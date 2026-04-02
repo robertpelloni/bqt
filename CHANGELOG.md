@@ -1,3 +1,10 @@
+## [1.2.0] - 2026-04-02
+### Added
+- **UI Comprehensiveness Milestone Achieved:** Implemented the highly complex `OmniCodeEditor` and `OmniCalendar` components natively as `QQuickPaintedItem`s.
+- `OmniCodeEditor`: Features a complete C++ string tokenization foundation, dynamic multi-line text layout, mouse scrolling, blinking cursors, and syntax highlighting hooks. It actively intercepts `QKeyEvent`s, routing seamlessly through the multi-cursor architecture.
+- `OmniCalendar`: Features a complete grid layout using `QDate` math, interactive month cycling, dynamic bounds-checking for clicks, and custom thematic highlighting.
+- Fully wired these advanced widgets into the `OmniQmlRegistration` pipeline. The entire planned `OmniUI 1.0` and `OmniData 1.0` C++ widget suite is now structurally complete and natively rendered.
+
 ## [1.1.0] - 2026-04-02
 ### Added
 - **ZERO VAPORWARE MILESTONE:** Eradicated the final mock facades from the QML Registration pipeline. 100% of the core UI, Layout, and Audio DSP API surface is now fully backed by robust, native C++ implementations.
