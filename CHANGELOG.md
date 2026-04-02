@@ -1,3 +1,10 @@
+## [1.0.8] - 2026-04-02
+### Added
+- Put the Multi-Cursor typing architecture to the ultimate test: Implemented `OmniTextField` natively as a `QQuickPaintedItem`. It perfectly hooks into the `OmniInputManager`'s independent focus tree and directly intercepts routed `QKeyEvent`s, allowing concurrent multi-user typing.
+- Implemented `OmniDial` with complex polar/mouse delta calculations, bridging high-end native audio dial logic into the QML engine.
+- Established the core DSP foundation: Implemented `OmniFilter` and `OmniGain` as native QML-exposed audio processors, paving the way for the JUCE AudioGraph wrapping.
+- Replaced the previous dummy mocks for TextField, Dial, Filter, and Gain in the `OmniQmlRegistration` system with these robust, native C++ implementations.
+
 ## [1.0.7] - 2026-04-02
 ### Added
 - Solved the Dual-Hierarchy Architectural Crisis: Autonomously refactored all generated backend classes from legacy `QWidget` inheritance to modern `QQuickPaintedItem` / `QQuickItem`. The backend is now natively designed for SceneGraph hardware acceleration and QML integration.

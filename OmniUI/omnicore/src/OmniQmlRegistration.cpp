@@ -2,15 +2,16 @@
 #include "OmniInputManager.h"
 #include "OmniButton.h"
 #include "OmniSlider.h"
+#include "OmniTextField.h"
+#include "OmniDial.h"
+#include "OmniFilter.h"
+#include "OmniGain.h"
 #include <QQmlEngine>
 #include <QDebug>
 
 #include <QQuickItem>
 
 // Temporary dummy items for un-ported components
-class OmniQmlSlider : public QQuickItem { Q_OBJECT };
-class OmniQmlTextField : public QQuickItem { Q_OBJECT };
-class OmniQmlDial : public QQuickItem { Q_OBJECT };
 class OmniQmlCheckBox : public QQuickItem { Q_OBJECT };
 class OmniQmlProgressBar : public QQuickItem { Q_OBJECT };
 class OmniQmlJuceView : public QQuickItem { Q_OBJECT };
@@ -26,7 +27,6 @@ class OmniQmlAudioGraph : public QQuickItem {
 public:
     Q_INVOKABLE void addProcessor(QObject* p) { Q_UNUSED(p); qDebug() << "AudioGraph: added processor"; }
 };
-class OmniQmlAudioProcessor : public QObject { Q_OBJECT };
 class OmniQmlSequencer : public QObject {
     Q_OBJECT
     Q_PROPERTY(int bpm READ bpm WRITE setBpm NOTIFY bpmChanged)
@@ -52,19 +52,22 @@ void OmniUI::registerQmlTypes() {
 
     // Register Actual Fully-Implemented Widgets
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");
+    qmlRegisterType<OmniSlider>("OmniUI", 1, 0, "Slider");
+    qmlRegisterType<OmniTextField>("OmniUI", 1, 0, "TextField");
+    qmlRegisterType<OmniDial>("OmniUI", 1, 0, "Dial");
+
+    // Register Audio DSP
+    qmlRegisterType<OmniFilter>("OmniAudio", 1, 0, "Filter");
+    qmlRegisterType<OmniGain>("OmniAudio", 1, 0, "Gain");
 
     // Register UI Controls (Mocked)
-    qmlRegisterType<OmniSlider>("OmniUI", 1, 0, "Slider");
-    qmlRegisterType<OmniQmlTextField>("OmniUI", 1, 0, "TextField");
-    qmlRegisterType<OmniQmlDial>("OmniUI", 1, 0, "Dial");
     qmlRegisterType<OmniQmlCheckBox>("OmniUI", 1, 0, "CheckBox");
     qmlRegisterType<OmniQmlProgressBar>("OmniUI", 1, 0, "ProgressBar");
     qmlRegisterType<OmniQmlJuceView>("OmniUI", 1, 0, "JuceView");
 
-    // Register Audio
+    // Register Audio (Mocked)
     qmlRegisterType<OmniQmlMidiHandler>("OmniAudio", 1, 0, "MidiHandler");
     qmlRegisterType<OmniQmlAudioGraph>("OmniAudio", 1, 0, "AudioGraph");
-    qmlRegisterType<OmniQmlAudioProcessor>("OmniAudio", 1, 0, "AudioProcessor");
     qmlRegisterType<OmniQmlSequencer>("OmniAudio", 1, 0, "Sequencer");
     
     qDebug() << "OmniUI: QML Types Registered successfully.";
