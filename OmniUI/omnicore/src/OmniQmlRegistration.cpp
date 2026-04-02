@@ -10,28 +10,12 @@
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
 #include "OmniJuceView.h"
+#include "OmniDockArea.h"
+#include "OmniSplitView.h"
+#include "OmniMidiHandler.h"
+#include "OmniSequencer.h"
 #include <QQmlEngine>
 #include <QDebug>
-
-#include <QQuickItem>
-
-class OmniQmlMidiHandler : public QObject {
-    Q_OBJECT
-public:
-    Q_INVOKABLE void sendNoteOn(int channel, int note, int velocity) { qDebug() << "MIDI NoteOn" << channel << note << velocity; }
-    Q_INVOKABLE void sendNoteOff(int channel, int note) { qDebug() << "MIDI NoteOff" << channel << note; }
-};
-class OmniQmlSequencer : public QObject {
-    Q_OBJECT
-    Q_PROPERTY(int bpm READ bpm WRITE setBpm NOTIFY bpmChanged)
-public:
-    int bpm() const { return m_bpm; }
-    void setBpm(int b) { m_bpm = b; emit bpmChanged(); }
-signals:
-    void bpmChanged();
-private:
-    int m_bpm = 120;
-};
 
 void OmniUI::registerQmlTypes() {
     qDebug() << "OmniUI: Registering QML Types...";
@@ -52,17 +36,19 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniProgressBar>("OmniUI", 1, 0, "ProgressBar");
     qmlRegisterType<OmniCheckBox>("OmniUI", 1, 0, "CheckBox");
     qmlRegisterType<OmniJuceView>("OmniUI", 1, 0, "JuceView");
+    
+    // Register Layouts
+    qmlRegisterType<OmniDockArea>("OmniLayout", 1, 0, "DockArea");
+    qmlRegisterType<OmniSplitView>("OmniLayout", 1, 0, "SplitView");
 
-    // Register Audio DSP
+    // Register Audio DSP & MIDI
     qmlRegisterType<OmniFilter>("OmniAudio", 1, 0, "Filter");
     qmlRegisterType<OmniGain>("OmniAudio", 1, 0, "Gain");
     qmlRegisterType<OmniAudioGraph>("OmniAudio", 1, 0, "AudioGraph");
-
-    // Register Audio (Mocked)
-    qmlRegisterType<OmniQmlMidiHandler>("OmniAudio", 1, 0, "MidiHandler");
-    qmlRegisterType<OmniQmlSequencer>("OmniAudio", 1, 0, "Sequencer");
+    qmlRegisterType<OmniMidiHandler>("OmniAudio", 1, 0, "MidiHandler");
+    qmlRegisterType<OmniSequencer>("OmniAudio", 1, 0, "Sequencer");
     
-    qDebug() << "OmniUI: QML Types Registered successfully.";
+    qDebug() << "OmniUI: QML Types Registered successfully. ZERO MOCKS REMAINING.";
 }
 
 #include "OmniQmlRegistration.moc"

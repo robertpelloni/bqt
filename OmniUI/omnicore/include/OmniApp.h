@@ -11,6 +11,7 @@ class JuceWidget;
 class OmniInputManager;
 class OmniDeveloperOverlay;
 class QQmlApplicationEngine;
+class OmniNativeEventFilter;
 
 class OmniApplication : public QApplication {
     Q_OBJECT
@@ -42,6 +43,7 @@ private:
     QList<JuceWidget*> m_managedWidgets;
     OmniDeveloperOverlay* m_developerOverlay;
     QQmlApplicationEngine* m_qmlEngine;
+    OmniNativeEventFilter* m_nativeFilter;
 };
 
 #endif // OMNIAPP_H

@@ -14,6 +14,7 @@ include_directories(../../deps/juce)
 add_executable(PluginDemo
     src/main.cpp
     ../../omnicore/src/OmniApp.cpp
+    ../../omnicore/src/OmniNativeEventFilter.cpp
     ../../omnicore/src/OmniQmlRegistration.cpp
     ../../omnicore/src/JuceWidget.cpp
     ../../omnicore/src/widgets/OmniButton.cpp

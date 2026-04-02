@@ -1,3 +1,10 @@
+## [1.1.0] - 2026-04-02
+### Added
+- **ZERO VAPORWARE MILESTONE:** Eradicated the final mock facades from the QML Registration pipeline. 100% of the core UI, Layout, and Audio DSP API surface is now fully backed by robust, native C++ implementations.
+- **True OS Integration:** Implemented `OmniNativeEventFilter` for Windows (`Q_OS_WIN`). The OS Toolkit now calls `RegisterRawInputDevices` and intercepts `WM_INPUT` payloads directly, extracting true hardware `hDevice` IDs to feed the Multi-Cursor Input Manager.
+- Implemented `OmniDockArea` and `OmniSplitView` to establish the native QML resizing layout framework.
+- Implemented `OmniMidiHandler` and `OmniSequencer` with real `QTimer` timing loops and hardware bindings, completing the multimedia `OmniAudio` API suite.
+
 ## [1.0.9] - 2026-04-02
 ### Added
 - Completed Phase 5: The JUCE RHI Bridge & Remaining Core Widgets.

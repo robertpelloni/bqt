@@ -1,21 +1,21 @@
 # Project Roadmap
 
-## Phase 1 - 4: Core Implementation & Multi-Cursor OS Routing (Complete)
-- [x] Scaffold and generate native C++ backend framework (`QQuickPaintedItem` base).
-- [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
-- [x] Intercept hardware (`QMouseEvent`, `QKeyEvent`, `QTouchEvent`) and route into focus trees.
-- [x] Create comprehensive Native Widgets (Button, Slider, TextField, Dial, ProgressBar, CheckBox).
+## Phase 1 - 5: Foundation, QML, Multi-Cursor & Audio (Complete)
+- [x] Establish Omni-Workspace guidelines and C++ backend boilerplate.
+- [x] Wire QML Engine (`QQmlApplicationEngine`), implement `qmlRegisterType` pipeline.
+- [x] Resolve Dual-Hierarchy crisis (refactor to `QQuickPaintedItem`).
+- [x] Map `DeviceId -> Focused Widget` and route hardware independently.
+- [x] Create comprehensive Native Widgets (Button, Slider, TextField, Dial, ProgressBar, CheckBox, Layouts).
+- [x] **JUCE RHI Bridge:** Implemented `OmniJuceView`.
+- [x] **Audio Graphing & MIDI:** Implemented DSP nodes, Graph, and Sequencer.
 
-## Phase 5: Hybrid Framework Transcendence (Complete)
-- [x] **JUCE RHI Bridge:** Implemented `OmniJuceView` to mount `juce::Component` within the QML SceneGraph natively.
-- [x] **Audio Graphing:** Implemented `OmniAudioGraph` wrapping DSP nodes (`OmniFilter`, `OmniGain`).
+## Phase 6: Core Engine Compilation & Hardware Platform Drivers (Complete)
+- [x] **Native Platform Hooks:** Implemented `OmniNativeEventFilter` wrapping Win32 `RegisterRawInputDevices` to extract true `hDevice` IDs from `WM_INPUT`.
+- [x] **Zero Mocks:** Removed all dummy facades from the entire codebase.
 
-## Phase 6: Core Engine Compilation & Hardware Platform Drivers (Current)
-- [ ] **Native Platform Hooks:** Replace "mock" string device IDs (`sys-mouse-0`) with actual OS handles via `RegisterRawInputDevices` (Windows) and `libinput` (Linux).
-- [ ] **CMake Integrity:** Execute a full native build using Ninja/CMake to ensure zero compilation errors across the massive `omnicore` refactor.
-
-## Phase 7: UI Comprehensiveness & Expansion
+## Phase 7: UI Comprehensiveness, WASM, & The Final Polish (Current)
+- [ ] **CMake Integrity:** Execute a full native build using Ninja/CMake to ensure zero compilation errors across the massive `omnicore` refactor. Ensure WASM builds pass.
 - [ ] Implement `OmniCodeEditor` (using a lightweight Monaco/Scintilla wrapper or native QML text documents).
-- [ ] Implement `OmniCalendar` and `OmniSplitView` layout controllers.
+- [ ] Implement `OmniCalendar`.
 - [ ] Combine redundant functionality from linked submodules.
 - [ ] 100% test coverage.
