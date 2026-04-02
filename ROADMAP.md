@@ -7,7 +7,8 @@
 - [ ] Establish Submodule Dashboard and tracking scripts.
 - [ ] Automate continuous Git sync (upstream merging, local feature branch integration).
 
-## Phase 2: Core Parity Verification
+## Phase 2: Core Parity Verification & OmniUI Backend
+- [ ] Implement the core `OmniApplication` and `JuceWidget` C++ wrappers.
 - [ ] Map all Qt6 Core features against current `bobui` implementation.
 - [ ] Identify unimplemented, incomplete, or partially wired backend features.
 - [ ] Ensure `OmniUI` integrates fully with the base system.
