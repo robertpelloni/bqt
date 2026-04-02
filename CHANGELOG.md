@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.0.4] - 2026-04-02
+### Added
+- Implemented foundational `JuceWidget` C++ wrapper for multimedia integration.
+- Introduced `OmniInputManager` singleton for multi-device HID identity tracking.
+- Created `OmniDeveloperOverlay` with ImGui integration bridge.
+- Published `MULTI_CURSOR_SPEC.md` and `OMNIUI_IMPLEMENTATION_DETAIL.md` documenting the path to an OS-level collaborative toolkit.
+- Updated `OmniApplication` to manage multi-framework lifecycles (Qt, JUCE, ImGui).
+
 ## [1.0.3] - 2026-04-02
 ### Added
 - Conducted extreme deep-dive codebase analysis mapping out OS-level capabilities.
