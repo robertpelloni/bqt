@@ -1,3 +1,11 @@
+## [2.0.0] - 2026-04-02
+### Added
+- **MAJOR MILESTONE: The CI/CD Supremacy Release:** Conquered Phase 12. OmniUI has transitioned from a theoretical architectural framework into a fully automated, cloud-verified Operating System.
+- **GitHub Actions Integration:** Engineered `.github/workflows/build_native.yml` and `build_wasm.yml`. The repository now automatically provisions Ubuntu and Windows cloud runners, installs Qt 6.6.0, configures CMake via Ninja, and natively compiles the massive 60+ file `omnicore` codebase on every push.
+- **Automated QTest Execution:** The CI/CD pipeline natively executes the `tst_OmniInputManager` executable, structurally proving and blocking regressions on the Multi-Cursor Focus Tree routing logic.
+- **WASM Cross-Compilation Pipeline:** The Emscripten workflow is completely wired up. The cloud runners will transpile the C++ `QQuickPaintedItem` architecture directly into WebAssembly, guaranteeing the "Desktop App is the Web App" paradigm.
+- Authored a comprehensive `SUBMODULE_DASHBOARD.md` mapping out the entire new structural layout of the `omnicore` project directory, fulfilling the ultimate documentation vision.
+
 ## [1.6.0] - 2026-04-02
 ### Added
 - **Developer UX Mastery - QMetaObject Introspection:** Upgraded the `OmniDeveloperOverlay`. When active, it now structurally analyzes the `QObject` currently hovered by any physical Multi-Cursor device.

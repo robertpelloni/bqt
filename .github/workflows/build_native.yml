@@ -1,0 +1,62 @@
+name: OmniUI Native CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-desktop:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        qt_ver: [6.6.0]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ matrix.qt_ver }}
+        host: ${{ matrix.os == 'windows-latest' && 'windows' || 'linux' }}
+        target: desktop
+        modules: 'qtdeclarative qtwebsockets qt5compat qtshadertools qtmultimedia'
+
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+
+    - name: Configure CMake (HelloOmni)
+      run: |
+        cd OmniUI/examples/HelloOmni
+        mkdir build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+
+    - name: Build OmniCore & HelloOmni
+      run: |
+        cd OmniUI/examples/HelloOmni/build
+        cmake --build . --parallel
+
+    - name: Configure CMake (Tests)
+      run: |
+        cd OmniUI/tests
+        mkdir build
+        cd build
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+
+    - name: Build Tests
+      run: |
+        cd OmniUI/tests/build
+        cmake --build . --parallel
+
+    - name: Run QTest (Multi-Cursor Verification)
+      run: |
+        cd OmniUI/tests/build
+        ctest --output-on-failure
