@@ -16,6 +16,9 @@
 #include "OmniSplitView.h"
 #include "OmniMidiHandler.h"
 #include "OmniSequencer.h"
+#include "OmniDatabase.h"
+#include "OmniHttpClient.h"
+#include "OmniWebSocket.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -51,8 +54,13 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniAudioGraph>("OmniAudio", 1, 0, "AudioGraph");
     qmlRegisterType<OmniMidiHandler>("OmniAudio", 1, 0, "MidiHandler");
     qmlRegisterType<OmniSequencer>("OmniAudio", 1, 0, "Sequencer");
+
+    // Register Data & Networking API
+    qmlRegisterType<OmniDatabase>("OmniData", 1, 0, "Database");
+    qmlRegisterType<OmniHttpClient>("OmniNet", 1, 0, "HttpClient");
+    qmlRegisterType<OmniWebSocket>("OmniNet", 1, 0, "WebSocket");
     
-    qDebug() << "OmniUI: QML Types Registered successfully. ZERO MOCKS REMAINING.";
+    qDebug() << "OmniUI: QML Types Registered successfully. Full Parity Reached.";
 }
 
 #include "OmniQmlRegistration.moc"

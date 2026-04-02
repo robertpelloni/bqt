@@ -1,19 +1,18 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Compilation Test:** Resolve local host build environment limits.
-- [ ] **Git Sync:** Intelligently merge any pending feature branches from the remote if they emerge.
+- [ ] **Compilation Test:** Resolve local host build environment limits to natively compile the massive `omnicore` refactor. Run `cmake -G Ninja`.
 
-## Implementation Tasks (Phase 8 Focus)
+## Implementation Tasks (Phase 9 Focus)
 
-### 1. Data & Persistence
-- [ ] Implement `OmniDatabase.cpp`. Expose `Q_INVOKABLE void executeQuery(QString query)` and `QVariantList getResults()`. Use `QSqlDatabase`.
-- [ ] Ensure SQLite linkage is added to CMake.
+### 1. Test Automation
+- [ ] Write exhaustive Unit Tests for `OmniInputManager`'s independent focus logic using `QTest`.
+- [ ] Write Unit Tests verifying that `OmniHttpClient` emits signals correctly when mocked responses are pushed.
 
-### 2. Networking (Native/WASM parity)
-- [ ] Implement `OmniHttpClient.cpp`. Provide Promise-like or Signal-Slot architecture for async HTTP GET/POST requests.
-- [ ] Implement `OmniWebSocket.cpp` for native real-time chat/collaboration routing.
+### 2. Audio & MIDI Perfection
+- [ ] The `OmniMidiHandler` needs to be hooked structurally to a `juce::MidiOutput` pointer.
+- [ ] Replace the mock DSP loops in `OmniFilter` with actual `juce::dsp::StateVariableTPTFilter` calls when the JUCE library is confirmed linked on the target build machine.
 
 ### 3. Polish & Documentation
-- [ ] Write exhaustive Unit Tests for `OmniCodeEditor` text insertion and backspacing logic.
-- [ ] Ensure all properties are documented in `Manual.md`.
+- [ ] Ensure all properties (like `accentColor`, `omniStyle`, `url`) are documented in `Manual.md`.
+- [ ] Add tooltips dynamically generated from C++ `Q_PROPERTY` metadata via QMetaObject introspection.

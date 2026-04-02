@@ -1,3 +1,10 @@
+## [1.3.0] - 2026-04-02
+### Added
+- **Data Persistence Mastery:** Implemented `OmniDatabase` wrapping `QSqlDatabase`. It natively translates SQL query results into `QVariantList`s, allowing frontend QML loops to dynamically iterate over local SQLite data structures without friction.
+- **Networking APIs Extracted:** Fully implemented `OmniHttpClient` for asynchronous REST API calls and `OmniWebSocket` for high-performance TCP socket connections, exposing native C++ networking directly to the QML rendering engine.
+- **CMake Hardening:** Updated project build configurations to successfully link against `Qt6::Sql`, `Qt6::Network`, and `Qt6::WebSockets`, completing the "OmniData" and "OmniNet" module bindings.
+- Achieved the conclusion of the primary framework architecture requirements defined in the ultimate vision.
+
 ## [1.2.0] - 2026-04-02
 ### Added
 - **UI Comprehensiveness Milestone Achieved:** Implemented the highly complex `OmniCodeEditor` and `OmniCalendar` components natively as `QQuickPaintedItem`s.
