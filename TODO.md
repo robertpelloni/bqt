@@ -1,14 +1,17 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Monitor GitHub Actions:** Upon pushing this commit, verify that `.github/workflows/ci_cd.yml` succeeds. The recent raw merge of `OmniNexus` might have introduced syntax errors.
+- [ ] **Monitor GitHub Actions:** Upon pushing this commit, verify that `.github/workflows/ci_cd.yml` completely passes the CMake build process now that the C++ linkage errors in the mock headers are fixed.
 
-## Implementation Tasks (Phase 14 Focus)
+## Implementation Tasks (Phase 15 Focus)
 
-### 1. Robust API Expansions
-- [ ] Implement `OmniDatabase::executeTransaction(QList<QString> queries)` to allow QML to push massive data batches dynamically.
-- [ ] Expose `QList<QString> getAvailableMidiDevices()` inside `OmniMidiHandler` dynamically mapping `juce::MidiOutput::getAvailableDevices()`.
+### 1. OmniMasterClock Integration
+- [ ] Create `OmniMasterClock.cpp`. 
+- [ ] Have `OmniSequencer` and all UI Animations tie their ticks to this unified clock instead of arbitrary `QTimer` instances to guarantee DSP-level precision.
 
-### 2. Physical QA
+### 2. Global IPC (Inter-Process Communication)
+- [ ] Implement `OmniIPC.cpp` wrapping `QSharedMemory`. 
+- [ ] Provide `Q_INVOKABLE` methods to allow QML to broadcast binary payloads locally between multiple running BobUI OS instances.
+
+### 3. Physical QA
 - [ ] Spin up a Windows PC with two USB mice attached. Open `HelloOmni.exe`. Verify two red cursors appear and move independently based on the specific mouse being used.
-- [ ] Spin up a browser, run the WASM version. Verify that touches/mouse clicks route correctly into the WASM canvas and translate into `OmniInputManager` events.

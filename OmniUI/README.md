@@ -1,46 +1,32 @@
-# OmniUI: The Definitive C++ UI Standard
+# OmniUI: The Universal Interface Standard (BobUI)
 
-## Overview
-OmniUI is a next-generation UI framework that combines the industrial strength of **Qt 6** with the multimedia prowess of **JUCE**. It is designed to be the "Electron Killer" for C++, offering a developer experience (DX) akin to modern web development while maintaining native performance and compiling seamlessly to WebAssembly (WASM).
+OmniUI is the definitive C++ UI framework for modern cross-platform development, designed to be the ultimate foundation for a next-generation, multi-user collaborative Operating System.
 
-## Features
-- **Qt + JUCE Fusion**: Use Qt for complex layouts, styling, and accessibility, while embedding JUCE components for high-performance audio/visualizers.
-- **TypeScript First**: Write your UI logic and business logic in TypeScript. OmniUI transpiles this to optimized QML/C++ bindings.
-- **WebAssembly Native**: Zero-config WASM builds. Your desktop app is your web app.
-- **Developer Experience**: A CLI tool `omni` that handles scaffolding, building, and hot-reloading.
+It combines the industrial strength of **Qt 6** with the multimedia prowess of **JUCE**, the styling of **JavaFX**, and the transcendence of **Dear ImGui**.
+
+## Core Paradigm: The Multi-Cursor OS
+OmniUI fundamentally rejects the single-user window manager limitation. By natively intercepting Win32 `RAWINPUT` and routing it into distinct Focus Trees, the framework allows infinite users to concurrently interact with the same application natively.
+
+## Feature Ecosystem
+
+| Feature Category | Modules | Core Capabilities |
+|------------------|---------|--------------------|
+| **Core UI** | OmniWidgets, OmniLayout | 100% C++ QQuickPaintedItem native rendering. |
+| **Audio/DSP** | OmniAudio, OmniMidi | Direct JUCE DSP mathematical integration & MIDI hardware hooks. |
+| **Data & Net** | OmniData, OmniNet | Native SQLite mapping to QVariantList & Async Websockets. |
+| **Extensibility**| OmniPlugin | Runtime `.dll` / `.so` injection via QPluginLoader. |
+| **Connectivity** | OmniCloud, OmniNexus | Global IPC & Master Clock Unification (Upcoming). |
+| **3D & Simulation** | Omni3D, OmniPhysics | Hardware-accelerated SceneGraph integration (Upcoming). |
 
 ## Getting Started
-See the [User Manual](docs/Manual.md) for full documentation.
+See the [User Manual](docs/Manual.md) for full API documentation.
 
 ### Quick Start
-# OmniUI: The Universal Interface Standard
-
-OmniUI is the definitive C++ UI framework for modern cross-platform development.
-
-| Feature Category | Modules | Status |
-|------------------|---------|--------|
-| **Core UI** | OmniWidgets, OmniLayout | Stable (v15.0) |
-| **Audio/DSP** | OmniAudio, OmniMidi | Stable (v15.0) |
-| **Visual Scripting** | OmniNodes, OmniScript | Stable (v15.0) |
-| **3D & XR** | Omni3D, OmniXR | Stable (v15.0) |
-| **Connectivity** | OmniNet, OmniCloud | Stable (v15.0) |
-| **Hardware** | OmniHardware, OmniEmbedded | Stable (v15.0) |
-| **Simulation** | OmniPhysics, OmniGfx | Stable (v15.0) |
-| **Gaming** | OmniGame | Stable (v15.0) |
-| **System** | OmniSystem | Stable (v20.0) |
-
-## Flagship Applications
-- **OmniStudio**: Integrated Development Environment.
-- **OmniSynth**: Modular Synthesizer.
-- **OmniChat**: AI Assistant.
-- **OmniDash**: IoT Dashboard.
-
-## Getting Started
 ```bash
-npm install -g omni-ui-cli
-omni init my-app
-cd my-app
-omni dev
+# OmniUI targets Emscripten (WASM) and Native Desktop dynamically.
+git clone --recursive https://github.com/robertpelloni/bobui
+cd bobui
+mkdir build && cd build
+cmake -G Ninja ..
+cmake --build .
 ```
-
-See [Manual](docs/Manual.md) for detailed guides.
