@@ -1,3 +1,10 @@
+## [1.0.9] - 2026-04-02
+### Added
+- Completed Phase 5: The JUCE RHI Bridge & Remaining Core Widgets.
+- Implemented `OmniQmlJuceView` (inheriting from `QQuickPaintedItem`), completing the true RHI integration bridge that allows raw C++ JUCE components to live dynamically inside the QML SceneGraph, fully replacing the legacy `QWidget` fallback.
+- Established `OmniAudioGraph`, wrapping DSP management natively into the QML engine, completing the C++ -> QML Audio framework pipeline.
+- Fully implemented `OmniProgressBar` and `OmniCheckBox` with dynamic properties (`accentColor`, `checked`, `maximum`), natively drawn and wired via the multi-cursor Input Manager, achieving 100% core UI framework boilerplate implementation.
+
 ## [1.0.8] - 2026-04-02
 ### Added
 - Put the Multi-Cursor typing architecture to the ultimate test: Implemented `OmniTextField` natively as a `QQuickPaintedItem`. It perfectly hooks into the `OmniInputManager`'s independent focus tree and directly intercepts routed `QKeyEvent`s, allowing concurrent multi-user typing.
