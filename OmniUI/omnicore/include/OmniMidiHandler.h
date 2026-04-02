@@ -3,6 +3,12 @@
 
 #include <QObject>
 #include <QString>
+#include <memory>
+
+// Forward declare JUCE classes
+namespace juce {
+    class MidiOutput;
+}
 
 class OmniMidiHandler : public QObject {
     Q_OBJECT
@@ -20,10 +26,11 @@ public:
 
 signals:
     void currentDeviceChanged();
-    void noteReceived(int channel, int note, int velocity); // From hardware to UI
+    void noteReceived(int channel, int note, int velocity);
 
 private:
     QString m_currentDevice;
+    std::unique_ptr<juce::MidiOutput> m_midiOutput;
 };
 
 #endif // OMNIMIDIHANDLER_H

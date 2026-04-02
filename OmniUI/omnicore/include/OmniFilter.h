@@ -2,6 +2,14 @@
 #define OMNIFILTER_H
 
 #include <QObject>
+#include <memory>
+
+// Forward declare JUCE classes
+namespace juce {
+namespace dsp {
+    class StateVariableTPTFilter;
+}
+}
 
 class OmniFilter : public QObject {
     Q_OBJECT
@@ -29,7 +37,7 @@ public:
     qreal resonance() const;
     void setResonance(qreal r);
 
-    // Mock processing function. In reality, this would wrap juce::dsp::StateVariableTPTFilter
+    // Integrates directly into the JUCE AudioGraph Thread
     void processAudioBlock(float* leftChannel, float* rightChannel, int numSamples);
 
 signals:
@@ -41,6 +49,8 @@ private:
     int m_type;
     qreal m_cutoff;
     qreal m_resonance;
+    
+    std::unique_ptr<juce::dsp::StateVariableTPTFilter> m_filter;
 };
 
 #endif // OMNIFILTER_H

@@ -1,3 +1,10 @@
+## [2.1.0] - 2026-04-02
+### Added
+- **Automated Release Generation:** Created `.github/workflows/ci_cd.yml` which combines the Windows, Linux, and WebAssembly builds into a unified deployment pipeline. On every commit, GitHub Actions will dynamically extract the version string from `VERSION.md` and create a formal GitHub Release, uploading the stripped native `.exe` binaries alongside the `WebAssembly` HTML/JS package directly to the users.
+- **Audio DSP Reality Check:** Rewrote `OmniFilter` and `OmniMidiHandler` to cast off their simulated C++ processing loops and officially link against the JUCE multimedia framework.
+- `OmniMidiHandler` now generates `juce::MidiMessage::noteOn` payloads and streams them directly into `juce::MidiOutput` devices selected via the QML UI.
+- `OmniFilter` now physically instantiates a `juce::dsp::StateVariableTPTFilter`, hooking the QML sliders directly into high-performance audio processing mathematics.
+
 ## [2.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The CI/CD Supremacy Release:** Conquered Phase 12. OmniUI has transitioned from a theoretical architectural framework into a fully automated, cloud-verified Operating System.
