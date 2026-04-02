@@ -4,12 +4,10 @@
 - [ ] **Compilation Test:** Resolve local host build environment limits. Execute `cmake -G Ninja` successfully.
 - [ ] **WASM Build Test:** Install Emscripten and run `emcmake cmake ..`.
 
-## Implementation Tasks (Phase 11 Focus)
+## Implementation Tasks (Phase 12 Focus)
 
-### 1. Developer Overlay Enhancements (QMetaObject)
-- [ ] Upgrade `OmniDeveloperOverlay.cpp` to listen for mouse hovers.
-- [ ] Extract the `QMetaObject` of the focused `QObject`.
-- [ ] Dynamically render an ImGui tooltip listing all `Q_PROPERTY` items (names and values) associated with that specific widget.
+### 1. Build Verification
+- [ ] Set up the GitHub Actions `.yml` file for the `robertpelloni/bobui` repository to automatically execute the CMake build upon commit.
 
 ### 2. Audio & MIDI Perfection
 - [ ] Connect `OmniMidiHandler` physically to `juce::MidiOutput`.

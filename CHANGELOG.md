@@ -1,3 +1,9 @@
+## [1.6.0] - 2026-04-02
+### Added
+- **Developer UX Mastery - QMetaObject Introspection:** Upgraded the `OmniDeveloperOverlay`. When active, it now structurally analyzes the `QObject` currently hovered by any physical Multi-Cursor device.
+- Implemented real-time dynamic tooltip generation: The ImGui/QPainter overlay extracts `metaObject()->propertyCount()` and draws a highly-stylized, semi-transparent syntax-highlighted floating tooltip detailing the class name and every active `Q_PROPERTY` value (resolving custom `QColor` hexes natively) attached to the hovered widget.
+- Completed Phase 11. The OS foundation is now fully structurally verified, physically extensible via dynamic `.dll` injection, and possesses native runtime debugging introspection.
+
 ## [1.5.0] - 2026-04-02
 ### Added
 - **OmniPlugin Architecture:** Engineered the `OmniPluginManager` and `OmniPluginInterface`. The OS toolkit now possesses the native capability to dynamically load external `.dll` (Windows) and `.so` (Linux) extensions at runtime via `QPluginLoader`.

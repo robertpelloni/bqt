@@ -29,12 +29,14 @@ public:
     // Updates the state of a specific pointing device
     void updateCursor(const QString& deviceId, const QPointF& pos);
 
-    // --- Multi-Focus Tree Management ---
+    // --- Multi-Focus & Hover Tree Management ---
     // Sets the focused widget for a specific device
-    void setDeviceFocus(const QString& deviceId, QObject* target);
-    
-    // Retrieves the currently focused widget for a device
-    QObject* deviceFocus(const QString& deviceId) const;
+    Q_INVOKABLE void setDeviceFocus(const QString& deviceId, QObject* target);
+    Q_INVOKABLE QObject* deviceFocus(const QString& deviceId) const;
+
+    // Sets the hovered widget for a specific device (used for Developer Introspection)
+    Q_INVOKABLE void setDeviceHover(const QString& deviceId, QObject* target);
+    Q_INVOKABLE QObject* deviceHover(const QString& deviceId) const;
 
     // Processes a key event and routes it to the specific device's focused widget
     bool routeKeyEvent(const QString& deviceId, QKeyEvent* event);
@@ -44,11 +46,13 @@ signals:
     void deviceDisconnected(const QString& deviceId);
     void cursorUpdated(const QString& deviceId, const QPointF& pos);
     void focusChanged(const QString& deviceId, QObject* target);
+    void hoverChanged(const QString& deviceId, QObject* target);
 
 private:
     explicit OmniInputManager(QObject *parent = nullptr);
     QMap<QString, OmniInputDevice> m_devices;
-    QMap<QString, QObject*> m_deviceFocusMap; // Maps DeviceId -> Focused QObject/QWidget
+    QMap<QString, QObject*> m_deviceFocusMap; // Maps DeviceId -> Focused QObject
+    QMap<QString, QObject*> m_deviceHoverMap; // Maps DeviceId -> Hovered QObject
 };
 
 #endif // OMNIINPUTMANAGER_H

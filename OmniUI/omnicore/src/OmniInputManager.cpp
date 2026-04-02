@@ -15,7 +15,7 @@ OmniInputManager::OmniInputManager(QObject *parent)
     // Simulation: Register initial system devices
     registerDevice("sys-mouse-0", "System Mouse", "mouse");
     registerDevice("sys-kb-0", "System Keyboard", "keyboard");
-    registerDevice("sys-kb-1", "Secondary User Keyboard", "keyboard"); // Mock multi-user
+    registerDevice("sys-kb-1", "Secondary User Keyboard", "keyboard");
 }
 
 QList<OmniInputDevice> OmniInputManager::devices() const
@@ -56,18 +56,25 @@ QObject* OmniInputManager::deviceFocus(const QString& deviceId) const
     return m_deviceFocusMap.value(deviceId, nullptr);
 }
 
+void OmniInputManager::setDeviceHover(const QString& deviceId, QObject* target)
+{
+    if (m_deviceHoverMap.value(deviceId) == target) return;
+
+    m_deviceHoverMap[deviceId] = target;
+    emit hoverChanged(deviceId, target);
+}
+
+QObject* OmniInputManager::deviceHover(const QString& deviceId) const
+{
+    return m_deviceHoverMap.value(deviceId, nullptr);
+}
+
 bool OmniInputManager::routeKeyEvent(const QString& deviceId, QKeyEvent* event)
 {
     QObject* target = deviceFocus(deviceId);
-    if (!target) {
-        // If the device has no specific focus, fallback to the standard Qt focus loop
-        // or a global window root.
-        return false;
-    }
+    if (!target) return false;
 
     qDebug() << "OmniInputManager: Routing Key" << event->key() << "specifically to device [" << deviceId << "] focus target.";
-    
-    // Dispatch the event directly to the targeted object, bypassing Qt's global focus
     QCoreApplication::sendEvent(target, event);
-    return true; // Event handled
+    return true;
 }

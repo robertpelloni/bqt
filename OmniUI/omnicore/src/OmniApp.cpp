@@ -24,15 +24,12 @@ OmniApplication::OmniApplication(int &argc, char **argv)
     setObjectName("OmniApplication");
     m_qmlEngine = new QQmlApplicationEngine(this);
     
-    // Bind the global Plugin Manager to the engine so external .dlls can register
     OmniPluginManager::instance()->setQmlEngine(m_qmlEngine);
 
-    // Install the native OS hardware interception filter
     m_nativeFilter = new OmniNativeEventFilter(inputManager());
     installNativeEventFilter(m_nativeFilter);
     m_nativeFilter->registerRawInput();
 
-    // Register OmniUI Custom QML Types before loading anything
     OmniUI::registerQmlTypes();
 }
 
@@ -101,6 +98,10 @@ bool OmniApplication::notify(QObject *receiver, QEvent *e)
         QString deviceId = "sys-mouse-0"; 
         
         manager->updateCursor(deviceId, mouseEvent->globalPosition());
+
+        if (e->type() == QEvent::MouseMove) {
+            manager->setDeviceHover(deviceId, receiver);
+        }
 
         if (e->type() == QEvent::MouseButtonPress) {
             manager->setDeviceFocus(deviceId, receiver);
