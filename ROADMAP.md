@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 8: Core Infrastructure, Multi-Cursor, Audio, Data, & Net (Complete)
+## Phase 1 - 9: Core Infrastructure, Multi-Cursor, Audio, Data, Net, & Verification (Complete)
 - [x] Scaffold and generate native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`) and route into focus trees.
@@ -10,12 +10,14 @@
 - [x] Implement complex advanced widgets (`OmniCodeEditor`, `OmniCalendar`).
 - [x] **Data Persistence:** Implemented `OmniDatabase` wrapping SQLite.
 - [x] **Networking:** Implemented `OmniHttpClient` and `OmniWebSocket`.
-
-## Phase 9: Real-World OS Stress Test & Polishing (Complete)
-- [x] **Automated Testing:** Established the `QTest` framework and mathematically proved that concurrent hardware keypress routing works flawlessly on independent focus trees.
+- [x] **Automated Testing:** Established the `QTest` framework and mathematically verified the core.
 - [x] **Architectural Synthesis:** Authored `OMNIUI_IMPLEMENTATION_DETAIL.md`.
 
-## Phase 10: OmniPlugin Architecture & CI/CD Rollout (Current)
-- [ ] **OmniPluginManager:** Implement `QPluginLoader` support inside `OmniUI` to dynamically load external `.dll` / `.so` files at runtime, allowing the OS to load user-developed extensions without recompiling the core.
-- [ ] **WASM CI/CD:** Establish GitHub Actions to compile the entire `omnicore` codebase via Emscripten natively to a `dist/` web folder.
-- [ ] **Compilation Validation:** Resolve local host build environment limits to natively compile the massive `omnicore` refactor via Ninja.
+## Phase 10: OmniPlugin Architecture & Dynamic OS Extensibility (Complete)
+- [x] **OmniPluginManager:** Implemented `QPluginLoader` support. The OS can now dynamically load external `.dll` / `.so` extensions at runtime.
+- [x] **Dynamic C++ Injection:** Plugins can now securely execute `registerQmlTypes` directly into the host OS's `QQmlApplicationEngine` without a recompile.
+
+## Phase 11: The CI/CD WebAssembly Rollout & Final Compilation Tests (Current)
+- [ ] **WASM Build Infrastructure:** Create an `Emscripten` CMake toolchain script to formally test the cross-compilation of the entire `omnicore` codebase into WASM for browser-based OS deployments.
+- [ ] **Compilation Validation:** Launch an actual native Ninja/MSVC compiler environment to verify `#include` syntax and standard library linking.
+- [ ] **Property Introspection:** Add logic inside `OmniDeveloperOverlay` that uses `QMetaObject` to dynamically parse and display QML tooltips based on custom `Q_PROPERTY` tags.

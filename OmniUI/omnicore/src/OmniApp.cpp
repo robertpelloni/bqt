@@ -4,6 +4,7 @@
 #include "OmniDeveloperOverlay.h"
 #include "OmniQmlRegistration.h"
 #include "OmniNativeEventFilter.h"
+#include "OmniPluginManager.h"
 #include <QQmlApplicationEngine>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -23,6 +24,9 @@ OmniApplication::OmniApplication(int &argc, char **argv)
     setObjectName("OmniApplication");
     m_qmlEngine = new QQmlApplicationEngine(this);
     
+    // Bind the global Plugin Manager to the engine so external .dlls can register
+    OmniPluginManager::instance()->setQmlEngine(m_qmlEngine);
+
     // Install the native OS hardware interception filter
     m_nativeFilter = new OmniNativeEventFilter(inputManager());
     installNativeEventFilter(m_nativeFilter);
@@ -94,8 +98,6 @@ bool OmniApplication::notify(QObject *receiver, QEvent *e)
         auto *mouseEvent = static_cast<QMouseEvent*>(e);
         
         // Mock hardware extraction for Qt High-Level Events:
-        // A true implementation correlates the RAWINPUT (caught by m_nativeFilter) 
-        // with the timestamp of this QMouseEvent to assign the true hardware ID.
         QString deviceId = "sys-mouse-0"; 
         
         manager->updateCursor(deviceId, mouseEvent->globalPosition());

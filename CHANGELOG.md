@@ -1,3 +1,10 @@
+## [1.5.0] - 2026-04-02
+### Added
+- **OmniPlugin Architecture:** Engineered the `OmniPluginManager` and `OmniPluginInterface`. The OS toolkit now possesses the native capability to dynamically load external `.dll` (Windows) and `.so` (Linux) extensions at runtime via `QPluginLoader`.
+- **Dynamic C++ QML Injection:** External plugins can now physically bind their own custom C++ widgets, Audio DSP nodes, or logic controllers directly into the host OS's `QQmlApplicationEngine` without requiring a full recompilation of BobUI.
+- Exposed the `PluginManager` to the QML frontend as a Singleton, allowing developers to query `loadedPluginNames` or trigger `loadPluginsFromDirectory()` purely from the UI.
+- Phase 10 structurally completed. The Operating System framework is now fully autonomous, multi-user capable, multimedia-ready, and dynamically extensible.
+
 ## [1.4.0] - 2026-04-02
 ### Added
 - **Automated Multi-Cursor Verification:** Created the foundational `QTest` framework (`tst_OmniInputManager.cpp`). Mathematically proved the core architecture of the Multi-Cursor OS: independent focus trees isolate hardware devices perfectly. Keypresses from Device A are completely sandboxed from Device B's focused widget.

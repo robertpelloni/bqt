@@ -19,6 +19,7 @@
 #include "OmniDatabase.h"
 #include "OmniHttpClient.h"
 #include "OmniWebSocket.h"
+#include "OmniPluginManager.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -31,6 +32,13 @@ void OmniUI::registerQmlTypes() {
             Q_UNUSED(engine)
             Q_UNUSED(scriptEngine)
             return OmniInputManager::instance();
+        });
+
+    qmlRegisterSingletonType<OmniPluginManager>("OmniUI", 1, 0, "PluginManager", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+            return OmniPluginManager::instance();
         });
 
     // Register Actual Fully-Implemented Widgets & Views
