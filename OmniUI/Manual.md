@@ -340,3 +340,12 @@ The **OmniNexus** module represents the final integration phase of the OmniUI pr
     *   **Example 1 (Kernel Panic)**: If a `KERNEL_PANIC` event fires, the IPC router intercepts it and automatically forces the `OmniAGI` module to halt processing (simulating a lack of compute resources) and drops the universal time dilation to `0.1x` to allow operators to debug the physical state of the universe in slow-motion.
     *   **Example 2 (Physics Broken)**: If the user alters the Fine Structure Constant in `OmniGodMode` to a degree that breaks physical binding laws, it fires `PHYSICS_BROKEN`. The router intercepts this, forces the `OmniMultiverse` manager to initiate a reality-destroying *Incursion*, and triggers the `OmniGenesis` module to slam the universe into a *Big Crunch*.
 *   **OmniNexus Unified Command UI**: `OmniNexus/assets/main.qml` was built as the ultimate dashboard. It imports six major namespaces (`Omni.Universe`, `Omni.Omega`, `Omni.Kernel`, `Omni.Time`, `Omni.Multiverse`, `Omni.Singularity`) simultaneously into a beautiful 3x2 Grid Layout, allowing the operator to view the CPU load, AGI IQ growth, and Multiverse incursions side-by-side, while manipulating the Master Clock dilation slider at the bottom.
+
+#### Omni Crisis Mode (v42.1.0 Update)
+The `OmniNexus` module features a bright red **"INITIATE OMNI CRISIS PROTOCOL"** button at the bottom of the interface. This feature stress-tests the Inter-Process Communication (IPC) bus (`OmniUniversalContext`) and the Master Clock simultaneously.
+
+Triggering the crisis fires a massive `OMNI_CRISIS` event over the IPC bus.
+*   **OmniAGI Response**: Detects the signal, drops out of its recursive self-improvement loop, and transitions to an `EMERGENCY HALT` status, printing a catastrophic failure warning to its log.
+*   **OmniEtherealPlane Response**: Automatically triggers three simulated "Dark Rituals", massively draining the Boundary Veil thickness, which triggers the high-probability spawning of Eldritch entities.
+*   **OmniAbyss Response**: Ingests 50,000 solar masses of "Catastrophic Debris" instantly and activates the `stareInto()` function, aggressively pulling the simulated observer's horizon proximity toward 0.0 (Spaghettification).
+*   **OmniTimeMachine / OmniSimulationEngine Response**: The central physics engine chokes its CPU tick rate down to 10Hz, and the Time Machine (if playing forward) violently reverses its progression speed to `-50.0x`.
