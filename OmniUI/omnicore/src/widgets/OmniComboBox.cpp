@@ -1,6 +1,6 @@
 #include "OmniComboBox.h"
 
-OmniComboBox::OmniComboBox(QWidget *parent) : QComboBox(parent) {
+OmniComboBox::OmniComboBox(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniComboBox");
     // qDebug() << "Initialized OmniComboBox";
 }

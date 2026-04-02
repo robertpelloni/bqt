@@ -1,13 +1,13 @@
 #ifndef OMNICODEEDITOR_H
 #define OMNICODEEDITOR_H
 
-#include <QPlainTextEdit>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniCodeEditor : public QPlainTextEdit {
+class OmniCodeEditor : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniCodeEditor(QWidget *parent = nullptr);
+    explicit OmniCodeEditor(QQuickItem *parent = nullptr);
     virtual ~OmniCodeEditor();
 };
 

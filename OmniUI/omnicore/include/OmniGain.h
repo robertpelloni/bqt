@@ -7,7 +7,7 @@
 class OmniGain : public QObject {
     Q_OBJECT
 public:
-    explicit OmniGain(QWidget *parent = nullptr);
+    explicit OmniGain(QQuickItem *parent = nullptr);
     virtual ~OmniGain();
 };
 

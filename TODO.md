@@ -1,24 +1,20 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **CMake Compilation Fix:** Fix the host build environment so `cmake -G Ninja` successfully compiles the massive generated `omnicore` library. Resolve any `#include` or `MOC` generation issues that arise.
-- [ ] **Git Synchronization:** Simulate a robust git pull/merge/push cycle to ensure the agent workflow respects history and intelligent conflict resolution.
+- [ ] **Compilation Test:** Resolve local host build environment limits to natively compile the massive `omnicore` refactor. Ensure Emscripten WASM build passes.
+- [ ] **Git Sync:** Intelligently merge any pending feature branches from the remote if they emerge.
 
-## Implementation Tasks (Phase 3 & 4 Focus)
+## Implementation Tasks (Phase 4 & 5 Focus)
 
-### 1. Robust Widget Logic (No Half-Measures)
-- [ ] Flesh out `OmniQmlButton::paint` using `QSGNode` for hardware accelerated rendering, or map it to Qt Quick Controls 2 styling logic.
-- [ ] Implement `OmniDial` property bindings and map it to logarithmic scaling for Audio DSP usage.
-- [ ] Ensure all widgets have rigorous inline comments explaining the logic, side-effects, and optimization strategies.
+### 1. Multimedia & JUCE Fusion
+- [ ] Rewrite `OmniQmlJuceView` to be a real `QQuickItem` that mounts a `juce::Component` within the QML SceneGraph, moving away from the legacy `JuceWidget` fallback.
+- [ ] Implement `OmniFilter` and `OmniGain` as true nodes linking to the Audio DSP thread.
+- [ ] Hook `OmniMidiHandler` directly into `juce::MidiInput`.
 
-### 2. Multi-Input OS Layer Deepening
-- [ ] `OmniApp::notify` currently intercepts `QMouseEvent`s. It must be extended to intercept `QKeyEvent`, `QTouchEvent`, and `QTabletEvent`.
-- [ ] Implement `OmniInputManager::getFocusedWidget(deviceId)` and `OmniInputManager::setFocus(deviceId, widget)`.
+### 2. Remaining Essential UI Components
+- [ ] Fully implement `OmniTextField.cpp`. This is critical for testing the multi-keyboard independent focus routing.
+- [ ] Implement `OmniDial.cpp` with logarithmic value scaling and polar coordinate tracking for the mouse logic.
 
-### 3. Audio & DSP
-- [ ] Implement `OmniAudioGraph::addProcessor` and wire it to an actual JUCE `AudioProcessorGraph`.
-- [ ] Expose MIDI mapping slots to QML.
-
-## Continuous Maintenance
-- [ ] Track all AI session notes and codebase quirks in `MEMORY.md`.
-- [ ] Ensure `VERSION.md` is updated and committed before the end of this session.
+### 3. Polish & Documentation
+- [ ] Ensure all new properties (like `accentColor`, `omniStyle`) are documented in `Manual.md`.
+- [ ] Re-verify the `OmniDeveloperOverlay` ImGui code cleanly accepts input without stalling the Qt event loop.

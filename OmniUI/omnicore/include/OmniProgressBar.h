@@ -1,13 +1,13 @@
 #ifndef OMNIPROGRESSBAR_H
 #define OMNIPROGRESSBAR_H
 
-#include <QProgressBar>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniProgressBar : public QProgressBar {
+class OmniProgressBar : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniProgressBar(QWidget *parent = nullptr);
+    explicit OmniProgressBar(QQuickItem *parent = nullptr);
     virtual ~OmniProgressBar();
 };
 

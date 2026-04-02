@@ -1,12 +1,12 @@
 #ifndef OMNIDEVELOPEROVERLAY_H
 #define OMNIDEVELOPEROVERLAY_H
 
-#include <QWidget>
+#include <QQuickItem>
 
-class OmniDeveloperOverlay : public QWidget {
+class OmniDeveloperOverlay : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniDeveloperOverlay(QWidget *parent = nullptr);
+    explicit OmniDeveloperOverlay(QQuickItem *parent = nullptr);
     ~OmniDeveloperOverlay();
 
 protected:

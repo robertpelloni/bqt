@@ -1,13 +1,13 @@
 #ifndef OMNIOSCILLOSCOPE_H
 #define OMNIOSCILLOSCOPE_H
 
-#include <QWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniOscilloscope : public QWidget {
+class OmniOscilloscope : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniOscilloscope(QWidget *parent = nullptr);
+    explicit OmniOscilloscope(QQuickItem *parent = nullptr);
     virtual ~OmniOscilloscope();
 };
 

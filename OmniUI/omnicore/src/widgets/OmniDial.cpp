@@ -1,6 +1,6 @@
 #include "OmniDial.h"
 
-OmniDial::OmniDial(QWidget *parent) : QDial(parent) {
+OmniDial::OmniDial(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniDial");
     // qDebug() << "Initialized OmniDial";
 }

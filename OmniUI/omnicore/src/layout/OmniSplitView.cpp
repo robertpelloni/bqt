@@ -1,6 +1,6 @@
 #include "OmniSplitView.h"
 
-OmniSplitView::OmniSplitView(QWidget *parent) : QSplitter(parent) {
+OmniSplitView::OmniSplitView(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniSplitView");
     // qDebug() << "Initialized OmniSplitView";
 }

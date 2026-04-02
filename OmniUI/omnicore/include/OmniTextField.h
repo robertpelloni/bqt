@@ -1,13 +1,13 @@
 #ifndef OMNITEXTFIELD_H
 #define OMNITEXTFIELD_H
 
-#include <QLineEdit>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniTextField : public QLineEdit {
+class OmniTextField : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniTextField(QWidget *parent = nullptr);
+    explicit OmniTextField(QQuickItem *parent = nullptr);
     virtual ~OmniTextField();
 };
 

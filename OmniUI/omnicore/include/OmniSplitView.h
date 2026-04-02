@@ -1,13 +1,13 @@
 #ifndef OMNISPLITVIEW_H
 #define OMNISPLITVIEW_H
 
-#include <QSplitter>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniSplitView : public QSplitter {
+class OmniSplitView : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniSplitView(QWidget *parent = nullptr);
+    explicit OmniSplitView(QQuickItem *parent = nullptr);
     virtual ~OmniSplitView();
 };
 

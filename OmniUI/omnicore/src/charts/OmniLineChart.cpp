@@ -1,6 +1,6 @@
 #include "OmniLineChart.h"
 
-OmniLineChart::OmniLineChart(QWidget *parent) : QWidget(parent) {
+OmniLineChart::OmniLineChart(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniLineChart");
     // qDebug() << "Initialized OmniLineChart";
 }

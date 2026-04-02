@@ -7,7 +7,7 @@
 class OmniWebSocket : public QObject {
     Q_OBJECT
 public:
-    explicit OmniWebSocket(QWidget *parent = nullptr);
+    explicit OmniWebSocket(QQuickItem *parent = nullptr);
     virtual ~OmniWebSocket();
 };
 

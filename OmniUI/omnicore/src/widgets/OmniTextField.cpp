@@ -1,6 +1,6 @@
 #include "OmniTextField.h"
 
-OmniTextField::OmniTextField(QWidget *parent) : QLineEdit(parent) {
+OmniTextField::OmniTextField(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniTextField");
     // qDebug() << "Initialized OmniTextField";
 }

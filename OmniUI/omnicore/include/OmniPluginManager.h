@@ -7,7 +7,7 @@
 class OmniPluginManager : public QObject {
     Q_OBJECT
 public:
-    explicit OmniPluginManager(QWidget *parent = nullptr);
+    explicit OmniPluginManager(QQuickItem *parent = nullptr);
     virtual ~OmniPluginManager();
 };
 

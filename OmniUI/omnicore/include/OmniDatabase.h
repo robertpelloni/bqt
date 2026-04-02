@@ -7,7 +7,7 @@
 class OmniDatabase : public QObject {
     Q_OBJECT
 public:
-    explicit OmniDatabase(QWidget *parent = nullptr);
+    explicit OmniDatabase(QQuickItem *parent = nullptr);
     virtual ~OmniDatabase();
 };
 

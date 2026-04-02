@@ -1,6 +1,6 @@
 #include "OmniProgressBar.h"
 
-OmniProgressBar::OmniProgressBar(QWidget *parent) : QProgressBar(parent) {
+OmniProgressBar::OmniProgressBar(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniProgressBar");
     // qDebug() << "Initialized OmniProgressBar";
 }

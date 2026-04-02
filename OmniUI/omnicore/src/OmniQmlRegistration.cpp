@@ -1,26 +1,13 @@
 #include "OmniQmlRegistration.h"
 #include "OmniInputManager.h"
+#include "OmniButton.h"
+#include "OmniSlider.h"
 #include <QQmlEngine>
 #include <QDebug>
 
-// Temporary dummy item to satisfy QML imports until fully implemented as QQuickItems
 #include <QQuickItem>
 
-class OmniQmlButton : public QQuickItem {
-    Q_OBJECT
-    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-public:
-    OmniQmlButton() { qDebug() << "OmniQmlButton created"; }
-    QString text() const { return m_text; }
-    void setText(const QString& t) { if(t != m_text) { m_text = t; emit textChanged(); } }
-signals:
-    void textChanged();
-    void clicked();
-private:
-    QString m_text;
-};
-
-// ... other dummy QQuickItems for the examples (Slider, Dial, etc.)
+// Temporary dummy items for un-ported components
 class OmniQmlSlider : public QQuickItem { Q_OBJECT };
 class OmniQmlTextField : public QQuickItem { Q_OBJECT };
 class OmniQmlDial : public QQuickItem { Q_OBJECT };
@@ -37,7 +24,7 @@ public:
 class OmniQmlAudioGraph : public QQuickItem {
     Q_OBJECT
 public:
-    Q_INVOKABLE void addProcessor(QObject* p) { qDebug() << "AudioGraph: added processor"; }
+    Q_INVOKABLE void addProcessor(QObject* p) { Q_UNUSED(p); qDebug() << "AudioGraph: added processor"; }
 };
 class OmniQmlAudioProcessor : public QObject { Q_OBJECT };
 class OmniQmlSequencer : public QObject {
@@ -60,14 +47,14 @@ void OmniUI::registerQmlTypes() {
         [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
             Q_UNUSED(engine)
             Q_UNUSED(scriptEngine)
-            // QQmlEngine takes ownership, but instance() returns a static pointer.
-            // In a real app we might need a wrapper object here.
             return OmniInputManager::instance();
         });
 
-    // Register UI Controls (Mocked as QQuickItems for now to make QML run)
-    qmlRegisterType<OmniQmlButton>("OmniUI", 1, 0, "Button");
-    qmlRegisterType<OmniQmlSlider>("OmniUI", 1, 0, "Slider");
+    // Register Actual Fully-Implemented Widgets
+    qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");
+
+    // Register UI Controls (Mocked)
+    qmlRegisterType<OmniSlider>("OmniUI", 1, 0, "Slider");
     qmlRegisterType<OmniQmlTextField>("OmniUI", 1, 0, "TextField");
     qmlRegisterType<OmniQmlDial>("OmniUI", 1, 0, "Dial");
     qmlRegisterType<OmniQmlCheckBox>("OmniUI", 1, 0, "CheckBox");

@@ -1,6 +1,6 @@
 #include "OmniCalendar.h"
 
-OmniCalendar::OmniCalendar(QWidget *parent) : QCalendarWidget(parent) {
+OmniCalendar::OmniCalendar(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniCalendar");
     // qDebug() << "Initialized OmniCalendar";
 }

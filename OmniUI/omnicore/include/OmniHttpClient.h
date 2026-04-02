@@ -7,7 +7,7 @@
 class OmniHttpClient : public QObject {
     Q_OBJECT
 public:
-    explicit OmniHttpClient(QWidget *parent = nullptr);
+    explicit OmniHttpClient(QQuickItem *parent = nullptr);
     virtual ~OmniHttpClient();
 };
 

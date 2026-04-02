@@ -1,6 +1,6 @@
 #include "OmniDockArea.h"
 
-OmniDockArea::OmniDockArea(QWidget *parent) : QWidget(parent) {
+OmniDockArea::OmniDockArea(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniDockArea");
     // qDebug() << "Initialized OmniDockArea";
 }

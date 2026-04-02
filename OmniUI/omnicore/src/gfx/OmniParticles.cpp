@@ -1,6 +1,6 @@
 #include "OmniParticles.h"
 
-OmniParticles::OmniParticles(QWidget *parent) : QWidget(parent) {
+OmniParticles::OmniParticles(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniParticles");
     // qDebug() << "Initialized OmniParticles";
 }

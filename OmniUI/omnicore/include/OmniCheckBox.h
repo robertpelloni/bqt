@@ -1,13 +1,13 @@
 #ifndef OMNICHECKBOX_H
 #define OMNICHECKBOX_H
 
-#include <QCheckBox>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniCheckBox : public QCheckBox {
+class OmniCheckBox : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniCheckBox(QWidget *parent = nullptr);
+    explicit OmniCheckBox(QQuickItem *parent = nullptr);
     virtual ~OmniCheckBox();
 };
 

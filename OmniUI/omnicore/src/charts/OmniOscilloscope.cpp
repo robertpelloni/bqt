@@ -1,6 +1,6 @@
 #include "OmniOscilloscope.h"
 
-OmniOscilloscope::OmniOscilloscope(QWidget *parent) : QWidget(parent) {
+OmniOscilloscope::OmniOscilloscope(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniOscilloscope");
     // qDebug() << "Initialized OmniOscilloscope";
 }

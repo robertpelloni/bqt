@@ -1,13 +1,13 @@
 #ifndef OMNICALENDAR_H
 #define OMNICALENDAR_H
 
-#include <QCalendarWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniCalendar : public QCalendarWidget {
+class OmniCalendar : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniCalendar(QWidget *parent = nullptr);
+    explicit OmniCalendar(QQuickItem *parent = nullptr);
     virtual ~OmniCalendar();
 };
 

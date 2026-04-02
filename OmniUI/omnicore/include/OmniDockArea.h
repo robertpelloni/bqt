@@ -1,13 +1,13 @@
 #ifndef OMNIDOCKAREA_H
 #define OMNIDOCKAREA_H
 
-#include <QWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniDockArea : public QWidget {
+class OmniDockArea : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniDockArea(QWidget *parent = nullptr);
+    explicit OmniDockArea(QQuickItem *parent = nullptr);
     virtual ~OmniDockArea();
 };
 

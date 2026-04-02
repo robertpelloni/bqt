@@ -1,13 +1,13 @@
 #ifndef OMNILINECHART_H
 #define OMNILINECHART_H
 
-#include <QWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniLineChart : public QWidget {
+class OmniLineChart : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniLineChart(QWidget *parent = nullptr);
+    explicit OmniLineChart(QQuickItem *parent = nullptr);
     virtual ~OmniLineChart();
 };
 

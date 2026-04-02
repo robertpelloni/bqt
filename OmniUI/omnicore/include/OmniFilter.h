@@ -7,7 +7,7 @@
 class OmniFilter : public QObject {
     Q_OBJECT
 public:
-    explicit OmniFilter(QWidget *parent = nullptr);
+    explicit OmniFilter(QQuickItem *parent = nullptr);
     virtual ~OmniFilter();
 };
 

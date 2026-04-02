@@ -1,6 +1,6 @@
 #include "OmniCodeEditor.h"
 
-OmniCodeEditor::OmniCodeEditor(QWidget *parent) : QPlainTextEdit(parent) {
+OmniCodeEditor::OmniCodeEditor(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniCodeEditor");
     // qDebug() << "Initialized OmniCodeEditor";
 }

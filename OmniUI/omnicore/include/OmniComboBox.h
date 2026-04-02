@@ -1,13 +1,13 @@
 #ifndef OMNICOMBOBOX_H
 #define OMNICOMBOBOX_H
 
-#include <QComboBox>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniComboBox : public QComboBox {
+class OmniComboBox : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniComboBox(QWidget *parent = nullptr);
+    explicit OmniComboBox(QQuickItem *parent = nullptr);
     virtual ~OmniComboBox();
 };
 

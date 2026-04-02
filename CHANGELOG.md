@@ -1,3 +1,11 @@
+## [1.0.7] - 2026-04-02
+### Added
+- Solved the Dual-Hierarchy Architectural Crisis: Autonomously refactored all generated backend classes from legacy `QWidget` inheritance to modern `QQuickPaintedItem` / `QQuickItem`. The backend is now natively designed for SceneGraph hardware acceleration and QML integration.
+- Fully implemented `OmniButton` and `OmniSlider` as `QQuickPaintedItem`s, providing dynamic theming, `Q_PROPERTY` exposure, and native mouse/hover routing directly within the C++ layer.
+- Expanded OS Event routing: `OmniApp::notify` now intercepts `QKeyEvent`s and `QTouchEvent`s, completely bypassing standard Qt global focus limitations.
+- Built out the `OmniInputManager` to map independent Focus Trees (`DeviceId -> Focused Widget`). Multi-cursor users can now theoretically type in separate text fields concurrently.
+- Replaced dummy facades in `OmniQmlRegistration` with the real, newly-implemented `OmniButton` and `OmniSlider`.
+
 ## [1.0.6] - 2026-04-02
 ### Added
 - Implemented `OmniQmlRegistration` to automatically register all generated core classes to the QML Engine.

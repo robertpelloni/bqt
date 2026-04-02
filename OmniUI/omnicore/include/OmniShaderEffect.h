@@ -1,13 +1,13 @@
 #ifndef OMNISHADEREFFECT_H
 #define OMNISHADEREFFECT_H
 
-#include <QWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniShaderEffect : public QWidget {
+class OmniShaderEffect : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniShaderEffect(QWidget *parent = nullptr);
+    explicit OmniShaderEffect(QQuickItem *parent = nullptr);
     virtual ~OmniShaderEffect();
 };
 

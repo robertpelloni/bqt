@@ -1,6 +1,6 @@
 #include "OmniCheckBox.h"
 
-OmniCheckBox::OmniCheckBox(QWidget *parent) : QCheckBox(parent) {
+OmniCheckBox::OmniCheckBox(QQuickItem *parent) : QQuickItem(parent) {
     setObjectName("OmniCheckBox");
     // qDebug() << "Initialized OmniCheckBox";
 }

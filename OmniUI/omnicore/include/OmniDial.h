@@ -1,13 +1,13 @@
 #ifndef OMNIDIAL_H
 #define OMNIDIAL_H
 
-#include <QDial>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniDial : public QDial {
+class OmniDial : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniDial(QWidget *parent = nullptr);
+    explicit OmniDial(QQuickItem *parent = nullptr);
     virtual ~OmniDial();
 };
 

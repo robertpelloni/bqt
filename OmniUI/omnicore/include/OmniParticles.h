@@ -1,13 +1,13 @@
 #ifndef OMNIPARTICLES_H
 #define OMNIPARTICLES_H
 
-#include <QWidget>
+#include <QQuickItem>
 #include <QDebug>
 
-class OmniParticles : public QWidget {
+class OmniParticles : public QQuickItem {
     Q_OBJECT
 public:
-    explicit OmniParticles(QWidget *parent = nullptr);
+    explicit OmniParticles(QQuickItem *parent = nullptr);
     virtual ~OmniParticles();
 };
 
