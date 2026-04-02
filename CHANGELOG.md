@@ -1,3 +1,11 @@
+## [1.0.6] - 2026-04-02
+### Added
+- Implemented `OmniQmlRegistration` to automatically register all generated core classes to the QML Engine.
+- Upgraded `OmniApplication::loadMainSource` to actually initialize a `QQmlApplicationEngine`, bind signal/slots, and load the QML payloads.
+- Hacked the core OS event loop (`OmniApplication::notify`) to intercept `QMouseEvent`s at the root level, routing absolute global coordinates into the `OmniInputManager`.
+- Physically wired up the `OmniDeveloperOverlay` to iterate through all connected `OmniInputDevice`s and paint distinct, color-coded "Virtual Cursors" over the entire workspace.
+- This represents the completion of the baseline "Local Multi-Cursor" architecture rendering pipeline.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
