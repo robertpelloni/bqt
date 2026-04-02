@@ -7,35 +7,35 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
 
-include_directories(../../core/include)
+include_directories(../../omnicore/include)
 # We point to the local deps folder for the mock JUCE headers
 include_directories(../../deps/juce)
 
 add_executable(PluginDemo
     src/main.cpp
-    ../../core/src/OmniApp.cpp
-    ../../core/src/JuceWidget.cpp
-    ../../core/src/widgets/OmniButton.cpp
-    ../../core/src/widgets/OmniSlider.cpp
-    ../../core/src/widgets/OmniTextField.cpp
-    ../../core/src/widgets/OmniDial.cpp
-    ../../core/src/widgets/OmniCheckBox.cpp
-    ../../core/src/widgets/OmniComboBox.cpp
-    ../../core/src/widgets/OmniProgressBar.cpp
-    ../../core/src/charts/OmniLineChart.cpp
-    ../../core/src/charts/OmniOscilloscope.cpp
-    ../../core/src/layout/OmniDockArea.cpp
-    ../../core/src/layout/OmniSplitView.cpp
-    ../../core/src/net/OmniHttpClient.cpp
-    ../../core/src/net/OmniWebSocket.cpp
-    ../../core/src/audio/dsp/OmniGain.cpp
-    ../../core/src/audio/dsp/OmniFilter.cpp
-    ../../core/src/plugin/OmniPluginManager.cpp
-    ../../core/src/data/OmniDatabase.cpp
-    ../../core/src/gfx/OmniShaderEffect.cpp
-    ../../core/src/gfx/OmniParticles.cpp
-    ../../core/src/widgets/OmniCodeEditor.cpp
-    ../../core/src/widgets/OmniCalendar.cpp
+    ../../omnicore/src/OmniApp.cpp
+    ../../omnicore/src/JuceWidget.cpp
+    ../../omnicore/src/widgets/OmniButton.cpp
+    ../../omnicore/src/widgets/OmniSlider.cpp
+    ../../omnicore/src/widgets/OmniTextField.cpp
+    ../../omnicore/src/widgets/OmniDial.cpp
+    ../../omnicore/src/widgets/OmniCheckBox.cpp
+    ../../omnicore/src/widgets/OmniComboBox.cpp
+    ../../omnicore/src/widgets/OmniProgressBar.cpp
+    ../../omnicore/src/charts/OmniLineChart.cpp
+    ../../omnicore/src/charts/OmniOscilloscope.cpp
+    ../../omnicore/src/layout/OmniDockArea.cpp
+    ../../omnicore/src/layout/OmniSplitView.cpp
+    ../../omnicore/src/net/OmniHttpClient.cpp
+    ../../omnicore/src/net/OmniWebSocket.cpp
+    ../../omnicore/src/audio/dsp/OmniGain.cpp
+    ../../omnicore/src/audio/dsp/OmniFilter.cpp
+    ../../omnicore/src/plugin/OmniPluginManager.cpp
+    ../../omnicore/src/data/OmniDatabase.cpp
+    ../../omnicore/src/gfx/OmniShaderEffect.cpp
+    ../../omnicore/src/gfx/OmniParticles.cpp
+    ../../omnicore/src/widgets/OmniCodeEditor.cpp
+    ../../omnicore/src/widgets/OmniCalendar.cpp
     ../../deps/juce/juce_mock.cpp
 )
 
