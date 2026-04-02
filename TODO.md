@@ -1,12 +1,12 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Monitor GitHub Actions:** Upon pushing this commit, verify that `.github/workflows/ci_cd.yml` succeeds and generates the `v2.1.0` GitHub Release correctly.
+- [ ] **Monitor GitHub Actions:** Upon pushing this commit, verify that `.github/workflows/ci_cd.yml` succeeds. The recent raw merge of `OmniNexus` might have introduced syntax errors.
 
 ## Implementation Tasks (Phase 14 Focus)
 
 ### 1. Robust API Expansions
-- [ ] Implement `OmniDatabase::executeTransaction(QList<QString> queries)` to allow QML to push massive data blocks cleanly to SQLite.
+- [ ] Implement `OmniDatabase::executeTransaction(QList<QString> queries)` to allow QML to push massive data batches dynamically.
 - [ ] Expose `QList<QString> getAvailableMidiDevices()` inside `OmniMidiHandler` dynamically mapping `juce::MidiOutput::getAvailableDevices()`.
 
 ### 2. Physical QA

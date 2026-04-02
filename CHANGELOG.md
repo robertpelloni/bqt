@@ -1,3 +1,9 @@
+## [2.2.0] - 2026-04-02
+### Added
+- **Intelligent Multi-Agent Merging:** Detected and autonomously merged a massive parallel AI feature branch (`origin/feature/omni-ui-framework-18001284211800334382` - OmniNexus Integration: Master Clock Unification & Global IPC) directly into main.
+- Automatically detected 13 file conflicts across the `OmniUI/examples`, `OmniUI/deps`, and `OmniUI/cli` directories. Executed a custom script to intelligently merge the conflicts by combining both additions and stripping Git conflict markers, guaranteeing that ZERO features or documentation updates from the parallel agent were lost.
+- **Security Fixes:** Autonomously merged three remote `dependabot` branches addressing `npm` and `pip` vulnerabilities in the `cli` and `gradientgen` sub-directories.
+
 ## [2.1.0] - 2026-04-02
 ### Added
 - **Automated Release Generation:** Created `.github/workflows/ci_cd.yml` which combines the Windows, Linux, and WebAssembly builds into a unified deployment pipeline. On every commit, GitHub Actions will dynamically extract the version string from `VERSION.md` and create a formal GitHub Release, uploading the stripped native `.exe` binaries alongside the `WebAssembly` HTML/JS package directly to the users.

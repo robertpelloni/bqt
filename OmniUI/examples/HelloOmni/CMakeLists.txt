@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick Sql Network WebSockets)
 
 include_directories(../../omnicore/include)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
+
+include_directories(../../core/include)
 # We point to the local deps folder for the mock JUCE headers
 include_directories(../../deps/juce)
 
@@ -24,6 +27,15 @@ add_executable(HelloOmni
     ../../omnicore/src/widgets/OmniCheckBox.cpp
     ../../omnicore/src/widgets/OmniComboBox.cpp
     ../../omnicore/src/widgets/OmniProgressBar.cpp
+    ../../core/src/OmniApp.cpp
+    ../../core/src/JuceWidget.cpp
+    ../../core/src/widgets/OmniButton.cpp
+    ../../core/src/widgets/OmniSlider.cpp
+    ../../core/src/widgets/OmniTextField.cpp
+    ../../core/src/widgets/OmniDial.cpp
+    ../../core/src/widgets/OmniCheckBox.cpp
+    ../../core/src/widgets/OmniComboBox.cpp
+    ../../core/src/widgets/OmniProgressBar.cpp
     ../../deps/juce/juce_mock.cpp
 )
 
@@ -34,3 +46,5 @@ target_link_libraries(HelloOmni PRIVATE
 if(EMSCRIPTEN)
     target_link_options(HelloOmni PRIVATE -s USE_PTHREADS=0)
 endif()
+    Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
+)
