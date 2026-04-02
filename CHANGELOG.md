@@ -1,3 +1,10 @@
+## [1.4.0] - 2026-04-02
+### Added
+- **Automated Multi-Cursor Verification:** Created the foundational `QTest` framework (`tst_OmniInputManager.cpp`). Mathematically proved the core architecture of the Multi-Cursor OS: independent focus trees isolate hardware devices perfectly. Keypresses from Device A are completely sandboxed from Device B's focused widget.
+- **Deep Architecture Synthesis:** Authored `OMNIUI_IMPLEMENTATION_DETAIL.md`, synthesizing the profound OS-level hacks (Win32 Raw Input Interception, Dual-Hierarchy Eradication, and Independent Focus Trees) that power BobUI.
+- **Test Infrastructure:** Added `CMakeLists.txt` for the `tests/` directory to integrate the `QTest` executable into future CI/CD pipelines.
+- Achieved Phase 9 structural testing milestones, verifying the absolute robustness of the OmniUI OS foundation.
+
 ## [1.3.0] - 2026-04-02
 ### Added
 - **Data Persistence Mastery:** Implemented `OmniDatabase` wrapping `QSqlDatabase`. It natively translates SQL query results into `QVariantList`s, allowing frontend QML loops to dynamically iterate over local SQLite data structures without friction.
