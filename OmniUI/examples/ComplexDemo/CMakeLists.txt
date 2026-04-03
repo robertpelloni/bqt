@@ -40,6 +40,7 @@ add_executable(ComplexDemo
     ../../omnicore/src/net/OmniHttpClient.cpp
     ../../omnicore/src/net/OmniWebSocket.cpp
     ../../omnicore/src/net/OmniIPC.cpp
+    ../../omnicore/src/net/OmniMeshNode.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp
     ../../omnicore/src/audio/dsp/OmniMasterClock.cpp
     ../../omnicore/src/audio/dsp/OmniMidiHandler.cpp

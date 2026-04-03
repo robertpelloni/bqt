@@ -1,6 +1,7 @@
 #include "OmniInputManager.h"
 #include "OmniRustBridge.h"
 #include "OmniMacroRecorder.h"
+#include "OmniMeshNode.h"
 #include <QKeyEvent>
 #include <QCoreApplication>
 #include <QMutexLocker>
@@ -63,6 +64,9 @@ void OmniInputManager::updateCursor(const QString& deviceId, const QPointF& pos)
 
     m_devices[deviceId].cursorPosition = pos;
     emit cursorUpdated(deviceId, pos);
+
+    // --- P2P MULTIPLAYER OS MESH BROADCAST ---
+    OmniMeshNode::instance()->broadcastCursor(deviceId, pos);
 }
 
 void OmniInputManager::setDeviceFocus(const QString& deviceId, QObject* target) {
@@ -70,10 +74,11 @@ void OmniInputManager::setDeviceFocus(const QString& deviceId, QObject* target) 
     if (m_deviceFocusMap.value(deviceId) == target) return;
     m_deviceFocusMap[deviceId] = target;
     
-    // --- OMNIMACRO RECORDING HOOK ---
-    // Log the physical human click natively into the OmniScript AST generator
     if (target && !target->objectName().isEmpty()) {
         OmniMacroRecorder::instance()->recordClick(target->objectName());
+        
+        // --- P2P MULTIPLAYER OS MESH BROADCAST ---
+        OmniMeshNode::instance()->broadcastFocus(deviceId, target->objectName());
     }
 
     emit focusChanged(deviceId, target);
@@ -105,13 +110,10 @@ bool OmniInputManager::routeKeyEvent(const QString& deviceId, QKeyEvent* event) 
     
     if (!target) return false;
     
-    // --- OMNIMACRO RECORDING HOOK ---
-    // Log the physical human typing natively into the OmniScript AST generator
     if (event->type() == QEvent::KeyPress && !event->text().isEmpty() && target && !target->objectName().isEmpty()) {
         OmniMacroRecorder::instance()->recordKey(target->objectName(), event->text());
     }
 
-    // Dispatch outside the lock to prevent deadlocks
     QCoreApplication::sendEvent(target, event);
     return true;
 }

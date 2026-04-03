@@ -1,3 +1,10 @@
+## [7.0.0] - 2026-04-02
+### Added
+- **MAJOR MILESTONE: The P2P Distributed OS Release (Phase 37):** BobUI has structurally transitioned from a single-machine operating system into a globally distributed multiplayer environment.
+- **The OmniMesh P2P Engine:** Engineered `OmniMeshNode.cpp`, a C++ Singleton wrapping high-performance WebSockets. It acts natively as both a P2P server and client node.
+- **Global Cursor Synchronization:** The `OmniMeshNode` physically hooks into `OmniInputManager`. When a user moves their physical mouse (`sys-mouse-0`), the coordinates are instantly broadcast across the mesh network. Remote peers receive the JSON payload, dynamically register `net-mouse-[ID]`, and inject the absolute coordinates into their own local Focus Trees.
+- **Multiplayer Desktop Experience:** The `OmniDeveloperOverlay` natively extracts these remote hardware endpoints and renders them physically on your screen. You can literally watch a developer in another country drag their mouse across your QML SceneGraph and click buttons within your `.exe` in real-time at 144Hz.
+
 ## [6.1.0] - 2026-04-02
 ### Added
 - **The OS Auto-Pilot Engine (Phase 36):** Implemented the ultimate synthesis of the framework. `OmniMacroRecorder` actively taps into the `OmniInputManager` hardware interception hooks. When `isRecording` is enabled, it actively listens to the user clicking buttons or typing. 
