@@ -5,11 +5,14 @@
 - [x] Implemented GPU-accelerated rendering in Go via Gio.
 
 ## Phase 61 - 62: Go Distributed Epoch (Complete)
-- [x] **Go VoIP Mesh:** Real-time P2P voice chat streaming in Go.
-- [x] **Go Reactive Engine:** JavaFX-style generic property bindings for state sync.
+- [x] **Go VoIP Mesh:** Real-time P2P voice chat streaming.
+- [x] **Go Reactive Engine:** JavaFX-style generic property bindings.
 - [x] **Go Desktop Shell:** Native Go Taskbar and Start Menu.
-- [x] **Go Lock Visualization:** Glowing neon borders for ownership in the Gio renderer.
 
-## Phase 63: The Distributed Epoch (Current)
-- [ ] Implement Go Markdown Viewer for documentation parity.
-- [ ] Port the multi-user Undo/Redo stack to Go.
+## Phase 63: Go Temporal Ledger (Complete)
+- [x] **Go Undo Stack:** Isolated collaborative history per UserID.
+- [x] **Go Markdown View:** Documentation parity in the Go port.
+
+## Phase 64: Distributed Go VFS & Release (Current)
+- [ ] Implement Go-native binary asset packaging (`.pak`).
+- [ ] Finalize Go CI/CD for cross-platform executables.

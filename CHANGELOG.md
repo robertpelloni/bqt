@@ -1,3 +1,10 @@
+## [23.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 4):** Ported the Collaborative History and Document rendering systems.
+- **Go Undo/Redo Kernel:** Implemented `undo_stack.go`, providing isolated history buffers per `UserID`. User A can now undo their work without disturbing User B’s work in the Go-based OS.
+- **Go Markdown View:** Ported the native C++ markdown engine to pure Go. It supports headers and lists natively in the Gio rendering loop.
+- **Shortcut Interception:** Integrated `Ctrl+Z` detection in the Go UI engine, mapped specifically to the active user's history buffer.
+
 ## [22.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 3):** Successfully ported the Visual Shell and Ownership Feedback logic to the Go Gio renderer.
