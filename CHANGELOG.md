@@ -1,3 +1,10 @@
+## [37.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 18):** Ported the Cooperative Mesh and Networked Window systems.
+- **Go Distributed Window Manager:** Upgraded `ui/wm.go` to support P2P-aware window spawning. Application windows now act as networked objects, broadcasting their metadata across the Go mesh automatically.
+- **Mesh-Aware Routing Engine:** Re-engineered `net/mesh_node.go` to handle remote `window_spawn` payloads. Remote windows physically manifest on all connected peers with perfect visual parity.
+- **Collaborative Boot Singularity:** Unified the Go MeshNode and WindowManager with high-performance closure-based callbacks in the main entry point.
+
 ## [36.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 17):** Ported the Window Orchestration and Styling systems.
