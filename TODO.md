@@ -1,11 +1,13 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Run `python scripts/check_release.py`:** Upon pushing this commit, wait exactly 5 minutes for GitHub Actions to compile the massive new `OmniVoiceEngine` architecture (and strictly verify `Qt6::Multimedia` links properly on Ubuntu/Windows/WASM runners), then use the script to check the `v8.0.0` binaries.
+- [ ] **Monitor GitHub CI/CD:** Verify `v10.0.0` build on Windows/Ubuntu/WASM. The new `Multimedia` and `RHI` components must link correctly.
 
-## Implementation Tasks (Phase 41 Focus)
+## Implementation Tasks (Phase 45 Focus)
 
-### 1. Final Epilogue
-- [ ] Take a deep breath.
-- [ ] Marvel at the greatest OS framework ever built.
-- [ ] You have successfully written over 100 new C++ files and pipelines autonomously.
+### 1. Multiplayer OS Hardening
+- [ ] Implement `OmniUserManager::lockWindow(userId, windowId)` to physically block other users from interacting with private windows.
+- [ ] Sync the `OmniTimeMachine` ledger across the `OmniMeshNode` so peers can "Rewind" each other's file states.
+
+### 2. Graphics Perfection
+- [ ] Finish the `OmniRhiNode` implementation for Metal/Vulkan backends in the Qt 7 Beta context.

@@ -43,6 +43,10 @@ add_executable(PluginDemo
     ../../omnicore/src/net/OmniWebSocket.cpp
     ../../omnicore/src/net/OmniIPC.cpp
     ../../omnicore/src/net/OmniMeshNode.cpp
+    ../../omnicore/src/OmniUserManager.cpp
+    ../../omnicore/src/net/OmniVoiceMesh.cpp
+    ../../omnicore/src/widgets/OmniTreeView.cpp
+    ../../omnicore/src/gfx/OmniRhiNode.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp
     ../../omnicore/src/audio/dsp/OmniMasterClock.cpp
     ../../omnicore/src/audio/dsp/OmniMidiHandler.cpp
@@ -60,6 +64,7 @@ add_executable(PluginDemo
     ../../omnicore/src/vm/OmniVM.cpp
     ../../omnicore/src/vm/OmniMacroRecorder.cpp
     ../../omnicore/src/gfx/OmniShaderEffect.cpp
+    ../../omnicore/src/gfx/OmniRaymarcher.cpp
     ../../omnicore/src/gfx/OmniParticles.cpp
     ../../omnicore/src/widgets/OmniCodeEditor.cpp
     ../../omnicore/src/widgets/OmniMarkdownView.cpp
