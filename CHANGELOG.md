@@ -1,3 +1,8 @@
+## [5.1.0] - 2026-04-02
+### Added
+- **OmniAsset Virtual File System (VFS):** Conquered Phase 33. Implemented a massive C++ memory-mapping layer. Operating systems and advanced game engines (Unity/Unreal) don't rely on raw thousands of `.png` files, they use asset bundles. I built `OmniAssetManager`, a Singleton that dynamically creates and mounts `OmniPak` binary archives containing raw file bytes and serialized byte-offsets dynamically into RAM.
+- **Native QML Image Provider Override:** Built `OmniImageProvider.cpp` natively into the `QQmlApplicationEngine` startup loop. A QML developer can now instantiate `Image { source: "image://omni/background.png" }`. The OS natively intercepts this URL, bypasses the host operating system's disk I/O entirely, extracts the raw bytes out of the VFS RAM payload, decodes it dynamically, and maps it straight onto the SceneGraph texture buffer.
+
 ## [5.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The Singularity & Simulation Release (OmniGfx):** Propelled BobUI entirely past traditional application toolkits and operating systems into the realm of Native Creative Coding and Game Engine parity.

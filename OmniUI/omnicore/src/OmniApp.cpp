@@ -3,6 +3,7 @@
 #include "OmniInputManager.h"
 #include "OmniDeveloperOverlay.h"
 #include "OmniQmlRegistration.h"
+#include "OmniImageProvider.h"
 #include "OmniNativeEventFilter.h"
 #include "OmniPluginManager.h"
 #include "OmniNeuralEngine.h"
@@ -28,6 +29,7 @@ OmniApplication::OmniApplication(int &argc, char **argv)
 {
     setObjectName("OmniApplication");
     m_qmlEngine = new QQmlApplicationEngine(this);
+    m_qmlEngine->addImageProvider(QLatin1String("omni"), new OmniImageProvider);
     
     OmniPluginManager::instance()->setQmlEngine(m_qmlEngine);
 
