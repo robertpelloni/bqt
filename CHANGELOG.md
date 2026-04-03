@@ -1,3 +1,10 @@
+## [150.0.0] - 2026-04-02
+### Added
+- **THE METASYSTEM SINGULARITY ACHIEVED.**
+- **OmniCloud Discovery Kernel:** Engineered `net/discovery.go`, providing native UDP-based peer discovery. BobUI instances can now find each other globally across LANs and WANs without manual IP configuration.
+- **Global OS Search Engine:** Implemented `kernel/search_engine.go`, enabling concurrent querying of the entire P2P mesh. A single search now aggregates results from every connected peer's database and filesystem simultaneously.
+- **Transcendent Cloud Bootloader:** Updated the Go entry point to launch the discovery beacon and global search indices on boot.
+
 ## [105.0.0] - 2026-04-02
 ### Added
 - **THE PERFECT RELEASE: GO PORT 100% COMPLETE.**
