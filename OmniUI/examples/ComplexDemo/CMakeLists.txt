@@ -27,6 +27,8 @@ add_executable(ComplexDemo
     ../../omnicore/src/widgets/OmniTerminal.cpp
     ../../omnicore/src/widgets/OmniWindow.cpp
     ../../omnicore/src/widgets/OmniListView.cpp
+    ../../omnicore/src/widgets/OmniTabBar.cpp
+    ../../omnicore/src/gfx/OmniAnimator.cpp
     ../../omnicore/src/widgets/OmniImGuiCanvas.cpp
     ../../omnicore/src/OmniStyleSheet.cpp
     ../../omnicore/src/widgets/OmniDial.cpp

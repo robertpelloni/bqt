@@ -16,6 +16,8 @@
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
 #include "OmniJuceView.h"
+#include "OmniTabBar.h"
+#include "OmniAnimator.h"
 #include "OmniDockArea.h"
 #include "OmniSplitView.h"
 #include "OmniMidiHandler.h"
@@ -55,6 +57,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniNeuralEngine>("OmniUI", 1, 0, "NeuralEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNeuralEngine::instance(); });
     qmlRegisterSingletonType<OmniVM>("OmniUI", 1, 0, "VM", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVM::instance(); });
     qmlRegisterSingletonType<OmniMacroRecorder>("OmniUI", 1, 0, "MacroRecorder", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMacroRecorder::instance(); });
+    qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });
     qmlRegisterSingletonType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMeshNode::instance(); });
 
     // Register Actual Fully-Implemented Widgets & Views
@@ -68,6 +71,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniCalendar>("OmniUI", 1, 0, "Calendar");
     qmlRegisterType<OmniTerminal>("OmniUI", 1, 0, "Terminal");
     qmlRegisterType<OmniJuceView>("OmniUI", 1, 0, "JuceView");
+    qmlRegisterType<OmniTabBar>("OmniUI", 1, 0, "TabBar");
     qmlRegisterType<OmniListView>("OmniUI", 1, 0, "ListView");
     qmlRegisterType<OmniImGuiCanvas>("OmniUI", 1, 0, "ImGuiCanvas");
     

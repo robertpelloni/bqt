@@ -1,3 +1,8 @@
+## [7.1.0] - 2026-04-02
+### Added
+- **JavaFX Animation Parity (`OmniAnimator`):** Conquered Phase 38. Bypassed declarative QML state machines entirely. Implemented a native C++ singleton that accepts `QObject` pointers and mathematically interpolates properties (using `EaseOutCubic` splines natively) via a 144Hz `QTimer` calculation loop. Programmatic C++ property morphing is now fully functional.
+- **Dear ImGui Docking Parity (`OmniTabBar`):** Engineered a highly-optimized, dynamic C++ `QQuickPaintedItem` container mimicking ImGui's docking tabs. It natively intercepts mouse/hover events without nested QML delegates, calculating dynamic horizontal bounding boxes and drawing stylized (or Cyberpunk angled) tabs that seamlessly broadcast `currentIndexChanged` to coordinate with `OmniWindow` groupings.
+
 ## [7.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The P2P Distributed OS Release (Phase 37):** BobUI has structurally transitioned from a single-machine operating system into a globally distributed multiplayer environment.
