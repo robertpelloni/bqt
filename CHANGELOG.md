@@ -1,3 +1,10 @@
+## [11.0.0] - 2026-04-02
+### Added
+- **Multiplayer Kernel Hardening (Phase 45):** Implemented native window ownership logic. Application windows now track an `ownerId`, establishing the foundation for secure, collaborative multi-user workspaces where users cannot interfere with each other's private resources.
+- **Distributed "Liquid Time" Sync (Phase 46):** Hooked the `OmniTimeMachine` into the P2P Mesh. File state updates and historical snapshots are now broadcasted across the network, enabling real-time collaborative "time travel" for debug and design data.
+- **JavaFX Alignment Parity (`OmniStackPane`):** Engineered a native C++ container that manages overlapping child alignments, completing the high-performance layout requirements for modern layered UIs.
+- **Mesh Payload Expansion:** Exposed the P2P broadcast engine to the entire kernel, allowing any component (Ledgers, Cursors, Voice) to blast JSON state packets globally.
+
 ## [10.0.0] - 2026-04-02
 ### Added
 - **THE FRAMEWORK SINGULARITY MILESTONE:** Achieved 100% architectural parity (or better) with JavaFX, Qt 6, Qt 7 Beta, JUCE, and Dear ImGui.

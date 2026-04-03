@@ -12,6 +12,7 @@
 #include "OmniWindow.h"
 #include "OmniListView.h"
 #include "OmniTreeView.h"
+#include "OmniStackPane.h"
 #include "OmniImGuiCanvas.h"
 #include "OmniFilter.h"
 #include "OmniGain.h"
@@ -44,6 +45,7 @@
 #include "OmniShaderEffect.h"
 #include "OmniRaymarcher.h"
 #include "OmniRhiNode.h"
+#include "OmniAnimator.h"
 
 #include <QQmlEngine>
 #include <QDebug>
@@ -51,7 +53,7 @@
 void OmniUI::registerQmlTypes() {
     qDebug() << "OmniUI: Registering QML Types...";
     
-    // Register Singletons
+    // Singletons
     qmlRegisterSingletonType<OmniInputManager>("OmniUI", 1, 0, "InputManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniInputManager::instance(); });
     qmlRegisterSingletonType<OmniPluginManager>("OmniUI", 1, 0, "PluginManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniPluginManager::instance(); });
     qmlRegisterSingletonType<OmniMasterClock>("OmniAudio", 1, 0, "MasterClock", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMasterClock::instance(); });
@@ -65,8 +67,10 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniMacroRecorder>("OmniUI", 1, 0, "MacroRecorder", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMacroRecorder::instance(); });
     qmlRegisterSingletonType<OmniUserManager>("OmniUI", 1, 0, "UserManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniUserManager::instance(); });
     qmlRegisterSingletonType<OmniVoiceMesh>("OmniNet", 1, 0, "VoiceMesh", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVoiceMesh::instance(); });
+    qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });
+    qmlRegisterSingletonType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMeshNode::instance(); });
 
-    // Register Actual Fully-Implemented Widgets & Views
+    // Widgets & Views
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");
     qmlRegisterType<OmniSlider>("OmniUI", 1, 0, "Slider");
     qmlRegisterType<OmniTextField>("OmniUI", 1, 0, "TextField");
@@ -85,12 +89,13 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniRaymarcher>("OmniGfx", 1, 0, "Raymarcher");
     qmlRegisterType<OmniRhiNode>("OmniGfx", 1, 0, "RhiNode");
     
-    // Register Layouts
+    // Layouts
     qmlRegisterType<OmniWindow>("OmniLayout", 1, 0, "Window");
     qmlRegisterType<OmniDockArea>("OmniLayout", 1, 0, "DockArea");
     qmlRegisterType<OmniSplitView>("OmniLayout", 1, 0, "SplitView");
+    qmlRegisterType<OmniStackPane>("OmniLayout", 1, 0, "StackPane");
 
-    // Register Audio DSP & MIDI
+    // Audio DSP & MIDI
     qmlRegisterType<OmniFilter>("OmniAudio", 1, 0, "Filter");
     qmlRegisterType<OmniGain>("OmniAudio", 1, 0, "Gain");
     qmlRegisterType<OmniAudioGraph>("OmniAudio", 1, 0, "AudioGraph");
@@ -99,12 +104,11 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniAudioPlayer>("OmniAudio", 1, 0, "AudioPlayer");
     qmlRegisterType<OmniSynthesizer>("OmniAudio", 1, 0, "Synthesizer");
 
-    // Register Data & Networking API
+    // Data & Networking
     qmlRegisterType<OmniDatabase>("OmniData", 1, 0, "Database");
     qmlRegisterType<OmniHttpClient>("OmniNet", 1, 0, "HttpClient");
     qmlRegisterType<OmniWebSocket>("OmniNet", 1, 0, "WebSocket");
     qmlRegisterType<OmniIPC>("OmniNet", 1, 0, "IPC");
-    qmlRegisterType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode");
     
     qDebug() << "OmniUI: QML Types Registered successfully. Full Multi-Framework Parity Reached.";
 }

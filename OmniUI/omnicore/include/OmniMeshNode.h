@@ -24,6 +24,7 @@ public:
     // Start a P2P listening node on a specific port
     Q_INVOKABLE bool startNode(int port = 8081);
     Q_INVOKABLE void stopNode();
+    Q_INVOKABLE void broadcastPayload(const QJsonObject& obj);
 
     // Connect to a remote peer's IP/Port
     Q_INVOKABLE bool connectToPeer(const QString& url);

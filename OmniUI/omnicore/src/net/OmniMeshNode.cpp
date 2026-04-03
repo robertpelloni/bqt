@@ -169,3 +169,7 @@ void OmniMeshNode::broadcastFocus(const QString& deviceId, const QString& target
         broadcastJson(obj);
     }
 }
+
+void OmniMeshNode::broadcastPayload(const QJsonObject& obj) {
+    broadcastJson(obj);
+}
