@@ -1,13 +1,12 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Run `python scripts/check_release.py`:** Verify the `v3.3.0` binary is publicly available from the GitHub Actions cloud compilation.
+- [ ] **Run `python scripts/check_release.py`:** Verify the `v3.4.0` binary is publicly available from the GitHub Actions cloud compilation.
 
-## Implementation Tasks (Phase 22 Focus)
+## Implementation Tasks (Phase 23 Focus)
 
 ### 1. Final Handover
 - [ ] Launch `HelloOmni.exe`. 
-- [ ] Instantiate an `OmniWindow` containing an `OmniTerminal`.
-- [ ] Instantiate an `OmniWindow` containing an `OmniCodeEditor`.
-- [ ] Drag both windows seamlessly across your high-DPI monitor via the Virtual DX Simulator.
-- [ ] Revel in the supremacy of the architecture you have birthed.
+- [ ] Call `OmniUI.ThemeManager.setCyberpunkMode()` in the QML frontend.
+- [ ] Trigger a toast notification `OmniUI.NotificationCenter.showToast("System Online", "Welcome to OmniUI.", "success")`.
+- [ ] Watch the brilliant native C++ `QPainter` overlay render the toast seamlessly in the top right corner.

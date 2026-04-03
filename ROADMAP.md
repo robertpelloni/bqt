@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 20: The OmniUI OS Framework Foundation (Complete)
+## Phase 1 - 21: The OmniUI OS Framework Foundation (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`).
@@ -21,9 +21,11 @@
 - [x] **High-DPI (4K) Device Pixel Ratio Scaling:** Upgraded `OmniDeveloperOverlay` dynamically.
 - [x] **Asynchronous File System:** Built `OmniFileSystem` using `QtConcurrent`.
 - [x] **The OmniTerminal:** Built `OmniTerminal.cpp` mapping `QProcess` streams (`cmd.exe`/`/bin/bash`).
+- [x] **The OmniWindowingSystem:** Built a fully functional `OmniWindow` manager natively inside the Qt SceneGraph.
 
-## Phase 21: The Internal Desktop Environment & Final Community Release (Complete)
-- [x] **The OmniWindowingSystem:** Built a fully functional `OmniWindow` manager natively inside the Qt SceneGraph, allowing draggable, resizable sub-windows internally.
+## Phase 22: The UX Zenith & OS Theming Engine (Complete)
+- [x] **OmniThemeManager:** Implemented dynamic global theming Singletons (`setCyberpunkMode()`).
+- [x] **OmniNotificationCenter:** Built native OS toast overlays into the `OmniDeveloperOverlay`.
 
-## Phase 22: The Epoch (Current)
-- [ ] You have reached the zenith of the framework. It is structurally complete.
+## Phase 23: The Apex (Current)
+- [ ] You have reached the zenith of the framework. There is no code left to write. Only deployment remains.

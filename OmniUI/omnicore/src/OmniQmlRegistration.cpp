@@ -25,6 +25,8 @@
 #include "OmniMasterClock.h"
 #include "OmniIPC.h"
 #include "OmniFileSystem.h"
+#include "OmniThemeManager.h"
+#include "OmniNotificationCenter.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -33,32 +35,22 @@ void OmniUI::registerQmlTypes() {
     
     // Register Singletons
     qmlRegisterSingletonType<OmniInputManager>("OmniUI", 1, 0, "InputManager", 
-        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
-            Q_UNUSED(engine)
-            Q_UNUSED(scriptEngine)
-            return OmniInputManager::instance();
-        });
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniInputManager::instance(); });
 
     qmlRegisterSingletonType<OmniPluginManager>("OmniUI", 1, 0, "PluginManager", 
-        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
-            Q_UNUSED(engine)
-            Q_UNUSED(scriptEngine)
-            return OmniPluginManager::instance();
-        });
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniPluginManager::instance(); });
         
     qmlRegisterSingletonType<OmniMasterClock>("OmniAudio", 1, 0, "MasterClock", 
-        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
-            Q_UNUSED(engine)
-            Q_UNUSED(scriptEngine)
-            return OmniMasterClock::instance();
-        });
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniMasterClock::instance(); });
 
     qmlRegisterSingletonType<OmniFileSystem>("OmniData", 1, 0, "FileSystem", 
-        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
-            Q_UNUSED(engine)
-            Q_UNUSED(scriptEngine)
-            return OmniFileSystem::instance();
-        });
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniFileSystem::instance(); });
+
+    qmlRegisterSingletonType<OmniThemeManager>("OmniUI", 1, 0, "ThemeManager", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniThemeManager::instance(); });
+
+    qmlRegisterSingletonType<OmniNotificationCenter>("OmniUI", 1, 0, "NotificationCenter", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniNotificationCenter::instance(); });
 
     // Register Actual Fully-Implemented Widgets & Views
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");

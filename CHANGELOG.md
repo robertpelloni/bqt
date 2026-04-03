@@ -1,3 +1,8 @@
+## [3.4.0] - 2026-04-02
+### Added
+- **Global Theme Engine:** Implemented `OmniThemeManager` as a QML Singleton. Developers can now execute `ThemeManager.setCyberpunkMode()`, `setDarkMode()`, or `setLightMode()`, instantly pushing dynamic `QColor` updates to all bound native widgets system-wide.
+- **Native OS Notification Center:** Built `OmniNotificationCenter`. QML developers can now broadcast `showToast("Title", "Message", "success")`. The `OmniDeveloperOverlay` natively intercepts this array and physically renders gorgeous, semi-transparent, color-coded floating toasts in the top-right corner of the OS overlay. It even uses `QTimer::singleShot` to dynamically fade/remove them without stalling the main UI rendering frame.
+
 ## [3.3.0] - 2026-04-02
 ### Added
 - **The Internal Desktop Environment (OmniWindow):** BobUI has structurally transitioned from an application framework into a literal Desktop Environment. Implemented `OmniWindow` as a fully-featured, hardware-accelerated `QQuickPaintedItem` that lives infinitely inside the main native OS borderless window.
