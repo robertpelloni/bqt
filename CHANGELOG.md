@@ -1,3 +1,10 @@
+## [41.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 22):** Ported the Multi-User Action and Auto-Pilot systems.
+- **Go Action Registry:** Implemented `kernel/action_registry.go`, providing native user-scoped keyboard shortcuts. Shortcuts are now physically mapped to `UserID`s, allowing concurrent command execution in the multi-user OS.
+- **Go Auto-Pilot Engine:** Engineered `vm/macro_recorder.go`, providing native interaction recording and playback. Synthesizes `OmniScript` AST payloads directly from the Go input kernel for autonomous GPU SceneGraph replay.
+- **Automation taskbar UI:** Integrated "REC" and "PLAY" controls into the Go-native shell.
+
 ## [40.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 21):** Ported the Authentication and Temporal systems.
