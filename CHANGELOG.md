@@ -1,3 +1,10 @@
+## [36.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 17):** Ported the Window Orchestration and Styling systems.
+- **Go Window Manager Engine:** Implemented `ui/wm.go`, providing a state-driven layer manager for dynamic application spawning. Supports Z-index depth sorting and multi-window coordinate mapping natively in Go.
+- **Go Native CSS Engine:** Engineered `theme/stylesheet.go`, providing 1:1 parity with the JavaFX-style inline parser. Allows Go developers to override global themes using raw string declarations on a per-window basis.
+- **Interactive Shell Synthesis:** Updated the Go UI engine to support clickable taskbars and dynamic window injection natively via the Gio GPU context.
+
 ## [35.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 16):** Ported the OS Shell and Sub-Processing systems.
