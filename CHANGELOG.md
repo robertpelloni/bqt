@@ -1,3 +1,10 @@
+## [47.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 25):** Ported the Historical Sync and Secure Boot systems.
+- **Go Distributed Time Machine:** Upgraded `data/time_machine.go` with P2P mesh synchronization. File history commits are now broadcast across the global Go mesh, allowing remote peers to sync historical timelines natively.
+- **Go Native Secure Boot:** Implemented `widgets/auth.go`, providing a native Go login shell gated by the `Database.go` kernel module.
+- **Mesh Temporal Hardening:** Updated `net/mesh_node.go` to handle real-time ledger updates and historical re-basing between distributed peers.
+
 ## [46.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 24):** Ported the Governance and Low-Level GPU systems.

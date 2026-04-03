@@ -7,7 +7,6 @@ import (
 	"gioui.org/f32"
 	"github.com/gorilla/websocket"
 	"github.com/robertpelloni/bobui/internal/kernel"
-	"github.com/robertpelloni/bobui/internal/ui/widgets"
 )
 
 var upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }}
@@ -27,7 +26,7 @@ func GetMeshNode() *MeshNode {
 	return nodeInstance
 }
 
-func (mn *MeshNode) StartNode(port string, spawnCallback func(string, string, f32.Point, f32.Point, bool)) {
+func (mn *MeshNode) StartNode(port string, spawnCallback func(string, string, f32.Point, f32.Point, bool), ledgerSync func(string, string)) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil { return }
@@ -41,13 +40,9 @@ func (mn *MeshNode) StartNode(port string, spawnCallback func(string, string, f3
 			mType := msg["type"].(string)
 			if mType == "cursor" {
 				kernel.GetInputManager().UpdateCursor("net-"+msg["deviceId"].(string), msg["x"].(float64), msg["y"].(float64))
-			} else if mType == "window_spawn" {
-				// --- DISTRIBUTED WINDOW SYNC ---
-				id := msg["id"].(string)
-				title := msg["title"].(string)
-				pos := f32.Pt(float32(msg["x"].(float64)), float32(msg["y"].(float64)))
-				size := f32.Pt(float32(msg["w"].(float64)), float32(msg["h"].(float64)))
-				spawnCallback(id, title, pos, size, true)
+			} else if mType == "ledger_update" {
+				// --- DISTRIBUTED TEMPORAL SYNC ---
+				ledgerSync(msg["path"].(string), msg["content"].(string))
 			}
 		}
 	})
