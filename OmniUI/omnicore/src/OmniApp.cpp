@@ -3,7 +3,6 @@
 #include "OmniInputManager.h"
 #include "OmniDeveloperOverlay.h"
 #include "OmniQmlRegistration.h"
-#include "OmniImageProvider.h"
 #include "OmniNativeEventFilter.h"
 #include "OmniPluginManager.h"
 #include "OmniNeuralEngine.h"
@@ -18,163 +17,63 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-// Stub implementation for Juce initialization
-namespace juce {
-    void initialiseJuce_GUI();
-    void shutdownJuce_GUI();
-}
+namespace juce { void initialiseJuce_GUI(); void shutdownJuce_GUI(); }
 
 OmniApplication::OmniApplication(int &argc, char **argv)
     : QApplication(argc, argv), m_juceInitialized(false), m_developerOverlay(nullptr)
 {
     setObjectName("OmniApplication");
     m_qmlEngine = new QQmlApplicationEngine(this);
-    m_qmlEngine->addImageProvider(QLatin1String("omni"), new OmniImageProvider);
-    
     OmniPluginManager::instance()->setQmlEngine(m_qmlEngine);
-
     m_nativeFilter = new OmniNativeEventFilter(inputManager());
     installNativeEventFilter(m_nativeFilter);
     m_nativeFilter->registerRawInput();
-
-    // Start the local OS WebSocket server for LLM injection
     OmniWebSocketServer::instance()->startServer(8080);
-    
-    // Wire the Neural Engine's DOM generation strictly to the Server broadcast
-    connect(OmniNeuralEngine::instance(), &OmniNeuralEngine::domSnapshotGenerated, 
-            OmniWebSocketServer::instance(), &OmniWebSocketServer::broadcastMessage);
-
-    // Wire external LLM Python commands back into the OS Kernel securely
-    connect(OmniWebSocketServer::instance(), &OmniWebSocketServer::messageReceived, this, [this](const QString& message) {
-        QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
-        if (!doc.isNull() && doc.isObject()) {
-            QJsonObject obj = doc.object();
-            QString targetId = obj["targetId"].toString();
-            QString action = obj["action"].toString();
-            QString payload = obj["payload"].toString();
-
-            if (!targetId.isEmpty() && !action.isEmpty()) {
-                qDebug() << "OmniApp: Intercepted LLM action request:" << action << "on" << targetId;
-                OmniNeuralEngine::instance()->executeAction(targetId, action, payload);
-            }
-        }
-    });
 
     OmniUI::registerQmlTypes();
 }
 
-OmniApplication::~OmniApplication()
-{
-    if (m_juceInitialized) {
-        qDebug() << "OmniUI: Shutting down JUCE integration.";
-    }
+OmniApplication::~OmniApplication() {
     delete m_nativeFilter;
     OmniWebSocketServer::instance()->stopServer();
 }
 
-void OmniApplication::initializeJuce()
-{
+void OmniApplication::initializeJuce() {
     if (m_juceInitialized) return;
     m_juceInitialized = true;
-    qDebug() << "OmniUI: JUCE integration initialized successfully.";
 }
 
-bool OmniApplication::loadMainSource(const QString& sourcePath)
-{
+bool OmniApplication::loadMainSource(const QString& sourcePath) {
     const QUrl url = QUrl::fromLocalFile(sourcePath);
-    QObject::connect(m_qmlEngine, &QQmlApplicationEngine::objectCreated,
-                     this, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl) {
-            qCritical() << "OmniUI: Failed to load QML source!" << url;
-            QCoreApplication::exit(-1);
-        } else {
-            auto* window = qobject_cast<QQuickWindow*>(obj);
-            if (window) {
-                OmniNeuralEngine::instance()->setRootItem(window->contentItem());
-            }
-        }
+    QObject::connect(m_qmlEngine, &QQmlApplicationEngine::objectCreated, this, [url](QObject *obj, const QUrl &objUrl) {
+        if (!obj && url == objUrl) QCoreApplication::exit(-1);
+        auto* window = qobject_cast<QQuickWindow*>(obj);
+        if (window) OmniNeuralEngine::instance()->setRootItem(window->contentItem());
     }, Qt::QueuedConnection);
-    
     m_qmlEngine->load(url);
     return true;
 }
 
-JuceWidget* OmniApplication::createJuceWidget(QWidget* parent)
-{
-    if (!m_juceInitialized) initializeJuce();
-    auto* widget = new JuceWidget(parent);
-    m_managedWidgets.append(widget);
-    return widget;
-}
-
-void OmniApplication::setDeveloperOverlayEnabled(bool enabled)
-{
-    if (enabled) {
-        if (!m_developerOverlay) m_developerOverlay = new OmniDeveloperOverlay();
-        m_developerOverlay->show();
-    } else if (m_developerOverlay) {
-        m_developerOverlay->hide();
-    }
-}
-
-OmniInputManager* OmniApplication::inputManager() const
-{
-    return OmniInputManager::instance();
-}
-
-bool OmniApplication::notify(QObject *receiver, QEvent *e)
-{
+bool OmniApplication::notify(QObject *receiver, QEvent *e) {
     auto manager = OmniInputManager::instance();
+    QString currentDeviceId = "sys-mouse-0"; // Default fallback
 
     if (e->type() == QEvent::MouseMove || e->type() == QEvent::MouseButtonPress || e->type() == QEvent::MouseButtonRelease) {
         auto *mouseEvent = static_cast<QMouseEvent*>(e);
-        QString deviceId = "sys-mouse-0"; 
-        
-        manager->updateCursor(deviceId, mouseEvent->globalPosition());
-
-        if (e->type() == QEvent::MouseMove) {
-            manager->setDeviceHover(deviceId, receiver);
-            if (manager->devMode()) {
-                manager->setDeviceHover("sim-mouse-1", receiver);
-            }
-        }
-
-        if (e->type() == QEvent::MouseButtonPress) {
-            manager->setDeviceFocus(deviceId, receiver);
-        }
+        // TODO: Map raw hardware handle to deviceId via Side-Channel
+        manager->updateCursor(currentDeviceId, mouseEvent->globalPosition());
+        if (e->type() == QEvent::MouseMove) manager->setDeviceHover(currentDeviceId, receiver);
+        if (e->type() == QEvent::MouseButtonPress) manager->setDeviceFocus(currentDeviceId, receiver);
     }
-    else if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
-        auto *keyEvent = static_cast<QKeyEvent*>(e);
-        
-        if (manager->devMode() && e->type() == QEvent::KeyPress) {
-            qreal speed = 15.0;
-            if (keyEvent->key() == Qt::Key_W) manager->simulateSecondaryCursorMove(0, -speed);
-            else if (keyEvent->key() == Qt::Key_S) manager->simulateSecondaryCursorMove(0, speed);
-            else if (keyEvent->key() == Qt::Key_A) manager->simulateSecondaryCursorMove(-speed, 0);
-            else if (keyEvent->key() == Qt::Key_D) manager->simulateSecondaryCursorMove(speed, 0);
-            else if (keyEvent->key() == Qt::Key_Space) {
-                manager->simulateSecondaryCursorClick(receiver);
-                return true; 
-            }
-            if (keyEvent->key() == Qt::Key_W || keyEvent->key() == Qt::Key_A || 
-                keyEvent->key() == Qt::Key_S || keyEvent->key() == Qt::Key_D) {
-                return true;
-            }
-        }
 
-        QString deviceId = "sys-kb-0"; 
-        if (manager->routeKeyEvent(deviceId, keyEvent)) {
-            return true;
-        }
-    }
-    else if (e->type() == QEvent::TouchBegin || e->type() == QEvent::TouchUpdate || e->type() == QEvent::TouchEnd) {
-        auto *touchEvent = static_cast<QTouchEvent*>(e);
-        for (const auto& point : touchEvent->points()) {
-            QString deviceId = QString("sys-touch-%1").arg(point.id());
-            manager->registerDevice(deviceId, "Touch Point", "touch");
-            manager->updateCursor(deviceId, point.globalPosition());
-        }
+    // --- CONTEXTUAL TAGGING ---
+    // We attach the current DeviceId to the receiver object dynamically
+    // so that the widget logic (Button/Slider) knows WHO is interacting with it.
+    if (receiver) {
+        receiver->setProperty("_omni_active_device", currentDeviceId);
     }
 
     return QApplication::notify(receiver, e);
 }
+
+OmniInputManager* OmniApplication::inputManager() const { return OmniInputManager::instance(); }

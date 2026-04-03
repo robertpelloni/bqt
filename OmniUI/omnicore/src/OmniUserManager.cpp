@@ -8,54 +8,59 @@ OmniUserManager* OmniUserManager::instance() {
 }
 
 OmniUserManager::OmniUserManager(QObject *parent) : QObject(parent) {
-    setObjectName("OmniUserManager");
-    
-    // Create the default Admin User
     createUser("Administrator", QColor("#FF0000"), false);
 }
 
 OmniUserManager::~OmniUserManager() = default;
 
-int OmniUserManager::userCount() const { return m_users.size(); }
-
 QString OmniUserManager::createUser(const QString& name, const QColor& cursorColor, bool isRemote) {
     QString id = QUuid::createUuid().toString();
-    OmniUser user;
-    user.id = id;
-    user.name = name;
-    user.cursorColor = cursorColor;
-    user.isRemote = isRemote;
-    
+    OmniUser user{id, name, cursorColor, {}, isRemote};
     m_users.insert(id, user);
-    qDebug() << "OmniUserManager: Created User [" << name << "] with ID:" << id;
-    
     emit usersChanged();
-    emit userConnected(id);
     return id;
 }
 
 bool OmniUserManager::assignDeviceToUser(const QString& deviceId, const QString& userId) {
     if (!m_users.contains(userId)) return false;
-    
     m_deviceToUserMap[deviceId] = userId;
-    m_users[userId].assignedDevices.append(deviceId);
-    
-    qDebug() << "OmniUserManager: Hardware Device [" << deviceId << "] assigned to User [" << m_users[userId].name << "]";
     return true;
+}
+
+bool OmniUserManager::tryGrab(const QString& deviceId, QObject* target) {
+    if (!target) return false;
+    QString userId = m_deviceToUserMap.value(deviceId, "");
+
+    // If the object is already locked by someone else, deny grab
+    if (m_interactionLocks.contains(target) && m_interactionLocks[target] != userId) {
+        return false;
+    }
+
+    m_interactionLocks[target] = userId;
+    emit grabAcquired(userId, target);
+    return true;
+}
+
+void OmniUserManager::releaseGrab(const QString& deviceId, QObject* target) {
+    if (!target) return;
+    QString userId = m_deviceToUserMap.value(deviceId, "");
+    if (m_interactionLocks.value(target) == userId) {
+        m_interactionLocks.remove(target);
+        emit grabReleased(userId, target);
+    }
+}
+
+bool OmniUserManager::canInteract(const QString& deviceId, QObject* target) const {
+    if (!target) return true;
+    QString userId = m_deviceToUserMap.value(deviceId, "");
+    
+    // If no one has a grab, anyone can interact
+    if (!m_interactionLocks.contains(target)) return true;
+    
+    // Otherwise, only the grab owner can interact
+    return m_interactionLocks[target] == userId;
 }
 
 QString OmniUserManager::getUserIdForDevice(const QString& deviceId) const {
     return m_deviceToUserMap.value(deviceId, "");
-}
-
-bool OmniUserManager::checkPermission(const QString& deviceId, QObject* target) {
-    // In a future phase, widgets will have an 'ownerId' property.
-    // For now, everyone has access to everything (God Mode).
-    Q_UNUSED(deviceId);
-    Q_UNUSED(target);
-    return true;
-}
-
-QList<OmniUser> OmniUserManager::activeUsers() const {
-    return m_users.values();
 }

@@ -5,52 +5,50 @@
 #include <QString>
 #include <QMap>
 #include <QColor>
-#include <QList>
+#include <QPointer>
 
 struct OmniUser {
     QString id;
     QString name;
     QColor cursorColor;
-    QStringList assignedDevices; // List of DeviceIds (hw-..., sys-..., net-...)
+    QStringList assignedDevices;
     bool isRemote;
 };
 
-// The OS-level Identity Manager. Standard OSs have 1 user. 
-// BobUI supports an infinite mesh of local and remote users.
 class OmniUserManager : public QObject {
     Q_OBJECT
-    Q_PROPERTY(int userCount READ userCount NOTIFY usersChanged)
-
 public:
     static OmniUserManager* instance();
 
-    int userCount() const;
-
-    // Registers a new logical user in the OS
     Q_INVOKABLE QString createUser(const QString& name, const QColor& cursorColor, bool isRemote = false);
-    
-    // Assigns a physical/virtual hardware device to a specific user
     Q_INVOKABLE bool assignDeviceToUser(const QString& deviceId, const QString& userId);
 
-    // Checks if a specific device is allowed to interact with an object owned by another user
-    Q_INVOKABLE bool checkPermission(const QString& deviceId, QObject* target);
-
-    // Retrieves the user associated with a device
-    QString getUserIdForDevice(const QString& deviceId) const;
+    // --- TOOL ACTION ISOLATION ---
+    // Attempts to lock an object to a specific user. Returns true if the user now owns the interaction.
+    Q_INVOKABLE bool tryGrab(const QString& deviceId, QObject* target);
     
-    QList<OmniUser> activeUsers() const;
+    // Releases the interaction lock
+    Q_INVOKABLE void releaseGrab(const QString& deviceId, QObject* target);
+
+    // Checks if a device is currently allowed to interact with an object
+    bool canInteract(const QString& deviceId, QObject* target) const;
+
+    QString getUserIdForDevice(const QString& deviceId) const;
 
 signals:
     void usersChanged();
-    void userConnected(const QString& userId);
-    void userDisconnected(const QString& userId);
+    void grabAcquired(const QString& userId, QObject* target);
+    void grabReleased(const QString& userId, QObject* target);
 
 private:
     explicit OmniUserManager(QObject *parent = nullptr);
     ~OmniUserManager() override;
 
     QMap<QString, OmniUser> m_users;
-    QMap<QString, QString> m_deviceToUserMap; // DeviceId -> UserId
+    QMap<QString, QString> m_deviceToUserMap;
+    
+    // Interaction Locks: Object Pointer -> UserID
+    QMap<QObject*, QString> m_interactionLocks;
 };
 
 #endif // OMNIUSERMANAGER_H

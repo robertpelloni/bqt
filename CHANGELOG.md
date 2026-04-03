@@ -1,3 +1,9 @@
+## [12.0.0] - 2026-04-02
+### Added
+- **Contextual Multiplayer Ownership (Phase 45):** Engineered the "Interaction Grab" system. Users can now share the same window, but specific tool actions (like dragging a slider) are physically locked to the user who initiated them.
+- **Kernel-Level Event Tagging:** Modified `OmniApp::notify` to natively tag standard Qt events with physical `DeviceId`s. Widgets can now determine exactly *who* is touching them at the memory level.
+- **Modal Pinning:** Implemented specialized isolation for `OmniWindow` modals. When a user triggers a modal dialog, the interaction is pinned to their identity, preventing other users from hijacking the dialog while allowing them to continue working in background windows.
+
 ## [11.0.0] - 2026-04-02
 ### Added
 - **Multiplayer Kernel Hardening (Phase 45):** Implemented native window ownership logic. Application windows now track an `ownerId`, establishing the foundation for secure, collaborative multi-user workspaces where users cannot interfere with each other's private resources.

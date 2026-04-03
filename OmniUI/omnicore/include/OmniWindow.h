@@ -12,6 +12,7 @@ class OmniWindow : public QQuickPaintedItem {
     Q_PROPERTY(bool isMaximized READ isMaximized WRITE setIsMaximized NOTIFY isMaximizedChanged)
     Q_PROPERTY(QString ownerId READ ownerId WRITE setOwnerId NOTIFY ownerIdChanged)
     Q_PROPERTY(bool collaborative READ collaborative WRITE setCollaborative NOTIFY collaborativeChanged)
+    Q_PROPERTY(bool isModal READ isModal WRITE setIsModal NOTIFY isModalChanged)
 
 public:
     explicit OmniWindow(QQuickItem *parent = nullptr);
@@ -32,6 +33,9 @@ public:
     bool collaborative() const;
     void setCollaborative(bool collabo);
 
+    bool isModal() const;
+    void setIsModal(bool modal);
+
     Q_INVOKABLE void close();
     Q_INVOKABLE void bringToFront();
 
@@ -43,16 +47,16 @@ signals:
     void isMaximizedChanged();
     void ownerIdChanged();
     void collaborativeChanged();
+    void isModalChanged();
     void windowClosed();
-    void permissionDenied(const QString& userId);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void hoverMoveEvent(QHoverEvent *event) override;
 
 private:
+    bool m_isModal;
     QString m_title;
     QColor m_accentColor;
     bool m_isMaximized;
@@ -60,15 +64,11 @@ private:
     bool m_collaborative;
     
     QRectF m_preMaximizeGeometry;
-
     bool m_isDragging;
     bool m_isResizing;
     int m_resizeEdge; 
     QPointF m_dragStartPos;
 
-    QRectF titleBarRect() const;
-    QRectF closeButtonRect() const;
-    
     bool checkInteractionPermission(QMouseEvent* event);
 };
 
