@@ -4,16 +4,13 @@
 - [x] Scaffold native C++ backend framework.
 - [x] Achieve 100% parity with JUCE, JavaFX, ImGui, and Qt 6/7.
 
-## Phase 61 - 63: Go Distributed Epoch (Complete)
-- [x] **Go VoIP Mesh:** Real-time P2P voice chat streaming.
-- [x] **Go Reactive Engine:** JavaFX-style generic property bindings.
-- [x] **Go Desktop Shell:** Native Go Taskbar and Start Menu.
-- [x] **Go Undo Stack:** Isolated collaborative history.
+## Phase 61 - 64: Go Distributed Epoch (Complete)
+- [x] **Go Kernel Core:** Ported Input, User, State, and Net managers to Go.
+- [x] **Go Rendering Engine:** Ported visual shell to `gioui.org` GPU engine.
+- [x] **Go Simulation:** Concurrent Go particle engine.
+- [x] **Go Persistence & VM:** Ported SQLite and Lisp VM to Go.
 
-## Phase 64: Go Visual Singularity (Complete)
-- [x] **Go Particle Engine:** Concurrent multi-threaded physics.
-- [x] **Go Asset Provider:** Memory-mapped VFS image loading.
-
-## Phase 65: Go Hypervisor & Final Port (Current)
-- [ ] Port the full Lisp-like `OmniVM` interpreter to pure Go.
-- [ ] Implement Go-native SQLite bindings for `OmniDatabase` parity.
+## Phase 65: Go Community Hardening (Current)
+- [ ] Implement Go-native 3D Raymarcher using concurrent Goroutines.
+- [ ] Finalize Go-WASM CI/CD build scripts.
+- [ ] Port the `OmniTimeMachine` temporal ledger to Go.

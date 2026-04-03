@@ -6,34 +6,26 @@ import (
 	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
 	"github.com/robertpelloni/bobui/internal/ui"
+	"github.com/robertpelloni/bobui/internal/data"
+	"github.com/robertpelloni/bobui/internal/vm"
 )
 
 func main() {
-	log.Println("OmniUI Go: Booting High-Concurrency Kernel...")
+	log.Println("OmniUI Go: Initializing Final Singularity Kernel...")
 
-	// 1. Setup Kernel
+	// 1. Setup Database
+	db := data.GetDatabase()
+	db.Connect("omni_go_system.db")
+
+	// 2. Setup VM
+	lisp := vm.NewVM()
+	res, _ := lisp.Eval([]interface{}{"+", 10.0, 32.0})
+	log.Printf("OmniVM Go: Boot Diagnostics (10 + 32) = %v", res)
+
+	// 3. Setup Input & Net
 	im := kernel.GetInputManager()
-	im.RegisterDevice("sys-mouse-0", "Local User", kernel.Mouse)
-	
-	// 2. Setup Reactive State (JavaFX Parity)
-	volume := kernel.NewProperty[float64](0.8)
-	volume.AddListener(func(val float64) {
-		log.Printf("OMNI STATE: System Volume shifted to %f", val)
-	})
-
-	// 3. Start Distributed Mesh & Voice (Remote Multiplayer OS)
-	mesh := net.GetMeshNode()
-	mesh.StartNode("8081")
-	
-	voice := net.GetVoiceMesh()
-	go func() {
-		// Simulation: Sending local voice data every second
-		for {
-			voice.BroadcastVoice([]byte{0xDE, 0xAD, 0xBE, 0xEF})
-			// time.Sleep(1 * time.Second)
-			return // End simulation for main loop stability
-		}
-	}()
+	im.RegisterDevice("sys-mouse-0", "Local Admin", kernel.Mouse)
+	net.GetMeshNode().StartNode("8081")
 
 	// 4. Launch GPU Engine
 	go func() {

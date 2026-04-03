@@ -1,3 +1,10 @@
+## [25.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 6):** Ported the Scripting and Database systems.
+- **Go Lisp Hypervisor:** Implemented `vm/lisp.go`, providing a Turing-complete AST evaluator natively in Go. Leverages Go's reflection system for high-performance symbol environment management.
+- **Pure Go SQLite Integration:** Engineered `data/database.go` using `modernc.org/sqlite`, providing a 100% Go-native SQL engine that bypasses CGO for absolute cross-platform portability.
+- **Final Singularity Boot Sequence:** Unified all ported modules (Kernel, UI, VM, DB, Net) into a single high-concurrency Go entry point.
+
 ## [24.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 5):** Ported the High-Performance Simulation and VFS Asset Provider systems.
