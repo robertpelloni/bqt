@@ -35,6 +35,7 @@
 #include "OmniTimeMachine.h"
 #include "OmniAssetManager.h"
 #include "OmniVM.h"
+#include "OmniMacroRecorder.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -47,11 +48,12 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniMasterClock>("OmniAudio", 1, 0, "MasterClock", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMasterClock::instance(); });
     qmlRegisterSingletonType<OmniFileSystem>("OmniData", 1, 0, "FileSystem", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniFileSystem::instance(); });
     qmlRegisterSingletonType<OmniTimeMachine>("OmniData", 1, 0, "TimeMachine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniTimeMachine::instance(); });
+    qmlRegisterSingletonType<OmniAssetManager>("OmniData", 1, 0, "AssetManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAssetManager::instance(); });
     qmlRegisterSingletonType<OmniThemeManager>("OmniUI", 1, 0, "ThemeManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniThemeManager::instance(); });
     qmlRegisterSingletonType<OmniNotificationCenter>("OmniUI", 1, 0, "NotificationCenter", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNotificationCenter::instance(); });
     qmlRegisterSingletonType<OmniNeuralEngine>("OmniUI", 1, 0, "NeuralEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNeuralEngine::instance(); });
-    qmlRegisterSingletonType<OmniAssetManager>("OmniData", 1, 0, "AssetManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAssetManager::instance(); });
     qmlRegisterSingletonType<OmniVM>("OmniUI", 1, 0, "VM", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVM::instance(); });
+    qmlRegisterSingletonType<OmniMacroRecorder>("OmniUI", 1, 0, "MacroRecorder", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMacroRecorder::instance(); });
 
     // Register Actual Fully-Implemented Widgets & Views
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");
@@ -87,7 +89,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniWebSocket>("OmniNet", 1, 0, "WebSocket");
     qmlRegisterType<OmniIPC>("OmniNet", 1, 0, "IPC");
     
-    qDebug() << "OmniUI: QML Types Registered successfully. Absolute Multi-Framework Parity Reached.";
+    qDebug() << "OmniUI: QML Types Registered successfully. Macro Recorder Online.";
 }
 
 #include "OmniQmlRegistration.moc"

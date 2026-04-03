@@ -54,6 +54,7 @@ add_executable(PluginDemo
     ../../omnicore/src/data/OmniAssetManager.cpp
     ../../omnicore/src/data/OmniImageProvider.cpp
     ../../omnicore/src/vm/OmniVM.cpp
+    ../../omnicore/src/vm/OmniMacroRecorder.cpp
     ../../omnicore/src/gfx/OmniShaderEffect.cpp
     ../../omnicore/src/gfx/OmniParticles.cpp
     ../../omnicore/src/widgets/OmniCodeEditor.cpp

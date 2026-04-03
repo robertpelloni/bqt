@@ -1,5 +1,6 @@
 #include "OmniInputManager.h"
 #include "OmniRustBridge.h"
+#include "OmniMacroRecorder.h"
 #include <QKeyEvent>
 #include <QCoreApplication>
 #include <QMutexLocker>
@@ -49,9 +50,6 @@ void OmniInputManager::registerDevice(const QString& id, const QString& name, co
     OmniInputDevice dev = { id, name, type, QPointF(0, 0) };
     m_devices.insert(id, dev);
     
-    // --- The Rusty Core Validation ---
-    // If the OS is compiled with Rust support, it mirrors the registration to the
-    // statically verifiable Rust Memory State to ensure absolute bounds-checking.
     OmniRustBridge::registerDevice(id, name, type);
 
     emit deviceConnected(dev);
@@ -61,10 +59,6 @@ void OmniInputManager::updateCursor(const QString& deviceId, const QPointF& pos)
     QMutexLocker locker(&m_mutex);
     if (!m_devices.contains(deviceId)) return;
     
-    // --- The Rusty Core Boundary Extraction ---
-    // In a fully integrated Rust/C++ build, the Rust engine receives the pos, 
-    // mathematically verifies it, bounds-checks it against 8K screen resolutions safely, 
-    // and stores it. The C++ frontend then reads from it securely.
     OmniRustBridge::updateCursor(deviceId, pos.x(), pos.y());
 
     m_devices[deviceId].cursorPosition = pos;
@@ -75,6 +69,13 @@ void OmniInputManager::setDeviceFocus(const QString& deviceId, QObject* target) 
     QMutexLocker locker(&m_mutex);
     if (m_deviceFocusMap.value(deviceId) == target) return;
     m_deviceFocusMap[deviceId] = target;
+    
+    // --- OMNIMACRO RECORDING HOOK ---
+    // Log the physical human click natively into the OmniScript AST generator
+    if (target && !target->objectName().isEmpty()) {
+        OmniMacroRecorder::instance()->recordClick(target->objectName());
+    }
+
     emit focusChanged(deviceId, target);
 }
 
@@ -104,7 +105,13 @@ bool OmniInputManager::routeKeyEvent(const QString& deviceId, QKeyEvent* event) 
     
     if (!target) return false;
     
-    // Dispatch outside the lock to prevent deadlocks if the UI thread takes time processing the key
+    // --- OMNIMACRO RECORDING HOOK ---
+    // Log the physical human typing natively into the OmniScript AST generator
+    if (event->type() == QEvent::KeyPress && !event->text().isEmpty() && target && !target->objectName().isEmpty()) {
+        OmniMacroRecorder::instance()->recordKey(target->objectName(), event->text());
+    }
+
+    // Dispatch outside the lock to prevent deadlocks
     QCoreApplication::sendEvent(target, event);
     return true;
 }
@@ -121,7 +128,7 @@ void OmniInputManager::simulateSecondaryCursorMove(qreal dx, qreal dy) {
     if (!enabled) return;
     
     QPointF newPos(current.x() + dx, current.y() + dy);
-    newPos.setX(std::clamp(newPos.x(), 0.0, 3840.0)); // Assume max 4K boundary for simulation
+    newPos.setX(std::clamp(newPos.x(), 0.0, 3840.0)); 
     newPos.setY(std::clamp(newPos.y(), 0.0, 2160.0));
     
     updateCursor("sim-mouse-1", newPos);

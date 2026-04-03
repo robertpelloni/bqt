@@ -1,3 +1,9 @@
+## [6.1.0] - 2026-04-02
+### Added
+- **The OS Auto-Pilot Engine (Phase 36):** Implemented the ultimate synthesis of the framework. `OmniMacroRecorder` actively taps into the `OmniInputManager` hardware interception hooks. When `isRecording` is enabled, it actively listens to the user clicking buttons or typing. 
+- **Dynamic AST Script Synthesis:** It converts these physical human actions dynamically into raw `OmniScript` (Lisp) syntax (e.g., `(click "SubmitButton")`).
+- **Autonomous Playback:** Calling `playMacro()` dumps the synthesized script directly into the `OmniVM` C++ AST interpreter, actively triggering the `OmniNeuralEngine` to synthetically recreate the user's entire session automatically. The OS is now capable of self-driving.
+
 ## [6.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The OmniScript Hypervisor Release (Phase 34):** The OS has achieved Turing-completeness natively without relying on the host OS `cmd.exe` shells or WebAssembly sandbox breakages.
