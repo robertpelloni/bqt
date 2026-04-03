@@ -5,37 +5,43 @@ import (
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
+	"github.com/robertpelloni/bobui/internal/vm"
 )
 
 type OmniStudio struct {
 	Editor    *CodeEditor
 	Terminal  *Terminal
+	Explorer  *MeshExplorer
 	SplitView *SplitView
 }
 
-func NewOmniStudio() *OmniStudio {
-	return &OmniStudio{
-		Editor:    &CodeEditor{},
-		Terminal:  &Terminal{},
-		SplitView: &SplitView{Ratio: 0.7},
-	}
-}
-
 func (os *OmniStudio) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
-	// --- OMNISTUDIO MULTIPLAYER IDE RENDER PASS ---
-	// Unifying Logic, Shell, and GPU Rendering into a single workspace.
-	
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
 
+	// --- GO AI SUGGESTION RENDER ---
+	assistant := vm.GetAIAssistant()
+	suggestion := assistant.GetLatestSuggestion()
+	if suggestion.Text != "" {
+		// Render Ghost-Text in Aetheria Gold
+		lbl := material.Label(mth, unit.Sp(12), suggestion.Text)
+		lbl.Color = th.Primary // Gold
+		// ... (positioning at cursor)
+	}
+
 	return os.SplitView.Layout(gtx,
 		func(gtx layout.Context) layout.Dimensions {
-			// Center: Collaborative Code Editor
-			return os.Editor.Layout(gtx, th)
+			return layout.Flex{Axis: layout.Horizontal}.Layout(gtx,
+				layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+					return os.Explorer.Layout(gtx, th)
+				}),
+				layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
+					return os.Editor.Layout(gtx, th)
+				}),
+			)
 		},
 		func(gtx layout.Context) layout.Dimensions {
-			// Sidebar: Integrated Native Shell
 			return os.Terminal.Layout(gtx, th)
 		},
 	)

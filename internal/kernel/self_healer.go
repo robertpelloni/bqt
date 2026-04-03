@@ -10,30 +10,17 @@ type SelfHealer struct {
 	Active bool
 }
 
-func GetSelfHealer() *SelfHealer {
-	return &SelfHealer{Active: true}
-}
+func GetSelfHealer() *SelfHealer { return &SelfHealer{Active: true} }
 
-// Intercept captures Go panics and prepares an AI Context Report.
-func (sh *SelfHealer) Intercept(taskName string) {
+func (sh *SelfHealer) Intercept(taskName string, aiCallback func(string)) {
 	if !sh.Active { return }
 	
 	if r := recover(); r != nil {
-		log.Printf("OMNI KERNEL CRITICAL: Panic detected in task [%s] -> %v", taskName, r)
-		
 		stack := debug.Stack()
+		report := fmt.Sprintf("TASK: %s\nERROR: %v\nSTACK:\n%s", taskName, r, string(stack))
+		log.Printf("OMNI HEALER: Caught Critical Panic. Dispatching to AI Assistant...")
 		
-		// Create the AI Context Report
-		report := map[string]interface{}{
-			"type":    "kernel_panic",
-			"task":    taskName,
-			"error":   fmt.Sprintf("%v", r),
-			"stack":   string(stack),
-		}
-		
-		// In a production build, this would be piped directly to an LLM 
-		// via the OmniNeuralEngine to generate a Go source fix.
-		_ = report
-		log.Println("OMNI KERNEL: AI Context Report generated for autonomous healing.")
+		// Physically pipe the crash to the AI Co-Processor
+		aiCallback(report)
 	}
 }

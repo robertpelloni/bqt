@@ -10,22 +10,24 @@ import (
 )
 
 func main() {
-	log.Println("OmniUI Go: Orchestrating Final Shell Singularity...")
+	log.Println("OmniUI Go: Orchestrating Cognitive Singularity...")
 
-	// 1. Setup Input & Net
-	im := kernel.GetInputManager()
-	im.RegisterDevice("sys-mouse-0", "Super Admin", kernel.Mouse)
+	// 1. Setup AI Assistant & Healer
+	assistant := vm.GetAIAssistant()
+	healer := kernel.GetSelfHealer()
+
+	// 2. Wrap main logic in AI Self-Healing Kernel
+	defer healer.Intercept("KernelMain", func(report string) {
+		assistant.RequestCompletion(report)
+	})
+
+	// 3. Setup Distributed Mesh
 	net.GetMeshNode().StartNode("8081", nil, nil)
 
-	// 2. AI Action Test (Simulation)
-	vm.ExecuteAIAction("SystemBtn", "click")
-
-	// 3. Launch GPU Engine with Aetheria Design
+	// 4. Launch GPU Engine
 	go func() {
 		engine := ui.NewEngine()
-		if err := engine.Run(); err != nil {
-			log.Fatal(err)
-		}
+		if err := engine.Run(); err != nil { log.Fatal(err) }
 	}()
 
 	app.Main()
