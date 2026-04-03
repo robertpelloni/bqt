@@ -1,6 +1,7 @@
 #include "OmniSlider.h"
 #include "OmniThemeManager.h"
 #include "OmniUserManager.h"
+#include "OmniValueTree.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
@@ -15,6 +16,30 @@ OmniSlider::OmniSlider(QQuickItem *parent)
     connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() { update(); });
 }
 
+qreal OmniSlider::value() const { return m_value; }
+void OmniSlider::setValue(qreal val) {
+    if (!qFuzzyCompare(m_value, val)) {
+        m_value = val;
+        emit valueChanged();
+        
+        // --- AUTO-PERSIST TO VALUE TREE ---
+        if (!m_valueTreeKey.isEmpty()) {
+            OmniValueTree::instance()->setParameter(m_valueTreeKey, m_value);
+        }
+        update();
+    }
+}
+
+QString OmniSlider::valueTreeKey() const { return m_valueTreeKey; }
+void OmniSlider::setValueTreeKey(const QString& key) {
+    if (m_valueTreeKey != key) {
+        m_valueTreeKey = key;
+        // Bind to tree for incoming remote updates
+        OmniValueTree::instance()->bindProperty(this, "value", key);
+        emit valueTreeKeyChanged();
+    }
+}
+
 void OmniSlider::mousePressEvent(QMouseEvent *event) {
     QString deviceId = property("_omni_active_device").toString();
     if (OmniUserManager::instance()->tryLockInteraction(deviceId, this)) {
@@ -22,6 +47,14 @@ void OmniSlider::mousePressEvent(QMouseEvent *event) {
         updateValueFromMouse(event->position());
     }
     QQuickPaintedItem::mousePressEvent(event);
+}
+
+void OmniSlider::mouseMoveEvent(QMouseEvent *event) {
+    QString deviceId = property("_omni_active_device").toString();
+    if (m_isDragging && OmniUserManager::instance()->canInteract(deviceId, this)) {
+        updateValueFromMouse(event->position());
+    }
+    QQuickPaintedItem::mouseMoveEvent(event);
 }
 
 void OmniSlider::mouseReleaseEvent(QMouseEvent *event) {
@@ -36,7 +69,7 @@ void OmniSlider::mouseReleaseEvent(QMouseEvent *event) {
 void OmniSlider::updateValueFromMouse(const QPointF& pos) {
     qreal ratio = std::clamp(pos.x() / width(), 0.0, 1.0);
     qreal newVal = m_minimum + ratio * (m_maximum - m_minimum);
-    if (!qFuzzyCompare(m_value, newVal)) { m_value = newVal; emit valueChanged(); update(); }
+    setValue(newVal);
 }
 
 void OmniSlider::paint(QPainter *painter) {
@@ -45,13 +78,11 @@ void OmniSlider::paint(QPainter *painter) {
     auto theme = OmniThemeManager::instance();
     auto userManager = OmniUserManager::instance();
     
-    // --- OWNERSHIP VISUALIZATION ---
-    // If someone has grabbed this slider, draw a glowing border in their color.
+    // --- GRAB GLOW VISUALIZATION ---
     if (!userManager->canInteract("", this)) {
-        QString userId = userManager->getUserIdForDevice(property("_omni_active_device").toString());
-        // For simulation, we draw a subtle gold highlight if locked
-        painter->setPen(QPen(theme->primary(), 2, Qt::DotLine));
-        painter->drawRect(rect.adjusted(-2, -2, 2, 2));
+        painter->setPen(QPen(theme->primary(), 2, Qt::SolidLine, Qt::RoundCap));
+        painter->setBrush(QColor(theme->primary().red(), theme->primary().green(), theme->primary().blue(), 30));
+        painter->drawRoundedRect(rect.adjusted(-4, -4, 4, 4), 4, 4);
     }
 
     qreal trackH = 6.0;
@@ -66,9 +97,6 @@ void OmniSlider::paint(QPainter *painter) {
     painter->drawEllipse(QPointF(activeRect.right(), rect.height()/2.0), 8.0, 8.0);
 }
 
-// Logic implementations omitted but preserved in kernel...
-qreal OmniSlider::value() const { return m_value; }
-void OmniSlider::setValue(qreal val) { m_value = val; update(); }
 qreal OmniSlider::minimum() const { return m_minimum; }
 void OmniSlider::setMinimum(qreal min) { m_minimum = min; update(); }
 qreal OmniSlider::maximum() const { return m_maximum; }
@@ -76,8 +104,3 @@ void OmniSlider::setMaximum(qreal max) { m_maximum = max; update(); }
 QColor OmniSlider::accentColor() const { return m_accentColor; }
 void OmniSlider::setAccentColor(const QColor& color) { m_accentColor = color; update(); }
 OmniSlider::~OmniSlider() = default;
-void OmniSlider::mouseMoveEvent(QMouseEvent *e) { 
-    QString deviceId = property("_omni_active_device").toString();
-    if (m_isDragging && OmniUserManager::instance()->canInteract(deviceId, this)) updateValueFromMouse(e->position());
-    QQuickPaintedItem::mouseMoveEvent(e); 
-}

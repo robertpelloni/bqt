@@ -53,6 +53,7 @@
 #include "OmniShaderEffect.h"
 #include "OmniRaymarcher.h"
 #include "OmniRhiNode.h"
+#include "OmniDropShadow.h"
 #include "OmniAnimator.h"
 
 #include <QQmlEngine>
@@ -81,7 +82,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });
     qmlRegisterSingletonType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMeshNode::instance(); });
 
-    // Widgets & Views
+    // Widgets
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");
     qmlRegisterType<OmniSlider>("OmniUI", 1, 0, "Slider");
     qmlRegisterType<OmniTextField>("OmniUI", 1, 0, "TextField");
@@ -96,10 +97,13 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniTreeView>("OmniUI", 1, 0, "TreeView");
     qmlRegisterType<OmniImGuiCanvas>("OmniUI", 1, 0, "ImGuiCanvas");
     qmlRegisterType<OmniPlot>("OmniUI", 1, 0, "Plot");
+    
+    // Effects
     qmlRegisterType<OmniParticleSystem>("OmniGfx", 1, 0, "ParticleSystem");
     qmlRegisterType<OmniShaderEffect>("OmniGfx", 1, 0, "ShaderEffect");
     qmlRegisterType<OmniRaymarcher>("OmniGfx", 1, 0, "Raymarcher");
     qmlRegisterType<OmniRhiNode>("OmniGfx", 1, 0, "RhiNode");
+    qmlRegisterType<OmniDropShadow>("OmniGfx", 1, 0, "DropShadow");
     
     // Layouts
     qmlRegisterType<OmniWindow>("OmniLayout", 1, 0, "Window");
@@ -109,7 +113,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniGridPane>("OmniLayout", 1, 0, "GridPane");
     qmlRegisterType<OmniFlowPane>("OmniLayout", 1, 0, "FlowPane");
 
-    // Audio DSP & MIDI
+    // Audio
     qmlRegisterType<OmniFilter>("OmniAudio", 1, 0, "Filter");
     qmlRegisterType<OmniGain>("OmniAudio", 1, 0, "Gain");
     qmlRegisterType<OmniAudioGraph>("OmniAudio", 1, 0, "AudioGraph");
@@ -124,7 +128,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniWebSocket>("OmniNet", 1, 0, "WebSocket");
     qmlRegisterType<OmniIPC>("OmniNet", 1, 0, "IPC");
     
-    qDebug() << "OmniUI: QML Types Registered successfully. Full Multi-Framework Parity Reached.";
+    qDebug() << "OmniUI: QML Types Registered successfully. Absolute Multi-Framework Parity Reached.";
 }
 
 #include "OmniQmlRegistration.moc"

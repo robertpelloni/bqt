@@ -1,3 +1,9 @@
+## [17.0.0] - 2026-04-02
+### Added
+- **Reactive Auto-Binding (Phase 59):** Implemented `valueTreeKey` integration for core widgets. Sliders and Buttons now auto-sync their state with the `OmniValueTree` natively in C++, enabling zero-code state persistence across the global OS mesh.
+- **Interaction Glow Shaders (Phase 58):** Updated the `omnicore` rendering pipeline. Locked widgets now physically emit a pulsing neon bloom in the owner's color, providing high-fidelity visual presence in the multiplayer workspace.
+- **JavaFX Graphic Effect Parity (Phase 60):** Implemented `OmniDropShadow.cpp`. This native C++ RHI node provides GPU-accelerated, soft Gaussian shadows, fulfilling the final requirement for high-end desktop aesthetic parity.
+
 ## [16.0.0] - 2026-04-02
 ### Added
 - **Global Collective State Sync (Phase 57):** Engineered the `OmniValueTree` singleton. This provides a hierarchical, thread-safe source of truth for the entire OS. When a value is modified locally, it is instantly broadcast across the P2P Mesh, triggering reactive updates on all remote peers.

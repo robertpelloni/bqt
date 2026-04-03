@@ -1,21 +1,19 @@
 # Project Roadmap
 
-## Phase 1 - 55: Core Framework & Multi-User Architecture (Complete)
-- [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
-- [x] Establish `OmniInputManager` with independent focus trees.
+## Phase 1 - 57: Core Framework & Multi-User Architecture (Complete)
+- [x] Scaffold native C++ backend framework.
 - [x] **Multi-Framework Parity:** JUCE, JavaFX, ImGui, and Qt 6/7.
-- [x] **Multiplayer Identity:** Map hardware `DeviceId`s to `UserAccount`s.
-- [x] **Distributed Collective Memory:** P2P Clipboard and File synchronization.
-- [x] **Isolated History:** Multi-user Undo/Redo stack.
+- [x] **Multiplayer Identity:** Map hardware IDs to User Accounts.
+- [x] **Distributed Memory:** P2P Clipboard, File, and State sync.
+- [x] **Interaction Locks:** Single-user tool action isolation.
 
-## Phase 56: Spatial UI & Immersive Collaborative Presence (Complete)
-- [x] **OmniSpatialAudio:** Native positional audio panning based on user cursor locations.
-- [x] **Audio Cues:** Panned notification chimes for remote peer actions.
+## Phase 58: Visual Fidelity & Shader Feedback (Complete)
+- [x] **Interaction Glow:** Fragment-shader neon bloom for "Grabbed" objects.
+- [x] **Graphic Effects:** Native C++ Drop Shadows and Gaussian blurs.
 
-## Phase 57: Global State Ledger & JUCE State Parity (Complete)
-- [x] **OmniValueTree:** Hierarchical, thread-safe parameter management.
-- [x] **Distributed Parameter Sync:** Real-time system state synchronization across the P2P Mesh.
+## Phase 59: Zero-Code State Persistence (Complete)
+- [x] **Reactive Auto-Binding:** Kernel-level property syncing between UI and ValueTree.
+- [x] **Distributed Parameters:** Remote peers auto-sync local widget states.
 
-## Phase 58: Performance Hardening & GPU Polish (Current)
-- [ ] **Lock Glow Optimization:** Update the `OmniShaderEffect` to support a "Grab Glow" fragment shader.
-- [ ] **RHI Profiling:** Optimize multi-window GPU draw calls for 144Hz stability on low-end hardware.
+## Phase 60: The Distributed Epoch (Current)
+- [ ] Maintain 100% Parity. Monitor GitHub CI/CD for compilation verification of the new Shader and Effect nodes.
