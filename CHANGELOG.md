@@ -1,3 +1,10 @@
+## [27.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 8):** Ported the Sensory and CI/CD systems.
+- **Go Voice Engine:** Implemented `audio/voice_engine.go`, providing native concurrent PCM capture. Leverages Go's memory-safe buffer management for high-fidelity sensory input.
+- **Go WASM CI/CD:** Engineered `.github/workflows/go_wasm.yml`. Every push to main now automatically compiles the Go-native OS kernel into a browser-ready WebAssembly binary.
+- **Shell Hardening:** Finalized the Start Menu and Taskbar layout logic in the native Go renderer.
+
 ## [26.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 7):** Ported the 3D Compositing and Temporal History systems.
