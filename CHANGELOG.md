@@ -1,3 +1,9 @@
+## [4.1.0] - 2026-04-02
+### Added
+- **The OmniNeural Context Engine:** Transformed the OS into an AI-first environment. Implemented `OmniNeuralEngine`, a C++ singleton that hooks directly into the QML SceneGraph's root window.
+- **LLM Visual DOM Streaming:** The engine natively recurses over every visible widget on the screen, extracting its class type, exact geometric bounding box (`[x,y,w,h]`), Z-index, and dynamic properties (like text values, slider values, or checkbox states). It physically serializes this into a high-speed JSON stream designed to be piped directly into local multi-modal LLMs. An AI agent can now instantly "see" the OS without brittle screen-scraping.
+- **Voice-to-Action OS Hook:** Added `OmniNeuralEngine::executeAction(targetId, action)`. An external LLM can now command the OS to natively synthesize and inject `QMouseEvent`s (clicks) or `QKeyEvent`s (typing) directly into the independent multi-cursor Focus Trees based solely on the `objectName` it parsed from the DOM stream.
+
 ## [4.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The OS Finalization & Cross-Platform Integrity Release:** The architecture of the OmniUI Operating System framework has reached absolute completion. The codebase is fully synchronized, documented, automated, and mathematically verified.

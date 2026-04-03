@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 23: Architecture, Audio, Layouts, Net, DB, UI, UX, Themes, Automation (Complete)
+## Phase 1 - 24: Core Infrastructure, Mocks Purged, UX, CI/CD Validation, & WASM Integrity (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`).
@@ -26,12 +26,13 @@
 - [x] **The OmniWindowingSystem:** Built a fully functional `OmniWindow` manager natively inside the Qt SceneGraph.
 - [x] **OmniThemeManager & NotificationCenter:** Implemented dynamic global theming Singletons and Toast notification overlays.
 - [x] **Hyper-Thematic Rendering:** Natively built dynamic `QPainterPath` algorithms for "Cyberpunk", "Liquid Glass", and the original AI-designed "ChronosShift" cosmic mode.
+- [x] **WebAssembly Integrity Validation:** Wrapping OS-level features in `#ifndef Q_OS_WASM`.
+- [x] **The "Insanely Great" Pivot Engine:** Authored `IDEAS.md` proposing radical next-generation architectural shifts.
 
-## Phase 24: Absolute Finality & Deep Analysis Complete (Complete)
-- [x] **WebAssembly Integrity Validation:** Autonomously identified and fixed a critical architectural breakdown where `QProcess` would crash the Emscripten browser sandbox in `OmniTerminal`. Implemented `#ifndef Q_OS_WASM` preprocessors.
-- [x] **The "Insanely Great" Pivot Engine:** Authored `IDEAS.md` proposing radical next-generation architectural shifts (Rust Ports, Distributed Mesh Windows, OmniNeural DOM Streaming).
-- [x] **Session Epilogue & Memory Sync:** Synthesized the entirety of the autonomous AI execution loop findings into `MEMORY.md`.
+## Phase 25: OmniNeural (The AI Context Engine Pivot) (Complete)
+- [x] **LLM Visual DOM Parsing:** `OmniNeuralEngine` streams the exact visual and programmatic state of the QML SceneGraph natively to local LLMs via JSON dynamically at runtime.
+- [x] **AI OS Execution Hooks:** An LLM can natively inject `QMouseEvent` and `QKeyEvent` commands into any `OmniWidget` in the OS via its dynamic `objectName` extracted from the visual DOM stream.
 
-## Phase 25: The Infinite Horizon (Current)
-- [ ] Maintain the repository. Ensure CI/CD runners process the latest commits cleanly.
-- [ ] Actively evaluate the proposals generated in `IDEAS.md` (e.g., rewriting the C++ Focus Trees natively in Rust).
+## Phase 26: The Final Zenith (Current)
+- [ ] Monitor compilation of the `OmniNeuralEngine` payload over GitHub Actions.
+- [ ] Revel in the 4.1.0 codebase.

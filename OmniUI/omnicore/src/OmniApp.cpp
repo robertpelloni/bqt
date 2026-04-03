@@ -5,12 +5,14 @@
 #include "OmniQmlRegistration.h"
 #include "OmniNativeEventFilter.h"
 #include "OmniPluginManager.h"
+#include "OmniNeuralEngine.h"
 #include <QQmlApplicationEngine>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QTouchEvent>
 #include <QDebug>
 #include <QUrl>
+#include <QQuickWindow>
 
 // Stub implementation for Juce initialization
 namespace juce {
@@ -56,6 +58,13 @@ bool OmniApplication::loadMainSource(const QString& sourcePath)
         if (!obj && url == objUrl) {
             qCritical() << "OmniUI: Failed to load QML source!" << url;
             QCoreApplication::exit(-1);
+        } else {
+            // Once the root QML Window is instantiated, bind it to the Neural Engine
+            // so an LLM can dynamically parse its DOM structure natively in C++.
+            auto* window = qobject_cast<QQuickWindow*>(obj);
+            if (window) {
+                OmniNeuralEngine::instance()->setRootItem(window->contentItem());
+            }
         }
     }, Qt::QueuedConnection);
     
@@ -98,8 +107,6 @@ bool OmniApplication::notify(QObject *receiver, QEvent *e)
 
         if (e->type() == QEvent::MouseMove) {
             manager->setDeviceHover(deviceId, receiver);
-            
-            // In dev mode, moving the physical mouse also simulates the virtual hover.
             if (manager->devMode()) {
                 manager->setDeviceHover("sim-mouse-1", receiver);
             }
@@ -112,7 +119,6 @@ bool OmniApplication::notify(QObject *receiver, QEvent *e)
     else if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
         auto *keyEvent = static_cast<QKeyEvent*>(e);
         
-        // DX Virtual Cursor Simulation
         if (manager->devMode() && e->type() == QEvent::KeyPress) {
             qreal speed = 15.0;
             if (keyEvent->key() == Qt::Key_W) manager->simulateSecondaryCursorMove(0, -speed);
@@ -120,14 +126,9 @@ bool OmniApplication::notify(QObject *receiver, QEvent *e)
             else if (keyEvent->key() == Qt::Key_A) manager->simulateSecondaryCursorMove(-speed, 0);
             else if (keyEvent->key() == Qt::Key_D) manager->simulateSecondaryCursorMove(speed, 0);
             else if (keyEvent->key() == Qt::Key_Space) {
-                // Find what widget is under the simulated cursor. 
-                // Since this is a native intercept, we can't easily run QGuiApplication::topLevelAt
-                // so we just pass the receiver that currently has normal focus for testing.
                 manager->simulateSecondaryCursorClick(receiver);
-                return true; // Consume the event
+                return true; 
             }
-            
-            // If it was WASD, consume the event so it doesn't type into text boxes.
             if (keyEvent->key() == Qt::Key_W || keyEvent->key() == Qt::Key_A || 
                 keyEvent->key() == Qt::Key_S || keyEvent->key() == Qt::Key_D) {
                 return true;
