@@ -47,6 +47,8 @@
 #include "OmniClipboard.h"
 #include "OmniFileMesh.h"
 #include "OmniUndoStack.h"
+#include "OmniValueTree.h"
+#include "OmniSpatialAudio.h"
 #include "OmniParticleSystem.h"
 #include "OmniShaderEffect.h"
 #include "OmniRaymarcher.h"
@@ -66,6 +68,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniFileSystem>("OmniData", 1, 0, "FileSystem", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniFileSystem::instance(); });
     qmlRegisterSingletonType<OmniTimeMachine>("OmniData", 1, 0, "TimeMachine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniTimeMachine::instance(); });
     qmlRegisterSingletonType<OmniAssetManager>("OmniData", 1, 0, "AssetManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAssetManager::instance(); });
+    qmlRegisterSingletonType<OmniValueTree>("OmniData", 1, 0, "ValueTree", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniValueTree::instance(); });
     qmlRegisterSingletonType<OmniThemeManager>("OmniUI", 1, 0, "ThemeManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniThemeManager::instance(); });
     qmlRegisterSingletonType<OmniNotificationCenter>("OmniUI", 1, 0, "NotificationCenter", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNotificationCenter::instance(); });
     qmlRegisterSingletonType<OmniNeuralEngine>("OmniUI", 1, 0, "NeuralEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNeuralEngine::instance(); });
@@ -73,9 +76,8 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniMacroRecorder>("OmniUI", 1, 0, "MacroRecorder", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMacroRecorder::instance(); });
     qmlRegisterSingletonType<OmniUserManager>("OmniUI", 1, 0, "UserManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniUserManager::instance(); });
     qmlRegisterSingletonType<OmniVoiceMesh>("OmniNet", 1, 0, "VoiceMesh", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVoiceMesh::instance(); });
+    qmlRegisterSingletonType<OmniSpatialAudio>("OmniAudio", 1, 0, "SpatialAudio", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniSpatialAudio::instance(); });
     qmlRegisterSingletonType<OmniClipboard>("OmniUI", 1, 0, "Clipboard", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniClipboard::instance(); });
-    qmlRegisterSingletonType<OmniFileMesh>("OmniNet", 1, 0, "FileMesh", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniFileMesh::instance(); });
-    qmlRegisterSingletonType<OmniUndoStack>("OmniUI", 1, 0, "UndoStack", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniUndoStack::instance(); });
     qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });
     qmlRegisterSingletonType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMeshNode::instance(); });
 

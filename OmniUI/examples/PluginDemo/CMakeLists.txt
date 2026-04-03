@@ -52,6 +52,8 @@ add_executable(PluginDemo
     ../../omnicore/src/net/OmniFileMesh.cpp
     ../../omnicore/src/OmniUndoStack.cpp
     ../../omnicore/src/layout/OmniFlowPane.cpp
+    ../../omnicore/src/audio/dsp/OmniSpatialAudio.cpp
+    ../../omnicore/src/data/OmniValueTree.cpp
     ../../omnicore/src/gfx/OmniRhiNode.cpp
     ../../omnicore/src/widgets/OmniPlot.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp

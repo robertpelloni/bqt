@@ -2,6 +2,7 @@
 #include "OmniInputManager.h"
 #include "OmniClipboard.h"
 #include "OmniFileMesh.h"
+#include "OmniValueTree.h"
 #include <QDebug>
 
 OmniMeshNode* OmniMeshNode::instance() {
@@ -63,9 +64,12 @@ void OmniMeshNode::processPeerMessage(const QString& message) {
             OmniClipboard::instance()->receiveRemoteText(obj["content"].toString());
         }
         else if (type == "file_sync") {
-            // --- GLOBAL FILE SYNC ---
             QByteArray data = QByteArray::fromBase64(obj["content"].toString().toUtf8());
             OmniFileMesh::instance()->receiveRemoteFile(obj["path"].toString(), data);
+        }
+        else if (type == "param_sync") {
+            // --- GLOBAL SYSTEM STATE SYNC ---
+            OmniValueTree::instance()->setParameter(obj["key"].toString(), obj["value"].toVariant(), false);
         }
     }
 }

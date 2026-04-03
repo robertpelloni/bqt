@@ -1,3 +1,9 @@
+## [16.0.0] - 2026-04-02
+### Added
+- **Global Collective State Sync (Phase 57):** Engineered the `OmniValueTree` singleton. This provides a hierarchical, thread-safe source of truth for the entire OS. When a value is modified locally, it is instantly broadcast across the P2P Mesh, triggering reactive updates on all remote peers.
+- **Spatial UI Audio Engine (Phase 56):** Implemented `OmniSpatialAudio`. Notification sounds and interaction clicks are now mathematically panned based on the triggering user's physical screen coordinates, providing high-fidelity audio cues for remote presence.
+- **Mesh State Hardening:** Integrated the Value Tree directly into the `OmniMeshNode` routing logic, ensuring that complex system parameters (DSP Cutoffs, Database flags) remain 100% synchronized across the distributed network.
+
 ## [15.0.0] - 2026-04-02
 ### Added
 - **Distributed File Synchronization (Phase 53):** Engineered the `OmniFileMesh` singleton. Binary assets can now be beamed across the global P2P Mesh and instantly mounted into remote peer virtual file systems.
