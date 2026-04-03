@@ -1,3 +1,9 @@
+## [14.0.0] - 2026-04-02
+### Added
+- **Distributed OS Clipboard (Phase 50):** Engineered the `OmniClipboard` singleton. Text copied on one local or remote machine is now instantly broadcasted across the P2P Mesh, allowing users to "Paste" data across physically separated hardware instances in a shared workspace.
+- **Interaction Ownership Visualization (Phase 51):** Updated the `omnicore` paint loops. When an object is "Grabbed" by a user, it now renders a pulsing highlight in that user's specific theme color, providing instant visual feedback on current control ownership.
+- **JavaFX GridPane Parity (Phase 52):** Implemented `OmniGridPane.cpp`. This native C++ container provides high-performance row/column spanning and flexible sizing, fulfilling the final major structural layout requirement for 1:1 framework parity.
+
 ## [13.0.0] - 2026-04-02
 ### Added
 - **The High-Art Visual Singularity:** Completely overhauled the `Cyberpunk`, `Liquid Glass`, and `Aetheria` rendering pipelines. Widgets now physically transform their geometry and render procedural neon trace lines, refractive glass textures, and celestial gradients natively in C++.

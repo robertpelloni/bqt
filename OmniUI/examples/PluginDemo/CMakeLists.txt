@@ -47,6 +47,8 @@ add_executable(PluginDemo
     ../../omnicore/src/net/OmniVoiceMesh.cpp
     ../../omnicore/src/widgets/OmniTreeView.cpp
     ../../omnicore/src/layout/OmniStackPane.cpp
+    ../../omnicore/src/layout/OmniGridPane.cpp
+    ../../omnicore/src/OmniClipboard.cpp
     ../../omnicore/src/gfx/OmniRhiNode.cpp
     ../../omnicore/src/widgets/OmniPlot.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp
