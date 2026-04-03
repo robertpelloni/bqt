@@ -8,6 +8,7 @@
 #include "OmniCheckBox.h"
 #include "OmniCodeEditor.h"
 #include "OmniCalendar.h"
+#include "OmniTerminal.h"
 #include "OmniFilter.h"
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
@@ -67,6 +68,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniCheckBox>("OmniUI", 1, 0, "CheckBox");
     qmlRegisterType<OmniCodeEditor>("OmniUI", 1, 0, "CodeEditor");
     qmlRegisterType<OmniCalendar>("OmniUI", 1, 0, "Calendar");
+    qmlRegisterType<OmniTerminal>("OmniUI", 1, 0, "Terminal");
     qmlRegisterType<OmniJuceView>("OmniUI", 1, 0, "JuceView");
     
     // Register Layouts

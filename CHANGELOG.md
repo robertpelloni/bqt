@@ -1,3 +1,9 @@
+## [3.2.0] - 2026-04-02
+### Added
+- **The OmniTerminal Sub-Process Engine:** Conquered Phase 20. Implemented `OmniTerminal`, a fully native C++ `QQuickPaintedItem` that physically spawns OS-level shells (`cmd.exe` on Windows, `/bin/bash` on Linux) using `QProcess`.
+- **Native OS Routing:** The terminal seamlessly integrates with our `OmniInputManager`. Multiple users can click into separate `OmniTerminal` windows simultaneously, typing distinct shell commands securely routed via the independent Focus Trees. It dynamically captures `stdout` and `stderr` asynchronously, rendering the console output natively into the GPU SceneGraph without blocking the 144Hz Main UI Thread.
+- This marks the absolute completion of the Operating System Framework. BobUI is now capable of running full sub-processes, managing file systems, persisting databases, streaming WebSockets, and running real-time audio DSP visualizers concurrently.
+
 ## [3.1.0] - 2026-04-02
 ### Added
 - **Asynchronous File System OS API:** Implemented `OmniFileSystem` using `QtConcurrent` thread pools. The QML frontend can now dynamically trigger `readFile()` and `writeFile()` payloads without blocking the 144Hz Main GUI Event loop, returning file contents via queued `fileRead` cross-thread signals. This is the ultimate missing link for true desktop app capability.
