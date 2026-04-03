@@ -6,6 +6,9 @@
 #include <QMouseEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QWindow>
 
 OmniDeveloperOverlay::OmniDeveloperOverlay(QWidget *parent)
     : QWidget(parent)
@@ -26,7 +29,7 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     
-    // 1. Process ImGui Frame (Placeholder until Vulkan RHI is ready)
+    // 1. Process ImGui Frame
     ImGui::NewFrame();
     ImGui::Render();
     
@@ -34,33 +37,44 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     
+    // Fetch Device Pixel Ratio for High-DPI (4K) screen scaling
+    qreal dpr = 1.0;
+    if (auto* screen = QGuiApplication::primaryScreen()) {
+        dpr = screen->devicePixelRatio();
+    }
+
     auto devices = OmniInputManager::instance()->devices();
     
     for (const auto& dev : devices) {
         if (dev.type == "mouse" || dev.type == "touch") {
-            // A. Draw the Virtual Cursor
+            // A. Draw the Virtual Cursor scaled
             painter.setBrush(Qt::red);
             painter.setPen(Qt::white);
             
             QPolygonF cursorPoly;
             cursorPoly << QPointF(dev.cursorPosition.x(), dev.cursorPosition.y())
-                       << QPointF(dev.cursorPosition.x() + 15, dev.cursorPosition.y() + 10)
-                       << QPointF(dev.cursorPosition.x() + 10, dev.cursorPosition.y() + 15);
+                       << QPointF(dev.cursorPosition.x() + (15 * dpr), dev.cursorPosition.y() + (10 * dpr))
+                       << QPointF(dev.cursorPosition.x() + (10 * dpr), dev.cursorPosition.y() + (15 * dpr));
             
             painter.drawPolygon(cursorPoly);
             
             // Draw the user/device name
-            painter.setPen(QColor(255, 255, 0, 200)); // Yellow, slightly transparent
-            painter.drawText(dev.cursorPosition + QPointF(20, 15), dev.name);
+            painter.setPen(QColor(255, 255, 0, 200)); 
+            
+            QFont nameFont("Consolas", 10 * dpr, QFont::Bold);
+            painter.setFont(nameFont);
+            painter.drawText(dev.cursorPosition + QPointF(20 * dpr, 15 * dpr), dev.name);
 
-            // B. QMetaObject Introspection (The Ultimate Developer UX Tool)
+            // B. QMetaObject Introspection
             QObject* hoveredObj = OmniInputManager::instance()->deviceHover(dev.id);
             if (hoveredObj) {
                 const QMetaObject* metaObj = hoveredObj->metaObject();
                 QString className = metaObj->className();
                 
                 // Draw Tooltip Background
-                QRectF tooltipRect(dev.cursorPosition.x() + 20, dev.cursorPosition.y() + 25, 250, 20);
+                QRectF tooltipRect(dev.cursorPosition.x() + (20 * dpr), 
+                                   dev.cursorPosition.y() + (25 * dpr), 
+                                   250 * dpr, 20 * dpr);
                 
                 QStringList propertiesData;
                 propertiesData << QString("Class: %1").arg(className);
@@ -78,24 +92,24 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
                     propertiesData << QString("- %1: %2").arg(propName, propValue.isEmpty() ? "<null/empty>" : propValue);
                 }
 
-                tooltipRect.setHeight(propertiesData.size() * 15 + 10);
+                tooltipRect.setHeight((propertiesData.size() * 15 * dpr) + (10 * dpr));
                 
-                painter.setBrush(QColor(0, 0, 0, 200)); // Dark semi-transparent
-                painter.setPen(QColor(0, 255, 0, 150)); // Green border
-                painter.drawRoundedRect(tooltipRect, 4, 4);
+                painter.setBrush(QColor(0, 0, 0, 200)); 
+                painter.setPen(QColor(0, 255, 0, 150)); 
+                painter.drawRoundedRect(tooltipRect, 4 * dpr, 4 * dpr);
                 
                 // Draw extracted data
                 painter.setPen(Qt::white);
-                QFont font("Consolas", 9);
-                painter.setFont(font);
+                QFont toolFont("Consolas", 9 * dpr);
+                painter.setFont(toolFont);
                 
-                int yOffset = tooltipRect.top() + 15;
+                qreal yOffset = tooltipRect.top() + (15 * dpr);
                 for (int i = 0; i < propertiesData.size(); ++i) {
                     if (i == 0) painter.setPen(QColor("#00FFFF")); // Cyan for ClassName
                     else painter.setPen(QColor("#AAAAAA")); // Gray for Properties
 
-                    painter.drawText(tooltipRect.left() + 5, yOffset, propertiesData[i]);
-                    yOffset += 15;
+                    painter.drawText(tooltipRect.left() + (5 * dpr), yOffset, propertiesData[i]);
+                    yOffset += (15 * dpr);
                 }
             }
         }
@@ -103,7 +117,9 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
 
     // Top-level diagnostic
     painter.setPen(QColor(0, 255, 0, 100));
-    painter.drawText(10, 20, "OmniUI: Developer Layer & QMetaObject Introspection Active");
+    QFont diagFont("Consolas", 10 * dpr, QFont::Bold);
+    painter.setFont(diagFont);
+    painter.drawText(10 * dpr, 20 * dpr, "OmniUI: Developer Layer & Introspection Active [Thread Safe]");
 }
 
 void OmniDeveloperOverlay::mousePressEvent(QMouseEvent *event)

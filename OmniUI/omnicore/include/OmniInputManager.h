@@ -6,6 +6,7 @@
 #include <QList>
 #include <QPointF>
 #include <QMap>
+#include <QMutex>
 
 struct OmniInputDevice {
     QString id;
@@ -45,7 +46,6 @@ public:
     bool routeKeyEvent(const QString& deviceId, QKeyEvent* event);
 
     // --- Developer Experience (DX) Simulation ---
-    // Allows a single-mouse developer to test multi-cursor logic via keyboard simulation
     Q_INVOKABLE void simulateSecondaryCursorMove(qreal dx, qreal dy);
     Q_INVOKABLE void simulateSecondaryCursorClick(QObject* receiver);
 
@@ -63,6 +63,10 @@ private:
     QMap<QString, QObject*> m_deviceFocusMap; 
     QMap<QString, QObject*> m_deviceHoverMap; 
     bool m_devMode;
+    
+    // Mutex to guarantee thread-safety when raw OS hooks and UI threads
+    // concurrently update independent focus trees.
+    mutable QMutex m_mutex;
 };
 
 #endif // OMNIINPUTMANAGER_H

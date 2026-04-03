@@ -1,7 +1,9 @@
 #include "OmniInputManager.h"
 #include <QKeyEvent>
 #include <QCoreApplication>
+#include <QMutexLocker>
 #include <QDebug>
+#include <algorithm>
 
 OmniInputManager* OmniInputManager::instance()
 {
@@ -13,18 +15,21 @@ OmniInputManager::OmniInputManager(QObject *parent)
     : QObject(parent),
       m_devMode(false)
 {
-    // Simulation: Register initial system devices
     registerDevice("sys-mouse-0", "System Mouse", "mouse");
     registerDevice("sys-kb-0", "System Keyboard", "keyboard");
     registerDevice("sys-kb-1", "Secondary User Keyboard", "keyboard");
     
-    // Virtual DX Device
     registerDevice("sim-mouse-1", "Virtual DX Mouse", "mouse");
-    updateCursor("sim-mouse-1", QPointF(400, 300)); // Start in middle of screen
+    updateCursor("sim-mouse-1", QPointF(400, 300));
 }
 
-bool OmniInputManager::devMode() const { return m_devMode; }
+bool OmniInputManager::devMode() const { 
+    QMutexLocker locker(&m_mutex);
+    return m_devMode; 
+}
+
 void OmniInputManager::setDevMode(bool enabled) {
+    QMutexLocker locker(&m_mutex);
     if (m_devMode != enabled) {
         m_devMode = enabled;
         emit devModeChanged();
@@ -32,9 +37,13 @@ void OmniInputManager::setDevMode(bool enabled) {
     }
 }
 
-QList<OmniInputDevice> OmniInputManager::devices() const { return m_devices.values(); }
+QList<OmniInputDevice> OmniInputManager::devices() const { 
+    QMutexLocker locker(&m_mutex);
+    return m_devices.values(); 
+}
 
 void OmniInputManager::registerDevice(const QString& id, const QString& name, const QString& type) {
+    QMutexLocker locker(&m_mutex);
     if (m_devices.contains(id)) return;
     OmniInputDevice dev = { id, name, type, QPointF(0, 0) };
     m_devices.insert(id, dev);
@@ -42,54 +51,76 @@ void OmniInputManager::registerDevice(const QString& id, const QString& name, co
 }
 
 void OmniInputManager::updateCursor(const QString& deviceId, const QPointF& pos) {
+    QMutexLocker locker(&m_mutex);
     if (!m_devices.contains(deviceId)) return;
     m_devices[deviceId].cursorPosition = pos;
     emit cursorUpdated(deviceId, pos);
 }
 
 void OmniInputManager::setDeviceFocus(const QString& deviceId, QObject* target) {
+    QMutexLocker locker(&m_mutex);
     if (m_deviceFocusMap.value(deviceId) == target) return;
     m_deviceFocusMap[deviceId] = target;
     emit focusChanged(deviceId, target);
 }
 
 QObject* OmniInputManager::deviceFocus(const QString& deviceId) const {
+    QMutexLocker locker(&m_mutex);
     return m_deviceFocusMap.value(deviceId, nullptr);
 }
 
 void OmniInputManager::setDeviceHover(const QString& deviceId, QObject* target) {
+    QMutexLocker locker(&m_mutex);
     if (m_deviceHoverMap.value(deviceId) == target) return;
     m_deviceHoverMap[deviceId] = target;
     emit hoverChanged(deviceId, target);
 }
 
 QObject* OmniInputManager::deviceHover(const QString& deviceId) const {
+    QMutexLocker locker(&m_mutex);
     return m_deviceHoverMap.value(deviceId, nullptr);
 }
 
 bool OmniInputManager::routeKeyEvent(const QString& deviceId, QKeyEvent* event) {
-    QObject* target = deviceFocus(deviceId);
+    QObject* target = nullptr;
+    {
+        QMutexLocker locker(&m_mutex);
+        target = m_deviceFocusMap.value(deviceId, nullptr);
+    }
+    
     if (!target) return false;
+    
+    // Dispatch outside the lock to prevent deadlocks if the UI thread takes time processing the key
     QCoreApplication::sendEvent(target, event);
     return true;
 }
 
-// --- Developer Experience (DX) Simulation ---
 void OmniInputManager::simulateSecondaryCursorMove(qreal dx, qreal dy) {
-    if (!m_devMode || !m_devices.contains("sim-mouse-1")) return;
+    QPointF current;
+    bool enabled = false;
+    {
+        QMutexLocker locker(&m_mutex);
+        enabled = m_devMode && m_devices.contains("sim-mouse-1");
+        if (enabled) current = m_devices["sim-mouse-1"].cursorPosition;
+    }
     
-    QPointF current = m_devices["sim-mouse-1"].cursorPosition;
+    if (!enabled) return;
+    
     QPointF newPos(current.x() + dx, current.y() + dy);
-    
-    // Basic bounds checking (assuming 1920x1080 screen for simulation)
-    newPos.setX(std::clamp(newPos.x(), 0.0, 1920.0));
-    newPos.setY(std::clamp(newPos.y(), 0.0, 1080.0));
+    newPos.setX(std::clamp(newPos.x(), 0.0, 3840.0)); // Assume max 4K boundary for simulation
+    newPos.setY(std::clamp(newPos.y(), 0.0, 2160.0));
     
     updateCursor("sim-mouse-1", newPos);
 }
 
 void OmniInputManager::simulateSecondaryCursorClick(QObject* receiver) {
-    if (!m_devMode) return;
+    bool enabled = false;
+    {
+        QMutexLocker locker(&m_mutex);
+        enabled = m_devMode;
+    }
+    
+    if (!enabled) return;
     setDeviceFocus("sim-mouse-1", receiver);
     qDebug() << "OmniInputManager: Virtual DX Mouse clicked and focused on" << receiver;
 }
