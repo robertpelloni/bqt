@@ -16,6 +16,8 @@
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
 #include "OmniJuceView.h"
+#include "OmniParticleSystem.h"
+#include "OmniShaderEffect.h"
 #include "OmniDockArea.h"
 #include "OmniSplitView.h"
 #include "OmniMidiHandler.h"
@@ -60,6 +62,8 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniCalendar>("OmniUI", 1, 0, "Calendar");
     qmlRegisterType<OmniTerminal>("OmniUI", 1, 0, "Terminal");
     qmlRegisterType<OmniJuceView>("OmniUI", 1, 0, "JuceView");
+    qmlRegisterType<OmniParticleSystem>("OmniGfx", 1, 0, "ParticleSystem");
+    qmlRegisterType<OmniShaderEffect>("OmniGfx", 1, 0, "ShaderEffect");
     qmlRegisterType<OmniListView>("OmniUI", 1, 0, "ListView");
     qmlRegisterType<OmniImGuiCanvas>("OmniUI", 1, 0, "ImGuiCanvas");
     
