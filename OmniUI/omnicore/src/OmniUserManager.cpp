@@ -8,7 +8,7 @@ OmniUserManager* OmniUserManager::instance() {
 }
 
 OmniUserManager::OmniUserManager(QObject *parent) : QObject(parent) {
-    createUser("Administrator", QColor("#FF0000"), false);
+    createUser("Admin", QColor("#FF0000"), false);
 }
 
 OmniUserManager::~OmniUserManager() = default;
@@ -27,38 +27,34 @@ bool OmniUserManager::assignDeviceToUser(const QString& deviceId, const QString&
     return true;
 }
 
-bool OmniUserManager::tryGrab(const QString& deviceId, QObject* target) {
+bool OmniUserManager::tryLockInteraction(const QString& deviceId, QObject* target) {
     if (!target) return false;
-    QString userId = m_deviceToUserMap.value(deviceId, "");
 
-    // If the object is already locked by someone else, deny grab
-    if (m_interactionLocks.contains(target) && m_interactionLocks[target] != userId) {
+    // If already locked by someone else, fail
+    if (m_locks.contains(target) && m_locks[target] != deviceId) {
         return false;
     }
 
-    m_interactionLocks[target] = userId;
-    emit grabAcquired(userId, target);
+    m_locks[target] = deviceId;
+    emit interactionLocked(deviceId, target);
     return true;
 }
 
-void OmniUserManager::releaseGrab(const QString& deviceId, QObject* target) {
-    if (!target) return;
-    QString userId = m_deviceToUserMap.value(deviceId, "");
-    if (m_interactionLocks.value(target) == userId) {
-        m_interactionLocks.remove(target);
-        emit grabReleased(userId, target);
+void OmniUserManager::unlockInteraction(const QString& deviceId, QObject* target) {
+    if (m_locks.value(target) == deviceId) {
+        m_locks.remove(target);
+        emit interactionUnlocked(deviceId, target);
     }
 }
 
 bool OmniUserManager::canInteract(const QString& deviceId, QObject* target) const {
     if (!target) return true;
-    QString userId = m_deviceToUserMap.value(deviceId, "");
     
-    // If no one has a grab, anyone can interact
-    if (!m_interactionLocks.contains(target)) return true;
+    // If no one owns the lock, anyone can touch
+    if (!m_locks.contains(target)) return true;
     
-    // Otherwise, only the grab owner can interact
-    return m_interactionLocks[target] == userId;
+    // Otherwise, only the owner can touch
+    return m_locks[target] == deviceId;
 }
 
 QString OmniUserManager::getUserIdForDevice(const QString& deviceId) const {

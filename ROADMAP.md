@@ -1,24 +1,21 @@
 # Project Roadmap
 
-## Phase 1 - 44: Core Framework Architecture (Complete)
+## Phase 1 - 47: Core Framework & Multi-User Architecture (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees.
 - [x] **Multi-Framework Parity:** JUCE, JavaFX, ImGui, and Qt 6/7.
-- [x] **Networking & Data:** P2P Mesh, Websockets, and SQLite.
-- [x] **AI Context:** LLM Visual DOM Parsing.
+- [x] **Distributed OS:** P2P Mesh, Websockets, and SQLite sync.
+- [x] **Multiplayer Identity:** Map hardware `DeviceId`s to `UserAccount`s.
 
-## Phase 45: The Multiplayer Identity & Interaction Kernel (Complete)
-- [x] **OmniUserManager:** Native OS-level multi-user mapping.
-- [x] **Interaction Grabbing:** Single-user tool action isolation.
-- [x] **Modal Pinning:** Exclusive input focus for individual user dialogs.
-- [x] **Contextual Event Tagging:** Tagging raw Qt events with physical hardware IDs.
+## Phase 48: High-Art Aesthetics & Thematic Rendering (Complete)
+- [x] **Cyberpunk Render Pass:** Procedural neon trace lines and angled geometry.
+- [x] **Liquid Glass Pass:** Glassmorphism and refractive border logic.
+- [x] **Aetheria Pass:** Original celestial/magical-tech theme.
 
-## Phase 46: Distributed Ledger & Global Sync (Complete)
-- [x] **P2P History Sync:** Hooked the Event Sourcing ledger to the Mesh Node.
+## Phase 49: Contextual Ownership & Interaction Hardening (Complete)
+- [x] **Interaction Locks:** Single-user tool action isolation.
+- [x] **Modal Pinning:** Exclusive hardware pinning for user-specific dialogs.
+- [x] **ImPlot Parity:** Native C++ 2D data plotting.
 
-## Phase 47: Advanced Layout Parity (Complete)
-- [x] **OmniStackPane:** JavaFX-style overlapping alignment containers.
-
-## Phase 48: Remote Clipboarding & Mesh Hardening (Current)
-- [ ] **Multiplayer Clipboard:** Synchronize copy/paste operations across the P2P OS mesh.
-- [ ] **Lock Indication:** Visual cues (colored borders) when an object is "Grabbed" by another user.
+## Phase 50: The Horizon (Current)
+- [ ] Maintain 100% Parity. Monitor GitHub CI/CD for compilation verification of the new high-art geometry nodes.

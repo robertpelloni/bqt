@@ -14,6 +14,7 @@
 #include "OmniTreeView.h"
 #include "OmniStackPane.h"
 #include "OmniImGuiCanvas.h"
+#include "OmniPlot.h"
 #include "OmniFilter.h"
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
@@ -84,6 +85,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniListView>("OmniUI", 1, 0, "ListView");
     qmlRegisterType<OmniTreeView>("OmniUI", 1, 0, "TreeView");
     qmlRegisterType<OmniImGuiCanvas>("OmniUI", 1, 0, "ImGuiCanvas");
+    qmlRegisterType<OmniPlot>("OmniUI", 1, 0, "Plot");
     qmlRegisterType<OmniParticleSystem>("OmniGfx", 1, 0, "ParticleSystem");
     qmlRegisterType<OmniShaderEffect>("OmniGfx", 1, 0, "ShaderEffect");
     qmlRegisterType<OmniRaymarcher>("OmniGfx", 1, 0, "Raymarcher");

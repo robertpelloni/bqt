@@ -12,7 +12,7 @@ class OmniWindow : public QQuickPaintedItem {
     Q_PROPERTY(bool isMaximized READ isMaximized WRITE setIsMaximized NOTIFY isMaximizedChanged)
     Q_PROPERTY(QString ownerId READ ownerId WRITE setOwnerId NOTIFY ownerIdChanged)
     Q_PROPERTY(bool collaborative READ collaborative WRITE setCollaborative NOTIFY collaborativeChanged)
-    Q_PROPERTY(bool isModal READ isModal WRITE setIsModal NOTIFY isModalChanged)
+    Q_PROPERTY(QString exclusiveDeviceId READ exclusiveDeviceId WRITE setExclusiveDeviceId NOTIFY exclusiveDeviceIdChanged)
 
 public:
     explicit OmniWindow(QQuickItem *parent = nullptr);
@@ -33,8 +33,9 @@ public:
     bool collaborative() const;
     void setCollaborative(bool collabo);
 
-    bool isModal() const;
-    void setIsModal(bool modal);
+    // If set, ONLY this physical/virtual device can interact with the window (Modal Pinning)
+    QString exclusiveDeviceId() const;
+    void setExclusiveDeviceId(const QString& deviceId);
 
     Q_INVOKABLE void close();
     Q_INVOKABLE void bringToFront();
@@ -47,21 +48,22 @@ signals:
     void isMaximizedChanged();
     void ownerIdChanged();
     void collaborativeChanged();
-    void isModalChanged();
+    void exclusiveDeviceIdChanged();
     void windowClosed();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void hoverMoveEvent(QHoverEvent *event) override;
 
 private:
-    bool m_isModal;
     QString m_title;
     QColor m_accentColor;
     bool m_isMaximized;
     QString m_ownerId;
     bool m_collaborative;
+    QString m_exclusiveDeviceId;
     
     QRectF m_preMaximizeGeometry;
     bool m_isDragging;
@@ -69,7 +71,10 @@ private:
     int m_resizeEdge; 
     QPointF m_dragStartPos;
 
-    bool checkInteractionPermission(QMouseEvent* event);
+    QRectF titleBarRect() const;
+    QRectF closeButtonRect() const;
+    
+    bool checkPermission(QMouseEvent* event);
 };
 
 #endif // OMNIWINDOW_H

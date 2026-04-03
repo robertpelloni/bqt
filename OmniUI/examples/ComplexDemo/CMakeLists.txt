@@ -48,6 +48,7 @@ add_executable(ComplexDemo
     ../../omnicore/src/widgets/OmniTreeView.cpp
     ../../omnicore/src/layout/OmniStackPane.cpp
     ../../omnicore/src/gfx/OmniRhiNode.cpp
+    ../../omnicore/src/widgets/OmniPlot.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp
     ../../omnicore/src/audio/dsp/OmniMasterClock.cpp
     ../../omnicore/src/audio/dsp/OmniMidiHandler.cpp

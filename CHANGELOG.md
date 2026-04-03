@@ -1,3 +1,10 @@
+## [13.0.0] - 2026-04-02
+### Added
+- **The High-Art Visual Singularity:** Completely overhauled the `Cyberpunk`, `Liquid Glass`, and `Aetheria` rendering pipelines. Widgets now physically transform their geometry and render procedural neon trace lines, refractive glass textures, and celestial gradients natively in C++.
+- **Single-User Action Logic (Phase 49):** Implemented Kernel-Level Interaction Locking. Even in collaborative windows, specific tool actions (like dragging a slider) are physically locked to the user who initiated them, preventing input chaos.
+- **Modal Pinning:** Exclusive hardware pinning for dialogs. Modals are now bound to the specific `DeviceId` that triggered them, allowing other users to continue background tasks unhindered.
+- **Dear ImGui Plotting Parity:** Implemented `OmniPlot.cpp`, enabling high-performance, GPU-accelerated 2D data visualization natively within the Scene Graph.
+
 ## [12.0.0] - 2026-04-02
 ### Added
 - **Contextual Multiplayer Ownership (Phase 45):** Engineered the "Interaction Grab" system. Users can now share the same window, but specific tool actions (like dragging a slider) are physically locked to the user who initiated them.
