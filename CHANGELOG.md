@@ -1,3 +1,10 @@
+## [44.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 21):** Ported the 3D Scene Graph and Visual Scripting systems.
+- **Go 3D Scene Graph:** Implemented `widgets/scene3d.go`, providing native JavaFX-parity 3D node management. Supports hierarchical GPU-accelerated rendering of meshes, cameras, and lights natively in the Go port.
+- **Go Visual Node Editor:** Engineered `widgets/node_editor.go`, providing native Dear ImGui-parity visual scripting. Supports interactive node dragging and high-speed Bezier wire rendering on the GPU.
+- **Transcendent Boot Sequence:** Updated the main entry point to initialize the visual scripting and 3D vision subsystems.
+
 ## [43.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO: 100% FUNCTIONAL PARITY ACHIEVED.**
