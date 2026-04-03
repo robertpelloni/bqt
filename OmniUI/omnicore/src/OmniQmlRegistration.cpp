@@ -34,6 +34,7 @@
 #include "OmniNeuralEngine.h"
 #include "OmniTimeMachine.h"
 #include "OmniAssetManager.h"
+#include "OmniVM.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -50,6 +51,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniNotificationCenter>("OmniUI", 1, 0, "NotificationCenter", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNotificationCenter::instance(); });
     qmlRegisterSingletonType<OmniNeuralEngine>("OmniUI", 1, 0, "NeuralEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNeuralEngine::instance(); });
     qmlRegisterSingletonType<OmniAssetManager>("OmniData", 1, 0, "AssetManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAssetManager::instance(); });
+    qmlRegisterSingletonType<OmniVM>("OmniUI", 1, 0, "VM", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVM::instance(); });
 
     // Register Actual Fully-Implemented Widgets & Views
     qmlRegisterType<OmniButton>("OmniUI", 1, 0, "Button");

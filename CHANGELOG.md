@@ -1,3 +1,9 @@
+## [6.0.0] - 2026-04-02
+### Added
+- **MAJOR MILESTONE: The OmniScript Hypervisor Release (Phase 34):** The OS has achieved Turing-completeness natively without relying on the host OS `cmd.exe` shells or WebAssembly sandbox breakages.
+- **Native C++ AST Interpreter:** Engineered `OmniVM.cpp`, a lightweight, blazing-fast Lisp/Scheme-like Abstract Syntax Tree (AST) tokenizer, parser, and evaluator directly inside the C++ kernel. 
+- **Dynamic OS Hooks:** The VM exposes `builtin_click` and `builtin_theme`. A developer (or AI) can stream `(theme "cyberpunk")` or `(click "LoginButton")` directly into the `OmniVM` via QML or WebSockets. The VM compiles the AST at runtime and dynamically injects physical `QMouseEvent`s into the Multi-Cursor Focus Trees and manipulates the Global Theme Engine natively.
+
 ## [5.1.0] - 2026-04-02
 ### Added
 - **OmniAsset Virtual File System (VFS):** Conquered Phase 33. Implemented a massive C++ memory-mapping layer. Operating systems and advanced game engines (Unity/Unreal) don't rely on raw thousands of `.png` files, they use asset bundles. I built `OmniAssetManager`, a Singleton that dynamically creates and mounts `OmniPak` binary archives containing raw file bytes and serialized byte-offsets dynamically into RAM.
