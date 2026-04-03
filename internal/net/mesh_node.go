@@ -23,61 +23,36 @@ var (
 )
 
 func GetMeshNode() *MeshNode {
-	nodeOnce.Do(func() {
-		nodeInstance = &MeshNode{
-			peers: make(map[*websocket.Conn]bool),
-		}
-	})
+	nodeOnce.Do(func() { nodeInstance = &MeshNode{peers: make(map[*websocket.Conn]bool)} })
 	return nodeInstance
 }
 
-// StartNode begins the P2P Go Server.
 func (mn *MeshNode) StartNode(port string) {
 	http.HandleFunc("/", mn.handlePeer)
-	go func() {
-		log.Printf("OmniMesh Go: Listening on %s", port)
-		if err := http.ListenAndServe(":"+port, nil); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	go http.ListenAndServe(":"+port, nil)
 }
 
 func (mn *MeshNode) handlePeer(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		return
-	}
-	mn.mu.Lock()
-	mn.peers[conn] = true
-	mn.mu.Unlock()
-
-	defer func() {
-		mn.mu.Lock()
-		delete(mn.peers, conn)
-		mn.mu.Unlock()
-		conn.Close()
-	}()
+	if err != nil { return }
+	mn.mu.Lock(); mn.peers[conn] = true; mn.mu.Unlock()
+	defer func() { mn.mu.Lock(); delete(mn.peers, conn); mn.mu.Unlock(); conn.Close() }()
 
 	for {
 		var msg map[string]interface{}
-		if err := conn.ReadJSON(&msg); err != nil {
-			break
-		}
-		// Route remote input into the Go kernel
-		if msg["type"] == "cursor" {
-			id := msg["deviceId"].(string)
-			x := msg["x"].(float64)
-			y := msg["y"].(float64)
-			kernel.GetInputManager().UpdateCursor("net-"+id, x, y)
+		if err := conn.ReadJSON(&msg); err != nil { break }
+		
+		// --- DISTRIBUTED PAYLOAD ROUTING ---
+		mType := msg["type"].(string)
+		if mType == "cursor" {
+			kernel.GetInputManager().UpdateCursor("net-"+msg["deviceId"].(string), msg["x"].(float64), msg["y"].(float64))
+		} else if mType == "clipboard_sync" {
+			kernel.GetClipboard().ReceiveRemote(msg["content"].(string))
 		}
 	}
 }
 
-// Broadcast blasts a payload to all Go P2P peers.
 func (mn *MeshNode) Broadcast(payload interface{}) {
-	mn.mu.Lock()
-	defer mn.mu.Unlock()
-	for peer := range mn.peers {
-		peer.WriteJSON(payload)
-	}
+	mn.mu.Lock(); defer mn.mu.Unlock()
+	for peer := range mn.peers { peer.WriteJSON(payload) }
 }

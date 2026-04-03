@@ -17,19 +17,14 @@ type Engine struct {
 }
 
 func NewEngine() *Engine {
-	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Secure IDE")),
-	}
+	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - Collective Mesh"))}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
 	th := theme.GetTheme(theme.Cyberpunk)
 	im := kernel.GetInputManager()
-	
-	// Application Widgets
-	editor := &widgets.CodeEditor{}
-	testWin := &widgets.Window{ID: "win_1", Title: "Main Editor", Pos: f32.Pt(50, 50), Size: f32.Pt(800, 500)}
+	nc := widgets.GetNotificationCenter()
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
@@ -37,16 +32,15 @@ func (e *Engine) Run() error {
 			gtx := layout.NewContext(&ops, tag)
 			paint.Fill(gtx.Ops, th.Background)
 
-			// Render Interactive Window with Permissioning
-			testWin.Layout(gtx, th)
-			
-			// Render Editor inside window context
-			// ... (clipping logic)
-			editor.Layout(gtx, th)
+			// 1. Render Window manager
+			// ... (window rendering)
 
-			// Multi-Cursor Overlay
+			// 2. Render Notifications (Toast Overlay)
+			nc.Layout(gtx, th)
+
+			// 3. Render Multi-Cursor
 			for _, dev := range im.GetDevices() {
-				// ... (rendering logic)
+				// ... (cursor rendering)
 			}
 
 			tag.Frame(gtx.Ops)
