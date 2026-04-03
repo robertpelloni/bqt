@@ -2,28 +2,33 @@ package main
 
 import (
 	"log"
+	"time"
 	"gioui.org/app"
-	"gioui.org/f32"
-	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
 	"github.com/robertpelloni/bobui/internal/ui"
+	"github.com/robertpelloni/bobui/internal/vm"
 )
 
 func main() {
-	log.Println("OmniUI Go: Launching Distributed Singularity...")
+	log.Println("OmniUI Go: Orchestrating AI Context Singularity...")
 
-	// 1. Setup Kernel Managers
-	im := kernel.GetInputManager()
-	im.RegisterDevice("sys-mouse-0", "Primary Admin", kernel.Mouse)
-	
-	wm := ui.GetWindowManager()
-
-	// 2. Start Distributed Mesh with Remote Window Support
+	// 1. Setup Net & Input
 	mesh := net.GetMeshNode()
-	mesh.StartNode("8081", func(id, title string, pos, size f32.Point, isRemote bool) {
-		log.Printf("OMNIMESH: Remote Peer spawned window [%s]", title)
-		wm.SpawnWindow(id, title, pos, size, true)
-	})
+	mesh.StartNode("8081", nil)
+
+	// 2. Start Neural Streamer (10 FPS for LLM Awareness)
+	ne := vm.GetNeuralEngine()
+	go func() {
+		for {
+			dom, _ := ne.CaptureDOM()
+			// Broadcast JSON DOM over local OS Server
+			mesh.Broadcast(map[string]interface{}{
+				"type": "neural_dom",
+				"payload": dom,
+			})
+			time.Sleep(100 * time.Millisecond)
+		}
+	}()
 
 	// 3. Launch GPU Engine
 	go func() {
