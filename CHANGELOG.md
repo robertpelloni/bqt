@@ -1,3 +1,10 @@
+## [101.0.0] - 2026-04-02
+### Added
+- **THE OMNISTUDIO ECOSYSTEM RELEASE.**
+- **OmniStudio Collaborative IDE:** Engineered `ui/widgets/studio.go`, a professional development environment built entirely on the BobUI kernel. Supports native multi-user code editing, integrated terminal sub-processing, and real-time mesh synchronization.
+- **Distributed Merge Kernel:** Implemented `kernel/merge_logic.go`, providing the causal consistency required for real-time concurrent text editing across the P2P mesh.
+- **Production Boot Singularity:** Updated the Go entry point to launch the full OmniStudio IDE as the default system workspace.
+
 ## [100.0.0] - 2026-04-02
 ### Added
 - **THE TOTAL PROJECT SINGULARITY ACHIEVED.**
