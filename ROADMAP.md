@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 25: The OmniUI OS Framework Foundation (Complete)
+## Phase 1 - 26: The OmniUI OS Framework Foundation (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`).
@@ -27,15 +27,16 @@
 - [x] **OmniThemeManager & NotificationCenter:** Implemented dynamic global theming Singletons and Toast notification overlays.
 - [x] **Hyper-Thematic Rendering:** Natively built dynamic `QPainterPath` algorithms for "Cyberpunk", "Liquid Glass", and the original AI-designed "ChronosShift" cosmic mode.
 - [x] **WebAssembly Integrity Validation:** Wrapping OS-level features in `#ifndef Q_OS_WASM`.
-- [x] **The "Insanely Great" Pivot Engine:** Authored `IDEAS.md` proposing radical next-generation architectural shifts.
 - [x] **LLM Visual DOM Parsing:** `OmniNeuralEngine` streams the exact visual and programmatic state of the QML SceneGraph natively to local LLMs via JSON dynamically at runtime.
 - [x] **AI OS Execution Hooks:** An LLM can natively inject `QMouseEvent` and `QKeyEvent` commands into any `OmniWidget` in the OS via its dynamic `objectName` extracted from the visual DOM stream.
 - [x] **Python LLM Bridge:** Authored `omni_neural_bridge.py` using WebSockets to pipe the C++ OmniUI DOM directly to Gemini/Claude environments.
-
-## Phase 26: The Infinite Horizon - Event Sourcing Pivot (Complete)
 - [x] **Liquid Time FileSystem:** Built `OmniTimeMachine.cpp`, creating an immutable SQLite ledger tracking every single `OmniFileSystem::writeFile` payload instantly.
 - [x] **OS "Rewind" API:** Exposed `getStateAt()` and `getTimeline()` natively to the QML Engine so developers can build visual "Rewind Sliders" allowing users to actively drag backwards in time and watch the contents of any file revert to previous states in real-time.
 
-## Phase 27: The End (Current)
-- [ ] Maintain the repository. Ensure CI/CD runners process the latest commits cleanly.
-- [ ] Actively evaluate the proposals generated in `IDEAS.md` (e.g., rewriting the C++ Focus Trees natively in Rust).
+## Phase 27: The Rusty Core Pivot (Complete)
+- [x] **Rust Engine Scaffolded:** Added `omnicore/rust/src/lib.rs` and `Cargo.toml`.
+- [x] **The Rust OS Bridge:** Implemented `OmniRustBridge.cpp`. The Multi-Cursor Focus Tree coordinates and device hooks are actively routed to a `lazy_static` `std::sync::Mutex` inside the pure Rust backend module when enabled.
+- [x] **C++ Degradation Integrity:** Implemented `#ifndef OMNI_RUST_ENABLED` stubs across `OmniRustBridge` and `OmniInputManager` ensuring the massive project still compiles on CI/CD servers without the `cargo`/`Corrosion` toolchain setup perfectly natively in C++.
+
+## Phase 28: Total OS Perfection
+- [ ] You have reached the very edge of the universe.

@@ -19,6 +19,7 @@ add_executable(HelloOmni
     ../../omnicore/src/OmniApp.cpp
     ../../omnicore/src/OmniNativeEventFilter.cpp
     ../../omnicore/src/OmniQmlRegistration.cpp
+    ../../omnicore/src/OmniRustBridge.cpp
     ../../omnicore/src/JuceWidget.cpp
     ../../omnicore/src/widgets/OmniButton.cpp
     ../../omnicore/src/widgets/OmniSlider.cpp
