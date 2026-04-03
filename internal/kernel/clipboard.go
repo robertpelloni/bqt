@@ -6,8 +6,9 @@ import (
 )
 
 type Clipboard struct {
-	mu   sync.RWMutex
-	text string
+	mu     sync.RWMutex
+	text   string
+	binary []byte // Support for images/audio
 }
 
 var (
@@ -16,36 +17,33 @@ var (
 )
 
 func GetClipboard() *Clipboard {
-	clipOnce.Do(func() {
-		clipInstance = &Clipboard{}
-	})
+	clipOnce.Do(func() { clipInstance = &Clipboard{} })
 	return clipInstance
 }
 
-// SetText updates the local clipboard and prepares for mesh broadcast.
 func (c *Clipboard) SetText(val string) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	
+	c.mu.Lock(); defer c.mu.Unlock()
 	if c.text != val {
 		c.text = val
-		log.Printf("OMNI CLIPBOARD: Local Update [%s...]", val[:qMin(len(val), 10)])
-		// Note: qMin fix handled by native Go logic...
+		log.Printf("OMNI CLIPBOARD: Local String Update.")
 	}
 }
 
-func (c *Clipboard) GetText() string {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.text
+// SetBinary handles raw byte payloads (Figma-grade assets) in Go.
+func (c *Clipboard) SetBinary(data []byte) {
+	c.mu.Lock(); defer c.mu.Unlock()
+	c.binary = data
+	log.Printf("OMNI CLIPBOARD: Local Binary Update (%d bytes).", len(data))
 }
 
-// ReceiveRemote updates the Go kernel with text from a P2P peer.
-func (c *Clipboard) ReceiveRemote(val string) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.text = val
-	log.Println("OMNI CLIPBOARD: Remote Sync Successful.")
+func (c *Clipboard) GetBinary() []byte {
+	c.mu.RLock(); defer c.mu.RUnlock()
+	return c.binary
 }
 
-func qMin(a, b int) int { if a < b { return a }; return b }
+func (c *Clipboard) ReceiveRemote(val string, data []byte) {
+	c.mu.Lock(); defer c.mu.Unlock()
+	if val != "" { c.text = val }
+	if data != nil { c.binary = data }
+	log.Println("OMNI CLIPBOARD: Remote Binary Sync Successful.")
+}
