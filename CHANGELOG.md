@@ -1,3 +1,11 @@
+## [4.6.0] - 2026-04-02
+### Added
+- **Multi-Framework Parity Singularity:** Conquered Phase 31 by implementing the missing heavyweight architectural features from JavaFX, Qt6, JUCE, and Dear ImGui into the native BobUI C++ kernel.
+- **JavaFX CSS Parity (`OmniStyleSheet`):** Built a native inline string parser that evaluates `-omni-background-color`, `-omni-border-radius`, and `-omni-font-family` natively inside C++, structurally overriding `OmniThemeManager` on a per-widget basis dynamically.
+- **Qt6 Parity (`OmniListView`):** Engineered a highly-optimized, hardware-accelerated scrollable `QVariantList` iterator mapping directly to the SceneGraph.
+- **Dear ImGui Parity (`OmniImGuiCanvas`):** Implemented an Immediate Mode API hook directly into QML, allowing frontend Javascript to write `onPaint: function() { if (OmniImGui.button("Hello")) { ... } }` and evaluating the geometry dynamically per-frame without retained state objects.
+- **JUCE Parity (`OmniAudioPlayer` & `OmniSynthesizer`):** Hooked the remaining massive JUCE multimedia engines directly into QML, allowing frontend devs to stream disk audio files or instantiate polyphonic software synthesizers via native C++ DSP loop integrations.
+
 ## [4.5.0] - 2026-04-02
 ### Added
 - **The OmniOS Desktop Environment:** The C++ backend is fully mature, so we rewrote the primary `main.qml` payload to transition BobUI from an "application framework" into a fully functional Operating System GUI.

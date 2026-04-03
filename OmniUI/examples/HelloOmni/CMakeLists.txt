@@ -26,6 +26,9 @@ add_executable(HelloOmni
     ../../omnicore/src/widgets/OmniTextField.cpp
     ../../omnicore/src/widgets/OmniTerminal.cpp
     ../../omnicore/src/widgets/OmniWindow.cpp
+    ../../omnicore/src/widgets/OmniListView.cpp
+    ../../omnicore/src/widgets/OmniImGuiCanvas.cpp
+    ../../omnicore/src/OmniStyleSheet.cpp
     ../../omnicore/src/widgets/OmniDial.cpp
     ../../omnicore/src/widgets/OmniCheckBox.cpp
     ../../omnicore/src/widgets/OmniComboBox.cpp

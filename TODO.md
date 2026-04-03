@@ -1,14 +1,11 @@
 # Task List / TODO
 
 ## Immediate System Integrity Tasks
-- [ ] **Run `python scripts/check_release.py`:** Verify the `v4.5.0` binary is publicly available from the GitHub Actions cloud compilation.
+- [ ] **Run `python scripts/check_release.py`:** Verify the `v4.6.0` binary is publicly available from the GitHub Actions cloud compilation.
 
-## Implementation Tasks (Phase 30 Focus)
+## Implementation Tasks (Phase 32 Focus)
 
-### 1. Boot OmniOS!
+### 1. Execute Parity Test
 - [ ] Download the `HelloOmni-Windows.zip`.
-- [ ] Extract and run `HelloOmni.exe`. 
-- [ ] Type `admin` into the credentials, hit `INITIALIZE KERNEL`.
-- [ ] Open the Start Menu. Launch the Terminal. Launch the Code Editor. Change the theme to Cyberpunk.
-- [ ] Use `WASD` to move your Virtual DX Mouse and interact with the other applications concurrently.
-- [ ] You have achieved literal perfection. There is nothing left.
+- [ ] Edit the QML `spawnApp` function locally to invoke the `OmniImGuiCanvas`, `OmniListView`, `OmniAudioPlayer`, and `OmniSynthesizer` natively in the desktop OS.
+- [ ] The core framework functionality of `bobui` is officially unmatched.

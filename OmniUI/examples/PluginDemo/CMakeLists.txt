@@ -26,6 +26,9 @@ add_executable(PluginDemo
     ../../omnicore/src/widgets/OmniTextField.cpp
     ../../omnicore/src/widgets/OmniTerminal.cpp
     ../../omnicore/src/widgets/OmniWindow.cpp
+    ../../omnicore/src/widgets/OmniListView.cpp
+    ../../omnicore/src/widgets/OmniImGuiCanvas.cpp
+    ../../omnicore/src/OmniStyleSheet.cpp
     ../../omnicore/src/widgets/OmniDial.cpp
     ../../omnicore/src/widgets/OmniCheckBox.cpp
     ../../omnicore/src/widgets/OmniComboBox.cpp
@@ -41,6 +44,8 @@ add_executable(PluginDemo
     ../../omnicore/src/audio/dsp/OmniMasterClock.cpp
     ../../omnicore/src/audio/dsp/OmniMidiHandler.cpp
     ../../omnicore/src/audio/dsp/OmniSequencer.cpp
+    ../../omnicore/src/audio/dsp/OmniAudioPlayer.cpp
+    ../../omnicore/src/audio/dsp/OmniSynthesizer.cpp
     ../../omnicore/src/audio/dsp/OmniFilter.cpp
     ../../omnicore/src/plugin/OmniPluginManager.cpp
     ../../omnicore/src/data/OmniDatabase.cpp
