@@ -1,3 +1,10 @@
+## [31.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 12):** Ported the High-Art Visual Themes and Interaction logic.
+- **Go Interactive Window Manager:** Implemented `widgets/window.go` utilizing Gio’s `pointer` package. Supports native, thread-safe window dragging and state management within the Go kernel.
+- **Go Hyper-Thematic Engine:** Ported the "Aetheria" and "Cyberpunk" visual render modes. Utilizes Go’s `f32` math and `clip.Path` to mathematically transform window geometry and render high-fidelity cosmic gradients.
+- **DPI-Aware Interaction:** Refined the Go pointer interceptor to support high-resolution displays with perfect sub-pixel precision.
+
 ## [30.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 11):** Ported the High-Precision Synchronization and Animation systems.

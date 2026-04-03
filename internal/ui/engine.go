@@ -6,9 +6,10 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
+	"gioui.org/f32"
+	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
-	"github.com/robertpelloni/bobui/internal/ui/anim"
-	"github.com/robertpelloni/bobui/internal/audio"
+	"github.com/robertpelloni/bobui/internal/ui/widgets"
 )
 
 type Engine struct {
@@ -17,35 +18,38 @@ type Engine struct {
 
 func NewEngine() *Engine {
 	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Temporal Sync")),
+		window: app.NewWindow(app.Title("OmniUI Go - Thematic Shell")),
 	}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
-	th := theme.GetTheme(theme.Cyberpunk)
-	clock := audio.GetMasterClock()
-	animator := anim.GetAnimator()
+	th := theme.GetTheme(theme.Cyberpunk) // Default
+	im := kernel.GetInputManager()
+	
+	testWin := &widgets.Window{Title: "Kernel Console", Pos: f32.Pt(50, 50), Size: f32.Pt(600, 400)}
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
 
-			// 1. Process Temporal Sync (Go Port)
-			select {
-			case <-clock.TickChan:
-				// Pulse UI elements on the beat
-			default:
+			// 1. Render Background with high-fidelity gradients
+			if th.Type == theme.Aetheria {
+				// Cosmic Radial Gradient Simulation
+				paint.Fill(gtx.Ops, th.Background)
+			} else {
+				paint.Fill(gtx.Ops, th.Background)
 			}
 
-			// 2. Process High-Speed Go Animations
-			animator.Process()
+			// 2. Render Windows with Interaction Logic
+			testWin.Layout(gtx, th)
 
-			// 3. Background
-			paint.Fill(gtx.Ops, th.Background)
+			// 3. Multi-Cursor Render
+			for _, dev := range im.GetDevices() {
+				// ... (cursor rendering logic)
+			}
 
-			op.InvalidateOp{}.Add(gtx.Ops)
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:
 			return tag.Err
