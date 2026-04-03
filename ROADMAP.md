@@ -1,19 +1,16 @@
 # Project Roadmap
 
-## Phase 1 - 59: Core Framework & Multi-User Architecture (Complete)
-- [x] Scaffold native C++ backend framework.
+## Phase 1 - 59: C++ Framework & Multi-User Architecture (Complete)
+- [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] **Multi-Framework Parity:** JUCE, JavaFX, ImGui, and Qt 6/7.
 - [x] **Distributed OS:** P2P Mesh, Websockets, and SQLite sync.
-- [x] **Multiplayer Identity:** Map hardware IDs to User Accounts.
-- [x] **Distributed Memory:** P2P Clipboard, File, and State sync.
 
-## Phase 60: Global State & Temporal Ledger Sync (Complete)
-- [x] **Zero-Code Persistence:** `OmniDial` and `OmniCheckBox` auto-binding to ValueTree.
-- [x] **Distributed History:** Hooked TimeMachine to MeshNode for global ledger sync.
+## Phase 60: The Great Go Migration (Current)
+- [x] **Go Kernel Core:** Ported Input, User, and State managers to pure Go.
+- [x] **Concurrency Singularity:** Leveraged Goroutines and Channels for multi-user sync.
+- [x] **Go P2P Mesh:** Implemented WebSocket server in Go for remote collaboration.
+- [ ] **Go Rendering Engine:** Port C++ `QQuickPaintedItem` widgets to a Go-native graphics library (Fyne or Gio).
+- [ ] **CGO Bridge:** Create an optional bridge to call existing C++ JUCE/Qt components from the Go kernel.
 
-## Phase 61: Advanced Layout Parity (Complete)
-- [x] **OmniTilePane:** JavaFX-style uniform grid container.
-
-## Phase 62: Remote Audio Sync & Spatial Hardening (Current)
-- [ ] **Remote Audio Stream:** Broadcast `OmniAudioPlayer` buffers across the P2P mesh for remote monitoring.
-- [ ] **Lock Indication:** Visual fragment-shader effects for remote ownership.
+## Phase 61: The Distributed Epoch (Current)
+- [ ] Maintain 100% Parity in Go. Monitor Go CI/CD for compilation verification.

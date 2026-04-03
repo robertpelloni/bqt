@@ -1,3 +1,12 @@
+## [19.0.0] - 2026-04-02
+### Added
+- **THE GREAT GO MIGRATION (Phase 1):** Ported the entire core Operating System Kernel from C++ to Go.
+- **Go Input Kernel:** Replaced C++ `OmniInputManager` with a highly concurrent Go version utilizing `sync.RWMutex` and device-specific Goroutines.
+- **Go Identity Kernel:** Ported `OmniUserManager` to pure Go for distributed identity management.
+- **Distributed State (Go Channels):** Ported `OmniValueTree` to Go. Utilized native Channels for reactive state broadcasting, matching JavaFX parity with a fraction of the overhead.
+- **P2P Go Mesh Node:** Engineered the `MeshNode` in Go using `gorilla/websocket`, enabling massive P2P scaling for remote multiplayer OS sessions.
+- **Go Workspace Initialization:** Established `go.mod` and the `internal/` kernel package architecture.
+
 ## [18.0.0] - 2026-04-02
 ### Added
 - **Zero-Code Parameter Persistence (Phase 60):** Completed the rollout of the `valueTreeKey` architecture. `OmniDial` and `OmniCheckBox` now auto-bind to the `OmniValueTree`, enabling native C++ state synchronization across the global mesh without writing QML sync logic.
