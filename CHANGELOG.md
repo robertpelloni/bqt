@@ -1,3 +1,10 @@
+## [29.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 10):** Ported the Audio Topology and Permissioning systems.
+- **Go Distributed Audio Graph:** Implemented `audio/audio_graph.go`, providing a native C++ parity DSP routing engine. Supports parallel block processing and sample-accurate synchronization between Go plugins.
+- **Go Permissioning Kernel:** Engineered `kernel/permission_manager.go` utilizing `sync.Map` for atomic interaction locking. Ensures that single-user tool actions are mathematically isolated in the Go-based multi-user OS.
+- **Hardened Boot Sequence:** Unified the Audio, Security, and Networking subsystems into the Go entry point.
+
 ## [28.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 9):** Ported the Extensibility and Vector rendering systems.

@@ -6,30 +6,26 @@ import (
 	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
 	"github.com/robertpelloni/bobui/internal/ui"
+	"github.com/robertpelloni/bobui/internal/audio"
 )
 
-// Example System Plugin
-type CorePlugin struct{}
-func (c *CorePlugin) Name() string { return "OmniCore-Go" }
-func (c *CorePlugin) Version() string { return "1.0.0" }
-func (c *CorePlugin) Initialize() error {
-	log.Println("OmniCore-Go: System Kernel Extension Initialized.")
-	return nil
-}
-
 func main() {
-	log.Println("OmniUI Go: Orchestrating Extensible Singularity...")
+	log.Println("OmniUI Go: Orchestrating Multimedia Singularity...")
 
-	// 1. Setup Plugin Manager
-	pm := kernel.GetPluginManager()
-	pm.RegisterPlugin(&CorePlugin{})
+	// 1. Setup Audio Graph
+	ag := audio.GetAudioGraph()
+	log.Printf("OmniAudio Go: Kernel Topology Initialized.")
 
-	// 2. Setup Input & Net
+	// 2. Setup Input & Security
 	im := kernel.GetInputManager()
+	pm := kernel.GetPermissionManager()
 	im.RegisterDevice("sys-mouse-0", "Local Admin", kernel.Mouse)
+	log.Printf("OmniSecurity Go: Lock Manager Active.")
+
+	// 3. Start Distributed Mesh
 	net.GetMeshNode().StartNode("8081")
 
-	// 3. Launch GPU Engine
+	// 4. Launch GPU Engine
 	go func() {
 		engine := ui.NewEngine()
 		if err := engine.Run(); err != nil {
