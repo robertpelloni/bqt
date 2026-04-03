@@ -35,6 +35,7 @@
 #include "OmniThemeManager.h"
 #include "OmniNotificationCenter.h"
 #include "OmniNeuralEngine.h"
+#include "OmniVoiceEngine.h"
 #include "OmniTimeMachine.h"
 #include "OmniAssetManager.h"
 #include "OmniVM.h"
@@ -56,6 +57,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniThemeManager>("OmniUI", 1, 0, "ThemeManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniThemeManager::instance(); });
     qmlRegisterSingletonType<OmniNotificationCenter>("OmniUI", 1, 0, "NotificationCenter", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNotificationCenter::instance(); });
     qmlRegisterSingletonType<OmniNeuralEngine>("OmniUI", 1, 0, "NeuralEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniNeuralEngine::instance(); });
+    qmlRegisterSingletonType<OmniVoiceEngine>("OmniAudio", 1, 0, "VoiceEngine", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVoiceEngine::instance(); });
     qmlRegisterSingletonType<OmniVM>("OmniUI", 1, 0, "VM", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVM::instance(); });
     qmlRegisterSingletonType<OmniMacroRecorder>("OmniUI", 1, 0, "MacroRecorder", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMacroRecorder::instance(); });
     qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });

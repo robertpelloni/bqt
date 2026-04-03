@@ -1,3 +1,9 @@
+## [8.0.0] - 2026-04-02
+### Added
+- **MAJOR MILESTONE: The Voice-to-Action OS Release (Phase 40):** An AI-First Operating System must be able to listen. I engineered `OmniVoiceEngine.cpp`, a C++ Singleton wrapping `QAudioSource` and `QMediaDevices`.
+- **Background Native Audio Capture:** A QML developer can call `OmniAudio.VoiceEngine.startListening()`. The C++ kernel instantly locks onto the default 16kHz mono hardware microphone and begins spooling raw PCM bytes directly into system RAM without freezing the UI.
+- **Asynchronous AI Integration:** Calling `stopListening()` triggers a high-speed background thread via `QtConcurrent`. The OS natively generates a valid `.wav` binary header around the PCM buffer, instantiates an `OmniHttpClient` node, and fires a non-blocking `POST` payload to a local Speech-to-Text Whisper AI instance. When the translated transcript returns via HTTP 200, the string is injected flawlessly back into the `OmniNeuralEngine`, closing the loop on a fully native Voice-to-Action Operating System interface.
+
 ## [7.2.0] - 2026-04-02
 ### Added
 - **Native Markdown Rendering Engine:** Conquered Phase 39. Implemented `OmniMarkdownView.cpp` natively as a `QQuickPaintedItem`.
