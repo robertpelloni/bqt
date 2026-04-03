@@ -1,3 +1,10 @@
+## [28.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 9):** Ported the Extensibility and Vector rendering systems.
+- **Go Plugin Kernel:** Implemented `kernel/plugin_manager.go`, providing a type-safe registry for Go-native OS extensions. Allows for dynamic module injection across WASM and Desktop targets without CGO.
+- **Go 2D Vector Engine:** Engineered `widgets/vector.go` utilizing `op/clip` for resolution-independent GPU path rendering.
+- **Extensible Boot Singularity:** Updated the main entry point to support dynamic kernel plugin registration and initialization.
+
 ## [27.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 8):** Ported the Sensory and CI/CD systems.

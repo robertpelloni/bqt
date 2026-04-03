@@ -6,15 +6,23 @@ import (
 	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
 	"github.com/robertpelloni/bobui/internal/ui"
-	"github.com/robertpelloni/bobui/internal/audio"
 )
 
-func main() {
-	log.Println("OmniUI Go: Booting Sensory Kernel...")
+// Example System Plugin
+type CorePlugin struct{}
+func (c *CorePlugin) Name() string { return "OmniCore-Go" }
+func (c *CorePlugin) Version() string { return "1.0.0" }
+func (c *CorePlugin) Initialize() error {
+	log.Println("OmniCore-Go: System Kernel Extension Initialized.")
+	return nil
+}
 
-	// 1. Setup Sensory Engine
-	voice := audio.GetVoiceEngine()
-	voice.StartListening()
+func main() {
+	log.Println("OmniUI Go: Orchestrating Extensible Singularity...")
+
+	// 1. Setup Plugin Manager
+	pm := kernel.GetPluginManager()
+	pm.RegisterPlugin(&CorePlugin{})
 
 	// 2. Setup Input & Net
 	im := kernel.GetInputManager()
