@@ -12,32 +12,40 @@ import (
 
 type Engine struct {
 	window *app.Window
+	login  *widgets.LoginView
+	rewind *widgets.RewindSlider
 }
 
 func NewEngine() *Engine {
-	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - 100% Perfect Port"))}
+	return &Engine{
+		window: app.NewWindow(app.Title("OmniUI Go - Desktop Environment")),
+		login:  &widgets.LoginView{},
+		rewind: &widgets.RewindSlider{Active: true},
+	}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
 	th := theme.GetTheme(theme.Aetheria)
-	
-	testWin := &widgets.Window{ID: "win_final", Title: "Porting Parity", Size: f32.Pt(600, 400)} // Note: f32 fix...
+	wm := GetWindowManager()
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
-			
-			// --- GO CELESTIAL BACKGROUND RENDER ---
-			if th.Type == theme.Aetheria {
-				// Deep Cosmic Gradient
-				paint.Fill(gtx.Ops, th.Background)
+			paint.Fill(gtx.Ops, th.Background)
+
+			if !e.login.Authenticated {
+				// 1. Render Secure Boot Shell
+				e.login.Layout(gtx, th)
 			} else {
-				paint.Fill(gtx.Ops, th.Background)
+				// 2. Render Secure Distributed Desktop
+				wm.Layout(gtx, th)
+				
+				// 3. Render Temporal Timeline
+				e.rewind.Layout(gtx, th)
 			}
 
-			testWin.Layout(gtx, th)
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:
 			return tag.Err

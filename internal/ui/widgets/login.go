@@ -6,7 +6,6 @@ import (
 	"gioui.org/widget/material"
 	"gioui.org/unit"
 	"gioui.org/op/paint"
-	"gioui.org/f32"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
@@ -17,14 +16,13 @@ type LoginView struct {
 }
 
 func (l *LoginView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
-	// --- GO NATIVE AETHERIA AUTH RENDER ---
-	// Celestial background and golden button logic.
-	
+	if l.Authenticated { return layout.Dimensions{} }
+
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
 
-	// Render Nebula Background simulation
+	// Render Aetheria Nebula Background
 	paint.Fill(gtx.Ops, th.Background)
 
 	return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
@@ -34,9 +32,10 @@ func (l *LoginView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions
 				lbl.Color = th.Primary // Gold
 				return lbl.Layout(gtx)
 			}),
+			layout.Rigid(layout.Spacer{Height: unit.Dp(20)}.Layout),
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				if l.LoginBtn.Clicked(gtx) { l.Authenticated = true }
-				btn := material.Button(mth, &l.LoginBtn, "INITIALIZE KERNEL")
+				btn := material.Button(mth, &l.LoginBtn, "BOOT KERNEL")
 				btn.Background = th.Primary
 				btn.Color = th.Background
 				return btn.Layout(gtx)
