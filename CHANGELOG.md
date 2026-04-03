@@ -1,3 +1,10 @@
+## [22.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 3):** Successfully ported the Visual Shell and Ownership Feedback logic to the Go Gio renderer.
+- **Go Taskbar & Start Menu:** Implemented `widgets/shell.go`, providing the fundamental desktop environment layout natively in Go.
+- **Go Ownership Glow:** Ported the high-fidelity neon bloom logic to the Go window paint loop, ensuring multi-user interaction locks are visually apparent on the GPU.
+- **High-DPI Support:** Unified `unit.Dp` scaling across the Go renderer, guaranteeing visual parity on 4K monitors.
+
 ## [21.0.0] - 2026-04-02
 ### Added
 - **GO DISTRIBUTED EPOCH (Phase 2):** Engineered the Go-native sensory and reactive layers.

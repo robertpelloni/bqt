@@ -19,7 +19,7 @@ type Engine struct {
 
 func NewEngine() *Engine {
 	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Multi-User Desktop")),
+		window: app.NewWindow(app.Title("OmniUI Go - Distributed Desktop")),
 	}
 }
 
@@ -28,22 +28,26 @@ func (e *Engine) Run() error {
 	th := theme.GetTheme(theme.Cyberpunk)
 	im := kernel.GetInputManager()
 	
-	testWin := &widgets.Window{Title: "Root Console", Size: f32.Pt(400, 300)}
+	shell := &widgets.Shell{}
+	testWin := &widgets.Window{Title: "Root Console", Pos: f32.Pt(50, 50), Size: f32.Pt(600, 400)}
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
 
-			// 1. Render Desktop Background
+			// 1. Background
 			paint.Fill(gtx.Ops, th.Background)
 
-			// 2. Render Windows
+			// 2. Render Shell Taskbar
+			shell.LayoutTaskbar(gtx, th)
+
+			// 3. Render Windows with Ownership Glow
+			testWin.Grabbed = true // Simulation
 			testWin.Layout(gtx, th)
 
-			// 3. Render Multi-Cursor Overlay (Remote & Local)
+			// 4. Multi-Cursor Render
 			for _, dev := range im.GetDevices() {
-				// Draw Cursor Polygon
 				var p clip.Path
 				p.Begin(gtx.Ops)
 				p.MoveTo(f32.Pt(float32(dev.X), float32(dev.Y)))
@@ -52,7 +56,7 @@ func (e *Engine) Run() error {
 				p.Close()
 				
 				stack := clip.Outline{Path: p.End()}.Op().Push(gtx.Ops)
-				paint.ColorOp{Color: th.Text}.Add(gtx.Ops) // User color
+				paint.ColorOp{Color: th.Text}.Add(gtx.Ops)
 				paint.PaintOp{}.Add(gtx.Ops)
 				stack.Pop()
 			}

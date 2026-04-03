@@ -1,15 +1,15 @@
 # Project Roadmap
 
-## Phase 1 - 60: Core Migration & Go Kernel (Complete)
+## Phase 1 - 60: C++ Framework Legacy (Complete)
 - [x] Ported logical Kernel (Input, User, State, Net) to pure Go.
 - [x] Implemented GPU-accelerated rendering in Go via Gio.
-- [x] Ported Hypervisor and VFS to Go.
 
-## Phase 61: Go Distributed Epoch (Complete)
+## Phase 61 - 62: Go Distributed Epoch (Complete)
 - [x] **Go VoIP Mesh:** Real-time P2P voice chat streaming in Go.
 - [x] **Go Reactive Engine:** JavaFX-style generic property bindings for state sync.
-- [x] **Advanced Go Layouts:** GPU-accelerated Grid and alignment containers.
+- [x] **Go Desktop Shell:** Native Go Taskbar and Start Menu.
+- [x] **Go Lock Visualization:** Glowing neon borders for ownership in the Gio renderer.
 
-## Phase 62: Remote Audio Sync & Go Shell (Current)
-- [ ] **Go Desktop Shell:** Port the taskbar and start menu from the `bobfilez` project concepts into the new Go UI.
-- [ ] **Lock Indication in Go:** Implement visual shader-like effects for remote ownership in the Gio renderer.
+## Phase 63: The Distributed Epoch (Current)
+- [ ] Implement Go Markdown Viewer for documentation parity.
+- [ ] Port the multi-user Undo/Redo stack to Go.
