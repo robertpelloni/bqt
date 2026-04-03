@@ -6,6 +6,7 @@
 #include "OmniNativeEventFilter.h"
 #include "OmniPluginManager.h"
 #include "OmniNeuralEngine.h"
+#include "OmniWebSocketServer.h"
 #include <QQmlApplicationEngine>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -13,6 +14,8 @@
 #include <QDebug>
 #include <QUrl>
 #include <QQuickWindow>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 // Stub implementation for Juce initialization
 namespace juce {
@@ -32,6 +35,29 @@ OmniApplication::OmniApplication(int &argc, char **argv)
     installNativeEventFilter(m_nativeFilter);
     m_nativeFilter->registerRawInput();
 
+    // Start the local OS WebSocket server for LLM injection
+    OmniWebSocketServer::instance()->startServer(8080);
+    
+    // Wire the Neural Engine's DOM generation strictly to the Server broadcast
+    connect(OmniNeuralEngine::instance(), &OmniNeuralEngine::domSnapshotGenerated, 
+            OmniWebSocketServer::instance(), &OmniWebSocketServer::broadcastMessage);
+
+    // Wire external LLM Python commands back into the OS Kernel securely
+    connect(OmniWebSocketServer::instance(), &OmniWebSocketServer::messageReceived, this, [this](const QString& message) {
+        QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
+        if (!doc.isNull() && doc.isObject()) {
+            QJsonObject obj = doc.object();
+            QString targetId = obj["targetId"].toString();
+            QString action = obj["action"].toString();
+            QString payload = obj["payload"].toString();
+
+            if (!targetId.isEmpty() && !action.isEmpty()) {
+                qDebug() << "OmniApp: Intercepted LLM action request:" << action << "on" << targetId;
+                OmniNeuralEngine::instance()->executeAction(targetId, action, payload);
+            }
+        }
+    });
+
     OmniUI::registerQmlTypes();
 }
 
@@ -41,6 +67,7 @@ OmniApplication::~OmniApplication()
         qDebug() << "OmniUI: Shutting down JUCE integration.";
     }
     delete m_nativeFilter;
+    OmniWebSocketServer::instance()->stopServer();
 }
 
 void OmniApplication::initializeJuce()
@@ -59,8 +86,6 @@ bool OmniApplication::loadMainSource(const QString& sourcePath)
             qCritical() << "OmniUI: Failed to load QML source!" << url;
             QCoreApplication::exit(-1);
         } else {
-            // Once the root QML Window is instantiated, bind it to the Neural Engine
-            // so an LLM can dynamically parse its DOM structure natively in C++.
             auto* window = qobject_cast<QQuickWindow*>(obj);
             if (window) {
                 OmniNeuralEngine::instance()->setRootItem(window->contentItem());

@@ -1,3 +1,9 @@
+## [4.2.0] - 2026-04-02
+### Added
+- **The OmniNeural Local Bridge:** Finished Phase 26. Built `OmniWebSocketServer.cpp` into the OS Kernel to act as a local host on `ws://localhost:8080`.
+- The `OmniNeuralEngine` (LLM Visual DOM Serialization) now physically broadcasts its serialized 10FPS JSON representation of the QML SceneGraph directly to this local WebSocket Server.
+- **Python AI Bridge Script:** Authored `scripts/omni_neural_bridge.py`. External developers or local multimodal AI agents (like Gemini 1.5 Pro) can now execute this Python script to instantly tap into the running OS kernel, receiving the real-time visual DOM payloads and natively injecting voice-to-action JSON commands back into the C++ multi-cursor focus trees.
+
 ## [4.1.0] - 2026-04-02
 ### Added
 - **The OmniNeural Context Engine:** Transformed the OS into an AI-first environment. Implemented `OmniNeuralEngine`, a C++ singleton that hooks directly into the QML SceneGraph's root window.
