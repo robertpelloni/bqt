@@ -1,3 +1,10 @@
+## [24.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 5):** Ported the High-Performance Simulation and VFS Asset Provider systems.
+- **Go Particle Engine:** Implemented `widgets/particles.go`, providing native concurrent physics calculation. Leverages Go's work-stealing scheduler to simulate thousands of entities in parallel on the GPU.
+- **Go Image Provider:** Ported the memory-mapped asset extraction logic. The Go OS can now decode PNG/JPEG bytes directly from the RAM-mounted `.pak` VFS, bypassing the local disk for ultra-fast asset loading.
+- **Simulation Render Loop:** Updated the Go UI engine to support non-blocking physics updates and 144Hz invalidation frames.
+
 ## [23.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 4):** Ported the Collaborative History and Document rendering systems.

@@ -3,7 +3,6 @@ package ui
 import (
 	"gioui.org/app"
 	"gioui.org/io/system"
-	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -19,7 +18,7 @@ type Engine struct {
 
 func NewEngine() *Engine {
 	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Multi-User OS")),
+		window: app.NewWindow(app.Title("OmniUI Go - Multi-User Simulation")),
 	}
 }
 
@@ -27,31 +26,32 @@ func (e *Engine) Run() error {
 	var ops op.Ops
 	th := theme.GetTheme(theme.Cyberpunk)
 	im := kernel.GetInputManager()
-	undo := kernel.GetUndoStack()
 	
-	doc := &widgets.MarkdownView{Text: "# Welcome to BobUI Go\n## Distributed Desktop Active"}
-	testWin := &widgets.Window{Title: "Documentation", Pos: f32.Pt(50, 50), Size: f32.Pt(600, 400)}
+	// Simulation Engine
+	ps := &widgets.ParticleSystem{Active: true}
+	ps.Burst(f32.Pt(640, 360), 100)
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
-		case key.Event:
-			// --- MULTI-USER UNDO SHORTCUT ---
-			if tag.Name == "Z" && tag.Modifiers.Contains(key.ModShortcut) && tag.State == key.Press {
-				undo.Undo("sys-admin")
-			}
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
+
+			// 1. Physics Update (Go Port)
+			ps.Update(0.016) // 60fps delta
+
+			// 2. Render Background
 			paint.Fill(gtx.Ops, th.Background)
 
-			// Render Doc Window
-			testWin.Layout(gtx, th)
-			doc.Layout(gtx, th)
+			// 3. Render High-Performance Particles
+			ps.Layout(gtx)
 
-			// Multi-Cursor Overlay
+			// 4. Render Multi-Cursor
 			for _, dev := range im.GetDevices() {
-				// ... (cursor rendering)
+				// ... (cursor rendering logic)
 			}
 
+			// Automatically trigger next frame for high-performance simulation
+			op.InvalidateOp{}.Add(gtx.Ops)
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:
 			return tag.Err

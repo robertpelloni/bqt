@@ -1,18 +1,19 @@
 # Project Roadmap
 
 ## Phase 1 - 60: C++ Framework Legacy (Complete)
-- [x] Ported logical Kernel (Input, User, State, Net) to pure Go.
-- [x] Implemented GPU-accelerated rendering in Go via Gio.
+- [x] Scaffold native C++ backend framework.
+- [x] Achieve 100% parity with JUCE, JavaFX, ImGui, and Qt 6/7.
 
-## Phase 61 - 62: Go Distributed Epoch (Complete)
+## Phase 61 - 63: Go Distributed Epoch (Complete)
 - [x] **Go VoIP Mesh:** Real-time P2P voice chat streaming.
 - [x] **Go Reactive Engine:** JavaFX-style generic property bindings.
 - [x] **Go Desktop Shell:** Native Go Taskbar and Start Menu.
+- [x] **Go Undo Stack:** Isolated collaborative history.
 
-## Phase 63: Go Temporal Ledger (Complete)
-- [x] **Go Undo Stack:** Isolated collaborative history per UserID.
-- [x] **Go Markdown View:** Documentation parity in the Go port.
+## Phase 64: Go Visual Singularity (Complete)
+- [x] **Go Particle Engine:** Concurrent multi-threaded physics.
+- [x] **Go Asset Provider:** Memory-mapped VFS image loading.
 
-## Phase 64: Distributed Go VFS & Release (Current)
-- [ ] Implement Go-native binary asset packaging (`.pak`).
-- [ ] Finalize Go CI/CD for cross-platform executables.
+## Phase 65: Go Hypervisor & Final Port (Current)
+- [ ] Port the full Lisp-like `OmniVM` interpreter to pure Go.
+- [ ] Implement Go-native SQLite bindings for `OmniDatabase` parity.
