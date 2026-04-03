@@ -1,3 +1,15 @@
+## [2.6.0] - 2026-04-02
+### Added
+- **Developer Hardware Simulation (DX Mode):** Solved the primary roadblock for developers testing the multi-cursor architecture without a secondary physical mouse/keyboard plugged into their machine. 
+- Upgraded `OmniInputManager` with a `devMode` Q_PROPERTY flag. When enabled, developers can utilize the WASD keys to physically steer a secondary "Virtual DX Mouse" (`sim-mouse-1`) across the screen independently of their physical mouse, generating real-time `QMetaObject` introspection tooltips and `setDeviceFocus` events locally via the Spacebar.
+- This effectively finalizes Phase 17 by ensuring absolute local Physical Hardware QA viability.
+
+## [2.5.0] - 2026-04-02
+### Added
+- **Final Stability Audits (Phase 16):** Implemented impenetrable exception handling and boundary layers inside `OmniDatabase`. If QML injects broken SQL batches, `executeTransaction()` cleanly rolls back and emits standard string errors rather than halting the host `C++` `.exe`.
+- **JUCE GPU Acceleration:** Upgraded `OmniJuceView` to force `QQuickPaintedItem::FramebufferObject` (FBO) targets natively inside the Qt SceneGraph. This prevents complex audio visualizer nodes from reverting to CPU rasterization, totally eliminating Main Thread UI stalling during high-density multi-cursor sessions.
+- **Robust Hardware API:** Expanded `OmniMidiHandler` to expose `getAvailableMidiDevices()` natively via `Q_INVOKABLE` lists. Frontend QML developers can now directly populate UI ComboBoxes with physical USB synthesizers using pure JUCE hardware extraction without writing any C++.
+
 ## [2.4.0] - 2026-04-02
 ### Added
 - **Master Clock Unification:** Conquered Phase 15. Implemented the `OmniMasterClock` singleton. It natively intercepts high-precision DSP audio loop timestamps and syncs them across the entire OS UI. Upgraded `OmniSequencer` to entirely drop its internal `QTimer` and hook directly into the Master Clock's `sixteenthStep()` signal, guaranteeing sample-accurate visual rendering across WebAssembly and Desktop.

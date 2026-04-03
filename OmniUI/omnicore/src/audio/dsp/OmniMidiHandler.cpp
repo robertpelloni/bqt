@@ -13,8 +13,6 @@ OmniMidiHandler::OmniMidiHandler(QObject *parent)
 }
 
 OmniMidiHandler::~OmniMidiHandler() {
-    // juce::MidiOutput::openDevice() returns a unique_ptr in JUCE 6/7
-    // but the mock might not. Clean up depending on implementation.
 }
 
 QString OmniMidiHandler::currentDevice() const { return m_currentDevice; }
@@ -39,6 +37,15 @@ void OmniMidiHandler::setCurrentDevice(const QString& device) {
         
         emit currentDeviceChanged();
     }
+}
+
+QStringList OmniMidiHandler::getAvailableMidiDevices() const {
+    QStringList deviceNames;
+    auto midiDevices = juce::MidiOutput::getAvailableDevices();
+    for (const auto& dev : midiDevices) {
+        deviceNames.append(QString::fromStdString(dev.name));
+    }
+    return deviceNames;
 }
 
 void OmniMidiHandler::sendNoteOn(int channel, int note, int velocity) {

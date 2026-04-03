@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <memory>
 
 // Forward declare JUCE classes
@@ -20,6 +21,9 @@ public:
 
     QString currentDevice() const;
     void setCurrentDevice(const QString& device);
+
+    // Exposes a list of connected physical hardware MIDI interfaces directly to the QML UI
+    Q_INVOKABLE QStringList getAvailableMidiDevices() const;
 
     Q_INVOKABLE void sendNoteOn(int channel, int note, int velocity);
     Q_INVOKABLE void sendNoteOff(int channel, int note);

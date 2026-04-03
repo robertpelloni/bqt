@@ -6,6 +6,7 @@
 #include <QVariantList>
 #include <QVariantMap>
 #include <QSqlDatabase>
+#include <QStringList>
 
 class OmniDatabase : public QObject {
     Q_OBJECT
@@ -25,8 +26,11 @@ public:
     // Closes the connection
     Q_INVOKABLE void disconnect();
 
-    // Executes a query and returns the results as a QML-friendly array of objects
+    // Executes a single query with dynamic bounds-checking
     Q_INVOKABLE QVariantList executeQuery(const QString& queryStr, const QVariantMap& boundValues = QVariantMap());
+
+    // Executes a massive batch of queries inside a high-speed SQLite transaction
+    Q_INVOKABLE bool executeTransaction(const QStringList& queries);
 
 signals:
     void isOpenChanged();
