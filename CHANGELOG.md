@@ -1,3 +1,9 @@
+## [3.1.0] - 2026-04-02
+### Added
+- **Asynchronous File System OS API:** Implemented `OmniFileSystem` using `QtConcurrent` thread pools. The QML frontend can now dynamically trigger `readFile()` and `writeFile()` payloads without blocking the 144Hz Main GUI Event loop, returning file contents via queued `fileRead` cross-thread signals. This is the ultimate missing link for true desktop app capability.
+- **GitHub CI/CD Monitoring Script:** Built `scripts/check_release.py`. Developers can now easily run `python scripts/check_release.py` locally to query the GitHub REST API and retrieve the direct `.exe` and `.wasm` download links instantly after the CI/CD pipeline pushes a new `VERSION.md` tag.
+- Conquered Phase 19 (Long-Term Sustained Deployment & OS API Expansion). The codebase now includes all elements required for cross-platform app file-management natively inside QML.
+
 ## [3.0.0] - 2026-04-02
 ### Added
 - **MAJOR MILESTONE: The 3.0.0 Community Beta Release:** The OmniUI OS Transcendence architecture has reached a structurally complete, production-ready milestone.

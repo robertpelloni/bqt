@@ -22,6 +22,7 @@
 #include "OmniPluginManager.h"
 #include "OmniMasterClock.h"
 #include "OmniIPC.h"
+#include "OmniFileSystem.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -48,6 +49,13 @@ void OmniUI::registerQmlTypes() {
             Q_UNUSED(engine)
             Q_UNUSED(scriptEngine)
             return OmniMasterClock::instance();
+        });
+
+    qmlRegisterSingletonType<OmniFileSystem>("OmniData", 1, 0, "FileSystem", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+            return OmniFileSystem::instance();
         });
 
     // Register Actual Fully-Implemented Widgets & Views
