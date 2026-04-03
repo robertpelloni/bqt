@@ -9,6 +9,7 @@
 #include "OmniCodeEditor.h"
 #include "OmniCalendar.h"
 #include "OmniTerminal.h"
+#include "OmniWindow.h"
 #include "OmniFilter.h"
 #include "OmniGain.h"
 #include "OmniAudioGraph.h"
@@ -72,6 +73,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniJuceView>("OmniUI", 1, 0, "JuceView");
     
     // Register Layouts
+    qmlRegisterType<OmniWindow>("OmniLayout", 1, 0, "Window");
     qmlRegisterType<OmniDockArea>("OmniLayout", 1, 0, "DockArea");
     qmlRegisterType<OmniSplitView>("OmniLayout", 1, 0, "SplitView");
 

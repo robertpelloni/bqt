@@ -24,6 +24,7 @@ add_executable(PluginDemo
     ../../omnicore/src/widgets/OmniSlider.cpp
     ../../omnicore/src/widgets/OmniTextField.cpp
     ../../omnicore/src/widgets/OmniTerminal.cpp
+    ../../omnicore/src/widgets/OmniWindow.cpp
     ../../omnicore/src/widgets/OmniDial.cpp
     ../../omnicore/src/widgets/OmniCheckBox.cpp
     ../../omnicore/src/widgets/OmniComboBox.cpp

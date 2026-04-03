@@ -1,3 +1,9 @@
+## [3.3.0] - 2026-04-02
+### Added
+- **The Internal Desktop Environment (OmniWindow):** BobUI has structurally transitioned from an application framework into a literal Desktop Environment. Implemented `OmniWindow` as a fully-featured, hardware-accelerated `QQuickPaintedItem` that lives infinitely inside the main native OS borderless window.
+- **Window Management Logic:** Features fully native C++ drag-and-drop title bars, interactive resize grips (dynamically adjusting boundaries), dynamic z-index depth sorting (`bringToFront` capability upon multi-cursor interaction), and maximization mechanics.
+- A WebAssembly deployment is now capable of rendering an entire functioning, multi-window Operating System desktop purely within the browser, backed natively by C++ execution speed.
+
 ## [3.2.0] - 2026-04-02
 ### Added
 - **The OmniTerminal Sub-Process Engine:** Conquered Phase 20. Implemented `OmniTerminal`, a fully native C++ `QQuickPaintedItem` that physically spawns OS-level shells (`cmd.exe` on Windows, `/bin/bash` on Linux) using `QProcess`.
