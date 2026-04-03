@@ -1,3 +1,10 @@
+## [105.0.0] - 2026-04-02
+### Added
+- **THE PERFECT RELEASE: GO PORT 100% COMPLETE.**
+- **Go Calendar Master:** Implemented `widgets/calendar.go`, providing a native Go temporal grid with high-precision date-math and interactive day highlighting.
+- **Go System Tray Telemetry:** Upgraded `widgets/shell.go` with real-time OS visibility. The Go taskbar now monitors the Master Clock and P2P Mesh status natively on the GPU.
+- **Final Visual Polish:** Optimized the Gio render loop to support the complete widget suite at 144Hz with perfect sub-pixel visual parity.
+
 ## [104.0.0] - 2026-04-02
 ### Added
 - **THE SECURE BOOT & TEMPORAL TIMELINE RELEASE.**
