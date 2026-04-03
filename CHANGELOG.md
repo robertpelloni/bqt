@@ -1,3 +1,10 @@
+## [40.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 21):** Ported the Authentication and Temporal systems.
+- **Go Login Shell:** Implemented `widgets/login.go`, providing a native Go state-driven authentication guard. Physically intercepts the render loop until valid kernel tokens are provided.
+- **Go Native Calendar:** Engineered `widgets/calendar.go` utilizing the Go `time` package for high-precision date-math and grid rendering.
+- **Authenticated Bootloader:** Updated the Go UI engine to support seamless transition from the Login Guard to the Secure Desktop Area.
+
 ## [39.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 20):** Ported the AI Context and Audio Synchronization systems.

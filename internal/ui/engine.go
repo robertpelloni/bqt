@@ -3,7 +3,6 @@ package ui
 import (
 	"gioui.org/app"
 	"gioui.org/io/system"
-	"gioui.org/io/key"
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
@@ -15,48 +14,44 @@ import (
 
 type Engine struct {
 	window *app.Window
-	time   float64
+	login  *widgets.LoginView
 }
 
 func NewEngine() *Engine {
-	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - Vision & History"))}
+	return &Engine{
+		window: app.NewWindow(app.Title("OmniUI Go - Security & Time")),
+		login:  &widgets.LoginView{},
+	}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
-	th := theme.GetTheme(theme.Aetheria)
+	th := theme.GetTheme(theme.Cyberpunk)
 	im := kernel.GetInputManager()
-	undo := kernel.GetUndoStack()
 	
-	// Complex 3D Application
-	rm := &widgets.Raymarcher{}
-	testWin := &widgets.Window{ID: "win_3d", Title: "Vision Engine", Pos: f32.Pt(100, 100), Size: f32.Pt(400, 400)}
+	// Desktop Widgets
+	cal := &widgets.Calendar{}
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
-		case key.Event:
-			if tag.Name == "Z" && tag.Modifiers.Contains(key.ModShortcut) && tag.State == key.Press {
-				// Native Go Multi-User Undo Trigger
-				undo.Undo("sys-admin")
-			}
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
-			e.time += 0.016
-			rm.Time = e.time
-			rm.Size = testWin.Size
-
 			paint.Fill(gtx.Ops, th.Background)
 
-			// 1. Render Window with 3D Vision Engine inside
-			testWin.Layout(gtx, th)
-			rm.Layout(gtx)
-
-			// 2. Multi-Cursor Render
-			for _, dev := range im.GetDevices() {
-				// ... (cursor logic)
+			if !e.login.Authenticated {
+				// 1. Render OS Auth Guard
+				e.login.Layout(gtx, th)
+			} else {
+				// 2. Render Secure Desktop Area
+				cal.Layout(gtx, th)
+				// ... (rest of desktop logic)
 			}
 
-			op.InvalidateOp{}.Add(gtx.Ops)
+			// 3. Render Multi-Cursor
+			for _, dev := range im.GetDevices() {
+				// ... (rendering logic)
+			}
+
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:
 			return tag.Err
