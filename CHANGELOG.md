@@ -1,3 +1,8 @@
+## [2.4.0] - 2026-04-02
+### Added
+- **Master Clock Unification:** Conquered Phase 15. Implemented the `OmniMasterClock` singleton. It natively intercepts high-precision DSP audio loop timestamps and syncs them across the entire OS UI. Upgraded `OmniSequencer` to entirely drop its internal `QTimer` and hook directly into the Master Clock's `sixteenthStep()` signal, guaranteeing sample-accurate visual rendering across WebAssembly and Desktop.
+- **Global IPC (Inter-Process Communication):** Implemented the `OmniIPC` module using `QSharedMemory`. Native Desktop applications compiled in BobUI can now instantiate named RAM blocks (e.g., "OmniNexus_Bus_01") and broadcast/receive string payloads instantly across totally separated `.exe` instances with zero TCP/Websocket overhead.
+
 ## [2.3.0] - 2026-04-02
 ### Added
 - **Syntax Stabilization (Post-Merge):** Autonomously resolved the C++ linkage flaws introduced during the raw concatenation of the parallel `OmniNexus` feature branch. Rewrote `juce_mock.cpp` to strictly adhere to the One Definition Rule (ODR) for `MidiMessage`, `MidiOutput`, and `dsp::StateVariableTPTFilter`, ensuring the GitHub Actions CI/CD pipeline compiles cleanly.

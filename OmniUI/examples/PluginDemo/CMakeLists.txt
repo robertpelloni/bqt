@@ -33,7 +33,11 @@ add_executable(PluginDemo
     ../../omnicore/src/layout/OmniSplitView.cpp
     ../../omnicore/src/net/OmniHttpClient.cpp
     ../../omnicore/src/net/OmniWebSocket.cpp
+    ../../omnicore/src/net/OmniIPC.cpp
     ../../omnicore/src/audio/dsp/OmniGain.cpp
+    ../../omnicore/src/audio/dsp/OmniMasterClock.cpp
+    ../../omnicore/src/audio/dsp/OmniMidiHandler.cpp
+    ../../omnicore/src/audio/dsp/OmniSequencer.cpp
     ../../omnicore/src/audio/dsp/OmniFilter.cpp
     ../../omnicore/src/plugin/OmniPluginManager.cpp
     ../../omnicore/src/data/OmniDatabase.cpp

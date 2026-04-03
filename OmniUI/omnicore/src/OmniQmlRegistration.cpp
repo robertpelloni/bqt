@@ -20,6 +20,8 @@
 #include "OmniHttpClient.h"
 #include "OmniWebSocket.h"
 #include "OmniPluginManager.h"
+#include "OmniMasterClock.h"
+#include "OmniIPC.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -39,6 +41,13 @@ void OmniUI::registerQmlTypes() {
             Q_UNUSED(engine)
             Q_UNUSED(scriptEngine)
             return OmniPluginManager::instance();
+        });
+        
+    qmlRegisterSingletonType<OmniMasterClock>("OmniAudio", 1, 0, "MasterClock", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+            return OmniMasterClock::instance();
         });
 
     // Register Actual Fully-Implemented Widgets & Views
@@ -67,6 +76,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniDatabase>("OmniData", 1, 0, "Database");
     qmlRegisterType<OmniHttpClient>("OmniNet", 1, 0, "HttpClient");
     qmlRegisterType<OmniWebSocket>("OmniNet", 1, 0, "WebSocket");
+    qmlRegisterType<OmniIPC>("OmniNet", 1, 0, "IPC");
     
     qDebug() << "OmniUI: QML Types Registered successfully. Full Parity Reached.";
 }
