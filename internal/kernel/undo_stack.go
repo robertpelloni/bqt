@@ -5,17 +5,18 @@ import (
 	"sync"
 )
 
-type UndoCommand struct {
+type UndoAction struct {
 	UserID      string
 	Description string
 	Undo        func()
 	Redo        func()
 }
 
-// UndoStack manages distributed collaborative history in Go.
+// UndoStack manages the Go-native multi-user history ledger.
 type UndoStack struct {
 	mu       sync.Mutex
-	commands []UndoCommand
+	actions  []UndoAction
+	redoPool []UndoAction
 }
 
 var (
@@ -26,35 +27,37 @@ var (
 func GetUndoStack() *UndoStack {
 	undoOnce.Do(func() {
 		undoInstance = &UndoStack{
-			commands: make([]UndoCommand, 0),
+			actions:  make([]UndoAction, 0),
+			redoPool: make([]UndoAction, 0),
 		}
 	})
 	return undoInstance
 }
 
-// Push adds a new action to the Go history ledger.
-func (us *UndoStack) Push(cmd UndoCommand) {
+// Push appends a new multi-user action to the Go temporal stack.
+func (us *UndoStack) Push(action UndoAction) {
 	us.mu.Lock()
 	defer us.mu.Unlock()
 	
-	us.commands = append(us.commands, cmd)
-	if len(us.commands) > 500 {
-		us.commands = us.commands[1:]
-	}
-	log.Printf("OMNI UNDO: Recorded [%s] for User [%s]", cmd.Description, cmd.UserID)
+	us.actions = append(us.actions, action)
+	// Limit history to 500 actions to prevent Go heap bloat
+	if len(us.actions) > 500 { us.actions = us.actions[1:] }
+	
+	log.Printf("OMNI UNDO: Recorded [%s] for user [%s]", action.Description, action.UserID)
 }
 
-// Undo reverts the last action for a specific user.
+// Undo specifically reverts the last action for a given UserID.
 func (us *UndoStack) Undo(userID string) {
 	us.mu.Lock()
 	defer us.mu.Unlock()
 
-	for i := len(us.commands) - 1; i >= 0; i-- {
-		if us.commands[i].UserID == userID {
-			cmd := us.commands[i]
-			cmd.Undo()
-			us.commands = append(us.commands[:i], us.commands[i+1:]...)
-			log.Printf("OMNI UNDO: Reverted [%s] for User [%s]", cmd.Description, userID)
+	for i := len(us.actions) - 1; i >= 0; i-- {
+		if us.actions[i].UserID == userID {
+			action := us.actions[i]
+			action.Undo()
+			us.redoPool = append(us.redoPool, action)
+			us.actions = append(us.actions[:i], us.actions[i+1:]...)
+			log.Printf("OMNI UNDO: Reverted action for user [%s]", userID)
 			return
 		}
 	}

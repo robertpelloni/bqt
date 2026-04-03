@@ -1,3 +1,10 @@
+## [38.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 19):** Ported the 3D Windowing and Temporal History systems.
+- **Go 3D Windowing:** Upgraded `widgets/raymarcher.go` to support dynamic sizing. Users can now spawn and resize multiple independent 3D Vision scenes within floating Go windows.
+- **Go Collaborative Undo Kernel:** Implemented `undo_stack.go`, providing isolated history buffers per `UserID`. The Go port now supports concurrent historical reverts without disrupting global mesh state.
+- **Shortcut Unification:** Integrated `Ctrl+Z` into the Go UI frame loop, natively routing temporal commands to the isolated history buffer of the active user.
+
 ## [37.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 18):** Ported the Cooperative Mesh and Networked Window systems.
