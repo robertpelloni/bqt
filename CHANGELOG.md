@@ -1,3 +1,10 @@
+## [3.5.0] - 2026-04-02
+### Added
+- **The Hyper-Thematic Engine:** Conquered the final visual frontier. The `OmniThemeManager` now natively controls pure rendering paths across the `QQuickPaintedItem` widgets, transcending basic color swapping to implement total structural geometry changes dynamically!
+- **Cyberpunk Mode:** Completely replaces the rounded rectangles of standard OS UI with angled polygons, high-contrast neon borders, and physically draws glowing trace circuit lines inside the backgrounds of `OmniWindow` containers dynamically at 144Hz.
+- **Liquid Glass Mode:** Replaces solid UI rendering with highly refractive, highly-transparent geometries (`QColor(255,255,255, 40)` opacity algorithms) natively using `QPainterPath`, simulating frosted glass panes layered above the hardware-accelerated SceneGraph.
+- **ChronosShift Mode (AI Custom Theme):** An originally invented OS theme designed by the Antigravity architecture engine. Draws deep cosmic indigo radial gradients (`#120024`) overlaid with brilliant temporal gold accents (`#FFD700`) and heavily shaded linear-gradient buttons, reflecting the high-precision Master Clock DSP paradigm.
+
 ## [3.4.0] - 2026-04-02
 ### Added
 - **Global Theme Engine:** Implemented `OmniThemeManager` as a QML Singleton. Developers can now execute `ThemeManager.setCyberpunkMode()`, `setDarkMode()`, or `setLightMode()`, instantly pushing dynamic `QColor` updates to all bound native widgets system-wide.

@@ -6,41 +6,39 @@
 
 class OmniThemeManager : public QObject {
     Q_OBJECT
-    Q_PROPERTY(QColor primaryColor READ primaryColor WRITE setPrimaryColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor secondaryColor READ secondaryColor WRITE setSecondaryColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor surfaceColor READ surfaceColor WRITE setSurfaceColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor dangerColor READ dangerColor WRITE setDangerColor NOTIFY themeChanged)
-    Q_PROPERTY(QColor successColor READ successColor WRITE setSuccessColor NOTIFY themeChanged)
+    Q_PROPERTY(Theme currentTheme READ currentTheme NOTIFY themeChanged)
+    Q_PROPERTY(QColor primaryColor READ primaryColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor secondaryColor READ secondaryColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor surfaceColor READ surfaceColor NOTIFY themeChanged)
+    Q_PROPERTY(QColor textColor READ textColor NOTIFY themeChanged)
 
 public:
+    enum Theme {
+        Dark,
+        Light,
+        Cyberpunk,
+        LiquidGlass,
+        ChronosShift // The Custom AI Theme
+    };
+    Q_ENUM(Theme)
+
     static OmniThemeManager* instance();
 
+    Theme currentTheme() const;
     QColor primaryColor() const;
-    void setPrimaryColor(const QColor& color);
-
     QColor secondaryColor() const;
-    void setSecondaryColor(const QColor& color);
-
     QColor backgroundColor() const;
-    void setBackgroundColor(const QColor& color);
-
     QColor surfaceColor() const;
-    void setSurfaceColor(const QColor& color);
-
     QColor textColor() const;
-    void setTextColor(const QColor& color);
-
     QColor dangerColor() const;
-    void setDangerColor(const QColor& color);
-
     QColor successColor() const;
-    void setSuccessColor(const QColor& color);
 
     Q_INVOKABLE void setDarkMode();
     Q_INVOKABLE void setLightMode();
     Q_INVOKABLE void setCyberpunkMode();
+    Q_INVOKABLE void setLiquidGlassMode();
+    Q_INVOKABLE void setChronosShiftMode();
 
 signals:
     void themeChanged();
@@ -49,6 +47,7 @@ private:
     explicit OmniThemeManager(QObject *parent = nullptr);
     ~OmniThemeManager() override;
 
+    Theme m_currentTheme;
     QColor m_primary;
     QColor m_secondary;
     QColor m_background;

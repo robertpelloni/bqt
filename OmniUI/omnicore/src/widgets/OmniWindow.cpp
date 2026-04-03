@@ -1,9 +1,12 @@
 #include "OmniWindow.h"
+#include "OmniThemeManager.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <QHoverEvent>
 #include <QDebug>
+#include <QLinearGradient>
+#include <QRadialGradient>
 
 OmniWindow::OmniWindow(QQuickItem *parent)
     : QQuickPaintedItem(parent),
@@ -21,6 +24,10 @@ OmniWindow::OmniWindow(QQuickItem *parent)
 
     setWidth(400);
     setHeight(300);
+    
+    connect(OmniThemeManager::instance(), &OmniThemeManager::themeChanged, this, [this]() {
+        update(); // Force repaint when global theme changes
+    });
 }
 
 OmniWindow::~OmniWindow() = default;
@@ -75,7 +82,6 @@ void OmniWindow::close() {
 
 void OmniWindow::bringToFront() {
     if (parentItem()) {
-        // Find highest Z among siblings
         qreal maxZ = 0;
         for (auto* child : parentItem()->childItems()) {
             if (child != this && child->z() > maxZ) {
@@ -103,12 +109,10 @@ void OmniWindow::hoverMoveEvent(QHoverEvent *event) {
     QPointF pos = event->position();
     int edge = 0;
     
-    if (pos.x() > width() - 10 && pos.y() > height() - 10) edge = 3; // BR
-    else if (pos.x() > width() - 5) edge = 1; // R
-    else if (pos.y() > height() - 5) edge = 2; // B
+    if (pos.x() > width() - 10 && pos.y() > height() - 10) edge = 3;
+    else if (pos.x() > width() - 5) edge = 1;
+    else if (pos.y() > height() - 5) edge = 2;
 
-    // In a full implementation, we would set the cursor shape here via QCursor
-    
     QQuickPaintedItem::hoverMoveEvent(event);
 }
 
@@ -163,34 +167,85 @@ void OmniWindow::mouseReleaseEvent(QMouseEvent *event) {
 void OmniWindow::paint(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
     QRectF rect = boundingRect();
-
-    // Drop Shadow / Border Simulation
-    painter->setPen(QColor(0, 0, 0, 150));
-    painter->drawRect(rect);
-
-    // Background
-    painter->fillRect(rect.adjusted(1, 1, -1, -1), QColor("#1E1E1E"));
-
-    // Title Bar
     QRectF tBar = titleBarRect();
-    painter->fillRect(tBar, m_accentColor);
+    QRectF cBtn = closeButtonRect();
+
+    auto themeMgr = OmniThemeManager::instance();
+    auto currentTheme = themeMgr->currentTheme();
+    QColor themePrimary = themeMgr->primaryColor();
+    QColor themeSurface = themeMgr->surfaceColor();
+    QColor themeText = themeMgr->textColor();
+
+    if (currentTheme == OmniThemeManager::Cyberpunk) {
+        // Glow effect outer border
+        painter->setPen(QPen(QColor(themePrimary.red(), themePrimary.green(), themePrimary.blue(), 100), 6));
+        painter->drawRect(rect);
+        
+        // Inner Sharp border
+        painter->setPen(QPen(themePrimary, 1));
+        painter->fillRect(rect.adjusted(3, 3, -3, -3), QColor(10, 10, 15, 240));
+        
+        // Neon Trace Circuit Lines Background
+        painter->setPen(QPen(QColor(0, 240, 255, 30), 1, Qt::DashLine));
+        for (int i = 30; i < rect.height(); i += 20) {
+            painter->drawLine(5, i, rect.width() - 5, i);
+        }
+        for (int i = 20; i < rect.width(); i += 20) {
+            painter->drawLine(i, 30, i, rect.height() - 5);
+        }
+        
+        // Cyberpunk Title Bar
+        QLinearGradient grad(0, 0, rect.width(), 0);
+        grad.setColorAt(0, themePrimary);
+        grad.setColorAt(1, QColor("#00F0FF")); // Cyan fade
+        painter->fillRect(tBar.adjusted(3, 3, -3, 0), grad);
+
+    } else if (currentTheme == OmniThemeManager::LiquidGlass) {
+        // Refractive Glass Look
+        painter->setPen(QPen(QColor(255, 255, 255, 100), 1));
+        painter->setBrush(themeSurface); // Highly transparent base
+        QPainterPath glassPath;
+        glassPath.addRoundedRect(rect, 8, 8);
+        painter->drawPath(glassPath);
+        
+        // Glare/Highlight at the top edge
+        QLinearGradient glare(0, 0, 0, 40);
+        glare.setColorAt(0, QColor(255, 255, 255, 150));
+        glare.setColorAt(1, QColor(255, 255, 255, 0));
+        painter->fillRect(QRectF(1, 1, rect.width() - 2, 40), glare);
+
+        // Glass Title Bar (invisible, just borders)
+        painter->drawLine(0, 30, rect.width(), 30);
+        
+    } else if (currentTheme == OmniThemeManager::ChronosShift) {
+        // ChronosShift (AI Invented) - Master Clock Temporal Energy
+        painter->setPen(QPen(themePrimary, 2));
+        
+        QRadialGradient radial(rect.center(), rect.width());
+        radial.setColorAt(0, QColor("#2D004D")); // Core temporal purple
+        radial.setColorAt(1, QColor("#120024")); // Edge deep space
+        painter->fillRect(rect, radial);
+        
+        // Title Bar
+        painter->fillRect(tBar, themePrimary);
+        
+    } else {
+        // Classic Dark/Light Mode
+        painter->setPen(QColor(0, 0, 0, 150));
+        painter->drawRect(rect);
+        painter->fillRect(rect.adjusted(1, 1, -1, -1), themeSurface);
+        painter->fillRect(tBar, themePrimary);
+    }
     
-    // Title Text
-    painter->setPen(Qt::white);
+    // Draw Title Text
+    painter->setPen(currentTheme == OmniThemeManager::ChronosShift || currentTheme == OmniThemeManager::Light ? Qt::black : Qt::white);
     QFont font = painter->font();
     font.setBold(true);
     painter->setFont(font);
     painter->drawText(tBar.adjusted(10, 0, -30, 0), Qt::AlignLeft | Qt::AlignVCenter, m_title);
 
-    // Close Button
-    QRectF cBtn = closeButtonRect();
-    painter->fillRect(cBtn, QColor("#D32F2F")); // Red
-    painter->drawText(cBtn, Qt::AlignCenter, "X");
-
-    // Resize Grip (if not maximized)
-    if (!m_isMaximized) {
-        painter->setPen(QColor("#555555"));
-        painter->drawLine(rect.right() - 10, rect.bottom() - 2, rect.right() - 2, rect.bottom() - 10);
-        painter->drawLine(rect.right() - 6, rect.bottom() - 2, rect.right() - 2, rect.bottom() - 6);
-    }
-}
+    // Close Button (Consistent across themes for usability, styled slightly)
+    if (currentTheme == OmniThemeManager::LiquidGlass) {
+        painter->setPen(QColor(255, 255, 255, 150));
+        painter->setBrush(QColor(255, 50, 50, 100)); // Transparent red
+        painter->drawRoundedRect(cBtn.adjusted(5, 5,

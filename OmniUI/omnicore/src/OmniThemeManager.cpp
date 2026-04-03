@@ -13,73 +13,71 @@ OmniThemeManager::OmniThemeManager(QObject *parent) : QObject(parent) {
 
 OmniThemeManager::~OmniThemeManager() = default;
 
+OmniThemeManager::Theme OmniThemeManager::currentTheme() const { return m_currentTheme; }
 QColor OmniThemeManager::primaryColor() const { return m_primary; }
-void OmniThemeManager::setPrimaryColor(const QColor& color) {
-    if (m_primary != color) { m_primary = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::secondaryColor() const { return m_secondary; }
-void OmniThemeManager::setSecondaryColor(const QColor& color) {
-    if (m_secondary != color) { m_secondary = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::backgroundColor() const { return m_background; }
-void OmniThemeManager::setBackgroundColor(const QColor& color) {
-    if (m_background != color) { m_background = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::surfaceColor() const { return m_surface; }
-void OmniThemeManager::setSurfaceColor(const QColor& color) {
-    if (m_surface != color) { m_surface = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::textColor() const { return m_text; }
-void OmniThemeManager::setTextColor(const QColor& color) {
-    if (m_text != color) { m_text = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::dangerColor() const { return m_danger; }
-void OmniThemeManager::setDangerColor(const QColor& color) {
-    if (m_danger != color) { m_danger = color; emit themeChanged(); }
-}
-
 QColor OmniThemeManager::successColor() const { return m_success; }
-void OmniThemeManager::setSuccessColor(const QColor& color) {
-    if (m_success != color) { m_success = color; emit themeChanged(); }
-}
 
 void OmniThemeManager::setDarkMode() {
-    m_primary = QColor("#0078D7"); // Windows Blue
+    m_currentTheme = Dark;
+    m_primary = QColor("#0078D7");
     m_secondary = QColor("#005A9E");
-    m_background = QColor("#111111"); // Deep Dark
-    m_surface = QColor("#1E1E1E"); // Elevated Surface
+    m_background = QColor("#111111");
+    m_surface = QColor("#1E1E1E");
     m_text = QColor("#FFFFFF");
-    m_danger = QColor("#D32F2F"); // Material Red
-    m_success = QColor("#388E3C"); // Material Green
+    m_danger = QColor("#D32F2F");
+    m_success = QColor("#388E3C");
     emit themeChanged();
-    qDebug() << "OmniThemeManager: Activated Dark Mode";
 }
 
 void OmniThemeManager::setLightMode() {
+    m_currentTheme = Light;
     m_primary = QColor("#0078D7");
     m_secondary = QColor("#005A9E");
-    m_background = QColor("#F3F3F3"); // Off White
-    m_surface = QColor("#FFFFFF"); // Pure White
+    m_background = QColor("#F3F3F3");
+    m_surface = QColor("#FFFFFF");
     m_text = QColor("#000000");
     m_danger = QColor("#D32F2F");
     m_success = QColor("#388E3C");
     emit themeChanged();
-    qDebug() << "OmniThemeManager: Activated Light Mode";
 }
 
 void OmniThemeManager::setCyberpunkMode() {
+    m_currentTheme = Cyberpunk;
     m_primary = QColor("#FCEE09"); // Cyberpunk Yellow
     m_secondary = QColor("#00F0FF"); // Neon Cyan
-    m_background = QColor("#0B0B0C"); // Vantablack
-    m_surface = QColor("#1A1A1D"); // Gunmetal
+    m_background = QColor(11, 11, 12, 230); // Deep transparent Vantablack
+    m_surface = QColor(26, 26, 29, 180); // Transparent Gunmetal
     m_text = QColor("#FF003C"); // Neon Pink/Red
     m_danger = QColor("#FF0000");
     m_success = QColor("#00FF00");
     emit themeChanged();
-    qDebug() << "OmniThemeManager: Activated Cyberpunk Mode";
+}
+
+void OmniThemeManager::setLiquidGlassMode() {
+    m_currentTheme = LiquidGlass;
+    m_primary = QColor(255, 255, 255, 180); // Frosted White
+    m_secondary = QColor(200, 200, 255, 100); // Light blue tint
+    m_background = QColor(10, 20, 30, 80); // Highly transparent dark water
+    m_surface = QColor(255, 255, 255, 30); // Barely visible glass pane
+    m_text = QColor("#E0F7FA"); // Pale Cyan text
+    m_danger = QColor(255, 50, 50, 180);
+    m_success = QColor(50, 255, 150, 180);
+    emit themeChanged();
+}
+
+void OmniThemeManager::setChronosShiftMode() {
+    m_currentTheme = ChronosShift;
+    m_primary = QColor("#FFD700"); // Master Clock Gold
+    m_secondary = QColor("#B8860B"); // Dark Goldenrod
+    m_background = QColor("#120024"); // Deep Cosmic Indigo
+    m_surface = QColor("#2D004D"); // Elevated Purple
+    m_text = QColor("#FFF8DC"); // Light Goldenrod text
+    m_danger = QColor("#FF4500"); // Orange Red
+    m_success = QColor("#32CD32"); // Lime Green
+    emit themeChanged();
 }
