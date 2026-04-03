@@ -55,13 +55,12 @@ void OmniTimeMachine::commitState(const QString& absolutePath, const QString& co
         int count = getStateCount(absolutePath);
         emit stateCommitted(absolutePath, count);
         
-        // --- DISTRIBUTED SYNC ---
-        // Broadcast the new file state to all peers in the mesh
+        // --- DISTRIBUTED TEMPORAL SYNC ---
         QJsonObject obj;
         obj["type"] = "ledger_update";
         obj["path"] = absolutePath;
         obj["content"] = content;
-        // OmniMeshNode::instance()->broadcastJson(obj); // Assuming broadcastJson is accessible
+        OmniMeshNode::instance()->broadcastPayload(obj);
     }
 }
 

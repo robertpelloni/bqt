@@ -1,19 +1,19 @@
 # Project Roadmap
 
-## Phase 1 - 57: Core Framework & Multi-User Architecture (Complete)
+## Phase 1 - 59: Core Framework & Multi-User Architecture (Complete)
 - [x] Scaffold native C++ backend framework.
 - [x] **Multi-Framework Parity:** JUCE, JavaFX, ImGui, and Qt 6/7.
+- [x] **Distributed OS:** P2P Mesh, Websockets, and SQLite sync.
 - [x] **Multiplayer Identity:** Map hardware IDs to User Accounts.
 - [x] **Distributed Memory:** P2P Clipboard, File, and State sync.
-- [x] **Interaction Locks:** Single-user tool action isolation.
 
-## Phase 58: Visual Fidelity & Shader Feedback (Complete)
-- [x] **Interaction Glow:** Fragment-shader neon bloom for "Grabbed" objects.
-- [x] **Graphic Effects:** Native C++ Drop Shadows and Gaussian blurs.
+## Phase 60: Global State & Temporal Ledger Sync (Complete)
+- [x] **Zero-Code Persistence:** `OmniDial` and `OmniCheckBox` auto-binding to ValueTree.
+- [x] **Distributed History:** Hooked TimeMachine to MeshNode for global ledger sync.
 
-## Phase 59: Zero-Code State Persistence (Complete)
-- [x] **Reactive Auto-Binding:** Kernel-level property syncing between UI and ValueTree.
-- [x] **Distributed Parameters:** Remote peers auto-sync local widget states.
+## Phase 61: Advanced Layout Parity (Complete)
+- [x] **OmniTilePane:** JavaFX-style uniform grid container.
 
-## Phase 60: The Distributed Epoch (Current)
-- [ ] Maintain 100% Parity. Monitor GitHub CI/CD for compilation verification of the new Shader and Effect nodes.
+## Phase 62: Remote Audio Sync & Spatial Hardening (Current)
+- [ ] **Remote Audio Stream:** Broadcast `OmniAudioPlayer` buffers across the P2P mesh for remote monitoring.
+- [ ] **Lock Indication:** Visual fragment-shader effects for remote ownership.

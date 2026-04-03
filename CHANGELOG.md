@@ -1,3 +1,9 @@
+## [18.0.0] - 2026-04-02
+### Added
+- **Zero-Code Parameter Persistence (Phase 60):** Completed the rollout of the `valueTreeKey` architecture. `OmniDial` and `OmniCheckBox` now auto-bind to the `OmniValueTree`, enabling native C++ state synchronization across the global mesh without writing QML sync logic.
+- **Distributed "Liquid Time" (Phase 61):** Hooked the `OmniTimeMachine` ledger directly into the P2P MeshNode. File history snapshots are now broadcasted globally, allowing remote peers to experience collaborative time-travel and see the evolution of shared data in real-time.
+- **JavaFX TilePane Parity (Phase 62):** Implemented `OmniTilePane.cpp`. This native C++ container forces uniform child sizing for high-performance asset grids and plugin browsers, completing the core automated layout requirements.
+
 ## [17.0.0] - 2026-04-02
 ### Added
 - **Reactive Auto-Binding (Phase 59):** Implemented `valueTreeKey` integration for core widgets. Sliders and Buttons now auto-sync their state with the `OmniValueTree` natively in C++, enabling zero-code state persistence across the global OS mesh.

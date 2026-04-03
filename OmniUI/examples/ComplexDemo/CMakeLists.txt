@@ -52,6 +52,7 @@ add_executable(ComplexDemo
     ../../omnicore/src/net/OmniFileMesh.cpp
     ../../omnicore/src/OmniUndoStack.cpp
     ../../omnicore/src/layout/OmniFlowPane.cpp
+    ../../omnicore/src/layout/OmniTilePane.cpp
     ../../omnicore/src/audio/dsp/OmniSpatialAudio.cpp
     ../../omnicore/src/data/OmniValueTree.cpp
     ../../omnicore/src/gfx/OmniDropShadow.cpp

@@ -10,6 +10,7 @@ class OmniCheckBox : public QQuickPaintedItem {
     Q_PROPERTY(bool checked READ checked WRITE setChecked NOTIFY checkedChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QColor accentColor READ accentColor WRITE setAccentColor NOTIFY accentColorChanged)
+    Q_PROPERTY(QString valueTreeKey READ valueTreeKey WRITE setValueTreeKey NOTIFY valueTreeKeyChanged)
 
 public:
     explicit OmniCheckBox(QQuickItem *parent = nullptr);
@@ -24,12 +25,16 @@ public:
     QColor accentColor() const;
     void setAccentColor(const QColor& color);
 
+    QString valueTreeKey() const;
+    void setValueTreeKey(const QString& key);
+
     void paint(QPainter *painter) override;
 
 signals:
     void checkedChanged();
     void textChanged();
     void accentColorChanged();
+    void valueTreeKeyChanged();
     void toggled(bool checked);
 
 protected:
@@ -42,6 +47,7 @@ private:
     bool m_checked;
     QString m_text;
     QColor m_accentColor;
+    QString m_valueTreeKey;
     bool m_isHovered;
     bool m_isPressed;
 };
