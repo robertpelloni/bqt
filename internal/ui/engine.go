@@ -14,11 +14,12 @@ import (
 
 type Engine struct {
 	window *app.Window
+	time   float64
 }
 
 func NewEngine() *Engine {
 	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Multi-User Simulation")),
+		window: app.NewWindow(app.Title("OmniUI Go - 3D Vision")),
 	}
 }
 
@@ -27,30 +28,27 @@ func (e *Engine) Run() error {
 	th := theme.GetTheme(theme.Cyberpunk)
 	im := kernel.GetInputManager()
 	
-	// Simulation Engine
-	ps := &widgets.ParticleSystem{Active: true}
-	ps.Burst(f32.Pt(640, 360), 100)
+	// Vision Engines
+	rm := &widgets.Raymarcher{}
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
 		case system.FrameEvent:
 			gtx := layout.NewContext(&ops, tag)
+			e.time += 0.016
+			rm.Time = e.time
 
-			// 1. Physics Update (Go Port)
-			ps.Update(0.016) // 60fps delta
-
-			// 2. Render Background
+			// 1. Background
 			paint.Fill(gtx.Ops, th.Background)
 
-			// 3. Render High-Performance Particles
-			ps.Layout(gtx)
+			// 2. Render Parallel 3D Scene
+			rm.Layout(gtx)
 
-			// 4. Render Multi-Cursor
+			// 3. Render Multi-Cursor
 			for _, dev := range im.GetDevices() {
-				// ... (cursor rendering logic)
+				// ... (cursor logic)
 			}
 
-			// Automatically trigger next frame for high-performance simulation
 			op.InvalidateOp{}.Add(gtx.Ops)
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:

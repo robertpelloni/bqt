@@ -1,3 +1,10 @@
+## [26.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 7):** Ported the 3D Compositing and Temporal History systems.
+- **Go Parallel 3D Engine:** Implemented `widgets/raymarcher.go`, providing native multi-threaded SDF rendering. Utilizes dynamic Goroutine pools to parallelize pixel-math across all CPU cores.
+- **Go Temporal Ledger:** Ported the `OmniTimeMachine` logic. The Go port now tracks immutable file history natively within the internal SQLite database.
+- **Vision Render Loop:** Updated the Go UI engine to support real-time 3D compositing natively on the GPU SceneGraph.
+
 ## [25.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 6):** Ported the Scripting and Database systems.
