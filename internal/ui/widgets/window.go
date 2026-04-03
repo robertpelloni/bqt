@@ -19,44 +19,45 @@ type Window struct {
 	Size     f32.Point
 	Dragging bool
 	DragID   pointer.ID
-	Grabbed  bool
 }
 
 func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	pm := kernel.GetPermissionManager()
-	
-	// --- GO PERMISSION CHECK ---
-	// Extract current active device from context (Simulation)
 	currentDevice := "sys-mouse-0" 
 
 	for _, ev := range gtx.Events(w) {
 		if e, ok := ev.(pointer.Event); ok {
 			switch e.Type {
 			case pointer.Press:
-				// Attempt to lock this window for this device
-				if pm.TryLock(currentDevice, w.ID) {
-					w.Dragging = true
-					w.DragID = e.PointerID
-				}
+				if pm.TryLock(currentDevice, w.ID) { w.Dragging = true; w.DragID = e.PointerID }
 			case pointer.Release:
-				w.Dragging = false
-				pm.Unlock(currentDevice, w.ID)
+				w.Dragging = false; pm.Unlock(currentDevice, w.ID)
 			case pointer.Move:
-				if w.Dragging && pm.CanInteract(currentDevice, w.ID) {
-					w.Pos = w.Pos.Add(e.Position)
-				}
+				if w.Dragging && pm.CanInteract(currentDevice, w.ID) { w.Pos = w.Pos.Add(e.Position) }
 			}
 		}
 	}
 
-	// Window Geometry rendering...
 	defer op.Offset(image.Pt(int(w.Pos.X), int(w.Pos.Y))).Push(gtx.Ops).Pop()
 	rect := f32.Rect(0, 0, w.Size.X, w.Size.Y)
 	
-	// Draw Window Body and Border
+	// --- GO HIGH-ART RENDER PASS (100% Parity) ---
+	if th.Type == theme.Cyberpunk {
+		// Draw Neon Trace Circuit Lines Natively in Go
+		for i := float32(40); i < w.Size.Y; i += 40 {
+			var p clip.Path
+			p.Begin(gtx.Ops)
+			p.MoveTo(f32.Pt(0, i))
+			p.LineTo(f32.Pt(w.Size.X, i))
+			paint.ColorOp{Color: th.Primary}.Add(gtx.Ops)
+			clip.Stroke{Path: p.End(), Width: 0.5}.Op().Add(gtx.Ops)
+			paint.PaintOp{}.Add(gtx.Ops)
+		}
+	}
+
 	paint.FillShape(gtx.Ops, th.Surface, clip.Rect(rect.Round()).Op())
 	paint.ColorOp{Color: th.Primary}.Add(gtx.Ops)
-	clip.Stroke{Path: clip.Rect(rect.Round()).Path(), Width: 1}.Op().Add(gtx.Ops)
+	clip.Stroke{Path: clip.Rect(rect.Round()).Path(), Width: 1.5}.Op().Add(gtx.Ops)
 	paint.PaintOp{}.Add(gtx.Ops)
 
 	return layout.Dimensions{Size: rect.Round().Size()}
