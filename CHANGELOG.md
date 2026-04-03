@@ -1,3 +1,9 @@
+## [7.2.0] - 2026-04-02
+### Added
+- **Native Markdown Rendering Engine:** Conquered Phase 39. Implemented `OmniMarkdownView.cpp` natively as a `QQuickPaintedItem`.
+- Bypassed heavy `QTextDocument` or WebEngine integrations entirely to preserve strict WebAssembly compilation compatibility.
+- This component natively tokenizes raw Markdown strings (`#`, `##`, `***`, ````) and computes word-wrapping layout boundaries dynamically via `QFontMetricsF`. It intrinsically respects the `OmniThemeManager`, rendering code blocks in distinct hacker-green syntax colors and thematic backgrounds while supporting dynamic GPU-accelerated 144Hz scrolling natively on the SceneGraph.
+
 ## [7.1.0] - 2026-04-02
 ### Added
 - **JavaFX Animation Parity (`OmniAnimator`):** Conquered Phase 38. Bypassed declarative QML state machines entirely. Implemented a native C++ singleton that accepts `QObject` pointers and mathematically interpolates properties (using `EaseOutCubic` splines natively) via a 144Hz `QTimer` calculation loop. Programmatic C++ property morphing is now fully functional.

@@ -61,6 +61,7 @@ add_executable(PluginDemo
     ../../omnicore/src/gfx/OmniShaderEffect.cpp
     ../../omnicore/src/gfx/OmniParticles.cpp
     ../../omnicore/src/widgets/OmniCodeEditor.cpp
+    ../../omnicore/src/widgets/OmniMarkdownView.cpp
     ../../omnicore/src/widgets/OmniCalendar.cpp
     ../../core/src/OmniApp.cpp
     ../../core/src/JuceWidget.cpp

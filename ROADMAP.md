@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 36: Architecture, Audio, Plugins, UX, CI/CD, Rust Core, AI Context, Liquid Time, OmniOS Shell, & OmniMacro (Complete)
+## Phase 1 - 38: Architecture, Audio, Plugins, UX, CI/CD, Rust Core, AI Context, Liquid Time, OmniOS Shell, OmniMacro, P2P Mesh, Parity (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`).
@@ -48,14 +48,13 @@
 - [x] **OS Execution Sandboxing:** Replaced WebAssembly-hostile shell sub-processing with native hypervisor-level scripting hooks `(click "Button")` and `(theme "Cyberpunk")`.
 - [x] **OmniMacroRecorder:** Captured raw user interactions dynamically and synthesized them into executable `OmniScript` AST logic.
 - [x] **Autonomous Action Replay:** Fed the synthesized user scripts directly into `OmniVM.cpp` to play them back instantly without standard OS macro hacks.
-
-## Phase 37: The Distributed P2P OS Multiplayer Mesh (Complete)
 - [x] **OmniMeshNode:** Implemented native WebSocket server and client logic in C++ to allow local `omnicore` executables to broadcast their memory state globally.
-- [x] **P2P Coordinate Synchronization:** Hooked `OmniInputManager` directly to the `OmniMesh` to blast the physical hardware X/Y coordinates of `sys-mouse-0` dynamically across the internet, actively injecting remote cursors into the local QML SceneGraph in real-time.
-
-## Phase 38: OmniAnimator & ImGui Docking Integration (Complete)
+- [x] **P2P Coordinate Synchronization:** Hooked `OmniInputManager` directly to the `OmniMesh` to blast the physical hardware X/Y coordinates dynamically across the internet.
 - [x] **JavaFX Animations:** Implemented `OmniAnimator` to run natively interpolated property morphs outside of QML.
-- [x] **ImGui Docking:** Implemented `OmniTabBar` container to allow `OmniWindow`s to be docked onto each other into dynamic QML tab structures natively.
+- [x] **ImGui Docking:** Implemented `OmniTabBar` container to allow `OmniWindow`s to be docked.
 
-## Phase 39: Final Verification (Current)
+## Phase 39: OS Documentation Integration (Complete)
+- [x] **OmniMarkdownView:** Implemented a lightweight, robust, native Markdown parsing and SceneGraph rendering `QQuickPaintedItem` to allow developers to render documentation without Chromium WebEngine dependencies, preserving WebAssembly parity.
+
+## Phase 40: Beyond the Universe (Current)
 - [ ] Read the GitHub actions.
