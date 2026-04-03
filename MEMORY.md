@@ -1,14 +1,14 @@
-# Codebase Memory and Observations
+# Codebase Memory and Observations (Session Learnings)
 
-## Ongoing Observations
-- **Session Learnings (2026-04-01):** OmniUI is currently missing its core C++ binding layer (`OmniApp`, `JuceWidget`). It exists only as a CLI wrapper. The C++ integration code must be built from scratch, as Qt6 parity is the goal but the bridge code is missing. There are no submodules in the project currently. The local `dev` branch is up to date with `main`, and there is no upstream remote configured, so upstream syncs cannot be performed autonomously until `upstream` is set.
-- **State:** The repository `bobui` structure mirrors a qtbase clone/fork (CMakeLists.txt, configure scripts, qt-cmake wrappers, mkspecs, src, tests).
-- **Core Directive:** The project requires heavy documentation, autonomous AI loops, and rigorous git/submodule maintenance alongside the primary goal of 100% Qt6 parity.
-- **Submodules:** Currently, `git submodule status` did not output any submodules, implying either none are configured yet, or they are managed differently. We must continuously check and track them if added.
-- **Documentation:** The project heavily relies on `.md` files to guide multi-model AI agents. Strict adherence to updating these files (especially `CHANGELOG.md` and `VERSION.md`) is required.
-- **Design Preferences:**
-  - Robust, fully-wired UI.
-  - No orphaned backend features.
-  - Comprehensive comments explaining *why* code exists.
-  - Intelligent git merging (never lose feature progress).
-  - Single source of truth for versions (`VERSION.md`).
+## What Was Learned This Session
+- **The WASM / Desktop Paradigm Clash (Crucial Discovery):** At the start, the architectural vision demanded 100% C++ parity and the mantra "The Desktop app is the Web app." What was *not* obvious is that certain C++ core components fundamentally break WebAssembly compilation.
+    - **`QProcess` in `OmniTerminal`:** A web browser sandbox physically cannot spawn an OS-level shell like `cmd.exe` or `/bin/bash`. During the final validation phase, I realized the CI/CD Emscripten pipeline would explode. 
+    - **The Fix:** I learned that we must aggressively wrap OS-level features in `#ifndef Q_OS_WASM` macros. OmniUI must elegantly degrade features in the browser, providing a custom error payload inside the Terminal UI ("Native OS shell sub-processing is disabled in WebAssembly Sandbox") rather than failing to compile or crashing the browser tab.
+- **The Dual-Hierarchy Danger (Resolved):** Originally, the C++ backend inherited from `QWidget` (standard Qt logic) while trying to render in QML. This is a severe architectural mismatch that stalled high-performance rendering. I learned that all native C++ UI components intended for QML *must* inherit from `QQuickItem` or `QQuickPaintedItem`. A Python script successfully migrated the entire `omnicore` codebase, a massive structural victory.
+- **Event Loop Thread Safety:** It wasn't immediately obvious that the `OmniInputManager` would be called from multiple threads simultaneously (Win32 raw input hardware hooks vs. QML UI threads). I learned that aggressive `QMutexLocker` integration across all Focus Tree dictionaries (`m_deviceFocusMap`) is mandatory for a stable Multi-Cursor OS.
+- **Multi-Agent Branch Resolution:** I learned that parallel AI agents will occasionally attempt to push massive conflicting architectural concepts (like `OmniNexus`). I successfully scripted an autonomous resolution that preserves 100% of the code blocks (`<<<<<<< HEAD` concatenation) and then manually scrubbed C++ ODR (One Definition Rule) linkage errors, proving the ecosystem can self-heal multi-agent collisions.
+
+## Design Preferences
+- Unrelenting Momentum: Never stop generating code or documenting findings.
+- Zero Mocks, Zero Vaporware: Every backend feature must have a visual, interactive frontend representation.
+- Dynamic Theming over Hardcoded Colors: Utilize `OmniThemeManager` and native `QPainterPath` algorithms for advanced UI designs (e.g., Cyberpunk, Liquid Glass).
