@@ -1,3 +1,10 @@
+## [4.5.0] - 2026-04-02
+### Added
+- **The OmniOS Desktop Environment:** The C++ backend is fully mature, so we rewrote the primary `main.qml` payload to transition BobUI from an "application framework" into a fully functional Operating System GUI.
+- **Boot Sequence & Shell:** Features a stylized OS-level login screen that initializes the `OmniDatabase` and `OmniTimeMachine` ledgers upon authentication.
+- **Dynamic Application Launcher:** Implemented a full Taskbar, Start Menu, and dynamic window manager. The user can click "Terminal" or "Code Editor" and the OS dynamically injects the C++ `OmniTerminal` and `OmniCodeEditor` components into floating `OmniWindow` containers at runtime, utilizing `Qt.createQmlObject` to bypass static compilation restrictions.
+- You can now literally boot the `.exe` or WASM package and experience a complete, multi-window, multi-cursor, themed desktop environment immediately.
+
 ## [4.4.0] - 2026-04-02
 ### Added
 - **The "Rusty Core" Architecture (Phase 28):** Executed the final radical pivot from `IDEAS.md`. Engineered the bridge to port the most critical layer of the OS (The Multi-Cursor Focus Trees and Device Management) entirely into Rust.

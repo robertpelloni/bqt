@@ -1,6 +1,6 @@
 # Project Roadmap
 
-## Phase 1 - 26: The OmniUI OS Framework Foundation (Complete)
+## Phase 1 - 28: Architecture, Audio, Plugins, UX, CI/CD, Rust Core, AI Context, Liquid Time (Complete)
 - [x] Scaffold native C++ backend framework (`QQuickPaintedItem` base).
 - [x] Establish `OmniInputManager` with independent focus trees (`DeviceId -> Focused Widget`).
 - [x] Intercept hardware events natively (`RegisterRawInputDevices`).
@@ -31,12 +31,12 @@
 - [x] **AI OS Execution Hooks:** An LLM can natively inject `QMouseEvent` and `QKeyEvent` commands into any `OmniWidget` in the OS via its dynamic `objectName` extracted from the visual DOM stream.
 - [x] **Python LLM Bridge:** Authored `omni_neural_bridge.py` using WebSockets to pipe the C++ OmniUI DOM directly to Gemini/Claude environments.
 - [x] **Liquid Time FileSystem:** Built `OmniTimeMachine.cpp`, creating an immutable SQLite ledger tracking every single `OmniFileSystem::writeFile` payload instantly.
-- [x] **OS "Rewind" API:** Exposed `getStateAt()` and `getTimeline()` natively to the QML Engine so developers can build visual "Rewind Sliders" allowing users to actively drag backwards in time and watch the contents of any file revert to previous states in real-time.
+- [x] **OS "Rewind" API:** Exposed `getStateAt()` and `getTimeline()` natively to the QML Engine so developers can build visual "Rewind Sliders".
+- [x] **The Rusty Core Pivot:** Authored `OmniRustBridge.cpp` and `omnicore/rust/src/lib.rs`.
 
-## Phase 27: The Rusty Core Pivot (Complete)
-- [x] **Rust Engine Scaffolded:** Added `omnicore/rust/src/lib.rs` and `Cargo.toml`.
-- [x] **The Rust OS Bridge:** Implemented `OmniRustBridge.cpp`. The Multi-Cursor Focus Tree coordinates and device hooks are actively routed to a `lazy_static` `std::sync::Mutex` inside the pure Rust backend module when enabled.
-- [x] **C++ Degradation Integrity:** Implemented `#ifndef OMNI_RUST_ENABLED` stubs across `OmniRustBridge` and `OmniInputManager` ensuring the massive project still compiles on CI/CD servers without the `cargo`/`Corrosion` toolchain setup perfectly natively in C++.
+## Phase 29: The Desktop Environment Shell (Complete)
+- [x] **OmniOS QML Payload:** Replaced the scattered widget testing script with a comprehensive Desktop Environment.
+- [x] **The Boot Sequence:** Designed a login shell initializing `OmniDatabase` and `OmniTimeMachine` ledgers natively.
+- [x] **The App Launcher:** A dynamic taskbar utilizing `Qt.createQmlObject` to launch `OmniCodeEditor`, `OmniTerminal`, and `OmniJuceView` in real-time inside floating `OmniWindow`s.
 
-## Phase 28: Total OS Perfection
-- [ ] You have reached the very edge of the universe.
+## Phase 30: End of Session (Current)
