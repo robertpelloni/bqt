@@ -1,3 +1,10 @@
+## [32.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 13):** Ported the IDE and Resource Protection systems.
+- **Go Native Code Editor:** Implemented `widgets/editor.go` utilizing Gio’s multi-line text engine. Provides a high-performance, GPU-accelerated coding environment natively within the Go port.
+- **Go Multi-User Lockdown:** Integrated `permission_manager.go` into the Go UI interaction loop. Windows and tools now physically verify `DeviceId` ownership, preventing input interference in collaborative multiplayer sessions.
+- **Hardened Desktop Engine:** Updated the Gio render loop to support sub-window clipping and permission-aware pointer routing.
+
 ## [31.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 12):** Ported the High-Art Visual Themes and Interaction logic.
