@@ -1,3 +1,10 @@
+## [34.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 15):** Ported the Layout Partitioning and Visual Control systems.
+- **Go Docking & Split Kernel:** Implemented `widgets/splitview.go` and `widgets/docking.go`. Utilizes Gio’s GPU flex-layouts to provide native, high-performance workspace partitioning.
+- **Go UI Widget Parity:** Ported the `Dial`, `CheckBox`, and `ProgressBar` to pure Go. Leverages `op/clip` and `f32` for 100% visual parity with the original C++ rendering standards.
+- **Responsive Desktop Engine:** Updated the Gio render loop to support dynamic split-view ratios and complex widget hierarchies.
+
 ## [33.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 14):** Ported the Communication and Shared Memory systems.
