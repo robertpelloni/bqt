@@ -1,3 +1,9 @@
+## [15.0.0] - 2026-04-02
+### Added
+- **Distributed File Synchronization (Phase 53):** Engineered the `OmniFileMesh` singleton. Binary assets can now be beamed across the global P2P Mesh and instantly mounted into remote peer virtual file systems.
+- **Multi-User Undo Stack (Phase 54):** Implemented the first-ever native C++ collaborative history engine. Actions are now filtered by `UserId`, allowing User A to undo their last mistake without interfering with User B's concurrent progress.
+- **JavaFX FlowPane Parity (Phase 55):** Implemented `OmniFlowPane.cpp`. This native C++ container provides dynamic wrapping and spacing, completing the core responsive layout requirements for modern multiplayer dashboards.
+
 ## [14.0.0] - 2026-04-02
 ### Added
 - **Distributed OS Clipboard (Phase 50):** Engineered the `OmniClipboard` singleton. Text copied on one local or remote machine is now instantly broadcasted across the P2P Mesh, allowing users to "Paste" data across physically separated hardware instances in a shared workspace.

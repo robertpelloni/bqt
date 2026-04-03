@@ -14,6 +14,7 @@
 #include "OmniTreeView.h"
 #include "OmniStackPane.h"
 #include "OmniGridPane.h"
+#include "OmniFlowPane.h"
 #include "OmniImGuiCanvas.h"
 #include "OmniPlot.h"
 #include "OmniFilter.h"
@@ -44,6 +45,8 @@
 #include "OmniUserManager.h"
 #include "OmniVoiceMesh.h"
 #include "OmniClipboard.h"
+#include "OmniFileMesh.h"
+#include "OmniUndoStack.h"
 #include "OmniParticleSystem.h"
 #include "OmniShaderEffect.h"
 #include "OmniRaymarcher.h"
@@ -71,6 +74,8 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterSingletonType<OmniUserManager>("OmniUI", 1, 0, "UserManager", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniUserManager::instance(); });
     qmlRegisterSingletonType<OmniVoiceMesh>("OmniNet", 1, 0, "VoiceMesh", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniVoiceMesh::instance(); });
     qmlRegisterSingletonType<OmniClipboard>("OmniUI", 1, 0, "Clipboard", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniClipboard::instance(); });
+    qmlRegisterSingletonType<OmniFileMesh>("OmniNet", 1, 0, "FileMesh", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniFileMesh::instance(); });
+    qmlRegisterSingletonType<OmniUndoStack>("OmniUI", 1, 0, "UndoStack", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniUndoStack::instance(); });
     qmlRegisterSingletonType<OmniAnimator>("OmniUI", 1, 0, "Animator", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniAnimator::instance(); });
     qmlRegisterSingletonType<OmniMeshNode>("OmniNet", 1, 0, "MeshNode", [](QQmlEngine *e, QJSEngine *s) -> QObject* { return OmniMeshNode::instance(); });
 
@@ -100,6 +105,7 @@ void OmniUI::registerQmlTypes() {
     qmlRegisterType<OmniSplitView>("OmniLayout", 1, 0, "SplitView");
     qmlRegisterType<OmniStackPane>("OmniLayout", 1, 0, "StackPane");
     qmlRegisterType<OmniGridPane>("OmniLayout", 1, 0, "GridPane");
+    qmlRegisterType<OmniFlowPane>("OmniLayout", 1, 0, "FlowPane");
 
     // Audio DSP & MIDI
     qmlRegisterType<OmniFilter>("OmniAudio", 1, 0, "Filter");

@@ -1,6 +1,7 @@
 #include "OmniMeshNode.h"
 #include "OmniInputManager.h"
 #include "OmniClipboard.h"
+#include "OmniFileMesh.h"
 #include <QDebug>
 
 OmniMeshNode* OmniMeshNode::instance() {
@@ -33,8 +34,7 @@ bool OmniMeshNode::startNode(int port) {
 void OmniMeshNode::stopNode() {
     m_server->close();
     for (auto* peer : m_peers) { peer->close(); peer->deleteLater(); }
-    m_peers.clear();
-    m_isConnected = false;
+    m_peers.clear(); m_isConnected = false;
 }
 
 bool OmniMeshNode::connectToPeer(const QString& urlStr) {
@@ -46,18 +46,8 @@ bool OmniMeshNode::connectToPeer(const QString& urlStr) {
     return true;
 }
 
-void OmniMeshNode::onConnectedToRemote() {
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    if (pClient) { m_peers << pClient; emit activePeersChanged(); }
-}
-
-void OmniMeshNode::onNewConnection() {
-    QWebSocket *pSocket = m_server->nextPendingConnection();
-    connect(pSocket, &QWebSocket::textMessageReceived, this, &OmniMeshNode::processPeerMessage);
-    connect(pSocket, &QWebSocket::disconnected, this, &OmniMeshNode::peerSocketDisconnected);
-    m_peers << pSocket;
-    emit activePeersChanged();
-}
+void OmniMeshNode::onConnectedToRemote() { QWebSocket *pClient = qobject_cast<QWebSocket *>(sender()); if (pClient) { m_peers << pClient; emit activePeersChanged(); } }
+void OmniMeshNode::onNewConnection() { QWebSocket *pSocket = m_server->nextPendingConnection(); connect(pSocket, &QWebSocket::textMessageReceived, this, &OmniMeshNode::processPeerMessage); connect(pSocket, &QWebSocket::disconnected, this, &OmniMeshNode::peerSocketDisconnected); m_peers << pSocket; emit activePeersChanged(); }
 
 void OmniMeshNode::processPeerMessage(const QString& message) {
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
@@ -70,31 +60,17 @@ void OmniMeshNode::processPeerMessage(const QString& message) {
             OmniInputManager::instance()->updateCursor("net-"+obj["deviceId"].toString(), QPointF(obj["x"].toDouble(), obj["y"].toDouble()));
         } 
         else if (type == "clipboard_sync") {
-            // --- GLOBAL CLIPBOARD SYNC ---
             OmniClipboard::instance()->receiveRemoteText(obj["content"].toString());
+        }
+        else if (type == "file_sync") {
+            // --- GLOBAL FILE SYNC ---
+            QByteArray data = QByteArray::fromBase64(obj["content"].toString().toUtf8());
+            OmniFileMesh::instance()->receiveRemoteFile(obj["path"].toString(), data);
         }
     }
 }
 
-void OmniMeshNode::peerSocketDisconnected() {
-    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-    if (pClient) { m_peers.removeAll(pClient); pClient->deleteLater(); emit activePeersChanged(); }
-}
-
-void OmniMeshNode::broadcastPayload(const QJsonObject& obj) {
-    if (m_peers.isEmpty()) return;
-    QString payload = QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact));
-    for (QWebSocket *pClient : std::as_const(m_peers)) { pClient->sendTextMessage(payload); }
-}
-
-void OmniMeshNode::broadcastCursor(const QString& deviceId, const QPointF& pos) {
-    if (m_peers.isEmpty() || deviceId.startsWith("net-")) return;
-    QJsonObject obj; obj["type"] = "cursor"; obj["deviceId"] = deviceId; obj["x"] = pos.x(); obj["y"] = pos.y();
-    broadcastPayload(obj);
-}
-
-void OmniMeshNode::broadcastFocus(const QString& deviceId, const QString& target) {
-    if (m_peers.isEmpty() || deviceId.startsWith("net-")) return;
-    QJsonObject obj; obj["type"] = "focus"; obj["deviceId"] = deviceId; obj["target"] = target;
-    broadcastPayload(obj);
-}
+void OmniMeshNode::peerSocketDisconnected() { QWebSocket *pClient = qobject_cast<QWebSocket *>(sender()); if (pClient) { m_peers.removeAll(pClient); pClient->deleteLater(); emit activePeersChanged(); } }
+void OmniMeshNode::broadcastPayload(const QJsonObject& obj) { if (m_peers.isEmpty()) return; QString payload = QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact)); for (QWebSocket *pClient : std::as_const(m_peers)) { pClient->sendTextMessage(payload); } }
+void OmniMeshNode::broadcastCursor(const QString& deviceId, const QPointF& pos) { if (m_peers.isEmpty() || deviceId.startsWith("net-")) return; QJsonObject obj; obj["type"] = "cursor"; obj["deviceId"] = deviceId; obj["x"] = pos.x(); obj["y"] = pos.y(); broadcastPayload(obj); }
+void OmniMeshNode::broadcastFocus(const QString& deviceId, const QString& target) { if (m_peers.isEmpty() || deviceId.startsWith("net-")) return; QJsonObject obj; obj["type"] = "focus"; obj["deviceId"] = deviceId; obj["target"] = target; broadcastPayload(obj); }
