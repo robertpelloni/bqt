@@ -1,3 +1,10 @@
+## [42.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 23):** Ported the Docking and Temporal organization systems.
+- **Go Native TabBar:** Implemented `widgets/tabbar.go`, providing a native Go docking manager for window grouping. Supports dynamic horizontal layout and active-state rendering on the GPU.
+- **Go Calendar Grid:** Finalized `widgets/calendar.go` utilizing Go’s `time.Date` math and `layout.Grid` logic to render interaction-aware temporal grids natively within the Go port.
+- **Organized Shell Synthesis:** Updated `ui/wm.go` to support global tab orchestration for floating application windows.
+
 ## [41.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 22):** Ported the Multi-User Action and Auto-Pilot systems.

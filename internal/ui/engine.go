@@ -6,30 +6,22 @@ import (
 	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/paint"
-	"gioui.org/f32"
-	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 	"github.com/robertpelloni/bobui/internal/ui/widgets"
 )
 
 type Engine struct {
 	window *app.Window
-	login  *widgets.LoginView
 }
 
 func NewEngine() *Engine {
-	return &Engine{
-		window: app.NewWindow(app.Title("OmniUI Go - Security & Time")),
-		login:  &widgets.LoginView{},
-	}
+	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - Structural Shell"))}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
 	th := theme.GetTheme(theme.Cyberpunk)
-	im := kernel.GetInputManager()
-	
-	// Desktop Widgets
+	wm := GetWindowManager()
 	cal := &widgets.Calendar{}
 
 	for event := range e.window.Events() {
@@ -38,19 +30,13 @@ func (e *Engine) Run() error {
 			gtx := layout.NewContext(&ops, tag)
 			paint.Fill(gtx.Ops, th.Background)
 
-			if !e.login.Authenticated {
-				// 1. Render OS Auth Guard
-				e.login.Layout(gtx, th)
-			} else {
-				// 2. Render Secure Desktop Area
-				cal.Layout(gtx, th)
-				// ... (rest of desktop logic)
-			}
+			// 1. Render Window Stack with Docking TabBar
+			wm.Layout(gtx, th)
 
-			// 3. Render Multi-Cursor
-			for _, dev := range im.GetDevices() {
-				// ... (rendering logic)
-			}
+			// 2. Render Calendar Component
+			layout.NE.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return cal.Layout(gtx, th)
+			})
 
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:
