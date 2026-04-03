@@ -1,3 +1,9 @@
+## [4.3.0] - 2026-04-02
+### Added
+- **"Liquid Time" Event Sourcing:** Executed the second radical pivot from `IDEAS.md`. Built the `OmniTimeMachine` singleton. 
+- **Immutable OS Ledger:** The `OmniTimeMachine` actively spins up a hidden SQLite database (`_omni_timemachine`). I structurally hooked this directly into the `OmniFileSystem`'s asynchronous background thread pool. Every single time `OmniFileSystem::writeFile` is called by an application or the OS natively, the exact content of that file is instantly committed as an immutable state index within the ledger.
+- **OS "Rewind" API:** `OmniTimeMachine` exposes `getStateAt(path, index)` and `getTimeline(path)` natively to the QML Engine. Frontend developers can now easily build visual "Rewind Sliders" allowing users to actively drag backwards in time and watch the contents of any file (`OmniCodeEditor` states, JSON configuration files, etc.) revert to previous iterations with absolute per-save precision natively integrated into the Qt SceneGraph.
+
 ## [4.2.0] - 2026-04-02
 ### Added
 - **The OmniNeural Local Bridge:** Finished Phase 26. Built `OmniWebSocketServer.cpp` into the OS Kernel to act as a local host on `ws://localhost:8080`.

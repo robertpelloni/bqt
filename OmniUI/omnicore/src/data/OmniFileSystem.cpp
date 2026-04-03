@@ -1,4 +1,5 @@
 #include "OmniFileSystem.h"
+#include "OmniTimeMachine.h"
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
@@ -19,13 +20,11 @@ OmniFileSystem::OmniFileSystem(QObject *parent) : QObject(parent) {
 OmniFileSystem::~OmniFileSystem() = default;
 
 void OmniFileSystem::readFile(const QString& absolutePath) {
-    // Execute file I/O on a background thread pool to prevent 60fps UI stutter
     QFuture<void> future = QtConcurrent::run([this, absolutePath]() {
         QFile file(absolutePath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QString err = "Failed to open file for reading: " + file.errorString();
             qWarning() << "OmniFileSystem:" << err << absolutePath;
-            // Emit on the main thread via queued connection inherently handled by Qt cross-thread signal emissions
             emit fileRead(absolutePath, "", false, err);
             return;
         }
@@ -54,6 +53,11 @@ void OmniFileSystem::writeFile(const QString& absolutePath, const QString& conte
         file.close();
 
         qDebug() << "OmniFileSystem: Successfully wrote to file:" << absolutePath;
+        
+        // --- OMNITIMEMACHINE HOOK ---
+        // Every single file written by the OS is instantly committed to the immutable Ledger Database.
+        OmniTimeMachine::instance()->commitState(absolutePath, content);
+        
         emit fileWritten(absolutePath, true, "");
     });
 }

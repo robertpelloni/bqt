@@ -44,6 +44,7 @@ add_executable(PluginDemo
     ../../omnicore/src/plugin/OmniPluginManager.cpp
     ../../omnicore/src/data/OmniDatabase.cpp
     ../../omnicore/src/data/OmniFileSystem.cpp
+    ../../omnicore/src/data/OmniTimeMachine.cpp
     ../../omnicore/src/gfx/OmniShaderEffect.cpp
     ../../omnicore/src/gfx/OmniParticles.cpp
     ../../omnicore/src/widgets/OmniCodeEditor.cpp

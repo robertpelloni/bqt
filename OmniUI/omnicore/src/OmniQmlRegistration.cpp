@@ -28,6 +28,7 @@
 #include "OmniThemeManager.h"
 #include "OmniNotificationCenter.h"
 #include "OmniNeuralEngine.h"
+#include "OmniTimeMachine.h"
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -46,6 +47,9 @@ void OmniUI::registerQmlTypes() {
 
     qmlRegisterSingletonType<OmniFileSystem>("OmniData", 1, 0, "FileSystem", 
         [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniFileSystem::instance(); });
+
+    qmlRegisterSingletonType<OmniTimeMachine>("OmniData", 1, 0, "TimeMachine", 
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniTimeMachine::instance(); });
 
     qmlRegisterSingletonType<OmniThemeManager>("OmniUI", 1, 0, "ThemeManager", 
         [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject* { return OmniThemeManager::instance(); });
