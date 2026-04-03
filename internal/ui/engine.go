@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"log"
 	"gioui.org/app"
 	"gioui.org/io/system"
 	"gioui.org/layout"
@@ -17,17 +18,19 @@ type Engine struct {
 }
 
 func NewEngine() *Engine {
-	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - Workstation Desktop"))}
+	return &Engine{window: app.NewWindow(app.Title("OmniUI Go - Kernel Terminal"))}
 }
 
 func (e *Engine) Run() error {
 	var ops op.Ops
 	th := theme.GetTheme(theme.Cyberpunk)
-	im := kernel.GetInputManager()
 	
-	// Complex Layout Components
-	split := &widgets.SplitView{Ratio: 0.3}
-	pb := &widgets.ProgressBar{Value: 0.75}
+	// Spawning Native Go Shell
+	sh, err := kernel.NewShell()
+	if err != nil { log.Fatal(err) }
+	term := &widgets.Terminal{Shell: sh}
+
+	testWin := &widgets.Window{ID: "win_term", Title: "Root Terminal", Pos: f32.Pt(100, 100), Size: f32.Pt(600, 400)}
 
 	for event := range e.window.Events() {
 		switch tag := event.(type) {
@@ -35,20 +38,8 @@ func (e *Engine) Run() error {
 			gtx := layout.NewContext(&ops, tag)
 			paint.Fill(gtx.Ops, th.Background)
 
-			// 1. Render Responsive Workstation Layout
-			split.Layout(gtx, 
-				func(gtx layout.Context) layout.Dimensions {
-					return widgets.material.Label(material.NewTheme(), 14, "Sidebar").Layout(gtx) // Note: material fix...
-				},
-				func(gtx layout.Context) layout.Dimensions {
-					return pb.Layout(gtx, th)
-				},
-			)
-
-			// 2. Render Multi-Cursor Overlay
-			for _, dev := range im.GetDevices() {
-				// ... (cursor rendering)
-			}
+			testWin.Layout(gtx, th)
+			term.Layout(gtx, th)
 
 			tag.Frame(gtx.Ops)
 		case system.DestroyEvent:

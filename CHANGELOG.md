@@ -1,3 +1,10 @@
+## [35.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 16):** Ported the OS Shell and Sub-Processing systems.
+- **Go Sub-Process Engine:** Implemented `kernel/process.go`, utilizing Go’s `os/exec` and asynchronous pipe goroutines to spawn and communicate with native OS shells (`cmd.exe`/`bash`).
+- **Go Native Terminal:** Engineered `widgets/terminal.go`, providing a high-performance console renderer natively within the Go port. Supports real-time stream processing and 144Hz scrolling on the GPU.
+- **Unified Command Singularity:** Updated the Go UI engine to support dynamic terminal spawning and interactive shell I/O.
+
 ## [34.0.0] - 2026-04-02
 ### Added
 - **TOTAL PROJECT PORT TO GO (Phase 15):** Ported the Layout Partitioning and Visual Control systems.
