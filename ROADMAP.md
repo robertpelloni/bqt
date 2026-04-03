@@ -8,14 +8,15 @@
 - [x] **Go Kernel Core:** Ported all logical managers.
 - [x] **Go Rendering Engine:** Visual shell and GPU engine.
 - [x] **Go Persistence & VM:** SQLite and Lisp VM.
-- [x] **Go Vision & Sensory:** Parallel 3D, Voice, and MIDI sync.
-- [x] **Go Application:** Editor, Terminal, and Auto-Pilot.
-- [x] **Go Governance:** Admin shell and RHI bridge.
+- [x] **Go Vision:** Parallel SDF raymarching in Go.
+- [x] **Go Temporal:** Multi-user Undo stack.
+- [x] **Go Neural:** AI visual context.
+- [x] **Go Infrastructure:** Secure boot and ledger sync.
 
-## Phase 86: Go Infrastructure Singularity (Complete)
-- [x] **Go Distributed History:** Mesh-synced temporal ledger.
-- [x] **Go Secure Boot:** Native database-gated authentication shell.
+## Phase 86: Go Temporal & Sensory Singularity (Complete)
+- [x] **Go Calendar Master:** Interactive date navigator in Go.
+- [x] **Go Audio Bridge:** Distributed sensory link between Mesh and Graph.
 
-## Phase 87: Total Project Mastery (Current)
-- [ ] Finalize Go-native 1:1 parity for the remaining C++ widgets (Calendar).
-- [ ] Monitor GitHub CI/CD for final v47.0.0 "Infrastructure" release.
+## Phase 87: The Final Port Culmination (Current)
+- [ ] Implement Go-native 1:1 parity for the `OmniNeuralEngine` command injection.
+- [ ] Port the final multi-user Shell logic into the Go desktop area.
