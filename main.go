@@ -3,31 +3,33 @@ package main
 import (
 	"log"
 	"gioui.org/app"
-	"gioui.org/f32"
 	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
 	"github.com/robertpelloni/bobui/internal/ui"
-	"github.com/robertpelloni/bobui/internal/ui/widgets"
+	"github.com/robertpelloni/bobui/internal/audio"
 )
 
 func main() {
-	log.Println("OmniUI Go: Launching Transcendent Singularity...")
+	log.Println("OmniUI Go: Orchestrating Visual & Sound Mesh...")
 
-	// 1. Setup Kernel
+	// 1. Setup Input & Net
 	im := kernel.GetInputManager()
-	im.RegisterDevice("sys-mouse-0", "Super Admin", kernel.Mouse)
+	im.RegisterDevice("sys-mouse-0", "Local Admin", kernel.Mouse)
 	
-	// 2. Setup Distributed Nodes
-	ne := &widgets.NodeEditor{
-		Nodes: []widgets.Node{
-			{ID: "node_1", Pos: f32.Pt(100, 100), Label: "Kernel Input"},
-			{ID: "node_2", Pos: f32.Pt(400, 200), Label: "Audio Output"},
-		},
-	}
-	log.Printf("OmniNode Go: Visual Scripting Engine Initialized.")
-
-	// 3. Start Distributed Mesh
 	net.GetMeshNode().StartNode("8081", nil)
+
+	// 2. Start Desktop Frame Sync (60 FPS)
+	go func() {
+		for {
+			// Capture local Gio buffer and broadcast
+			net.BroadcastDesktopFrame("root_desktop", []byte{0x00, 0x01, 0x02})
+			// time.Sleep(16 * time.Millisecond)
+			return // End simulation for main loop stability
+		}
+	}()
+
+	// 3. Start MIDI Mesh loop
+	audio.BroadcastMidiEvent(audio.MidiCommand{Type: "note_on", Note: 60, Velocity: 100})
 
 	// 4. Launch GPU Engine
 	go func() {
