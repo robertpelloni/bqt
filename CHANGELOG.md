@@ -1,3 +1,11 @@
+## [20.0.0] - 2026-04-02
+### Added
+- **TOTAL PROJECT PORT TO GO (Phase 2):** Successfully completed the migration of the entire architectural stack from C++/Qt/JUCE to Go.
+- **Go GPU Rendering Kernel:** Implemented a high-performance immediate-mode renderer using `gioui.org`, matching the visual fidelity of the original C++ SceneGraph.
+- **Go Cyberpunk Geometry:** Ported the angled polygon and neon trace render passes to pure Go using the `f32` and `op/clip` libraries.
+- **Go Hypervisor & VFS:** Ported the `OmniVM` Lisp interpreter and `OmniAssetManager` VFS to Go, achieving Turing-completeness and memory-mapped asset loading natively.
+- **Unified Multi-User Executable:** The Go port now integrates the Kernel, Networking, and Rendering into a single, highly-concurrent binary.
+
 ## [19.0.0] - 2026-04-02
 ### Added
 - **THE GREAT GO MIGRATION (Phase 1):** Ported the entire core Operating System Kernel from C++ to Go.

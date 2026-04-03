@@ -2,43 +2,30 @@ package main
 
 import (
 	"log"
-	"time"
+	"gioui.org/app"
 	"github.com/robertpelloni/bobui/internal/kernel"
 	"github.com/robertpelloni/bobui/internal/net"
-	"github.com/robertpelloni/bobui/internal/state"
+	"github.com/robertpelloni/bobui/internal/ui"
 )
 
 func main() {
-	log.Println("OmniUI Go: Initializing Kernel Singularity...")
+	log.Println("OmniUI Go: Booting Language-Native Kernel...")
 
-	// 1. Setup Kernel Managers
+	// 1. Setup Kernel
 	im := kernel.GetInputManager()
-	um := kernel.GetUserManager()
-	vt := state.GetValueTree()
+	im.RegisterDevice("sys-mouse-0", "Local User", kernel.Mouse)
+
+	// 2. Start Network Mesh
 	mesh := net.GetMeshNode()
-
-	// 2. Create Default System Identity
-	um.CreateUser("sys-admin", "Administrator", "#00F0FF")
-	im.RegisterDevice("sys-mouse-0", "System Mouse", kernel.Mouse)
-
-	// 3. Start Distributed Mesh Node
 	mesh.StartNode("8081")
 
-	// 4. Reactive State Subscription (Go Parity with JavaFX)
-	changes := vt.Subscribe()
+	// 3. Launch UI Engine
 	go func() {
-		for change := range changes {
-			log.Printf("OMNI STATE: Param [%s] shifted to %v", change.Key, change.Value)
-			// Broadcast state change to P2P peers
-			mesh.Broadcast(change)
+		engine := ui.NewEngine()
+		if err := engine.Run(); err != nil {
+			log.Fatal(err)
 		}
 	}()
 
-	// 5. Simulation Loop (OS Heartbeat)
-	log.Println("OmniUI Go: OS is now operational. Awaiting Multi-User Input...")
-	for {
-		// Mock physical hardware sync
-		im.UpdateCursor("sys-mouse-0", 100, 200)
-		time.Sleep(1 * time.Second)
-	}
+	app.Main()
 }
