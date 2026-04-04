@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.11] - 2026-04-02
+### Added
+- Extended the Go `WebView` baseline into a richer WebEngineQuick-style bridge contract:
+  - handler registration via `RegisterHandler(...)`
+  - request/reply semantics via `Request(...)`
+  - structured message metadata with `id`, `channel`, `payload`, and `kind`
+  - machine-readable bridge description via `BridgeContractJSON()`
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated the Go engine baseline to exercise navigation, load, title, history, script-message, and request/reply bridge activity.
+- Updated the Quick/QuickControls2/WebEngineQuick audit and planning docs to reflect the richer bridge contract.
+
 ## [1.1.10] - 2026-04-02
 ### Added
 - Extended the lightweight Go `WebView` with a richer WebEngineQuick-style event and bridge surface:
@@ -39,25 +55,3 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
 - Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
-
-## [1.1.8] - 2026-04-02
-### Added
-- Added `internal/ui/widgets/demo_surface.go`, a compile-safe Go composition surface that groups the QuickControls2-style baseline controls into a single framework demo target.
-- Extended the lightweight Go `WebView` with baseline callback hooks for navigation and load events.
-
-### Verified
-- `go test ./internal/...` passes.
-- `go build -buildvcs=false .` succeeds.
-
-### Changed
-- Updated `internal/ui/engine.go` so the Go baseline initializes the demo surface and logs basic `WebView` callback activity.
-- Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
-
-## [1.1.7] - 2026-04-02
-### Verified
-- `go test ./internal/...` passes.
-- `go build -buildvcs=false .` succeeds after adding baseline QuickControls2-style controls.
-
-### Added
-- Added Go-native baseline `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar` primitives under `internal/ui/widgets/`.
-- Expanded `docs/QML_QUICK_PARITY_AUDIT.md` to reflect concrete coverage and remaining Quick / QuickControls2 / WebEngineQuick gaps.

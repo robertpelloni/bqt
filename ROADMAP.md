@@ -13,12 +13,11 @@
 - [x] Add a first Go-native QuickControls2-style `Popup` primitive.
 - [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, `ScrollView`, and `ScrollBar` primitives.
 - [x] Add a lightweight `WebView` navigation/history model.
-- [x] Add baseline `WebView` callbacks (`OnNavigate`, `OnLoad`, `OnTitleChanged`, `OnHistoryChanged`, `OnScriptMessage`).
-- [x] Add baseline bridge methods (`EvalJS`, `PostMessage`, `BridgeContractJSON`).
+- [x] Add a richer event surface and bridge contract (`EvalJS`, `PostMessage`, `Request`, handler registration).
 - [x] Add a compile-safe demo composition surface for the new controls.
 - [ ] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
 - [ ] Add touch/swipe behavior primitives.
-- [ ] Upgrade the `WebView` bridge from contract to executable semantics.
+- [ ] Upgrade the `WebView` bridge from compile-safe contract to executable runtime semantics.
 
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.

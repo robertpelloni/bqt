@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/robertpelloni/bobui/internal/ui/theme"
@@ -40,11 +41,14 @@ func (e *Engine) Run() error {
 			log.Printf("BOBUI WEBVIEW: history index=%d length=%d", index, length)
 		}
 		e.demo.WebView.OnScriptMessage = func(msg widgets.ScriptMessage) {
-			log.Printf("BOBUI WEBVIEW: script message kind=%s channel=%s payload=%s", msg.Kind, msg.Channel, msg.Payload)
+			log.Printf("BOBUI WEBVIEW: script message kind=%s id=%s channel=%s payload=%s", msg.Kind, msg.ID, msg.Channel, msg.Payload)
 		}
-		// demonstrate baseline bridge plumbing
+		e.demo.WebView.RegisterHandler("ping", func(payload string) (string, error) {
+			return fmt.Sprintf("pong:%s", payload), nil
+		})
 		e.demo.WebView.PostMessage("boot", "demo-surface-online")
 		e.demo.WebView.EvalJS("window.bobuiReady = true")
+		_ = e.demo.WebView.Request("ping", "hello")
 	}
 	return nil
 }

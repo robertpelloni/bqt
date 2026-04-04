@@ -30,16 +30,18 @@ This audit is about what `bobui` currently provides as a framework and what rema
 ## 3. WebEngineQuick Progress
 ### Present in some form
 - Lightweight Go-native `WebView` navigation/history model exists
-- Baseline event hooks exist:
+- Event hooks exist:
   - `OnNavigate`
   - `OnLoad`
   - `OnTitleChanged`
   - `OnHistoryChanged`
   - `OnScriptMessage`
-- Baseline host/page bridge methods exist:
+- Bridge contract exists:
   - `EvalJS(...)`
   - `PostMessage(...)`
+  - `Request(...)`
   - `BridgeContractJSON()`
+  - handler registration via `RegisterHandler(...)`
 - Asset/VFS and markdown/document rendering exist
 
 ### Missing / incomplete
@@ -51,5 +53,5 @@ This audit is about what `bobui` currently provides as a framework and what rema
 ## 4. Recommended Next Framework Targets
 1. Add runtime-integrated `ScrollBar` behavior demo.
 2. Add touch/swipe behavior primitives.
-3. Upgrade the WebView bridge from callback contract to executable bridge semantics.
+3. Upgrade the `WebView` bridge from a compile-safe contract to executable page/runtime semantics.
 4. Continue runtime validation instead of file-count-based parity claims.

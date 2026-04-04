@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"gioui.org/layout"
@@ -13,28 +14,71 @@ import (
 
 // ScriptMessage represents a lightweight page-to-host or host-to-page bridge payload.
 type ScriptMessage struct {
+	ID      string `json:"id"`
 	Channel string `json:"channel"`
 	Payload string `json:"payload"`
-	Kind    string `json:"kind"` // "emit", "eval", "reply"
+	Kind    string `json:"kind"` // emit | eval | request | reply | error
 }
+
+type JSBridgeHandler func(payload string) (string, error)
 
 // JSBridge provides a compile-safe contract for WebEngineQuick-style host/page messaging.
 type JSBridge struct {
 	OnMessage func(msg ScriptMessage)
+	Handlers  map[string]JSBridgeHandler
+	nextID    int
+}
+
+func (b *JSBridge) ensureHandlers() {
+	if b.Handlers == nil {
+		b.Handlers = make(map[string]JSBridgeHandler)
+	}
+}
+
+func (b *JSBridge) nextMessageID() string {
+	b.nextID++
+	return fmt.Sprintf("msg-%d", b.nextID)
+}
+
+func (b *JSBridge) RegisterHandler(channel string, handler JSBridgeHandler) {
+	b.ensureHandlers()
+	b.Handlers[channel] = handler
 }
 
 func (b *JSBridge) Emit(channel, payload string) {
 	if b == nil || b.OnMessage == nil {
 		return
 	}
-	b.OnMessage(ScriptMessage{Channel: channel, Payload: payload, Kind: "emit"})
+	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: channel, Payload: payload, Kind: "emit"})
 }
 
 func (b *JSBridge) Eval(source string) {
 	if b == nil || b.OnMessage == nil {
 		return
 	}
-	b.OnMessage(ScriptMessage{Channel: "eval", Payload: source, Kind: "eval"})
+	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: "eval", Payload: source, Kind: "eval"})
+}
+
+func (b *JSBridge) Request(channel, payload string) {
+	if b == nil || b.OnMessage == nil {
+		return
+	}
+	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: channel, Payload: payload, Kind: "request"})
+}
+
+// Dispatch routes a page->host request into a registered handler and returns a reply/error.
+func (b *JSBridge) Dispatch(channel, payload string) ScriptMessage {
+	b.ensureHandlers()
+	id := b.nextMessageID()
+	h, ok := b.Handlers[channel]
+	if !ok {
+		return ScriptMessage{ID: id, Channel: channel, Payload: "handler not found", Kind: "error"}
+	}
+	result, err := h(payload)
+	if err != nil {
+		return ScriptMessage{ID: id, Channel: channel, Payload: err.Error(), Kind: "error"}
+	}
+	return ScriptMessage{ID: id, Channel: channel, Payload: result, Kind: "reply"}
 }
 
 // WebView is a lightweight WebEngineQuick-style navigation model for the verified Go baseline.
@@ -67,12 +111,18 @@ func (w *WebView) ensureBridge() {
 	if w.Bridge == nil {
 		w.Bridge = &JSBridge{}
 	}
+	w.Bridge.ensureHandlers()
 	w.Bridge.OnMessage = func(msg ScriptMessage) {
 		w.LastPostedMsg = msg
 		if w.OnScriptMessage != nil {
 			w.OnScriptMessage(msg)
 		}
 	}
+}
+
+func (w *WebView) RegisterHandler(channel string, handler JSBridgeHandler) {
+	w.ensureBridge()
+	w.Bridge.RegisterHandler(channel, handler)
 }
 
 func (w *WebView) Navigate(url, html string) {
@@ -145,14 +195,26 @@ func (w *WebView) PostMessage(channel, payload string) {
 	w.Bridge.Emit(channel, payload)
 }
 
+// Request sends a request and immediately routes it through the local bridge handler set.
+func (w *WebView) Request(channel, payload string) ScriptMessage {
+	w.ensureBridge()
+	reply := w.Bridge.Dispatch(channel, payload)
+	w.LastPostedMsg = reply
+	if w.OnScriptMessage != nil {
+		w.OnScriptMessage(reply)
+	}
+	return reply
+}
+
 // BridgeContractJSON exposes the bridge contract in a tool-friendly format.
 func (w *WebView) BridgeContractJSON() string {
 	contract := map[string]any{
-		"supports": []string{"navigate", "history", "titleChanged", "load", "scriptMessage", "evalJS", "postMessage"},
+		"supports": []string{"navigate", "history", "titleChanged", "load", "scriptMessage", "evalJS", "postMessage", "request", "reply", "error"},
 		"message": map[string]string{
+			"id":      "optional request/reply correlation id",
 			"channel": "logical route name",
 			"payload": "string payload",
-			"kind":    "emit|eval|reply",
+			"kind":    "emit|eval|request|reply|error",
 		},
 	}
 	data, _ := json.Marshal(contract)
