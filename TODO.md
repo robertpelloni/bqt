@@ -2,10 +2,11 @@
 
 ## Immediate
 - [ ] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
-- [ ] Integrate `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar` into a runnable Go demo path.
+- [ ] Wire the `DemoSurface` into a real interactive Gio frame loop.
+- [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
 
 ## Near-Term QML/Quick Focus
-- [ ] Extend `WebView` with navigation signals and a JS bridge contract.
+- [ ] Extend `WebView` with a JS bridge contract.
 - [ ] Add touch/swipe behavior primitives.
 - [ ] Re-audit declarative state/transition parity versus QML/Quick.
 

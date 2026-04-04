@@ -13,8 +13,10 @@
 - [x] Add a first Go-native QuickControls2-style `Popup` primitive.
 - [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, `ScrollView`, and `ScrollBar` primitives.
 - [x] Add a lightweight `WebView` navigation/history model.
-- [ ] Add runtime-integrated `ScrollBar` behavior and demo wiring.
-- [ ] Add `WebView` navigation signals / JS bridge semantics.
+- [x] Add baseline `WebView` callbacks (`OnNavigate`, `OnLoad`).
+- [x] Add a compile-safe demo composition surface for the new controls.
+- [ ] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
+- [ ] Add `WebView` JS bridge semantics.
 - [ ] Add touch/swipe behavior primitives.
 
 ## 4. Framework Parity Work

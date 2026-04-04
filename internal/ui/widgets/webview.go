@@ -22,6 +22,9 @@ type WebView struct {
 	BackBtn    widget.Clickable
 	ForwardBtn widget.Clickable
 	ReloadBtn  widget.Clickable
+
+	OnNavigate func(url string)
+	OnLoad     func(url string)
 }
 
 func (w *WebView) Navigate(url, html string) {
@@ -33,6 +36,12 @@ func (w *WebView) Navigate(url, html string) {
 	}
 	w.History = append(w.History, url)
 	w.Index = len(w.History) - 1
+	if w.OnNavigate != nil {
+		w.OnNavigate(url)
+	}
+	if w.OnLoad != nil {
+		w.OnLoad(url)
+	}
 }
 
 func (w *WebView) Back() {
@@ -40,6 +49,9 @@ func (w *WebView) Back() {
 		w.Index--
 		w.URL = w.History[w.Index]
 		w.Title = w.URL
+		if w.OnNavigate != nil {
+			w.OnNavigate(w.URL)
+		}
 	}
 }
 
@@ -48,6 +60,9 @@ func (w *WebView) Forward() {
 		w.Index++
 		w.URL = w.History[w.Index]
 		w.Title = w.URL
+		if w.OnNavigate != nil {
+			w.OnNavigate(w.URL)
+		}
 	}
 }
 
@@ -63,7 +78,9 @@ func (w *WebView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 		w.Forward()
 	}
 	if w.ReloadBtn.Clicked(gtx) {
-		// no-op placeholder for verified baseline
+		if w.OnLoad != nil {
+			w.OnLoad(w.URL)
+		}
 	}
 
 	lines := strings.Split(w.HTML, "<br>")

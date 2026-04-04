@@ -2,9 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.8] - 2026-04-02
+### Added
+- Added `internal/ui/widgets/demo_surface.go`, a compile-safe Go composition surface that groups the QuickControls2-style baseline controls into a single framework demo target.
+- Extended the lightweight Go `WebView` with baseline callback hooks for navigation and load events.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated `internal/ui/engine.go` so the Go baseline initializes the demo surface and logs basic `WebView` callback activity.
+- Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
+
 ## [1.1.7] - 2026-04-02
 ### Verified
-- `go test ./internal/...` passes after adding baseline QuickControls2-style controls.
+- `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds after adding baseline QuickControls2-style controls.
 
 ### Added
@@ -43,19 +56,3 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated `ROADMAP.md`, `TODO.md`, and `HANDOFF.md` to prioritize the remaining Quick / QuickControls2 / WebEngineQuick gaps: `ScrollBar`, richer `WebView`, and runtime integration.
-
-## [1.1.4] - 2026-04-02
-### Added
-- Added `docs/REPO_HYGIENE_AUDIT.md` documenting the large untracked artifact set created by the earlier blanket `qt` → `bobui` rename.
-
-### Changed
-- Updated `TODO.md` and `HANDOFF.md` to prioritize repository hygiene and verified Go work over blindly staging renamed legacy artifacts.
-
-### Verified
-- `go test ./internal/...` still passes.
-- `go build -buildvcs=false .` still succeeds.
-
-## [1.1.3] - 2026-04-02
-### Added
-- Added `docs/FRAMEWORK_PARITY_AUDIT.md`, a grounded comparison of current `bobui` capabilities against Qt 6/7, JUCE, JavaFX, and Dear ImGui.
-- Added a first Go-native `TableView` baseline in `internal/ui/widgets/table.go` to begin closing a real model/view parity gap.
