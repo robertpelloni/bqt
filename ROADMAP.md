@@ -14,10 +14,11 @@
 - [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, `ScrollView`, and `ScrollBar` primitives.
 - [x] Add a lightweight `WebView` navigation/history model.
 - [x] Add baseline `WebView` callbacks (`OnNavigate`, `OnLoad`, `OnTitleChanged`, `OnHistoryChanged`, `OnScriptMessage`).
+- [x] Add baseline bridge methods (`EvalJS`, `PostMessage`, `BridgeContractJSON`).
 - [x] Add a compile-safe demo composition surface for the new controls.
 - [ ] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
 - [ ] Add touch/swipe behavior primitives.
-- [ ] Formalize the `WebView` JS bridge contract.
+- [ ] Upgrade the `WebView` bridge from contract to executable semantics.
 
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.

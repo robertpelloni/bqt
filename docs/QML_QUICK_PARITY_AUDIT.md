@@ -36,16 +36,20 @@ This audit is about what `bobui` currently provides as a framework and what rema
   - `OnTitleChanged`
   - `OnHistoryChanged`
   - `OnScriptMessage`
+- Baseline host/page bridge methods exist:
+  - `EvalJS(...)`
+  - `PostMessage(...)`
+  - `BridgeContractJSON()`
 - Asset/VFS and markdown/document rendering exist
 
 ### Missing / incomplete
 - Real embedded browser parity
-- A real JavaScript execution environment
+- Real JavaScript execution environment
 - Remote content sandboxing and permissions
 - Resource interception comparable to request interceptors
 
 ## 4. Recommended Next Framework Targets
 1. Add runtime-integrated `ScrollBar` behavior demo.
 2. Add touch/swipe behavior primitives.
-3. Formalize the `WebView` JS bridge contract and navigation signal model.
+3. Upgrade the WebView bridge from callback contract to executable bridge semantics.
 4. Continue runtime validation instead of file-count-based parity claims.

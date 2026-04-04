@@ -1,6 +1,7 @@
 package widgets
 
 import (
+	"encoding/json"
 	"strings"
 
 	"gioui.org/layout"
@@ -10,10 +11,30 @@ import (
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
-// ScriptMessage represents a lightweight JS bridge payload for the verified Go baseline.
+// ScriptMessage represents a lightweight page-to-host or host-to-page bridge payload.
 type ScriptMessage struct {
-	Channel string
-	Payload string
+	Channel string `json:"channel"`
+	Payload string `json:"payload"`
+	Kind    string `json:"kind"` // "emit", "eval", "reply"
+}
+
+// JSBridge provides a compile-safe contract for WebEngineQuick-style host/page messaging.
+type JSBridge struct {
+	OnMessage func(msg ScriptMessage)
+}
+
+func (b *JSBridge) Emit(channel, payload string) {
+	if b == nil || b.OnMessage == nil {
+		return
+	}
+	b.OnMessage(ScriptMessage{Channel: channel, Payload: payload, Kind: "emit"})
+}
+
+func (b *JSBridge) Eval(source string) {
+	if b == nil || b.OnMessage == nil {
+		return
+	}
+	b.OnMessage(ScriptMessage{Channel: "eval", Payload: source, Kind: "eval"})
 }
 
 // WebView is a lightweight WebEngineQuick-style navigation model for the verified Go baseline.
@@ -30,14 +51,28 @@ type WebView struct {
 	ForwardBtn widget.Clickable
 	ReloadBtn  widget.Clickable
 
-	OnNavigate      func(url string)
-	OnLoad          func(url string)
-	OnTitleChanged  func(title string)
+	OnNavigate       func(url string)
+	OnLoad           func(url string)
+	OnTitleChanged   func(title string)
 	OnHistoryChanged func(index int, length int)
-	OnScriptMessage func(msg ScriptMessage)
+	OnScriptMessage  func(msg ScriptMessage)
+
+	Bridge *JSBridge
 
 	LastEvaluatedJS string
 	LastPostedMsg   ScriptMessage
+}
+
+func (w *WebView) ensureBridge() {
+	if w.Bridge == nil {
+		w.Bridge = &JSBridge{}
+	}
+	w.Bridge.OnMessage = func(msg ScriptMessage) {
+		w.LastPostedMsg = msg
+		if w.OnScriptMessage != nil {
+			w.OnScriptMessage(msg)
+		}
+	}
 }
 
 func (w *WebView) Navigate(url, html string) {
@@ -97,25 +132,36 @@ func (w *WebView) Forward() {
 	}
 }
 
-// EvalJS establishes the contract for a future real JS bridge.
-// In the verified baseline this records the latest expression and fires a synthetic callback.
+// EvalJS is a host-to-page bridge request.
 func (w *WebView) EvalJS(source string) {
+	w.ensureBridge()
 	w.LastEvaluatedJS = source
-	if w.OnScriptMessage != nil {
-		w.LastPostedMsg = ScriptMessage{Channel: "eval", Payload: source}
-		w.OnScriptMessage(w.LastPostedMsg)
-	}
+	w.Bridge.Eval(source)
 }
 
-// PostMessage simulates a page -> host bridge message in the verified baseline.
+// PostMessage is a page-to-host bridge message.
 func (w *WebView) PostMessage(channel, payload string) {
-	w.LastPostedMsg = ScriptMessage{Channel: channel, Payload: payload}
-	if w.OnScriptMessage != nil {
-		w.OnScriptMessage(w.LastPostedMsg)
+	w.ensureBridge()
+	w.Bridge.Emit(channel, payload)
+}
+
+// BridgeContractJSON exposes the bridge contract in a tool-friendly format.
+func (w *WebView) BridgeContractJSON() string {
+	contract := map[string]any{
+		"supports": []string{"navigate", "history", "titleChanged", "load", "scriptMessage", "evalJS", "postMessage"},
+		"message": map[string]string{
+			"channel": "logical route name",
+			"payload": "string payload",
+			"kind":    "emit|eval|reply",
+		},
 	}
+	data, _ := json.Marshal(contract)
+	return string(data)
 }
 
 func (w *WebView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
+	w.ensureBridge()
+
 	mth := material.NewTheme()
 	mth.Palette.Fg = th.Text
 	mth.Palette.Bg = th.Surface
@@ -148,6 +194,9 @@ func (w *WebView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return material.H6(mth, w.Title).Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return material.Caption(mth, w.BridgeContractJSON()).Layout(gtx)
 		}),
 		layout.Flexed(1, func(gtx layout.Context) layout.Dimensions {
 			return list.Layout(gtx, len(lines), func(gtx layout.Context, i int) layout.Dimensions {

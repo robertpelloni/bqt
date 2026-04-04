@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.10] - 2026-04-02
+### Added
+- Extended the lightweight Go `WebView` with a richer WebEngineQuick-style event and bridge surface:
+  - `OnNavigate`
+  - `OnLoad`
+  - `OnTitleChanged`
+  - `OnHistoryChanged`
+  - `OnScriptMessage`
+  - `EvalJS(...)`
+  - `PostMessage(...)`
+  - `BridgeContractJSON()`
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated the Go engine baseline to initialize and log the extended WebView event surface.
+- Updated parity docs and planning around JS bridge semantics and richer runtime integration.
+
 ## [1.1.9] - 2026-04-02
 ### Added
 - Expanded the lightweight Go `WebView` baseline with a real event surface:
@@ -18,7 +38,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
-- Updated parity docs and planning to focus next on JS bridge semantics, richer runtime integration, and touch/swipe primitives.
+- Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
 
 ## [1.1.8] - 2026-04-02
 ### Added
