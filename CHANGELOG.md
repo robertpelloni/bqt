@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.6] - 2026-04-02
+### Added
+- Added a Go-native QuickControls2-style `ScrollBar` baseline in `internal/ui/widgets/scrollbar.go`.
+- Expanded `internal/ui/widgets/scrollview.go` to carry policy/state concepts for richer scroll behavior.
+
+### Fixed
+- Resolved a Go compile regression caused by helper-name collision in the new scrollbar baseline.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated parity planning/docs to treat `ScrollView` / `ScrollBar` as the next verified QuickControls2 layer.
+
 ## [1.1.5] - 2026-04-02
 ### Added
 - Added Go-native QuickControls2-style baseline controls for `Dialog`, `Drawer`, and `ToolTip` in `internal/ui/widgets/`.
@@ -51,12 +66,3 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Rebased key docs (`VISION.md`, `MEMORY.md`, `DEPLOY.md`, `ROADMAP.md`, `TODO.md`, `HANDOFF.md`, `OmniUI/README.md`, `SUBMODULE_DASHBOARD.md`) around the verified state of the repository instead of prior aspirational claims.
 - Clarified that `bobui` is the framework/kernel project and that the operating shell belongs to the adjacent `bobfilez` project.
-
-## [1.1.1] - 2026-04-02
-### Changed
-- Re-audited the repository and corrected documentation drift: `bobui` is now explicitly documented as the framework/kernel project, while the operating shell belongs to the adjacent `bobfilez` project.
-- Rebased `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `ROADMAP.md`, `TODO.md`, `HANDOFF.md`, `OmniUI/README.md`, and `SUBMODULE_DASHBOARD.md` around the verified state of the repo instead of aspirational claims.
-
-### Fixed
-- Fixed a concrete Go compile issue in `internal/kernel/plugin_manager.go` (`um` typo in `GetLoadedPlugins`).
-- Removed several direct package-cycle causes by simplifying `internal/kernel/genome.go`, `internal/kernel/consensus.go`, `internal/vm/ai_assistant.go`, `internal/vm/action_injection.go`, `internal/ui/widgets/studio.go`, and `internal/kernel/grid_compute.go`.

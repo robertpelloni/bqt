@@ -17,11 +17,12 @@ This audit is about what `bobui` currently provides as a framework and what rema
 - Drawer baseline (`internal/ui/widgets/drawer.go`)
 - ToolTip baseline (`internal/ui/widgets/tooltip.go`)
 - Menu baseline (`internal/ui/widgets/menu.go`)
-- Layout primitives exist (split, flow, grid, stack, tile)
 - Scroll container baseline (`internal/ui/widgets/scrollview.go`)
+- ScrollBar baseline (`internal/ui/widgets/scrollbar.go`)
+- Layout primitives exist (split, flow, grid, stack, tile)
 
 ### Still missing or incomplete
-- ScrollBar visual parity and policy control
+- ScrollBar interaction polish and policy/runtime behavior coupling
 - Swipe / touch-driven control parity
 - State/transition ergonomics comparable to declarative QML animations
 - Rich validation / focus / accessibility semantics across all controls
@@ -38,7 +39,7 @@ This audit is about what `bobui` currently provides as a framework and what rema
 - Resource interception comparable to request interceptors
 
 ## 4. Recommended Next Framework Targets
-1. Add `ScrollBar` visuals and policies.
+1. Add runtime-integrated `ScrollView` + `ScrollBar` behavior demo.
 2. Add touch/swipe behavior primitives.
 3. Add `WebView` navigation signals and JS bridge semantics.
 4. Continue runtime validation instead of file-count-based parity claims.

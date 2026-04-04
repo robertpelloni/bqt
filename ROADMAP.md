@@ -11,10 +11,11 @@
 
 ## 3. QML / Quick / QuickControls2 / WebEngineQuick Focus (Current)
 - [x] Add a first Go-native QuickControls2-style `Popup` primitive.
-- [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, and `ScrollView` primitives.
+- [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, `ScrollView`, and `ScrollBar` primitives.
 - [x] Add a lightweight `WebView` navigation/history model.
-- [ ] Add explicit `ScrollBar` visuals and behavior policies.
+- [ ] Add runtime-integrated `ScrollBar` behavior and demo wiring.
 - [ ] Add `WebView` navigation signals / JS bridge semantics.
+- [ ] Add touch/swipe behavior primitives.
 
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.

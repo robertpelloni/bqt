@@ -4,17 +4,16 @@
 2026-04-02
 
 ## What I did this cycle
-- Continued the parity pass specifically for QML / Quick / QuickControls2 / WebEngineQuick.
-- Added Go-native baseline primitives for `Dialog`, `Drawer`, and `ToolTip`.
-- Updated the parity audit and planning docs to track these new controls.
+- Added a Go-native QuickControls2-style `ScrollBar` baseline.
+- Expanded `ScrollView` to include policy concepts and scrollbar composition state.
+- Updated parity docs and planning around verified QML/Quick/QuickControls2 coverage.
 
 ## Verified state
-- `go test ./internal/...` passes.
-- `go build -buildvcs=false .` succeeds.
-- These controls are baseline implementations intended to establish verifiable parity direction, not full production-complete endpoints yet.
+- The new controls are baseline implementations focused on compile-safe parity direction.
+- They still need runtime integration and interaction polish.
 
 ## Recommended next steps
-1. Add `ScrollBar` visuals and scroll policies.
-2. Add `WebView` signals and JS bridge semantics.
-3. Wire the new controls into a runnable Go desktop/demo surface.
-4. Keep shell/OS concerns in `bobfilez`, framework concerns in `bobui`.
+1. Wire `ScrollView`/`ScrollBar` into a runnable Go demo surface.
+2. Add `WebView` navigation signals and JS bridge semantics.
+3. Add touch/swipe behavior primitives.
+4. Continue separating `bobfilez` shell concerns from `bobui` framework concerns.
