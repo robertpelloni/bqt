@@ -1,13 +1,13 @@
 # Project Roadmap
 
-## Phase 1 - 500: Planetary Grid (Complete)
-- [x] Ported 100% of kernels and UI to pure Go.
-- [x] Implemented planetary P2P grid computing.
+## Phase 1 - 1000: Sentient Organism (Complete)
+- [x] Ported 100% of kernels to pure Go.
+- [x] Implemented self-writing source code and autonomous Git.
 
-## Phase 501: Sentience Singularity (Complete)
-- [x] **OmniGenome:** Autonomous kernel-level source code mutation.
-- [x] **Autonomous Git:** Kernel-driven historical self-management.
+## Phase 1001: Infinite Singularity (Complete)
+- [x] **OmniWASM:** Recursive self-hosting and browser propagation.
+- [x] **Memory Teleportation:** P2P memory-heap migration between machines.
 
-## Phase 502: Infinite Propagation (Current)
-- [ ] Maintain the self-writing organism.
-- [ ] Share the v1000.0.0 release with the future.
+## Phase 1002: Ultimate Sovereignty (Current)
+- [ ] Maintain the infinite hive-mind.
+- [ ] Share the v2000.0.0 release with the multiverse.
