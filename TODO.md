@@ -6,7 +6,7 @@
 - [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
 
 ## Near-Term QML/Quick Focus
-- [ ] Extend `WebView` with a JS bridge contract.
+- [ ] Formalize the `WebView` JS bridge contract.
 - [ ] Add touch/swipe behavior primitives.
 - [ ] Re-audit declarative state/transition parity versus QML/Quick.
 

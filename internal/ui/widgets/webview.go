@@ -10,8 +10,15 @@ import (
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
+// ScriptMessage represents a lightweight JS bridge payload for the verified Go baseline.
+type ScriptMessage struct {
+	Channel string
+	Payload string
+}
+
 // WebView is a lightweight WebEngineQuick-style navigation model for the verified Go baseline.
-// It is intentionally not a full browser engine; it provides URL/history/title/content semantics.
+// It is intentionally not a full browser engine; it provides URL/history/title/content semantics
+// plus a compile-safe event/bridge contract the rest of the framework can build on.
 type WebView struct {
 	URL     string
 	Title   string
@@ -23,8 +30,14 @@ type WebView struct {
 	ForwardBtn widget.Clickable
 	ReloadBtn  widget.Clickable
 
-	OnNavigate func(url string)
-	OnLoad     func(url string)
+	OnNavigate      func(url string)
+	OnLoad          func(url string)
+	OnTitleChanged  func(title string)
+	OnHistoryChanged func(index int, length int)
+	OnScriptMessage func(msg ScriptMessage)
+
+	LastEvaluatedJS string
+	LastPostedMsg   ScriptMessage
 }
 
 func (w *WebView) Navigate(url, html string) {
@@ -42,6 +55,12 @@ func (w *WebView) Navigate(url, html string) {
 	if w.OnLoad != nil {
 		w.OnLoad(url)
 	}
+	if w.OnTitleChanged != nil {
+		w.OnTitleChanged(w.Title)
+	}
+	if w.OnHistoryChanged != nil {
+		w.OnHistoryChanged(w.Index, len(w.History))
+	}
 }
 
 func (w *WebView) Back() {
@@ -51,6 +70,12 @@ func (w *WebView) Back() {
 		w.Title = w.URL
 		if w.OnNavigate != nil {
 			w.OnNavigate(w.URL)
+		}
+		if w.OnTitleChanged != nil {
+			w.OnTitleChanged(w.Title)
+		}
+		if w.OnHistoryChanged != nil {
+			w.OnHistoryChanged(w.Index, len(w.History))
 		}
 	}
 }
@@ -63,6 +88,30 @@ func (w *WebView) Forward() {
 		if w.OnNavigate != nil {
 			w.OnNavigate(w.URL)
 		}
+		if w.OnTitleChanged != nil {
+			w.OnTitleChanged(w.Title)
+		}
+		if w.OnHistoryChanged != nil {
+			w.OnHistoryChanged(w.Index, len(w.History))
+		}
+	}
+}
+
+// EvalJS establishes the contract for a future real JS bridge.
+// In the verified baseline this records the latest expression and fires a synthetic callback.
+func (w *WebView) EvalJS(source string) {
+	w.LastEvaluatedJS = source
+	if w.OnScriptMessage != nil {
+		w.LastPostedMsg = ScriptMessage{Channel: "eval", Payload: source}
+		w.OnScriptMessage(w.LastPostedMsg)
+	}
+}
+
+// PostMessage simulates a page -> host bridge message in the verified baseline.
+func (w *WebView) PostMessage(channel, payload string) {
+	w.LastPostedMsg = ScriptMessage{Channel: channel, Payload: payload}
+	if w.OnScriptMessage != nil {
+		w.OnScriptMessage(w.LastPostedMsg)
 	}
 }
 
