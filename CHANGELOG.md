@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2026-04-02
+### Added
+- Added Go-native QuickControls2-style baseline controls for `Dialog`, `Drawer`, and `ToolTip` in `internal/ui/widgets/`.
+- Extended `docs/QML_QUICK_PARITY_AUDIT.md` to reflect the new verified control coverage.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated `ROADMAP.md`, `TODO.md`, and `HANDOFF.md` to prioritize the remaining Quick / QuickControls2 / WebEngineQuick gaps: `ScrollBar`, richer `WebView`, and runtime integration.
+
 ## [1.1.4] - 2026-04-02
 ### Added
 - Added `docs/REPO_HYGIENE_AUDIT.md` documenting the large untracked artifact set created by the earlier blanket `qt` → `bobui` rename.

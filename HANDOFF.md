@@ -3,16 +3,18 @@
 ## Date
 2026-04-02
 
-## What I verified this cycle
-- The Go internal packages still compile (`go test ./internal/...`).
-- The root Go binary still builds (`go build -buildvcs=false .`).
-- There is a very large untracked-file explosion in the legacy C++ tree caused by a prior broad `qt` -> `bobui` rename pass.
+## What I did this cycle
+- Continued the parity pass specifically for QML / Quick / QuickControls2 / WebEngineQuick.
+- Added Go-native baseline primitives for `Dialog`, `Drawer`, and `ToolTip`.
+- Updated the parity audit and planning docs to track these new controls.
 
-## Critical repository finding
-The repo currently contains **thousands of untracked renamed artifacts** under `src/`, `tests/`, and related legacy framework paths. These should not be blindly staged.
+## Verified state
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+- These controls are baseline implementations intended to establish verifiable parity direction, not full production-complete endpoints yet.
 
 ## Recommended next steps
-1. Perform a dedicated rename-hygiene audit before touching the legacy C++ tree again.
-2. Continue framework work in the verified Go tree.
-3. Keep `bobfilez` shell concerns separate from `bobui`.
-4. Use `docs/REPO_HYGIENE_AUDIT.md` as the baseline for cleanup planning.
+1. Add `ScrollBar` visuals and scroll policies.
+2. Add `WebView` signals and JS bridge semantics.
+3. Wire the new controls into a runnable Go desktop/demo surface.
+4. Keep shell/OS concerns in `bobfilez`, framework concerns in `bobui`.

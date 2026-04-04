@@ -1,25 +1,27 @@
 # Project Roadmap
 
 ## 1. Scope & Ownership
-- [x] Clarify that `bobui` is the framework/kernel project.
-- [ ] Keep shell/desktop product concerns in `bobfilez`.
+- [x] `bobui` is the framework/kernel.
+- [ ] `bobfilez` remains the shell/desktop product.
 
-## 2. Verified Build Stability (Current)
-- [x] Internal Go packages compile with `go test ./internal/...`.
-- [x] Root Go binary builds with `go build -buildvcs=false .`.
-- [ ] Add these exact verification steps to CI.
-- [ ] Continue reducing placeholder/stub logic in Go packages.
+## 2. Verified Go Baseline
+- [x] `go test ./internal/...` passes.
+- [x] `go build -buildvcs=false .` succeeds.
+- [ ] Add these exact commands to CI.
 
-## 3. Go Port Stabilization
-- [ ] Replace compile-safe placeholder widgets with real Gio implementations incrementally.
-- [ ] Audit package boundaries so UI, VM, kernel, and net stay acyclic.
-- [ ] Add tests for Go kernel modules where feasible.
+## 3. QML / Quick / QuickControls2 / WebEngineQuick Focus (Current)
+- [x] Add a first Go-native QuickControls2-style `Popup` primitive.
+- [x] Add baseline `Menu`, `Dialog`, `Drawer`, `ToolTip`, and `ScrollView` primitives.
+- [x] Add a lightweight `WebView` navigation/history model.
+- [ ] Add explicit `ScrollBar` visuals and behavior policies.
+- [ ] Add `WebView` navigation signals / JS bridge semantics.
 
 ## 4. Framework Parity Work
-- [ ] Verify which parity features are truly functional vs architectural placeholders.
-- [ ] Prioritize high-value framework primitives: state binding, multiplayer ownership, synchronization, plotting, markdown, tree/list views, and audio graph stability.
-- [ ] Defer “grand singularity” ideas until build/runtime proof exists.
+- [ ] Continue runtime-verifying parity claims instead of expanding only by file count.
+- [ ] Strengthen model/view parity (`TableView`, selection, sorting, delegates).
+- [ ] Tighten JUCE-style parameter/state automation and mesh-aware DSP routing.
 
-## 5. Documentation Integrity
-- [ ] Continue rewriting docs to match verified state.
-- [ ] Keep changelog honest about what was fixed versus what remains experimental.
+## 5. Stabilization
+- [ ] Replace remaining placeholder Gio widgets with richer implementations.
+- [ ] Continue reducing package coupling.
+- [ ] Add tests for Go kernel/data/net packages.
