@@ -7,7 +7,7 @@ It is **not** the end-user operating shell/desktop product. The shell/OS experie
 
 ## Ultimate Goal
 Build a high-performance, multi-user application framework that reaches or exceeds the practical strengths of:
-- **Qt 6 / Qt 7 direction** for application framework breadth
+- **BobUI 6 / BobUI 7 direction** for application framework breadth
 - **JUCE** for audio/DSP and media workflows
 - **JavaFX** for styling, layout, and binding ergonomics
 - **Dear ImGui / ImPlot** for immediate-mode tooling and debugging surfaces
@@ -40,6 +40,7 @@ while also introducing a first-class foundation for:
 3. **Prioritize framework correctness** over adding more speculative subsystems.
 4. **Keep Go work clearly marked** as experimental or partial until build-verified.
 5. **Harden multiplayer fundamentals**: ownership, collaboration, synchronization, permissions.
+6. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.
