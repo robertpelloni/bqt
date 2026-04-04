@@ -2,15 +2,15 @@ package widgets
 
 import (
 	"image"
+	"sync"
+	"time"
+
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
 	"gioui.org/widget/material"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
-	"time"
-	"sync"
 )
 
 type Toast struct {
@@ -30,51 +30,33 @@ var (
 )
 
 func GetNotificationCenter() *NotificationCenter {
-	notifyOnce.Do(func() {
-		notifyInstance = &NotificationCenter{}
-	})
+	notifyOnce.Do(func() { notifyInstance = &NotificationCenter{} })
 	return notifyInstance
 }
 
 func (nc *NotificationCenter) ShowToast(title, msg, tType string) {
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
-	nc.toasts = append(nc.toasts, Toast{
-		Title: title, Msg: msg, Type: tType,
-		Expiry: time.Now().Add(3 * time.Second),
-	})
+	nc.toasts = append(nc.toasts, Toast{Title: title, Msg: msg, Type: tType, Expiry: time.Now().Add(3 * time.Second)})
 }
 
 func (nc *NotificationCenter) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	nc.mu.Lock()
 	defer nc.mu.Unlock()
-
-	// Filter expired toasts
-	active := make([]Toast, 0)
+	active := make([]Toast, 0, len(nc.toasts))
 	for _, t := range nc.toasts {
-		if time.Now().Before(t.Expiry) { active = append(active, t) }
+		if time.Now().Before(t.Expiry) {
+			active = append(active, t)
+		}
 	}
 	nc.toasts = active
-
-	// --- GO NOTIFICATION RENDER PASS ---
-	// Render toasts in the top-right corner using Gio layouting.
-	return layout.NW.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				for _, t := range nc.toasts {
-					// Draw Toast Background
-					rect := image.Rect(0, 0, gtx.Dp(unit.Dp(300)), gtx.Dp(unit.Dp(60)))
-					stack := clip.Rect(rect).Push(gtx.Ops)
-					paint.Fill(gtx.Ops, th.Surface)
-					stack.Pop()
-					
-					// Draw Title (Simulated Material Label)
-					lbl := material.Label(material.NewTheme(), unit.Sp(12), t.Title)
-					lbl.Color = th.Primary
-					lbl.Layout(gtx)
-				}
-				return layout.Dimensions{}
-			}),
-		)
-	})
+	if len(nc.toasts) == 0 {
+		return layout.Dimensions{}
+	}
+	mth := material.NewTheme()
+	mth.Palette.Fg = th.Text
+	mth.Palette.Bg = th.Surface
+	rect := image.Rect(0, 0, gtx.Dp(unit.Dp(300)), gtx.Dp(unit.Dp(60)))
+	paint.FillShape(gtx.Ops, th.Surface, clip.Rect(rect).Op())
+	return material.Label(mth, unit.Sp(12), nc.toasts[0].Title).Layout(gtx)
 }

@@ -1,22 +1,48 @@
 # Project Vision: BobUI / OmniUI
 
+## Scope Clarification
+`bobui` is the **framework/kernel project**.
+
+It is **not** the end-user operating shell/desktop product. The shell/OS experience belongs to the adjacent `bobfilez` project, which consumes `bobui` as its UI, input, audio, networking, and synchronization foundation.
+
 ## Ultimate Goal
-The ultimate goal of the `bobui` project is to achieve **absolute, comprehensive, 100% feature and function parity with Qt6**, serving as an Omni-Workspace UI framework. 
+Build a high-performance, multi-user application framework that reaches or exceeds the practical strengths of:
+- **Qt 6 / Qt 7 direction** for application framework breadth
+- **JUCE** for audio/DSP and media workflows
+- **JavaFX** for styling, layout, and binding ergonomics
+- **Dear ImGui / ImPlot** for immediate-mode tooling and debugging surfaces
 
-This encompasses:
-- Full support for Qt Core, Gui, Widgets, QML, and all standard Qt6 modules.
-- A modernized, robust, and elegant design under the `OmniUI` umbrella.
-- Seamless cross-platform compilation and deployment leveraging the existing CMake infrastructure.
-- Complete documentation of all functionality, represented comprehensively in the UI where applicable.
+while also introducing a first-class foundation for:
+- **local multi-user interaction** (multiple devices, device identity, ownership, contention handling)
+- **remote multi-user collaboration** (cursor/state/asset synchronization)
+- **AI-aware interaction** (DOM/context serialization, automation hooks)
+- **cross-platform deployment** (desktop first, WASM where realistic)
 
-## Design Philosophy
-1. **Uncompromising Parity:** Every API, class, and tool available in Qt6 must have a direct, fully functional equivalent in BobUI.
-2. **Robustness & Elegance:** Code must be extremely robust, well-documented, configurable, and free of regressions. Refactoring for elegant design is paramount.
-3. **Comprehensive UI:** Any feature implemented on the backend must be completely wired up and represented in the frontend/UI, with tooltips, descriptions, and manual documentation.
-4. **Autonomous Expandability:** The codebase must be highly structured to allow LLM agents (Gemini, Claude, GPT, Jules) to autonomously analyze, implement, test, and document features in a continuous loop.
-5. **No Half-Measures:** There should be no "partially finished" code. All features are fully tested, polished, and robust before moving to the next.
+## Product Boundary
+### BobUI owns
+- input and device identity
+- widget toolkit and layout system
+- media/audio graph primitives
+- networking/state synchronization primitives
+- developer tooling overlays and introspection
+- framework-level themes, styling, animation, plotting, document views
+- portable runtime/service abstractions
 
-## Long-Term Direction
-- Fully integrate the `OmniUI` system to provide a superior, AI-first developer experience.
-- Combine redundant functionalities found in referenced submodules/libraries to create the most complete UI framework possible.
-- Continuously sync with upstream sources while protecting local feature branches and avoiding regressions.
+### Bobfilez owns
+- desktop shell / launcher / taskbar / start menu
+- login/desktop metaphors as product UX
+- workflow-specific end-user applications
+- system-level shell composition and user-facing orchestration
+
+## Current Strategic Direction
+1. **Stabilize reality over aspiration**: verify what actually builds and runs.
+2. **Reduce drift** between documentation and code.
+3. **Prioritize framework correctness** over adding more speculative subsystems.
+4. **Keep Go work clearly marked** as experimental or partial until build-verified.
+5. **Harden multiplayer fundamentals**: ownership, collaboration, synchronization, permissions.
+
+## Engineering Philosophy
+- Prefer small, verifiable improvements over sprawling unverified additions.
+- Avoid claiming parity where build/runtime proof does not yet exist.
+- Separate framework concerns (`bobui`) from shell concerns (`bobfilez`).
+- Preserve past exploratory work, but clearly label experimental layers.

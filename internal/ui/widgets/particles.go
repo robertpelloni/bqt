@@ -5,8 +5,8 @@ import (
 	"image/color"
 	"math"
 	"math/rand"
+
 	"gioui.org/layout"
-	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/f32"
@@ -24,10 +24,10 @@ type ParticleSystem struct {
 	Active    bool
 }
 
-// Update handles the physics simulation in the Go port.
 func (ps *ParticleSystem) Update(dt float32) {
-	if !ps.Active { return }
-	
+	if !ps.Active {
+		return
+	}
 	for i := len(ps.Particles) - 1; i >= 0; i-- {
 		p := &ps.Particles[i]
 		p.Life -= dt
@@ -35,8 +35,6 @@ func (ps *ParticleSystem) Update(dt float32) {
 			ps.Particles = append(ps.Particles[:i], ps.Particles[i+1:]...)
 			continue
 		}
-		
-		// Apply Gravity Natively in Go
 		p.Vel.Y += 9.8 * dt
 		p.Pos = p.Pos.Add(p.Vel)
 	}
@@ -58,15 +56,13 @@ func (ps *ParticleSystem) Burst(pos f32.Point, count int) {
 
 func (ps *ParticleSystem) Layout(gtx layout.Context) layout.Dimensions {
 	for _, p := range ps.Particles {
-		// Render each particle as a GPU Point/Rect
-		alpha := uint8((p.Life / p.MaxLife) * 255)
+		a := uint8((p.Life / p.MaxLife) * 255)
 		c := p.Color
-		c.A = alpha
-		
-		rect := f32.Rect(p.Pos.X, p.Pos.Y, p.Pos.X+2, p.Pos.Y+2)
-		stack := clip.Rect(rect.Round()).Push(gtx.Ops)
-		paint.Fill(gtx.Ops, c)
-		stack.Pop()
+		c.A = a
+		px := int(p.Pos.X)
+		py := int(p.Pos.Y)
+		rect := image.Rect(px, py, px+2, py+2)
+		paint.FillShape(gtx.Ops, c, clip.Rect(rect).Op())
 	}
 	return layout.Dimensions{Size: gtx.Constraints.Max}
 }

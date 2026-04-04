@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"github.com/robertpelloni/bobui/internal/vm"
 )
 
 type GenomeKernel struct {
@@ -18,24 +17,29 @@ func GetGenomeKernel() *GenomeKernel {
 // MutateSource physically writes new Go code to the system directory.
 func (gk *GenomeKernel) MutateSource(packageName, code string) error {
 	path := fmt.Sprintf("%s/%s.go", gk.EvolutionPath, packageName)
-	
+
+	if err := os.MkdirAll(gk.EvolutionPath, 0o755); err != nil {
+		return err
+	}
+
 	f, err := os.Create(path)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 	defer f.Close()
 
 	_, err = f.WriteString(code)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
-	log.Printf("OMNIGENOME Go: Kernel successfully evolved. New DNA at %s", path)
-	
-	// In a production build, this would trigger 'go build -buildmode=plugin' 
-	// and load it via plugin_host.go instantly.
+	log.Printf("OMNIGENOME Go: Kernel wrote new source to %s", path)
 	return nil
 }
 
-// RequestEvolution asks the AI to propose a kernel-level improvement.
+// RequestEvolution is intentionally a lightweight stub in the verified Go baseline.
+// The higher-level AI assistant can call MutateSource after generating code, but this
+// package does not import the VM layer in order to avoid import cycles.
 func (gk *GenomeKernel) RequestEvolution() {
-	assistant := vm.GetAIAssistant()
-	log.Println("OMNIGENOME Go: Requesting autonomous source-code evolution...")
-	assistant.RequestCompletion("Propose a new Go-native UI component in Gio.")
+	log.Println("OMNIGENOME Go: Evolution request queued for external AI orchestration.")
 }

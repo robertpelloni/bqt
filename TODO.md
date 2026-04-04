@@ -1,13 +1,21 @@
-# Task List / TODO
+# TODO
 
-## Immediate System Integrity Tasks
-- [ ] **Monitor GitHub CI/CD:** Verify `v10.0.0` build on Windows/Ubuntu/WASM. The new `Multimedia` and `RHI` components must link correctly.
+## Immediate
+- [x] Break major Go package cycles.
+- [x] Make `go test ./internal/...` pass.
+- [x] Make `go build -buildvcs=false .` succeed.
+- [ ] Update CI to run the verified Go build/test commands.
 
-## Implementation Tasks (Phase 45 Focus)
+## Next Engineering Targets
+- [ ] Replace placeholder Go `Engine.Run()` loop with a real Gio event/render loop.
+- [ ] Restore real interactive window drag/ownership in Go using current Gio APIs.
+- [ ] Validate the Go mesh stack end-to-end with actual peer instances.
+- [ ] Decide which C++ components remain canonical until the Go renderer is feature-complete.
 
-### 1. Multiplayer OS Hardening
-- [ ] Implement `OmniUserManager::lockWindow(userId, windowId)` to physically block other users from interacting with private windows.
-- [ ] Sync the `OmniTimeMachine` ledger across the `OmniMeshNode` so peers can "Rewind" each other's file states.
+## Scope Corrections
+- [x] Document that the shell/OS belongs to `bobfilez`.
+- [ ] Remove or relocate shell-specific claims from remaining project docs where needed.
 
-### 2. Graphics Perfection
-- [ ] Finish the `OmniRhiNode` implementation for Metal/Vulkan backends in the Qt 7 Beta context.
+## Quality
+- [ ] Add tests for `internal/kernel`, `internal/net`, and `internal/data` packages.
+- [ ] Audit and normalize unrealistic historical changelog/version entries over time.

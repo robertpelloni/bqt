@@ -3,16 +3,15 @@ package vm
 import (
 	"log"
 	"sync"
-	"github.com/robertpelloni/bobui/internal/kernel"
 )
 
 type AISuggestion struct {
-	Text string `json:"text"`
+	Text       string  `json:"text"`
 	Confidence float32 `json:"confidence"`
 }
 
 type AIAssistant struct {
-	mu sync.Mutex
+	mu             sync.Mutex
 	LastSuggestion AISuggestion
 }
 
@@ -28,26 +27,24 @@ func GetAIAssistant() *AIAssistant {
 	return assistantInstance
 }
 
-// RequestCompletion sends the system context to the LLM for code assistance.
+// RequestCompletion aggregates the locally available context and hands it off to
+// an external LLM bridge. In the verified Go baseline this function is intentionally
+// side-effect-light and avoids cyclic dependencies.
 func (aa *AIAssistant) RequestCompletion(codeContext string) {
 	ne := GetNeuralEngine()
 	dom, _ := ne.CaptureDOM()
-
-	// Aggregated AI Context
-	context := map[string]interface{}{
-		"code": codeContext,
-		"visual_dom": dom,
-	}
-
-	log.Printf("OMNIAI Go: Dispatching Cognitive Context to LLM (%d chars)", len(codeContext))
-	
-	// In a full implementation, we'd fire an async POST to a local LLM server
-	// and update LastSuggestion on response.
-	_ = context
+	_ = dom
+	log.Printf("OMNIAI Go: Dispatching cognitive context to external LLM bridge (%d chars)", len(codeContext))
 }
 
 func (aa *AIAssistant) GetLatestSuggestion() AISuggestion {
 	aa.mu.Lock()
 	defer aa.mu.Unlock()
 	return aa.LastSuggestion
+}
+
+func (aa *AIAssistant) SetLatestSuggestion(s AISuggestion) {
+	aa.mu.Lock()
+	defer aa.mu.Unlock()
+	aa.LastSuggestion = s
 }

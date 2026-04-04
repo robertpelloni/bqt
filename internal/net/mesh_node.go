@@ -1,7 +1,6 @@
 package net
 
 import (
-	"log"
 	"net/http"
 	"sync"
 	"gioui.org/f32"

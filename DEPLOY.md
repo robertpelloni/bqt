@@ -1,38 +1,34 @@
 # Deployment Instructions
 
-## Overview
-BobUI utilizes a CMake-based build system, heavily inspired by and maintaining parity with Qt6.
+## Scope
+This file covers the `bobui` framework repository.
 
-## Prerequisites
-- CMake 3.16+
-- A compliant C++17/C++20 compiler (GCC, Clang, MSVC)
-- Python 3 (for sync scripts if applicable)
+The interactive shell / desktop experience belongs to the adjacent `bobfilez` project.
 
-## Standard Build Process
-1. **Configure:**
-   ```bash
-   mkdir build && cd build
-   ../configure -prefix /usr/local/bobui
-   ```
-   *Alternatively, use CMake directly:*
-   ```bash
-   cmake -B build -S . -DCMAKE_INSTALL_PREFIX=/usr/local/bobui
-   ```
+## Verified Go Baseline
+### Commands that currently work
+```bash
+go test ./internal/...
+go build -buildvcs=false .
+```
 
-2. **Build:**
-   ```bash
-   cmake --build build --parallel
-   ```
+## Go Runtime Requirements
+- Go toolchain matching `go.mod`
+- Gio-compatible platform support for the UI runtime
 
-3. **Test:**
-   ```bash
-   ctest --test-dir build --output-on-failure
-   ```
+## C++ / Qt Track
+The repository still contains the older C++ / Qt / OmniUI track in `OmniUI/`.
+Treat it as a separate implementation path from the Go tree.
 
-4. **Install/Deploy:**
-   ```bash
-   cmake --install build
-   ```
+## CI/CD
+Current workflows exist for:
+- Qt/C++ native builds
+- Qt/C++ WASM builds
+- Go WASM builds
 
-## Versioning
-The version is controlled by `VERSION.md`. Ensure that packaging scripts read this file dynamically rather than relying on hardcoded strings.
+The Go CI pipeline should be updated to explicitly run the verified Go commands listed above.
+
+## Release Verification
+```bash
+python scripts/check_release.py
+```

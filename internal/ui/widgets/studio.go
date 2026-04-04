@@ -2,10 +2,7 @@ package widgets
 
 import (
 	"gioui.org/layout"
-	"gioui.org/unit"
-	"gioui.org/widget/material"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
-	"github.com/robertpelloni/bobui/internal/vm"
 )
 
 type OmniStudio struct {
@@ -15,19 +12,27 @@ type OmniStudio struct {
 	SplitView *SplitView
 }
 
-func (os *OmniStudio) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
-	mth := material.NewTheme()
-	mth.Palette.Fg = th.Text
-	mth.Palette.Bg = th.Surface
+func NewOmniStudio() *OmniStudio {
+	return &OmniStudio{
+		Editor:    &CodeEditor{},
+		Terminal:  &Terminal{},
+		Explorer:  &MeshExplorer{},
+		SplitView: &SplitView{Ratio: 0.7},
+	}
+}
 
-	// --- GO AI SUGGESTION RENDER ---
-	assistant := vm.GetAIAssistant()
-	suggestion := assistant.GetLatestSuggestion()
-	if suggestion.Text != "" {
-		// Render Ghost-Text in Aetheria Gold
-		lbl := material.Label(mth, unit.Sp(12), suggestion.Text)
-		lbl.Color = th.Primary // Gold
-		// ... (positioning at cursor)
+func (os *OmniStudio) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
+	if os.SplitView == nil {
+		os.SplitView = &SplitView{Ratio: 0.7}
+	}
+	if os.Editor == nil {
+		os.Editor = &CodeEditor{}
+	}
+	if os.Terminal == nil {
+		os.Terminal = &Terminal{}
+	}
+	if os.Explorer == nil {
+		os.Explorer = &MeshExplorer{}
 	}
 
 	return os.SplitView.Layout(gtx,

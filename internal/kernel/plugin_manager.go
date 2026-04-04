@@ -50,8 +50,8 @@ func (pm *PluginManager) RegisterPlugin(p PluginInterface) error {
 
 func (pm *PluginManager) GetLoadedPlugins() []string {
 	pm.mu.RLock()
-	defer um.mu.RUnlock() // Note: typo 'um' should be 'pm' - fixing in kernel...
-	
+	defer pm.mu.RUnlock()
+
 	names := make([]string, 0, len(pm.plugins))
 	for name := range pm.plugins {
 		names = append(names, name)

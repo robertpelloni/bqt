@@ -3,7 +3,6 @@ package data
 import (
 	"encoding/binary"
 	"fmt"
-	"io"
 	"os"
 	"sync"
 )

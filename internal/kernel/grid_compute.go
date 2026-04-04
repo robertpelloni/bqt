@@ -1,36 +1,21 @@
 package kernel
 
-import (
-	"log"
-	"github.com/robertpelloni/bobui/internal/net"
-)
+import "log"
 
 type ComputeJob struct {
 	ID      string `json:"id"`
 	Payload []byte `json:"payload"`
 }
 
-// DispatchJob shards a heavy computation to the global Go mesh.
+// DispatchJob records intent to distribute a heavy computation.
+// The verified Go baseline keeps this package free of networking imports to avoid
+// package cycles; mesh dispatch should be orchestrated by a higher-level coordinator.
 func DispatchJob(id string, data []byte) {
-	mesh := net.GetMeshNode()
-	payload := map[string]interface{}{
-		"type":    "compute_task",
-		"id":      id,
-		"content": data,
-	}
-	mesh.Broadcast(payload)
-	log.Printf("OMNICOMPUTE Go: Compute Job [%s] sharded to the Planetary Mesh.", id)
+	log.Printf("OMNICOMPUTE Go: queued compute job [%s] (%d bytes) for mesh dispatch", id, len(data))
 }
 
-// HandleRemoteTask processes a job from a peer and returns the result.
+// HandleRemoteTask is a verified local stub. Real distributed execution should be
+// coordinated by the networking layer and then handed back into the audio/compute kernels.
 func HandleRemoteTask(peerID, jobID string, data []byte) {
-	log.Printf("OMNICOMPUTE Go: Executing remote task for %s", peerID)
-	// Process natively...
-	
-	// Broadcast result back
-	net.GetMeshNode().Broadcast(map[string]interface{}{
-		"type":   "compute_result",
-		"id":     jobID,
-		"result": []byte{0x01, 0x02}, // Mock result
-	})
+	log.Printf("OMNICOMPUTE Go: received remote task [%s] from %s (%d bytes)", jobID, peerID, len(data))
 }

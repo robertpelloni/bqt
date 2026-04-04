@@ -1,32 +1,36 @@
-# OmniUI: The Universal Interface Standard (BobUI)
+# OmniUI / BobUI Framework
 
-OmniUI is the definitive C++ UI framework for modern cross-platform development, designed to be the ultimate foundation for a next-generation, multi-user collaborative Operating System.
+`bobui` is the **framework/kernel** project.
 
-It combines the industrial strength of **Qt 6** with the multimedia prowess of **JUCE**, the styling of **JavaFX**, and the transcendence of **Dear ImGui**.
+It provides the reusable foundation for:
+- multi-device input and ownership
+- UI widgets and layouts
+- media / DSP primitives
+- networking / synchronization primitives
+- developer tooling overlays
+- cross-platform runtime experiments
 
-## Core Paradigm: The Multi-Cursor OS
-OmniUI fundamentally rejects the single-user window manager limitation. By natively intercepting Win32 `RAWINPUT` and routing it into distinct Focus Trees, the framework allows infinite users to concurrently interact with the same application natively.
+The **desktop shell / operating environment** belongs to the adjacent `bobfilez` project, which consumes `bobui`.
 
-## Feature Ecosystem
+## Current State
+This repository contains two major implementation tracks:
+1. **C++ / Qt / OmniUI** in `OmniUI/`
+2. **Experimental Go port** in `internal/` and `main.go`
 
-| Feature Category | Modules | Core Capabilities |
-|------------------|---------|--------------------|
-| **Core UI** | OmniWidgets, OmniLayout | 100% C++ QQuickPaintedItem native rendering. |
-| **Audio/DSP** | OmniAudio, OmniMidi | Direct JUCE DSP mathematical integration & MIDI hardware hooks. |
-| **Data & Net** | OmniData, OmniNet | Native SQLite mapping to QVariantList & Async Websockets. |
-| **Extensibility**| OmniPlugin | Runtime `.dll` / `.so` injection via QPluginLoader. |
-| **Connectivity** | OmniCloud, OmniNexus | Global IPC & Master Clock Unification (Upcoming). |
-| **3D & Simulation** | Omni3D, OmniPhysics | Hardware-accelerated SceneGraph integration (Upcoming). |
+Both tracks contain substantial work. Neither should be assumed complete without build verification.
 
-## Getting Started
-See the [User Manual](docs/Manual.md) for full API documentation.
+## Design Direction
+BobUI aims to match or exceed practical strengths from:
+- Qt 6 / Qt 7 direction
+- JUCE
+- JavaFX
+- Dear ImGui / ImPlot
 
-### Quick Start
-```bash
-# OmniUI targets Emscripten (WASM) and Native Desktop dynamically.
-git clone --recursive https://github.com/robertpelloni/bobui
-cd bobui
-mkdir build && cd build
-cmake -G Ninja ..
-cmake --build .
-```
+with special emphasis on:
+- local multi-user interaction
+- remote collaborative synchronization
+- AI-aware context and automation
+- high-performance desktop and WASM deployment
+
+## Important Boundary
+If you are looking for the actual OS shell, taskbar, launcher, or desktop product, that belongs in **`bobfilez`**, not in this repo.

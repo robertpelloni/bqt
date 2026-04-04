@@ -1,10 +1,9 @@
 package kernel
 
 import (
-	"fmt"
+	"log"
 	"plugin"
 	"sync"
-	"log"
 )
 
 type HostedPlugin struct {

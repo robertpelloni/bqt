@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"gioui.org/layout"
-	"gioui.org/unit"
 )
 
 type SplitView struct {
