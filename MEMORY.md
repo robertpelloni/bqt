@@ -43,3 +43,4 @@
 - 2026-04-05: `internal/ui/widgets/webview_test.go` now provides automated coverage for WebView bridge queueing, reply correlation, eval handling, error propagation, and external message routing.
 - 2026-04-05: `internal/ui/engine_test.go` now provides automated validation for live runtime composition using synthetic Gio frame contexts, covering both login and authenticated runtime states.
 - 2026-04-05: `internal/ui/widgets/webview_test.go` now also covers navigation/history semantics including callback firing, back/forward behavior, and forward-history truncation.
+- 2026-04-05: `internal/ui/widgets/shell_test.go` now provides synthetic frame-context coverage for taskbar start-button toggling and start-menu visibility/layout behavior.
