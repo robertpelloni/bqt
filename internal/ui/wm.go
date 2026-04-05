@@ -48,7 +48,7 @@ func (wm *WindowManager) VisibleWindows() []*widgets.Window {
 	activeTab := wm.ActiveTab()
 	visible := make([]*widgets.Window, 0, len(wm.Windows))
 	for _, win := range wm.Windows {
-		if win == nil {
+		if win == nil || win.Closed {
 			continue
 		}
 		if win.Tab == "" || activeTab == "" || win.Tab == activeTab {
@@ -81,4 +81,34 @@ func (wm *WindowManager) SpawnWindow(id, title string, pos, size f32.Point) {
 
 func (wm *WindowManager) SpawnManagedWindow(id, title, tab, body string, pos, size f32.Point) {
 	wm.Windows = append(wm.Windows, &widgets.Window{ID: id, Title: title, Tab: tab, Body: body, Pos: pos, Size: size})
+}
+
+func (wm *WindowManager) CloseWindow(id string) bool {
+	for _, win := range wm.Windows {
+		if win != nil && win.ID == id {
+			win.Close()
+			return true
+		}
+	}
+	return false
+}
+
+func (wm *WindowManager) MoveWindow(id string, dx, dy float32) bool {
+	for _, win := range wm.Windows {
+		if win != nil && win.ID == id {
+			win.MoveBy(dx, dy)
+			return true
+		}
+	}
+	return false
+}
+
+func (wm *WindowManager) ResizeWindow(id string, dw, dh float32) bool {
+	for _, win := range wm.Windows {
+		if win != nil && win.ID == id {
+			win.ResizeBy(dw, dh)
+			return true
+		}
+	}
+	return false
 }

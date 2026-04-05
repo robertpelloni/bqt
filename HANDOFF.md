@@ -4,19 +4,19 @@
 2026-04-05
 
 ## What I did this cycle
-- Reworked the managed-window path so tabs are now clickable, windows carry tab/body semantics, and `WindowManager` filters visible windows by active tab.
-- Seeded the live runtime with tab-aware managed windows containing meaningful sample content.
-- Extended deterministic tests around window-manager visibility/filtering and engine initialization of the visible managed-window set.
-- Added implementation/testing docs for the managed-window interaction milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-managed-window-interaction-session.md`.
+- Reworked the managed-window baseline to support close state, move helpers, resize helpers, drag handlers, and a close button.
+- Reworked `WindowManager` to expose `MoveWindow(...)`, `ResizeWindow(...)`, and `CloseWindow(...)`.
+- Added deterministic tests around window-level move/resize/close behavior and manager-level manipulation routing.
+- Added implementation/testing docs for the managed-window manipulation milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-managed-window-manipulation-session.md`.
 
 ## Verified state
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
-- The Go baseline now includes a live runtime path with login, demo surface, shell composition, clickable tabs, and tab-aware managed windows.
-- Managed-window interaction remains intentionally lightweight; current behavior focuses on selection/filtering/content rather than move/resize/close or full docking complexity.
+- The Go baseline now includes a live runtime path with login, demo surface, shell composition, clickable tabs, tab-aware managed windows, and managed-window move/resize/close baseline behavior.
+- Managed-window interaction is still intentionally lightweight; current behavior does not yet include richer focus/activation or full docking/workspace semantics.
 
 ## Recommended next steps
-1. Add managed-window move/resize/close interaction.
-2. Improve docking/tab behavior beyond basic active-tab filtering.
+1. Improve docking/tab behavior beyond active-tab filtering.
+2. Add focus/activation semantics for managed windows.
 3. Continue keeping docs aligned only with verified behavior.
 4. Continue using BTK as a comparative native-framework reference while keeping shell/OS concerns in `bobfilez` and framework concerns in `bobui`.

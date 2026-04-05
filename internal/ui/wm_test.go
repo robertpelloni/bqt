@@ -53,6 +53,29 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 		t.Fatalf("unexpected visible windows for Docs tab: %+v %+v", visible[0], visible[1])
 	}
 
+	if !wm.MoveWindow("win-2", 10, -5) {
+		t.Fatal("expected MoveWindow to succeed for existing window")
+	}
+	if wm.Windows[1].Pos.X != 40 || wm.Windows[1].Pos.Y != 35 {
+		t.Fatalf("unexpected moved position for win-2: %v/%v", wm.Windows[1].Pos.X, wm.Windows[1].Pos.Y)
+	}
+	if !wm.ResizeWindow("win-2", 20, 30) {
+		t.Fatal("expected ResizeWindow to succeed for existing window")
+	}
+	if wm.Windows[1].Size.X != 260 || wm.Windows[1].Size.Y != 170 {
+		t.Fatalf("unexpected resized size for win-2: %v/%v", wm.Windows[1].Size.X, wm.Windows[1].Size.Y)
+	}
+	if !wm.CloseWindow("win-2") {
+		t.Fatal("expected CloseWindow to succeed for existing window")
+	}
+	visible = wm.VisibleWindows()
+	if len(visible) != 1 || visible[0].ID != "win-3" {
+		t.Fatalf("expected only shared window to remain visible after closing win-2, got %+v", visible)
+	}
+	if wm.MoveWindow("missing", 1, 1) || wm.ResizeWindow("missing", 1, 1) || wm.CloseWindow("missing") {
+		t.Fatal("expected move/resize/close to fail for missing window")
+	}
+
 	dims := wm.Layout(newTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
 	if dims.Size.X != 1280 || dims.Size.Y != 900 {
 		t.Fatalf("expected window manager layout to cover full available space, got %v", dims.Size)

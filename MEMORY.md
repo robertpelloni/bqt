@@ -48,3 +48,4 @@
 - 2026-04-05: `internal/kernel/services_test.go` now adds deterministic coverage for `UndoStack`, `Clipboard`, and `MergeKernel`, extending verification into higher-value kernel services.
 - 2026-04-05: The Go `WindowManager` is now integrated into the live runtime path, with seeded managed windows and deterministic tests covering initialization, reset/spawn behavior, and layout dimensions.
 - 2026-04-05: Managed windows now have clickable tabs, tab-aware visibility filtering, and per-window body content, making runtime composition more meaningful without claiming full docking complexity.
+- 2026-04-05: Managed windows now also have a first direct manipulation baseline through close/move/resize helpers plus deterministic manager/window tests covering that behavior.
