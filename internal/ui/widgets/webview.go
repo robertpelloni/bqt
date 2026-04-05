@@ -22,16 +22,29 @@ type ScriptMessage struct {
 
 type JSBridgeHandler func(payload string) (string, error)
 
-// JSBridge provides a compile-safe contract for WebEngineQuick-style host/page messaging.
+// JSBridge provides a compile-safe but now executable bridge model for
+// WebEngineQuick-style host/page messaging. Messages can be queued and then
+// pumped through local handlers, while still preserving a small BobUI-facing API.
 type JSBridge struct {
 	OnMessage func(msg ScriptMessage)
 	Handlers  map[string]JSBridgeHandler
-	nextID    int
+
+	EvalHandler JSBridgeHandler
+	Queue       []ScriptMessage
+	History     []ScriptMessage
+
+	nextID                 int
+	AutoDispatch           bool
+	autoDispatchInitialized bool
 }
 
-func (b *JSBridge) ensureHandlers() {
+func (b *JSBridge) ensureState() {
 	if b.Handlers == nil {
 		b.Handlers = make(map[string]JSBridgeHandler)
+	}
+	if !b.autoDispatchInitialized {
+		b.AutoDispatch = true
+		b.autoDispatchInitialized = true
 	}
 }
 
@@ -40,50 +53,118 @@ func (b *JSBridge) nextMessageID() string {
 	return fmt.Sprintf("msg-%d", b.nextID)
 }
 
+func (b *JSBridge) record(msg ScriptMessage) {
+	b.History = append(b.History, msg)
+	if b.OnMessage != nil {
+		b.OnMessage(msg)
+	}
+}
+
+func (b *JSBridge) QueueMessage(msg ScriptMessage) ScriptMessage {
+	b.ensureState()
+	if msg.ID == "" {
+		msg.ID = b.nextMessageID()
+	}
+	b.Queue = append(b.Queue, msg)
+	b.record(msg)
+	return msg
+}
+
 func (b *JSBridge) RegisterHandler(channel string, handler JSBridgeHandler) {
-	b.ensureHandlers()
+	b.ensureState()
 	b.Handlers[channel] = handler
 }
 
-func (b *JSBridge) Emit(channel, payload string) {
-	if b == nil || b.OnMessage == nil {
-		return
-	}
-	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: channel, Payload: payload, Kind: "emit"})
+func (b *JSBridge) RegisterEvalHandler(handler JSBridgeHandler) {
+	b.ensureState()
+	b.EvalHandler = handler
 }
 
-func (b *JSBridge) Eval(source string) {
-	if b == nil || b.OnMessage == nil {
-		return
-	}
-	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: "eval", Payload: source, Kind: "eval"})
+func (b *JSBridge) Emit(channel, payload string) ScriptMessage {
+	return b.QueueMessage(ScriptMessage{Channel: channel, Payload: payload, Kind: "emit"})
 }
 
-func (b *JSBridge) Request(channel, payload string) {
-	if b == nil || b.OnMessage == nil {
-		return
-	}
-	b.OnMessage(ScriptMessage{ID: b.nextMessageID(), Channel: channel, Payload: payload, Kind: "request"})
+func (b *JSBridge) Eval(source string) ScriptMessage {
+	return b.QueueMessage(ScriptMessage{Channel: "eval", Payload: source, Kind: "eval"})
+}
+
+func (b *JSBridge) Request(channel, payload string) ScriptMessage {
+	return b.QueueMessage(ScriptMessage{Channel: channel, Payload: payload, Kind: "request"})
 }
 
 // Dispatch routes a page->host request into a registered handler and returns a reply/error.
 func (b *JSBridge) Dispatch(channel, payload string) ScriptMessage {
-	b.ensureHandlers()
-	id := b.nextMessageID()
-	h, ok := b.Handlers[channel]
-	if !ok {
-		return ScriptMessage{ID: id, Channel: channel, Payload: "handler not found", Kind: "error"}
+	b.ensureState()
+	return b.DispatchMessage(ScriptMessage{ID: b.nextMessageID(), Channel: channel, Payload: payload, Kind: "request"})
+}
+
+func (b *JSBridge) DispatchMessage(msg ScriptMessage) ScriptMessage {
+	b.ensureState()
+	if msg.ID == "" {
+		msg.ID = b.nextMessageID()
 	}
-	result, err := h(payload)
-	if err != nil {
-		return ScriptMessage{ID: id, Channel: channel, Payload: err.Error(), Kind: "error"}
+
+	switch msg.Kind {
+	case "emit":
+		if h, ok := b.Handlers[msg.Channel]; ok {
+			_, _ = h(msg.Payload)
+		}
+		return ScriptMessage{}
+	case "eval":
+		if b.EvalHandler == nil {
+			return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: "no eval handler registered", Kind: "error"}
+		}
+		result, err := b.EvalHandler(msg.Payload)
+		if err != nil {
+			return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: err.Error(), Kind: "error"}
+		}
+		return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: result, Kind: "reply"}
+	case "request":
+		h, ok := b.Handlers[msg.Channel]
+		if !ok {
+			return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: "handler not found", Kind: "error"}
+		}
+		result, err := h(msg.Payload)
+		if err != nil {
+			return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: err.Error(), Kind: "error"}
+		}
+		return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: result, Kind: "reply"}
+	case "reply", "error":
+		return msg
+	default:
+		return ScriptMessage{ID: msg.ID, Channel: msg.Channel, Payload: "unsupported message kind", Kind: "error"}
 	}
-	return ScriptMessage{ID: id, Channel: channel, Payload: result, Kind: "reply"}
+}
+
+// Pump processes queued runtime messages and returns any generated replies/errors.
+func (b *JSBridge) Pump() []ScriptMessage {
+	b.ensureState()
+	if len(b.Queue) == 0 {
+		return nil
+	}
+
+	queued := append([]ScriptMessage(nil), b.Queue...)
+	b.Queue = b.Queue[:0]
+
+	var replies []ScriptMessage
+	for _, msg := range queued {
+		reply := b.DispatchMessage(msg)
+		if reply.Kind == "" {
+			continue
+		}
+		b.record(reply)
+		replies = append(replies, reply)
+	}
+	return replies
+}
+
+func (b *JSBridge) QueueDepth() int {
+	return len(b.Queue)
 }
 
 // WebView is a lightweight WebEngineQuick-style navigation model for the verified Go baseline.
 // It is intentionally not a full browser engine; it provides URL/history/title/content semantics
-// plus a compile-safe event/bridge contract the rest of the framework can build on.
+// plus an executable bridge/runtime surface the rest of the framework can build on.
 type WebView struct {
 	URL     string
 	Title   string
@@ -104,14 +185,16 @@ type WebView struct {
 	Bridge *JSBridge
 
 	LastEvaluatedJS string
+	LastEvalResult  string
 	LastPostedMsg   ScriptMessage
+	LastReply       ScriptMessage
 }
 
 func (w *WebView) ensureBridge() {
 	if w.Bridge == nil {
 		w.Bridge = &JSBridge{}
 	}
-	w.Bridge.ensureHandlers()
+	w.Bridge.ensureState()
 	w.Bridge.OnMessage = func(msg ScriptMessage) {
 		w.LastPostedMsg = msg
 		if w.OnScriptMessage != nil {
@@ -120,9 +203,70 @@ func (w *WebView) ensureBridge() {
 	}
 }
 
+func (w *WebView) captureReplies(replies []ScriptMessage) {
+	for _, reply := range replies {
+		w.LastReply = reply
+		w.LastPostedMsg = reply
+		if reply.Channel == "eval" && reply.Kind == "reply" {
+			w.LastEvalResult = reply.Payload
+		}
+	}
+}
+
+func (w *WebView) maybePumpBridge() []ScriptMessage {
+	if w.Bridge == nil || !w.Bridge.AutoDispatch {
+		return nil
+	}
+	return w.PumpRuntime()
+}
+
+func (w *WebView) SetAutoDispatch(enabled bool) {
+	w.ensureBridge()
+	w.Bridge.AutoDispatch = enabled
+	w.Bridge.autoDispatchInitialized = true
+}
+
 func (w *WebView) RegisterHandler(channel string, handler JSBridgeHandler) {
 	w.ensureBridge()
 	w.Bridge.RegisterHandler(channel, handler)
+}
+
+func (w *WebView) RegisterEvalHandler(handler JSBridgeHandler) {
+	w.ensureBridge()
+	w.Bridge.RegisterEvalHandler(handler)
+}
+
+func (w *WebView) PumpRuntime() []ScriptMessage {
+	w.ensureBridge()
+	replies := w.Bridge.Pump()
+	w.captureReplies(replies)
+	return replies
+}
+
+func (w *WebView) QueueDepth() int {
+	w.ensureBridge()
+	return w.Bridge.QueueDepth()
+}
+
+// HandleScriptMessage routes an externally supplied script message through the local runtime.
+func (w *WebView) HandleScriptMessage(msg ScriptMessage) ScriptMessage {
+	w.ensureBridge()
+	if msg.Kind == "reply" || msg.Kind == "error" {
+		if msg.ID == "" {
+			msg.ID = w.Bridge.nextMessageID()
+		}
+		w.Bridge.record(msg)
+		w.captureReplies([]ScriptMessage{msg})
+		return msg
+	}
+	queued := w.Bridge.QueueMessage(msg)
+	replies := w.maybePumpBridge()
+	for _, reply := range replies {
+		if reply.ID == queued.ID {
+			return reply
+		}
+	}
+	return ScriptMessage{}
 }
 
 func (w *WebView) Navigate(url, html string) {
@@ -182,34 +326,38 @@ func (w *WebView) Forward() {
 	}
 }
 
-// EvalJS is a host-to-page bridge request.
+// EvalJS is a host-to-page bridge request that now executes through the local runtime.
 func (w *WebView) EvalJS(source string) {
 	w.ensureBridge()
 	w.LastEvaluatedJS = source
 	w.Bridge.Eval(source)
+	w.maybePumpBridge()
 }
 
-// PostMessage is a page-to-host bridge message.
+// PostMessage is a page-to-host bridge message that now flows through the local runtime queue.
 func (w *WebView) PostMessage(channel, payload string) {
 	w.ensureBridge()
 	w.Bridge.Emit(channel, payload)
+	w.maybePumpBridge()
 }
 
-// Request sends a request and immediately routes it through the local bridge handler set.
+// Request sends a request and routes it through the local runtime bridge, preserving correlation ids.
 func (w *WebView) Request(channel, payload string) ScriptMessage {
 	w.ensureBridge()
-	reply := w.Bridge.Dispatch(channel, payload)
-	w.LastPostedMsg = reply
-	if w.OnScriptMessage != nil {
-		w.OnScriptMessage(reply)
+	request := w.Bridge.Request(channel, payload)
+	replies := w.maybePumpBridge()
+	for _, reply := range replies {
+		if reply.ID == request.ID {
+			return reply
+		}
 	}
-	return reply
+	return ScriptMessage{ID: request.ID, Channel: channel, Payload: "pending runtime reply", Kind: "request"}
 }
 
 // BridgeContractJSON exposes the bridge contract in a tool-friendly format.
 func (w *WebView) BridgeContractJSON() string {
 	contract := map[string]any{
-		"supports": []string{"navigate", "history", "titleChanged", "load", "scriptMessage", "evalJS", "postMessage", "request", "reply", "error"},
+		"supports": []string{"navigate", "history", "titleChanged", "load", "scriptMessage", "evalJS", "postMessage", "request", "reply", "error", "runtimeQueue", "pumpRuntime", "handleScriptMessage", "registerEvalHandler", "autoDispatch"},
 		"message": map[string]string{
 			"id":      "optional request/reply correlation id",
 			"channel": "logical route name",
@@ -219,6 +367,19 @@ func (w *WebView) BridgeContractJSON() string {
 	}
 	data, _ := json.Marshal(contract)
 	return string(data)
+}
+
+func (w *WebView) runtimeSummary() string {
+	w.ensureBridge()
+	lastReply := "none"
+	if w.LastReply.Kind != "" {
+		lastReply = fmt.Sprintf("%s:%s", w.LastReply.Kind, w.LastReply.Channel)
+	}
+	lastEval := w.LastEvalResult
+	if lastEval == "" {
+		lastEval = "none"
+	}
+	return fmt.Sprintf("queue=%d auto=%v lastReply=%s lastEval=%s", w.QueueDepth(), w.Bridge.AutoDispatch, lastReply, lastEval)
 }
 
 func (w *WebView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
@@ -256,6 +417,9 @@ func (w *WebView) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return material.H6(mth, w.Title).Layout(gtx)
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return material.Caption(mth, w.runtimeSummary()).Layout(gtx)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return material.Caption(mth, w.BridgeContractJSON()).Layout(gtx)

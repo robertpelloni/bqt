@@ -23,7 +23,7 @@ func NewEngine() *Engine {
 }
 
 // Run remains a compile-safe baseline while the Gio event loop is stabilized.
-// It now initializes the demo composition surface and the lightweight WebView event hooks.
+// It now initializes the demo composition surface and exercises the executable WebView bridge runtime.
 func (e *Engine) Run() error {
 	_ = theme.GetTheme(theme.Cyberpunk)
 	log.Println("OmniUI Go: Engine initialized in safe baseline mode.")
@@ -46,9 +46,20 @@ func (e *Engine) Run() error {
 		e.demo.WebView.RegisterHandler("ping", func(payload string) (string, error) {
 			return fmt.Sprintf("pong:%s", payload), nil
 		})
+		e.demo.WebView.RegisterHandler("title", func(payload string) (string, error) {
+			e.demo.WebView.Title = payload
+			if e.demo.WebView.OnTitleChanged != nil {
+				e.demo.WebView.OnTitleChanged(payload)
+			}
+			return "title-updated", nil
+		})
+		e.demo.WebView.RegisterEvalHandler(func(payload string) (string, error) {
+			return fmt.Sprintf("evaluated:%s", payload), nil
+		})
 		e.demo.WebView.PostMessage("boot", "demo-surface-online")
 		e.demo.WebView.EvalJS("window.bobuiReady = true")
 		_ = e.demo.WebView.Request("ping", "hello")
+		_ = e.demo.WebView.HandleScriptMessage(widgets.ScriptMessage{Channel: "title", Payload: "about:bobui runtime", Kind: "request"})
 	}
 	return nil
 }

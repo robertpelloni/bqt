@@ -36,3 +36,5 @@
 - `DemoSurface` now exercises the scrolling baseline with sample content and live status text, which gives future runtime work a visible integration target.
 - 2026-04-05: The Go baseline now includes a `TouchArea` primitive with directional swipe recognition and optional mouse-as-touch fallback for development on non-touch systems.
 - The touch/swipe addition is intentionally small and framework-owned; it is a foundation for later multi-touch and gesture-composition work, not a claim of full gesture-stack parity.
+- 2026-04-05: The Go `WebView` bridge now supports a small executable runtime model with queueing, pumping, eval handlers, correlated request/reply behavior, and explicit external message handling.
+- The most useful near-term pattern remains: use Gio internals for proven interaction mechanics while preserving BobUI-owned framework abstractions and honest scope boundaries.

@@ -17,7 +17,7 @@
 - [x] Add a compile-safe demo composition surface for the new controls.
 - [x] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
 - [x] Add touch/swipe behavior primitives.
-- [ ] Upgrade the `WebView` bridge from compile-safe contract to executable runtime semantics.
+- [x] Upgrade the `WebView` bridge from compile-safe contract to executable runtime semantics.
 
 ## 4. Framework Parity Work
 - [ ] Continue runtime-verifying parity claims instead of expanding only by file count.

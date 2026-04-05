@@ -36,3 +36,8 @@ The `BTK` comparison suggests a durable split that may actually accelerate both 
 The new `TouchArea` baseline suggests a clean expansion order for input primitives.
 - **The Pivot:** Grow from single-swipe and touch-presence semantics into multi-touch, pinch, rotate, gesture arbitration, and haptic coupling only after each layer is visibly exercised in the demo/runtime surface.
 - **The Execution:** Keep each step framework-owned and compile-verified, using Gio gesture machinery internally but exposing BobUI-specific input abstractions externally.
+
+## 8. WebView Runtime Growth Path
+The executable local `WebView` runtime now suggests a similar staged path for embedded web behavior.
+- **The Pivot:** Grow from local queue/pump/eval/request semantics into richer async routing, interception policies, permission layers, and eventually browser-backed execution only when each layer remains verifiable.
+- **The Execution:** Preserve the lightweight BobUI bridge vocabulary while expanding behavior incrementally, so the surface remains useful even before a full embedded browser stack exists.
