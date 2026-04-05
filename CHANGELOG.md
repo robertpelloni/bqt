@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.34] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6CoreConfig.cmake`, `cmake/BobUICoreConfig.cmake`, `cmake/BobUI6WidgetsConfig.cmake`, and `cmake/BobUIWidgetsConfig.cmake`.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-core-widgets.md` and `docs/ai/testing/2026-04-05-bobui-cmake-module-shims-core-widgets-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-core-widgets-session.md`.
+
+### Changed
+- Reworked `cmake/QtBobUIHelpers.cmake` so missing BobUI config sources are treated as safe no-ops.
+- Reworked `cmake/QtModuleHelpers.cmake` to publish BobUI module-package compatibility files only when matching BobUI config sources exist.
+- Extended `cmake/tests/bobui_package_forwarding_smoke.cmake` and `cmake/tests/bobui_export_publication_configure_smoke.cmake` to validate direct Core/Widgets module-package forwarding and publication.
+- Updated project/session docs to record the first direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.33] - 2026-04-05
 ### Added
 - Added `cmake/QtBobUIHelpers.cmake` to hold the BobUI compatibility package-publication helper.

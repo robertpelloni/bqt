@@ -11,6 +11,10 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/Qt6Widgets"
     "${_bobui_cmake_root}/BobUI6"
     "${_bobui_cmake_root}/BobUI"
+    "${_bobui_cmake_root}/BobUI6Core"
+    "${_bobui_cmake_root}/BobUICore"
+    "${_bobui_cmake_root}/BobUI6Widgets"
+    "${_bobui_cmake_root}/BobUIWidgets"
     "${_bobui_source_dir}"
 )
 
@@ -44,34 +48,50 @@ endif()
 
 file(WRITE "${_bobui_cmake_root}/Qt6Core/Qt6CoreConfig.cmake" [=[
 set(Qt6Core_FOUND TRUE)
+set(Qt6Core_VERSION "6.12.0")
 if(NOT TARGET Qt6::Core)
     add_library(Qt6::Core INTERFACE IMPORTED)
 endif()
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Core/Qt6CoreConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 file(WRITE "${_bobui_cmake_root}/Qt6Widgets/Qt6WidgetsConfig.cmake" [=[
 set(Qt6Widgets_FOUND TRUE)
+set(Qt6Widgets_VERSION "6.12.0")
 if(NOT TARGET Qt6::Widgets)
     add_library(Qt6::Widgets INTERFACE IMPORTED)
 endif()
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Widgets/Qt6WidgetsConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
-    DESTINATION "${_bobui_cmake_root}/BobUI6")
+foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6Widgets BobUIWidgets)
+    file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
+        DESTINATION "${_bobui_cmake_root}/${_bobui_package_dir}")
+endforeach()
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6Config.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6")
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
-    DESTINATION "${_bobui_cmake_root}/BobUI")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6CoreConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Core")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICoreConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUICore")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6WidgetsConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Widgets")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIWidgetsConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUIWidgets")
 
-file(WRITE "${_bobui_cmake_root}/BobUI6/BobUI6ConfigVersion.cmake" [=[
+foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6Widgets BobUIWidgets)
+    file(WRITE "${_bobui_cmake_root}/${_bobui_package_name}/${_bobui_package_name}ConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
-file(WRITE "${_bobui_cmake_root}/BobUI/BobUIConfigVersion.cmake" [=[
-set(PACKAGE_VERSION "6.12.0")
-set(PACKAGE_VERSION_COMPATIBLE TRUE)
-]=])
+endforeach()
 
 file(WRITE "${_bobui_source_dir}/CMakeLists.txt" [=[
 cmake_minimum_required(VERSION 3.16)
@@ -79,6 +99,10 @@ project(BobUIPackageForwardingSmoke LANGUAGES NONE)
 
 find_package(BobUI6 6.12 REQUIRED CONFIG COMPONENTS Core Widgets)
 find_package(BobUI REQUIRED CONFIG COMPONENTS Core Widgets)
+find_package(BobUI6Core 6.12 REQUIRED CONFIG)
+find_package(BobUICore REQUIRED CONFIG)
+find_package(BobUI6Widgets 6.12 REQUIRED CONFIG)
+find_package(BobUIWidgets REQUIRED CONFIG)
 
 foreach(target_name
     BobUI6::Core

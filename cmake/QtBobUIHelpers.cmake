@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 function(qt_internal_install_bobui_compat_package package_name config_source_file)
+    if(NOT EXISTS "${config_source_file}")
+        return()
+    endif()
+
     qt_path_join(package_build_dir ${QT_CONFIG_BUILD_DIR} ${package_name})
     qt_path_join(package_install_dir ${QT_CONFIG_INSTALL_DIR} ${package_name})
 

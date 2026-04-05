@@ -32,6 +32,10 @@ Current additive compatibility files:
 - `cmake/BobUICompatibilityHelpers.cmake`
 - `cmake/BobUI6Config.cmake`
 - `cmake/BobUIConfig.cmake`
+- `cmake/BobUI6CoreConfig.cmake`
+- `cmake/BobUICoreConfig.cmake`
+- `cmake/BobUI6WidgetsConfig.cmake`
+- `cmake/BobUIWidgetsConfig.cmake`
 
 Current additive export wiring:
 - `cmake/QtBaseGlobalTargets.cmake` now publishes additive `BobUI6/` and `BobUI/` package directories alongside the canonical `Qt6/` package directory.

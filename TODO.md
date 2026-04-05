@@ -22,7 +22,9 @@
 - [x] Wire the BobUI CMake compatibility shims into install/export generation without replacing the canonical Qt package layout in one shot.
 - [x] Add an install-layout-style prefix-path validation path for `find_package(BobUI6 ...)` through a fake-prefix smoke test.
 - [x] Add stronger configure-time validation for the modified top-level package-generation path via a publication-helper smoke test.
+- [x] Add a first direct BobUI module-package slice for `Core` and `Widgets`.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
+- [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

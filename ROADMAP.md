@@ -45,6 +45,8 @@
 - [x] Implement the first additive `cmake/` package/export compatibility slice without staging unrelated rename artifacts.
 - [x] Wire the new BobUI CMake compatibility shims into install/export generation without replacing the canonical Qt package layout in one shot.
 - [x] Add stronger native/prefix validation for the additive BobUI package-generation path through a configure-time publication smoke test.
+- [x] Extend the additive BobUI CMake compatibility path into a first direct module-package slice for `Core` and `Widgets`.
 - [ ] Add stronger qtbase-native configure/install validation when practical.
+- [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
