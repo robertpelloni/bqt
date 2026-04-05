@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.27] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-managed-window-activation.md` documenting the managed-window focus/activation baseline.
+- Added `docs/ai/testing/2026-04-05-managed-window-activation-tests.md` documenting validation for managed-window activation behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-managed-window-activation-session.md`.
+
+### Changed
+- Reworked `internal/ui/wm.go` to track an active window, promote activated windows, and choose fallback active windows when visibility changes.
+- Reworked `internal/ui/widgets/window.go` to reflect active/inactive visual state.
+- Extended `internal/ui/wm_test.go` to validate activation, ordering promotion, and fallback behavior.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified managed-window activation milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.26] - 2026-04-05
 ### Added
 - Added `docs/ai/implementation/2026-04-05-managed-window-manipulation.md` documenting the managed-window move/resize/close baseline.

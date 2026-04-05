@@ -6,6 +6,7 @@ import (
 
 	"gioui.org/f32"
 	"github.com/robertpelloni/bobui/internal/ui/theme"
+	"github.com/robertpelloni/bobui/internal/ui/widgets"
 )
 
 func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
@@ -28,8 +29,15 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 		t.Fatalf("unexpected window titles: %+v %+v %+v", wm.Windows[0], wm.Windows[1], wm.Windows[2])
 	}
 
+	dims := wm.Layout(newTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
+	if dims.Size.X != 1280 || dims.Size.Y != 900 {
+		t.Fatalf("expected window manager layout to cover full available space, got %v", dims.Size)
+	}
 	if active := wm.ActiveTab(); active != "Kernel" {
 		t.Fatalf("expected initial active tab Kernel, got %q", active)
+	}
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-1" {
+		t.Fatalf("expected win-1 to become the initial active visible window, got %+v", wm.ActiveWindow())
 	}
 	visible := wm.VisibleWindows()
 	if len(visible) != 2 {
@@ -37,6 +45,16 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 	}
 	if visible[0].ID != "win-1" || visible[1].ID != "win-3" {
 		t.Fatalf("unexpected visible windows for Kernel tab: %+v %+v", visible[0], visible[1])
+	}
+
+	if !wm.ActivateWindow("win-3") {
+		t.Fatal("expected ActivateWindow to succeed for visible shared window")
+	}
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-3" {
+		t.Fatalf("expected win-3 to become active, got %+v", wm.ActiveWindow())
+	}
+	if wm.Windows[len(wm.Windows)-1].ID != "win-3" {
+		t.Fatalf("expected active window to be promoted to front order, got tail id %q", wm.Windows[len(wm.Windows)-1].ID)
 	}
 
 	wm.Tabs.ClickTab(2)
@@ -52,32 +70,43 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 	if visible[0].ID != "win-2" || visible[1].ID != "win-3" {
 		t.Fatalf("unexpected visible windows for Docs tab: %+v %+v", visible[0], visible[1])
 	}
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-3" {
+		t.Fatalf("expected shared active window to remain active across tab change, got %+v", wm.ActiveWindow())
+	}
 
 	if !wm.MoveWindow("win-2", 10, -5) {
 		t.Fatal("expected MoveWindow to succeed for existing window")
 	}
-	if wm.Windows[1].Pos.X != 40 || wm.Windows[1].Pos.Y != 35 {
-		t.Fatalf("unexpected moved position for win-2: %v/%v", wm.Windows[1].Pos.X, wm.Windows[1].Pos.Y)
+	var win2 *widgets.Window
+	for _, win := range wm.Windows {
+		if win != nil && win.ID == "win-2" {
+			win2 = win
+			break
+		}
+	}
+	if win2 == nil {
+		t.Fatal("expected to find win-2 after move")
+	}
+	if win2.Pos.X != 40 || win2.Pos.Y != 35 {
+		t.Fatalf("unexpected moved position for win-2: %v/%v", win2.Pos.X, win2.Pos.Y)
 	}
 	if !wm.ResizeWindow("win-2", 20, 30) {
 		t.Fatal("expected ResizeWindow to succeed for existing window")
 	}
-	if wm.Windows[1].Size.X != 260 || wm.Windows[1].Size.Y != 170 {
-		t.Fatalf("unexpected resized size for win-2: %v/%v", wm.Windows[1].Size.X, wm.Windows[1].Size.Y)
+	if win2.Size.X != 260 || win2.Size.Y != 170 {
+		t.Fatalf("unexpected resized size for win-2: %v/%v", win2.Size.X, win2.Size.Y)
 	}
-	if !wm.CloseWindow("win-2") {
-		t.Fatal("expected CloseWindow to succeed for existing window")
+	if !wm.CloseWindow("win-3") {
+		t.Fatal("expected CloseWindow to succeed for existing active window")
+	}
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-2" {
+		t.Fatalf("expected active window to fall back to visible docs window, got %+v", wm.ActiveWindow())
 	}
 	visible = wm.VisibleWindows()
-	if len(visible) != 1 || visible[0].ID != "win-3" {
-		t.Fatalf("expected only shared window to remain visible after closing win-2, got %+v", visible)
+	if len(visible) != 1 || visible[0].ID != "win-2" {
+		t.Fatalf("expected only docs window to remain visible after closing shared window, got %+v", visible)
 	}
-	if wm.MoveWindow("missing", 1, 1) || wm.ResizeWindow("missing", 1, 1) || wm.CloseWindow("missing") {
-		t.Fatal("expected move/resize/close to fail for missing window")
-	}
-
-	dims := wm.Layout(newTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
-	if dims.Size.X != 1280 || dims.Size.Y != 900 {
-		t.Fatalf("expected window manager layout to cover full available space, got %v", dims.Size)
+	if wm.MoveWindow("missing", 1, 1) || wm.ResizeWindow("missing", 1, 1) || wm.CloseWindow("missing") || wm.ActivateWindow("missing") {
+		t.Fatal("expected move/resize/close/activate to fail for missing window")
 	}
 }

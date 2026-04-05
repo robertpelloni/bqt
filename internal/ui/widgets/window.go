@@ -26,6 +26,7 @@ type Window struct {
 
 	MinSize f32.Point
 	Closed  bool
+	Active  bool
 
 	CloseBtn   widget.Clickable
 	moveDrag   gesture.Drag
@@ -70,6 +71,11 @@ func (w *Window) ResizeBy(dw, dh float32) {
 
 func (w *Window) Close() {
 	w.Closed = true
+	w.Active = false
+}
+
+func (w *Window) SetActive(active bool) {
+	w.Active = active && !w.Closed
 }
 
 func (w *Window) handleDrag(gtx layout.Context, drag *gesture.Drag, active *bool, last *f32.Point, onDelta func(dx, dy float32)) {
@@ -124,9 +130,12 @@ func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	titleBar := image.Rect(0, 0, width, 30)
 	bodyRect := image.Rect(0, 30, width, height)
 	resizeHandle := image.Rect(width-18, height-18, width, height)
-
+	titleColor := th.Primary
+	if w.Active {
+		titleColor = th.Accent
+	}
 	paint.FillShape(local.Ops, th.Surface, clip.Rect(outer).Op())
-	paint.FillShape(local.Ops, th.Primary, clip.Rect(titleBar).Op())
+	paint.FillShape(local.Ops, titleColor, clip.Rect(titleBar).Op())
 	paint.FillShape(local.Ops, th.Background, clip.Rect(bodyRect).Op())
 	paint.FillShape(local.Ops, th.Accent, clip.Rect(resizeHandle).Op())
 	if th.Type == theme.Cyberpunk {
@@ -158,6 +167,10 @@ func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 		if tabInfo == "" {
 			tabInfo = "shared"
 		}
+		state := "inactive"
+		if w.Active {
+			state = "active"
+		}
 		return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Horizontal, Spacing: layout.SpaceBetween, Alignment: layout.Middle}.Layout(gtx,
@@ -173,7 +186,7 @@ func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 			layout.Rigid(layout.Spacer{Height: unit.Dp(18)}.Layout),
 			layout.Rigid(material.Body2(mth, body).Layout),
 			layout.Rigid(layout.Spacer{Height: unit.Dp(8)}.Layout),
-			layout.Rigid(material.Caption(mth, "tab="+tabInfo+" id="+w.ID).Layout),
+			layout.Rigid(material.Caption(mth, "tab="+tabInfo+" id="+w.ID+" state="+state).Layout),
 			layout.Rigid(material.Caption(mth, "drag title bar | resize bottom-right").Layout),
 		)
 	})

@@ -11,8 +11,9 @@ import (
 )
 
 type WindowManager struct {
-	Windows []*widgets.Window
-	Tabs    *widgets.TabBar
+	Windows        []*widgets.Window
+	Tabs           *widgets.TabBar
+	ActiveWindowID string
 }
 
 var (
@@ -32,6 +33,7 @@ func GetWindowManager() *WindowManager {
 func (wm *WindowManager) Reset() {
 	wm.Windows = make([]*widgets.Window, 0)
 	wm.Tabs = &widgets.TabBar{Tabs: []string{"Kernel", "Terminal", "Docs"}}
+	wm.ActiveWindowID = ""
 }
 
 func (wm *WindowManager) ActiveTab() string {
@@ -39,6 +41,48 @@ func (wm *WindowManager) ActiveTab() string {
 		return ""
 	}
 	return wm.Tabs.ActiveTitle()
+}
+
+func (wm *WindowManager) ActiveWindow() *widgets.Window {
+	if wm == nil || wm.ActiveWindowID == "" {
+		return nil
+	}
+	for _, win := range wm.Windows {
+		if win != nil && !win.Closed && win.ID == wm.ActiveWindowID {
+			return win
+		}
+	}
+	return nil
+}
+
+func (wm *WindowManager) syncActiveWindowState() {
+	active := wm.ActiveWindowID
+	for _, win := range wm.Windows {
+		if win != nil {
+			win.SetActive(win.ID == active)
+		}
+		if win != nil && win.Closed && win.ID == active {
+			active = ""
+		}
+	}
+	wm.ActiveWindowID = active
+}
+
+func (wm *WindowManager) ensureActiveVisible() {
+	visible := wm.VisibleWindows()
+	if len(visible) == 0 {
+		wm.ActiveWindowID = ""
+		wm.syncActiveWindowState()
+		return
+	}
+	for _, win := range visible {
+		if win.ID == wm.ActiveWindowID {
+			wm.syncActiveWindowState()
+			return
+		}
+	}
+	wm.ActiveWindowID = visible[0].ID
+	wm.syncActiveWindowState()
 }
 
 func (wm *WindowManager) VisibleWindows() []*widgets.Window {
@@ -69,6 +113,7 @@ func (wm *WindowManager) Layout(gtx layout.Context, th theme.Theme) layout.Dimen
 		stack.Pop()
 	}
 
+	wm.ensureActiveVisible()
 	for _, win := range wm.VisibleWindows() {
 		win.Layout(gtx, th)
 	}
@@ -83,10 +128,28 @@ func (wm *WindowManager) SpawnManagedWindow(id, title, tab, body string, pos, si
 	wm.Windows = append(wm.Windows, &widgets.Window{ID: id, Title: title, Tab: tab, Body: body, Pos: pos, Size: size})
 }
 
+func (wm *WindowManager) ActivateWindow(id string) bool {
+	for i, win := range wm.Windows {
+		if win != nil && !win.Closed && win.ID == id {
+			wm.ActiveWindowID = id
+			if i != len(wm.Windows)-1 {
+				wm.Windows = append(append(wm.Windows[:i], wm.Windows[i+1:]...), win)
+			}
+			wm.syncActiveWindowState()
+			return true
+		}
+	}
+	return false
+}
+
 func (wm *WindowManager) CloseWindow(id string) bool {
 	for _, win := range wm.Windows {
 		if win != nil && win.ID == id {
 			win.Close()
+			if wm.ActiveWindowID == id {
+				wm.ActiveWindowID = ""
+			}
+			wm.ensureActiveVisible()
 			return true
 		}
 	}

@@ -49,3 +49,4 @@
 - 2026-04-05: The Go `WindowManager` is now integrated into the live runtime path, with seeded managed windows and deterministic tests covering initialization, reset/spawn behavior, and layout dimensions.
 - 2026-04-05: Managed windows now have clickable tabs, tab-aware visibility filtering, and per-window body content, making runtime composition more meaningful without claiming full docking complexity.
 - 2026-04-05: Managed windows now also have a first direct manipulation baseline through close/move/resize helpers plus deterministic manager/window tests covering that behavior.
+- 2026-04-05: Managed windows now have an explicit activation baseline with active-window tracking, fallback behavior on visibility changes, ordering promotion, and active visual state.
