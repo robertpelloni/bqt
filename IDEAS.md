@@ -46,3 +46,8 @@ The executable local `WebView` runtime now suggests a similar staged path for em
 The improved `ScrollView` now hints at how richer spatial containers should grow.
 - **The Pivot:** Start with honest overlay/occupy scrollbar policies and normalized secondary-axis state, then grow into true 2D virtualization, corner widgets, and richer content surfaces only when the runtime can support them cleanly.
 - **The Execution:** Keep the current scroll APIs stable while deepening behavior under the hood, using the demo surface as a living validation target.
+
+## 10. Live Runtime Composition Path
+The new Gio frame loop opens a cleaner path for runtime composition work.
+- **The Pivot:** Grow from a simple login -> demo -> shell stack into richer window-manager, docking, overlay, and runtime-inspector composition without abandoning the verified primitives already in place.
+- **The Execution:** Keep adding runtime layers to the live loop incrementally so every new subsystem gets exercised in the same real rendering/input path.

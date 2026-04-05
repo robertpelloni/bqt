@@ -8,6 +8,7 @@
 - [x] `go test ./internal/...` passes.
 - [x] `go build -buildvcs=false .` succeeds.
 - [ ] Add these exact commands to CI.
+- [x] Wire the current Go demo primitives into a live Gio frame loop.
 
 ## 3. QML / Quick / QuickControls2 / WebEngineQuick Focus (Current)
 - [x] Add a first Go-native QuickControls2-style `Popup` primitive.

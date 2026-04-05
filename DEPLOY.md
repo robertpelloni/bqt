@@ -15,6 +15,7 @@ go build -buildvcs=false .
 ## Go Runtime Requirements
 - Go toolchain matching `go.mod`
 - Gio-compatible platform support for the UI runtime
+- The Go path now opens a real Gio window/frame loop in `internal/ui/engine.go`
 - No external browser runtime is currently required for the verified Go `WebView` baseline; the current bridge execution model remains local and compile-safe
 
 ## C++ / BobUI Track
