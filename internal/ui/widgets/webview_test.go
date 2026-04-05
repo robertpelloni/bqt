@@ -2,6 +2,7 @@ package widgets
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -157,5 +158,110 @@ func TestHandleScriptMessageSupportsExternalRepliesAndRequests(t *testing.T) {
 	}
 	if w.LastReply.ID != externalReply.ID {
 		t.Fatalf("expected LastReply id %q, got %q", externalReply.ID, w.LastReply.ID)
+	}
+}
+
+func TestWebViewNavigateFiresCallbacksAndTracksHistory(t *testing.T) {
+	w := &WebView{}
+	var navigated []string
+	var loaded []string
+	var titles []string
+	var histories []string
+
+	w.OnNavigate = func(url string) {
+		navigated = append(navigated, url)
+	}
+	w.OnLoad = func(url string) {
+		loaded = append(loaded, url)
+	}
+	w.OnTitleChanged = func(title string) {
+		titles = append(titles, title)
+	}
+	w.OnHistoryChanged = func(index int, length int) {
+		histories = append(histories, fmt.Sprintf("%d/%d", index, length))
+	}
+
+	w.Navigate("page:a", "A")
+	w.Navigate("page:b", "B")
+
+	if w.URL != "page:b" {
+		t.Fatalf("expected current URL page:b, got %q", w.URL)
+	}
+	if w.Title != "page:b" {
+		t.Fatalf("expected current Title page:b, got %q", w.Title)
+	}
+	if w.HTML != "B" {
+		t.Fatalf("expected HTML B, got %q", w.HTML)
+	}
+	if w.Index != 1 {
+		t.Fatalf("expected history index 1, got %d", w.Index)
+	}
+	if len(w.History) != 2 || w.History[0] != "page:a" || w.History[1] != "page:b" {
+		t.Fatalf("unexpected history contents: %+v", w.History)
+	}
+	if len(navigated) != 2 || navigated[0] != "page:a" || navigated[1] != "page:b" {
+		t.Fatalf("unexpected navigate callbacks: %+v", navigated)
+	}
+	if len(loaded) != 2 || loaded[0] != "page:a" || loaded[1] != "page:b" {
+		t.Fatalf("unexpected load callbacks: %+v", loaded)
+	}
+	if len(titles) != 2 || titles[0] != "page:a" || titles[1] != "page:b" {
+		t.Fatalf("unexpected title callbacks: %+v", titles)
+	}
+	if len(histories) != 2 || histories[0] != "0/1" || histories[1] != "1/2" {
+		t.Fatalf("unexpected history callbacks: %+v", histories)
+	}
+}
+
+func TestWebViewBackForwardAndTruncateHistory(t *testing.T) {
+	w := &WebView{}
+	var navigated []string
+	var loaded []string
+	var histories []string
+
+	w.OnNavigate = func(url string) {
+		navigated = append(navigated, url)
+	}
+	w.OnLoad = func(url string) {
+		loaded = append(loaded, url)
+	}
+	w.OnHistoryChanged = func(index int, length int) {
+		histories = append(histories, fmt.Sprintf("%d/%d", index, length))
+	}
+
+	w.Navigate("page:a", "A")
+	w.Navigate("page:b", "B")
+	w.Navigate("page:c", "C")
+	w.Back()
+	if w.URL != "page:b" || w.Index != 1 {
+		t.Fatalf("expected Back to reach page:b at index 1, got url=%q index=%d", w.URL, w.Index)
+	}
+	w.Forward()
+	if w.URL != "page:c" || w.Index != 2 {
+		t.Fatalf("expected Forward to reach page:c at index 2, got url=%q index=%d", w.URL, w.Index)
+	}
+	w.Back()
+	w.Navigate("page:d", "D")
+
+	if w.URL != "page:d" || w.Index != 2 {
+		t.Fatalf("expected navigate from middle to end at page:d index 2, got url=%q index=%d", w.URL, w.Index)
+	}
+	if len(w.History) != 3 {
+		t.Fatalf("expected truncated history length 3, got %d", len(w.History))
+	}
+	if w.History[0] != "page:a" || w.History[1] != "page:b" || w.History[2] != "page:d" {
+		t.Fatalf("unexpected truncated history contents: %+v", w.History)
+	}
+	if len(loaded) != 4 {
+		t.Fatalf("expected load callback only on Navigate calls (4 total), got %d", len(loaded))
+	}
+	if loaded[3] != "page:d" {
+		t.Fatalf("expected last load callback page:d, got %q", loaded[3])
+	}
+	if len(navigated) < 6 {
+		t.Fatalf("expected navigate callbacks across navigate/back/forward flow, got %d", len(navigated))
+	}
+	if histories[len(histories)-1] != "2/3" {
+		t.Fatalf("expected final history callback 2/3, got %+v", histories)
 	}
 }

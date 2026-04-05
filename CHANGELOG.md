@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.20] - 2026-04-05
+### Added
+- Added `docs/ai/testing/2026-04-05-webview-navigation-history-tests.md` documenting automated WebView navigation/history coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-webview-navigation-tests-session.md`.
+
+### Changed
+- Extended `internal/ui/widgets/webview_test.go` with automated tests for navigation/history callback behavior, back/forward state changes, and forward-history truncation.
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of automated WebView navigation/history validation.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.19] - 2026-04-05
 ### Added
 - Added `internal/ui/engine_test.go` with automated validation for the live Gio runtime composition path.
