@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.29] - 2026-04-05
+### Added
+- Added `docs/ai/design/2026-04-05-cpp-go-side-by-side-migration-strategy.md` documenting the safe staged strategy for keeping C++ and Go buildable side by side during naming migration.
+- Added `docs/ai/implementation/2026-04-05-cpp-rename-safety-rules.md` documenting explicit guardrails for future C++ rename work.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-cpp-side-by-side-strategy-session.md`.
+
+### Changed
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to record compatibility-first bucketed migration as the safe path instead of a destructive global rename.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.28] - 2026-04-05
 ### Added
 - Added `docs/ai/implementation/2026-04-05-pointer-activation-routing.md` documenting direct window activation routing into manager-owned activation state.
