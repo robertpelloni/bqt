@@ -30,7 +30,7 @@
 ## 5. Stabilization
 - [ ] Replace remaining placeholder Gio widgets with richer implementations.
 - [ ] Continue reducing package coupling.
-- [ ] Add tests for Go kernel/data/net packages.
+- [x] Add tests for Go kernel/data/net packages.
 - [x] Improve `ScrollView` scrollbar occupancy/overlay policy and lightweight two-axis behavior.
 
 ## 6. Strategic Alignment

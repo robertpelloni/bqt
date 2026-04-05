@@ -44,3 +44,4 @@
 - 2026-04-05: `internal/ui/engine_test.go` now provides automated validation for live runtime composition using synthetic Gio frame contexts, covering both login and authenticated runtime states.
 - 2026-04-05: `internal/ui/widgets/webview_test.go` now also covers navigation/history semantics including callback firing, back/forward behavior, and forward-history truncation.
 - 2026-04-05: `internal/ui/widgets/shell_test.go` now provides synthetic frame-context coverage for taskbar start-button toggling and start-menu visibility/layout behavior.
+- 2026-04-05: `internal/kernel/managers_test.go`, `internal/data/data_test.go`, and `internal/net/mesh_node_test.go` now provide the first focused automated coverage for Go kernel/data/net support packages.
