@@ -114,8 +114,15 @@ func (wm *WindowManager) Layout(gtx layout.Context, th theme.Theme) layout.Dimen
 	}
 
 	wm.ensureActiveVisible()
+	var requestedID string
 	for _, win := range wm.VisibleWindows() {
 		win.Layout(gtx, th)
+		if win.ConsumeActivationRequest() {
+			requestedID = win.ID
+		}
+	}
+	if requestedID != "" {
+		wm.ActivateWindow(requestedID)
 	}
 	return layout.Dimensions{Size: gtx.Constraints.Max}
 }

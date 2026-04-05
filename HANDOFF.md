@@ -4,19 +4,19 @@
 2026-04-05
 
 ## What I did this cycle
-- Reworked `WindowManager` to track an active window, synchronize active state, promote activated windows in ordering, and choose fallback active windows when visibility changes.
-- Reworked the managed-window baseline to reflect active/inactive visual state.
-- Extended deterministic tests around managed-window activation, ordering promotion, and fallback behavior on tab changes/close events.
-- Added implementation/testing docs for the managed-window activation milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-managed-window-activation-session.md`.
+- Reworked the managed-window baseline to expose activation requests through a direct click surface.
+- Reworked `WindowManager.Layout(...)` so direct window activation requests now flow back through manager-owned activation logic.
+- Extended deterministic tests around one-shot activation request consumption and click-routed active-window transitions.
+- Added implementation/testing docs for the pointer activation routing milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-pointer-activation-routing-session.md`.
 
 ## Verified state
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
-- The Go baseline now includes a live runtime path with login, demo surface, shell composition, clickable tabs, tab-aware managed windows, move/resize/close behavior, and managed-window focus/activation semantics.
-- Managed-window activation remains intentionally lightweight; it does not yet include pointer-driven manager activation, keyboard focus routing, or full docking/workspace semantics.
+- The Go baseline now includes a live runtime path with login, demo surface, shell composition, clickable tabs, tab-aware managed windows, move/resize/close behavior, activation semantics, and pointer-routed activation requests.
+- Focus routing is still intentionally lightweight; direct activation now exists, but keyboard focus routing and deeper docking/workspace semantics do not yet.
 
 ## Recommended next steps
-1. Add pointer-driven activation/focus routing from direct window clicks.
-2. Improve docking/tab behavior beyond tab filtering and ordering promotion.
+1. Improve docking/tab behavior beyond filtering and ordering promotion.
+2. Add richer focus routing on top of activation state.
 3. Continue keeping docs aligned only with verified behavior.
-4. Continue using BTK as a comparative native-framework reference while keeping shell/OS concerns in `bobfilez` and framework concerns in `bobui`.
+4. Continue progressing in verified slices instead of broad unsafe global rename work.

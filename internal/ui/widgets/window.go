@@ -28,13 +28,17 @@ type Window struct {
 	Closed  bool
 	Active  bool
 
-	CloseBtn   widget.Clickable
+	CloseBtn widget.Clickable
+	activate gesture.Click
+
 	moveDrag   gesture.Drag
 	resizeDrag gesture.Drag
 	moving     bool
 	resizing   bool
 	lastMove   f32.Point
 	lastResize f32.Point
+
+	activationRequested bool
 }
 
 func (w *Window) ensureDefaults() {
@@ -76,6 +80,16 @@ func (w *Window) Close() {
 
 func (w *Window) SetActive(active bool) {
 	w.Active = active && !w.Closed
+}
+
+func (w *Window) RequestActivate() {
+	w.activationRequested = true
+}
+
+func (w *Window) ConsumeActivationRequest() bool {
+	requested := w.activationRequested
+	w.activationRequested = false
+	return requested
 }
 
 func (w *Window) handleDrag(gtx layout.Context, drag *gesture.Drag, active *bool, last *f32.Point, onDelta func(dx, dy float32)) {
@@ -153,6 +167,19 @@ func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	w.resizeDrag.Add(local.Ops)
 	resizeScope.Pop()
 
+	activateScope := clip.Rect(outer).Push(local.Ops)
+	w.activate.Add(local.Ops)
+	activateScope.Pop()
+	for {
+		ev, ok := w.activate.Update(local.Source)
+		if !ok {
+			break
+		}
+		if ev.Kind == gesture.KindClick {
+			w.activationRequested = true
+		}
+	}
+
 	if w.CloseBtn.Clicked(local) {
 		w.Close()
 		return layout.Dimensions{}
@@ -187,7 +214,7 @@ func (w *Window) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 			layout.Rigid(material.Body2(mth, body).Layout),
 			layout.Rigid(layout.Spacer{Height: unit.Dp(8)}.Layout),
 			layout.Rigid(material.Caption(mth, "tab="+tabInfo+" id="+w.ID+" state="+state).Layout),
-			layout.Rigid(material.Caption(mth, "drag title bar | resize bottom-right").Layout),
+			layout.Rigid(material.Caption(mth, "click to activate | drag title bar | resize bottom-right").Layout),
 		)
 	})
 }

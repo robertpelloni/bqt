@@ -8,7 +8,7 @@ import (
 	"github.com/robertpelloni/bobui/internal/ui/theme"
 )
 
-func TestWindowMoveResizeAndClose(t *testing.T) {
+func TestWindowMoveResizeCloseAndActivationRequest(t *testing.T) {
 	w := &Window{ID: "win-1", Title: "Inspector", Pos: f32.Pt(10, 20), Size: f32.Pt(240, 160)}
 	w.MoveBy(15, -5)
 	if w.Pos.X != 25 || w.Pos.Y != 15 {
@@ -23,6 +23,15 @@ func TestWindowMoveResizeAndClose(t *testing.T) {
 	dims := w.Layout(newWidgetTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
 	if dims.Size.X <= 0 || dims.Size.Y <= 0 {
 		t.Fatalf("expected visible window layout to produce non-zero dimensions, got %v", dims.Size)
+	}
+
+	w.RequestActivate()
+	w.Layout(newWidgetTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
+	if !w.ConsumeActivationRequest() {
+		t.Fatal("expected programmatic activation request to be consumed after layout")
+	}
+	if w.ConsumeActivationRequest() {
+		t.Fatal("expected activation request to clear after consumption")
 	}
 
 	w.CloseBtn.Click()

@@ -13,7 +13,8 @@
 - [x] Add managed-window move/resize/close interaction.
 - [ ] Improve docking/tab behavior beyond active-tab filtering.
 - [x] Add focus/activation semantics for managed windows.
-- [ ] Add pointer-driven activation/focus routing from direct window clicks.
+- [x] Add pointer-driven activation/focus routing from direct window clicks.
+- [ ] Add richer focus routing on top of activation state.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

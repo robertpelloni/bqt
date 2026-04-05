@@ -56,6 +56,15 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 	if wm.Windows[len(wm.Windows)-1].ID != "win-3" {
 		t.Fatalf("expected active window to be promoted to front order, got tail id %q", wm.Windows[len(wm.Windows)-1].ID)
 	}
+	for _, win := range wm.Windows {
+		if win != nil && win.ID == "win-1" {
+			win.RequestActivate()
+		}
+	}
+	wm.Layout(newTestLayoutContext(image.Pt(1280, 900)), theme.GetTheme(theme.Cyberpunk))
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-1" {
+		t.Fatalf("expected click-routed activation to promote win-1, got %+v", wm.ActiveWindow())
+	}
 
 	wm.Tabs.ClickTab(2)
 	gtx := newTestLayoutContext(image.Pt(1280, 900))
@@ -70,8 +79,8 @@ func TestWindowManagerResetSpawnAndLayout(t *testing.T) {
 	if visible[0].ID != "win-2" || visible[1].ID != "win-3" {
 		t.Fatalf("unexpected visible windows for Docs tab: %+v %+v", visible[0], visible[1])
 	}
-	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-3" {
-		t.Fatalf("expected shared active window to remain active across tab change, got %+v", wm.ActiveWindow())
+	if wm.ActiveWindow() == nil || wm.ActiveWindow().ID != "win-2" {
+		t.Fatalf("expected active window to fall back to visible docs window after tab change, got %+v", wm.ActiveWindow())
 	}
 
 	if !wm.MoveWindow("win-2", 10, -5) {
