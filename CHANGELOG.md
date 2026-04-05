@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.31] - 2026-04-05
+### Added
+- Added `cmake/BobUICompatibilityHelpers.cmake` with BobUI-to-Qt package mapping, forwarded `find_package(...)` argument handling, and compatibility target helpers.
+- Added `cmake/BobUI6Config.cmake` and `cmake/BobUIConfig.cmake` as additive BobUI-facing package shims over the canonical Qt package surface.
+- Added `cmake/tests/bobui_compatibility_helpers_mapping.cmake` for script-mode validation of the new compatibility helper layer.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-compatibility-shims.md` and `docs/ai/testing/2026-04-05-bobui-cmake-compatibility-shims-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-compatibility-session.md`.
+
+### Changed
+- Updated `cmake/README.md`, `ROADMAP.md`, `TODO.md`, `MEMORY.md`, `HANDOFF.md`, `VISION.md`, `IDEAS.md`, and `DEPLOY.md` to record the first real additive C++ compatibility-bucket implementation.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.30] - 2026-04-05
 ### Added
 - Added `docs/ai/design/2026-04-05-cpp-rename-bucket-classification.md` documenting the observed rename-artifact distribution and a bucket-by-bucket canonical/generated/duplicate assessment.

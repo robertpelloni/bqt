@@ -17,8 +17,10 @@
 - [ ] Add richer focus routing on top of activation state.
 - [x] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
 - [x] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
-- [ ] Compare tracked top-level `cmake/` files against renamed copies and mark canonical inputs.
-- [ ] Implement the first additive BobUI package/export compatibility slice in `cmake/` without deep source renames.
+- [x] Compare tracked top-level `cmake/` files against renamed copies and mark canonical inputs.
+- [x] Implement the first additive BobUI package/export compatibility slice in `cmake/` without deep source renames.
+- [ ] Wire the BobUI CMake compatibility shims into install/export generation without replacing the canonical Qt package layout in one shot.
+- [ ] Add a native end-to-end install-tree or prefix-path validation path for `find_package(BobUI6 ...)` once the export wiring exists.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

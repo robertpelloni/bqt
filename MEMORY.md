@@ -3,15 +3,15 @@
 ## High-Confidence Findings
 - `bobui` should be treated as the **framework/kernel**, not the full shell/desktop product. The shell belongs to `bobfilez`.
 - The repository now contains **both** a large C++/BobUI/OmniUI codebase and a large experimental Go port.
-- The Go port is **not fully build-verified**. A direct `go test ./internal/...` currently exposes package cycles and incomplete integrations.
+- The actively maintained Go framework path under `internal/` is currently build-verified with `go test ./internal/...` and `go build -buildvcs=false .`, even though the broader repository still contains exploratory and partially migrated areas.
 - The C++ tree contains many exploratory components; some are stubs or partial implementations intended as architectural placeholders.
-- Documentation drift is severe: several files claim total completion, while the actual code still needs stabilization and verification.
+- Documentation drift has improved, but it still needs active maintenance to stay aligned with the verified state.
 
 ## Verified Technical Problems
-- Go package cycles exist, especially around `internal/net`, `internal/kernel`, `internal/vm`, and `internal/ui`.
-- Some Go files use placeholder or invalid APIs and need compile-focused cleanup.
+- The legacy C++ tree is still burdened by a large rename-artifact explosion that mixes likely canonical files with generated/support files, tests, docs/assets, and duplicate renamed copies.
+- Some non-Go areas of the repository remain exploratory and should not be treated as uniformly build-verified.
 - Some docs still describe `bobui` as a full OS shell instead of a framework consumed by `bobfilez`.
-- `VERSION.md` and `CHANGELOG.md` became inconsistent due prior uncontrolled bumps.
+- `VERSION.md` and `CHANGELOG.md` required repeated normalization after prior uncontrolled bumps.
 
 ## Design Preferences Going Forward
 - Treat previous large-scale additions as **experimental until compiled**.
@@ -55,3 +55,5 @@
 - The huge untracked C++ rename tree should be treated as a separate classification/cleanup project before any broad migration bucket is attempted.
 - 2026-04-05: A first-pass census of the rename explosion shows the largest pressure in `tests/`, `src/corelib/`, and `cmake/`, which reinforces that tests/assets/docs are poor early targets and that `cmake/` package/export compatibility is the safest first real C++ migration bucket.
 - 2026-04-05: The first actual C++ migration work should improve identity/discovery through additive `cmake/` package/export compatibility surfaces before touching deep runtime identifiers.
+- 2026-04-05: The first additive C++ compatibility implementation now exists in `cmake/BobUICompatibilityHelpers.cmake`, `cmake/BobUI6Config.cmake`, and `cmake/BobUIConfig.cmake`, which forward BobUI package discovery to the canonical Qt package surface and create BobUI-namespaced compatibility component targets.
+- 2026-04-05: Script-mode validation via `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` is a safe way to test this bucket before attempting riskier install/export wiring.

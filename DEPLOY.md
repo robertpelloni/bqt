@@ -28,6 +28,13 @@ Current migration policy for the C++ track:
 - start with additive `cmake/` package/export compatibility surfaces,
 - preserve the verified Go baseline while the C++ compatibility story is clarified.
 
+Current additive compatibility files:
+- `cmake/BobUICompatibilityHelpers.cmake`
+- `cmake/BobUI6Config.cmake`
+- `cmake/BobUIConfig.cmake`
+
+These currently provide a source-tree forwarding layer; install/export wiring remains a follow-on task.
+
 ## CI/CD
 Current workflows exist for:
 - BobUI/C++ native builds
