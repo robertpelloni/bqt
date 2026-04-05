@@ -109,4 +109,5 @@ if(NOT _bobui_configure_result EQUAL 0)
         "stderr:\n${_bobui_configure_stderr}")
 endif()
 
+file(REMOVE_RECURSE "${_bobui_smoke_root}")
 message(STATUS "BobUI package forwarding smoke test passed")

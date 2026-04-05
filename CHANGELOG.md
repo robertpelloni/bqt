@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.33] - 2026-04-05
+### Added
+- Added `cmake/QtBobUIHelpers.cmake` to hold the BobUI compatibility package-publication helper.
+- Added `cmake/tests/bobui_export_publication_configure_smoke.cmake` for configure-time validation of BobUI package publication.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-publication-helper.md` and `docs/ai/testing/2026-04-05-bobui-cmake-publication-helper-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-publication-helper-session.md`.
+
+### Changed
+- Reworked `cmake/QtBaseGlobalTargets.cmake` to consume the extracted BobUI publication helper instead of defining the publication logic inline.
+- Updated `CHANGELOG.md`, `VERSION.md`, `HANDOFF.md`, `MEMORY.md`, `ROADMAP.md`, `TODO.md`, `VISION.md`, `IDEAS.md`, `DEPLOY.md`, and `cmake/README.md` to record the stronger publication-helper validation milestone.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.32] - 2026-04-05
 ### Added
 - Added `cmake/tests/bobui_package_forwarding_smoke.cmake` for end-to-end BobUI package-forwarding validation against a fake prefix layout.

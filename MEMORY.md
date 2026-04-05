@@ -59,3 +59,5 @@
 - 2026-04-05: Script-mode validation via `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` is a safe way to test this bucket before attempting riskier install/export wiring.
 - 2026-04-05: `cmake/QtBaseGlobalTargets.cmake` is the clean hook point for publishing additive BobUI package directories (`BobUI6/`, `BobUI/`) alongside the canonical `Qt6/` package directory.
 - 2026-04-05: An end-to-end fake-prefix smoke test via `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` now validates that `find_package(BobUI6 ...)` and `find_package(BobUI ...)` can succeed against a realistic package-layout model.
+- 2026-04-05: Extracting BobUI package publication into `cmake/QtBobUIHelpers.cmake` made the export-wiring path independently testable under a real configure flow.
+- 2026-04-05: `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` now validates that the BobUI publication helper emits expected config/helper/version files into both build-style and install-style package directories.

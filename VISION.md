@@ -47,6 +47,7 @@ while also introducing a first-class foundation for:
 10. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
 11. **Migrate the legacy C++ track compatibility-first**: BobUI naming should first appear through package/export/header compatibility surfaces before any broad source-identifier rewrite, so the C++ and Go tracks can keep converging side by side.
 12. **Prefer additive package-discovery shims before export rewiring**: a small BobUI-facing CMake forwarding layer is a safer first migration move than trying to rename the entire native framework surface at once.
+13. **Extract migration logic into testable helpers**: compatibility-bucket code should be factored so it can be validated in isolated configure-time tests before broader native integration work.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.

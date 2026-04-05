@@ -56,4 +56,4 @@ The new Gio frame loop opens a cleaner path for runtime composition work.
 The C++ rename-bucket classification points to `cmake/` package/export surfaces as the highest-leverage safe migration entry point.
 - **The Pivot:** Introduce additive BobUI-facing package discovery, export names, and compatibility aliases before any deep runtime source rewrite.
 - **The Execution:** Treat top-level `cmake/` inputs as the first real migration bucket, explicitly rejecting generated outputs, test assets, and third-party content from the initial pass.
-- **Current State:** The first additive shim layer now exists via `cmake/BobUICompatibilityHelpers.cmake`, `cmake/BobUI6Config.cmake`, and `cmake/BobUIConfig.cmake`; the next step is install/export wiring rather than wider renaming.
+- **Current State:** The first additive shim layer now exists via `cmake/BobUICompatibilityHelpers.cmake`, `cmake/BobUI6Config.cmake`, and `cmake/BobUIConfig.cmake`; install/export wiring now exists as well, and `cmake/QtBobUIHelpers.cmake` plus configure-time smoke tests make the publication path easier to extend safely.

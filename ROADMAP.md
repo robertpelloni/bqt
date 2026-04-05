@@ -44,6 +44,7 @@
 - [x] Classify the current C++ rename-artifact explosion into migration buckets and select `cmake/` package/export compatibility as the first safe implementation bucket.
 - [x] Implement the first additive `cmake/` package/export compatibility slice without staging unrelated rename artifacts.
 - [x] Wire the new BobUI CMake compatibility shims into install/export generation without replacing the canonical Qt package layout in one shot.
-- [ ] Add stronger native/prefix validation for the additive BobUI package-generation path when practical.
+- [x] Add stronger native/prefix validation for the additive BobUI package-generation path through a configure-time publication smoke test.
+- [ ] Add stronger qtbase-native configure/install validation when practical.
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
