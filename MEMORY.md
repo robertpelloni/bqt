@@ -57,3 +57,5 @@
 - 2026-04-05: The first actual C++ migration work should improve identity/discovery through additive `cmake/` package/export compatibility surfaces before touching deep runtime identifiers.
 - 2026-04-05: The first additive C++ compatibility implementation now exists in `cmake/BobUICompatibilityHelpers.cmake`, `cmake/BobUI6Config.cmake`, and `cmake/BobUIConfig.cmake`, which forward BobUI package discovery to the canonical Qt package surface and create BobUI-namespaced compatibility component targets.
 - 2026-04-05: Script-mode validation via `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` is a safe way to test this bucket before attempting riskier install/export wiring.
+- 2026-04-05: `cmake/QtBaseGlobalTargets.cmake` is the clean hook point for publishing additive BobUI package directories (`BobUI6/`, `BobUI/`) alongside the canonical `Qt6/` package directory.
+- 2026-04-05: An end-to-end fake-prefix smoke test via `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` now validates that `find_package(BobUI6 ...)` and `find_package(BobUI ...)` can succeed against a realistic package-layout model.

@@ -12,8 +12,9 @@ This repository also carries an additive BobUI-facing compatibility layer in:
 - `BobUIConfig.cmake`
 
 These files do **not** replace the canonical Qt-derived build internals. They are the first staged
-compatibility bucket for side-by-side BobUI naming work and currently provide source-tree package
-forwarding on top of the tracked Qt package surface.
+compatibility bucket for side-by-side BobUI naming work and now publish additive `BobUI6/` and
+`BobUI/` package directories through the top-level package-generation path while preserving the
+tracked Qt package surface.
 
 # Contributing
 

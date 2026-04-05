@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.32] - 2026-04-05
+### Added
+- Added `cmake/tests/bobui_package_forwarding_smoke.cmake` for end-to-end BobUI package-forwarding validation against a fake prefix layout.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-export-wiring.md` and `docs/ai/testing/2026-04-05-bobui-cmake-export-wiring-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-export-wiring-session.md`.
+
+### Changed
+- Reworked `cmake/QtBaseGlobalTargets.cmake` to publish additive `BobUI6/` and `BobUI/` package directories alongside the canonical `Qt6/` package directory.
+- Hardened `cmake/BobUICompatibilityHelpers.cmake` to safely handle undefined forwarded `find_package(...)` boolean variables.
+- Updated `CHANGELOG.md`, `VERSION.md`, `HANDOFF.md`, `MEMORY.md`, `ROADMAP.md`, `TODO.md`, `DEPLOY.md`, and `cmake/README.md` to record the export-wiring milestone.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.31] - 2026-04-05
 ### Added
 - Added `cmake/BobUICompatibilityHelpers.cmake` with BobUI-to-Qt package mapping, forwarded `find_package(...)` argument handling, and compatibility target helpers.

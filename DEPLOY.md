@@ -33,7 +33,11 @@ Current additive compatibility files:
 - `cmake/BobUI6Config.cmake`
 - `cmake/BobUIConfig.cmake`
 
-These currently provide a source-tree forwarding layer; install/export wiring remains a follow-on task.
+Current additive export wiring:
+- `cmake/QtBaseGlobalTargets.cmake` now publishes additive `BobUI6/` and `BobUI/` package directories alongside the canonical `Qt6/` package directory.
+- `cmake/tests/bobui_package_forwarding_smoke.cmake` provides an install-layout-style forwarding validation path.
+
+These changes preserve the canonical Qt package surface while layering BobUI discovery on top.
 
 ## CI/CD
 Current workflows exist for:
