@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.19] - 2026-04-05
+### Added
+- Added `internal/ui/engine_test.go` with automated validation for the live Gio runtime composition path.
+- Added `docs/ai/testing/2026-04-05-live-gio-frame-loop-automated-tests.md` documenting the new live runtime test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-live-gio-tests-session.md`.
+
+### Changed
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of automated live Gio runtime validation using synthetic frame contexts.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.18] - 2026-04-05
 ### Added
 - Added `internal/ui/widgets/webview_test.go` with automated unit tests for WebView bridge queueing, correlation, eval handling, error propagation, and external message routing.

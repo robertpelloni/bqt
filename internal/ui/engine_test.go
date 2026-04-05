@@ -1,0 +1,77 @@
+package ui
+
+import (
+	"image"
+	"testing"
+	"time"
+
+	"gioui.org/app"
+	"gioui.org/layout"
+	"gioui.org/op"
+	"gioui.org/unit"
+)
+
+func newTestLayoutContext(size image.Point) layout.Context {
+	var ops op.Ops
+	fe := app.FrameEvent{
+		Now:    time.Now(),
+		Size:   size,
+		Metric: unit.Metric{PxPerDp: 1, PxPerSp: 1},
+		Frame:  func(frame *op.Ops) {},
+	}
+	return app.NewContext(&ops, fe)
+}
+
+func TestEngineInitializeDemoConfiguresExecutableWebViewRuntime(t *testing.T) {
+	e := NewEngine()
+	e.initializeDemo()
+
+	if e.demo == nil {
+		t.Fatal("expected demo surface to be initialized")
+	}
+	if e.demo.WebView.Bridge == nil {
+		t.Fatal("expected WebView bridge to be initialized")
+	}
+	if e.demo.WebView.LastEvaluatedJS != "window.bobuiReady = true" {
+		t.Fatalf("expected LastEvaluatedJS to be initialized, got %q", e.demo.WebView.LastEvaluatedJS)
+	}
+	if e.demo.WebView.LastEvalResult != "evaluated:window.bobuiReady = true" {
+		t.Fatalf("expected LastEvalResult to be initialized, got %q", e.demo.WebView.LastEvalResult)
+	}
+	if e.demo.WebView.Title != "about:bobui runtime" {
+		t.Fatalf("expected title to be updated by runtime handler, got %q", e.demo.WebView.Title)
+	}
+	if e.demo.WebView.QueueDepth() != 0 {
+		t.Fatalf("expected empty runtime queue after initialization, got %d", e.demo.WebView.QueueDepth())
+	}
+
+	reply := e.demo.WebView.Request("ping", "test")
+	if reply.Kind != "reply" {
+		t.Fatalf("expected reply kind after initialized request handler, got %q", reply.Kind)
+	}
+	if reply.Payload != "pong:test" {
+		t.Fatalf("expected pong:test payload, got %q", reply.Payload)
+	}
+}
+
+func TestEngineLayoutSupportsLoginAndAuthenticatedRuntimeStates(t *testing.T) {
+	e := NewEngine()
+	e.initializeDemo()
+	size := image.Pt(1280, 900)
+
+	loginCtx := newTestLayoutContext(size)
+	loginDims := e.layout(loginCtx)
+	if loginDims.Size.X <= 0 || loginDims.Size.Y <= 0 {
+		t.Fatalf("expected login layout to produce non-zero dimensions, got %+v", loginDims.Size)
+	}
+
+	e.login.Authenticated = true
+	runtimeCtx := newTestLayoutContext(size)
+	runtimeDims := e.layout(runtimeCtx)
+	if runtimeDims.Size.X <= 0 || runtimeDims.Size.Y <= 0 {
+		t.Fatalf("expected runtime layout to produce non-zero dimensions, got %+v", runtimeDims.Size)
+	}
+	if runtimeDims.Size.X > size.X || runtimeDims.Size.Y > size.Y {
+		t.Fatalf("expected runtime layout to fit within frame size %v, got %v", size, runtimeDims.Size)
+	}
+}

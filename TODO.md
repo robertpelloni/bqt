@@ -4,7 +4,8 @@
 - [ ] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
 - [x] Wire the `DemoSurface` into a real interactive Gio frame loop.
 - [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
-- [ ] Add automated runtime validation for the live Gio frame loop.
+- [x] Add automated runtime validation for the live Gio frame loop.
+- [ ] Add richer synthetic frame-context coverage for shell/taskbar/start-menu interaction.
 - [x] Implement interactive `ScrollBar` drag behavior and couple it to `ScrollView` state.
 - [x] Improve scrollbar occupancy/overlay policy and two-axis behavior.
 - [ ] Add richer scroll corner/theming behavior when both bars are visible.
