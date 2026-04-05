@@ -42,7 +42,8 @@ while also introducing a first-class foundation for:
 5. **Harden multiplayer fundamentals**: ownership, collaboration, synchronization, permissions.
 6. **Deepen verified interaction primitives**: keep adding small but real input surfaces such as scrolling and touch/swipe behavior before claiming broader parity.
 7. **Prefer executable local runtimes over empty contracts**: where possible, move framework surfaces like `WebView` from API-only shape toward small, verifiable runtime behavior.
-8. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
+8. **Prefer honest partial spatial models over fake completeness**: lightweight two-axis viewport state is better than claiming full 2D scrolling before the container/runtime architecture exists.
+9. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.

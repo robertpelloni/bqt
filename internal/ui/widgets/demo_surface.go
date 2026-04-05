@@ -34,6 +34,10 @@ func NewDemoSurface() *DemoSurface {
 	d.WebView.Navigate("about:bobui", "<h1>BobUI WebView</h1><br>History and navigation baseline")
 	d.ScrollBox = NewScrollView(layout.Vertical)
 	d.ScrollBox.VerticalPolicy = ScrollAlwaysOn
+	d.ScrollBox.HorizontalPolicy = ScrollAlwaysOn
+	d.ScrollBox.VerticalPlacement = ScrollBarOccupy
+	d.ScrollBox.HorizontalPlacement = ScrollBarOccupy
+	d.ScrollBox.SetCrossAxisViewport(0.15, 0.45)
 	d.TouchPad = TouchArea{
 		Label:             "Swipe Demo",
 		AllowMouseAsTouch: true,
@@ -65,13 +69,14 @@ func (d *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensio
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return layout.Inset{Top: unit.Dp(8), Bottom: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
-					layout.Rigid(material.Label(mth, unit.Sp(11), fmt.Sprintf("Scroll demo items=%d position=%.2f page=%.2f dragging=%v", len(d.ScrollItems), d.ScrollBox.VerticalBar.Position, d.ScrollBox.VerticalBar.PageSize, d.ScrollBox.VerticalBar.Dragging)).Layout),
+					layout.Rigid(material.Label(mth, unit.Sp(11), fmt.Sprintf("Scroll demo items=%d vPos=%.2f vPage=%.2f hPos=%.2f hPage=%.2f", len(d.ScrollItems), d.ScrollBox.VerticalBar.Position, d.ScrollBox.VerticalBar.PageSize, d.ScrollBox.HorizontalBar.Position, d.ScrollBox.HorizontalBar.PageSize)).Layout),
+					layout.Rigid(material.Label(mth, unit.Sp(10), fmt.Sprintf("placements vertical=%s horizontal=%s deltas main=%.2f cross=%.2f", scrollPlacementLabel(d.ScrollBox.VerticalPlacement), scrollPlacementLabel(d.ScrollBox.HorizontalPlacement), d.ScrollBox.LastScrollDelta, d.ScrollBox.LastCrossDelta)).Layout),
 					layout.Rigid(layout.Spacer{Height: unit.Dp(6)}.Layout),
 					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 						gtx.Constraints.Min.Y = gtx.Dp(unit.Dp(140))
 						gtx.Constraints.Max.Y = gtx.Dp(unit.Dp(140))
 						return d.ScrollBox.LayoutWithTheme(gtx, th, len(d.ScrollItems), func(gtx layout.Context, i int) layout.Dimensions {
-							return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4), Left: unit.Dp(6), Right: unit.Dp(18)}.Layout(gtx, material.Body1(mth, d.ScrollItems[i]).Layout)
+							return layout.Inset{Top: unit.Dp(4), Bottom: unit.Dp(4), Left: unit.Dp(6), Right: unit.Dp(48)}.Layout(gtx, material.Body1(mth, d.ScrollItems[i]).Layout)
 						})
 					}),
 				)
@@ -111,4 +116,11 @@ func emptyDemoValue(v string) string {
 		return "none"
 	}
 	return v
+}
+
+func scrollPlacementLabel(p ScrollBarPlacement) string {
+	if p == ScrollBarOccupy {
+		return "occupy"
+	}
+	return "overlay"
 }

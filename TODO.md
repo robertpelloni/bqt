@@ -5,7 +5,8 @@
 - [ ] Wire the `DemoSurface` into a real interactive Gio frame loop.
 - [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
 - [x] Implement interactive `ScrollBar` drag behavior and couple it to `ScrollView` state.
-- [ ] Improve scrollbar occupancy/overlay policy and two-axis behavior.
+- [x] Improve scrollbar occupancy/overlay policy and two-axis behavior.
+- [ ] Add richer scroll corner/theming behavior when both bars are visible.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

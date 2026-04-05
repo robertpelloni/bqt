@@ -41,3 +41,8 @@ The new `TouchArea` baseline suggests a clean expansion order for input primitiv
 The executable local `WebView` runtime now suggests a similar staged path for embedded web behavior.
 - **The Pivot:** Grow from local queue/pump/eval/request semantics into richer async routing, interception policies, permission layers, and eventually browser-backed execution only when each layer remains verifiable.
 - **The Execution:** Preserve the lightweight BobUI bridge vocabulary while expanding behavior incrementally, so the surface remains useful even before a full embedded browser stack exists.
+
+## 9. Two-Axis Container Growth Path
+The improved `ScrollView` now hints at how richer spatial containers should grow.
+- **The Pivot:** Start with honest overlay/occupy scrollbar policies and normalized secondary-axis state, then grow into true 2D virtualization, corner widgets, and richer content surfaces only when the runtime can support them cleanly.
+- **The Execution:** Keep the current scroll APIs stable while deepening behavior under the hood, using the demo surface as a living validation target.
