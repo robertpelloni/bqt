@@ -15,6 +15,8 @@
 - [x] Add focus/activation semantics for managed windows.
 - [x] Add pointer-driven activation/focus routing from direct window clicks.
 - [ ] Add richer focus routing on top of activation state.
+- [ ] Classify the untracked C++ rename artifacts into canonical vs generated vs duplicate buckets before any broad migration work.
+- [ ] Choose one safe C++ package/export/header compatibility bucket for the first side-by-side migration implementation.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

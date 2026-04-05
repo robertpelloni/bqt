@@ -51,3 +51,5 @@
 - 2026-04-05: Managed windows now also have a first direct manipulation baseline through close/move/resize helpers plus deterministic manager/window tests covering that behavior.
 - 2026-04-05: Managed windows now have an explicit activation baseline with active-window tracking, fallback behavior on visibility changes, ordering promotion, and active visual state.
 - 2026-04-05: Direct managed-window activation requests now route through `WindowManager.Layout(...)`, making activation more realistic while keeping manager state authoritative.
+- 2026-04-05: The correct path to side-by-side C++ and Go compilation is a staged compatibility-first migration, not a global `qt` -> `bobui` text replacement.
+- The huge untracked C++ rename tree should be treated as a separate classification/cleanup project before any broad migration bucket is attempted.
