@@ -4,7 +4,8 @@
 - [ ] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
 - [ ] Wire the `DemoSurface` into a real interactive Gio frame loop.
 - [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
-- [ ] Implement interactive `ScrollBar` drag behavior and couple it to `ScrollView` state.
+- [x] Implement interactive `ScrollBar` drag behavior and couple it to `ScrollView` state.
+- [ ] Improve scrollbar occupancy/overlay policy and two-axis behavior.
 
 ## Near-Term QML/Quick Focus
 - [ ] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.

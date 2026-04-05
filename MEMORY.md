@@ -32,3 +32,5 @@
 - `BTK` has already started formalizing BobUI-inspired ownership semantics in stronger C++ types such as `BtkInputOwner`, `BtkFocusToken`, and `BtkInputArbitrator`.
 - The right strategic relationship is complementary, not competitive: `BTK` as native framework mainline, `bobui` as idea incubator and parity/abstraction lab.
 - `bobui` should keep prioritizing verified runtime semantics, especially around `ScrollBar`/`ScrollView` interaction and `WebView` bridge execution, instead of broad but shallow surface expansion.
+- 2026-04-05: The Go `ScrollBar`/`ScrollView` baseline now has compile-verified interaction coupling by reusing Gio's internal scrollbar gesture machinery underneath a BobUI-owned widget surface.
+- `DemoSurface` now exercises the scrolling baseline with sample content and live status text, which gives future runtime work a visible integration target.
