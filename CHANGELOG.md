@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.30] - 2026-04-05
+### Added
+- Added `docs/ai/design/2026-04-05-cpp-rename-bucket-classification.md` documenting the observed rename-artifact distribution and a bucket-by-bucket canonical/generated/duplicate assessment.
+- Added `docs/ai/implementation/2026-04-05-first-cpp-compatibility-bucket-plan.md` selecting the `cmake/` package/export surface as the first safe C++ compatibility bucket.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-cpp-rename-bucket-classification-session.md`.
+
+### Changed
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to record that the rename explosion has now been classified and that `cmake/` compatibility surfaces are the next safe implementation target.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.29] - 2026-04-05
 ### Added
 - Added `docs/ai/design/2026-04-05-cpp-go-side-by-side-migration-strategy.md` documenting the safe staged strategy for keeping C++ and Go buildable side by side during naming migration.

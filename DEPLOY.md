@@ -22,6 +22,12 @@ go build -buildvcs=false .
 The repository still contains the older C++ / BobUI / OmniUI track in `OmniUI/`.
 Treat it as a separate implementation path from the Go tree.
 
+Current migration policy for the C++ track:
+- do not perform a global `qt` -> `bobui` replacement,
+- classify rename artifacts before merging them,
+- start with additive `cmake/` package/export compatibility surfaces,
+- preserve the verified Go baseline while the C++ compatibility story is clarified.
+
 ## CI/CD
 Current workflows exist for:
 - BobUI/C++ native builds

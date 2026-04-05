@@ -51,3 +51,8 @@ The improved `ScrollView` now hints at how richer spatial containers should grow
 The new Gio frame loop opens a cleaner path for runtime composition work.
 - **The Pivot:** Grow from a simple login -> demo -> shell stack into richer window-manager, docking, overlay, and runtime-inspector composition without abandoning the verified primitives already in place.
 - **The Execution:** Keep adding runtime layers to the live loop incrementally so every new subsystem gets exercised in the same real rendering/input path.
+
+## 11. BobUI CMake Compatibility Surface
+The C++ rename-bucket classification points to `cmake/` package/export surfaces as the highest-leverage safe migration entry point.
+- **The Pivot:** Introduce additive BobUI-facing package discovery, export names, and compatibility aliases before any deep runtime source rewrite.
+- **The Execution:** Treat top-level `cmake/` inputs as the first real migration bucket, explicitly rejecting generated outputs, test assets, and third-party content from the initial pass.

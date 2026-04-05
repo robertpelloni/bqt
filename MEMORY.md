@@ -53,3 +53,5 @@
 - 2026-04-05: Direct managed-window activation requests now route through `WindowManager.Layout(...)`, making activation more realistic while keeping manager state authoritative.
 - 2026-04-05: The correct path to side-by-side C++ and Go compilation is a staged compatibility-first migration, not a global `qt` -> `bobui` text replacement.
 - The huge untracked C++ rename tree should be treated as a separate classification/cleanup project before any broad migration bucket is attempted.
+- 2026-04-05: A first-pass census of the rename explosion shows the largest pressure in `tests/`, `src/corelib/`, and `cmake/`, which reinforces that tests/assets/docs are poor early targets and that `cmake/` package/export compatibility is the safest first real C++ migration bucket.
+- 2026-04-05: The first actual C++ migration work should improve identity/discovery through additive `cmake/` package/export compatibility surfaces before touching deep runtime identifiers.

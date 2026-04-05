@@ -41,5 +41,7 @@
 ## 6. Strategic Alignment
 - [x] Record the current `BTK` relationship in `docs/ai/design/2026-04-04-bobui-vs-btk-comparison.md`.
 - [x] Document a safe staged strategy for C++/Go side-by-side migration instead of a destructive global `qt` -> `bobui` rename.
+- [x] Classify the current C++ rename-artifact explosion into migration buckets and select `cmake/` package/export compatibility as the first safe implementation bucket.
+- [ ] Implement the first additive `cmake/` package/export compatibility slice without staging unrelated rename artifacts.
 - [ ] Keep `bobui` positioned as a fast idea/incubation track for ownership semantics, bridge contracts, and compile-safe parity exploration.
 - [ ] Promote ideas from `bobui` into larger native framework tracks only after they are scoped, validated, and clearly separated from shell/product concerns.
