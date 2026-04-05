@@ -4,18 +4,18 @@
 2026-04-05
 
 ## What I did this cycle
-- Added `internal/kernel/services_test.go` to expand deterministic kernel coverage beyond the earlier manager-layer tests.
-- Covered `UndoStack`, `Clipboard`, and `MergeKernel` behavior including history limits, remote/local clipboard updates, and merge-history ordering.
-- Added testing docs for the kernel-services milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-kernel-services-tests-session.md`.
+- Integrated the Go `WindowManager` into the live runtime composition path so managed windows now render on top of the demo surface.
+- Added deterministic tests around window-manager reset/spawn/layout behavior and engine initialization of managed runtime windows.
+- Added implementation/testing docs for the window-manager runtime milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-window-manager-runtime-session.md`.
 
 ## Verified state
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
-- The Go baseline now includes automated validation for UI/runtime surfaces, first-wave kernel/data/net support packages, and additional kernel collaboration/editing services.
-- Kernel coverage remains intentionally deterministic and low-flake.
+- The Go baseline now includes a live runtime path with login, demo surface, shell composition, and managed windows/tabs.
+- Managed-window behavior is still intentionally lightweight; current integration focuses on composition rather than full interaction or docking depth.
 
 ## Recommended next steps
-1. Add richer runtime composition and deeper window-manager integration.
-2. Expand deterministic coverage into other kernel services as warranted.
+1. Add richer managed-window content and interaction.
+2. Improve docking/tab behavior beyond static rendering.
 3. Continue keeping docs aligned only with verified behavior.
 4. Continue using BTK as a comparative native-framework reference while keeping shell/OS concerns in `bobfilez` and framework concerns in `bobui`.

@@ -24,6 +24,9 @@ func newTestLayoutContext(size image.Point) layout.Context {
 
 func TestEngineInitializeDemoConfiguresExecutableWebViewRuntime(t *testing.T) {
 	e := NewEngine()
+	if e.wm != nil {
+		e.wm.Reset()
+	}
 	e.initializeDemo()
 
 	if e.demo == nil {
@@ -44,6 +47,15 @@ func TestEngineInitializeDemoConfiguresExecutableWebViewRuntime(t *testing.T) {
 	if e.demo.WebView.QueueDepth() != 0 {
 		t.Fatalf("expected empty runtime queue after initialization, got %d", e.demo.WebView.QueueDepth())
 	}
+	if e.wm == nil {
+		t.Fatal("expected window manager to be initialized")
+	}
+	if len(e.wm.Windows) != 2 {
+		t.Fatalf("expected 2 managed runtime windows after initialization, got %d", len(e.wm.Windows))
+	}
+	if e.wm.Tabs == nil || len(e.wm.Tabs.Tabs) == 0 {
+		t.Fatal("expected window manager tabs to be initialized")
+	}
 
 	reply := e.demo.WebView.Request("ping", "test")
 	if reply.Kind != "reply" {
@@ -56,6 +68,9 @@ func TestEngineInitializeDemoConfiguresExecutableWebViewRuntime(t *testing.T) {
 
 func TestEngineLayoutSupportsLoginAndAuthenticatedRuntimeStates(t *testing.T) {
 	e := NewEngine()
+	if e.wm != nil {
+		e.wm.Reset()
+	}
 	e.initializeDemo()
 	size := image.Pt(1280, 900)
 

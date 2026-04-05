@@ -32,6 +32,7 @@
 - [ ] Continue reducing package coupling.
 - [x] Add tests for Go kernel/data/net packages.
 - [x] Improve `ScrollView` scrollbar occupancy/overlay policy and lightweight two-axis behavior.
+- [x] Integrate the Go `WindowManager` into the live runtime composition path.
 
 ## 6. Strategic Alignment
 - [x] Record the current `BTK` relationship in `docs/ai/design/2026-04-04-bobui-vs-btk-comparison.md`.

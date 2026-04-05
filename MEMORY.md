@@ -46,3 +46,4 @@
 - 2026-04-05: `internal/ui/widgets/shell_test.go` now provides synthetic frame-context coverage for taskbar start-button toggling and start-menu visibility/layout behavior.
 - 2026-04-05: `internal/kernel/managers_test.go`, `internal/data/data_test.go`, and `internal/net/mesh_node_test.go` now provide the first focused automated coverage for Go kernel/data/net support packages.
 - 2026-04-05: `internal/kernel/services_test.go` now adds deterministic coverage for `UndoStack`, `Clipboard`, and `MergeKernel`, extending verification into higher-value kernel services.
+- 2026-04-05: The Go `WindowManager` is now integrated into the live runtime path, with seeded managed windows and deterministic tests covering initialization, reset/spawn behavior, and layout dimensions.
