@@ -40,3 +40,4 @@
 - The most useful near-term pattern remains: use Gio internals for proven interaction mechanics while preserving BobUI-owned framework abstractions and honest scope boundaries.
 - 2026-04-05: `ScrollView` now supports overlay vs occupy placement and a lightweight secondary-axis viewport model, improving realism without pretending to have full 2D virtualization.
 - 2026-04-05: `Engine.Run()` now uses a real Gio window/frame loop, rendering `LoginView`, `DemoSurface`, and `Shell` in a live runtime path instead of only safe initialization.
+- 2026-04-05: `internal/ui/widgets/webview_test.go` now provides automated coverage for WebView bridge queueing, reply correlation, eval handling, error propagation, and external message routing.

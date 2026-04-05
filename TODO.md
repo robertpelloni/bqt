@@ -14,7 +14,8 @@
 - [x] Add touch/swipe behavior primitives.
 - [ ] Add multi-touch/pinch/rotation primitives after the single-swipe baseline is exercised further.
 - [ ] Re-audit declarative state/transition parity versus QML/Quick.
-- [ ] Add automated validation around WebView bridge queueing, correlation, and error routing.
+- [x] Add automated validation around WebView bridge queueing, correlation, and error routing.
+- [ ] Add automated tests around navigation/history callback behavior.
 - [ ] Use the new BTK comparison doc to keep parity language grounded in verified runtime behavior rather than repo breadth.
 
 ## Quality
