@@ -9,7 +9,8 @@
 
 ## Near-Term QML/Quick Focus
 - [ ] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.
-- [ ] Add touch/swipe behavior primitives.
+- [x] Add touch/swipe behavior primitives.
+- [ ] Add multi-touch/pinch/rotation primitives after the single-swipe baseline is exercised further.
 - [ ] Re-audit declarative state/transition parity versus QML/Quick.
 - [ ] Use the new BTK comparison doc to keep parity language grounded in verified runtime behavior rather than repo breadth.
 

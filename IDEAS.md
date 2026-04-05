@@ -31,3 +31,8 @@ Instead of writing QML logic for layouts, create a visual node graph like Unreal
 The `BTK` comparison suggests a durable split that may actually accelerate both efforts.
 - **The Pivot:** Treat `bobui` as the fast lab for ownership semantics, host/page bridge contracts, and compile-safe parity prototypes while treating `BTK` as the place where mature native-framework realizations eventually land.
 - **The Execution:** Each experimental abstraction in `bobui` gets a promotion checklist: scoped API, verified behavior, shell/framework boundary check, and evidence that it belongs in a long-term native framework surface.
+
+## 7. Gesture Stack Growth Path
+The new `TouchArea` baseline suggests a clean expansion order for input primitives.
+- **The Pivot:** Grow from single-swipe and touch-presence semantics into multi-touch, pinch, rotate, gesture arbitration, and haptic coupling only after each layer is visibly exercised in the demo/runtime surface.
+- **The Execution:** Keep each step framework-owned and compile-verified, using Gio gesture machinery internally but exposing BobUI-specific input abstractions externally.

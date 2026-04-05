@@ -40,7 +40,8 @@ while also introducing a first-class foundation for:
 3. **Prioritize framework correctness** over adding more speculative subsystems.
 4. **Keep Go work clearly marked** as experimental or partial until build-verified.
 5. **Harden multiplayer fundamentals**: ownership, collaboration, synchronization, permissions.
-6. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
+6. **Deepen verified interaction primitives**: keep adding small but real input surfaces such as scrolling and touch/swipe behavior before claiming broader parity.
+7. **Use adjacent framework research productively**: treat `BTK` as a larger native-framework reference and keep `bobui` focused on the abstractions it is best suited to incubate quickly.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.

@@ -34,3 +34,5 @@
 - `bobui` should keep prioritizing verified runtime semantics, especially around `ScrollBar`/`ScrollView` interaction and `WebView` bridge execution, instead of broad but shallow surface expansion.
 - 2026-04-05: The Go `ScrollBar`/`ScrollView` baseline now has compile-verified interaction coupling by reusing Gio's internal scrollbar gesture machinery underneath a BobUI-owned widget surface.
 - `DemoSurface` now exercises the scrolling baseline with sample content and live status text, which gives future runtime work a visible integration target.
+- 2026-04-05: The Go baseline now includes a `TouchArea` primitive with directional swipe recognition and optional mouse-as-touch fallback for development on non-touch systems.
+- The touch/swipe addition is intentionally small and framework-owned; it is a foundation for later multi-touch and gesture-composition work, not a claim of full gesture-stack parity.

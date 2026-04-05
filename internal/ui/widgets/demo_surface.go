@@ -20,6 +20,8 @@ type DemoSurface struct {
 	WebView     WebView
 	ScrollBox   *ScrollView
 	ScrollItems []string
+	TouchPad    TouchArea
+	LastSwipe   string
 }
 
 func NewDemoSurface() *DemoSurface {
@@ -32,6 +34,14 @@ func NewDemoSurface() *DemoSurface {
 	d.WebView.Navigate("about:bobui", "<h1>BobUI WebView</h1><br>History and navigation baseline")
 	d.ScrollBox = NewScrollView(layout.Vertical)
 	d.ScrollBox.VerticalPolicy = ScrollAlwaysOn
+	d.TouchPad = TouchArea{
+		Label:             "Swipe Demo",
+		AllowMouseAsTouch: true,
+		MinSwipeDistance:  24,
+	}
+	d.TouchPad.OnSwipe = func(direction SwipeDirection, distance float32) {
+		d.LastSwipe = fmt.Sprintf("%s %.0fpx", direction.String(), distance)
+	}
 	for i := 1; i <= 40; i++ {
 		d.ScrollItems = append(d.ScrollItems, fmt.Sprintf("Scroll item %02d - QuickControls2-style scroll baseline", i))
 	}
@@ -68,6 +78,17 @@ func (d *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensio
 			})
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return layout.Inset{Top: unit.Dp(8), Bottom: unit.Dp(8)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+				return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
+					layout.Rigid(material.Label(mth, unit.Sp(11), fmt.Sprintf("Touch/swipe demo lastSwipe=%s", emptyDemoValue(d.LastSwipe))).Layout),
+					layout.Rigid(layout.Spacer{Height: unit.Dp(6)}.Layout),
+					layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+						return d.TouchPad.Layout(gtx, th)
+					}),
+				)
+			})
+		}),
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return d.Popup.Layout(gtx, th)
 		}),
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
@@ -83,4 +104,11 @@ func (d *DemoSurface) Layout(gtx layout.Context, th theme.Theme) layout.Dimensio
 			})
 		}),
 	)
+}
+
+func emptyDemoValue(v string) string {
+	if v == "" {
+		return "none"
+	}
+	return v
 }

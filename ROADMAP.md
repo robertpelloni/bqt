@@ -16,7 +16,7 @@
 - [x] Add a richer event surface and bridge contract (`EvalJS`, `PostMessage`, `Request`, handler registration).
 - [x] Add a compile-safe demo composition surface for the new controls.
 - [x] Add runtime-integrated `ScrollBar` behavior and richer demo wiring.
-- [ ] Add touch/swipe behavior primitives.
+- [x] Add touch/swipe behavior primitives.
 - [ ] Upgrade the `WebView` bridge from compile-safe contract to executable runtime semantics.
 
 ## 4. Framework Parity Work

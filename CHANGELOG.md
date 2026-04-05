@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.14] - 2026-04-05
+### Added
+- Added `internal/ui/widgets/touch.go` with a lightweight `TouchArea` primitive and `SwipeDirection` model for the verified Go baseline.
+- Added `docs/ai/implementation/2026-04-05-touch-swipe-primitives.md` documenting the new touch/swipe milestone.
+- Added `docs/ai/testing/2026-04-05-touch-swipe-validation.md` documenting validation for the touch/swipe baseline.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-touch-swipe-session.md`.
+
+### Changed
+- Updated `internal/ui/widgets/demo_surface.go` to visibly exercise the new touch/swipe primitive and report the latest swipe.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified touch/swipe milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.13] - 2026-04-05
 ### Added
 - Added `docs/ai/implementation/2026-04-05-scrollbar-scrollview-runtime.md` documenting the first runtime-coupled Go scroll implementation step.
