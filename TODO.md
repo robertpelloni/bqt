@@ -21,6 +21,6 @@
 
 ## Quality
 - [x] Add tests for Go kernel/data/net packages.
-- [ ] Expand coverage into additional kernel services such as undo/clipboard/merge logic.
+- [x] Expand coverage into additional kernel services such as undo/clipboard/merge logic.
 - [ ] Keep docs aligned with verified state.
 - [ ] Revisit which abstractions should remain BobUI experiments versus long-term native framework candidates after each major parity milestone.
