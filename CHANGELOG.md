@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.25] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-managed-window-interaction.md` documenting clickable tabs and tab-aware managed-window content/visibility.
+- Added `docs/ai/testing/2026-04-05-managed-window-interaction-tests.md` documenting validation for managed-window interaction behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-managed-window-interaction-session.md`.
+
+### Changed
+- Reworked `internal/ui/widgets/tabbar.go` to support real clickable tab selection.
+- Reworked `internal/ui/widgets/window.go` to render richer title/body metadata and carry tab/content semantics.
+- Reworked `internal/ui/wm.go` to expose active-tab and visible-window behavior.
+- Reworked `internal/ui/engine.go` to seed tab-aware managed windows with meaningful content.
+- Extended `internal/ui/wm_test.go` and `internal/ui/engine_test.go` to validate tab-aware runtime composition behavior.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified managed-window interaction milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.24] - 2026-04-05
 ### Added
 - Added `docs/ai/implementation/2026-04-05-window-manager-runtime-integration.md` documenting the first meaningful Go window-manager runtime integration.

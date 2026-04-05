@@ -34,6 +34,30 @@ func (wm *WindowManager) Reset() {
 	wm.Tabs = &widgets.TabBar{Tabs: []string{"Kernel", "Terminal", "Docs"}}
 }
 
+func (wm *WindowManager) ActiveTab() string {
+	if wm == nil || wm.Tabs == nil {
+		return ""
+	}
+	return wm.Tabs.ActiveTitle()
+}
+
+func (wm *WindowManager) VisibleWindows() []*widgets.Window {
+	if wm == nil {
+		return nil
+	}
+	activeTab := wm.ActiveTab()
+	visible := make([]*widgets.Window, 0, len(wm.Windows))
+	for _, win := range wm.Windows {
+		if win == nil {
+			continue
+		}
+		if win.Tab == "" || activeTab == "" || win.Tab == activeTab {
+			visible = append(visible, win)
+		}
+	}
+	return visible
+}
+
 func (wm *WindowManager) Layout(gtx layout.Context, th theme.Theme) layout.Dimensions {
 	if wm == nil {
 		return layout.Dimensions{}
@@ -45,7 +69,7 @@ func (wm *WindowManager) Layout(gtx layout.Context, th theme.Theme) layout.Dimen
 		stack.Pop()
 	}
 
-	for _, win := range wm.Windows {
+	for _, win := range wm.VisibleWindows() {
 		win.Layout(gtx, th)
 	}
 	return layout.Dimensions{Size: gtx.Constraints.Max}
@@ -53,4 +77,8 @@ func (wm *WindowManager) Layout(gtx layout.Context, th theme.Theme) layout.Dimen
 
 func (wm *WindowManager) SpawnWindow(id, title string, pos, size f32.Point) {
 	wm.Windows = append(wm.Windows, &widgets.Window{ID: id, Title: title, Pos: pos, Size: size})
+}
+
+func (wm *WindowManager) SpawnManagedWindow(id, title, tab, body string, pos, size f32.Point) {
+	wm.Windows = append(wm.Windows, &widgets.Window{ID: id, Title: title, Tab: tab, Body: body, Pos: pos, Size: size})
 }

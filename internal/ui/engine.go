@@ -112,8 +112,9 @@ func (e *Engine) initializeWindowManager() {
 		e.wm.Tabs = &widgets.TabBar{Tabs: []string{"Kernel", "Terminal", "Docs"}, Active: 0}
 	}
 	if len(e.wm.Windows) == 0 {
-		e.wm.SpawnWindow("kernel-inspector", "Kernel Inspector", f32.Pt(760, 110), f32.Pt(260, 180))
-		e.wm.SpawnWindow("runtime-log", "Runtime Log", f32.Pt(780, 320), f32.Pt(300, 200))
+		e.wm.SpawnManagedWindow("kernel-inspector", "Kernel Inspector", "Kernel", "Kernel state, permissions, and system surfaces.", f32.Pt(760, 110), f32.Pt(280, 180))
+		e.wm.SpawnManagedWindow("runtime-log", "Runtime Log", "Terminal", "Live runtime messages and execution notes.", f32.Pt(780, 320), f32.Pt(320, 200))
+		e.wm.SpawnManagedWindow("docs-pane", "Docs Pane", "Docs", "Framework notes and parity planning surfaces.", f32.Pt(740, 150), f32.Pt(300, 220))
 	}
 }
 
@@ -126,6 +127,10 @@ func (e *Engine) layout(gtx layout.Context) layout.Dimensions {
 	mth := material.NewTheme()
 	mth.Palette.Fg = e.th.Text
 	mth.Palette.Bg = e.th.Surface
+	runtimeSubtitle := "Live Gio frame loop with DemoSurface, managed windows, interactive scroll, touch/swipe, and executable WebView runtime."
+	if e.wm != nil && e.wm.ActiveTab() != "" {
+		runtimeSubtitle = fmt.Sprintf("%s Active managed tab: %s", runtimeSubtitle, e.wm.ActiveTab())
+	}
 
 	return layout.Stack{}.Layout(gtx,
 		layout.Expanded(func(gtx layout.Context) layout.Dimensions {
@@ -134,7 +139,7 @@ func (e *Engine) layout(gtx layout.Context) layout.Dimensions {
 					return layout.Inset{Top: unit.Dp(10), Left: unit.Dp(10), Right: unit.Dp(10), Bottom: unit.Dp(10)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
 						return layout.Flex{Axis: layout.Vertical}.Layout(gtx,
 							layout.Rigid(material.H5(mth, "BobUI Go Runtime Surface").Layout),
-							layout.Rigid(material.Body2(mth, "Live Gio frame loop with DemoSurface, managed windows, interactive scroll, touch/swipe, and executable WebView runtime.").Layout),
+							layout.Rigid(material.Body2(mth, runtimeSubtitle).Layout),
 						)
 					})
 				}),

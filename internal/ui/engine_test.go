@@ -50,8 +50,21 @@ func TestEngineInitializeDemoConfiguresExecutableWebViewRuntime(t *testing.T) {
 	if e.wm == nil {
 		t.Fatal("expected window manager to be initialized")
 	}
-	if len(e.wm.Windows) != 2 {
-		t.Fatalf("expected 2 managed runtime windows after initialization, got %d", len(e.wm.Windows))
+	if len(e.wm.Windows) != 3 {
+		t.Fatalf("expected 3 managed runtime windows after initialization, got %d", len(e.wm.Windows))
+	}
+	if e.wm.Tabs == nil || len(e.wm.Tabs.Tabs) == 0 {
+		t.Fatal("expected window manager tabs to be initialized")
+	}
+	if active := e.wm.ActiveTab(); active != "Kernel" {
+		t.Fatalf("expected initial active tab Kernel, got %q", active)
+	}
+	visible := e.wm.VisibleWindows()
+	if len(visible) != 1 {
+		t.Fatalf("expected one visible managed window for initial Kernel tab, got %d", len(visible))
+	}
+	if visible[0].Title != "Kernel Inspector" {
+		t.Fatalf("expected Kernel Inspector to be initially visible, got %q", visible[0].Title)
 	}
 	if e.wm.Tabs == nil || len(e.wm.Tabs.Tabs) == 0 {
 		t.Fatal("expected window manager tabs to be initialized")

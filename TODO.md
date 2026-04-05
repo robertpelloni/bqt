@@ -9,7 +9,9 @@
 - [x] Implement interactive `ScrollBar` drag behavior and couple it to `ScrollView` state.
 - [x] Improve scrollbar occupancy/overlay policy and two-axis behavior.
 - [ ] Add richer scroll corner/theming behavior when both bars are visible.
-- [ ] Add richer managed-window content and interaction in the live runtime path.
+- [x] Add richer managed-window content and interaction in the live runtime path.
+- [ ] Add managed-window move/resize/close interaction.
+- [ ] Improve docking/tab behavior beyond active-tab filtering.
 
 ## Near-Term QML/Quick Focus
 - [x] Upgrade `WebView` JS bridge from compile-safe contract to executable runtime semantics.
