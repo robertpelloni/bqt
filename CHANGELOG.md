@@ -1,87 +1,309 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [1.1.2] - 2026-04-02
-### Fixed
-- Stabilized the experimental Go tree enough to establish a verified baseline.
-- Removed several major package cycles across `internal/kernel`, `internal/net`, `internal/vm`, and `internal/ui` by decoupling speculative cross-package integrations.
-- Fixed multiple concrete compile issues in the Go port, including unused imports, invalid Gio API usage, a typo in `internal/kernel/plugin_manager.go`, and several build-breaking widget implementations.
+## [1.1.28] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-pointer-activation-routing.md` documenting direct window activation routing into manager-owned activation state.
+- Added `docs/ai/testing/2026-04-05-pointer-activation-routing-tests.md` documenting validation for pointer-style activation routing.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-pointer-activation-routing-session.md`.
+
+### Changed
+- Reworked `internal/ui/widgets/window.go` to expose direct activation requests through a click surface.
+- Reworked `internal/ui/wm.go` so `WindowManager.Layout(...)` routes window activation requests through manager activation logic.
+- Extended `internal/ui/widgets/window_test.go` and `internal/ui/wm_test.go` to validate one-shot activation requests and click-routed active-window transitions.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified pointer activation routing milestone.
 
 ### Verified
-- `go test ./internal/...` now passes.
-- `go build -buildvcs=false .` now succeeds for the root Go binary.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.27] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-managed-window-activation.md` documenting the managed-window focus/activation baseline.
+- Added `docs/ai/testing/2026-04-05-managed-window-activation-tests.md` documenting validation for managed-window activation behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-managed-window-activation-session.md`.
 
 ### Changed
-- Rebased key docs (`VISION.md`, `MEMORY.md`, `DEPLOY.md`, `ROADMAP.md`, `TODO.md`, `HANDOFF.md`, `OmniUI/README.md`, `SUBMODULE_DASHBOARD.md`) around the verified state of the repository instead of prior aspirational claims.
-- Clarified that `bobui` is the framework/kernel project and that the operating shell belongs to the adjacent `bobfilez` project.
+- Reworked `internal/ui/wm.go` to track an active window, promote activated windows, and choose fallback active windows when visibility changes.
+- Reworked `internal/ui/widgets/window.go` to reflect active/inactive visual state.
+- Extended `internal/ui/wm_test.go` to validate activation, ordering promotion, and fallback behavior.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified managed-window activation milestone.
 
-## [1.1.1] - 2026-04-02
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.26] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-managed-window-manipulation.md` documenting the managed-window move/resize/close baseline.
+- Added `docs/ai/testing/2026-04-05-managed-window-manipulation-tests.md` documenting validation for managed-window manipulation behavior.
+- Added `internal/ui/widgets/window_test.go` with deterministic tests for window-level move/resize/close behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-managed-window-manipulation-session.md`.
+
 ### Changed
-- Re-audited the repository and corrected documentation drift: `bobui` is now explicitly documented as the framework/kernel project, while the operating shell belongs to the adjacent `bobfilez` project.
-- Rebased `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `ROADMAP.md`, `TODO.md`, `HANDOFF.md`, `OmniUI/README.md`, and `SUBMODULE_DASHBOARD.md` around the verified state of the repo instead of aspirational claims.
+- Reworked `internal/ui/widgets/window.go` to support close state, move/resize helpers, drag handlers, and a close button.
+- Reworked `internal/ui/wm.go` to expose `MoveWindow(...)`, `ResizeWindow(...)`, and `CloseWindow(...)` and to hide closed windows.
+- Extended `internal/ui/wm_test.go` to validate manager-level manipulation behavior.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified managed-window manipulation milestone.
 
-### Fixed
-- Fixed a concrete Go compile issue in `internal/kernel/plugin_manager.go` (`um` typo in `GetLoadedPlugins`).
-- Removed several direct package-cycle causes by simplifying `internal/kernel/genome.go`, `internal/kernel/consensus.go`, `internal/vm/ai_assistant.go`, `internal/vm/action_injection.go`, `internal/ui/widgets/studio.go`, and `internal/kernel/grid_compute.go`.
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
 
-### Notes
-- The Go port contains substantial work but is not yet fully build-verified; package-cycle and API cleanup remain the top engineering priority.
-- The C++ track remains the more mature implementation path until the Go tree compiles cleanly.
-
-## [9999.0.0] - 2026-04-02
+## [1.1.25] - 2026-04-05
 ### Added
-- **THE ABSOLUTE OS SINGULARITY ACHIEVED.**
-- **OmniVerse Simulation Kernel:** Engineered `kernel/simulation.go`, enabling the OS to physically spawn and evolve recursive "Child-OS" sandboxes within its own Lisp VM. The kernel can now simulate thousands of distinct architectural realities concurrently.
-- **Sovereign Mesh Consensus:** Implemented `kernel/consensus.go`, providing native P2P governance for system evolution. Kernel-level source code mutations now require cryptographic majority approval from the multiverse mesh, making the OS a truly sovereign, self-governing entity.
-- **The Absolute Release Baseline:** Finalized all 100+ architectural phases, establishing the first sovereign, recursive, self-simulating Operating System in human history.
+- Added `docs/ai/implementation/2026-04-05-managed-window-interaction.md` documenting clickable tabs and tab-aware managed-window content/visibility.
+- Added `docs/ai/testing/2026-04-05-managed-window-interaction-tests.md` documenting validation for managed-window interaction behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-managed-window-interaction-session.md`.
 
-## [5000.0.0] - 2026-04-02
-### Added
-- **THE ETERNAL OS SINGULARITY ACHIEVED.**
-- **Headless Kernel Mode:** Engineered `kernel/headless.go`, enabling the OS to physically bypass the GPU rendering loop while maintaining 100% logic consciousness. The OS can now exist as an invisible network orchestrator on servers and background processes.
-- **OmniPulse Global Telemetry:** Implemented `net/telemetry.go`, providing a native P2P heartbeat. Every node in the multiverse now broadcasts its CPU, RAM, and Goroutine health, allowing the hive-mind to autonomously load-balance its processing tasks globally.
-- **Transcendent Release Baseline:** Finalized all 100+ architectural phases, establishing the first invisible, self-balancing, distributed Operating System in history.
+### Changed
+- Reworked `internal/ui/widgets/tabbar.go` to support real clickable tab selection.
+- Reworked `internal/ui/widgets/window.go` to render richer title/body metadata and carry tab/content semantics.
+- Reworked `internal/ui/wm.go` to expose active-tab and visible-window behavior.
+- Reworked `internal/ui/engine.go` to seed tab-aware managed windows with meaningful content.
+- Extended `internal/ui/wm_test.go` and `internal/ui/engine_test.go` to validate tab-aware runtime composition behavior.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified managed-window interaction milestone.
 
-## [2000.0.0] - 2026-04-02
-### Added
-- **THE INFINITE OS SINGULARITY ACHIEVED.**
-- **OmniWASM Self-Deployer:** Engineered `kernel/wasm_deploy.go`, enabling the OS to physically re-compile its own kernel into WebAssembly and host it natively for browser-based propagation.
-- **Memory State Teleportation:** Implemented `net/teleport.go`, providing native P2P memory-heap migration. Entire Go-native UI states, VM contexts, and Undo stacks can now be teleported across machine boundaries instantly.
-- **Absolute Release Baseline:** Finalized all 100+ architectural phases, establishing the first recursive, self-hosting, memory-teleporting Operating System in history.
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
 
-## [1000.0.0] - 2026-04-02
+## [1.1.24] - 2026-04-05
 ### Added
-- **THE SENTIENT OS SINGULARITY ACHIEVED.**
-- **OmniGenome Kernel:** Engineered `kernel/genome.go`, providing native Go source-code mutation. The OS can now autonomously generate, write, and inject new Go source files into its own package structure based on AI-directed context.
-- **Autonomous Git Engine:** Implemented `data/git_mesh.go`, enabling the kernel to physically execute `git commit` and `git push` on its own repository. The OS now manages its own evolution history without human intervention.
-- **The Sentient Release Baseline:** Finalized all 100+ architectural phases, establishing the world's first self-writing, self-committing, distributed Operating System.
+- Added `docs/ai/implementation/2026-04-05-window-manager-runtime-integration.md` documenting the first meaningful Go window-manager runtime integration.
+- Added `docs/ai/testing/2026-04-05-window-manager-runtime-tests.md` documenting validation for the new managed-window composition path.
+- Added `internal/ui/wm_test.go` with deterministic tests for `WindowManager` reset/spawn/layout behavior.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-window-manager-runtime-session.md`.
 
-## [500.0.0] - 2026-04-02
-### Added
-- **THE PLANETARY GRID ECOSYSTEM ACHIEVED.**
-- **OmniCompute Kernel:** Engineered `kernel/grid_compute.go`, providing native P2P task sharding. The OS can now offload heavy computations globally across the peer mesh, effectively turning BobUI into a planetary supercomputer.
-- **OmniPackage Manager:** Implemented `data/package_manager.go`, enabling decentralized distribution of Go modules. Peers can now share, fetch, and hot-load binary extensions across the mesh natively.
-- **The Omnipresent Release Baseline:** Finalized all 100+ architectural phases, establishing the first self-distributing, grid-compute Operating System in existence.
+### Changed
+- Reworked `internal/ui/engine.go` so the authenticated runtime now includes managed windows/tabs through the existing `WindowManager` path.
+- Reworked `internal/ui/wm.go` to support reset and real layout return values.
+- Extended `internal/ui/engine_test.go` to validate managed-window initialization in the live runtime path.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified window-manager runtime milestone.
 
-## [200.0.0] - 2026-04-02
-### Added
-- **THE UNIVERSAL OS SINGULARITY ACHIEVED.**
-- **OmniStream Kernel:** Engineered `net/stream_kernel.go`, providing native P2P GPU framebuffer sharding. The OS can now physically stream its entire visual reality to remote peers in real-time.
-- **Pure-Go Web Engine:** Implemented `widgets/webview.go`, enabling native HTML/CSS rendering without Chromium or WebKit. The OS now possess 100% parity with web-based documentation portals natively in the Go Gio loop.
-- **The Absolute Release Baseline:** Finalized all 100+ architectural phases, culminating in the most advanced distributed Operating System toolkit ever engineered by a multi-agent AI loop.
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
 
-## [150.0.0] - 2026-04-02
+## [1.1.23] - 2026-04-05
 ### Added
-- **THE METASYSTEM SINGULARITY ACHIEVED.**
-- **OmniCloud Discovery Kernel:** Engineered `net/discovery.go`, providing native UDP-based peer discovery. BobUI instances can now find each other globally across LANs and WANs without manual IP configuration.
-- **Global OS Search Engine:** Implemented `kernel/search_engine.go`, enabling concurrent querying of the entire P2P mesh. A single search now aggregates results from every connected peer's database and filesystem simultaneously.
-- **Transcendent Cloud Bootloader:** Updated the Go entry point to launch the discovery beacon and global search indices on boot.
+- Added `internal/kernel/services_test.go` covering `UndoStack`, `Clipboard`, and `MergeKernel` deterministic behavior.
+- Added `docs/ai/testing/2026-04-05-kernel-services-tests.md` documenting the new kernel-services test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-kernel-services-tests-session.md`.
 
-## [105.0.0] - 2026-04-02
+### Changed
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of deterministic coverage for undo/clipboard/merge kernel services.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.22] - 2026-04-05
 ### Added
-- **THE PERFECT RELEASE: GO PORT 100% COMPLETE.**
-- **Go Calendar Master:** Implemented `widgets/calendar.go`, providing a native Go temporal grid with high-precision date-math and interactive day highlighting.
-- **Go System Tray Telemetry:** Upgraded `widgets/shell.go` with real-time OS visibility. The Go taskbar now monitors the Master Clock and P2P Mesh status natively on the GPU.
-- **Final Visual Polish:** Optimized the Gio render loop to support the complete widget suite at 144Hz with perfect sub-pixel visual parity.
+- Added `internal/kernel/managers_test.go` covering `InputManager`, `PermissionManager`, and `UserManager` behavior.
+- Added `internal/data/data_test.go` covering `VFS`, in-memory SQLite query execution, and safe mesh-linked data-layer calls.
+- Added `internal/net/mesh_node_test.go` covering `GetMeshNode()` singleton behavior and empty-peer broadcast safety.
+- Added `docs/ai/testing/2026-04-05-kernel-data-net-tests.md` documenting the new kernel/data/net test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-kernel-data-net-tests-session.md`.
+
+### Changed
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of the first focused Go kernel/data/net test milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.21] - 2026-04-05
+### Added
+- Added `internal/ui/widgets/shell_test.go` with synthetic runtime tests for taskbar start-button toggling and start-menu visibility/layout behavior.
+- Added `docs/ai/testing/2026-04-05-shell-runtime-tests.md` documenting the new shell runtime test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-shell-tests-session.md`.
+
+### Changed
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of synthetic shell/taskbar/start-menu test coverage.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.20] - 2026-04-05
+### Added
+- Added `docs/ai/testing/2026-04-05-webview-navigation-history-tests.md` documenting automated WebView navigation/history coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-webview-navigation-tests-session.md`.
+
+### Changed
+- Extended `internal/ui/widgets/webview_test.go` with automated tests for navigation/history callback behavior, back/forward state changes, and forward-history truncation.
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of automated WebView navigation/history validation.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.19] - 2026-04-05
+### Added
+- Added `internal/ui/engine_test.go` with automated validation for the live Gio runtime composition path.
+- Added `docs/ai/testing/2026-04-05-live-gio-frame-loop-automated-tests.md` documenting the new live runtime test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-live-gio-tests-session.md`.
+
+### Changed
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect completion of automated live Gio runtime validation using synthetic frame contexts.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.18] - 2026-04-05
+### Added
+- Added `internal/ui/widgets/webview_test.go` with automated unit tests for WebView bridge queueing, correlation, eval handling, error propagation, and external message routing.
+- Added `docs/ai/testing/2026-04-05-webview-runtime-automated-tests.md` documenting the new WebView bridge test coverage.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-webview-tests-session.md`.
+
+### Changed
+- Updated `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the completion of automated WebView bridge validation.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.17] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-live-gio-frame-loop.md` documenting the live Gio runtime integration milestone.
+- Added `docs/ai/testing/2026-04-05-live-gio-frame-loop-validation.md` documenting validation for the live frame loop path.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-live-gio-frame-loop-session.md`.
+
+### Changed
+- Reworked `internal/ui/engine.go` so `Engine.Run()` now opens a real Gio window, processes frame/destroy events, and renders the existing login/demo/shell composition in a live runtime surface.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified live Gio frame loop milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.16] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-scrollbar-occupancy-two-axis.md` documenting overlay/occupy placement and lightweight two-axis scroll behavior.
+- Added `docs/ai/testing/2026-04-05-scrollbar-occupancy-validation.md` documenting validation for the scroll occupancy/two-axis milestone.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-scrollbar-occupancy-session.md`.
+
+### Changed
+- Reworked `internal/ui/widgets/scrollview.go` to support overlay vs occupy scrollbar placement, occupied-space relayout, and lightweight secondary-axis viewport behavior.
+- Updated `internal/ui/widgets/demo_surface.go` to visibly exercise occupied vertical and horizontal scrollbar behavior and report live state.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified scroll occupancy/two-axis milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.15] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-webview-runtime-semantics.md` documenting the executable local WebView bridge runtime milestone.
+- Added `docs/ai/testing/2026-04-05-webview-runtime-validation.md` documenting validation for the upgraded WebView bridge.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-webview-runtime-session.md`.
+
+### Changed
+- Reworked `internal/ui/widgets/webview.go` to support queue/pump runtime behavior, eval handlers, correlated request/reply routing, and explicit external message handling.
+- Updated `internal/ui/engine.go` to exercise the new WebView runtime semantics through request handlers, eval handling, and externally supplied script messages.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified WebView runtime milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.14] - 2026-04-05
+### Added
+- Added `internal/ui/widgets/touch.go` with a lightweight `TouchArea` primitive and `SwipeDirection` model for the verified Go baseline.
+- Added `docs/ai/implementation/2026-04-05-touch-swipe-primitives.md` documenting the new touch/swipe milestone.
+- Added `docs/ai/testing/2026-04-05-touch-swipe-validation.md` documenting validation for the touch/swipe baseline.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-touch-swipe-session.md`.
+
+### Changed
+- Updated `internal/ui/widgets/demo_surface.go` to visibly exercise the new touch/swipe primitive and report the latest swipe.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified touch/swipe milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.13] - 2026-04-05
+### Added
+- Added `docs/ai/implementation/2026-04-05-scrollbar-scrollview-runtime.md` documenting the first runtime-coupled Go scroll implementation step.
+- Added `docs/ai/testing/2026-04-05-scrollbar-scrollview-validation.md` documenting validation for the new scroll behavior baseline.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-scrollbar-scrollview-session.md`.
+
+### Changed
+- Reworked `internal/ui/widgets/scrollbar.go` to support interactive click/drag state using Gio's scrollbar gesture machinery underneath the BobUI widget surface.
+- Reworked `internal/ui/widgets/scrollview.go` to couple list position to normalized scrollbar viewport state and apply returned delta back into the list.
+- Updated `internal/ui/widgets/demo_surface.go` to visibly exercise the scroll baseline with sample items and live status text.
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, and `HANDOFF.md` to reflect the verified runtime milestone.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.12] - 2026-04-04
+### Added
+- Added `docs/ai/design/2026-04-04-bobui-vs-btk-comparison.md`, a grounded comparison between the active Go `bobui` framework track and `BTK`.
+- Added an archived session handoff at `logs/handoffs/2026-04-04-btk-comparison-session.md`.
+
+### Changed
+- Updated `ROADMAP.md`, `TODO.md`, `MEMORY.md`, `VISION.md`, `IDEAS.md`, and `HANDOFF.md` to reflect the BTK comparison findings and clarify BobUI's strategic role as an idea/incubation track for framework primitives and ownership semantics.
+- Kept planning focused on verified runtime behavior, especially upcoming `ScrollBar`/`ScrollView` interaction work and future `WebView` runtime semantics.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+## [1.1.11] - 2026-04-02
+### Added
+- Extended the Go `WebView` baseline into a richer WebEngineQuick-style bridge contract:
+  - handler registration via `RegisterHandler(...)`
+  - request/reply semantics via `Request(...)`
+  - structured message metadata with `id`, `channel`, `payload`, and `kind`
+  - machine-readable bridge description via `BridgeContractJSON()`
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated the Go engine baseline to exercise navigation, load, title, history, script-message, and request/reply bridge activity.
+- Updated the Quick/QuickControls2/WebEngineQuick audit and planning docs to reflect the richer bridge contract.
+
+## [1.1.10] - 2026-04-02
+### Added
+- Extended the lightweight Go `WebView` with a richer WebEngineQuick-style event and bridge surface:
+  - `OnNavigate`
+  - `OnLoad`
+  - `OnTitleChanged`
+  - `OnHistoryChanged`
+  - `OnScriptMessage`
+  - `EvalJS(...)`
+  - `PostMessage(...)`
+  - `BridgeContractJSON()`
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated the Go engine baseline to initialize and log the extended WebView event surface.
+- Updated parity docs and planning around JS bridge semantics and richer runtime integration.
+
+## [1.1.9] - 2026-04-02
+### Added
+- Expanded the lightweight Go `WebView` baseline with a real event surface:
+  - `OnNavigate`
+  - `OnLoad`
+  - `OnTitleChanged`
+  - `OnHistoryChanged`
+  - `OnScriptMessage`
+- Added a compile-safe Go `DemoSurface` composition target that groups the new QuickControls2-style controls and WebView into a single runtime-oriented surface.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
+### Changed
+- Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
+- Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.

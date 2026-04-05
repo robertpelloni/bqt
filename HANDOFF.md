@@ -1,39 +1,22 @@
 # Session Handoff
 
 ## Date
-2026-04-02
+2026-04-05
 
-## What I actually verified
-- The repository contains a huge amount of generated C++ and Go code.
-- The **Go port is not yet cleanly buildable**.
-- A direct `go test ./internal/...` reveals package cycles, especially around:
-  - `internal/net`
-  - `internal/kernel`
-  - `internal/vm`
-  - `internal/ui`
-- I fixed one concrete compile bug in `internal/kernel/plugin_manager.go` (`um` -> `pm`).
-- I removed one major package-cycle source by decoupling:
-  - `internal/kernel/genome.go`
-  - `internal/vm/ai_assistant.go`
-  - `internal/vm/action_injection.go`
-  - `internal/ui/widgets/studio.go`
-  - `internal/kernel/consensus.go`
-- I removed another direct cycle source by rewriting `internal/kernel/grid_compute.go` so it no longer imports `internal/net`.
+## What I did this cycle
+- Reworked the managed-window baseline to expose activation requests through a direct click surface.
+- Reworked `WindowManager.Layout(...)` so direct window activation requests now flow back through manager-owned activation logic.
+- Extended deterministic tests around one-shot activation request consumption and click-routed active-window transitions.
+- Added implementation/testing docs for the pointer activation routing milestone and archived a detailed handoff log in `logs/handoffs/2026-04-05-pointer-activation-routing-session.md`.
 
-## What I corrected in documentation
-- Rewrote `VISION.md` to reflect the real scope: `bobui` is the framework/kernel; the shell belongs to `bobfilez`.
-- Rewrote `MEMORY.md` to reflect actual verified findings rather than aspirational claims.
-- Rewrote `DEPLOY.md` to describe the actual dual-path repo (C++ and experimental Go).
-- Rebased `ROADMAP.md` and `TODO.md` around stabilization and verified parity work.
-
-## Current truth about the repo
-- The repository is **not** in a trustworthy “100% complete” state despite previous claims.
-- The C++ tree contains many experimental components and placeholders.
-- The Go tree contains many experimental files, and while a large amount of logic exists, it still requires a serious stabilization pass.
-- The correct next move is **compile integrity first**, then feature work.
+## Verified state
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+- The Go baseline now includes a live runtime path with login, demo surface, shell composition, clickable tabs, tab-aware managed windows, move/resize/close behavior, activation semantics, and pointer-routed activation requests.
+- Focus routing is still intentionally lightweight; direct activation now exists, but keyboard focus routing and deeper docking/workspace semantics do not yet.
 
 ## Recommended next steps
-1. Continue eliminating Go package cycles.
-2. Fix obvious Gio API misuse and placeholder code in core UI packages.
-3. Update `OmniUI/README.md` and related docs to remove shell/OS ownership confusion.
-4. Only after the baseline builds cleanly, resume parity feature work.
+1. Improve docking/tab behavior beyond filtering and ordering promotion.
+2. Add richer focus routing on top of activation state.
+3. Continue keeping docs aligned only with verified behavior.
+4. Continue progressing in verified slices instead of broad unsafe global rename work.
