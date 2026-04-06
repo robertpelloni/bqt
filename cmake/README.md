@@ -16,8 +16,12 @@ This repository also carries an additive BobUI-facing compatibility layer in:
 - `BobUIGuiConfig.cmake`
 - `BobUI6NetworkConfig.cmake`
 - `BobUINetworkConfig.cmake`
+- `BobUI6SqlConfig.cmake`
+- `BobUISqlConfig.cmake`
 - `BobUI6WidgetsConfig.cmake`
 - `BobUIWidgetsConfig.cmake`
+- `BobUI6XmlConfig.cmake`
+- `BobUIXmlConfig.cmake`
 - `QtBobUIHelpers.cmake`
 
 These files do **not** replace the canonical Qt-derived build internals. They are the first staged

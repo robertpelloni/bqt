@@ -16,8 +16,12 @@ foreach(_bobui_file
     BobUIGuiConfig.cmake
     BobUI6NetworkConfig.cmake
     BobUINetworkConfig.cmake
+    BobUI6SqlConfig.cmake
+    BobUISqlConfig.cmake
     BobUI6WidgetsConfig.cmake
     BobUIWidgetsConfig.cmake
+    BobUI6XmlConfig.cmake
+    BobUIXmlConfig.cmake
 )
     file(COPY "${CMAKE_CURRENT_LIST_DIR}/../${_bobui_file}"
         DESTINATION "${_bobui_source_dir}/cmake")
@@ -104,12 +108,28 @@ qt_internal_install_bobui_compat_package(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUINetworkConfig.cmake"
 )
 qt_internal_install_bobui_compat_package(
+    "BobUI6Sql"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6SqlConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUISql"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUISqlConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
     "BobUI6Widgets"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6WidgetsConfig.cmake"
 )
 qt_internal_install_bobui_compat_package(
     "BobUIWidgets"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIWidgetsConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUI6Xml"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6XmlConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUIXml"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIXmlConfig.cmake"
 )
 
 foreach(_bobui_expected_file
@@ -137,12 +157,24 @@ foreach(_bobui_expected_file
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUINetworkConfig.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUINetworkConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUI6SqlConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUI6SqlConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUISql/BobUISqlConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUISql/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUISql/BobUISqlConfigVersion.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Widgets/BobUI6WidgetsConfig.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Widgets/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Widgets/BobUI6WidgetsConfigVersion.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUIWidgets/BobUIWidgetsConfig.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUIWidgets/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUIWidgets/BobUIWidgetsConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Xml/BobUI6XmlConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Xml/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6Xml/BobUI6XmlConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIXml/BobUIXmlConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIXml/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIXml/BobUIXmlConfigVersion.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6/BobUI6Config.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6/BobUI6ConfigVersion.cmake"
@@ -167,12 +199,24 @@ foreach(_bobui_expected_file
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUINetworkConfig.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUINetworkConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUI6SqlConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUI6SqlConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUISql/BobUISqlConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUISql/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUISql/BobUISqlConfigVersion.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Widgets/BobUI6WidgetsConfig.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Widgets/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Widgets/BobUI6WidgetsConfigVersion.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUIWidgets/BobUIWidgetsConfig.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUIWidgets/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUIWidgets/BobUIWidgetsConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Xml/BobUI6XmlConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Xml/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6Xml/BobUI6XmlConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIXml/BobUIXmlConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIXml/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIXml/BobUIXmlConfigVersion.cmake"
 )
     if(NOT EXISTS "${_bobui_expected_file}")
         message(FATAL_ERROR "Expected BobUI publication file to exist: ${_bobui_expected_file}")

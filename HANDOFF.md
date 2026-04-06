@@ -4,19 +4,20 @@
 2026-04-05
 
 ## What I did this cycle
-- Attempted stronger native qtbase configure validation and confirmed that the current environment does not expose a usable C/C++ compiler to CMake.
-- Added `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` so native configure readiness is now encoded as a repeatable preflight gate instead of an ad hoc manual failure.
-- Added testing documentation and updated roadmap/todo/memory/handoff/version/changelog plus related session metadata.
-- Archived a detailed handoff log in `logs/handoffs/2026-04-05-bobui-qtbase-native-configure-preflight-session.md`.
+- Added direct module config shims for `BobUI6Sql`, `BobUISql`, `BobUI6Xml`, and `BobUIXml`.
+- Extended the forwarding smoke test to validate direct Sql/Xml module-package lookup and target creation.
+- Extended the publication configure smoke test to validate build/install-style publication for Sql/Xml compat package files.
+- Added implementation/testing docs and updated roadmap/todo/memory/handoff/version/changelog plus related session metadata.
+- Archived a detailed handoff log in `logs/handoffs/2026-04-05-bobui-cmake-module-shims-sql-xml-session.md`.
 
 ## Verified state
-- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
 - `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
 - `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
 - `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
-- The Go baseline remains fully verified while the C++ migration path now has an honest native-validation gate that distinguishes environment/toolchain problems from package-surface regressions.
+- The Go baseline remains fully verified while the C++ migration path now includes direct BobUI module-package slices for `Core`, `Gui`, `Network`, `Sql`, `Widgets`, and `Xml`.
 - A global rename of legacy C++ `qt`/`Q*` surfaces is still intentionally deferred because it would be far riskier than the compatibility-first path that is now producing real code and validation.
 
 ## Recommended next steps

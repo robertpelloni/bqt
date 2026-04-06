@@ -10,7 +10,9 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/Qt6Core"
     "${_bobui_cmake_root}/Qt6Gui"
     "${_bobui_cmake_root}/Qt6Network"
+    "${_bobui_cmake_root}/Qt6Sql"
     "${_bobui_cmake_root}/Qt6Widgets"
+    "${_bobui_cmake_root}/Qt6Xml"
     "${_bobui_cmake_root}/BobUI6"
     "${_bobui_cmake_root}/BobUI"
     "${_bobui_cmake_root}/BobUI6Core"
@@ -19,8 +21,12 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/BobUIGui"
     "${_bobui_cmake_root}/BobUI6Network"
     "${_bobui_cmake_root}/BobUINetwork"
+    "${_bobui_cmake_root}/BobUI6Sql"
+    "${_bobui_cmake_root}/BobUISql"
     "${_bobui_cmake_root}/BobUI6Widgets"
     "${_bobui_cmake_root}/BobUIWidgets"
+    "${_bobui_cmake_root}/BobUI6Xml"
+    "${_bobui_cmake_root}/BobUIXml"
     "${_bobui_source_dir}"
 )
 
@@ -93,6 +99,21 @@ file(WRITE "${_bobui_cmake_root}/Qt6Network/Qt6NetworkConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Sql/Qt6SqlConfig.cmake" [=[
+set(Qt6Sql_FOUND TRUE)
+set(Qt6Sql_VERSION "6.12.0")
+if(NOT TARGET Qt6::Sql)
+    add_library(Qt6::Sql INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::Sql)
+    add_library(Qt::Sql INTERFACE IMPORTED)
+    set_property(TARGET Qt::Sql PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::Sql")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Sql/Qt6SqlConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 file(WRITE "${_bobui_cmake_root}/Qt6Widgets/Qt6WidgetsConfig.cmake" [=[
 set(Qt6Widgets_FOUND TRUE)
 set(Qt6Widgets_VERSION "6.12.0")
@@ -108,8 +129,23 @@ file(WRITE "${_bobui_cmake_root}/Qt6Widgets/Qt6WidgetsConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Xml/Qt6XmlConfig.cmake" [=[
+set(Qt6Xml_FOUND TRUE)
+set(Qt6Xml_VERSION "6.12.0")
+if(NOT TARGET Qt6::Xml)
+    add_library(Qt6::Xml INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::Xml)
+    add_library(Qt::Xml INTERFACE IMPORTED)
+    set_property(TARGET Qt::Xml PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::Xml")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Xml/Qt6XmlConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 
-foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Widgets BobUIWidgets)
+foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
         DESTINATION "${_bobui_cmake_root}/${_bobui_package_dir}")
 endforeach()
@@ -129,12 +165,20 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6NetworkConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Network")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUINetworkConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUINetwork")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6SqlConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Sql")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUISqlConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUISql")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6WidgetsConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Widgets")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIWidgetsConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUIWidgets")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6XmlConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Xml")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIXmlConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUIXml")
 
-foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Widgets BobUIWidgets)
+foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(WRITE "${_bobui_cmake_root}/${_bobui_package_name}/${_bobui_package_name}ConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
@@ -153,18 +197,26 @@ find_package(BobUI6Gui 6.12 REQUIRED CONFIG)
 find_package(BobUIGui REQUIRED CONFIG)
 find_package(BobUI6Network 6.12 REQUIRED CONFIG)
 find_package(BobUINetwork REQUIRED CONFIG)
+find_package(BobUI6Sql 6.12 REQUIRED CONFIG)
+find_package(BobUISql REQUIRED CONFIG)
 find_package(BobUI6Widgets 6.12 REQUIRED CONFIG)
 find_package(BobUIWidgets REQUIRED CONFIG)
+find_package(BobUI6Xml 6.12 REQUIRED CONFIG)
+find_package(BobUIXml REQUIRED CONFIG)
 
 foreach(target_name
     BobUI6::Core
     BobUI6::Gui
     BobUI6::Network
+    BobUI6::Sql
     BobUI6::Widgets
+    BobUI6::Xml
     BobUI::Core
     BobUI::Gui
     BobUI::Network
+    BobUI::Sql
     BobUI::Widgets
+    BobUI::Xml
 )
     if(NOT TARGET ${target_name})
         message(FATAL_ERROR "Expected compatibility target ${target_name} to exist")

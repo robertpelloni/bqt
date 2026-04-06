@@ -67,3 +67,4 @@
 - 2026-04-05: The existing forwarding/publication smoke tests scale to additional modules well, making them a good guardrail for continued package-surface migration.
 - 2026-04-05: A direct top-level qtbase configure attempt in this environment fails before project logic due to missing visible C/C++ compilers, so native validation is currently gated by toolchain visibility rather than by the additive BobUI package work.
 - 2026-04-05: `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` now encodes that reality as a repeatable preflight step that cleanly skips when no compiler is visible in `PATH`.
+- 2026-04-05: The next direct BobUI module-package slice now exists for `Sql` and `Xml` via `BobUI6Sql`/`BobUISql` and `BobUI6Xml`/`BobUIXml` config shims.

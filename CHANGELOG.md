@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.37] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6SqlConfig.cmake`, `cmake/BobUISqlConfig.cmake`, `cmake/BobUI6XmlConfig.cmake`, and `cmake/BobUIXmlConfig.cmake`.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-sql-xml.md` and `docs/ai/testing/2026-04-05-bobui-cmake-module-shims-sql-xml-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-sql-xml-session.md`.
+
+### Changed
+- Extended `cmake/tests/bobui_package_forwarding_smoke.cmake` to validate direct Sql/Xml module-package forwarding.
+- Extended `cmake/tests/bobui_export_publication_configure_smoke.cmake` to validate Sql/Xml compat package publication.
+- Updated project/session docs to record the next direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.36] - 2026-04-05
 ### Added
 - Added `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` to encode a repeatable native qtbase configure preflight gate.

@@ -47,6 +47,7 @@
 - [x] Add stronger native/prefix validation for the additive BobUI package-generation path through a configure-time publication smoke test.
 - [x] Extend the additive BobUI CMake compatibility path into a first direct module-package slice for `Core` and `Widgets`.
 - [x] Extend BobUI module-package shims into a second high-value public slice for `Gui` and `Network`.
+- [x] Extend BobUI module-package shims into a third high-value public slice for `Sql` and `Xml`.
 - [x] Add a repeatable qtbase-native configure preflight gate that distinguishes missing-toolchain environments from real configure regressions.
 - [ ] Execute the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.

@@ -50,6 +50,7 @@ while also introducing a first-class foundation for:
 13. **Extract migration logic into testable helpers**: compatibility-bucket code should be factored so it can be validated in isolated configure-time tests before broader native integration work.
 14. **Grow package identity from umbrella to modules in slices**: once a top-level BobUI package surface is stable, extend compatibility into a few high-value public modules before considering wider native renaming.
 15. **Prefer breadth by validated public package slices, not text churn**: expanding from Core/Widgets into Gui/Network is valuable because it increases real consumer-facing compatibility without pretending the entire native tree has been renamed.
+16. **Keep adding verified package depth where it matters**: extending into modules like Sql and Xml is worthwhile because it improves real downstream package discovery without forcing unsafe source-wide rename pressure.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.
