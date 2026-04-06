@@ -50,6 +50,7 @@
 - [x] Extend BobUI module-package shims into a third high-value public slice for `Sql` and `Xml`.
 - [x] Extend BobUI module-package shims into a fourth high-value public slice for `OpenGL` and `OpenGLWidgets`.
 - [x] Extend BobUI module-package shims into a fifth high-value public slice for `DBus` and `PrintSupport`.
+- [x] Extend BobUI module-package shims into a sixth high-value public slice for `Concurrent` and `Test`.
 - [x] Add a repeatable qtbase-native configure preflight gate that distinguishes missing-toolchain environments from real configure regressions.
 - [ ] Execute the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.

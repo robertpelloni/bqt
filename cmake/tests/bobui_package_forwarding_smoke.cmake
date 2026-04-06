@@ -7,6 +7,7 @@ set(_bobui_build_dir "${_bobui_smoke_root}/build")
 file(REMOVE_RECURSE "${_bobui_smoke_root}")
 file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/Qt6"
+    "${_bobui_cmake_root}/Qt6Concurrent"
     "${_bobui_cmake_root}/Qt6Core"
     "${_bobui_cmake_root}/Qt6DBus"
     "${_bobui_cmake_root}/Qt6Gui"
@@ -15,10 +16,13 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/Qt6OpenGLWidgets"
     "${_bobui_cmake_root}/Qt6PrintSupport"
     "${_bobui_cmake_root}/Qt6Sql"
+    "${_bobui_cmake_root}/Qt6Test"
     "${_bobui_cmake_root}/Qt6Widgets"
     "${_bobui_cmake_root}/Qt6Xml"
     "${_bobui_cmake_root}/BobUI6"
     "${_bobui_cmake_root}/BobUI"
+    "${_bobui_cmake_root}/BobUI6Concurrent"
+    "${_bobui_cmake_root}/BobUIConcurrent"
     "${_bobui_cmake_root}/BobUI6Core"
     "${_bobui_cmake_root}/BobUICore"
     "${_bobui_cmake_root}/BobUI6DBus"
@@ -35,6 +39,8 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/BobUIPrintSupport"
     "${_bobui_cmake_root}/BobUI6Sql"
     "${_bobui_cmake_root}/BobUISql"
+    "${_bobui_cmake_root}/BobUI6Test"
+    "${_bobui_cmake_root}/BobUITest"
     "${_bobui_cmake_root}/BobUI6Widgets"
     "${_bobui_cmake_root}/BobUIWidgets"
     "${_bobui_cmake_root}/BobUI6Xml"
@@ -70,6 +76,21 @@ else()
 endif()
 ]=])
 
+file(WRITE "${_bobui_cmake_root}/Qt6Concurrent/Qt6ConcurrentConfig.cmake" [=[
+set(Qt6Concurrent_FOUND TRUE)
+set(Qt6Concurrent_VERSION "6.12.0")
+if(NOT TARGET Qt6::Concurrent)
+    add_library(Qt6::Concurrent INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::Concurrent)
+    add_library(Qt::Concurrent INTERFACE IMPORTED)
+    set_property(TARGET Qt::Concurrent PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::Concurrent")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Concurrent/Qt6ConcurrentConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 file(WRITE "${_bobui_cmake_root}/Qt6Core/Qt6CoreConfig.cmake" [=[
 set(Qt6Core_FOUND TRUE)
 set(Qt6Core_VERSION "6.12.0")
@@ -186,6 +207,21 @@ file(WRITE "${_bobui_cmake_root}/Qt6Sql/Qt6SqlConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Test/Qt6TestConfig.cmake" [=[
+set(Qt6Test_FOUND TRUE)
+set(Qt6Test_VERSION "6.12.0")
+if(NOT TARGET Qt6::Test)
+    add_library(Qt6::Test INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::Test)
+    add_library(Qt::Test INTERFACE IMPORTED)
+    set_property(TARGET Qt::Test PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::Test")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6Test/Qt6TestConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 file(WRITE "${_bobui_cmake_root}/Qt6Widgets/Qt6WidgetsConfig.cmake" [=[
 set(Qt6Widgets_FOUND TRUE)
 set(Qt6Widgets_VERSION "6.12.0")
@@ -217,7 +253,7 @@ set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
 
-foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6DBus BobUIDBus BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6PrintSupport BobUIPrintSupport BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
+foreach(_bobui_package_dir BobUI6 BobUI BobUI6Concurrent BobUIConcurrent BobUI6Core BobUICore BobUI6DBus BobUIDBus BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6PrintSupport BobUIPrintSupport BobUI6Sql BobUISql BobUI6Test BobUITest BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
         DESTINATION "${_bobui_cmake_root}/${_bobui_package_dir}")
 endforeach()
@@ -225,6 +261,10 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6Config.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6ConcurrentConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Concurrent")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIConcurrentConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUIConcurrent")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6CoreConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Core")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICoreConfig.cmake"
@@ -257,6 +297,10 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6SqlConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Sql")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUISqlConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUISql")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6TestConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6Test")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUITestConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUITest")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6WidgetsConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Widgets")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIWidgetsConfig.cmake"
@@ -266,7 +310,7 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6XmlConfig.cmake"
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIXmlConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUIXml")
 
-foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6DBus BobUIDBus BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6PrintSupport BobUIPrintSupport BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
+foreach(_bobui_package_name BobUI6 BobUI BobUI6Concurrent BobUIConcurrent BobUI6Core BobUICore BobUI6DBus BobUIDBus BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6PrintSupport BobUIPrintSupport BobUI6Sql BobUISql BobUI6Test BobUITest BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(WRITE "${_bobui_cmake_root}/${_bobui_package_name}/${_bobui_package_name}ConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
@@ -279,6 +323,8 @@ project(BobUIPackageForwardingSmoke LANGUAGES NONE)
 
 find_package(BobUI6 6.12 REQUIRED CONFIG COMPONENTS Core Widgets)
 find_package(BobUI REQUIRED CONFIG COMPONENTS Core Widgets)
+find_package(BobUI6Concurrent 6.12 REQUIRED CONFIG)
+find_package(BobUIConcurrent REQUIRED CONFIG)
 find_package(BobUI6Core 6.12 REQUIRED CONFIG)
 find_package(BobUICore REQUIRED CONFIG)
 find_package(BobUI6DBus 6.12 REQUIRED CONFIG)
@@ -295,12 +341,15 @@ find_package(BobUI6PrintSupport 6.12 REQUIRED CONFIG)
 find_package(BobUIPrintSupport REQUIRED CONFIG)
 find_package(BobUI6Sql 6.12 REQUIRED CONFIG)
 find_package(BobUISql REQUIRED CONFIG)
+find_package(BobUI6Test 6.12 REQUIRED CONFIG)
+find_package(BobUITest REQUIRED CONFIG)
 find_package(BobUI6Widgets 6.12 REQUIRED CONFIG)
 find_package(BobUIWidgets REQUIRED CONFIG)
 find_package(BobUI6Xml 6.12 REQUIRED CONFIG)
 find_package(BobUIXml REQUIRED CONFIG)
 
 foreach(target_name
+    BobUI6::Concurrent
     BobUI6::Core
     BobUI6::DBus
     BobUI6::Gui
@@ -309,8 +358,10 @@ foreach(target_name
     BobUI6::OpenGLWidgets
     BobUI6::PrintSupport
     BobUI6::Sql
+    BobUI6::Test
     BobUI6::Widgets
     BobUI6::Xml
+    BobUI::Concurrent
     BobUI::Core
     BobUI::DBus
     BobUI::Gui
@@ -319,6 +370,7 @@ foreach(target_name
     BobUI::OpenGLWidgets
     BobUI::PrintSupport
     BobUI::Sql
+    BobUI::Test
     BobUI::Widgets
     BobUI::Xml
 )

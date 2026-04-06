@@ -70,3 +70,4 @@
 - 2026-04-05: The next direct BobUI module-package slice now exists for `Sql` and `Xml` via `BobUI6Sql`/`BobUISql` and `BobUI6Xml`/`BobUIXml` config shims.
 - 2026-04-05: Another direct BobUI module-package slice now exists for `OpenGL` and `OpenGLWidgets` via `BobUI6OpenGL`/`BobUIOpenGL` and `BobUI6OpenGLWidgets`/`BobUIOpenGLWidgets` config shims.
 - 2026-04-05: Another direct BobUI module-package slice now exists for `DBus` and `PrintSupport` via `BobUI6DBus`/`BobUIDBus` and `BobUI6PrintSupport`/`BobUIPrintSupport` config shims.
+- 2026-04-05: Another direct BobUI module-package slice now exists for `Concurrent` and `Test` via `BobUI6Concurrent`/`BobUIConcurrent` and `BobUI6Test`/`BobUITest` config shims.

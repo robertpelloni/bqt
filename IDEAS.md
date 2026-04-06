@@ -62,3 +62,4 @@ The C++ rename-bucket classification points to `cmake/` package/export surfaces 
 - **Current State 4:** A third direct slice now exists for `Sql` and `Xml`, which further supports the idea that package-level migration depth can grow meaningfully without any reckless whole-tree rename.
 - **Current State 5:** A fourth direct slice now exists for `OpenGL` and `OpenGLWidgets`, showing that graphics-oriented public packages can follow the same additive compatibility pattern cleanly.
 - **Current State 6:** A fifth direct slice now exists for `DBus` and `PrintSupport`, which shows the same package-surface migration model also works for service/system and document-output oriented modules.
+- **Current State 7:** A sixth direct slice now exists for `Concurrent` and `Test`, which shows the same approach also works for workflow and testing-oriented public packages.
