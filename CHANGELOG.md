@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.43] - 2026-04-05
+### Added
+- Added the human-readable supported component status report at `docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md`.
+- Added `cmake/tests/bobui_supported_component_report_consistency.cmake` to keep the report aligned with the manifest.
+- Added testing documentation at `docs/ai/testing/2026-04-05-bobui-supported-component-report-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-supported-component-report-session.md`.
+
+### Changed
+- Updated project/session docs so the BobUI CMake compatibility surface is now represented by both a machine-readable manifest and a checked human-readable status report.
+
+### Verified
+- `cmake -P cmake/tests/bobui_supported_component_manifest_consistency.cmake` passes.
+- `cmake -P cmake/tests/bobui_supported_component_report_consistency.cmake` passes.
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.42] - 2026-04-05
 ### Added
 - Added `cmake/BobUISupportedComponents.cmake` centralizing the currently supported additive BobUI CMake component set.

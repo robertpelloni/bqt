@@ -74,3 +74,5 @@
 - 2026-04-05: The BobUI umbrella package smoke test now validates a broader supported multi-module component matrix in one `find_package(BobUI6 ...)` / `find_package(BobUI ...)` call, which is closer to realistic downstream usage than the previous minimal two-component check.
 - 2026-04-05: `cmake/BobUISupportedComponents.cmake` is now the explicit source of truth for the currently supported additive BobUI CMake component matrix.
 - 2026-04-05: `cmake/tests/bobui_supported_component_manifest_consistency.cmake` now checks that the manifest, shim files, and umbrella/publication smoke coverage remain aligned.
+- 2026-04-05: `docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md` now provides a human-readable status report for the same matrix.
+- 2026-04-05: `cmake/tests/bobui_supported_component_report_consistency.cmake` now checks that the human-readable report stays aligned with the manifest-backed component inventory.
