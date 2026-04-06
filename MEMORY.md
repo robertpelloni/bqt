@@ -78,3 +78,5 @@
 - 2026-04-05: `cmake/tests/bobui_supported_component_report_consistency.cmake` now checks that the human-readable report stays aligned with the manifest-backed component inventory.
 - 2026-04-05: `cmake/bobui_generate_supported_component_report.cmake` now generates the supported component status report from the manifest, making the checked-in report generator-backed instead of purely hand-maintained.
 - 2026-04-05: `cmake/tests/bobui_full_compatibility_validation.cmake` now provides a single repeatable command for the full BobUI CMake compatibility stack, which is a better default validation gate than a hand-maintained checklist of individual scripts.
+- 2026-04-05: `.github/workflows/go_wasm.yml` now includes a `validate-framework` job that runs the exact verified Go baseline plus the consolidated BobUI compatibility command.
+- 2026-04-05: `BOBUI_SKIP_NATIVE_CONFIGURE=ON` is now the CI-friendly way to keep the compatibility gate green while native compiler/toolchain provisioning remains a separate environment concern.

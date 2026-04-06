@@ -7,7 +7,7 @@
 ## 2. Verified Go Baseline
 - [x] `go test ./internal/...` passes.
 - [x] `go build -buildvcs=false .` succeeds.
-- [ ] Add these exact commands to CI.
+- [x] Add these exact commands to CI.
 - [x] Wire the current Go demo primitives into a live Gio frame loop.
 
 ## 3. QML / Quick / QuickControls2 / WebEngineQuick Focus (Current)
@@ -56,6 +56,7 @@
 - [x] Add a checked human-readable status report for the supported BobUI component matrix.
 - [x] Generate the supported component status report from the manifest-backed component inventory.
 - [x] Add a consolidated validation entry point for the BobUI CMake compatibility stack.
+- [x] Wire the exact verified Go baseline and the CI-friendly BobUI compatibility gate into the Go workflow.
 - [x] Add a repeatable qtbase-native configure preflight gate that distinguishes missing-toolchain environments from real configure regressions.
 - [ ] Execute the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.

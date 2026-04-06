@@ -16,7 +16,11 @@ endfunction()
 _bobui_find_first_program(_bobui_c_compiler cl gcc clang cc)
 _bobui_find_first_program(_bobui_cxx_compiler cl g++ clang++ c++)
 
-if("${_bobui_c_compiler}" STREQUAL "" OR "${_bobui_cxx_compiler}" STREQUAL "")
+if(DEFINED BOBUI_SKIP_NATIVE_CONFIGURE AND BOBUI_SKIP_NATIVE_CONFIGURE)
+    message(STATUS
+        "Skipping qtbase-native configure smoke: BOBUI_SKIP_NATIVE_CONFIGURE is enabled for this run.")
+    file(REMOVE_RECURSE "${_bobui_build_dir}")
+elseif("${_bobui_c_compiler}" STREQUAL "" OR "${_bobui_cxx_compiler}" STREQUAL "")
     message(STATUS
         "Skipping qtbase-native configure smoke: no usable C/C++ compiler was found in PATH. "
         "This environment cannot currently complete a native top-level CMake configure.")

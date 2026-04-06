@@ -30,9 +30,15 @@ The new entry point makes it easier to:
 - reduce command drift between sessions,
 - make handoffs more reliable.
 
-## Command
+## Commands
+Default local run:
 ```bash
 cmake -P cmake/tests/bobui_full_compatibility_validation.cmake
+```
+
+CI-friendly run that explicitly skips the environment-dependent native configure preflight execution path:
+```bash
+cmake -DBOBUI_SKIP_NATIVE_CONFIGURE=ON -P cmake/tests/bobui_full_compatibility_validation.cmake
 ```
 
 ## Interpretation
@@ -49,6 +55,14 @@ This command complements, but does not replace, the verified Go baseline:
 go test ./internal/...
 go build -buildvcs=false .
 ```
+
+## CI usage
+The Go workflow now uses:
+- `go test ./internal/...`
+- `go build -buildvcs=false .`
+- `cmake -DBOBUI_SKIP_NATIVE_CONFIGURE=ON -P cmake/tests/bobui_full_compatibility_validation.cmake`
+
+This keeps CI aligned with the verified BobUI compatibility surface while avoiding false negatives from environment-specific native compiler visibility.
 
 ## Recommended next use
 Use this consolidated command as the default BobUI CMake compatibility validation step going forward, especially before future package-surface additions.

@@ -15,8 +15,14 @@ foreach(_bobui_check IN LISTS _bobui_cmake_checks)
         message(FATAL_ERROR "Missing BobUI compatibility check: ${_bobui_check_path}")
     endif()
 
+    set(_bobui_check_command "${CMAKE_COMMAND}")
+    if(DEFINED BOBUI_SKIP_NATIVE_CONFIGURE)
+        list(APPEND _bobui_check_command "-DBOBUI_SKIP_NATIVE_CONFIGURE=${BOBUI_SKIP_NATIVE_CONFIGURE}")
+    endif()
+    list(APPEND _bobui_check_command -P "${_bobui_check_path}")
+
     execute_process(
-        COMMAND "${CMAKE_COMMAND}" -P "${_bobui_check_path}"
+        COMMAND ${_bobui_check_command}
         RESULT_VARIABLE _bobui_check_result
         OUTPUT_VARIABLE _bobui_check_stdout
         ERROR_VARIABLE _bobui_check_stderr

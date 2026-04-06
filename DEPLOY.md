@@ -74,9 +74,16 @@ These changes preserve the canonical Qt package surface while layering BobUI dis
 Current workflows exist for:
 - BobUI/C++ native builds
 - BobUI/C++ WASM builds
-- Go WASM builds
+- Go validation + WASM builds
 
-The Go CI pipeline should be updated to explicitly run the verified Go commands listed above.
+The Go workflow now runs:
+```bash
+go test ./internal/...
+go build -buildvcs=false .
+cmake -DBOBUI_SKIP_NATIVE_CONFIGURE=ON -P cmake/tests/bobui_full_compatibility_validation.cmake
+```
+
+The native skip flag in CI is intentional while native compiler/toolchain visibility remains an environment-specific concern.
 
 ## Release Verification
 ```bash

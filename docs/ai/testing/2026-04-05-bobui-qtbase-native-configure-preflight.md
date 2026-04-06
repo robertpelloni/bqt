@@ -26,9 +26,10 @@ This is an environment/toolchain visibility problem, not a reason to do a broad 
 
 ## What the preflight does
 `cmake/tests/bobui_qtbase_native_configure_preflight.cmake`:
-1. searches `PATH` for plausible C/C++ compilers,
-2. if none are visible, reports a clean skip with an explanatory message,
-3. if compilers are visible, attempts a conservative top-level configure using:
+1. honors `BOBUI_SKIP_NATIVE_CONFIGURE=ON` by reporting a clean explicit skip,
+2. otherwise searches `PATH` for plausible C/C++ compilers,
+3. if none are visible, reports a clean skip with an explanatory message,
+4. if compilers are visible, attempts a conservative top-level configure using:
    - `QT_BUILD_TESTS=OFF`
    - `QT_BUILD_EXAMPLES=OFF`
    - `BUILD_SHARED_LIBS=OFF`
@@ -42,6 +43,8 @@ This gives the migration path an honest native-validation checkpoint:
 
 ## Result in the current environment
 The preflight reports a skip because no usable native compiler is visible in `PATH`.
+
+In CI, the consolidated BobUI compatibility command currently passes `BOBUI_SKIP_NATIVE_CONFIGURE=ON` to avoid turning environment/toolchain provisioning differences into false negatives.
 
 That means:
 - the stronger native qtbase configure step is **not yet green here**,

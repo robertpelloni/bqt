@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.46] - 2026-04-05
+### Added
+- Added testing documentation at `docs/ai/testing/2026-04-05-bobui-go-ci-validation.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-go-ci-validation-session.md`.
+
+### Changed
+- Reworked `.github/workflows/go_wasm.yml` to add a `validate-framework` job that runs `go test ./internal/...`, `go build -buildvcs=false .`, and the consolidated BobUI compatibility validation command.
+- Reworked `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` to honor `BOBUI_SKIP_NATIVE_CONFIGURE=ON`.
+- Reworked `cmake/tests/bobui_full_compatibility_validation.cmake` to propagate the native-skip flag to child checks.
+- Updated project/session docs to record the CI-friendly BobUI compatibility validation path.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.45] - 2026-04-05
 ### Added
 - Added `cmake/tests/bobui_full_compatibility_validation.cmake` as a consolidated validation entry point for the additive BobUI CMake compatibility stack.

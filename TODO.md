@@ -1,7 +1,7 @@
 # TODO
 
 ## Immediate
-- [ ] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
+- [x] Add `go test ./internal/...` and `go build -buildvcs=false .` to Go CI.
 - [x] Wire the `DemoSurface` into a real interactive Gio frame loop.
 - [ ] Add richer runtime integration for `Popup`, `Dialog`, `Drawer`, `ToolTip`, `Menu`, `ScrollView`, and `ScrollBar`.
 - [x] Add automated runtime validation for the live Gio frame loop.
@@ -33,6 +33,7 @@
 - [x] Add a checked human-readable supported component status report.
 - [x] Generate the supported component status report from the manifest-backed component inventory.
 - [x] Add a consolidated BobUI CMake compatibility validation command.
+- [x] Wire the consolidated BobUI compatibility validation command into Go CI with CI-friendly native skip behavior.
 - [x] Add a repeatable qtbase-native configure preflight script.
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
