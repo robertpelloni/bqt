@@ -10,6 +10,8 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/Qt6Core"
     "${_bobui_cmake_root}/Qt6Gui"
     "${_bobui_cmake_root}/Qt6Network"
+    "${_bobui_cmake_root}/Qt6OpenGL"
+    "${_bobui_cmake_root}/Qt6OpenGLWidgets"
     "${_bobui_cmake_root}/Qt6Sql"
     "${_bobui_cmake_root}/Qt6Widgets"
     "${_bobui_cmake_root}/Qt6Xml"
@@ -21,6 +23,10 @@ file(MAKE_DIRECTORY
     "${_bobui_cmake_root}/BobUIGui"
     "${_bobui_cmake_root}/BobUI6Network"
     "${_bobui_cmake_root}/BobUINetwork"
+    "${_bobui_cmake_root}/BobUI6OpenGL"
+    "${_bobui_cmake_root}/BobUIOpenGL"
+    "${_bobui_cmake_root}/BobUI6OpenGLWidgets"
+    "${_bobui_cmake_root}/BobUIOpenGLWidgets"
     "${_bobui_cmake_root}/BobUI6Sql"
     "${_bobui_cmake_root}/BobUISql"
     "${_bobui_cmake_root}/BobUI6Widgets"
@@ -99,6 +105,36 @@ file(WRITE "${_bobui_cmake_root}/Qt6Network/Qt6NetworkConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
+file(WRITE "${_bobui_cmake_root}/Qt6OpenGL/Qt6OpenGLConfig.cmake" [=[
+set(Qt6OpenGL_FOUND TRUE)
+set(Qt6OpenGL_VERSION "6.12.0")
+if(NOT TARGET Qt6::OpenGL)
+    add_library(Qt6::OpenGL INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::OpenGL)
+    add_library(Qt::OpenGL INTERFACE IMPORTED)
+    set_property(TARGET Qt::OpenGL PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::OpenGL")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6OpenGL/Qt6OpenGLConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6OpenGLWidgets/Qt6OpenGLWidgetsConfig.cmake" [=[
+set(Qt6OpenGLWidgets_FOUND TRUE)
+set(Qt6OpenGLWidgets_VERSION "6.12.0")
+if(NOT TARGET Qt6::OpenGLWidgets)
+    add_library(Qt6::OpenGLWidgets INTERFACE IMPORTED)
+endif()
+if(NOT TARGET Qt::OpenGLWidgets)
+    add_library(Qt::OpenGLWidgets INTERFACE IMPORTED)
+    set_property(TARGET Qt::OpenGLWidgets PROPERTY INTERFACE_LINK_LIBRARIES "Qt6::OpenGLWidgets")
+endif()
+]=])
+file(WRITE "${_bobui_cmake_root}/Qt6OpenGLWidgets/Qt6OpenGLWidgetsConfigVersion.cmake" [=[
+set(PACKAGE_VERSION "6.12.0")
+set(PACKAGE_VERSION_COMPATIBLE TRUE)
+]=])
 file(WRITE "${_bobui_cmake_root}/Qt6Sql/Qt6SqlConfig.cmake" [=[
 set(Qt6Sql_FOUND TRUE)
 set(Qt6Sql_VERSION "6.12.0")
@@ -145,7 +181,7 @@ set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
 ]=])
 
-foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
+foreach(_bobui_package_dir BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUICompatibilityHelpers.cmake"
         DESTINATION "${_bobui_cmake_root}/${_bobui_package_dir}")
 endforeach()
@@ -165,6 +201,14 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6NetworkConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Network")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUINetworkConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUINetwork")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6OpenGLConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6OpenGL")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIOpenGLConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUIOpenGL")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6OpenGLWidgetsConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUI6OpenGLWidgets")
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIOpenGLWidgetsConfig.cmake"
+    DESTINATION "${_bobui_cmake_root}/BobUIOpenGLWidgets")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6SqlConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUI6Sql")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUISqlConfig.cmake"
@@ -178,7 +222,7 @@ file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUI6XmlConfig.cmake"
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/../BobUIXmlConfig.cmake"
     DESTINATION "${_bobui_cmake_root}/BobUIXml")
 
-foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
+foreach(_bobui_package_name BobUI6 BobUI BobUI6Core BobUICore BobUI6Gui BobUIGui BobUI6Network BobUINetwork BobUI6OpenGL BobUIOpenGL BobUI6OpenGLWidgets BobUIOpenGLWidgets BobUI6Sql BobUISql BobUI6Widgets BobUIWidgets BobUI6Xml BobUIXml)
     file(WRITE "${_bobui_cmake_root}/${_bobui_package_name}/${_bobui_package_name}ConfigVersion.cmake" [=[
 set(PACKAGE_VERSION "6.12.0")
 set(PACKAGE_VERSION_COMPATIBLE TRUE)
@@ -197,6 +241,10 @@ find_package(BobUI6Gui 6.12 REQUIRED CONFIG)
 find_package(BobUIGui REQUIRED CONFIG)
 find_package(BobUI6Network 6.12 REQUIRED CONFIG)
 find_package(BobUINetwork REQUIRED CONFIG)
+find_package(BobUI6OpenGL 6.12 REQUIRED CONFIG)
+find_package(BobUIOpenGL REQUIRED CONFIG)
+find_package(BobUI6OpenGLWidgets 6.12 REQUIRED CONFIG)
+find_package(BobUIOpenGLWidgets REQUIRED CONFIG)
 find_package(BobUI6Sql 6.12 REQUIRED CONFIG)
 find_package(BobUISql REQUIRED CONFIG)
 find_package(BobUI6Widgets 6.12 REQUIRED CONFIG)
@@ -208,12 +256,16 @@ foreach(target_name
     BobUI6::Core
     BobUI6::Gui
     BobUI6::Network
+    BobUI6::OpenGL
+    BobUI6::OpenGLWidgets
     BobUI6::Sql
     BobUI6::Widgets
     BobUI6::Xml
     BobUI::Core
     BobUI::Gui
     BobUI::Network
+    BobUI::OpenGL
+    BobUI::OpenGLWidgets
     BobUI::Sql
     BobUI::Widgets
     BobUI::Xml

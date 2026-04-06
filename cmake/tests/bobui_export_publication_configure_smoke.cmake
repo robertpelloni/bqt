@@ -16,6 +16,10 @@ foreach(_bobui_file
     BobUIGuiConfig.cmake
     BobUI6NetworkConfig.cmake
     BobUINetworkConfig.cmake
+    BobUI6OpenGLConfig.cmake
+    BobUIOpenGLConfig.cmake
+    BobUI6OpenGLWidgetsConfig.cmake
+    BobUIOpenGLWidgetsConfig.cmake
     BobUI6SqlConfig.cmake
     BobUISqlConfig.cmake
     BobUI6WidgetsConfig.cmake
@@ -108,6 +112,22 @@ qt_internal_install_bobui_compat_package(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUINetworkConfig.cmake"
 )
 qt_internal_install_bobui_compat_package(
+    "BobUI6OpenGL"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6OpenGLConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUIOpenGL"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIOpenGLConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUI6OpenGLWidgets"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6OpenGLWidgetsConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
+    "BobUIOpenGLWidgets"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUIOpenGLWidgetsConfig.cmake"
+)
+qt_internal_install_bobui_compat_package(
     "BobUI6Sql"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BobUI6SqlConfig.cmake"
 )
@@ -157,6 +177,18 @@ foreach(_bobui_expected_file
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUINetworkConfig.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUINetwork/BobUINetworkConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGL/BobUI6OpenGLConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGL/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGL/BobUI6OpenGLConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGL/BobUIOpenGLConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGL/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGL/BobUIOpenGLConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGLWidgets/BobUI6OpenGLWidgetsConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGLWidgets/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUI6OpenGLWidgets/BobUI6OpenGLWidgetsConfigVersion.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGLWidgets/BobUIOpenGLWidgetsConfig.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGLWidgets/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_BUILD_DIR}/BobUIOpenGLWidgets/BobUIOpenGLWidgetsConfigVersion.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUI6SqlConfig.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_BUILD_DIR}/BobUI6Sql/BobUI6SqlConfigVersion.cmake"
@@ -199,6 +231,18 @@ foreach(_bobui_expected_file
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUINetworkConfig.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUINetwork/BobUINetworkConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGL/BobUI6OpenGLConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGL/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGL/BobUI6OpenGLConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGL/BobUIOpenGLConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGL/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGL/BobUIOpenGLConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGLWidgets/BobUI6OpenGLWidgetsConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGLWidgets/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUI6OpenGLWidgets/BobUI6OpenGLWidgetsConfigVersion.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGLWidgets/BobUIOpenGLWidgetsConfig.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGLWidgets/BobUICompatibilityHelpers.cmake"
+    "${QT_CONFIG_INSTALL_DIR}/BobUIOpenGLWidgets/BobUIOpenGLWidgetsConfigVersion.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUI6SqlConfig.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUICompatibilityHelpers.cmake"
     "${QT_CONFIG_INSTALL_DIR}/BobUI6Sql/BobUI6SqlConfigVersion.cmake"

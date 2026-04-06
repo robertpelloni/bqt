@@ -68,3 +68,4 @@
 - 2026-04-05: A direct top-level qtbase configure attempt in this environment fails before project logic due to missing visible C/C++ compilers, so native validation is currently gated by toolchain visibility rather than by the additive BobUI package work.
 - 2026-04-05: `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` now encodes that reality as a repeatable preflight step that cleanly skips when no compiler is visible in `PATH`.
 - 2026-04-05: The next direct BobUI module-package slice now exists for `Sql` and `Xml` via `BobUI6Sql`/`BobUISql` and `BobUI6Xml`/`BobUIXml` config shims.
+- 2026-04-05: Another direct BobUI module-package slice now exists for `OpenGL` and `OpenGLWidgets` via `BobUI6OpenGL`/`BobUIOpenGL` and `BobUI6OpenGLWidgets`/`BobUIOpenGLWidgets` config shims.

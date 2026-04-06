@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.38] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6OpenGLConfig.cmake`, `cmake/BobUIOpenGLConfig.cmake`, `cmake/BobUI6OpenGLWidgetsConfig.cmake`, and `cmake/BobUIOpenGLWidgetsConfig.cmake`.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-opengl.md` and `docs/ai/testing/2026-04-05-bobui-cmake-module-shims-opengl-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-opengl-session.md`.
+
+### Changed
+- Extended `cmake/tests/bobui_package_forwarding_smoke.cmake` to validate direct OpenGL/OpenGLWidgets module-package forwarding.
+- Extended `cmake/tests/bobui_export_publication_configure_smoke.cmake` to validate OpenGL/OpenGLWidgets compat package publication.
+- Updated project/session docs to record the next direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.37] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6SqlConfig.cmake`, `cmake/BobUISqlConfig.cmake`, `cmake/BobUI6XmlConfig.cmake`, and `cmake/BobUIXmlConfig.cmake`.

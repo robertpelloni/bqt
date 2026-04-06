@@ -60,3 +60,4 @@ The C++ rename-bucket classification points to `cmake/` package/export surfaces 
 - **Current State 2:** The first direct BobUI module-package slice now exists for `Core` and `Widgets`, which suggests future module expansion should continue only where public package value is high and the validation story stays simple.
 - **Current State 3:** A second direct slice now exists for `Gui` and `Network`, strengthening the case for expanding by consumer-facing package surfaces instead of trying to rename the entire native tree in one pass.
 - **Current State 4:** A third direct slice now exists for `Sql` and `Xml`, which further supports the idea that package-level migration depth can grow meaningfully without any reckless whole-tree rename.
+- **Current State 5:** A fourth direct slice now exists for `OpenGL` and `OpenGLWidgets`, showing that graphics-oriented public packages can follow the same additive compatibility pattern cleanly.
