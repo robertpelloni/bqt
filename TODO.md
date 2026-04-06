@@ -32,6 +32,7 @@
 - [x] Centralize the supported BobUI component matrix in a manifest and validate it with a consistency test.
 - [x] Add a checked human-readable supported component status report.
 - [x] Generate the supported component status report from the manifest-backed component inventory.
+- [x] Add a consolidated BobUI CMake compatibility validation command.
 - [x] Add a repeatable qtbase-native configure preflight script.
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.

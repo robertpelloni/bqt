@@ -66,6 +66,7 @@ Current additive export wiring:
 - `cmake/tests/bobui_supported_component_manifest_consistency.cmake` keeps the manifest and smoke coverage aligned.
 - `cmake/tests/bobui_supported_component_report_consistency.cmake` keeps the status report aligned with the manifest and generator output.
 - `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` provides a repeatable native configure readiness gate.
+- `cmake/tests/bobui_full_compatibility_validation.cmake` provides the consolidated BobUI CMake compatibility validation command.
 
 These changes preserve the canonical Qt package surface while layering BobUI discovery on top.
 

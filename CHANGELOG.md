@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.45] - 2026-04-05
+### Added
+- Added `cmake/tests/bobui_full_compatibility_validation.cmake` as a consolidated validation entry point for the additive BobUI CMake compatibility stack.
+- Added testing documentation at `docs/ai/testing/2026-04-05-bobui-full-compatibility-validation.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-full-compatibility-validation-session.md`.
+
+### Changed
+- Updated project/session docs so the consolidated BobUI compatibility validation command is now recorded as the preferred default gate for the additive CMake compatibility surface.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.44] - 2026-04-05
 ### Added
 - Added `cmake/bobui_generate_supported_component_report.cmake` to generate the human-readable BobUI supported component status report from the manifest.
