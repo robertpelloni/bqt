@@ -1,4 +1,14 @@
-# BobUI CMake Supported Component Status
+include("${CMAKE_CURRENT_LIST_DIR}/BobUISupportedComponents.cmake")
+
+if(NOT DEFINED OUTPUT_PATH OR "${OUTPUT_PATH}" STREQUAL "")
+    set(OUTPUT_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/../docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md")
+endif()
+
+get_filename_component(_bobui_output_dir "${OUTPUT_PATH}" DIRECTORY)
+file(MAKE_DIRECTORY "${_bobui_output_dir}")
+
+set(_bobui_report_content [=[# BobUI CMake Supported Component Status
 
 ## Date
 2026-04-05
@@ -18,18 +28,14 @@ It is generated from the supported component manifest via:
 
 | Component | BobUI6 package | BobUI package | Primary targets | Umbrella routing | Direct package smoke | Publication smoke |
 |---|---|---|---|---|---|---|
-| Concurrent | `BobUI6Concurrent` | `BobUIConcurrent` | `BobUI6::Concurrent`, `BobUI::Concurrent` | Yes | Yes | Yes |
-| Core | `BobUI6Core` | `BobUICore` | `BobUI6::Core`, `BobUI::Core` | Yes | Yes | Yes |
-| DBus | `BobUI6DBus` | `BobUIDBus` | `BobUI6::DBus`, `BobUI::DBus` | Yes | Yes | Yes |
-| Gui | `BobUI6Gui` | `BobUIGui` | `BobUI6::Gui`, `BobUI::Gui` | Yes | Yes | Yes |
-| Network | `BobUI6Network` | `BobUINetwork` | `BobUI6::Network`, `BobUI::Network` | Yes | Yes | Yes |
-| OpenGL | `BobUI6OpenGL` | `BobUIOpenGL` | `BobUI6::OpenGL`, `BobUI::OpenGL` | Yes | Yes | Yes |
-| OpenGLWidgets | `BobUI6OpenGLWidgets` | `BobUIOpenGLWidgets` | `BobUI6::OpenGLWidgets`, `BobUI::OpenGLWidgets` | Yes | Yes | Yes |
-| PrintSupport | `BobUI6PrintSupport` | `BobUIPrintSupport` | `BobUI6::PrintSupport`, `BobUI::PrintSupport` | Yes | Yes | Yes |
-| Sql | `BobUI6Sql` | `BobUISql` | `BobUI6::Sql`, `BobUI::Sql` | Yes | Yes | Yes |
-| Test | `BobUI6Test` | `BobUITest` | `BobUI6::Test`, `BobUI::Test` | Yes | Yes | Yes |
-| Widgets | `BobUI6Widgets` | `BobUIWidgets` | `BobUI6::Widgets`, `BobUI::Widgets` | Yes | Yes | Yes |
-| Xml | `BobUI6Xml` | `BobUIXml` | `BobUI6::Xml`, `BobUI::Xml` | Yes | Yes | Yes |
+]=])
+
+foreach(_component IN LISTS BOBUI_SUPPORTED_COMPONENTS)
+    string(APPEND _bobui_report_content
+        "| ${_component} | `BobUI6${_component}` | `BobUI${_component}` | `BobUI6::${_component}`, `BobUI::${_component}` | Yes | Yes | Yes |\n")
+endforeach()
+
+string(APPEND _bobui_report_content [=[
 
 ## Validation sources
 - Manifest consistency: `cmake/tests/bobui_supported_component_manifest_consistency.cmake`
@@ -61,3 +67,7 @@ When a new supported component is added:
 3. update smoke coverage,
 4. regenerate this report,
 5. rerun manifest/report consistency and smoke validation.
+]=])
+
+file(WRITE "${OUTPUT_PATH}" "${_bobui_report_content}")
+message(STATUS "Generated BobUI supported component report: ${OUTPUT_PATH}")

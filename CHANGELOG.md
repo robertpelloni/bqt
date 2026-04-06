@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.44] - 2026-04-05
+### Added
+- Added `cmake/bobui_generate_supported_component_report.cmake` to generate the human-readable BobUI supported component status report from the manifest.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-component-report-generation.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-component-report-generation-session.md`.
+
+### Changed
+- Reworked `cmake/tests/bobui_supported_component_report_consistency.cmake` so it now compares the checked-in report against exact generated output instead of only checking for expected substrings.
+- Regenerated `docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md` from the manifest-backed component inventory.
+- Updated project/session docs to record the generator-backed supported component report flow.
+
+### Verified
+- `cmake -P cmake/tests/bobui_supported_component_manifest_consistency.cmake` passes.
+- `cmake -P cmake/tests/bobui_supported_component_report_consistency.cmake` passes.
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.43] - 2026-04-05
 ### Added
 - Added the human-readable supported component status report at `docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md`.

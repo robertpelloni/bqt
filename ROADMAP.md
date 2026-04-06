@@ -54,6 +54,7 @@
 - [x] Strengthen umbrella BobUI package validation to cover a broader supported multi-module component set.
 - [x] Centralize the supported BobUI CMake component matrix and validate it with a manifest consistency test.
 - [x] Add a checked human-readable status report for the supported BobUI component matrix.
+- [x] Generate the supported component status report from the manifest-backed component inventory.
 - [x] Add a repeatable qtbase-native configure preflight gate that distinguishes missing-toolchain environments from real configure regressions.
 - [ ] Execute the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.

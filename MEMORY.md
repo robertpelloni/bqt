@@ -76,3 +76,4 @@
 - 2026-04-05: `cmake/tests/bobui_supported_component_manifest_consistency.cmake` now checks that the manifest, shim files, and umbrella/publication smoke coverage remain aligned.
 - 2026-04-05: `docs/ai/design/2026-04-05-bobui-cmake-supported-component-status.md` now provides a human-readable status report for the same matrix.
 - 2026-04-05: `cmake/tests/bobui_supported_component_report_consistency.cmake` now checks that the human-readable report stays aligned with the manifest-backed component inventory.
+- 2026-04-05: `cmake/bobui_generate_supported_component_report.cmake` now generates the supported component status report from the manifest, making the checked-in report generator-backed instead of purely hand-maintained.
