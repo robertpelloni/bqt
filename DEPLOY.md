@@ -34,6 +34,10 @@ Current additive compatibility files:
 - `cmake/BobUIConfig.cmake`
 - `cmake/BobUI6CoreConfig.cmake`
 - `cmake/BobUICoreConfig.cmake`
+- `cmake/BobUI6GuiConfig.cmake`
+- `cmake/BobUIGuiConfig.cmake`
+- `cmake/BobUI6NetworkConfig.cmake`
+- `cmake/BobUINetworkConfig.cmake`
 - `cmake/BobUI6WidgetsConfig.cmake`
 - `cmake/BobUIWidgetsConfig.cmake`
 

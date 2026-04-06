@@ -49,6 +49,7 @@ while also introducing a first-class foundation for:
 12. **Prefer additive package-discovery shims before export rewiring**: a small BobUI-facing CMake forwarding layer is a safer first migration move than trying to rename the entire native framework surface at once.
 13. **Extract migration logic into testable helpers**: compatibility-bucket code should be factored so it can be validated in isolated configure-time tests before broader native integration work.
 14. **Grow package identity from umbrella to modules in slices**: once a top-level BobUI package surface is stable, extend compatibility into a few high-value public modules before considering wider native renaming.
+15. **Prefer breadth by validated public package slices, not text churn**: expanding from Core/Widgets into Gui/Network is valuable because it increases real consumer-facing compatibility without pretending the entire native tree has been renamed.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.

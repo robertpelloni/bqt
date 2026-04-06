@@ -12,6 +12,10 @@ This repository also carries an additive BobUI-facing compatibility layer in:
 - `BobUIConfig.cmake`
 - `BobUI6CoreConfig.cmake`
 - `BobUICoreConfig.cmake`
+- `BobUI6GuiConfig.cmake`
+- `BobUIGuiConfig.cmake`
+- `BobUI6NetworkConfig.cmake`
+- `BobUINetworkConfig.cmake`
 - `BobUI6WidgetsConfig.cmake`
 - `BobUIWidgetsConfig.cmake`
 - `QtBobUIHelpers.cmake`

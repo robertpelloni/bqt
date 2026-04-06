@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.35] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6GuiConfig.cmake`, `cmake/BobUIGuiConfig.cmake`, `cmake/BobUI6NetworkConfig.cmake`, and `cmake/BobUINetworkConfig.cmake`.
+- Added `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-gui-network.md` and `docs/ai/testing/2026-04-05-bobui-cmake-module-shims-gui-network-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-gui-network-session.md`.
+
+### Changed
+- Extended `cmake/tests/bobui_package_forwarding_smoke.cmake` to validate direct Gui/Network module-package forwarding.
+- Extended `cmake/tests/bobui_export_publication_configure_smoke.cmake` to validate Gui/Network compat package publication.
+- Updated project/session docs to record the next direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.34] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6CoreConfig.cmake`, `cmake/BobUICoreConfig.cmake`, `cmake/BobUI6WidgetsConfig.cmake`, and `cmake/BobUIWidgetsConfig.cmake`.

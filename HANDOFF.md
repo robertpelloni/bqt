@@ -4,12 +4,11 @@
 2026-04-05
 
 ## What I did this cycle
-- Added direct module config shims for `BobUI6Core`, `BobUICore`, `BobUI6Widgets`, and `BobUIWidgets`.
-- Reworked `cmake/QtBobUIHelpers.cmake` so missing BobUI config sources are treated as safe no-ops.
-- Reworked `cmake/QtModuleHelpers.cmake` to publish BobUI module-package compatibility files only when matching BobUI config sources exist.
-- Extended the forwarding/publication smoke tests to validate direct Core/Widgets module-package lookup and publication.
+- Added direct module config shims for `BobUI6Gui`, `BobUIGui`, `BobUI6Network`, and `BobUINetwork`.
+- Extended the forwarding smoke test to validate direct Gui/Network module-package lookup and target creation.
+- Extended the publication configure smoke test to validate build/install-style publication for Gui/Network compat package files.
 - Added implementation/testing docs and updated roadmap/todo/memory/handoff/version/changelog plus related session metadata.
-- Archived a detailed handoff log in `logs/handoffs/2026-04-05-bobui-cmake-module-shims-core-widgets-session.md`.
+- Archived a detailed handoff log in `logs/handoffs/2026-04-05-bobui-cmake-module-shims-gui-network-session.md`.
 
 ## Verified state
 - `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
@@ -17,7 +16,7 @@
 - `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
 - `go test ./internal/...` passes.
 - `go build -buildvcs=false .` succeeds.
-- The Go baseline remains fully verified while the C++ migration path now includes a first direct BobUI module-package slice for `Core` and `Widgets`.
+- The Go baseline remains fully verified while the C++ migration path now includes direct BobUI module-package slices for `Core`, `Widgets`, `Gui`, and `Network`.
 - A global rename of legacy C++ `qt`/`Q*` surfaces is still intentionally deferred because it would be far riskier than the compatibility-first path that is now producing real code and validation.
 
 ## Recommended next steps

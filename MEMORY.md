@@ -63,3 +63,5 @@
 - 2026-04-05: `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` now validates that the BobUI publication helper emits expected config/helper/version files into both build-style and install-style package directories.
 - 2026-04-05: The first direct BobUI module-package slice now exists for `Core` and `Widgets` via `BobUI6Core`/`BobUICore` and `BobUI6Widgets`/`BobUIWidgets` config shims.
 - 2026-04-05: `QtModuleHelpers.cmake` can now publish BobUI module-package compat files safely because missing BobUI module configs are treated as intentional no-ops.
+- 2026-04-05: The next direct BobUI module-package slice now exists for `Gui` and `Network` via `BobUI6Gui`/`BobUIGui` and `BobUI6Network`/`BobUINetwork` config shims.
+- 2026-04-05: The existing forwarding/publication smoke tests scale to additional modules well, making them a good guardrail for continued package-surface migration.

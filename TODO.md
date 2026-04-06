@@ -23,6 +23,7 @@
 - [x] Add an install-layout-style prefix-path validation path for `find_package(BobUI6 ...)` through a fake-prefix smoke test.
 - [x] Add stronger configure-time validation for the modified top-level package-generation path via a publication-helper smoke test.
 - [x] Add a first direct BobUI module-package slice for `Core` and `Widgets`.
+- [x] Add a second BobUI module-package slice for `Gui` and `Network`.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
 
