@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.36] - 2026-04-05
+### Added
+- Added `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` to encode a repeatable native qtbase configure preflight gate.
+- Added testing documentation at `docs/ai/testing/2026-04-05-bobui-qtbase-native-configure-preflight.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-qtbase-native-configure-preflight-session.md`.
+
+### Changed
+- Updated session/project docs to record that stronger qtbase-native configure validation is now encoded as a preflight step and currently skips in this environment because no usable C/C++ compiler is visible in `PATH`.
+
+### Verified
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.35] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6GuiConfig.cmake`, `cmake/BobUIGuiConfig.cmake`, `cmake/BobUI6NetworkConfig.cmake`, and `cmake/BobUINetworkConfig.cmake`.

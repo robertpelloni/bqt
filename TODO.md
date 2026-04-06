@@ -24,6 +24,8 @@
 - [x] Add stronger configure-time validation for the modified top-level package-generation path via a publication-helper smoke test.
 - [x] Add a first direct BobUI module-package slice for `Core` and `Widgets`.
 - [x] Add a second BobUI module-package slice for `Gui` and `Network`.
+- [x] Add a repeatable qtbase-native configure preflight script.
+- [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.
 - [ ] Extend BobUI module-package shims to other high-value public modules in small verified slices.
 

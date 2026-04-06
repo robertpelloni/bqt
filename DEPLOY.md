@@ -46,6 +46,7 @@ Current additive export wiring:
 - `cmake/QtBobUIHelpers.cmake` isolates the BobUI package-publication logic.
 - `cmake/tests/bobui_package_forwarding_smoke.cmake` provides an install-layout-style forwarding validation path.
 - `cmake/tests/bobui_export_publication_configure_smoke.cmake` provides configure-time publication validation.
+- `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` provides a repeatable native configure readiness gate.
 
 These changes preserve the canonical Qt package surface while layering BobUI discovery on top.
 
