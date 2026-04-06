@@ -321,8 +321,8 @@ file(WRITE "${_bobui_source_dir}/CMakeLists.txt" [=[
 cmake_minimum_required(VERSION 3.16)
 project(BobUIPackageForwardingSmoke LANGUAGES NONE)
 
-find_package(BobUI6 6.12 REQUIRED CONFIG COMPONENTS Core Widgets)
-find_package(BobUI REQUIRED CONFIG COMPONENTS Core Widgets)
+find_package(BobUI6 6.12 REQUIRED CONFIG COMPONENTS Concurrent Core DBus Gui Network OpenGL OpenGLWidgets PrintSupport Sql Test Widgets Xml)
+find_package(BobUI REQUIRED CONFIG COMPONENTS Concurrent Core DBus Gui Network OpenGL OpenGLWidgets PrintSupport Sql Test Widgets Xml)
 find_package(BobUI6Concurrent 6.12 REQUIRED CONFIG)
 find_package(BobUIConcurrent REQUIRED CONFIG)
 find_package(BobUI6Core 6.12 REQUIRED CONFIG)

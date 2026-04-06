@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.41] - 2026-04-05
+### Added
+- Added testing documentation at `docs/ai/testing/2026-04-05-bobui-umbrella-component-matrix-tests.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-umbrella-component-matrix-session.md`.
+
+### Changed
+- Reworked `cmake/tests/bobui_package_forwarding_smoke.cmake` so the umbrella BobUI packages request and validate a broader supported component matrix instead of only a minimal `Core`/`Widgets` subset.
+- Updated project/session docs to record the stronger umbrella-package validation milestone.
+
+### Verified
+- `cmake -P cmake/tests/bobui_qtbase_native_configure_preflight.cmake` runs and reports the expected skip in the current environment.
+- `cmake -P cmake/tests/bobui_compatibility_helpers_mapping.cmake` passes.
+- `cmake -P cmake/tests/bobui_package_forwarding_smoke.cmake` passes.
+- `cmake -P cmake/tests/bobui_export_publication_configure_smoke.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.40] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6ConcurrentConfig.cmake`, `cmake/BobUIConcurrentConfig.cmake`, `cmake/BobUI6TestConfig.cmake`, and `cmake/BobUITestConfig.cmake`.
