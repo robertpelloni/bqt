@@ -38,10 +38,14 @@ Current additive compatibility files:
 - `cmake/BobUIGuiConfig.cmake`
 - `cmake/BobUI6NetworkConfig.cmake`
 - `cmake/BobUINetworkConfig.cmake`
+- `cmake/BobUI6DBusConfig.cmake`
+- `cmake/BobUIDBusConfig.cmake`
 - `cmake/BobUI6OpenGLConfig.cmake`
 - `cmake/BobUIOpenGLConfig.cmake`
 - `cmake/BobUI6OpenGLWidgetsConfig.cmake`
 - `cmake/BobUIOpenGLWidgetsConfig.cmake`
+- `cmake/BobUI6PrintSupportConfig.cmake`
+- `cmake/BobUIPrintSupportConfig.cmake`
 - `cmake/BobUI6SqlConfig.cmake`
 - `cmake/BobUISqlConfig.cmake`
 - `cmake/BobUI6WidgetsConfig.cmake`

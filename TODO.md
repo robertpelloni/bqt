@@ -26,6 +26,7 @@
 - [x] Add a second BobUI module-package slice for `Gui` and `Network`.
 - [x] Add a third BobUI module-package slice for `Sql` and `Xml`.
 - [x] Add a fourth BobUI module-package slice for `OpenGL` and `OpenGLWidgets`.
+- [x] Add a fifth BobUI module-package slice for `DBus` and `PrintSupport`.
 - [x] Add a repeatable qtbase-native configure preflight script.
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.

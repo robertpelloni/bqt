@@ -16,10 +16,14 @@ This repository also carries an additive BobUI-facing compatibility layer in:
 - `BobUIGuiConfig.cmake`
 - `BobUI6NetworkConfig.cmake`
 - `BobUINetworkConfig.cmake`
+- `BobUI6DBusConfig.cmake`
+- `BobUIDBusConfig.cmake`
 - `BobUI6OpenGLConfig.cmake`
 - `BobUIOpenGLConfig.cmake`
 - `BobUI6OpenGLWidgetsConfig.cmake`
 - `BobUIOpenGLWidgetsConfig.cmake`
+- `BobUI6PrintSupportConfig.cmake`
+- `BobUIPrintSupportConfig.cmake`
 - `BobUI6SqlConfig.cmake`
 - `BobUISqlConfig.cmake`
 - `BobUI6WidgetsConfig.cmake`

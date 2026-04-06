@@ -52,6 +52,7 @@ while also introducing a first-class foundation for:
 15. **Prefer breadth by validated public package slices, not text churn**: expanding from Core/Widgets into Gui/Network is valuable because it increases real consumer-facing compatibility without pretending the entire native tree has been renamed.
 16. **Keep adding verified package depth where it matters**: extending into modules like Sql and Xml is worthwhile because it improves real downstream package discovery without forcing unsafe source-wide rename pressure.
 17. **Use graphics modules as consumer-facing migration anchors too**: package surfaces like OpenGL and OpenGLWidgets are valuable because they deepen native-framework compatibility in a realistic usage area without requiring deep source churn.
+18. **Keep including system/service-facing modules in the same pattern**: adding package slices like DBus and PrintSupport broadens real framework utility while preserving the additive, reversible migration model.
 
 ## Engineering Philosophy
 - Prefer small, verifiable improvements over sprawling unverified additions.
