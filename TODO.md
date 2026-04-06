@@ -29,6 +29,7 @@
 - [x] Add a fifth BobUI module-package slice for `DBus` and `PrintSupport`.
 - [x] Add a sixth BobUI module-package slice for `Concurrent` and `Test`.
 - [x] Strengthen the umbrella BobUI package smoke test to cover a broader supported component matrix.
+- [x] Centralize the supported BobUI component matrix in a manifest and validate it with a consistency test.
 - [x] Add a repeatable qtbase-native configure preflight script.
 - [ ] Run the qtbase-native configure gate in an environment with a visible C/C++ compiler toolchain.
 - [ ] Add stronger native end-to-end qtbase configure/install validation when practical.

@@ -58,8 +58,10 @@ Current additive compatibility files:
 Current additive export wiring:
 - `cmake/QtBaseGlobalTargets.cmake` now publishes additive `BobUI6/` and `BobUI/` package directories alongside the canonical `Qt6/` package directory.
 - `cmake/QtBobUIHelpers.cmake` isolates the BobUI package-publication logic.
+- `cmake/BobUISupportedComponents.cmake` centralizes the currently supported BobUI CMake compatibility matrix.
 - `cmake/tests/bobui_package_forwarding_smoke.cmake` provides an install-layout-style forwarding validation path and now exercises a broader supported umbrella component matrix.
 - `cmake/tests/bobui_export_publication_configure_smoke.cmake` provides configure-time publication validation.
+- `cmake/tests/bobui_supported_component_manifest_consistency.cmake` keeps the manifest and smoke coverage aligned.
 - `cmake/tests/bobui_qtbase_native_configure_preflight.cmake` provides a repeatable native configure readiness gate.
 
 These changes preserve the canonical Qt package surface while layering BobUI discovery on top.

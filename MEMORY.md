@@ -72,3 +72,5 @@
 - 2026-04-05: Another direct BobUI module-package slice now exists for `DBus` and `PrintSupport` via `BobUI6DBus`/`BobUIDBus` and `BobUI6PrintSupport`/`BobUIPrintSupport` config shims.
 - 2026-04-05: Another direct BobUI module-package slice now exists for `Concurrent` and `Test` via `BobUI6Concurrent`/`BobUIConcurrent` and `BobUI6Test`/`BobUITest` config shims.
 - 2026-04-05: The BobUI umbrella package smoke test now validates a broader supported multi-module component matrix in one `find_package(BobUI6 ...)` / `find_package(BobUI ...)` call, which is closer to realistic downstream usage than the previous minimal two-component check.
+- 2026-04-05: `cmake/BobUISupportedComponents.cmake` is now the explicit source of truth for the currently supported additive BobUI CMake component matrix.
+- 2026-04-05: `cmake/tests/bobui_supported_component_manifest_consistency.cmake` now checks that the manifest, shim files, and umbrella/publication smoke coverage remain aligned.
