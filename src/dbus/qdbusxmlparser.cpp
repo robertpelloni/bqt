@@ -12,7 +12,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -432,6 +432,6 @@ QDBusXmlParser::QDBusXmlParser(const QString &service, const QString &path, cons
         qDBusParserError("XML error: %s", qPrintable(m_xml.errorString()));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

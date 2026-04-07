@@ -7,14 +7,14 @@
 
 // define some useful types for D-Bus
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qhashfunctions.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_DBUS_EXPORT QDBusObjectPath
 {
@@ -155,7 +155,7 @@ inline void QDBusVariant::setVariant(const QVariant &dBusVariant)
 inline bool operator==(const QDBusVariant &v1, const QDBusVariant &v2)
 { return v1.variant() == v2.variant(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 QT_DECL_METATYPE_EXTERN(QDBusVariant, Q_DBUS_EXPORT)
 QT_DECL_METATYPE_EXTERN(QDBusObjectPath, Q_DBUS_EXPORT)

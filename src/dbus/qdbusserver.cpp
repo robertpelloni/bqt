@@ -12,11 +12,11 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDBusServer
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBusServer class provides peer-to-peer communication
     between processes on the same computer.
@@ -156,7 +156,7 @@ bool QDBusServer::isAnonymousAuthenticationAllowed() const
   established to the server.
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusserver.cpp"
 

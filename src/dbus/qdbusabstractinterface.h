@@ -5,16 +5,16 @@
 #ifndef QDBUSABSTRACTINTERFACE_H
 #define QDBUSABSTRACTINTERFACE_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
 
-#include <QtDBus/qdbusmessage.h>
-#include <QtDBus/qdbusextratypes.h>
-#include <QtDBus/qdbusconnection.h>
-#include <QtDBus/qdbuspendingcall.h>
+#include <BobUIDBus/qdbusmessage.h>
+#include <BobUIDBus/qdbusextratypes.h>
+#include <BobUIDBus/qdbusconnection.h>
+#include <BobUIDBus/qdbuspendingcall.h>
 
 #ifdef interface
 #undef interface
@@ -22,7 +22,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusError;
@@ -139,7 +139,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_serviceOwnerChanged(QString,QString,QString))
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

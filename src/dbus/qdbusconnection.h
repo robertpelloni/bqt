@@ -6,7 +6,7 @@
 #ifndef QDBUSCONNECTION_H
 #define QDBUSCONNECTION_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
 
@@ -16,7 +16,7 @@
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 namespace QDBus
@@ -42,7 +42,7 @@ class QDBusConnectionPrivate;
 class Q_DBUS_EXPORT QDBusConnection
 {
     Q_GADGET
-    Q_MOC_INCLUDE(<QtDBus/qdbuspendingcall.h>)
+    Q_MOC_INCLUDE(<BobUIDBus/qdbuspendingcall.h>)
 
 public:
     enum BusType { SessionBus, SystemBus, ActivationBus };
@@ -180,7 +180,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusConnection::RegisterOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusConnection::VirtualObjectRegisterOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusConnection::ConnectionCapabilities)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

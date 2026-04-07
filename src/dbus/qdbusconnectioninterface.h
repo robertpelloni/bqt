@@ -5,15 +5,15 @@
 #ifndef QDBUSCONNECTIONINTERFACE_H
 #define QDBUSCONNECTIONINTERFACE_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qstringlist.h>
 
-#include <QtDBus/qdbusabstractinterface.h>
-#include <QtDBus/qdbusreply.h>
+#include <BobUIDBus/qdbusabstractinterface.h>
+#include <BobUIDBus/qdbusreply.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusConnection;
@@ -89,7 +89,7 @@ protected:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 Q_DECLARE_BUILTIN_METATYPE(UInt, QMetaType::UInt, QDBusConnectionInterface::RegisterServiceReply)
 

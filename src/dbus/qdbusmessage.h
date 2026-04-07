@@ -5,8 +5,8 @@
 #ifndef QDBUSMESSAGE_H
 #define QDBUSMESSAGE_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbuserror.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbuserror.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qvariant.h>
 
@@ -16,7 +16,7 @@
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusMessagePrivate;
 class Q_DBUS_EXPORT QDBusMessage
@@ -96,7 +96,7 @@ Q_DECLARE_SHARED(QDBusMessage)
 Q_DBUS_EXPORT QDebug operator<<(QDebug, const QDBusMessage &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 QT_DECL_METATYPE_EXTERN(QDBusMessage, Q_DBUS_EXPORT)
 

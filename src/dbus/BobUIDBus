@@ -1,0 +1,2 @@
+#include <QtDBus/QtDBus>
+#include <QtCore/bobuimacros.h>

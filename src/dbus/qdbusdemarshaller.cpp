@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 static inline T qIterGet(DBusMessageIter *it)
@@ -399,4 +399,4 @@ QDBusArgument QDBusDemarshaller::duplicate()
     return QDBusArgumentPrivate::create(d.release());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

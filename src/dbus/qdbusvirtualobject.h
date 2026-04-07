@@ -5,13 +5,13 @@
 #ifndef QDBUSVIRTUALOBJECT_H
 #define QDBUSVIRTUALOBJECT_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qobject.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusMessage;
@@ -31,7 +31,7 @@ private:
     Q_DISABLE_COPY(QDBusVirtualObject)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

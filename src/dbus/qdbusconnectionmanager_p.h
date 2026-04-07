@@ -18,13 +18,13 @@
 #ifndef QDBUSCONNECTIONMANAGER_P_H
 #define QDBUSCONNECTIONMANAGER_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include "qdbusconnection_p.h"
 #include "private/qthread_p.h"
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusServer;
 
@@ -68,7 +68,7 @@ private:
     QDBusConnectionPrivate *defaultBuses[2];
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

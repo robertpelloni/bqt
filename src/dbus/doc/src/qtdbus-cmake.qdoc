@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-\group cmake-commands-qtdbus
+\group cmake-commands-bobuidbus
 \title CMake Commands in Qt6 DBus
 \brief Lists CMake commands defined in Qt6::DBus.
 
@@ -17,8 +17,8 @@ find_package(Qt6 REQUIRED COMPONENTS DBus)
 */
 
 /*!
-\page qtdbus-cmake-qt-add-dbus-interface.html
-\ingroup cmake-commands-qtdbus
+\page bobuidbus-cmake-qt-add-dbus-interface.html
+\ingroup cmake-commands-bobuidbus
 
 \title qt_add_dbus_interface
 \keyword qt6_add_dbus_interface
@@ -85,8 +85,8 @@ Options can be set using \c set_source_files_properties on the \c dbus_spec:
 */
 
 /*!
-\page qtdbus-cmake-qt-add-dbus-interfaces.html
-\ingroup cmake-commands-qtdbus
+\page bobuidbus-cmake-qt-add-dbus-interfaces.html
+\ingroup cmake-commands-bobuidbus
 
 \title qt_add_dbus_interfaces
 \keyword qt6_add_dbus_interfaces
@@ -146,8 +146,8 @@ arguments:
 */
 
 /*!
-\page qtdbus-cmake-qt-generate-dbus-interface.html
-\ingroup cmake-commands-qtdbus
+\page bobuidbus-cmake-qt-generate-dbus-interface.html
+\ingroup cmake-commands-bobuidbus
 
 \title qt_generate_dbus_interface
 \keyword qt6_generate_dbus_interface
@@ -185,8 +185,8 @@ arguments to the tool can be set after \c{OPTIONS}.
 */
 
 /*!
-\page qtdbus-cmake-qt-add-dbus-adaptor.html
-\ingroup cmake-commands-qtdbus
+\page bobuidbus-cmake-qt-add-dbus-adaptor.html
+\ingroup cmake-commands-bobuidbus
 
 \title qt_add_dbus_adaptor
 \keyword qt6_add_dbus_adaptor
@@ -245,7 +245,7 @@ argument.
 */
 
 /*!
-\group cmake-source-file-properties-qtdbus
+\group cmake-source-file-properties-bobuidbus
 \title CMake Source File Properties in Qt6 DBus
 \brief Lists CMake file properties used in Qt6::DBus.
 
@@ -257,7 +257,7 @@ source file properties:
 
 /*!
 \page cmake-source-file-property-classname.html
-\ingroup cmake-source-file-properties-qtdbus
+\ingroup cmake-source-file-properties-bobuidbus
 
 \title CLASSNAME
 \target cmake-source-file-property-CLASSNAME
@@ -274,7 +274,7 @@ with the provided property value.
 
 /*!
 \page cmake-source-file-property-include.html
-\ingroup cmake-source-file-properties-qtdbus
+\ingroup cmake-source-file-properties-bobuidbus
 
 \title INCLUDE
 \target cmake-source-file-property-INCLUDE
@@ -291,7 +291,7 @@ to the generated C++ file.
 
 /*!
 \page cmake-source-file-property-no-namespace.html
-\ingroup cmake-source-file-properties-qtdbus
+\ingroup cmake-source-file-properties-bobuidbus
 
 \title NO_NAMESPACE
 \target cmake-source-file-property-NO_NAMESPACE

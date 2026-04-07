@@ -25,11 +25,11 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDBusConnection
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusConnection class represents a connection to the D-Bus bus daemon.
@@ -982,7 +982,7 @@ QByteArray QDBusConnection::localMachineId()
 
 /*!
     \namespace QDBus
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBus namespace contains miscellaneous identifiers used
     throughout the Qt D-Bus module.
@@ -1012,7 +1012,7 @@ QByteArray QDBusConnection::localMachineId()
     \memberswap{connection}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnection_p.cpp"
 #include "moc_qdbusconnection.cpp"

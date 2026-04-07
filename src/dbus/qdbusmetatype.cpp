@@ -32,7 +32,7 @@
 # define DBUS_TYPE_UNIX_FD_AS_STRING "h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusCustomTypeInfo
 {
@@ -111,7 +111,7 @@ Q_GLOBAL_STATIC(QDBusCustomTypes, customTypes)
 
 /*!
     \class QDBusMetaType
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Meta-type registration system for the Qt D-Bus module.
     \internal
 
@@ -483,6 +483,6 @@ const char *QDBusMetaType::typeToSignature(QMetaType type)
     return info->signature;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

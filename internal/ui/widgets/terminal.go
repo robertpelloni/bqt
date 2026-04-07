@@ -9,7 +9,7 @@ import (
 )
 
 type Terminal struct {
-	Shell  *kernel.ShellProcess
+	Shell  *kernel.Process
 	Buffer []string
 }
 

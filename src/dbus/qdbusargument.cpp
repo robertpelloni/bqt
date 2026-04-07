@@ -22,7 +22,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QT_IMPL_METATYPE_EXTERN(QDBusArgument)
 
@@ -132,7 +132,7 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
 
 /*!
     \class QDBusArgument
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusArgument class is used to marshall and demarshall D-Bus arguments.
@@ -1091,13 +1091,13 @@ QVariant QDBusArgument::asVariant() const
     return QVariant();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // for optimization purposes, we include the marshallers here
 #include "qdbusmarshaller.cpp"
 #include "qdbusdemarshaller.cpp"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // QDBusArgument operators
 
@@ -1368,6 +1368,6 @@ QDBusArgument &operator<<(QDBusArgument &a, const QLineF &line)
     \memberswap{argument}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

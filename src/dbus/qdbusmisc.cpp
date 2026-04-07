@@ -19,7 +19,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -52,7 +52,7 @@ QString qDBusInterfaceFromMetaObject(const QMetaObject *mo)
         interface.replace("::"_L1, "."_L1);
 
         if (interface.startsWith("QDBus"_L1)) {
-            interface.prepend("org.qtproject.QtDBus."_L1);
+            interface.prepend("org.qtproject.BobUIDBus."_L1);
         } else if (interface.startsWith(u'Q') &&
                    interface.size() >= 2 && interface.at(1).isUpper()) {
             // assume it's Qt
@@ -196,7 +196,7 @@ int qDBusParametersForMethod(const QList<QByteArray> &parameterTypes, QList<QMet
         if (id == QDBusMetaTypeId::message())
             seenMessage = true;
         else if (QDBusMetaType::typeToSignature(id) == nullptr) {
-            errorMsg = "Type not registered with QtDBus in parameter list: "_L1 + QLatin1StringView(type);
+            errorMsg = "Type not registered with BobUIDBus in parameter list: "_L1 + QLatin1StringView(type);
             return -1;
         }
 
@@ -207,6 +207,6 @@ int qDBusParametersForMethod(const QList<QByteArray> &parameterTypes, QList<QMet
     return inputCount;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

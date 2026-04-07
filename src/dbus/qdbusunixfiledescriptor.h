@@ -6,14 +6,14 @@
 #ifndef QDBUSUNIXFILEDESCRIPTOR_H
 #define QDBUSUNIXFILEDESCRIPTOR_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qshareddata.h>
 
 #ifndef QT_NO_DBUS
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusUnixFileDescriptorPrivate;
@@ -48,7 +48,7 @@ protected:
 
 Q_DECLARE_SHARED(QDBusUnixFileDescriptor)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 QT_DECL_METATYPE_EXTERN(QDBusUnixFileDescriptor, Q_DBUS_EXPORT)
 

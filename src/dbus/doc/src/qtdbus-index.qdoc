@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \page qtdbus-index.html
+    \page bobuidbus-index.html
     \title Qt D-Bus
     \brief An introduction to Inter-Process Communication and Remote Procedure Calling with D-Bus.
 
-    \keyword QtDBus
+    \keyword BobUIDBus
 
     D-Bus is an Inter-Process Communication (IPC) and Remote Procedure
     Calling (RPC) mechanism originally developed for Linux to replace
@@ -76,7 +76,7 @@
     Furthermore, Qt D-Bus in Qt \QtVersion may contain third party
     modules under the following permissive licenses:
 
-    \annotatedlist attributions-qtdbus
+    \annotatedlist attributions-bobuidbus
 */
 
 /*!

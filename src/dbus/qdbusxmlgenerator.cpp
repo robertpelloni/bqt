@@ -15,7 +15,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -82,7 +82,7 @@ static QString generateInterfaceXml(const QMetaObject *mo, int flags, int method
 
             if (!QDBusMetaType::signatureToMetaType(signature).isValid()) {
                 const char *typeName = type.name();
-                retval += ">\n      <annotation name=\"org.qtproject.QtDBus.QtTypeName\" value=\"%3\"/>\n    </property>\n"_L1
+                retval += ">\n      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName\" value=\"%3\"/>\n    </property>\n"_L1
                           .arg(typeNameToXml(typeName));
             } else {
                 retval += "/>\n"_L1;
@@ -132,7 +132,7 @@ static QString generateInterfaceXml(const QMetaObject *mo, int flags, int method
 
                 // do we need to describe this argument?
                 if (!QDBusMetaType::signatureToMetaType(typeName).isValid())
-                    xml += "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"%1\"/>\n"_L1
+                    xml += "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out0\" value=\"%1\"/>\n"_L1
                         .arg(typeNameToXml(QMetaType(typeId).name()));
             } else {
                 qWarning() << "Unsupported return type" << typeId.id() << typeId.name() << "in method" << mm.name();
@@ -180,7 +180,7 @@ static QString generateInterfaceXml(const QMetaObject *mo, int flags, int method
             // do we need to describe this argument?
             if (!QDBusMetaType::signatureToMetaType(signature).isValid()) {
                 const char *typeName = QMetaType(types.at(j)).name();
-                xml += QString::fromLatin1("      <annotation name=\"org.qtproject.QtDBus.QtTypeName.%1%2\" value=\"%3\"/>\n")
+                xml += QString::fromLatin1("      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.%1%2\" value=\"%3\"/>\n")
                        .arg(isOutput ? "Out"_L1 : "In"_L1)
                        .arg(isOutput && !isSignal ? j - inputCount : j - 1)
                        .arg(typeNameToXml(typeName));
@@ -230,6 +230,6 @@ QString qDBusGenerateMetaObjectXml(QString interface, const QMetaObject *mo,
         .arg(interface, xml);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

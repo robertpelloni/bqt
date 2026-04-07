@@ -15,7 +15,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 using namespace QtMiscUtils;
@@ -281,7 +281,7 @@ static const char *validateSingleType(const char *signature)
 
 /*!
     \namespace QDBusUtil
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \internal
 
     \brief The QDBusUtil namespace contains a few functions that are of general use when
@@ -540,6 +540,6 @@ namespace QDBusUtil
 
 } // namespace QDBusUtil
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

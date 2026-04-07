@@ -11,7 +11,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QDBusContextPrivate *QDBusContextPrivate::set(QObject *obj, QDBusContextPrivate *newContext)
 {
@@ -35,7 +35,7 @@ QDBusContextPrivate *QDBusContextPrivate::set(QObject *obj, QDBusContextPrivate 
 /*!
     \since 4.3
     \class QDBusContext
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBusContext class allows slots to determine the D-Bus context of the calls.
 
@@ -166,6 +166,6 @@ void QDBusContext::sendErrorReply(QDBusError::ErrorType type, const QString &msg
     connection().send(message().createErrorReply(type, msg));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

@@ -18,7 +18,7 @@
 #ifndef QDBUSCONNECTION_P_H
 #define QDBUSCONNECTION_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbuserror.h>
 #include <qdbusconnection.h>
 
@@ -35,11 +35,11 @@
 
 #include <qdbusmessage.h>
 #include <qdbusservicewatcher.h>    // for the WatchMode enum
-Q_MOC_INCLUDE(<QtDBus/private/qdbuspendingcall_p.h>)
+Q_MOC_INCLUDE(<BobUIDBus/private/qdbuspendingcall_p.h>)
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusMessage;
 class QSocketNotifier;
@@ -366,7 +366,7 @@ extern QDBusMessage qDBusPropertyGetAll(const QDBusConnectionPrivate::ObjectTree
 
 #endif // QT_BOOTSTRAPPED
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

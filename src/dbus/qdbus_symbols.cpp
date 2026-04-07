@@ -13,7 +13,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -130,6 +130,6 @@ static void qdbus_unloadLibDBus()
 Q_DESTRUCTOR_FUNCTION(qdbus_unloadLibDBus)
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

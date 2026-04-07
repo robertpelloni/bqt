@@ -5,13 +5,13 @@
 #ifndef QDBUSSERVER_H
 #define QDBUSSERVER_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qstring.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusConnectionPrivate;
@@ -42,7 +42,7 @@ private:
     friend class QDBusConnectionPrivate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

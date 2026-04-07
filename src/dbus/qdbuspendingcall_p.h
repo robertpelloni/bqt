@@ -18,7 +18,7 @@
 #ifndef QDBUSPENDINGCALL_P_H
 #define QDBUSPENDINGCALL_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qlist.h>
 #include <qmutex.h>
 #include <qpointer.h>
@@ -30,7 +30,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusPendingCall;
 class QDBusPendingCallWatcher;
@@ -95,7 +95,7 @@ Q_SIGNALS:
     void error(const QDBusError &error, const QDBusMessage &msg);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

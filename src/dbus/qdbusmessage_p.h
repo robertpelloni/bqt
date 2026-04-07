@@ -16,7 +16,7 @@
 // We mean it.
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qatomic.h>
 #include <qstring.h>
 #include <qdbusmessage.h>
@@ -26,7 +26,7 @@ struct DBusMessage;
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusConnectionPrivate;
 
@@ -70,7 +70,7 @@ public:
                                        const QDBusMessage &asSent);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

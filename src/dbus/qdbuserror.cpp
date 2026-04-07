@@ -16,7 +16,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QT_IMPL_METATYPE_EXTERN(QDBusError)
 
@@ -44,11 +44,11 @@ static constexpr const auto errorMessages = qOffsetStringArray(
     "org.freedesktop.DBus.Error.UnknownObject",
     "org.freedesktop.DBus.Error.UnknownProperty",
     "org.freedesktop.DBus.Error.PropertyReadOnly",
-    "org.qtproject.QtDBus.Error.InternalError",
-    "org.qtproject.QtDBus.Error.InvalidService",
-    "org.qtproject.QtDBus.Error.InvalidObjectPath",
-    "org.qtproject.QtDBus.Error.InvalidInterface",
-    "org.qtproject.QtDBus.Error.InvalidMember",
+    "org.qtproject.BobUIDBus.Error.InternalError",
+    "org.qtproject.BobUIDBus.Error.InvalidService",
+    "org.qtproject.BobUIDBus.Error.InvalidObjectPath",
+    "org.qtproject.BobUIDBus.Error.InvalidInterface",
+    "org.qtproject.BobUIDBus.Error.InvalidMember",
     ""
 );
 
@@ -66,7 +66,7 @@ static inline QDBusError::ErrorType get(const char *name)
 
 /*!
     \class QDBusError
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusError class represents an error received from the
@@ -318,7 +318,7 @@ QDebug operator<<(QDebug dbg, const QDBusError &msg)
     \memberswap{error}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbuserror.cpp"
 

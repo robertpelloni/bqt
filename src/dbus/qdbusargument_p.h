@@ -16,7 +16,7 @@
 // We mean it.
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbusargument.h>
 #include "qdbusconnection.h"
 #include "qdbusunixfiledescriptor.h"
@@ -29,7 +29,7 @@
 # define DBUS_TYPE_UNIX_FD_AS_STRING "h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusMarshaller;
 class QDBusDemarshaller;
@@ -194,7 +194,7 @@ inline QDBusMarshaller *QDBusArgumentPrivate::marshaller()
 inline QDBusDemarshaller *QDBusArgumentPrivate::demarshaller()
 { return static_cast<QDBusDemarshaller *>(this); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

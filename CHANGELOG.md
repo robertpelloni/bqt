@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.51] - 2026-04-05
+### Added
+- Added `internal/kernel/process_test.go` to verify `Process` (QProcess parity) functionality.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-go-process-parity.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-go-process-parity-session.md`.
+
+### Changed
+- Performed a **Targeted Internal Source Rename** of the `DBus` module in C++, replacing `QtDBus` with `BobUIDBus` and renaming `qtdbusglobal.h` to `bobuidbusglobal.h`.
+- Refactored Go `internal/kernel/process.go` from `ShellProcess` into a more generic `Process` struct mirroring `QProcess` features (WorkingDirectory, Arguments, Environment, State, Done signals).
+- Updated `internal/ui/widgets/terminal.go` to consume the new `Process` struct.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.50] - 2026-04-05
 ### Added
 - Added `internal/kernel/clipboard_parity_test.go` (implicitly through `services_test.go` updates) to verify `QClipboard`/`QMimeData` parity.

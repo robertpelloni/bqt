@@ -14,7 +14,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusServiceWatcherPrivate: public QObjectPrivate
 {
@@ -100,7 +100,7 @@ void QDBusServiceWatcherPrivate::removeService(const QString &service,
 /*!
     \class QDBusServiceWatcher
     \since 4.6
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBusServiceWatcher class allows the user to watch for a bus service change.
 
@@ -379,7 +379,7 @@ void QDBusServiceWatcher::setConnection(const QDBusConnection &connection)
     d->setConnection(d->watchedServicesData, connection, d->watchMode);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 

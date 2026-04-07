@@ -5,14 +5,14 @@
 #ifndef QDBUSMETATYPE_H
 #define QDBUSMETATYPE_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbusargument.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbusargument.h>
 
 #include <QtCore/qmetatype.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_DBUS_EXPORT QDBusMetaType
@@ -42,7 +42,7 @@ QMetaType qDBusRegisterMetaType()
     return metaType;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif
