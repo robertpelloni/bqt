@@ -8,11 +8,14 @@ set(BOBUI_SUPPORTED_COMPONENTS
     Core
     DBus
     Gui
+    Linguist
     Network
     OpenGL
     OpenGLWidgets
     PrintSupport
+    ShaderTools
     Sql
+    Svg
     Test
     Widgets
     Xml

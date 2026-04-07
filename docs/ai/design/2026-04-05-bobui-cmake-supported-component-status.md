@@ -22,11 +22,14 @@ It is generated from the supported component manifest via:
 | Core | `BobUI6Core` | `BobUICore` | `BobUI6::Core`, `BobUI::Core` | Yes | Yes | Yes |
 | DBus | `BobUI6DBus` | `BobUIDBus` | `BobUI6::DBus`, `BobUI::DBus` | Yes | Yes | Yes |
 | Gui | `BobUI6Gui` | `BobUIGui` | `BobUI6::Gui`, `BobUI::Gui` | Yes | Yes | Yes |
+| Linguist | `BobUI6Linguist` | `BobUILinguist` | `BobUI6::Linguist`, `BobUI::Linguist` | Yes | Yes | Yes |
 | Network | `BobUI6Network` | `BobUINetwork` | `BobUI6::Network`, `BobUI::Network` | Yes | Yes | Yes |
 | OpenGL | `BobUI6OpenGL` | `BobUIOpenGL` | `BobUI6::OpenGL`, `BobUI::OpenGL` | Yes | Yes | Yes |
 | OpenGLWidgets | `BobUI6OpenGLWidgets` | `BobUIOpenGLWidgets` | `BobUI6::OpenGLWidgets`, `BobUI::OpenGLWidgets` | Yes | Yes | Yes |
 | PrintSupport | `BobUI6PrintSupport` | `BobUIPrintSupport` | `BobUI6::PrintSupport`, `BobUI::PrintSupport` | Yes | Yes | Yes |
+| ShaderTools | `BobUI6ShaderTools` | `BobUIShaderTools` | `BobUI6::ShaderTools`, `BobUI::ShaderTools` | Yes | Yes | Yes |
 | Sql | `BobUI6Sql` | `BobUISql` | `BobUI6::Sql`, `BobUI::Sql` | Yes | Yes | Yes |
+| Svg | `BobUI6Svg` | `BobUISvg` | `BobUI6::Svg`, `BobUI::Svg` | Yes | Yes | Yes |
 | Test | `BobUI6Test` | `BobUITest` | `BobUI6::Test`, `BobUI::Test` | Yes | Yes | Yes |
 | Widgets | `BobUI6Widgets` | `BobUIWidgets` | `BobUI6::Widgets`, `BobUI::Widgets` | Yes | Yes | Yes |
 | Xml | `BobUI6Xml` | `BobUIXml` | `BobUI6::Xml`, `BobUI::Xml` | Yes | Yes | Yes |

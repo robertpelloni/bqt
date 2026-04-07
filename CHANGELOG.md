@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.47] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6LinguistConfig.cmake`, `cmake/BobUILinguistConfig.cmake`, `cmake/BobUI6ShaderToolsConfig.cmake`, `cmake/BobUIShaderToolsConfig.cmake`, `cmake/BobUI6SvgConfig.cmake`, and `cmake/BobUISvgConfig.cmake`.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-linguist-shadertools-svg.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-linguist-shadertools-svg-session.md`.
+
+### Changed
+- Refactored `cmake/tests/bobui_package_forwarding_smoke.cmake` and `cmake/tests/bobui_export_publication_configure_smoke.cmake` to use the `BOBUI_SUPPORTED_COMPONENTS` manifest loop, making smoke tests more robust and easier to extend.
+- Updated `cmake/BobUISupportedComponents.cmake` to include `Linguist`, `ShaderTools`, and `Svg`.
+- Updated project docs/metadata to record the seventh direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.46] - 2026-04-05
 ### Added
 - Added testing documentation at `docs/ai/testing/2026-04-05-bobui-go-ci-validation.md`.
