@@ -68,6 +68,8 @@
 #if QT_CONFIG(version_tagging)
 #include <QtCore/qversiontagging.h>
 #endif
-#endif /* __cplusplus */
+#if defined(__cplusplus)
+#include <QtCore/bobuimacros.h>
+#endif
 
 #endif /* QGLOBAL_H */

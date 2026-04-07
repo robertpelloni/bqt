@@ -3,9 +3,9 @@
 
 #define QT_XML_BUILD_REMOVED_API
 
-#include "qtxmlglobal.h"
+#include "bobuixmlglobal.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 #if QT_XML_REMOVED_SINCE(6, 9)
 

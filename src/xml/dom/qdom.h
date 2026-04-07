@@ -4,7 +4,7 @@
 #ifndef QDOM_H
 #define QDOM_H
 
-#include <QtXml/qtxmlglobal.h>
+#include <BobUIXml/bobuixmlglobal.h>
 
 #include <QtCore/qcompare.h>
 #include <QtCore/qcontainertools_impl.h>
@@ -16,7 +16,7 @@
 
 class tst_QDom;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
 class QTextStream;
@@ -741,7 +741,7 @@ private:
 
 Q_XML_EXPORT QTextStream& operator<<(QTextStream& stream, const QDomNode& node);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature dom
 

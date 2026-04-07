@@ -15,7 +15,7 @@ QT_REQUIRE_CONFIG(dom);
 
 #include <QtCore/qxpfunctional.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
@@ -502,6 +502,6 @@ public:
     long nodeListTime;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDOMHELPERS_P_H

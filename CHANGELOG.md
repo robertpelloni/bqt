@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.49] - 2026-04-05
+### Added
+- Introduced the **BobUI C++ Namespace and Macros** in `src/corelib/global/bobuimacros.h`.
+- Added the first **Public Header Aliases** to allow BobUI-branded includes: `src/corelib/BobUICore`, `src/gui/BobUIGui`, `src/network/BobUINetwork`, `src/widgets/BobUIWidgets`, and `src/xml/BobUIXml`.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-cpp-namespace-and-header-aliases.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cpp-namespace-and-header-aliases-session.md`.
+
+### Changed
+- Injected BobUI macros into `src/corelib/global/qglobal.h` so that the `BobUI` namespace is available to all C++ code.
+- Performed a **Targeted Internal Source Rename** of the `Xml` module, replacing `QtXml` with `BobUIXml` and `QT_BEGIN_NAMESPACE` with `BOBUI_BEGIN_NAMESPACE` across all files in `src/xml`.
+- Updated `src/corelib/CMakeLists.txt` and `src/xml/CMakeLists.txt` to include the new BobUI headers.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.48] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6ChartsConfig.cmake`, `cmake/BobUIChartsConfig.cmake`, `cmake/BobUI6MultimediaConfig.cmake`, `cmake/BobUIMultimediaConfig.cmake`, `cmake/BobUI6QmlConfig.cmake`, `cmake/BobUIQmlConfig.cmake`, `cmake/BobUI6QuickConfig.cmake`, and `cmake/BobUIQuickConfig.cmake`.

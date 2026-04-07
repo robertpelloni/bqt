@@ -44,6 +44,8 @@ qt_internal_add_module(Core
         # Keep the rest alphabetical
         compat/removed_api.cpp
         global/archdetect.cpp
+        global/bobuimacros.h
+        BobUICore
         global/qalloc.cpp global/qalloc.h
         global/qassert.cpp global/qassert.h
         global/qcheckedint_impl.h
