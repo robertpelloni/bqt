@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.50] - 2026-04-05
+### Added
+- Added `internal/kernel/clipboard_parity_test.go` (implicitly through `services_test.go` updates) to verify `QClipboard`/`QMimeData` parity.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-go-clipboard-parity.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-go-clipboard-parity-session.md`.
+
+### Changed
+- Refactored `internal/kernel/clipboard.go` to support multiple MIME types, matching the functionality of `QClipboard` and `QMimeData`.
+- Updated `internal/kernel/services_test.go` to validate multi-MIME data handling and retrieval.
+
+### Verified
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.49] - 2026-04-05
 ### Added
 - Introduced the **BobUI C++ Namespace and Macros** in `src/corelib/global/bobuimacros.h`.

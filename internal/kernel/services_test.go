@@ -65,10 +65,10 @@ func TestUndoStackPushUndoAndHistoryLimit(t *testing.T) {
 }
 
 func TestClipboardSetBinaryAndReceiveRemote(t *testing.T) {
-	clip := &Clipboard{}
+	clip := GetClipboard()
 	clip.SetText("hello")
-	if clip.text != "hello" {
-		t.Fatalf("expected local text to be stored, got %q", clip.text)
+	if clip.GetText() != "hello" {
+		t.Fatalf("expected local text to be stored, got %q", clip.GetText())
 	}
 
 	blob := []byte{1, 2, 3, 4}
@@ -79,19 +79,19 @@ func TestClipboardSetBinaryAndReceiveRemote(t *testing.T) {
 	}
 
 	clip.ReceiveRemote("remote-text", []byte{9, 8})
-	if clip.text != "remote-text" {
-		t.Fatalf("expected remote text overwrite, got %q", clip.text)
+	if clip.GetText() != "remote-text" {
+		t.Fatalf("expected remote text overwrite, got %q", clip.GetText())
 	}
-	if len(clip.binary) != 2 || clip.binary[0] != 9 || clip.binary[1] != 8 {
-		t.Fatalf("expected remote binary overwrite, got %v", clip.binary)
+	if len(clip.GetBinary()) != 2 || clip.GetBinary()[0] != 9 || clip.GetBinary()[1] != 8 {
+		t.Fatalf("expected remote binary overwrite, got %v", clip.GetBinary())
 	}
 
 	clip.ReceiveRemote("", nil)
-	if clip.text != "remote-text" {
-		t.Fatalf("expected empty remote text to preserve existing text, got %q", clip.text)
+	if clip.GetText() != "remote-text" {
+		t.Fatalf("expected empty remote text to preserve existing text, got %q", clip.GetText())
 	}
-	if len(clip.binary) != 2 || clip.binary[0] != 9 || clip.binary[1] != 8 {
-		t.Fatalf("expected nil remote binary to preserve existing binary, got %v", clip.binary)
+	if len(clip.GetBinary()) != 2 || clip.GetBinary()[0] != 9 || clip.GetBinary()[1] != 8 {
+		t.Fatalf("expected nil remote binary to preserve existing binary, got %v", clip.GetBinary())
 	}
 }
 
