@@ -4,15 +4,19 @@
 # surface for additive CMake compatibility work.
 
 set(BOBUI_SUPPORTED_COMPONENTS
+    Charts
     Concurrent
     Core
     DBus
     Gui
     Linguist
+    Multimedia
     Network
     OpenGL
     OpenGLWidgets
     PrintSupport
+    Qml
+    Quick
     ShaderTools
     Sql
     Svg

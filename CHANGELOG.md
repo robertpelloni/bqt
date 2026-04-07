@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.48] - 2026-04-05
+### Added
+- Added direct module config shims: `cmake/BobUI6ChartsConfig.cmake`, `cmake/BobUIChartsConfig.cmake`, `cmake/BobUI6MultimediaConfig.cmake`, `cmake/BobUIMultimediaConfig.cmake`, `cmake/BobUI6QmlConfig.cmake`, `cmake/BobUIQmlConfig.cmake`, `cmake/BobUI6QuickConfig.cmake`, and `cmake/BobUIQuickConfig.cmake`.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-cmake-module-shims-charts-multimedia-qml-quick.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-cmake-module-shims-charts-multimedia-qml-quick-session.md`.
+
+### Changed
+- Updated `cmake/BobUISupportedComponents.cmake` to include `Charts`, `Multimedia`, `Qml`, and `Quick`.
+- Regenerated the human-readable status report from the updated manifest.
+- Verified that manifest-driven smoke tests automatically cover the new modules.
+- Updated project docs/metadata to record the eighth direct BobUI module-package slice.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.47] - 2026-04-05
 ### Added
 - Added direct module config shims: `cmake/BobUI6LinguistConfig.cmake`, `cmake/BobUILinguistConfig.cmake`, `cmake/BobUI6ShaderToolsConfig.cmake`, `cmake/BobUIShaderToolsConfig.cmake`, `cmake/BobUI6SvgConfig.cmake`, and `cmake/BobUISvgConfig.cmake`.
