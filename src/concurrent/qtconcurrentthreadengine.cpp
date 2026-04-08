@@ -2,51 +2,51 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#include "qtconcurrentthreadengine.h"
+#include "bobuiconcurrentthreadengine.h"
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 /*!
-  \class QtConcurrent::ThreadEngineBarrier
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ThreadEngineBarrier
+  \inmodule BobUIConcurrent
   \internal
 */
 
 /*!
-  \enum QtConcurrent::ThreadFunctionResult
+  \enum BobUIConcurrent::ThreadFunctionResult
   \internal
 */
 
 /*!
-  \class QtConcurrent::ThreadEngineBase
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ThreadEngineBase
+  \inmodule BobUIConcurrent
   \internal
 */
 
 /*!
-  \class QtConcurrent::ThreadEngine
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ThreadEngine
+  \inmodule BobUIConcurrent
   \internal
 */
 
 /*!
-  \class QtConcurrent::ThreadEngineStarterBase
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ThreadEngineStarterBase
+  \inmodule BobUIConcurrent
   \internal
 */
 
 /*!
-  \class QtConcurrent::ThreadEngineStarter
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ThreadEngineStarter
+  \inmodule BobUIConcurrent
   \internal
 */
 
 /*!
-  \fn [qtconcurrentthreadengine-1] template <typename ThreadEngine> ThreadEngineStarter<typename ThreadEngine::ResultType> QtConcurrent::startThreadEngine(ThreadEngine *threadEngine)
+  \fn [bobuiconcurrentthreadengine-1] template <typename ThreadEngine> ThreadEngineStarter<typename ThreadEngine::ResultType> BobUIConcurrent::startThreadEngine(ThreadEngine *threadEngine)
   \internal
 */
 
@@ -282,8 +282,8 @@ void ThreadEngineBase::handleException(const QException &exception)
 #endif
 
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT

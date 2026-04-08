@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.52] - 2026-04-05
+### Added
+- Added `internal/kernel/fs_watcher.go` and `internal/kernel/fs_watcher_test.go` to provide a Go-native process matching `QFileSystemWatcher` functionality.
+- Added implementation documentation at `docs/ai/implementation/2026-04-05-bobui-go-fs-watcher-parity.md`.
+- Added an archived session handoff at `logs/handoffs/2026-04-05-bobui-go-fs-watcher-parity-session.md`.
+
+### Changed
+- Performed a **Targeted Internal Source Rename** of the `Concurrent` module in C++, replacing `QtConcurrent` with `BobUIConcurrent` and renaming `qtconcurrent_global.h` to `bobuiconcurrent_global.h`.
+- Updated `src/concurrent/CMakeLists.txt` to include the new BobUI headers.
+- Added **Core Class Aliases** to `src/corelib/global/bobuimacros.h`, aliasing `QObject` to `BobUI::Object`, `QString` to `BobUI::String`, and `QVariant` to `BobUI::Variant`.
+
+### Verified
+- `cmake -P cmake/tests/bobui_full_compatibility_validation.cmake` passes.
+- `go test ./internal/...` passes.
+- `go build -buildvcs=false .` succeeds.
+
 ## [1.1.51] - 2026-04-05
 ### Added
 - Added `internal/kernel/process_test.go` to verify `Process` (QProcess parity) functionality.

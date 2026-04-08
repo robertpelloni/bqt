@@ -10,7 +10,7 @@ qt_internal_add_module(Concurrent
     EXCEPTIONS
     SOURCES
         qtaskbuilder.h
-        qtconcurrent_global.h
+        bobuiconcurrent_global.h
         qtconcurrentcompilertest.h
         qtconcurrentfilter.cpp qtconcurrentfilter.h
         qtconcurrentfilterkernel.h
@@ -47,5 +47,5 @@ qt_internal_extend_target(Concurrent CONDITION MSVC AND (TEST_architecture_arch 
         "/BASE:0x66000000"
 )
 qt_internal_add_docs(Concurrent
-    doc/qtconcurrent.qdocconf
+    doc/bobuiconcurrent.qdocconf
 )

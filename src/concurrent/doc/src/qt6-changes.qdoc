@@ -3,7 +3,7 @@
 
 /*!
     \page concurrent-changes-qt6.html
-    \title Changes to Qt Concurrent
+    \title Changes to BobUI Concurrent
     \ingroup changes-qt-5-to-6
     \brief Improved to work with a variable number of arguments.
 
@@ -14,12 +14,12 @@
     APIs in each release. But some changes were inevitable in an effort to
     make Qt a better framework.
 
-    In this topic we summarize those changes in Qt Concurrent, and provide
+    In this topic we summarize those changes in BobUI Concurrent, and provide
     guidance to handle them.
 
-    \section1 QtConcurrent::run()
+    \section1 BobUIConcurrent::run()
 
-    QtConcurrent::run() has been improved to work with a variable number
+    BobUIConcurrent::run() has been improved to work with a variable number
     of arguments, so the signatures are changed to:
 
     \code
@@ -38,20 +38,20 @@
 
     \code
     QImage image = ...;
-    QFuture<void> future = QtConcurrent::run(&image, &QImage::invertPixels, QImage::InvertRgba);
+    QFuture<void> future = BobUIConcurrent::run(&image, &QImage::invertPixels, QImage::InvertRgba);
     \endcode
 
     You have to write:
 
     \code
-    QFuture<void> future = QtConcurrent::run(&QImage::invertPixels, &image, QImage::InvertRgba);
+    QFuture<void> future = BobUIConcurrent::run(&QImage::invertPixels, &image, QImage::InvertRgba);
     \endcode
 
-    Another side effect is that \c QtConcurrent::run() will not work with
+    Another side effect is that \c BobUIConcurrent::run() will not work with
     overloaded functions anymore. For example, the code below won't compile:
 
-    \include qtconcurrentrun.cpp run-with-overload-calls
+    \include bobuiconcurrentrun.cpp run-with-overload-calls
 
-    Other methods of QtConcurrent have no behavioral changes and do not introduce
+    Other methods of BobUIConcurrent have no behavioral changes and do not introduce
     source compatibility breaks.
 */

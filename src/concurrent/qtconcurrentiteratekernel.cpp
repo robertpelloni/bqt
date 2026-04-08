@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#include "qtconcurrentiteratekernel.h"
+#include "bobuiconcurrentiteratekernel.h"
 
 #include <qdeadlinetimer.h>
 #include "private/qfunctions_p.h"
@@ -10,7 +10,7 @@
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     TargetRatio = 100
@@ -26,41 +26,41 @@ static double elapsed(qint64 after, qint64 before)
     return double(after - before);
 }
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 /*!
-  \class QtConcurrent::Median
-  \inmodule QtConcurrent
-  \internal
- */
-
-/*!
-  \class QtConcurrent::BlockSizeManager
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::Median
+  \inmodule BobUIConcurrent
   \internal
  */
 
 /*!
-  \class QtConcurrent::ResultReporter
-  \inmodule QtConcurrent
-  \internal
- */
-
-/*! \fn bool QtConcurrent::selectIteration(std::bidirectional_iterator_tag)
-  \internal
- */
-
-/*! \fn bool QtConcurrent::selectIteration(std::forward_iterator_tag)
-  \internal
- */
-
-/*! \fn bool QtConcurrent::selectIteration(std::random_access_iterator_tag)
+  \class BobUIConcurrent::BlockSizeManager
+  \inmodule BobUIConcurrent
   \internal
  */
 
 /*!
-  \class QtConcurrent::IterateKernel
-  \inmodule QtConcurrent
+  \class BobUIConcurrent::ResultReporter
+  \inmodule BobUIConcurrent
+  \internal
+ */
+
+/*! \fn bool BobUIConcurrent::selectIteration(std::bidirectional_iterator_tag)
+  \internal
+ */
+
+/*! \fn bool BobUIConcurrent::selectIteration(std::forward_iterator_tag)
+  \internal
+ */
+
+/*! \fn bool BobUIConcurrent::selectIteration(std::random_access_iterator_tag)
+  \internal
+ */
+
+/*!
+  \class BobUIConcurrent::IterateKernel
+  \inmodule BobUIConcurrent
   \internal
  */
 
@@ -101,7 +101,7 @@ void BlockSizeManager::timeAfterUser()
 
     m_blockSize = qMin(m_blockSize * 2,  maxBlockSize);
 
-#ifdef QTCONCURRENT_FOR_DEBUG
+#ifdef BOBUICONCURRENT_FOR_DEBUG
     qDebug() << QThread::currentThread() << "adjusting block size" << controlPartElapsed.median() << userPartElapsed.median() << m_blockSize;
 #endif
 
@@ -116,8 +116,8 @@ int BlockSizeManager::blockSize()
     return m_blockSize;
 }
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT

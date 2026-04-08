@@ -2,19 +2,19 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_MEDIAN_H
-#define QTCONCURRENT_MEDIAN_H
+#ifndef BOBUICONCURRENT_MEDIAN_H
+#define BOBUICONCURRENT_MEDIAN_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
 #include <algorithm>
 #include <cstring>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 class Median
 {
@@ -82,9 +82,9 @@ private:
     bool dirty;
 };
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

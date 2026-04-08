@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_THREADENGINE_H
-#define QTCONCURRENT_THREADENGINE_H
+#ifndef BOBUICONCURRENT_THREADENGINE_H
+#define BOBUICONCURRENT_THREADENGINE_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) ||defined(Q_QDOC)
 
@@ -16,14 +16,14 @@
 #include <QtCore/qatomic.h>
 #include <QtCore/qsemaphore.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 // The ThreadEngineBarrier counts worker threads, and allows one
 // thread to wait for all others to finish. Tested for its use in
-// QtConcurrent, requires more testing for use as a general class.
+// BobUIConcurrent, requires more testing for use as a general class.
 class ThreadEngineBarrier
 {
 private:
@@ -207,17 +207,17 @@ public:
         : ThreadEngineStarterBase<void>(_threadEngine) {}
 };
 
-//! [qtconcurrentthreadengine-1]
+//! [bobuiconcurrentthreadengine-1]
 template <typename ThreadEngine>
 inline ThreadEngineStarter<typename ThreadEngine::ResultType> startThreadEngine(ThreadEngine *threadEngine)
 {
     return ThreadEngineStarter<typename ThreadEngine::ResultType>(threadEngine);
 }
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

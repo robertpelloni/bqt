@@ -12,6 +12,13 @@
 
 #ifdef __cplusplus
 namespace BobUI = Qt;
+
+// Core Class Aliases
+namespace BobUI {
+    using Object = ::QObject;
+    using String = ::QString;
+    using Variant = ::QVariant;
+}
 #endif
 
 #endif // BOBUIMACROS_H

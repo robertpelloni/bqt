@@ -3,14 +3,14 @@
 
 //! [0]
 extern void aFunction();
-QFuture<void> future = QtConcurrent::run(aFunction);
+QFuture<void> future = BobUIConcurrent::run(aFunction);
 //! [0]
 
 
 //! [explicit-pool-0]
 extern void aFunction();
 QThreadPool pool;
-QFuture<void> future = QtConcurrent::run(&pool, aFunction);
+QFuture<void> future = BobUIConcurrent::run(&pool, aFunction);
 //! [explicit-pool-0]
 
 
@@ -21,13 +21,13 @@ int integer = ...;
 double floatingPoint = ...;
 QString string = ...;
 
-QFuture<void> future = QtConcurrent::run(aFunctionWithArguments, integer, floatingPoint, string);
+QFuture<void> future = BobUIConcurrent::run(aFunctionWithArguments, integer, floatingPoint, string);
 //! [1]
 
 
 //! [2]
 extern QString functionReturningAString();
-QFuture<QString> future = QtConcurrent::run(functionReturningAString);
+QFuture<QString> future = BobUIConcurrent::run(functionReturningAString);
 ...
 QString result = future.result();
 //! [2]
@@ -38,7 +38,7 @@ extern QString someFunction(const QByteArray &input);
 
 QByteArray bytearray = ...;
 
-QFuture<QString> future = QtConcurrent::run(someFunction, bytearray);
+QFuture<QString> future = BobUIConcurrent::run(someFunction, bytearray);
 ...
 QString result = future.result();
 //! [3]
@@ -46,7 +46,7 @@ QString result = future.result();
 //! [4]
 // call 'QList<QByteArray>  QByteArray::split(char sep) const' in a separate thread
 QByteArray bytearray = "hello world";
-QFuture<QList<QByteArray> > future = QtConcurrent::run(&QByteArray::split, bytearray, ' ');
+QFuture<QList<QByteArray> > future = BobUIConcurrent::run(&QByteArray::split, bytearray, ' ');
 ...
 QList<QByteArray> result = future.result();
 //! [4]
@@ -54,14 +54,14 @@ QList<QByteArray> result = future.result();
 //! [5]
 // call 'void QImage::invertPixels(InvertMode mode)' in a separate thread
 QImage image = ...;
-QFuture<void> future = QtConcurrent::run(&QImage::invertPixels, &image, QImage::InvertRgba);
+QFuture<void> future = BobUIConcurrent::run(&QImage::invertPixels, &image, QImage::InvertRgba);
 ...
 future.waitForFinished();
 // At this point, the pixels in 'image' have been inverted
 //! [5]
 
 //! [6]
-QFuture<void> future = QtConcurrent::run([=]() {
+QFuture<void> future = BobUIConcurrent::run([=]() {
     // Code in this block will run in another thread
 });
 ...
@@ -71,7 +71,7 @@ QFuture<void> future = QtConcurrent::run([=]() {
 static void addOne(int &n) { ++n; }
 ...
 int n = 42;
-QtConcurrent::run(&addOne, std::ref(n)).waitForFinished(); // n == 43
+BobUIConcurrent::run(&addOne, std::ref(n)).waitForFinished(); // n == 43
 //! [7]
 
 //! [8]
@@ -86,21 +86,21 @@ struct TestClass
 TestClass o;
 
 // Modify original object
-QtConcurrent::run(std::ref(o), 15).waitForFinished(); // o.s == 15
+BobUIConcurrent::run(std::ref(o), 15).waitForFinished(); // o.s == 15
 
 // Modify a copy of the original object
-QtConcurrent::run(o, 42).waitForFinished(); // o.s == 15
+BobUIConcurrent::run(o, 42).waitForFinished(); // o.s == 15
 
 // Use a temporary object
-QtConcurrent::run(TestClass(), 42).waitForFinished();
+BobUIConcurrent::run(TestClass(), 42).waitForFinished();
 
 // Ill-formed
-QtConcurrent::run(&o, 42).waitForFinished(); // compilation error
+BobUIConcurrent::run(&o, 42).waitForFinished(); // compilation error
 //! [8]
 
 //! [9]
 extern void aFunction(QPromise<void> &promise);
-QFuture<void> future = QtConcurrent::run(aFunction);
+QFuture<void> future = BobUIConcurrent::run(aFunction);
 //! [9]
 
 //! [10]
@@ -109,7 +109,7 @@ extern void aFunction(QPromise<void> &promise, int arg1, const QString &arg2);
 int integer = ...;
 QString string = ...;
 
-QFuture<void> future = QtConcurrent::run(aFunction, integer, string);
+QFuture<void> future = BobUIConcurrent::run(aFunction, integer, string);
 //! [10]
 
 //! [11]
@@ -119,7 +119,7 @@ void helloWorldFunction(QPromise<QString> &promise)
     promise.addResult("world");
 }
 
-QFuture<QString> future = QtConcurrent::run(helloWorldFunction);
+QFuture<QString> future = BobUIConcurrent::run(helloWorldFunction);
 ...
 QList<QString> results = future.results();
 //! [11]
@@ -138,7 +138,7 @@ void aFunction(QPromise<int> &promise)
     }
 }
 
-QFuture<int> future = QtConcurrent::run(aFunction);
+QFuture<int> future = BobUIConcurrent::run(aFunction);
 
 ... // user pressed a pause button after 10 seconds
 future.suspend();
@@ -169,7 +169,7 @@ QObject::connect(&watcher, &QFutureWatcher::progressValueChanged, [](int progres
     ... ; // update GUI with a progress
     qDebug() << "current progress:" << progress;
 });
-watcher.setFuture(QtConcurrent::run(aFunction));
+watcher.setFuture(BobUIConcurrent::run(aFunction));
 //! [13]
 
 //! [14]
@@ -187,17 +187,17 @@ run<double>(f); // this will select the 2nd overload
 void foo(int arg);
 void foo(int arg1, int arg2);
 ...
-QFuture<void> future = QtConcurrent::run(foo, 42);
+QFuture<void> future = BobUIConcurrent::run(foo, 42);
 //! [15]
 
 //! [16]
-QFuture<void> future = QtConcurrent::run([] { foo(42); });
+QFuture<void> future = BobUIConcurrent::run([] { foo(42); });
 //! [16]
 
 //! [17]
-QFuture<void> future = QtConcurrent::run(static_cast<void(*)(int)>(foo), 42);
+QFuture<void> future = BobUIConcurrent::run(static_cast<void(*)(int)>(foo), 42);
 //! [17]
 
 //! [18]
-QFuture<void> future = QtConcurrent::run(qOverload<int>(foo), 42);
+QFuture<void> future = BobUIConcurrent::run(qOverload<int>(foo), 42);
 //! [18]

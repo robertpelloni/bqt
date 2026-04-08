@@ -2,18 +2,18 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_FUNCTIONWRAPPERS_H
-#define QTCONCURRENT_FUNCTIONWRAPPERS_H
+#ifndef BOBUICONCURRENT_FUNCTIONWRAPPERS_H
+#define BOBUICONCURRENT_FUNCTIONWRAPPERS_H
 
-#include <QtConcurrent/qtconcurrentcompilertest.h>
-#include <QtConcurrent/qtconcurrentreducekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentcompilertest.h>
+#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
 #include <QtCore/qfuture.h>
 
 #include <tuple>
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QtPrivate {
 
@@ -126,7 +126,7 @@ using isInvocable = std::is_invocable<Callable, typename std::decay_t<Sequence>:
 template <class InitialValueType, class ResultType>
 inline constexpr bool isInitialValueCompatible_v = std::conjunction_v<
         std::is_convertible<InitialValueType, ResultType>,
-        std::negation<std::is_same<std::decay_t<InitialValueType>, QtConcurrent::ReduceOption>>>;
+        std::negation<std::is_same<std::decay_t<InitialValueType>, BobUIConcurrent::ReduceOption>>>;
 
 template<class Callable, class Enable = void>
 struct ReduceResultTypeHelper
@@ -173,7 +173,7 @@ struct MapSequenceResultType<InputSequence<T...>, MapFunctor>
 } // namespace QtPrivate.
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 
