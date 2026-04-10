@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "textdump.h"
 
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QString>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
 struct EnumLookup {
     int value;
@@ -352,11 +352,11 @@ struct FormattingContext
     int unicodeVersion = -1;
 };
 
-static void formatCharacter(QTextStream &str, const QChar &qc, FormattingContext &context)
+static void formatCharacter(BOBUIextStream &str, const QChar &qc, FormattingContext &context)
 {
     const ushort unicode = qc.unicode();
-    str << "U+" << qSetFieldWidth(4) << qSetPadChar('0') << Qt::uppercasedigits << Qt::hex
-        << unicode << Qt::dec << qSetFieldWidth(0) << ' ';
+    str << "U+" << qSetFieldWidth(4) << qSetPadChar('0') << BobUI::uppercasedigits << BobUI::hex
+        << unicode << BobUI::dec << qSetFieldWidth(0) << ' ';
 
     const EnumLookup *specialChar = enumLookup(unicode, specialCharactersEnumLookup, sizeof(specialCharactersEnumLookup) / sizeof(EnumLookup));
     if (specialChar)
@@ -406,7 +406,7 @@ static void formatCharacter(QTextStream &str, const QChar &qc, FormattingContext
 QString dumpText(const QString &text)
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     FormattingContext context;
     for (int i = 0; i < text.size(); ++i) {
         str << '#' << (i + 1) << ' ';
@@ -419,12 +419,12 @@ QString dumpText(const QString &text)
 QString dumpTextAsCode(const QString &text)
 {
     QString result;
-    QTextStream str(&result);
-    str << "    QString result;\n" << Qt::hex << Qt::showbase;
+    BOBUIextStream str(&result);
+    str << "    QString result;\n" << BobUI::hex << BobUI::showbase;
     for (QChar c : text)
         str << "    result += QChar(" << c.unicode() << ");\n";
     str << '\n';
     return result;
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

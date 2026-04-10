@@ -1,5 +1,5 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef RELOCATABLE_CHANGE_H
 #define RELOCATABLE_CHANGE_H
 
@@ -8,7 +8,7 @@
 #endif
 
 #include <qvariant.h>
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 #include <type_traits>
 
@@ -46,7 +46,7 @@ template <typename Type> QVariant relocatabilityChange_create()
     static_assert(QVariant::Private::FitsInInternalSize<sizeof(Type)>);
 
     static constexpr bool IsRelocatable = std::is_same_v<Type, WHICH_TYPE_IS_RELOCATABLE>;
-    static_assert(QTypeInfo<Type>::isRelocatable == IsRelocatable);
+    static_assert(BOBUIypeInfo<Type>::isRelocatable == IsRelocatable);
     static_assert(QVariant::Private::CanUseInternalSpace<Type> == IsRelocatable);
 
     Type t;

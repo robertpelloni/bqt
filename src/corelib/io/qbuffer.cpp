@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qbuffer.h"
-#include <QtCore/qmetaobject.h>
+#include <BobUICore/qmetaobject.h>
 #include "private/qiodevice_p.h"
 
 #include <limits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /** QBufferPrivate **/
 class QBufferPrivate : public QIODevicePrivate
@@ -24,7 +24,7 @@ public:
     qint64 peek(char *data, qint64 maxSize) override;
     QByteArray peek(qint64 maxSize) override;
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     qint64 writtenSinceLastEmit = 0;
     int signalConnectionCount = 0;
     bool signalsEmitted = false;
@@ -48,7 +48,7 @@ QByteArray QBufferPrivate::peek(qint64 maxSize)
 
 /*!
     \class QBuffer
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QBuffer class provides a QIODevice interface for a QByteArray.
 
@@ -83,7 +83,7 @@ QByteArray QBufferPrivate::peek(qint64 maxSize)
 
     \snippet buffer/buffer.cpp 2
 
-    QTextStream and QDataStream also provide convenience constructors
+    BOBUIextStream and QDataStream also provide convenience constructors
     that take a QByteArray and that create a QBuffer behind the
     scenes.
 
@@ -92,10 +92,10 @@ QByteArray QBufferPrivate::peek(qint64 maxSize)
     store temporary data before processing it. QBuffer also emits
     bytesWritten() every time new data has been written to the buffer.
 
-    \sa QFile, QDataStream, QTextStream, QByteArray
+    \sa QFile, QDataStream, BOBUIextStream, QByteArray
 */
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 QBuffer::QBuffer()
     : QIODevice(*new QBufferPrivate)
 {
@@ -259,7 +259,7 @@ void QBuffer::setData(const QByteArray &data)
     Sets the contents of the internal buffer to be the first \a size
     bytes of \a data.
 
-    \note In Qt versions prior to 6.5, this function took the length as
+    \note In BobUI versions prior to 6.5, this function took the length as
     an \c{int} parameter, potentially truncating sizes.
 */
 void QBuffer::setData(const char *data, qsizetype size)
@@ -335,9 +335,9 @@ bool QBuffer::seek(qint64 pos)
     const auto oldBufSize = d->buf->size();
     constexpr qint64 MaxSeekPos = (std::numeric_limits<decltype(oldBufSize)>::max)();
     if (pos <= MaxSeekPos && pos > oldBufSize && isWritable()) {
-        QT_TRY {
+        BOBUI_TRY {
             d->buf->resize(qsizetype(pos), '\0');
-        } QT_CATCH(const std::bad_alloc &) {} // swallow, failure case is handled below
+        } BOBUI_CATCH(const std::bad_alloc &) {} // swallow, failure case is handled below
         if (d->buf->size() != pos) {
             qWarning("QBuffer::seek: Unable to fill gap");
             return false;
@@ -402,7 +402,7 @@ qint64 QBuffer::writeData(const char *data, qint64 len)
 
     memcpy(d->buf->data() + pos(), data, size_t(len));
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     d->writtenSinceLastEmit += len;
     if (d->signalConnectionCount && !d->signalsEmitted && !signalsBlocked()) {
         d->signalsEmitted = true;
@@ -412,13 +412,13 @@ qint64 QBuffer::writeData(const char *data, qint64 len)
             d->writtenSinceLastEmit = 0;
             emit q->readyRead();
             d->signalsEmitted = false;
-        }, Qt::QueuedConnection, this);
+        }, BobUI::QueuedConnection, this);
     }
 #endif
     return len;
 }
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 static bool is_tracked_signal(const QMetaMethod &signal)
 {
     // dynamic initialization: minimize the number of guard variables:
@@ -453,9 +453,9 @@ void QBuffer::disconnectNotify(const QMetaMethod &signal)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 # include "moc_qbuffer.cpp"
 #endif
 

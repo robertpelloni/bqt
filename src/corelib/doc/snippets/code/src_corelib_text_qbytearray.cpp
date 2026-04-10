@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QByteArray>
 #include <QDataStream>
@@ -247,7 +247,7 @@ void wrapInFunction()
 
     {
         //! [25]
-        QByteArray url("ftp://ftp.qt-project.org/");
+        QByteArray url("ftp://ftp.bobui-project.org/");
         if (url.startsWith("ftp:"))
             {/*...*/}
         //! [25]
@@ -255,7 +255,7 @@ void wrapInFunction()
 
     {
         //! [26]
-        QByteArray url("http://qt-project.org/doc/qt-5.0/qtdoc/index.html");
+        QByteArray url("http://bobui-project.org/doc/bobui-5.0/bobuidoc/index.html");
         if (url.endsWith(".html"))
             {/*...*/}
         //! [26]
@@ -287,17 +287,17 @@ void wrapInFunction()
 
     {
         //! [30]
-        QByteArray x("Qt by THE QT COMPANY");
+        QByteArray x("BobUI by THE BOBUI COMPANY");
         QByteArray y = x.toLower();
-        // y == "qt by the qt company"
+        // y == "bobui by the bobui company"
         //! [30]
     }
 
     {
         //! [31]
-        QByteArray x("Qt by THE QT COMPANY");
+        QByteArray x("BobUI by THE BOBUI COMPANY");
         QByteArray y = x.toUpper();
-        // y == "QT BY THE QT COMPANY"
+        // y == "BOBUI BY THE BOBUI COMPANY"
         //! [31]
     }
 
@@ -373,7 +373,7 @@ void wrapInFunction()
 
     {
         //! [39]
-        QByteArray text("Qt is great!");
+        QByteArray text("BobUI is great!");
         text.toBase64();        // returns "UXQgaXMgZ3JlYXQh"
 
         QByteArray hello("<p>Hello?</p>");
@@ -427,7 +427,7 @@ void wrapInFunction()
     {
         //! [44]
         QByteArray text = QByteArray::fromBase64("UXQgaXMgZ3JlYXQh");
-        text.data();            // returns "Qt is great!"
+        text.data();            // returns "BobUI is great!"
 
         QByteArray::fromBase64("PHA+SGVsbG8/PC9wPg==", QByteArray::Base64Encoding); // returns "<p>Hello?</p>"
         QByteArray::fromBase64("PHA-SGVsbG8_PC9wPg==", QByteArray::Base64UrlEncoding); // returns "<p>Hello?</p>"
@@ -454,7 +454,7 @@ void wrapInFunction()
     {
         //! [45]
         QByteArray text = QByteArray::fromHex("517420697320677265617421");
-        text.data();            // returns "Qt is great!"
+        text.data();            // returns "BobUI is great!"
         //! [45]
     }
 
@@ -516,8 +516,8 @@ void wrapInFunction()
 
     {
         //! [51]
-        QByteArray text = QByteArray::fromPercentEncoding("Qt%20is%20great%33");
-        qDebug("%s", text.data());      // reports "Qt is great!"
+        QByteArray text = QByteArray::fromPercentEncoding("BobUI%20is%20great%33");
+        qDebug("%s", text.data());      // reports "BobUI is great!"
         //! [51]
     }
 
@@ -538,12 +538,12 @@ void wrapInFunction()
 
     {
         //! [54]
-        QByteArray encoded("Qt%20is%20great%33");
-        QByteArray decoded = encoded.percentDecoded(); // Set to "Qt is great!"
+        QByteArray encoded("BobUI%20is%20great%33");
+        QByteArray decoded = encoded.percentDecoded(); // Set to "BobUI is great!"
         //! [54]
     }
 
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     {
         //! [57]

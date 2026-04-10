@@ -22,10 +22,10 @@
 **
 ****************************************************************************/
 
-#include <QtTest>
+#include <BobUITest>
 #include "cbor.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(5, 9, 0)
 #include <qfloat16.h>
 #endif
 
@@ -43,7 +43,7 @@ namespace t17 {
 } // namespace t17
 
 Q_DECLARE_METATYPE(CborError)
-namespace QTest {
+namespace BOBUIest {
 template<> char *toString<CborError>(const CborError &err)
 {
     return qstrdup(cbor_error_string(err));
@@ -142,7 +142,7 @@ CborError encodeVariant(CborEncoder *encoder, const QVariant &v)
             return cbor_encode_negative_int(encoder, v.value<NegativeInteger>().abs);
         if (type == qMetaTypeId<SimpleType>())
             return cbor_encode_simple_value(encoder, v.value<SimpleType>().type);
-#if QT_VERSION < QT_VERSION_CHECK(5, 9, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(5, 9, 0)
         if (type == qMetaTypeId<Float16Standin>())
             return cbor_encode_half_float(encoder, v.constData());
 #else
@@ -218,11 +218,11 @@ void encodeOne(Input input, FnUnderTest fn_under_test, QByteArray &buffer, CborE
 template <typename Input, typename FnUnderTest>
 void compare(Input input, FnUnderTest fn_under_test, const QByteArray &output)
 {
-    QByteArray buffer(output.length(), Qt::Uninitialized);
+    QByteArray buffer(output.length(), BobUI::Uninitialized);
     CborError error;
 
     encodeOne(input, fn_under_test, buffer, error);
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     QCOMPARE(error, CborNoError);
@@ -246,10 +246,10 @@ void tst_Encoder::floatAsHalfFloat()
     QFETCH(QByteArray, output);
 
     if (rawInput == 0U || rawInput == 0x8000U)
-        QSKIP("zero values are out of scope of this test case", QTest::SkipSingle);
+        QSKIP("zero values are out of scope of this test case", BOBUIest::SkipSingle);
 
     if (qIsNaN(floatInput))
-        QSKIP("NaN values are out of scope of this test case", QTest::SkipSingle);
+        QSKIP("NaN values are out of scope of this test case", BOBUIest::SkipSingle);
 
     output.prepend('\xf9');
 
@@ -274,20 +274,20 @@ void tst_Encoder::halfFloat()
 
 void tst_Encoder::floatAsHalfFloatCloseToZero_data()
 {
-    QTest::addColumn<double>("floatInput");
+    BOBUIest::addColumn<double>("floatInput");
 
-    QTest::newRow("+0") << 0.0;
-    QTest::newRow("-0") << -0.0;
+    BOBUIest::newRow("+0") << 0.0;
+    BOBUIest::newRow("-0") << -0.0;
 
-    QTest::newRow("below min.denorm") << ldexp(1.0, -14) * ldexp(1.0, -11);
-    QTest::newRow("above -min.denorm") << ldexp(-1.0, -14) * ldexp(1.0, -11);
+    BOBUIest::newRow("below min.denorm") << ldexp(1.0, -14) * ldexp(1.0, -11);
+    BOBUIest::newRow("above -min.denorm") << ldexp(-1.0, -14) * ldexp(1.0, -11);
 }
 
 void tst_Encoder::floatAsHalfFloatCloseToZero()
 {
     QFETCH(double, floatInput);
 
-    QByteArray buffer(4, Qt::Uninitialized);
+    QByteArray buffer(4, BobUI::Uninitialized);
     CborError error;
 
     encodeOne((float)floatInput, cbor_encode_float_as_half_float, buffer, error);
@@ -301,7 +301,7 @@ void tst_Encoder::floatAsHalfFloatCloseToZero()
 
 void tst_Encoder::floatAsHalfFloatNaN()
 {
-    QByteArray buffer(4, Qt::Uninitialized);
+    QByteArray buffer(4, BobUI::Uninitialized);
     CborError error;
 
     encodeOne(myNaNf(), cbor_encode_float_as_half_float, buffer, error);
@@ -358,34 +358,34 @@ void tst_Encoder::tags()
     QFETCH(QByteArray, output);
 
     compare(QVariant::fromValue(Tag{1, input}), "\xc1" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{24, input}), "\xd8\x18" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{255, input}), "\xd8\xff" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{256, input}), raw("\xd9\1\0") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{CborSignatureTag, input}), raw("\xd9\xd9\xf7") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{65535, input}), raw("\xd9\xff\xff") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{65536, input}), raw("\xda\0\1\0\0") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{UINT32_MAX, input}), raw("\xda\xff\xff\xff\xff") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{UINT32_MAX + Q_UINT64_C(1), input}), raw("\xdb\0\0\0\1\0\0\0\0") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(QVariant::fromValue(Tag{UINT64_MAX, input}), raw("\xdb\xff\xff\xff\xff\xff\xff\xff\xff") + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     // nested tags
     compare(QVariant::fromValue(Tag{1, QVariant::fromValue(Tag{1, input})}), "\xc1\xc1" + output);
@@ -397,10 +397,10 @@ void tst_Encoder::arrays()
     QFETCH(QByteArray, output);
 
     compare(make_list(input), "\x81" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_list(input, input), "\x82" + output + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     {
         QVariantList list{input};
@@ -412,7 +412,7 @@ void tst_Encoder::arrays()
             longoutput += longoutput;
         }
         compare(list, "\x98\x20" + longoutput);
-        if (QTest::currentTestFailed()) return;
+        if (BOBUIest::currentTestFailed()) return;
 
         // now 256 elements (32 << 3)
         for (int i = 0; i < 3; ++i) {
@@ -420,18 +420,18 @@ void tst_Encoder::arrays()
             longoutput += longoutput;
         }
         compare(list, raw("\x99\1\0") + longoutput);
-        if (QTest::currentTestFailed()) return;
+        if (BOBUIest::currentTestFailed()) return;
     }
 
     // nested lists
     compare(make_list(make_list(input)), "\x81\x81" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_list(make_list(input, input)), "\x81\x82" + output + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_list(make_list(input), input), "\x82\x81" + output + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_list(make_list(input), make_list(input)), "\x82\x81" + output + "\x81" + output);
 }
@@ -442,13 +442,13 @@ void tst_Encoder::maps()
     QFETCH(QByteArray, output);
 
     compare(make_map({{1, input}}), "\xa1\1" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_map({{1, input}, {input, 24}}), "\xa2\1" + output + output + "\x18\x18");
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_map({{input, input}}), "\xa1" + output + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     {
         Map map{{1, input}};
@@ -460,7 +460,7 @@ void tst_Encoder::maps()
             longoutput += longoutput;
         }
         compare(QVariant::fromValue(map), "\xb8\x20" + longoutput);
-        if (QTest::currentTestFailed()) return;
+        if (BOBUIest::currentTestFailed()) return;
 
         // now 256 elements (32 << 3)
         for (int i = 0; i < 3; ++i) {
@@ -468,18 +468,18 @@ void tst_Encoder::maps()
             longoutput += longoutput;
         }
         compare(QVariant::fromValue(map), raw("\xb9\1\0") + longoutput);
-        if (QTest::currentTestFailed()) return;
+        if (BOBUIest::currentTestFailed()) return;
     }
 
     // nested maps
     compare(make_map({{1, make_map({{2, input}})}}), "\xa1\1\xa1\2" + output);
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_map({{1, make_map({{2, input}, {input, false}})}}), "\xa1\1\xa2\2" + output + output + "\xf4");
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 
     compare(make_map({{1, make_map({{2, input}})}, {input, false}}), "\xa2\1\xa1\2" + output + output + "\xf4");
-    if (QTest::currentTestFailed()) return;
+    if (BOBUIest::currentTestFailed()) return;
 }
 
 void tst_Encoder::writerApi()
@@ -527,7 +527,7 @@ void tst_Encoder::shortBuffer()
 {
     QFETCH(QVariant, input);
     QFETCH(QByteArray, output);
-    QByteArray buffer(output.length(), Qt::Uninitialized);
+    QByteArray buffer(output.length(), BobUI::Uninitialized);
 
     for (int len = 0; len < output.length(); ++len) {
         CborEncoder encoder;
@@ -542,7 +542,7 @@ void tst_Encoder::tooShortArrays()
 {
     QFETCH(QVariant, input);
     QFETCH(QByteArray, output);
-    QByteArray buffer(output.length() + 1, Qt::Uninitialized);
+    QByteArray buffer(output.length() + 1, BobUI::Uninitialized);
 
     CborEncoder encoder, container;
     cbor_encoder_init(&encoder, reinterpret_cast<quint8 *>(buffer.data()), buffer.length(), 0);
@@ -556,7 +556,7 @@ void tst_Encoder::tooShortMaps()
 {
     QFETCH(QVariant, input);
     QFETCH(QByteArray, output);
-    QByteArray buffer(output.length() + 1, Qt::Uninitialized);
+    QByteArray buffer(output.length() + 1, BobUI::Uninitialized);
 
     CborEncoder encoder, container;
     cbor_encoder_init(&encoder, reinterpret_cast<quint8 *>(buffer.data()), buffer.length(), 0);
@@ -570,7 +570,7 @@ void tst_Encoder::tooBigArrays()
 {
     QFETCH(QVariant, input);
     QFETCH(QByteArray, output);
-    QByteArray buffer(output.length() * 2 + 1, Qt::Uninitialized);
+    QByteArray buffer(output.length() * 2 + 1, BobUI::Uninitialized);
 
     CborEncoder encoder, container;
     cbor_encoder_init(&encoder, reinterpret_cast<quint8 *>(buffer.data()), buffer.length(), 0);
@@ -585,7 +585,7 @@ void tst_Encoder::tooBigMaps()
 {
     QFETCH(QVariant, input);
     QFETCH(QByteArray, output);
-    QByteArray buffer(output.length() * 3 + 1, Qt::Uninitialized);
+    QByteArray buffer(output.length() * 3 + 1, BobUI::Uninitialized);
 
     CborEncoder encoder, container;
     cbor_encoder_init(&encoder, reinterpret_cast<quint8 *>(buffer.data()), buffer.length(), 0);
@@ -599,14 +599,14 @@ void tst_Encoder::tooBigMaps()
 
 void tst_Encoder::illegalSimpleType_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::newRow("half-float") << 25;
-    QTest::newRow("float") << 26;
-    QTest::newRow("double") << 27;
-    QTest::newRow("28") << 28;
-    QTest::newRow("29") << 29;
-    QTest::newRow("30") << 30;
-    QTest::newRow("31") << 31;
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::newRow("half-float") << 25;
+    BOBUIest::newRow("float") << 26;
+    BOBUIest::newRow("double") << 27;
+    BOBUIest::newRow("28") << 28;
+    BOBUIest::newRow("29") << 29;
+    BOBUIest::newRow("30") << 30;
+    BOBUIest::newRow("31") << 31;
 }
 
 void tst_Encoder::illegalSimpleType()
@@ -619,4 +619,4 @@ void tst_Encoder::illegalSimpleType()
     QCOMPARE(cbor_encode_simple_value(&encoder, type), CborErrorIllegalSimpleType);
 }
 
-QTEST_MAIN(tst_Encoder)
+BOBUIEST_MAIN(tst_Encoder)

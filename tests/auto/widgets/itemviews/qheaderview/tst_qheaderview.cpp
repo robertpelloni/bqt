@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Thorbjørn Lund Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QHeaderView>
 #include <QProxyStyle>
@@ -8,12 +8,12 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QStringListModel>
-#include <QTableView>
-#include <QTest>
-#include <QTreeWidget>
+#include <BOBUIableView>
+#include <BOBUIest>
+#include <BOBUIreeWidget>
 #include <QStyledItemDelegate>
-#include <QtWidgets/private/qheaderview_p.h>
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qheaderview_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 using BoolList = QList<bool>;
 using IntList = QList<int>;
@@ -39,7 +39,7 @@ class protected_QHeaderView : public QHeaderView
 {
     Q_OBJECT
 public:
-    protected_QHeaderView(Qt::Orientation orientation) : QHeaderView(orientation)
+    protected_QHeaderView(BobUI::Orientation orientation) : QHeaderView(orientation)
     {
         resizeSections();
     }
@@ -124,7 +124,7 @@ private slots:
     void moveSectionAndReset();
     void moveSectionAndRemove();
     void saveRestore();
-    void QTBUG99487_saveRestoreQt5Compat();
+    void BOBUIBUG99487_saveRestoreBobUI5Compat();
     void restoreToMoreColumns();
     void restoreToMoreColumnsNoMovedColumns();
     void restoreBeforeSetModel();
@@ -159,15 +159,15 @@ private slots:
     void task236450_hidden_data();
     void task236450_hidden();
     void task248050_hideRow();
-    void QTBUG6058_reset();
-    void QTBUG7833_sectionClicked();
+    void BOBUIBUG6058_reset();
+    void BOBUIBUG7833_sectionClicked();
     void checkLayoutChangeEmptyModel();
-    void QTBUG8650_crashOnInsertSections();
-    void QTBUG12268_hiddenMovedSectionSorting();
-    void QTBUG14242_hideSectionAutoSize();
-    void QTBUG50171_visualRegionForSwappedItems();
-    void QTBUG53221_assertShiftHiddenRow();
-    void QTBUG75615_sizeHintWithStylesheet();
+    void BOBUIBUG8650_crashOnInsertSections();
+    void BOBUIBUG12268_hiddenMovedSectionSorting();
+    void BOBUIBUG14242_hideSectionAutoSize();
+    void BOBUIBUG50171_visualRegionForSwappedItems();
+    void BOBUIBUG53221_assertShiftHiddenRow();
+    void BOBUIBUG75615_sizeHintWithStylesheet();
     void ensureNoIndexAtLength();
     void offsetConsistent();
     void sectionsDontSortWhenNotClickingInThem();
@@ -225,38 +225,38 @@ protected:
     QWidget *topLevel = nullptr;
     QHeaderView *view = nullptr;
     QStandardItemModel *model = nullptr;
-    QTableView *m_tableview = nullptr;
+    BOBUIableView *m_tableview = nullptr;
     bool m_special_prepare = false;
     QElapsedTimer timer;
 };
 
-class QtTestModel: public QAbstractTableModel
+class BobUITestModel: public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    QtTestModel(int rc, int cc, QObject *parent = nullptr)
+    BobUITestModel(int rc, int cc, QObject *parent = nullptr)
         : QAbstractTableModel(parent), rows(rc), cols(cc) {}
     int rowCount(const QModelIndex &) const override { return rows; }
     int columnCount(const QModelIndex &) const override { return cols; }
     bool isEditable(const QModelIndex &) const { return true; }
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override
     {
-        if (section < 0 || (role != Qt::DisplayRole && role != Qt::StatusTipRole))
+        if (section < 0 || (role != BobUI::DisplayRole && role != BobUI::StatusTipRole))
             return QVariant();
-        const int row = (orientation == Qt::Vertical ? section : 0);
-        const int col = (orientation == Qt::Horizontal ? section : 0);
-        if (orientation == Qt::Vertical && row >= rows)
+        const int row = (orientation == BobUI::Vertical ? section : 0);
+        const int col = (orientation == BobUI::Horizontal ? section : 0);
+        if (orientation == BobUI::Vertical && row >= rows)
             return QVariant();
-        if (orientation == Qt::Horizontal && col >= cols)
+        if (orientation == BobUI::Horizontal && col >= cols)
             return QVariant();
         if (m_bMultiLine)
              return QString("%1\n%1").arg(section);
         return QLatin1Char('[') + QString::number(row) + QLatin1Char(',')
             + QString::number(col) + QLatin1String(",0] -- Header");
     }
-    QVariant data(const QModelIndex &idx, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &idx, int role = BobUI::DisplayRole) const override
     {
-        if (role != Qt::DisplayRole)
+        if (role != BobUI::DisplayRole)
             return QVariant();
         if (idx.row() < 0 || idx.column() < 0 || idx.column() >= cols || idx.row() >= rows) {
             wrongIndex = true;
@@ -366,15 +366,15 @@ public:
     bool m_bMultiLine = false;
 };
 
-static Qt::LayoutDirection otherLayoutDirection(Qt::LayoutDirection current)
+static BobUI::LayoutDirection otherLayoutDirection(BobUI::LayoutDirection current)
 {
     switch (current) {
-    case Qt::LayoutDirection::LeftToRight: return Qt::LayoutDirection::RightToLeft;
-    case Qt::LayoutDirection::RightToLeft: return Qt::LayoutDirection::LeftToRight;
-    case Qt::LayoutDirection::LayoutDirectionAuto:
+    case BobUI::LayoutDirection::LeftToRight: return BobUI::LayoutDirection::RightToLeft;
+    case BobUI::LayoutDirection::RightToLeft: return BobUI::LayoutDirection::LeftToRight;
+    case BobUI::LayoutDirection::LayoutDirectionAuto:
         ;
     }
-    Q_UNREACHABLE_RETURN(Qt::LayoutDirection::LayoutDirectionAuto);
+    Q_UNREACHABLE_RETURN(BobUI::LayoutDirection::LayoutDirectionAuto);
 }
 
 static void swapLayoutDirection(QWidget &w)
@@ -385,7 +385,7 @@ static void swapLayoutDirection(QWidget &w)
 // Testing get/set functions
 void tst_QHeaderView::getSetCheck()
 {
-    protected_QHeaderView obj1(Qt::Horizontal);
+    protected_QHeaderView obj1(BobUI::Horizontal);
     // bool QHeaderView::highlightSections()
     // void QHeaderView::setHighlightSections(bool)
     obj1.setHighlightSections(false);
@@ -427,7 +427,7 @@ void tst_QHeaderView::getSetCheck()
     QCOMPARE(0, obj1.offset());
     obj1.setOffset(std::numeric_limits<int>::min());
     QCOMPARE(std::numeric_limits<int>::min(), obj1.offset());
-    QTest::ignoreMessage(QtWarningMsg, // one of the INT_MAX will hit this; not necessarily the first one
+    BOBUIest::ignoreMessage(BobUIWarningMsg, // one of the INT_MAX will hit this; not necessarily the first one
                          "Integer argument 2147483647 causes overflow in QHeaderView::setOffset "
                          "when calling QWidget::scroll, results may not be as you expect");
     obj1.setOffset(std::numeric_limits<int>::max());
@@ -445,12 +445,12 @@ void tst_QHeaderView::getSetCheck()
 
 tst_QHeaderView::tst_QHeaderView()
 {
-    qRegisterMetaType<Qt::SortOrder>("Qt::SortOrder");
+    qRegisterMetaType<BobUI::SortOrder>("BobUI::SortOrder");
 }
 
 void tst_QHeaderView::initTestCase()
 {
-    m_tableview = new QTableView;
+    m_tableview = new BOBUIableView;
     qDebug().noquote().nospace()
             << "default min section size is "
             << QString::number(m_tableview->verticalHeader()->minimumSectionSize())
@@ -467,7 +467,7 @@ void tst_QHeaderView::cleanupTestCase()
 void tst_QHeaderView::init()
 {
     topLevel = new QWidget;
-    view = new QHeaderView(Qt::Vertical, topLevel);
+    view = new QHeaderView(BobUI::Vertical, topLevel);
     // Some initial value tests before a model is added
     QCOMPARE(view->length(), 0);
     QCOMPARE(view->sizeHint(), QSize(0,0));
@@ -515,13 +515,13 @@ void tst_QHeaderView::cleanup()
 
 void tst_QHeaderView::noModel()
 {
-    QHeaderView emptyView(Qt::Vertical);
+    QHeaderView emptyView(BobUI::Vertical);
     QCOMPARE(emptyView.count(), 0);
 }
 
 void tst_QHeaderView::emptyModel()
 {
-    QtTestModel testmodel(0, 0);
+    BobUITestModel testmodel(0, 0);
     view->setModel(&testmodel);
     QVERIFY(!testmodel.wrongIndex);
     QCOMPARE(view->count(), testmodel.rows);
@@ -530,10 +530,10 @@ void tst_QHeaderView::emptyModel()
 
 void tst_QHeaderView::removeRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QHeaderView vertical(Qt::Vertical);
-    QHeaderView horizontal(Qt::Horizontal);
+    QHeaderView vertical(BobUI::Vertical);
+    QHeaderView horizontal(BobUI::Horizontal);
 
     vertical.setModel(&model);
     horizontal.setModel(&model);
@@ -556,10 +556,10 @@ void tst_QHeaderView::removeRows()
 
 void tst_QHeaderView::removeCols()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QHeaderView vertical(Qt::Vertical);
-    QHeaderView horizontal(Qt::Horizontal);
+    QHeaderView vertical(BobUI::Vertical);
+    QHeaderView horizontal(BobUI::Horizontal);
     vertical.setModel(&model);
     horizontal.setModel(&model);
     vertical.show();
@@ -657,7 +657,7 @@ void tst_QHeaderView::stretch()
     view->setStretchLastSection(true);
     QCOMPARE(view->stretchLastSection(), true);
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
     QCOMPARE(view->width(), viewSize.width());
     QCOMPARE(view->visualIndexAt(view->viewport()->height() - 5), 3);
 
@@ -671,13 +671,13 @@ void tst_QHeaderView::stretch()
 void tst_QHeaderView::oneSectionSize()
 {
     //this ensures that if there is only one section, it gets a correct width (more than 0)
-    QHeaderView view (Qt::Vertical);
-    QtTestModel model(1, 1);
+    QHeaderView view (BobUI::Vertical);
+    BobUITestModel model(1, 1);
 
     view.setSectionResizeMode(QHeaderView::Interactive);
     view.setModel(&model);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     QCOMPARE_GT(view.sectionSize(0), 0);
 }
@@ -685,13 +685,13 @@ void tst_QHeaderView::oneSectionSize()
 
 void tst_QHeaderView::sectionSize_data()
 {
-    QTest::addColumn<IntList>("boundsCheck");
-    QTest::addColumn<IntList>("defaultSizes");
-    QTest::addColumn<int>("initialDefaultSize");
-    QTest::addColumn<int>("lastVisibleSectionSize");
-    QTest::addColumn<int>("persistentSectionSize");
+    BOBUIest::addColumn<IntList>("boundsCheck");
+    BOBUIest::addColumn<IntList>("defaultSizes");
+    BOBUIest::addColumn<int>("initialDefaultSize");
+    BOBUIest::addColumn<int>("lastVisibleSectionSize");
+    BOBUIest::addColumn<int>("persistentSectionSize");
 
-    QTest::newRow("data set one")
+    BOBUIest::newRow("data set one")
         << (IntList{ -1, 0, 4, 9999 })
         << (IntList{ 10, 30, 30 })
         << 30
@@ -745,7 +745,7 @@ void tst_QHeaderView::sectionSize()
     int sectionCount = view->count();
     for (int i = 0; i < sectionCount; ++i)
         view->resizeSection(i, persistentSectionSize);
-    QtTestModel model(sectionCount * 2, sectionCount * 2);
+    BobUITestModel model(sectionCount * 2, sectionCount * 2);
     view->setModel(&model);
     for (int j = 0; j < sectionCount; ++j)
         QCOMPARE(view->sectionSize(j), persistentSectionSize);
@@ -770,29 +770,29 @@ void tst_QHeaderView::visualIndex()
 
 void tst_QHeaderView::visualIndexAt_data()
 {
-    QTest::addColumn<IntList>("hidden");
-    QTest::addColumn<IntList>("from");
-    QTest::addColumn<IntList>("to");
-    QTest::addColumn<IntList>("coordinate");
-    QTest::addColumn<IntList>("visual");
+    BOBUIest::addColumn<IntList>("hidden");
+    BOBUIest::addColumn<IntList>("from");
+    BOBUIest::addColumn<IntList>("to");
+    BOBUIest::addColumn<IntList>("coordinate");
+    BOBUIest::addColumn<IntList>("visual");
 
     const IntList coordinateList{ -1, 0, 31, 91, 99999 };
 
-    QTest::newRow("no hidden, no moved sections")
+    BOBUIest::newRow("no hidden, no moved sections")
         << IntList()
         << IntList()
         << IntList()
         << coordinateList
         << (IntList{ -1, 0, 1, 3, -1 });
 
-    QTest::newRow("no hidden, moved sections")
+    BOBUIest::newRow("no hidden, moved sections")
         << IntList()
         << (IntList{ 0 })
         << (IntList{ 1 })
         << coordinateList
         << (IntList{ -1, 0, 1, 3, -1 });
 
-    QTest::newRow("hidden, no moved sections")
+    BOBUIest::newRow("hidden, no moved sections")
         << (IntList{ 0 })
         << IntList()
         << IntList()
@@ -813,7 +813,7 @@ void tst_QHeaderView::visualIndexAt()
 
     view->setStretchLastSection(true);
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
 
     for (int i : hidden)
         view->setSectionHidden(i, true);
@@ -822,14 +822,14 @@ void tst_QHeaderView::visualIndexAt()
         view->moveSection(from.at(j), to.at(j));
 
     for (int k = 0; k < coordinate.size(); ++k)
-        QTRY_COMPARE(view->visualIndexAt(coordinate.at(k)), visual.at(k));
+        BOBUIRY_COMPARE(view->visualIndexAt(coordinate.at(k)), visual.at(k));
 }
 
 void tst_QHeaderView::length()
 {
     view->setStretchLastSection(true);
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
 
     //minimumSectionSize should be the size of the last section of the widget is not tall enough
     int length = view->minimumSectionSize();
@@ -841,12 +841,12 @@ void tst_QHeaderView::length()
 
     view->setStretchLastSection(false);
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
 
     QCOMPARE_NE(length, view->length());
 
     // layoutChanged might mean rows have been removed
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     view->setModel(&model);
     int oldLength = view->length();
     model.cleanup();
@@ -889,7 +889,7 @@ void tst_QHeaderView::logicalIndexAt()
     QCOMPARE(view->logicalIndexAt(1), 0);
 
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
     view->setStretchLastSection(true);
     // First item
     QCOMPARE(view->logicalIndexAt(0), 0);
@@ -945,14 +945,14 @@ void tst_QHeaderView::swapSections()
 
 void tst_QHeaderView::moveSection_data()
 {
-    QTest::addColumn<IntList>("hidden");
-    QTest::addColumn<IntList>("from");
-    QTest::addColumn<IntList>("to");
-    QTest::addColumn<BoolList>("moved");
-    QTest::addColumn<IntList>("logical");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<IntList>("hidden");
+    BOBUIest::addColumn<IntList>("from");
+    BOBUIest::addColumn<IntList>("to");
+    BOBUIest::addColumn<BoolList>("moved");
+    BOBUIest::addColumn<IntList>("logical");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("bad args, no hidden")
+    BOBUIest::newRow("bad args, no hidden")
         << IntList()
         << (IntList{ -1, 1, 99999, 1 })
         << (IntList{ 1, -1, 1, 99999 })
@@ -960,7 +960,7 @@ void tst_QHeaderView::moveSection_data()
         << (IntList{ 0, 1, 2, 3 })
         << 0;
 
-    QTest::newRow("good args, no hidden")
+    BOBUIest::newRow("good args, no hidden")
         << IntList()
         << (IntList{ 1, 1, 2, 1 })
         << (IntList{ 1, 2, 1, 2 })
@@ -968,7 +968,7 @@ void tst_QHeaderView::moveSection_data()
         << (IntList{ 0, 2, 1, 3 })
         << 3;
 
-    QTest::newRow("hidden sections")
+    BOBUIest::newRow("hidden sections")
         << (IntList{ 0, 3 })
         << (IntList{ 1, 1, 2, 1 })
         << (IntList{ 1, 2, 1, 2 })
@@ -1009,32 +1009,32 @@ void tst_QHeaderView::moveSection()
 
 void tst_QHeaderView::resizeAndMoveSection_data()
 {
-    QTest::addColumn<IntList>("logicalIndexes");
-    QTest::addColumn<IntList>("sizes");
-    QTest::addColumn<int>("logicalFrom");
-    QTest::addColumn<int>("logicalTo");
+    BOBUIest::addColumn<IntList>("logicalIndexes");
+    BOBUIest::addColumn<IntList>("sizes");
+    BOBUIest::addColumn<int>("logicalFrom");
+    BOBUIest::addColumn<int>("logicalTo");
 
-    QTest::newRow("resizeAndMove-1")
+    BOBUIest::newRow("resizeAndMove-1")
         << (IntList{ 0, 1 })
         << (IntList{ 20, 40 })
         << 0 << 1;
 
-    QTest::newRow("resizeAndMove-2")
+    BOBUIest::newRow("resizeAndMove-2")
         << (IntList{ 0, 1, 2, 3 })
         << (IntList{ 20, 60, 10, 80 })
         << 0 << 2;
 
-    QTest::newRow("resizeAndMove-3")
+    BOBUIest::newRow("resizeAndMove-3")
         << (IntList{ 0, 1, 2, 3 })
         << (IntList{ 100, 60, 40, 10 })
         << 0 << 3;
 
-    QTest::newRow("resizeAndMove-4")
+    BOBUIest::newRow("resizeAndMove-4")
         << (IntList{ 0, 1, 2, 3 })
         << (IntList{ 10, 40, 80, 30 })
         << 1 << 2;
 
-    QTest::newRow("resizeAndMove-5")
+    BOBUIest::newRow("resizeAndMove-5")
         << (IntList{ 2, 3 })
         << (IntList{ 100, 200})
         << 3 << 2;
@@ -1092,20 +1092,20 @@ void tst_QHeaderView::resizeAndMoveSection()
 
 void tst_QHeaderView::resizeHiddenSection_data()
 {
-    QTest::addColumn<int>("section");
-    QTest::addColumn<int>("initialSize");
-    QTest::addColumn<int>("finalSize");
+    BOBUIest::addColumn<int>("section");
+    BOBUIest::addColumn<int>("initialSize");
+    BOBUIest::addColumn<int>("finalSize");
 
-    QTest::newRow("section 0 resize 50 to 20")
+    BOBUIest::newRow("section 0 resize 50 to 20")
         << 0 << 50 << 20;
 
-    QTest::newRow("section 1 resize 50 to 20")
+    BOBUIest::newRow("section 1 resize 50 to 20")
         << 1 << 50 << 20;
 
-    QTest::newRow("section 2 resize 50 to 20")
+    BOBUIest::newRow("section 2 resize 50 to 20")
         << 2 << 50 << 20;
 
-    QTest::newRow("section 3 resize 50 to 20")
+    BOBUIest::newRow("section 3 resize 50 to 20")
         << 3 << 50 << 20;
 }
 
@@ -1128,19 +1128,19 @@ void tst_QHeaderView::resizeHiddenSection()
 
 void tst_QHeaderView::resizeAndInsertSection_data()
 {
-    QTest::addColumn<int>("section");
-    QTest::addColumn<int>("size");
-    QTest::addColumn<int>("insert");
-    QTest::addColumn<int>("compare");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<int>("section");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<int>("insert");
+    BOBUIest::addColumn<int>("compare");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("section 0 size 50 insert 0")
+    BOBUIest::newRow("section 0 size 50 insert 0")
         << 0 << 50 << 0 << 1 << 50;
 
-    QTest::newRow("section 1 size 50 insert 1")
+    BOBUIest::newRow("section 1 size 50 insert 1")
         << 0 << 50 << 1 << 0 << 50;
 
-    QTest::newRow("section 1 size 50 insert 0")
+    BOBUIest::newRow("section 1 size 50 insert 0")
         << 1 << 50 << 0 << 2 << 50;
 
 }
@@ -1165,12 +1165,12 @@ void tst_QHeaderView::resizeAndInsertSection()
 
 void tst_QHeaderView::resizeWithResizeModes_data()
 {
-    QTest::addColumn<int>("size");
-    QTest::addColumn<IntList>("sections");
-    QTest::addColumn<ResizeVec>("modes");
-    QTest::addColumn<IntList>("expected");
+    BOBUIest::addColumn<int>("size");
+    BOBUIest::addColumn<IntList>("sections");
+    BOBUIest::addColumn<ResizeVec>("modes");
+    BOBUIest::addColumn<IntList>("expected");
 
-    QTest::newRow("stretch first section")
+    BOBUIest::newRow("stretch first section")
         << 600
         << (IntList{ 100, 100, 100, 100 })
         << (ResizeVec
@@ -1194,7 +1194,7 @@ void  tst_QHeaderView::resizeWithResizeModes()
         view->setSectionResizeMode(i, modes.at(i));
     }
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
     view->resize(size, size);
     for (int j = 0; j < expected.size(); ++j)
         QCOMPARE(view->sectionSize(j), expected.at(j));
@@ -1202,12 +1202,12 @@ void  tst_QHeaderView::resizeWithResizeModes()
 
 void tst_QHeaderView::moveAndInsertSection_data()
 {
-    QTest::addColumn<int>("from");
-    QTest::addColumn<int>("to");
-    QTest::addColumn<int>("insert");
-    QTest::addColumn<IntList>("mapping");
+    BOBUIest::addColumn<int>("from");
+    BOBUIest::addColumn<int>("to");
+    BOBUIest::addColumn<int>("insert");
+    BOBUIest::addColumn<IntList>("mapping");
 
-    QTest::newRow("move from 1 to 3, insert 0")
+    BOBUIest::newRow("move from 1 to 3, insert 0")
         << 1 << 3 << 0 <<(IntList{ 0, 1, 3, 4, 2 });
 
 }
@@ -1258,14 +1258,14 @@ void tst_QHeaderView::resizeMode()
 
 void tst_QHeaderView::resizeSection_data()
 {
-    QTest::addColumn<int>("initial");
-    QTest::addColumn<IntList>("logical");
-    QTest::addColumn<IntList>("size");
-    QTest::addColumn<ResizeVec>("mode");
-    QTest::addColumn<int>("resized");
-    QTest::addColumn<IntList>("expected");
+    BOBUIest::addColumn<int>("initial");
+    BOBUIest::addColumn<IntList>("logical");
+    BOBUIest::addColumn<IntList>("size");
+    BOBUIest::addColumn<ResizeVec>("mode");
+    BOBUIest::addColumn<int>("resized");
+    BOBUIest::addColumn<IntList>("expected");
 
-    QTest::newRow("bad args")
+    BOBUIest::newRow("bad args")
         << 100
         << (IntList{ -1, -1, 99999, 99999, 4 })
         << (IntList{ -1, 0, 99999, -1, -1 })
@@ -1290,7 +1290,7 @@ void tst_QHeaderView::resizeSection()
     view->resize(400, 400);
 
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
     view->setSectionsMovable(true);
     view->setStretchLastSection(false);
 
@@ -1324,40 +1324,40 @@ void tst_QHeaderView::showSortIndicator()
 {
     view->setSortIndicatorShown(true);
     QCOMPARE(view->isSortIndicatorShown(), true);
-    QCOMPARE(view->sortIndicatorOrder(), Qt::DescendingOrder);
-    view->setSortIndicator(1, Qt::AscendingOrder);
-    QCOMPARE(view->sortIndicatorOrder(), Qt::AscendingOrder);
-    view->setSortIndicator(1, Qt::DescendingOrder);
-    QCOMPARE(view->sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(view->sortIndicatorOrder(), BobUI::DescendingOrder);
+    view->setSortIndicator(1, BobUI::AscendingOrder);
+    QCOMPARE(view->sortIndicatorOrder(), BobUI::AscendingOrder);
+    view->setSortIndicator(1, BobUI::DescendingOrder);
+    QCOMPARE(view->sortIndicatorOrder(), BobUI::DescendingOrder);
     view->setSortIndicatorShown(false);
     QCOMPARE(view->isSortIndicatorShown(), false);
 
-    view->setSortIndicator(999999, Qt::DescendingOrder);
+    view->setSortIndicator(999999, BobUI::DescendingOrder);
     // Don't segfault baby :)
     view->setSortIndicatorShown(true);
 
-    view->setSortIndicator(0, Qt::DescendingOrder);
+    view->setSortIndicator(0, BobUI::DescendingOrder);
     // Don't assert baby :)
 }
 
 void tst_QHeaderView::clearSectionSorting()
 {
     QStandardItemModel m(4, 4);
-    QHeaderView h(Qt::Horizontal);
+    QHeaderView h(BobUI::Horizontal);
 
     QCOMPARE(h.sortIndicatorSection(), 0);
-    QCOMPARE(h.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h.sortIndicatorOrder(), BobUI::DescendingOrder);
 
     h.setModel(&m);
     h.setSectionsClickable(true);
     h.setSortIndicatorShown(true);
-    h.setSortIndicator(-1, Qt::DescendingOrder);
+    h.setSortIndicator(-1, BobUI::DescendingOrder);
     h.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&h));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&h));
 
     QCOMPARE(h.sortIndicatorSection(), -1);
-    QCOMPARE(h.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h.sortIndicatorOrder(), BobUI::DescendingOrder);
 
     QSignalSpy sectionClickedSpy(&h, &QHeaderView::sectionClicked);
     QVERIFY(sectionClickedSpy.isValid());
@@ -1371,39 +1371,39 @@ void tst_QHeaderView::clearSectionSorting()
 
     // normal behavior: clicking multiple times will just toggle the sort indicator
     for (int i = 0; i < Count; ++i) {
-        QTest::mouseClick(h.viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(5, 5));
+        BOBUIest::mouseClick(h.viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(5, 5));
         QCOMPARE(sectionClickedSpy.size(), i + 1);
         QCOMPARE(sortIndicatorChangedSpy.size(), i + 1);
         QCOMPARE(h.sortIndicatorSection(), 0);
-        const auto expectedOrder = (i % 2) == 0 ? Qt::AscendingOrder : Qt::DescendingOrder;
+        const auto expectedOrder = (i % 2) == 0 ? BobUI::AscendingOrder : BobUI::DescendingOrder;
         QCOMPARE(h.sortIndicatorOrder(), expectedOrder);
     }
 
-    h.setSortIndicator(-1, Qt::DescendingOrder);
+    h.setSortIndicator(-1, BobUI::DescendingOrder);
     h.setSortIndicatorClearable(true);
     QCOMPARE(h.sortIndicatorSection(), -1);
-    QCOMPARE(h.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h.sortIndicatorOrder(), BobUI::DescendingOrder);
 
     sectionClickedSpy.clear();
     sortIndicatorChangedSpy.clear();
 
     // clearing behavior: clicking multiple times will be tristate (asc, desc, nothing)
     for (int i = 0; i < Count; ++i) {
-        QTest::mouseClick(h.viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(5, 5));
+        BOBUIest::mouseClick(h.viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(5, 5));
         QCOMPARE(sectionClickedSpy.size(), i + 1);
         QCOMPARE(sortIndicatorChangedSpy.size(), i + 1);
         switch (i % 3) {
         case 0:
             QCOMPARE(h.sortIndicatorSection(), 0);
-            QCOMPARE(h.sortIndicatorOrder(), Qt::AscendingOrder);
+            QCOMPARE(h.sortIndicatorOrder(), BobUI::AscendingOrder);
             break;
         case 1:
             QCOMPARE(h.sortIndicatorSection(), 0);
-            QCOMPARE(h.sortIndicatorOrder(), Qt::DescendingOrder);
+            QCOMPARE(h.sortIndicatorOrder(), BobUI::DescendingOrder);
             break;
         case 2:
             QCOMPARE(h.sortIndicatorSection(), -1);
-            QCOMPARE(h.sortIndicatorOrder(), Qt::AscendingOrder);
+            QCOMPARE(h.sortIndicatorOrder(), BobUI::AscendingOrder);
             break;
         }
     }
@@ -1411,13 +1411,13 @@ void tst_QHeaderView::clearSectionSorting()
 
 void tst_QHeaderView::sortIndicatorTracking()
 {
-    QtTestModel model(10, 10);
-    QHeaderView hv(Qt::Horizontal);
+    BobUITestModel model(10, 10);
+    QHeaderView hv(BobUI::Horizontal);
 
     hv.setModel(&model);
     hv.show();
     hv.setSortIndicatorShown(true);
-    hv.setSortIndicator(1, Qt::DescendingOrder);
+    hv.setSortIndicator(1, BobUI::DescendingOrder);
 
     model.removeOneColumn(8);
     QCOMPARE(hv.sortIndicatorSection(), 1);
@@ -1506,9 +1506,9 @@ void tst_QHeaderView::unhideSection()
 
 void tst_QHeaderView::testEvent()
 {
-    protected_QHeaderView x(Qt::Vertical);
+    protected_QHeaderView x(BobUI::Vertical);
     x.testEvent();
-    protected_QHeaderView y(Qt::Horizontal);
+    protected_QHeaderView y(BobUI::Horizontal);
     y.testEvent();
 }
 
@@ -1527,15 +1527,15 @@ void protected_QHeaderView::testEvent()
 void tst_QHeaderView::headerDataChanged()
 {
     // This shouldn't assert because view is Vertical
-    view->headerDataChanged(Qt::Horizontal, -1, -1);
+    view->headerDataChanged(BobUI::Horizontal, -1, -1);
 #if 0
     // This will assert
-    view->headerDataChanged(Qt::Vertical, -1, -1);
+    view->headerDataChanged(BobUI::Vertical, -1, -1);
 #endif
 
     // No crashing please
-    view->headerDataChanged(Qt::Horizontal, 0, 1);
-    view->headerDataChanged(Qt::Vertical, 0, 1);
+    view->headerDataChanged(BobUI::Horizontal, 0, 1);
+    view->headerDataChanged(BobUI::Vertical, 0, 1);
 }
 
 void tst_QHeaderView::currentChanged()
@@ -1545,23 +1545,23 @@ void tst_QHeaderView::currentChanged()
 
 void tst_QHeaderView::horizontalOffset()
 {
-    protected_QHeaderView x(Qt::Vertical);
+    protected_QHeaderView x(BobUI::Vertical);
     x.testhorizontalOffset();
-    protected_QHeaderView y(Qt::Horizontal);
+    protected_QHeaderView y(BobUI::Horizontal);
     y.testhorizontalOffset();
 }
 
 void tst_QHeaderView::verticalOffset()
 {
-    protected_QHeaderView x(Qt::Vertical);
+    protected_QHeaderView x(BobUI::Vertical);
     x.testverticalOffset();
-    protected_QHeaderView y(Qt::Horizontal);
+    protected_QHeaderView y(BobUI::Horizontal);
     y.testverticalOffset();
 }
 
 void  protected_QHeaderView::testhorizontalOffset()
 {
-    if (orientation() == Qt::Horizontal) {
+    if (orientation() == BobUI::Horizontal) {
         QCOMPARE(horizontalOffset(), 0);
         setOffset(10);
         QCOMPARE(horizontalOffset(), 10);
@@ -1572,7 +1572,7 @@ void  protected_QHeaderView::testhorizontalOffset()
 
 void  protected_QHeaderView::testverticalOffset()
 {
-    if (orientation() == Qt::Vertical) {
+    if (orientation() == BobUI::Vertical) {
         QCOMPARE(verticalOffset(), 0);
         setOffset(10);
         QCOMPARE(verticalOffset(), 10);
@@ -1620,32 +1620,32 @@ void tst_QHeaderView::hiddenSectionCount()
 
 void tst_QHeaderView::focusPolicy()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    QHeaderView view(Qt::Horizontal);
-    QCOMPARE(view.focusPolicy(), Qt::NoFocus);
+    QHeaderView view(BobUI::Horizontal);
+    QCOMPARE(view.focusPolicy(), BobUI::NoFocus);
 
-    QTreeWidget widget;
-    QCOMPARE(widget.header()->focusPolicy(), Qt::NoFocus);
+    BOBUIreeWidget widget;
+    QCOMPARE(widget.header()->focusPolicy(), BobUI::NoFocus);
     QVERIFY(!widget.focusProxy());
     QVERIFY(!widget.hasFocus());
     QVERIFY(!widget.header()->focusProxy());
     QVERIFY(!widget.header()->hasFocus());
 
     widget.show();
-    widget.setFocus(Qt::OtherFocusReason);
+    widget.setFocus(BobUI::OtherFocusReason);
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
     QVERIFY(widget.hasFocus());
     QVERIFY(!widget.header()->hasFocus());
 
-    widget.setFocusPolicy(Qt::NoFocus);
+    widget.setFocusPolicy(BobUI::NoFocus);
     widget.clearFocus();
-    QTRY_VERIFY(!widget.hasFocus());
+    BOBUIRY_VERIFY(!widget.hasFocus());
     QVERIFY(!widget.header()->hasFocus());
 
-    QTest::keyPress(&widget, Qt::Key_Tab);
+    BOBUIest::keyPress(&widget, BobUI::Key_Tab);
 
     QCoreApplication::processEvents();
     QCoreApplication::processEvents();
@@ -1679,7 +1679,7 @@ public:
     {
         if (!index.isValid())
             return QVariant();
-        if (role == Qt::DisplayRole)
+        if (role == BobUI::DisplayRole)
             return QString::number(index.row()) + QLatin1Char(',') + QString::number(index.column());
         return QVariant();
     }
@@ -1694,7 +1694,7 @@ private:
 void tst_QHeaderView::moveSectionAndReset()
 {
     SimpleModel m;
-    QHeaderView v(Qt::Horizontal);
+    QHeaderView v(BobUI::Horizontal);
     v.setModel(&m);
     int cc = 2;
     for (cc = 2; cc < 4; ++cc) {
@@ -1714,7 +1714,7 @@ void tst_QHeaderView::moveSectionAndReset()
 void tst_QHeaderView::moveSectionAndRemove()
 {
     QStandardItemModel m;
-    QHeaderView v(Qt::Horizontal);
+    QHeaderView v(BobUI::Horizontal);
 
     v.setModel(&m);
     v.model()->insertColumns(0, 3);
@@ -1728,19 +1728,19 @@ void tst_QHeaderView::moveSectionAndRemove()
 static QByteArray savedState()
 {
     QStandardItemModel m(4, 4);
-    QHeaderView h1(Qt::Horizontal);
+    QHeaderView h1(BobUI::Horizontal);
     h1.setModel(&m);
     h1.setMinimumSectionSize(0);    // system default min size can be to large
     h1.swapSections(0, 2);
     h1.resizeSection(1, 10);
     h1.setSortIndicatorShown(true);
-    h1.setSortIndicator(2, Qt::DescendingOrder);
+    h1.setSortIndicator(2, BobUI::DescendingOrder);
     h1.setSectionHidden(3, true);
     return h1.saveState();
 }
 
 // As generated by savedState()
-static const QByteArray qt5SavedSate = QByteArrayLiteral("\x00\x00\x00\xFF\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x02\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\b\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00""d\x00\x00\x00\xD2\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00""d\x00\x00\x00\x00\x00\x00\x00\x84\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00""d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00""d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xE8\x00\x00\x00\x00\x00\x00\x00\x00\x00");
+static const QByteArray bobui5SavedSate = QByteArrayLiteral("\x00\x00\x00\xFF\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x02\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\b\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00""d\x00\x00\x00\xD2\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00""d\x00\x00\x00\x00\x00\x00\x00\x84\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00""d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00""d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03\xE8\x00\x00\x00\x00\x00\x00\x00\x00\x00");
 
 enum class SaveRestoreOption
 {
@@ -1752,7 +1752,7 @@ static void saveRestoreImpl(const QByteArray &state, SaveRestoreOption option)
 {
     QStandardItemModel m(4, 4);
 
-    QHeaderView h2(Qt::Vertical);
+    QHeaderView h2(BobUI::Vertical);
     QSignalSpy spy(&h2, &QHeaderView::sortIndicatorChanged);
 
     h2.setModel(&m);
@@ -1765,7 +1765,7 @@ static void saveRestoreImpl(const QByteArray &state, SaveRestoreOption option)
     QCOMPARE(h2.logicalIndex(2), 0);
     QCOMPARE(h2.sectionSize(1), 10);
     QCOMPARE(h2.sortIndicatorSection(), 2);
-    QCOMPARE(h2.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h2.sortIndicatorOrder(), BobUI::DescendingOrder);
     QCOMPARE(h2.isSortIndicatorShown(), true);
     QVERIFY(!h2.isSectionHidden(2));
     QVERIFY(h2.isSectionHidden(3));
@@ -1790,16 +1790,16 @@ void tst_QHeaderView::saveRestore()
     saveRestoreImpl(savedState(), SaveRestoreOption::CheckGeneratedState);
 }
 
-void tst_QHeaderView::QTBUG99487_saveRestoreQt5Compat()
+void tst_QHeaderView::BOBUIBUG99487_saveRestoreBobUI5Compat()
 {
-    saveRestoreImpl(qt5SavedSate, SaveRestoreOption::DoNotCheckGeneratedState);
+    saveRestoreImpl(bobui5SavedSate, SaveRestoreOption::DoNotCheckGeneratedState);
 }
 
 void tst_QHeaderView::restoreToMoreColumns()
 {
     // Restore state onto a model with more columns
     const QByteArray s1 = savedState();
-    QHeaderView h4(Qt::Horizontal);
+    QHeaderView h4(BobUI::Horizontal);
     QStandardItemModel fiveColumnsModel(1, 5);
     h4.setModel(&fiveColumnsModel);
     QCOMPARE(fiveColumnsModel.columnCount(), 5);
@@ -1814,7 +1814,7 @@ void tst_QHeaderView::restoreToMoreColumns()
     QVERIFY(h4.isSectionHidden(3));
     QCOMPARE(h4.hiddenSectionCount(), 1);
     QCOMPARE(h4.sortIndicatorSection(), 2);
-    QCOMPARE(h4.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h4.sortIndicatorOrder(), BobUI::DescendingOrder);
     QCOMPARE(h4.logicalIndex(0), 2);
     QCOMPARE(h4.logicalIndex(1), 1);
     QCOMPARE(h4.logicalIndex(2), 0);
@@ -1824,13 +1824,13 @@ void tst_QHeaderView::restoreToMoreColumns()
 
     // Repainting shouldn't crash
     h4.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&h4));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&h4));
 }
 
 void tst_QHeaderView::restoreToMoreColumnsNoMovedColumns()
 {
     // Given a model with 2 columns, for saving state
-    QHeaderView h1(Qt::Horizontal);
+    QHeaderView h1(BobUI::Horizontal);
     QStandardItemModel model1(1, 2);
     h1.setModel(&model1);
     QCOMPARE(h1.visualIndex(0), 0);
@@ -1840,7 +1840,7 @@ void tst_QHeaderView::restoreToMoreColumnsNoMovedColumns()
     const QByteArray savedState = h1.saveState();
 
     // And a model with 3 columns, to apply that state upon
-    QHeaderView h2(Qt::Horizontal);
+    QHeaderView h2(BobUI::Horizontal);
     QStandardItemModel model2(1, 3);
     h2.setModel(&model2);
     QCOMPARE(h2.visualIndex(0), 0);
@@ -1863,12 +1863,12 @@ void tst_QHeaderView::restoreToMoreColumnsNoMovedColumns()
 
     // And repainting shouldn't crash
     h2.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&h2));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&h2));
 }
 
 void tst_QHeaderView::restoreBeforeSetModel()
 {
-    QHeaderView h2(Qt::Horizontal);
+    QHeaderView h2(BobUI::Horizontal);
     const QByteArray s1 = savedState();
     // First restore
     QVERIFY(h2.restoreState(s1));
@@ -1881,7 +1881,7 @@ void tst_QHeaderView::restoreBeforeSetModel()
     QCOMPARE(h2.logicalIndex(2), 0);
     QCOMPARE(h2.sectionSize(1), 10);
     QCOMPARE(h2.sortIndicatorSection(), 2);
-    QCOMPARE(h2.sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(h2.sortIndicatorOrder(), BobUI::DescendingOrder);
     QCOMPARE(h2.isSortIndicatorShown(), true);
     QVERIFY(!h2.isSectionHidden(2));
     QVERIFY(h2.isSectionHidden(3));
@@ -1891,12 +1891,12 @@ void tst_QHeaderView::restoreBeforeSetModel()
 void tst_QHeaderView::defaultSectionSizeTest()
 {
     // Setup
-    QTableView qtv;
-    QHeaderView *hv = qtv.verticalHeader();
+    BOBUIableView bobuiv;
+    QHeaderView *hv = bobuiv.verticalHeader();
     hv->setMinimumSectionSize(10);
     hv->setDefaultSectionSize(99); // Set it to a value different from defaultSize.
     QStandardItemModel amodel(4, 4);
-    qtv.setModel(&amodel);
+    bobuiv.setModel(&amodel);
     QCOMPARE(hv->sectionSize(0), 99);
     QCOMPARE(hv->visualIndexAt(50), 0); // <= also make sure that indexes are calculated
     hv->setDefaultSectionSize(40); // Set it to a value different from defaultSize.
@@ -1943,7 +1943,7 @@ void tst_QHeaderView::defaultSectionSizeTestStyles()
     style1.horizontalSectionSize = 100;
     style2.horizontalSectionSize = 200;
 
-    QHeaderView hv(Qt::Horizontal);
+    QHeaderView hv(BobUI::Horizontal);
     hv.setStyle(&style1);
     QCOMPARE(hv.defaultSectionSize(), style1.horizontalSectionSize);
     hv.setStyle(&style2);
@@ -1960,36 +1960,36 @@ void tst_QHeaderView::defaultSectionSizeTestStyles()
 
 void tst_QHeaderView::defaultAlignment_data()
 {
-    QTest::addColumn<Qt::Orientation>("direction");
-    QTest::addColumn<Qt::Alignment>("initial");
-    QTest::addColumn<Qt::Alignment>("alignment");
+    BOBUIest::addColumn<BobUI::Orientation>("direction");
+    BOBUIest::addColumn<BobUI::Alignment>("initial");
+    BOBUIest::addColumn<BobUI::Alignment>("alignment");
 
-    QTest::newRow("horizontal right aligned")
-        << Qt::Horizontal
-        << Qt::Alignment(Qt::AlignCenter)
-        << Qt::Alignment(Qt::AlignRight);
+    BOBUIest::newRow("horizontal right aligned")
+        << BobUI::Horizontal
+        << BobUI::Alignment(BobUI::AlignCenter)
+        << BobUI::Alignment(BobUI::AlignRight);
 
-    QTest::newRow("horizontal left aligned")
-        << Qt::Horizontal
-        << Qt::Alignment(Qt::AlignCenter)
-        << Qt::Alignment(Qt::AlignLeft);
+    BOBUIest::newRow("horizontal left aligned")
+        << BobUI::Horizontal
+        << BobUI::Alignment(BobUI::AlignCenter)
+        << BobUI::Alignment(BobUI::AlignLeft);
 
-    QTest::newRow("vertical right aligned")
-        << Qt::Vertical
-        << Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter)
-        << Qt::Alignment(Qt::AlignRight);
+    BOBUIest::newRow("vertical right aligned")
+        << BobUI::Vertical
+        << BobUI::Alignment(BobUI::AlignLeft|BobUI::AlignVCenter)
+        << BobUI::Alignment(BobUI::AlignRight);
 
-    QTest::newRow("vertical left aligned")
-        << Qt::Vertical
-        << Qt::Alignment(Qt::AlignLeft|Qt::AlignVCenter)
-        << Qt::Alignment(Qt::AlignLeft);
+    BOBUIest::newRow("vertical left aligned")
+        << BobUI::Vertical
+        << BobUI::Alignment(BobUI::AlignLeft|BobUI::AlignVCenter)
+        << BobUI::Alignment(BobUI::AlignLeft);
 }
 
 void tst_QHeaderView::defaultAlignment()
 {
-    QFETCH(Qt::Orientation, direction);
-    QFETCH(Qt::Alignment, initial);
-    QFETCH(Qt::Alignment, alignment);
+    QFETCH(BobUI::Orientation, direction);
+    QFETCH(BobUI::Alignment, initial);
+    QFETCH(BobUI::Alignment, alignment);
 
     SimpleModel m;
 
@@ -2003,19 +2003,19 @@ void tst_QHeaderView::defaultAlignment()
 
 void tst_QHeaderView::globalResizeMode_data()
 {
-    QTest::addColumn<Qt::Orientation>("direction");
-    QTest::addColumn<QHeaderView::ResizeMode>("mode");
-    QTest::addColumn<int>("insert");
+    BOBUIest::addColumn<BobUI::Orientation>("direction");
+    BOBUIest::addColumn<QHeaderView::ResizeMode>("mode");
+    BOBUIest::addColumn<int>("insert");
 
-    QTest::newRow("horizontal ResizeToContents 0")
-        << Qt::Horizontal
+    BOBUIest::newRow("horizontal ResizeToContents 0")
+        << BobUI::Horizontal
         << QHeaderView::ResizeToContents
         << 0;
 }
 
 void tst_QHeaderView::globalResizeMode()
 {
-    QFETCH(Qt::Orientation, direction);
+    QFETCH(BobUI::Orientation, direction);
     QFETCH(QHeaderView::ResizeMode, mode);
     QFETCH(int, insert);
 
@@ -2032,24 +2032,24 @@ void tst_QHeaderView::globalResizeMode()
 
 void tst_QHeaderView::sectionPressedSignal_data()
 {
-    QTest::addColumn<Qt::Orientation>("direction");
-    QTest::addColumn<bool>("clickable");
-    QTest::addColumn<int>("count");
+    BOBUIest::addColumn<BobUI::Orientation>("direction");
+    BOBUIest::addColumn<bool>("clickable");
+    BOBUIest::addColumn<int>("count");
 
-    QTest::newRow("horizontal unclickable 0")
-        << Qt::Horizontal
+    BOBUIest::newRow("horizontal unclickable 0")
+        << BobUI::Horizontal
         << false
         << 0;
 
-    QTest::newRow("horizontal clickable 1")
-        << Qt::Horizontal
+    BOBUIest::newRow("horizontal clickable 1")
+        << BobUI::Horizontal
         << true
         << 1;
 }
 
 void tst_QHeaderView::sectionPressedSignal()
 {
-    QFETCH(Qt::Orientation, direction);
+    QFETCH(BobUI::Orientation, direction);
     QFETCH(bool, clickable);
     QFETCH(int, count);
 
@@ -2063,13 +2063,13 @@ void tst_QHeaderView::sectionPressedSignal()
     QSignalSpy spy(&h, &QHeaderView::sectionPressed);
 
     QCOMPARE(spy.size(), 0);
-    QTest::mousePress(h.viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(5, 5));
+    BOBUIest::mousePress(h.viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(5, 5));
     QCOMPARE(spy.size(), count);
 }
 
 void tst_QHeaderView::sectionClickedSignal()
 {
-    QFETCH(Qt::Orientation, direction);
+    QFETCH(BobUI::Orientation, direction);
     QFETCH(bool, clickable);
     QFETCH(int, count);
 
@@ -2086,7 +2086,7 @@ void tst_QHeaderView::sectionClickedSignal()
 
     QCOMPARE(spy.size(), 0);
     QCOMPARE(spy2.size(), 0);
-    QTest::mouseClick(h.viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(5, 5));
+    BOBUIest::mouseClick(h.viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(5, 5));
     QCOMPARE(spy.size(), count);
     QCOMPARE(spy2.size(), count);
 
@@ -2094,26 +2094,26 @@ void tst_QHeaderView::sectionClickedSignal()
     spy.clear();
     spy2.clear();
     h.setSortIndicatorShown(false);
-    QTest::mouseClick(h.viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(5, 5));
+    BOBUIest::mouseClick(h.viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(5, 5));
     QCOMPARE(spy.size(), count);
     QCOMPARE(spy2.size(), count);
 }
 
 void tst_QHeaderView::defaultSectionSize_data()
 {
-    QTest::addColumn<Qt::Orientation>("direction");
-    QTest::addColumn<int>("oldDefaultSize");
-    QTest::addColumn<int>("newDefaultSize");
+    BOBUIest::addColumn<BobUI::Orientation>("direction");
+    BOBUIest::addColumn<int>("oldDefaultSize");
+    BOBUIest::addColumn<int>("newDefaultSize");
 
-    //QTest::newRow("horizontal,-5") << int(Qt::Horizontal) << 100 << -5;
-    QTest::newRow("horizontal, 0") << Qt::Horizontal << 100 << 0;
-    QTest::newRow("horizontal, 5") << Qt::Horizontal << 100 << 5;
-    QTest::newRow("horizontal,25") << Qt::Horizontal << 100 << 5;
+    //BOBUIest::newRow("horizontal,-5") << int(BobUI::Horizontal) << 100 << -5;
+    BOBUIest::newRow("horizontal, 0") << BobUI::Horizontal << 100 << 0;
+    BOBUIest::newRow("horizontal, 5") << BobUI::Horizontal << 100 << 5;
+    BOBUIest::newRow("horizontal,25") << BobUI::Horizontal << 100 << 5;
 }
 
 void tst_QHeaderView::defaultSectionSize()
 {
-    QFETCH(Qt::Orientation, direction);
+    QFETCH(BobUI::Orientation, direction);
     QFETCH(int, oldDefaultSize);
     QFETCH(int, newDefaultSize);
 
@@ -2133,17 +2133,17 @@ void tst_QHeaderView::defaultSectionSize()
 
 void tst_QHeaderView::hideAndInsert_data()
 {
-    QTest::addColumn<Qt::Orientation>("direction");
-    QTest::addColumn<int>("hide");
-    QTest::addColumn<int>("insert");
-    QTest::addColumn<int>("hidden");
+    BOBUIest::addColumn<BobUI::Orientation>("direction");
+    BOBUIest::addColumn<int>("hide");
+    BOBUIest::addColumn<int>("insert");
+    BOBUIest::addColumn<int>("hidden");
 
-    QTest::newRow("horizontal, 0, 0") << Qt::Horizontal << 0 << 0 << 1;
+    BOBUIest::newRow("horizontal, 0, 0") << BobUI::Horizontal << 0 << 0 << 1;
 }
 
 void tst_QHeaderView::hideAndInsert()
 {
-    QFETCH(Qt::Orientation, direction);
+    QFETCH(BobUI::Orientation, direction);
     QFETCH(int, hide);
     QFETCH(int, insert);
     QFETCH(int, hidden);
@@ -2153,7 +2153,7 @@ void tst_QHeaderView::hideAndInsert()
     h.setModel(&m);
     h.setSectionHidden(hide, true);
 
-    if (direction == Qt::Vertical)
+    if (direction == BobUI::Vertical)
         m.insertRow(insert);
     else
         m.insertColumn(insert);
@@ -2167,7 +2167,7 @@ void tst_QHeaderView::removeSection()
     const int hidden = 3; //section that will be hidden
 
     QStringListModel model({ "0", "1", "2", "3", "4", "5", "6" });
-    QHeaderView view(Qt::Vertical);
+    QHeaderView view(BobUI::Vertical);
     view.setModel(&model);
     view.hideSection(hidden);
     view.hideSection(1);
@@ -2188,7 +2188,7 @@ void tst_QHeaderView::removeSection()
 void tst_QHeaderView::preserveHiddenSectionWidth()
 {
     QStringListModel model({ "0", "1", "2", "3" });
-    QHeaderView view(Qt::Vertical);
+    QHeaderView view(BobUI::Vertical);
     view.setModel(&model);
     view.resizeSection(0, 100);
     view.resizeSection(1, 10);
@@ -2212,12 +2212,12 @@ void tst_QHeaderView::preserveHiddenSectionWidth()
 
 void tst_QHeaderView::invisibleStretchLastSection()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), BobUI::CaseInsensitive))
         QSKIP("EGLFS does not allow resizing on top window");
 
     int count = 6;
     QStandardItemModel model(1, count);
-    QHeaderView view(Qt::Horizontal);
+    QHeaderView view(BobUI::Horizontal);
     view.setModel(&model);
     int height = view.height();
 
@@ -2239,7 +2239,7 @@ void tst_QHeaderView::invisibleStretchLastSection()
 void tst_QHeaderView::noSectionsWithNegativeSize()
 {
     QStandardItemModel m(4, 4);
-    QHeaderView h(Qt::Horizontal);
+    QHeaderView h(BobUI::Horizontal);
     h.setModel(&m);
     h.resizeSection(1, -5);
     QCOMPARE_GE(h.sectionSize(1), 0); // Sections with negative sizes not well defined.
@@ -2253,16 +2253,16 @@ void tst_QHeaderView::emptySectionSpan()
 
 void tst_QHeaderView::task236450_hidden_data()
 {
-    QTest::addColumn<IntList>("hide1");
-    QTest::addColumn<IntList>("hide2");
+    BOBUIest::addColumn<IntList>("hide1");
+    BOBUIest::addColumn<IntList>("hide2");
 
-    QTest::newRow("set 1") << (IntList{ 1, 3 })
+    BOBUIest::newRow("set 1") << (IntList{ 1, 3 })
                            << (IntList{ 1, 5 });
 
-    QTest::newRow("set 2") << (IntList{ 2, 3 })
+    BOBUIest::newRow("set 2") << (IntList{ 2, 3 })
                            << (IntList{ 1, 5 });
 
-    QTest::newRow("set 3") << (IntList{ 0, 2, 4 })
+    BOBUIest::newRow("set 3") << (IntList{ 0, 2, 4 })
                            << (IntList{ 2, 3, 5 });
 
 }
@@ -2273,7 +2273,7 @@ void tst_QHeaderView::task236450_hidden()
     QFETCH(const IntList, hide2);
 
     QStringListModel model({ "0", "1", "2", "3", "4", "5" });
-    protected_QHeaderView view(Qt::Vertical);
+    protected_QHeaderView view(BobUI::Vertical);
     view.setModel(&model);
     view.show();
 
@@ -2302,7 +2302,7 @@ void tst_QHeaderView::task236450_hidden()
 void tst_QHeaderView::task248050_hideRow()
 {
     //this is the sequence of events that make the task fail
-    protected_QHeaderView header(Qt::Vertical);
+    protected_QHeaderView header(BobUI::Vertical);
     QStandardItemModel model(0, 1);
     header.setMinimumSectionSize(0);    // system default min size can be to large
     header.setStretchLastSection(false);
@@ -2317,7 +2317,7 @@ void tst_QHeaderView::task248050_hideRow()
     header.hideSection(1);
     QCOMPARE(header.sectionPosition(2), 17);
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     //the size of the section shouldn't have changed
     QCOMPARE(header.sectionPosition(2), 17);
 }
@@ -2339,44 +2339,44 @@ static int checkHeaderViewOrder(const QHeaderView *view, const IntList &expected
 }
 
 
-void tst_QHeaderView::QTBUG6058_reset()
+void tst_QHeaderView::BOBUIBUG6058_reset()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStringListModel model1({ "0", "1", "2", "3", "4", "5" });
     QStringListModel model2({ "a", "b", "c" });
     QSortFilterProxyModel proxy;
 
-    QHeaderView view(Qt::Vertical);
+    QHeaderView view(BobUI::Vertical);
     view.setModel(&proxy);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
-    QVERIFY(QTest::qWaitForWindowActive(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&view));
 
     proxy.setSourceModel(&model1);
     view.swapSections(0, 2);
     view.swapSections(1, 4);
     IntList expectedOrder{2, 4, 0, 3, 1, 5};
-    QTRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
+    BOBUIRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
 
     proxy.setSourceModel(&model2);
     expectedOrder = {2, 0, 1};
-    QTRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
+    BOBUIRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
 
     proxy.setSourceModel(&model1);
     expectedOrder = {2, 0, 1, 3, 4, 5};
-    QTRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
+    BOBUIRY_COMPARE(checkHeaderViewOrder(&view, expectedOrder) , 0);
 }
 
-void tst_QHeaderView::QTBUG7833_sectionClicked()
+void tst_QHeaderView::BOBUIBUG7833_sectionClicked()
 {
-    QTableView tv;
+    BOBUIableView tv;
     QStandardItemModel *sim = new QStandardItemModel(&tv);
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(&tv);
     proxyModel->setSourceModel(sim);
     proxyModel->setDynamicSortFilter(true);
-    proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    proxyModel->setSortCaseSensitivity(BobUI::CaseInsensitive);
 
     QList<QStandardItem *> row;
     for (char i = 0; i < 12; i++)
@@ -2401,7 +2401,7 @@ void tst_QHeaderView::QTBUG7833_sectionClicked()
     tv.setColumnHidden(5, true);
     tv.setColumnHidden(6, true);
     tv.horizontalHeader()->swapSections(8, 10);
-    tv.sortByColumn(1, Qt::AscendingOrder);
+    tv.sortByColumn(1, BobUI::AscendingOrder);
 
     QCOMPARE(tv.isColumnHidden(5), true);
     QCOMPARE(tv.isColumnHidden(6), true);
@@ -2417,7 +2417,7 @@ void tst_QHeaderView::QTBUG7833_sectionClicked()
     QSignalSpy pressedSpy(tv.horizontalHeader(), &QHeaderView::sectionPressed);
 
 
-    QTest::mouseClick(tv.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(tv.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       QPoint(tv.horizontalHeader()->sectionViewportPosition(11) +
                              tv.horizontalHeader()->sectionSize(11) / 2, 5));
     QCOMPARE(clickedSpy.size(), 1);
@@ -2425,7 +2425,7 @@ void tst_QHeaderView::QTBUG7833_sectionClicked()
     QCOMPARE(clickedSpy.at(0).at(0).toInt(), 11);
     QCOMPARE(pressedSpy.at(0).at(0).toInt(), 11);
 
-    QTest::mouseClick(tv.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(tv.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       QPoint(tv.horizontalHeader()->sectionViewportPosition(8) +
                              tv.horizontalHeader()->sectionSize(0) / 2, 5));
 
@@ -2434,7 +2434,7 @@ void tst_QHeaderView::QTBUG7833_sectionClicked()
     QCOMPARE(clickedSpy.at(1).at(0).toInt(), 8);
     QCOMPARE(pressedSpy.at(1).at(0).toInt(), 8);
 
-    QTest::mouseClick(tv.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier,
+    BOBUIest::mouseClick(tv.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                       QPoint(tv.horizontalHeader()->sectionViewportPosition(0) +
                              tv.horizontalHeader()->sectionSize(0) / 2, 5));
 
@@ -2446,8 +2446,8 @@ void tst_QHeaderView::QTBUG7833_sectionClicked()
 
 void tst_QHeaderView::checkLayoutChangeEmptyModel()
 {
-    QtTestModel tm(0, 11);
-    QTableView tv;
+    BobUITestModel tm(0, 11);
+    BOBUIableView tv;
     tv.verticalHeader()->setStretchLastSection(true);
     tv.setModel(&tm);
 
@@ -2459,7 +2459,7 @@ void tst_QHeaderView::checkLayoutChangeEmptyModel()
     tv.setColumnHidden(6, true);
     tv.horizontalHeader()->swapSections(8, 10);
 
-    tv.sortByColumn(1, Qt::AscendingOrder);
+    tv.sortByColumn(1, BobUI::AscendingOrder);
     tm.emitLayoutChanged();
 
     QCOMPARE(tv.isColumnHidden(5), true);
@@ -2489,10 +2489,10 @@ void tst_QHeaderView::checkLayoutChangeEmptyModel()
     tv.setColumnHidden(5, true);
 }
 
-void tst_QHeaderView::QTBUG8650_crashOnInsertSections()
+void tst_QHeaderView::BOBUIBUG8650_crashOnInsertSections()
 {
     QStringList headerLabels;
-    QHeaderView view(Qt::Horizontal);
+    QHeaderView view(BobUI::Horizontal);
     QStandardItemModel model(2, 2);
     view.setModel(&model);
     view.moveSection(1, 0);
@@ -2511,33 +2511,33 @@ static void setModelTexts(QStandardItemModel *model)
     }
 }
 
-void tst_QHeaderView::QTBUG12268_hiddenMovedSectionSorting()
+void tst_QHeaderView::BOBUIBUG12268_hiddenMovedSectionSorting()
 {
-    QTableView view; // ### this test fails on QTableView &view = *m_tableview; !? + shadowing view member
+    BOBUIableView view; // ### this test fails on BOBUIableView &view = *m_tableview; !? + shadowing view member
     QStandardItemModel model(4, 3);
     setModelTexts(&model);
     view.setModel(&model);
     view.horizontalHeader()->setSectionsMovable(true);
     view.setSortingEnabled(true);
-    view.sortByColumn(1, Qt::AscendingOrder);
+    view.sortByColumn(1, BobUI::AscendingOrder);
     view.horizontalHeader()->moveSection(0,2);
     view.setColumnHidden(1, true);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     QCOMPARE(view.horizontalHeader()->hiddenSectionCount(), 1);
-    QTest::mouseClick(view.horizontalHeader()->viewport(), Qt::LeftButton);
+    BOBUIest::mouseClick(view.horizontalHeader()->viewport(), BobUI::LeftButton);
     QCOMPARE(view.horizontalHeader()->hiddenSectionCount(), 1);
 }
 
-void tst_QHeaderView::QTBUG14242_hideSectionAutoSize()
+void tst_QHeaderView::BOBUIBUG14242_hideSectionAutoSize()
 {
-    QTableView qtv;
+    BOBUIableView bobuiv;
     QStandardItemModel amodel(4, 4);
-    qtv.setModel(&amodel);
-    QHeaderView *hv = qtv.verticalHeader();
+    bobuiv.setModel(&amodel);
+    QHeaderView *hv = bobuiv.verticalHeader();
     hv->setDefaultSectionSize(25);
     hv->setSectionResizeMode(QHeaderView::ResizeToContents);
-    qtv.show();
+    bobuiv.show();
 
     hv->hideSection(0);
     int afterlength = hv->length();
@@ -2549,17 +2549,17 @@ void tst_QHeaderView::QTBUG14242_hideSectionAutoSize()
     QCOMPARE(calced_length, afterlength);
 }
 
-void tst_QHeaderView::QTBUG50171_visualRegionForSwappedItems()
+void tst_QHeaderView::BOBUIBUG50171_visualRegionForSwappedItems()
 {
-    protected_QHeaderView headerView(Qt::Horizontal);
-    QtTestModel model(2, 3);
+    protected_QHeaderView headerView(BobUI::Horizontal);
+    BobUITestModel model(2, 3);
     headerView.setModel(&model);
     headerView.swapSections(1, 2);
     headerView.hideSection(0);
     headerView.testVisualRegionForSelection();
 }
 
-class QTBUG53221_Model : public QAbstractItemModel
+class BOBUIBUG53221_Model : public QAbstractItemModel
 {
     Q_OBJECT
 public:
@@ -2577,7 +2577,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const override
     {
-        return (role == Qt::DisplayRole) ? m_displayNames.at(index.row()) : QVariant();
+        return (role == BobUI::DisplayRole) ? m_displayNames.at(index.row()) : QVariant();
     }
 
     QModelIndex index(int row, int column, const QModelIndex &) const override { return createIndex(row, column); }
@@ -2589,10 +2589,10 @@ private:
     QStringList m_displayNames;
 };
 
-void tst_QHeaderView::QTBUG53221_assertShiftHiddenRow()
+void tst_QHeaderView::BOBUIBUG53221_assertShiftHiddenRow()
 {
-    QTableView tableView;
-    QTBUG53221_Model modelTableView;
+    BOBUIableView tableView;
+    BOBUIBUG53221_Model modelTableView;
     tableView.setModel(&modelTableView);
 
     modelTableView.insertRowAtBeginning();
@@ -2607,9 +2607,9 @@ void tst_QHeaderView::QTBUG53221_assertShiftHiddenRow()
     QCOMPARE(tableView.verticalHeader()->isSectionHidden(2), true);
 }
 
-void tst_QHeaderView::QTBUG75615_sizeHintWithStylesheet()
+void tst_QHeaderView::BOBUIBUG75615_sizeHintWithStylesheet()
 {
-    QTableView tableView;
+    BOBUIableView tableView;
     QStandardItemModel model(1, 1);
     tableView.setModel(&model);
     tableView.show();
@@ -2618,11 +2618,11 @@ void tst_QHeaderView::QTBUG75615_sizeHintWithStylesheet()
     const auto oldSizeHint = headerView->sizeHint();
     QVERIFY(oldSizeHint.isValid());
 
-    tableView.setStyleSheet("QTableView QHeaderView::section { height: 100px;}");
+    tableView.setStyleSheet("BOBUIableView QHeaderView::section { height: 100px;}");
     QCOMPARE(headerView->sizeHint().width(), oldSizeHint.width());
     QCOMPARE(headerView->sizeHint().height(), 100);
 
-    tableView.setStyleSheet("QTableView QHeaderView::section { width: 100px;}");
+    tableView.setStyleSheet("BOBUIableView QHeaderView::section { width: 100px;}");
     QCOMPARE(headerView->sizeHint().height(), oldSizeHint.height());
     QCOMPARE(headerView->sizeHint().width(), 100);
 }
@@ -2635,10 +2635,10 @@ void protected_QHeaderView::testVisualRegionForSelection()
 
 void tst_QHeaderView::ensureNoIndexAtLength()
 {
-    QTableView qtv;
+    BOBUIableView bobuiv;
     QStandardItemModel amodel(4, 4);
-    qtv.setModel(&amodel);
-    QHeaderView *hv = qtv.verticalHeader();
+    bobuiv.setModel(&amodel);
+    QHeaderView *hv = bobuiv.verticalHeader();
     QCOMPARE(hv->visualIndexAt(hv->length()), -1);
     hv->resizeSection(hv->count() - 1, 0);
     QCOMPARE(hv->visualIndexAt(hv->length()), -1);
@@ -2649,10 +2649,10 @@ void tst_QHeaderView::offsetConsistent()
     // Ensure that a hidden section 'far away'
     // does not affect setOffsetToSectionPosition ..
     const int sectionToHide = 513;
-    QTableView qtv;
+    BOBUIableView bobuiv;
     QStandardItemModel amodel(1000, 4);
-    qtv.setModel(&amodel);
-    QHeaderView *hv = qtv.verticalHeader();
+    bobuiv.setModel(&amodel);
+    QHeaderView *hv = bobuiv.verticalHeader();
     for (int u = 0; u < 100; u += 2)
         hv->resizeSection(u, 0);
     hv->setOffsetToSectionPosition(150);
@@ -2673,10 +2673,10 @@ void tst_QHeaderView::offsetConsistent()
 
 void tst_QHeaderView::sectionsDontSortWhenNotClickingInThem()
 {
-    QTableView qtv;
+    BOBUIableView bobuiv;
     QStandardItemModel amodel(1000, 4);
-    qtv.setModel(&amodel);
-    QHeaderView *hv = qtv.horizontalHeader();
+    bobuiv.setModel(&amodel);
+    QHeaderView *hv = bobuiv.horizontalHeader();
     hv->setSectionsClickable(true);
     hv->setFirstSectionMovable(true);
     hv->setSectionsMovable(false);
@@ -2685,21 +2685,21 @@ void tst_QHeaderView::sectionsDontSortWhenNotClickingInThem()
 
     const auto pressOnSection = [&](int section, int yOffset = DefaultYOffset)
     {
-        QTest::mousePress(hv->viewport(), Qt::LeftButton, Qt::NoModifier,
+        BOBUIest::mousePress(hv->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                           QPoint(hv->sectionViewportPosition(section) + hv->sectionSize(section) / 2, yOffset));
     };
     const auto moveOntoSection = [&](int section, int yOffset = DefaultYOffset)
     {
-        QTest::mouseMove(hv->viewport(),
+        BOBUIest::mouseMove(hv->viewport(),
                          QPoint(hv->sectionViewportPosition(section) + hv->sectionSize(section) / 2, yOffset));
     };
     const auto releaseOnSection = [&](int section, int yOffset = DefaultYOffset)
     {
-        QTest::mouseRelease(hv->viewport(), Qt::LeftButton, Qt::NoModifier,
+        BOBUIest::mouseRelease(hv->viewport(), BobUI::LeftButton, BobUI::NoModifier,
                             QPoint(hv->sectionViewportPosition(section) + hv->sectionSize(section) / 2, yOffset));
     };
 
-    hv->setSortIndicator(-1, Qt::AscendingOrder);
+    hv->setSortIndicator(-1, BobUI::AscendingOrder);
     QCOMPARE(hv->sortIndicatorSection(), -1);
 
     pressOnSection(0);
@@ -2707,7 +2707,7 @@ void tst_QHeaderView::sectionsDontSortWhenNotClickingInThem()
     // RESULT: sorting
     QCOMPARE(hv->sortIndicatorSection(), 0);
 
-    hv->setSortIndicator(-1, Qt::AscendingOrder);
+    hv->setSortIndicator(-1, BobUI::AscendingOrder);
     QCOMPARE(hv->sortIndicatorSection(), -1);
 
     pressOnSection(0);
@@ -2757,7 +2757,7 @@ void tst_QHeaderView::sectionsDontSortWhenNotClickingInThem()
     // RESULT: no change, still sorting by 1
     QCOMPARE(hv->sortIndicatorSection(), 1);
 
-    hv->setSortIndicator(-1, Qt::AscendingOrder);
+    hv->setSortIndicator(-1, BobUI::AscendingOrder);
     QCOMPARE(hv->sortIndicatorSection(), -1);
 
     pressOnSection(0);
@@ -2807,35 +2807,35 @@ void tst_QHeaderView::sectionsDontSortWhenNotClickingInThem()
 
 void tst_QHeaderView::initialSortOrderRole()
 {
-    QTableView view; // ### Shadowing member view (of type QHeaderView)
+    BOBUIableView view; // ### Shadowing member view (of type QHeaderView)
     QStandardItemModel model(4, 3);
     setModelTexts(&model);
     QStandardItem *ascendingItem = new QStandardItem();
     QStandardItem *descendingItem = new QStandardItem();
-    ascendingItem->setData(Qt::AscendingOrder, Qt::InitialSortOrderRole);
-    descendingItem->setData(Qt::DescendingOrder, Qt::InitialSortOrderRole);
+    ascendingItem->setData(BobUI::AscendingOrder, BobUI::InitialSortOrderRole);
+    descendingItem->setData(BobUI::DescendingOrder, BobUI::InitialSortOrderRole);
     model.setHorizontalHeaderItem(1, ascendingItem);
     model.setHorizontalHeaderItem(2, descendingItem);
     view.setModel(&model);
     view.setSortingEnabled(true);
-    view.sortByColumn(0, Qt::AscendingOrder);
+    view.sortByColumn(0, BobUI::AscendingOrder);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
 
     const int column1Pos = view.horizontalHeader()->sectionViewportPosition(1) + 5; // +5 not to be on the handle
-    QTest::mouseClick(view.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(column1Pos, 0));
+    BOBUIest::mouseClick(view.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(column1Pos, 0));
     QCOMPARE(view.horizontalHeader()->sortIndicatorSection(), 1);
-    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), Qt::AscendingOrder);
+    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), BobUI::AscendingOrder);
 
     const int column2Pos = view.horizontalHeader()->sectionViewportPosition(2) + 5; // +5 not to be on the handle
-    QTest::mouseClick(view.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(column2Pos, 0));
+    BOBUIest::mouseClick(view.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(column2Pos, 0));
     QCOMPARE(view.horizontalHeader()->sortIndicatorSection(), 2);
-    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), Qt::DescendingOrder);
+    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), BobUI::DescendingOrder);
 
     const int column0Pos = view.horizontalHeader()->sectionViewportPosition(0) + 5; // +5 not to be on the handle
-    QTest::mouseClick(view.horizontalHeader()->viewport(), Qt::LeftButton, Qt::NoModifier, QPoint(column0Pos, 0));
+    BOBUIest::mouseClick(view.horizontalHeader()->viewport(), BobUI::LeftButton, BobUI::NoModifier, QPoint(column0Pos, 0));
     QCOMPARE(view.horizontalHeader()->sortIndicatorSection(), 0);
-    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), Qt::AscendingOrder);
+    QCOMPARE(view.horizontalHeader()->sortIndicatorOrder(), BobUI::AscendingOrder);
 }
 
 const bool block_some_signals = true; // The test should also work with this set to false
@@ -2844,13 +2844,13 @@ const int colcount = 10;
 
 void tst_QHeaderView::setupTestData()
 {
-    QTest::addColumn<bool>("updates_enabled");
-    QTest::addColumn<bool>("special_prepare");
+    BOBUIest::addColumn<bool>("updates_enabled");
+    BOBUIest::addColumn<bool>("special_prepare");
 
-    QTest::newRow("no_updates+normal")  << false << false;
-    QTest::newRow("hasupdates+normal")  << true << false;
-    QTest::newRow("no_updates+special") << false << true;
-    QTest::newRow("hasupdates+special") << true << true;
+    BOBUIest::newRow("no_updates+normal")  << false << false;
+    BOBUIest::newRow("hasupdates+normal")  << true << false;
+    BOBUIest::newRow("no_updates+special") << false << true;
+    BOBUIest::newRow("hasupdates+special") << true << true;
 }
 
 void tst_QHeaderView::additionalInit()
@@ -2870,7 +2870,7 @@ void tst_QHeaderView::additionalInit()
 
     if (special_prepare) {
 
-        for (int u = 0; u <= rowcount; ++u) // ensures fragmented spans in e.g Qt 4.7
+        for (int u = 0; u <= rowcount; ++u) // ensures fragmented spans in e.g BobUI 4.7
             model->setRowCount(u);
 
         model->setColumnCount(colcount);
@@ -3136,7 +3136,7 @@ void tst_QHeaderView::resizeToContentTest()
 
 void tst_QHeaderView::testStreamWithHide()
 {
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     m_tableview->setVerticalHeader(view);
     m_tableview->setModel(model);
     view->setDefaultSectionSize(25);
@@ -3164,7 +3164,7 @@ void tst_QHeaderView::testStreamWithHide()
 void tst_QHeaderView::testStylePosition()
 {
     topLevel->show();
-    QVERIFY(QTest::qWaitForWindowExposed(topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(topLevel));
 
     TestStyle proxy;
     view->setStyle(&proxy);
@@ -3210,9 +3210,9 @@ void tst_QHeaderView::testStylePosition()
 
 void tst_QHeaderView::sizeHintCrash()
 {
-    QTreeView treeView;
+    BOBUIreeView treeView;
     QStandardItemModel *model = new QStandardItemModel(&treeView);
-    model->appendRow(new QStandardItem("QTBUG-48543"));
+    model->appendRow(new QStandardItem("BOBUIBUG-48543"));
     treeView.setModel(model);
     treeView.header()->sizeHintForColumn(0);
     treeView.header()->sizeHintForRow(0);
@@ -3221,7 +3221,7 @@ void tst_QHeaderView::sizeHintCrash()
 void tst_QHeaderView::stretchAndRestoreLastSection()
 {
     QStandardItemModel m(10, 10);
-    QTableView tv;
+    BOBUIableView tv;
     tv.setModel(&m);
     tv.showMaximized();
 
@@ -3230,7 +3230,7 @@ void tst_QHeaderView::stretchAndRestoreLastSection()
     const int someOtherSectionSize = 40;
     const int biggerSizeThanAnySection = 50;
 
-    QVERIFY(QTest::qWaitForWindowFocused(&tv));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&tv));
 
     QHeaderView &header = *tv.horizontalHeader();
     // set minimum size before resizeSections() is called
@@ -3242,7 +3242,7 @@ void tst_QHeaderView::stretchAndRestoreLastSection()
 
     // Default last section is larger
     QCOMPARE(header.sectionSize(8), defaultSectionSize);
-    QTRY_COMPARE_GE(header.sectionSize(9), biggerSizeThanAnySection);
+    BOBUIRY_COMPARE_GE(header.sectionSize(9), biggerSizeThanAnySection);
 
     // Moving last section away (restore old last section 9 - and make 8 larger)
     header.swapSections(9, 8);
@@ -3348,9 +3348,9 @@ void tst_QHeaderView::stretchAndRestoreLastSection()
 
 void tst_QHeaderView::testMinMaxSectionSize_data()
 {
-    QTest::addColumn<bool>("stretchLastSection");
-    QTest::addRow("stretched") << true;
-    QTest::addRow("not stretched") << false;
+    BOBUIest::addColumn<bool>("stretchLastSection");
+    BOBUIest::addRow("stretched") << true;
+    BOBUIest::addRow("not stretched") << false;
 }
 
 void tst_QHeaderView::testMinMaxSectionSize()
@@ -3358,7 +3358,7 @@ void tst_QHeaderView::testMinMaxSectionSize()
     QFETCH(bool, stretchLastSection);
 
     QStandardItemModel m(5, 5);
-    QTableView tv;
+    BOBUIableView tv;
     tv.setModel(&m);
     tv.show();
 
@@ -3366,7 +3366,7 @@ void tst_QHeaderView::testMinMaxSectionSize()
     const int sectionSizeMax = 40;
     const int defaultSectionSize = 30;
 
-    QVERIFY(QTest::qWaitForWindowExposed(&tv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tv));
 
     QHeaderView &header = *tv.horizontalHeader();
     header.setMinimumSectionSize(sectionSizeMin);
@@ -3400,7 +3400,7 @@ void tst_QHeaderView::testMinMaxSectionSize()
     header.resizeSection(0, sectionSizeMax);
     QCOMPARE(header.sectionSize(0), sectionSizeMax);
     header.setMaximumSectionSize(defaultSectionSize);
-    QTRY_COMPARE(header.sectionSize(0), defaultSectionSize);
+    BOBUIRY_COMPARE(header.sectionSize(0), defaultSectionSize);
 
     // change section size on min change
     header.setMinimumSectionSize(sectionSizeMin);
@@ -3408,16 +3408,16 @@ void tst_QHeaderView::testMinMaxSectionSize()
     header.resizeSection(0, sectionSizeMin);
     QCOMPARE(header.sectionSize(0), sectionSizeMin);
     header.setMinimumSectionSize(defaultSectionSize);
-    QTRY_COMPARE(header.sectionSize(0), defaultSectionSize);
+    BOBUIRY_COMPARE(header.sectionSize(0), defaultSectionSize);
 }
 
 void tst_QHeaderView::testResetCachedSizeHint()
 {
-    QtTestModel model(10, 10);
-    QTableView tv;
+    BobUITestModel model(10, 10);
+    BOBUIableView tv;
     tv.setModel(&model);
     tv.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&tv));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tv));
 
     QSize s1 = tv.horizontalHeader()->sizeHint();
     model.setMultiLineHeader(true);
@@ -3449,33 +3449,33 @@ protected:
 
 void tst_QHeaderView::statusTips()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
-    StatusTipHeaderView headerView(Qt::Horizontal);
-    QtTestModel model(5, 5);
+    StatusTipHeaderView headerView(BobUI::Horizontal);
+    BobUITestModel model(5, 5);
     headerView.setModel(&model);
     headerView.viewport()->setMouseTracking(true);
     headerView.setGeometry(QRect(QPoint(QGuiApplication::primaryScreen()->geometry().center() - QPoint(250, 250)),
                            QSize(500, 500)));
     headerView.show();
-    QVERIFY(QTest::qWaitForWindowActive(&headerView));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&headerView));
 
     // Ensure it is moved away first and then moved to the relevant section
-    QTest::mouseMove(&headerView,
+    BOBUIest::mouseMove(&headerView,
                      headerView.rect().bottomLeft() + QPoint(20, 20));
     QPoint centerPoint = QRect(headerView.sectionPosition(0), 0,
                                headerView.sectionSize(0), headerView.height()).center();
-    QTest::mouseMove(headerView.windowHandle(), centerPoint);
-    QTRY_VERIFY(headerView.gotStatusTipEvent);
+    BOBUIest::mouseMove(headerView.windowHandle(), centerPoint);
+    BOBUIRY_VERIFY(headerView.gotStatusTipEvent);
     QCOMPARE(headerView.statusTipText, QLatin1String("[0,0,0] -- Header"));
 
     headerView.gotStatusTipEvent = false;
     headerView.statusTipText.clear();
     centerPoint = QRect(headerView.sectionPosition(1), 0,
                         headerView.sectionSize(1), headerView.height()).center();
-    QTest::mouseMove(headerView.windowHandle(), centerPoint);
-    QTRY_VERIFY(headerView.gotStatusTipEvent);
+    BOBUIest::mouseMove(headerView.windowHandle(), centerPoint);
+    BOBUIRY_VERIFY(headerView.gotStatusTipEvent);
     QCOMPARE(headerView.statusTipText, QLatin1String("[0,1,0] -- Header"));
 }
 
@@ -3483,7 +3483,7 @@ void tst_QHeaderView::testRemovingColumnsViaLayoutChanged()
 {
     const int persistentSectionSize = 101;
 
-    QtTestModel model(5, 5);
+    BobUITestModel model(5, 5);
     view->setModel(&model);
     for (int i = 0; i < model.cols; ++i)
         view->resizeSection(i, persistentSectionSize + i);
@@ -3495,8 +3495,8 @@ void tst_QHeaderView::testRemovingColumnsViaLayoutChanged()
 
 void tst_QHeaderView::testModelMovingColumns()
 {
-    QtTestModel model(10, 10);
-    QHeaderView hv(Qt::Horizontal);
+    BobUITestModel model(10, 10);
+    QHeaderView hv(BobUI::Horizontal);
     hv.setModel(&model);
     hv.resizeSections(QHeaderView::ResizeToContents);
     hv.show();
@@ -3513,8 +3513,8 @@ void tst_QHeaderView::testModelMovingColumns()
 
 void tst_QHeaderView::testModelMovingRows()
 {
-    QtTestModel model(10, 10);
-    QHeaderView hv(Qt::Vertical);
+    BobUITestModel model(10, 10);
+    QHeaderView hv(BobUI::Vertical);
     hv.setModel(&model);
     hv.resizeSections(QHeaderView::ResizeToContents);
     hv.show();
@@ -3544,7 +3544,7 @@ struct BasicModel : public QStandardItemModel
     }
 };
 
-struct TableViewWithBasicModel : public QTableView
+struct TableViewWithBasicModel : public BOBUIableView
 {
     TableViewWithBasicModel()
     {
@@ -3691,21 +3691,21 @@ public:
 
     QVariant data(const QModelIndex &i, int role) const override
     {
-        return (role == Qt::DisplayRole) ? QString("R: %1, C: %2").arg(i.row()).arg(i.column()) : QVariant();
+        return (role == BobUI::DisplayRole) ? QString("R: %1, C: %2").arg(i.row()).arg(i.column()) : QVariant();
     }
 
-    QVariant headerData(int /*section*/, Qt::Orientation /*orientation*/, int role = Qt::DisplayRole) const override
+    QVariant headerData(int /*section*/, BobUI::Orientation /*orientation*/, int role = BobUI::DisplayRole) const override
     {
-        return (role == Qt::SizeHintRole) ? QSize(1, 1) : QVariant();
+        return (role == BobUI::SizeHintRole) ? QSize(1, 1) : QVariant();
     }
 };
 
 // Custom table view that sets the cell sizes based on a property
-class SpecialResizeModeTableView : public QTableView
+class SpecialResizeModeTableView : public BOBUIableView
 {
     Q_OBJECT
 public:
-    SpecialResizeModeTableView(QWidget *parent = nullptr) : QTableView(parent)
+    SpecialResizeModeTableView(QWidget *parent = nullptr) : BOBUIableView(parent)
     {
         QHeaderView *hHeader = horizontalHeader();
         QHeaderView *vHeader = verticalHeader();
@@ -3750,7 +3750,7 @@ void tst_QHeaderView::setModelWithAutoSizeWillSwitchToMemoryMode()
     v.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     v.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&v));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&v));
 
     auto *model = new SpecialResizeModeTestModel(&v);
     v.setModel(model);
@@ -3779,8 +3779,8 @@ void tst_QHeaderView::tableViewResizeSectionsWillSwitchToMemoryMode()
 
 void tst_QHeaderView::setDefaultSectionSizeRespectsColumnWidth()
 {
-    QTreeWidget tree;
-    tree.setHeaderItem(new QTreeWidgetItem({"Col 0", "Col 1", "Col 2"}));
+    BOBUIreeWidget tree;
+    tree.setHeaderItem(new BOBUIreeWidgetItem({"Col 0", "Col 1", "Col 2"}));
     tree.header()->setStretchLastSection(false);
 
     int columnWidths[3] = {};
@@ -3789,20 +3789,20 @@ void tst_QHeaderView::setDefaultSectionSizeRespectsColumnWidth()
         tree.setColumnWidth(c, columnWidths[c]);
     }
     tree.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&tree));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tree));
 
     for (int c = 0; c < tree.columnCount(); ++c)
-        QTRY_COMPARE(tree.columnWidth(c), columnWidths[c]);
+        BOBUIRY_COMPARE(tree.columnWidth(c), columnWidths[c]);
 
     // trigger a style change event
-    tree.setStyleSheet("QTreeView { qproperty-headerHidden: true }");
-    QTRY_COMPARE(tree.isHeaderHidden(), true);
-    tree.setStyleSheet("QTreeView { qproperty-headerHidden: false }");
-    QTRY_COMPARE(tree.isHeaderHidden(), false);
+    tree.setStyleSheet("BOBUIreeView { qproperty-headerHidden: true }");
+    BOBUIRY_COMPARE(tree.isHeaderHidden(), true);
+    tree.setStyleSheet("BOBUIreeView { qproperty-headerHidden: false }");
+    BOBUIRY_COMPARE(tree.isHeaderHidden(), false);
 
     for (int c = 0; c < tree.columnCount(); ++c)
-        QTRY_COMPARE(tree.columnWidth(c), columnWidths[c]);
+        BOBUIRY_COMPARE(tree.columnWidth(c), columnWidths[c]);
 }
 
-QTEST_MAIN(tst_QHeaderView)
+BOBUIEST_MAIN(tst_QHeaderView)
 #include "tst_qheaderview.moc"

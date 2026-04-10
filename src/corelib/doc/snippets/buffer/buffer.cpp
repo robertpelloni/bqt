@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QBuffer>
 #include <QPalette>
@@ -11,7 +11,7 @@ static void main_snippet()
     char ch;
 
     buffer.open(QBuffer::ReadWrite);
-    buffer.write("Qt rocks!");
+    buffer.write("BobUI rocks!");
     buffer.seek(0);
     buffer.getChar(&ch);  // ch == 'Q'
     buffer.getChar(&ch);  // ch == 't'

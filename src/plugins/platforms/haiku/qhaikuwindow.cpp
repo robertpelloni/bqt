@@ -1,19 +1,19 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qhaikuwindow.h"
 
 #include "private/qguiapplication_p.h"
 
 #include <QCoreApplication>
-#include <QThread>
+#include <BOBUIhread>
 #include <QWindow>
 #include <qpa/qwindowsysteminterface.h>
 
 #include <Rect.h>
 #include <Window.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     DefaultWindowWidth = 160,
@@ -24,7 +24,7 @@ HaikuWindowProxy::HaikuWindowProxy(QWindow *window, const QRect &rect, QObject *
     : QObject(parent)
     , BWindow(BRect(rect.x(), rect.y(), rect.right() - 1, rect.bottom() - 1),
               window->title().toUtf8(), B_NO_BORDER_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
-    , m_qtCalledZoom(false)
+    , m_bobuiCalledZoom(false)
     , m_zoomInProgress(false)
 {
 }
@@ -59,7 +59,7 @@ void HaikuWindowProxy::Zoom(BPoint pos, float width, float height)
     BWindow::Zoom(pos, width, height);
 
     // Only notify about Zoom invocations from the Haiku windowing system
-    if (!m_qtCalledZoom)
+    if (!m_bobuiCalledZoom)
         Q_EMIT zoomed();
 }
 
@@ -69,21 +69,21 @@ bool HaikuWindowProxy::QuitRequested()
 
     // Return false to prevent Haiku windowing system to clean up
     // the BWindow and BView instances. We will do that ourself when
-    // Qt invokes the dtor of QHaikuWindow
+    // BobUI invokes the dtor of QHaikuWindow
     return false;
 }
 
-void HaikuWindowProxy::zoomByQt()
+void HaikuWindowProxy::zoomByBobUI()
 {
-    m_qtCalledZoom = true;
+    m_bobuiCalledZoom = true;
     BWindow::Zoom();
-    m_qtCalledZoom = false;
+    m_bobuiCalledZoom = false;
 }
 
 QHaikuWindow::QHaikuWindow(QWindow *window)
     : QPlatformWindow(window)
     , m_window(nullptr)
-    , m_windowState(Qt::WindowNoState)
+    , m_windowState(BobUI::WindowNoState)
 {
     const QRect rect = initialGeometry(window, window->geometry(), DefaultWindowWidth, DefaultWindowHeight);
 
@@ -93,7 +93,7 @@ QHaikuWindow::QHaikuWindow(QWindow *window)
     connect(haikuWindow, SIGNAL(windowActivated(bool)), SLOT(haikuWindowActivated(bool)));
     connect(haikuWindow, SIGNAL(minimized(bool)), SLOT(haikuWindowMinimized(bool)));
     connect(haikuWindow, SIGNAL(zoomed()), SLOT(haikuWindowZoomed()));
-    connect(haikuWindow, SIGNAL(quitRequested()), SLOT(haikuWindowQuitRequested()), Qt::BlockingQueuedConnection);
+    connect(haikuWindow, SIGNAL(quitRequested()), SLOT(haikuWindowQuitRequested()), BobUI::BlockingQueuedConnection);
 
     m_window = haikuWindow;
 
@@ -169,34 +169,34 @@ void QHaikuWindow::requestActivateWindow()
     m_window->Activate(true);
 }
 
-void QHaikuWindow::setWindowState(Qt::WindowStates state)
+void QHaikuWindow::setWindowState(BobUI::WindowStates state)
 {
     if (m_windowState == state)
         return;
 
-    const Qt::WindowStates oldState = m_windowState;
+    const BobUI::WindowStates oldState = m_windowState;
 
     m_windowState = state;
 
-    if (m_windowState & Qt::WindowMinimized)
+    if (m_windowState & BobUI::WindowMinimized)
         m_window->Minimize(true);
-    else if (m_windowState & Qt::WindowMaximized)
-        m_window->zoomByQt();
-    else if (oldState & Qt::WindowMinimized)
+    else if (m_windowState & BobUI::WindowMaximized)
+        m_window->zoomByBobUI();
+    else if (oldState & BobUI::WindowMinimized)
         m_window->Minimize(false); // undo minimize
-    else if (oldState & Qt::WindowMaximized)
-        m_window->zoomByQt(); // undo zoom
+    else if (oldState & BobUI::WindowMaximized)
+        m_window->zoomByBobUI(); // undo zoom
 }
 
-void QHaikuWindow::setWindowFlags(Qt::WindowFlags flags)
+void QHaikuWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
-    const Qt::WindowType type = static_cast<Qt::WindowType>(static_cast<int>(flags & Qt::WindowType_Mask));
+    const BobUI::WindowType type = static_cast<BobUI::WindowType>(static_cast<int>(flags & BobUI::WindowType_Mask));
 
-    const bool isPopup = (type == Qt::Popup);
-    const bool isSplashScreen = (type == Qt::SplashScreen);
-    const bool isDialog = ((type == Qt::Dialog) || (type == Qt::Sheet) || (type == Qt::MSWindowsFixedSizeDialogHint));
-    const bool isTool = ((type == Qt::Tool) || (type == Qt::Drawer));
-    const bool isToolTip = (type == Qt::ToolTip);
+    const bool isPopup = (type == BobUI::Popup);
+    const bool isSplashScreen = (type == BobUI::SplashScreen);
+    const bool isDialog = ((type == BobUI::Dialog) || (type == BobUI::Sheet) || (type == BobUI::MSWindowsFixedSizeDialogHint));
+    const bool isTool = ((type == BobUI::Tool) || (type == BobUI::Drawer));
+    const bool isToolTip = (type == BobUI::ToolTip);
 
     window_look wlook = B_TITLED_WINDOW_LOOK;
     window_feel wfeel = B_NORMAL_WINDOW_FEEL;
@@ -214,38 +214,38 @@ void QHaikuWindow::setWindowFlags(Qt::WindowFlags flags)
     if (isPopup) {
         wlook = B_NO_BORDER_WINDOW_LOOK;
         wflag |= (B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT | B_AVOID_FOCUS);
-        flags |= Qt::WindowStaysOnTopHint;
+        flags |= BobUI::WindowStaysOnTopHint;
     }
 
     if (isDialog) {
-        if (window()->modality() == Qt::WindowModal)
+        if (window()->modality() == BobUI::WindowModal)
             wfeel = B_MODAL_SUBSET_WINDOW_FEEL;
-        else if (window()->modality() == Qt::ApplicationModal)
+        else if (window()->modality() == BobUI::ApplicationModal)
             wfeel = B_MODAL_APP_WINDOW_FEEL;
     }
 
     if (isToolTip) {
         wlook = B_NO_BORDER_WINDOW_LOOK;
         wflag |= (B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FOCUS);
-        flags |= Qt::WindowStaysOnTopHint;
+        flags |= BobUI::WindowStaysOnTopHint;
     }
 
-    if (flags & Qt::FramelessWindowHint)
+    if (flags & BobUI::FramelessWindowHint)
         wlook = B_NO_BORDER_WINDOW_LOOK;
 
-    if (flags & Qt::MSWindowsFixedSizeDialogHint)
+    if (flags & BobUI::MSWindowsFixedSizeDialogHint)
         wflag |= (B_NOT_RESIZABLE | B_NOT_ZOOMABLE);
 
-    if (flags & Qt::CustomizeWindowHint) {
-        if (!(flags & Qt::WindowMinimizeButtonHint))
+    if (flags & BobUI::CustomizeWindowHint) {
+        if (!(flags & BobUI::WindowMinimizeButtonHint))
             wflag |= B_NOT_MINIMIZABLE;
-        if (!(flags & Qt::WindowMaximizeButtonHint))
+        if (!(flags & BobUI::WindowMaximizeButtonHint))
             wflag |= B_NOT_ZOOMABLE;
-        if (!(flags & Qt::WindowCloseButtonHint))
+        if (!(flags & BobUI::WindowCloseButtonHint))
             wflag |= B_NOT_CLOSABLE;
     }
 
-    if (flags & Qt::WindowStaysOnTopHint)
+    if (flags & BobUI::WindowStaysOnTopHint)
         wfeel = B_FLOATING_ALL_WINDOW_FEEL;
 
     m_window->SetLook(wlook);
@@ -284,9 +284,9 @@ void QHaikuWindow::haikuWindowResized(const QSize &size, bool zoomInProgress)
     QWindowSystemInterface::handleGeometryChange(window(), newGeometry);
     QWindowSystemInterface::handleExposeEvent(window(), QRect(QPoint(0, 0), newGeometry.size()));
 
-    if ((m_windowState == Qt::WindowMaximized) && !zoomInProgress) {
+    if ((m_windowState == BobUI::WindowMaximized) && !zoomInProgress) {
         // the user has resized the window while maximized -> reset maximized flag
-        m_windowState = Qt::WindowNoState;
+        m_windowState = BobUI::WindowNoState;
 
         QWindowSystemInterface::handleWindowStateChanged(window(), m_windowState);
     }
@@ -299,14 +299,14 @@ void QHaikuWindow::haikuWindowActivated(bool activated)
 
 void QHaikuWindow::haikuWindowMinimized(bool minimize)
 {
-    m_windowState = (minimize ? Qt::WindowMinimized : Qt::WindowNoState);
+    m_windowState = (minimize ? BobUI::WindowMinimized : BobUI::WindowNoState);
 
     QWindowSystemInterface::handleWindowStateChanged(window(), m_windowState);
 }
 
 void QHaikuWindow::haikuWindowZoomed()
 {
-    m_windowState = (m_windowState == Qt::WindowMaximized ? Qt::WindowNoState : Qt::WindowMaximized);
+    m_windowState = (m_windowState == BobUI::WindowMaximized ? BobUI::WindowNoState : BobUI::WindowMaximized);
 
     QWindowSystemInterface::handleWindowStateChanged(window(), m_windowState);
 }
@@ -316,18 +316,18 @@ void QHaikuWindow::haikuWindowQuitRequested()
     QWindowSystemInterface::handleCloseEvent(window());
 }
 
-void QHaikuWindow::haikuMouseEvent(const QPoint &localPosition, const QPoint &globalPosition, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, Qt::MouseEventSource source)
+void QHaikuWindow::haikuMouseEvent(const QPoint &localPosition, const QPoint &globalPosition, BobUI::MouseButtons buttons, BobUI::KeyboardModifiers modifiers, BobUI::MouseEventSource source)
 {
     QWindowSystemInterface::handleMouseEvent(window(), localPosition, globalPosition,
                                              buttons, modifiers, source);
 }
 
-void QHaikuWindow::haikuWheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, Qt::Orientation orientation, Qt::KeyboardModifiers modifiers)
+void QHaikuWindow::haikuWheelEvent(const QPoint &localPosition, const QPoint &globalPosition, int delta, BobUI::Orientation orientation, BobUI::KeyboardModifiers modifiers)
 {
     QWindowSystemInterface::handleWheelEvent(window(), localPosition, globalPosition, delta, orientation, modifiers);
 }
 
-void QHaikuWindow::haikuKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text)
+void QHaikuWindow::haikuKeyEvent(QEvent::Type type, int key, BobUI::KeyboardModifiers modifiers, const QString &text)
 {
     QWindowSystemInterface::handleKeyEvent(window(), type, key, modifiers, text);
 }
@@ -347,4 +347,4 @@ void QHaikuWindow::haikuDrawRequest(const QRect &rect)
     QWindowSystemInterface::handleExposeEvent(window(), QRegion(rect));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

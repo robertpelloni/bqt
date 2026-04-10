@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
-#if QT_CONFIG(style_windowsvista)
+#if BOBUI_CONFIG(style_windowsvista)
 
 #include "qwizard_win_p.h"
 #include <private/qapplication_p.h>
@@ -14,12 +14,12 @@
 #include "qwizard.h"
 #include "qpaintengine.h"
 #include "qapplication.h"
-#include <QtCore/QOperatingSystemVersion>
-#include <QtCore/QVariant>
-#include <QtCore/QDebug>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QWindow>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUICore/QOperatingSystemVersion>
+#include <BobUICore/QVariant>
+#include <BobUICore/QDebug>
+#include <BobUIGui/QMouseEvent>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
 #include <uxtheme.h>
 #include <vssym32.h>
@@ -32,7 +32,7 @@ Q_DECLARE_METATYPE(QMargins)
 #  define WM_DWMCOMPOSITIONCHANGED 0x031E
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 qreal QVistaHelper::m_devicePixelRatio = 1.0;
 
@@ -43,10 +43,10 @@ qreal QVistaHelper::m_devicePixelRatio = 1.0;
 QVistaBackButton::QVistaBackButton(QWidget *widget)
     : QAbstractButton(widget)
 {
-    setFocusPolicy(Qt::NoFocus);
+    setFocusPolicy(BobUI::NoFocus);
     // Native dialogs use ALT-Left even in RTL mode, so do the same, even if it might be counter-intuitive.
-#if QT_CONFIG(shortcut)
-    setShortcut(QKeySequence(Qt::ALT | Qt::Key_Left));
+#if BOBUI_CONFIG(shortcut)
+    setShortcut(QKeySequence(BobUI::ALT | BobUI::Key_Left));
 #endif
 }
 
@@ -102,7 +102,7 @@ void QVistaBackButton::paintEvent(QPaintEvent *)
         state = NAV_BB_HOT;
 
     DrawThemeBackground(theme, hdc,
-                        layoutDirection() == Qt::LeftToRight ? NAV_BACKBUTTON : NAV_FORWARDBUTTON,
+                        layoutDirection() == BobUI::LeftToRight ? NAV_BACKBUTTON : NAV_FORWARDBUTTON,
                         state, &clipRect, &clipRect);
 }
 
@@ -177,7 +177,7 @@ bool QVistaHelper::setDWMTitleBar(TitleBarChangeType type)
     return false;
 }
 
-Q_GUI_EXPORT HICON qt_pixmapToWinHICON(const QPixmap &);
+Q_GUI_EXPORT HICON bobui_pixmapToWinHICON(const QPixmap &);
 
 static LOGFONT getCaptionLogFont(HANDLE hTheme)
 {
@@ -229,7 +229,7 @@ void QVistaHelper::drawTitleBar(QPainter *painter)
     int textHeight = brect.height() + 2 * glowOffset;
     int textWidth = brect.width() + 2 * glowOffset;
 
-    const int titleLeft = (wizard->layoutDirection() == Qt::LeftToRight
+    const int titleLeft = (wizard->layoutDirection() == BobUI::LeftToRight
                            ? titleOffset() - glowOffset
                            : wizard->width() - titleOffset() - textWidth + glowOffset);
 
@@ -239,20 +239,20 @@ void QVistaHelper::drawTitleBar(QPainter *painter)
     } else {
         painter->save();
         painter->setFont(font);
-        painter->drawText(textRectangle, Qt::AlignVCenter | Qt::AlignHCenter, text);
+        painter->drawText(textRectangle, BobUI::AlignVCenter | BobUI::AlignHCenter, text);
         painter->restore();
     }
 
     const QIcon windowIcon = wizard->windowIcon();
     if (!windowIcon.isNull()) {
         const int size = QVistaHelper::iconSize(wizard);
-        const int iconLeft = (wizard->layoutDirection() == Qt::LeftToRight
+        const int iconLeft = (wizard->layoutDirection() == BobUI::LeftToRight
                               ? leftMargin(wizard)
                               : wizard->width() - leftMargin(wizard) - size);
 
         const QPoint pos(origin.x() + iconLeft, origin.y() + verticalCenter - size / 2);
         const QPoint posDp = pos * QVistaHelper::m_devicePixelRatio;
-        const HICON hIcon = qt_pixmapToWinHICON(windowIcon.pixmap(QSize(size, size), QVistaHelper::m_devicePixelRatio));
+        const HICON hIcon = bobui_pixmapToWinHICON(windowIcon.pixmap(QSize(size, size), QVistaHelper::m_devicePixelRatio));
         DrawIconEx(hdc, posDp.x(), posDp.y(), hIcon, 0, 0, 0, NULL, DI_NORMAL | DI_COMPAT);
         DestroyIcon(hIcon);
     }
@@ -307,11 +307,11 @@ bool QVistaHelper::winEvent(MSG* msg, qintptr *result)
 
 void QVistaHelper::setMouseCursor(QPoint pos)
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (rtTop.contains(pos))
-        wizard->setCursor(Qt::SizeVerCursor);
+        wizard->setCursor(BobUI::SizeVerCursor);
     else
-        wizard->setCursor(Qt::ArrowCursor);
+        wizard->setCursor(BobUI::ArrowCursor);
 #endif
 }
 
@@ -360,7 +360,7 @@ void QVistaHelper::paintEvent(QPaintEvent *event)
 
 void QVistaHelper::mouseMoveEvent(QMouseEvent *event)
 {
-    if (wizard->windowState() & Qt::WindowMaximized) {
+    if (wizard->windowState() & BobUI::WindowMaximized) {
         event->ignore();
         return;
     }
@@ -396,7 +396,7 @@ void QVistaHelper::mousePressEvent(QMouseEvent *event)
 {
     change = noChange;
 
-    if (event->button() != Qt::LeftButton || wizard->windowState() & Qt::WindowMaximized) {
+    if (event->button() != BobUI::LeftButton || wizard->windowState() & BobUI::WindowMaximized) {
         event->ignore();
         return;
     }
@@ -452,7 +452,7 @@ bool QVistaHelper::eventFilter(QObject *obj, QEvent *event)
      } else if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
 
-        if (mouseEvent->button() == Qt::LeftButton) {
+        if (mouseEvent->button() == BobUI::LeftButton) {
             qintptr result;
             MSG msg;
             msg.message = WM_NCHITTEST;
@@ -467,7 +467,7 @@ bool QVistaHelper::eventFilter(QObject *obj, QEvent *event)
      } else if (event->type() == QEvent::MouseButtonRelease) {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
 
-        if (mouseEvent->button() == Qt::LeftButton) {
+        if (mouseEvent->button() == BobUI::LeftButton) {
             qintptr result;
             MSG msg;
             msg.message = WM_NCHITTEST;
@@ -620,6 +620,6 @@ int QVistaHelper::topOffset(const QPaintDevice *device)
     return aeroOffset + titleBarSize();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // style_windowsvista

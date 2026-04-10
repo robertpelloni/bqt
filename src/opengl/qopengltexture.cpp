@@ -1,18 +1,18 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopengltexture.h"
 #include "qopengltexture_p.h"
 #include "qopengltexturehelper_p.h"
 #include "qopenglfunctions.h"
-#include <QtGui/qcolor.h>
-#include <QtGui/qopenglcontext.h>
-#include <QtCore/qdebug.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUICore/qdebug.h>
 #include <private/qobject_p.h>
 #include <private/qopenglcontext_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //this is to work around GL_TEXTURE_WRAP_R_OES which also has 0x8072 as value
 #if !defined(GL_TEXTURE_WRAP_R)
@@ -2036,7 +2036,7 @@ QOpenGLTexture *QOpenGLTexturePrivate::createTextureView(QOpenGLTexture::Target 
 
 /*!
     \class QOpenGLTexture
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.2
     \wrapper
     \brief The QOpenGLTexture class encapsulates an OpenGL texture object.
@@ -2227,7 +2227,7 @@ QOpenGLTexture *QOpenGLTexturePrivate::createTextureView(QOpenGLTexture::Target 
     \value D32 Equivalent to GL_DEPTH_COMPONENT32
     \value D32F Equivalent to GL_DEPTH_COMPONENT32F
     \value D32FS8X24 Equivalent to GL_DEPTH32F_STENCIL8
-    \value S8 Equivalent to GL_STENCIL_INDEX8. Introduced in Qt 5.4
+    \value S8 Equivalent to GL_STENCIL_INDEX8. Introduced in BobUI 5.4
 
     \value RGB_DXT1 Equivalent to GL_COMPRESSED_RGB_S3TC_DXT1_EXT
     \value RGBA_DXT1 Equivalent to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
@@ -2326,7 +2326,7 @@ QOpenGLTexture *QOpenGLTexturePrivate::createTextureView(QOpenGLTexture::Target 
     \value BGR_Integer Equivalent to GL_BGR_INTEGER
     \value RGBA_Integer Equivalent to GL_RGBA_INTEGER
     \value BGRA_Integer Equivalent to GL_BGRA_INTEGER
-    \value Stencil Equivalent to GL_STENCIL_INDEX. Introduced in Qt 5.4
+    \value Stencil Equivalent to GL_STENCIL_INDEX. Introduced in BobUI 5.4
     \value Depth Equivalent to GL_DEPTH_COMPONENT
     \value DepthStencil Equivalent to GL_DEPTH_STENCIL
     \value Alpha Equivalent to GL_ALPHA (OpenGL ES 2 only)
@@ -2363,8 +2363,8 @@ QOpenGLTexture *QOpenGLTexturePrivate::createTextureView(QOpenGLTexture::Target 
     \value UInt32_RGBA8_Rev Equivalent to GL_UNSIGNED_INT_8_8_8_8_REV
     \value UInt32_RGB10A2 Equivalent to GL_UNSIGNED_INT_10_10_10_2
     \value UInt32_RGB10A2_Rev Equivalent to GL_UNSIGNED_INT_2_10_10_10_REV
-    \value UInt32_D24S8 Equivalent to GL_UNSIGNED_INT_24_8. Introduced in Qt 5.4
-    \value Float32_D32_UInt32_S8_X24 Equivalent to GL_FLOAT_32_UNSIGNED_INT_24_8_REV. Introduced in Qt 5.4
+    \value UInt32_D24S8 Equivalent to GL_UNSIGNED_INT_24_8. Introduced in BobUI 5.4
+    \value Float32_D32_UInt32_S8_X24 Equivalent to GL_FLOAT_32_UNSIGNED_INT_24_8_REV. Introduced in BobUI 5.4
 */
 
 /*!
@@ -3744,7 +3744,7 @@ bool QOpenGLTexture::hasFeature(Feature feature)
 
     bool supported = false;
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!ctx->isOpenGLES()) {
         switch (feature) {
         case ImmutableMultisampleStorage:
@@ -3836,7 +3836,7 @@ bool QOpenGLTexture::hasFeature(Feature feature)
         switch (feature) {
         case ImmutableStorage:
             supported = (f.version() >= std::pair(3, 0) || ctx->hasExtension(QByteArrayLiteral("GL_EXT_texture_storage")))
-                && !(renderer && strstr(renderer, "Mali")); // do not use on Mali: QTBUG-45106
+                && !(renderer && strstr(renderer, "Mali")); // do not use on Mali: BOBUIBUG-45106
             break;
 
         case ImmutableMultisampleStorage:
@@ -3906,7 +3906,7 @@ bool QOpenGLTexture::hasFeature(Feature feature)
 /*!
     Sets the base mipmap level used for all texture lookups with this texture to \a baseLevel.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa mipBaseLevel(), setMipMaxLevel(), setMipLevelRange()
 */
 void QOpenGLTexture::setMipBaseLevel(int baseLevel)
@@ -3939,7 +3939,7 @@ int QOpenGLTexture::mipBaseLevel() const
 /*!
     Sets the maximum mipmap level used for all texture lookups with this texture to \a maxLevel.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa mipMaxLevel(), setMipBaseLevel(), setMipLevelRange()
 */
 void QOpenGLTexture::setMipMaxLevel(int maxLevel)
@@ -3972,7 +3972,7 @@ int QOpenGLTexture::mipMaxLevel() const
     Sets the range of mipmap levels that can be used for texture lookups with this texture
     to range from \a baseLevel to \a maxLevel.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa setMipBaseLevel(), setMipMaxLevel(), mipLevelRange()
 */
 void QOpenGLTexture::setMipLevelRange(int baseLevel, int maxLevel)
@@ -4091,12 +4091,12 @@ void QOpenGLTexture::generateMipMaps(int baseLevel, bool resetBaseLevel)
 
     This function maps \a component to the output \a value.
 
-    \note This function has no effect on Mac and Qt built for OpenGL ES 2.
+    \note This function has no effect on Mac and BobUI built for OpenGL ES 2.
     \sa swizzleMask()
 */
 void QOpenGLTexture::setSwizzleMask(SwizzleComponent component, SwizzleValue value)
 {
-#if !defined(Q_OS_MAC) && !QT_CONFIG(opengles2)
+#if !defined(Q_OS_MAC) && !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4125,7 +4125,7 @@ void QOpenGLTexture::setSwizzleMask(SwizzleComponent component, SwizzleValue val
 void QOpenGLTexture::setSwizzleMask(SwizzleValue r, SwizzleValue g,
                                     SwizzleValue b, SwizzleValue a)
 {
-#if !defined(Q_OS_MAC) && !QT_CONFIG(opengles2)
+#if !defined(Q_OS_MAC) && !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4179,13 +4179,13 @@ QOpenGLTexture::SwizzleValue QOpenGLTexture::swizzleMask(SwizzleComponent compon
     shader will access the depth component as a single float, as normal. But when
     the parameter is set to StencilMode, the shader will access the stencil component.
 
-    \note This function has no effect on Mac and Qt built for OpenGL ES 2.
+    \note This function has no effect on Mac and BobUI built for OpenGL ES 2.
     \since 5.4
     \sa depthStencilMode()
 */
 void QOpenGLTexture::setDepthStencilMode(QOpenGLTexture::DepthStencilMode mode)
 {
-#if !defined(Q_OS_MAC) && !QT_CONFIG(opengles2)
+#if !defined(Q_OS_MAC) && !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4468,7 +4468,7 @@ QOpenGLTexture::WrapMode QOpenGLTexture::wrapMode(QOpenGLTexture::CoordinateDire
 /*!
     Sets the border color of the texture to \a color.
 
-    \note This function has no effect on Mac and Qt built for OpenGL ES 2.
+    \note This function has no effect on Mac and BobUI built for OpenGL ES 2.
     \sa borderColor()
 */
 void QOpenGLTexture::setBorderColor(const QColor &color)
@@ -4484,7 +4484,7 @@ void QOpenGLTexture::setBorderColor(const QColor &color)
 */
 void QOpenGLTexture::setBorderColor(float r, float g, float b, float a)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4517,7 +4517,7 @@ void QOpenGLTexture::setBorderColor(float r, float g, float b, float a)
 */
 void QOpenGLTexture::setBorderColor(int r, int g, int b, int a)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4552,7 +4552,7 @@ void QOpenGLTexture::setBorderColor(int r, int g, int b, int a)
 */
 void QOpenGLTexture::setBorderColor(uint r, uint g, uint b, uint a)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4659,12 +4659,12 @@ void QOpenGLTexture::borderColor(unsigned int *border) const
     Sets the minimum level of detail to \a value. This limits the selection of highest
     resolution mipmap (lowest mipmap level). The default value is -1000.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa minimumLevelOfDetail(), setMaximumLevelOfDetail(), setLevelOfDetailRange()
 */
 void QOpenGLTexture::setMinimumLevelOfDetail(float value)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4696,12 +4696,12 @@ float QOpenGLTexture::minimumLevelOfDetail() const
     Sets the maximum level of detail to \a value. This limits the selection of lowest
     resolution mipmap (highest mipmap level). The default value is 1000.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa maximumLevelOfDetail(), setMinimumLevelOfDetail(), setLevelOfDetailRange()
 */
 void QOpenGLTexture::setMaximumLevelOfDetail(float value)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4732,12 +4732,12 @@ float QOpenGLTexture::maximumLevelOfDetail() const
 /*!
     Sets the minimum level of detail parameters to \a min and the maximum level
     to \a max.
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa levelOfDetailRange(), setMinimumLevelOfDetail(), setMaximumLevelOfDetail()
 */
 void QOpenGLTexture::setLevelOfDetailRange(float min, float max)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4774,12 +4774,12 @@ std::pair<float, float> QOpenGLTexture::levelOfDetailRange() const
     Increasing values for level of detail bias makes the overall images blurrier
     or smoother. Decreasing values make the overall images sharper.
 
-    \note This function has no effect on Qt built for OpenGL ES 2.
+    \note This function has no effect on BobUI built for OpenGL ES 2.
     \sa levelofDetailBias()
 */
 void QOpenGLTexture::setLevelofDetailBias(float bias)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGLTexture);
         d->create();
@@ -4806,7 +4806,7 @@ float QOpenGLTexture::levelofDetailBias() const
     return d->levelOfDetailBias;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QOpenGLTexture *t)
 {
     QDebugStateSaver saver(debug);
@@ -4840,8 +4840,8 @@ QDebug operator<<(QDebug debug, const QOpenGLTexture *t)
     debug << ')';
     return debug;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopengltexture.cpp"

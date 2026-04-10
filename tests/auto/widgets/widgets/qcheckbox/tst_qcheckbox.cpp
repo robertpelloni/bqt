@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QApplication>
 #include <QPixmap>
@@ -33,7 +33,7 @@ private slots:
 
 void tst_QCheckBox::initTestCase()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 }
 
@@ -45,38 +45,38 @@ void tst_QCheckBox::setChecked()
     testWidget.setChecked(true);
     QVERIFY(testWidget.isChecked());
     QVERIFY(testWidget.isChecked());
-    QVERIFY(testWidget.checkState() == Qt::Checked);
+    QVERIFY(testWidget.checkState() == BobUI::Checked);
 
     testWidget.setChecked(false);
     QVERIFY(!testWidget.isChecked());
     QVERIFY(!testWidget.isChecked());
-    QVERIFY(testWidget.checkState() == Qt::Unchecked);
+    QVERIFY(testWidget.checkState() == BobUI::Unchecked);
 
     testWidget.setChecked(false);
-    QTest::keyClick(&testWidget, ' ');
+    BOBUIest::keyClick(&testWidget, ' ');
     QVERIFY(testWidget.isChecked());
 
-    QTest::keyClick(&testWidget, ' ');
+    BOBUIest::keyClick(&testWidget, ' ');
     QVERIFY(!testWidget.isChecked());
 }
 
 void tst_QCheckBox::setCheckedSignal()
 {
     QCheckBox testWidget;
-    testWidget.setCheckState(Qt::Unchecked);
+    testWidget.setCheckState(BobUI::Unchecked);
     QSignalSpy checkStateChangedSpy(&testWidget, &QCheckBox::checkStateChanged);
-    testWidget.setCheckState(Qt::Checked);
-    testWidget.setCheckState(Qt::Checked);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 1);   // get signal only once
-    QCOMPARE(testWidget.checkState(), Qt::Checked);
-    testWidget.setCheckState(Qt::Unchecked);
-    testWidget.setCheckState(Qt::Unchecked);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 2);   // get signal only once
-    QCOMPARE(testWidget.checkState(), Qt::Unchecked);
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 3);   // get signal only once
-    QCOMPARE(testWidget.checkState(), Qt::PartiallyChecked);
+    testWidget.setCheckState(BobUI::Checked);
+    testWidget.setCheckState(BobUI::Checked);
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 1);   // get signal only once
+    QCOMPARE(testWidget.checkState(), BobUI::Checked);
+    testWidget.setCheckState(BobUI::Unchecked);
+    testWidget.setCheckState(BobUI::Unchecked);
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 2);   // get signal only once
+    QCOMPARE(testWidget.checkState(), BobUI::Unchecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 3);   // get signal only once
+    QCOMPARE(testWidget.checkState(), BobUI::PartiallyChecked);
 }
 
 void tst_QCheckBox::setTriState()
@@ -84,44 +84,44 @@ void tst_QCheckBox::setTriState()
     QCheckBox testWidget;
     testWidget.setTristate(true);
     QVERIFY(testWidget.isTristate());
-    QVERIFY(testWidget.checkState() == Qt::Unchecked);
+    QVERIFY(testWidget.checkState() == BobUI::Unchecked);
 
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    QVERIFY(testWidget.checkState() == Qt::PartiallyChecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    QVERIFY(testWidget.checkState() == BobUI::PartiallyChecked);
 
     testWidget.setChecked(true);
     QVERIFY(testWidget.isChecked());
-    QVERIFY(testWidget.checkState() == Qt::Checked);
+    QVERIFY(testWidget.checkState() == BobUI::Checked);
 
     testWidget.setChecked(false);
     QVERIFY(!testWidget.isChecked());
-    QVERIFY(testWidget.checkState() == Qt::Unchecked);
+    QVERIFY(testWidget.checkState() == BobUI::Unchecked);
 
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    QVERIFY(testWidget.checkState() == Qt::PartiallyChecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    QVERIFY(testWidget.checkState() == BobUI::PartiallyChecked);
 
     testWidget.setTristate(false);
     QVERIFY(!testWidget.isTristate());
 
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    QVERIFY(testWidget.checkState() == Qt::PartiallyChecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    QVERIFY(testWidget.checkState() == BobUI::PartiallyChecked);
 
     testWidget.setChecked(true);
-    QVERIFY(testWidget.checkState() == Qt::Checked);
+    QVERIFY(testWidget.checkState() == BobUI::Checked);
 
     testWidget.setChecked(false);
-    QVERIFY(testWidget.checkState() == Qt::Unchecked);
+    QVERIFY(testWidget.checkState() == BobUI::Unchecked);
 }
 
 void tst_QCheckBox::setText_data()
 {
-    QTest::addColumn<QString>("s1");
+    BOBUIest::addColumn<QString>("s1");
 
-    QTest::newRow("data0" ) << QString("This is a text");
-    QTest::newRow("data1" ) << QString("A");
-    QTest::newRow("data2" ) << QString("ABCDEFG ");
-    QTest::newRow("data3" ) << QString("Text\nwith a cr-lf");
-    QTest::newRow("data4" ) << QString("");
+    BOBUIest::newRow("data0" ) << QString("This is a text");
+    BOBUIest::newRow("data1" ) << QString("A");
+    BOBUIest::newRow("data2" ) << QString("ABCDEFG ");
+    BOBUIest::newRow("data3" ) << QString("Text\nwith a cr-lf");
+    BOBUIest::newRow("data4" ) << QString("");
 }
 
 void tst_QCheckBox::setText()
@@ -177,12 +177,12 @@ void tst_QCheckBox::pressed()
     testWidget.setDown(false);
     QVERIFY(!testWidget.isChecked());
 
-    QTest::keyPress(&testWidget, Qt::Key_Space);
+    BOBUIest::keyPress(&testWidget, BobUI::Key_Space);
     QVERIFY(press_count == 1);
     QVERIFY(release_count == 0);
     QVERIFY(!testWidget.isChecked());
 
-    QTest::keyRelease(&testWidget, Qt::Key_Space);
+    BOBUIest::keyRelease(&testWidget, BobUI::Key_Space);
     QVERIFY(press_count == 1);
     QVERIFY(release_count == 1);
     QVERIFY(testWidget.isChecked());
@@ -211,44 +211,44 @@ void tst_QCheckBox::toggled()
 void tst_QCheckBox::checkStateChanged()
 {
     QCheckBox testWidget;
-    QCOMPARE(testWidget.checkState(), Qt::Unchecked);
+    QCOMPARE(testWidget.checkState(), BobUI::Unchecked);
 
-    Qt::CheckState cur_state = Qt::Unchecked;
+    BobUI::CheckState cur_state = BobUI::Unchecked;
     QSignalSpy checkStateChangedSpy(&testWidget, &QCheckBox::checkStateChanged);
-#if QT_DEPRECATED_SINCE(6, 9)
-    QT_IGNORE_DEPRECATIONS(
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+    BOBUI_IGNORE_DEPRECATIONS(
     QSignalSpy stateChangedSpy(&testWidget, &QCheckBox::stateChanged);
     )
 #endif
     connect(&testWidget, &QCheckBox::checkStateChanged, this, [&](auto state) { cur_state = state; });
     testWidget.setChecked(true);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 1);
-#if QT_DEPRECATED_SINCE(6, 9)
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 1);
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     QCOMPARE(stateChangedSpy.size(), 1);
 #endif
-    QCOMPARE(cur_state, Qt::Checked);
-    QCOMPARE(testWidget.checkState(), Qt::Checked);
+    QCOMPARE(cur_state, BobUI::Checked);
+    QCOMPARE(testWidget.checkState(), BobUI::Checked);
 
     testWidget.setChecked(false);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 2);
-#if QT_DEPRECATED_SINCE(6, 9)
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 2);
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     QCOMPARE(stateChangedSpy.size(), 2);
 #endif
-    QCOMPARE(cur_state, Qt::Unchecked);
-    QCOMPARE(testWidget.checkState(), Qt::Unchecked);
+    QCOMPARE(cur_state, BobUI::Unchecked);
+    QCOMPARE(testWidget.checkState(), BobUI::Unchecked);
 
-    testWidget.setCheckState(Qt::PartiallyChecked);
-    QTRY_COMPARE(checkStateChangedSpy.size(), 3);
-#if QT_DEPRECATED_SINCE(6, 9)
+    testWidget.setCheckState(BobUI::PartiallyChecked);
+    BOBUIRY_COMPARE(checkStateChangedSpy.size(), 3);
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     QCOMPARE(stateChangedSpy.size(), 3);
 #endif
-    QCOMPARE(cur_state, Qt::PartiallyChecked);
-    QCOMPARE(testWidget.checkState(), Qt::PartiallyChecked);
+    QCOMPARE(cur_state, BobUI::PartiallyChecked);
+    QCOMPARE(testWidget.checkState(), BobUI::PartiallyChecked);
 
-    testWidget.setCheckState(Qt::PartiallyChecked);
+    testWidget.setCheckState(BobUI::PartiallyChecked);
     QCoreApplication::processEvents();
     QCOMPARE(checkStateChangedSpy.size(), 3);
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     QCOMPARE(stateChangedSpy.size(), 3);
 #endif
 }
@@ -272,5 +272,5 @@ void tst_QCheckBox::minimumSizeHint()
     QCOMPARE(box.sizeHint(), box.minimumSizeHint());
 }
 
-QTEST_MAIN(tst_QCheckBox)
+BOBUIEST_MAIN(tst_QCheckBox)
 #include "tst_qcheckbox.moc"

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qiosplatformaccessibility.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/QtGui>
+#include <BobUIGui/BobUIGui>
 #include "qioswindow.h"
 #include "quiaccessibilityelement.h"
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QMacAccessibilityElement);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QMacAccessibilityElement);
 
 QIOSPlatformAccessibility::QIOSPlatformAccessibility()
 {
@@ -39,7 +39,7 @@ void invalidateCache(QAccessibleInterface *iface)
     // (Therefore this function still takes the interface as argument)
     foreach (QWindow *win, QGuiApplication::topLevelWindows()) {
         if (win && win->handle()) {
-            QT_PREPEND_NAMESPACE(QIOSWindow) *window = static_cast<QT_PREPEND_NAMESPACE(QIOSWindow) *>(win->handle());
+            BOBUI_PREPEND_NAMESPACE(QIOSWindow) *window = static_cast<BOBUI_PREPEND_NAMESPACE(QIOSWindow) *>(win->handle());
             window->clearAccessibleCache();
         }
     }

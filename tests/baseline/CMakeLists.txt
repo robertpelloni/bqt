@@ -1,10 +1,10 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(TARGET Qt::Gui AND TARGET Qt::Network AND QT_FEATURE_pdf)
+if(TARGET BobUI::Gui AND TARGET BobUI::Network AND BOBUI_FEATURE_pdf)
     add_subdirectory(painting)
 endif()
-if(TARGET Qt::Network AND TARGET Qt::Widgets)
+if(TARGET BobUI::Network AND TARGET BobUI::Widgets)
     add_subdirectory(widgets)
     add_subdirectory(stylesheet)
     add_subdirectory(text)

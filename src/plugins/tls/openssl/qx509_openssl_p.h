@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QX509_OPENSSL_P_H
 #define QX509_OPENSSL_P_H
@@ -9,29 +9,29 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "../shared/qx509_base_p.h"
 
-#include <QtNetwork/private/qtlsbackend_p.h>
+#include <BobUINetwork/private/bobuilsbackend_p.h>
 
-#include <QtCore/qvariant.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qstring.h>
 
 #include "qopenssl_p.h"
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 class X509CertificateOpenSSL final : public X509CertificateBase
 {
@@ -50,7 +50,7 @@ public:
     QByteArray toPem() const override;
     QByteArray toDer() const override;
     QString toText() const override;
-    Qt::HANDLE handle() const override;
+    BobUI::HANDLE handle() const override;
 
     size_t hash(size_t seed) const noexcept override;
 
@@ -79,10 +79,10 @@ private:
     Q_DISABLE_COPY_MOVE(X509CertificateOpenSSL)
 };
 
-int qt_X509Callback(int ok, X509_STORE_CTX *ctx);
+int bobui_X509Callback(int ok, X509_STORE_CTX *ctx);
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QX509_OPENSSL_P_H

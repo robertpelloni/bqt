@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSTABLETSUPPORT_H
 #define QWINDOWSTABLETSUPPORT_H
 
-#include "qtwindowsglobal.h"
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qpointingdevice.h>
+#include "bobuiwindowsglobal.h"
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qpointingdevice.h>
 
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qsharedpointer.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qsharedpointer.h>
 
 #include <wintab.h>
 
-QT_REQUIRE_CONFIG(tabletevent);
+BOBUI_REQUIRE_CONFIG(tabletevent);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QWindow;
@@ -91,7 +91,7 @@ private:
     DeviceDataPtr m_deviceData;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QWindowsTabletDeviceData &t);
 #endif
 
@@ -159,6 +159,6 @@ private:
     ulong m_eventTime = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSTABLETSUPPORT_H

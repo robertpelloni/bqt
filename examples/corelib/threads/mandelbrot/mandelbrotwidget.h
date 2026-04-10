@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MANDELBROTWIDGET_H
 #define MANDELBROTWIDGET_H
@@ -10,9 +10,9 @@
 #include <QPixmap>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QGestureEvent;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MandelbrotWidget : public QWidget
@@ -27,13 +27,13 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     bool event(QEvent *event) override;
 #endif
 
@@ -41,7 +41,7 @@ private:
     void updatePixmap(const QImage &image, double scaleFactor);
     void zoom(double zoomFactor);
     void scroll(int deltaX, int deltaY);
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     bool gestureEvent(QGestureEvent *event);
 #endif
 

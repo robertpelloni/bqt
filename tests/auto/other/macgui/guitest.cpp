@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "guitest.h"
 #include <QDebug>
 #include <QWidget>
 #include <QStack>
-#include <QTimer>
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIimer>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 #ifdef Q_OS_MAC
 #   include <ApplicationServices/ApplicationServices.h>
@@ -108,14 +108,14 @@ WidgetNavigator::~WidgetNavigator()
 
 namespace NativeEvents {
 #ifdef Q_OS_MAC
-   void mouseClick(const QPoint &globalPos, Qt::MouseButtons buttons)
+   void mouseClick(const QPoint &globalPos, BobUI::MouseButtons buttons)
     {
         CGPoint position;
         position.x = globalPos.x();
         position.y = globalPos.y();
 
-        CGEventType mouseDownType = (buttons & Qt::LeftButton) ? kCGEventLeftMouseDown :
-                                    (buttons & Qt::RightButton) ? kCGEventRightMouseDown :
+        CGEventType mouseDownType = (buttons & BobUI::LeftButton) ? kCGEventLeftMouseDown :
+                                    (buttons & BobUI::RightButton) ? kCGEventRightMouseDown :
                                                                   kCGEventOtherMouseDown;
         // The mouseButton argument to CGEventCreateMouseEvent() is ignored unless the type
         // is kCGEventOtherMouseDown, so defaulting to kCGMouseButtonLeft is fine.
@@ -123,8 +123,8 @@ namespace NativeEvents {
         CGEventRef mouseEvent = CGEventCreateMouseEvent(NULL, mouseDownType, position, mouseButton);
         CGEventPost(kCGHIDEventTap, mouseEvent);
 
-        CGEventType mouseUpType = (buttons & Qt::LeftButton) ? kCGEventLeftMouseUp :
-                                  (buttons & Qt::RightButton) ? kCGEventRightMouseUp :
+        CGEventType mouseUpType = (buttons & BobUI::LeftButton) ? kCGEventLeftMouseUp :
+                                  (buttons & BobUI::RightButton) ? kCGEventRightMouseUp :
                                                                 kCGEventOtherMouseUp;
         CGEventSetType(mouseEvent, mouseUpType);
         CGEventPost(kCGHIDEventTap, mouseEvent);
@@ -222,14 +222,14 @@ bool GuiTester::isContent(const QImage image, const QRect &rect, Directions dire
 void DelayedAction::run()
 {
     if (next)
-        QTimer::singleShot(next->delay, next, SLOT(run()));
+        BOBUIimer::singleShot(next->delay, next, SLOT(run()));
 };
 
 /*
     Schedules a mouse click at an interface using a singleShot timer.
     Only one click can be scheduled at a time.
 */
-ClickLaterAction::ClickLaterAction(QAccessibleInterface *interface, Qt::MouseButtons buttons)
+ClickLaterAction::ClickLaterAction(QAccessibleInterface *interface, BobUI::MouseButtons buttons)
 {
     this->useInterface = true;
     this->interface = interface;
@@ -240,7 +240,7 @@ ClickLaterAction::ClickLaterAction(QAccessibleInterface *interface, Qt::MouseBut
     Schedules a mouse click at a widget using a singleShot timer.
     Only one click can be scheduled at a time.
 */
-ClickLaterAction::ClickLaterAction(QWidget *widget, Qt::MouseButtons buttons)
+ClickLaterAction::ClickLaterAction(QWidget *widget, BobUI::MouseButtons buttons)
 {
     this->useInterface = false;
     this->widget  = widget;
@@ -260,14 +260,14 @@ void ClickLaterAction::run()
     DelayedAction::run();
 }
 
-void GuiTester::clickLater(QAccessibleInterface *interface, Qt::MouseButtons buttons, int delay)
+void GuiTester::clickLater(QAccessibleInterface *interface, BobUI::MouseButtons buttons, int delay)
 {
     clearSequence();
     addToSequence(new ClickLaterAction(interface, buttons), delay);
     runSequence();
 }
 
-void GuiTester::clickLater(QWidget *widget, Qt::MouseButtons buttons, int delay)
+void GuiTester::clickLater(QWidget *widget, BobUI::MouseButtons buttons, int delay)
 {
     clearSequence();
     addToSequence(new ClickLaterAction(widget, buttons), delay);
@@ -291,11 +291,11 @@ void GuiTester::addToSequence(DelayedAction *action, int delay)
 
 void GuiTester::runSequence()
 {
-    QTimer::singleShot(0, startAction, SLOT(run()));
+    BOBUIimer::singleShot(0, startAction, SLOT(run()));
 }
 
 void GuiTester::exitLoopSlot()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 

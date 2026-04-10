@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLoggingCategory>
 #include <QStandardPaths>
 
-#include <QtCore/private/qloggingregistry_p.h>
+#include <BobUICore/private/qloggingregistry_p.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 enum LoggingRuleState {
     Invalid,
     Match,
     NoMatch
 };
 Q_DECLARE_METATYPE(LoggingRuleState);
-Q_DECLARE_METATYPE(QtMsgType);
+Q_DECLARE_METATYPE(BobUIMsgType);
 
 class tst_QLoggingRegistry : public QObject
 {
@@ -27,111 +27,111 @@ private slots:
         // ensure a clean environment
         QStandardPaths::setTestModeEnabled(true);
         qputenv("XDG_CONFIG_DIRS", "/does/not/exist");
-        qunsetenv("QT_LOGGING_CONF");
-        qunsetenv("QT_LOGGING_RULES");
+        qunsetenv("BOBUI_LOGGING_CONF");
+        qunsetenv("BOBUI_LOGGING_RULES");
     }
 
     void QLoggingRule_parse_data()
     {
-        QTest::addColumn<QString>("pattern");
-        QTest::addColumn<QString>("category");
-        QTest::addColumn<QtMsgType>("msgType");
-        QTest::addColumn<LoggingRuleState>("result");
+        BOBUIest::addColumn<QString>("pattern");
+        BOBUIest::addColumn<QString>("category");
+        BOBUIest::addColumn<BobUIMsgType>("msgType");
+        BOBUIest::addColumn<LoggingRuleState>("result");
 
         // _empty_ should match (only) _empty_
-        QTest::newRow("_empty_-_empty_")
-                << QString("") << QString("") << QtDebugMsg << Match;
-        QTest::newRow("_empty_-default")
-                << QString("") << QString("default") << QtDebugMsg << NoMatch;
-        QTest::newRow(".debug-_empty_")
-                << QString(".debug") << QString("") << QtDebugMsg << Match;
-        QTest::newRow(".warning-default")
-                << QString(".warning") << QString("default") << QtDebugMsg << NoMatch;
+        BOBUIest::newRow("_empty_-_empty_")
+                << QString("") << QString("") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_empty_-default")
+                << QString("") << QString("default") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow(".debug-_empty_")
+                << QString(".debug") << QString("") << BobUIDebugMsg << Match;
+        BOBUIest::newRow(".warning-default")
+                << QString(".warning") << QString("default") << BobUIDebugMsg << NoMatch;
 
         // literal should match only literal
-        QTest::newRow("qt-qt")
-                << QString("qt") << QString("qt") << QtDebugMsg << Match;
-        QTest::newRow("qt-_empty_")
-                << QString("qt") << QString("") << QtDebugMsg << NoMatch;
-        QTest::newRow("qt-qtx")
-                << QString("qt") << QString("qtx") << QtDebugMsg << NoMatch;
-        QTest::newRow("qt-qt.io")
-                << QString("qt") << QString("qt.io") << QtDebugMsg << NoMatch;
-        QTest::newRow("qt.debug-qt")
-                << QString("qt.debug") << QString("qt") << QtDebugMsg << Match;
-        QTest::newRow("qt.critical-qt")
-                << QString("qt.critical") << QString("qt") << QtDebugMsg << NoMatch;
+        BOBUIest::newRow("bobui-bobui")
+                << QString("bobui") << QString("bobui") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui-_empty_")
+                << QString("bobui") << QString("") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("bobui-bobuix")
+                << QString("bobui") << QString("bobuix") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("bobui-bobui.io")
+                << QString("bobui") << QString("bobui.io") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("bobui.debug-bobui")
+                << QString("bobui.debug") << QString("bobui") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui.critical-bobui")
+                << QString("bobui.critical") << QString("bobui") << BobUIDebugMsg << NoMatch;
 
         // * should match everything
-        QTest::newRow("_star_-qt.io.debug")
-                << QString("*") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_-qt.io.warning")
-                << QString("*") << QString("qt.io") << QtWarningMsg << Match;
-        QTest::newRow("_star_-qt.io.critical")
-                << QString("*") << QString("qt.io") << QtCriticalMsg << Match;
-        QTest::newRow("_star_-_empty_")
-                << QString("*") << QString("") << QtDebugMsg << Match;
-        QTest::newRow("_star_.debug-qt.io")
-                << QString("*.debug") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_.warning-qt.io")
-                << QString("*.warning") << QString("qt.io") << QtDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_-bobui.io.debug")
+                << QString("*") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_-bobui.io.warning")
+                << QString("*") << QString("bobui.io") << BobUIWarningMsg << Match;
+        BOBUIest::newRow("_star_-bobui.io.critical")
+                << QString("*") << QString("bobui.io") << BobUICriticalMsg << Match;
+        BOBUIest::newRow("_star_-_empty_")
+                << QString("*") << QString("") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.debug-bobui.io")
+                << QString("*.debug") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.warning-bobui.io")
+                << QString("*.warning") << QString("bobui.io") << BobUIDebugMsg << NoMatch;
 
-        // qt.* should match everything starting with 'qt.'
-        QTest::newRow("qt._star_-qt.io")
-                << QString("qt.*") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("qt._star_-qt")
-                << QString("qt.*") << QString("qt") << QtDebugMsg << NoMatch;
-        QTest::newRow("qt__star_-qt")
-                << QString("qt*") << QString("qt") << QtDebugMsg << Match;
-        QTest::newRow("qt._star_-qt.io.fs")
-                << QString("qt.*") << QString("qt.io.fs") << QtDebugMsg << Match;
-        QTest::newRow("qt._star_.debug-qt.io.fs")
-                << QString("qt.*.debug") << QString("qt.io.fs") << QtDebugMsg << Match;
-        QTest::newRow("qt._star_.warning-qt.io.fs")
-                << QString("qt.*.warning") << QString("qt.io.fs") << QtDebugMsg << NoMatch;
+        // bobui.* should match everything starting with 'bobui.'
+        BOBUIest::newRow("bobui._star_-bobui.io")
+                << QString("bobui.*") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui._star_-bobui")
+                << QString("bobui.*") << QString("bobui") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("bobui__star_-bobui")
+                << QString("bobui*") << QString("bobui") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui._star_-bobui.io.fs")
+                << QString("bobui.*") << QString("bobui.io.fs") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui._star_.debug-bobui.io.fs")
+                << QString("bobui.*.debug") << QString("bobui.io.fs") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("bobui._star_.warning-bobui.io.fs")
+                << QString("bobui.*.warning") << QString("bobui.io.fs") << BobUIDebugMsg << NoMatch;
 
         // *.io should match everything ending with .io
-        QTest::newRow("_star_.io-qt.io")
-                << QString("*.io") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_io-qt.io")
-                << QString("*io") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_.io-io")
-                << QString("*.io") << QString("io") << QtDebugMsg << NoMatch;
-        QTest::newRow("_star_io-io")
-                << QString("*io") << QString("io") << QtDebugMsg << Match;
-        QTest::newRow("_star_.io-qt.ios")
-                << QString("*.io") << QString("qt.ios") << QtDebugMsg << NoMatch;
-        QTest::newRow("_star_.io-qt.io.x")
-                << QString("*.io") << QString("qt.io.x") << QtDebugMsg << NoMatch;
-        QTest::newRow("_star_.io.debug-qt.io")
-                << QString("*.io.debug") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_.io.warning-qt.io")
-                << QString("*.io.warning") << QString("qt.io") << QtDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_.io-bobui.io")
+                << QString("*.io") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_io-bobui.io")
+                << QString("*io") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.io-io")
+                << QString("*.io") << QString("io") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_io-io")
+                << QString("*io") << QString("io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.io-bobui.ios")
+                << QString("*.io") << QString("bobui.ios") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_.io-bobui.io.x")
+                << QString("*.io") << QString("bobui.io.x") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_.io.debug-bobui.io")
+                << QString("*.io.debug") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.io.warning-bobui.io")
+                << QString("*.io.warning") << QString("bobui.io") << BobUIDebugMsg << NoMatch;
 
-        // *qt* should match everything that contains 'qt'
-        QTest::newRow("_star_qt_star_-qt.core.io")
-                << QString("*qt*") << QString("qt.core.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_qt_star_-default")
-                << QString("*qt*") << QString("default") << QtDebugMsg << NoMatch;
-        QTest::newRow("_star_qt._star_.debug-qt.io")
-                << QString("*qt.*.debug") << QString("qt.io") << QtDebugMsg << Match;
-        QTest::newRow("_star_.qt._star_.warning-qt.io")
-                << QString("*.qt.*.warning") << QString("qt.io") << QtDebugMsg << NoMatch;
-        QTest::newRow("**")
-                << QString("**") << QString("qt.core.io") << QtDebugMsg << Match;
+        // *bobui* should match everything that contains 'bobui'
+        BOBUIest::newRow("_star_bobui_star_-bobui.core.io")
+                << QString("*bobui*") << QString("bobui.core.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_bobui_star_-default")
+                << QString("*bobui*") << QString("default") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("_star_bobui._star_.debug-bobui.io")
+                << QString("*bobui.*.debug") << QString("bobui.io") << BobUIDebugMsg << Match;
+        BOBUIest::newRow("_star_.bobui._star_.warning-bobui.io")
+                << QString("*.bobui.*.warning") << QString("bobui.io") << BobUIDebugMsg << NoMatch;
+        BOBUIest::newRow("**")
+                << QString("**") << QString("bobui.core.io") << BobUIDebugMsg << Match;
 
         // * outside of start/end
-        QTest::newRow("qt.*.io")
-                << QString("qt.*.io") << QString("qt.core.io") << QtDebugMsg << Invalid;
-        QTest::newRow("***")
-                << QString("***") << QString("qt.core.io") << QtDebugMsg << Invalid;
+        BOBUIest::newRow("bobui.*.io")
+                << QString("bobui.*.io") << QString("bobui.core.io") << BobUIDebugMsg << Invalid;
+        BOBUIest::newRow("***")
+                << QString("***") << QString("bobui.core.io") << BobUIDebugMsg << Invalid;
     }
 
     void QLoggingRule_parse()
     {
         QFETCH(QString, pattern);
         QFETCH(QString, category);
-        QFETCH(QtMsgType, msgType);
+        QFETCH(BobUIMsgType, msgType);
         QFETCH(LoggingRuleState, result);
 
         const auto categoryL1 = category.toLatin1();
@@ -181,7 +181,7 @@ private slots:
     void QLoggingRegistry_environment()
     {
         //
-        // Check whether QT_LOGGING_CONF is picked up from environment
+        // Check whether BOBUI_LOGGING_CONF is picked up from environment
         //
 
         Q_ASSERT(!qApp); // Rules should not require an app to resolve
@@ -192,11 +192,11 @@ private slots:
 
         calledOnce = true;
 
-        qputenv("QT_LOGGING_RULES", "qt.foo.bar=true");
-        QLoggingCategory qtEnabledByLoggingRule("qt.foo.bar");
-        QCOMPARE(qtEnabledByLoggingRule.isDebugEnabled(), true);
-        QLoggingCategory qtDisabledByDefault("qt.foo.baz");
-        QCOMPARE(qtDisabledByDefault.isDebugEnabled(), false);
+        qputenv("BOBUI_LOGGING_RULES", "bobui.foo.bar=true");
+        QLoggingCategory bobuiEnabledByLoggingRule("bobui.foo.bar");
+        QCOMPARE(bobuiEnabledByLoggingRule.isDebugEnabled(), true);
+        QLoggingCategory bobuiDisabledByDefault("bobui.foo.baz");
+        QCOMPARE(bobuiDisabledByDefault.isDebugEnabled(), false);
 
         QLoggingRegistry &registry = *QLoggingRegistry::instance();
         registry.initializeRules();
@@ -204,16 +204,16 @@ private slots:
         QCOMPARE(registry.ruleSets[QLoggingRegistry::ConfigRules].size(), 0);
         QCOMPARE(registry.ruleSets[QLoggingRegistry::EnvironmentRules].size(), 1);
 
-        qunsetenv("QT_LOGGING_RULES");
-        qputenv("QT_LOGGING_CONF", QFINDTESTDATA("qtlogging.ini").toLocal8Bit());
+        qunsetenv("BOBUI_LOGGING_RULES");
+        qputenv("BOBUI_LOGGING_CONF", QFINDTESTDATA("bobuilogging.ini").toLocal8Bit());
         registry.initializeRules();
 
         QCOMPARE(registry.ruleSets[QLoggingRegistry::ApiRules].size(), 0);
         QCOMPARE(registry.ruleSets[QLoggingRegistry::ConfigRules].size(), 0);
         QCOMPARE(registry.ruleSets[QLoggingRegistry::EnvironmentRules].size(), 1);
 
-        // check that QT_LOGGING_RULES take precedence
-        qputenv("QT_LOGGING_RULES", "Digia.*=true");
+        // check that BOBUI_LOGGING_RULES take precedence
+        qputenv("BOBUI_LOGGING_RULES", "Digia.*=true");
         registry.initializeRules();
         QCOMPARE(registry.ruleSets[QLoggingRegistry::EnvironmentRules].size(), 2);
         QCOMPARE(registry.ruleSets[QLoggingRegistry::EnvironmentRules].at(1).enabled, true);
@@ -222,19 +222,19 @@ private slots:
     void QLoggingRegistry_config()
     {
         //
-        // Check whether QtProject/qtlogging.ini is loaded automatically
+        // Check whether BobUIProject/bobuilogging.ini is loaded automatically
         //
 
         // first try to create a test file..
         QString path = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);
         QVERIFY(!path.isEmpty());
-        QDir dir(path + "/QtProject");
+        QDir dir(path + "/BobUIProject");
         if (!dir.exists())
-            QVERIFY(dir.mkpath(path + "/QtProject"));
+            QVERIFY(dir.mkpath(path + "/BobUIProject"));
 
-        QFile file(dir.absoluteFilePath("qtlogging.ini"));
+        QFile file(dir.absoluteFilePath("bobuilogging.ini"));
         QVERIFY(file.open(QFile::WriteOnly | QFile::Text));
-        QTextStream out(&file);
+        BOBUIextStream out(&file);
         out << "[Rules]\n";
         out << "Digia.*=false\n";
         file.close();
@@ -254,10 +254,10 @@ private slots:
         //
         // Rules can stem from 3 sources:
         //   via QLoggingCategory::setFilterRules (API)
-        //   via qtlogging.ini file in settings (Config)
-        //   via QT_LOGGING_CONF environment variable (Env)
+        //   via bobuilogging.ini file in settings (Config)
+        //   via BOBUI_LOGGING_CONF environment variable (Env)
         //
-        // Rules set by environment should get higher precedence than qtlogging.conf,
+        // Rules set by environment should get higher precedence than bobuilogging.conf,
         // than QLoggingCategory::setFilterRules
         //
 
@@ -297,9 +297,9 @@ private slots:
     void QLoggingRegistry_checkErrors()
     {
         QLoggingSettingsParser parser;
-        QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed logging rule: '***=false'");
-        QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed logging rule: '*=0'");
-        QTest::ignoreMessage(QtWarningMsg, "Ignoring malformed logging rule: '*=TRUE'");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "Ignoring malformed logging rule: '***=false'");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "Ignoring malformed logging rule: '*=0'");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "Ignoring malformed logging rule: '*=TRUE'");
         parser.setContent(u"[Rules]\n"
                            "***=false\n"
                            "*=0\n"
@@ -308,6 +308,6 @@ private slots:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_QLoggingRegistry)
+BOBUIEST_APPLESS_MAIN(tst_QLoggingRegistry)
 
 #include "tst_qloggingregistry.moc"

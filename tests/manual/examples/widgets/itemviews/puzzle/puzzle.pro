@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(listview))
+BOBUI += widgets
+requires(bobuiConfig(listview))
 
 HEADERS     = mainwindow.h \
               piecesmodel.h \
@@ -11,5 +11,5 @@ SOURCES     = main.cpp \
               puzzlewidget.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/puzzle
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/puzzle
 INSTALLS += target

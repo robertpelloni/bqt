@@ -1,5 +1,5 @@
 // Copyright (C) 2015 André Klitzing <aklitzing@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QFile>
 #include <QResource>

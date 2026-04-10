@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Dmitry Shachnev <mitya57@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
  * This file was originally created by qdbusxml2cpp version 0.8
@@ -11,7 +11,7 @@
 
 #include "qdbusmenuregistrarproxy_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
  * Implementation of interface class QDBusMenuRegistrarInterface
@@ -26,6 +26,6 @@ QDBusMenuRegistrarInterface::~QDBusMenuRegistrarInterface()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusmenuregistrarproxy_p.cpp"

@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#ifndef QTBASE_DEPFILE_SHARED_H
-#define QTBASE_DEPFILE_SHARED_H
+#ifndef BOBUIBASE_DEPFILE_SHARED_H
+#define BOBUIBASE_DEPFILE_SHARED_H
 
 #include <QByteArray>
 #include <QString>
@@ -52,4 +52,4 @@ static inline QByteArray escapeAndEncodeDependencyPath(const QString &path)
     return QFile::encodeName(escapeDependencyPath(path));
 }
 
-#endif // QTBASE_DEPFILE_SHARED_H
+#endif // BOBUIBASE_DEPFILE_SHARED_H

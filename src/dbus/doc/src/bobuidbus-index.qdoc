@@ -1,0 +1,106 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \page bobuidbus-index.html
+    \title BobUI D-Bus
+    \brief An introduction to Inter-Process Communication and Remote Procedure Calling with D-Bus.
+
+    \keyword BobUIDBus
+
+    D-Bus is an Inter-Process Communication (IPC) and Remote Procedure
+    Calling (RPC) mechanism originally developed for Linux to replace
+    existing and competing IPC solutions with one unified protocol. It
+    was also designed to allow communication between system-level
+    processes (such as printer and hardware driver services) and
+    normal user processes.
+
+    It uses a fast, binary message-passing protocol, which is suitable
+    for same-machine communication due to its low latency and low
+    overhead. Its specification is currently defined by the
+    \tt{freedesktop.org} project and is available to all parties.
+
+    Communication, in general, happens through a central server
+    application called the "bus" (hence the name), but direct
+    application-to-application communication is also possible. When
+    communicating on a bus, applications can query which other
+    applications and services are available, as well as activate one
+    on demand.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \include {module-use.qdocinc} {building with cmake} {DBus}
+
+    \section1 Articles and Guides
+
+    The following documents contain information about BobUI's D-Bus integration
+    features and provide details about the mechanisms used to send and receive
+    type information over the bus:
+
+    \list
+      \li \l {BobUI D-Bus Overview}
+      \li \l {Using BobUI D-Bus Adaptors}
+      \li \l {The BobUI D-Bus Type System}
+      \li \l {BobUI D-Bus XML compiler (qdbusxml2cpp)}
+      \li \l {BobUI D-Bus Viewer}
+    \endlist
+
+    \section1 Examples
+
+    \list
+      \li \l{BobUI D-Bus Examples}
+    \endlist
+
+    \section1 Reference
+
+    \list
+      \li \l{BobUI D-Bus C++ Classes}
+      \li \l{CMake Commands in BobUI6 DBus}
+    \endlist
+
+    \section1 Module Evolution
+
+    \l{Changes to BobUI D-Bus} lists important changes in the module API
+    and functionality that were made for the BobUI 6 series of BobUI.
+
+    \section1 Licenses and Attributions
+
+    The BobUI D-Bus module is available under commercial licenses from \l{The BobUI Company}.
+    In addition, it is available under free software licenses:
+    The \l{GNU Lesser General Public License, version 3}, or
+    the \l{GNU General Public License, version 2}.
+    See \l{BobUI Licensing} for further details.
+
+    Furthermore, BobUI D-Bus in BobUI \BobUIVersion may contain third party
+    modules under the following permissive licenses:
+
+    \annotatedlist attributions-bobuidbus
+*/
+
+/*!
+  \page qdbusviewer.html
+  \title BobUI D-Bus Viewer
+  \keyword qdbusviewer
+
+  The BobUI D-Bus Viewer (\c {qdbusviewer}) is a tool that lets you introspect D-Bus objects and messages. You can
+  choose between the system bus and the session bus. Click on any service on the list
+  on the left side to see all the exported objects.
+
+  You can invoke methods by double-clicking on them. If a method takes one or more IN parameters,
+  a property editor opens.
+
+  Right-click on a signal to connect to it. All emitted signals including their parameters
+  are output in the message view on the lower side of the window.
+
+  \section1 Running BobUI D-Bus Viewer
+
+  To run BobUI D-Bus Viewer, execute the \c qdbusviewer tool in the installation
+  directory of the respective BobUI version. For the BobUI \BobUIVersion Linux/X11
+  installation using the \QOI, the tool is at:
+
+  \badcode \BobUIVersion
+  <INSTALL_DIR>/\1/gcc_64/bin/qdbusviewer
+  \endcode
+*/

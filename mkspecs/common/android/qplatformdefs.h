@@ -1,10 +1,10 @@
 // Copyright (C) 2012 Collabora Ltd, author <robin.burchell@collabora.co.uk>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -38,79 +38,79 @@
 #  define _GNU_SOURCE
 #endif
 
-#define QT_STATBUF              struct stat
-#define QT_STATBUF4TSTAT        struct stat
-#define QT_STAT                 ::stat
-#define QT_FSTAT                ::fstat
-#define QT_LSTAT                ::lstat
-#define QT_OPEN                 ::open
-#define QT_TRUNCATE             ::truncate
-#define QT_FTRUNCATE            ::ftruncate
-#define QT_LSEEK                ::lseek
+#define BOBUI_STATBUF              struct stat
+#define BOBUI_STATBUF4TSTAT        struct stat
+#define BOBUI_STAT                 ::stat
+#define BOBUI_FSTAT                ::fstat
+#define BOBUI_LSTAT                ::lstat
+#define BOBUI_OPEN                 ::open
+#define BOBUI_TRUNCATE             ::truncate
+#define BOBUI_FTRUNCATE            ::ftruncate
+#define BOBUI_LSEEK                ::lseek
 
-#define QT_FOPEN                ::fopen
-#define QT_FSEEK                ::fseek
-#define QT_FTELL                ::ftell
-#define QT_FGETPOS              ::fgetpos
-#define QT_FSETPOS              ::fsetpos
-#define QT_MMAP                 ::mmap
-#define QT_FPOS_T               fpos_t
-#define QT_OFF_T                long
+#define BOBUI_FOPEN                ::fopen
+#define BOBUI_FSEEK                ::fseek
+#define BOBUI_FTELL                ::ftell
+#define BOBUI_FGETPOS              ::fgetpos
+#define BOBUI_FSETPOS              ::fsetpos
+#define BOBUI_MMAP                 ::mmap
+#define BOBUI_FPOS_T               fpos_t
+#define BOBUI_OFF_T                long
 
-#define QT_STAT_REG             S_IFREG
-#define QT_STAT_DIR             S_IFDIR
-#define QT_STAT_MASK            S_IFMT
-#define QT_STAT_LNK             S_IFLNK
-#define QT_SOCKET_CONNECT       ::connect
-#define QT_SOCKET_BIND          ::bind
-#define QT_FILENO               fileno
-#define QT_CLOSE                ::close
-#define QT_READ                 ::read
-#define QT_WRITE                ::write
-#define QT_ACCESS               ::access
-#define QT_GETCWD               ::getcwd
-#define QT_CHDIR                ::chdir
-#define QT_MKDIR                ::mkdir
-#define QT_RMDIR                ::rmdir
-#define QT_OPEN_LARGEFILE       O_LARGEFILE
-#define QT_OPEN_RDONLY          O_RDONLY
-#define QT_OPEN_WRONLY          O_WRONLY
-#define QT_OPEN_RDWR            O_RDWR
-#define QT_OPEN_CREAT           O_CREAT
-#define QT_OPEN_TRUNC           O_TRUNC
-#define QT_OPEN_APPEND          O_APPEND
-#define QT_OPEN_EXCL            O_EXCL
+#define BOBUI_STAT_REG             S_IFREG
+#define BOBUI_STAT_DIR             S_IFDIR
+#define BOBUI_STAT_MASK            S_IFMT
+#define BOBUI_STAT_LNK             S_IFLNK
+#define BOBUI_SOCKET_CONNECT       ::connect
+#define BOBUI_SOCKET_BIND          ::bind
+#define BOBUI_FILENO               fileno
+#define BOBUI_CLOSE                ::close
+#define BOBUI_READ                 ::read
+#define BOBUI_WRITE                ::write
+#define BOBUI_ACCESS               ::access
+#define BOBUI_GETCWD               ::getcwd
+#define BOBUI_CHDIR                ::chdir
+#define BOBUI_MKDIR                ::mkdir
+#define BOBUI_RMDIR                ::rmdir
+#define BOBUI_OPEN_LARGEFILE       O_LARGEFILE
+#define BOBUI_OPEN_RDONLY          O_RDONLY
+#define BOBUI_OPEN_WRONLY          O_WRONLY
+#define BOBUI_OPEN_RDWR            O_RDWR
+#define BOBUI_OPEN_CREAT           O_CREAT
+#define BOBUI_OPEN_TRUNC           O_TRUNC
+#define BOBUI_OPEN_APPEND          O_APPEND
+#define BOBUI_OPEN_EXCL            O_EXCL
 
 // Directory iteration
-#define QT_DIR                  DIR
+#define BOBUI_DIR                  DIR
 
 
-#define QT_OPENDIR              ::opendir
-#define QT_CLOSEDIR             ::closedir
+#define BOBUI_OPENDIR              ::opendir
+#define BOBUI_CLOSEDIR             ::closedir
 
-#if defined(QT_LARGEFILE_SUPPORT) \
-        && defined(QT_USE_XOPEN_LFS_EXTENSIONS) \
-        && !defined(QT_NO_READDIR64)
-#define QT_DIRENT               struct dirent64
-#define QT_READDIR              ::readdir64
+#if defined(BOBUI_LARGEFILE_SUPPORT) \
+        && defined(BOBUI_USE_XOPEN_LFS_EXTENSIONS) \
+        && !defined(BOBUI_NO_READDIR64)
+#define BOBUI_DIRENT               struct dirent64
+#define BOBUI_READDIR              ::readdir64
 #else
-#define QT_DIRENT               struct dirent
-#define QT_READDIR              ::readdir
+#define BOBUI_DIRENT               struct dirent
+#define BOBUI_READDIR              ::readdir
 #endif
 
-#define QT_SOCKET_CONNECT       ::connect
-#define QT_SOCKET_BIND          ::bind
+#define BOBUI_SOCKET_CONNECT       ::connect
+#define BOBUI_SOCKET_BIND          ::bind
 
 
-#define QT_SIGNAL_RETTYPE       void
-#define QT_SIGNAL_ARGS          int
-#define QT_SIGNAL_IGNORE        SIG_IGN
+#define BOBUI_SIGNAL_RETTYPE       void
+#define BOBUI_SIGNAL_ARGS          int
+#define BOBUI_SIGNAL_IGNORE        SIG_IGN
 
-#define QT_SOCKLEN_T            socklen_t
+#define BOBUI_SOCKLEN_T            socklen_t
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE >= 500)
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 #endif
 
 

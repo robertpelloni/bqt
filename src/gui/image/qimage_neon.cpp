@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qimage.h>
 #include <private/qimage_p.h>
@@ -7,9 +7,9 @@
 
 #if defined(__ARM_NEON__)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len)
+Q_GUI_EXPORT void BOBUI_FASTCALL bobui_convert_rgb888_to_rgb32_neon(quint32 *dst, const uchar *src, int len)
 {
     if (!len)
         return;
@@ -56,7 +56,7 @@ Q_GUI_EXPORT void QT_FASTCALL qt_convert_rgb888_to_rgb32_neon(quint32 *dst, cons
     }
 }
 
-void convert_RGB888_to_RGB32_neon(QImageData *dest, const QImageData *src, Qt::ImageConversionFlags)
+void convert_RGB888_to_RGB32_neon(QImageData *dest, const QImageData *src, BobUI::ImageConversionFlags)
 {
     Q_ASSERT(src->format == QImage::Format_RGB888);
     Q_ASSERT(dest->format == QImage::Format_RGB32 || dest->format == QImage::Format_ARGB32 || dest->format == QImage::Format_ARGB32_Premultiplied);
@@ -67,12 +67,12 @@ void convert_RGB888_to_RGB32_neon(QImageData *dest, const QImageData *src, Qt::I
     quint32 *dest_data = (quint32 *) dest->data;
 
     for (int i = 0; i < src->height; ++i) {
-        qt_convert_rgb888_to_rgb32_neon(dest_data, src_data, src->width);
+        bobui_convert_rgb888_to_rgb32_neon(dest_data, src_data, src->width);
         src_data += src->bytes_per_line;
         dest_data = (quint32 *)((uchar*)dest_data + dest->bytes_per_line);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // defined(__ARM_NEON__)

@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
-#ifndef QT_NO_TABLETEVENT
+#ifndef BOBUI_NO_TABLETEVENT
 
-#include <QtGui/qpointingdevice.h>
-#include <QtCore/private/qflatmap_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUICore/private/qflatmap_p.h>
 
 using QCocoaTabletDeviceMap = QFlatMap<qint64, const QPointingDevice*>;
 Q_GLOBAL_STATIC(QCocoaTabletDeviceMap, devicesInProximity)
@@ -16,7 +16,7 @@ Q_GLOBAL_STATIC(QCocoaTabletDeviceMap, devicesInProximity)
 
 - (bool)handleTabletEvent:(NSEvent *)theEvent
 {
-    static bool ignoreButtonMapping = qEnvironmentVariableIsSet("QT_MAC_TABLET_IGNORE_BUTTON_MAPPING");
+    static bool ignoreButtonMapping = qEnvironmentVariableIsSet("BOBUI_MAC_TABLET_IGNORE_BUTTON_MAPPING");
 
     if (!m_platformWindow)
         return false;
@@ -73,8 +73,8 @@ Q_GLOBAL_STATIC(QCocoaTabletDeviceMap, devicesInProximity)
     if (rotation > 180.0)
         rotation -= 360.0;
 
-    Qt::KeyboardModifiers keyboardModifiers = QAppleKeyMapper::fromCocoaModifiers(theEvent.modifierFlags);
-    Qt::MouseButtons buttons = ignoreButtonMapping ? static_cast<Qt::MouseButtons>(static_cast<uint>([theEvent buttonMask])) : m_buttons;
+    BobUI::KeyboardModifiers keyboardModifiers = QAppleKeyMapper::fromCocoaModifiers(theEvent.modifierFlags);
+    BobUI::MouseButtons buttons = ignoreButtonMapping ? static_cast<BobUI::MouseButtons>(static_cast<uint>([theEvent buttonMask])) : m_buttons;
 
     QWindowSystemInterface::handleTabletEvent(m_platformWindow->window(), timestamp, device, windowPoint, screenPoint,
                                               buttons, pressure, xTilt, yTilt, tangentialPressure, rotation, z,  keyboardModifiers);

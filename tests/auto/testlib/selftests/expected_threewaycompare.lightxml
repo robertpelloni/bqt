@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -9,177 +9,177 @@
   </TestFunction>
   <TestFunction name="compareInts">
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
    Right    (rhs): 2
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 2
    Right    (rhs): 1
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareFloats">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::equivalent]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::partial_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1 (0x1p+0)
    Right    (rhs): 1 (0x1p+0)
    Actual   (lhs <=> rhs)  : std::partial_ordering::equivalent
-   Expected (expectedOrder): Qt::partial_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::partial_ordering::less]]></Description>
     </Incident>
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::less]]></DataTag>
+      <DataTag><![CDATA[BobUI::partial_ordering::less]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::partial_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1.1 (0x1.19999ap+0)
    Right    (rhs): 1 (0x1p+0)
    Actual   (lhs <=> rhs)  : std::partial_ordering::greater
-   Expected (expectedOrder): Qt::partial_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::partial_ordering::less]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareDoubles">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::equivalent]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::partial_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 0 (0x0p+0)
    Right    (rhs): 0 (0x0p+0)
    Actual   (lhs <=> rhs)  : std::partial_ordering::equivalent
-   Expected (expectedOrder): Qt::partial_ordering::greater]]></Description>
+   Expected (expectedOrder): BobUI::partial_ordering::greater]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::less]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::partial_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 0 (0x0p+0)
    Right    (rhs): 0.1 (0x1.999999999999ap-4)
    Actual   (lhs <=> rhs)  : std::partial_ordering::less
-   Expected (expectedOrder): Qt::partial_ordering::greater]]></Description>
+   Expected (expectedOrder): BobUI::partial_ordering::greater]]></Description>
     </Incident>
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::partial_ordering::greater]]></DataTag>
+      <DataTag><![CDATA[BobUI::partial_ordering::greater]]></DataTag>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="comparePointers">
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
    Right    (rhs): 2
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 2
    Right    (rhs): 1
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareToNullptr">
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): "nullptr"
    Right    (rhs): 1
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
    Right    (rhs): "nullptr"
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
-   Expected (expectedOrder): Qt::strong_ordering::equal]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::equal]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareUnregisteredEnum">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 0
    Right    (rhs): 0
    Actual   (lhs <=> rhs)  : std::strong_ordering::equal
-   Expected (expectedOrder): Qt::strong_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::less]]></Description>
     </Incident>
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
    Right    (rhs): 0
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
-   Expected (expectedOrder): Qt::strong_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::less]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareRegisteredEnum">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): Monday
    Right    (rhs): Monday
    Actual   (lhs <=> rhs)  : std::strong_ordering::equal
-   Expected (expectedOrder): Qt::strong_ordering::greater]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::greater]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): Monday
    Right    (rhs): Sunday
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
-   Expected (expectedOrder): Qt::strong_ordering::greater]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::greater]]></Description>
     </Incident>
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="compareCustomTypes">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::equivalent]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): MyClass(1)
    Right    (rhs): MyClass(1)
    Actual   (lhs <=> rhs)  : std::strong_ordering::equal
-   Expected (expectedOrder): Qt::strong_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::less]]></Description>
     </Incident>
     <Incident type="pass" file="" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::less]]></DataTag>
+      <DataTag><![CDATA[BobUI::strong_ordering::less]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
-      <DataTag><![CDATA[Qt::strong_ordering::greater]]></DataTag>
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+      <DataTag><![CDATA[BobUI::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): MyClass(2)
    Right    (rhs): MyClass(1)
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
-   Expected (expectedOrder): Qt::strong_ordering::less]]></Description>
+   Expected (expectedOrder): BobUI::strong_ordering::less]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
@@ -187,7 +187,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
@@ -195,7 +195,7 @@
    Actual   (lhs <=> rhs)  : std::strong_ordering::greater
    Expected (expectedOrder): std::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): -2
@@ -206,7 +206,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stdCompareFloats">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::partial_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 2 (0x1p+1)
@@ -214,7 +214,7 @@
    Actual   (lhs <=> rhs)  : std::partial_ordering::equivalent
    Expected (expectedOrder): std::partial_ordering::less]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::partial_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 2 (0x1p+1)
@@ -228,7 +228,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stdCompareDoubles">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::partial_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 0.15 (0x1.3333333333333p-3)
@@ -236,7 +236,7 @@
    Actual   (lhs <=> rhs)  : std::partial_ordering::equivalent
    Expected (expectedOrder): std::partial_ordering::greater]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::partial_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 0.15 (0x1.3333333333333p-3)
@@ -253,7 +253,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
@@ -261,7 +261,7 @@
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
    Expected (expectedOrder): std::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 2
@@ -275,7 +275,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): "nullptr"
@@ -283,7 +283,7 @@
    Actual   (lhs <=> rhs)  : std::strong_ordering::less
    Expected (expectedOrder): std::strong_ordering::equal]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
@@ -294,7 +294,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stdCompareUnregisteredEnum">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
@@ -302,7 +302,7 @@
    Actual   (lhs <=> rhs)  : std::strong_ordering::equal
    Expected (expectedOrder): std::strong_ordering::less]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): 1
@@ -316,7 +316,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stdCompareRegisteredEnum">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): Monday
@@ -324,7 +324,7 @@
    Actual   (lhs <=> rhs)  : std::strong_ordering::equal
    Expected (expectedOrder): std::strong_ordering::greater]]></Description>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): Monday
@@ -338,7 +338,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stdCompareCustomTypes">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::equivalent]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): MyClass(1)
@@ -349,7 +349,7 @@
     <Incident type="pass" file="" line="0">
       <DataTag><![CDATA[std::strong_ordering::less]]></DataTag>
     </Incident>
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <DataTag><![CDATA[std::strong_ordering::greater]]></DataTag>
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (lhs): MyClass(2)
@@ -360,7 +360,7 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="checkComparisonForTemporaryObjects">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (getClassForValue(0).getValuePointer()): MyClass(2) on memory address with index 0
    Right    (getClassForValue(1).getValuePointer()): MyClass(1) on memory address with index 1
@@ -370,12 +370,12 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="checkWeakComparison">
-    <Incident type="fail" file="qtbase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
+    <Incident type="fail" file="bobuibase/tests/auto/testlib/selftests/threewaycompare/tst_threewaycompare.cpp" line="0">
       <Description><![CDATA[The result of operator<=>() is not what was expected
    Left     (june)     : 2012/06/20 14:33:02.500[UTC]
    Right    (juneLater): 2012/06/20 14:33:02.501[UTC]
    Actual   (june <=> juneLater)        : std::weak_ordering::less
-   Expected (Qt::weak_ordering::greater): Qt::weak_ordering::greater]]></Description>
+   Expected (BobUI::weak_ordering::greater): BobUI::weak_ordering::greater]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>

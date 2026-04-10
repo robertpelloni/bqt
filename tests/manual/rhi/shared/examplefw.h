@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Adapted from hellominimalcrossgfxtriangle with the frame rendering stripped out.
 // Include this file and implement Window::customInit, release and render.
@@ -10,7 +10,7 @@
 #include <QWindow>
 #include <QPlatformSurfaceEvent>
 #include <QElapsedTimer>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QLoggingCategory>
 #include <QColorSpace>
 #include <QFile>
@@ -127,7 +127,7 @@ protected:
     QElapsedTimer m_timer;
     int m_frameCount;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOffscreenSurface *m_fallbackSurface = nullptr;
 #endif
 
@@ -162,7 +162,7 @@ Window::Window()
         break;
     }
 
-    m_clearColor = transparentBackground ? Qt::transparent : QColor::fromRgbF(0.4f, 0.7f, 0.0f, 1.0f);
+    m_clearColor = transparentBackground ? BobUI::transparent : QColor::fromRgbF(0.4f, 0.7f, 0.0f, 1.0f);
 }
 
 Window::~Window()
@@ -231,7 +231,7 @@ void Window::init()
         m_r = QRhi::create(QRhi::Null, &params, rhiFlags);
     }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (graphicsApi == OpenGL) {
         m_fallbackSurface = QRhiGles2InitParams::newFallbackSurface();
         QRhiGles2InitParams params;
@@ -241,7 +241,7 @@ void Window::init()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = vulkanInstance();
@@ -269,7 +269,7 @@ void Window::init()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (graphicsApi == Metal) {
         QRhiMetalInitParams params;
         m_r = QRhi::create(QRhi::Metal, &params, rhiFlags);
@@ -342,7 +342,7 @@ void Window::releaseResources()
     delete m_r;
     m_r = nullptr;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     delete m_fallbackSurface;
     m_fallbackSurface = nullptr;
 #endif
@@ -439,14 +439,14 @@ int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    QLoggingCategory::setFilterRules(QLatin1String("qt.rhi.general=true"));
+    QLoggingCategory::setFilterRules(QLatin1String("bobui.rhi.general=true"));
 
     // Defaults.
 #if defined(Q_OS_WIN)
     graphicsApi = D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = Vulkan;
 #else
     graphicsApi = OpenGL;
@@ -533,7 +533,7 @@ int main(int argc, char **argv)
     QSurfaceFormat::setDefaultFormat(fmt);
 
     // Vulkan setup.
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance inst;
     if (graphicsApi == Vulkan) {
         if (debugLayer) {
@@ -562,7 +562,7 @@ int main(int argc, char **argv)
 
     // Create and show the window.
     Window w;
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == Vulkan)
         w.setVulkanInstance(&inst);
 #endif
@@ -571,7 +571,7 @@ int main(int argc, char **argv)
     w.show();
 
     if (cmdLineParser.isSet(sdOption))
-        QTimer::singleShot(5000, qGuiApp, SLOT(quit()));
+        BOBUIimer::singleShot(5000, qGuiApp, SLOT(quit()));
 
     int ret = app.exec();
 

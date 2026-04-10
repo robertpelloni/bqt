@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example hellovulkancubes
@@ -23,8 +23,8 @@
     handling takes an alternative approach here: dynamic uniform buffers are
     used instead of multiple descriptor sets.
 
-    The example requires QtConcurrent since it demonstrates simple usage of
-    QtConcurrent::run(), QFuture, and QFutureWatcher in combination of
+    The example requires BobUIConcurrent since it demonstrates simple usage of
+    BobUIConcurrent::run(), QFuture, and QFutureWatcher in combination of
     QVulkanWindow. Mesh and shader data loading, the potentially expensive
     graphics pipeline construction, and the building of the frame command buffer
     are all done in separate worker threads.

@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSTYLE_H
 #define QSTYLE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qsize.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qpalette.h>
-#include <QtWidgets/qsizepolicy.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qsize.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/qpixmap.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIWidgets/qsizepolicy.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QAction;
 class QDebug;
-class QTab;
+class BOBUIab;
 class QFontMetrics;
 class QStyleHintReturn;
 class QStyleOption;
@@ -87,11 +87,11 @@ public:
         State_Children =            0x00080000,
         State_Item =                0x00100000,
         State_Sibling =             0x00200000,
-#if QT_DEPRECATED_SINCE(6, 11)
-        State_Editing Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since Qt 5") =  0x00400000,
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+        State_Editing Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since BobUI 5") =  0x00400000,
 #endif
         State_KeyboardFocusChange = 0x00800000,
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         State_HasEditFocus =        0x01000000,
 #endif
         State_ReadOnly =            0x02000000,
@@ -467,10 +467,10 @@ public:
         PM_ExclusiveIndicatorWidth,
         PM_ExclusiveIndicatorHeight,
 
-#if QT_DEPRECATED_SINCE(6, 8)
-        PM_DialogButtonsSeparator Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since Qt 4"),
-        PM_DialogButtonsButtonWidth Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since Qt 4"),
-        PM_DialogButtonsButtonHeight Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since Qt 4"),
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+        PM_DialogButtonsSeparator Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since BobUI 4"),
+        PM_DialogButtonsButtonWidth Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since BobUI 4"),
+        PM_DialogButtonsButtonHeight Q_DECL_ENUMERATOR_DEPRECATED_X("Not used and no effect since BobUI 4"),
 #endif
 
         PM_MdiSubWindowFrameWidth = 44,
@@ -813,23 +813,23 @@ public:
     virtual QPixmap generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap,
                                         const QStyleOption *opt) const = 0;
 
-    static QRect visualRect(Qt::LayoutDirection direction, const QRect &boundingRect,
+    static QRect visualRect(BobUI::LayoutDirection direction, const QRect &boundingRect,
                             const QRect &logicalRect);
-    static QPoint visualPos(Qt::LayoutDirection direction, const QRect &boundingRect,
+    static QPoint visualPos(BobUI::LayoutDirection direction, const QRect &boundingRect,
                             const QPoint &logicalPos);
     static int sliderPositionFromValue(int min, int max, int val, int space,
                                        bool upsideDown = false);
     static int sliderValueFromPosition(int min, int max, int pos, int space,
                                        bool upsideDown = false);
-    static Qt::Alignment visualAlignment(Qt::LayoutDirection direction, Qt::Alignment alignment);
-    static QRect alignedRect(Qt::LayoutDirection direction, Qt::Alignment alignment,
+    static BobUI::Alignment visualAlignment(BobUI::LayoutDirection direction, BobUI::Alignment alignment);
+    static QRect alignedRect(BobUI::LayoutDirection direction, BobUI::Alignment alignment,
                              const QSize &size, const QRect &rectangle);
 
     virtual int layoutSpacing(QSizePolicy::ControlType control1,
-                              QSizePolicy::ControlType control2, Qt::Orientation orientation,
+                              QSizePolicy::ControlType control2, BobUI::Orientation orientation,
                               const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const = 0;
     int combinedLayoutSpacing(QSizePolicy::ControlTypes controls1,
-                              QSizePolicy::ControlTypes controls2, Qt::Orientation orientation,
+                              QSizePolicy::ControlTypes controls2, BobUI::Orientation orientation,
                               QStyleOption *option = nullptr, QWidget *widget = nullptr) const;
 
     const QStyle * proxy() const;
@@ -852,6 +852,6 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::State)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QStyle::SubControls)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLE_H

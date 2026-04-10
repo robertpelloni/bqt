@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qbitmap.h"
 #include <qpa/qplatformpixmap.h>
@@ -13,11 +13,11 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QBitmap
-    \inmodule QtGui
+    \inmodule BobUIGui
     \brief The QBitmap class provides monochrome (1-bit depth) pixmaps.
 
     \ingroup painting
@@ -33,19 +33,19 @@ QT_BEGIN_NAMESPACE
     greater than 1 is assigned to a bitmap, the bitmap will be
     dithered automatically.
 
-    Use the QColor objects Qt::color0 and Qt::color1 when drawing on a
+    Use the QColor objects BobUI::color0 and BobUI::color1 when drawing on a
     QBitmap object (or a QPixmap object with depth 1).
 
-    Painting with Qt::color0 sets the bitmap bits to 0, and painting
-    with Qt::color1 sets the bits to 1. For a bitmap, 0-bits indicate
+    Painting with BobUI::color0 sets the bitmap bits to 0, and painting
+    with BobUI::color1 sets the bits to 1. For a bitmap, 0-bits indicate
     background (or transparent pixels) and 1-bits indicate foreground
     (or opaque pixels). Use the clear() function to set all the bits
-    to Qt::color0. Note that using the Qt::black and Qt::white colors
+    to BobUI::color0. Note that using the BobUI::black and BobUI::white colors
     make no sense because the QColor::pixel() value is not necessarily
     0 for black and 1 for white.
 
     The QBitmap class provides the transformed() function returning a
-    transformed copy of the bitmap; use the QTransform argument to
+    transformed copy of the bitmap; use the BOBUIransform argument to
     translate, scale, shear, and rotate the bitmap. In addition,
     QBitmap provides the static fromData() function which returns a
     bitmap constructed from the given \c uchar data, and the static
@@ -99,14 +99,14 @@ QBitmap::QBitmap(const QSize &size)
 
 /*!
     \internal
-    This dtor must stay empty until Qt 7 (was inline until 6.2).
+    This dtor must stay empty until BobUI 7 (was inline until 6.2).
 */
 QBitmap::~QBitmap() = default;
 
 /*!
     \fn QBitmap::clear()
 
-    Clears the bitmap, setting all its bits to Qt::color0.
+    Clears the bitmap, setting all its bits to BobUI::color0.
 */
 
 /*!
@@ -123,7 +123,7 @@ QBitmap::~QBitmap() = default;
 QBitmap::QBitmap(const QString& fileName, const char *format)
     : QPixmap(QSize(0, 0), QPlatformPixmap::BitmapType)
 {
-    load(fileName, format, Qt::MonoOnly);
+    load(fileName, format, BobUI::MonoOnly);
 }
 
 /*!
@@ -139,12 +139,12 @@ QBitmap::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-static QBitmap makeBitmap(QImage &&image, Qt::ImageConversionFlags flags)
+static QBitmap makeBitmap(QImage &&image, BobUI::ImageConversionFlags flags)
 {
-    // make sure image.color(0) == Qt::color0 (white)
-    // and image.color(1) == Qt::color1 (black)
-    const QRgb c0 = QColor(Qt::black).rgb();
-    const QRgb c1 = QColor(Qt::white).rgb();
+    // make sure image.color(0) == BobUI::color0 (white)
+    // and image.color(1) == BobUI::color1 (black)
+    const QRgb c0 = QColor(BobUI::black).rgb();
+    const QRgb c1 = QColor(BobUI::white).rgb();
     if (image.color(0) == c0 && image.color(1) == c1) {
         image.invertPixels();
         image.setColor(0, c1);
@@ -153,7 +153,7 @@ static QBitmap makeBitmap(QImage &&image, Qt::ImageConversionFlags flags)
 
     std::unique_ptr<QPlatformPixmap> data(QGuiApplicationPrivate::platformIntegration()->createPlatformPixmap(QPlatformPixmap::BitmapType));
 
-    data->fromImageInPlace(image, flags | Qt::MonoOnly);
+    data->fromImageInPlace(image, flags | BobUI::MonoOnly);
     return QBitmap::fromPixmap(QPixmap(data.release()));
 }
 
@@ -163,7 +163,7 @@ static QBitmap makeBitmap(QImage &&image, Qt::ImageConversionFlags flags)
 
     \sa fromData()
 */
-QBitmap QBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
+QBitmap QBitmap::fromImage(const QImage &image, BobUI::ImageConversionFlags flags)
 {
     if (image.isNull())
         return QBitmap();
@@ -180,7 +180,7 @@ QBitmap QBitmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 
     \sa fromData()
 */
-QBitmap QBitmap::fromImage(QImage &&image, Qt::ImageConversionFlags flags)
+QBitmap QBitmap::fromImage(QImage &&image, BobUI::ImageConversionFlags flags)
 {
     if (image.isNull())
         return QBitmap();
@@ -205,8 +205,8 @@ QBitmap QBitmap::fromData(const QSize &size, const uchar *bits, QImage::Format m
     Q_ASSERT(monoFormat == QImage::Format_Mono || monoFormat == QImage::Format_MonoLSB);
 
     QImage image(size, monoFormat);
-    image.setColor(0, QColor(Qt::color0).rgb());
-    image.setColor(1, QColor(Qt::color1).rgb());
+    image.setColor(0, QColor(BobUI::color0).rgb());
+    image.setColor(1, QColor(BobUI::color1).rgb());
 
     // Need to memcpy each line separately since QImage is 32bit aligned and
     // this data is only byte aligned...
@@ -244,7 +244,7 @@ QBitmap QBitmap::fromPixmap(const QPixmap &pixmap)
     return fromImage(pixmap.toImage());
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \deprecated [6.0] Use fromPixmap instead.
     Constructs a bitmap that is a copy of the given \a pixmap.
@@ -284,9 +284,9 @@ QBitmap &QBitmap::operator=(const QPixmap &pixmap)
 
     \sa QPixmap::transformed()
  */
-QBitmap QBitmap::transformed(const QTransform &matrix) const
+QBitmap QBitmap::transformed(const BOBUIransform &matrix) const
 {
     return QBitmap::fromPixmap(QPixmap::transformed(matrix));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

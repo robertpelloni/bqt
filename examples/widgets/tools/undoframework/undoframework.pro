@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(undoview))
+BOBUI += widgets
+requires(bobuiConfig(undoview))
 
 HEADERS	    = commands.h \
 	      diagramitem.h \
@@ -13,5 +13,5 @@ SOURCES	    = commands.cpp \
 RESOURCES   = undoframework.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/undoframework
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/undoframework
 INSTALLS += target

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTITEMVIEW_P_H
 #define QABSTRACTITEMVIEW_P_H
@@ -9,33 +9,33 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qabstractitemview.h"
 #include "private/qabstractscrollarea_p.h"
 #include "private/qabstractitemmodel_p.h"
-#include "QtWidgets/qapplication.h"
-#include "QtGui/qevent.h"
-#include "QtCore/qmimedata.h"
-#include "QtGui/qpainter.h"
-#include "QtGui/qregion.h"
+#include "BobUIWidgets/qapplication.h"
+#include "BobUIGui/qevent.h"
+#include "BobUICore/qmimedata.h"
+#include "BobUIGui/qpainter.h"
+#include "BobUIGui/qregion.h"
 
-#include "QtCore/qbasictimer.h"
-#include "QtCore/qelapsedtimer.h"
-#include <QtCore/qpointer.h>
+#include "BobUICore/qbasictimer.h"
+#include "BobUICore/qelapsedtimer.h"
+#include <BobUICore/qpointer.h>
 
 
 #include <array>
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QEditorInfo {
     QEditorInfo(QWidget *e, bool s): widget(QPointer<QWidget>(e)), isStatic(s) {}
@@ -54,7 +54,7 @@ struct QItemViewPaintPair {
     QModelIndex index;
 };
 template <>
-class QTypeInfo<QItemViewPaintPair> : public QTypeInfoMerger<QItemViewPaintPair, QRect, QModelIndex> {};
+class BOBUIypeInfo<QItemViewPaintPair> : public BOBUIypeInfoMerger<QItemViewPaintPair, QRect, QModelIndex> {};
 
 typedef QList<QItemViewPaintPair> QItemViewPaintPairs;
 
@@ -101,7 +101,7 @@ public:
     }
     void stopAutoScroll() { autoScrollTimer.stop(); autoScrollCount = 0;}
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual bool dropOn(QDropEvent *event, int *row, int *col, QModelIndex *index);
 #endif
     bool droppingOnItself(QDropEvent *event, const QModelIndex &index);
@@ -134,7 +134,7 @@ public:
         }
     }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect, const QModelIndex &idx) const;
 
     inline bool canDrop(QDropEvent *event) {
@@ -155,7 +155,7 @@ public:
         int row = -1;
         if (dropOn(event, &row, &col, &index)) {
             return model->canDropMimeData(mime,
-                                          dragDropMode == QAbstractItemView::InternalMove ? Qt::MoveAction : event->dropAction(),
+                                          dragDropMode == QAbstractItemView::InternalMove ? BobUI::MoveAction : event->dropAction(),
                                           row, col, index);
         }
         return false;
@@ -165,8 +165,8 @@ public:
     {
         if (showDropIndicator && state == QAbstractItemView::DraggingState
             && !dropIndicatorRect.isNull()
-#ifndef QT_NO_CURSOR
-            && viewport->cursor().shape() != Qt::ForbiddenCursor
+#ifndef BOBUI_NO_CURSOR
+            && viewport->cursor().shape() != BobUI::ForbiddenCursor
 #endif
         ) {
             QStyleOption opt;
@@ -253,17 +253,17 @@ public:
          return (index.row() >= 0) && (index.column() >= 0) && (index.model() == model);
     }
     inline bool isIndexSelectable(const QModelIndex &index) const {
-        return (model->flags(index) & Qt::ItemIsSelectable);
+        return (model->flags(index) & BobUI::ItemIsSelectable);
     }
     inline bool isIndexEnabled(const QModelIndex &index) const {
-        return (model->flags(index) & Qt::ItemIsEnabled);
+        return (model->flags(index) & BobUI::ItemIsEnabled);
     }
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     inline bool isIndexDropEnabled(const QModelIndex &index) const {
-        return (model->flags(index) & Qt::ItemIsDropEnabled);
+        return (model->flags(index) & BobUI::ItemIsDropEnabled);
     }
     inline bool isIndexDragEnabled(const QModelIndex &index) const {
-        return (model->flags(index) & Qt::ItemIsDragEnabled);
+        return (model->flags(index) & BobUI::ItemIsDragEnabled);
     }
 #endif
 
@@ -272,7 +272,7 @@ public:
         return isIndexValid(index) && isIndexSelectable(index);
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     virtual int accessibleChildIndex(const QModelIndex &index) const
     {
         Q_UNUSED(index);
@@ -280,7 +280,7 @@ public:
     }
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     void updateItemAccessibility(const QModelIndex &index, const QList<int> &roles);
 #endif
 
@@ -324,14 +324,14 @@ public:
         return static_cast<QAbstractItemModelPrivate *>(model->d_ptr.data())->persistent.indexes.contains(index);
     }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QModelIndexList selectedDraggableIndexes() const;
     void maybeStartDrag(QPoint eventPoint);
 #endif
 
     void doDelayedReset()
     {
-        //we delay the reset of the timer because some views (QTableView)
+        //we delay the reset of the timer because some views (BOBUIableView)
         //with headers can't handle the fact that the model has been destroyed
         //all modelDestroyed() slots must have been called
         if (!delayedReset.isActive())
@@ -361,7 +361,7 @@ public:
     QPersistentModelIndex enteredIndex;
     QPersistentModelIndex pressedIndex;
     QPersistentModelIndex currentSelectionStartIndex;
-    Qt::KeyboardModifiers pressedModifiers;
+    BobUI::KeyboardModifiers pressedModifiers;
     QPoint pressedPosition;
     QPoint draggedPosition;
     QPoint draggedPositionOffset;
@@ -382,7 +382,7 @@ public:
 
     bool tabKeyNavigation;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     bool showDropIndicator;
     QRect dropIndicatorRect;
     bool dragEnabled;
@@ -390,12 +390,12 @@ public:
     bool overwrite;
     bool dropEventMoved;
     QAbstractItemView::DropIndicatorPosition dropIndicatorPosition;
-    Qt::DropAction defaultDropAction;
+    BobUI::DropAction defaultDropAction;
 #endif
 
     QString keyboardInput;
     QElapsedTimer keyboardInputTime;
-    Qt::MatchFlags keyboardSearchFlags = Qt::MatchStartsWith | Qt::MatchWrap;
+    BobUI::MatchFlags keyboardSearchFlags = BobUI::MatchStartsWith | BobUI::MatchWrap;
 
     bool autoScroll;
     QBasicTimer autoScrollTimer;
@@ -407,7 +407,7 @@ public:
     bool alternatingColors;
 
     QSize iconSize;
-    Qt::TextElideMode textElideMode;
+    BobUI::TextElideMode textElideMode;
 
     QRegion updateRegion; // used for the internal update system
     QPoint scrollDelayOffset;
@@ -420,7 +420,7 @@ public:
     QAbstractItemView::ScrollMode verticalScrollMode;
     QAbstractItemView::ScrollMode horizontalScrollMode;
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     // the selection before the last mouse down. In case we have to restore it for scrolling
     QItemSelection oldSelection;
     QModelIndex oldCurrent;
@@ -442,7 +442,7 @@ public:
 
     std::array<QMetaObject::Connection, 14> modelConnections;
     std::array<QMetaObject::Connection, 4> scrollbarConnections;
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QMetaObject::Connection scollerConnection;
 #endif
 
@@ -468,9 +468,9 @@ private:
     mutable QBasicTimer fetchMoreTimer;
 };
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <qlist.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 template<typename T>
 inline int qBinarySearch(const QList<T> &vec, const T &item, int start, int end)
@@ -486,6 +486,6 @@ inline int qBinarySearch(const QList<T> &vec, const T &item, int start, int end)
     return i;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTITEMVIEW_P_H

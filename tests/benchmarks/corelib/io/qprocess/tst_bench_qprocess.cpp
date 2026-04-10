@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtCore/QProcess>
-#include <QtCore/QElapsedTimer>
+#include <BobUICore/QProcess>
+#include <BobUICore/QElapsedTimer>
 
 class tst_QProcess : public QObject
 {
@@ -66,5 +66,5 @@ void tst_QProcess::echoTest_performance()
     QVERIFY(process.waitForFinished());
 }
 
-QTEST_MAIN(tst_QProcess)
+BOBUIEST_MAIN(tst_QProcess)
 #include "tst_bench_qprocess.moc"

@@ -1,10 +1,10 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS     = window.h
 SOURCES     = main.cpp \
               window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/lineedits
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/lineedits
 INSTALLS += target

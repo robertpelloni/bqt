@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "paintcommands.h"
 #include <qbaselinetest.h>
 #include <QDir>
 #include <QPainter>
 #include <QPdfWriter>
-#include <QTemporaryFile>
-#if QT_CONFIG(process)
+#include <BOBUIemporaryFile>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include <QOpenGLFramebufferObjectFormat>
 #include <QOpenGLContext>
 #include <QOpenGLPaintDevice>
@@ -85,7 +85,7 @@ private slots:
     void testPdf_data();
     void testPdf();
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     void testOpenGL_data();
     void testOpenGL();
     void testOpenGLBGR30_data();
@@ -127,19 +127,19 @@ void tst_Lancelot::initTestCase()
         QFile file(scriptsDir + fileName);
         QVERIFY(file.open(QFile::ReadOnly));
         QByteArray cont = file.readAll();
-        scripts.insert(fileName, QString::fromUtf8(cont).split(QLatin1Char('\n'), Qt::SkipEmptyParts));
+        scripts.insert(fileName, QString::fromUtf8(cont).split(QLatin1Char('\n'), BobUI::SkipEmptyParts));
         scriptChecksums.insert(fileName, qChecksum(cont));
     }
 
-    QString underlineTestFont1 = QLatin1String(":/fonts/QtUnderlineTest-Regular.ttf");
+    QString underlineTestFont1 = QLatin1String(":/fonts/BobUIUnderlineTest-Regular.ttf");
     int id = QFontDatabase::addApplicationFont(underlineTestFont1);
     QVERIFY(id >= 0);
 
-    QString underlineTestFont2 = QLatin1String(":/fonts/QtUnderlineTest2-Regular.ttf");
+    QString underlineTestFont2 = QLatin1String(":/fonts/BobUIUnderlineTest2-Regular.ttf");
     id = QFontDatabase::addApplicationFont(underlineTestFont2);
     QVERIFY(id >= 0);
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     initOpenGL();
 #endif
 }
@@ -295,7 +295,7 @@ void tst_Lancelot::testPdf()
 }
 
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 void tst_Lancelot::initOpenGL()
 {
     // Stencil buffer is needed for clipping
@@ -392,7 +392,7 @@ void tst_Lancelot::testCoreOpenGL()
 
 void tst_Lancelot::setupTestSuite(const QStringList& blacklist)
 {
-    QTest::addColumn<QString>("qpsFile");
+    BOBUIest::addColumn<QString>("qpsFile");
     foreach (const QString &fileName, qpsFiles) {
         if (blacklist.contains(fileName))
             continue;
@@ -413,7 +413,7 @@ void tst_Lancelot::runTestSuite(GraphicsEngine engine, QImage::Format format, co
         QImage img(800, 800, format);
         paint(&img, engine, format, script, QFileInfo(filePath).absoluteFilePath());
         rendered = img;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     } else if (engine == OpenGL) {
         QWindow win;
         win.setSurfaceType(QSurface::OpenGLSurface);
@@ -435,10 +435,10 @@ void tst_Lancelot::runTestSuite(GraphicsEngine engine, QImage::Format format, co
         rendered = fbo.toImage().convertToFormat(format);
 #endif
     } else if (engine == Pdf) {
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
         QString tempStem(QDir::tempPath() + QLatin1String("/lancelot_XXXXXX_") + qpsFile.chopped(4));
 
-        QTemporaryFile pdfFile(tempStem + QLatin1String(".pdf"));
+        BOBUIemporaryFile pdfFile(tempStem + QLatin1String(".pdf"));
         QVERIFY(pdfFile.open());
         QPdfWriter writer(&pdfFile);
         writer.setPdfVersion(QPdfWriter::PdfVersion_1_6);
@@ -450,7 +450,7 @@ void tst_Lancelot::runTestSuite(GraphicsEngine engine, QImage::Format format, co
         pdfFile.close();
 
         // Convert pdf to something we can read into a QImage, using macOS' sips utility
-        QTemporaryFile pngFile(tempStem + QLatin1String(".png"));
+        BOBUIemporaryFile pngFile(tempStem + QLatin1String(".png"));
         QVERIFY(pngFile.open()); // Just create the file name
         pngFile.close();
         QProcess proc;

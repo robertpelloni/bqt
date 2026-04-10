@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <jni.h>
 
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
-#include <QtTest/QTest>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
+#include <BobUITest/BOBUIest>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const char javaTestClass[] =
-        "org/qtproject/qt/android/testdatapackage/QtJniEnvironmentTestClass";
+        "org/bobuiproject/bobui/android/testdatapackage/BobUIJniEnvironmentTestClass";
 static const char javaTestClassNoCtor[] =
-        "org/qtproject/qt/android/testdatapackage/QtJniEnvironmentTestClassNoCtor";
+        "org/bobuiproject/bobui/android/testdatapackage/BobUIJniEnvironmentTestClassNoCtor";
 
-static QString registerNativesString = QStringLiteral("Qt");
+static QString registerNativesString = QStringLiteral("BobUI");
 static int registerNativeInteger = 0;
 
 class tst_QJniEnvironment : public QObject
@@ -38,7 +38,7 @@ void tst_QJniEnvironment::init()
     // Unless explicitly ignored to test error handling, warning messages
     // in this test about a failure to look up a field, method, or class
     // make the test fail.
-    QTest::failOnWarning(QRegularExpression("java.lang.NoSuch.*Error"));
+    BOBUIest::failOnWarning(QRegularExpression("java.lang.NoSuch.*Error"));
 }
 
 void tst_QJniEnvironment::jniEnv()
@@ -70,7 +70,7 @@ void tst_QJniEnvironment::jniEnv()
         QVERIFY(!QJniEnvironment::checkAndClearExceptions(env.jniEnv()));
 
         // try to find a nonexistent class
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
         QVERIFY(!env->FindClass("this/doesnt/Exist"));
         QVERIFY(QJniEnvironment::checkAndClearExceptions(env.jniEnv()));
 
@@ -80,11 +80,11 @@ void tst_QJniEnvironment::jniEnv()
         QVERIFY(env.findClass<jstring>());
 
         // try to find a nonexistent class
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
         QVERIFY(!env.findClass("this/doesnt/Exist"));
 
         // clear exception with member function
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.ClassNotFoundException: .*"));
         QVERIFY(!env->FindClass("this/doesnt/Exist"));
         QVERIFY(env.checkAndClearExceptions());
     }
@@ -159,7 +159,7 @@ namespace CallbackNamespace {
 
 void tst_QJniEnvironment::registerNativeMethods()
 {
-    QJniObject QtString = QJniObject::fromString(registerNativesString);
+    QJniObject BobUIString = QJniObject::fromString(registerNativesString);
     QJniEnvironment env;
 
     {
@@ -170,9 +170,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClass,
                                            "appendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java: Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java: BobUI"));
     }
 
     // Named native function
@@ -184,9 +184,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClass,
                                            "namedAppendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java (named): Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java (named): BobUI"));
     }
 
     // Static class member as callback
@@ -198,9 +198,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClass,
                                            "memberAppendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java (member): Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java (member): BobUI"));
     }
 
     // Static named class member as callback
@@ -213,9 +213,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClass,
                                            "namedMemberAppendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java (named member): Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java (named member): BobUI"));
     }
 
     // Function generally just in namespace as callback
@@ -227,9 +227,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClass,
                                            "namespaceAppendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java (namespace): Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java (namespace): BobUI"));
     }
 
     // No default constructor in class
@@ -241,9 +241,9 @@ void tst_QJniEnvironment::registerNativeMethods()
         QJniObject::callStaticMethod<void>(javaTestClassNoCtor,
                                            "appendJavaToString",
                                            "(Ljava/lang/String;)V",
-                                            QtString.object<jstring>());
-        QTest::qWait(200);
-        QVERIFY(registerNativesString == QStringLiteral("From Java (no ctor): Qt"));
+                                            BobUIString.object<jstring>());
+        BOBUIest::qWait(200);
+        QVERIFY(registerNativesString == QStringLiteral("From Java (no ctor): BobUI"));
     }
 }
 
@@ -268,7 +268,7 @@ void tst_QJniEnvironment::registerNativeMethodsByJclass()
     QJniObject parameter = QJniObject::fromString(QString("123"));
     QJniObject::callStaticMethod<void>(clazz, "convertToInt", "(Ljava/lang/String;)V",
                                        parameter.object<jstring>());
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
     QCOMPARE(registerNativeInteger, 123);
 }
 
@@ -287,7 +287,7 @@ void tst_QJniEnvironment::findMethod()
     QVERIFY(methodId != nullptr);
 
     // invalid signature
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
     jmethodID invalid = env.findMethod(clazz, "unknown", "()I");
     QVERIFY(invalid == nullptr);
     // check that all exceptions are already cleared
@@ -314,10 +314,10 @@ void tst_QJniEnvironment::findStaticMethod()
     QCOMPARE(result, 123);
 
     // invalid method
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
     jmethodID invalid = env.findStaticMethod(clazz, "unknown", "()I");
     QVERIFY(invalid == nullptr);
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.NoSuchMethodError: .*"));
     invalid = env.findStaticMethod<jint>(clazz, "unknown");
     QVERIFY(invalid == nullptr);
     // check that all exceptions are already cleared
@@ -345,7 +345,7 @@ void tst_QJniEnvironment::findField()
     QVERIFY(value == 123);
 
     // invalid signature
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.NoSuchFieldError: .*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.NoSuchFieldError: .*"));
     jfieldID invalidId = env.findField(clazz, "unknown", "I");
     QVERIFY(invalidId == nullptr);
     // check that all exceptions are already cleared
@@ -369,15 +369,15 @@ void tst_QJniEnvironment::findStaticField()
     QVERIFY(size == 321);
 
     // invalid signature
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.NoSuchFieldError: .*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.NoSuchFieldError: .*"));
     jfieldID invalidId = env.findStaticField(clazz, "unknown", "I");
     QVERIFY(invalidId == nullptr);
     // check that all exceptions are already cleared
     QVERIFY(!env.checkAndClearExceptions());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_QJniEnvironment)
+BOBUIEST_MAIN(tst_QJniEnvironment)
 
 #include "tst_qjnienvironment.moc"

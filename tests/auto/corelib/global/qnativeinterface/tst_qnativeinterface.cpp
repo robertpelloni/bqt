@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qnativeinterface.h>
-#include <QtCore/private/qnativeinterface_p.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUICore/private/qnativeinterface_p.h>
 
 class tst_QNativeInterface: public QObject
 {
@@ -22,29 +22,29 @@ struct InterfaceImplementation;
 struct PublicClass
 {
     PublicClass();
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(PublicClass)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(PublicClass)
     std::unique_ptr<InterfaceImplementation> m_implementation;
 
     friend void tst_QNativeInterface::resolve() const;
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace QNativeInterface {
 struct Interface
 {
-    QT_DECLARE_NATIVE_INTERFACE(Interface, 10, PublicClass)
+    BOBUI_DECLARE_NATIVE_INTERFACE(Interface, 10, PublicClass)
     virtual int foo() = 0;
 };
 
 struct OtherInterface
 {
-    QT_DECLARE_NATIVE_INTERFACE(OtherInterface, 10, PublicClass)
+    BOBUI_DECLARE_NATIVE_INTERFACE(OtherInterface, 10, PublicClass)
 };
 }
 
-QT_DEFINE_NATIVE_INTERFACE(Interface);
-QT_DEFINE_NATIVE_INTERFACE(OtherInterface);
-QT_END_NAMESPACE
+BOBUI_DEFINE_NATIVE_INTERFACE(Interface);
+BOBUI_DEFINE_NATIVE_INTERFACE(OtherInterface);
+BOBUI_END_NAMESPACE
 
 struct NotInterface {};
 
@@ -67,8 +67,8 @@ PublicClass::PublicClass() : m_implementation(new InterfaceImplementation) {}
 void* PublicClass::resolveInterface(char const* name, int revision) const
 {
     auto *implementation = m_implementation.get();
-    QT_NATIVE_INTERFACE_RETURN_IF(Interface, implementation);
-    QT_NATIVE_INTERFACE_RETURN_IF(OtherInterface, implementation);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(Interface, implementation);
+    BOBUI_NATIVE_INTERFACE_RETURN_IF(OtherInterface, implementation);
     return nullptr;
 }
 
@@ -96,7 +96,7 @@ void tst_QNativeInterface::resolve() const
 
     QVERIFY(foo.resolveInterface("Interface", 10));
 
-    QTest::ignoreMessage(QtWarningMsg, "Native interface revision mismatch "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Native interface revision mismatch "
                     "(requested 5 / available 10) for interface Interface");
 
     QCOMPARE(foo.resolveInterface("Interface", 5), nullptr);
@@ -111,5 +111,5 @@ void tst_QNativeInterface::accessor() const
     QCOMPARE(foo.nativeInterface<Interface>()->foo(), 123);
 }
 
-QTEST_MAIN(tst_QNativeInterface)
+BOBUIEST_MAIN(tst_QNativeInterface)
 #include "tst_qnativeinterface.moc"

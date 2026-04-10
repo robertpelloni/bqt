@@ -1,7 +1,7 @@
-Qt 4.1.4 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.1.0.
+BobUI 4.1.4 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.1.0.
 
-The Qt version 4.1 series is binary compatible with the 4.0.x series.
+The BobUI version 4.1 series is binary compatible with the 4.0.x series.
 Applications compiled for 4.0 will continue to run with 4.1.
 
 ****************************************************************************
@@ -9,7 +9,7 @@ Applications compiled for 4.0 will continue to run with 4.1.
 ****************************************************************************
 
 Configure / Compilation
-	Compile with -no-qt3support on Windows.
+	Compile with -no-bobui3support on Windows.
 	Compile on Linux with icc 9.1.
 	Compile on tru64-g++.
 	Compile MySQL plugin with client libraries below MySQL 4.1.
@@ -33,8 +33,8 @@ General improvements
 --------------------
 
 - Fixed crash in QGLWidget::makeCurrent() when called from a thread not
-  created with QThread.
-- Fixed a crash that occurred when writing a PNG image when Qt is built
+  created with BOBUIhread.
+- Fixed a crash that occurred when writing a PNG image when BobUI is built
   statically.
 - Fixed Arabic shaping for some fonts.
 - Limited the character string to 255 characters when writing Type1 fonts to
@@ -75,10 +75,10 @@ General improvements
 - QSortFilterProxyModel
 	Emit modelReset() signal when setting a source model.
 
-- QTextEdit
+- BOBUIextEdit
         Ensure that the cursor is visible after dragging & dropping text
 
-- QTreeView
+- BOBUIreeView
 	Fixed potential assert when asking for the coordinates of a
 	non-existing item.
 	Fixed a regression that caused selections to be	painted
@@ -96,7 +96,7 @@ Platform-Specific changes
 
 Windows:
 
-- Fixed a bug that caused application text to be absent in Qt applications
+- Fixed a bug that caused application text to be absent in BobUI applications
   on Windows NT 4.0.
 - Fixed resource leak in non-accelerated GL contexts.
 
@@ -117,7 +117,7 @@ QPainter
 	any clipping.
 
 
-Qtopia Core:
+BobUIopia Core:
 
 - Fixed crash due to incorrect assembly code in implementation of
   q_atomic_swp() for ARM.

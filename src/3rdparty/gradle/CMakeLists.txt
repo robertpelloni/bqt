@@ -1,4 +1,4 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 set(gradle_programs
     "${CMAKE_CURRENT_SOURCE_DIR}/gradlew"
@@ -15,38 +15,38 @@ set(gradle_wrapper_files
     "${CMAKE_CURRENT_SOURCE_DIR}/gradle/wrapper/gradle-wrapper.jar"
 )
 
-add_custom_target(Qt${QtBase_VERSION_MAJOR}GradleScripts
+add_custom_target(BobUI${BobUIBase_VERSION_MAJOR}GradleScripts
     SOURCES
         ${gradle_programs}
         ${gradle_files}
         ${gradle_wrapper_files}
 )
 
-qt_path_join(destination ${QT_INSTALL_DIR} ${INSTALL_DATADIR} "src/3rdparty/gradle")
+bobui_path_join(destination ${BOBUI_INSTALL_DIR} ${INSTALL_DATADIR} "src/3rdparty/gradle")
 
-qt_copy_or_install(
+bobui_copy_or_install(
     PROGRAMS
         ${gradle_programs}
     DESTINATION
         "${destination}"
 )
 
-qt_copy_or_install(
+bobui_copy_or_install(
     FILES
         ${gradle_files}
     DESTINATION
         "${destination}"
 )
 
-qt_copy_or_install(
+bobui_copy_or_install(
     DIRECTORY
         ${gradle_wrapper}
     DESTINATION
         "${destination}"
 )
 
-if(NOT QT_WILL_INSTALL)
-    qt_internal_copy_at_build_time(TARGET Qt${QtBase_VERSION_MAJOR}GradleScripts
+if(NOT BOBUI_WILL_INSTALL)
+    bobui_internal_copy_at_build_time(TARGET BobUI${BobUIBase_VERSION_MAJOR}GradleScripts
         FILES ${gradle_programs} ${gradle_files}
         DIRECTORIES ${gradle_wrapper}
         DESTINATION ${destination}

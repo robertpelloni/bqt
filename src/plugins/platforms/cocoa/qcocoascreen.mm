@@ -1,6 +1,6 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -10,18 +10,18 @@
 #include "qcocoahelpers.h"
 #include "qcocoaintegration.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
 #include <IOKit/graphics/IOGraphicsLib.h>
 
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/private/qeventdispatcher_cf_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/private/qeventdispatcher_cf_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace CoreGraphics {
     Q_NAMESPACE
@@ -80,7 +80,7 @@ void QCocoaScreen::initializeScreens()
 void QCocoaScreen::updateScreens()
 {
     // Adding, updating, or removing a screen below might trigger
-    // Qt or the application to move a window to a different screen,
+    // BobUI or the application to move a window to a different screen,
     // recursing back here via QCocoaWindow::windowDidChangeScreen.
     // The update code is not re-entrant, so bail out if we end up
     // in this situation. The screens will stabilize eventually.
@@ -178,14 +178,14 @@ void QCocoaScreen::remove()
 {
     // This may result in the application responding to QGuiApplication::screenRemoved
     // by moving the window to another screen, either by setGeometry, or by setScreen.
-    // If the window isn't moved by the application, Qt will as a fallback move it to
+    // If the window isn't moved by the application, BobUI will as a fallback move it to
     // the primary screen via setScreen. Due to the way setScreen works, this won't
     // actually recreate the window on the new screen, it will just assign the new
     // QScreen to the window. The associated NSWindow will have an NSScreen determined
     // by AppKit. AppKit will then move the window to another screen by changing the
     // geometry, and we will get a callback in QCocoaWindow::windowDidMove and then
     // QCocoaWindow::windowDidChangeScreen. At that point the window will appear to have
-    // already changed its screen, but that's only true if comparing the Qt screens,
+    // already changed its screen, but that's only true if comparing the BobUI screens,
     // not when comparing the NSScreens.
     qCInfo(lcQpaScreen) << "Removing " << this;
     QWindowSystemInterface::handleScreenRemoved(this);
@@ -225,8 +225,8 @@ void QCocoaScreen::update(CGDirectDisplayID displayId)
 
     // The reference screen for the geometry is always the primary screen
     QRectF primaryScreenGeometry = QRectF::fromCGRect(CGDisplayBounds(CGMainDisplayID()));
-    m_geometry = qt_mac_flip(QRectF::fromCGRect(nsScreen.frame), primaryScreenGeometry).toRect();
-    m_availableGeometry = qt_mac_flip(QRectF::fromCGRect(nsScreen.visibleFrame), primaryScreenGeometry).toRect();
+    m_geometry = bobui_mac_flip(QRectF::fromCGRect(nsScreen.frame), primaryScreenGeometry).toRect();
+    m_availableGeometry = bobui_mac_flip(QRectF::fromCGRect(nsScreen.visibleFrame), primaryScreenGeometry).toRect();
 
     m_devicePixelRatio = nsScreen.backingScaleFactor;
 
@@ -262,7 +262,7 @@ void QCocoaScreen::update(CGDirectDisplayID displayId)
 
 // ----------------------- Display link -----------------------
 
-Q_LOGGING_CATEGORY(lcQpaScreenUpdates, "qt.qpa.screen.updates", QtCriticalMsg);
+Q_LOGGING_CATEGORY(lcQpaScreenUpdates, "bobui.qpa.screen.updates", BobUICriticalMsg);
 
 bool QCocoaScreen::requestUpdate()
 {
@@ -384,7 +384,7 @@ void QCocoaScreen::deliverUpdateRequests()
 
     // The CVDisplayLink callback is a notification that it's a good time to produce a new frame.
     // Since the callback is delivered on a separate thread we have to marshal it over to the
-    // main thread, as Qt requires update requests to be delivered there. This needs to happen
+    // main thread, as BobUI requires update requests to be delivered there. This needs to happen
     // asynchronously, as otherwise we may end up deadlocking if the main thread calls back
     // into any of the CVDisplayLink APIs.
     if (!NSThread.isMainThread) {
@@ -538,16 +538,16 @@ QPlatformScreen::SubpixelAntialiasingType QCocoaScreen::subpixelAntialiasingType
     return type;
 }
 
-Qt::ScreenOrientation QCocoaScreen::orientation() const
+BobUI::ScreenOrientation QCocoaScreen::orientation() const
 {
     if (m_rotation == 0)
-        return Qt::LandscapeOrientation;
+        return BobUI::LandscapeOrientation;
     if (m_rotation == 90)
-        return Qt::PortraitOrientation;
+        return BobUI::PortraitOrientation;
     if (m_rotation == 180)
-        return Qt::InvertedLandscapeOrientation;
+        return BobUI::InvertedLandscapeOrientation;
     if (m_rotation == 270)
-        return Qt::InvertedPortraitOrientation;
+        return BobUI::InvertedPortraitOrientation;
     return QPlatformScreen::orientation();
 }
 
@@ -559,7 +559,7 @@ QWindow *QCocoaScreen::topLevelAt(const QPoint &point) const
             if (!nsWindow)
                 return;
 
-            // Continue the search if the window does not belong to Qt
+            // Continue the search if the window does not belong to BobUI
             if (![nsWindow conformsToProtocol:@protocol(QNSWindowProtocol)])
                 return;
 
@@ -602,7 +602,7 @@ QPixmap QCocoaScreen::grabWindow(WId view, int x, int y, int width, int height) 
 {
     /*
        Grab the grabRect section of the specified display into a pixmap that has
-       sRGB color spec. Once Qt supports a fully color-managed flow and conversions
+       sRGB color spec. Once BobUI supports a fully color-managed flow and conversions
        that don't lose the colorspec information, we would want the image to maintain
        the color spec of the display from which it was grabbed. Ultimately, rendering
        the returned pixmap on the same display from which it was grabbed should produce
@@ -615,7 +615,7 @@ QPixmap QCocoaScreen::grabWindow(WId view, int x, int y, int width, int height) 
             qCDebug(lcQpaScreen) << "applying color correction for display" << displayId;
             image = CGImageCreateCopyWithColorSpace(image, sRGBcolorSpace);
         }
-        QPixmap pixmap = QPixmap::fromImage(qt_mac_toQImage(image));
+        QPixmap pixmap = QPixmap::fromImage(bobui_mac_toQImage(image));
         pixmap.setDevicePixelRatio(nativeScreenForDisplayId(displayId).backingScaleFactor);
         return pixmap;
     };
@@ -690,7 +690,7 @@ QPixmap QCocoaScreen::grabWindow(WId view, int x, int y, int width, int height) 
     qCDebug(lcQpaScreen) << "Create grap pixmap" << grabRect.size() << "at devicePixelRatio" << dpr;
     QPixmap windowPixmap(grabRect.size() * dpr);
     windowPixmap.setDevicePixelRatio(dpr);
-    windowPixmap.fill(Qt::transparent);
+    windowPixmap.fill(BobUI::transparent);
     QPainter painter(&windowPixmap);
     for (uint i = 0; i < displayCount; ++i)
         painter.drawPixmap(destinations.at(i), pixmaps.at(i));
@@ -726,7 +726,7 @@ bool QCocoaScreen::isMirroring() const
 */
 QCocoaScreen *QCocoaScreen::primaryScreen()
 {
-    // Note: The primary screen that Qt knows about may not match the current CGMainDisplayID()
+    // Note: The primary screen that BobUI knows about may not match the current CGMainDisplayID()
     // if macOS has not yet been able to inform us that the main display has changed, but we
     // will update the primary screen accordingly once the reconfiguration callback comes in.
     return static_cast<QCocoaScreen *>(QGuiApplication::primaryScreen()->handle());
@@ -745,7 +745,7 @@ QList<QPlatformScreen*> QCocoaScreen::virtualSiblings() const
 
 QCocoaScreen *QCocoaScreen::get(NSScreen *nsScreen)
 {
-    auto displayId = nsScreen.qt_displayId;
+    auto displayId = nsScreen.bobui_displayId;
     auto *cocoaScreen = get(displayId);
     if (!cocoaScreen) {
         qCWarning(lcQpaScreen) << "Failed to map" << nsScreen
@@ -790,7 +790,7 @@ QCocoaScreen *QCocoaScreen::get(CFUUIDRef uuid)
 NSScreen *QCocoaScreen::nativeScreenForDisplayId(CGDirectDisplayID displayId)
 {
     for (NSScreen *screen in NSScreen.screens) {
-        if (screen.qt_displayId == displayId)
+        if (screen.bobui_displayId == displayId)
             return screen;
     }
     return nil;
@@ -807,28 +807,28 @@ NSScreen *QCocoaScreen::nativeScreen() const
 CGPoint QCocoaScreen::mapToNative(const QPointF &pos, QCocoaScreen *screen)
 {
     Q_ASSERT(screen);
-    return qt_mac_flip(pos, screen->geometry()).toCGPoint();
+    return bobui_mac_flip(pos, screen->geometry()).toCGPoint();
 }
 
 CGRect QCocoaScreen::mapToNative(const QRectF &rect, QCocoaScreen *screen)
 {
     Q_ASSERT(screen);
-    return qt_mac_flip(rect, screen->geometry()).toCGRect();
+    return bobui_mac_flip(rect, screen->geometry()).toCGRect();
 }
 
 QPointF QCocoaScreen::mapFromNative(CGPoint pos, QCocoaScreen *screen)
 {
     Q_ASSERT(screen);
-    return qt_mac_flip(QPointF::fromCGPoint(pos), screen->geometry());
+    return bobui_mac_flip(QPointF::fromCGPoint(pos), screen->geometry());
 }
 
 QRectF QCocoaScreen::mapFromNative(CGRect rect, QCocoaScreen *screen)
 {
     Q_ASSERT(screen);
-    return qt_mac_flip(QRectF::fromCGRect(rect), screen->geometry());
+    return bobui_mac_flip(QRectF::fromCGRect(rect), screen->geometry());
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QCocoaScreen *screen)
 {
     QDebugStateSaver saver(debug);
@@ -854,15 +854,15 @@ QDebug operator<<(QDebug debug, const QCocoaScreen *screen)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcocoascreen.moc"
 
-@implementation NSScreen (QtExtras)
+@implementation NSScreen (BobUIExtras)
 
-- (CGDirectDisplayID)qt_displayId
+- (CGDirectDisplayID)bobui_displayId
 {
     return [self.deviceDescription[@"NSScreenNumber"] unsignedIntValue];
 }

@@ -1,21 +1,21 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(deployment_api)
 enable_testing()
 
-find_package(Qt6 COMPONENTS REQUIRED Widgets Test)
+find_package(BobUI6 COMPONENTS REQUIRED Widgets Test)
 
-qt6_standard_project_setup()
+bobui6_standard_project_setup()
 
 function(create_test_executable target)
     cmake_parse_arguments(arg "" "" "" ${ARGN})
 
     if(CMAKE_VERSION VERSION_LESS "3.19")
-        qt_add_executable(${target} MANUAL_FINALIZATION main.cpp)
+        bobui_add_executable(${target} MANUAL_FINALIZATION main.cpp)
     else()
-        qt_add_executable(${target} main.cpp)
+        bobui_add_executable(${target} main.cpp)
     endif()
 
     set_target_properties(${target} PROPERTIES
@@ -24,14 +24,14 @@ function(create_test_executable target)
 
         MACOSX_BUNDLE TRUE
     )
-    target_link_libraries(${target} PRIVATE Qt::Widgets Qt::Test)
+    target_link_libraries(${target} PRIVATE BobUI::Widgets BobUI::Test)
 
     install(TARGETS ${target}
         BUNDLE  DESTINATION .
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 
-    qt_generate_deploy_app_script(
+    bobui_generate_deploy_app_script(
         TARGET ${target}
         OUTPUT_SCRIPT deploy_script
         # Don't fail at configure time on unsupported platforms
@@ -40,7 +40,7 @@ function(create_test_executable target)
     install(SCRIPT ${deploy_script})
 
     if(CMAKE_VERSION VERSION_LESS "3.19")
-        qt_finalize_target(${target})
+        bobui_finalize_target(${target})
     endif()
 
     if(APPLE AND NOT IOS)
@@ -53,7 +53,7 @@ function(create_test_executable target)
 
     # There's no nice way to get the location of an installed binary, so we need to construct
     # the binary install path by hand, somewhat similar to how it's done in
-    # the implementation of qt_deploy_runtime_dependencies.
+    # the implementation of bobui_deploy_runtime_dependencies.
     # On unsupported deployment platforms, either the install_ test will fail not finding
     # the location of the app (because we do not set a installed_app_location value)
     # or the run_deployed_ test will fail because we didn't deploy the runtime dependencies.

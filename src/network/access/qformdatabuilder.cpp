@@ -1,18 +1,18 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qformdatabuilder.h"
 
-#include <QtCore/private/qstringconverter_p.h>
-#if QT_CONFIG(mimetype)
-#include "QtCore/qmimedatabase.h"
+#include <BobUICore/private/qstringconverter_p.h>
+#if BOBUI_CONFIG(mimetype)
+#include "BobUICore/qmimedatabase.h"
 #endif
 
 #include <variant>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QFormDataPartBuilder
@@ -22,7 +22,7 @@ QT_BEGIN_NAMESPACE
 
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QFormDataPartBuilder class can be used to build a QHttpPart object with
     the content disposition header set to be form-data by default. Then the
@@ -311,7 +311,7 @@ QHttpPart QFormDataPartBuilderPrivate::build(QFormDataBuilder::Options options)
         }
     }
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     if (m_mimeType.isEmpty()) {
         // auto-detect
         QMimeDatabase db;
@@ -349,7 +349,7 @@ QHttpPart QFormDataPartBuilderPrivate::build(QFormDataBuilder::Options options)
 
     \ingroup network
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QFormDataBuilder class can be used to build a QHttpMultiPart object
     with the content type set to be FormDataType by default.
@@ -512,4 +512,4 @@ std::unique_ptr<QHttpMultiPart> QFormDataBuilder::buildMultiPart(Options options
     return multiPart;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

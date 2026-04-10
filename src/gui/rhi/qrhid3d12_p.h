@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRHID3D12_P_H
 #define QRHID3D12_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -47,7 +47,7 @@ using D3D12GraphicsCommandList = ID3D12GraphicsCommandList5;
 using D3D12GraphicsCommandList = ID3D12GraphicsCommandList1;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const int QD3D12_FRAMES_IN_FLIGHT = 2;
 
@@ -213,12 +213,12 @@ struct QD3D12ObjectPool
             }
         }
         data.clear();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         // debug builds: just do it always
         static bool leakCheck = true;
 #else
         // release builds: opt-in
-        static bool leakCheck = qEnvironmentVariableIntValue("QT_RHI_LEAK_CHECK");
+        static bool leakCheck = qEnvironmentVariableIntValue("BOBUI_RHI_LEAK_CHECK");
 #endif
         if (leakCheck) {
             if (leakCount > 0) {
@@ -507,7 +507,7 @@ struct Q_D3D12_SAMPLER_DESC
 
     friend size_t qHash(const Q_D3D12_SAMPLER_DESC &key, size_t seed = 0) noexcept
     {
-        QtPrivate::QHashCombine hash(seed);
+        BobUIPrivate::QHashCombine hash(seed);
         seed = hash(seed, key.desc.Filter);
         seed = hash(seed, key.desc.AddressU);
         seed = hash(seed, key.desc.AddressV);
@@ -1305,7 +1305,7 @@ public:
     } caps;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // __ID3D12Device2_INTERFACE_DEFINED__
 

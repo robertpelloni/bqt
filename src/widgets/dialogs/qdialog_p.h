@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIALOG_P_H
 #define QDIALOG_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "private/qwidget_p.h"
-#include "QtCore/qeventloop.h"
-#include "QtCore/qpointer.h"
-#include "QtWidgets/qdialog.h"
-#if QT_CONFIG(pushbutton)
-#include "QtWidgets/qpushbutton.h"
+#include "BobUICore/qeventloop.h"
+#include "BobUICore/qpointer.h"
+#include "BobUIWidgets/qdialog.h"
+#if BOBUI_CONFIG(pushbutton)
+#include "BobUIWidgets/qpushbutton.h"
 #endif
 #include <qpa/qplatformdialoghelper.h>
 
-QT_REQUIRE_CONFIG(dialog);
+BOBUI_REQUIRE_CONFIG(dialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSizeGrip;
 
@@ -39,11 +39,11 @@ public:
 
     QDialogPrivate()
         :
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
           mainDef(nullptr),
 #endif
-          orientation(Qt::Horizontal),extension(nullptr), doShowExtension(false),
-#if QT_CONFIG(sizegrip)
+          orientation(BobUI::Horizontal),extension(nullptr), doShowExtension(false),
+#if BOBUI_CONFIG(sizegrip)
           resizer(nullptr),
           sizeGripEnabled(false),
 #endif
@@ -58,20 +58,20 @@ public:
     bool setNativeDialogVisible(bool visible);
     QVariant styleHint(QPlatformDialogHelper::StyleHint hint) const;
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     QPointer<QPushButton> mainDef;
 #endif
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     QWidget *extension;
     bool doShowExtension;
     QSize size, min, max;
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QSizeGrip *resizer;
     bool sizeGripEnabled;
 #endif
     QPoint lastRMBPress;
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     void setDefault(QPushButton *);
     void setMainDefault(QPushButton *);
     void hideDefault();
@@ -118,6 +118,6 @@ private:
     Q_DISABLE_COPY(QAutoPointer);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIALOG_P_H

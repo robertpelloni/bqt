@@ -1,23 +1,23 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformintegration.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "androidjniaccessibility.h"
 #endif
 #include "androidjnimain.h"
 #include "qabstracteventdispatcher.h"
 #include "qandroideventdispatcher.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qandroidplatformaccessibility.h"
 #endif
 #include "qandroidplatformclipboard.h"
 #include "qandroidplatformfontdatabase.h"
 #include "qandroidplatformforeignwindow.h"
 #include "qandroidplatformoffscreensurface.h"
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 #include "qandroidplatformopenglcontext.h"
 #endif
 #include "qandroidplatformopenglwindow.h"
@@ -29,37 +29,37 @@
 #include <QGuiApplication>
 #include <QOffscreenSurface>
 #include <QOpenGLContext>
-#include <QThread>
-#include <QtCore/QJniObject>
-#if QT_CONFIG(egl)
-#include <QtGui/private/qeglpbuffer_p.h>
+#include <BOBUIhread>
+#include <BobUICore/QJniObject>
+#if BOBUI_CONFIG(egl)
+#include <BobUIGui/private/qeglpbuffer_p.h>
 #endif
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qoffscreensurface_p.h>
-#include <QtGui/private/qrhibackingstore_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qoffscreensurface_p.h>
+#include <BobUIGui/private/qrhibackingstore_p.h>
 #include <qpa/qplatformoffscreensurface.h>
 #include <qpa/qplatformwindow.h>
 #include <qpa/qwindowsysteminterface.h>
 
 #include <jni.h>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qandroidplatformvulkanwindow.h"
 #include "qandroidplatformvulkaninstance.h"
 #endif
 
-#include <QtGui/qpa/qplatforminputcontextfactory_p.h>
+#include <BobUIGui/qpa/qplatforminputcontextfactory_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Qt::ScreenOrientation QAndroidPlatformIntegration::m_orientation = Qt::PrimaryOrientation;
-Qt::ScreenOrientation QAndroidPlatformIntegration::m_nativeOrientation = Qt::PrimaryOrientation;
+BobUI::ScreenOrientation QAndroidPlatformIntegration::m_orientation = BobUI::PrimaryOrientation;
+BobUI::ScreenOrientation QAndroidPlatformIntegration::m_nativeOrientation = BobUI::PrimaryOrientation;
 
 bool QAndroidPlatformIntegration::m_showPasswordEnabled = false;
 
-Q_DECLARE_JNI_CLASS(QtDisplayManager, "org/qtproject/qt/android/QtDisplayManager")
+Q_DECLARE_JNI_CLASS(BobUIDisplayManager, "org/bobuiproject/bobui/android/BobUIDisplayManager")
 Q_DECLARE_JNI_CLASS(Display, "android/view/Display")
 
 Q_DECLARE_JNI_CLASS(List, "java/util/List")
@@ -68,8 +68,8 @@ namespace {
 
 QAndroidPlatformScreen* createScreenForDisplayId(int displayId)
 {
-    const QJniObject display = QtJniTypes::QtDisplayManager::callStaticMethod<QtJniTypes::Display>(
-            "getDisplay", QtAndroidPrivate::context(), displayId);
+    const QJniObject display = BobUIJniTypes::BobUIDisplayManager::callStaticMethod<BobUIJniTypes::Display>(
+            "getDisplay", BobUIAndroidPrivate::context(), displayId);
     if (!display.isValid())
         return nullptr;
     return new QAndroidPlatformScreen(display);
@@ -77,8 +77,8 @@ QAndroidPlatformScreen* createScreenForDisplayId(int displayId)
 
 static bool isValidAndroidContextForRendering()
 {
-    return QtAndroid::isQtApplication() ? QtAndroidPrivate::activity().isValid()
-                                        : QtAndroidPrivate::context().isValid();
+    return BobUIAndroid::isBobUIApplication() ? BobUIAndroidPrivate::activity().isValid()
+                                        : BobUIAndroidPrivate::context().isValid();
 }
 
 } // anonymous namespace
@@ -86,14 +86,14 @@ static bool isValidAndroidContextForRendering()
 void *QAndroidPlatformNativeInterface::nativeResourceForIntegration(const QByteArray &resource)
 {
     if (resource=="JavaVM")
-        return QtAndroidPrivate::javaVM();
-    if (resource == "QtActivity") {
-        extern Q_CORE_EXPORT jobject qt_androidActivity();
-        return qt_androidActivity();
+        return BobUIAndroidPrivate::javaVM();
+    if (resource == "BobUIActivity") {
+        extern Q_CORE_EXPORT jobject bobui_androidActivity();
+        return bobui_androidActivity();
     }
-    if (resource == "QtService") {
-        extern Q_CORE_EXPORT jobject qt_androidService();
-        return qt_androidService();
+    if (resource == "BobUIService") {
+        extern Q_CORE_EXPORT jobject bobui_androidService();
+        return bobui_androidService();
     }
     if (resource == "AndroidStyleData") {
         if (m_androidStyle) {
@@ -117,7 +117,7 @@ void *QAndroidPlatformNativeInterface::nativeResourceForIntegration(const QByteA
         return nullptr;
     }
     if (resource == "AndroidDeviceName") {
-        static QString deviceName = QtAndroid::deviceName();
+        static QString deviceName = BobUIAndroid::deviceName();
         return &deviceName;
     }
     return 0;
@@ -125,7 +125,7 @@ void *QAndroidPlatformNativeInterface::nativeResourceForIntegration(const QByteA
 
 void *QAndroidPlatformNativeInterface::nativeResourceForWindow(const QByteArray &resource, QWindow *window)
 {
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (resource == "vkSurface") {
         if (window->surfaceType() == QSurface::VulkanSurface) {
             QAndroidPlatformVulkanWindow *w = static_cast<QAndroidPlatformVulkanWindow *>(window->handle());
@@ -142,7 +142,7 @@ void *QAndroidPlatformNativeInterface::nativeResourceForWindow(const QByteArray 
 
 void *QAndroidPlatformNativeInterface::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context)
 {
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     if (QEGLPlatformContext *platformContext = static_cast<QEGLPlatformContext *>(context->handle())) {
         if (resource == "eglcontext")
             return platformContext->eglContext();
@@ -163,28 +163,28 @@ void QAndroidPlatformNativeInterface::customEvent(QEvent *event)
     if (event->type() != QEvent::User)
         return;
 
-    QMutexLocker lock(QtAndroid::platformInterfaceMutex());
+    QMutexLocker lock(BobUIAndroid::platformInterfaceMutex());
     QAndroidPlatformIntegration *api = static_cast<QAndroidPlatformIntegration *>(QGuiApplicationPrivate::platformIntegration());
-    QtAndroid::setAndroidPlatformIntegration(api);
+    BobUIAndroid::setAndroidPlatformIntegration(api);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     // Android accessibility activation event might have been already received
-    api->accessibility()->setActive(QtAndroidAccessibility::isActive());
-#endif // QT_CONFIG(accessibility)
+    api->accessibility()->setActive(BobUIAndroidAccessibility::isActive());
+#endif // BOBUI_CONFIG(accessibility)
 
     api->flushPendingUpdates();
 }
 
 QAndroidPlatformIntegration::QAndroidPlatformIntegration(const QStringList &paramList)
     : m_touchDevice(nullptr)
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     , m_accessibility(nullptr)
 #endif
 {
     Q_UNUSED(paramList);
     m_androidPlatformNativeInterface = new QAndroidPlatformNativeInterface();
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     m_eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if (Q_UNLIKELY(m_eglDisplay == EGL_NO_DISPLAY))
         qFatal("Could not open egl display");
@@ -197,10 +197,10 @@ QAndroidPlatformIntegration::QAndroidPlatformIntegration(const QStringList &para
         qFatal("Could not bind GL_ES API");
 #endif
 
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     m_primaryDisplayId = Display::getStaticField<jint>("DEFAULT_DISPLAY");
-    const QJniObject nativeDisplaysList = QtDisplayManager::callStaticMethod<List>(
-                "getAvailableDisplays", QtAndroidPrivate::context());
+    const QJniObject nativeDisplaysList = BobUIDisplayManager::callStaticMethod<List>(
+                "getAvailableDisplays", BobUIAndroidPrivate::context());
 
     const int numberOfAvailableDisplays = nativeDisplaysList.callMethod<jint>("size");
     for (int i = 0; i < numberOfAvailableDisplays; ++i) {
@@ -224,24 +224,24 @@ QAndroidPlatformIntegration::QAndroidPlatformIntegration(const QStringList &para
         QWindowSystemInterface::handleScreenAdded(defaultScreen, true);
     }
 
-    m_mainThread = QThread::currentThread();
+    m_mainThread = BOBUIhread::currentThread();
 
     m_androidFDB = new QAndroidPlatformFontDatabase();
     m_androidPlatformServices.reset(new QAndroidPlatformServices);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     m_androidPlatformClipboard = new QAndroidPlatformClipboard();
 #endif
 
     m_androidSystemLocale = new QAndroidSystemLocale;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         m_accessibility = new QAndroidPlatformAccessibility();
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-    QJniObject javaActivity = QtAndroidPrivate::activity();
+    QJniObject javaActivity = BobUIAndroidPrivate::activity();
     if (!javaActivity.isValid())
-        javaActivity = QtAndroidPrivate::service();
+        javaActivity = BobUIAndroidPrivate::service();
 
     if (javaActivity.isValid()) {
         QJniObject resources = javaActivity.callObjectMethod("getResources", "()Landroid/content/res/Resources;");
@@ -312,9 +312,9 @@ QAndroidPlatformIntegration::QAndroidPlatformIntegration(const QStringList &para
 static bool needsBasicRenderloopWorkaround()
 {
     static bool needsWorkaround =
-            QtAndroid::deviceName().compare("samsung SM-T211"_L1, Qt::CaseInsensitive) == 0
-            || QtAndroid::deviceName().compare("samsung SM-T210"_L1, Qt::CaseInsensitive) == 0
-            || QtAndroid::deviceName().compare("samsung SM-T215"_L1, Qt::CaseInsensitive) == 0;
+            BobUIAndroid::deviceName().compare("samsung SM-T211"_L1, BobUI::CaseInsensitive) == 0
+            || BobUIAndroid::deviceName().compare("samsung SM-T210"_L1, BobUI::CaseInsensitive) == 0
+            || BobUIAndroid::deviceName().compare("samsung SM-T215"_L1, BobUI::CaseInsensitive) == 0;
     return needsWorkaround;
 }
 
@@ -332,7 +332,7 @@ bool QAndroidPlatformIntegration::hasCapability(Capability cap) const
     switch (cap) {
         case ApplicationState: return true;
         case ThreadedPixmaps: return true;
-        case NativeWidgets: return QtAndroidPrivate::activity().isValid();
+        case NativeWidgets: return BobUIAndroidPrivate::activity().isValid();
         case OpenGL:
             return isValidAndroidContextForRendering();
         case ForeignWindows:
@@ -341,10 +341,10 @@ bool QAndroidPlatformIntegration::hasCapability(Capability cap) const
             return !needsBasicRenderloopWorkaround() && isValidAndroidContextForRendering();
         case TopStackedNativeChildWindows: return false;
         case MaximizeUsingFullscreenGeometry: return true;
-        // FIXME QTBUG-118849 - we do not implement grabWindow() anymore, calling it will return
+        // FIXME BOBUIBUG-118849 - we do not implement grabWindow() anymore, calling it will return
         // a null QPixmap also for raster windows - for OpenGL windows this was always true
         case ScreenWindowGrabbing: return false;
-        case OffscreenSurface: return QtAndroidPrivate::activity().isValid();
+        case OffscreenSurface: return BobUIAndroidPrivate::activity().isValid();
         default:
             return QPlatformIntegration::hasCapability(cap);
     }
@@ -352,13 +352,13 @@ bool QAndroidPlatformIntegration::hasCapability(Capability cap) const
 
 QPlatformBackingStore *QAndroidPlatformIntegration::createPlatformBackingStore(QWindow *window) const
 {
-    if (!QtAndroidPrivate::activity().isValid())
+    if (!BobUIAndroidPrivate::activity().isValid())
         return nullptr;
 
     return new QRhiBackingStore(window);
 }
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 QPlatformOpenGLContext *QAndroidPlatformIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     if (!isValidAndroidContextForRendering())
@@ -379,7 +379,7 @@ QOpenGLContext *QAndroidPlatformIntegration::createOpenGLContext(EGLContext cont
 
 QPlatformOffscreenSurface *QAndroidPlatformIntegration::createPlatformOffscreenSurface(QOffscreenSurface *surface) const
 {
-    if (!QtAndroidPrivate::activity().isValid())
+    if (!BobUIAndroidPrivate::activity().isValid())
         return nullptr;
 
     QSurfaceFormat format(surface->requestedFormat());
@@ -393,7 +393,7 @@ QPlatformOffscreenSurface *QAndroidPlatformIntegration::createPlatformOffscreenS
 
 QOffscreenSurface *QAndroidPlatformIntegration::createOffscreenSurface(ANativeWindow *nativeSurface) const
 {
-    if (!QtAndroidPrivate::activity().isValid() || !nativeSurface)
+    if (!BobUIAndroidPrivate::activity().isValid() || !nativeSurface)
         return nullptr;
 
     auto *surface = new QOffscreenSurface;
@@ -408,12 +408,12 @@ QPlatformWindow *QAndroidPlatformIntegration::createPlatformWindow(QWindow *wind
     if (!isValidAndroidContextForRendering())
         return nullptr;
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (window->surfaceType() == QSurface::VulkanSurface)
         return new QAndroidPlatformVulkanWindow(window);
 #endif
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     return new QAndroidPlatformOpenGLWindow(window, m_eglDisplay);
 #endif
 
@@ -432,7 +432,7 @@ QAbstractEventDispatcher *QAndroidPlatformIntegration::createEventDispatcher() c
 
 QAndroidPlatformIntegration::~QAndroidPlatformIntegration()
 {
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     if (m_eglDisplay != EGL_NO_DISPLAY)
         eglTerminate(m_eglDisplay);
 #endif
@@ -441,11 +441,11 @@ QAndroidPlatformIntegration::~QAndroidPlatformIntegration()
     delete m_androidFDB;
     delete m_androidSystemLocale;
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     delete m_androidPlatformClipboard;
 #endif
 
-    QtAndroid::setAndroidPlatformIntegration(NULL);
+    BobUIAndroid::setAndroidPlatformIntegration(NULL);
 }
 
 QPlatformFontDatabase *QAndroidPlatformIntegration::fontDatabase() const
@@ -453,7 +453,7 @@ QPlatformFontDatabase *QAndroidPlatformIntegration::fontDatabase() const
     return m_androidFDB;
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 QPlatformClipboard *QAndroidPlatformIntegration::clipboard() const
 {
     return m_androidPlatformClipboard;
@@ -488,11 +488,11 @@ QVariant QAndroidPlatformIntegration::styleHint(StyleHint hint) const
     }
 }
 
-Qt::WindowState QAndroidPlatformIntegration::defaultWindowState(Qt::WindowFlags flags) const
+BobUI::WindowState QAndroidPlatformIntegration::defaultWindowState(BobUI::WindowFlags flags) const
 {
     // Don't maximize dialogs on Android
-    if (flags & Qt::Dialog & ~Qt::Window)
-        return Qt::WindowNoState;
+    if (flags & BobUI::Dialog & ~BobUI::Window)
+        return BobUI::WindowNoState;
 
     return QPlatformIntegration::defaultWindowState(flags);
 }
@@ -511,8 +511,8 @@ QPlatformTheme *QAndroidPlatformIntegration::createPlatformTheme(const QString &
     return 0;
 }
 
-void QAndroidPlatformIntegration::setScreenOrientation(Qt::ScreenOrientation currentOrientation,
-                                                       Qt::ScreenOrientation nativeOrientation)
+void QAndroidPlatformIntegration::setScreenOrientation(BobUI::ScreenOrientation currentOrientation,
+                                                       BobUI::ScreenOrientation nativeOrientation)
 {
     m_orientation = currentOrientation;
     m_nativeOrientation = nativeOrientation;
@@ -524,7 +524,7 @@ void QAndroidPlatformIntegration::flushPendingUpdates()
         m_primaryScreen->setAvailableGeometry(m_primaryScreen->availableGeometry());
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QPlatformAccessibility *QAndroidPlatformIntegration::accessibility() const
 {
     return m_accessibility;
@@ -532,11 +532,11 @@ QPlatformAccessibility *QAndroidPlatformIntegration::accessibility() const
 #endif
 
 extern "C" JNIEXPORT bool JNICALL
-Java_org_qtproject_qt_android_QtNativeAccessibility_accessibilitySupported(JNIEnv *, jobject)
+Java_org_bobuiproject_bobui_android_BobUINativeAccessibility_accessibilitySupported(JNIEnv *, jobject)
 {
-    #if QT_CONFIG(accessibility)
+    #if BOBUI_CONFIG(accessibility)
         return true;
-    #endif // QT_CONFIG(accessibility)
+    #endif // BOBUI_CONFIG(accessibility)
 
     return false;
 }
@@ -544,24 +544,24 @@ Java_org_qtproject_qt_android_QtNativeAccessibility_accessibilitySupported(JNIEn
 void QAndroidPlatformIntegration::setAvailableGeometry(const QRect &availableGeometry)
 {
     if (m_primaryScreen)
-        QMetaObject::invokeMethod(m_primaryScreen, "setAvailableGeometry", Qt::AutoConnection, Q_ARG(QRect, availableGeometry));
+        QMetaObject::invokeMethod(m_primaryScreen, "setAvailableGeometry", BobUI::AutoConnection, Q_ARG(QRect, availableGeometry));
 }
 
 void QAndroidPlatformIntegration::setPhysicalSize(int width, int height)
 {
     if (m_primaryScreen)
-        QMetaObject::invokeMethod(m_primaryScreen, "setPhysicalSize", Qt::AutoConnection, Q_ARG(QSize, QSize(width, height)));
+        QMetaObject::invokeMethod(m_primaryScreen, "setPhysicalSize", BobUI::AutoConnection, Q_ARG(QSize, QSize(width, height)));
 }
 
 void QAndroidPlatformIntegration::setScreenSize(int width, int height)
 {
     if (m_primaryScreen)
-        QMetaObject::invokeMethod(m_primaryScreen, "setSize", Qt::AutoConnection, Q_ARG(QSize, QSize(width, height)));
+        QMetaObject::invokeMethod(m_primaryScreen, "setSize", BobUI::AutoConnection, Q_ARG(QSize, QSize(width, height)));
 }
 
-Qt::ColorScheme QAndroidPlatformIntegration::m_colorScheme = Qt::ColorScheme::Light;
+BobUI::ColorScheme QAndroidPlatformIntegration::m_colorScheme = BobUI::ColorScheme::Light;
 
-void QAndroidPlatformIntegration::updateColorScheme(Qt::ColorScheme colorScheme)
+void QAndroidPlatformIntegration::updateColorScheme(BobUI::ColorScheme colorScheme)
 {
     if (m_colorScheme == colorScheme)
         return;
@@ -574,7 +574,7 @@ void QAndroidPlatformIntegration::updateColorScheme(Qt::ColorScheme colorScheme)
 void QAndroidPlatformIntegration::setRefreshRate(qreal refreshRate)
 {
     if (m_primaryScreen)
-        QMetaObject::invokeMethod(m_primaryScreen, "setRefreshRate", Qt::AutoConnection,
+        QMetaObject::invokeMethod(m_primaryScreen, "setRefreshRate", BobUI::AutoConnection,
                                   Q_ARG(qreal, refreshRate));
 }
 
@@ -611,7 +611,7 @@ void QAndroidPlatformIntegration::handleScreenChanged(int displayId)
     }
 
     // We do not do handle changes in rotation, refresh rate and density
-    // as they are done under QtDisplayManager.
+    // as they are done under BobUIDisplayManager.
 }
 
 void QAndroidPlatformIntegration::handleScreenRemoved(int displayId)
@@ -627,13 +627,13 @@ void QAndroidPlatformIntegration::handleScreenRemoved(int displayId)
     m_screens.erase(it);
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 
 QPlatformVulkanInstance *QAndroidPlatformIntegration::createPlatformVulkanInstance(QVulkanInstance *instance) const
 {
     return new QAndroidPlatformVulkanInstance(instance);
 }
 
-#endif // QT_CONFIG(vulkan)
+#endif // BOBUI_CONFIG(vulkan)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

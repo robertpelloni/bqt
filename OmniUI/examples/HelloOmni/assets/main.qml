@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Window 2.15
+import BobUIQuick 2.15
+import BobUIQuick.Window 2.15
 import OmniUI 1.0
 import OmniLayout 1.0
 import OmniData 1.0
@@ -91,7 +91,7 @@ Window {
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            color: Qt.darker(ThemeManager.surfaceColor, 1.2)
+            color: BobUI.darker(ThemeManager.surfaceColor, 1.2)
 
             Row {
                 anchors.left: parent.left
@@ -174,15 +174,15 @@ Window {
         var componentString = "";
         
         if (appType === "Terminal") {
-            componentString = 'import QtQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; Window { title: "Root Terminal"; x: 50; y: 50; width: 600; height: 400; Terminal { anchors.fill: parent; anchors.topMargin: 30 } }';
+            componentString = 'import BobUIQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; Window { title: "Root Terminal"; x: 50; y: 50; width: 600; height: 400; Terminal { anchors.fill: parent; anchors.topMargin: 30 } }';
         } else if (appType === "CodeEditor") {
-            componentString = 'import QtQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; Window { title: "OmniCode v1.0"; x: 100; y: 100; width: 700; height: 500; CodeEditor { anchors.fill: parent; anchors.topMargin: 30; text: "#include <iostream>\n\nint main() {\n    std::cout << \\"Hello OmniOS!\\";\n    return 0;\n}" } }';
+            componentString = 'import BobUIQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; Window { title: "OmniCode v1.0"; x: 100; y: 100; width: 700; height: 500; CodeEditor { anchors.fill: parent; anchors.topMargin: 30; text: "#include <iostream>\n\nint main() {\n    std::cout << \\"Hello OmniOS!\\";\n    return 0;\n}" } }';
         } else if (appType === "AudioDSP") {
-            componentString = 'import QtQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; import OmniAudio 1.0; Window { title: "JUCE DSP Bridge"; x: 200; y: 150; width: 500; height: 400; Column { anchors.fill: parent; anchors.topMargin: 40; spacing: 10; Slider { width: parent.width } Text { color: "white"; text: "Cutoff Frequency" } JuceView { width: parent.width; height: 200 } } }';
+            componentString = 'import BobUIQuick 2.15; import OmniUI 1.0; import OmniLayout 1.0; import OmniAudio 1.0; Window { title: "JUCE DSP Bridge"; x: 200; y: 150; width: 500; height: 400; Column { anchors.fill: parent; anchors.topMargin: 40; spacing: 10; Slider { width: parent.width } Text { color: "white"; text: "Cutoff Frequency" } JuceView { width: parent.width; height: 200 } } }';
         }
 
         if (componentString !== "") {
-            Qt.createQmlObject(componentString, windowContainer, "dynamicApp");
+            BobUI.createQmlObject(componentString, windowContainer, "dynamicApp");
         }
     }
 }

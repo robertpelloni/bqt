@@ -1,4 +1,4 @@
-QT += widgets concurrent
+BOBUI += widgets concurrent
 
 HEADERS += \
     mainwindow.h \
@@ -20,5 +20,5 @@ SOURCES += \
 RESOURCES += hellovulkancubes.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/vulkan/hellovulkancubes
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/vulkan/hellovulkancubes
 INSTALLS += target

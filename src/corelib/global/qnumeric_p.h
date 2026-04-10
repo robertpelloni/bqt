@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QNUMERIC_P_H
 #define QNUMERIC_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include "QtCore/private/qglobal_p.h"
-#include "QtCore/qnumeric.h"
-#include "QtCore/qsimd.h"
+#include "BobUICore/private/qglobal_p.h"
+#include "BobUICore/qnumeric.h"
+#include "BobUICore/qsimd.h"
 #include <cmath>
 #include <limits>
 #include <type_traits>
 
-#include <QtCore/q26numeric.h> // temporarily, for saturate_cast
+#include <BobUICore/q26numeric.h> // temporarily, for saturate_cast
 
 #ifndef __has_extension
 #  define __has_extension(X)    0
@@ -32,8 +32,8 @@
 #if !defined(Q_CC_MSVC) && defined(Q_OS_QNX)
 #  include <math.h>
 #  ifdef isnan
-#    define QT_MATH_H_DEFINES_MACROS
-QT_BEGIN_NAMESPACE
+#    define BOBUI_MATH_H_DEFINES_MACROS
+BOBUI_BEGIN_NAMESPACE
 namespace qnumeric_std_wrapper {
 // the 'using namespace std' below is cases where the stdlib already put the math.h functions in the std namespace and undefined the macros.
 Q_DECL_CONST_FUNCTION static inline bool math_h_isnan(double d) { using namespace std; return isnan(d); }
@@ -45,7 +45,7 @@ Q_DECL_CONST_FUNCTION static inline bool math_h_isinf(float f) { using namespace
 Q_DECL_CONST_FUNCTION static inline bool math_h_isfinite(float f) { using namespace std; return isfinite(f); }
 Q_DECL_CONST_FUNCTION static inline int math_h_fpclassify(float f) { using namespace std; return fpclassify(f); }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 // These macros from math.h conflict with the real functions in the std namespace.
 #    undef signbit
 #    undef isnan
@@ -55,13 +55,13 @@ QT_END_NAMESPACE
 #  endif // defined(isnan)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class qfloat16;
 
 namespace qnumeric_std_wrapper {
-#if defined(QT_MATH_H_DEFINES_MACROS)
-#  undef QT_MATH_H_DEFINES_MACROS
+#if defined(BOBUI_MATH_H_DEFINES_MACROS)
+#  undef BOBUI_MATH_H_DEFINES_MACROS
 Q_DECL_CONST_FUNCTION static inline bool isnan(double d) { return math_h_isnan(d); }
 Q_DECL_CONST_FUNCTION static inline bool isinf(double d) { return math_h_isinf(d); }
 Q_DECL_CONST_FUNCTION static inline bool isfinite(double d) { return math_h_isfinite(d); }
@@ -82,15 +82,15 @@ Q_DECL_CONST_FUNCTION static inline int fpclassify(float f) { return std::fpclas
 #endif
 }
 
-constexpr Q_DECL_CONST_FUNCTION static inline double qt_inf() noexcept
+constexpr Q_DECL_CONST_FUNCTION static inline double bobui_inf() noexcept
 {
     static_assert(std::numeric_limits<double>::has_infinity,
                   "platform has no definition for infinity for type double");
     return std::numeric_limits<double>::infinity();
 }
 
-#if QT_CONFIG(signaling_nan)
-constexpr Q_DECL_CONST_FUNCTION static inline double qt_snan() noexcept
+#if BOBUI_CONFIG(signaling_nan)
+constexpr Q_DECL_CONST_FUNCTION static inline double bobui_snan() noexcept
 {
     static_assert(std::numeric_limits<double>::has_signaling_NaN,
                   "platform has no definition for signaling NaN for type double");
@@ -99,49 +99,49 @@ constexpr Q_DECL_CONST_FUNCTION static inline double qt_snan() noexcept
 #endif
 
 // Quiet NaN
-constexpr Q_DECL_CONST_FUNCTION static inline double qt_qnan() noexcept
+constexpr Q_DECL_CONST_FUNCTION static inline double bobui_qnan() noexcept
 {
     static_assert(std::numeric_limits<double>::has_quiet_NaN,
                   "platform has no definition for quiet NaN for type double");
     return std::numeric_limits<double>::quiet_NaN();
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_inf(double d)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_inf(double d)
 {
     return qnumeric_std_wrapper::isinf(d);
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_nan(double d)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_nan(double d)
 {
     return qnumeric_std_wrapper::isnan(d);
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_finite(double d)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_finite(double d)
 {
     return qnumeric_std_wrapper::isfinite(d);
 }
 
-Q_DECL_CONST_FUNCTION static inline int qt_fpclassify(double d)
+Q_DECL_CONST_FUNCTION static inline int bobui_fpclassify(double d)
 {
     return qnumeric_std_wrapper::fpclassify(d);
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_inf(float f)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_inf(float f)
 {
     return qnumeric_std_wrapper::isinf(f);
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_nan(float f)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_nan(float f)
 {
     return qnumeric_std_wrapper::isnan(f);
 }
 
-Q_DECL_CONST_FUNCTION static inline bool qt_is_finite(float f)
+Q_DECL_CONST_FUNCTION static inline bool bobui_is_finite(float f)
 {
     return qnumeric_std_wrapper::isfinite(f);
 }
 
-Q_DECL_CONST_FUNCTION static inline int qt_fpclassify(float f)
+Q_DECL_CONST_FUNCTION static inline int bobui_fpclassify(float f)
 {
     return qnumeric_std_wrapper::fpclassify(f);
 }
@@ -279,12 +279,12 @@ convertDoubleTo(double v, T *value, bool allow_precision_upgrade = true)
     // Now we can convert, these two conversions cannot be UB
     *value = T(v);
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
     return *value == v;
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 }
 
 template <typename T> static
@@ -376,7 +376,7 @@ convertDoubleTo(double v, T *value, bool allow_precision_upgrade = true)
 #  endif
 #endif // __SSE2__ && inline assembly
 
-    if (!qt_is_finite(v) && std::numeric_limits<T>::has_infinity) {
+    if (!bobui_is_finite(v) && std::numeric_limits<T>::has_infinity) {
         // infinity (or NaN)
         *value = T(v);
         return true;
@@ -434,11 +434,11 @@ template <auto V2, typename T> bool mul_overflow(T v1, T *r)
 #endif // Q_QDOC
 
 template <typename To, typename From>
-static constexpr auto qt_saturate(From x)
+static constexpr auto bobui_saturate(From x)
 {
     return q26::saturate_cast<To>(x);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNUMERIC_P_H

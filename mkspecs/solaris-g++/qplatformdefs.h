@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -38,36 +38,36 @@
 #include <sys/wait.h>
 #include <netinet/in.h>
 
-#define QT_USE_XOPEN_LFS_EXTENSIONS
+#define BOBUI_USE_XOPEN_LFS_EXTENSIONS
 #include "../common/posix/qplatformdefs.h"
 
-#undef QT_SOCKLEN_T
-#undef QT_SOCKET_CONNECT
-#undef QT_SOCKET_BIND
+#undef BOBUI_SOCKLEN_T
+#undef BOBUI_SOCKET_CONNECT
+#undef BOBUI_SOCKET_BIND
 
-#define QT_SOCKET_CONNECT       qt_socket_connect
-#define QT_SOCKET_BIND          qt_socket_bind
+#define BOBUI_SOCKET_CONNECT       bobui_socket_connect
+#define BOBUI_SOCKET_BIND          bobui_socket_bind
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE-0 >= 500) && (_XOPEN_VERSION-0 >= 500)
 // Solaris 7 and better with specific feature test macros
-#define QT_SOCKLEN_T            socklen_t
+#define BOBUI_SOCKLEN_T            socklen_t
 #elif defined(_XOPEN_SOURCE_EXTENDED) && defined(_XOPEN_UNIX)
 // Solaris 2.6 and better with specific feature test macros
-#define QT_SOCKLEN_T            size_t
+#define BOBUI_SOCKLEN_T            size_t
 #else
 // always this case in practice
-#define QT_SOCKLEN_T            int
+#define BOBUI_SOCKLEN_T            int
 #endif
 
 // Solaris redefines connect -> __xnet_connect with _XOPEN_SOURCE_EXTENDED
-static inline int qt_socket_connect(int s, struct sockaddr *addr, QT_SOCKLEN_T addrlen)
+static inline int bobui_socket_connect(int s, struct sockaddr *addr, BOBUI_SOCKLEN_T addrlen)
 { return  ::connect(s, addr, addrlen); }
 #if defined (connect)
 # undef connect
 #endif
 
 // Solaris redefines bind -> __xnet_bind with _XOPEN_SOURCE_EXTENDED
-static inline int qt_socket_bind(int s, struct sockaddr *addr, QT_SOCKLEN_T addrlen)
+static inline int bobui_socket_bind(int s, struct sockaddr *addr, BOBUI_SOCKLEN_T addrlen)
 { return ::bind(s, addr, addrlen); }
 #if defined(bind)
 # undef bind
@@ -87,8 +87,8 @@ extern "C" int gethostname(char *, int);
 
 #if defined(_XOPEN_UNIX)
 // Solaris 2.6 and better
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 #endif
 
 #endif // QPLATFORMDEFS_H

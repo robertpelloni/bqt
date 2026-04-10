@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #if 0
-#pragma qt_class(QtCompilerDetection)
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUICompilerDetection)
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QCOMPILERDETECTION_H
 #define QCOMPILERDETECTION_H
 
-#include <QtCore/qprocessordetection.h>
-#include <QtCore/qsystemdetection.h>
-#include <QtCore/qtconfiginclude.h>
+#include <BobUICore/qprocessordetection.h>
+#include <BobUICore/qsystemdetection.h>
+#include <BobUICore/bobuiconfiginclude.h>
 
 /*
    The compiler, must be one of: (Q_CC_x)
@@ -76,7 +76,7 @@
 #  define Q_DECL_EXPORT __declspec(dllexport)
 #  define Q_DECL_IMPORT __declspec(dllimport)
 #  if _MSC_VER < 1938 // stdext is deprecated since VS 2022 17.8
-#    define QT_MAKE_CHECKED_ARRAY_ITERATOR(x, N) stdext::make_checked_array_iterator(x, size_t(N)) // Since _MSC_VER >= 1500
+#    define BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(x, N) stdext::make_checked_array_iterator(x, size_t(N)) // Since _MSC_VER >= 1500
 #  endif
 #  ifdef Q_CC_MSVC_ONLY
 #    define Q_COMPILER_COMPLAINS_ABOUT_RETURN_AFTER_UNREACHABLE
@@ -191,7 +191,7 @@
 #    define Q_DECL_IMPORT     __declspec(dllimport)
 #  else
 #    define Q_DECL_EXPORT_OVERRIDABLE __attribute__((visibility("default"), weak))
-#    ifdef QT_USE_PROTECTED_VISIBILITY
+#    ifdef BOBUI_USE_PROTECTED_VISIBILITY
 #      define Q_DECL_EXPORT     __attribute__((visibility("protected")))
 #    else
 #      define Q_DECL_EXPORT     __attribute__((visibility("default")))
@@ -213,7 +213,7 @@
 #  define Q_DECL_COLD_FUNCTION __attribute__((cold))
 #  define Q_PACKED __attribute__ ((__packed__))
 #  ifndef __ARM_EABI__
-#    define QT_NO_ARM_EABI
+#    define BOBUI_NO_ARM_EABI
 #  endif
 #  if Q_CC_GNU >= 403 && !defined(Q_CC_CLANG)
 #      define Q_ALLOC_SIZE(x) __attribute__((alloc_size(x)))
@@ -403,7 +403,7 @@
     in which case _BOOL is not defined
         this is the default in 4.2 compatibility mode triggered by -compat=4 */
 #  if __SUNPRO_CC >= 0x500
-#    define QT_NO_TEMPLATE_TEMPLATE_PARAMETERS
+#    define BOBUI_NO_TEMPLATE_TEMPLATE_PARAMETERS
    /* see http://developers.sun.com/sunstudio/support/Ccompare.html */
 #    if __SUNPRO_CC >= 0x590
 #      define Q_TYPEOF(expr)    __typeof__(expr)
@@ -430,7 +430,7 @@
 #  define Q_BROKEN_TEMPLATE_SPECIALIZATION
 
 #else
-#  error "Qt has not been tested with this compiler - see http://www.qt-project.org/"
+#  error "BobUI has not been tested with this compiler - see http://www.bobui-project.org/"
 #endif
 
 /*
@@ -468,7 +468,7 @@
    either of those options
  */
 #if __has_feature(address_sanitizer) || defined(__SANITIZE_ADDRESS__)
-#  define QT_ASAN_ENABLED
+#  define BOBUI_ASAN_ENABLED
 #endif
 
 /*
@@ -866,7 +866,7 @@
 #    if _MSC_VER < 1936
 #      define Q_COMPILER_LACKS_THREE_WAY_COMPARE_SYMMETRY
 #    endif
-// QTBUG-124376: MSVC is slow at compiling qstrnlen()
+// BOBUIBUG-124376: MSVC is slow at compiling qstrnlen()
 #    define Q_COMPILER_SLOW_QSTRNLEN_COMPILATION
 #  endif /* __cplusplus */
 #endif // defined(Q_CC_MSVC) && !defined(Q_CC_CLANG)
@@ -874,7 +874,7 @@
 #ifdef Q_COMPILER_UNICODE_STRINGS
 #  define Q_STDLIB_UNICODE_STRINGS
 #elif defined(__cplusplus)
-#  error "Qt6 requires Unicode string support in both the compiler and the standard library"
+#  error "BobUI6 requires Unicode string support in both the compiler and the standard library"
 #endif
 
 #ifdef __cplusplus
@@ -1072,10 +1072,10 @@
 #  define Q_UNLIKELY(x) (x)
 #endif
 #ifndef Q_ASSUME_IMPL
-#  define Q_ASSUME_IMPL(expr) qt_noop()
+#  define Q_ASSUME_IMPL(expr) bobui_noop()
 #endif
 #ifndef Q_UNREACHABLE_IMPL
-#  define Q_UNREACHABLE_IMPL() qt_noop()
+#  define Q_UNREACHABLE_IMPL() bobui_noop()
 #endif
 #ifndef Q_ALLOC_SIZE
 #  define Q_ALLOC_SIZE(x)
@@ -1123,7 +1123,7 @@
 #  if defined(Q_OS_SOLARIS) || defined(Q_CC_XLC)
 #    define Q_FUNC_INFO __FILE__ "(line number unavailable)"
 #  else
-#    define Q_FUNC_INFO __FILE__ ":" QT_STRINGIFY(__LINE__)
+#    define Q_FUNC_INFO __FILE__ ":" BOBUI_STRINGIFY(__LINE__)
 #  endif
 #endif
 #ifndef Q_DECL_CF_RETURNS_RETAINED
@@ -1141,11 +1141,11 @@
 #ifndef Q_DECL_COLD_FUNCTION
 #  define Q_DECL_COLD_FUNCTION
 #endif
-#ifndef QT_MAKE_UNCHECKED_ARRAY_ITERATOR
-#  define QT_MAKE_UNCHECKED_ARRAY_ITERATOR(x) (x)
+#ifndef BOBUI_MAKE_UNCHECKED_ARRAY_ITERATOR
+#  define BOBUI_MAKE_UNCHECKED_ARRAY_ITERATOR(x) (x)
 #endif
-#ifndef QT_MAKE_CHECKED_ARRAY_ITERATOR
-#  define QT_MAKE_CHECKED_ARRAY_ITERATOR(x, N) (x)
+#ifndef BOBUI_MAKE_CHECKED_ARRAY_ITERATOR
+#  define BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(x, N) (x)
 #endif
 
 /*
@@ -1164,83 +1164,83 @@
  * 1) make them fully inline; and
  * 2) guard them using the necessary feature-testing macros.
  *
- * This decouples the C++ version used to build Qt with the one used by
- * end-user applications; Qt and the application can either choose any C++
+ * This decouples the C++ version used to build BobUI with the one used by
+ * end-user applications; BobUI and the application can either choose any C++
  * version.
  *
  * A problem arises on MSVC for member functions of exported classes. Client
  * code that tries to use such a function will see it as exported, and simply
- * try to consume the function's *symbol*. However, if Qt has been built in
+ * try to consume the function's *symbol*. However, if BobUI has been built in
  * C++17, it won't have such a symbol, and linking will fail.
  *
  * The workaround: declare such functions as function templates.
  * (Obviously a function template does not need this marker.)
 */
 #ifndef Q_QDOC
-#  define QT_POST_CXX17_API_IN_EXPORTED_CLASS template <typename = void>
+#  define BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS template <typename = void>
 #else
-#  define QT_POST_CXX17_API_IN_EXPORTED_CLASS
+#  define BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
 #endif
 
 /*
  * Warning/diagnostic handling
  */
 
-#define QT_DO_PRAGMA(text)                      _Pragma(#text)
+#define BOBUI_DO_PRAGMA(text)                      _Pragma(#text)
 #if defined(Q_CC_MSVC) && !defined(Q_CC_CLANG)
-#  undef QT_DO_PRAGMA                           /* not needed */
-#  define QT_WARNING_PUSH                       __pragma(warning(push))
-#  define QT_WARNING_POP                        __pragma(warning(pop))
-#  define QT_WARNING_DISABLE_MSVC(number)       __pragma(warning(disable: number))
-#  define QT_WARNING_DISABLE_INTEL(number)
-#  define QT_WARNING_DISABLE_CLANG(text)
-#  define QT_WARNING_DISABLE_GCC(text)
-#  define QT_WARNING_DISABLE_DEPRECATED         QT_WARNING_DISABLE_MSVC(4996)
-#  define QT_WARNING_DISABLE_FLOAT_COMPARE
-#  define QT_WARNING_DISABLE_INVALID_OFFSETOF
+#  undef BOBUI_DO_PRAGMA                           /* not needed */
+#  define BOBUI_WARNING_PUSH                       __pragma(warning(push))
+#  define BOBUI_WARNING_POP                        __pragma(warning(pop))
+#  define BOBUI_WARNING_DISABLE_MSVC(number)       __pragma(warning(disable: number))
+#  define BOBUI_WARNING_DISABLE_INTEL(number)
+#  define BOBUI_WARNING_DISABLE_CLANG(text)
+#  define BOBUI_WARNING_DISABLE_GCC(text)
+#  define BOBUI_WARNING_DISABLE_DEPRECATED         BOBUI_WARNING_DISABLE_MSVC(4996)
+#  define BOBUI_WARNING_DISABLE_FLOAT_COMPARE
+#  define BOBUI_WARNING_DISABLE_INVALID_OFFSETOF
 #elif defined(Q_CC_CLANG)
-#  define QT_WARNING_PUSH                       QT_DO_PRAGMA(clang diagnostic push)
-#  define QT_WARNING_POP                        QT_DO_PRAGMA(clang diagnostic pop)
-#  define QT_WARNING_DISABLE_CLANG(text)        QT_DO_PRAGMA(clang diagnostic ignored text)
-#  define QT_WARNING_DISABLE_GCC(text)
-#  define QT_WARNING_DISABLE_INTEL(number)
-#  define QT_WARNING_DISABLE_MSVC(number)
-#  define QT_WARNING_DISABLE_DEPRECATED         QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-#  define QT_WARNING_DISABLE_FLOAT_COMPARE      QT_WARNING_DISABLE_CLANG("-Wfloat-equal")
-#  define QT_WARNING_DISABLE_INVALID_OFFSETOF   QT_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
+#  define BOBUI_WARNING_PUSH                       BOBUI_DO_PRAGMA(clang diagnostic push)
+#  define BOBUI_WARNING_POP                        BOBUI_DO_PRAGMA(clang diagnostic pop)
+#  define BOBUI_WARNING_DISABLE_CLANG(text)        BOBUI_DO_PRAGMA(clang diagnostic ignored text)
+#  define BOBUI_WARNING_DISABLE_GCC(text)
+#  define BOBUI_WARNING_DISABLE_INTEL(number)
+#  define BOBUI_WARNING_DISABLE_MSVC(number)
+#  define BOBUI_WARNING_DISABLE_DEPRECATED         BOBUI_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
+#  define BOBUI_WARNING_DISABLE_FLOAT_COMPARE      BOBUI_WARNING_DISABLE_CLANG("-Wfloat-equal")
+#  define BOBUI_WARNING_DISABLE_INVALID_OFFSETOF   BOBUI_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
 #elif defined(Q_CC_GNU) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 406)
-#  define QT_WARNING_PUSH                       QT_DO_PRAGMA(GCC diagnostic push)
-#  define QT_WARNING_POP                        QT_DO_PRAGMA(GCC diagnostic pop)
-#  define QT_WARNING_DISABLE_GCC(text)          QT_DO_PRAGMA(GCC diagnostic ignored text)
-#  define QT_WARNING_DISABLE_CLANG(text)
-#  define QT_WARNING_DISABLE_INTEL(number)
-#  define QT_WARNING_DISABLE_MSVC(number)
-#  define QT_WARNING_DISABLE_DEPRECATED         QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
-#  define QT_WARNING_DISABLE_FLOAT_COMPARE      QT_WARNING_DISABLE_GCC("-Wfloat-equal")
-#  define QT_WARNING_DISABLE_INVALID_OFFSETOF   QT_WARNING_DISABLE_GCC("-Winvalid-offsetof")
+#  define BOBUI_WARNING_PUSH                       BOBUI_DO_PRAGMA(GCC diagnostic push)
+#  define BOBUI_WARNING_POP                        BOBUI_DO_PRAGMA(GCC diagnostic pop)
+#  define BOBUI_WARNING_DISABLE_GCC(text)          BOBUI_DO_PRAGMA(GCC diagnostic ignored text)
+#  define BOBUI_WARNING_DISABLE_CLANG(text)
+#  define BOBUI_WARNING_DISABLE_INTEL(number)
+#  define BOBUI_WARNING_DISABLE_MSVC(number)
+#  define BOBUI_WARNING_DISABLE_DEPRECATED         BOBUI_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
+#  define BOBUI_WARNING_DISABLE_FLOAT_COMPARE      BOBUI_WARNING_DISABLE_GCC("-Wfloat-equal")
+#  define BOBUI_WARNING_DISABLE_INVALID_OFFSETOF   BOBUI_WARNING_DISABLE_GCC("-Winvalid-offsetof")
 #else       // All other compilers, GCC < 4.6 and MSVC < 2008
-#  define QT_WARNING_DISABLE_GCC(text)
-#  define QT_WARNING_PUSH
-#  define QT_WARNING_POP
-#  define QT_WARNING_DISABLE_INTEL(number)
-#  define QT_WARNING_DISABLE_MSVC(number)
-#  define QT_WARNING_DISABLE_CLANG(text)
-#  define QT_WARNING_DISABLE_GCC(text)
-#  define QT_WARNING_DISABLE_DEPRECATED
-#  define QT_WARNING_DISABLE_FLOAT_COMPARE
-#  define QT_WARNING_DISABLE_INVALID_OFFSETOF
+#  define BOBUI_WARNING_DISABLE_GCC(text)
+#  define BOBUI_WARNING_PUSH
+#  define BOBUI_WARNING_POP
+#  define BOBUI_WARNING_DISABLE_INTEL(number)
+#  define BOBUI_WARNING_DISABLE_MSVC(number)
+#  define BOBUI_WARNING_DISABLE_CLANG(text)
+#  define BOBUI_WARNING_DISABLE_GCC(text)
+#  define BOBUI_WARNING_DISABLE_DEPRECATED
+#  define BOBUI_WARNING_DISABLE_FLOAT_COMPARE
+#  define BOBUI_WARNING_DISABLE_INVALID_OFFSETOF
 #endif
 
-#ifndef QT_IGNORE_DEPRECATIONS
-#define QT_IGNORE_DEPRECATIONS(statement) \
-    QT_WARNING_PUSH \
-    QT_WARNING_DISABLE_DEPRECATED \
+#ifndef BOBUI_IGNORE_DEPRECATIONS
+#define BOBUI_IGNORE_DEPRECATIONS(statement) \
+    BOBUI_WARNING_PUSH \
+    BOBUI_WARNING_DISABLE_DEPRECATED \
     statement \
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 
 // The body must be a statement:
-#define Q_CAST_IGNORE_ALIGN(body) QT_WARNING_PUSH QT_WARNING_DISABLE_GCC("-Wcast-align") body QT_WARNING_POP
+#define Q_CAST_IGNORE_ALIGN(body) BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_GCC("-Wcast-align") body BOBUI_WARNING_POP
 
 // This macro can be used to calculate member offsets for types with a non standard layout.
 // It uses the fact that offsetof() is allowed to support those types since C++17 as an optional
@@ -1248,15 +1248,15 @@
 // call in a macro that disables the compiler warning.
 #define Q_OFFSETOF(Class, member) \
     []() -> size_t { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, member); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     }()
 
 /*
    Proper for-scoping in MIPSpro CC
 */
-#ifndef QT_NO_KEYWORDS
+#ifndef BOBUI_NO_KEYWORDS
 #  if defined(Q_CC_MIPS) || (defined(Q_CC_HPACC) && defined(__ia64))
 #    define for if (0) {} else for
 #  endif
@@ -1300,36 +1300,36 @@
     Sanitize compiler feature availability
 */
 #if !defined(Q_PROCESSOR_X86)
-#  undef QT_COMPILER_SUPPORTS_SSE2
-#  undef QT_COMPILER_SUPPORTS_SSE3
-#  undef QT_COMPILER_SUPPORTS_SSSE3
-#  undef QT_COMPILER_SUPPORTS_SSE4_1
-#  undef QT_COMPILER_SUPPORTS_SSE4_2
-#  undef QT_COMPILER_SUPPORTS_AVX
-#  undef QT_COMPILER_SUPPORTS_AVX2
-#  undef QT_COMPILER_SUPPORTS_F16C
+#  undef BOBUI_COMPILER_SUPPORTS_SSE2
+#  undef BOBUI_COMPILER_SUPPORTS_SSE3
+#  undef BOBUI_COMPILER_SUPPORTS_SSSE3
+#  undef BOBUI_COMPILER_SUPPORTS_SSE4_1
+#  undef BOBUI_COMPILER_SUPPORTS_SSE4_2
+#  undef BOBUI_COMPILER_SUPPORTS_AVX
+#  undef BOBUI_COMPILER_SUPPORTS_AVX2
+#  undef BOBUI_COMPILER_SUPPORTS_F16C
 #endif
 #if !defined(Q_PROCESSOR_ARM)
-#  undef QT_COMPILER_SUPPORTS_NEON
+#  undef BOBUI_COMPILER_SUPPORTS_NEON
 #endif
 #if !defined(Q_PROCESSOR_MIPS)
-#  undef QT_COMPILER_SUPPORTS_MIPS_DSP
-#  undef QT_COMPILER_SUPPORTS_MIPS_DSPR2
+#  undef BOBUI_COMPILER_SUPPORTS_MIPS_DSP
+#  undef BOBUI_COMPILER_SUPPORTS_MIPS_DSPR2
 #endif
 
 // Compiler version check
 #if defined(__cplusplus) && (__cplusplus < 201703L)
 #  ifdef Q_CC_MSVC
-#    error "Qt requires a C++17 compiler, and a suitable value for __cplusplus. On MSVC, you must pass the /Zc:__cplusplus option to the compiler."
+#    error "BobUI requires a C++17 compiler, and a suitable value for __cplusplus. On MSVC, you must pass the /Zc:__cplusplus option to the compiler."
 #  else
-#    error "Qt requires a C++17 compiler"
+#    error "BobUI requires a C++17 compiler"
 #  endif
 #endif // __cplusplus
 
 #if defined(__cplusplus) && defined(Q_CC_MSVC) && !defined(Q_CC_CLANG)
 #  if Q_CC_MSVC < 1927
      // Check below only works with 16.7 or newer
-#    error "Qt requires at least Visual Studio 2019 version 16.7 (VC++ version 14.27). Please upgrade."
+#    error "BobUI requires at least Visual Studio 2019 version 16.7 (VC++ version 14.27). Please upgrade."
 #  endif
 
 // On MSVC we require /permissive- set by user code. Check that we are
@@ -1340,28 +1340,28 @@ static_assert(!std::is_convertible_v<std::nullptr_t, bool>,
               "On MSVC you must pass the /permissive- option to the compiler.");
 #endif
 
-#if defined(QT_BOOTSTRAPPED) || defined(QT_USE_PROTECTED_VISIBILITY) || !defined(__ELF__) || defined(__PIC__)
+#if defined(BOBUI_BOOTSTRAPPED) || defined(BOBUI_USE_PROTECTED_VISIBILITY) || !defined(__ELF__) || defined(__PIC__)
 // this is fine
 #elif defined(__PIE__)
-#  error "-fPIE is not sufficient if Qt was configured with the -DFEATURE_reduce_relocations=ON "\
-         "CMake option. Compile your code with -fPIC and without -fPIE or compile Qt with "\
+#  error "-fPIE is not sufficient if BobUI was configured with the -DFEATURE_reduce_relocations=ON "\
+         "CMake option. Compile your code with -fPIC and without -fPIE or compile BobUI with "\
          "-DFEATURE_no_direct_extern_access=ON."
-#elif defined(QT_REDUCE_RELOCATIONS)
-#  error "You must build your code with position independent code if Qt was configured with the "\
+#elif defined(BOBUI_REDUCE_RELOCATIONS)
+#  error "You must build your code with position independent code if BobUI was configured with the "\
          "-DFEATURE_reduce_relocations=ON CMake option. Compile your code with -fPIC and "\
-         "without -fPIE or compile Qt with -DFEATURE_no_direct_extern_access=ON."
+         "without -fPIE or compile BobUI with -DFEATURE_no_direct_extern_access=ON."
 #endif
 
 #ifdef Q_PROCESSOR_X86_32
 #  if defined(Q_CC_GNU)
-#    define QT_FASTCALL __attribute__((regparm(3)))
+#    define BOBUI_FASTCALL __attribute__((regparm(3)))
 #  elif defined(Q_CC_MSVC)
-#    define QT_FASTCALL __fastcall
+#    define BOBUI_FASTCALL __fastcall
 #  else
-#    define QT_FASTCALL
+#    define BOBUI_FASTCALL
 #  endif
 #else
-#  define QT_FASTCALL
+#  define BOBUI_FASTCALL
 #endif
 
 // enable gcc warnings for printf-style functions
@@ -1392,11 +1392,11 @@ static_assert(!std::is_convertible_v<std::nullptr_t, bool>,
 //the alignment needs to be forced for sse2 to not crash with mingw
 #if defined(Q_OS_WIN)
 #  if defined(Q_CC_MINGW) && defined(Q_PROCESSOR_X86_32)
-#    define QT_ENSURE_STACK_ALIGNED_FOR_SSE __attribute__ ((force_align_arg_pointer))
+#    define BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE __attribute__ ((force_align_arg_pointer))
 #  else
-#    define QT_ENSURE_STACK_ALIGNED_FOR_SSE
+#    define BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE
 #  endif
-#  define QT_WIN_CALLBACK CALLBACK QT_ENSURE_STACK_ALIGNED_FOR_SSE
+#  define BOBUI_WIN_CALLBACK CALLBACK BOBUI_ENSURE_STACK_ALIGNED_FOR_SSE
 #endif
 
 #ifdef __cpp_conditional_explicit
@@ -1431,27 +1431,27 @@ static_assert(!std::is_convertible_v<std::nullptr_t, bool>,
 
 /*
    Avoid some particularly useless warnings from some stupid compilers.
-   To get ALL C++ compiler warnings, define QT_CC_WARNINGS or comment out
-   the line "#define QT_NO_WARNINGS". See also QTBUG-26877.
+   To get ALL C++ compiler warnings, define BOBUI_CC_WARNINGS or comment out
+   the line "#define BOBUI_NO_WARNINGS". See also BOBUIBUG-26877.
 */
-#if !defined(QT_CC_WARNINGS)
-#  define QT_NO_WARNINGS
+#if !defined(BOBUI_CC_WARNINGS)
+#  define BOBUI_NO_WARNINGS
 #endif
-#if defined(QT_NO_WARNINGS)
+#if defined(BOBUI_NO_WARNINGS)
 #  if defined(Q_CC_MSVC)
-QT_WARNING_DISABLE_MSVC(4251) /* class 'type' needs to have dll-interface to be used by clients of class 'type2' */
-QT_WARNING_DISABLE_MSVC(4244) /* conversion from 'type1' to 'type2', possible loss of data */
-QT_WARNING_DISABLE_MSVC(4275) /* non - DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier' */
-QT_WARNING_DISABLE_MSVC(4514) /* unreferenced inline function has been removed */
-QT_WARNING_DISABLE_MSVC(4800) /* 'type' : forcing value to bool 'true' or 'false' (performance warning) */
-QT_WARNING_DISABLE_MSVC(4097) /* typedef-name 'identifier1' used as synonym for class-name 'identifier2' */
-QT_WARNING_DISABLE_MSVC(4706) /* assignment within conditional expression */
-QT_WARNING_DISABLE_MSVC(4355) /* 'this' : used in base member initializer list */
-QT_WARNING_DISABLE_MSVC(4710) /* function not inlined */
-QT_WARNING_DISABLE_MSVC(4530) /* C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc */
+BOBUI_WARNING_DISABLE_MSVC(4251) /* class 'type' needs to have dll-interface to be used by clients of class 'type2' */
+BOBUI_WARNING_DISABLE_MSVC(4244) /* conversion from 'type1' to 'type2', possible loss of data */
+BOBUI_WARNING_DISABLE_MSVC(4275) /* non - DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier' */
+BOBUI_WARNING_DISABLE_MSVC(4514) /* unreferenced inline function has been removed */
+BOBUI_WARNING_DISABLE_MSVC(4800) /* 'type' : forcing value to bool 'true' or 'false' (performance warning) */
+BOBUI_WARNING_DISABLE_MSVC(4097) /* typedef-name 'identifier1' used as synonym for class-name 'identifier2' */
+BOBUI_WARNING_DISABLE_MSVC(4706) /* assignment within conditional expression */
+BOBUI_WARNING_DISABLE_MSVC(4355) /* 'this' : used in base member initializer list */
+BOBUI_WARNING_DISABLE_MSVC(4710) /* function not inlined */
+BOBUI_WARNING_DISABLE_MSVC(4530) /* C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc */
 #  elif defined(Q_CC_CLANG_ONLY)
 #    if __has_warning("-Wcharacter-conversion")
-        QT_WARNING_DISABLE_CLANG("-Wcharacter-conversion") /* until https://github.com/llvm/llvm-project/issues/163719 is fixed */
+        BOBUI_WARNING_DISABLE_CLANG("-Wcharacter-conversion") /* until https://github.com/llvm/llvm-project/issues/163719 is fixed */
 #    endif
 #  elif defined(Q_CC_BOR)
 #    pragma option -w-inl
@@ -1464,36 +1464,36 @@ QT_WARNING_DISABLE_MSVC(4530) /* C++ exception handler used, but unwind semantic
 #  endif
 #endif
 
-#if !defined(QT_NO_EXCEPTIONS)
+#if !defined(BOBUI_NO_EXCEPTIONS)
 #  if !defined(Q_MOC_RUN)
 #    if defined(Q_CC_GNU) && !defined(__cpp_exceptions)
-#      define QT_NO_EXCEPTIONS
+#      define BOBUI_NO_EXCEPTIONS
 #    endif
-#  elif defined(QT_BOOTSTRAPPED)
-#    define QT_NO_EXCEPTIONS
+#  elif defined(BOBUI_BOOTSTRAPPED)
+#    define BOBUI_NO_EXCEPTIONS
 #  endif
 #endif
 
 // libstdc++ shipped with gcc < 11 does not have a fix for defect LWG 3346
 #if __cplusplus >= 202002L && (!defined(_GLIBCXX_RELEASE) || _GLIBCXX_RELEASE >= 11)
-#  define QT_COMPILER_HAS_LWG3346
+#  define BOBUI_COMPILER_HAS_LWG3346
 #endif
 
 #if defined(__cplusplus) && __cplusplus >= 202002L // P0846 doesn't have a feature macro :/
 # if !defined(Q_CC_MSVC_ONLY) || Q_CC_MSVC >= 1939 // claims C++20 support but lacks P0846
                                                    // 1939 is known to work
                                                    // 1936 is known to fail
-#  define QT_COMPILER_HAS_P0846
+#  define BOBUI_COMPILER_HAS_P0846
 # endif
 #endif
 
-#ifdef QT_COMPILER_HAS_P0846
-#   define QT_ENABLE_P0846_SEMANTICS_FOR(func)
+#ifdef BOBUI_COMPILER_HAS_P0846
+#   define BOBUI_ENABLE_P0846_SEMANTICS_FOR(func)
 #else
-    class QT_CLASS_JUST_FOR_P0846_SIMULATION;
-#   define QT_ENABLE_P0846_SEMANTICS_FOR(func) \
+    class BOBUI_CLASS_JUST_FOR_P0846_SIMULATION;
+#   define BOBUI_ENABLE_P0846_SEMANTICS_FOR(func) \
         template <typename T> \
-        void func (QT_CLASS_JUST_FOR_P0846_SIMULATION *); \
+        void func (BOBUI_CLASS_JUST_FOR_P0846_SIMULATION *); \
         /* end */
 #endif // !P0846
 

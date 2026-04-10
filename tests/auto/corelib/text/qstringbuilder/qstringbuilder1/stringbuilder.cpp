@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Do not include anything in this file. We are being #included in the unnamed namespace
 // with a bunch of defines that may break other legitimate code.
@@ -22,8 +22,8 @@
 # error You need to define P
 #endif
 
-//fix for gcc4.0: if the operator+ does not exist without QT_USE_FAST_OPERATOR_PLUS
-#ifndef QT_USE_FAST_CONCATENATION
+//fix for gcc4.0: if the operator+ does not exist without BOBUI_USE_FAST_OPERATOR_PLUS
+#ifndef BOBUI_USE_FAST_CONCATENATION
 #define Q %
 #else
 #define Q P
@@ -73,7 +73,7 @@ void checkItWorksWithFreeSpaceAtBegin(const String &chunk, const Separator &sepa
     // WHEN: adding a QStringBuilder expression which exceeds freeSpaceAtEnd()
     str += separator P chunk;
 
-    // THEN: it doesn't crash (QTBUG-99330)
+    // THEN: it doesn't crash (BOBUIBUG-99330)
     const String expected = chunk.repeated(prepends + appends) + separator + chunk;
     QCOMPARE(str, expected);
 }
@@ -239,7 +239,7 @@ void checkAuto()
     CheckAuto::checkAutoImpl<QByteArray, const char *, QByteArray>();
     CheckAuto::checkAutoImpl<QByteArray, QByteArrayView, QByteArray>();
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     CheckAuto::checkAutoImpl<QString, const char *, QString>();
     CheckAuto::checkAutoImpl<QString, QByteArray, QString>();
 #endif
@@ -328,7 +328,7 @@ void runScenario()
     CHECK(Q, stringview, u16chararray);
     CHECK(Q, stringview, u16charstar);
 
-#if defined(QT_USE_QSTRINGBUILDER)
+#if defined(BOBUI_USE_QSTRINGBUILDER)
     CHECK(P, lchar, lchar);
     CHECK(P, lchar, special);
 #endif
@@ -338,7 +338,7 @@ void runScenario()
     CHECK(Q, lchar, u16chararray);
     CHECK(Q, lchar, u16charstar);
 
-#if defined(QT_USE_QSTRINGBUILDER)
+#if defined(BOBUI_USE_QSTRINGBUILDER)
     CHECK(P, qchar, qchar);
 #endif
     CHECK(P, qchar, special);
@@ -347,7 +347,7 @@ void runScenario()
     CHECK(Q, qchar, u16chararray);
     CHECK(Q, qchar, u16charstar);
 
-#if defined(QT_USE_QSTRINGBUILDER)
+#if defined(BOBUI_USE_QSTRINGBUILDER)
     CHECK(P, special, special);
 #endif
     CHECK(P, special, QStringLiteral(LITERAL));
@@ -399,7 +399,7 @@ void runScenario()
     CHECK(Q, QByteArray(bytearray), baview);
     CHECK(Q, bytearray, charstar);
 
-#ifndef Q_CC_MSVC // see QTBUG-65359
+#ifndef Q_CC_MSVC // see BOBUIBUG-65359
     CHECK(P, bytearray, chararray);
 #else
     Q_UNUSED(chararray);
@@ -422,16 +422,16 @@ void runScenario()
     // Check QString/QByteArray consistency when appending const char[] with embedded NULs:
     {
         const QByteArray ba = baview Q embedded_NULs;
-        QEXPECT_FAIL("", "QTBUG-117321", Continue);
+        QEXPECT_FAIL("", "BOBUIBUG-117321", Continue);
         QCOMPARE(ba.size(), baview.size() + q20::ssize(embedded_NULs) - 1);
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         const auto l1s = QLatin1StringView{baview}; // l1string != baview
 
         const QString s = l1s Q embedded_NULs;
         QCOMPARE(s.size(), l1s.size() + q20::ssize(embedded_NULs) - 1);
 
-        QEXPECT_FAIL("", "QTBUG-117321", Continue);
+        QEXPECT_FAIL("", "BOBUIBUG-117321", Continue);
         QCOMPARE(s, ba);
 #endif
     }
@@ -454,7 +454,7 @@ void runScenario()
     // self-assignment:
     r = stringview.toString();
     r = lchar + r;
-#ifdef QT_USE_QSTRINGBUILDER
+#ifdef BOBUI_USE_QSTRINGBUILDER
     QCOMPARE(r, QString(lchar P stringview));
 #endif
 
@@ -462,7 +462,7 @@ void runScenario()
     r = r Q QStringLiteral(UNICODE_LITERAL);
     QCOMPARE(r, r3);
 
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
     r = string P LITERAL;
     QCOMPARE(r, r2);
     r = LITERAL P string;
@@ -566,7 +566,7 @@ void runScenario()
         r = zero P ba;
         QCOMPARE(r, ba);
 
-#ifdef QT_USE_QSTRINGBUILDER
+#ifdef BOBUI_USE_QSTRINGBUILDER
         QByteArrayView qbav = LITERAL;
         superba = qbav P qbav P LITERAL;
         QCOMPARE(superba, QByteArray(LITERAL LITERAL LITERAL));
@@ -578,7 +578,7 @@ void runScenario()
         QString str = QString::fromUtf8(UTF8_LITERAL);
         str +=  QLatin1String(LITERAL) P str;
         QCOMPARE(str, QString::fromUtf8(UTF8_LITERAL LITERAL UTF8_LITERAL));
-#ifndef QT_NO_CAST_FROM_ASCII
+#ifndef BOBUI_NO_CAST_FROM_ASCII
         str = (QString::fromUtf8(UTF8_LITERAL) += QLatin1String(LITERAL) P UTF8_LITERAL);
         QCOMPARE(str, QString::fromUtf8(UTF8_LITERAL LITERAL UTF8_LITERAL));
 #endif
@@ -592,13 +592,13 @@ void runScenario()
     }
 
     checkItWorksWithFreeSpaceAtBegin(QString::fromUtf8(UTF8_LITERAL),
-                                 #ifdef QT_NO_CAST_FROM_ASCII
+                                 #ifdef BOBUI_NO_CAST_FROM_ASCII
                                      QLatin1String("1234")
                                  #else
                                      "1234"
                                  #endif
                                      );
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     //operator QByteArray  +=
@@ -622,6 +622,6 @@ void runScenario()
     checkAuto();
 
     checkItWorksWithFreeSpaceAtBegin(QByteArray(UTF8_LITERAL), "1234");
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 }

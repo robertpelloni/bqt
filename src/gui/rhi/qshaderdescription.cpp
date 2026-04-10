@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qshaderdescription_p.h"
 #include "qshader_p.h"
@@ -8,24 +8,24 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QShaderDescription
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes the interface of a shader.
 
-    \warning The QRhi family of classes in the Qt Gui module, including QShader
+    \warning The QRhi family of classes in the BobUI Gui module, including QShader
     and QShaderDescription, offer limited compatibility guarantees. There are
     no source or binary compatibility guarantees for these classes, meaning the
-    API is only guaranteed to work with the Qt version the application was
+    API is only guaranteed to work with the BobUI version the application was
     developed against. Source incompatible changes are however aimed to be kept
     at a minimum and will only be made in minor releases (6.7, 6.8, and so on).
     To use these classes in an application, link to
-    \c{Qt::GuiPrivate} (if using CMake), and include the headers with the \c
+    \c{BobUI::GuiPrivate} (if using CMake), and include the headers with the \c
     rhi prefix, for example \c{#include <rhi/qshaderdescription.h>}.
 
     A shader typically has a set of inputs and outputs. A vertex shader for
@@ -282,7 +282,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::InOutVariable
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes an input or output variable in the shader.
@@ -333,7 +333,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::BlockVariable
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes a member of a uniform or push constant block.
@@ -380,7 +380,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::UniformBlock
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes a uniform block.
@@ -420,7 +420,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::PushConstantBlock
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes a push constant block.
@@ -443,7 +443,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::StorageBlock
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes a shader storage block.
@@ -486,7 +486,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \struct QShaderDescription::BuiltinVariable
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 6.6
 
     \brief Describes a built-in variable.
@@ -667,7 +667,7 @@ QList<QShaderDescription::UniformBlock> QShaderDescription::uniformBlocks() cons
     \return the list of push constant blocks.
 
     \note Avoid relying on push constant blocks for shaders that are to be used
-    in combination with the Qt Rendering Hardware Interface since that
+    in combination with the BobUI Rendering Hardware Interface since that
     currently has no support for them.
  */
 QList<QShaderDescription::PushConstantBlock> QShaderDescription::pushConstantBlocks() const
@@ -1190,7 +1190,7 @@ static QLatin1StringView tessPartStr(QShaderDescription::TessellationPartitionin
     return {};
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QShaderDescription &sd)
 {
     const QShaderDescriptionPrivate *d = sd.d;
@@ -2099,4 +2099,4 @@ bool operator==(const QShaderDescription::BuiltinVariable &lhs, const QShaderDes
             && lhs.arrayDims == rhs.arrayDims;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

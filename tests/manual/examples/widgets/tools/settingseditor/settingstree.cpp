@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "settingstree.h"
 #include "variantdelegate.h"
@@ -10,7 +10,7 @@
 #include <QSettings>
 
 SettingsTree::SettingsTree(QWidget *parent)
-    : QTreeWidget(parent),
+    : BOBUIreeWidget(parent),
       m_typeChecker(new TypeChecker)
 {
     setItemDelegate(new VariantDelegate(m_typeChecker, this));
@@ -28,7 +28,7 @@ SettingsTree::SettingsTree(QWidget *parent)
                         QIcon::Normal, QIcon::On);
     keyIcon.addPixmap(style()->standardPixmap(QStyle::SP_FileIcon));
 
-    connect(&refreshTimer, &QTimer::timeout, this, &SettingsTree::maybeRefresh);
+    connect(&refreshTimer, &BOBUIimer::timeout, this, &SettingsTree::maybeRefresh);
 }
 
 SettingsTree::~SettingsTree() = default;
@@ -85,13 +85,13 @@ void SettingsTree::refresh()
     if (settings.isNull())
         return;
 
-    disconnect(this, &QTreeWidget::itemChanged,
+    disconnect(this, &BOBUIreeWidget::itemChanged,
                this, &SettingsTree::updateSetting);
 
     settings->sync();
     updateChildItems(nullptr);
 
-    connect(this, &QTreeWidget::itemChanged,
+    connect(this, &BOBUIreeWidget::itemChanged,
             this, &SettingsTree::updateSetting);
 }
 
@@ -101,36 +101,36 @@ bool SettingsTree::event(QEvent *event)
         if (isActiveWindow() && autoRefresh)
             maybeRefresh();
     }
-    return QTreeWidget::event(event);
+    return BOBUIreeWidget::event(event);
 }
 
-void SettingsTree::updateSetting(QTreeWidgetItem *item)
+void SettingsTree::updateSetting(BOBUIreeWidgetItem *item)
 {
     QString key = item->text(0);
-    QTreeWidgetItem *ancestor = item->parent();
+    BOBUIreeWidgetItem *ancestor = item->parent();
     while (ancestor) {
         key.prepend(ancestor->text(0) + QLatin1Char('/'));
         ancestor = ancestor->parent();
     }
 
-    settings->setValue(key, item->data(2, Qt::UserRole));
+    settings->setValue(key, item->data(2, BobUI::UserRole));
     if (autoRefresh)
         refresh();
 }
 
-void SettingsTree::updateChildItems(QTreeWidgetItem *parent)
+void SettingsTree::updateChildItems(BOBUIreeWidgetItem *parent)
 {
     int dividerIndex = 0;
 
     const QStringList childGroups = settings->childGroups();
     for (const QString &group : childGroups) {
-        QTreeWidgetItem *child;
+        BOBUIreeWidgetItem *child;
         int childIndex = findChild(parent, group, dividerIndex);
         if (childIndex != -1) {
             child = childAt(parent, childIndex);
             child->setText(1, QString());
             child->setText(2, QString());
-            child->setData(2, Qt::UserRole, QVariant());
+            child->setData(2, BobUI::UserRole, QVariant());
             moveItemForward(parent, childIndex, dividerIndex);
         } else {
             child = createItem(group, parent, dividerIndex);
@@ -145,7 +145,7 @@ void SettingsTree::updateChildItems(QTreeWidgetItem *parent)
 
     const QStringList childKeys = settings->childKeys();
     for (const QString &key : childKeys) {
-        QTreeWidgetItem *child;
+        BOBUIreeWidgetItem *child;
         int childIndex = findChild(parent, key, 0);
 
         if (childIndex == -1 || childIndex >= dividerIndex) {
@@ -170,7 +170,7 @@ void SettingsTree::updateChildItems(QTreeWidgetItem *parent)
             if (value.typeId() == QMetaType::QString) {
                 const QString stringValue = value.toString();
                 if (m_typeChecker->boolExp.match(stringValue).hasMatch()) {
-                    value.setValue(stringValue.compare("true", Qt::CaseInsensitive) == 0);
+                    value.setValue(stringValue.compare("true", BobUI::CaseInsensitive) == 0);
                 } else if (m_typeChecker->signedIntegerExp.match(stringValue).hasMatch())
                     value.setValue(stringValue.toInt());
             }
@@ -178,42 +178,42 @@ void SettingsTree::updateChildItems(QTreeWidgetItem *parent)
             child->setText(1, value.typeName());
         }
         child->setText(2, VariantDelegate::displayText(value));
-        child->setData(2, Qt::UserRole, value);
+        child->setData(2, BobUI::UserRole, value);
     }
 
     while (dividerIndex < childCount(parent))
         delete childAt(parent, dividerIndex);
 }
 
-QTreeWidgetItem *SettingsTree::createItem(const QString &text,
-                                          QTreeWidgetItem *parent, int index)
+BOBUIreeWidgetItem *SettingsTree::createItem(const QString &text,
+                                          BOBUIreeWidgetItem *parent, int index)
 {
-    QTreeWidgetItem *after = nullptr;
+    BOBUIreeWidgetItem *after = nullptr;
     if (index != 0)
         after = childAt(parent, index - 1);
 
-    QTreeWidgetItem *item;
+    BOBUIreeWidgetItem *item;
     if (parent)
-        item = new QTreeWidgetItem(parent, after);
+        item = new BOBUIreeWidgetItem(parent, after);
     else
-        item = new QTreeWidgetItem(this, after);
+        item = new BOBUIreeWidgetItem(this, after);
 
     item->setText(0, text);
-    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setFlags(item->flags() | BobUI::ItemIsEditable);
     return item;
 }
 
-QTreeWidgetItem *SettingsTree::childAt(QTreeWidgetItem *parent, int index) const
+BOBUIreeWidgetItem *SettingsTree::childAt(BOBUIreeWidgetItem *parent, int index) const
 {
     return (parent ? parent->child(index) : topLevelItem(index));
 }
 
-int SettingsTree::childCount(QTreeWidgetItem *parent) const
+int SettingsTree::childCount(BOBUIreeWidgetItem *parent) const
 {
     return (parent ? parent->childCount() : topLevelItemCount());
 }
 
-int SettingsTree::findChild(QTreeWidgetItem *parent, const QString &text,
+int SettingsTree::findChild(BOBUIreeWidgetItem *parent, const QString &text,
                             int startIndex) const
 {
     for (int i = startIndex; i < childCount(parent); ++i) {
@@ -223,7 +223,7 @@ int SettingsTree::findChild(QTreeWidgetItem *parent, const QString &text,
     return -1;
 }
 
-void SettingsTree::moveItemForward(QTreeWidgetItem *parent, int oldIndex,
+void SettingsTree::moveItemForward(BOBUIreeWidgetItem *parent, int oldIndex,
                                    int newIndex)
 {
     for (int i = 0; i < oldIndex - newIndex; ++i)

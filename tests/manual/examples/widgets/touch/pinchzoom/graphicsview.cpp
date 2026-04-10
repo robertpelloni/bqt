@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "graphicsview.h"
 
 #include <QScrollBar>
-#include <QTouchEvent>
+#include <BOBUIouchEvent>
 
 GraphicsView::GraphicsView(QGraphicsScene *scene, QWidget *parent)
     : QGraphicsView(scene, parent)
 {
-    viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
+    viewport()->setAttribute(BobUI::WA_AcceptTouchEvents);
     setDragMode(ScrollHandDrag);
 }
 
@@ -20,7 +20,7 @@ bool GraphicsView::viewportEvent(QEvent *event)
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
     {
-        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+        BOBUIouchEvent *touchEvent = static_cast<BOBUIouchEvent *>(event);
         const auto touchPoints = touchEvent->points();
         if (touchPoints.count() == 2) {
             // determine scale factor
@@ -36,7 +36,7 @@ bool GraphicsView::viewportEvent(QEvent *event)
                 totalScaleFactor *= currentScaleFactor;
                 currentScaleFactor = 1;
             }
-            setTransform(QTransform::fromScale(totalScaleFactor * currentScaleFactor,
+            setTransform(BOBUIransform::fromScale(totalScaleFactor * currentScaleFactor,
                                                totalScaleFactor * currentScaleFactor));
         }
         return true;

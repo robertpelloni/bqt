@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #ifndef BITSTREAMS_P_H
 #define BITSTREAMS_P_H
@@ -9,23 +9,23 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qtcoreglobal_p.h>
-#include <QtCore/qassert.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/private/bobuicoreglobal_p.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <type_traits>
 #include <algorithm>
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QByteArray;
 class QByteArrayView;
@@ -148,6 +148,6 @@ private:
 
 } // namespace HPack
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

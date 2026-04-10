@@ -1,9 +1,9 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui/QPixmap>
-#include <QtGui/QImage>
+#include <BOBUIest>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/QImage>
 
 class tst_QDataStreamPixmap : public QObject
 {
@@ -21,14 +21,14 @@ void tst_QDataStreamPixmap::stream_with_pixmap()
         "DQoaCgAAAA1JSERSAAAAAwAAAAMIAgAAANlKIugAAAAJcEhZcwAADsQAAA7EAZUr"
         "DhsAAAAQSURBVAiZY/zPAAVMDJgsAB1bAQXZn5ieAAAAAElFTkSuQmCCAAAAAgBh"
         "AAAACgAAAAAKAGgAZQBsAGwAbw==");
-    QImage dummy; // Needed to make sure qtGui is loaded
+    QImage dummy; // Needed to make sure bobuiGui is loaded
 
-    QTest::ignoreMessage(QtWarningMsg, "QPixmap::fromImageInPlace: "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QPixmap::fromImageInPlace: "
                          "QPixmap cannot be created without a QGuiApplication");
 
     QVariantMap map;
     QDataStream d(ba);
-    d.setVersion(QDataStream::Qt_5_12);
+    d.setVersion(QDataStream::BobUI_5_12);
     d >> map;
 
     QCOMPARE(map["a"].toString(), QString("hello"));
@@ -37,6 +37,6 @@ void tst_QDataStreamPixmap::stream_with_pixmap()
     QCOMPARE(map["z"].toString(), QString("there"));
 }
 
-QTEST_GUILESS_MAIN(tst_QDataStreamPixmap)
+BOBUIEST_GUILESS_MAIN(tst_QDataStreamPixmap)
 
 #include "tst_qdatastream_core_pixmap.moc"

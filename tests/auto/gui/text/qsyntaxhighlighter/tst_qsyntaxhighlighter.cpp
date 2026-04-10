@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTextDocument>
-#include <QTextLayout>
+#include <BOBUIest>
+#include <BOBUIextDocument>
+#include <BOBUIextLayout>
 #include <QDebug>
 #include <QAbstractTextDocumentLayout>
 #include <QSyntaxHighlighter>
 #include <QSignalSpy>
 
-#ifndef QT_NO_WIDGETS
-#include <QTextEdit>
+#ifndef BOBUI_NO_WIDGETS
+#include <BOBUIextEdit>
 #endif
 
-class QTestDocumentLayout : public QAbstractTextDocumentLayout
+class BOBUIestDocumentLayout : public QAbstractTextDocumentLayout
 {
     Q_OBJECT
 public:
-    inline QTestDocumentLayout(QTextDocument *doc)
+    inline BOBUIestDocumentLayout(BOBUIextDocument *doc)
         : QAbstractTextDocumentLayout(doc), documentChangedCalled(false) {}
 
         virtual void draw(QPainter *, const QAbstractTextDocumentLayout::PaintContext &) override {}
 
-        virtual int hitTest(const QPointF &, Qt::HitTestAccuracy ) const override { return 0; }
+        virtual int hitTest(const QPointF &, BobUI::HitTestAccuracy ) const override { return 0; }
 
         virtual void documentChanged(int, int, int) override { documentChangedCalled = true; }
 
@@ -31,8 +31,8 @@ public:
 
         virtual QSizeF documentSize() const override { return QSize(); }
 
-        virtual QRectF frameBoundingRect(QTextFrame *) const override { return QRectF(); }
-        virtual QRectF blockBoundingRect(const QTextBlock &) const override { return QRectF(); }
+        virtual QRectF frameBoundingRect(BOBUIextFrame *) const override { return QRectF(); }
+        virtual QRectF blockBoundingRect(const BOBUIextBlock &) const override { return QRectF(); }
 
         bool documentChangedCalled;
 };
@@ -62,22 +62,22 @@ private slots:
     void noContentsChangedDuringHighlight();
     void rehighlight();
     void rehighlightBlock();
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void textEditParent();
 #endif
 
 private:
-    QTextDocument *doc;
-    QTestDocumentLayout *lout;
-    QTextCursor cursor;
+    BOBUIextDocument *doc;
+    BOBUIestDocumentLayout *lout;
+    BOBUIextCursor cursor;
 };
 
 void tst_QSyntaxHighlighter::init()
 {
-    doc = new QTextDocument;
-    lout = new QTestDocumentLayout(doc);
+    doc = new BOBUIextDocument;
+    lout = new BOBUIestDocumentLayout(doc);
     doc->setDocumentLayout(lout);
-    cursor = QTextCursor(doc);
+    cursor = BOBUIextCursor(doc);
 }
 
 void tst_QSyntaxHighlighter::cleanup()
@@ -89,19 +89,19 @@ void tst_QSyntaxHighlighter::cleanup()
 class TestHighlighter : public QSyntaxHighlighter
 {
 public:
-    inline TestHighlighter(const QList<QTextLayout::FormatRange> &fmts, QTextDocument *parent)
+    inline TestHighlighter(const QList<BOBUIextLayout::FormatRange> &fmts, BOBUIextDocument *parent)
         : QSyntaxHighlighter(parent), formats(fmts), highlighted(false), callCount(0)
     {
     }
     inline TestHighlighter(QObject *parent)
         : QSyntaxHighlighter(parent) {}
-        inline TestHighlighter(QTextDocument *parent)
+        inline TestHighlighter(BOBUIextDocument *parent)
             : QSyntaxHighlighter(parent), highlighted(false), callCount(0) {}
 
             virtual void highlightBlock(const QString &text) override
             {
                 for (int i = 0; i < formats.size(); ++i) {
-                    const QTextLayout::FormatRange &range = formats.at(i);
+                    const BOBUIextLayout::FormatRange &range = formats.at(i);
                     setFormat(range.start, range.length, range.format);
                 }
                 highlighted = true;
@@ -109,7 +109,7 @@ public:
                 ++callCount;
             }
 
-            QList<QTextLayout::FormatRange> formats;
+            QList<BOBUIextLayout::FormatRange> formats;
             bool highlighted;
             int callCount;
             QString highlightedText;
@@ -117,11 +117,11 @@ public:
 
 void tst_QSyntaxHighlighter::basic()
 {
-    QList<QTextLayout::FormatRange> formats;
-    QTextLayout::FormatRange range;
+    QList<BOBUIextLayout::FormatRange> formats;
+    BOBUIextLayout::FormatRange range;
     range.start = 0;
     range.length = 2;
-    range.format.setForeground(Qt::blue);
+    range.format.setForeground(BobUI::blue);
     formats.append(range);
 
     range.start = 4;
@@ -147,7 +147,7 @@ void tst_QSyntaxHighlighter::basic()
 class CommentTestHighlighter : public QSyntaxHighlighter
 {
 public:
-    inline CommentTestHighlighter(QTextDocument *parent)
+    inline CommentTestHighlighter(BOBUIextDocument *parent)
         : QSyntaxHighlighter(parent), highlighted(false) {}
 
         inline void reset()
@@ -157,8 +157,8 @@ public:
 
         virtual void highlightBlock(const QString &text) override
         {
-            QTextCharFormat commentFormat;
-            commentFormat.setForeground(Qt::darkGreen);
+            BOBUIextCharFormat commentFormat;
+            commentFormat.setForeground(BobUI::darkGreen);
             commentFormat.setFontWeight(QFont::StyleItalic);
             commentFormat.setFontFixedPitch(true);
             int textLength = text.size();
@@ -184,11 +184,11 @@ void tst_QSyntaxHighlighter::basicTwo()
 
 void tst_QSyntaxHighlighter::removeFormatsOnDelete()
 {
-    QList<QTextLayout::FormatRange> formats;
-    QTextLayout::FormatRange range;
+    QList<BOBUIextLayout::FormatRange> formats;
+    BOBUIextLayout::FormatRange range;
     range.start = 0;
     range.length = 9;
-    range.format.setForeground(Qt::blue);
+    range.format.setForeground(BobUI::blue);
     formats.append(range);
 
     TestHighlighter *hl = new TestHighlighter(formats, doc);
@@ -224,9 +224,9 @@ void tst_QSyntaxHighlighter::setCharFormat()
     cursor.insertText("FooBar");
     cursor.insertBlock();
     cursor.insertText("Blah");
-    cursor.movePosition(QTextCursor::Start);
-    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    QTextCharFormat fmt;
+    cursor.movePosition(BOBUIextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::End, BOBUIextCursor::KeepAnchor);
+    BOBUIextCharFormat fmt;
     fmt.setFontItalic(true);
     hl->highlighted = false;
     hl->callCount = 0;
@@ -242,7 +242,7 @@ void tst_QSyntaxHighlighter::highlightOnInit()
     cursor.insertText("World");
 
     TestHighlighter *hl = new TestHighlighter(doc);
-    QTRY_VERIFY(hl->highlighted);
+    BOBUIRY_VERIFY(hl->highlighted);
 }
 
 void tst_QSyntaxHighlighter::highlightOnInitAndAppend()
@@ -254,14 +254,14 @@ void tst_QSyntaxHighlighter::highlightOnInitAndAppend()
     TestHighlighter *hl = new TestHighlighter(doc);
     cursor.insertBlock();
     cursor.insertText("More text");
-    QTRY_VERIFY(hl->highlighted);
+    BOBUIRY_VERIFY(hl->highlighted);
     QVERIFY(hl->highlightedText.endsWith(doc->toPlainText().remove(QLatin1Char('\n'))));
 }
 
 class StateTestHighlighter : public QSyntaxHighlighter
 {
 public:
-    inline StateTestHighlighter(QTextDocument *parent)
+    inline StateTestHighlighter(BOBUIextDocument *parent)
         : QSyntaxHighlighter(parent), state(0), highlighted(false) {}
 
         inline void reset()
@@ -294,12 +294,12 @@ void tst_QSyntaxHighlighter::stopHighlightingWhenStateDoesNotChange()
     cursor.insertText("changestate");
 
     StateTestHighlighter *hl = new StateTestHighlighter(doc);
-    QTRY_VERIFY(hl->highlighted);
+    BOBUIRY_VERIFY(hl->highlighted);
 
     hl->reset();
 
     // turn the text of the first block into 'changestate'
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     cursor.insertText("change");
 
     // verify that we highlighted only to the 'keepstate' block,
@@ -323,17 +323,17 @@ void tst_QSyntaxHighlighter::unindent()
     QCOMPARE(doc->toPlainText(), plainText);
 
     TestHighlighter *hl = new TestHighlighter(doc);
-    QTRY_VERIFY(hl->highlighted);
+    BOBUIRY_VERIFY(hl->highlighted);
     hl->callCount = 0;
 
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     cursor.beginEditBlock();
 
     plainText.clear();
     for (int i = 0; i < 5; ++i) {
-        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 4);
+        cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor, 4);
         cursor.removeSelectedText();
-        cursor.movePosition(QTextCursor::NextBlock);
+        cursor.movePosition(BOBUIextCursor::NextBlock);
 
         plainText += text;
         plainText += QLatin1Char('\n');
@@ -349,7 +349,7 @@ void tst_QSyntaxHighlighter::highlightToEndOfDocument()
     TestHighlighter *hl = new TestHighlighter(doc);
     hl->callCount = 0;
 
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     cursor.beginEditBlock();
 
     cursor.insertText("Hello");
@@ -368,10 +368,10 @@ void tst_QSyntaxHighlighter::highlightToEndOfDocument2()
     TestHighlighter *hl = new TestHighlighter(doc);
     hl->callCount = 0;
 
-    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(BOBUIextCursor::End);
     cursor.beginEditBlock();
-    QTextBlockFormat fmt;
-    fmt.setAlignment(Qt::AlignLeft);
+    BOBUIextBlockFormat fmt;
+    fmt.setAlignment(BobUI::AlignLeft);
     cursor.setBlockFormat(fmt);
     cursor.insertText("Three\nLines\nHere");
     cursor.endEditBlock();
@@ -381,22 +381,22 @@ void tst_QSyntaxHighlighter::highlightToEndOfDocument2()
 
 void tst_QSyntaxHighlighter::preservePreeditArea()
 {
-    QList<QTextLayout::FormatRange> formats;
-    QTextLayout::FormatRange range;
+    QList<BOBUIextLayout::FormatRange> formats;
+    BOBUIextLayout::FormatRange range;
     range.start = 0;
     range.length = 8;
-    range.format.setForeground(Qt::blue);
+    range.format.setForeground(BobUI::blue);
     formats << range;
     range.start = 9;
     range.length = 1;
-    range.format.setForeground(Qt::red);
+    range.format.setForeground(BobUI::red);
     formats << range;
     TestHighlighter *hl = new TestHighlighter(formats, doc);
 
     doc->setPlainText("Hello World");
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
 
-    QTextLayout *layout = cursor.block().layout();
+    BOBUIextLayout *layout = cursor.block().layout();
 
     layout->setPreeditArea(5, QString("foo"));
     range.start = 5;
@@ -438,7 +438,7 @@ void tst_QSyntaxHighlighter::task108530()
     cursor.insertText("test");
     hl->callCount = 0;
     hl->highlightedText.clear();
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     cursor.insertBlock();
 
     QCOMPARE(hl->highlightedText, QString("test"));
@@ -478,17 +478,17 @@ void tst_QSyntaxHighlighter::avoidUnnecessaryDelayedRehighlight()
 
 void tst_QSyntaxHighlighter::noContentsChangedDuringHighlight()
 {
-    QList<QTextLayout::FormatRange> formats;
-    QTextLayout::FormatRange range;
+    QList<BOBUIextLayout::FormatRange> formats;
+    BOBUIextLayout::FormatRange range;
     range.start = 0;
     range.length = 10;
-    range.format.setForeground(Qt::blue);
+    range.format.setForeground(BobUI::blue);
     formats.append(range);
 
     TestHighlighter *hl = new TestHighlighter(formats, doc);
 
     lout->documentChangedCalled = false;
-    QTextCursor cursor(doc);
+    BOBUIextCursor cursor(doc);
 
     QSignalSpy contentsChangedSpy(doc, SIGNAL(contentsChanged()));
     cursor.insertText("Hello World");
@@ -512,7 +512,7 @@ void tst_QSyntaxHighlighter::rehighlightBlock()
 {
     TestHighlighter *hl = new TestHighlighter(doc);
 
-    cursor.movePosition(QTextCursor::Start);
+    cursor.movePosition(BOBUIextCursor::Start);
     cursor.beginEditBlock();
     cursor.insertText("Hello");
     cursor.insertBlock();
@@ -521,7 +521,7 @@ void tst_QSyntaxHighlighter::rehighlightBlock()
 
     hl->callCount = 0;
     hl->highlightedText.clear();
-    QTextBlock block = doc->begin();
+    BOBUIextBlock block = doc->begin();
     hl->rehighlightBlock(block);
 
     QCOMPARE(hl->highlightedText, QString("Hello"));
@@ -535,14 +535,14 @@ void tst_QSyntaxHighlighter::rehighlightBlock()
     QCOMPARE(hl->callCount, 1);
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 void tst_QSyntaxHighlighter::textEditParent()
 {
-    QTextEdit textEdit;
+    BOBUIextEdit textEdit;
     TestHighlighter *hl = new TestHighlighter(&textEdit);
     QCOMPARE(hl->document(), textEdit.document());
 }
 #endif
 
-QTEST_MAIN(tst_QSyntaxHighlighter)
+BOBUIEST_MAIN(tst_QSyntaxHighlighter)
 #include "tst_qsyntaxhighlighter.moc"

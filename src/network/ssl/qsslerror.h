@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLERROR_H
 #define QSSLERROR_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qvariant.h>
-#include <QtNetwork/qsslcertificate.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvariant.h>
+#include <BobUINetwork/qsslcertificate.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -92,9 +92,9 @@ public:
     QSslCertificate certificate() const;
 
 private:
-    // ### Qt 7: make QSslError implicitly shared
+    // ### BobUI 7: make QSslError implicitly shared
     std::unique_ptr<QSslErrorPrivate> d;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     Q_NETWORK_EXPORT friend QDebug print(QDebug debug, QSslError::SslError error);
     friend QDebug operator<<(QDebug debug, SslError error)
     { return print(std::move(debug), error); }
@@ -104,21 +104,21 @@ Q_DECLARE_SHARED(QSslError)
 
 Q_NETWORK_EXPORT size_t qHash(const QSslError &key, size_t seed = 0) noexcept;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QSslError &error);
-#if QT_NETWORK_REMOVED_SINCE(6, 8)
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 8)
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QSslError::SslError &error);
 #endif
 #endif
 #else
 class Q_NETWORK_EXPORT QSslError {}; // dummy class so that moc has a complete type
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_SSL
-QT_DECL_METATYPE_EXTERN_TAGGED(QList<QSslError>, QList_QSslError, Q_NETWORK_EXPORT)
+#ifndef BOBUI_NO_SSL
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QList<QSslError>, QList_QSslError, Q_NETWORK_EXPORT)
 #endif
 
 #endif

@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
     app.initializeJuce();
 
     QWidget window;
-    window.setWindowTitle("OmniUI: Qt + JUCE + WASM");
+    window.setWindowTitle("OmniUI: BobUI + JUCE + WASM");
     window.resize(800, 600);
 
     QVBoxLayout* layout = new QVBoxLayout(&window);
 
-    // native Qt widget
-    QPushButton* btn = new QPushButton("This is a native Qt Button", &window);
+    // native BobUI widget
+    QPushButton* btn = new QPushButton("This is a native BobUI Button", &window);
     layout->addWidget(btn);
 
     // Omni/JUCE widget
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     layout->addWidget(juceContent);
 
     QObject::connect(btn, &QPushButton::clicked, [juceContent]() {
-        qDebug() << "Qt Button Clicked! Sending signal to JUCE...";
+        qDebug() << "BobUI Button Clicked! Sending signal to JUCE...";
         // In a real app, we would call a method on juceContent
     });
 

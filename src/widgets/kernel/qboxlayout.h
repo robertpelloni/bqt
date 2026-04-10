@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBOXLAYOUT_H
 #define QBOXLAYOUT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qlayout.h>
-#ifdef QT_INCLUDE_COMPAT
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qlayout.h>
+#ifdef BOBUI_INCLUDE_COMPAT
+#include <BobUIWidgets/qwidget.h>
 #endif
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QBoxLayoutPrivate;
@@ -36,7 +36,7 @@ public:
     void addSpacing(int size);
     void addStretch(int stretch = 0);
     void addSpacerItem(QSpacerItem *spacerItem);
-    void addWidget(QWidget *, int stretch = 0, Qt::Alignment alignment = Qt::Alignment());
+    void addWidget(QWidget *, int stretch = 0, BobUI::Alignment alignment = BobUI::Alignment());
     void addLayout(QLayout *layout, int stretch = 0);
     void addStrut(int);
     void addItem(QLayoutItem *) override;
@@ -44,7 +44,7 @@ public:
     void insertSpacing(int index, int size);
     void insertStretch(int index, int stretch = 0);
     void insertSpacerItem(int index, QSpacerItem *spacerItem);
-    void insertWidget(int index, QWidget *widget, int stretch = 0, Qt::Alignment alignment = Qt::Alignment());
+    void insertWidget(int index, QWidget *widget, int stretch = 0, BobUI::Alignment alignment = BobUI::Alignment());
     void insertLayout(int index, QLayout *layout, int stretch = 0);
     void insertItem(int index, QLayoutItem *);
 
@@ -64,7 +64,7 @@ public:
     int heightForWidth(int) const override;
     int minimumHeightForWidth(int) const override;
 
-    Qt::Orientations expandingDirections() const override;
+    BobUI::Orientations expandingDirections() const override;
     void invalidate() override;
     QLayoutItem *itemAt(int) const override;
     QLayoutItem *takeAt(int) override;
@@ -101,6 +101,6 @@ private:
     Q_DISABLE_COPY(QVBoxLayout)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBOXLAYOUT_H

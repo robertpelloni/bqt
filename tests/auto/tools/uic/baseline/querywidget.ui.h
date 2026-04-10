@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'querywidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef QUERYWIDGET_H
 #define QUERYWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/QStatusBar>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_QueryWidget
 {
@@ -31,15 +31,15 @@ public:
     QGroupBox *inputGroupBox;
     QVBoxLayout *verticalLayout_4;
     QVBoxLayout *_2;
-    QTextEdit *inputTextEdit;
+    BOBUIextEdit *inputTextEdit;
     QGroupBox *queryGroupBox;
     QVBoxLayout *verticalLayout_5;
     QComboBox *defaultQueries;
-    QTextEdit *queryTextEdit;
+    BOBUIextEdit *queryTextEdit;
     QGroupBox *outputGroupBox;
     QVBoxLayout *verticalLayout_6;
     QVBoxLayout *_3;
-    QTextEdit *outputTextEdit;
+    BOBUIextEdit *outputTextEdit;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -73,7 +73,7 @@ public:
         _2->setContentsMargins(0, 0, 0, 0);
 #endif
         _2->setObjectName("_2");
-        inputTextEdit = new QTextEdit(inputGroupBox);
+        inputTextEdit = new BOBUIextEdit(inputGroupBox);
         inputTextEdit->setObjectName("inputTextEdit");
 
         _2->addWidget(inputTextEdit);
@@ -94,7 +94,7 @@ public:
 
         verticalLayout_5->addWidget(defaultQueries);
 
-        queryTextEdit = new QTextEdit(queryGroupBox);
+        queryTextEdit = new BOBUIextEdit(queryGroupBox);
         queryTextEdit->setObjectName("queryTextEdit");
         queryTextEdit->setMinimumSize(QSize(400, 60));
         queryTextEdit->setReadOnly(true);
@@ -118,7 +118,7 @@ public:
         _3->setContentsMargins(0, 0, 0, 0);
 #endif
         _3->setObjectName("_3");
-        outputTextEdit = new QTextEdit(outputGroupBox);
+        outputTextEdit = new BOBUIextEdit(outputGroupBox);
         outputTextEdit->setObjectName("outputTextEdit");
         outputTextEdit->setMinimumSize(QSize(500, 80));
         outputTextEdit->setReadOnly(true);
@@ -163,6 +163,6 @@ namespace Ui {
     class QueryWidget: public Ui_QueryWidget {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QUERYWIDGET_H

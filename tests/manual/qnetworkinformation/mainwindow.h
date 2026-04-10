@@ -1,14 +1,14 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/qmainwindow.h>
-#include <QtWidgets/qlabel.h>
-#include <QtCore/qmetaobject.h>
+#include <BobUIWidgets/qmainwindow.h>
+#include <BobUIWidgets/qlabel.h>
+#include <BobUICore/qmetaobject.h>
 
-#include <QtNetwork/qnetworkinformation.h>
+#include <BobUINetwork/qnetworkinformation.h>
 
 template<typename QEnum>
 QString enumToString(const QEnum value)

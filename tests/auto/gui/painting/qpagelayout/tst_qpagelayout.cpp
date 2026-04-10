@@ -1,8 +1,8 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtGui/qpagelayout.h>
+#include <BOBUIest>
+#include <BobUIGui/qpagelayout.h>
 
 class tst_QPageLayout : public QObject
 {
@@ -435,13 +435,13 @@ void tst_QPageLayout::setGetClampedMargins()
 
 void tst_QPageLayout::setUnits_data()
 {
-    QTest::addColumn<QPageLayout::Unit>("units");
-    QTest::newRow("Millimeter") << QPageLayout::Millimeter;
-    QTest::newRow("Point") << QPageLayout::Point;
-    QTest::newRow("Inch") << QPageLayout::Inch;
-    QTest::newRow("Pica") << QPageLayout::Pica;
-    QTest::newRow("Didot") << QPageLayout::Didot;
-    QTest::newRow("Cicero") << QPageLayout::Cicero;
+    BOBUIest::addColumn<QPageLayout::Unit>("units");
+    BOBUIest::newRow("Millimeter") << QPageLayout::Millimeter;
+    BOBUIest::newRow("Point") << QPageLayout::Point;
+    BOBUIest::newRow("Inch") << QPageLayout::Inch;
+    BOBUIest::newRow("Pica") << QPageLayout::Pica;
+    BOBUIest::newRow("Didot") << QPageLayout::Didot;
+    BOBUIest::newRow("Cicero") << QPageLayout::Cicero;
 }
 
 void tst_QPageLayout::setUnits()
@@ -481,6 +481,6 @@ void tst_QPageLayout::setUnits()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QPageLayout)
+BOBUIEST_APPLESS_MAIN(tst_QPageLayout)
 
 #include "tst_qpagelayout.moc"

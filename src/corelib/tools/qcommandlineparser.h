@@ -1,18 +1,18 @@
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCOMMANDLINEPARSER_H
 #define QCOMMANDLINEPARSER_H
 
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qstringlist.h>
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qcommandlineoption.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qcommandlineoption.h>
 
-QT_REQUIRE_CONFIG(commandlineparser);
+BOBUI_REQUIRE_CONFIG(commandlineparser);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCommandLineParserPrivate;
 class QCoreApplication;
@@ -80,6 +80,6 @@ private:
     QCommandLineParserPrivate * const d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMMANDLINEPARSER_H

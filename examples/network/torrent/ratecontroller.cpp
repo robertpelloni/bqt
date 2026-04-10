@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "peerwireclient.h"
 #include "ratecontroller.h"
 
-#include <QtCore>
+#include <BobUICore>
 
 Q_GLOBAL_STATIC(RateController, rateController)
 
@@ -42,7 +42,7 @@ void RateController::scheduleTransfer()
     if (transferScheduled)
         return;
     transferScheduled = true;
-    QTimer::singleShot(50, this, &RateController::transfer);
+    BOBUIimer::singleShot(50, this, &RateController::transfer);
 }
 
 void RateController::transfer()

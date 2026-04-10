@@ -1,4 +1,4 @@
-QT       += core gui widgets
+BOBUI       += core gui widgets
 TARGET = windowchildgeometry
 TEMPLATE = app
 

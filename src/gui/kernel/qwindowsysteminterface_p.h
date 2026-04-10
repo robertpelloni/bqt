@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QWINDOWSYSTEMINTERFACE_P_H
 #define QWINDOWSYSTEMINTERFACE_P_H
 
@@ -7,15 +7,15 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qevent_p.h>
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/qevent_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qwindowsysteminterface.h"
 
 #include <QElapsedTimer>
@@ -26,9 +26,9 @@
 #include <QAtomicInt>
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DECLARE_EXPORTED_QT_LOGGING_CATEGORY(lcQpaInputDevices, Q_GUI_EXPORT)
+BOBUI_DECLARE_EXPORTED_BOBUI_LOGGING_CATEGORY(lcQpaInputDevices, Q_GUI_EXPORT)
 
 class QWindowSystemEventHandler;
 
@@ -60,7 +60,7 @@ public:
         PlatformPanel = UserInputEvent | 0x17,
         ContextMenu = UserInputEvent | 0x18,
         EnterWhatsThisMode = UserInputEvent | 0x19,
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
         Gesture = UserInputEvent | 0x1a,
 #endif
         ApplicationStateChanged = 0x19,
@@ -127,22 +127,22 @@ public:
 
     class FocusWindowEvent : public WindowSystemEvent {
     public:
-        explicit FocusWindowEvent(QWindow *focusedWindow, Qt::FocusReason r)
+        explicit FocusWindowEvent(QWindow *focusedWindow, BobUI::FocusReason r)
             : WindowSystemEvent(FocusWindow), focused(focusedWindow), reason(r)
         { }
         QPointer<QWindow> focused;
-        Qt::FocusReason reason;
+        BobUI::FocusReason reason;
     };
 
     class WindowStateChangedEvent : public WindowSystemEvent {
     public:
-        WindowStateChangedEvent(QWindow *_window, Qt::WindowStates _newState, Qt::WindowStates _oldState)
+        WindowStateChangedEvent(QWindow *_window, BobUI::WindowStates _newState, BobUI::WindowStates _oldState)
             : WindowSystemEvent(WindowStateChanged), window(_window), newState(_newState), oldState(_oldState)
         { }
 
         QPointer<QWindow> window;
-        Qt::WindowStates newState;
-        Qt::WindowStates oldState;
+        BobUI::WindowStates newState;
+        BobUI::WindowStates oldState;
     };
 
     class WindowScreenChangedEvent : public WindowSystemEvent {
@@ -175,11 +175,11 @@ public:
 
     class ApplicationStateChangedEvent : public WindowSystemEvent {
     public:
-        ApplicationStateChangedEvent(Qt::ApplicationState newState, bool forcePropagate = false)
+        ApplicationStateChangedEvent(BobUI::ApplicationState newState, bool forcePropagate = false)
             : WindowSystemEvent(ApplicationStateChanged), newState(newState), forcePropagate(forcePropagate)
         { }
 
-        Qt::ApplicationState newState;
+        BobUI::ApplicationState newState;
         bool forcePropagate;
     };
 
@@ -206,24 +206,24 @@ public:
 
     class InputEvent: public UserEvent {
     public:
-        InputEvent(QWindow *w, ulong time, EventType t, Qt::KeyboardModifiers mods, const QInputDevice *dev)
+        InputEvent(QWindow *w, ulong time, EventType t, BobUI::KeyboardModifiers mods, const QInputDevice *dev)
             : UserEvent(w, time, t), modifiers(mods), device(dev) {}
-        Qt::KeyboardModifiers modifiers;
+        BobUI::KeyboardModifiers modifiers;
         const QInputDevice *device;
     };
 
     class PointerEvent : public InputEvent {
     public:
-        PointerEvent(QWindow * w, ulong time, EventType t, Qt::KeyboardModifiers mods, const QPointingDevice *device)
+        PointerEvent(QWindow * w, ulong time, EventType t, BobUI::KeyboardModifiers mods, const QPointingDevice *device)
             : InputEvent(w, time, t, mods, device) {}
     };
 
     class MouseEvent : public PointerEvent {
     public:
         MouseEvent(QWindow *w, ulong time, const QPointF &local, const QPointF &global,
-                   Qt::MouseButtons state, Qt::KeyboardModifiers mods,
-                   Qt::MouseButton b, QEvent::Type type,
-                   Qt::MouseEventSource src = Qt::MouseEventNotSynthesized, bool frame = false,
+                   BobUI::MouseButtons state, BobUI::KeyboardModifiers mods,
+                   BobUI::MouseButton b, QEvent::Type type,
+                   BobUI::MouseEventSource src = BobUI::MouseEventNotSynthesized, bool frame = false,
                    const QPointingDevice *device = QPointingDevice::primaryPointingDevice(),
                    int evPtId = -1)
             : PointerEvent(w, time, Mouse, mods, device), localPos(local), globalPos(global),
@@ -232,41 +232,41 @@ public:
 
         QPointF localPos;
         QPointF globalPos;
-        Qt::MouseButtons buttons;
-        Qt::MouseEventSource source;
+        BobUI::MouseButtons buttons;
+        BobUI::MouseEventSource source;
         bool nonClientArea;
-        Qt::MouseButton button;
+        BobUI::MouseButton button;
         QEvent::Type buttonType;
         int eventPointId; // from the original device if synth-mouse, otherwise -1
     };
 
     class WheelEvent : public PointerEvent {
     public:
-        WheelEvent(QWindow *w, ulong time, const QPointF &local, const QPointF &global, QPoint pixelD, QPoint angleD, int qt4D, Qt::Orientation qt4O,
-                   Qt::KeyboardModifiers mods, Qt::ScrollPhase phase = Qt::NoScrollPhase, Qt::MouseEventSource src = Qt::MouseEventNotSynthesized,
+        WheelEvent(QWindow *w, ulong time, const QPointF &local, const QPointF &global, QPoint pixelD, QPoint angleD, int bobui4D, BobUI::Orientation bobui4O,
+                   BobUI::KeyboardModifiers mods, BobUI::ScrollPhase phase = BobUI::NoScrollPhase, BobUI::MouseEventSource src = BobUI::MouseEventNotSynthesized,
                    bool inverted = false, const QPointingDevice *device = QPointingDevice::primaryPointingDevice())
-            : PointerEvent(w, time, Wheel, mods, device), pixelDelta(pixelD), angleDelta(angleD), qt4Delta(qt4D),
-              qt4Orientation(qt4O), localPos(local), globalPos(global), phase(phase), source(src), inverted(inverted) { }
+            : PointerEvent(w, time, Wheel, mods, device), pixelDelta(pixelD), angleDelta(angleD), bobui4Delta(bobui4D),
+              bobui4Orientation(bobui4O), localPos(local), globalPos(global), phase(phase), source(src), inverted(inverted) { }
         QPoint pixelDelta;
         QPoint angleDelta;
-        int qt4Delta;
-        Qt::Orientation qt4Orientation;
+        int bobui4Delta;
+        BobUI::Orientation bobui4Orientation;
         QPointF localPos;
         QPointF globalPos;
-        Qt::ScrollPhase phase;
-        Qt::MouseEventSource source;
+        BobUI::ScrollPhase phase;
+        BobUI::MouseEventSource source;
         bool inverted;
     };
 
     class KeyEvent : public InputEvent {
     public:
-        KeyEvent(QWindow *w, ulong time, QEvent::Type t, int k, Qt::KeyboardModifiers mods,
+        KeyEvent(QWindow *w, ulong time, QEvent::Type t, int k, BobUI::KeyboardModifiers mods,
                  const QString & text = QString(), bool autorep = false, ushort count = 1,
                  const QInputDevice *device = QInputDevice::primaryKeyboard())
             : InputEvent(w, time, Key, mods, device), source(nullptr), key(k), unicode(text),
              repeat(autorep), repeatCount(count), keyType(t),
              nativeScanCode(0), nativeVirtualKey(0), nativeModifiers(0) { }
-        KeyEvent(QWindow *w, ulong time, QEvent::Type t, int k, Qt::KeyboardModifiers mods,
+        KeyEvent(QWindow *w, ulong time, QEvent::Type t, int k, BobUI::KeyboardModifiers mods,
                  quint32 nativeSC, quint32 nativeVK, quint32 nativeMods,
                  const QString & text = QString(), bool autorep = false, ushort count = 1,
                  const QInputDevice *device = QInputDevice::primaryKeyboard())
@@ -287,7 +287,7 @@ public:
     class TouchEvent : public PointerEvent {
     public:
         TouchEvent(QWindow *w, ulong time, QEvent::Type t, const QPointingDevice *device,
-                   const QList<QEventPoint> &p, Qt::KeyboardModifiers mods)
+                   const QList<QEventPoint> &p, BobUI::KeyboardModifiers mods)
             : PointerEvent(w, time, Touch, mods, device), points(p), touchType(t) { }
         QList<QEventPoint> points;
         QEvent::Type touchType;
@@ -295,10 +295,10 @@ public:
 
     class ScreenOrientationEvent : public WindowSystemEvent {
     public:
-        ScreenOrientationEvent(QScreen *s, Qt::ScreenOrientation o)
+        ScreenOrientationEvent(QScreen *s, BobUI::ScreenOrientation o)
             : WindowSystemEvent(ScreenOrientation), screen(s), orientation(o) { }
         QPointer<QScreen> screen;
-        Qt::ScreenOrientation orientation;
+        BobUI::ScreenOrientation orientation;
     };
 
     class ScreenGeometryEvent : public WindowSystemEvent {
@@ -364,19 +364,19 @@ public:
     public:
         // TODO take QPointingDevice* instead of types and IDs
         static void handleTabletEvent(QWindow *w, const QPointF &local, const QPointF &global,
-                                      int device, int pointerType, Qt::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
+                                      int device, int pointerType, BobUI::MouseButtons buttons, qreal pressure, qreal xTilt, qreal yTilt,
                                       qreal tangentialPressure, qreal rotation, int z, qint64 uid,
-                                      Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+                                      BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
         static void setPlatformSynthesizesMouse(bool v);
 
         TabletEvent(QWindow *w, ulong time, const QPointF &local, const QPointF &global,
-                    const QPointingDevice *device, Qt::MouseButtons b, qreal pressure, qreal xTilt, qreal yTilt, qreal tpressure,
-                    qreal rotation, int z, Qt::KeyboardModifiers mods)
+                    const QPointingDevice *device, BobUI::MouseButtons b, qreal pressure, qreal xTilt, qreal yTilt, qreal tpressure,
+                    qreal rotation, int z, BobUI::KeyboardModifiers mods)
             : PointerEvent(w, time, Tablet, mods, device),
               buttons(b), local(local), global(global),
               pressure(pressure), xTilt(xTilt), yTilt(yTilt), tangentialPressure(tpressure),
               rotation(rotation), z(z) { }
-        Qt::MouseButtons buttons;
+        BobUI::MouseButtons buttons;
         QPointF local;
         QPointF global;
         qreal pressure;
@@ -392,14 +392,14 @@ public:
     public:
         // TODO store more info: position and whatever else we can get on most platforms
         TabletEnterProximityEvent(ulong time, const QPointingDevice *device)
-            : PointerEvent(nullptr, time, TabletEnterProximity, Qt::NoModifier, device) { }
+            : PointerEvent(nullptr, time, TabletEnterProximity, BobUI::NoModifier, device) { }
     };
 
     class TabletLeaveProximityEvent : public PointerEvent {
     public:
         // TODO store more info: position and whatever else we can get on most platforms
         TabletLeaveProximityEvent(ulong time, const QPointingDevice *device)
-            : PointerEvent(nullptr, time, TabletLeaveProximity, Qt::NoModifier, device) { }
+            : PointerEvent(nullptr, time, TabletLeaveProximity, BobUI::NoModifier, device) { }
     };
 
     class PlatformPanelEvent : public WindowSystemEvent {
@@ -409,29 +409,29 @@ public:
         QPointer<QWindow> window;
     };
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     class ContextMenuEvent : public WindowSystemEvent {
     public:
         explicit ContextMenuEvent(QWindow *w, bool mouseTriggered, const QPoint &pos,
-                                  const QPoint &globalPos, Qt::KeyboardModifiers modifiers)
+                                  const QPoint &globalPos, BobUI::KeyboardModifiers modifiers)
             : WindowSystemEvent(ContextMenu), window(w), mouseTriggered(mouseTriggered), pos(pos),
               globalPos(globalPos), modifiers(modifiers) { }
         QPointer<QWindow> window;
         bool mouseTriggered;
         QPoint pos;       // Only valid if triggered by mouse
         QPoint globalPos; // Only valid if triggered by mouse
-        Qt::KeyboardModifiers modifiers;
+        BobUI::KeyboardModifiers modifiers;
     };
 #endif
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     class GestureEvent : public PointerEvent {
     public:
-        GestureEvent(QWindow *window, ulong time, Qt::NativeGestureType type, const QPointingDevice *dev,
+        GestureEvent(QWindow *window, ulong time, BobUI::NativeGestureType type, const QPointingDevice *dev,
                      int fingerCount, QPointF pos, QPointF globalPos, qreal realValue, QPointF delta)
-            : PointerEvent(window, time, Gesture, Qt::NoModifier, dev), type(type), pos(pos), globalPos(globalPos),
+            : PointerEvent(window, time, Gesture, BobUI::NoModifier, dev), type(type), pos(pos), globalPos(globalPos),
               delta(delta), fingerCount(fingerCount), realValue(realValue), sequenceId(0), intValue(0) { }
-        Qt::NativeGestureType type;
+        BobUI::NativeGestureType type;
         QPointF pos;
         QPointF globalPos;
         QPointF delta;
@@ -547,6 +547,6 @@ public:
     virtual bool sendEvent(QWindowSystemInterfacePrivate::WindowSystemEvent *event);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSYSTEMINTERFACE_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef Q_SPI_STRUCT_MARSHALLERS_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/qlist.h>
-#include <QtDBus/QDBusArgument>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusObjectPath>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/qlist.h>
+#include <BobUIDBus/QDBusArgument>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusObjectPath>
 
-QT_REQUIRE_CONFIG(accessibility);
+BOBUI_REQUIRE_CONFIG(accessibility);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using QSpiIntList = QList<int>;
 using QSpiUIntList = QList<uint>;
@@ -40,7 +40,7 @@ struct QSpiObjectReference
         : service(connection.baseService()), path(path) {}
 };
 Q_DECLARE_TYPEINFO(QSpiObjectReference, Q_RELOCATABLE_TYPE); // QDBusObjectPath is movable, even though it
-                                                         // cannot be marked that way until Qt 6
+                                                         // cannot be marked that way until BobUI 6
 
 QDBusArgument &operator<<(QDBusArgument &argument, const QSpiObjectReference &address);
 const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiObjectReference &address);
@@ -139,27 +139,27 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, QSpiMatchRule &ma
 
 void qSpiInitializeStructTypes();
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QSpiIntList, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiUIntList, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiObjectReference, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiObjectReferenceArray, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiAccessibleCacheItem, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiAccessibleCacheArray, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiAction, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiActionArray, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiEventListener, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiEventListenerArray, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiRelationArrayEntry, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiRelationArray, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiTextRange, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiTextRangeList, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiAttributeSet, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiDeviceEvent, /* not exported */)
-QT_DECL_METATYPE_EXTERN(QSpiMatchRule, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiIntList, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiUIntList, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiObjectReference, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiObjectReferenceArray, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiAccessibleCacheItem, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiAccessibleCacheArray, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiAction, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiActionArray, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiEventListener, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiEventListenerArray, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiRelationArrayEntry, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiRelationArray, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiTextRange, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiTextRangeList, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiAttributeSet, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiDeviceEvent, /* not exported */)
+BOBUI_DECL_METATYPE_EXTERN(QSpiMatchRule, /* not exported */)
 
 // For qdbusxml2cpp-generated code
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 #endif /* Q_SPI_STRUCT_MARSHALLERS_H */

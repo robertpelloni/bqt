@@ -1,25 +1,25 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from src.pro.
 # special case begin
 
-set(QT_SBOM_DEFAULT_QT_LICENSE_ID_LIBRARIES "QT_COMMERCIAL_OR_LGPL3")
+set(BOBUI_SBOM_DEFAULT_BOBUI_LICENSE_ID_LIBRARIES "BOBUI_COMMERCIAL_OR_LGPL3")
 
-if (NOT QT_FEATURE_waylandscanner OR NOT QT_FEATURE_wayland)
+if (NOT BOBUI_FEATURE_waylandscanner OR NOT BOBUI_FEATURE_wayland)
     return()
 endif()
 
 # See globalprivate/README for a description of the following module.
-qt_internal_add_module(WaylandGlobalPrivate
+bobui_internal_add_module(WaylandGlobalPrivate
     INTERNAL_MODULE
     HEADER_MODULE
     NO_GENERATE_CPP_EXPORTS
 )
 
 # special case begin
-# TODO: Ideally these macros would be part of the qtwaylandscanner tool, and not the compositor/client
-include(../../../../src/tools/qtwaylandscanner/Qt6WaylandClientMacros.cmake)
+# TODO: Ideally these macros would be part of the bobuiwaylandscanner tool, and not the compositor/client
+include(../../../../src/tools/bobuiwaylandscanner/BobUI6WaylandClientMacros.cmake)
 # special case end
 
 # special case end
@@ -30,7 +30,7 @@ include(../../../../src/tools/qtwaylandscanner/Qt6WaylandClientMacros.cmake)
 ## WaylandClient Module:
 #####################################################################
 
-qt_internal_add_module(WaylandClient
+bobui_internal_add_module(WaylandClient
     PLUGIN_TYPES wayland-graphics-integration-client wayland-inputdevice-integration wayland-decoration-client wayland-shell-integration
     SOURCES
         shared/qwaylandinputmethodeventbuilder.cpp shared/qwaylandinputmethodeventbuilder_p.h
@@ -47,7 +47,7 @@ qt_internal_add_module(WaylandClient
         inputdeviceintegration/qwaylandinputdeviceintegration_p.h
         inputdeviceintegration/qwaylandinputdeviceintegrationfactory.cpp inputdeviceintegration/qwaylandinputdeviceintegrationfactory_p.h
         inputdeviceintegration/qwaylandinputdeviceintegrationplugin.cpp inputdeviceintegration/qwaylandinputdeviceintegrationplugin_p.h
-        qtwaylandclientglobal.h qtwaylandclientglobal_p.h
+        bobuiwaylandclientglobal.h bobuiwaylandclientglobal_p.h
         qwaylandabstractdecoration.cpp qwaylandabstractdecoration_p.h
         qwaylandappmenu.cpp qwaylandappmenu_p.h
         qwaylandbuffer.cpp qwaylandbuffer_p.h
@@ -89,20 +89,20 @@ qt_internal_add_module(WaylandClient
         inputdeviceintegration
         shellintegration
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
-        Qt::WaylandGlobalPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
+        BobUI::WaylandGlobalPrivate
     PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
+        BobUI::Core
+        BobUI::Gui
         Wayland::Client
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
-        Qt::GuiPrivate
-        Qt::WaylandGlobalPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
+        BobUI::WaylandGlobalPrivate
     PRIVATE_HEADER_FILTERS
         "^qwayland-.*\.h|^wayland-.*-protocol\.h"
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
     ATTRIBUTION_FILE_DIR_PATHS
         ../../../3rdparty/wayland/protocols/pointer-gestures
         ../../../3rdparty/wayland/protocols/tablet
@@ -120,20 +120,20 @@ qt_internal_add_module(WaylandClient
 
 )
 
-qt_internal_add_plugin(QWaylandIntegrationPlugin
+bobui_internal_add_plugin(QWaylandIntegrationPlugin
     OUTPUT_NAME qwayland
     PLUGIN_TYPE platforms
-    DEFAULT_IF "wayland" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "wayland" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::WaylandClientPrivate
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+        BobUI::Core
+        BobUI::Gui
+        BobUI::WaylandClientPrivate
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
 )
 
-qt6_generate_wayland_protocol_client_sources(WaylandClient
+bobui6_generate_wayland_protocol_client_sources(WaylandClient
     PRIVATE_CODE
     FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/protocols/appmenu/appmenu.xml
@@ -152,8 +152,8 @@ qt6_generate_wayland_protocol_client_sources(WaylandClient
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/protocols/xdg-shell/xdg-shell.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/protocols/xdg-system-bell/xdg-system-bell-v1.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/protocols/xdg-toplevel-drag/xdg-toplevel-drag-v1.xml
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/qt-text-input-method-unstable-v1.xml
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/qt-windowmanager.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/bobui-text-input-method-unstable-v1.xml
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/bobui-windowmanager.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/hardware-integration.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/extensions/server-buffer-extension.xml
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/wayland/protocols/color-management/color-management-v1.xml
@@ -170,38 +170,38 @@ qt6_generate_wayland_protocol_client_sources(WaylandClient
 
 # special case begin
 #
-# Do not explicitly add XKB::XKB. This is already done by Qt::GuiPrivate.
+# Do not explicitly add XKB::XKB. This is already done by BobUI::GuiPrivate.
 #
-# qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_xkbcommon
+# bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_xkbcommon
 #     PUBLIC_LIBRARIES
 #         XKB::XKB
 # )
 # special case end
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_tabletevent
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_tabletevent
     SOURCES
         qwaylandtabletv2.cpp qwaylandtabletv2_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_clipboard
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_clipboard
     SOURCES
         qwaylandclipboard.cpp qwaylandclipboard_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_vulkan
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_vulkan
     SOURCES
         qwaylandvulkaninstance.cpp qwaylandvulkaninstance_p.h
         qwaylandvulkanwindow.cpp qwaylandvulkanwindow_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_cursor
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_cursor
     SOURCES
         qwaylandcursor.cpp qwaylandcursor_p.h
     PUBLIC_LIBRARIES
         Wayland::Cursor
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_wayland_datadevice
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_wayland_datadevice
     SOURCES
         qwaylanddatadevice.cpp qwaylanddatadevice_p.h
         qwaylanddatadevicemanager.cpp qwaylanddatadevicemanager_p.h
@@ -209,33 +209,33 @@ qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_wayland_datadevice
         qwaylanddatasource.cpp qwaylanddatasource_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_wayland_client_primary_selection
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_wayland_client_primary_selection
     SOURCES
         qwaylandprimaryselectionv1.cpp qwaylandprimaryselectionv1_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_draganddrop
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_draganddrop
     SOURCES
         qwaylanddnd.cpp qwaylanddnd_p.h
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_egl AND NOT QT_FEATURE_egl_x11
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_egl AND NOT BOBUI_FEATURE_egl_x11
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
 )
 
-qt_internal_extend_target(WaylandClient CONDITION QT_FEATURE_sessionmanager
+bobui_internal_extend_target(WaylandClient CONDITION BOBUI_FEATURE_sessionmanager
     SOURCES
         qwaylandsessionmanager.cpp qwaylandsessionmanager_p.h
 )
 
-qt_internal_add_docs(WaylandClient
-    doc/qtwaylandclient.qdocconf
+bobui_internal_add_docs(WaylandClient
+    doc/bobuiwaylandclient.qdocconf
 )
 
-qt_record_extra_qt_main_tools_package_dependency(WaylandClient WaylandScannerTools "${PROJECT_VERSION}")
-qt_internal_register_target_dependencies(WaylandClient PUBLIC Qt6::WaylandGlobalPrivate)
+bobui_record_extra_bobui_main_tools_package_dependency(WaylandClient WaylandScannerTools "${PROJECT_VERSION}")
+bobui_internal_register_target_dependencies(WaylandClient PUBLIC BobUI6::WaylandGlobalPrivate)
 
-if (QT_FEATURE_wayland_client)
+if (BOBUI_FEATURE_wayland_client)
     add_subdirectory(plugins)
 endif()

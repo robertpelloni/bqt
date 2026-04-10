@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qvariant.h>
 
@@ -15,13 +15,13 @@
 #include <qpen.h>
 #include <qpolygon.h>
 #include <qpalette.h>
-#include <qtransform.h>
+#include <bobuiransform.h>
 #include <qvector2d.h>
 #include <qvector3d.h>
 #include <qvector4d.h>
 #include <qquaternion.h>
-#include <qtextdocument.h>
-#include <qtextformat.h>
+#include <bobuiextdocument.h>
+#include <bobuiextformat.h>
 #include <qfont.h>
 
 #include "tst_qvariant_common.h"
@@ -84,16 +84,16 @@ private slots:
 
     void guiVariantAtExit();
 
-    void qt4QPolygonFDataStream();
+    void bobui4QPolygonFDataStream();
 };
 
 void tst_QGuiVariant::constructor_invalid_data()
 {
-    QTest::addColumn<uint>("typeId");
+    BOBUIest::addColumn<uint>("typeId");
 
-    QTest::newRow("LastGuiType + 1") << uint(QMetaType::LastGuiType + 1);
+    BOBUIest::newRow("LastGuiType + 1") << uint(QMetaType::LastGuiType + 1);
     QVERIFY(!QMetaType::isRegistered(QMetaType::LastGuiType + 1));
-    QTest::newRow("LastWidgetsType + 1") << uint(QMetaType::LastWidgetsType + 1);
+    BOBUIest::newRow("LastWidgetsType + 1") << uint(QMetaType::LastWidgetsType + 1);
     QVERIFY(!QMetaType::isRegistered(QMetaType::LastWidgetsType + 1));
 }
 
@@ -102,13 +102,13 @@ void tst_QGuiVariant::constructor_invalid()
 
     QFETCH(uint, typeId);
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
         QVariant variant{QMetaType(typeId)};
         QVERIFY(!variant.isValid());
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
     }
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Trying to construct an instance of an invalid type, type id:"));
         QVariant variant(QMetaType(typeId), nullptr);
         QVERIFY(!variant.isValid());
         QCOMPARE(variant.userType(), int(QMetaType::UnknownType));
@@ -134,45 +134,45 @@ void tst_QGuiVariant::canConvert_data()
 
 
     var = QVariant::fromValue(QBitmap());
-    QTest::newRow("Bitmap")
+    BOBUIest::newRow("Bitmap")
         << var << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QBrush());
-    QTest::newRow("Brush")
+    BOBUIest::newRow("Brush")
         << var << N << N << N << Y << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QColor());
-    QTest::newRow("Color")
+    BOBUIest::newRow("Color")
         << var << N << N << N << Y << Y << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     var = QVariant::fromValue(QCursor());
-    QTest::newRow("Cursor")
+    BOBUIest::newRow("Cursor")
         << var << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
 #endif
     var = QVariant::fromValue(QFont());
-    QTest::newRow("Font")
+    BOBUIest::newRow("Font")
         << var << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N;
     var = QVariant::fromValue(QIcon());
-    QTest::newRow("Icon")
+    BOBUIest::newRow("Icon")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QImage());
-    QTest::newRow("Image")
+    BOBUIest::newRow("Image")
         << var << N << Y << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QKeySequence());
-    QTest::newRow("KeySequence")
+    BOBUIest::newRow("KeySequence")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << Y << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N;
     var = QVariant::fromValue(QPalette());
-    QTest::newRow("Palette")
+    BOBUIest::newRow("Palette")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QPen());
-    QTest::newRow("Pen")
+    BOBUIest::newRow("Pen")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QPixmap());
-    QTest::newRow("Pixmap")
+    BOBUIest::newRow("Pixmap")
         << var << N << Y << N << Y << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QPolygon());
-    QTest::newRow("PointArray")
+    BOBUIest::newRow("PointArray")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N;
     var = QVariant::fromValue(QRegion());
-    QTest::newRow("Region")
+    BOBUIest::newRow("Region")
         << var << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << N << Y << N << N << N << N << N << N << N;
 
 #undef N
@@ -188,11 +188,11 @@ void tst_QGuiVariant::canConvert()
 
 void tst_QGuiVariant::toInt_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<int>("result");
-    QTest::addColumn<bool>("valueOK");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<int>("result");
+    BOBUIest::addColumn<bool>("valueOK");
 
-    QTest::newRow( "keysequence" ) << QVariant::fromValue( QKeySequence( Qt::Key_A ) ) << 65 << true;
+    BOBUIest::newRow( "keysequence" ) << QVariant::fromValue( QKeySequence( BobUI::Key_A ) ) << 65 << true;
 }
 
 void tst_QGuiVariant::toInt()
@@ -209,20 +209,20 @@ void tst_QGuiVariant::toInt()
 
 void tst_QGuiVariant::toColor_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QColor>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QColor>("result");
 
     QColor c("red");
-    QTest::newRow( "string" ) << QVariant( QString( "red" ) ) << c;
-    QTest::newRow( "solid brush" ) << QVariant( QBrush(c) ) << c;
-    QTest::newRow("qbytearray") << QVariant(QByteArray("red")) << c;
-    QTest::newRow("same color") << QVariant(c) << c;
-    QTest::newRow("qstring(#ff0000)") << QVariant(QString::fromUtf8("#ff0000")) << c;
-    QTest::newRow("qbytearray(#ff0000)") << QVariant(QByteArray("#ff0000")) << c;
+    BOBUIest::newRow( "string" ) << QVariant( QString( "red" ) ) << c;
+    BOBUIest::newRow( "solid brush" ) << QVariant( QBrush(c) ) << c;
+    BOBUIest::newRow("qbytearray") << QVariant(QByteArray("red")) << c;
+    BOBUIest::newRow("same color") << QVariant(c) << c;
+    BOBUIest::newRow("qstring(#ff0000)") << QVariant(QString::fromUtf8("#ff0000")) << c;
+    BOBUIest::newRow("qbytearray(#ff0000)") << QVariant(QByteArray("#ff0000")) << c;
 
     c = QColor::fromString("#88112233");
-    QTest::newRow("qstring(#88112233)") << QVariant(QString::fromUtf8("#88112233")) << c;
-    QTest::newRow("qbytearray(#88112233)") << QVariant(QByteArray("#88112233")) << c;
+    BOBUIest::newRow("qstring(#88112233)") << QVariant(QString::fromUtf8("#88112233")) << c;
+    BOBUIest::newRow("qbytearray(#88112233)") << QVariant(QByteArray("#88112233")) << c;
 }
 
 void tst_QGuiVariant::toColor()
@@ -239,16 +239,16 @@ void tst_QGuiVariant::toColor()
 
 void tst_QGuiVariant::toPixmap_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QPixmap>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QPixmap>("result");
 
     QPixmap pm(30, 30);
-    pm.fill(Qt::red);
-    QTest::newRow( "image" ) << QVariant( pm ) << pm;
+    pm.fill(BobUI::red);
+    BOBUIest::newRow( "image" ) << QVariant( pm ) << pm;
 
     QBitmap bm(30, 30);
-    bm.fill(Qt::color1);
-    QTest::newRow( "bitmap" ) << QVariant( bm ) << QPixmap(bm);
+    bm.fill(BobUI::color1);
+    BOBUIest::newRow( "bitmap" ) << QVariant( bm ) << QPixmap(bm);
 }
 
 void tst_QGuiVariant::toPixmap()
@@ -263,12 +263,12 @@ void tst_QGuiVariant::toPixmap()
 
 void tst_QGuiVariant::toImage_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QImage>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QImage>("result");
 
     QImage im(30, 30, QImage::Format_ARGB32);
     im.fill(0x7fff0000);
-    QTest::newRow( "image" ) << QVariant( im ) << im;
+    BOBUIest::newRow( "image" ) << QVariant( im ) << im;
 }
 
 void tst_QGuiVariant::toImage()
@@ -283,14 +283,14 @@ void tst_QGuiVariant::toImage()
 
 void tst_QGuiVariant::toBrush_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QBrush>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QBrush>("result");
 
-    QColor c(Qt::red);
-    QTest::newRow( "color" ) << QVariant( c ) << QBrush(c);
+    QColor c(BobUI::red);
+    BOBUIest::newRow( "color" ) << QVariant( c ) << QBrush(c);
     QPixmap pm(30, 30);
     pm.fill(c);
-    QTest::newRow( "pixmap" ) << QVariant( pm ) << QBrush(pm);
+    BOBUIest::newRow( "pixmap" ) << QVariant( pm ) << QBrush(pm);
 }
 
 void tst_QGuiVariant::toBrush()
@@ -305,11 +305,11 @@ void tst_QGuiVariant::toBrush()
 
 void tst_QGuiVariant::toFont_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QFont>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QFont>("result");
 
     QFont f("times",12,-1,false);
-    QTest::newRow( "string" ) << QVariant( QString( "times,12,-1,5,50,0,0,0,0,0" ) ) << f;
+    BOBUIest::newRow( "string" ) << QVariant( QString( "times,12,-1,5,50,0,0,0,0,0" ) ) << f;
 }
 
 void tst_QGuiVariant::toFont()
@@ -324,16 +324,16 @@ void tst_QGuiVariant::toFont()
 
 void tst_QGuiVariant::toKeySequence_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QKeySequence>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QKeySequence>("result");
 
 
-    QTest::newRow( "int" ) << QVariant( 67108929 ) << QKeySequence( Qt::CTRL | Qt::Key_A );
+    BOBUIest::newRow( "int" ) << QVariant( 67108929 ) << QKeySequence( BobUI::CTRL | BobUI::Key_A );
 
 
-    QTest::newRow( "qstring" )
+    BOBUIest::newRow( "qstring" )
         << QVariant( QString( "Ctrl+A" ) )
-        << QKeySequence( Qt::CTRL | Qt::Key_A );
+        << QKeySequence( BobUI::CTRL | BobUI::Key_A );
 }
 
 void tst_QGuiVariant::toKeySequence()
@@ -348,10 +348,10 @@ void tst_QGuiVariant::toKeySequence()
 
 void tst_QGuiVariant::toString_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow( "qkeysequence" ) << QVariant::fromValue( QKeySequence( Qt::CTRL | Qt::Key_A ) )
+    BOBUIest::newRow( "qkeysequence" ) << QVariant::fromValue( QKeySequence( BobUI::CTRL | BobUI::Key_A ) )
 #ifndef Q_OS_MAC
         << QString( "Ctrl+A" );
 #else
@@ -359,8 +359,8 @@ void tst_QGuiVariant::toString_data()
 #endif
 
     QFont font( "times", 12 );
-    QTest::newRow("qfont") << QVariant::fromValue(font) << QString("times,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0");
-    QTest::newRow( "qcolor" ) << QVariant::fromValue( QColor( 10, 10, 10 ) ) << QString( "#0a0a0a" );
+    BOBUIest::newRow("qfont") << QVariant::fromValue(font) << QString("times,12,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0");
+    BOBUIest::newRow( "qcolor" ) << QVariant::fromValue( QColor( 10, 10, 10 ) ) << QString( "#0a0a0a" );
 }
 
 void tst_QGuiVariant::toString()
@@ -391,14 +391,14 @@ void tst_QGuiVariant::matrix4x4()
 void tst_QGuiVariant::transform()
 {
     QVariant variant;
-    QTransform matrix = qvariant_cast<QTransform>(variant);
+    BOBUIransform matrix = qvariant_cast<BOBUIransform>(variant);
     QVERIFY(matrix.isIdentity());
-    variant.setValue(QTransform().rotate(90));
-    QCOMPARE(QTransform().rotate(90), qvariant_cast<QTransform>(variant));
+    variant.setValue(BOBUIransform().rotate(90));
+    QCOMPARE(BOBUIransform().rotate(90), qvariant_cast<BOBUIransform>(variant));
 
-    void *mmatrix = QMetaType(QMetaType::QTransform).create();
+    void *mmatrix = QMetaType(QMetaType::BOBUIransform).create();
     QVERIFY(mmatrix);
-    QMetaType(QMetaType::QTransform).destroy(mmatrix);
+    QMetaType(QMetaType::BOBUIransform).destroy(mmatrix);
 }
 
 
@@ -456,33 +456,33 @@ void tst_QGuiVariant::quaternion()
 
 void tst_QGuiVariant::writeToReadFromDataStream_data()
 {
-    QTest::addColumn<QVariant>("writeVariant");
-    QTest::addColumn<bool>("isNull");
+    BOBUIest::addColumn<QVariant>("writeVariant");
+    BOBUIest::addColumn<bool>("isNull");
 
-    QTest::newRow( "bitmap_invalid" ) << QVariant::fromValue( QBitmap() ) << false;
+    BOBUIest::newRow( "bitmap_invalid" ) << QVariant::fromValue( QBitmap() ) << false;
     QBitmap bitmap( 10, 10 );
-    bitmap.fill( Qt::red );
-    QTest::newRow( "bitmap_valid" ) << QVariant::fromValue( bitmap ) << false;
-    QTest::newRow( "brush_valid" ) << QVariant::fromValue( QBrush( Qt::red ) ) << false;
-    QTest::newRow( "color_valid" ) << QVariant::fromValue( QColor( Qt::red ) ) << false;
-#ifndef QT_NO_CURSOR
-    QTest::newRow( "cursor_valid" ) << QVariant::fromValue( QCursor( Qt::PointingHandCursor ) ) << false;
+    bitmap.fill( BobUI::red );
+    BOBUIest::newRow( "bitmap_valid" ) << QVariant::fromValue( bitmap ) << false;
+    BOBUIest::newRow( "brush_valid" ) << QVariant::fromValue( QBrush( BobUI::red ) ) << false;
+    BOBUIest::newRow( "color_valid" ) << QVariant::fromValue( QColor( BobUI::red ) ) << false;
+#ifndef BOBUI_NO_CURSOR
+    BOBUIest::newRow( "cursor_valid" ) << QVariant::fromValue( QCursor( BobUI::PointingHandCursor ) ) << false;
 #endif
-    QTest::newRow( "font_valid" ) << QVariant::fromValue( QFont( "times", 12 ) ) << false;
-    QTest::newRow( "pixmap_invalid" ) << QVariant::fromValue( QPixmap() ) << false;
+    BOBUIest::newRow( "font_valid" ) << QVariant::fromValue( QFont( "times", 12 ) ) << false;
+    BOBUIest::newRow( "pixmap_invalid" ) << QVariant::fromValue( QPixmap() ) << false;
     QPixmap pixmap( 10, 10 );
-    pixmap.fill( Qt::red );
-    QTest::newRow( "pixmap_valid" ) << QVariant::fromValue( pixmap ) << false;
-    QTest::newRow( "image_invalid" ) << QVariant::fromValue( QImage() ) << false;
-    QTest::newRow( "keysequence_valid" ) << QVariant::fromValue( QKeySequence( Qt::CTRL | Qt::Key_A ) ) << false;
-    QTest::newRow( "palette_valid" ) << QVariant::fromValue(QPalette(QColor("turquoise"))) << false;
-    QTest::newRow( "pen_valid" ) << QVariant::fromValue( QPen( Qt::red ) ) << false;
-    QTest::newRow( "pointarray_invalid" ) << QVariant::fromValue( QPolygon() ) << false;
-    QTest::newRow( "pointarray_valid" ) << QVariant::fromValue( QPolygon( QRect( 10, 10, 20, 20 ) ) ) << false;
-    QTest::newRow( "region_invalid" ) << QVariant::fromValue( QRegion() ) << false;
-    QTest::newRow( "region_valid" ) << QVariant::fromValue( QRegion( 10, 10, 20, 20 ) ) << false;
-    QTest::newRow("polygonf_invalid") << QVariant::fromValue(QPolygonF()) << false;
-    QTest::newRow("polygonf_valid") << QVariant::fromValue(QPolygonF(QRectF(10, 10, 20, 20))) << false;
+    pixmap.fill( BobUI::red );
+    BOBUIest::newRow( "pixmap_valid" ) << QVariant::fromValue( pixmap ) << false;
+    BOBUIest::newRow( "image_invalid" ) << QVariant::fromValue( QImage() ) << false;
+    BOBUIest::newRow( "keysequence_valid" ) << QVariant::fromValue( QKeySequence( BobUI::CTRL | BobUI::Key_A ) ) << false;
+    BOBUIest::newRow( "palette_valid" ) << QVariant::fromValue(QPalette(QColor("turquoise"))) << false;
+    BOBUIest::newRow( "pen_valid" ) << QVariant::fromValue( QPen( BobUI::red ) ) << false;
+    BOBUIest::newRow( "pointarray_invalid" ) << QVariant::fromValue( QPolygon() ) << false;
+    BOBUIest::newRow( "pointarray_valid" ) << QVariant::fromValue( QPolygon( QRect( 10, 10, 20, 20 ) ) ) << false;
+    BOBUIest::newRow( "region_invalid" ) << QVariant::fromValue( QRegion() ) << false;
+    BOBUIest::newRow( "region_valid" ) << QVariant::fromValue( QRegion( 10, 10, 20, 20 ) ) << false;
+    BOBUIest::newRow("polygonf_invalid") << QVariant::fromValue(QPolygonF()) << false;
+    BOBUIest::newRow("polygonf_valid") << QVariant::fromValue(QPolygonF(QRectF(10, 10, 20, 20))) << false;
 }
 
 void tst_QGuiVariant::invalidQColor()
@@ -497,7 +497,7 @@ void tst_QGuiVariant::invalidQColor()
 
 void tst_QGuiVariant::validQColor()
 {
-    QColor col(Qt::red);
+    QColor col(BobUI::red);
     QVariant va(col.name());
     QVERIFY(va.canConvert(QMetaType(QMetaType::QColor)));
 
@@ -512,17 +512,17 @@ void tst_QGuiVariant::validQColor()
 
 void tst_QGuiVariant::colorInteger()
 {
-    QVariant v = QColor(Qt::red);
+    QVariant v = QColor(BobUI::red);
     QCOMPARE(v.metaType(), QMetaType(QMetaType::QColor));
-    QCOMPARE(v.value<QColor>(), QColor(Qt::red));
+    QCOMPARE(v.value<QColor>(), QColor(BobUI::red));
 
     v.setValue(1000);
     QCOMPARE(v.metaType(), QMetaType(QMetaType::Int));
     QCOMPARE(v.toInt(), 1000);
 
-    v.setValue(QColor(Qt::yellow));
+    v.setValue(QColor(BobUI::yellow));
     QCOMPARE(v.metaType(), QMetaType(QMetaType::QColor));
-    QCOMPARE(v.value<QColor>(), QColor(Qt::yellow));
+    QCOMPARE(v.value<QColor>(), QColor(BobUI::yellow));
 }
 
 void tst_QGuiVariant::writeToReadFromDataStream()
@@ -591,7 +591,7 @@ void tst_QGuiVariant::writeToReadFromOldDataStream()
         QFile file(":/data/qpolygonf.bin");
         QVERIFY(file.open(QIODevice::ReadOnly));
         QDataStream dataFileStream(&file);
-        dataFileStream.setVersion(QDataStream::Qt_4_9);
+        dataFileStream.setVersion(QDataStream::BobUI_4_9);
         QVariant readVariant;
         dataFileStream >> readVariant;
         QCOMPARE(readVariant.userType(), int(QMetaType::QPolygonF));
@@ -608,7 +608,7 @@ void tst_QGuiVariant::writeToReadFromOldDataStream()
         QFile file(":/data/qpolygonf.bin");
         QVERIFY(file.open(QIODevice::ReadOnly));
         QDataStream dataFileStream(&file);
-        dataFileStream.setVersion(QDataStream::Qt_4_9);
+        dataFileStream.setVersion(QDataStream::BobUI_4_9);
         int dummy;
         dataFileStream >> dummy;
         QByteArray polyData49;
@@ -624,13 +624,13 @@ void tst_QGuiVariant::writeToReadFromOldDataStream()
 
 void tst_QGuiVariant::debugStream_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<int>("typeId");
     for (int id = QMetaType::FirstGuiType; id <= QMetaType::LastGuiType; ++id) {
         const char *tagName = QMetaType(id).name();
         if (!tagName)
             continue;
-        QTest::newRow(tagName) << QVariant(QMetaType(id)) << id;
+        BOBUIest::newRow(tagName) << QVariant(QMetaType(id)) << id;
     }
 }
 
@@ -672,14 +672,14 @@ void tst_QGuiVariant::implicitConstruction()
     F(Quaternion) \
     F(PolygonF)
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 #  define FOR_EACH_GUI_CLASS(F) \
     FOR_EACH_GUI_CLASS_BASE(F) \
     F(Cursor)
-#else // !QT_NO_CURSOR
+#else // !BOBUI_NO_CURSOR
 #  define FOR_EACH_GUI_CLASS(F) \
     FOR_EACH_GUI_CLASS_BASE(F)
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 
 #define CONSTRUCT(TYPE) \
     { \
@@ -697,14 +697,14 @@ void tst_QGuiVariant::implicitConstruction()
 void tst_QGuiVariant::guiVariantAtExit()
 {
     // crash test, it should not crash at QGuiApplication exit
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     static QVariant cursor = QCursor();
 #endif
     static QVariant point = QPoint();
     static QVariant icon = QIcon();
     static QVariant image = QImage();
     static QVariant palette = QPalette();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_UNUSED(cursor);
 #endif
     Q_UNUSED(point);
@@ -714,23 +714,23 @@ void tst_QGuiVariant::guiVariantAtExit()
     QVERIFY(true);
 }
 
-void tst_QGuiVariant::qt4QPolygonFDataStream()
+void tst_QGuiVariant::bobui4QPolygonFDataStream()
 {
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream.setVersion(QDataStream::Qt_4_8);
+    stream.setVersion(QDataStream::BobUI_4_8);
     QPolygonF polygon;
     polygon.append(QPointF(2, 3));
     stream << QVariant::fromValue(polygon);
-    const QByteArray qt4Data = QByteArray::fromHex("0000007f000000000a51506f6c79676f6e46000000000140000000000000004008000000000000");
-    QCOMPARE(data, qt4Data);
+    const QByteArray bobui4Data = QByteArray::fromHex("0000007f000000000a51506f6c79676f6e46000000000140000000000000004008000000000000");
+    QCOMPARE(data, bobui4Data);
 
     QDataStream input(&data, QIODevice::ReadOnly);
-    input.setVersion(QDataStream::Qt_4_8);
+    input.setVersion(QDataStream::BobUI_4_8);
     QVariant result;
     input >> result;
     QCOMPARE(result.value<QPolygonF>(), polygon);
 }
 
-QTEST_MAIN(tst_QGuiVariant)
+BOBUIEST_MAIN(tst_QGuiVariant)
 #include "tst_qguivariant.moc"

@@ -1,25 +1,25 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsmimeregistry.h"
 #include "qwindowscontext.h"
 
-#include <QtGui/private/qinternalmimedata_p.h>
-#include <QtCore/qbytearraymatcher.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qbuffer.h>
-#include <QtGui/qimagereader.h>
-#include <QtGui/qimagewriter.h>
+#include <BobUIGui/private/qinternalmimedata_p.h>
+#include <BobUICore/qbytearraymatcher.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUIGui/qimagereader.h>
+#include <BobUIGui/qimagewriter.h>
 
 #include <shlobj.h>
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /* The MSVC compilers allows multi-byte characters, that has the behavior of
  * that each character gets shifted into position. 0x73524742 below is for MSVC
@@ -105,7 +105,7 @@ static QByteArray writeDib(const QImage &img)
     return ba;
 }
 
-static bool qt_write_dibv5(QDataStream &s, QImage image)
+static bool bobui_write_dibv5(QDataStream &s, QImage image)
 {
     QIODevice* d = s.device();
     if (!d->isWritable())
@@ -268,7 +268,7 @@ static bool canGetData(int cf, IDataObject * pDataObj)
     return true;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const FORMATETC &tc)
 {
     QDebugStateSaver saver(d);
@@ -331,7 +331,7 @@ QDebug operator<<(QDebug d, IDataObject *dataObj)
     d << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 class QWindowsMimeText : public QWindowsMimeConverter
 {
@@ -661,12 +661,12 @@ class QWindowsMimeHtml : public QWindowsMimeConverter
 public:
     QWindowsMimeHtml();
 
-    // for converting from Qt
+    // for converting from BobUI
     bool canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const override;
     bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const override;
     QList<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const override;
 
-    // for converting to Qt
+    // for converting to BobUI
     bool canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const override;
     QVariant convertToMime(const QString &mime, IDataObject *pDataObj, QMetaType preferredType) const override;
     QString mimeForFormat(const FORMATETC &formatetc) const override;
@@ -793,17 +793,17 @@ bool QWindowsMimeHtml::convertFromMime(const FORMATETC &formatetc, const QMimeDa
 }
 
 
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
 class QWindowsMimeImage : public QWindowsMimeConverter
 {
 public:
     QWindowsMimeImage();
-    // for converting from Qt
+    // for converting from BobUI
     bool canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const override;
     bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const override;
     QList<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const override;
 
-    // for converting to Qt
+    // for converting to BobUI
     bool canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const override;
     QVariant convertToMime(const QString &mime, IDataObject *pDataObj, QMetaType preferredType) const override;
     QString mimeForFormat(const FORMATETC &formatetc) const override;
@@ -820,8 +820,8 @@ QWindowsMimeImage::QWindowsMimeImage()
 QList<FORMATETC> QWindowsMimeImage::formatsForMime(const QString &mimeType, const QMimeData *mimeData) const
 {
     QList<FORMATETC> formatetcs;
-    if (mimeData->hasImage() && mimeType == u"application/x-qt-image") {
-        //add DIBV5 if image has alpha channel. Do not add CF_PNG here as it will confuse MS Office (QTBUG47656).
+    if (mimeData->hasImage() && mimeType == u"application/x-bobui-image") {
+        //add DIBV5 if image has alpha channel. Do not add CF_PNG here as it will confuse MS Office (BOBUIBUG47656).
         auto image = qvariant_cast<QImage>(mimeData->imageData());
         if (!image.isNull() && image.hasAlphaChannel())
             formatetcs += setCf(CF_DIBV5);
@@ -836,13 +836,13 @@ QString QWindowsMimeImage::mimeForFormat(const FORMATETC &formatetc) const
 {
     int cf = getCf(formatetc);
     if (cf == CF_DIB || cf == CF_DIBV5 || cf == int(CF_PNG))
-       return u"application/x-qt-image"_s;
+       return u"application/x-bobui-image"_s;
     return QString();
 }
 
 bool QWindowsMimeImage::canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const
 {
-    return mimeType == u"application/x-qt-image"
+    return mimeType == u"application/x-bobui-image"
         && (canGetData(CF_DIB, pDataObj) || canGetData(CF_PNG, pDataObj));
 }
 
@@ -854,7 +854,7 @@ bool QWindowsMimeImage::canConvertFromMime(const FORMATETC &formatetc, const QMi
     const QImage image = qvariant_cast<QImage>(mimeData->imageData());
     if (image.isNull())
         return false;
-    // QTBUG-64322: Use PNG only for transparent images as otherwise MS PowerPoint
+    // BOBUIBUG-64322: Use PNG only for transparent images as otherwise MS PowerPoint
     // cannot handle it.
     return cf == CF_DIBV5 || cf == CF_DIB
         || (cf == int(CF_PNG) && image.hasAlphaChannel());
@@ -883,7 +883,7 @@ bool QWindowsMimeImage::convertFromMime(const FORMATETC &formatetc, const QMimeD
         } else {
             QDataStream s(&ba, QIODevice::WriteOnly);
             s.setByteOrder(QDataStream::LittleEndian);// Intel byte order ####
-            if (qt_write_dibv5(s, std::move(img)))
+            if (bobui_write_dibv5(s, std::move(img)))
                 return setData(ba, pmedium);
         }
     }
@@ -916,7 +916,7 @@ QVariant QWindowsMimeImage::convertToMime(const QString &mimeType, IDataObject *
 {
     Q_UNUSED(preferredType);
     QVariant result;
-    if (mimeType != u"application/x-qt-image")
+    if (mimeType != u"application/x-bobui-image")
         return result;
     // Try to convert from DIBV5 as it is the most widespread format that supports transparency,
     // but avoid synthesizing it, as that typically loses transparency, e.g. from Office
@@ -951,12 +951,12 @@ class QBuiltInMimes : public QWindowsMimeConverter
 public:
     QBuiltInMimes();
 
-    // for converting from Qt
+    // for converting from BobUI
     bool canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const override;
     bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const override;
     QList<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const override;
 
-    // for converting to Qt
+    // for converting to BobUI
     bool canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const override;
     QVariant convertToMime(const QString &mime, IDataObject *pDataObj, QMetaType preferredType) const override;
     QString mimeForFormat(const FORMATETC &formatetc) const override;
@@ -1019,9 +1019,9 @@ bool QBuiltInMimes::convertFromMime(const FORMATETC &formatetc, const QMimeData 
             r[byteLength+1] = 0;
             data = r;
         } else {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
             data = QInternalMimeData::renderDataHelper(outFormats.value(getCf(formatetc)), mimeData);
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
         }
         return setData(data, pmedium);
     }
@@ -1072,12 +1072,12 @@ class QLastResortMimes : public QWindowsMimeConverter
 public:
 
     QLastResortMimes();
-    // for converting from Qt
+    // for converting from BobUI
     bool canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const override;
     bool convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const override;
     QList<FORMATETC> formatsForMime(const QString &mimeType, const QMimeData *mimeData) const override;
 
-    // for converting to Qt
+    // for converting to BobUI
     bool canConvertToMime(const QString &mimeType, IDataObject *pDataObj) const override;
     QVariant convertToMime(const QString &mime, IDataObject *pDataObj, QMetaType preferredType) const override;
     QString mimeForFormat(const FORMATETC &formatetc) const override;
@@ -1112,7 +1112,7 @@ QLastResortMimes::QLastResortMimes()
         excludeList.append(u"text/html"_s);
         excludeList.append(u"text/plain"_s);
         excludeList.append(u"text/uri-list"_s);
-        excludeList.append(u"application/x-qt-image"_s);
+        excludeList.append(u"application/x-bobui-image"_s);
         excludeList.append(u"application/x-color"_s);
     }
 }
@@ -1120,7 +1120,7 @@ QLastResortMimes::QLastResortMimes()
 bool QLastResortMimes::canConvertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData) const
 {
     // really check
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     return formatetc.tymed & TYMED_HGLOBAL
         && (formats.contains(formatetc.cfFormat)
         && QInternalMimeData::hasFormatHelper(formats.value(formatetc.cfFormat), mimeData));
@@ -1129,12 +1129,12 @@ bool QLastResortMimes::canConvertFromMime(const FORMATETC &formatetc, const QMim
     Q_UNUSED(formatetc);
     return formatetc.tymed & TYMED_HGLOBAL
         && formats.contains(formatetc.cfFormat);
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 }
 
 bool QLastResortMimes::convertFromMime(const FORMATETC &formatetc, const QMimeData *mimeData, STGMEDIUM * pmedium) const
 {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     return canConvertFromMime(formatetc, mimeData)
         && setData(QInternalMimeData::renderDataHelper(formats.value(getCf(formatetc)), mimeData), pmedium);
 #else
@@ -1142,7 +1142,7 @@ bool QLastResortMimes::convertFromMime(const FORMATETC &formatetc, const QMimeDa
     Q_UNUSED(formatetc);
     Q_UNUSED(pmedium);
     return false;
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 }
 
 QList<FORMATETC> QLastResortMimes::formatsForMime(const QString &mimeType, const QMimeData * /*mimeData*/) const
@@ -1150,7 +1150,7 @@ QList<FORMATETC> QLastResortMimes::formatsForMime(const QString &mimeType, const
     QList<FORMATETC> formatetcs;
     auto mit = std::find(formats.begin(), formats.end(), mimeType);
     // register any other available formats
-    if (mit == formats.end() && !excludeList.contains(mimeType, Qt::CaseInsensitive))
+    if (mit == formats.end() && !excludeList.contains(mimeType, BobUI::CaseInsensitive))
         mit = formats.insert(registerMimeType(mimeType), mimeType);
     if (mit != formats.end())
         formatetcs += setCf(mit.key());
@@ -1159,16 +1159,16 @@ QList<FORMATETC> QLastResortMimes::formatsForMime(const QString &mimeType, const
         qCDebug(lcQpaMime) << __FUNCTION__ << mimeType << formatetcs;
     return formatetcs;
 }
-static const char x_qt_windows_mime[] = "application/x-qt-windows-mime;value=\"";
+static const char x_bobui_windows_mime[] = "application/x-bobui-windows-mime;value=\"";
 
 static bool isCustomMimeType(const QString &mimeType)
 {
-    return mimeType.startsWith(QLatin1StringView(x_qt_windows_mime), Qt::CaseInsensitive);
+    return mimeType.startsWith(QLatin1StringView(x_bobui_windows_mime), BobUI::CaseInsensitive);
 }
 
 static QString customMimeType(const QString &mimeType, int *lindex = nullptr)
 {
-    int len = sizeof(x_qt_windows_mime) - 1;
+    int len = sizeof(x_bobui_windows_mime) - 1;
     int n = mimeType.lastIndexOf(u'\"') - len;
     QString ret = mimeType.mid(len, n);
 
@@ -1229,28 +1229,28 @@ QString QLastResortMimes::mimeForFormat(const FORMATETC &formatetc) const
 
     const QString clipFormat = QWindowsMimeRegistry::clipboardFormatName(getCf(formatetc));
     if (!clipFormat.isEmpty()) {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         if (QInternalMimeData::canReadData(clipFormat))
             format = clipFormat;
         else if ((formatetc.cfFormat >= 0xC000)){
             //create the mime as custom. not registered.
-            if (!excludeList.contains(clipFormat, Qt::CaseInsensitive)) {
+            if (!excludeList.contains(clipFormat, BobUI::CaseInsensitive)) {
                 //check if this is a mime type
                 bool ianaType = false;
                 int sz = ianaTypes.size();
                 for (int i = 0; i < sz; i++) {
-                    if (clipFormat.startsWith(ianaTypes[i], Qt::CaseInsensitive)) {
+                    if (clipFormat.startsWith(ianaTypes[i], BobUI::CaseInsensitive)) {
                         ianaType =  true;
                         break;
                     }
                 }
                 if (!ianaType)
-                    format = QLatin1StringView(x_qt_windows_mime) + clipFormat + u'"';
+                    format = QLatin1StringView(x_bobui_windows_mime) + clipFormat + u'"';
                 else
                     format = clipFormat;
             }
         }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
     }
 
     return format;
@@ -1324,7 +1324,7 @@ QList<FORMATETC> QWindowsMimeRegistry::allFormatsForMime(const QMimeData *mimeDa
 {
     ensureInitialized();
     QList<FORMATETC> formatics;
-#if !QT_CONFIG(draganddrop)
+#if !BOBUI_CONFIG(draganddrop)
     Q_UNUSED(mimeData);
 #else
     formatics.reserve(20);
@@ -1333,7 +1333,7 @@ QList<FORMATETC> QWindowsMimeRegistry::allFormatsForMime(const QMimeData *mimeDa
         for (int i = m_mimes.size() - 1; i >= 0; --i)
             formatics += m_mimes.at(i)->formatsForMime(formats.at(f), mimeData);
     }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
     return formatics;
 }
 
@@ -1341,9 +1341,9 @@ void QWindowsMimeRegistry::ensureInitialized() const
 {
     if (m_internalMimeCount == 0) {
         m_internalMimeCount = -1; // prevent reentrancy when types register themselves
-#ifndef QT_NO_IMAGEFORMAT_BMP
+#ifndef BOBUI_NO_IMAGEFORMAT_BMP
         (void)new QWindowsMimeImage;
-#endif //QT_NO_IMAGEFORMAT_BMP
+#endif //BOBUI_NO_IMAGEFORMAT_BMP
         (void)new QLastResortMimes;
         (void)new QWindowsMimeText;
         (void)new QWindowsMimeURI;
@@ -1394,7 +1394,7 @@ void QWindowsMimeRegistry::registerMime(QWindowsMimeConverter *mime)
     Registers the MIME type \a mime, and returns an ID number
     identifying the format on Windows.
 
-    A mime type \c {application/x-qt-windows-mime;value="WindowsType"} will be
+    A mime type \c {application/x-bobui-windows-mime;value="WindowsType"} will be
     registered as the clipboard format for \c WindowsType.
 */
 int QWindowsMimeRegistry::registerMimeType(const QString &mime)
@@ -1409,4 +1409,4 @@ int QWindowsMimeRegistry::registerMimeType(const QString &mime)
     return int(f);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

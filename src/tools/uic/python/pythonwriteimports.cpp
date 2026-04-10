@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "pythonwriteimports.h"
 
@@ -10,15 +10,15 @@
 
 #include <ui4.h>
 
-#include <QtCore/qdir.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qtextstream.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/bobuiextstream.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Generate imports for Python. Note some things differ from C++:
 // - qItemView->header()->setFoo() does not require QHeaderView to be imported
@@ -31,15 +31,15 @@ namespace Python {
 static WriteImports::ClassesPerModule defaultClasses()
 {
     return {
-        {QStringLiteral("QtCore"),
+        {QStringLiteral("BobUICore"),
             {QStringLiteral("QCoreApplication"), QStringLiteral("QDate"),
              QStringLiteral("QDateTime"), QStringLiteral("QLocale"),
              QStringLiteral("QMetaObject"), QStringLiteral("QObject"),
              QStringLiteral("QPoint"), QStringLiteral("QRect"),
-             QStringLiteral("QSize"), QStringLiteral("QTime"),
-             QStringLiteral("QUrl"), QStringLiteral("Qt")},
+             QStringLiteral("QSize"), QStringLiteral("BOBUIime"),
+             QStringLiteral("QUrl"), QStringLiteral("BobUI")},
         },
-        {QStringLiteral("QtGui"),
+        {QStringLiteral("BobUIGui"),
             {QStringLiteral("QBrush"), QStringLiteral("QColor"),
              QStringLiteral("QConicalGradient"), QStringLiteral("QCursor"),
              QStringLiteral("QGradient"), QStringLiteral("QFont"),
@@ -47,10 +47,10 @@ static WriteImports::ClassesPerModule defaultClasses()
              QStringLiteral("QImage"), QStringLiteral("QKeySequence"),
              QStringLiteral("QLinearGradient"), QStringLiteral("QPalette"),
              QStringLiteral("QPainter"), QStringLiteral("QPixmap"),
-             QStringLiteral("QTransform"), QStringLiteral("QRadialGradient")}
+             QStringLiteral("BOBUIransform"), QStringLiteral("QRadialGradient")}
         },
         // Add QWidget for QWidget.setTabOrder()
-        {QStringLiteral("QtWidgets"),
+        {QStringLiteral("BobUIWidgets"),
           {QStringLiteral("QSizePolicy"), QStringLiteral("QWidget")}
         }
     };
@@ -68,7 +68,7 @@ static void insertClass(const QString &module, const QString &className,
 }
 
 // Format a class list: "from A import (B, C)"
-static void formatImportClasses(QTextStream &str, QStringList classList)
+static void formatImportClasses(BOBUIextStream &str, QStringList classList)
 {
     std::sort(classList.begin(), classList.end());
 
@@ -84,7 +84,7 @@ static void formatImportClasses(QTextStream &str, QStringList classList)
         str << ')';
 }
 
-static void formatClasses(QTextStream &str, const WriteImports::ClassesPerModule &c,
+static void formatClasses(BOBUIextStream &str, const WriteImports::ClassesPerModule &c,
                           bool useStarImports = false,
                           const QByteArray &modulePrefix = {})
 {
@@ -99,7 +99,7 @@ static void formatClasses(QTextStream &str, const WriteImports::ClassesPerModule
 }
 
 WriteImports::WriteImports(Uic *uic) : WriteIncludesBase(uic),
-    m_qtClasses(defaultClasses())
+    m_bobuiClasses(defaultClasses())
 {
     for (const auto &e : classInfoEntries())
         m_classToModule.insert(QLatin1StringView(e.klass), QLatin1StringView(e.module));
@@ -112,10 +112,10 @@ void WriteImports::acceptUI(DomUI *node)
     auto &output = uic()->output();
     const bool useStarImports = uic()->driver()->option().useStarImports;
 
-    const QByteArray qtPrefix = QByteArrayLiteral("PySide")
-        + QByteArray::number(QT_VERSION_MAJOR) + '.';
+    const QByteArray bobuiPrefix = QByteArrayLiteral("PySide")
+        + QByteArray::number(BOBUI_VERSION_MAJOR) + '.';
 
-    formatClasses(output, m_qtClasses, useStarImports, qtPrefix);
+    formatClasses(output, m_bobuiClasses, useStarImports, bobuiPrefix);
 
     if (!m_customWidgets.isEmpty() || !m_plainCustomWidgets.isEmpty()) {
         output << '\n';
@@ -186,30 +186,30 @@ void WriteImports::doAdd(const QString &className, const DomCustomWidget *dcw)
     const CustomWidgetsInfo *cwi = uic()->customWidgetsInfo();
     if (cwi->extends(className, "QListWidget"))
         add(QStringLiteral("QListWidgetItem"));
-    else if (cwi->extends(className, "QTreeWidget"))
-        add(QStringLiteral("QTreeWidgetItem"));
-    else if (cwi->extends(className, "QTableWidget"))
-        add(QStringLiteral("QTableWidgetItem"));
+    else if (cwi->extends(className, "BOBUIreeWidget"))
+        add(QStringLiteral("BOBUIreeWidgetItem"));
+    else if (cwi->extends(className, "BOBUIableWidget"))
+        add(QStringLiteral("BOBUIableWidgetItem"));
 
     if (dcw != nullptr) {
         addPythonCustomWidget(className, dcw);
         return;
     }
 
-    if (!addQtClass(className))
-        qWarning("WriteImports::add(): Unknown Qt class %s", qPrintable(className));
+    if (!addBobUIClass(className))
+        qWarning("WriteImports::add(): Unknown BobUI class %s", qPrintable(className));
 }
 
-bool WriteImports::addQtClass(const QString &className)
+bool WriteImports::addBobUIClass(const QString &className)
 {
     // QVariant is not exposed in PySide
-    if (className == u"QVariant" || className == u"Qt")
+    if (className == u"QVariant" || className == u"BobUI")
         return true;
 
     const auto moduleIt = m_classToModule.constFind(className);
     const bool result = moduleIt != m_classToModule.cend();
     if (result)
-        insertClass(moduleIt.value(), className, &m_qtClasses);
+        insertClass(moduleIt.value(), className, &m_bobuiClasses);
     return result;
 }
 
@@ -218,11 +218,11 @@ void WriteImports::addPythonCustomWidget(const QString &className, const DomCust
     if (className.contains("::"_L1))
         return; // Exclude namespaced names (just to make tests pass).
 
-    if (addQtClass(className))  // Qt custom widgets like QQuickWidget, QAxWidget, etc
+    if (addBobUIClass(className))  // BobUI custom widgets like QQuickWidget, QAxWidget, etc
         return;
 
     // When the elementHeader is not set, we know it's the continuation
-    // of a Qt for Python import or a normal import of another module.
+    // of a BobUI for Python import or a normal import of another module.
     if (!node->elementHeader() || node->elementHeader()->text().isEmpty()) {
         m_plainCustomWidgets.append(className);
     } else { // When we do have elementHeader, we know it's a relative import.
@@ -230,7 +230,7 @@ void WriteImports::addPythonCustomWidget(const QString &className, const DomCust
         // Replace the '/' by '.'
         modulePath.replace(u'/', u'.');
         // '.h' is added by default on headers for <customwidget>.
-        if (modulePath.endsWith(".h"_L1, Qt::CaseInsensitive))
+        if (modulePath.endsWith(".h"_L1, BobUI::CaseInsensitive))
             modulePath.chop(2);
         else if (modulePath.endsWith(".hh"_L1))
             modulePath.chop(3);
@@ -262,11 +262,11 @@ void WriteImports::addEnumBaseClass(const QString &v)
     const auto colonPos = v.indexOf(u"::");
     if (colonPos > 0) {
         const QString base = v.left(colonPos);
-        if (base.startsWith(u'Q') && base != u"Qt")
-            addQtClass(base);
+        if (base.startsWith(u'Q') && base != u"BobUI")
+            addBobUIClass(base);
     }
 }
 
 } // namespace Python
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

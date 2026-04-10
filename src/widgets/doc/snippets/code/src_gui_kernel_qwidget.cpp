@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [0]
-w->setWindowState(w->windowState() ^ Qt::WindowFullScreen);
+w->setWindowState(w->windowState() ^ BobUI::WindowFullScreen);
 //! [0]
 
 
 //! [1]
-w->setWindowState((w->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+w->setWindowState((w->windowState() & ~BobUI::WindowMinimized) | BobUI::WindowActive);
 //! [1]
 
 
@@ -23,7 +23,7 @@ aWidget->window()->setWindowTitle("New Window Title");
 
 
 //! [6]
-setCursor(Qt::IBeamCursor);
+setCursor(BobUI::IBeamCursor);
 //! [6]
 
 

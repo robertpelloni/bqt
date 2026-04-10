@@ -1,6 +1,6 @@
 // Copyright (C) 2020 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORVALUE_P_H
 #define QCBORVALUE_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.
+// This file is not part of the BobUI API.
 // This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,7 +18,7 @@
 
 #include "qcborvalue.h"
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
 #  include "qcborstreamreader.h"
 #endif
 
@@ -27,9 +27,9 @@
 
 #include <math.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtCbor {
+namespace BobUICbor {
 enum class Comparison {
     ForEquality,
     ForOrdering,
@@ -93,9 +93,9 @@ struct ByteData
 static_assert(std::is_trivially_default_constructible<ByteData>::value);
 static_assert(std::is_trivially_copyable<ByteData>::value);
 static_assert(std::is_standard_layout<ByteData>::value);
-} // namespace QtCbor
+} // namespace BobUICbor
 
-Q_DECLARE_TYPEINFO(QtCbor::Element, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BobUICbor::Element, Q_PRIMITIVE_TYPE);
 
 class QCborContainerPrivate : public QSharedData
 {
@@ -113,7 +113,7 @@ public:
 
     QByteArray::size_type usedData = 0;
     QByteArray data;
-    QList<QtCbor::Element> elements;
+    QList<BobUICbor::Element> elements;
 
     void deref() { if (!ref.deref()) delete this; }
     void compact();
@@ -131,16 +131,16 @@ public:
         qptrdiff offset = target.size();
 
         // align offset
-        offset += alignof(QtCbor::ByteData) - 1;
-        offset &= ~(alignof(QtCbor::ByteData) - 1);
+        offset += alignof(BobUICbor::ByteData) - 1;
+        offset &= ~(alignof(BobUICbor::ByteData) - 1);
 
-        qptrdiff increment = qptrdiff(sizeof(QtCbor::ByteData)) + len;
+        qptrdiff increment = qptrdiff(sizeof(BobUICbor::ByteData)) + len;
 
         targetUsed += increment;
         target.resize(offset + increment);
 
         char *ptr = target.begin() + offset;
-        auto b = new (ptr) QtCbor::ByteData;
+        auto b = new (ptr) BobUICbor::ByteData;
         b->len = len;
         if (block)
             memcpy(b->byte(), block, len);
@@ -153,34 +153,34 @@ public:
         return addByteDataImpl(data, usedData, block, len);
     }
 
-    const QtCbor::ByteData *byteData(QtCbor::Element e) const
+    const BobUICbor::ByteData *byteData(BobUICbor::Element e) const
     {
-        if ((e.flags & QtCbor::Element::HasByteData) == 0)
+        if ((e.flags & BobUICbor::Element::HasByteData) == 0)
             return nullptr;
 
         size_t offset = size_t(e.value);
-        Q_ASSERT((offset % alignof(QtCbor::ByteData)) == 0);
-        Q_ASSERT(offset + sizeof(QtCbor::ByteData) <= size_t(data.size()));
+        Q_ASSERT((offset % alignof(BobUICbor::ByteData)) == 0);
+        Q_ASSERT(offset + sizeof(BobUICbor::ByteData) <= size_t(data.size()));
 
-        auto b = reinterpret_cast<const QtCbor::ByteData *>(data.constData() + offset);
+        auto b = reinterpret_cast<const BobUICbor::ByteData *>(data.constData() + offset);
         Q_ASSERT(offset + sizeof(*b) + size_t(b->len) <= size_t(data.size()));
         return b;
     }
-    const QtCbor::ByteData *byteData(qsizetype idx) const
+    const BobUICbor::ByteData *byteData(qsizetype idx) const
     {
         return byteData(elements.at(idx));
     }
 
     QCborContainerPrivate *containerAt(qsizetype idx, QCborValue::Type type) const
     {
-        const QtCbor::Element &e = elements.at(idx);
-        if (e.type != type || (e.flags & QtCbor::Element::IsContainer) == 0)
+        const BobUICbor::Element &e = elements.at(idx);
+        if (e.type != type || (e.flags & BobUICbor::Element::IsContainer) == 0)
             return nullptr;
         return e.container;
     }
 
-    void replaceAt_complex(QtCbor::Element &e, const QCborValue &value, ContainerDisposition disp);
-    void replaceAt_internal(QtCbor::Element &e, const QCborValue &value, ContainerDisposition disp)
+    void replaceAt_complex(BobUICbor::Element &e, const QCborValue &value, ContainerDisposition disp);
+    void replaceAt_internal(BobUICbor::Element &e, const QCborValue &value, ContainerDisposition disp)
     {
         if (value.container)
             return replaceAt_complex(e, value, disp);
@@ -191,13 +191,13 @@ public:
     }
     void replaceAt(qsizetype idx, const QCborValue &value, ContainerDisposition disp = CopyContainer)
     {
-        QtCbor::Element &e = elements[idx];
-        if (e.flags & QtCbor::Element::IsContainer) {
+        BobUICbor::Element &e = elements[idx];
+        if (e.flags & BobUICbor::Element::IsContainer) {
             e.container->deref();
             e.container = nullptr;
             e.flags = {};
         } else if (auto b = byteData(e)) {
-            usedData -= b->len + sizeof(QtCbor::ByteData);
+            usedData -= b->len + sizeof(BobUICbor::ByteData);
         }
         replaceAt_internal(e, value, disp);
     }
@@ -206,28 +206,28 @@ public:
         replaceAt_internal(*elements.insert(idx, {}), value, disp);
     }
 
-    void append(QtCbor::Undefined)
+    void append(BobUICbor::Undefined)
     {
-        elements.append(QtCbor::Element());
+        elements.append(BobUICbor::Element());
     }
     void append(qint64 value)
     {
-        elements.append(QtCbor::Element(value , QCborValue::Integer));
+        elements.append(BobUICbor::Element(value , QCborValue::Integer));
     }
     void append(QCborTag tag)
     {
-        elements.append(QtCbor::Element(qint64(tag), QCborValue::Tag));
+        elements.append(BobUICbor::Element(qint64(tag), QCborValue::Tag));
     }
     void appendByteData(const char *data, qsizetype len, QCborValue::Type type,
-                        QtCbor::Element::ValueFlags extraFlags = {})
+                        BobUICbor::Element::ValueFlags extraFlags = {})
     {
-        elements.append(QtCbor::Element(addByteData(data, len), type,
-                                        QtCbor::Element::HasByteData | extraFlags));
+        elements.append(BobUICbor::Element(addByteData(data, len), type,
+                                        BobUICbor::Element::HasByteData | extraFlags));
     }
     void appendAsciiString(const QString &s);
     void appendAsciiString(const char *str, qsizetype len)
     {
-        appendByteData(str, len, QCborValue::String, QtCbor::Element::StringIsAscii);
+        appendByteData(str, len, QCborValue::String, BobUICbor::Element::StringIsAscii);
     }
     void appendUtf8String(const char *str, qsizetype len)
     {
@@ -235,12 +235,12 @@ public:
     }
     void append(QLatin1StringView s)
     {
-        if (!QtPrivate::isAscii(s))
+        if (!BobUIPrivate::isAscii(s))
             return appendNonAsciiString(QString(s));
 
         // US-ASCII is a subset of UTF-8, so we can keep in 8-bit
         appendByteData(s.latin1(), s.size(), QCborValue::String,
-                       QtCbor::Element::StringIsAscii);
+                       BobUICbor::Element::StringIsAscii);
     }
     void appendAsciiString(QStringView s);
     void appendNonAsciiString(QStringView s);
@@ -252,7 +252,7 @@ public:
 
     void append(QStringView s)
     {
-        if (QtPrivate::isAscii(s))
+        if (BobUIPrivate::isAscii(s))
             appendAsciiString(s);
         else
             appendNonAsciiString(s);
@@ -282,9 +282,9 @@ public:
         const auto data = byteData(e);
         if (!data)
             return QString();
-        if (e.flags & QtCbor::Element::StringIsUtf16)
+        if (e.flags & BobUICbor::Element::StringIsUtf16)
             return data->toString();
-        if (e.flags & QtCbor::Element::StringIsAscii)
+        if (e.flags & BobUICbor::Element::StringIsAscii)
             return data->asLatin1();
         return data->toUtf8String();
     }
@@ -294,9 +294,9 @@ public:
         const auto data = byteData(e);
         if (!data)
             return nullptr;
-        if (e.flags & QtCbor::Element::StringIsUtf16)
+        if (e.flags & BobUICbor::Element::StringIsUtf16)
             return data->asStringView();
-        if (e.flags & QtCbor::Element::StringIsAscii)
+        if (e.flags & BobUICbor::Element::StringIsAscii)
             return data->asLatin1();
         return data->asUtf8StringView();
     }
@@ -321,73 +321,73 @@ public:
     {
         const auto &e = elements.at(idx);
 
-        if (e.flags & QtCbor::Element::IsContainer) {
+        if (e.flags & BobUICbor::Element::IsContainer) {
             if (e.type == QCborValue::Tag && e.container->elements.size() != 2) {
                 // invalid tags can be created due to incomplete parsing
                 return makeValue(QCborValue::Invalid, 0, nullptr);
             }
             return makeValue(e.type, -1, e.container);
-        } else if (e.flags & QtCbor::Element::HasByteData) {
+        } else if (e.flags & BobUICbor::Element::HasByteData) {
             return makeValue(e.type, idx, const_cast<QCborContainerPrivate *>(this));
         }
         return makeValue(e.type, e.value);
     }
-    QCborValue extractAt_complex(QtCbor::Element e);
+    QCborValue extractAt_complex(BobUICbor::Element e);
     QCborValue extractAt(qsizetype idx)
     {
-        QtCbor::Element e;
+        BobUICbor::Element e;
         qSwap(e, elements[idx]);
 
-        if (e.flags & QtCbor::Element::IsContainer) {
+        if (e.flags & BobUICbor::Element::IsContainer) {
             if (e.type == QCborValue::Tag && e.container->elements.size() != 2) {
                 // invalid tags can be created due to incomplete parsing
                 e.container->deref();
                 return makeValue(QCborValue::Invalid, 0, nullptr);
             }
             return makeValue(e.type, -1, e.container, MoveContainer);
-        } else if (e.flags & QtCbor::Element::HasByteData) {
+        } else if (e.flags & BobUICbor::Element::HasByteData) {
             return extractAt_complex(e);
         }
         return makeValue(e.type, e.value);
     }
 
-    static QtCbor::Element elementFromValue(const QCborValue &value)
+    static BobUICbor::Element elementFromValue(const QCborValue &value)
     {
         if (value.n >= 0 && value.container)
             return value.container->elements.at(value.n);
 
-        QtCbor::Element e;
+        BobUICbor::Element e;
         e.value = value.n;
         e.type = value.t;
         if (value.container) {
             e.container = value.container;
-            e.flags = QtCbor::Element::IsContainer;
+            e.flags = BobUICbor::Element::IsContainer;
         }
         return e;
     }
 
-    static int compareUtf8(const QtCbor::ByteData *b, QLatin1StringView s)
+    static int compareUtf8(const BobUICbor::ByteData *b, QLatin1StringView s)
     {
         return QUtf8::compareUtf8(QByteArrayView(b->byte(), b->len), s);
     }
 
-    static int compareUtf8(const QtCbor::ByteData *b, QStringView s)
+    static int compareUtf8(const BobUICbor::ByteData *b, QStringView s)
     {
         return QUtf8::compareUtf8(QByteArrayView(b->byte(), b->len), s);
     }
 
     template<typename String>
-    int stringCompareElement(const QtCbor::Element &e, String s, QtCbor::Comparison mode) const
+    int stringCompareElement(const BobUICbor::Element &e, String s, BobUICbor::Comparison mode) const
     {
         if (e.type != QCborValue::String)
             return int(e.type) - int(QCborValue::String);
 
-        const QtCbor::ByteData *b = byteData(e);
+        const BobUICbor::ByteData *b = byteData(e);
         if (!b)
             return s.isEmpty() ? 0 : -1;
 
-        if (e.flags & QtCbor::Element::StringIsUtf16) {
-            if (mode == QtCbor::Comparison::ForEquality)
+        if (e.flags & BobUICbor::Element::StringIsUtf16) {
+            if (mode == BobUICbor::Comparison::ForEquality)
                 return b->asStringView() == s ? 0 : 1;
             return b->asStringView().compare(s);
         }
@@ -395,9 +395,9 @@ public:
     }
 
     template<typename String>
-    bool stringEqualsElement(const QtCbor::Element &e, String s) const
+    bool stringEqualsElement(const BobUICbor::Element &e, String s) const
     {
-        return stringCompareElement(e, s, QtCbor::Comparison::ForEquality) == 0;
+        return stringCompareElement(e, s, BobUICbor::Comparison::ForEquality) == 0;
     }
 
     template<typename String>
@@ -406,10 +406,10 @@ public:
         return stringEqualsElement(elements.at(idx), s);
     }
 
-    static int compareElement_helper(const QCborContainerPrivate *c1, QtCbor::Element e1,
-                                     const QCborContainerPrivate *c2, QtCbor::Element e2,
-                                     QtCbor::Comparison mode) noexcept;
-    int compareElement(qsizetype idx, const QCborValue &value, QtCbor::Comparison mode) const
+    static int compareElement_helper(const QCborContainerPrivate *c1, BobUICbor::Element e1,
+                                     const QCborContainerPrivate *c2, BobUICbor::Element e2,
+                                     BobUICbor::Comparison mode) noexcept;
+    int compareElement(qsizetype idx, const QCborValue &value, BobUICbor::Comparison mode) const
     {
         auto &e1 = elements.at(idx);
         auto e2 = elementFromValue(value);
@@ -430,7 +430,7 @@ public:
             const auto &e = elements.at(i);
             bool equals;
             if constexpr (std::is_same_v<std::decay_t<KeyType>, QCborValue>) {
-                equals = (compareElement(i, key, QtCbor::Comparison::ForEquality) == 0);
+                equals = (compareElement(i, key, BobUICbor::Comparison::ForEquality) == 0);
             } else if constexpr (std::is_integral_v<KeyType>) {
                 equals = (e.type == QCborValue::Integer && e.value == key);
             } else {
@@ -478,13 +478,13 @@ public:
     template <typename KeyType> static QCborValueRef findOrAddMapKey(QCborValue &self, KeyType key);
     template <typename KeyType> static QCborValueRef findOrAddMapKey(QCborValueRef self, KeyType key);
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
     void decodeValueFromCbor(QCborStreamReader &reader, int remainingStackDepth);
     void decodeStringFromCbor(QCborStreamReader &reader);
     static inline void setErrorInReader(QCborStreamReader &reader, QCborError error);
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORVALUE_P_H

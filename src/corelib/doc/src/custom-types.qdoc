@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page custom-types.html
-    \title Creating Custom Qt Types
-    \brief How to create and register new types with Qt.
+    \title Creating Custom BobUI Types
+    \brief How to create and register new types with BobUI.
 
     \ingroup how-to
 
     \section1 Overview
 
-    When creating user interfaces with Qt, particularly those with specialized controls and
+    When creating user interfaces with BobUI, particularly those with specialized controls and
     features, developers sometimes need to create new data types that can be used alongside
-    or in place of Qt's existing set of value types.
+    or in place of BobUI's existing set of value types.
 
     Standard types such as QSize, QColor and QString can all be stored in QVariant objects,
     used as the types of properties in QObject-based classes, and emitted in signal-slot
     communication.
 
-    In this document, we take a custom type and describe how to integrate it into Qt's object
-    model so that it can be stored in the same way as standard Qt types. We then show how to
+    In this document, we take a custom type and describe how to integrate it into BobUI's object
+    model so that it can be stored in the same way as standard BobUI types. We then show how to
     register the custom type to allow it to be used in signals and slots connections.
 
     \section1 Creating a Custom Type
@@ -43,11 +43,11 @@
     \section1 Declaring the Type with QMetaType
 
     The \c Message class only needs a suitable implementation in order to be usable.
-    However, Qt's type system will not be able to understand how to store, retrieve
+    However, BobUI's type system will not be able to understand how to store, retrieve
     and serialize instances of this class without some assistance. For example, we
     will be unable to store \c Message values in QVariant.
 
-    The class in Qt responsible for custom types is QMetaType. To make the type known
+    The class in BobUI responsible for custom types is QMetaType. To make the type known
     to this class, we invoke the Q_DECLARE_METATYPE() macro on the class in the header
     file where it is defined:
 

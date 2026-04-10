@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwidgetdump.h"
 
 #include <QApplication>
 #include <QWidget>
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
 
-#include <QtCore/QDebug>
-#include <QtCore/QMetaObject>
-#include <QtCore/QTextStream>
+#include <BobUICore/QDebug>
+#include <BobUICore/QMetaObject>
+#include <BobUICore/BOBUIextStream>
 
-namespace QtDiag {
+namespace BobUIDiag {
 
-static const char *qtWidgetClasses[] = {
+static const char *bobuiWidgetClasses[] = {
     "QAbstractItemView", "QAbstractScrollArea", "QAbstractSlider", "QAbstractSpinBox",
     "QCalendarWidget", "QCheckBox", "QColorDialog", "QColumnView", "QComboBox",
     "QCommandLinkButton", "QDateEdit", "QDateTimeEdit", "QDial",
@@ -25,26 +25,26 @@ static const char *qtWidgetClasses[] = {
     "QMenuBar", "QMessageBox", "QOpenGLWidget", "QPlainTextEdit", "QProgressBar",
     "QProgressDialog", "QPushButton", "QRadioButton", "QRubberBand", "QScrollArea",
     "QScrollBar", "QSlider", "QSpinBox", "QSplashScreen", "QSplitter",
-    "QStackedWidget", "QStatusBar", "QTabBar", "QTabWidget", "QTableView",
-    "QTableWidget", "QTextBrowser", "QTextEdit", "QTimeEdit", "QToolBar",
-    "QToolBox", "QToolButton", "QTreeView", "QTreeWidget", "QWidget",
+    "QStackedWidget", "QStatusBar", "BOBUIabBar", "BOBUIabWidget", "BOBUIableView",
+    "BOBUIableWidget", "BOBUIextBrowser", "BOBUIextEdit", "BOBUIimeEdit", "BOBUIoolBar",
+    "BOBUIoolBox", "BOBUIoolButton", "BOBUIreeView", "BOBUIreeWidget", "QWidget",
     "QWizard", "QWizardPage"
 };
 
-static bool isQtWidget(const char *className)
+static bool isBobUIWidget(const char *className)
 {
-    for (auto qtWidgetClass : qtWidgetClasses) {
-        if (qstrcmp(className, qtWidgetClass) == 0)
+    for (auto bobuiWidgetClass : bobuiWidgetClasses) {
+        if (qstrcmp(className, bobuiWidgetClass) == 0)
             return true;
     }
     return false;
 }
 
-static void formatWidgetClass(QTextStream &str, const QWidget *w)
+static void formatWidgetClass(BOBUIextStream &str, const QWidget *w)
 {
     const QMetaObject *mo = w->metaObject();
     str << mo->className();
-    while (!isQtWidget(mo->className())) {
+    while (!isBobUIWidget(mo->className())) {
         mo = mo->superClass();
         str << ':' << mo->className();
     }
@@ -53,22 +53,22 @@ static void formatWidgetClass(QTextStream &str, const QWidget *w)
         str << "/\"" << on << '"';
 }
 
-static void dumpWidgetRecursion(QTextStream &str, const QWidget *w,
+static void dumpWidgetRecursion(BOBUIextStream &str, const QWidget *w,
                                 FormatWindowOptions options, int depth = 0)
 {
     indentStream(str, 2 * depth);
     formatWidgetClass(str, w);
     str << ' ' << (w->isVisible() ? "[visible] " : "[hidden] ");
     if (const WId nativeWinId = w->internalWinId())
-        str << "[native: " << Qt::hex << Qt::showbase << nativeWinId << Qt::dec << Qt::noshowbase
+        str << "[native: " << BobUI::hex << BobUI::showbase << nativeWinId << BobUI::dec << BobUI::noshowbase
             << "] ";
     if (w->isWindow())
         str << "[top] ";
-    str << (w->testAttribute(Qt::WA_Mapped) ? "[mapped] " : "[not mapped] ");
-    if (w->testAttribute(Qt::WA_DontCreateNativeAncestors))
+    str << (w->testAttribute(BobUI::WA_Mapped) ? "[mapped] " : "[not mapped] ");
+    if (w->testAttribute(BobUI::WA_DontCreateNativeAncestors))
         str << "[NoNativeAncestors] ";
     if (const int states = w->windowState())
-        str << "windowState=" << Qt::hex << Qt::showbase << states << Qt::dec << Qt::noshowbase
+        str << "windowState=" << BobUI::hex << BobUI::showbase << states << BobUI::dec << BobUI::noshowbase
             << ' ';
     formatRect(str, w->geometry());
     if (w->isWindow()) {
@@ -116,7 +116,7 @@ static void dumpWidgetRecursion(QTextStream &str, const QWidget *w,
 void dumpAllWidgets(FormatWindowOptions options, const QWidget *root)
 {
     QString d;
-    QTextStream str(&d);
+    BOBUIextStream str(&d);
     str << "### QWidgets:\n";
     QWidgetList topLevels;
     if (root)
@@ -129,4 +129,4 @@ void dumpAllWidgets(FormatWindowOptions options, const QWidget *root)
         qDebug().noquote() << line;
 }
 
-} // namespace QtDiag
+} // namespace BobUIDiag

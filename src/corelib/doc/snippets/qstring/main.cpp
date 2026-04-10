@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QWidget>
 #include <stdio.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class Widget : public QWidget
 {
@@ -281,23 +281,23 @@ void Widget::compareFunction()
 void Widget::compareSensitiveFunction()
 {
     //! [16]
-    int x = QString::compare("aUtO", "AuTo", Qt::CaseInsensitive);  // x == 0
-    int y = QString::compare("auto", "Car", Qt::CaseSensitive);     // y > 0
-    int z = QString::compare("auto", "Car", Qt::CaseInsensitive);   // z < 0
+    int x = QString::compare("aUtO", "AuTo", BobUI::CaseInsensitive);  // x == 0
+    int y = QString::compare("auto", "Car", BobUI::CaseSensitive);     // y > 0
+    int z = QString::compare("auto", "Car", BobUI::CaseInsensitive);   // z < 0
     //! [16]
 
-    //! [QtPrivate::compareStrings-QSV-QSV]
-    int a = QtPrivate::compareStrings(u"aUtO", u"AuTo", Qt::CaseInsensitive);  // a == 0
-    int b = QtPrivate::compareStrings(u"auto", u"Car", Qt::CaseSensitive);     // b > 0
-    int c = QtPrivate::compareStrings(u"auto", u"Car", Qt::CaseInsensitive);   // c < 0
-    //! [QtPrivate::compareStrings-QSV-QSV]
+    //! [BobUIPrivate::compareStrings-QSV-QSV]
+    int a = BobUIPrivate::compareStrings(u"aUtO", u"AuTo", BobUI::CaseInsensitive);  // a == 0
+    int b = BobUIPrivate::compareStrings(u"auto", u"Car", BobUI::CaseSensitive);     // b > 0
+    int c = BobUIPrivate::compareStrings(u"auto", u"Car", BobUI::CaseInsensitive);   // c < 0
+    //! [BobUIPrivate::compareStrings-QSV-QSV]
 }
 
 void Widget::containsFunction()
 {
     //! [17]
     QString str = "Peter Pan";
-    str.contains("peter", Qt::CaseInsensitive);    // returns true
+    str.contains("peter", BobUI::CaseInsensitive);    // returns true
     //! [17]
 }
 
@@ -490,7 +490,7 @@ void Widget::removeFunction()
 
     //! [38]
     QString t = "Ali Baba";
-    t.remove(QChar('a'), Qt::CaseInsensitive);
+    t.remove(QChar('a'), BobUI::CaseInsensitive);
     // t == "li Bb"
     //! [38]
 
@@ -672,7 +672,7 @@ void Widget::splitFunction()
 
     //! [91]
     str = "This time, a normal English sentence.";
-    list = str.split(QRegularExpression("\\W+"), Qt::SkipEmptyParts);
+    list = str.split(QRegularExpression("\\W+"), BobUI::SkipEmptyParts);
     // list: [ "This", "time", "a", "normal", "English", "sentence" ]
     //! [91]
 
@@ -692,7 +692,7 @@ void Widget::splitCaseSensitiveFunction()
     QStringList list1 = str.split(u',');
     // list1: [ "a", "", "b", "c" ]
 
-    QStringList list2 = str.split(u',', Qt::SkipEmptyParts);
+    QStringList list2 = str.split(u',', BobUI::SkipEmptyParts);
     // list2: [ "a", "b", "c" ]
     //! [62]
     }
@@ -718,7 +718,7 @@ void Widget::sprintfFunction()
 {
     //! [64]
     QString result;
-    QTextStream(&result) << "pi = " << 3.14;
+    BOBUIextStream(&result) << "pi = " << 3.14;
     // result == "pi = 3.14"
     //! [64]
 }
@@ -809,8 +809,8 @@ void Widget::toLongLongFunction()
 void Widget::toLowerFunction()
 {
     //! [75]
-    QString str = "The Qt PROJECT";
-    str = str.toLower();        // str == "the qt project"
+    QString str = "The BobUI PROJECT";
+    str = str.toLower();        // str == "the bobui project"
     //! [75]
 }
 

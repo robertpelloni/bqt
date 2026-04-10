@@ -1,3 +1,3 @@
-QT = core
+BOBUI = core
 CONFIG += cmdline
 SOURCES += main.cpp

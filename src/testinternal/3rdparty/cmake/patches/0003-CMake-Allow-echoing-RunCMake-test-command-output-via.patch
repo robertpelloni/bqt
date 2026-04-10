@@ -1,10 +1,10 @@
 From 171377424a728b0cd5a635f07ade8930ee10b9d7 Mon Sep 17 00:00:00 2001
-From: Alexandru Croitor <alexandru.croitor@qt.io>
+From: Alexandru Croitor <alexandru.croitor@bobui.io>
 Date: Wed, 26 Mar 2025 19:47:37 +0100
 Subject: [PATCH] CMake: Allow echoing RunCMake test command output via an
  opt-in
 
-This will be used in a new manual test in qt5.git, to show progress of
+This will be used in a new manual test in bobui5.git, to show progress of
 long-running commands.
 
 Change-Id: Ib73908e20fac7fe0bd620400d483625238fa37d1

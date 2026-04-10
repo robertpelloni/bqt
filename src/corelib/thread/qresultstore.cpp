@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qresultstore.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 /*!
   \internal
@@ -45,17 +45,17 @@ static ResultIteratorBase findResult(const QMap<int, ResultItem> &store, int ind
 }
 
 /*!
-  \class QtPrivate::ResultItem
+  \class BobUIPrivate::ResultItem
   \internal
  */
 
 /*!
-  \class QtPrivate::ResultIteratorBase
+  \class BobUIPrivate::ResultIteratorBase
   \internal
  */
 
 /*!
-  \class QtPrivate::ResultStoreBase
+  \class BobUIPrivate::ResultStoreBase
   \internal
  */
 
@@ -246,6 +246,6 @@ int ResultStoreBase::updateInsertIndex(int index, int _count)
     return index;
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

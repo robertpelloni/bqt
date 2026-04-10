@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
-#include <QtCore>
+#include <BobUICore>
 
 //! [0]
 class Employee
@@ -234,7 +234,7 @@ void examles()
 
 
     //! [cmake_no_keywords]
-    target_compile_definitions(my_app PRIVATE QT_NO_KEYWORDS)
+    target_compile_definitions(my_app PRIVATE BOBUI_NO_KEYWORDS)
     //! [cmake_no_keywords]
     #endif
     }
@@ -264,7 +264,7 @@ void wrap()
     /*
         Now we should be careful with iterator i since it will point to shared data
         If we do *i = 4 then we would change the shared instance (both vectors)
-        The behavior differs from STL containers. Avoid doing such things in Qt.
+        The behavior differs from STL containers. Avoid doing such things in BobUI.
     */
 
     a[0] = 5;

@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSMENUTYPES_H
 #define QDBUSMENUTYPES_H
@@ -9,8 +9,8 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
@@ -24,7 +24,7 @@
 #include <QPixmap>
 #include <private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusPlatformMenu;
 class QDBusPlatformMenuItem;
@@ -40,7 +40,7 @@ public:
 
     static QDBusMenuItemList items(const QList<int> &ids, const QStringList &propertyNames);
     static QString convertMnemonic(const QString &label);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     static QDBusMenuShortcut convertKeySequence(const QKeySequence &sequence);
 #endif
     static void registerDBusTypes();
@@ -94,28 +94,28 @@ public:
     uint m_timestamp;
 };
 Q_DECLARE_TYPEINFO(QDBusMenuEvent, Q_RELOCATABLE_TYPE); // QDBusVariant is movable, even though it cannot
-                                                    // be marked as such until Qt 6.
+                                                    // be marked as such until BobUI 6.
 
 const QDBusArgument &operator<<(QDBusArgument &arg, const QDBusMenuEvent &ev);
 const QDBusArgument &operator>>(const QDBusArgument &arg, QDBusMenuEvent &ev);
 
 typedef QList<QDBusMenuEvent> QDBusMenuEventList;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QDBusMenuItem &item);
 QDebug operator<<(QDebug d, const QDBusMenuLayoutItem &item);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusMenuItem, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuItemList, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuItemKeys, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuItemKeysList, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuLayoutItem, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuLayoutItemList, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuEvent, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuEventList, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN(QDBusMenuShortcut, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuItem, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuItemList, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuItemKeys, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuItemKeysList, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuLayoutItem, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuLayoutItemList, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuEvent, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuEventList, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusMenuShortcut, Q_GUI_EXPORT)
 
 #endif

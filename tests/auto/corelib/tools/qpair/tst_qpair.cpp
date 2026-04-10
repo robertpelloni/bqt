@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QPair>
 #include <QSize>
@@ -14,7 +14,7 @@ private Q_SLOTS:
     void structuredBindings();
     void testConstexpr();
     void testConversions();
-    void taskQTBUG_48780_pairContainingCArray();
+    void taskBOBUIBUG_48780_pairContainingCArray();
     void testDeductionRules();
 };
 
@@ -22,10 +22,10 @@ class C { C() {} ~C() {} Q_DECL_UNUSED_MEMBER char _[4]; };
 class M { M() {} Q_DECL_UNUSED_MEMBER char _[4]; };
 class P { Q_DECL_UNUSED_MEMBER char _[4]; };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(M, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(P, Q_PRIMITIVE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // avoid the comma:
 typedef QPair<C,C> QPairCC;
@@ -38,32 +38,32 @@ typedef QPair<P,C> QPairPC;
 typedef QPair<P,M> QPairPM;
 typedef QPair<P,P> QPairPP;
 
-static_assert( QTypeInfo<QPairCC>::isComplex);
-static_assert( !QTypeInfo<QPairCC>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairCC>::isComplex);
+static_assert( !BOBUIypeInfo<QPairCC>::isRelocatable );
 
-static_assert( QTypeInfo<QPairCM>::isComplex);
-static_assert( !QTypeInfo<QPairCM>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairCM>::isComplex);
+static_assert( !BOBUIypeInfo<QPairCM>::isRelocatable );
 
-static_assert( QTypeInfo<QPairCP>::isComplex);
-static_assert( !QTypeInfo<QPairCP>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairCP>::isComplex);
+static_assert( !BOBUIypeInfo<QPairCP>::isRelocatable );
 
-static_assert( QTypeInfo<QPairMC>::isComplex);
-static_assert( !QTypeInfo<QPairMC>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairMC>::isComplex);
+static_assert( !BOBUIypeInfo<QPairMC>::isRelocatable );
 
-static_assert( QTypeInfo<QPairMM>::isComplex);
-static_assert( QTypeInfo<QPairMM>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairMM>::isComplex);
+static_assert( BOBUIypeInfo<QPairMM>::isRelocatable );
 
-static_assert( QTypeInfo<QPairMP>::isComplex);
-static_assert( QTypeInfo<QPairMP>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairMP>::isComplex);
+static_assert( BOBUIypeInfo<QPairMP>::isRelocatable );
 
-static_assert( QTypeInfo<QPairPC>::isComplex);
-static_assert( !QTypeInfo<QPairPC>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairPC>::isComplex);
+static_assert( !BOBUIypeInfo<QPairPC>::isRelocatable );
 
-static_assert( QTypeInfo<QPairPM>::isComplex);
-static_assert( QTypeInfo<QPairPM>::isRelocatable );
+static_assert( BOBUIypeInfo<QPairPM>::isComplex);
+static_assert( BOBUIypeInfo<QPairPM>::isRelocatable );
 
-static_assert(!QTypeInfo<QPairPP>::isComplex);
-static_assert( QTypeInfo<QPairPP>::isRelocatable );
+static_assert(!BOBUIypeInfo<QPairPP>::isComplex);
+static_assert( BOBUIypeInfo<QPairPP>::isRelocatable );
 
 static_assert(!std::is_pointer_v<QPairPP>);
 
@@ -218,7 +218,7 @@ void tst_QPair::testConversions()
     }
 }
 
-void tst_QPair::taskQTBUG_48780_pairContainingCArray()
+void tst_QPair::taskBOBUIBUG_48780_pairContainingCArray()
 {
     // compile-only:
     QPair<int[2], int> pair;
@@ -253,5 +253,5 @@ void tst_QPair::testDeductionRules()
 #endif
 }
 
-QTEST_APPLESS_MAIN(tst_QPair)
+BOBUIEST_APPLESS_MAIN(tst_QPair)
 #include "tst_qpair.moc"

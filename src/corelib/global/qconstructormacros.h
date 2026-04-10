@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCONSTRUCTORMACROS_H
 #define QCONSTRUCTORMACROS_H
 
 #if 0
-#pragma qt_class(QtConstructorMacros)
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUIConstructorMacros)
+#pragma bobui_sync_stop_processing
 #endif
 
 #if defined(__cplusplus)

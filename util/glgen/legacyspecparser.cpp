@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "legacyspecparser.h"
 
@@ -7,12 +7,12 @@
 #include <QFile>
 #include <QRegExp>
 #include <QStringList>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #ifdef SPECPARSER_DEBUG
 #define qLegacySpecParserDebug qDebug
 #else
-#define qLegacySpecParserDebug QT_NO_QDEBUG_MACRO
+#define qLegacySpecParserDebug BOBUI_NO_QDEBUG_MACRO
 #endif
 
 bool LegacySpecParser::parse()
@@ -28,7 +28,7 @@ bool LegacySpecParser::parse()
         return false;
     }
 
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     // Extract the info that we need
     parseFunctions(stream);
@@ -43,7 +43,7 @@ bool LegacySpecParser::parseTypeMap()
         return false;
     }
 
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     static QRegExp typeMapRegExp("([^,]+)\\W+([^,]+)");
 
@@ -73,7 +73,7 @@ void LegacySpecParser::parseEnums()
 {
 }
 
-void LegacySpecParser::parseFunctions(QTextStream &stream)
+void LegacySpecParser::parseFunctions(BOBUIextStream &stream)
 {
     static QRegExp functionRegExp("^(\\w+)\\(.*\\)");
     static QRegExp returnRegExp("^\\treturn\\s+(\\S+)");

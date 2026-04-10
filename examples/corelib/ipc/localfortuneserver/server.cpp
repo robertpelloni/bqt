@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "server.h"
 
@@ -13,7 +13,7 @@
 #include <QPushButton>
 #include <QRandomGenerator>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const QString idleStateText = QObject::tr("Press \"Listen\" to start the server");
 
@@ -25,7 +25,7 @@ Server::Server(QWidget *parent)
       listenButton(new QPushButton(tr("Listen"))),
       stopListeningButton(new QPushButton(tr("Stop Listening")))
 {
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowFlags(windowFlags() & ~BobUI::WindowContextHelpButtonHint);
 
     statusLabel->setWordWrap(true);
 
@@ -103,7 +103,7 @@ void Server::sendFortune()
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_5);
+    out.setVersion(QDataStream::BobUI_6_5);
     const int fortuneIndex = QRandomGenerator::global()->bounded(0, fortunes.size());
     const QString &message = fortunes.at(fortuneIndex);
     out << message;

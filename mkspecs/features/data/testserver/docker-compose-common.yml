@@ -10,12 +10,12 @@ version: '2.1'
 #         extends:
 #             file: ${SHARED_DATA}/docker-compose-common.yml
 #             service: ${SHARED_SERVICE}
-#         container_name: qt-test-server-foo
+#         container_name: bobui-test-server-foo
 #         hostname: ${HOST_NAME:-foo}
 #         build:
 #             context: .
 #             args:
-#                 provisioningImage: qt-test-server-foo:537fe302f61851d1663...
+#                 provisioningImage: bobui-test-server-foo:537fe302f61851d1663...
 #                 serviceDir: ./foo
 #         command: service/foo.sh
 
@@ -35,4 +35,4 @@ services:
         << : *default-service
         network_mode: "host"
         extra_hosts:
-            - "qt-test-server.${TEST_DOMAIN}:${MACHINE_IP}"
+            - "bobui-test-server.${TEST_DOMAIN}:${MACHINE_IP}"

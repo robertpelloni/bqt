@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdnd_p.h"
 
@@ -9,7 +9,7 @@
 #include <qpa/qplatformintegration.h>
 #include <private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // the universe's only drag manager
 QDragManager *QDragManager::m_instance = nullptr;
@@ -58,19 +58,19 @@ QObject *QDragManager::currentTarget() const
     return m_currentDropTarget;
 }
 
-Qt::DropAction QDragManager::drag(QDrag *o)
+BobUI::DropAction QDragManager::drag(QDrag *o)
 {
     if (!o || m_object == o)
-         return Qt::IgnoreAction;
+         return BobUI::IgnoreAction;
 
     if (!m_platformDrag || !o->source()) {
         o->deleteLater();
-        return Qt::IgnoreAction;
+        return BobUI::IgnoreAction;
     }
 
     if (m_object) {
         qWarning("QDragManager::drag in possibly invalid state");
-        return Qt::IgnoreAction;
+        return BobUI::IgnoreAction;
     }
 
     m_object = o;
@@ -78,7 +78,7 @@ Qt::DropAction QDragManager::drag(QDrag *o)
     m_object->d_func()->target = nullptr;
 
     QGuiApplicationPrivate::instance()->notifyDragStarted(m_object.data());
-    const Qt::DropAction result = m_platformDrag->drag(m_object);
+    const BobUI::DropAction result = m_platformDrag->drag(m_object);
     if (!m_object.isNull() && !m_platformDrag->ownsDragObject())
         m_object->deleteLater();
 
@@ -86,6 +86,6 @@ Qt::DropAction QDragManager::drag(QDrag *o)
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdnd_p.cpp"

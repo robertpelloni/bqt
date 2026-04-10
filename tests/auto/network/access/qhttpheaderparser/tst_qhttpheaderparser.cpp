@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 #include <QObject>
-#include <QtNetwork/private/qhttpheaderparser_p.h>
+#include <BobUINetwork/private/qhttpheaderparser_p.h>
 
 class tst_QHttpHeaderParser : public QObject
 {
@@ -44,30 +44,30 @@ void tst_QHttpHeaderParser::limitsSetters()
 
 void tst_QHttpHeaderParser::adjustableLimits_data()
 {
-    QTest::addColumn<qsizetype>("maxFieldCount");
-    QTest::addColumn<qsizetype>("maxFieldSize");
-    QTest::addColumn<qsizetype>("maxTotalSize");
-    QTest::addColumn<QByteArray>("headers");
-    QTest::addColumn<bool>("success");
+    BOBUIest::addColumn<qsizetype>("maxFieldCount");
+    BOBUIest::addColumn<qsizetype>("maxFieldSize");
+    BOBUIest::addColumn<qsizetype>("maxTotalSize");
+    BOBUIest::addColumn<QByteArray>("headers");
+    BOBUIest::addColumn<bool>("success");
 
     // We pretend -1 means to not set a new limit.
 
-    QTest::newRow("maxFieldCount-pass") << qsizetype(10) << qsizetype(-1) << qsizetype(-1)
+    BOBUIest::newRow("maxFieldCount-pass") << qsizetype(10) << qsizetype(-1) << qsizetype(-1)
                                         << QByteArray("Location: hi\r\n\r\n") << true;
-    QTest::newRow("maxFieldCount-fail") << qsizetype(1) << qsizetype(-1) << qsizetype(-1)
+    BOBUIest::newRow("maxFieldCount-fail") << qsizetype(1) << qsizetype(-1) << qsizetype(-1)
                                         << QByteArray("Location: hi\r\nCookie: a\r\n\r\n") << false;
 
-    QTest::newRow("maxFieldSize-pass") << qsizetype(-1) << qsizetype(50) << qsizetype(-1)
+    BOBUIest::newRow("maxFieldSize-pass") << qsizetype(-1) << qsizetype(50) << qsizetype(-1)
                                        << QByteArray("Location: hi\r\n\r\n") << true;
     constexpr char cookieHeader[] = "Cookie: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     static_assert(sizeof(cookieHeader) - 1 == 51);
     QByteArray fullHeader = QByteArray("Location: hi\r\n") + cookieHeader;
-    QTest::newRow("maxFieldSize-fail") << qsizetype(-1) << qsizetype(50) << qsizetype(-1)
+    BOBUIest::newRow("maxFieldSize-fail") << qsizetype(-1) << qsizetype(50) << qsizetype(-1)
                                        << (fullHeader + "\r\n\r\n") << false;
 
-    QTest::newRow("maxTotalSize-pass") << qsizetype(-1) << qsizetype(-1) << qsizetype(50)
+    BOBUIest::newRow("maxTotalSize-pass") << qsizetype(-1) << qsizetype(-1) << qsizetype(50)
                                        << QByteArray("Location: hi\r\n\r\n") << true;
-    QTest::newRow("maxTotalSize-fail") << qsizetype(-1) << qsizetype(-1) << qsizetype(10)
+    BOBUIest::newRow("maxTotalSize-fail") << qsizetype(-1) << qsizetype(-1) << qsizetype(10)
                                        << QByteArray("Location: hi\r\n\r\n") << false;
 }
 
@@ -90,5 +90,5 @@ void tst_QHttpHeaderParser::adjustableLimits()
     QCOMPARE(parser.parseHeaders(headers), success);
 }
 
-QTEST_MAIN(tst_QHttpHeaderParser)
+BOBUIEST_MAIN(tst_QHttpHeaderParser)
 #include "tst_qhttpheaderparser.moc"

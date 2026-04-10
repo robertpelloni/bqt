@@ -10,4 +10,4 @@ To regenerate:
   make
 
 Note: the license of the script does not affect the produced output's
-license. Therefore, no qt_attribution.json file is provided.
+license. Therefore, no bobui_attribution.json file is provided.

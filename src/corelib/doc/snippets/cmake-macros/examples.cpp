@@ -1,7 +1,7 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-//! [qt_wrap_cpp_4]
+//! [bobui_wrap_cpp_4]
 // myapp.cpp
 #include "myapp.h"
 #include <QObject>
@@ -13,4 +13,4 @@ public:
 };
 
 #include "myapp.moc"
-//! [qt_wrap_cpp_4]
+//! [bobui_wrap_cpp_4]

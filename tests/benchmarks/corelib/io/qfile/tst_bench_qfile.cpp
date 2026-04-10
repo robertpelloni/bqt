@@ -1,19 +1,19 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
-#include <QTemporaryFile>
+#include <BOBUIemporaryFile>
 #include <QString>
 #include <QDirIterator>
 
 #include <private/qfsfileengine_p.h>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 #include <stdio.h>
 
 #ifdef Q_OS_WIN
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #endif
 
 #if defined(Q_OS_QNX) && defined(open)
@@ -45,7 +45,7 @@ Q_OBJECT
 public:
     enum BenchmarkType {
         QFileBenchmark = 1,
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         QFSFileEngineBenchmark,
 #endif
         Win32Benchmark,
@@ -86,23 +86,23 @@ private:
     void readBigFile();
     void readSmallFiles();
 
-    class TestDataDir : public QTemporaryDir
+    class TestDataDir : public BOBUIemporaryDir
     {
         void createFile();
         void createSmallFiles();
     public:
-        TestDataDir() : QTemporaryDir(), fail(errorString().toLocal8Bit())
+        TestDataDir() : BOBUIemporaryDir(), fail(errorString().toLocal8Bit())
         {
-            if (fail.isEmpty() && !QTemporaryDir::isValid())
+            if (fail.isEmpty() && !BOBUIemporaryDir::isValid())
                 fail = "Failed to create temporary directory for data";
             if (isValid())
                 createSmallFiles();
             if (isValid())
                 createFile();
             if (isValid())
-                QTest::qSleep(2000); // let IO settle
+                BOBUIest::qSleep(2000); // let IO settle
         }
-        bool isValid() { return QTemporaryDir::isValid() && fail.isEmpty(); }
+        bool isValid() { return BOBUIemporaryDir::isValid() && fail.isEmpty(); }
         QByteArray fail;
         QString filename;
     } tempDir;
@@ -157,10 +157,10 @@ void tst_qfile::initTestCase()
 void tst_qfile::readFile_data(BenchmarkType type, QIODevice::OpenModeFlag t,
                               QIODevice::OpenModeFlag b)
 {
-    QTest::addColumn<tst_qfile::BenchmarkType>("testType");
-    QTest::addColumn<int>("blockSize");
-    QTest::addColumn<QFile::OpenModeFlag>("textMode");
-    QTest::addColumn<QFile::OpenModeFlag>("bufferedMode");
+    BOBUIest::addColumn<tst_qfile::BenchmarkType>("testType");
+    BOBUIest::addColumn<int>("blockSize");
+    BOBUIest::addColumn<QFile::OpenModeFlag>("textMode");
+    BOBUIest::addColumn<QFile::OpenModeFlag>("bufferedMode");
 
     QByteArray flagstring;
     if (t & QIODevice::Text)
@@ -176,7 +176,7 @@ void tst_qfile::readFile_data(BenchmarkType type, QIODevice::OpenModeFlag t,
     const int kbs[] = {1, 2, 8, 16, 32, 512};
     for (int kb : kbs) {
         const int size = 1024 * kb;
-        QTest::addRow("BS: %d, Flags: %s", size, flagstring.constData())
+        BOBUIest::addRow("BS: %d, Flags: %s", size, flagstring.constData())
             << type << size << t << b;
     }
 }
@@ -192,7 +192,7 @@ void tst_qfile::readBigFile_QFile_data()
 
 void tst_qfile::readBigFile_QFSFileEngine_data()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     // Support for buffering dropped at 5.10, so only test Unbuffered
     readFile_data(QFSFileEngineBenchmark, QIODevice::NotOpen, QIODevice::Unbuffered);
     readFile_data(QFSFileEngineBenchmark, QIODevice::Text, QIODevice::Unbuffered);
@@ -235,7 +235,7 @@ void tst_qfile::readBigFile()
             file.close();
         }
         break;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         case QFSFileEngineBenchmark: {
             QFSFileEngine fse(tempDir.filename);
             Q_UNUSED(fse.open(QIODevice::ReadOnly | textMode | bufferedMode, std::nullopt));
@@ -294,14 +294,14 @@ void tst_qfile::readBigFile()
 
 void tst_qfile::seek_data()
 {
-    QTest::addColumn<tst_qfile::BenchmarkType>("testType");
-    QTest::newRow("QFile") << QFileBenchmark;
-#ifdef QT_BUILD_INTERNAL
-    QTest::newRow("QFSFileEngine") << QFSFileEngineBenchmark;
+    BOBUIest::addColumn<tst_qfile::BenchmarkType>("testType");
+    BOBUIest::newRow("QFile") << QFileBenchmark;
+#ifdef BOBUI_BUILD_INTERNAL
+    BOBUIest::newRow("QFSFileEngine") << QFSFileEngineBenchmark;
 #endif
-    QTest::newRow("Posix FILE*") << PosixBenchmark;
+    BOBUIest::newRow("Posix FILE*") << PosixBenchmark;
 #ifdef Q_OS_WIN
-    QTest::newRow("Win32 API") << Win32Benchmark;
+    BOBUIest::newRow("Win32 API") << Win32Benchmark;
 #endif
 }
 
@@ -321,7 +321,7 @@ void tst_qfile::seek()
             file.close();
         }
         break;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         case QFSFileEngineBenchmark: {
             QFSFileEngine fse(tempDir.filename);
             Q_UNUSED(fse.open(QIODevice::ReadOnly | QIODevice::Unbuffered, std::nullopt));
@@ -372,15 +372,15 @@ void tst_qfile::seek()
 
 void tst_qfile::open_data()
 {
-    QTest::addColumn<tst_qfile::BenchmarkType>("testType");
-    QTest::newRow("QFile") << QFileBenchmark;
-#ifdef QT_BUILD_INTERNAL
-    QTest::newRow("QFSFileEngine") << QFSFileEngineBenchmark;
+    BOBUIest::addColumn<tst_qfile::BenchmarkType>("testType");
+    BOBUIest::newRow("QFile") << QFileBenchmark;
+#ifdef BOBUI_BUILD_INTERNAL
+    BOBUIest::newRow("QFSFileEngine") << QFSFileEngineBenchmark;
 #endif
-    QTest::newRow("Posix FILE*") << PosixBenchmark;
-    QTest::newRow("QFile from FILE*") << QFileFromPosixBenchmark;
+    BOBUIest::newRow("Posix FILE*") << PosixBenchmark;
+    BOBUIest::newRow("QFile from FILE*") << QFileFromPosixBenchmark;
 #ifdef Q_OS_WIN
-    QTest::newRow("Win32 API") << Win32Benchmark;
+    BOBUIest::newRow("Win32 API") << Win32Benchmark;
 #endif
 }
 
@@ -397,7 +397,7 @@ void tst_qfile::open()
             }
         }
         break;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         case QFSFileEngineBenchmark: {
             QBENCHMARK {
                 QFSFileEngine fse(tempDir.filename);
@@ -464,7 +464,7 @@ void tst_qfile::readSmallFiles_QFile_data()
 
 void tst_qfile::readSmallFiles_QFSFileEngine_data()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     // Support for buffering dropped at 5.10, so only test Unbuffered
     readFile_data(QFSFileEngineBenchmark, QIODevice::NotOpen, QIODevice::Unbuffered);
     readFile_data(QFSFileEngineBenchmark, QIODevice::Text, QIODevice::Unbuffered);
@@ -521,7 +521,7 @@ void tst_qfile::readSmallFiles()
             }
         }
         break;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
         case QFSFileEngineBenchmark: {
             QList<QFSFileEngine*> fileList;
             for (const QString &file : files) {
@@ -589,6 +589,6 @@ void tst_qfile::readSmallFiles()
     }
 }
 
-QTEST_MAIN(tst_qfile)
+BOBUIEST_MAIN(tst_qfile)
 
 #include "tst_bench_qfile.moc"

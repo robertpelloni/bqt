@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS     = slidersgroup.h \
               window.h
@@ -8,5 +8,5 @@ SOURCES     = main.cpp \
               window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/sliders
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/sliders
 INSTALLS += target

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstackedlayout.h"
 #include "qlayout_p.h"
@@ -9,11 +9,11 @@
 #include "private/qwidget_p.h"
 #include "private/qlayoutengine_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QStackedLayoutPrivate : public QLayoutPrivate
 {
@@ -50,10 +50,10 @@ QLayoutItem* QStackedLayoutPrivate::replaceAt(int idx, QLayoutItem *newitem)
     only one widget is visible at a time.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QStackedLayout can be used to create a user interface similar to
-    the one provided by QTabWidget. There is also a convenience
+    the one provided by BOBUIabWidget. There is also a convenience
     QStackedWidget class built on top of QStackedLayout.
 
     A QStackedLayout can be populated with a number of child widgets
@@ -91,7 +91,7 @@ QLayoutItem* QStackedLayoutPrivate::replaceAt(int idx, QLayoutItem *newitem)
     removed from the layout, the currentChanged() and widgetRemoved()
     signals are emitted respectively.
 
-    \sa QStackedWidget, QTabWidget
+    \sa QStackedWidget, BOBUIabWidget
 */
 
 /*!
@@ -232,7 +232,7 @@ QLayoutItem *QStackedLayout::itemAt(int index) const
 // Code that enables proper handling of the case that takeAt() is
 // called somewhere inside QObject destructor (can't call hide()
 // on the object then)
-static bool qt_wasDeleted(const QWidget *w)
+static bool bobui_wasDeleted(const QWidget *w)
 {
     return QObjectPrivate::get(w)->wasDeleted;
 }
@@ -259,7 +259,7 @@ QLayoutItem *QStackedLayout::takeAt(int index)
         --d->index;
     }
     emit widgetRemoved(index);
-    if (item->widget() && !qt_wasDeleted(item->widget()))
+    if (item->widget() && !bobui_wasDeleted(item->widget()))
         item->widget()->hide();
     return item;
 }
@@ -313,7 +313,7 @@ void QStackedLayout::setCurrentIndex(int index)
                 // second best: first child widget in the focus chain
                 if (QWidget *i = fw) {
                     while ((i = i->nextInFocusChain()) != fw) {
-                        if (((i->focusPolicy() & Qt::TabFocus) == Qt::TabFocus)
+                        if (((i->focusPolicy() & BobUI::TabFocus) == BobUI::TabFocus)
                             && !i->focusProxy() && i->isVisibleTo(next) && i->isEnabled()
                             && next->isAncestorOf(i)) {
                             i->setFocus();
@@ -572,6 +572,6 @@ void QStackedLayout::setStackingMode(StackingMode stackingMode)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstackedlayout.cpp"

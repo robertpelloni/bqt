@@ -2108,7 +2108,7 @@ void ImGui::TableSetColumnWidth(int column_n, float width)
     // - All stretch: easy.
     // - One or more fixed + one stretch: easy.
     // - One or more fixed + more than one stretch: tricky.
-    // Qt when manual resize is enabled only support a single _trailing_ stretch column.
+    // BobUI when manual resize is enabled only support a single _trailing_ stretch column.
 
     // When forwarding resize from Wn| to Fn+1| we need to be considerate of the _NoResize flag on Fn+1.
     // FIXME-TABLE: Find a way to rewrite all of this so interactions feel more consistent for the user.

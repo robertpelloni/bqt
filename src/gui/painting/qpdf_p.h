@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPDF_P_H
 #define QPDF_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#ifndef QT_NO_PDF
+#ifndef BOBUI_NO_PDF
 
-#include "QtCore/qlist.h"
-#include "QtCore/qstring.h"
-#include "QtCore/quuid.h"
+#include "BobUICore/qlist.h"
+#include "BobUICore/qstring.h"
+#include "BobUICore/quuid.h"
 #include "private/qfontengine_p.h"
 #include "private/qfontsubset_p.h"
 #include "private/qpaintengine_p.h"
@@ -29,10 +29,10 @@
 #include "qpagelayout.h"
 #include "qpdfoutputintent.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-const char *qt_real_to_string(qreal val, char *buf);
-const char *qt_int_to_string(int val, char *buf);
+const char *bobui_real_to_string(qreal val, char *buf);
+const char *bobui_int_to_string(int val, char *buf);
 
 namespace QPdf {
 
@@ -79,8 +79,8 @@ namespace QPdf {
         StrokePath,
         FillAndStrokePath
     };
-    QByteArray generatePath(const QPainterPath &path, const QTransform &matrix, PathFlags flags);
-    QByteArray generateMatrix(const QTransform &matrix);
+    QByteArray generatePath(const QPainterPath &path, const BOBUIransform &matrix, PathFlags flags);
+    QByteArray generateMatrix(const BOBUIransform &matrix);
     QByteArray generateDashes(const QPen &pen);
     QByteArray patternForBrush(const QBrush &b);
 
@@ -90,7 +90,7 @@ namespace QPdf {
         void strokePath(const QPainterPath &path);
         ByteStream *stream;
         bool first;
-        QTransform matrix;
+        BOBUIransform matrix;
         bool cosmeticPen;
     private:
         QStroker basicStroker;
@@ -178,11 +178,11 @@ public:
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode) override;
     void drawPath (const QPainterPath & path) override;
 
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
 
     void drawPixmap (const QRectF & rectangle, const QPixmap & pixmap, const QRectF & sr) override;
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                   Qt::ImageConversionFlags flags = Qt::AutoColor) override;
+                   BobUI::ImageConversionFlags flags = BobUI::AutoColor) override;
     void drawTiledPixmap (const QRectF & rectangle, const QPixmap & pixmap, const QPointF & point) override;
 
     void drawHyperlink(const QRectF &r, const QUrl &url);
@@ -209,7 +209,7 @@ public:
     void setupGraphicsState(QPaintEngine::DirtyFlags flags);
 
 private:
-    void updateClipPath(const QPainterPath & path, Qt::ClipOperation op);
+    void updateClipPath(const QPainterPath & path, BobUI::ClipOperation op);
 };
 
 class Q_GUI_EXPORT QPdfEnginePrivate : public QPaintEnginePrivate
@@ -226,11 +226,11 @@ public:
 
     int addImage(const QImage &image, bool *bitmap, bool lossless, qint64 serial_no);
     int addConstantAlphaObject(int brushAlpha, int penAlpha = 255);
-    int addBrushPattern(const QTransform &matrix, bool *specifyColor, int *gStateObject);
+    int addBrushPattern(const BOBUIransform &matrix, bool *specifyColor, int *gStateObject);
 
-    void drawTextItem(const QPointF &p, const QTextItemInt &ti);
+    void drawTextItem(const QPointF &p, const BOBUIextItemInt &ti);
 
-    QTransform pageMatrix() const;
+    BOBUIransform pageMatrix() const;
 
     void newPage();
 
@@ -275,10 +275,10 @@ public:
     QPageLayout m_pageLayout;
 
 private:
-    int gradientBrush(const QBrush &b, const QTransform &matrix, int *gStateObject);
-    int generateGradientShader(const QGradient *gradient, const QTransform &matrix, bool alpha = false);
-    int generateLinearGradientShader(const QLinearGradient *lg, const QTransform &matrix, bool alpha);
-    int generateRadialGradientShader(const QRadialGradient *gradient, const QTransform &matrix, bool alpha);
+    int gradientBrush(const QBrush &b, const BOBUIransform &matrix, int *gStateObject);
+    int generateGradientShader(const QGradient *gradient, const BOBUIransform &matrix, bool alpha = false);
+    int generateLinearGradientShader(const QLinearGradient *lg, const BOBUIransform &matrix, bool alpha);
+    int generateRadialGradientShader(const QRadialGradient *gradient, const BOBUIransform &matrix, bool alpha);
     struct ShadingFunctionResult
     {
         int function;
@@ -364,9 +364,9 @@ private:
     QByteArray xmpDocumentMetadata;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PDF
+#endif // BOBUI_NO_PDF
 
 #endif // QPDF_P_H
 

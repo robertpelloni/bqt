@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Jeremy Lainé <jeremy.laine@m4x.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "dnslookup.h"
 
@@ -7,33 +7,33 @@
 #include <QDnsLookup>
 #include <QHostAddress>
 #include <QStringList>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
 #include <cstdio>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static std::optional<QDnsLookup::Type> typeFromParameter(QStringView type)
 {
-    if (type.compare(u"a", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"a", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::A;
-    if (type.compare(u"aaaa", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"aaaa", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::AAAA;
-    if (type.compare(u"any", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"any", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::ANY;
-    if (type.compare(u"cname", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"cname", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::CNAME;
-    if (type.compare(u"mx", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"mx", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::MX;
-    if (type.compare(u"ns", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"ns", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::NS;
-    if (type.compare(u"ptr", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"ptr", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::PTR;
-    if (type.compare(u"srv", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"srv", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::SRV;
-    if (type.compare(u"txt", Qt::CaseInsensitive) == 0)
+    if (type.compare(u"txt", BobUI::CaseInsensitive) == 0)
         return QDnsLookup::TXT;
     return std::nullopt;
 }
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
 //! [1]
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QCoreApplication::setApplicationName(QCoreApplication::translate("QDnsLookupExample",
                                                                      "DNS Lookup Example"));
     QCommandLineParser parser;
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 
     DnsManager manager;
     manager.setQuery(query);
-    QTimer::singleShot(0, &manager, &DnsManager::execute);
+    BOBUIimer::singleShot(0, &manager, &DnsManager::execute);
 
     return app.exec();
 }

@@ -1,5 +1,5 @@
 // Copyright (C) 2021 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_FULLSCREENSHELLV1_H
 #define MOCKCOMPOSITOR_FULLSCREENSHELLV1_H
@@ -14,7 +14,7 @@ namespace MockCompositor {
 class Surface;
 class FullScreenShellV1;
 
-class FullScreenShellV1 : public Global, public QtWaylandServer::zwp_fullscreen_shell_v1
+class FullScreenShellV1 : public Global, public BobUIWaylandServer::zwp_fullscreen_shell_v1
 {
     Q_OBJECT
 public:

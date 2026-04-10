@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 TARGET = subscription
 
 SOURCES += main.cpp \
@@ -6,7 +6,7 @@ SOURCES += main.cpp \
     user.cpp \
     ../shared/subscriptionwindow.cpp
 
-target.path = $$[QT_INSTALL_EXAMPLES]/corelib/bindableproperties/subscription
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/corelib/bindableproperties/subscription
 INSTALLS += target
 
 FORMS += \

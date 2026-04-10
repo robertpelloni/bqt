@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WIDGETGALLERY_H
 #define WIDGETGALLERY_H
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QDateTimeEdit;
@@ -20,10 +20,10 @@ class QRadioButton;
 class QScrollBar;
 class QSlider;
 class QSpinBox;
-class QTabWidget;
-class QTableWidget;
-class QTextEdit;
-QT_END_NAMESPACE
+class BOBUIabWidget;
+class BOBUIableWidget;
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class WidgetGallery : public QDialog
@@ -66,9 +66,9 @@ private:
     QPushButton *togglePushButton;
     QPushButton *flatPushButton;
 
-    QTabWidget *bottomLeftTabWidget;
-    QTableWidget *tableWidget;
-    QTextEdit *textEdit;
+    BOBUIabWidget *bottomLeftTabWidget;
+    BOBUIableWidget *tableWidget;
+    BOBUIextEdit *textEdit;
 
     QGroupBox *bottomRightGroupBox;
     QLineEdit *lineEdit;

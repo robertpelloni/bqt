@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #pragma once
 
@@ -16,9 +16,9 @@
 #include <qrect.h>
 #include <qxcbobject.h>
 
-QT_REQUIRE_CONFIG(draganddrop);
+BOBUI_REQUIRE_CONFIG(draganddrop);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 class QPlatformWindow;
@@ -39,11 +39,11 @@ public:
 
     void startDrag() override;
     void cancel() override;
-    void move(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
-    void drop(const QPoint &globalPos, Qt::MouseButtons b, Qt::KeyboardModifiers mods) override;
+    void move(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
+    void drop(const QPoint &globalPos, BobUI::MouseButtons b, BobUI::KeyboardModifiers mods) override;
     void endDrag() override;
 
-    Qt::DropAction defaultAction(Qt::DropActions possibleActions, Qt::KeyboardModifiers modifiers) const override;
+    BobUI::DropAction defaultAction(BobUI::DropActions possibleActions, BobUI::KeyboardModifiers modifiers) const override;
 
     void handlePropertyNotifyEvent(const xcb_property_notify_event_t *event) override;
 
@@ -51,7 +51,7 @@ public:
     void handlePosition(QPlatformWindow *w, const xcb_client_message_event_t *event);
     void handleLeave(QPlatformWindow *w, const xcb_client_message_event_t *event);
     void handleDrop(QPlatformWindow *, const xcb_client_message_event_t *event,
-                    Qt::MouseButtons b = { }, Qt::KeyboardModifiers mods = { });
+                    BobUI::MouseButtons b = { }, BobUI::KeyboardModifiers mods = { });
 
     void handleStatus(const xcb_client_message_event_t *event);
     void handleSelectionRequest(const xcb_selection_request_event_t *event);
@@ -64,7 +64,7 @@ public:
     xcb_timestamp_t targetTime() { return target_time; }
 
 protected:
-    void timerEvent(QTimerEvent* e) override;
+    void timerEvent(BOBUIimerEvent* e) override;
 
     bool findXdndAwareTarget(const QPoint &globalPos, xcb_window_t *target_out);
 
@@ -74,16 +74,16 @@ private:
     void init();
 
     void handle_xdnd_position(QPlatformWindow *w, const xcb_client_message_event_t *event,
-                              Qt::MouseButtons b = { }, Qt::KeyboardModifiers mods = { });
+                              BobUI::MouseButtons b = { }, BobUI::KeyboardModifiers mods = { });
     void handle_xdnd_status(const xcb_client_message_event_t *event);
     void send_leave();
 
-    Qt::DropAction toDropAction(xcb_atom_t atom) const;
-    Qt::DropActions toDropActions(const QList<xcb_atom_t> &atoms) const;
-    xcb_atom_t toXdndAction(Qt::DropAction a) const;
+    BobUI::DropAction toDropAction(xcb_atom_t atom) const;
+    BobUI::DropActions toDropActions(const QList<xcb_atom_t> &atoms) const;
+    xcb_atom_t toXdndAction(BobUI::DropAction a) const;
 
     void readActionList();
-    void setActionList(Qt::DropAction requestedAction, Qt::DropActions supportedActions);
+    void setActionList(BobUI::DropAction requestedAction, BobUI::DropActions supportedActions);
     void startListeningForActionListChanges();
     void stopListeningForActionListChanges();
 
@@ -92,7 +92,7 @@ private:
     QPoint currentPosition;
 
     QXcbDropData *m_dropData;
-    Qt::DropAction accepted_drop_action;
+    BobUI::DropAction accepted_drop_action;
 
     QWindow *desktop_proxy;
 
@@ -141,9 +141,9 @@ private:
         QPlatformWindow *targetWindow;
 //        QWidget *embedding_widget;
         QPointer<QDrag> drag;
-        QTime time;
+        BOBUIime time;
     };
-    friend class QTypeInfo<Transaction>;
+    friend class BOBUIypeInfo<Transaction>;
     QList<Transaction> transactions;
 
     int transaction_expiry_timer;
@@ -154,4 +154,4 @@ private:
 };
 Q_DECLARE_TYPEINFO(QXcbDrag::Transaction, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

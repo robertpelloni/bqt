@@ -1,17 +1,17 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <private/qcomvariant_p.h>
 #include <private/qcomobject_p.h>
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/private/qcomptr_p.h>
 
 using Microsoft::WRL::ComPtr;
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 struct IUnknownStub : QComObject<IUnknown>
 {
@@ -195,5 +195,5 @@ private slots:
 
 };
 
-QTEST_MAIN(tst_qcomvariant)
+BOBUIEST_MAIN(tst_qcomvariant)
 #include "tst_qcomvariant.moc"

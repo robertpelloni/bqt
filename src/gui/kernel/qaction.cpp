@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaction.h"
 #include "qactiongroup.h"
@@ -9,7 +9,7 @@
 #include "qevent.h"
 #include "qlist.h"
 #include "qstylehints.h"
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <private/qshortcutmap_p.h>
 #endif
 #include <private/qguiapplication_p.h>
@@ -21,14 +21,14 @@
         return; \
     }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
   internal: guesses a descriptive text from a text suited for a menu entry
  */
-static QString qt_strippedText(QString s)
+static QString bobui_strippedText(QString s)
 {
     s.remove("..."_L1);
     for (int i = 0; i < s.size(); ++i) {
@@ -44,7 +44,7 @@ QActionPrivate *QGuiApplicationPrivate::createActionPrivate() const
 }
 
 QActionPrivate::QActionPrivate() :
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     autorepeat(1),
 #endif
     enabled(1), explicitEnabled(0), explicitEnabledValue(1), visible(1), forceInvisible(0), checkable(0),
@@ -53,14 +53,14 @@ QActionPrivate::QActionPrivate() :
 {
 }
 
-#if QT_CONFIG(shortcut)
-static bool dummy(QObject *, Qt::ShortcutContext) { return false; } // only for GUI testing.
+#if BOBUI_CONFIG(shortcut)
+static bool dummy(QObject *, BobUI::ShortcutContext) { return false; } // only for GUI testing.
 
 QShortcutMap::ContextMatcher QActionPrivate::contextMatcher() const
 {
     return dummy;
 };
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 QActionPrivate::~QActionPrivate() = default;
 
@@ -77,7 +77,7 @@ void QActionPrivate::sendDataChanged()
     emit q->changed();
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 void QActionPrivate::redoGrab(QShortcutMap &map)
 {
     Q_Q(QAction);
@@ -115,7 +115,7 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
             map.setShortcutEnabled(enable, id, q);
     }
 }
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
 bool QActionPrivate::showStatusText(QObject *object, const QString &str)
 {
@@ -142,7 +142,7 @@ QObject *QActionPrivate::menu() const
     that can be added to different user interface components.
     \since 6.0
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     In applications many common commands can be invoked via menus,
     toolbar buttons, and keyboard shortcuts. Since the user expects
@@ -176,7 +176,7 @@ QObject *QActionPrivate::menu() const
     Actions are added to widgets using QWidget::addAction() or
     QGraphicsWidget::addAction(). Note that an action must be added to a
     widget before it can be used. This is also true when the shortcut should
-    be global (i.e., Qt::ApplicationShortcut as Qt::ShortcutContext).
+    be global (i.e., BobUI::ApplicationShortcut as BobUI::ShortcutContext).
 
     Actions can be created as independent objects. But they may
     also be created during the construction of menus. The QMenu class
@@ -184,7 +184,7 @@ QObject *QActionPrivate::menu() const
     use as menu items.
 
 
-    \sa QMenu, QToolBar
+    \sa QMenu, BOBUIoolBar
 */
 
 /*!
@@ -208,10 +208,10 @@ QObject *QActionPrivate::menu() const
     \value TextHeuristicRole This action should be put in the application menu based on the action's text
            as described in the QMenuBar documentation.
     \value ApplicationSpecificRole This action should be put in the application menu with an application specific role
-    \value AboutQtRole This action handles the "About Qt" menu item.
+    \value AboutBobUIRole This action handles the "About BobUI" menu item.
     \value AboutRole This action should be placed where the "About" menu item is in the application menu. The text of
            the menu item will be set to "About <application name>". The application name is fetched from the
-           \c{Info.plist} file in the application's bundle (See \l{Qt for macOS - Deployment}).
+           \c{Info.plist} file in the application's bundle (See \l{BobUI for macOS - Deployment}).
     \value PreferencesRole This action should be placed where the  "Preferences..." menu item is in the application menu.
     \value QuitRole This action should be placed where the Quit menu item is in the application menu.
 
@@ -225,7 +225,7 @@ QObject *QActionPrivate::menu() const
     Constructs an action with \a parent. If \a parent is an action
     group the action will be automatically inserted into the group.
 
-    \note The \a parent argument is optional since Qt 5.7.
+    \note The \a parent argument is optional since BobUI 5.7.
 */
 QAction::QAction(QObject *parent)
     : QAction(*QGuiApplicationPrivate::instance()->createActionPrivate(), parent)
@@ -280,13 +280,13 @@ QAction::QAction(QActionPrivate &dd, QObject *parent)
         d->group->addAction(this);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 /*!
     \property QAction::shortcut
     \brief the action's primary shortcut key
 
-    Valid keycodes for this property can be found in \l Qt::Key and
-    \l Qt::Modifier. There is no default shortcut key.
+    Valid keycodes for this property can be found in \l BobUI::Key and
+    \l BobUI::Modifier. There is no default shortcut key.
 */
 
 /*!
@@ -364,10 +364,10 @@ QList<QKeySequence> QAction::shortcuts() const
     \property QAction::shortcutContext
     \brief the context for the action's shortcut
 
-    Valid values for this property can be found in \l Qt::ShortcutContext.
-    The default value is Qt::WindowShortcut.
+    Valid values for this property can be found in \l BobUI::ShortcutContext.
+    The default value is BobUI::WindowShortcut.
 */
-void QAction::setShortcutContext(Qt::ShortcutContext context)
+void QAction::setShortcutContext(BobUI::ShortcutContext context)
 {
     Q_D(QAction);
     if (d->shortcutContext == context)
@@ -378,7 +378,7 @@ void QAction::setShortcutContext(Qt::ShortcutContext context)
     d->sendDataChanged();
 }
 
-Qt::ShortcutContext QAction::shortcutContext() const
+BobUI::ShortcutContext QAction::shortcutContext() const
 {
     Q_D(const QAction);
     return d->shortcutContext;
@@ -409,7 +409,7 @@ bool QAction::autoRepeat() const
     Q_D(const QAction);
     return d->autorepeat;
 }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 /*!
     \property QAction::font
@@ -452,7 +452,7 @@ QAction::~QAction()
 
     if (d->group)
         d->group->removeAction(this);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (qApp) {
         for (int id : std::as_const(d->shortcutIds)) {
             if (id)
@@ -635,7 +635,7 @@ QString QAction::text() const
     \property QAction::iconText
     \brief the action's descriptive icon text
 
-    If QToolBar::toolButtonStyle is set to a value that permits text to
+    If BOBUIoolBar::toolButtonStyle is set to a value that permits text to
     be displayed, the text defined held in this property appears as a
     label in the relevant tool button.
 
@@ -664,7 +664,7 @@ QString QAction::iconText() const
 {
     Q_D(const QAction);
     if (d->iconText.isEmpty())
-        return qt_strippedText(d->text);
+        return bobui_strippedText(d->text);
     return d->iconText;
 }
 
@@ -694,8 +694,8 @@ QString QAction::toolTip() const
     Q_D(const QAction);
     if (d->tooltip.isEmpty()) {
         if (!d->text.isEmpty())
-            return qt_strippedText(d->text);
-        return qt_strippedText(d->iconText);
+            return bobui_strippedText(d->text);
+        return bobui_strippedText(d->iconText);
     }
     return d->tooltip;
 }
@@ -792,7 +792,7 @@ QString QAction::whatsThis() const
     This property can be set to indicate how the action should be prioritized
     in the user interface.
 
-    For instance, when toolbars have the Qt::ToolButtonTextBesideIcon
+    For instance, when toolbars have the BobUI::ToolButtonTextBesideIcon
     mode set, then actions with LowPriority will not show the text
     labels.
 */
@@ -951,7 +951,7 @@ bool QActionPrivate::setEnabled(bool b, bool byGroup)
         return false;
 
     enabled = b;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     setShortcutEnabled(b, QGuiApplicationPrivate::instance()->shortcutMap);
 #endif
     QPointer guard(q);
@@ -1034,7 +1034,7 @@ bool QAction::event(QEvent *e)
             QCoreApplication::sendEvent(object, e);
     }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (e->type() == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         Q_ASSERT_X(d_func()->shortcutIds.contains(se->shortcutId()),
@@ -1046,7 +1046,7 @@ bool QAction::event(QEvent *e)
             activate(Trigger);
         return true;
     }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
     return QObject::event(e);
 }
 
@@ -1230,7 +1230,7 @@ void QAction::setMenuObject(QObject *object)
     toolbar, but not in menus. If true, the icon (if valid) is shown in the menu, when it
     is false, it is not shown.
 
-    The default is to follow whether the Qt::AA_DontShowIconsInMenus attribute
+    The default is to follow whether the BobUI::AA_DontShowIconsInMenus attribute
     is set for the application. Explicitly settings this property overrides
     the presence (or absence) of the attribute.
 
@@ -1247,7 +1247,7 @@ void QAction::setIconVisibleInMenu(bool visible)
         d->iconVisibleInMenu = visible;
         // Only send data changed if we really need to.
         if (oldValue != -1
-            || visible == !QCoreApplication::testAttribute(Qt::AA_DontShowIconsInMenus)) {
+            || visible == !QCoreApplication::testAttribute(BobUI::AA_DontShowIconsInMenus)) {
             d->sendDataChanged();
         }
     }
@@ -1257,7 +1257,7 @@ bool QAction::isIconVisibleInMenu() const
 {
     Q_D(const QAction);
     if (d->iconVisibleInMenu == -1) {
-        return !QCoreApplication::testAttribute(Qt::AA_DontShowIconsInMenus);
+        return !QCoreApplication::testAttribute(BobUI::AA_DontShowIconsInMenus);
     }
     return d->iconVisibleInMenu;
 }
@@ -1270,7 +1270,7 @@ bool QAction::isIconVisibleInMenu() const
     context menus. If true, the shortcut (if valid) is shown when the action is
     shown via a context menu, when it is false, it is not shown.
 
-    The default is to follow whether the Qt::AA_DontShowShortcutsInContextMenus attribute
+    The default is to follow whether the BobUI::AA_DontShowShortcutsInContextMenus attribute
     is set for the application. Explicitly setting this property overrides the attribute.
 
     \sa shortcut, QCoreApplication::setAttribute()
@@ -1283,7 +1283,7 @@ void QAction::setShortcutVisibleInContextMenu(bool visible)
         d->shortcutVisibleInContextMenu = visible;
         // Only send data changed if we really need to.
         if (oldValue != -1
-            || visible == !QCoreApplication::testAttribute(Qt::AA_DontShowShortcutsInContextMenus)) {
+            || visible == !QCoreApplication::testAttribute(BobUI::AA_DontShowShortcutsInContextMenus)) {
             d->sendDataChanged();
         }
     }
@@ -1293,11 +1293,11 @@ bool QAction::isShortcutVisibleInContextMenu() const
 {
     Q_D(const QAction);
     if (d->shortcutVisibleInContextMenu == -1)
-        return !QCoreApplication::testAttribute(Qt::AA_DontShowShortcutsInContextMenus);
+        return !QCoreApplication::testAttribute(BobUI::AA_DontShowShortcutsInContextMenus);
     return d->shortcutVisibleInContextMenu;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAction *action)
 {
     QDebugStateSaver saver(d);
@@ -1309,21 +1309,21 @@ Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAction *action)
             d << " toolTip=" << action->toolTip();
         if (action->isCheckable())
             d << " checked=" << action->isChecked();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         if (!action->shortcuts().isEmpty())
             d << " shortcuts=" << action->shortcuts();
 #endif
         d << " menuRole=";
-        QtDebugUtils::formatQEnum(d, action->menuRole());
+        BobUIDebugUtils::formatQEnum(d, action->menuRole());
         d << " enabled=" << action->isEnabled();
         d << " visible=" << action->isVisible();
     }
     d << ')';
     return d;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #undef QAPP_CHECK
 

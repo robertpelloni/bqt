@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_BenchlibWalltime: public QObject
 {
@@ -18,14 +18,14 @@ private slots:
 void tst_BenchlibWalltime::waitForOneThousand()
 {
     QBENCHMARK {
-        QTest::qWait(1000);
+        BOBUIest::qWait(1000);
     }
 }
 
 void tst_BenchlibWalltime::waitForFourThousand()
 {
     QBENCHMARK {
-        QTest::qWait(4000);
+        BOBUIest::qWait(4000);
     }
 }
 
@@ -39,6 +39,6 @@ void tst_BenchlibWalltime::qbenchmark_once()
 }
 
 
-QTEST_MAIN(tst_BenchlibWalltime)
+BOBUIEST_MAIN(tst_BenchlibWalltime)
 
 #include "tst_benchlibwalltime.moc"

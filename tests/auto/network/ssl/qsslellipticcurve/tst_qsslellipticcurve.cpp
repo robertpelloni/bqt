@@ -1,11 +1,11 @@
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 #include <QSslSocket>
 #endif // ssl
 
@@ -16,7 +16,7 @@ class tst_QSslEllipticCurve : public QObject
 {
     Q_OBJECT
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 private Q_SLOTS:
     void initTestCase();
     void constExpr();
@@ -28,7 +28,7 @@ private Q_SLOTS:
 #endif // Feature 'ssl'.
 };
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
 void tst_QSslEllipticCurve::initTestCase()
 {
@@ -58,22 +58,22 @@ void tst_QSslEllipticCurve::construction()
 
 void tst_QSslEllipticCurve::fromShortName_data()
 {
-    QTest::addColumn<QString>("shortName");
-    QTest::addColumn<QSslEllipticCurve>("curve");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QString>("shortName");
+    BOBUIest::addColumn<QSslEllipticCurve>("curve");
+    BOBUIest::addColumn<bool>("valid");
 
-    QTest::newRow("QString()") << QString() << QSslEllipticCurve() << false;
-    QTest::newRow("\"\"") << QString("") << QSslEllipticCurve() << false;
-    QTest::newRow("does-not-exist") << QStringLiteral("does-not-exist") << QSslEllipticCurve() << false;
+    BOBUIest::newRow("QString()") << QString() << QSslEllipticCurve() << false;
+    BOBUIest::newRow("\"\"") << QString("") << QSslEllipticCurve() << false;
+    BOBUIest::newRow("does-not-exist") << QStringLiteral("does-not-exist") << QSslEllipticCurve() << false;
     const auto supported = QSslConfiguration::supportedEllipticCurves();
     for (QSslEllipticCurve ec : supported) {
         const QString sN = ec.shortName();
-        QTest::newRow(qPrintable("supported EC \"" + sN + '"')) << sN << ec << true;
+        BOBUIest::newRow(qPrintable("supported EC \"" + sN + '"')) << sN << ec << true;
         // At least in the OpenSSL impl, the short name is case-sensitive. That feels odd.
         //const QString SN = sN.toUpper();
-        //QTest::newRow(qPrintable("supported EC \"" + SN + '"')) << SN << ec << true;
+        //BOBUIest::newRow(qPrintable("supported EC \"" + SN + '"')) << SN << ec << true;
         //const QString sn = sN.toLower();
-        //QTest::newRow(qPrintable("supported EC \"" + sn + '"')) << sn << ec << true;
+        //BOBUIest::newRow(qPrintable("supported EC \"" + sn + '"')) << sn << ec << true;
     }
 }
 
@@ -92,17 +92,17 @@ void tst_QSslEllipticCurve::fromShortName()
 
 void tst_QSslEllipticCurve::fromLongName_data()
 {
-    QTest::addColumn<QString>("longName");
-    QTest::addColumn<QSslEllipticCurve>("curve");
-    QTest::addColumn<bool>("valid");
+    BOBUIest::addColumn<QString>("longName");
+    BOBUIest::addColumn<QSslEllipticCurve>("curve");
+    BOBUIest::addColumn<bool>("valid");
 
-    QTest::newRow("QString()") << QString() << QSslEllipticCurve() << false;
-    QTest::newRow("\"\"") << QString("") << QSslEllipticCurve() << false;
-    QTest::newRow("does-not-exist") << QStringLiteral("does-not-exist") << QSslEllipticCurve() << false;
+    BOBUIest::newRow("QString()") << QString() << QSslEllipticCurve() << false;
+    BOBUIest::newRow("\"\"") << QString("") << QSslEllipticCurve() << false;
+    BOBUIest::newRow("does-not-exist") << QStringLiteral("does-not-exist") << QSslEllipticCurve() << false;
     const auto supported = QSslConfiguration::supportedEllipticCurves();
     for (QSslEllipticCurve ec : supported) {
         const QString lN = ec.longName();
-        QTest::newRow(qPrintable("supported EC \"" + lN + '"')) << lN << ec << true;
+        BOBUIest::newRow(qPrintable("supported EC \"" + lN + '"')) << lN << ec << true;
     }
 }
 
@@ -121,5 +121,5 @@ void tst_QSslEllipticCurve::fromLongName()
 
 #endif // Feature 'ssl'.
 
-QTEST_MAIN(tst_QSslEllipticCurve)
+BOBUIEST_MAIN(tst_QSslEllipticCurve)
 #include "tst_qsslellipticcurve.moc"

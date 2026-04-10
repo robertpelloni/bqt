@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "browser.h"
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QMainWindow mainWin;
-    mainWin.setWindowTitle(QApplication::translate("MainWindow", "Qt SQL Browser"));
+    mainWin.setWindowTitle(QApplication::translate("MainWindow", "BobUI SQL Browser"));
 
     Browser browser(&mainWin);
     mainWin.setCentralWidget(&browser);
@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
     QMenu *helpMenu = mainWin.menuBar()->addMenu(QObject::tr("&Help"));
     helpMenu->addAction(QApplication::translate("MainWindow", "About"),
                         &browser, &Browser::about);
-    helpMenu->addAction(QApplication::translate("MainWindow", "About Qt"),
-                        qApp, &QApplication::aboutQt);
+    helpMenu->addAction(QApplication::translate("MainWindow", "About BobUI"),
+                        qApp, &QApplication::aboutBobUI);
 
     QObject::connect(&browser, &Browser::statusMessage,
                      &mainWin, [&mainWin](const QString &text) { mainWin.statusBar()->showMessage(text); });
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     mainWin.show();
     if (QSqlDatabase::connectionNames().isEmpty())
         QMetaObject::invokeMethod(&browser, &Browser::openNewConnectionDialog,
-                                  Qt::QueuedConnection);
+                                  BobUI::QueuedConnection);
 
     return app.exec();
 }

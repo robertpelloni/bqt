@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILEDEVICE_P_H
 #define QFILEDEVICE_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -24,17 +24,17 @@
 #  include <sys/types.h> // for mode_t
 #  include <sys/stat.h> // for mode_t constants
 #elif defined(Q_OS_WINDOWS)
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <winnt.h> // for SECURITY_DESCRIPTOR
 #  include <optional>
-#  if defined(QT_BOOTSTRAPPED)
-#    define QT_FEATURE_fslibs -1
+#  if defined(BOBUI_BOOTSTRAPPED)
+#    define BOBUI_FEATURE_fslibs -1
 #  else
-#    define QT_FEATURE_fslibs 1
-#  endif // QT_BOOTSTRAPPED
+#    define BOBUI_FEATURE_fslibs 1
+#  endif // BOBUI_BOOTSTRAPPED
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractFileEngine;
 class QFSFileEngine;
@@ -80,7 +80,7 @@ inline bool QFileDevicePrivate::ensureFlushed() const
 }
 
 #ifdef Q_OS_UNIX
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 constexpr mode_t toMode_t(QFileDevice::Permissions permissions)
 {
@@ -106,7 +106,7 @@ constexpr mode_t toMode_t(QFileDevice::Permissions permissions)
     return mode;
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 #elif defined(Q_OS_WINDOWS)
 
 class QNativeFilePermissions
@@ -128,7 +128,7 @@ private:
             sizeof(ACL) + (sizeof(ACCESS_ALLOWED_ACE) + SECURITY_MAX_SID_SIZE) * MaxNumACEs;
 
     SECURITY_ATTRIBUTES sa;
-#if QT_CONFIG(fslibs)
+#if BOBUI_CONFIG(fslibs)
     SECURITY_DESCRIPTOR sd;
     alignas(DWORD) char aclStorage[MaxACLSize];
 #endif
@@ -136,6 +136,6 @@ private:
 
 #endif // Q_OS_UNIX
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILEDEVICE_P_H

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 #include <qlist.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qvarlengtharray.h>
 #include <qwineventnotifier.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
 #include <algorithm>
 #include <memory>
@@ -37,7 +37,7 @@ void tst_QWinEventNotifier::simple_activated()
 {
     simpleActivated = true;
     ResetEvent((HANDLE)simpleHEvent);
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QWinEventNotifier::simple_timerSet()
@@ -47,9 +47,9 @@ void tst_QWinEventNotifier::simple_timerSet()
 
 void tst_QWinEventNotifier::simple_data()
 {
-    QTest::addColumn<bool>("resetManually");
-    QTest::newRow("manual_reset") << true;
-    QTest::newRow("auto_reset") << false;
+    BOBUIest::addColumn<bool>("resetManually");
+    BOBUIest::newRow("manual_reset") << true;
+    BOBUIest::newRow("auto_reset") << false;
 }
 
 void tst_QWinEventNotifier::simple()
@@ -64,8 +64,8 @@ void tst_QWinEventNotifier::simple()
 
     SetEvent((HANDLE)simpleHEvent);
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Timed out");
 
     QVERIFY(simpleActivated);
@@ -73,10 +73,10 @@ void tst_QWinEventNotifier::simple()
 
     simpleActivated = false;
 
-    QTimer::singleShot(3000, this, SLOT(simple_timerSet()));
+    BOBUIimer::singleShot(3000, this, SLOT(simple_timerSet()));
 
-    QTestEventLoop::instance().enterLoop(30);
-    if (QTestEventLoop::instance().timeout())
+    BOBUIestEventLoop::instance().enterLoop(30);
+    if (BOBUIestEventLoop::instance().timeout())
         QFAIL("Timed out");
 
     QVERIFY(simpleActivated);
@@ -97,8 +97,8 @@ void tst_QWinEventNotifier::blockedWaiting()
     ResetEvent(simpleHEvent);
     n.setEnabled(true);
 
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(BOBUIestEventLoop::instance().timeout());
     QVERIFY(!simpleActivated);
 }
 
@@ -152,8 +152,8 @@ void tst_QWinEventNotifier::manyNotifiers()
         return EventWithNotifierPtr(new EventWithNotifier);
     });
 
-    QTestEventLoop loop;
-    auto connection = connect(events.at(8).get(), &EventWithNotifier::activated, &loop, &QTestEventLoop::exitLoop);
+    BOBUIestEventLoop loop;
+    auto connection = connect(events.at(8).get(), &EventWithNotifier::activated, &loop, &BOBUIestEventLoop::exitLoop);
     for (const auto &ewn : events) {
         connect(ewn.get(), &EventWithNotifier::activated, [&events, &loop] () {
             if (std::all_of(events.cbegin(), events.cend(),
@@ -189,21 +189,21 @@ using Indices = QList<int>;
 
 void tst_QWinEventNotifier::disableNotifiersInActivatedSlot_data()
 {
-    QTest::addColumn<int>("count");
-    QTest::addColumn<Indices>("notifiersToSignal");
-    QTest::addColumn<Indices>("notifiersToDisable");
-    QTest::addColumn<bool>("deleteNotifiers");
-    QTest::newRow("disable_signaled") << 3 << Indices{1} << Indices{1} << false;
-    QTest::newRow("disable_signaled2") << 3 << Indices{1, 2} << Indices{1} << false;
-    QTest::newRow("disable_before_signaled") << 3 << Indices{1} << Indices{0, 1} << false;
-    QTest::newRow("disable_after_signaled") << 3 << Indices{1} << Indices{1, 2} << false;
-    QTest::newRow("delete_signaled") << 3 << Indices{1} << Indices{1} << true;
-    QTest::newRow("delete_before_signaled1") << 3 << Indices{1} << Indices{0} << true;
-    QTest::newRow("delete_before_signaled2") << 3 << Indices{1} << Indices{0, 1} << true;
-    QTest::newRow("delete_before_signaled3") << 4 << Indices{3, 1} << Indices{0, 1} << true;
-    QTest::newRow("delete_after_signaled1") << 3 << Indices{1} << Indices{1, 2} << true;
-    QTest::newRow("delete_after_signaled2") << 4 << Indices{1, 3} << Indices{1, 2} << true;
-    QTest::newRow("delete_after_signaled3") << 5 << Indices{1} << Indices{1, 4} << true;
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<Indices>("notifiersToSignal");
+    BOBUIest::addColumn<Indices>("notifiersToDisable");
+    BOBUIest::addColumn<bool>("deleteNotifiers");
+    BOBUIest::newRow("disable_signaled") << 3 << Indices{1} << Indices{1} << false;
+    BOBUIest::newRow("disable_signaled2") << 3 << Indices{1, 2} << Indices{1} << false;
+    BOBUIest::newRow("disable_before_signaled") << 3 << Indices{1} << Indices{0, 1} << false;
+    BOBUIest::newRow("disable_after_signaled") << 3 << Indices{1} << Indices{1, 2} << false;
+    BOBUIest::newRow("delete_signaled") << 3 << Indices{1} << Indices{1} << true;
+    BOBUIest::newRow("delete_before_signaled1") << 3 << Indices{1} << Indices{0} << true;
+    BOBUIest::newRow("delete_before_signaled2") << 3 << Indices{1} << Indices{0, 1} << true;
+    BOBUIest::newRow("delete_before_signaled3") << 4 << Indices{3, 1} << Indices{0, 1} << true;
+    BOBUIest::newRow("delete_after_signaled1") << 3 << Indices{1} << Indices{1, 2} << true;
+    BOBUIest::newRow("delete_after_signaled2") << 4 << Indices{1, 3} << Indices{1, 2} << true;
+    BOBUIest::newRow("delete_after_signaled3") << 5 << Indices{1} << Indices{1, 4} << true;
 }
 
 void tst_QWinEventNotifier::disableNotifiersInActivatedSlot()
@@ -232,16 +232,16 @@ void tst_QWinEventNotifier::disableNotifiersInActivatedSlot()
             }
             if (std::all_of(notifiersToSignal.begin(), notifiersToSignal.end(),
                             isActivatedOrDisabled)) {
-                QTimer::singleShot(0, &QTestEventLoop::instance(), SLOT(exitLoop()));
+                BOBUIimer::singleShot(0, &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
             }
         });
     }
     for (int i : notifiersToSignal)
         SetEvent(events.at(i)->eventHandle());
-    QTestEventLoop::instance().enterLoop(30);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(30);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
-QTEST_MAIN(tst_QWinEventNotifier)
+BOBUIEST_MAIN(tst_QWinEventNotifier)
 
 #include "tst_qwineventnotifier.moc"

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 
 #include <QRadioButton>
@@ -19,7 +19,7 @@ public:
     virtual ~tst_QRadioButton(){};
 
 private slots:
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void task190739_focus();
 #endif
     void minimumSizeHint();
@@ -27,11 +27,11 @@ private slots:
 private:
 };
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QRadioButton::task190739_focus()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget widget;
@@ -42,7 +42,7 @@ void tst_QRadioButton::task190739_focus()
 
     QRadioButton radio1(&widget);
     radio1.setText("radio1");
-    radio1.setFocusPolicy(Qt::TabFocus);
+    radio1.setFocusPolicy(BobUI::TabFocus);
     radio1.setShortcut(QKeySequence("Ctrl+O"));
 
     QVBoxLayout layout(&widget);
@@ -52,18 +52,18 @@ void tst_QRadioButton::task190739_focus()
 
     widget.show();
     widget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&widget));
 
     QVERIFY(edit.hasFocus());
     QVERIFY(!radio1.isChecked());
 
-    QTest::keyClick(&edit, Qt::Key_O, Qt::ControlModifier, 20);
-    QTRY_VERIFY(radio1.isChecked());
+    BOBUIest::keyClick(&edit, BobUI::Key_O, BobUI::ControlModifier, 20);
+    BOBUIRY_VERIFY(radio1.isChecked());
     QVERIFY(edit.hasFocus());
     QVERIFY(!radio1.hasFocus());
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QRadioButton::minimumSizeHint()
 {
@@ -72,5 +72,5 @@ void tst_QRadioButton::minimumSizeHint()
 }
 
 
-QTEST_MAIN(tst_QRadioButton)
+BOBUIEST_MAIN(tst_QRadioButton)
 #include "tst_qradiobutton.moc"

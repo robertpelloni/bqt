@@ -1,8 +1,8 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qlayout.h>
 #include "qstyle.h"
 #include <qevent.h>
@@ -14,8 +14,8 @@
 #include <qstyleoption.h>
 #include <qscrollbar.h>
 #include <qprogressbar.h>
-#include <qtoolbutton.h>
-#include <qtoolbar.h>
+#include <bobuioolbutton.h>
+#include <bobuioolbar.h>
 
 #include <qcommonstyle.h>
 #include <qproxystyle.h>
@@ -35,9 +35,9 @@
 
 #include <algorithm>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QStyle : public QObject
 {
@@ -47,11 +47,11 @@ private slots:
     void init();
     void drawItemPixmap();
     void cleanup();
-#ifndef QT_NO_STYLE_FUSION
+#ifndef BOBUI_NO_STYLE_FUSION
     void testFusionStyle();
 #endif
     void testWindowsStyle();
-#if defined(Q_OS_WIN) && !defined(QT_NO_STYLE_WINDOWSVISTA)
+#if defined(Q_OS_WIN) && !defined(BOBUI_NO_STYLE_WINDOWSVISTA)
     void testWindowsVistaStyle();
 #endif
 #ifdef Q_OS_MAC
@@ -59,7 +59,7 @@ private slots:
 #endif
     void testStyleFactory();
     void testProxyStyle();
-#if !defined(QT_NO_STYLE_WINDOWS) && !defined(QT_NO_STYLE_FUSION)
+#if !defined(BOBUI_NO_STYLE_WINDOWS) && !defined(BOBUI_NO_STYLE_FUSION)
     void progressBarChangeStyle();
 #endif
     void defaultFont();
@@ -91,7 +91,7 @@ protected:
 
 void tst_QStyle::init()
 {
-    QTest::failOnWarning(QRegularExpression("QPainter:.*"));
+    BOBUIest::failOnWarning(QRegularExpression("QPainter:.*"));
 }
 
 void tst_QStyle::cleanup()
@@ -102,10 +102,10 @@ void tst_QStyle::cleanup()
 void tst_QStyle::testStyleFactory()
 {
     const QStringList keys = QStyleFactory::keys();
-#ifndef QT_NO_STYLE_FUSION
+#ifndef BOBUI_NO_STYLE_FUSION
     QVERIFY(keys.contains("Fusion"));
 #endif
-#ifndef QT_NO_STYLE_WINDOWS
+#ifndef BOBUI_NO_STYLE_WINDOWS
     QVERIFY(keys.contains("Windows"));
 #endif
 
@@ -165,7 +165,7 @@ void tst_QStyle::drawItemPixmap()
     testWidget.showNormal();
 
     QImage image = testWidget.grab().toImage();
-    const QRgb green = QColor(Qt::green).rgb();
+    const QRgb green = QColor(BobUI::green).rgb();
     QVERIFY(image.reinterpretAsFormat(QImage::Format_RGB32));
     const QRgb *bits = reinterpret_cast<const QRgb *>(image.constBits());
     const QRgb *end = bits + image.sizeInBytes() / sizeof(QRgb);
@@ -247,9 +247,9 @@ bool tst_QStyle::testAllFunctions(QStyle *style)
         }
     }
 
-    style->itemPixmapRect(QRect(0, 0, 100, 100), Qt::AlignHCenter, QPixmap(200, 200));
+    style->itemPixmapRect(QRect(0, 0, 100, 100), BobUI::AlignHCenter, QPixmap(200, 200));
     style->itemTextRect(QFontMetrics(QApplication::font()), QRect(0, 0, 100, 100),
-                        Qt::AlignHCenter, true, QLatin1String("Test"));
+                        BobUI::AlignHCenter, true, QLatin1String("Test"));
 
     return testScrollBarSubControls(style);
 }
@@ -257,11 +257,11 @@ bool tst_QStyle::testAllFunctions(QStyle *style)
 bool tst_QStyle::testScrollBarSubControls(const QStyle *style)
 {
     const bool isMacStyle = style->objectName().compare(QLatin1String("macos"),
-                                                        Qt::CaseInsensitive) == 0;
+                                                        BobUI::CaseInsensitive) == 0;
     QScrollBar scrollBar;
     setFrameless(&scrollBar);
     scrollBar.show();
-    const QStyleOptionSlider opt = qt_qscrollbarStyleOption(&scrollBar);
+    const QStyleOptionSlider opt = bobui_qscrollbarStyleOption(&scrollBar);
     for (int sc : {1, 2, 4, 8}) {
         const auto subControl = static_cast<QStyle::SubControl>(sc);
         const QRect sr = style->subControlRect(QStyle::CC_ScrollBar, &opt, subControl, &scrollBar);
@@ -277,7 +277,7 @@ bool tst_QStyle::testScrollBarSubControls(const QStyle *style)
     return true;
 }
 
-#ifndef QT_NO_STYLE_FUSION
+#ifndef BOBUI_NO_STYLE_FUSION
 void tst_QStyle::testFusionStyle()
 {
     QScopedPointer<QStyle> fstyle(QStyleFactory::create("Fusion"));
@@ -294,7 +294,7 @@ void tst_QStyle::testWindowsStyle()
     QVERIFY(testAllFunctions(wstyle.data()));
     lineUpLayoutTest(wstyle.data());
 
-    // Tests drawing indeterminate progress with 0 size: QTBUG-15973
+    // Tests drawing indeterminate progress with 0 size: BOBUIBUG-15973
     QStyleOptionProgressBar pb;
     pb.rect = QRect(0,0,-9,0);
     QPixmap surface(QSize(200, 200));
@@ -302,7 +302,7 @@ void tst_QStyle::testWindowsStyle()
     wstyle->drawControl(QStyle::CE_ProgressBar, &pb, &painter, nullptr);
 }
 
-#if defined(Q_OS_WIN) && !defined(QT_NO_STYLE_WINDOWSVISTA)
+#if defined(Q_OS_WIN) && !defined(BOBUI_NO_STYLE_WINDOWSVISTA)
 void tst_QStyle::testWindowsVistaStyle()
 {
     QScopedPointer<QStyle> vistastyle(QStyleFactory::create("WindowsVista"));
@@ -325,12 +325,12 @@ void MyWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     QPixmap big(400,400);
-    big.fill(Qt::green);
-    style()->drawItemPixmap(&p, rect(), Qt::AlignCenter, big);
+    big.fill(BobUI::green);
+    style()->drawItemPixmap(&p, rect(), BobUI::AlignCenter, big);
 }
 
 
-#if !defined(QT_NO_STYLE_WINDOWS) && !defined(QT_NO_STYLE_FUSION)
+#if !defined(BOBUI_NO_STYLE_WINDOWS) && !defined(BOBUI_NO_STYLE_FUSION)
 void tst_QStyle::progressBarChangeStyle()
 {
     //test a crashing situation (task 143530)
@@ -346,10 +346,10 @@ void tst_QStyle::progressBarChangeStyle()
 
     progress->setStyle(style2);
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     delete progress;
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 
     //before the correction, there would be a crash here
     delete style1;
@@ -379,7 +379,7 @@ void tst_QStyle::lineUpLayoutTest(QStyle *style)
     for (QWidget *w : children)
         w->setStyle(style);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
 
 #ifdef Q_OS_WIN
     const int limit = 2; // Aero style has larger margins
@@ -432,7 +432,7 @@ void tst_QStyle::testDrawingShortcuts()
     {
         QWidget w;
         setFrameless(&w);
-        QToolButton *tb = new QToolButton(&w);
+        BOBUIoolButton *tb = new BOBUIoolButton(&w);
         tb->setText("&abc");
         QScopedPointer<DrawTextStyle> dts(new DrawTextStyle);
         w.show();
@@ -441,12 +441,12 @@ void tst_QStyle::testDrawingShortcuts()
         QStyleOptionToolButton sotb;
         sotb.initFrom(tb);
         bool showMnemonic = dts->styleHint(QStyle::SH_UnderlineShortcut, &sotb, tb);
-        QVERIFY(dts->alignment & (showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic));
+        QVERIFY(dts->alignment & (showMnemonic ? BobUI::TextShowMnemonic : BobUI::TextHideMnemonic));
     }
     {
-        QToolBar w;
+        BOBUIoolBar w;
         setFrameless(&w);
-        QToolButton *tb = new QToolButton(&w);
+        BOBUIoolButton *tb = new BOBUIoolButton(&w);
         tb->setText("&abc");
         QScopedPointer<DrawTextStyle> dts(new DrawTextStyle);
         w.addWidget(tb);
@@ -456,7 +456,7 @@ void tst_QStyle::testDrawingShortcuts()
         QStyleOptionToolButton sotb;
         sotb.initFrom(tb);
         bool showMnemonic = dts->styleHint(QStyle::SH_UnderlineShortcut, &sotb, tb);
-        QVERIFY(dts->alignment & (showMnemonic ? Qt::TextShowMnemonic : Qt::TextHideMnemonic));
+        QVERIFY(dts->alignment & (showMnemonic ? BobUI::TextShowMnemonic : BobUI::TextHideMnemonic));
      }
 }
 
@@ -521,8 +521,8 @@ public:
 
 void tst_QStyle::testProxyCalled()
 {
-    QToolButton b;
-    b.setArrowType(Qt::DownArrow);
+    BOBUIoolButton b;
+    b.setArrowType(BobUI::DownArrow);
     QStyleOptionToolButton opt;
     opt.initFrom(&b);
     opt.features |= QStyleOptionToolButton::Arrow;
@@ -611,7 +611,7 @@ public:
         return QProxyStyle::generatedIconPixmap(iconMode, pixmap, opt);
     }
 
-    int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2, Qt::Orientation orientation, const QStyleOption *option, const QWidget *widget) const override {
+    int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2, BobUI::Orientation orientation, const QStyleOption *option, const QWidget *widget) const override {
         checkStyle(QString::asprintf("QSizePolicy::ControlType(%i), QSizePolicy::ControlType(%i)", control1, control2).toLatin1(), option);
         return QProxyStyle::layoutSpacing(control1, control2, orientation, option, widget);
     }
@@ -650,43 +650,43 @@ void tst_QStyle::testStyleOptionInit()
 
 void tst_QStyle::sliderPositionFromValue_data()
 {
-    QTest::addColumn<int>("min");
-    QTest::addColumn<int>("max");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<int>("span");
-    QTest::addColumn<bool>("upsideDown");
-    QTest::addColumn<int>("position");
+    BOBUIest::addColumn<int>("min");
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("span");
+    BOBUIest::addColumn<bool>("upsideDown");
+    BOBUIest::addColumn<int>("position");
 
-    QTest::addRow("no span") << 12 << 56 << 34 << 0 << false << 0;
-    QTest::addRow("no span inverse") << 12 << 56 << 34 << 0 << true << 0;
+    BOBUIest::addRow("no span") << 12 << 56 << 34 << 0 << false << 0;
+    BOBUIest::addRow("no span inverse") << 12 << 56 << 34 << 0 << true << 0;
 
-    QTest::addRow("value too small") << 34 << 56 << 12 << 2000 << false << 0;
-    QTest::addRow("value too small inverse") << 34 << 56 << 12 << 2000 << true << 2000;
+    BOBUIest::addRow("value too small") << 34 << 56 << 12 << 2000 << false << 0;
+    BOBUIest::addRow("value too small inverse") << 34 << 56 << 12 << 2000 << true << 2000;
 
-    QTest::addRow("no-range") << 12 << 12 << 12 << 2000 << false << 0;
-    QTest::addRow("no-range-inverse") << 12 << 12 << 12 << 2000 << true << 0;
+    BOBUIest::addRow("no-range") << 12 << 12 << 12 << 2000 << false << 0;
+    BOBUIest::addRow("no-range-inverse") << 12 << 12 << 12 << 2000 << true << 0;
 
-    QTest::addRow("close-to-max") << 12 << 34 << 33 << 2000 << false << 1909;
-    QTest::addRow("at-max") << 12 << 34 << 34 << 2000 << false << 2000;
-    QTest::addRow("value too large") << 12 << 34 << 35 << 2000 << false << 2000;
-    QTest::addRow("close-to-max-inverse") << 12 << 34 << 33 << 2000 << true << 91;
-    QTest::addRow("at-max-inverse") << 12 << 34 << 34 << 2000 << true << 0;
-    QTest::addRow("value too large-inverse") << 12 << 34 << 35 << 2000 << true << 0;
+    BOBUIest::addRow("close-to-max") << 12 << 34 << 33 << 2000 << false << 1909;
+    BOBUIest::addRow("at-max") << 12 << 34 << 34 << 2000 << false << 2000;
+    BOBUIest::addRow("value too large") << 12 << 34 << 35 << 2000 << false << 2000;
+    BOBUIest::addRow("close-to-max-inverse") << 12 << 34 << 33 << 2000 << true << 91;
+    BOBUIest::addRow("at-max-inverse") << 12 << 34 << 34 << 2000 << true << 0;
+    BOBUIest::addRow("value too large-inverse") << 12 << 34 << 35 << 2000 << true << 0;
 
-    QTest::addRow("big-range") << 100000 << 700000 << 250000 << 2000 << false << 500;
-    QTest::addRow("big-range-inverse") << 100000 << 700000 << 250000 << 2000 << true << 1500;
+    BOBUIest::addRow("big-range") << 100000 << 700000 << 250000 << 2000 << false << 500;
+    BOBUIest::addRow("big-range-inverse") << 100000 << 700000 << 250000 << 2000 << true << 1500;
 
-    QTest::addRow("across-zero") << -1000 << 1000 << -500 << 100 << false << 25;
-    QTest::addRow("across-zero-inverse") << -1000 << 1000 << -500 << 100 << true << 75;
+    BOBUIest::addRow("across-zero") << -1000 << 1000 << -500 << 100 << false << 25;
+    BOBUIest::addRow("across-zero-inverse") << -1000 << 1000 << -500 << 100 << true << 75;
 
-    QTest::addRow("span>range") << 0 << 100 << 60 << 2000 << false << 1200;
-    QTest::addRow("span>range-inverse") << 0 << 100 << 60 << 2000 << true << 800;
+    BOBUIest::addRow("span>range") << 0 << 100 << 60 << 2000 << false << 1200;
+    BOBUIest::addRow("span>range-inverse") << 0 << 100 << 60 << 2000 << true << 800;
 
-    QTest::addRow("overflow1 (QTBUG-101581)") << -1 << INT_MAX << 235 << 891 << false << 0;
-    QTest::addRow("overflow2") << INT_MIN << INT_MAX << 10 << 100 << false << 50;
-    QTest::addRow("overflow2-inverse") << INT_MIN << INT_MAX << 10 << 100 << true << 49;
-    QTest::addRow("overflow3") << INT_MIN << INT_MAX << -10 << 100 << false << 49;
-    QTest::addRow("overflow3-inverse") << INT_MIN << INT_MAX << -10 << 100 << true << 50;
+    BOBUIest::addRow("overflow1 (BOBUIBUG-101581)") << -1 << INT_MAX << 235 << 891 << false << 0;
+    BOBUIest::addRow("overflow2") << INT_MIN << INT_MAX << 10 << 100 << false << 50;
+    BOBUIest::addRow("overflow2-inverse") << INT_MIN << INT_MAX << 10 << 100 << true << 49;
+    BOBUIest::addRow("overflow3") << INT_MIN << INT_MAX << -10 << 100 << false << 49;
+    BOBUIest::addRow("overflow3-inverse") << INT_MIN << INT_MAX << -10 << 100 << true << 50;
 }
 
 void tst_QStyle::sliderPositionFromValue()
@@ -703,40 +703,40 @@ void tst_QStyle::sliderPositionFromValue()
 
 void tst_QStyle::sliderValueFromPosition_data()
 {
-    QTest::addColumn<int>("min");
-    QTest::addColumn<int>("max");
-    QTest::addColumn<int>("position");
-    QTest::addColumn<int>("span");
-    QTest::addColumn<bool>("upsideDown");
-    QTest::addColumn<int>("value");
+    BOBUIest::addColumn<int>("min");
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::addColumn<int>("position");
+    BOBUIest::addColumn<int>("span");
+    BOBUIest::addColumn<bool>("upsideDown");
+    BOBUIest::addColumn<int>("value");
 
-    QTest::addRow("position zero") << 0 << 100 << 0 << 2000 << false << 0;
-    QTest::addRow("position zero inverse") << 0 << 100 << 0 << 2000 << true << 100;
+    BOBUIest::addRow("position zero") << 0 << 100 << 0 << 2000 << false << 0;
+    BOBUIest::addRow("position zero inverse") << 0 << 100 << 0 << 2000 << true << 100;
 
-    QTest::addRow("span zero") << 0 << 100 << 1200 << 0 << false << 0;
-    QTest::addRow("span zero inverse") << 0 << 100 << 1200 << 0 << true << 100;
+    BOBUIest::addRow("span zero") << 0 << 100 << 1200 << 0 << false << 0;
+    BOBUIest::addRow("span zero inverse") << 0 << 100 << 1200 << 0 << true << 100;
 
-    QTest::addRow("position > span") << -300 << -200 << 2 << 1 << false << -200;
-    QTest::addRow("position > span inverse") << -300 << -200 << 2 << 1 << true << -300;
+    BOBUIest::addRow("position > span") << -300 << -200 << 2 << 1 << false << -200;
+    BOBUIest::addRow("position > span inverse") << -300 << -200 << 2 << 1 << true << -300;
 
-    QTest::addRow("large") << 0 << 100 << 1200 << 2000 << false << 60;
-    QTest::addRow("large-inverse") << 0 << 100 << 1200 << 2000 << true << 40;
+    BOBUIest::addRow("large") << 0 << 100 << 1200 << 2000 << false << 60;
+    BOBUIest::addRow("large-inverse") << 0 << 100 << 1200 << 2000 << true << 40;
 
-    QTest::addRow("normal") << 0 << 100 << 12 << 20 << false << 60;
-    QTest::addRow("inverse") << 0 << 100 << 12 << 20 << true << 40;
+    BOBUIest::addRow("normal") << 0 << 100 << 12 << 20 << false << 60;
+    BOBUIest::addRow("inverse") << 0 << 100 << 12 << 20 << true << 40;
 
-    QTest::addRow("overflow1") << -1 << INT_MAX << 10 << 10 << false << INT_MAX;
-    QTest::addRow("overflow1-inverse") << -1 << INT_MAX << 10 << 10 << true << -1;
-    QTest::addRow("overflow2") << INT_MIN << INT_MAX << 5 << 10 << false << 0;
-    QTest::addRow("overflow2-inverse") << INT_MIN << INT_MAX << 5 << 10 << true << -1;
-    QTest::addRow("overflow3") << INT_MIN << 0 << 0 << 10 << false << INT_MIN;
-    QTest::addRow("overflow3-inverse") << INT_MIN << 0 << 0 << 10 << true << 0;
+    BOBUIest::addRow("overflow1") << -1 << INT_MAX << 10 << 10 << false << INT_MAX;
+    BOBUIest::addRow("overflow1-inverse") << -1 << INT_MAX << 10 << 10 << true << -1;
+    BOBUIest::addRow("overflow2") << INT_MIN << INT_MAX << 5 << 10 << false << 0;
+    BOBUIest::addRow("overflow2-inverse") << INT_MIN << INT_MAX << 5 << 10 << true << -1;
+    BOBUIest::addRow("overflow3") << INT_MIN << 0 << 0 << 10 << false << INT_MIN;
+    BOBUIest::addRow("overflow3-inverse") << INT_MIN << 0 << 0 << 10 << true << 0;
 
-    QTest::addRow("overflow4") << 0 << INT_MAX << INT_MAX/2-6 << INT_MAX/2-5 << false << INT_MAX-2;
-    QTest::addRow("overflow4-inverse") << 0 << INT_MAX << INT_MAX/2-6 << INT_MAX/2-5 << true << 2;
+    BOBUIest::addRow("overflow4") << 0 << INT_MAX << INT_MAX/2-6 << INT_MAX/2-5 << false << INT_MAX-2;
+    BOBUIest::addRow("overflow4-inverse") << 0 << INT_MAX << INT_MAX/2-6 << INT_MAX/2-5 << true << 2;
 
-    QTest::addRow("overflow5") << 0 << 4 << INT_MAX/4 << INT_MAX << false << 1;
-    QTest::addRow("overflow5-inverse") << 0 << 4 << INT_MAX/4 << INT_MAX << true << 3;
+    BOBUIest::addRow("overflow5") << 0 << 4 << INT_MAX/4 << INT_MAX << false << 1;
+    BOBUIest::addRow("overflow5-inverse") << 0 << 4 << INT_MAX/4 << INT_MAX << true << 3;
 }
 
 void tst_QStyle::sliderValueFromPosition()
@@ -751,5 +751,5 @@ void tst_QStyle::sliderValueFromPosition()
     QCOMPARE(QStyle::sliderValueFromPosition(min, max, position, span, upsideDown), value);
 }
 
-QTEST_MAIN(tst_QStyle)
+BOBUIEST_MAIN(tst_QStyle)
 #include "tst_qstyle.moc"

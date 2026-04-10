@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef CACHEKEYS_H
 #define CACHEKEYS_H
@@ -12,7 +12,7 @@
 #include <qfileinfo.h>
 #include <qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // -------------------------------------------------------------------------------------------------
 struct FixStringCacheKey
@@ -90,6 +90,6 @@ typedef void (*qmakeCacheClearFunc)(void *);
 void qmakeAddCacheClear(qmakeCacheClearFunc func, void **);
 void qmakeClearCaches();
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CACHEKEYS_H

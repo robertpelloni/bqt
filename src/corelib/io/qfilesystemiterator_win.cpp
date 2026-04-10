@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfilesystemiterator_p.h"
 #include "qfilesystemengine_p.h"
 #include "qoperatingsystemversion.h"
 #include "qplatformdefs.h"
 
-#include <QtCore/qt_windows.h>
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <BobUICore/bobui_windows.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 bool done = true;
 
@@ -71,12 +71,12 @@ bool QFileSystemIterator::advance(QFileSystemEntry &fileEntry, QFileSystemMetaDa
         int searchOps =  0;         // FindExSearchNameMatch
         if (onlyDirs)
             searchOps = 1 ;         // FindExSearchLimitToDirectories
-        findFileHandle = FindFirstFileEx(qt_castToWchar(nativePath),
+        findFileHandle = FindFirstFileEx(bobui_castToWchar(nativePath),
                                          FINDEX_INFO_LEVELS(infoLevel), &findData,
                                          FINDEX_SEARCH_OPS(searchOps), 0, dwAdditionalFlags);
         if (findFileHandle == INVALID_HANDLE_VALUE) {
             if (nativePath.startsWith("\\\\?\\UNC\\"_L1)) {
-                const auto parts = QStringView{nativePath}.split(u'\\', Qt::SkipEmptyParts);
+                const auto parts = QStringView{nativePath}.split(u'\\', BobUI::SkipEmptyParts);
                 if (parts.count() == 4 && QFileSystemEngine::uncListSharesOnServer(
                         "\\\\"_L1 + parts.at(2), &uncShares)) {
                     if (uncShares.isEmpty())
@@ -113,4 +113,4 @@ bool QFileSystemIterator::advance(QFileSystemEntry &fileEntry, QFileSystemMetaDa
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

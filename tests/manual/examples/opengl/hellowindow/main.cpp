@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "hellowindow.h"
 
@@ -9,15 +9,15 @@
 #include <QCommandLineOption>
 #include <QGuiApplication>
 #include <QScreen>
-#include <QThread>
+#include <BOBUIhread>
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    QCoreApplication::setApplicationName("Qt HelloWindow GL Example");
-    QCoreApplication::setOrganizationName("QtProject");
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationName("BobUI HelloWindow GL Example");
+    QCoreApplication::setOrganizationName("BobUIProject");
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::applicationName());
     parser.addHelpOption();
@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
     windowA->setVisible(true);
     windows.prepend(windowA);
 
-    QList<QThread *> renderThreads;
+    QList<BOBUIhread *> renderThreads;
     if (multipleWindows) {
         QSharedPointer<Renderer> rendererB(new Renderer(format, rendererA.data()));
 
-        QThread *renderThread = new QThread;
+        BOBUIhread *renderThread = new BOBUIhread;
         rendererB->moveToThread(renderThread);
         renderThreads << renderThread;
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
             QScreen *screen = QGuiApplication::screens().at(i);
             QSharedPointer<Renderer> renderer(new Renderer(format, rendererA.data(), screen));
 
-            QThread *renderThread = new QThread;
+            BOBUIhread *renderThread = new BOBUIhread;
             renderer->moveToThread(renderThread);
             renderThreads.prepend(renderThread);
 
@@ -103,13 +103,13 @@ int main(int argc, char *argv[])
     }
 
     for (int i = 0; i < renderThreads.size(); ++i) {
-        QObject::connect(qGuiApp, &QGuiApplication::lastWindowClosed, renderThreads.at(i), &QThread::quit);
+        QObject::connect(qGuiApp, &QGuiApplication::lastWindowClosed, renderThreads.at(i), &BOBUIhread::quit);
         renderThreads.at(i)->start();
     }
 
     // Quit after 10 seconds. For platforms that do not have windows that are closeable.
     if (parser.isSet(timeoutOption))
-        QTimer::singleShot(10000, qGuiApp, &QCoreApplication::quit);
+        BOBUIimer::singleShot(10000, qGuiApp, &QCoreApplication::quit);
 
     const int exitValue = app.exec();
 

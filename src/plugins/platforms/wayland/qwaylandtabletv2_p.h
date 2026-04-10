@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDTABLETV2_P_H
 #define QWAYLANDTABLETV2_P_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/private/qwayland-tablet-unstable-v2.h>
+#include <BobUIWaylandClient/private/qwayland-tablet-unstable-v2.h>
 
-#include <QtWaylandClient/private/qtwaylandclientglobal_p.h>
+#include <BobUIWaylandClient/private/bobuiwaylandclientglobal_p.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QPointer>
-#include <QtCore/QPointF>
-#include <QtCore/QTimer>
-#include <QtGui/QPointingDevice>
-#include <QtGui/QInputDevice>
+#include <BobUICore/QObject>
+#include <BobUICore/QPointer>
+#include <BobUICore/QPointF>
+#include <BobUICore/BOBUIimer>
+#include <BobUIGui/QPointingDevice>
+#include <BobUIGui/QInputDevice>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandInputDevice;
@@ -39,21 +39,21 @@ class QWaylandTabletV2;
 class QWaylandTabletToolV2;
 class QWaylandTabletPadV2;
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 class QWaylandCursorTheme;
 class QWaylandCursorShape;
 template <typename T>
 class CursorSurface;
 #endif
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandTabletManagerV2 : public QtWayland::zwp_tablet_manager_v2
+class Q_WAYLANDCLIENT_EXPORT QWaylandTabletManagerV2 : public BobUIWayland::zwp_tablet_manager_v2
 {
 public:
     explicit QWaylandTabletManagerV2(QWaylandDisplay *display, uint id, uint version);
     ~QWaylandTabletManagerV2() override;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandTabletSeatV2 : public QObject, public QtWayland::zwp_tablet_seat_v2
+class Q_WAYLANDCLIENT_EXPORT QWaylandTabletSeatV2 : public QObject, public BobUIWayland::zwp_tablet_seat_v2
 {
     Q_OBJECT
 public:
@@ -78,7 +78,7 @@ private:
     QList<QWaylandTabletPadV2 *> m_pads;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandTabletV2 : public QPointingDevice, public QtWayland::zwp_tablet_v2
+class Q_WAYLANDCLIENT_EXPORT QWaylandTabletV2 : public QPointingDevice, public BobUIWayland::zwp_tablet_v2
 {
     Q_OBJECT
 public:
@@ -94,7 +94,7 @@ protected:
     void zwp_tablet_v2_removed() override;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandTabletToolV2 : public QPointingDevice, public QtWayland::zwp_tablet_tool_v2
+class Q_WAYLANDCLIENT_EXPORT QWaylandTabletToolV2 : public QPointingDevice, public BobUIWayland::zwp_tablet_tool_v2
 {
     Q_OBJECT
 public:
@@ -125,7 +125,7 @@ protected:
     void zwp_tablet_tool_v2_frame(uint32_t time) override;
 
 private:
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     int idealCursorScale() const;
     void updateCursorTheme();
     void cursorTimerCallback();
@@ -143,14 +143,14 @@ private:
     quint64 m_uid = 0;
 
     uint32_t mEnterSerial = 0;
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     struct
     {
         QScopedPointer<QWaylandCursorShape> shape;
         QWaylandCursorTheme *theme = nullptr;
         int themeBufferScale = 0;
         QScopedPointer<CursorSurface<QWaylandTabletToolV2>> surface;
-        QTimer frameTimer;
+        BOBUIimer frameTimer;
         bool gotFrameCallback = false;
         bool gotTimerCallback = false;
     } mCursor;
@@ -168,7 +168,7 @@ private:
         qreal xTilt = 0;
         qreal yTilt = 0;
         qreal slider = 0;
-        Qt::MouseButtons buttons = Qt::MouseButton::NoButton; // Actual buttons, down state -> left mouse is mapped inside the frame handler
+        BobUI::MouseButtons buttons = BobUI::MouseButton::NoButton; // Actual buttons, down state -> left mouse is mapped inside the frame handler
         //auto operator<=>(const Point&) const = default; // TODO: use this when upgrading to C++20
         bool operator==(const State &o) const;
     } m_pending, m_applied;
@@ -177,7 +177,7 @@ private:
     friend class CursorSurface;
 };
 
-class Q_WAYLANDCLIENT_EXPORT QWaylandTabletPadV2 : public QPointingDevice, public QtWayland::zwp_tablet_pad_v2
+class Q_WAYLANDCLIENT_EXPORT QWaylandTabletPadV2 : public QPointingDevice, public BobUIWayland::zwp_tablet_pad_v2
 {
     Q_OBJECT
 public:
@@ -195,8 +195,8 @@ protected:
     void zwp_tablet_pad_v2_removed() override;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDTABLETV2_P_H

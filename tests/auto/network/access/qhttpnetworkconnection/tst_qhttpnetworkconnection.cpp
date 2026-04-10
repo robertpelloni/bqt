@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QAuthenticator>
-#include <QTcpServer>
+#include <BOBUIcpServer>
 
 #include "private/qhttpnetworkconnection_p.h"
 #include "private/qnoncontiguousbytedevice_p.h"
@@ -20,14 +20,14 @@ public Q_SLOTS:
     void finishedReply();
     void finishedWithError(QNetworkReply::NetworkError errorCode, const QString &detail);
     void challenge401(const QHttpNetworkRequest &request, QAuthenticator *authenticator);
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void sslErrors(const QList<QSslError> &errors);
 #endif
 private:
     bool finishedCalled;
     bool finishedWithErrorCalled;
     QNetworkReply::NetworkError netErrorCode;
-    QString (*httpServerName)() = QtNetworkSettings::httpServerName;
+    QString (*httpServerName)() = BobUINetworkSettings::httpServerName;
 
 private Q_SLOTS:
     void initTestCase();
@@ -47,15 +47,15 @@ private Q_SLOTS:
     void trace();
     void _connect_data();
     void _connect();
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
     void compression_data();
     void compression();
 #endif
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void ignoresslerror_data();
     void ignoresslerror();
 #endif
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     void nossl_data();
     void nossl();
 #endif
@@ -79,10 +79,10 @@ private Q_SLOTS:
 
 void tst_QHttpNetworkConnection::initTestCase()
 {
-#if defined(QT_TEST_SERVER)
-    QVERIFY(QtNetworkSettings::verifyConnection(httpServerName(), 80));
+#if defined(BOBUI_TEST_SERVER)
+    QVERIFY(BobUINetworkSettings::verifyConnection(httpServerName(), 80));
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 }
@@ -100,18 +100,18 @@ void tst_QHttpNetworkConnection::options()
 
 void tst_QHttpNetworkConnection::head_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<int>("statusCode");
-    QTest::addColumn<QString>("statusString");
-    QTest::addColumn<int>("contentLength");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("statusString");
+    BOBUIest::addColumn<int>("contentLength");
 
-    QTest::newRow("success-internal") << "http://" << httpServerName() << "/qtest/rfc3252.txt" << ushort(80) << false << 200 << "OK" << 25962;
-    QTest::newRow("failure-path") << "http://" << httpServerName() << "/t" << ushort(80) << false << 404 << "Not Found" << -1;
-    QTest::newRow("failure-protocol") << "" << httpServerName() << "/qtest/rfc3252.txt" << ushort(80) << false << 400 << "Bad Request" << -1;
+    BOBUIest::newRow("success-internal") << "http://" << httpServerName() << "/bobuiest/rfc3252.txt" << ushort(80) << false << 200 << "OK" << 25962;
+    BOBUIest::newRow("failure-path") << "http://" << httpServerName() << "/t" << ushort(80) << false << 404 << "Not Found" << -1;
+    BOBUIest::newRow("failure-protocol") << "" << httpServerName() << "/bobuiest/rfc3252.txt" << ushort(80) << false << 400 << "Bad Request" << -1;
 }
 
 void tst_QHttpNetworkConnection::head()
@@ -133,7 +133,7 @@ void tst_QHttpNetworkConnection::head()
     QHttpNetworkRequest request(protocol + host + path, QHttpNetworkRequest::Head);
     QHttpNetworkReply *reply = connection.sendRequest(request);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
     QCOMPARE(reply->statusCode(), statusCode);
     QCOMPARE(reply->reasonPhrase(), statusString);
     // only check it if it is set and expected
@@ -147,20 +147,20 @@ void tst_QHttpNetworkConnection::head()
 
 void tst_QHttpNetworkConnection::get_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<int>("statusCode");
-    QTest::addColumn<QString>("statusString");
-    QTest::addColumn<int>("contentLength");
-    QTest::addColumn<int>("downloadSize");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("statusString");
+    BOBUIest::addColumn<int>("contentLength");
+    BOBUIest::addColumn<int>("downloadSize");
 
-    QTest::newRow("success-internal") << "http://" << httpServerName() << "/qtest/rfc3252.txt" << ushort(80) << false << 200 << "OK" << 25962 << 25962;
+    BOBUIest::newRow("success-internal") << "http://" << httpServerName() << "/bobuiest/rfc3252.txt" << ushort(80) << false << 200 << "OK" << 25962 << 25962;
 
-    QTest::newRow("failure-path") << "http://" << httpServerName() << "/t" << ushort(80) << false << 404 << "Not Found" << -1 << -1;
-    QTest::newRow("failure-protocol") << "" << httpServerName() << "/qtest/rfc3252.txt" << ushort(80) << false << 400 << "Bad Request" << -1 << -1;
+    BOBUIest::newRow("failure-path") << "http://" << httpServerName() << "/t" << ushort(80) << false << 404 << "Not Found" << -1 << -1;
+    BOBUIest::newRow("failure-protocol") << "" << httpServerName() << "/bobuiest/rfc3252.txt" << ushort(80) << false << 400 << "Bad Request" << -1 << -1;
 }
 
 void tst_QHttpNetworkConnection::get()
@@ -183,7 +183,7 @@ void tst_QHttpNetworkConnection::get()
     QHttpNetworkRequest request(protocol + host + path);
     QHttpNetworkReply *reply = connection.sendRequest(request);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
 
     QCOMPARE(reply->statusCode(), statusCode);
     QCOMPARE(reply->reasonPhrase(), statusString);
@@ -191,7 +191,7 @@ void tst_QHttpNetworkConnection::get()
     if (reply->contentLength() != -1 && contentLength != -1)
         QCOMPARE(reply->contentLength(), qint64(contentLength));
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
     QByteArray ba = reply->readAll();
     //do not require server generated error pages to be a fixed size
     if (downloadSize != -1)
@@ -218,17 +218,17 @@ void tst_QHttpNetworkConnection::finishedWithError(QNetworkReply::NetworkError e
 void tst_QHttpNetworkConnection::put_data()
 {
 
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<bool>("succeed");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<bool>("succeed");
 
-    QTest::newRow("success-internal") << "http://" << httpServerName() << "/dav/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<true;
-    QTest::newRow("fail-internal") << "http://" << httpServerName() << "/dav2/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<false;
-    QTest::newRow("fail-host") << "http://" << "invalid.test.qt-project.org" << "/dav2/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<false;
+    BOBUIest::newRow("success-internal") << "http://" << httpServerName() << "/dav/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<true;
+    BOBUIest::newRow("fail-internal") << "http://" << httpServerName() << "/dav2/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<false;
+    BOBUIest::newRow("fail-host") << "http://" << "invalid.test.bobui-project.org" << "/dav2/file1.txt" << ushort(80) << false << "Hello World\nEnd of file\n"<<false;
 }
 
 void tst_QHttpNetworkConnection::put()
@@ -261,7 +261,7 @@ void tst_QHttpNetworkConnection::put()
     connect(reply, SIGNAL(finishedWithError(QNetworkReply::NetworkError,QString)),
         SLOT(finishedWithError(QNetworkReply::NetworkError,QString)));
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->isFinished() || finishedCalled || finishedWithErrorCalled, 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->isFinished() || finishedCalled || finishedWithErrorCalled, 30000);
 
     if (reply->isFinished()) {
         QByteArray ba;
@@ -295,19 +295,19 @@ void tst_QHttpNetworkConnection::put()
 
 void tst_QHttpNetworkConnection::post_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("statusCode");
-    QTest::addColumn<QString>("statusString");
-    QTest::addColumn<int>("contentLength");
-    QTest::addColumn<int>("downloadSize");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("statusString");
+    BOBUIest::addColumn<int>("contentLength");
+    BOBUIest::addColumn<int>("downloadSize");
 
-    QTest::newRow("success-internal") << "http://" << httpServerName() << "/qtest/cgi-bin/echo.cgi" << ushort(80) << false << "7 bytes" << 200 << "OK" << 7 << 7;
-    QTest::newRow("failure-internal") << "http://" << httpServerName() << "/t" << ushort(80) << false << "Hello World" << 404 << "Not Found" << -1 << -1;
+    BOBUIest::newRow("success-internal") << "http://" << httpServerName() << "/bobuiest/cgi-bin/echo.cgi" << ushort(80) << false << "7 bytes" << 200 << "OK" << 7 << 7;
+    BOBUIest::newRow("failure-internal") << "http://" << httpServerName() << "/t" << ushort(80) << false << "Hello World" << 404 << "Not Found" << -1 << -1;
 }
 
 void tst_QHttpNetworkConnection::post()
@@ -337,7 +337,7 @@ void tst_QHttpNetworkConnection::post()
 
     QHttpNetworkReply *reply = connection.sendRequest(request);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
     QCOMPARE(reply->statusCode(), statusCode);
     QCOMPARE(reply->reasonPhrase(), statusString);
 
@@ -354,7 +354,7 @@ void tst_QHttpNetworkConnection::post()
         }
     }
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
     QByteArray ba = reply->readAll();
     //don't require fixed size for generated error pages
     if (downloadSize != -1)
@@ -421,21 +421,21 @@ void tst_QHttpNetworkConnection::challenge401(const QHttpNetworkRequest &request
 
 void tst_QHttpNetworkConnection::get401_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<bool>("setCredentials");
-    QTest::addColumn<QString>("username");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<bool>("setCredentials");
+    BOBUIest::addColumn<QString>("username");
+    BOBUIest::addColumn<QString>("password");
+    BOBUIest::addColumn<int>("statusCode");
 
-    QTest::newRow("no-credentials") << "http://" << httpServerName() << "/qtest/rfcs-auth/index.html" << ushort(80) << false << false << "" << ""<<401;
-    QTest::newRow("invalid-credentials") << "http://" << httpServerName() << "/qtest/rfcs-auth/index.html" << ushort(80) << false << true << "test" << "test"<<401;
-    QTest::newRow("valid-credentials") << "http://" << httpServerName() << "/qtest/rfcs-auth/index.html" << ushort(80) << false << true << "httptest" << "httptest"<<200;
-    QTest::newRow("digest-authentication-invalid") << "http://" << httpServerName() << "/qtest/auth-digest/index.html" << ushort(80) << false << true << "wrong" << "wrong"<<401;
-    QTest::newRow("digest-authentication-valid") << "http://" << httpServerName() << "/qtest/auth-digest/index.html" << ushort(80) << false << true << "httptest" << "httptest"<<200;
+    BOBUIest::newRow("no-credentials") << "http://" << httpServerName() << "/bobuiest/rfcs-auth/index.html" << ushort(80) << false << false << "" << ""<<401;
+    BOBUIest::newRow("invalid-credentials") << "http://" << httpServerName() << "/bobuiest/rfcs-auth/index.html" << ushort(80) << false << true << "test" << "test"<<401;
+    BOBUIest::newRow("valid-credentials") << "http://" << httpServerName() << "/bobuiest/rfcs-auth/index.html" << ushort(80) << false << true << "httptest" << "httptest"<<200;
+    BOBUIest::newRow("digest-authentication-invalid") << "http://" << httpServerName() << "/bobuiest/auth-digest/index.html" << ushort(80) << false << true << "wrong" << "wrong"<<401;
+    BOBUIest::newRow("digest-authentication-valid") << "http://" << httpServerName() << "/bobuiest/auth-digest/index.html" << ushort(80) << false << true << "httptest" << "httptest"<<200;
 }
 
 void tst_QHttpNetworkConnection::get401()
@@ -470,29 +470,29 @@ void tst_QHttpNetworkConnection::get401()
     connect(reply, SIGNAL(finishedWithError(QNetworkReply::NetworkError,QString)),
         SLOT(finishedWithError(QNetworkReply::NetworkError,QString)));
 
-    QTRY_VERIFY_WITH_TIMEOUT(finishedCalled || finishedWithErrorCalled, 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(finishedCalled || finishedWithErrorCalled, 30000);
     QCOMPARE(reply->statusCode(), statusCode);
     delete reply;
 }
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 void tst_QHttpNetworkConnection::compression_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<int>("statusCode");
-    QTest::addColumn<QString>("statusString");
-    QTest::addColumn<int>("contentLength");
-    QTest::addColumn<int>("downloadSize");
-    QTest::addColumn<bool>("autoCompress");
-    QTest::addColumn<QString>("contentCoding");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("statusString");
+    BOBUIest::addColumn<int>("contentLength");
+    BOBUIest::addColumn<int>("downloadSize");
+    BOBUIest::addColumn<bool>("autoCompress");
+    BOBUIest::addColumn<QString>("contentCoding");
 
-    QTest::newRow("success-autogzip-temp") << "http://" << httpServerName() << "/qtest/rfcs/rfc2616.html" << ushort(80) << false << 200 << "OK" << -1 << 418321 << true << "";
-    QTest::newRow("success-nogzip-temp") << "http://" << httpServerName() << "/qtest/rfcs/rfc2616.html" << ushort(80) << false << 200 << "OK" << 418321 << 418321 << false << "identity";
-    QTest::newRow("success-manualgzip-temp") << "http://" << httpServerName() << "/qtest/deflate/rfc2616.html" << ushort(80) << false << 200 << "OK" << 119124 << 119124 << false << "gzip";
+    BOBUIest::newRow("success-autogzip-temp") << "http://" << httpServerName() << "/bobuiest/rfcs/rfc2616.html" << ushort(80) << false << 200 << "OK" << -1 << 418321 << true << "";
+    BOBUIest::newRow("success-nogzip-temp") << "http://" << httpServerName() << "/bobuiest/rfcs/rfc2616.html" << ushort(80) << false << 200 << "OK" << 418321 << 418321 << false << "identity";
+    BOBUIest::newRow("success-manualgzip-temp") << "http://" << httpServerName() << "/bobuiest/deflate/rfc2616.html" << ushort(80) << false << 200 << "OK" << 119124 << 119124 << false << "gzip";
 
 }
 
@@ -520,7 +520,7 @@ void tst_QHttpNetworkConnection::compression()
         request.setHeaderField("Accept-Encoding", contentCoding.toLatin1());
     QHttpNetworkReply *reply = connection.sendRequest(request);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
     QCOMPARE(reply->statusCode(), statusCode);
     QCOMPARE(reply->reasonPhrase(), statusString);
     bool isLengthOk = (reply->contentLength() == qint64(contentLength)
@@ -529,7 +529,7 @@ void tst_QHttpNetworkConnection::compression()
 
     QVERIFY(isLengthOk);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->isFinished(), 30000);
     QByteArray ba = reply->readAll();
     QCOMPARE(ba.size(), downloadSize);
 
@@ -537,7 +537,7 @@ void tst_QHttpNetworkConnection::compression()
 }
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void tst_QHttpNetworkConnection::sslErrors(const QList<QSslError> &errors)
 {
     Q_UNUSED(errors);
@@ -555,22 +555,22 @@ void tst_QHttpNetworkConnection::sslErrors(const QList<QSslError> &errors)
 
 void tst_QHttpNetworkConnection::ignoresslerror_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<bool>("ignoreInit");
-    QTest::addColumn<bool>("ignoreFromSignal");
-    QTest::addColumn<int>("statusCode");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<bool>("ignoreInit");
+    BOBUIest::addColumn<bool>("ignoreFromSignal");
+    BOBUIest::addColumn<int>("statusCode");
 
     // This test will work only if the website has ssl errors.
     // fluke's certificate is signed by a non-standard authority.
     // Since we don't introduce that CA into the SSL verification chain,
     // connecting should fail.
-    QTest::newRow("success-init") << "https://" << httpServerName() << "/" << ushort(443) << true << true << false << 200;
-    QTest::newRow("success-fromSignal") << "https://" << httpServerName() << "/" << ushort(443) << true << false << true << 200;
-    QTest::newRow("failure") << "https://" << httpServerName() << "/" << ushort(443) << true << false << false << 100;
+    BOBUIest::newRow("success-init") << "https://" << httpServerName() << "/" << ushort(443) << true << true << false << 200;
+    BOBUIest::newRow("success-fromSignal") << "https://" << httpServerName() << "/" << ushort(443) << true << false << true << 200;
+    BOBUIest::newRow("failure") << "https://" << httpServerName() << "/" << ushort(443) << true << false << false << 100;
 }
 
 void tst_QHttpNetworkConnection::ignoresslerror()
@@ -601,23 +601,23 @@ void tst_QHttpNetworkConnection::ignoresslerror()
 
     connect(reply, SIGNAL(finished()), SLOT(finishedReply()));
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable() || (statusCode == 100 && finishedWithErrorCalled), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable() || (statusCode == 100 && finishedWithErrorCalled), 30000);
     QCOMPARE(reply->statusCode(), statusCode);
     delete reply;
 }
 #endif
 
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
 void tst_QHttpNetworkConnection::nossl_data()
 {
-    QTest::addColumn<QString>("protocol");
-    QTest::addColumn<QString>("host");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<ushort>("port");
-    QTest::addColumn<bool>("encrypt");
-    QTest::addColumn<QNetworkReply::NetworkError>("networkError");
+    BOBUIest::addColumn<QString>("protocol");
+    BOBUIest::addColumn<QString>("host");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<ushort>("port");
+    BOBUIest::addColumn<bool>("encrypt");
+    BOBUIest::addColumn<QNetworkReply::NetworkError>("networkError");
 
-    QTest::newRow("protocol-error") << "https://" << httpServerName() << "/" << ushort(443) << true <<QNetworkReply::ProtocolUnknownError;
+    BOBUIest::newRow("protocol-error") << "https://" << httpServerName() << "/" << ushort(443) << true <<QNetworkReply::ProtocolUnknownError;
 }
 
 void tst_QHttpNetworkConnection::nossl()
@@ -643,7 +643,7 @@ void tst_QHttpNetworkConnection::nossl()
     connect(reply, SIGNAL(finishedWithError(QNetworkReply::NetworkError,QString)),
         SLOT(finishedWithError(QNetworkReply::NetworkError,QString)));
 
-    QTRY_VERIFY_WITH_TIMEOUT(finishedWithErrorCalled, 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(finishedWithErrorCalled, 30000);
     QCOMPARE(netErrorCode, networkError);
     delete reply;
 }
@@ -652,15 +652,15 @@ void tst_QHttpNetworkConnection::nossl()
 
 void tst_QHttpNetworkConnection::getMultiple_data()
 {
-    QTest::addColumn<quint16>("connectionCount");
-    QTest::addColumn<bool>("pipeliningAllowed");
+    BOBUIest::addColumn<quint16>("connectionCount");
+    BOBUIest::addColumn<bool>("pipeliningAllowed");
     // send 100 requests. apache will usually force-close after 100 requests in a single tcp connection
-    QTest::addColumn<int>("requestCount");
+    BOBUIest::addColumn<int>("requestCount");
 
-    QTest::newRow("6 connections, no pipelining, 100 requests")  << quint16(6) << false << 100;
-    QTest::newRow("1 connection, no pipelining, 100 requests")  << quint16(1) << false << 100;
-    QTest::newRow("6 connections, pipelining allowed, 100 requests")  << quint16(6) << true << 100;
-    QTest::newRow("1 connection, pipelining allowed, 100 requests")  << quint16(1) << true << 100;
+    BOBUIest::newRow("6 connections, no pipelining, 100 requests")  << quint16(6) << false << 100;
+    BOBUIest::newRow("1 connection, no pipelining, 100 requests")  << quint16(1) << false << 100;
+    BOBUIest::newRow("6 connections, pipelining allowed, 100 requests")  << quint16(6) << true << 100;
+    BOBUIest::newRow("1 connection, pipelining allowed, 100 requests")  << quint16(1) << true << 100;
 }
 
 static bool allRepliesFinished(const QList<QHttpNetworkReply*> *_replies)
@@ -687,7 +687,7 @@ void tst_QHttpNetworkConnection::getMultiple()
         // depending on what you use the results will vary.
         // for the "real" results, use a URL that has "internet latency" for you. Then (6 connections, pipelining) will win.
         // for LAN latency, you will possibly get that (1 connection, no pipelining) is the fastest
-        QHttpNetworkRequest *request = new QHttpNetworkRequest("http://" + httpServerName() + "/qtest/rfc3252.txt");
+        QHttpNetworkRequest *request = new QHttpNetworkRequest("http://" + httpServerName() + "/bobuiest/rfc3252.txt");
         if (pipeliningAllowed)
             request->setPipeliningAllowed(true);
         requests.append(request);
@@ -695,7 +695,7 @@ void tst_QHttpNetworkConnection::getMultiple()
         replies.append(reply);
     }
 
-    QTRY_VERIFY_WITH_TIMEOUT(allRepliesFinished(&replies), 60000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(allRepliesFinished(&replies), 60000);
     qDeleteAll(requests);
     qDeleteAll(replies);
 }
@@ -713,9 +713,9 @@ void tst_QHttpNetworkConnection::getMultipleWithPipeliningAndMultiplePriorities(
     for (int i = 0; i < requestCount; i++) {
         QHttpNetworkRequest *request = nullptr;
         if (i % 3)
-            request = new QHttpNetworkRequest("http://" + httpServerName() + "/qtest/rfc3252.txt", QHttpNetworkRequest::Get);
+            request = new QHttpNetworkRequest("http://" + httpServerName() + "/bobuiest/rfc3252.txt", QHttpNetworkRequest::Get);
         else
-            request = new QHttpNetworkRequest("http://" + httpServerName() + "/qtest/rfc3252.txt", QHttpNetworkRequest::Head);
+            request = new QHttpNetworkRequest("http://" + httpServerName() + "/bobuiest/rfc3252.txt", QHttpNetworkRequest::Head);
 
         if (i % 2 || i % 3)
             request->setPipeliningAllowed(true);
@@ -732,7 +732,7 @@ void tst_QHttpNetworkConnection::getMultipleWithPipeliningAndMultiplePriorities(
         replies.append(reply);
     }
 
-    QTRY_VERIFY_WITH_TIMEOUT(allRepliesFinished(&replies), 60000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(allRepliesFinished(&replies), 60000);
 
     int pipelinedCount = 0;
     for (int i = 0; i < replies.size(); i++) {
@@ -774,7 +774,7 @@ public Q_SLOTS:
         QVERIFY(highPrioReceived + 7 >= lowPrioReceived);
 
         if (highPrioReceived + lowPrioReceived == requestCount)
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
     }
 };
 
@@ -784,7 +784,7 @@ void tst_QHttpNetworkConnection::getMultipleWithPriorities()
     // use 2 connections.
     QHttpNetworkConnection connection(2, httpServerName());
     GetMultipleWithPrioritiesReceiver receiver(requestCount);
-    QUrl url("http://" + httpServerName() + "/qtest/rfc3252.txt");
+    QUrl url("http://" + httpServerName() + "/bobuiest/rfc3252.txt");
     QList<QHttpNetworkRequest*> requests;
     QList<QHttpNetworkReply*> replies;
 
@@ -806,8 +806,8 @@ void tst_QHttpNetworkConnection::getMultipleWithPriorities()
         replies.append(reply);
     }
 
-    QTestEventLoop::instance().enterLoop(40);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(40);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     qDeleteAll(requests);
     qDeleteAll(replies);
@@ -828,7 +828,7 @@ public Q_SLOTS:
         receivedCount++;
 
         if (receivedCount == requestCount)
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
     }
 };
 
@@ -854,8 +854,8 @@ void tst_QHttpNetworkConnection::getEmptyWithPipelining()
         replies.append(reply);
     }
 
-    QTestEventLoop::instance().enterLoop(20);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(20);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     qDeleteAll(requests);
     qDeleteAll(replies);
@@ -875,7 +875,7 @@ public Q_SLOTS:
         receivedCount++;
 
         if (receivedCount == requestCount)
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
     }
 };
 
@@ -884,7 +884,7 @@ void tst_QHttpNetworkConnection::getAndEverythingShouldBePipelined()
     quint16 requestCount = 100;
     // use 1 connection.
     QHttpNetworkConnection connection(1, httpServerName());
-    QUrl url("http://" + httpServerName() + "/qtest/rfc3252.txt");
+    QUrl url("http://" + httpServerName() + "/bobuiest/rfc3252.txt");
     QList<QHttpNetworkRequest*> requests;
     QList<QHttpNetworkReply*> replies;
 
@@ -899,8 +899,8 @@ void tst_QHttpNetworkConnection::getAndEverythingShouldBePipelined()
         connect(reply, SIGNAL(finished()), &receiver, SLOT(finishedSlot()));
         replies.append(reply);
     }
-    QTestEventLoop::instance().enterLoop(40);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(40);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     qDeleteAll(requests);
     qDeleteAll(replies);
@@ -910,21 +910,21 @@ void tst_QHttpNetworkConnection::getAndEverythingShouldBePipelined()
 
 void tst_QHttpNetworkConnection::getAndThenDeleteObject_data()
 {
-    QTest::addColumn<bool>("replyFirst");
+    BOBUIest::addColumn<bool>("replyFirst");
 
-    QTest::newRow("delete-reply-first") << true;
-    QTest::newRow("delete-connection-first") << false;
+    BOBUIest::newRow("delete-reply-first") << true;
+    BOBUIest::newRow("delete-connection-first") << false;
 }
 
 void tst_QHttpNetworkConnection::getAndThenDeleteObject()
 {
     // yes, this will leak if the testcase fails. I don't care. It must not fail then :P
     QHttpNetworkConnection *connection = new QHttpNetworkConnection(QHttpNetworkConnectionPrivate::defaultHttpChannelCount, httpServerName());
-    QHttpNetworkRequest request("http://" + httpServerName() + "/qtest/bigfile");
+    QHttpNetworkRequest request("http://" + httpServerName() + "/bobuiest/bigfile");
     QHttpNetworkReply *reply = connection->sendRequest(request);
     reply->setDownstreamLimited(true);
 
-    QTRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
+    BOBUIRY_VERIFY_WITH_TIMEOUT(reply->bytesAvailable(), 30000);
     QCOMPARE(reply->statusCode() ,200);
     QVERIFY(!reply->isFinished()); // must not be finished
 
@@ -939,13 +939,13 @@ void tst_QHttpNetworkConnection::getAndThenDeleteObject()
     }
 }
 
-class TestTcpServer : public QTcpServer
+class TestTcpServer : public BOBUIcpServer
 {
     Q_OBJECT
 public:
     TestTcpServer() : errorCodeReports(0)
     {
-        connect(this, &QTcpServer::newConnection, this, &TestTcpServer::onNewConnection);
+        connect(this, &BOBUIcpServer::newConnection, this, &TestTcpServer::onNewConnection);
         QVERIFY(listen(QHostAddress::LocalHost));
     }
 
@@ -954,11 +954,11 @@ public:
 public slots:
     void onNewConnection()
     {
-        QTcpSocket *socket = nextPendingConnection();
+        BOBUIcpSocket *socket = nextPendingConnection();
         if (!socket)
             return;
         // close socket instantly!
-        connect(socket, &QTcpSocket::readyRead, socket, &QTcpSocket::close);
+        connect(socket, &BOBUIcpSocket::readyRead, socket, &BOBUIcpSocket::close);
     }
 
     void onReply(QNetworkReply::NetworkError code)
@@ -986,9 +986,9 @@ void tst_QHttpNetworkConnection::overlappingCloseAndWrite()
                          &server, &TestTcpServer::onReply);
     }
 
-    QTRY_COMPARE(server.errorCodeReports, 10);
+    BOBUIRY_COMPARE(server.errorCodeReports, 10);
 }
 
 
-QTEST_MAIN(tst_QHttpNetworkConnection)
+BOBUIEST_MAIN(tst_QHttpNetworkConnection)
 #include "tst_qhttpnetworkconnection.moc"

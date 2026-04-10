@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,11 +22,11 @@
 
 #include "qspi_struct_marshallers_p.h"
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/QAccessible>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/QAccessible>
 #include <atspi/atspi-constants.h>
 
-QT_REQUIRE_CONFIG(accessibility);
+BOBUI_REQUIRE_CONFIG(accessibility);
 
 // missing from at-spi2-core:
 #define ATSPI_DBUS_INTERFACE_EVENT_WINDOW "org.a11y.atspi.Event.Window"
@@ -35,7 +35,7 @@ QT_REQUIRE_CONFIG(accessibility);
 #define QSPI_OBJECT_PATH_ACCESSIBLE  "/org/a11y/atspi/accessible"
 #define QSPI_OBJECT_PATH_PREFIX      "/org/a11y/atspi/accessible/"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct RoleNames {
     RoleNames() {}
@@ -69,6 +69,6 @@ quint64 spiStatesFromSpiStateSet(QSpiUIntList stateSet);
 
 AtspiRelationType qAccessibleRelationToAtSpiRelation(QAccessible::Relation relation);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* Q_SPI_CONSTANT_MAPPINGS_H */

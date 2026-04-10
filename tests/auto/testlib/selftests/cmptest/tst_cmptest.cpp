@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qatomicscopedvaluerollback.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QTimer>
-#ifdef QT_GUI_LIB
-#include <QtGui/QColor>
-#include <QtGui/QImage>
-#include <QtGui/QPalette>
-#include <QtGui/QPixmap>
-#include <QtGui/QVector2D>
-#include <QtGui/QVector3D>
-#include <QtGui/QVector4D>
+#include <BOBUIest>
+#include <BobUICore/qatomicscopedvaluerollback.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/BOBUIimer>
+#ifdef BOBUI_GUI_LIB
+#include <BobUIGui/QColor>
+#include <BobUIGui/QImage>
+#include <BobUIGui/QPalette>
+#include <BobUIGui/QPixmap>
+#include <BobUIGui/QVector2D>
+#include <BobUIGui/QVector3D>
+#include <BobUIGui/QVector4D>
 #endif
 #include <QSet>
 #include <vector>
 
 using namespace std::chrono_literals;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /* XPM test data for QPixmap, QImage tests (use drag cursors as example) */
 
@@ -137,7 +137,7 @@ private slots:
     void compareQListIntToInitializerList_data();
     void compareQListIntToInitializerList();
     void compareContainerToInitializerList();
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
     void compareQColor_data();
     void compareQColor();
     void compareQPixmaps();
@@ -175,8 +175,8 @@ void tst_Cmptest::compare_unregistered_enums()
 void tst_Cmptest::compare_registered_enums()
 {
     // use an enum that doesn't start at 0
-    QCOMPARE(Qt::Monday, Qt::Monday);
-    QCOMPARE(Qt::Monday, Qt::Sunday);
+    QCOMPARE(BobUI::Monday, BobUI::Monday);
+    QCOMPARE(BobUI::Monday, BobUI::Sunday);
 }
 
 void tst_Cmptest::compare_class_enums()
@@ -187,26 +187,26 @@ void tst_Cmptest::compare_class_enums()
 
 void tst_Cmptest::test_windowflags_data()
 {
-    QTest::addColumn<Qt::WindowFlags>("actualWindowFlags");
-    QTest::addColumn<Qt::WindowFlags>("expectedWindowFlags");
+    BOBUIest::addColumn<BobUI::WindowFlags>("actualWindowFlags");
+    BOBUIest::addColumn<BobUI::WindowFlags>("expectedWindowFlags");
 
-    const Qt::WindowFlags windowFlags = Qt::Window
-        | Qt::WindowSystemMenuHint | Qt::WindowStaysOnBottomHint;
-    QTest::newRow("pass")
+    const BobUI::WindowFlags windowFlags = BobUI::Window
+        | BobUI::WindowSystemMenuHint | BobUI::WindowStaysOnBottomHint;
+    BOBUIest::newRow("pass")
         << windowFlags
         << windowFlags;
-    QTest::newRow("fail1")
+    BOBUIest::newRow("fail1")
         << windowFlags
-        << (windowFlags | Qt::FramelessWindowHint);
-    QTest::newRow("fail2")
-        << Qt::WindowFlags(Qt::Window)
-        << Qt::WindowFlags(Qt::Window | Qt::FramelessWindowHint);
+        << (windowFlags | BobUI::FramelessWindowHint);
+    BOBUIest::newRow("fail2")
+        << BobUI::WindowFlags(BobUI::Window)
+        << BobUI::WindowFlags(BobUI::Window | BobUI::FramelessWindowHint);
 }
 
 void tst_Cmptest::test_windowflags()
 {
-    QFETCH(Qt::WindowFlags, actualWindowFlags);
-    QFETCH(Qt::WindowFlags, expectedWindowFlags);
+    QFETCH(BobUI::WindowFlags, actualWindowFlags);
+    QFETCH(BobUI::WindowFlags, expectedWindowFlags);
     QCOMPARE(actualWindowFlags, expectedWindowFlags);
 }
 
@@ -222,16 +222,16 @@ Q_DECLARE_METATYPE(UnregisteredFlags);
 
 void tst_Cmptest::test_unregistered_flags_data()
 {
-    QTest::addColumn<UnregisteredFlags>("actualFlags");
-    QTest::addColumn<UnregisteredFlags>("expectedFlags");
+    BOBUIest::addColumn<UnregisteredFlags>("actualFlags");
+    BOBUIest::addColumn<UnregisteredFlags>("expectedFlags");
 
-    QTest::newRow("pass")
+    BOBUIest::newRow("pass")
         << UnregisteredFlags(UnregisteredEnumValue1)
         << UnregisteredFlags(UnregisteredEnumValue1);
-    QTest::newRow("fail1")
+    BOBUIest::newRow("fail1")
         << UnregisteredFlags(UnregisteredEnumValue1 | UnregisteredEnumValue2)
         << UnregisteredFlags(UnregisteredEnumValue1 | UnregisteredEnumValue3);
-    QTest::newRow("fail2")
+    BOBUIest::newRow("fail2")
         << UnregisteredFlags(UnregisteredEnumValue1)
         << UnregisteredFlags(UnregisteredEnumValue1 | UnregisteredEnumValue3);
 }
@@ -326,32 +326,32 @@ struct PhonyClass
 
 void tst_Cmptest::compare_tostring_data()
 {
-    QTest::addColumn<QVariant>("actual");
-    QTest::addColumn<QVariant>("expected");
+    BOBUIest::addColumn<QVariant>("actual");
+    BOBUIest::addColumn<QVariant>("expected");
 
-    QTest::newRow("int, string")
+    BOBUIest::newRow("int, string")
         << QVariant::fromValue(123)
         << QVariant::fromValue(QString("hi"))
     ;
 
-    QTest::newRow("both invalid")
+    BOBUIest::newRow("both invalid")
         << QVariant()
         << QVariant()
     ;
 
-    QTest::newRow("null hash, invalid")
+    BOBUIest::newRow("null hash, invalid")
         << QVariant(QMetaType(QMetaType::QVariantHash))
         << QVariant()
     ;
 
-    QTest::newRow("string, null user type")
+    BOBUIest::newRow("string, null user type")
         << QVariant::fromValue(QString::fromLatin1("A simple string"))
         << QVariant(QMetaType::fromType<PhonyClass>())
     ;
 
     PhonyClass fake1 = {1};
     PhonyClass fake2 = {2};
-    QTest::newRow("both non-null user type")
+    BOBUIest::newRow("both non-null user type")
         << QVariant(QMetaType::fromType<PhonyClass>(), (const void*)&fake1)
         << QVariant(QMetaType::fromType<PhonyClass>(), (const void*)&fake2)
     ;
@@ -401,14 +401,14 @@ void tst_Cmptest::compare_textFromDebug()
 
 void tst_Cmptest::compareQStringLists_data()
 {
-    QTest::addColumn<QStringList>("opA");
-    QTest::addColumn<QStringList>("opB");
+    BOBUIest::addColumn<QStringList>("opA");
+    BOBUIest::addColumn<QStringList>("opB");
 
     {
         QStringList opA;
         QStringList opB(opA);
 
-        QTest::newRow("empty lists") << opA << opB;
+        BOBUIest::newRow("empty lists") << opA << opB;
     }
 
     {
@@ -420,7 +420,7 @@ void tst_Cmptest::compareQStringLists_data()
 
         QStringList opB(opA);
 
-        QTest::newRow("equal lists") << opA << opB;
+        BOBUIest::newRow("equal lists") << opA << opB;
     }
 
     {
@@ -432,7 +432,7 @@ void tst_Cmptest::compareQStringLists_data()
         opA.append(QLatin1String("string3"));
         opB.append(QLatin1String("DIFFERS"));
 
-        QTest::newRow("last item different") << opA << opB;
+        BOBUIest::newRow("last item different") << opA << opB;
     }
 
     {
@@ -447,7 +447,7 @@ void tst_Cmptest::compareQStringLists_data()
         opB.append(QLatin1String("DIFFERS"));
         opB.append(QLatin1String("string4"));
 
-        QTest::newRow("second-last item different") << opA << opB;
+        BOBUIest::newRow("second-last item different") << opA << opB;
     }
 
     {
@@ -458,7 +458,7 @@ void tst_Cmptest::compareQStringLists_data()
         QStringList opB;
         opB.append(QLatin1String("string1"));
 
-        QTest::newRow("prefix") << opA << opB;
+        BOBUIest::newRow("prefix") << opA << opB;
     }
 
     {
@@ -479,9 +479,9 @@ void tst_Cmptest::compareQStringLists_data()
         QStringList opB;
         opB.append(QLatin1String("viewDocumentSource"));
 
-        QTest::newRow("short list second") << opA << opB;
+        BOBUIest::newRow("short list second") << opA << opB;
 
-        QTest::newRow("short list first") << opB << opA;
+        BOBUIest::newRow("short list first") << opB << opA;
     }
 }
 
@@ -497,11 +497,11 @@ using IntList = QList<int>;
 
 void tst_Cmptest::compareQListInt_data()
 {
-      QTest::addColumn<IntList>("actual");
+      BOBUIest::addColumn<IntList>("actual");
 
-      QTest::newRow("match") << IntList{1, 2, 3};
-      QTest::newRow("size mismatch") << IntList{1, 2};
-      QTest::newRow("value mismatch") << IntList{1, 2, 4};
+      BOBUIest::newRow("match") << IntList{1, 2, 3};
+      BOBUIest::newRow("size mismatch") << IntList{1, 2};
+      BOBUIest::newRow("value mismatch") << IntList{1, 2, 4};
 }
 
 void tst_Cmptest::compareQListInt()
@@ -555,15 +555,15 @@ void tst_Cmptest::compareContainerToInitializerList()
 #undef ARG
 }
 
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
 void tst_Cmptest::compareQColor_data()
 {
-    QTest::addColumn<QColor>("colorA");
-    QTest::addColumn<QColor>("colorB");
+    BOBUIest::addColumn<QColor>("colorA");
+    BOBUIest::addColumn<QColor>("colorB");
 
-    QTest::newRow("Qt::yellow vs \"yellow\"") << QColor(Qt::yellow) << QColor(QStringLiteral("yellow"));
-    QTest::newRow("Qt::yellow vs Qt::green") << QColor(Qt::yellow) << QColor(Qt::green);
-    QTest::newRow("0x88ff0000 vs 0xffff0000") << QColor::fromRgba(0x88ff0000) << QColor::fromRgba(0xffff0000);
+    BOBUIest::newRow("BobUI::yellow vs \"yellow\"") << QColor(BobUI::yellow) << QColor(QStringLiteral("yellow"));
+    BOBUIest::newRow("BobUI::yellow vs BobUI::green") << QColor(BobUI::yellow) << QColor(BobUI::green);
+    BOBUIest::newRow("0x88ff0000 vs 0xffff0000") << QColor::fromRgba(0x88ff0000) << QColor::fromRgba(0xffff0000);
 }
 
 void tst_Cmptest::compareQColor()
@@ -576,8 +576,8 @@ void tst_Cmptest::compareQColor()
 
 void tst_Cmptest::compareQPixmaps_data()
 {
-    QTest::addColumn<QPixmap>("opA");
-    QTest::addColumn<QPixmap>("opB");
+    BOBUIest::addColumn<QPixmap>("opA");
+    BOBUIest::addColumn<QPixmap>("opB");
 
     const QPixmap pixmap1(xpmPixmapData1);
     const QPixmap pixmap2(xpmPixmapData2);
@@ -585,13 +585,13 @@ void tst_Cmptest::compareQPixmaps_data()
     QPixmap pixmapWrongDpr = pixmap1.scaled(2, 2);
     pixmapWrongDpr.setDevicePixelRatio(2);
 
-    QTest::newRow("both null") << QPixmap() << QPixmap();
-    QTest::newRow("one null") << QPixmap() << pixmap1;
-    QTest::newRow("other null") << pixmap1 << QPixmap();
-    QTest::newRow("equal") << pixmap1 << pixmap1;
-    QTest::newRow("different size") << pixmap1 << pixmap3;
-    QTest::newRow("different pixels") << pixmap1 << pixmap2;
-    QTest::newRow("different dpr") << pixmap1 << pixmapWrongDpr;
+    BOBUIest::newRow("both null") << QPixmap() << QPixmap();
+    BOBUIest::newRow("one null") << QPixmap() << pixmap1;
+    BOBUIest::newRow("other null") << pixmap1 << QPixmap();
+    BOBUIest::newRow("equal") << pixmap1 << pixmap1;
+    BOBUIest::newRow("different size") << pixmap1 << pixmap3;
+    BOBUIest::newRow("different pixels") << pixmap1 << pixmap2;
+    BOBUIest::newRow("different dpr") << pixmap1 << pixmapWrongDpr;
 }
 
 void tst_Cmptest::compareQPixmaps()
@@ -604,8 +604,8 @@ void tst_Cmptest::compareQPixmaps()
 
 void tst_Cmptest::compareQImages_data()
 {
-    QTest::addColumn<QImage>("opA");
-    QTest::addColumn<QImage>("opB");
+    BOBUIest::addColumn<QImage>("opA");
+    BOBUIest::addColumn<QImage>("opB");
 
     const QImage image1(QPixmap(xpmPixmapData1).toImage());
     const QImage image2(QPixmap(xpmPixmapData2).toImage());
@@ -614,14 +614,14 @@ void tst_Cmptest::compareQImages_data()
     QImage imageWrongDpr = image1.scaled(2, 2);
     imageWrongDpr.setDevicePixelRatio(2);
 
-    QTest::newRow("both null") << QImage() << QImage();
-    QTest::newRow("one null") << QImage() << image1;
-    QTest::newRow("other null") << image1 << QImage();
-    QTest::newRow("equal") << image1 << image1;
-    QTest::newRow("different size") << image1 << image3;
-    QTest::newRow("different format") << image1 << image1Indexed;
-    QTest::newRow("different pixels") << image1 << image2;
-    QTest::newRow("different dpr") << image1 << imageWrongDpr;
+    BOBUIest::newRow("both null") << QImage() << QImage();
+    BOBUIest::newRow("one null") << QImage() << image1;
+    BOBUIest::newRow("other null") << image1 << QImage();
+    BOBUIest::newRow("equal") << image1 << image1;
+    BOBUIest::newRow("different size") << image1 << image3;
+    BOBUIest::newRow("different format") << image1 << image1Indexed;
+    BOBUIest::newRow("different pixels") << image1 << image2;
+    BOBUIest::newRow("different dpr") << image1 << imageWrongDpr;
 }
 
 void tst_Cmptest::compareQImages()
@@ -634,17 +634,17 @@ void tst_Cmptest::compareQImages()
 
 void tst_Cmptest::compareQRegion_data()
 {
-    QTest::addColumn<QRegion>("rA");
-    QTest::addColumn<QRegion>("rB");
+    BOBUIest::addColumn<QRegion>("rA");
+    BOBUIest::addColumn<QRegion>("rB");
     const QRect rect1(QPoint(10, 10), QSize(200, 50));
     const QRegion region1(rect1);
     QRegion listRegion2;
     const QList<QRect> list2 = QList<QRect>() << QRect(QPoint(100, 200), QSize(50, 200)) << rect1;
     listRegion2.setRects(list2.constData(), list2.size());
-    QTest::newRow("equal-empty") << QRegion() << QRegion();
-    QTest::newRow("1-empty") << region1 << QRegion();
-    QTest::newRow("equal") << region1 << region1;
-    QTest::newRow("different lists") << region1 << listRegion2;
+    BOBUIest::newRow("equal-empty") << QRegion() << QRegion();
+    BOBUIest::newRow("1-empty") << region1 << QRegion();
+    BOBUIest::newRow("equal") << region1 << region1;
+    BOBUIest::newRow("different lists") << region1 << listRegion2;
 }
 
 void tst_Cmptest::compareQRegion()
@@ -684,14 +684,14 @@ void tst_Cmptest::compareQVector4D()
 
 void tst_Cmptest::compareQPalettes_data()
 {
-    QTest::addColumn<QPalette>("actualPalette");
-    QTest::addColumn<QPalette>("expectedPalette");
+    BOBUIest::addColumn<QPalette>("actualPalette");
+    BOBUIest::addColumn<QPalette>("expectedPalette");
 
     // Initialize both to black, as the default palette values change
     // depending on whether the test is run directly from a shell
     // vs through generate_expected_output.py. We're not testing
     // the defaults, we're testing that the full output is printed
-    // (QTBUG-5903 and QTBUG-87039).
+    // (BOBUIBUG-5903 and BOBUIBUG-87039).
     QPalette actualPalette;
     for (int i = 0; i < QPalette::NColorRoles; ++i) {
         const auto role = QPalette::ColorRole(i);
@@ -708,18 +708,18 @@ void tst_Cmptest::compareQPalettes_data()
         const auto color = QColor::fromRgb(i);
         actualPalette.setColor(role, color);
     }
-    QTest::newRow("all roles are different") << actualPalette << expectedPalette;
+    BOBUIest::newRow("all roles are different") << actualPalette << expectedPalette;
 
     for (int i = 0; i < QPalette::NColorRoles - 1; ++i) {
         const auto role = QPalette::ColorRole(i);
         const auto color = QColor::fromRgb(i);
         expectedPalette.setColor(role, color);
     }
-    QTest::newRow("one role is different") << actualPalette << expectedPalette;
+    BOBUIest::newRow("one role is different") << actualPalette << expectedPalette;
 
     const auto lastRole = QPalette::ColorRole(QPalette::NColorRoles - 1);
     expectedPalette.setColor(lastRole, QColor::fromRgb(lastRole));
-    QTest::newRow("all roles are the same") << actualPalette << expectedPalette;
+    BOBUIest::newRow("all roles are the same") << actualPalette << expectedPalette;
 }
 
 void tst_Cmptest::compareQPalettes()
@@ -729,7 +729,7 @@ void tst_Cmptest::compareQPalettes()
 
     QCOMPARE(actualPalette, expectedPalette);
 }
-#endif // QT_GUI_LIB
+#endif // BOBUI_GUI_LIB
 
 static int opaqueFunc()
 {
@@ -761,7 +761,7 @@ public:
     explicit DeferredFlag(bool initial = false) : m_flag(initial)
     {
         if (!initial)
-            QTimer::singleShot(50, this, &DeferredFlag::onTimeOut);
+            BOBUIimer::singleShot(50, this, &DeferredFlag::onTimeOut);
     }
     explicit operator bool() const { return m_flag; }
     bool operator!() const { return !m_flag; }
@@ -789,18 +789,18 @@ void tst_Cmptest::tryCompare()
     DeferredFlag trueAlready(true);
     {
         DeferredFlag c;
-        // QTRY should check before looping, so be equal to the fresh false immediately.
-        QTRY_COMPARE(c, DeferredFlag());
+        // BOBUIRY should check before looping, so be equal to the fresh false immediately.
+        BOBUIRY_COMPARE(c, DeferredFlag());
         // Given time, it'll end up equal to a true one.
-        QTRY_COMPARE(c, trueAlready);
+        BOBUIRY_COMPARE(c, trueAlready);
     }
     {
         DeferredFlag c;
-        QTRY_COMPARE_WITH_TIMEOUT(c, DeferredFlag(), 300ms);
+        BOBUIRY_COMPARE_WITH_TIMEOUT(c, DeferredFlag(), 300ms);
         QVERIFY(!c); // Instantly equal, so succeeded without delay.
-        QTRY_COMPARE_WITH_TIMEOUT(c, trueAlready, 1s);
+        BOBUIRY_COMPARE_WITH_TIMEOUT(c, trueAlready, 1s);
         qInfo("Should now time out and fail");
-        QTRY_COMPARE_WITH_TIMEOUT(c, DeferredFlag(), 200);
+        BOBUIRY_COMPARE_WITH_TIMEOUT(c, DeferredFlag(), 200);
     }
 }
 
@@ -808,15 +808,15 @@ void tst_Cmptest::tryVerify()
 {
     {
         DeferredFlag c;
-        QTRY_VERIFY(!c);
-        QTRY_VERIFY(c);
+        BOBUIRY_VERIFY(!c);
+        BOBUIRY_VERIFY(c);
     }
     {
         DeferredFlag c;
-        QTRY_VERIFY_WITH_TIMEOUT(!c, 300ms);
-        QTRY_VERIFY_WITH_TIMEOUT(c, 200);
+        BOBUIRY_VERIFY_WITH_TIMEOUT(!c, 300ms);
+        BOBUIRY_VERIFY_WITH_TIMEOUT(c, 200);
         qInfo("Should now time out and fail");
-        QTRY_VERIFY_WITH_TIMEOUT(!c, 200);
+        BOBUIRY_VERIFY_WITH_TIMEOUT(!c, 200);
     }
 }
 
@@ -824,14 +824,14 @@ void tst_Cmptest::tryVerify2()
 {
     {
         DeferredFlag c;
-        QTRY_VERIFY2(!c, "Failed to check before looping");
-        QTRY_VERIFY2(c, "Failed to trigger single-shot");
+        BOBUIRY_VERIFY2(!c, "Failed to check before looping");
+        BOBUIRY_VERIFY2(c, "Failed to trigger single-shot");
     }
     {
         DeferredFlag c;
-        QTRY_VERIFY2_WITH_TIMEOUT(!c, "Failed to check before looping", 300ms);
-        QTRY_VERIFY2_WITH_TIMEOUT(c, "Failed to trigger single-shot", 200);
-        QTRY_VERIFY2_WITH_TIMEOUT(!c, "Should time out and fail", 200);
+        BOBUIRY_VERIFY2_WITH_TIMEOUT(!c, "Failed to check before looping", 300ms);
+        BOBUIRY_VERIFY2_WITH_TIMEOUT(c, "Failed to trigger single-shot", 200);
+        BOBUIRY_VERIFY2_WITH_TIMEOUT(!c, "Should time out and fail", 200);
     }
 }
 
@@ -853,9 +853,9 @@ void tst_Cmptest::verifyExplicitOperatorBool()
 
 void tst_Cmptest::defaultTryTimeoutData()
 {
-    QTest::addColumn<std::chrono::milliseconds>("timeout");
-    QTest::addRow("times-out") << 1ms;
-    QTest::addRow("ample-time") << 1000ms;
+    BOBUIest::addColumn<std::chrono::milliseconds>("timeout");
+    BOBUIest::addRow("times-out") << 1ms;
+    BOBUIest::addRow("ample-time") << 1000ms;
 }
 
 void tst_Cmptest::defaultTryVerifyTimeout_data()
@@ -868,17 +868,17 @@ void tst_Cmptest::defaultTryVerifyTimeout()
     QFETCH(const std::chrono::milliseconds, timeout);
 
     // Check that the default is what expect.
-    QCOMPARE(QTest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
+    QCOMPARE(BOBUIest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
 
     {
         DeferredFlag trueEventually;
-        const auto innerScope = QAtomicScopedValueRollback(QTest::defaultTryTimeout, timeout, std::memory_order_relaxed);
+        const auto innerScope = QAtomicScopedValueRollback(BOBUIest::defaultTryTimeout, timeout, std::memory_order_relaxed);
         QEXPECT_FAIL("times-out", "The timeout (std::chrono::milliseconds) is deliberately too short", Continue);
-        QTRY_VERIFY(trueEventually);
+        BOBUIRY_VERIFY(trueEventually);
     }
 
     // innerScope has now been destroyed, so the timeout should be back to its default.
-    QCOMPARE(QTest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
+    QCOMPARE(BOBUIest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
 }
 
 void tst_Cmptest::defaultTryCompareTimeout_data()
@@ -893,14 +893,14 @@ void tst_Cmptest::defaultTryCompareTimeout()
     DeferredFlag trueAlready(true);
     {
         DeferredFlag trueEventually;
-        const auto innerScope = QAtomicScopedValueRollback(QTest::defaultTryTimeout, timeout, std::memory_order_relaxed);
+        const auto innerScope = QAtomicScopedValueRollback(BOBUIest::defaultTryTimeout, timeout, std::memory_order_relaxed);
         QEXPECT_FAIL("times-out", "The timeout (std::chrono::milliseconds) is deliberately too short", Continue);
-        QTRY_COMPARE(trueEventually, trueAlready);
+        BOBUIRY_COMPARE(trueEventually, trueAlready);
     }
 
     // innerScope has now been destroyed, so the timeout should be back to its default.
-    QCOMPARE(QTest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
+    QCOMPARE(BOBUIest::defaultTryTimeout.load(std::memory_order_relaxed), 5s);
 }
 
-QTEST_MAIN(tst_Cmptest)
+BOBUIEST_MAIN(tst_Cmptest)
 #include "tst_cmptest.moc"

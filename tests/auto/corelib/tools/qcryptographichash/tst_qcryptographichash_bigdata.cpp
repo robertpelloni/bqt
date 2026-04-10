@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
+#include <BobUICore/QCoreApplication>
 #include <QElapsedTimer>
-#include <QTest>
+#include <BOBUIest>
 #include <QScopeGuard>
 #include <QCryptographicHash>
 
@@ -25,7 +25,7 @@ private:
 
 void tst_QCryptographicHashBigData::ensureLargeData()
 {
-#if QT_POINTER_SIZE > 4
+#if BOBUI_POINTER_SIZE > 4
     QElapsedTimer timer;
     timer.start();
     const size_t GiB = 1024 * 1024 * 1024;
@@ -44,20 +44,20 @@ void tst_QCryptographicHashBigData::ensureLargeData()
 
 void tst_QCryptographicHashBigData::moreThan4GiBOfData_data()
 {
-#if QT_POINTER_SIZE > 4
+#if BOBUI_POINTER_SIZE > 4
     if (ensureLargeData(); large.empty())
         return;
-    QTest::addColumn<QCryptographicHash::Algorithm>("algorithm");
+    BOBUIest::addColumn<QCryptographicHash::Algorithm>("algorithm");
     auto me = QMetaEnum::fromType<QCryptographicHash::Algorithm>();
     auto row = [me] (QCryptographicHash::Algorithm algo) {
-        QTest::addRow("%s", me.valueToKey(int(algo))) << algo;
+        BOBUIest::addRow("%s", me.valueToKey(int(algo))) << algo;
     };
     // these are reasonably fast (O(secs))
     row(QCryptographicHash::Md4);
     row(QCryptographicHash::Md5);
-    const bool runsOnCI = qgetenv("QTEST_ENVIRONMENT").split(' ').contains("ci");
+    const bool runsOnCI = qgetenv("BOBUIEST_ENVIRONMENT").split(' ').contains("ci");
     const bool runsUnderASan =
-        #ifdef QT_ASAN_ENABLED
+        #ifdef BOBUI_ASAN_ENABLED
             true
         #else
             false
@@ -113,7 +113,7 @@ void tst_QCryptographicHashBigData::moreThan4GiBOfData()
 
 void tst_QCryptographicHashBigData::keccakBufferOverflow()
 {
-#if QT_POINTER_SIZE == 4
+#if BOBUI_POINTER_SIZE == 4
     QSKIP("This is a 64-bit-only test");
 #else
 
@@ -139,5 +139,5 @@ void tst_QCryptographicHashBigData::keccakBufferOverflow()
 #endif
 }
 
-QTEST_MAIN(tst_QCryptographicHashBigData)
+BOBUIEST_MAIN(tst_QCryptographicHashBigData)
 #include "tst_qcryptographichash_bigdata.moc"

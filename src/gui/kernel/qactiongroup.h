@@ -1,15 +1,15 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACTIONGROUP_H
 #define QACTIONGROUP_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qaction.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qaction.h>
 
-QT_REQUIRE_CONFIG(action);
+BOBUI_REQUIRE_CONFIG(action);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QActionGroupPrivate;
 
@@ -69,6 +69,6 @@ private:
     Q_DISABLE_COPY(QActionGroup)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QACTIONGROUP_H

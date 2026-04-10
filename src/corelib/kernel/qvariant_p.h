@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QVARIANT_P_H
 #define QVARIANT_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,7 +18,7 @@
 
 #include "qvariant.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 inline auto customConstructSharedImpl(size_t size, size_t align)
 {
@@ -74,7 +74,7 @@ inline void QVariant::PrivateShared::free(PrivateShared *p)
     operator delete(p);
 }
 
-inline QVariant::Private::Private(const QtPrivate::QMetaTypeInterface *iface) noexcept
+inline QVariant::Private::Private(const BobUIPrivate::QMetaTypeInterface *iface) noexcept
     : is_shared(false), is_null(false), packedType(quintptr(iface) >> 2)
 {
     Q_ASSERT((quintptr(iface) & 0x3) == 0);
@@ -89,7 +89,7 @@ QVariant::Private::Private(std::piecewise_construct_t, const T &t)
     static constexpr bool isNothrowCopyConstructible = std::is_nothrow_copy_constructible_v<T>;
     static constexpr bool isNothrowCopyAssignable = std::is_nothrow_copy_assignable_v<T>;
 
-    const QtPrivate::QMetaTypeInterface *iface = QtPrivate::qMetaTypeInterfaceForType<T>();
+    const BobUIPrivate::QMetaTypeInterface *iface = BobUIPrivate::qMetaTypeInterfaceForType<T>();
     Q_ASSERT((quintptr(iface) & 0x3) == 0);
     packedType = quintptr(iface) >> 2;
 
@@ -105,6 +105,6 @@ QVariant::Private::Private(std::piecewise_construct_t, const T &t)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVARIANT_P_H

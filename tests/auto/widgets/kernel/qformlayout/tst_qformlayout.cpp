@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qlayout.h>
 #include <qapplication.h>
 #include <qwidget.h>
 #include <qproxystyle.h>
 #include <qsizepolicy.h>
 
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
+#include <BobUIWidgets/QCheckBox>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
 
 #include <private/qdialog_p.h>
 
 #include <QStyleFactory>
 #include <QSharedPointer>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 #include <qformlayout.h>
 
@@ -74,7 +74,7 @@ class tst_QFormLayout : public QObject
 private slots:
     void cleanup();
     void rowCount();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void buddies();
 #endif
     void getItemPosition();
@@ -136,18 +136,18 @@ private slots:
 
     bool hasHeightForWidth() const;
     int heightForWidth(int width) const;
-    Qt::Orientations expandingDirections() const;
+    BobUI::Orientations expandingDirections() const;
 */
 
-    void taskQTBUG_27420_takeAtShouldUnparentLayout();
-    void taskQTBUG_40609_addingWidgetToItsOwnLayout();
-    void taskQTBUG_40609_addingLayoutToItself();
+    void taskBOBUIBUG_27420_takeAtShouldUnparentLayout();
+    void taskBOBUIBUG_40609_addingWidgetToItsOwnLayout();
+    void taskBOBUIBUG_40609_addingLayoutToItself();
 
 };
 
 void tst_QFormLayout::cleanup()
 {
-    QTRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
+    BOBUIRY_VERIFY(QApplication::topLevelWidgets().isEmpty());
 }
 
 void tst_QFormLayout::rowCount()
@@ -170,7 +170,7 @@ void tst_QFormLayout::rowCount()
     //TODO: remove items
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QFormLayout::buddies()
 {
@@ -200,7 +200,7 @@ void tst_QFormLayout::buddies()
     //TODO: empty label?
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QFormLayout::getItemPosition()
 {
@@ -259,7 +259,7 @@ void tst_QFormLayout::wrapping()
     fl->addRow(lbl, le);
 
     w.setFixedWidth(240);
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.show();
 
     QCOMPARE(le->geometry().y() > lbl->geometry().y(), true);
@@ -337,7 +337,7 @@ void tst_QFormLayout::spacing()
 
 
 
-    // Do not assert if spacings are negative (QTBUG-34731)
+    // Do not assert if spacings are negative (BOBUIBUG-34731)
     style->vspacing = -1;
     style->hspacing = -1;
     QLabel *label = new QLabel(tr("Asserts"));
@@ -345,9 +345,9 @@ void tst_QFormLayout::spacing()
     fl->setWidget(0, QFormLayout::LabelRole, label);
     fl->setWidget(1, QFormLayout::FieldRole, checkBox);
     w.resize(200, 100);
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 }
 
 void tst_QFormLayout::contentsRect()
@@ -357,9 +357,9 @@ void tst_QFormLayout::contentsRect()
     QFormLayout form;
     w.setLayout(&form);
     form.addRow("Label", new QPushButton(&w));
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     int l, t, r, b;
     form.getContentsMargins(&l, &t, &r, &b);
     QRect geom = form.geometry();
@@ -375,9 +375,9 @@ public:
     {
         switch(hint) {
             case SH_FormLayoutFormAlignment:
-                return Qt::AlignHCenter | Qt::AlignTop;
+                return BobUI::AlignHCenter | BobUI::AlignTop;
             case SH_FormLayoutLabelAlignment:
-                return Qt::AlignRight;
+                return BobUI::AlignRight;
             case SH_FormLayoutWrapPolicy:
                 return QFormLayout::DontWrapRows;
             case SH_FormLayoutFieldGrowthPolicy:
@@ -388,16 +388,16 @@ public:
     }
 };
 
-class DummyQtopiaStyle : public QCommonStyle
+class DummyBobUIopiaStyle : public QCommonStyle
 {
 public:
     virtual int styleHint ( StyleHint hint, const QStyleOption * option = 0, const QWidget * widget = nullptr, QStyleHintReturn * returnData = 0 ) const override
     {
         switch(hint) {
             case SH_FormLayoutFormAlignment:
-                return Qt::AlignLeft | Qt::AlignTop;
+                return BobUI::AlignLeft | BobUI::AlignTop;
             case SH_FormLayoutLabelAlignment:
-                return Qt::AlignRight;
+                return BobUI::AlignRight;
             case SH_FormLayoutWrapPolicy:
                 return QFormLayout::WrapLongRows;
             case SH_FormLayoutFieldGrowthPolicy:
@@ -414,11 +414,11 @@ void tst_QFormLayout::setFormStyle()
     QFormLayout layout;
     widget.setLayout(&layout);
 
-#if 0 // QT_NO_STYLE_PLASTIQUE
+#if 0 // BOBUI_NO_STYLE_PLASTIQUE
     widget.setStyle(new QPlastiqueStyle());
 
-    QCOMPARE(layout.labelAlignment(), Qt::AlignRight);
-    QVERIFY(layout.formAlignment() == (Qt::AlignLeft | Qt::AlignTop));
+    QCOMPARE(layout.labelAlignment(), BobUI::AlignRight);
+    QVERIFY(layout.formAlignment() == (BobUI::AlignLeft | BobUI::AlignTop));
     QCOMPARE(layout.fieldGrowthPolicy(), QFormLayout::ExpandingFieldsGrow);
     QCOMPARE(layout.rowWrapPolicy(), QFormLayout::DontWrapRows);
 #endif
@@ -426,28 +426,28 @@ void tst_QFormLayout::setFormStyle()
     const QScopedPointer<QStyle> windowsStyle(QStyleFactory::create("windows"));
     widget.setStyle(windowsStyle.data());
 
-    QCOMPARE(layout.labelAlignment(), Qt::AlignLeft);
-    QVERIFY(layout.formAlignment() == (Qt::AlignLeft | Qt::AlignTop));
+    QCOMPARE(layout.labelAlignment(), BobUI::AlignLeft);
+    QVERIFY(layout.formAlignment() == (BobUI::AlignLeft | BobUI::AlignTop));
     QCOMPARE(layout.fieldGrowthPolicy(), QFormLayout::AllNonFixedFieldsGrow);
     QCOMPARE(layout.rowWrapPolicy(), QFormLayout::DontWrapRows);
 
-    /* can't directly create mac style or qtopia style, since
+    /* can't directly create mac style or bobuiopia style, since
        this test is cross platform.. so create dummy styles that
        return all the right stylehints.
      */
     DummyMacStyle macStyle;
     widget.setStyle(&macStyle);
 
-    QCOMPARE(layout.labelAlignment(), Qt::AlignRight);
-    QVERIFY(layout.formAlignment() == (Qt::AlignHCenter | Qt::AlignTop));
+    QCOMPARE(layout.labelAlignment(), BobUI::AlignRight);
+    QVERIFY(layout.formAlignment() == (BobUI::AlignHCenter | BobUI::AlignTop));
     QCOMPARE(layout.fieldGrowthPolicy(), QFormLayout::FieldsStayAtSizeHint);
     QCOMPARE(layout.rowWrapPolicy(), QFormLayout::DontWrapRows);
 
-    DummyQtopiaStyle qtopiaStyle;
-    widget.setStyle(&qtopiaStyle);
+    DummyBobUIopiaStyle bobuiopiaStyle;
+    widget.setStyle(&bobuiopiaStyle);
 
-    QCOMPARE(layout.labelAlignment(), Qt::AlignRight);
-    QVERIFY(layout.formAlignment() == (Qt::AlignLeft | Qt::AlignTop));
+    QCOMPARE(layout.labelAlignment(), BobUI::AlignRight);
+    QVERIFY(layout.formAlignment() == (BobUI::AlignLeft | BobUI::AlignTop));
     QCOMPARE(layout.fieldGrowthPolicy(), QFormLayout::AllNonFixedFieldsGrow);
     QCOMPARE(layout.rowWrapPolicy(), QFormLayout::WrapLongRows);
 }
@@ -670,19 +670,19 @@ void tst_QFormLayout::insertRow_QString_QWidget()
     layout->insertRow(-5, "&Name:", fld1);
     QLabel *label1 = qobject_cast<QLabel *>(layout->itemAt(0, QFormLayout::LabelRole)->widget());
     QVERIFY(label1 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QCOMPARE(label1->buddy(), fld1);
 #endif
     layout->insertRow(0, "&Email:", fld2);
     QLabel *label2 = qobject_cast<QLabel *>(layout->itemAt(0, QFormLayout::LabelRole)->widget());
     QVERIFY(label2 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QCOMPARE(label2->buddy(), fld2);
 #endif
     layout->insertRow(5, "&Age:", fld3);
     QLabel *label3 = qobject_cast<QLabel *>(layout->itemAt(2, QFormLayout::LabelRole)->widget());
     QVERIFY(label3 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QCOMPARE(label3->buddy(), fld3);
 #endif
 }
@@ -698,7 +698,7 @@ void tst_QFormLayout::insertRow_QString_QLayout()
     layout->insertRow(-5, "&Name:", fld1);
     QLabel *label1 = qobject_cast<QLabel *>(layout->itemAt(0, QFormLayout::LabelRole)->widget());
     QVERIFY(label1 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QVERIFY(!label1->buddy());
 #endif
 
@@ -707,7 +707,7 @@ void tst_QFormLayout::insertRow_QString_QLayout()
     layout->insertRow(0, "&Email:", fld2);
     QLabel *label2 = qobject_cast<QLabel *>(layout->itemAt(0, QFormLayout::LabelRole)->widget());
     QVERIFY(label2 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QVERIFY(!label2->buddy());
 #endif
 
@@ -716,7 +716,7 @@ void tst_QFormLayout::insertRow_QString_QLayout()
     layout->insertRow(5, "&Age:", fld3);
     QLabel *label3 = qobject_cast<QLabel *>(layout->itemAt(2, QFormLayout::LabelRole)->widget());
     QVERIFY(label3 != 0);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QVERIFY(!label3->buddy());
 #endif
 
@@ -794,7 +794,7 @@ void tst_QFormLayout::removeRow_QWidget()
     QCOMPARE(layout->rowCount(), 0);
 
     QWidget *w3 = new QWidget;
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayout::takeRow: Invalid widget");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayout::takeRow: Invalid widget");
     layout->removeRow(w3);
     delete w3;
 }
@@ -835,7 +835,7 @@ void tst_QFormLayout::removeRow_QLayout()
     QCOMPARE(layout->rowCount(), 0);
 
     QHBoxLayout *l3 = new QHBoxLayout;
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayout::takeRow: Invalid layout");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayout::takeRow: Invalid layout");
     layout->removeRow(l3);
     delete l3;
 }
@@ -875,7 +875,7 @@ void tst_QFormLayout::takeRow()
     QCOMPARE(layout->rowCount(), 0);
     QCOMPARE(result.fieldItem->widget(), w1.data());
 
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayout::takeRow: Invalid row 0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayout::takeRow: Invalid row 0");
     result = layout->takeRow(0);
 
     QVERIFY(!result.fieldItem);
@@ -916,7 +916,7 @@ void tst_QFormLayout::takeRow_QWidget()
     QCOMPARE(layout->rowCount(), 0);
 
     QWidget *w3 = new QWidget;
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayout::takeRow: Invalid widget");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayout::takeRow: Invalid widget");
     result = layout->takeRow(w3);
     delete w3;
 
@@ -964,7 +964,7 @@ void tst_QFormLayout::takeRow_QLayout()
     QCOMPARE(layout->rowCount(), 0);
 
     QHBoxLayout *l3 = new QHBoxLayout;
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayout::takeRow: Invalid layout");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayout::takeRow: Invalid layout");
     result = layout->takeRow(l3);
     delete l3;
 
@@ -994,9 +994,9 @@ void tst_QFormLayout::setWidget()
     QCOMPARE(layout.rowCount(), 6);
 
     // should be ignored and generate warnings
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayoutPrivate::setItem: Cell (3, 1) already occupied");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayoutPrivate::setItem: Cell (3, 1) already occupied");
     layout.setWidget(3, QFormLayout::FieldRole, &w4);
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayoutPrivate::setItem: Invalid cell (-1, 1)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayoutPrivate::setItem: Invalid cell (-1, 1)");
     layout.setWidget(-1, QFormLayout::FieldRole, &w4);
 
     {
@@ -1064,9 +1064,9 @@ void tst_QFormLayout::setLayout()
     QCOMPARE(layout.rowCount(), 6);
 
     // should be ignored and generate warnings
-    QTest::ignoreMessage(QtWarningMsg, "QFormLayoutPrivate::setItem: Cell (3, 1) already occupied");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QFormLayoutPrivate::setItem: Cell (3, 1) already occupied");
     layout.setLayout(3, QFormLayout::FieldRole, &l4);
-    QTest::ignoreMessage(QtWarningMsg, "QLayout::addChildLayout: layout QHBoxLayout \"\" already has a parent");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout::addChildLayout: layout QHBoxLayout \"\" already has a parent");
     layout.setLayout(-1, QFormLayout::FieldRole, &l4);
     QCOMPARE(layout.count(), 3);
     QCOMPARE(layout.rowCount(), 6);
@@ -1133,7 +1133,7 @@ void tst_QFormLayout::hideShowRow()
 
     topLevel.setLayout(&layout);
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
 
     // returns the top-left position of the items in a row
     const auto rowPosition = [&layout](int row) {
@@ -1173,7 +1173,7 @@ void tst_QFormLayout::hideShowRow()
         layout.setRowVisible(row, false);
         QVERIFY(!layout.isRowVisible(row));
         if (row < layout.rowCount() - 1)
-            QTRY_COMPARE(rowPosition(row + 1), rowPositions[row]);
+            BOBUIRY_COMPARE(rowPosition(row + 1), rowPositions[row]);
         layout.setRowVisible(row, true);
         QVERIFY(layout.isRowVisible(row));
     }
@@ -1216,7 +1216,7 @@ void tst_QFormLayout::hideShowRow()
         QVERIFY(!layout.isRowVisible(fieldWidget));
         if (labelWidget)
             QVERIFY(!layout.isRowVisible(labelWidget));
-        QTRY_COMPARE(rowPosition(row + 1), rowPositions[row]);
+        BOBUIRY_COMPARE(rowPosition(row + 1), rowPositions[row]);
         if (labelWidget)
             labelWidget->show();
         fieldWidget->show();
@@ -1257,7 +1257,7 @@ void tst_QFormLayout::showWithHiddenRow()
 /*
     Test that hiding rows does not leave outdated layout data behind
     in hidden items that results in out-of-bounds array access. See
-    QTBUG-109237.
+    BOBUIBUG-109237.
 */
 void tst_QFormLayout::hiddenRowAndStretch()
 {
@@ -1378,12 +1378,12 @@ void tst_QFormLayout::layoutAlone()
     QHBoxLayout hlay;
     layout.setLayout(1, QFormLayout::LabelRole, &hlay);
     QCOMPARE(layout.count(), 2);
-    w.setWindowTitle(QTest::currentTestFunction());
+    w.setWindowTitle(BOBUIest::currentTestFunction());
     w.show();
     layout.activate();
 }
 
-void tst_QFormLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
+void tst_QFormLayout::taskBOBUIBUG_27420_takeAtShouldUnparentLayout()
 {
     QSharedPointer<QFormLayout> outer(new QFormLayout);
     QAutoPointer<QFormLayout> holder{new QFormLayout};
@@ -1402,24 +1402,24 @@ void tst_QFormLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
     QVERIFY(holder); // a taken item/layout should not be deleted when the old parent is deleted
 }
 
-void tst_QFormLayout::taskQTBUG_40609_addingWidgetToItsOwnLayout(){
+void tst_QFormLayout::taskBOBUIBUG_40609_addingWidgetToItsOwnLayout(){
     QWidget widget;
     widget.setObjectName("6435cbada60548b4522cbb6");
     QFormLayout layout(&widget);
     layout.setObjectName("c03c0e22c0b6d019a93a248");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add parent widget QWidget/6435cbada60548b4522cbb6 to its child layout QFormLayout/c03c0e22c0b6d019a93a248");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add parent widget QWidget/6435cbada60548b4522cbb6 to its child layout QFormLayout/c03c0e22c0b6d019a93a248");
     layout.addRow(QLatin1String("48c81f39b7320082f8"), &widget);
     QCOMPARE(layout.count(), 0);
 }
 
-void tst_QFormLayout::taskQTBUG_40609_addingLayoutToItself(){
+void tst_QFormLayout::taskBOBUIBUG_40609_addingLayoutToItself(){
     QWidget widget;
     widget.setObjectName("2bc425637d084c07ce65956");
     QFormLayout layout(&widget);
     layout.setObjectName("60e31de0c8800eaba713a4f2");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add layout QFormLayout/60e31de0c8800eaba713a4f2 to itself");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add layout QFormLayout/60e31de0c8800eaba713a4f2 to itself");
     layout.addRow(QLatin1String("9a2cd4f40c06b489f889"), &layout);
     QCOMPARE(layout.count(), 0);
 }
@@ -1472,6 +1472,6 @@ void tst_QFormLayout::replaceWidget()
 
 }
 
-QTEST_MAIN(tst_QFormLayout)
+BOBUIEST_MAIN(tst_QFormLayout)
 
 #include "tst_qformlayout.moc"

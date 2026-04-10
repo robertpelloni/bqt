@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSOCKS5SOCKETENGINE_P_H
 #define QSOCKS5SOCKETENGINE_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtNetwork/qnetworkproxy.h>
+#include <BobUINetwork/qnetworkproxy.h>
 
 #include "qabstractsocketengine_p.h"
 
-QT_REQUIRE_CONFIG(socks5);
+BOBUI_REQUIRE_CONFIG(socks5);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSocks5SocketEnginePrivate;
 
@@ -57,19 +57,19 @@ public:
     qint64 read(char *data, qint64 maxlen) override;
     qint64 write(const char *data, qint64 len) override;
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
     bool joinMulticastGroup(const QHostAddress &groupAddress,
                             const QNetworkInterface &iface) override;
     bool leaveMulticastGroup(const QHostAddress &groupAddress,
                              const QNetworkInterface &iface) override;
     QNetworkInterface multicastInterface() const override;
     bool setMulticastInterface(const QNetworkInterface &iface) override;
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
     bool hasPendingDatagrams() const override;
     qint64 pendingDatagramSize() const override;
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
     qint64 readDatagram(char *data, qint64 maxlen, QIpPacketHeader * = nullptr,
                         PacketHeaderOptions = WantNone) override;
@@ -101,7 +101,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_controlSocketConnected())
     Q_PRIVATE_SLOT(d_func(), void _q_controlSocketReadNotification())
     Q_PRIVATE_SLOT(d_func(), void _q_controlSocketErrorOccurred(QAbstractSocket::SocketError))
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     Q_PRIVATE_SLOT(d_func(), void _q_udpSocketReadNotification())
 #endif
     Q_PRIVATE_SLOT(d_func(), void _q_controlSocketBytesWritten())
@@ -114,7 +114,7 @@ private:
 };
 
 
-class QTcpSocket;
+class BOBUIcpSocket;
 
 class QSocks5Authenticator
 {
@@ -122,12 +122,12 @@ public:
     QSocks5Authenticator();
     virtual ~QSocks5Authenticator();
     virtual char methodId();
-    virtual bool beginAuthenticate(QTcpSocket *socket, bool *completed);
-    virtual bool continueAuthenticate(QTcpSocket *socket, bool *completed);
+    virtual bool beginAuthenticate(BOBUIcpSocket *socket, bool *completed);
+    virtual bool continueAuthenticate(BOBUIcpSocket *socket, bool *completed);
 
     bool seal(const QByteArray &buf, QByteArray *sealedBuf);
     bool unSeal(const QByteArray &sealedBuf, QByteArray *buf);
-    bool unSeal(QTcpSocket *sealedSocket, QByteArray *buf);
+    bool unSeal(BOBUIcpSocket *sealedSocket, QByteArray *buf);
 
     virtual QString errorString() { return QString(); }
 };
@@ -137,8 +137,8 @@ class QSocks5PasswordAuthenticator : public QSocks5Authenticator
 public:
     QSocks5PasswordAuthenticator(const QString &userName, const QString &password);
     char methodId() override;
-    bool beginAuthenticate(QTcpSocket *socket, bool *completed) override;
-    bool continueAuthenticate(QTcpSocket *socket, bool *completed) override;
+    bool beginAuthenticate(BOBUIcpSocket *socket, bool *completed) override;
+    bool continueAuthenticate(BOBUIcpSocket *socket, bool *completed) override;
 
     QString errorString() override;
 
@@ -217,7 +217,7 @@ public:
     void _q_controlSocketConnected();
     void _q_controlSocketReadNotification();
     void _q_controlSocketErrorOccurred(QAbstractSocket::SocketError);
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     void _q_udpSocketReadNotification();
 #endif
     void _q_controlSocketBytesWritten();
@@ -232,7 +232,7 @@ public:
 
     QSocks5Data *data;
     QSocks5ConnectData *connectData;
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
     QSocks5UdpAssociateData *udpData;
 #endif
     QSocks5BindData *bindData;
@@ -261,6 +261,6 @@ public:
     virtual QAbstractSocketEngine *createSocketEngine(qintptr socketDescriptor, QObject *parent) override;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSOCKS5SOCKETENGINE_H

@@ -1,58 +1,58 @@
-Qt 3.0 beta 5 is not binary compatible with beta 4; any programs
+BobUI 3.0 beta 5 is not binary compatible with beta 4; any programs
 linked against beta 4 must be recompiled.
 
-Below you will find a description of general changes in the Qt
-Library and Qt Designer followed by a detailed list of changes in the
+Below you will find a description of general changes in the BobUI
+Library and BobUI Designer followed by a detailed list of changes in the
 API.
 
 
-The Qt Library
+The BobUI Library
 ========================================
 
 Documentation
 -------------
 
-The extensive revision of Qt classes' documentation is complete. The
-front page of the Qt documentation (index.html) has been redesigned
+The extensive revision of BobUI classes' documentation is complete. The
+front page of the BobUI documentation (index.html) has been redesigned
 to provide better access to other documentation than class
 documentation.
 
 OpenGL Module
 -------------
 
-Qt beta 5 provides some fixes which will make rendering GL widgets to
+BobUI beta 5 provides some fixes which will make rendering GL widgets to
 pixmaps work on a wider range of X servers.
 
 QDateTimeEdit
 -------------
 
-The QDateTimeEdit, QDateEdit and QTimeEdit widgets have been moved
-from the SQL module to the Qt core widget set. All users of Qt can
+The QDateTimeEdit, QDateEdit and BOBUIimeEdit widgets have been moved
+from the SQL module to the BobUI core widget set. All users of BobUI can
 now use these widgets.
 
 
-Qt Designer
+BobUI Designer
 ========================================
 
  - Some bugs related to the .ui.h feature were fixed.
 
  - The generation of code related to QSqlCursor has been fixed.
 
- - When removing a slot implementation from the Qt Designer
+ - When removing a slot implementation from the BobUI Designer
    interface, do not accidentally remove a preceding comment.
 
  - Improved the C++ code indenter in the editor for some C++
    constructs, including try-catch blocks.
 
 
-Qt Linguist
+BobUI Linguist
 ========================================
 
  - Fixed problem with loading phrase books containing non-ASCII
    characters.
 
 
-Qt Classes
+BobUI Classes
 ========================================
 
 QApplication
@@ -165,7 +165,7 @@ QMime
 QMutex
 ------
 
- - Unlock the Qt library mutex when enter_loop() is called the first
+ - Unlock the BobUI library mutex when enter_loop() is called the first
    time, rather than when exec() is called. A programmer might call
    QDialog::exec() and never QApplication::exec(), and then she will
    wait for the mutex.
@@ -234,18 +234,18 @@ QStyle
  - Allow separator custom menu items to use a different size than
    specified by the style.
 
-Qt
+BobUI
 --
 
- - Renamed Qt::Top, Qt::Bottom, Qt::Left, Qt::Right to Qt::DockTop,
-   Qt::DockBottom, Qt::DockLeft, Qt::DockRight.
+ - Renamed BobUI::Top, BobUI::Bottom, BobUI::Left, BobUI::Right to BobUI::DockTop,
+   BobUI::DockBottom, BobUI::DockLeft, BobUI::DockRight.
 
-QTable
+BOBUIable
 ------
 
  - Fixed currentChanged() and valueChanged() emits.
 
-QTextEdit
+BOBUIextEdit
 ---------
 
  - Moved eventFilter() from the public slots section to the public
@@ -256,24 +256,24 @@ QTextEdit
 New function:
 	void zoomTo( int size );
 
-QTextIStream
+BOBUIextIStream
 ------------
 
- - Fixed QTextIStream with a QString.
+ - Fixed BOBUIextIStream with a QString.
 
-QToolBar
+BOBUIoolBar
 --------
 
  - Fall back to text property in extension popup if no pixmap label
    has been set.
  - Made mainWindow() const.
 
-QToolButton
+BOBUIoolButton
 -----------
 
  - Fixed the minimumSizeHint() for better behavior in a layout.
 
-QToolTip
+BOBUIoolTip
 --------
 
  - Fixed the transparent tooltip effect a la Windows 2000.

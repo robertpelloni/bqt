@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore>
-#include <QtGui>
-#include <QTest>
+#include <BobUICore>
+#include <BobUIGui>
+#include <BOBUIest>
 
 Q_DECLARE_METATYPE(QMetaType::Type)
 
@@ -42,23 +42,23 @@ private slots:
     F(QBitmap, QBitmap) \
     F(QKeySequence, QKeySequence) \
     F(QPen, QPen) \
-    F(QTextLength, QTextLength) \
-    F(QTextFormat, QTextFormat) \
-    F(QTransform, QTransform) \
+    F(BOBUIextLength, BOBUIextLength) \
+    F(BOBUIextFormat, BOBUIextFormat) \
+    F(BOBUIransform, BOBUIransform) \
     F(QMatrix4x4, QMatrix4x4) \
     F(QVector2D, QVector2D) \
     F(QVector3D, QVector3D) \
     F(QVector4D, QVector4D) \
     F(QQuaternion, QQuaternion)
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 #   define FOR_EACH_GUI_METATYPE(F) \
         FOR_EACH_GUI_METATYPE_BASE(F) \
         F(QCursor, QCursor)
-#else // !QT_NO_CURSOR
+#else // !BOBUI_NO_CURSOR
 #   define FOR_EACH_GUI_METATYPE(F) \
         FOR_EACH_GUI_METATYPE_BASE(F)
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
 
 namespace {
@@ -107,7 +107,7 @@ template<> struct TypeComparator<QMetaType::QBitmap>
     { return v1.size() == v2.size(); }
 };
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 template<> struct TypeComparator<QMetaType::QCursor>
 {
     static bool equal(const QCursor &v1, const QCursor &v2)
@@ -132,13 +132,13 @@ template<> struct TestValueFactory<QMetaType::QPixmap> {
     static QPixmap *create() { return new QPixmap(16, 32); }
 };
 template<> struct TestValueFactory<QMetaType::QBrush> {
-    static QBrush *create() { return new QBrush(Qt::SolidPattern); }
+    static QBrush *create() { return new QBrush(BobUI::SolidPattern); }
 };
 template<> struct TestValueFactory<QMetaType::QColor> {
-    static QColor *create() { return new QColor(Qt::blue); }
+    static QColor *create() { return new QColor(BobUI::blue); }
 };
 template<> struct TestValueFactory<QMetaType::QPalette> {
-    static QPalette *create() { return new QPalette(Qt::yellow, Qt::green); }
+    static QPalette *create() { return new QPalette(BobUI::yellow, BobUI::green); }
 };
 template<> struct TestValueFactory<QMetaType::QImage> {
     static QImage *create() { return new QImage(16, 32, QImage::Format_ARGB32_Premultiplied); }
@@ -152,29 +152,29 @@ template<> struct TestValueFactory<QMetaType::QRegion> {
 template<> struct TestValueFactory<QMetaType::QBitmap> {
     static QBitmap *create() { return new QBitmap(16, 32); }
 };
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 template<> struct TestValueFactory<QMetaType::QCursor> {
-    static QCursor *create() { return new QCursor(Qt::WaitCursor); }
+    static QCursor *create() { return new QCursor(BobUI::WaitCursor); }
 };
 #endif
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 template<> struct TestValueFactory<QMetaType::QKeySequence> {
     static QKeySequence *create() { return new QKeySequence(QKeySequence::Close); }
 };
 #endif
 
 template<> struct TestValueFactory<QMetaType::QPen> {
-    static QPen *create() { return new QPen(Qt::DashDotDotLine); }
+    static QPen *create() { return new QPen(BobUI::DashDotDotLine); }
 };
-template<> struct TestValueFactory<QMetaType::QTextLength> {
-    static QTextLength *create() { return new QTextLength(QTextLength::PercentageLength, 50); }
+template<> struct TestValueFactory<QMetaType::BOBUIextLength> {
+    static BOBUIextLength *create() { return new BOBUIextLength(BOBUIextLength::PercentageLength, 50); }
 };
-template<> struct TestValueFactory<QMetaType::QTextFormat> {
-    static QTextFormat *create() { return new QTextFormat(QTextFormat::FrameFormat); }
+template<> struct TestValueFactory<QMetaType::BOBUIextFormat> {
+    static BOBUIextFormat *create() { return new BOBUIextFormat(BOBUIextFormat::FrameFormat); }
 };
-template<> struct TestValueFactory<QMetaType::QTransform> {
-    static QTransform *create() { return new QTransform(10, 20, 30, 40, 50, 60); }
+template<> struct TestValueFactory<QMetaType::BOBUIransform> {
+    static BOBUIransform *create() { return new BOBUIransform(10, 20, 30, 40, 50, 60); }
 };
 template<> struct TestValueFactory<QMetaType::QMatrix4x4> {
     static QMatrix4x4 *create() { return new QMatrix4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16); }
@@ -194,9 +194,9 @@ template<> struct TestValueFactory<QMetaType::QQuaternion> {
 
 void tst_QGuiMetaType::create_data()
 {
-    QTest::addColumn<QMetaType::Type>("type");
+    BOBUIest::addColumn<QMetaType::Type>("type");
 #define ADD_METATYPE_TEST_ROW(TYPE, ID) \
-    QTest::newRow(QMetaType(QMetaType::ID).name()) << QMetaType::ID;
+    BOBUIest::newRow(QMetaType(QMetaType::ID).name()) << QMetaType::ID;
 FOR_EACH_GUI_METATYPE(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
@@ -274,10 +274,10 @@ FOR_EACH_GUI_METATYPE(RETURN_CREATE_COPY_FUNCTION)
 
 void tst_QGuiMetaType::sizeOf_data()
 {
-    QTest::addColumn<QMetaType::Type>("type");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<QMetaType::Type>("type");
+    BOBUIest::addColumn<int>("size");
 #define ADD_METATYPE_TEST_ROW(TYPE, ID) \
-    QTest::newRow(QMetaType(QMetaType::ID).name()) << QMetaType::ID << int(sizeof(TYPE));
+    BOBUIest::newRow(QMetaType(QMetaType::ID).name()) << QMetaType::ID << int(sizeof(TYPE));
 FOR_EACH_GUI_METATYPE(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
@@ -297,9 +297,9 @@ struct TypeAlignment
 
 template <typename T> void addFlagsRow(const char *name, int id = qMetaTypeId<T>())
 {
-    QTest::newRow(name)
+    BOBUIest::newRow(name)
             << id
-            << bool(QTypeInfo<T>::isRelocatable)
+            << bool(BOBUIypeInfo<T>::isRelocatable)
             << bool(!std::is_trivially_default_constructible_v<T>)
             << bool(!std::is_trivially_copy_constructible_v<T>)
             << bool(!std::is_trivially_destructible_v<T>);
@@ -308,15 +308,15 @@ template <typename T> void addFlagsRow(const char *name, int id = qMetaTypeId<T>
 // tst_QGuiMetaType::flags is nearly identical to tst_QMetaType::flags
 void tst_QGuiMetaType::flags_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<bool>("isRelocatable");
-    QTest::addColumn<bool>("needsConstruction");
-    QTest::addColumn<bool>("needsCopyConstruction");
-    QTest::addColumn<bool>("needsDestruction");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<bool>("isRelocatable");
+    BOBUIest::addColumn<bool>("needsConstruction");
+    BOBUIest::addColumn<bool>("needsCopyConstruction");
+    BOBUIest::addColumn<bool>("needsDestruction");
 
 #define ADD_METATYPE_TEST_ROW(MetaTypeName, MetaTypeId, RealType) \
     addFlagsRow<RealType>(#RealType, MetaTypeId);
-QT_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
+BOBUI_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
 
@@ -336,30 +336,30 @@ void tst_QGuiMetaType::flags()
 
 template <typename T> static void addFlags2Row(QMetaType metaType = QMetaType::fromType<T>())
 {
-    QTest::newRow(metaType.name() ? metaType.name() : "UnknownType")
+    BOBUIest::newRow(metaType.name() ? metaType.name() : "UnknownType")
             << metaType
             << std::is_default_constructible_v<T>
             << std::is_copy_constructible_v<T>
             << std::is_move_constructible_v<T>
             << std::is_destructible_v<T>
-            << (QTypeTraits::has_operator_equal<T>::value || QTypeTraits::has_operator_less_than<T>::value)
-            << QTypeTraits::has_operator_less_than<T>::value;
+            << (BOBUIypeTraits::has_operator_equal<T>::value || BOBUIypeTraits::has_operator_less_than<T>::value)
+            << BOBUIypeTraits::has_operator_less_than<T>::value;
 };
 
 // tst_QGuiMetaType::flags2 is nearly identical to tst_QMetaType::flags2
 void tst_QGuiMetaType::flags2_data()
 {
-    QTest::addColumn<QMetaType>("type");
-    QTest::addColumn<bool>("isDefaultConstructible");
-    QTest::addColumn<bool>("isCopyConstructible");
-    QTest::addColumn<bool>("isMoveConstructible");
-    QTest::addColumn<bool>("isDestructible");
-    QTest::addColumn<bool>("isEqualityComparable");
-    QTest::addColumn<bool>("isOrdered");
+    BOBUIest::addColumn<QMetaType>("type");
+    BOBUIest::addColumn<bool>("isDefaultConstructible");
+    BOBUIest::addColumn<bool>("isCopyConstructible");
+    BOBUIest::addColumn<bool>("isMoveConstructible");
+    BOBUIest::addColumn<bool>("isDestructible");
+    BOBUIest::addColumn<bool>("isEqualityComparable");
+    BOBUIest::addColumn<bool>("isOrdered");
 
 #define ADD_METATYPE_TEST_ROW(MetaTypeName, MetaTypeId, RealType) \
     addFlags2Row<RealType>();
-QT_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
+BOBUI_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
 
@@ -472,12 +472,12 @@ struct StreamingTraits
 
 void tst_QGuiMetaType::saveAndLoadBuiltin_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<bool>("isStreamable");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<bool>("isStreamable");
 
 #define ADD_METATYPE_TEST_ROW(MetaTypeName, MetaTypeId, RealType) \
-    QTest::newRow(#RealType) << MetaTypeId << bool(StreamingTraits<RealType>::isStreamable);
-    QT_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
+    BOBUIest::newRow(#RealType) << MetaTypeId << bool(StreamingTraits<RealType>::isStreamable);
+    BOBUI_FOR_EACH_STATIC_GUI_CLASS(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
 
@@ -507,5 +507,5 @@ void tst_QGuiMetaType::saveAndLoadBuiltin()
     QMetaType(type).destroy(value);
 }
 
-QTEST_MAIN(tst_QGuiMetaType)
+BOBUIEST_MAIN(tst_QGuiMetaType)
 #include "tst_qguimetatype.moc"

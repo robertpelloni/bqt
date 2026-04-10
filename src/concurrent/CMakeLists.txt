@@ -1,51 +1,51 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## Concurrent Module:
 #####################################################################
 
-qt_internal_add_module(Concurrent
+bobui_internal_add_module(Concurrent
     NO_PRIVATE_MODULE
     EXCEPTIONS
     SOURCES
-        qtaskbuilder.h
-        qtconcurrent_global.h
-        qtconcurrentcompilertest.h
-        qtconcurrentfilter.cpp qtconcurrentfilter.h
-        qtconcurrentfilterkernel.h
-        qtconcurrentfunctionwrappers.h
-        qtconcurrentiteratekernel.cpp qtconcurrentiteratekernel.h
-        qtconcurrentmap.cpp qtconcurrentmap.h
-        qtconcurrentmapkernel.h
-        qtconcurrentmedian.h
-        qtconcurrentreducekernel.h
-        qtconcurrentrun.cpp qtconcurrentrun.h
-        qtconcurrentrunbase.h
-        qtconcurrentstoredfunctioncall.h
-        qtconcurrenttask.h
-        qtconcurrentthreadengine.cpp qtconcurrentthreadengine.h
+        bobuiaskbuilder.h
+        bobuiconcurrent_global.h
+        bobuiconcurrentcompilertest.h
+        bobuiconcurrentfilter.cpp bobuiconcurrentfilter.h
+        bobuiconcurrentfilterkernel.h
+        bobuiconcurrentfunctionwrappers.h
+        bobuiconcurrentiteratekernel.cpp bobuiconcurrentiteratekernel.h
+        bobuiconcurrentmap.cpp bobuiconcurrentmap.h
+        bobuiconcurrentmapkernel.h
+        bobuiconcurrentmedian.h
+        bobuiconcurrentreducekernel.h
+        bobuiconcurrentrun.cpp bobuiconcurrentrun.h
+        bobuiconcurrentrunbase.h
+        bobuiconcurrentstoredfunctioncall.h
+        bobuiconcurrenttask.h
+        bobuiconcurrentthreadengine.cpp bobuiconcurrentthreadengine.h
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_NO_USING_NAMESPACE
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_USE_NODISCARD_FILE_OPEN
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
     PRECOMPILED_HEADER
-        "../corelib/global/qt_pch.h"
+        "../corelib/global/bobui_pch.h"
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(Concurrent CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
+bobui_internal_extend_target(Concurrent CONDITION MSVC AND (TEST_architecture_arch STREQUAL "i386")
     LINK_OPTIONS
         "/BASE:0x66000000"
 )
-qt_internal_add_docs(Concurrent
-    doc/qtconcurrent.qdocconf
+bobui_internal_add_docs(Concurrent
+    doc/bobuiconcurrent.qdocconf
 )

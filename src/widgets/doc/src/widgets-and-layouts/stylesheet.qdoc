@@ -1,14 +1,14 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page stylesheet.html
-    \title Qt Style Sheets
+    \title BobUI Style Sheets
     \brief How to use style sheets to customize the appearance of widgets.
 
     \ingroup frameworks-technologies
-    \ingroup qt-basic-concepts
-    \ingroup qt-gui-concepts
+    \ingroup bobui-basic-concepts
+    \ingroup bobui-gui-concepts
 
     \previouspage {Styles and Style Aware Widgets}{Styles}
     \nextpage The Style Sheet Syntax
@@ -16,10 +16,10 @@
     \keyword style sheet
     \keyword stylesheet
 
-    Qt Style Sheets are a powerful mechanism that allows you to
+    BobUI Style Sheets are a powerful mechanism that allows you to
     customize the appearance of widgets, in addition to what is
     already possible by subclassing QStyle. The concepts,
-    terminology, and syntax of Qt Style Sheets are heavily inspired
+    terminology, and syntax of BobUI Style Sheets are heavily inspired
     by HTML \l{http://www.w3.org/Style/CSS/}{Cascading Style Sheets
     (CSS)} but adapted to the world of widgets.
 
@@ -28,15 +28,15 @@
     \list
     \li \l{Overview}
     \li \l{The Style Sheet Syntax}
-    \li \l{Qt Widgets Designer Integration}
-    \li \l{Customizing Qt Widgets Using Style Sheets}
-    \li \l{Qt Style Sheets Reference}
-    \li \l{Qt Style Sheets Examples}
+    \li \l{BobUI Widgets Designer Integration}
+    \li \l{Customizing BobUI Widgets Using Style Sheets}
+    \li \l{BobUI Style Sheets Reference}
+    \li \l{BobUI Style Sheets Examples}
     \endlist
 
-    \note If Qt Style Sheets are used on the same widget as functions that
+    \note If BobUI Style Sheets are used on the same widget as functions that
     set the appearance of widgets, such as \l QWidget::setFont() or
-    \l QTreeWidgetItem::setBackground(), style sheets will take precedence
+    \l BOBUIreeWidgetItem::setBackground(), style sheets will take precedence
     if the settings conflict.
 
     \target overview
@@ -46,7 +46,7 @@
     whole application using QApplication::setStyleSheet() or on a
     specific widget (and its children) using
     QWidget::setStyleSheet(). If several style sheets are set at
-    different levels, Qt derives the effective style sheet from all
+    different levels, BobUI derives the effective style sheet from all
     of those that are set. This is called cascading.
 
     For example, the following style sheet specifies that all
@@ -93,17 +93,17 @@
     otherwise forwards the drawing operations to the underlying,
     platform-specific style (e.g., QWindowsVistaStyle on Windows).
 
-    Since Qt 4.5, Qt style sheets fully supports \macos.
+    Since BobUI 4.5, BobUI style sheets fully supports \macos.
 
 */
 
 /*!
     \page stylesheet-syntax.html
-    \previouspage Qt Style Sheets
-    \nextpage Qt Widgets Designer Integration
+    \previouspage BobUI Style Sheets
+    \nextpage BobUI Widgets Designer Integration
     \title The Style Sheet Syntax
 
-    Qt Style Sheet terminology and syntactic rules are almost
+    BobUI Style Sheet terminology and syntactic rules are almost
     identical to those of HTML CSS. If you already know CSS, you can
     probably skim quickly through this section.
 
@@ -122,10 +122,10 @@
     QPushButton and its subclasses (e.g., \c MyPushButton) should use
     red as their foreground color.
 
-    Qt Style Sheet is generally case insensitive (i.e., \c color,
+    BobUI Style Sheet is generally case insensitive (i.e., \c color,
     \c Color, \c COLOR, and \c cOloR refer to the same property).
     The only exceptions are class names,
-    \l{QObject::setObjectName()}{object names}, and Qt property
+    \l{QObject::setObjectName()}{object names}, and BobUI property
     names, which are case sensitive.
 
     Several selectors can be specified for the same declaration,
@@ -145,12 +145,12 @@
     \snippet code/doc_src_stylesheet.qdoc 4
 
     See the \l{List of Properties} section below for the list of
-    properties provided by Qt widgets.
+    properties provided by BobUI widgets.
 
     \section1 Selector Types
 
     All the examples so far used the simplest type of selector, the
-    Type Selector. Qt Style Sheets support all the
+    Type Selector. BobUI Style Sheets support all the
     \l{http://www.w3.org/TR/REC-CSS2/selector.html#q1}{selectors
     defined in CSS2}. The table below summarizes the most useful
     types of selectors.
@@ -176,7 +176,7 @@
         \li \c{QPushButton[flat="false"]}
         \li Matches instances of QPushButton that are not
            \l{QPushButton::}{flat}. You may use this selector to test
-           for any Qt \l{Qt's Property System}{property} that supports
+           for any BobUI \l{BobUI's Property System}{property} that supports
            QVariant::toString() (see the \l{QVariant::}{toString()}
            function documentation for details). In addition, the
            special \c class property is supported, for the name of the
@@ -187,9 +187,9 @@
            refer to \l{Customizing Using Dynamic Properties}.
 
            Instead of \c =, you can also use \c ~= to test whether a
-           Qt property of type QStringList contains a given QString.
+           BobUI property of type QStringList contains a given QString.
 
-           \warning If the value of the Qt property changes after the
+           \warning If the value of the BobUI property changes after the
            style sheet has been set, it might be necessary to force a
            style sheet recomputation. One way to achieve this is to
            unset the style sheet and set it again.
@@ -233,22 +233,22 @@
 
     The above rule styles the drop-down button of all \l{QComboBox}es.
     Although the double-colon (\c{::}) syntax is reminiscent of CSS3
-    Pseudo-Elements, Qt Sub-Controls differ conceptually from these and have
+    Pseudo-Elements, BobUI Sub-Controls differ conceptually from these and have
     different cascading semantics.
 
     Sub-controls are always positioned with respect to another element - a
     reference element. This reference element could be the widget or another
-    Sub-control. For example, the \l{Qt Style Sheets Reference#drop-down-sub}
+    Sub-control. For example, the \l{BobUI Style Sheets Reference#drop-down-sub}
     {::drop-down} of a QComboBox is placed, by default, in the top right corner
     of the Padding rectangle of the QComboBox. The
-    \l{Qt Style Sheets Reference#drop-down-sub}{::drop-down} is placed,
+    \l{BobUI Style Sheets Reference#drop-down-sub}{::drop-down} is placed,
     by default, in the Center of the Contents rectangle of the
-    \l{Qt Style Sheets Reference#drop-down-sub}{::drop-down} Sub-control. See
+    \l{BobUI Style Sheets Reference#drop-down-sub}{::drop-down} Sub-control. See
     the \l{List of Stylable Widgets} below for the Sub-controls to use to
     style a widget and their default positions.
 
     The origin rectangle to be used can be changed using the
-    \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}
+    \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}
     property. For example, if we want to place the drop-down in the margin
     rectangle of the QComboBox instead of the default Padding rectangle, we
     can specify:
@@ -256,17 +256,17 @@
     \snippet code/doc_src_stylesheet.qdoc 6
 
     The alignment of the drop-down within the Margin rectangle is changed
-    using \l{Qt Style Sheets Reference#subcontrol-position-prop}
+    using \l{BobUI Style Sheets Reference#subcontrol-position-prop}
     {subcontrol-position} property.
 
-    The \l{Qt Style Sheets Reference#width-prop}{width} and
-    \l{Qt Style Sheets Reference#height-prop}{height} properties can be used
+    The \l{BobUI Style Sheets Reference#width-prop}{width} and
+    \l{BobUI Style Sheets Reference#height-prop}{height} properties can be used
     to control the size of the Sub-control. Note that setting a
-    \l{Qt Style Sheets Reference#image-prop}{image} implicitly sets the size
+    \l{BobUI Style Sheets Reference#image-prop}{image} implicitly sets the size
     of a Sub-control.
 
     The relative positioning scheme
-    (\l{Qt Style Sheets Reference#position-prop}{position} : relative),
+    (\l{BobUI Style Sheets Reference#position-prop}{position} : relative),
     allows the position of the Sub-Control to be offset from its initial
     position. For example, when the QComboBox's drop-down button is
     pressed, we might like the arrow inside to be offset to give a
@@ -275,7 +275,7 @@
     \snippet code/doc_src_stylesheet.qdoc 7
 
     The absolute positioning scheme
-    (\l{Qt Style Sheets Reference#position-prop}{position} : absolute),
+    (\l{BobUI Style Sheets Reference#position-prop}{position} : absolute),
     allows the position and size of the Sub-control to be changed with
     respect to the reference element.
 
@@ -328,7 +328,7 @@
     \snippet code/doc_src_stylesheet.qdoc 13
 
     See the \l{List of Pseudo-States} section below for the list of
-    pseudo-states provided by Qt widgets.
+    pseudo-states provided by BobUI widgets.
 
     \section1 Conflict Resolution
 
@@ -375,17 +375,17 @@
 
     Both rules apply to QPushButton instances (since QPushButton
     inherits QAbstractButton) and there is a conflict for the
-    \l{Qt Style Sheets Reference#color-prop}{color} property. Because QPushButton
+    \l{BobUI Style Sheets Reference#color-prop}{color} property. Because QPushButton
     inherits QAbstractButton, it might be tempting to assume that
     \c QPushButton is more specific than \c QAbstractButton. However,
     for style sheet computations, all Type Selectors have the same
     specificity, and the rule that appears last takes precedence. In
-    other words, \l{Qt Style Sheets Reference#color-prop}{color} is set to \c gray
+    other words, \l{BobUI Style Sheets Reference#color-prop}{color} is set to \c gray
     for all \l{QAbstractButton}s, including \l{QPushButton}s. If we really
     want \l{QPushButton}s to have red text, we can always reorder the
     rules.
 
-    For determining the specificity of a rule, Qt Style Sheets follow
+    For determining the specificity of a rule, BobUI Style Sheets follow
     the
     \l{http://www.w3.org/TR/REC-CSS2/cascade.html#specificity}{CSS2
     Specification}:
@@ -446,14 +446,14 @@
 
     Style sheet cascading is a complex topic. Refer to the
     \l{http://www.w3.org/TR/CSS2/cascade.html#cascade}{CSS2
-    Specification} for the gory details. Be aware that Qt currently
+    Specification} for the gory details. Be aware that BobUI currently
     doesn't implement \c{!important}.
 
     \section1 Inheritance
 
     In classic CSS, when font and color of an item is not explicitly set,
     it gets automatically inherited from the parent. By default, when using
-    Qt Style Sheets, a widget does \b{not} automatically inherit its font
+    BobUI Style Sheets, a widget does \b{not} automatically inherit its font
     and color setting from its parent widget.
 
     For example, consider a QPushButton inside a QGroupBox:
@@ -471,14 +471,14 @@
     QWidget::setPalette() propagates to child widgets.
 
     If you would prefer that the font and palette propagate to child widgets,
-    you can set the Qt::AA_UseStyleSheetPropagationInWidgetStyles flag, like
+    you can set the BobUI::AA_UseStyleSheetPropagationInWidgetStyles flag, like
     this:
 
     Usage:
     \snippet code/doc_src_stylesheet.cpp 96
 
     When the widget-style font and palette propagation is enabled, font and
-    palette changes made through Qt Style Sheets will behave as if the user
+    palette changes made through BobUI Style Sheets will behave as if the user
     had manually called the corresponding QWidget::setPalette() and
     QWidget::setFont() methods on all of the QWidgets targeted by the style
     sheet.
@@ -500,7 +500,7 @@
 
     \snippet code/doc_src_stylesheet.cpp 26
 
-    Qt Style Sheet uses QObject::className() of the widget to determine
+    BobUI Style Sheet uses QObject::className() of the widget to determine
     when to apply the Type Selector. When custom widgets are inside namespaces,
     the QObject::className() returns <namespace>::<classname>. This conflicts
     with the syntax for \l{Sub-Controls}. To overcome this problem,
@@ -529,15 +529,15 @@
 /*!
     \page stylesheet-designer.html
     \previouspage The Style Sheet Syntax
-    \nextpage Customizing Qt Widgets Using Style Sheets
-    \title Qt Widgets Designer Integration
+    \nextpage Customizing BobUI Widgets Using Style Sheets
+    \title BobUI Widgets Designer Integration
 
-    \l{Qt Widgets Designer Manual}{\QD} is an excellent tool
+    \l{BobUI Widgets Designer Manual}{\QD} is an excellent tool
     to preview style sheets. You can right-click on any widget in Designer
     and select \uicontrol{Change styleSheet...} to set the style sheet.
 
     \image designer-stylesheet-options.webp
-           {Editing a form in Qt Widgets Designer}
+           {Editing a form in BobUI Widgets Designer}
 
     \QD also includes a style sheet syntax highlighter and validator. The
     validator indicates if the syntax is valid or invalid, at the bottom left
@@ -555,9 +555,9 @@
 
 /*!
     \page stylesheet-customizing.html
-    \previouspage Qt Widgets Designer Integration
-    \nextpage Qt Style Sheets Reference
-    \title Customizing Qt Widgets Using Style Sheets
+    \previouspage BobUI Widgets Designer Integration
+    \nextpage BobUI Style Sheets Reference
+    \title Customizing BobUI Widgets Using Style Sheets
 
     When using style sheets, every widget is treated as a box with four
     concentric rectangles: the margin rectangle, the border rectangle, the
@@ -582,38 +582,38 @@
        the padding.
     \endlist
 
-    The \l{Qt Style Sheets Reference#margin-prop}{margin},
-    \l{Qt Style Sheets Reference#border-width-prop}
+    The \l{BobUI Style Sheets Reference#margin-prop}{margin},
+    \l{BobUI Style Sheets Reference#border-width-prop}
     {border-width}, and
-    \l{Qt Style Sheets Reference#padding-prop}{padding}
+    \l{BobUI Style Sheets Reference#padding-prop}{padding}
     properties all default to zero. In that case, all four rectangles
     (\c margin, \c border, \c padding, and \c content) coincide exactly.
 
     You can specify a background for the widget using the
-    \l{Qt Style Sheets Reference#background-image-prop}{background-image}
+    \l{BobUI Style Sheets Reference#background-image-prop}{background-image}
     property. By default, the background-image is drawn only for the area
     inside the border. This can be changed using the
-    \l{Qt Style Sheets Reference#background-clip-prop}{background-clip}
+    \l{BobUI Style Sheets Reference#background-clip-prop}{background-clip}
     property. You can use
-    \l{Qt Style Sheets Reference#background-repeat-prop}{background-repeat}
+    \l{BobUI Style Sheets Reference#background-repeat-prop}{background-repeat}
     and
-    \l{Qt Style Sheets Reference#background-origin-prop}{background-origin}
+    \l{BobUI Style Sheets Reference#background-origin-prop}{background-origin}
     to control the repetition and origin of the background image.
 
     A background-image does not scale with the size of the widget. To provide
     a "skin" or background that scales along with the widget size, one must
     use
-    \l{Qt Style Sheets Reference#border-image-prop}{border-image}. Since the
+    \l{BobUI Style Sheets Reference#border-image-prop}{border-image}. Since the
     border-image property provides an alternate background, it is not required
     to specify a background-image when border-image is specified. In the case,
     when both of them are specified, the border-image draws over the
     background-image.
 
-    In addition, the \l{Qt Style Sheets Reference#image-prop}{image} property
+    In addition, the \l{BobUI Style Sheets Reference#image-prop}{image} property
     may be used to draw an image over the border-image. The image specified does
     not tile or stretch and when its size does not match the size of the widget,
     its alignment is specified using the
-    \l{Qt Style Sheets Reference#image-position-prop}{image-position}
+    \l{BobUI Style Sheets Reference#image-position-prop}{image-position}
     property. Unlike background-image and border-image, one may specify a
     SVG in the image property, in which case the image is scaled automatically
     according to the widget size.
@@ -642,9 +642,9 @@
     Sub-controls share a parent-child relationship. In the case of QComboBox,
     the parent of down-arrow is the drop-down and the parent of drop-down is
     the widget itself. Sub-controls are positioned within their parent using
-    the \l{Qt Style Sheets Reference#subcontrol-position-prop}
+    the \l{BobUI Style Sheets Reference#subcontrol-position-prop}
     {subcontrol-position} and
-    \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}
+    \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}
     properties.
 
     Once positioned, sub-controls can be styled using the \l{box model}.
@@ -657,17 +657,17 @@
 
 /*!
     \page stylesheet-reference.html
-    \previouspage Customizing Qt Widgets Using Style Sheets
-    \nextpage Qt Style Sheets Examples
-    \title Qt Style Sheets Reference
+    \previouspage Customizing BobUI Widgets Using Style Sheets
+    \nextpage BobUI Style Sheets Examples
+    \title BobUI Style Sheets Reference
 
-    Qt Style Sheets support various properties, pseudo-states, and
+    BobUI Style Sheets support various properties, pseudo-states, and
     subcontrols that make it possible to customize the look of
     widgets.
 
     \section1 List of Stylable Widgets
 
-    The following table lists the Qt widgets that can be customized
+    The following table lists the BobUI widgets that can be customized
     using style sheets:
 
     \table 100%
@@ -680,17 +680,17 @@
         \li Supports the \l{box model}.
         \br
         \br
-           All derivatives of QAbstractScrollArea, including QTextEdit,
+           All derivatives of QAbstractScrollArea, including BOBUIextEdit,
            and QAbstractItemView (all item view classes), support
            scrollable backgrounds using
-           \l{Qt Style Sheets Reference#background-attachment-prop}
+           \l{BobUI Style Sheets Reference#background-attachment-prop}
            {background-attachment}. Setting the background-attachment to
            \c{fixed} provides a background-image that does not scroll with the
            viewport. Setting the background-attachment to \c{scroll}, scrolls
            the background-image when the scroll bars move.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QAbstractScrollArea}
+           See \l{BobUI Style Sheets Examples#Customizing QAbstractScrollArea}
            {Customizing QAbstractScrollArea} for an example.
 
     \row
@@ -706,7 +706,7 @@
            the text.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QCheckBox}
+           See \l{BobUI Style Sheets Examples#Customizing QCheckBox}
            {Customizing QCheckBox} for an example.
 
     \row
@@ -740,7 +740,7 @@
            \l{#placeholder-text-color-prop}{placeholder-text-color} property.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QComboBox}{Customizing QComboBox}
+           See \l{BobUI Style Sheets Examples#Customizing QComboBox}{Customizing QComboBox}
            for an example.
 
     \row
@@ -753,7 +753,7 @@
 
     \row
         \li QDialog \target qdialog-widget
-        \li Supports only the \l{Qt Style Sheets Reference#background-prop}{background},
+        \li Supports only the \l{BobUI Style Sheets Reference#background-prop}{background},
            \l{#background-clip-prop}{background-clip} and
            \l{#background-origin-prop}{background-origin} properties.
 
@@ -786,9 +786,9 @@
         \note Use QMainWindow::separator to style the resize handle.
 
         \warning The style sheet has no effect when the QDockWidget is undocked
-        as Qt uses native top level windows when undocked.
+        as BobUI uses native top level windows when undocked.
 
-        See \l{Qt Style Sheets Examples#Customizing QDockWidget}
+        See \l{BobUI Style Sheets Examples#Customizing QDockWidget}
         {Customizing QDockWidget} for an example.
 
     \row
@@ -804,7 +804,7 @@
            sets the QFrame::frameStyle property to QFrame::StyledPanel.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QFrame}{Customizing QFrame}
+           See \l{BobUI Style Sheets Examples#Customizing QFrame}{Customizing QFrame}
            for an example.
 
     \row
@@ -824,7 +824,7 @@
            the spacing between the text and indicator.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QGroupBox}{Customizing QGroupBox}
+           See \l{BobUI Style Sheets Examples#Customizing QGroupBox}{Customizing QGroupBox}
            for an example.
 
     \row
@@ -847,7 +847,7 @@
            \l{#down-arrow-sub}{::down-arrow} Sub-control.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QHeaderView}{Customizing QHeaderView}
+           See \l{BobUI Style Sheets Examples#Customizing QHeaderView}{Customizing QHeaderView}
            for an example.
 
     \row
@@ -860,7 +860,7 @@
            sets the QFrame::frameStyle property to QFrame::StyledPanel.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QFrame}{Customizing QFrame} for an
+           See \l{BobUI Style Sheets Examples#Customizing QFrame}{Customizing QFrame} for an
            example (a QLabel derives from QFrame).
 
     \row
@@ -887,7 +887,7 @@
            \l{#lineedit-password-mask-delay-prop}{lineedit-password-mask-delay}
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QLineEdit}{Customizing QLineEdit}
+           See \l{BobUI Style Sheets Examples#Customizing QLineEdit}{Customizing QLineEdit}
            for an example.
 
     \row
@@ -920,7 +920,7 @@
            style scrollable backgrounds.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QListView}
+           See \l{BobUI Style Sheets Examples#Customizing QListView}
            {Customzing QListView} for an example.
 
     \row
@@ -936,7 +936,7 @@
            using the \l{#separator-sub}{::separator} subcontrol.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QMainWindow}{Customizing QMainWindow}
+           See \l{BobUI Style Sheets Examples#Customizing QMainWindow}{Customizing QMainWindow}
            for an example.
 
     \row
@@ -971,7 +971,7 @@
             The tear-off is styled using the \l{#tearoff-sub}{::tearoff}.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QMenu}{Customizing QMenu}
+           See \l{BobUI Style Sheets Examples#Customizing QMenu}{Customizing QMenu}
            for an example.
 
     \row
@@ -984,10 +984,10 @@
            Individual items are styled using the \l{#item-sub}{::item}
            subcontrol.
 
-           \warning When running on Qt/Mac, the menu bar is usually embedded into the
+           \warning When running on BobUI/Mac, the menu bar is usually embedded into the
            system-wide menu bar. In this case, the style sheet will have no effect.
 
-           See \l{Qt Style Sheets Examples#Customizing QMenuBar}{Customizing QMenuBar}
+           See \l{BobUI Style Sheets Examples#Customizing QMenuBar}{Customizing QMenuBar}
            for an example.
 
     \row
@@ -1014,7 +1014,7 @@
            \l{#indeterminate-ps}{:indeterminate} pseudo state set.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QProgressBar}{Customizing QProgressBar}
+           See \l{BobUI Style Sheets Examples#Customizing QProgressBar}{Customizing QProgressBar}
            for an example.
 
     \row
@@ -1043,7 +1043,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 30
 
-           See \l{Qt Style Sheets Examples#Customizing QPushButton}{Customizing QPushButton}
+           See \l{BobUI Style Sheets Examples#Customizing QPushButton}{Customizing QPushButton}
            for an example.
 
     \row
@@ -1062,7 +1062,7 @@
            the text.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QRadioButton}
+           See \l{BobUI Style Sheets Examples#Customizing QRadioButton}
            {Customizing QRadioButton} for an example.
 
     \row
@@ -1105,7 +1105,7 @@
            subcontrol can be used to style the region of the slider that adds a page.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QScrollBar}{Customizing QScrollBar}
+           See \l{BobUI Style Sheets Examples#Customizing QScrollBar}{Customizing QScrollBar}
            for an example.
 
     \row
@@ -1115,7 +1115,7 @@
            properties.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QSizeGrip}{Customizing QSizeGrip}
+           See \l{BobUI Style Sheets Examples#Customizing QSizeGrip}{Customizing QSizeGrip}
            for an example.
 
     \row
@@ -1138,7 +1138,7 @@
            the groove subcontrol.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QSlider}{Customizing QSlider}
+           See \l{BobUI Style Sheets Examples#Customizing QSlider}{Customizing QSlider}
            for an example.
 
     \row
@@ -1167,7 +1167,7 @@
            rectangle of the bottom-button.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QSpinBox}{Customizing QSpinBox}
+           See \l{BobUI Style Sheets Examples#Customizing QSpinBox}{Customizing QSpinBox}
            for an example.
 
     \row
@@ -1176,22 +1176,22 @@
            is styled using the \l{#handle-sub}{::handle} subcontrol.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QSplitter}{Customizing QSplitter}
+           See \l{BobUI Style Sheets Examples#Customizing QSplitter}{Customizing QSplitter}
            for an example.
 
     \row
         \li QStatusBar \target qstatusbar-widget
-        \li Supports only the \l{Qt Style Sheets Reference#background-prop}
+        \li Supports only the \l{BobUI Style Sheets Reference#background-prop}
            {background} property.
            The frame for individual items can be style using the
            \l{#item-sub}{::item} subcontrol.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QStatusBar}{Customizing QStatusBar}
+           See \l{BobUI Style Sheets Examples#Customizing QStatusBar}{Customizing QStatusBar}
            for an example.
 
     \row
-        \li QTabBar \target qtabbar-widget
+        \li BOBUIabBar \target bobuiabbar-widget
         \li Individual tabs may be styled using the \l{#tab-sub}{::tab}  subcontrol.
            Close buttons using the \l{#close-button-sub}{::close-button}.
            The tabs support the
@@ -1211,28 +1211,28 @@
             negative margins or using the \c{absolute} position scheme.
         \br
         \br
-            The tear indicator of the QTabBar is styled using the
+            The tear indicator of the BOBUIabBar is styled using the
             \l{#tear-sub}{::tear} subcontrol.
         \br
         \br
-            QTabBar used two QToolButtons for its scrollers that can be styled
-            using the \c{QTabBar QToolButton} selector. To specify the width
+            BOBUIabBar used two BOBUIoolButtons for its scrollers that can be styled
+            using the \c{BOBUIabBar BOBUIoolButton} selector. To specify the width
             of the scroll button use the \l{#scroller-sub}{::scroller}
             subcontrol.
         \br
         \br
-            The alignment of the tabs within the QTabBar is styled
+            The alignment of the tabs within the BOBUIabBar is styled
             using the \l{#Alignment}{alignment} property.
         \br
         \warning
-            To change the position of the QTabBar within a QTabWidget, use the
+            To change the position of the BOBUIabBar within a BOBUIabWidget, use the
             \l{#tab-bar-sub}{tab-bar} subcontrol (and set subcontrol-position).
 
-           See \l{Qt Style Sheets Examples#Customizing QTabWidget and QTabBar}{Customizing QTabBar}
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIabWidget and BOBUIabBar}{Customizing BOBUIabBar}
            for an example.
 
     \row
-        \li QTabWidget \target qtabwidget-widget
+        \li BOBUIabWidget \target bobuiabwidget-widget
         \li The frame of the tab widget is styled using the
            \l{#pane-sub}{::pane} subcontrol. The left and right
            corners are styled using the \l{#left-corner-sub}{::left-corner}
@@ -1241,8 +1241,8 @@
            \l{#tab-bar-sub}{::tab-bar} subcontrol.
         \br
         \br
-           By default, the subcontrols have positions of a QTabWidget in
-           the QWindowsStyle. To place the QTabBar in the center, set the
+           By default, the subcontrols have positions of a BOBUIabWidget in
+           the QWindowsStyle. To place the BOBUIabBar in the center, set the
            subcontrol-position of the tab-bar subcontrol.
         \br
         \br
@@ -1251,11 +1251,11 @@
             of the tabs.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QTabWidget and QTabBar}
-           {Customizing QTabWidget} for an example.
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIabWidget and BOBUIabBar}
+           {Customizing BOBUIabWidget} for an example.
 
     \row
-        \li QTableView \target qtableview-widget
+        \li BOBUIableView \target bobuiableview-widget
         \li Supports the \l{box model}. When
            \l{QAbstractItemView::alternatingRowColors}{alternating row colors}
            is enabled, the alternating colors can be styled using the
@@ -1269,13 +1269,13 @@
            respectively.
         \br
         \br
-           The corner widget in a QTableView is implemented as a QAbstractButton
-           and can be styled using the "QTableView QTableCornerButton::section"
+           The corner widget in a BOBUIableView is implemented as a QAbstractButton
+           and can be styled using the "BOBUIableView BOBUIableCornerButton::section"
            selector.
         \br
-           \warning If you only set a background-color on a QTableCornerButton,
+           \warning If you only set a background-color on a BOBUIableCornerButton,
            the background may not appear unless you set the border property to
-           some value. This is because, by default, the QTableCornerButton draws a
+           some value. This is because, by default, the BOBUIableCornerButton draws a
            native border which completely overlaps the background-color.
 
         \br
@@ -1287,15 +1287,15 @@
            style scrollable backgrounds.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QTableView}
-           {Customzing QTableView} for an example.
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIableView}
+           {Customzing BOBUIableView} for an example.
 
     \row
-        \li QTableWidget \target qtablewidget-widget
-        \li See \l{#qtableview-widget}{QTableView}.
+        \li BOBUIableWidget \target bobuiablewidget-widget
+        \li See \l{#bobuiableview-widget}{BOBUIableView}.
 
     \row
-        \li QTextEdit \target qtextedit-widget
+        \li BOBUIextEdit \target bobuiextedit-widget
         \li Supports the \l{box model}.
         \br
         \br
@@ -1313,11 +1313,11 @@
            style scrollable backgrounds.
 
     \row
-        \li QTimeEdit \target qtimeedit-widget
+        \li BOBUIimeEdit \target bobuiimeedit-widget
         \li See \l{#qspinbox-widget}{QSpinBox}.
 
     \row
-        \li QToolBar \target qtoolbar-widget
+        \li BOBUIoolBar \target bobuioolbar-widget
         \li Supports the \l{box model}.
         \br
         \br
@@ -1332,7 +1332,7 @@
            QStyleOptionToolBar::positionWithinLine).
         \br
         \br
-           The separator of a QToolBar is styled using the
+           The separator of a BOBUIoolBar is styled using the
            \l{#separator-sub}{::separator} subcontrol.
         \br
         \br
@@ -1340,11 +1340,11 @@
            \l{#handle-sub}{::handle} subcontrol.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QToolBar}{Customizing QToolBar}
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIoolBar}{Customizing BOBUIoolBar}
            for an example.
 
     \row
-        \li QToolBox \target qtoolbox-widget
+        \li BOBUIoolBox \target bobuioolbox-widget
         \li Supports the \l{box model}.
      \br
      \br
@@ -1357,17 +1357,17 @@
        \l{#selected-ps}{:selected} pseudo states.
 
     \row
-        \li QToolButton \target qtoolbutton-widget
+        \li BOBUIoolButton \target bobuioolbutton-widget
         \li Supports the \l{box model}.
         \br
         \br
-           If the QToolButton has a menu, is
+           If the BOBUIoolButton has a menu, is
            \l{#menu-indicator-sub}{::menu-indicator} subcontrol can be used to
            style the indicator. By default, the menu-indicator is positioned
            at the bottom right of the Padding rectangle of the widget.
         \br
         \br
-           If the QToolButton is in QToolButton::MenuButtonPopup mode,
+           If the BOBUIoolButton is in BOBUIoolButton::MenuButtonPopup mode,
            the \l{#menu-button-sub}{::menu-button} subcontrol is used to draw the
            menu button. \l{#menu-arrow-sub}{::menu-arrow} subcontrol is used to
            draw the menu arrow inside the menu-button. By default, it is
@@ -1375,31 +1375,31 @@
            menu-button subcontrol.
         \br
         \br
-           When the QToolButton displays arrows, the \l{#up-arrow-sub}{::up-arrow},
+           When the BOBUIoolButton displays arrows, the \l{#up-arrow-sub}{::up-arrow},
            \l{#down-arrow-sub}{::down-arrow}, \l{#left-arrow-sub}{::left-arrow}
            and \l{#right-arrow-sub}{::right-arrow} subcontrols are used.
         \br
-           \warning If you only set a background-color on a QToolButton, the background
+           \warning If you only set a background-color on a BOBUIoolButton, the background
            will not appear unless you set the border property to some value. This is
-           because, by default, the QToolButton draws a native border which completely
+           because, by default, the BOBUIoolButton draws a native border which completely
            overlaps the background-color. For example,
 
            \snippet code/doc_src_stylesheet.qdoc 31
 
-           See \l{Qt Style Sheets Examples#Customizing QToolButton}{Customizing QToolButton}
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIoolButton}{Customizing BOBUIoolButton}
            for an example.
 
     \row
-        \li QToolTip \target qtooltip-widget
+        \li BOBUIoolTip \target bobuiooltip-widget
         \li Supports the \l{box model}. The \l{#opacity-prop}{opacity}
            property controls the opacity of the tooltip.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QFrame}{Customizing QFrame}
-           for an example (a QToolTip is a QFrame).
+           See \l{BobUI Style Sheets Examples#Customizing QFrame}{Customizing QFrame}
+           for an example (a BOBUIoolTip is a QFrame).
 
     \row
-        \li QTreeView \target qtreeview-widget
+        \li BOBUIreeView \target bobuireeview-widget
         \li Supports the \l{box model}. When
            \l{QAbstractItemView::alternatingRowColors}{alternating row colors}
            is enabled, the alternating colors can be styled using the
@@ -1425,23 +1425,23 @@
         \br
         \br
            Use the \l{#item-sub}{::item} subcontrol for more fine grained
-           control over the items in the QTreeView.
+           control over the items in the BOBUIreeView.
         \br
         \br
            See \l{qabstractscrollarea-widget}{QAbstractScrollArea} to
            style scrollable backgrounds.
         \br
         \br
-           See \l{Qt Style Sheets Examples#Customizing QTreeView}{Customizing QTreeView}
+           See \l{BobUI Style Sheets Examples#Customizing BOBUIreeView}{Customizing BOBUIreeView}
            for an example to style the branches.
 
     \row
-        \li QTreeWidget \target qtreewidget-widget
-        \li See \l{#qtreeview-widget}{QTreeView}.
+        \li BOBUIreeWidget \target bobuireewidget-widget
+        \li See \l{#bobuireeview-widget}{BOBUIreeView}.
 
     \row
         \li QWidget \target qwidget-widget
-        \li Supports only the \l{Qt Style Sheets Reference#background-prop}{background},
+        \li Supports only the \l{BobUI Style Sheets Reference#background-prop}{background},
            \l{#background-clip-prop}{background-clip} and
            \l{#background-origin-prop}{background-origin} properties.
         \br
@@ -1459,12 +1459,12 @@
 
     \section1 List of Properties
 
-    This section lists all the properties supported by Qt Style
+    This section lists all the properties supported by BobUI Style
     Sheets. Which values can be given to a property depend on the
     \l{List of Property Types}{property's type}. Unless otherwise
     specified, the following properties apply to all widgets. Properties
-    marked with an asterisk * are specific to Qt and have no equivalent
-    in CSS2 or CSS3. The Qt-specific properties are the following:
+    marked with an asterisk * are specific to BobUI and have no equivalent
+    in CSS2 or CSS3. The BobUI-specific properties are the following:
     \list
     \li \l{#gridline-color*}{gridline-color*}
     \li \l{#image*}{image*}
@@ -1507,7 +1507,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 33
 
-           See also \l{Qt Style Sheets Reference#background-prop}{background} and
+           See also \l{BobUI Style Sheets Reference#background-prop}{background} and
            \l{#selection-background-color-prop}{selection-background-color}.
 
     \section2 background
@@ -1523,7 +1523,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QDialog, QFrame, QGroupBox, QLabel, QLineEdit,
            QMenu, QMenuBar, QPushButton, QRadioButton, QSplitter,
-           QTextEdit, QToolTip, and plain \l{QWidget}s.
+           BOBUIextEdit, BOBUIoolTip, and plain \l{QWidget}s.
 
            Example:
 
@@ -1531,9 +1531,9 @@
 
 
            Often, it is required to set a fill pattern similar to the styles
-           in Qt::BrushStyle. You can use the background-color property for
-           Qt::SolidPattern, Qt::RadialGradientPattern, Qt::LinearGradientPattern
-           and Qt::ConicalGradientPattern.  The other patterns are easily achieved
+           in BobUI::BrushStyle. You can use the background-color property for
+           BobUI::SolidPattern, BobUI::RadialGradientPattern, BobUI::LinearGradientPattern
+           and BobUI::ConicalGradientPattern.  The other patterns are easily achieved
            by creating a background image that contains the pattern.
 
            Example:
@@ -1613,7 +1613,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 40
 
-        See also \l{Qt Style Sheets Reference#background-prop}{background}
+        See also \l{BobUI Style Sheets Reference#background-prop}{background}
 
     \section2 background-clip
     \target background-clip-prop
@@ -1628,7 +1628,7 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QDialog, QFrame, QGroupBox, QLabel,
-           QPushButton, QRadioButton, QSplitter, QTextEdit, QToolTip,
+           QPushButton, QRadioButton, QSplitter, BOBUIextEdit, BOBUIoolTip,
            and plain \l{QWidget}s.
 
            If this property is not specified, the default is \c
@@ -1638,7 +1638,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 41
 
-           See also \l{Qt Style Sheets Reference#background-prop}{background},
+           See also \l{BobUI Style Sheets Reference#background-prop}{background},
            \l{#background-origin-prop}{background-origin} and \l{The Box Model}.
 
     \section2 background-origin
@@ -1653,7 +1653,7 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QDialog, QFrame, QGroupBox, QLabel,
-           QPushButton, QRadioButton, QSplitter, QTextEdit, QToolTip,
+           QPushButton, QRadioButton, QSplitter, BOBUIextEdit, BOBUIoolTip,
            and plain \l{QWidget}s.
 
            If this property is not specified, the default is \c
@@ -1663,7 +1663,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 42
 
-           See also \l{Qt Style Sheets Reference#background-prop}{background} and
+           See also \l{BobUI Style Sheets Reference#background-prop}{background} and
            \l{The Box Model}.
 
     \section2 border
@@ -1680,7 +1680,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit,
            QMenu, QMenuBar, QPushButton, QRadioButton, QSplitter,
-           QTextEdit, QToolTip, and plain \l{QWidget}s.
+           BOBUIextEdit, BOBUIoolTip, and plain \l{QWidget}s.
 
            Example:
 
@@ -1739,7 +1739,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit,
            QMenu, QMenuBar, QPushButton, QRadioButton, QSplitter,
-           QTextEdit, QToolTip, and plain \l{QWidget}s.
+           BOBUIextEdit, BOBUIoolTip, and plain \l{QWidget}s.
 
            If this property is not specified, it defaults to
            \l{#color-prop}{color} (i.e., the widget's foreground
@@ -1749,8 +1749,8 @@
 
            \snippet code/doc_src_stylesheet.qdoc 44
 
-           See also \l{Qt Style Sheets Reference#border-style-prop}{border-style},
-           \l{Qt Style Sheets Reference#border-width-prop}{border-width},
+           See also \l{BobUI Style Sheets Reference#border-style-prop}{border-style},
+           \l{BobUI Style Sheets Reference#border-width-prop}{border-width},
            \l{#border-image-prop}{border-image}, and \l{The Box Model}.
 
     \section2 border-top-color
@@ -1795,11 +1795,11 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit,
            QMenu, QMenuBar, QPushButton, QRadioButton, QSplitter,
-           QTextEdit and QToolTip.
+           BOBUIextEdit and BOBUIoolTip.
 
            See also \l{#border-color-prop}{border-color},
-           \l{Qt Style Sheets Reference#border-style-prop}{border-style},
-           \l{Qt Style Sheets Reference#border-width-prop}{border-width}, and
+           \l{BobUI Style Sheets Reference#border-style-prop}{border-style},
+           \l{BobUI Style Sheets Reference#border-width-prop}{border-width}, and
            \l{The Box Model}.
 
     \section2 border-radius
@@ -1814,13 +1814,13 @@
            and \c border-bottom-left-radius.
 
            The border-radius clips the element's
-           \l{Qt Style Sheets Reference#background-prop}{background}.
+           \l{BobUI Style Sheets Reference#background-prop}{background}.
 
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
-           QMenuBar, QPushButton, QRadioButton, QSplitter, QTextEdit,
-           and QToolTip.
+           QMenuBar, QPushButton, QRadioButton, QSplitter, BOBUIextEdit,
+           and BOBUIoolTip.
 
            If this property is not specified, it defaults to 0.
 
@@ -1828,7 +1828,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 45
 
-           See also \l{Qt Style Sheets Reference#border-width-prop}{border-width} and
+           See also \l{BobUI Style Sheets Reference#border-width-prop}{border-width} and
            \l{The Box Model}.
 
     \section2 border-top-left-radius
@@ -1873,8 +1873,8 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
-           QMenuBar, QPushButton, QRadioButton, QSplitter, QTextEdit,
-           and QToolTip.
+           QMenuBar, QPushButton, QRadioButton, QSplitter, BOBUIextEdit,
+           and BOBUIoolTip.
 
            If this property is not specified, it defaults to \c none.
 
@@ -1883,7 +1883,7 @@
            \snippet code/doc_src_stylesheet.qdoc 46
 
            See also \l{#border-color-prop}{border-color},
-           \l{Qt Style Sheets Reference#border-style-prop}{border-style},
+           \l{BobUI Style Sheets Reference#border-style-prop}{border-style},
            \l{#border-image-prop}{border-image}, and \l{The Box Model}.
 
     \section2 border-top-style
@@ -1927,8 +1927,8 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
-           QMenuBar, QPushButton, QRadioButton, QSplitter, QTextEdit,
-           and QToolTip.
+           QMenuBar, QPushButton, QRadioButton, QSplitter, BOBUIextEdit,
+           and BOBUIoolTip.
 
            Example:
 
@@ -1936,7 +1936,7 @@
 
            See also \l{#border-color-prop}{border-color},
            \l{#border-radius-prop}{border-radius},
-           \l{Qt Style Sheets Reference#border-style-prop}{border-style},
+           \l{BobUI Style Sheets Reference#border-style-prop}{border-style},
            \l{#border-image-prop}{border-image}, and
            \l{The Box Model}.
 
@@ -1977,20 +1977,20 @@
            If \l{#position-prop}{position} is \c relative (the
            default), moves a subcontrol by a certain offset up;
            specifying \tt{bottom: \e{y}} is then equivalent to
-           specifying \tt{\l{Qt Style Sheets Reference#top-prop}{top}: -\e{y}}.
+           specifying \tt{\l{BobUI Style Sheets Reference#top-prop}{top}: -\e{y}}.
 
            If \l{#position-prop}{position} is \c absolute, the \c
            bottom property specifies the subcontrol's bottom edge
            in relation to the parent's bottom edge (see also
-           \l{Qt Style Sheets Reference#subcontrol-origin-prop}
+           \l{BobUI Style Sheets Reference#subcontrol-origin-prop}
            {subcontrol-origin}).
 
            Example:
 
            \snippet code/doc_src_stylesheet.qdoc 48
 
-           See also \l{Qt Style Sheets Reference#left-prop}{left}, \l{#right-prop}{right}, and
-           \l{Qt Style Sheets Reference#top-prop}{top}.
+           See also \l{BobUI Style Sheets Reference#left-prop}{left}, \l{#right-prop}{right}, and
+           \l{BobUI Style Sheets Reference#top-prop}{top}.
 
 
     \section2 button-layout
@@ -2035,7 +2035,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 50
 
-           See also \l{Qt Style Sheets Reference#background-prop}{background} and
+           See also \l{BobUI Style Sheets Reference#background-prop}{background} and
            \l{#selection-color-prop}{selection-color}.
 
     \section2 dialogbuttonbox-buttons-have-icons
@@ -2048,7 +2048,7 @@
         If this property is set to 1, the buttons of a QDialogButtonBox
         show icons; if it is set to 0, the icons are not shown.
 
-        See the \l{Qt Style Sheets Reference#list of icons}{List of Icons}
+        See the \l{BobUI Style Sheets Reference#list of icons}{List of Icons}
         section for information on how to set icons.
 
         \snippet code/doc_src_stylesheet.qdoc 51
@@ -2108,7 +2108,7 @@
       \row \li \b Type \li \l{#Font Size}{Font Size}
     \endtable
 
-           The font size. In this version of Qt, only pt and px metrics are
+           The font size. In this version of BobUI, only pt and px metrics are
            supported.
 
            Example:
@@ -2139,7 +2139,7 @@
       \row \li \b Type \li \l{#Color}{Color}
     \endtable
 
-           The color of the grid line in a QTableView.
+           The color of the grid line in a BOBUIableView.
 
            If this property is not specified, it defaults to the
            value specified by the current style for the
@@ -2204,10 +2204,10 @@
                \li QListView
                \li QPushButton
                \li QRadioButton
-               \li QTabBar
-               \li QToolBar
-               \li QToolBox
-               \li QTreeView
+               \li BOBUIabBar
+               \li BOBUIoolBar
+               \li BOBUIoolBox
+               \li BOBUIreeView
                \endlist
 
     \section2 image*
@@ -2228,7 +2228,7 @@
            Setting the image property on sub controls implicitly sets the
            width and height of the sub-control (unless the image in a SVG).
 
-           In Qt 4.3 and later, the alignment of the
+           In BobUI 4.3 and later, the alignment of the
            image within the rectangle can be specified using
            \l{image-position-prop}{image-position}.
 
@@ -2248,7 +2248,7 @@
       \row \li \b Type \li \l{#Alignment}{alignment}
     \endtable
 
-           In Qt 4.3 and later, the alignment of the image image's position can be specified
+           In BobUI 4.3 and later, the alignment of the image image's position can be specified
            using relative or absolute position.
 
     \section2 left
@@ -2264,7 +2264,7 @@
            If \l{#position-prop}{position} is \c absolute, the \c
            left property specifies the subcontrol's left edge in
            relation to the parent's left edge (see also
-           \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
+           \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
 
            If this property is not specified, it defaults to \c 0.
 
@@ -2272,7 +2272,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 60
 
-           See also \l{#right-prop}{right}, \l{Qt Style Sheets Reference#top-prop}{top}, and
+           See also \l{#right-prop}{right}, \l{BobUI Style Sheets Reference#top-prop}{top}, and
            \l{#bottom-prop}{bottom}.
 
     \section2 letter-spacing
@@ -2312,7 +2312,7 @@
            value specified by the current style for the
            \l{QStyle::}{SH_LineEdit_PasswordMaskDelay} style hint.
 
-           Available since Qt 5.4.
+           Available since BobUI 5.4.
 
            Example:
 
@@ -2331,8 +2331,8 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
-           QMenuBar, QPushButton, QRadioButton, QSplitter, QTextEdit,
-           and QToolTip.
+           QMenuBar, QPushButton, QRadioButton, QSplitter, BOBUIextEdit,
+           and BOBUIoolTip.
 
            If this property is not specified, it defaults to \c 0.
 
@@ -2340,7 +2340,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 62
 
-           See also \l{Qt Style Sheets Reference#padding-prop}{padding},
+           See also \l{BobUI Style Sheets Reference#padding-prop}{padding},
            \l{#spacing-prop}{spacing}, and \l{The Box Model}.
 
     \section2 margin-top
@@ -2379,7 +2379,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
            QMenuBar, QPushButton, QRadioButton, QSizeGrip, QSpinBox,
-           QSplitter, QStatusBar, QTextEdit, and QToolTip.
+           QSplitter, QStatusBar, BOBUIextEdit, and BOBUIoolTip.
 
            The value is relative to the contents rect in the \l{The
            Box Model}{box model}.
@@ -2402,7 +2402,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
            QMenuBar, QPushButton, QRadioButton, QSizeGrip, QSpinBox,
-           QSplitter, QStatusBar, QTextEdit, and QToolTip.
+           QSplitter, QStatusBar, BOBUIextEdit, and BOBUIoolTip.
 
            The value is relative to the contents rect in the \l{The
            Box Model}{box model}.
@@ -2420,7 +2420,7 @@
     \endtable
 
            The interaction behavior for text in a message box.
-           Possible values are based on Qt::TextInteractionFlags.
+           Possible values are based on BobUI::TextInteractionFlags.
 
            If this property is not specified, it defaults to the
            value specified by the current style for the
@@ -2443,7 +2443,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
            QMenuBar, QPushButton, QRadioButton, QSizeGrip, QSpinBox,
-           QSplitter, QStatusBar, QTextEdit, QToolButton, and QToolTip.
+           QSplitter, QStatusBar, BOBUIextEdit, BOBUIoolButton, and BOBUIoolTip.
 
            If this property is not specified, the minimum height is
            derived based on the widget's contents and the style.
@@ -2472,7 +2472,7 @@
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
            QMenuBar, QPushButton, QRadioButton, QSizeGrip, QSpinBox,
-           QSplitter, QStatusBar, QTextEdit, QToolButton, and QToolTip.
+           QSplitter, QStatusBar, BOBUIextEdit, BOBUIoolButton, and BOBUIoolTip.
 
            If this property is not specified, the minimum width is
            derived based on the widget's contents and the style.
@@ -2497,7 +2497,7 @@
 
            The opacity for a widget. Possible values are from 0
            (transparent) to 255 (opaque). For the moment, this is
-           only supported for \l{QToolTip}{tooltips}.
+           only supported for \l{BOBUIoolTip}{tooltips}.
 
            If this property is not specified, it defaults to the
            value specified by the current style for the
@@ -2517,7 +2517,7 @@
     \endtable
 
            The color of the outline.
-            See also \l{Qt Style Sheets Reference#border-color-prop}{border-color}
+            See also \l{BobUI Style Sheets Reference#border-color-prop}{border-color}
 
     \section2 outline-offset
     \table
@@ -2529,7 +2529,7 @@
     \section2 outline-style
 
            Specifies the pattern used to draw the outline.
-           See also \l{Qt Style Sheets Reference#border-style-prop}{border-style}
+           See also \l{BobUI Style Sheets Reference#border-style-prop}{border-style}
 
     \section2 outline-radius
 
@@ -2576,8 +2576,8 @@
            This property is supported by QAbstractItemView
            subclasses, QAbstractSpinBox subclasses, QCheckBox,
            QComboBox, QFrame, QGroupBox, QLabel, QLineEdit, QMenu,
-           QMenuBar, QPushButton, QRadioButton, QSplitter, QTextEdit,
-           and QToolTip.
+           QMenuBar, QPushButton, QRadioButton, QSplitter, BOBUIextEdit,
+           and BOBUIoolTip.
 
            If this property is not specified, it defaults to \c 0.
 
@@ -2622,7 +2622,7 @@
       \row \li \b Type \li \c bool
     \endtable
 
-           Whether the QTreeView paints alternating row colors for the empty
+           Whether the BOBUIreeView paints alternating row colors for the empty
            area (i.e the area where there are no items)
 
     \section2 placeholder-text-color*
@@ -2650,8 +2650,8 @@
             | \c absolute
     \endtable
 
-           Whether offsets specified using \l{Qt Style Sheets Reference#left-prop}{left},
-           \l{#right-prop}{right}, \l{Qt Style Sheets Reference#top-prop}{top}, and
+           Whether offsets specified using \l{BobUI Style Sheets Reference#left-prop}{left},
+           \l{#right-prop}{right}, \l{BobUI Style Sheets Reference#top-prop}{top}, and
            \l{#bottom-prop}{bottom} are relative or absolute
            coordinates.
 
@@ -2667,18 +2667,18 @@
            If \l{#position-prop}{position} is \c relative (the
            default), moves a subcontrol by a certain offset to
            the left; specifying \tt{right: \e{x}} is then equivalent
-           to specifying \tt{\l{Qt Style Sheets Reference#left-prop}{left}: -\e{x}}.
+           to specifying \tt{\l{BobUI Style Sheets Reference#left-prop}{left}: -\e{x}}.
 
            If \l{#position-prop}{position} is \c absolute, the \c
            right property specifies the subcontrol's right edge in
            relation to the parent's right edge (see also
-           \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
+           \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
 
            Example:
 
            \snippet code/doc_src_stylesheet.qdoc 70
 
-           See also \l{Qt Style Sheets Reference#left-prop}{left}, \l{Qt Style Sheets Reference#top-prop}{top}, and
+           See also \l{BobUI Style Sheets Reference#left-prop}{left}, \l{BobUI Style Sheets Reference#top-prop}{top}, and
            \l{#bottom-prop}{bottom}.
 
     \section2 selection-background-color*
@@ -2701,7 +2701,7 @@
            \snippet code/doc_src_stylesheet.qdoc 71
 
            See also \l{#selection-color-prop}{selection-color} and
-           \l{Qt Style Sheets Reference#background-prop}{background}.
+           \l{BobUI Style Sheets Reference#background-prop}{background}.
 
 
     \section2 selection-color*
@@ -2764,7 +2764,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 74
 
-           See also \l{Qt Style Sheets Reference#padding-prop}{padding} and
+           See also \l{BobUI Style Sheets Reference#padding-prop}{padding} and
            \l{#margin-prop}{margin}.
 
 
@@ -2785,7 +2785,7 @@
            \snippet code/doc_src_stylesheet.qdoc 75
 
            See also
-           \l{Qt Style Sheets Reference#subcontrol-position-prop}{subcontrol-position}.
+           \l{BobUI Style Sheets Reference#subcontrol-position-prop}{subcontrol-position}.
 
     \section2 subcontrol-position*
     \target subcontrol-position-prop
@@ -2794,7 +2794,7 @@
     \endtable
 
            The alignment of the subcontrol within the origin
-           rectangle specified by \l{Qt Style Sheets Reference#subcontrol-origin-prop}
+           rectangle specified by \l{BobUI Style Sheets Reference#subcontrol-origin-prop}
            {subcontrol-origin}.
 
            If this property is not specified, it defaults to a value
@@ -2805,7 +2805,7 @@
            \snippet code/doc_src_stylesheet.qdoc 76
 
            See also
-           \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}.
+           \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}.
 
     \section2 titlebar-show-tooltips-on-buttons
     \target titlebar-show-tooltips-on-buttons-prop
@@ -2829,7 +2829,7 @@
            value specified by the current style for the
            \l{QStyle::}{SH_Widget_Animation_Duration} style hint.
 
-           Available since Qt 5.10.
+           Available since BobUI 5.10.
 
            Example:
 
@@ -2878,7 +2878,7 @@
            If \l{#position-prop}{position} is \c absolute, the \c top
            property specifies the subcontrol's top edge in relation
            to the parent's top edge (see also
-           \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
+           \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin}).
 
            If this property is not specified, it defaults to \c 0.
 
@@ -2886,7 +2886,7 @@
 
            \snippet code/doc_src_stylesheet.qdoc 78
 
-           See also \l{Qt Style Sheets Reference#left-prop}{left}, \l{#right-prop}{right}, and
+           See also \l{BobUI Style Sheets Reference#left-prop}{left}, \l{#right-prop}{right}, and
            \l{#bottom-prop}{bottom}.
 
     \section2 width
@@ -2918,7 +2918,7 @@
 
            Space between each word in a string within a widget.
 
-    \section2 -qt-background-role
+    \section2 -bobui-background-role
     \table
       \row \li \b Type \li \l{#paletterole}{PaletteRole}
     \endtable
@@ -2926,19 +2926,19 @@
            The \c{background-color} for the subcontrol or widget based on the
             chosen role.
 
-    \section2 -qt-style-features
+    \section2 -bobui-style-features
     \table
       \row \li \b Type \li \c list
     \endtable
 
-           The list of CSS properties that you want to apply Qt-specific styles on.
+           The list of CSS properties that you want to apply BobUI-specific styles on.
 
             \note The \c list can only include properties that are not pixmap-based.
 
     \target list of icons
     \section1 List of Icons
 
-    Icons used in Qt can be customized using the following properties. Each of
+    Icons used in BobUI can be customized using the following properties. Each of
     the properties listed in this section have the type \l{#Icon}{Icon}.
 
     Note that for icons to appear in buttons in a QDialogButtonBox, you need to
@@ -3396,9 +3396,9 @@
         \li A number followed by a measurement unit. The CSS standard recommends
            that user agents must
            \l{http://www.w3.org/TR/CSS21/syndata.html#illegalvalues}{ignore}
-           a declaration with an illegal value. In Qt, it is mandatory to
+           a declaration with an illegal value. In BobUI, it is mandatory to
            specify measurement units. For compatibility with earlier versions
-           of Qt, numbers without measurement units are treated as pixels
+           of BobUI, numbers without measurement units are treated as pixels
            in most contexts. The supported units are:
 
            \list
@@ -3409,7 +3409,7 @@
            \li \c ex: the x-height of the font (i.e., the height of 'x')
            \endlist
 
-           However, Qt is limited to font sizes in \c pt and \c px and any other
+           However, BobUI is limited to font sizes in \c pt and \c px and any other
            size must be in \c px, \c em or \c ex.
 
     \row
@@ -3495,7 +3495,7 @@
         \li \b{Url} \target Url
         \li \tt{url(\e{filename})}
         \li \tt{\e{filename}} is the name of a file on the local disk
-           or stored using \l{The Qt Resource System}. Setting an
+           or stored using \l{The BobUI Resource System}. Setting an
            image implicitly sets the width and height of the element.
 
     \endtable
@@ -3514,7 +3514,7 @@
 
     \row
         \li \c :adjoins-item \target adjoins-item-ps
-        \li This state is set when the \l{#branch-sub}{::branch} of a QTreeView
+        \li This state is set when the \l{#branch-sub}{::branch} of a BOBUIreeView
            is adjacent to an item.
 
     \row
@@ -3525,7 +3525,7 @@
 
     \row
         \li \c :bottom \target bottom-ps
-        \li The item is positioned at the bottom. For example, a QTabBar
+        \li The item is positioned at the bottom. For example, a BOBUIabBar
            that has its tabs positioned at the bottom.
 
     \row
@@ -3541,7 +3541,7 @@
     \row
         \li \c :closed \target closed-ps
         \li The item is in the closed state. For example, an non-expanded
-           item in a QTreeView
+           item in a BOBUIreeView
 
     \row
         \li \c :default \target default-ps
@@ -3560,7 +3560,7 @@
     \row
         \li \c :edit-focus \target edit-focus-ps
         \li The item has edit focus (See QStyle::State_HasEditFocus). This state
-           is available only for Qt Extended applications.
+           is available only for BobUI Extended applications.
 
     \row
         \li \c :enabled \target enabled-ps
@@ -3574,7 +3574,7 @@
     \row
         \li \c :first \target first-ps
         \li The item is the first (in a list). For example, the first
-           tab in a QTabBar.
+           tab in a BOBUIabBar.
 
     \row
         \li \c :flat \target flat-ps
@@ -3593,12 +3593,12 @@
     \row
         \li \c :has-children \target has-children-ps
         \li The item has children. For example, an item in a
-           QTreeView that has child items.
+           BOBUIreeView that has child items.
 
     \row
         \li \c :has-siblings \target has-siblings-ps
         \li The item has siblings. For example, an item in a
-           QTreeView that siblings.
+           BOBUIreeView that siblings.
 
     \row
         \li \c :horizontal \target horizontal-ps
@@ -3611,16 +3611,16 @@
     \row
         \li \c :indeterminate \target indeterminate-ps
         \li The item has indeterminate state. For example, a QCheckBox
-           or QRadioButton is \l{Qt::PartiallyChecked}{partially checked}.
+           or QRadioButton is \l{BobUI::PartiallyChecked}{partially checked}.
 
     \row
         \li \c :last \target last-ps
         \li The item is the last (in a list). For example, the last
-           tab in a QTabBar.
+           tab in a BOBUIabBar.
 
     \row
         \li \c :left \target left-ps
-        \li The item is positioned at the left. For example, a QTabBar
+        \li The item is positioned at the left. For example, a BOBUIabBar
            that has its tabs positioned at the left.
 
     \row
@@ -3630,7 +3630,7 @@
     \row
         \li \c :middle \target middle-ps
         \li The item is in the middle (in a list). For example, a tab
-           that is not in the beginning or the end in a QTabBar.
+           that is not in the beginning or the end in a BOBUIabBar.
 
     \row
         \li \c :minimized \target minimized-ps
@@ -3664,18 +3664,18 @@
     \row
         \li \c :only-one \target only-one-ps
         \li The item is the only one (in a list). For example, a lone tab
-           in a QTabBar.
+           in a BOBUIabBar.
 
     \row
         \li \c :open \target open-ps
         \li The item is in the open state. For example, an expanded
-           item in a QTreeView, or a QComboBox or QPushButton with
+           item in a BOBUIreeView, or a QComboBox or QPushButton with
            an open menu.
 
     \row
         \li \c :next-selected \target next-selected-ps
         \li The next item (in a list) is selected. For example, the
-           selected tab of a QTabBar is next to this item.
+           selected tab of a BOBUIabBar is next to this item.
 
     \row
         \li \c :pressed \target pressed-ps
@@ -3684,7 +3684,7 @@
     \row
         \li \c :previous-selected \target previous-selected-ps
         \li The previous item (in a list) is selected. For example, a
-           tab in a QTabBar that is next to the selected tab.
+           tab in a BOBUIabBar that is next to the selected tab.
 
     \row
         \li \c :read-only \target read-only-ps
@@ -3693,17 +3693,17 @@
 
     \row
         \li \c :right \target right-ps
-        \li The item is positioned at the right. For example, a QTabBar
+        \li The item is positioned at the right. For example, a BOBUIabBar
            that has its tabs positioned at the right.
 
     \row
         \li \c :selected \target selected-ps
         \li The item is selected. For example, the selected tab in
-           a QTabBar or the selected item in a QMenu.
+           a BOBUIabBar or the selected item in a QMenu.
 
     \row
         \li \c :top \target top-ps
-        \li The item is positioned at the top. For example, a QTabBar
+        \li The item is positioned at the top. For example, a BOBUIabBar
            that has its tabs positioned at the top.
 
     \row
@@ -3742,7 +3742,7 @@
 
     \row
         \li \c ::branch \target branch-sub
-        \li The branch indicator of a QTreeView.
+        \li The branch indicator of a BOBUIreeView.
 
     \row
         \li \c ::chunk \target chunk-sub
@@ -3750,7 +3750,7 @@
 
     \row
         \li \c ::close-button \target close-button-sub
-        \li The close button of a QDockWidget or tabs of QTabBar
+        \li The close button of a QDockWidget or tabs of BOBUIabBar
 
     \row
         \li \c ::corner \target corner-sub
@@ -3801,16 +3801,16 @@
 
     \row
         \li \c ::left-corner \target left-corner-sub
-        \li The left corner of a QTabWidget. For example, this control can be
-           used to control position the left corner widget in a QTabWidget.
+        \li The left corner of a BOBUIabWidget. For example, this control can be
+           used to control position the left corner widget in a BOBUIabWidget.
 
     \row
         \li \c ::menu-arrow \target menu-arrow-sub
-        \li The arrow of a QToolButton with a menu.
+        \li The arrow of a BOBUIoolButton with a menu.
 
     \row
         \li \c ::menu-button \target menu-button-sub
-        \li The menu button of a QToolButton.
+        \li The menu button of a BOBUIoolButton.
 
     \row
         \li \c ::menu-indicator \target menu-indicator-sub
@@ -3822,16 +3822,16 @@
 
     \row
         \li \c ::pane \target pane-sub
-        \li The pane (frame) of a QTabWidget.
+        \li The pane (frame) of a BOBUIabWidget.
 
     \row
         \li \c ::right-corner \target right-corner-sub
-        \li The right corner of a QTabWidget. For example, this control can be
-           used to control the position the right corner widget in a QTabWidget.
+        \li The right corner of a BOBUIabWidget. For example, this control can be
+           used to control the position the right corner widget in a BOBUIabWidget.
 
     \row
         \li \c ::scroller \target scroller-sub
-        \li The scroller of a QMenu or QTabBar.
+        \li The scroller of a QMenu or BOBUIabBar.
 
     \row
         \li \c ::section \target section-sub
@@ -3852,17 +3852,17 @@
 
     \row
         \li \c ::tab \target tab-sub
-        \li The tab of a QTabBar or QToolBox.
+        \li The tab of a BOBUIabBar or BOBUIoolBox.
 
     \row
         \li \c ::tab-bar \target tab-bar-sub
-        \li The tab bar of a QTabWidget. This subcontrol exists only to
-           control the position of the QTabBar inside the QTabWidget. To
+        \li The tab bar of a BOBUIabWidget. This subcontrol exists only to
+           control the position of the BOBUIabBar inside the BOBUIabWidget. To
            style the tabs using the \l{#tab-sub}{::tab} subcontrol.
 
     \row
         \li \c ::tear \target tear-sub
-        \li The tear indicator of a QTabBar.
+        \li The tear indicator of a BOBUIabBar.
 
     \row
         \li \c ::tearoff \target tearoff-sub
@@ -3893,10 +3893,10 @@
 
 /*!
     \page stylesheet-examples.html
-    \previouspage Qt Style Sheets Reference
-    \title Qt Style Sheets Examples
+    \previouspage BobUI Style Sheets Reference
+    \title BobUI Style Sheets Examples
 
-    We will now see a few examples to get started with using Qt Style Sheets.
+    We will now see a few examples to get started with using BobUI Style Sheets.
 
     \section1 Style Sheet Usage
 
@@ -3921,7 +3921,7 @@
     \snippet code/doc_src_stylesheet.cpp 90
 
     Alternatively, we can set the
-    \l{Qt Style Sheets Reference#background-prop}{background-color} property directly on the
+    \l{BobUI Style Sheets Reference#background-prop}{background-color} property directly on the
     QLineEdit, omitting the selector:
 
     \snippet code/doc_src_stylesheet.cpp 91
@@ -3943,12 +3943,12 @@
     has mandatory fields. To indicate to the user that the field is
     mandatory, one effective (albeit esthetically dubious) solution
     is to use yellow as the background color for those fields. It
-    turns out this is very easy to implement using Qt Style Sheets.
+    turns out this is very easy to implement using BobUI Style Sheets.
     First, we would use the following application-wide style sheet:
 
     \snippet code/doc_src_stylesheet.qdoc 94
 
-    This means that every widget whose \c mandatoryField Qt property
+    This means that every widget whose \c mandatoryField BobUI property
     is set to true would have a yellow background.
 
     Then, for each mandatory field widget, we would simply create a
@@ -3979,8 +3979,8 @@
        let us specify the background color of a button).
     \li Therefore, the button is rendered using style sheets.
     \li We haven't specified any values for
-       \l{Qt Style Sheets Reference#border-width-prop}{border-width} and
-       \l{Qt Style Sheets Reference#border-style-prop}{border-style}, so by default we obtain
+       \l{BobUI Style Sheets Reference#border-width-prop}{border-width} and
+       \l{BobUI Style Sheets Reference#border-style-prop}{border-style}, so by default we obtain
        a 0-pixel wide border of style \c none.
     \endlist
 
@@ -3992,7 +3992,7 @@
 
     Things look already a lot better. But the button looks a bit
     cramped. Let's specify some spacing between the border and the
-    text using the \l{Qt Style Sheets Reference#padding-prop}{padding}. Additionally, we will
+    text using the \l{BobUI Style Sheets Reference#padding-prop}{padding}. Additionally, we will
     enforce a minimum width, round the corners, and specify a larger
     font to make the button look nicer:
 
@@ -4018,17 +4018,17 @@
 
     By default, the menu indicator is located at the bottom-right
     corner of the padding rectangle. We can change this by specifying
-    \l{Qt Style Sheets Reference#subcontrol-position-prop}{subcontrol-position} and
-    \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin} to anchor the
-    indicator differently. We can also use \l{Qt Style Sheets Reference#top-prop}{top} and
-    \l{Qt Style Sheets Reference#left-prop}{left} to move the indicator by a few pixels. For
+    \l{BobUI Style Sheets Reference#subcontrol-position-prop}{subcontrol-position} and
+    \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin} to anchor the
+    indicator differently. We can also use \l{BobUI Style Sheets Reference#top-prop}{top} and
+    \l{BobUI Style Sheets Reference#left-prop}{left} to move the indicator by a few pixels. For
     example:
 
     \snippet code/doc_src_stylesheet.qdoc 101
 
     This positions the \c myindicator.png to the center right of the
-    QPushButton's \l{Qt Style Sheets Reference#padding-prop}{padding} rectangle (see
-    \l{Qt Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin} for more
+    QPushButton's \l{BobUI Style Sheets Reference#padding-prop}{padding} rectangle (see
+    \l{BobUI Style Sheets Reference#subcontrol-origin-prop}{subcontrol-origin} for more
     information).
 
     \section2 Complex Selector Example
@@ -4066,8 +4066,8 @@
 
     \section2 Customizing QAbstractScrollArea
 
-    The background of any QAbstractScrollArea (Item views, QTextEdit
-    and QTextBrowser) can be set using the background properties. For example,
+    The background of any QAbstractScrollArea (Item views, BOBUIextEdit
+    and BOBUIextBrowser) can be set using the background properties. For example,
     to set a background-image that scrolls with the scroll bar:
     \snippet code/doc_src_stylesheet.qdoc 106
 
@@ -4217,12 +4217,12 @@
     \snippet code/doc_src_stylesheet.qdoc 129
 
     For a QPushButton with a menu, use the
-    \l{Qt Style Sheets Reference#menu-indicator-sub}{::menu-indicator}
+    \l{BobUI Style Sheets Reference#menu-indicator-sub}{::menu-indicator}
     subcontrol.
 
     \snippet code/doc_src_stylesheet.qdoc 130
 
-    Checkable QPushButton have the \l{Qt Style Sheets Reference#checked-ps}
+    Checkable QPushButton have the \l{BobUI Style Sheets Reference#checked-ps}
     {:checked} pseudo state set.
 
     \section2 Customizing QRadioButton
@@ -4296,7 +4296,7 @@
 
     A QSplitter derives from a QFrame and hence can be styled like a QFrame.
     The grip or the handle is customized using the
-    \l{Qt Style Sheets Reference#handle-sub}{::handle} subcontrol.
+    \l{BobUI Style Sheets Reference#handle-sub}{::handle} subcontrol.
 
     \snippet code/doc_src_stylesheet.qdoc 142
 
@@ -4310,7 +4310,7 @@
     using the descendant declaration (i.e)
     \snippet code/doc_src_stylesheet.qdoc 144
 
-    \section2 Customizing QTabWidget and QTabBar
+    \section2 Customizing BOBUIabWidget and BOBUIabBar
 
     \image tabWidget-stylesheet1.png {Image of several tabs}
 
@@ -4322,7 +4322,7 @@
     \image tabWidget-stylesheet2.png {Image of overlapped tabs}
 
     For a tab widget that looks like above, we make use of
-    \l{https://doc.qt.io/qt-5/stylesheet-customizing.html#the-box-model}
+    \l{https://doc.bobui.io/bobui-5/stylesheet-customizing.html#the-box-model}
     {negative margins}. Negative values draw the element closer to its
     neighbors than it would be by default. The resulting stylesheet
     looks like this:
@@ -4337,12 +4337,12 @@
     The tear indicator and the scroll buttons can be further customized as follows:
     \snippet code/doc_src_stylesheet.qdoc 148
 
-    Since Qt 4.6 the close button can be customized as follow:
+    Since BobUI 4.6 the close button can be customized as follow:
     \snippet code/doc_src_stylesheet.qdoc 159
 
-    \section2 Customizing QTableView
+    \section2 Customizing BOBUIableView
 
-    Suppose we'd like our selected item in QTableView to have bubblegum pink
+    Suppose we'd like our selected item in BOBUIableView to have bubblegum pink
     fade to white as its background.
 
     \image tableWidget-stylesheet.png {Table view with custom style}
@@ -4357,54 +4357,54 @@
 
     \snippet code/doc_src_stylesheet.qdoc 150
 
-    The QTableView's checkbox indicator can also be customized. In the
+    The BOBUIableView's checkbox indicator can also be customized. In the
     following snippet the indicator \c background-color in unchecked state is
     customized:
 
     \snippet code/doc_src_stylesheet.qdoc 161
 
-    \section2 Customizing QToolBar
+    \section2 Customizing BOBUIoolBar
 
-    The background and the handle of a QToolBar is customized as below:
+    The background and the handle of a BOBUIoolBar is customized as below:
     \snippet code/doc_src_stylesheet.qdoc 151
 
-    \section2 Customizing QToolBox
+    \section2 Customizing BOBUIoolBox
 
-    The tabs of the QToolBox are customized using the 'tab' subcontrol.
+    The tabs of the BOBUIoolBox are customized using the 'tab' subcontrol.
 
     \snippet code/doc_src_stylesheet.qdoc 152
 
-    \section2 Customizing QToolButton
+    \section2 Customizing BOBUIoolButton
 
-    There are three types of QToolButtons.
+    There are three types of BOBUIoolButtons.
     \list
-       \li The QToolButton has no menu. In this case, the QToolButton is styled
+       \li The BOBUIoolButton has no menu. In this case, the BOBUIoolButton is styled
           exactly like QPushButton.  See
           \l{#Customizing QPushButton}{Customizing QPushButton} for an
           example.
 
-       \li The QToolButton has a menu and has the QToolButton::popupMode set to
-          QToolButton::DelayedPopup or QToolButton::InstantPopup. In this case,
-          the QToolButton is styled exactly like a QPushButton with a menu.
+       \li The BOBUIoolButton has a menu and has the BOBUIoolButton::popupMode set to
+          BOBUIoolButton::DelayedPopup or BOBUIoolButton::InstantPopup. In this case,
+          the BOBUIoolButton is styled exactly like a QPushButton with a menu.
           See \l{#Customizing QPushButton}{Customizing QPushButton} for an
           example of the usage of the menu-indicator pseudo state.
 
-        \li The QToolButton has its QToolButton::popupMode set to
-           QToolButton::MenuButtonPopup. In this case, we style it as follows:
+        \li The BOBUIoolButton has its BOBUIoolButton::popupMode set to
+           BOBUIoolButton::MenuButtonPopup. In this case, we style it as follows:
     \endlist
 
     \snippet code/doc_src_stylesheet.qdoc 153
 
 
-    \section2 Customizing QToolTip
+    \section2 Customizing BOBUIoolTip
 
-    QToolTip is customized exactly like a QLabel. In addition, for platforms
+    BOBUIoolTip is customized exactly like a QLabel. In addition, for platforms
     that support it, the opacity property may be set to adjust the opacity.
 
     For example,
     \snippet code/doc_src_stylesheet.qdoc 154
 
-    \section2 Customizing QTreeView
+    \section2 Customizing BOBUIreeView
 
     The background color of alternating rows can be customized using the following
     style sheet:
@@ -4415,8 +4415,8 @@
     \l{item-sub}{::item} subcontrol. For example,
     \snippet code/doc_src_stylesheet.qdoc 156
 
-    The branches of a QTreeView are styled using the
-    \l{Qt Style Sheets Reference#branch-sub}{::branch} subcontrol. The
+    The branches of a BOBUIreeView are styled using the
+    \l{BobUI Style Sheets Reference#branch-sub}{::branch} subcontrol. The
     following stylesheet color codes the various states when drawing
     a branch.
 
@@ -4457,7 +4457,7 @@
 
     When styling a QPushButton, it is often desirable to use an image as the
     button graphic. It is common to try the
-    \l{Qt Style Sheets Reference#background-image-prop}{background-image}
+    \l{BobUI Style Sheets Reference#background-image-prop}{background-image}
     property,
     but this has a number of drawbacks: For instance, the background will
     often appear hidden behind the button decoration, because it is not
@@ -4466,7 +4466,7 @@
     always look good.
 
     It is better to use the
-    \l{Qt Style Sheets Reference#border-image-prop}{border-image}
+    \l{BobUI Style Sheets Reference#border-image-prop}{border-image}
     property, as it will always display the image,
     regardless of the background (you can combine it with a background if it
     has alpha values in it), and it has special settings to deal with button

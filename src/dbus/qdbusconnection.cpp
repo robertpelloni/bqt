@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusconnection.h"
 #include "qdbusconnection_p.h"
@@ -23,13 +23,13 @@
 #undef interface
 #endif
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDBusConnection
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusConnection class represents a connection to the D-Bus bus daemon.
@@ -390,7 +390,7 @@ bool QDBusConnection::callWithCallback(const QDBusMessage &message, QObject *rec
     of placing calls.
 
     \warning If \a mode is QDBus::BlockWithGui, this function will
-             reenter the Qt event loop in order to wait for the
+             reenter the BobUI event loop in order to wait for the
              reply. During the wait, it may deliver signals and other
              method calls to your application. Therefore, it must be
              prepared to handle a reentrancy whenever a call is
@@ -520,19 +520,19 @@ bool QDBusConnection::connect(const QString &service, const QString &path, const
     if (interface.isEmpty() && name.isEmpty())
         return false;
     if (!interface.isEmpty() && !QDBusUtil::isValidInterfaceName(interface)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QDBusConnection::connect: interface name '%s' is not valid", interface.toLatin1().constData());
 #endif
         return false;
     }
     if (!service.isEmpty() && !QDBusUtil::isValidBusName(service)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QDBusConnection::connect: service name '%s' is not valid", service.toLatin1().constData());
 #endif
         return false;
     }
     if (!path.isEmpty() && !QDBusUtil::isValidObjectPath(path)) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         qWarning("QDBusConnection::connect: object path '%s' is not valid", path.toLatin1().constData());
 #endif
         return false;
@@ -956,7 +956,7 @@ void QDBusConnectionPrivate::createBusService()
 
     QObject::connect(this, &QDBusConnectionPrivate::callWithCallbackFailed,
                      busService, emit &QDBusConnectionInterface::callWithCallbackFailed,
-                     Qt::QueuedConnection);
+                     BobUI::QueuedConnection);
 }
 
 /*!
@@ -982,10 +982,10 @@ QByteArray QDBusConnection::localMachineId()
 
 /*!
     \namespace QDBus
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBus namespace contains miscellaneous identifiers used
-    throughout the Qt D-Bus module.
+    throughout the BobUI D-Bus module.
 */
 
 /*!
@@ -998,7 +998,7 @@ QByteArray QDBusConnection::localMachineId()
     \value Block                Don't use an event loop to wait for a reply, but instead block on
                                 network operations while waiting. This means the
                                 user-interface may not be updated until the function returns.
-    \value BlockWithGui         Use the Qt event loop to wait for a reply. This means that the
+    \value BlockWithGui         Use the BobUI event loop to wait for a reply. This means that the
                                 user-interface will stay responsive (processing input events),
                                 but it also means other events may happen, like signal delivery
                                 and other D-Bus method calls.
@@ -1012,9 +1012,9 @@ QByteArray QDBusConnection::localMachineId()
     \memberswap{connection}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnection_p.cpp"
 #include "moc_qdbusconnection.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

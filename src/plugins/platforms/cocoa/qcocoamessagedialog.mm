@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcocoamessagedialog.h"
 
@@ -8,23 +8,23 @@
 #include "qcocoahelpers.h"
 #include "qcocoaeventdispatcher.h"
 
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/qtimer.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/bobuiimer.h>
 
-#include <QtGui/qtextdocument.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qcoregraphics_p.h>
-#include <QtGui/qpa/qplatformtheme.h>
+#include <BobUIGui/bobuiextdocument.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
 
 #include <AppKit/NSAlert.h>
 #include <AppKit/NSButton.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaMessageDialog::~QCocoaMessageDialog()
 {
@@ -34,26 +34,26 @@ QCocoaMessageDialog::~QCocoaMessageDialog()
 
 static QString toPlainText(const QString &text)
 {
-    // FIXME: QMessageDialog supports Qt::TextFormat, which
-    // nowadays includes Qt::MarkdownText, but we don't have
+    // FIXME: QMessageDialog supports BobUI::TextFormat, which
+    // nowadays includes BobUI::MarkdownText, but we don't have
     // the machinery to deal with that yet. We should as a
     // start plumb the dialog's text format to the platform
     // via the dialog options.
 
-    if (!Qt::mightBeRichText(text))
+    if (!BobUI::mightBeRichText(text))
         return text;
 
-    QTextDocument textDocument;
+    BOBUIextDocument textDocument;
     textDocument.setHtml(text);
     return textDocument.toPlainText();
 }
 
-static NSControlStateValue controlStateFor(Qt::CheckState state)
+static NSControlStateValue controlStateFor(BobUI::CheckState state)
 {
     switch (state) {
-    case Qt::Checked: return NSControlStateValueOn;
-    case Qt::Unchecked: return NSControlStateValueOff;
-    case Qt::PartiallyChecked: return NSControlStateValueMixed;
+    case BobUI::Checked: return NSControlStateValueOn;
+    case BobUI::Unchecked: return NSControlStateValueOff;
+    case BobUI::PartiallyChecked: return NSControlStateValueMixed;
     }
     Q_UNREACHABLE();
 }
@@ -67,7 +67,7 @@ static NSControlStateValue controlStateFor(Qt::CheckState state)
     Returns true if the helper could successfully show the dialog, or
     false if the cross platform fallback dialog should be used instead.
 */
-bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QCocoaMessageDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
 
@@ -79,17 +79,17 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
     }
 
     // We can only do application and window modal dialogs
-    if (windowModality == Qt::NonModal)
+    if (windowModality == BobUI::NonModal)
         return false;
 
     // And only window modal if we have a parent
-    if (windowModality == Qt::WindowModal && (!parent || !parent->handle())) {
+    if (windowModality == BobUI::WindowModal && (!parent || !parent->handle())) {
         qCWarning(lcQpaDialogs, "Cannot run window modal dialog without parent window");
         return false;
     }
 
     // Tahoe has issues with window-modal alert buttons not responding to mouse
-    if (windowModality == Qt::WindowModal
+    if (windowModality == BobUI::WindowModal
         && QOperatingSystemVersion::current() >= QOperatingSystemVersion::MacOSTahoe)
         return false;
 
@@ -103,8 +103,8 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
         return false;
     }
 
-    if (Qt::mightBeRichText(options()->text()) ||
-        Qt::mightBeRichText(options()->informativeText())) {
+    if (BobUI::mightBeRichText(options()->text()) ||
+        BobUI::mightBeRichText(options()->informativeText())) {
         // Let's fallback to non-native message box,
         // we only have plain NSString/text in NSAlert.
         qCDebug(lcQpaDialogs, "Message box contains text in rich text format");
@@ -229,7 +229,7 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
     }
 
     std::vector<Button> orderedButtons;
-    const int *layoutEntry = buttonLayout(Qt::Horizontal, ButtonLayout::MacLayout);
+    const int *layoutEntry = buttonLayout(BobUI::Horizontal, ButtonLayout::MacLayout);
     while (*layoutEntry != QPlatformDialogHelper::EOL) {
         const auto role = ButtonRole(*layoutEntry & ~ButtonRole::Reverse);
         const bool reverse = *layoutEntry & ButtonRole::Reverse;
@@ -260,14 +260,14 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
         checkBoxLabel = QPlatformTheme::removeMnemonics(checkBoxLabel);
         m_alert.suppressionButton.title = checkBoxLabel.toNSString();
         auto state = options()->checkBoxState();
-        m_alert.suppressionButton.allowsMixedState = state == Qt::PartiallyChecked;
+        m_alert.suppressionButton.allowsMixedState = state == BobUI::PartiallyChecked;
         m_alert.suppressionButton.state = controlStateFor(state);
         m_alert.showsSuppressionButton = YES;
     }
 
     qCDebug(lcQpaDialogs) << "Showing" << m_alert;
 
-    if (windowModality == Qt::WindowModal) {
+    if (windowModality == BobUI::WindowModal) {
         auto *cocoaWindow = static_cast<QCocoaWindow*>(parent->handle());
         [m_alert beginSheetModalForWindow:cocoaWindow->nativeWindow()
             completionHandler:^(NSModalResponse response) {
@@ -282,7 +282,7 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
         // after showing the dialog. As a workaround, we call it from exec(),
         // but also make sure that if the user returns to the main runloop
         // we'll run the modal dialog from there.
-        QTimer::singleShot(0, this, [this]{
+        BOBUIimer::singleShot(0, this, [this]{
             if (m_alert && !m_alert.window.visible) {
                 qCDebug(lcQpaDialogs) << "Running deferred modal" << m_alert;
                 QCocoaEventDispatcher::clearCurrentThreadCocoaEventDispatcherInterruptFlag();
@@ -297,7 +297,7 @@ bool QCocoaMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality w
 // We shouldn't get NSModalResponseContinue as a response from NSAlert::runModal,
 // and processResponse must not be called with that value (if we are there, it's
 // too late to do anything about it.
-// However, as QTBUG-114546 shows, there are scenarios where we might get that
+// However, as BOBUIBUG-114546 shows, there are scenarios where we might get that
 // response anyway. We interpret it to keep the modal loop running, and we only
 // return if we got something else to pass to processResponse.
 NSModalResponse QCocoaMessageDialog::runModal() const
@@ -312,7 +312,7 @@ void QCocoaMessageDialog::exec()
 {
     Q_ASSERT(m_alert);
 
-    if (modality() == Qt::WindowModal) {
+    if (modality() == BobUI::WindowModal) {
         qCDebug(lcQpaDialogs) << "Running local event loop for window modal" << m_alert;
         QEventLoop eventLoop;
         QScopedValueRollback updateGuard(m_eventLoop, &eventLoop);
@@ -327,12 +327,12 @@ void QCocoaMessageDialog::exec()
 // Custom modal response code to record that the dialog was hidden by us
 static const NSInteger kModalResponseDialogHidden = NSAlertThirdButtonReturn + 1;
 
-static Qt::CheckState checkStateFor(NSControlStateValue state)
+static BobUI::CheckState checkStateFor(NSControlStateValue state)
 {
     switch (state) {
-    case NSControlStateValueOn: return Qt::Checked;
-    case NSControlStateValueOff: return Qt::Unchecked;
-    case NSControlStateValueMixed: return Qt::PartiallyChecked;
+    case NSControlStateValueOn: return BobUI::Checked;
+    case NSControlStateValueOff: return BobUI::Unchecked;
+    case NSControlStateValueMixed: return BobUI::PartiallyChecked;
     }
     Q_UNREACHABLE();
 }
@@ -403,7 +403,7 @@ void QCocoaMessageDialog::hide()
         // Note: Just hiding or closing the NSAlert's NWindow here is not sufficient,
         // as the dialog is running a modal event loop as well, which we need to end.
 
-        if (modality() == Qt::WindowModal) {
+        if (modality() == BobUI::WindowModal) {
             // Will call processResponse() synchronously
             [m_alert.window.sheetParent endSheet:m_alert.window returnCode:kModalResponseDialogHidden];
         } else {
@@ -421,10 +421,10 @@ void QCocoaMessageDialog::hide()
     }
 }
 
-Qt::WindowModality QCocoaMessageDialog::modality() const
+BobUI::WindowModality QCocoaMessageDialog::modality() const
 {
     Q_ASSERT(m_alert && m_alert.window);
-    return m_alert.window.sheetParent ? Qt::WindowModal : Qt::ApplicationModal;
+    return m_alert.window.sheetParent ? BobUI::WindowModal : BobUI::ApplicationModal;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

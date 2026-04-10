@@ -1,7 +1,7 @@
-# Copyright (C) 2025 The Qt Company Ltd.
+# Copyright (C) 2025 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_plugin(QConnManNetworkInformationPlugin
+bobui_internal_add_plugin(QConnManNetworkInformationPlugin
     OUTPUT_NAME qconnman
     CLASS_NAME QConnManNetworkInformationBackendFactory
     PLUGIN_TYPE networkinformation
@@ -12,9 +12,9 @@ qt_internal_add_plugin(QConnManNetworkInformationPlugin
         qconnmanservice.h
         qconnmanservice.cpp
     LIBRARIES
-        Qt::DBus
-        Qt::NetworkPrivate
+        BobUI::DBus
+        BobUI::NetworkPrivate
     DEFINES
-        "QT_ENABLE_STRICT_MODE_UP_TO=QT_VERSION_CHECK(6,11,0)"
-        QT_NO_CAST_FROM_ASCII
+        "BOBUI_ENABLE_STRICT_MODE_UP_TO=BOBUI_VERSION_CHECK(6,11,0)"
+        BOBUI_NO_CAST_FROM_ASCII
 )

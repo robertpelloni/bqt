@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qinputmethod.h>
 #include <private/qinputmethod_p.h>
@@ -8,7 +8,7 @@
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -28,20 +28,20 @@ QInputMethod::~QInputMethod()
 /*!
     \class QInputMethod
     \brief The QInputMethod class provides access to the active text input method.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QInputMethod is used by the text editors for integrating to the platform text input
     methods and more commonly by application views for querying various text input method-related
     information like virtual keyboard visibility and keyboard dimensions.
 
-    Qt Quick also provides access to QInputMethod in QML through \l{QmlGlobalQtObject}{Qt global object}
-    as \c Qt.inputMethod property.
+    BobUI Quick also provides access to QInputMethod in QML through \l{QmlGlobalBobUIObject}{BobUI global object}
+    as \c BobUI.inputMethod property.
 */
 
 /*!
     Returns the transformation from input item coordinates to the window coordinates.
 */
-QTransform QInputMethod::inputItemTransform() const
+BOBUIransform QInputMethod::inputItemTransform() const
 {
     Q_D(const QInputMethod);
     return d->inputItemTransform;
@@ -52,7 +52,7 @@ QTransform QInputMethod::inputItemTransform() const
     Item transform needs to be updated by the focused window like QQuickCanvas whenever
     item is moved inside the scene.
 */
-void QInputMethod::setInputItemTransform(const QTransform &transform)
+void QInputMethod::setInputItemTransform(const BOBUIransform &transform)
 {
     Q_D(QInputMethod);
     if (d->inputItemTransform == transform)
@@ -90,7 +90,7 @@ void QInputMethod::setInputItemRectangle(const QRectF &rect)
     d->inputRectangle = rect;
 }
 
-static QRectF inputMethodQueryRectangle_helper(Qt::InputMethodQuery imquery, const QTransform &xform)
+static QRectF inputMethodQueryRectangle_helper(BobUI::InputMethodQuery imquery, const BOBUIransform &xform)
 {
     QRectF r;
     if (QObject *focusObject = qGuiApp->focusObject()) {
@@ -113,7 +113,7 @@ static QRectF inputMethodQueryRectangle_helper(Qt::InputMethodQuery imquery, con
 QRectF QInputMethod::cursorRectangle() const
 {
     Q_D(const QInputMethod);
-    return inputMethodQueryRectangle_helper(Qt::ImCursorRectangle, d->inputItemTransform);
+    return inputMethodQueryRectangle_helper(BobUI::ImCursorRectangle, d->inputItemTransform);
 }
 
 /*!
@@ -126,7 +126,7 @@ QRectF QInputMethod::cursorRectangle() const
 QRectF QInputMethod::anchorRectangle() const
 {
     Q_D(const QInputMethod);
-    return inputMethodQueryRectangle_helper(Qt::ImAnchorRectangle, d->inputItemTransform);
+    return inputMethodQueryRectangle_helper(BobUI::ImAnchorRectangle, d->inputItemTransform);
 }
 
 /*!
@@ -155,7 +155,7 @@ QRectF QInputMethod::keyboardRectangle() const
 QRectF QInputMethod::inputItemClipRectangle() const
 {
     Q_D(const QInputMethod);
-    return inputMethodQueryRectangle_helper(Qt::ImInputItemClipRectangle, d->inputItemTransform);
+    return inputMethodQueryRectangle_helper(BobUI::ImInputItemClipRectangle, d->inputItemTransform);
 }
 /*!
     Requests virtual keyboard to open. If the platform
@@ -255,13 +255,13 @@ QLocale QInputMethod::locale() const
     \property QInputMethod::inputDirection
     \brief Current input direction.
 */
-Qt::LayoutDirection QInputMethod::inputDirection() const
+BobUI::LayoutDirection QInputMethod::inputDirection() const
 {
     Q_D(const QInputMethod);
     QPlatformInputContext *ic = d->platformInputContext();
     if (ic)
         return ic->inputDirection();
-    return Qt::LeftToRight;
+    return BobUI::LeftToRight;
 }
 
 /*!
@@ -273,13 +273,13 @@ Qt::LayoutDirection QInputMethod::inputDirection() const
     In particular calling update whenever the cursor position changes is important as
     that often causes other query attributes like surrounding text and text selection
     to change as well. The attributes that often change together with cursor position
-    have been grouped in Qt::ImQueryInput value for convenience.
+    have been grouped in BobUI::ImQueryInput value for convenience.
 */
-void QInputMethod::update(Qt::InputMethodQueries queries)
+void QInputMethod::update(BobUI::InputMethodQueries queries)
 {
     Q_D(QInputMethod);
 
-    if (queries & Qt::ImEnabled) {
+    if (queries & BobUI::ImEnabled) {
         QObject *focus = qApp->focusObject();
         bool enabled = d->objectAcceptsInputMethod(focus);
         QPlatformInputContextPrivate::setInputMethodAccepted(enabled);
@@ -289,13 +289,13 @@ void QInputMethod::update(Qt::InputMethodQueries queries)
     if (ic)
         ic->update(queries);
 
-    if (queries & Qt::ImCursorRectangle)
+    if (queries & BobUI::ImCursorRectangle)
         emit cursorRectangleChanged();
 
-    if (queries & (Qt::ImAnchorRectangle))
+    if (queries & (BobUI::ImAnchorRectangle))
         emit anchorRectangleChanged();
 
-    if (queries & (Qt::ImInputItemClipRectangle))
+    if (queries & (BobUI::ImInputItemClipRectangle))
         emit inputItemClipRectangleChanged();
 }
 
@@ -367,12 +367,12 @@ bool QInputMethodPrivate::objectAcceptsInputMethod(QObject *object)
         // in addition and disable in case of ImhHiddenText.
         static const bool supportsHiddenText = platformSupportsHiddenText();
         QInputMethodQueryEvent query(supportsHiddenText
-                                     ? Qt::InputMethodQueries(Qt::ImEnabled)
-                                     : Qt::InputMethodQueries(Qt::ImEnabled | Qt::ImHints));
+                                     ? BobUI::InputMethodQueries(BobUI::ImEnabled)
+                                     : BobUI::InputMethodQueries(BobUI::ImEnabled | BobUI::ImHints));
         QGuiApplication::sendEvent(object, &query);
-        enabled = query.value(Qt::ImEnabled).toBool();
+        enabled = query.value(BobUI::ImEnabled).toBool();
         if (enabled && !supportsHiddenText
-            && Qt::InputMethodHints(query.value(Qt::ImHints).toInt()).testFlag(Qt::ImhHiddenText)) {
+            && BobUI::InputMethodHints(query.value(BobUI::ImHints).toInt()).testFlag(BobUI::ImhHiddenText)) {
             enabled = false;
         }
     }
@@ -382,20 +382,20 @@ bool QInputMethodPrivate::objectAcceptsInputMethod(QObject *object)
 /*!
   Send \a query to the current focus object with parameters \a argument and return the result.
  */
-QVariant QInputMethod::queryFocusObject(Qt::InputMethodQuery query, const QVariant &argument)
+QVariant QInputMethod::queryFocusObject(BobUI::InputMethodQuery query, const QVariant &argument)
 {
     QVariant retval;
     QObject *focusObject = qGuiApp->focusObject();
     if (!focusObject)
         return retval;
 
-    static const char *signature = "inputMethodQuery(Qt::InputMethodQuery,QVariant)";
+    static const char *signature = "inputMethodQuery(BobUI::InputMethodQuery,QVariant)";
     const bool newMethodSupported = focusObject->metaObject()->indexOfMethod(signature) != -1;
     if (newMethodSupported) {
         const bool ok = QMetaObject::invokeMethod(focusObject, "inputMethodQuery",
-                                                        Qt::DirectConnection,
+                                                        BobUI::DirectConnection,
                                                         Q_RETURN_ARG(QVariant, retval),
-                                                        Q_ARG(Qt::InputMethodQuery, query),
+                                                        Q_ARG(BobUI::InputMethodQuery, query),
                                                         Q_ARG(QVariant, argument));
         Q_ASSERT(ok);
         if (retval.isValid())
@@ -410,6 +410,6 @@ QVariant QInputMethod::queryFocusObject(Qt::InputMethodQuery query, const QVaria
     return queryEvent.value(query);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qinputmethod.cpp"

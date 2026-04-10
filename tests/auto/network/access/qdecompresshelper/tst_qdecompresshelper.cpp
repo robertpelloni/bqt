@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtNetwork/private/qdecompresshelper_p.h>
+#include <BobUINetwork/private/qdecompresshelper_p.h>
 
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qbytearray.h>
 
-const QString srcDir = QStringLiteral(QT_STRINGIFY(SRC_DIR));
+const QString srcDir = QStringLiteral(BOBUI_STRINGIFY(SRC_DIR));
 
 class tst_QDecompressHelper : public QObject
 {
@@ -49,13 +49,13 @@ void tst_QDecompressHelper::initTestCase()
 {
     Q_INIT_RESOURCE(gzip);
     Q_INIT_RESOURCE(inflate);
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     Q_INIT_RESOURCE(zstandard);
 #endif
 }
 void tst_QDecompressHelper::cleanupTestCase()
 {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     Q_CLEANUP_RESOURCE(zstandard);
 #endif
     Q_CLEANUP_RESOURCE(inflate);
@@ -74,13 +74,13 @@ void tst_QDecompressHelper::encodingSupported()
 
     QVERIFY(accepted.indexOf("gzip") < accepted.indexOf("deflate"));
 
-#if QT_CONFIG(brotli)
+#if BOBUI_CONFIG(brotli)
     QVERIFY(QDecompressHelper::isSupportedEncoding("br"));
     QVERIFY(accepted.contains("br"));
     ++expected;
 #endif
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     QVERIFY(QDecompressHelper::isSupportedEncoding("zstd"));
     QVERIFY(accepted.contains("zstd"));
     ++expected;
@@ -90,35 +90,35 @@ void tst_QDecompressHelper::encodingSupported()
 
 void tst_QDecompressHelper::sharedDecompress_data()
 {
-    QTest::addColumn<QByteArray>("encoding");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArray>("encoding");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("expected");
 
-    QTest::newRow("gzip-hello-world")
+    BOBUIest::newRow("gzip-hello-world")
             << QByteArray("gzip")
             << QByteArray::fromBase64("H4sIAAAAAAAAA8tIzcnJVyjPL8pJAQCFEUoNCwAAAA==")
             << QByteArray("hello world");
 
     // Has two streams. ZLib reports end of stream after the first one, but we need to decompress
     // all of the streams to get the full file.
-    QTest::newRow("gzip-multistream-hello-world")
+    BOBUIest::newRow("gzip-multistream-hello-world")
             << QByteArray("gzip")
             << QByteArray::fromBase64(
                        "H4sIAAAAAAAAA8tIzcnJBwCGphA2BQAAAB+LCAAAAAAAAANTKM8vykkBAMtCO0oGAAAA")
             << QByteArray("hello world");
 
-    QTest::newRow("deflate-hello-world")
+    BOBUIest::newRow("deflate-hello-world")
             << QByteArray("deflate") << QByteArray::fromBase64("eJzLSM3JyVcozy/KSQEAGgsEXQ==")
             << QByteArray("hello world");
 
-#if QT_CONFIG(brotli)
-    QTest::newRow("brotli-hello-world")
+#if BOBUI_CONFIG(brotli)
+    BOBUIest::newRow("brotli-hello-world")
             << QByteArray("br") << QByteArray::fromBase64("DwWAaGVsbG8gd29ybGQD")
             << QByteArray("hello world");
 #endif
 
-#if QT_CONFIG(zstd)
-    QTest::newRow("zstandard-hello-world")
+#if BOBUI_CONFIG(zstd)
+    BOBUIest::newRow("zstandard-hello-world")
             << QByteArray("zstd") << QByteArray::fromBase64("KLUv/QRYWQAAaGVsbG8gd29ybGRoaR6y")
             << QByteArray("hello world");
 #endif
@@ -140,7 +140,7 @@ void tst_QDecompressHelper::decompress()
     helper.feed(data);
 
     QFETCH(QByteArray, expected);
-    QByteArray actual(expected.size(), Qt::Uninitialized);
+    QByteArray actual(expected.size(), BobUI::Uninitialized);
     qsizetype read = helper.read(actual.data(), actual.size());
 
     QCOMPARE(read, expected.size());
@@ -165,7 +165,7 @@ void tst_QDecompressHelper::partialDecompress()
     helper.feed(data);
 
     QFETCH(QByteArray, expected);
-    QByteArray actual(expected.size(), Qt::Uninitialized);
+    QByteArray actual(expected.size(), BobUI::Uninitialized);
     qsizetype readTotal = 0;
     while (helper.hasData()) {
         qsizetype read = helper.read(actual.data() + readTotal, 1);
@@ -209,7 +209,7 @@ void tst_QDecompressHelper::countAhead()
     QFETCH(QByteArray, expected);
     QCOMPARE(helper.uncompressedSize(), expected.size());
 
-    QByteArray actual(helper.uncompressedSize(), Qt::Uninitialized);
+    QByteArray actual(helper.uncompressedSize(), BobUI::Uninitialized);
     qsizetype read = helper.read(actual.data(), actual.size());
 
     QCOMPARE(read, expected.size());
@@ -243,7 +243,7 @@ void tst_QDecompressHelper::countAheadByteDataBuffer()
 
         QCOMPARE(helper.uncompressedSize(), expected.size());
 
-        QByteArray actual(helper.uncompressedSize(), Qt::Uninitialized);
+        QByteArray actual(helper.uncompressedSize(), BobUI::Uninitialized);
         qsizetype read = helper.read(actual.data(), actual.size());
 
         QCOMPARE(read, expected.size());
@@ -266,7 +266,7 @@ void tst_QDecompressHelper::countAheadByteDataBuffer()
 
         QCOMPARE(helper.uncompressedSize(), expected.size());
 
-        QByteArray actual(helper.uncompressedSize(), Qt::Uninitialized);
+        QByteArray actual(helper.uncompressedSize(), BobUI::Uninitialized);
         qsizetype read = helper.read(actual.data(), actual.size());
 
         QCOMPARE(read, expected.size());
@@ -303,7 +303,7 @@ void tst_QDecompressHelper::countAheadPartialRead()
     QFETCH(QByteArray, expected);
     QCOMPARE(helper.uncompressedSize(), expected.size());
 
-    QByteArray actual(helper.uncompressedSize(), Qt::Uninitialized);
+    QByteArray actual(helper.uncompressedSize(), BobUI::Uninitialized);
     qsizetype read = helper.read(actual.data(), 5);
     QCOMPARE(read, 5);
     QCOMPARE(helper.uncompressedSize(), expected.size() - read);
@@ -319,30 +319,30 @@ void tst_QDecompressHelper::countAheadPartialRead()
 
 void tst_QDecompressHelper::decompressBigData_data()
 {
-#if defined(QT_ASAN_ENABLED)
+#if defined(BOBUI_ASAN_ENABLED)
     QSKIP("Tests are too slow with asan enabled");
 #endif
-    QTest::addColumn<QByteArray>("encoding");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<qint64>("size");
-    QTest::addColumn<bool>("countAhead");
+    BOBUIest::addColumn<QByteArray>("encoding");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<qint64>("size");
+    BOBUIest::addColumn<bool>("countAhead");
 
     qint64 fourGiB = 4ll * 1024ll * 1024ll * 1024ll;
     qint64 fiveGiB = 5ll * 1024ll * 1024ll * 1024ll;
 
     // Only use countAhead on one of these since they share codepath anyway
-    QTest::newRow("gzip-counted-4G") << QByteArray("gzip") << QString(":/4G.gz") << fourGiB << true;
-    QTest::newRow("deflate-5G") << QByteArray("deflate") << QString(":/5GiB.txt.inflate")
+    BOBUIest::newRow("gzip-counted-4G") << QByteArray("gzip") << QString(":/4G.gz") << fourGiB << true;
+    BOBUIest::newRow("deflate-5G") << QByteArray("deflate") << QString(":/5GiB.txt.inflate")
                                 << fiveGiB << false;
 
-#if QT_CONFIG(brotli)
-    QTest::newRow("brotli-4G") << QByteArray("br") << (srcDir + "/4G.br") << fourGiB << false;
-    QTest::newRow("brotli-counted-4G") << QByteArray("br") << (srcDir + "/4G.br") << fourGiB << true;
+#if BOBUI_CONFIG(brotli)
+    BOBUIest::newRow("brotli-4G") << QByteArray("br") << (srcDir + "/4G.br") << fourGiB << false;
+    BOBUIest::newRow("brotli-counted-4G") << QByteArray("br") << (srcDir + "/4G.br") << fourGiB << true;
 #endif
 
-#if QT_CONFIG(zstd)
-    QTest::newRow("zstandard-4G") << QByteArray("zstd") << (":/4G.zst") << fourGiB << false;
-    QTest::newRow("zstandard-counted-4G") << QByteArray("zstd") << (":/4G.zst") << fourGiB << true;
+#if BOBUI_CONFIG(zstd)
+    BOBUIest::newRow("zstandard-4G") << QByteArray("zstd") << (":/4G.zst") << fourGiB << false;
+    BOBUIest::newRow("zstandard-counted-4G") << QByteArray("zstd") << (":/4G.zst") << fourGiB << true;
 #endif
 }
 
@@ -362,7 +362,7 @@ void tst_QDecompressHelper::decompressBigData()
     helper.setEncoding(encoding);
 
     // The size of 'output' should be at least QDecompressHelper::MaxDecompressedDataBufferSize + 1
-    QByteArray output(10 * 1024 * 1024 + 1, Qt::Uninitialized);
+    QByteArray output(10 * 1024 * 1024 + 1, BobUI::Uninitialized);
     qint64 totalSize = 0;
     while (!file.atEnd()) {
         helper.feed(file.read(third));
@@ -376,17 +376,17 @@ void tst_QDecompressHelper::decompressBigData()
             QVERIFY(allZero);
         }
     }
-    QTEST(totalSize, "size");
+    BOBUIEST(totalSize, "size");
 }
 
 void tst_QDecompressHelper::archiveBomb_data()
 {
-    QTest::addColumn<QByteArray>("encoding");
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("shouldFail");
+    BOBUIest::addColumn<QByteArray>("encoding");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("shouldFail");
 
-    QTest::newRow("gzip-10K") << QByteArray("gzip") << (srcDir + "/10K.gz") << false;
-    QTest::newRow("gzip-4G") << QByteArray("gzip") << QString(":/4G.gz") << true;
+    BOBUIest::newRow("gzip-10K") << QByteArray("gzip") << (srcDir + "/10K.gz") << false;
+    BOBUIest::newRow("gzip-4G") << QByteArray("gzip") << QString(":/4G.gz") << true;
 }
 
 void tst_QDecompressHelper::archiveBomb()
@@ -404,7 +404,7 @@ void tst_QDecompressHelper::archiveBomb()
     constexpr qint64 SafeSizeLimit = 10 * 1024 * 1024;
     constexpr qint64 RatioLimit = 40;
     qint64 bytesToRead = std::min(SafeSizeLimit / RatioLimit, file.bytesAvailable());
-    QByteArray output(1 + bytesToRead * RatioLimit, Qt::Uninitialized);
+    QByteArray output(1 + bytesToRead * RatioLimit, BobUI::Uninitialized);
     helper.feed(file.read(bytesToRead));
     qsizetype bytesRead = helper.read(output.data(), output.size());
     QVERIFY(bytesRead <= output.size());
@@ -421,12 +421,12 @@ void tst_QDecompressHelper::archiveBomb()
 
 void tst_QDecompressHelper::bigZlib()
 {
-#if QT_POINTER_SIZE < 8
+#if BOBUI_POINTER_SIZE < 8
     QSKIP("This cannot be tested on 32-bit systems");
-#elif defined(QT_ASAN_ENABLED)
+#elif defined(BOBUI_ASAN_ENABLED)
     QSKIP("Test is too slow with asan enabled");
 #else
-#  ifndef QT_NO_EXCEPTIONS
+#  ifndef BOBUI_NO_EXCEPTIONS
     try {
 #  endif
     // ZLib uses unsigned integers as their size type internally which creates some special
@@ -445,10 +445,10 @@ void tst_QDecompressHelper::bigZlib()
     // We need the whole thing in one go... which is why this test is not available for 32-bit
     const qint64 expected = 5ll * 1024ll * 1024ll * 1024ll;
     // Request a few more byte than what is available, to verify exact size
-    QByteArray output(expected + 42, Qt::Uninitialized);
+    QByteArray output(expected + 42, BobUI::Uninitialized);
     const qsizetype size = helper.read(output.data(), output.size());
     QCOMPARE(size, expected);
-#  ifndef QT_NO_EXCEPTIONS
+#  ifndef BOBUI_NO_EXCEPTIONS
     } catch (const std::bad_alloc &) {
         QSKIP("Encountered most likely OOM.");
     }
@@ -456,6 +456,6 @@ void tst_QDecompressHelper::bigZlib()
 #endif
 }
 
-QTEST_MAIN(tst_QDecompressHelper)
+BOBUIEST_MAIN(tst_QDecompressHelper)
 
 #include "tst_qdecompresshelper.moc"

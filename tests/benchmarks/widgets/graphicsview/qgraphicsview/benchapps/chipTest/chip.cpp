@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "chip.h"
 
-#include <QtGui>
+#include <BobUIGui>
 
 Chip::Chip(const QColor &color, int x, int y)
 {
@@ -43,7 +43,7 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
             return;
         }
 
-        painter->setPen(QPen(Qt::black, 0));
+        painter->setPen(QPen(BobUI::black, 0));
         painter->setBrush(fillColor);
         painter->drawRect(13, 13, 97, 57);
         return;
@@ -60,10 +60,10 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     painter->drawRect(QRect(14, 14, 79, 39));
     if (lod >= 1) {
-        painter->setPen(QPen(Qt::gray, 1));
+        painter->setPen(QPen(BobUI::gray, 1));
         painter->drawLine(15, 54, 94, 54);
         painter->drawLine(94, 53, 94, 15);
-        painter->setPen(QPen(Qt::black, 0));
+        painter->setPen(QPen(BobUI::black, 0));
     }
 
     // Draw text
@@ -106,8 +106,8 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     // Draw red ink
     if (stuff.size() > 1) {
-        painter->setPen(QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(BobUI::red, 1, BobUI::SolidLine, BobUI::RoundCap, BobUI::RoundJoin));
+        painter->setBrush(BobUI::NoBrush);
         QPainterPath path;
         path.moveTo(stuff.first());
         for (int i = 1; i < stuff.size(); ++i)
@@ -124,7 +124,7 @@ void Chip::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Chip::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->modifiers() & Qt::ShiftModifier) {
+    if (event->modifiers() & BobUI::ShiftModifier) {
         stuff << event->pos();
         update();
         return;

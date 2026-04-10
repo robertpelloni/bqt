@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #include <AppKit/AppKit.h>
 
@@ -10,28 +10,28 @@
 #include "qcocoahelpers.h"
 #include "qcocoaeventdispatcher.h"
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qabstracteventdispatcher.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/private/qdarwinsecurityscopedfileengine_p.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qabstracteventdispatcher.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/private/qdarwinsecurityscopedfileengine_p.h>
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformnativeinterface.h>
 
 #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static NSString *strippedText(QString s)
 {
@@ -154,7 +154,7 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
     [super dealloc];
 }
 
-- (bool)showPanel:(Qt::WindowModality) windowModality withParent:(QWindow *)parent
+- (bool)showPanel:(BobUI::WindowModality) windowModality withParent:(QWindow *)parent
 {
     const QFileInfo info(m_currentSelection);
     NSString *filepath = info.filePath().toNSString();
@@ -172,10 +172,10 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
             m_helper->panelClosed(result);
     };
 
-    if (windowModality == Qt::WindowModal && parent) {
+    if (windowModality == BobUI::WindowModal && parent) {
         NSView *view = reinterpret_cast<NSView*>(parent->winId());
         [m_panel beginSheetModalForWindow:view.window completionHandler:completionHandler];
-    } else if (windowModality == Qt::ApplicationModal) {
+    } else if (windowModality == BobUI::ApplicationModal) {
         return true; // Defer until exec()
     } else {
         [m_panel beginWithCompletionHandler:completionHandler];
@@ -302,18 +302,18 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
             auto *alert = [[NSAlert new] autorelease];
             alert.alertStyle = NSAlertStyleCritical;
 
-            alert.messageText = [NSString stringWithFormat:qt_mac_AppKitString(@"SavePanel",
+            alert.messageText = [NSString stringWithFormat:bobui_mac_AppKitString(@"SavePanel",
                 @"\\U201c%@\\U201d already exists. Do you want to replace it?"),
                     fileInfo.fileName().toNSString()];
-            alert.informativeText = [NSString stringWithFormat:qt_mac_AppKitString(@"SavePanel",
+            alert.informativeText = [NSString stringWithFormat:bobui_mac_AppKitString(@"SavePanel",
                 @"A file or folder with the same name already exists in the folder %@. "
                 "Replacing it will overwrite its current contents."),
                         fileInfo.absoluteDir().dirName().toNSString()];
 
-            auto *replaceButton = [alert addButtonWithTitle:qt_mac_AppKitString(@"SavePanel", @"Replace")];
+            auto *replaceButton = [alert addButtonWithTitle:bobui_mac_AppKitString(@"SavePanel", @"Replace")];
             replaceButton.hasDestructiveAction = YES;
             replaceButton.tag = 1337;
-            [alert addButtonWithTitle:qt_mac_AppKitString(@"Common", @"Cancel")];
+            [alert addButtonWithTitle:bobui_mac_AppKitString(@"Common", @"Cancel")];
 
             [alert beginSheetModalForWindow:m_panel
                 completionHandler:^(NSModalResponse returnCode) {
@@ -324,7 +324,7 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
             QFileInfo firstFilter(m_selectedNameFilter.first());
             auto *domain = qGuiApp->organizationDomain().toNSString();
             *outError = [NSError errorWithDomain:domain code:0 userInfo:@{
-                NSLocalizedDescriptionKey:[NSString stringWithFormat:qt_mac_AppKitString(@"SavePanel",
+                NSLocalizedDescriptionKey:[NSString stringWithFormat:bobui_mac_AppKitString(@"SavePanel",
                     @"You cannot save this document with extension \\U201c.%1$@\\U201d at the end "
                     "of the name. The required extension is \\U201c.%2$@\\U201d."),
                 fileInfo.completeSuffix().toNSString(), firstFilter.completeSuffix().toNSString()]
@@ -397,11 +397,11 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
     if (auto *openPanel = openpanel_cast(m_panel)) {
         QList<QUrl> result;
         for (NSURL *url in openPanel.URLs)
-            result << qt_apple_urlFromPossiblySecurityScopedURL(url);
+            result << bobui_apple_urlFromPossiblySecurityScopedURL(url);
         return result;
     } else {
-        QUrl result = qt_apple_urlFromPossiblySecurityScopedURL(m_panel.URL);
-        if (qt_apple_isSandboxed())
+        QUrl result = bobui_apple_urlFromPossiblySecurityScopedURL(m_panel.URL);
+        if (bobui_apple_isSandboxed())
             return { result }; // Can't tweak suffix
 
         QFileInfo fileInfo(result.toLocalFile());
@@ -536,7 +536,7 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
         if (filter.count(u'*') != 1)
             continue;
 
-        auto extensions = filter.split('.', Qt::SkipEmptyParts);
+        auto extensions = filter.split('.', BobUI::SkipEmptyParts);
         if (extensions.count() > 2)
             return @[];
 
@@ -611,7 +611,7 @@ typedef QSharedPointer<QFileDialogOptions> SharedPointerFileDialogOptions;
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaFileDialogHelper::QCocoaFileDialogHelper()
 {
@@ -725,9 +725,9 @@ void QCocoaFileDialogHelper::hide()
         m_eventLoop->exit();
 }
 
-bool QCocoaFileDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QCocoaFileDialogHelper::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
-    if (windowFlags & Qt::WindowStaysOnTopHint) {
+    if (windowFlags & BobUI::WindowStaysOnTopHint) {
         // The native file dialog tries all it can to stay
         // on the NSModalPanel level. And it might also show
         // its own "create directory" dialog that we cannot control.
@@ -735,10 +735,10 @@ bool QCocoaFileDialogHelper::show(Qt::WindowFlags windowFlags, Qt::WindowModalit
         return false;
     }
 
-    if (qt_apple_isSandboxed()) {
-        static bool canRead = qt_mac_processHasEntitlement(
+    if (bobui_apple_isSandboxed()) {
+        static bool canRead = bobui_mac_processHasEntitlement(
             u"com.apple.security.files.user-selected.read-only"_s);
-        static bool canReadWrite = qt_mac_processHasEntitlement(
+        static bool canReadWrite = bobui_mac_processHasEntitlement(
             u"com.apple.security.files.user-selected.read-write"_s);
 
         if (options()->acceptMode() == QFileDialogOptions::AcceptSave
@@ -800,4 +800,4 @@ bool QCocoaFileDialogHelper::defaultNameFilterDisables() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

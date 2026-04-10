@@ -13,7 +13,7 @@ OmniListView::OmniListView(QQuickItem *parent)
       m_scrollY(0)
 {
     setObjectName("OmniListView");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemAcceptsInputMethod, true);
     setFlag(ItemHasContents, true);
     setFocusOnTouch(true);
@@ -82,21 +82,21 @@ void OmniListView::wheelEvent(QWheelEvent *event) {
 void OmniListView::keyPressEvent(QKeyEvent *event) {
     if (m_model.isEmpty()) return;
 
-    if (event->key() == Qt::Key_Up) {
+    if (event->key() == BobUI::Key_Up) {
         setCurrentIndex(std::max(0, m_currentIndex - 1));
         
         // Auto-scroll
         if (m_currentIndex * m_rowHeight < m_scrollY) {
             m_scrollY = m_currentIndex * m_rowHeight;
         }
-    } else if (event->key() == Qt::Key_Down) {
+    } else if (event->key() == BobUI::Key_Down) {
         setCurrentIndex(std::min((int)m_model.size() - 1, m_currentIndex + 1));
         
         // Auto-scroll
         if ((m_currentIndex + 1) * m_rowHeight > m_scrollY + height()) {
             m_scrollY = ((m_currentIndex + 1) * m_rowHeight) - height();
         }
-    } else if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    } else if (event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) {
         if (m_currentIndex >= 0) emit itemClicked(m_currentIndex, m_model[m_currentIndex]);
     }
 
@@ -115,7 +115,7 @@ void OmniListView::paint(QPainter *painter) {
 
     if (m_model.isEmpty()) {
         painter->setPen(themeMgr->textColor().darker(150));
-        painter->drawText(rect, Qt::AlignCenter, "No Items");
+        painter->drawText(rect, BobUI::AlignCenter, "No Items");
         return;
     }
 
@@ -132,7 +132,7 @@ void OmniListView::paint(QPainter *painter) {
         // Draw Selection / Hover
         if (i == m_currentIndex) {
             painter->fillRect(rowRect, themeMgr->primaryColor());
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
         } else {
             painter->setPen(themeMgr->textColor());
             // Alternating row colors
@@ -146,6 +146,6 @@ void OmniListView::paint(QPainter *painter) {
         else if (data.typeId() == QMetaType::QVariantMap) textToDraw = data.toMap().value("text").toString();
         else textToDraw = "Item " + QString::number(i);
 
-        painter->drawText(rowRect.adjusted(15, 0, -15, 0), Qt::AlignLeft | Qt::AlignVCenter, textToDraw);
+        painter->drawText(rowRect.adjusted(15, 0, -15, 0), BobUI::AlignLeft | BobUI::AlignVCenter, textToDraw);
     }
 }

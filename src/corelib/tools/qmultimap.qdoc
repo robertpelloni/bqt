@@ -1,10 +1,10 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \class QMultiMap
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiMap class is a template class that provides an associative array with multiple equivalent keys.
     \compares equality
 
@@ -13,7 +13,7 @@
 
     \reentrant
 
-    QMultiMap\<Key, T\> is one of Qt's generic \l{container classes}, where
+    QMultiMap\<Key, T\> is one of BobUI's generic \l{container classes}, where
     \a Key is the type used for lookup keys and \a T is the mapped value
     type. It stores (key, value) pairs and provides fast lookup by key.
 
@@ -27,7 +27,7 @@
        With QMultiMap, the items are always sorted by key.
     \li The key type of a QMultiHash must provide operator==() and a global
        qHash(Key) function. The key type of a QMultiMap must provide
-       operator<() specifying a total order. Since Qt 5.8.1 it is also safe
+       operator<() specifying a total order. Since BobUI 5.8.1 it is also safe
        to use a pointer type as key, even if the underlying operator<()
        does not provide a total order.
     \endlist
@@ -849,7 +849,7 @@
     crash but there is also a risk that it will silently corrupt both the multi map and the \a pos multi map.
 */
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*! \fn template <class Key, class T> QMultiMap<Key, T>::iterator QMultiMap<Key, T>::insertMulti(const Key &key, const T &value)
     \deprecated Use insert() instead.
 
@@ -899,12 +899,12 @@
 
 /*! \typedef QMultiMap::Iterator
 
-    Qt-style synonym for QMultiMap::iterator.
+    BobUI-style synonym for QMultiMap::iterator.
 */
 
 /*! \typedef QMultiMap::ConstIterator
 
-    Qt-style synonym for QMultiMap::const_iterator.
+    BobUI-style synonym for QMultiMap::const_iterator.
 */
 
 /*! \typedef QMultiMap::difference_type
@@ -986,7 +986,7 @@
 */
 
 /*! \class QMultiMap::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiMap::iterator class provides an STL-style non-const iterator for QMultiMap.
 
     QMultiMap\<Key, T\>::iterator allows you to iterate over a QMultiMap
@@ -1185,7 +1185,7 @@
 */
 
 /*! \class QMultiMap::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMultiMap::const_iterator class provides an STL-style const iterator for QMultiMap.
 
     QMultiMap\<Key, T\>::const_iterator allows you to iterate over a QMultiMap.
@@ -1357,7 +1357,7 @@
 */
 
 /*! \class QMultiMap::key_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.6
     \brief The QMultiMap::key_iterator class provides an STL-style const iterator for QMultiMap keys.
 
@@ -1485,7 +1485,7 @@
 */
 
 /*! \typedef QMultiMap::const_key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QMultiMap::const_key_value_iterator typedef provides an STL-style iterator for QMultiMap.
 
@@ -1497,7 +1497,7 @@
 */
 
 /*! \typedef QMultiMap::key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QMultiMap::key_value_iterator typedef provides an STL-style iterator for QMultiMap.
 
@@ -1516,7 +1516,7 @@
     This function requires the key and value types to implement \c
     operator<<().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*! \fn template <class Key, class T> QDataStream &operator>>(QDataStream &in, QMultiMap<Key, T> &map)
@@ -1527,7 +1527,7 @@
     This function requires the key and value types to implement \c
     operator>>().
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 /*! \fn template <typename Key, typename T, typename Predicate> qsizetype erase_if(QMultiMap<Key, T> &map, Predicate pred)

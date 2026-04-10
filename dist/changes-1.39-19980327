@@ -105,7 +105,7 @@ src/kernel/qimage.cpp    2.65.2.1  agulbra  +4 -4
   write is 0.  enables gif image handlers.
 
 
-src/qt.pro    2.6  agulbra  +4 -2  (1997/11/20)
+src/bobui.pro    2.6  agulbra  +4 -2  (1997/11/20)
 src/kernel/qdragobject.cpp    2.1  agulbra  initial checkin
 src/kernel/qdragobject.h    2.1  agulbra  initial checkin
 src/kernel/qevent.h    2.6  agulbra  +59 -2
@@ -250,15 +250,15 @@ extensions/xt/doc/examples.doc    1.1  warwick  initial checkin
 extensions/xt/doc/index.doc    1.1  warwick  initial checkin
 extensions/xt/examples/mainlyMotif/editor.cpp    1.1  warwick  initial checkin
 extensions/xt/examples/mainlyMotif/editor.pro    1.1  warwick  initial checkin
-extensions/xt/examples/mainlyQt/editor.cpp    1.1  warwick  initial checkin
-extensions/xt/examples/mainlyQt/editor.pro    1.1  warwick  initial checkin
+extensions/xt/examples/mainlyBobUI/editor.cpp    1.1  warwick  initial checkin
+extensions/xt/examples/mainlyBobUI/editor.pro    1.1  warwick  initial checkin
 extensions/xt/examples/mainlyXt/editor.cpp    1.1  warwick  initial checkin
 extensions/xt/examples/mainlyXt/editor.pro    1.1  warwick  initial checkin
 extensions/xt/src/qxt.cpp    1.1  warwick  initial checkin
 extensions/xt/src/qxt.h    1.1  warwick  initial checkin
 extensions/xt/src/qxt.pro    1.1  warwick  initial checkin
 
-  Qt Xt/Motif Extension, examples, docs.
+  BobUI Xt/Motif Extension, examples, docs.
 
 
 src/kernel/qevent.cpp    2.7  paul  +48 -9  (1998/01/08)
@@ -273,7 +273,7 @@ src/kernel/qwidget.cpp    2.85  paul  +10 -2
   Use new events in GM.
 
 
-src/qt.pro    2.11  paul  +2 -0
+src/bobui.pro    2.11  paul  +2 -0
 src/widgets/qsplitter.cpp    1.1  paul  initial checkin
 src/widgets/qsplitter.h    1.1  paul  initial checkin
 
@@ -307,10 +307,10 @@ src/widgets/qlined.cpp    2.58  paul  +18 -8  (1998/01/14)
   Correct cursor when end(). Better blinking
 
 
-src/dialogs/qtabdlg.cpp    2.36  agulbra  +172 -213
-src/dialogs/qtabdlg.h    2.17  agulbra  +2 -1
+src/dialogs/bobuiabdlg.cpp    2.36  agulbra  +172 -213
+src/dialogs/bobuiabdlg.h    2.17  agulbra  +2 -1
 src/kernel/qgmanagr.cpp    2.23  agulbra  +22 -21
-src/widgets/qtabbar.cpp    2.30  agulbra  +12 -15
+src/widgets/bobuiabbar.cpp    2.30  agulbra  +12 -15
 src/widgets/qwidgetstack.cpp    2.1  agulbra  initial checkin
 src/widgets/qwidgetstack.h    2.1  agulbra  initial checkin
 
@@ -318,12 +318,12 @@ src/widgets/qwidgetstack.h    2.1  agulbra  initial checkin
   size, where the one on top of the stack is visible.  It provides slots
   to raise any of the widgets to the top of the stack and so on.
   
-  QTabDialog now uses QWidgetStack.  A couple of hacks went away, and it
+  BOBUIabDialog now uses QWidgetStack.  A couple of hacks went away, and it
   now uses QBoxLayout to manage its children.  Some more minor changes
   are desirable here.
   
-  QTabBar now uses autoMinimumSize() appropriately, and is closer to the
-  new Windows look and feel (ie. it lost the bold stuff).  QTabDialog is
+  BOBUIabBar now uses autoMinimumSize() appropriately, and is closer to the
+  new Windows look and feel (ie. it lost the bold stuff).  BOBUIabDialog is
   adapted accordingly.
   
   QGManager now has a one-line VERY INEFFICENT fix that SORELY NEEDS
@@ -338,15 +338,15 @@ src/kernel/qobject.cpp    2.42  agulbra  +13 -2
   show geometry and visibility too in dumpObjectTree()
 
 
-src/qt.pro    2.12  agulbra  +10 -0
+src/bobui.pro    2.12  agulbra  +10 -0
 src/widgets/qmainwindow.cpp    2.1  agulbra  initial checkin
 src/widgets/qmainwindow.h    2.1  agulbra  initial checkin
 src/widgets/qstatusbar.cpp    2.1  agulbra  initial checkin
 src/widgets/qstatusbar.h    2.1  agulbra  initial checkin
-src/widgets/qtoolbar.cpp    2.1  agulbra  initial checkin
-src/widgets/qtoolbar.h    2.1  agulbra  initial checkin
-src/widgets/qtoolbutton.cpp    2.1  agulbra  initial checkin
-src/widgets/qtoolbutton.h    2.1  agulbra  initial checkin
+src/widgets/bobuioolbar.cpp    2.1  agulbra  initial checkin
+src/widgets/bobuioolbar.h    2.1  agulbra  initial checkin
+src/widgets/bobuioolbutton.cpp    2.1  agulbra  initial checkin
+src/widgets/bobuioolbutton.h    2.1  agulbra  initial checkin
 
   several new classes.  very rough and ready, but they're good enough to
   talk about and play with.
@@ -367,12 +367,12 @@ src/kernel/qimage.h    2.22  warwick  +5 -1
 
 src/widgets/qpopmenu.h    2.10  agulbra  +3 -2
 
-  new signal aboutToShow(), like the one in QTabDialog.
+  new signal aboutToShow(), like the one in BOBUIabDialog.
 
 
 src/tools/qstring.cpp    2.16  warwick  +44 -3  (1998/01/23)
 
-  Make QString implicitly shared.  Activates in Qt 2.00.
+  Make QString implicitly shared.  Activates in BobUI 2.00.
   Try enabling this protection next time you have some weird bug.
 
 
@@ -381,7 +381,7 @@ src/kernel/qclb_x11.cpp    2.6  hanord  +155 -46
   INCR paste works.
 
 
-src/qt.pro    2.13  agulbra  +2 -0
+src/bobui.pro    2.13  agulbra  +2 -0
 src/widgets/qwhatsthis.cpp    2.1  agulbra  initial checkin
 src/widgets/qwhatsthis.h    2.1  agulbra  initial checkin
 
@@ -460,7 +460,7 @@ src/tools/qfileinf.cpp    2.7  agulbra  +5 -4
   do what the docs say for absFilePath() (ie. no /usr/../usr/bin/ls names)
 
 
-src/widgets/qtablevw.cpp    2.41  agulbra  +31 -23
+src/widgets/bobuiablevw.cpp    2.41  agulbra  +31 -23
 
   scrollLast*Cell and clipToCell could not be combined.  now they can.
 
@@ -470,7 +470,7 @@ src/widgets/qframe.cpp    2.13  warwick  +4 -4  (1998/02/20)
   Fix Box and H/VLine frames with margin() != 0.
 
 
-src/qt.pro    2.15  warwick  +2 -0
+src/bobui.pro    2.15  warwick  +2 -0
 src/widgets/qlabelled.cpp    1.1  warwick  initial checkin
 src/widgets/qlabelled.h    1.1  warwick  initial checkin
 
@@ -497,7 +497,7 @@ src/widgets/qradiobt.cpp    2.23  agulbra  +7 -17
   is not a QRadioButton.
 
 
-src/qt.pro    2.16  paul  +6 -0
+src/bobui.pro    2.16  paul  +6 -0
 src/widgets/qgrid.cpp    1.1  paul  initial checkin
 src/widgets/qgrid.h    1.1  paul  initial checkin
 src/widgets/qhbox.cpp    1.1  paul  initial checkin
@@ -538,7 +538,7 @@ src/tools/qfile.cpp    2.16  agulbra  +5 -4  (1998/02/25)
   -1 in case of error...
 
 
-src/qt.pro    2.17  paul  +2 -0
+src/bobui.pro    2.17  paul  +2 -0
 src/widgets/qbuttonrow.cpp    1.1  paul  initial checkin
 src/widgets/qbuttonrow.h    1.1  paul  initial checkin
 
@@ -765,8 +765,8 @@ src/widgets/qlcdnum.cpp    2.9  agulbra  +7 -5
 src/widgets/qmainwindow.cpp    2.9  agulbra  +4 -3
 src/widgets/qscrbar.cpp    2.33  agulbra  +14 -14
 src/widgets/qslider.cpp    2.48  agulbra  +4 -4
-src/widgets/qtablevw.cpp    2.42  agulbra  +10 -8
-src/widgets/qtoolbar.cpp    2.10  agulbra  +4 -4
+src/widgets/bobuiablevw.cpp    2.42  agulbra  +10 -8
+src/widgets/bobuioolbar.cpp    2.10  agulbra  +4 -4
 
   provide QObject::name( const char * defaultName ).
   
@@ -920,7 +920,7 @@ src/kernel/qiconset.h    2.1  agulbra  initial checkin
 
   QIconSet first checking.  QIconSet is neat: You give it one or more
   icons, and it completes the set so you get large and small disabled,
-  active and normal icons.  QToolButton uses it, QMenuData will soon.
+  active and normal icons.  BOBUIoolButton uses it, QMenuData will soon.
 
 
 src/kernel/qpainter.cpp    2.31  agulbra  +18 -2

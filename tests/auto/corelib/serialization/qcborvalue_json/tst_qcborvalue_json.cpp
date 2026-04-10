@@ -1,8 +1,8 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qcborvalue.h>
-#include <QTest>
+#include <BobUICore/qcborvalue.h>
+#include <BOBUIest>
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -35,25 +35,25 @@ private slots:
 
 void tst_QCborValue_Json::toVariant_data()
 {
-    QTest::addColumn<QCborValue>("v");
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<QJsonValue>("json");
+    BOBUIest::addColumn<QCborValue>("v");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<QJsonValue>("json");
     QDateTime dt = QDateTime::currentDateTimeUtc();
     QUuid uuid = QUuid::createUuid();
 
     QMetaEnum me = QMetaEnum::fromType<QCborValue::Type>();
     auto add = [me](const QCborValue &v, const QVariant &exp, const QJsonValue &json) {
-        auto addRow = [=]() -> QTestData & {
+        auto addRow = [=]() -> BOBUIestData & {
             const char *typeString = me.valueToKey(v.type());
             if (v.type() == QCborValue::Integer)
-                return QTest::addRow("Integer:%lld", exp.toLongLong());
+                return BOBUIest::addRow("Integer:%lld", exp.toLongLong());
             if (v.type() == QCborValue::Double)
-                return QTest::addRow("Double:%g", exp.toDouble());
+                return BOBUIest::addRow("Double:%g", exp.toDouble());
             if (v.type() == QCborValue::ByteArray || v.type() == QCborValue::String)
-                return QTest::addRow("%s:%zd", typeString, size_t(exp.toString().size()));
+                return BOBUIest::addRow("%s:%zd", typeString, size_t(exp.toString().size()));
             if (v.type() >= 0x10000)
-                return QTest::newRow(exp.typeName());
-            return QTest::newRow(typeString);
+                return BOBUIest::newRow(exp.typeName());
+            return BOBUIest::newRow(typeString);
         };
         addRow() << v << exp << json;
     };
@@ -76,23 +76,23 @@ void tst_QCborValue_Json::toVariant_data()
 
     // converts to string in JSON:
     add(QByteArray("Hello"), QByteArray("Hello"), "SGVsbG8");
-    add(QCborValue(dt), dt, dt.toString(Qt::ISODateWithMs));
+    add(QCborValue(dt), dt, dt.toString(BobUI::ISODateWithMs));
     add(QCborValue(QUrl("http://example.com/{q}")), QUrl("http://example.com/{q}"),
         "http://example.com/%7Bq%7D");      // note the encoded form in JSON
     add(QCborValue(QRegularExpression(".")), QRegularExpression("."), ".");
     add(QCborValue(uuid), uuid, uuid.toString(QUuid::WithoutBraces));
 
     // not valid in JSON
-    QTest::newRow("simpletype") << QCborValue(QCborSimpleType(255))
+    BOBUIest::newRow("simpletype") << QCborValue(QCborSimpleType(255))
                                 << QVariant::fromValue(QCborSimpleType(255))
                                 << QJsonValue("simple(255)");
-    QTest::newRow("Double:inf") << QCborValue(qInf())
+    BOBUIest::newRow("Double:inf") << QCborValue(qInf())
                                 << QVariant(qInf())
                                 << QJsonValue();
-    QTest::newRow("Double:-inf") << QCborValue(-qInf())
+    BOBUIest::newRow("Double:-inf") << QCborValue(-qInf())
                                  << QVariant(-qInf())
                                  << QJsonValue();
-    QTest::newRow("Double:nan") << QCborValue(qQNaN())
+    BOBUIest::newRow("Double:nan") << QCborValue(qQNaN())
                                 << QVariant(qQNaN())
                                 << QJsonValue();
 
@@ -164,13 +164,13 @@ void tst_QCborValue_Json::toJson()
 
 void tst_QCborValue_Json::taggedByteArrayToJson_data()
 {
-    QTest::addColumn<QCborValue>("v");
-    QTest::addColumn<QJsonValue>("json");
+    BOBUIest::addColumn<QCborValue>("v");
+    BOBUIest::addColumn<QJsonValue>("json");
 
     QByteArray data("\xff\x01");
-    QTest::newRow("base64url") << QCborValue(QCborKnownTags::ExpectedBase64url, data) << QJsonValue("_wE");
-    QTest::newRow("base64") << QCborValue(QCborKnownTags::ExpectedBase64, data) << QJsonValue("/wE=");
-    QTest::newRow("hex") << QCborValue(QCborKnownTags::ExpectedBase16, data) << QJsonValue("ff01");
+    BOBUIest::newRow("base64url") << QCborValue(QCborKnownTags::ExpectedBase64url, data) << QJsonValue("_wE");
+    BOBUIest::newRow("base64") << QCborValue(QCborKnownTags::ExpectedBase64, data) << QJsonValue("/wE=");
+    BOBUIest::newRow("hex") << QCborValue(QCborKnownTags::ExpectedBase16, data) << QJsonValue("ff01");
 }
 
 void tst_QCborValue_Json::taggedByteArrayToJson()
@@ -190,7 +190,7 @@ void tst_QCborValue_Json::fromVariant_data()
         QCborValue cv = qint64(number);
         QJsonValue jv = qint64(number);
         QVariant vv = QVariant::fromValue(number);
-        QTest::addRow("%s:%lld", vv.typeName(), qlonglong(number)) << cv << vv << jv;
+        BOBUIest::addRow("%s:%lld", vv.typeName(), qlonglong(number)) << cv << vv << jv;
     };
 
     // exercise different QVariant numeric types
@@ -203,8 +203,8 @@ void tst_QCborValue_Json::fromVariant_data()
     addIntegral(-0x1'0000'0000LL);
     addIntegral(0x1000'0000'0000ULL);
 
-    QTest::addRow("float:1.875") << QCborValue(1.875) << QVariant::fromValue(1.875f) << QJsonValue(1.875);
-    QTest::addRow("qfloat16:-0.5") << QCborValue(-0.5) << QVariant::fromValue(qfloat16(-0.5f)) << QJsonValue(-0.5);
+    BOBUIest::addRow("float:1.875") << QCborValue(1.875) << QVariant::fromValue(1.875f) << QJsonValue(1.875);
+    BOBUIest::addRow("qfloat16:-0.5") << QCborValue(-0.5) << QVariant::fromValue(qfloat16(-0.5f)) << QJsonValue(-0.5);
 }
 
 void tst_QCborValue_Json::fromVariant()
@@ -238,22 +238,22 @@ void tst_QCborValue_Json::fromVariant()
 
 void tst_QCborValue_Json::fromJson_data()
 {
-    QTest::addColumn<QCborValue>("v");
-    QTest::addColumn<QJsonValue>("json");
+    BOBUIest::addColumn<QCborValue>("v");
+    BOBUIest::addColumn<QJsonValue>("json");
 
-    QTest::newRow("null") << QCborValue(QCborValue::Null) << QJsonValue(QJsonValue::Null);
-    QTest::newRow("false") << QCborValue(false) << QJsonValue(false);
-    QTest::newRow("true") << QCborValue(true) << QJsonValue(true);
-    QTest::newRow("0") << QCborValue(0) << QJsonValue(0.);
-    QTest::newRow("1") << QCborValue(1) << QJsonValue(1);
-    QTest::newRow("1.5") << QCborValue(1.5) << QJsonValue(1.5);
-    QTest::newRow("Integer:max") << QCborValue(std::numeric_limits<qint64>::max())
+    BOBUIest::newRow("null") << QCborValue(QCborValue::Null) << QJsonValue(QJsonValue::Null);
+    BOBUIest::newRow("false") << QCborValue(false) << QJsonValue(false);
+    BOBUIest::newRow("true") << QCborValue(true) << QJsonValue(true);
+    BOBUIest::newRow("0") << QCborValue(0) << QJsonValue(0.);
+    BOBUIest::newRow("1") << QCborValue(1) << QJsonValue(1);
+    BOBUIest::newRow("1.5") << QCborValue(1.5) << QJsonValue(1.5);
+    BOBUIest::newRow("Integer:max") << QCborValue(std::numeric_limits<qint64>::max())
                                  << QJsonValue(std::numeric_limits<qint64>::max());
-    QTest::newRow("Integer:min") << QCborValue(std::numeric_limits<qint64>::min())
+    BOBUIest::newRow("Integer:min") << QCborValue(std::numeric_limits<qint64>::min())
                                  << QJsonValue(std::numeric_limits<qint64>::min());
-    QTest::newRow("string") << QCborValue("Hello") << QJsonValue("Hello");
-    QTest::newRow("array") << QCborValue(QCborValue::Array) << QJsonValue(QJsonValue::Array);
-    QTest::newRow("map") << QCborValue(QCborValue::Map) << QJsonValue(QJsonValue::Object);
+    BOBUIest::newRow("string") << QCborValue("Hello") << QJsonValue("Hello");
+    BOBUIest::newRow("array") << QCborValue(QCborValue::Array) << QJsonValue(QJsonValue::Array);
+    BOBUIest::newRow("map") << QCborValue(QCborValue::Map) << QJsonValue(QJsonValue::Object);
 }
 
 void tst_QCborValue_Json::fromJson()
@@ -273,11 +273,11 @@ void tst_QCborValue_Json::fromJson()
 
 void tst_QCborValue_Json::nonStringKeysInMaps_data()
 {
-    QTest::addColumn<QCborValue>("key");
-    QTest::addColumn<QString>("converted");
+    BOBUIest::addColumn<QCborValue>("key");
+    BOBUIest::addColumn<QString>("converted");
 
     auto add = [](const char *str, const QCborValue &v) {
-        QTest::newRow(str) << v << str;
+        BOBUIest::newRow(str) << v << str;
     };
     add("0", 0);
     add("-1", -1);
@@ -289,25 +289,25 @@ void tst_QCborValue_Json::nonStringKeysInMaps_data()
     add("2.5", 2.5);
 
     QByteArray data("\xff\x01");
-    QTest::newRow("bytearray") << QCborValue(data) << "_wE";
-    QTest::newRow("base64url") << QCborValue(QCborKnownTags::ExpectedBase64url, data) << "_wE";
-    QTest::newRow("base64") << QCborValue(QCborKnownTags::ExpectedBase64, data) << "/wE=";
-    QTest::newRow("hex") << QCborValue(QCborKnownTags::ExpectedBase16, data) << "ff01";
+    BOBUIest::newRow("bytearray") << QCborValue(data) << "_wE";
+    BOBUIest::newRow("base64url") << QCborValue(QCborKnownTags::ExpectedBase64url, data) << "_wE";
+    BOBUIest::newRow("base64") << QCborValue(QCborKnownTags::ExpectedBase64, data) << "/wE=";
+    BOBUIest::newRow("hex") << QCborValue(QCborKnownTags::ExpectedBase16, data) << "ff01";
 
-    QTest::newRow("emptyarray") << QCborValue(QCborValue::Array) << "[]";
-    QTest::newRow("emptymap") << QCborValue(QCborValue::Map) << "{}";
-    QTest::newRow("array") << QCborValue(QCborArray{1, true, 2.5, "Hello"})
+    BOBUIest::newRow("emptyarray") << QCborValue(QCborValue::Array) << "[]";
+    BOBUIest::newRow("emptymap") << QCborValue(QCborValue::Map) << "{}";
+    BOBUIest::newRow("array") << QCborValue(QCborArray{1, true, 2.5, "Hello"})
                            << "[1, true, 2.5, \"Hello\"]";
-    QTest::newRow("map") << QCborValue(QCborMap{{"Hello", 0}, {0, "Hello"}})
+    BOBUIest::newRow("map") << QCborValue(QCborMap{{"Hello", 0}, {0, "Hello"}})
                          << "{\"Hello\": 0, 0: \"Hello\"}";
 
     QDateTime dt = QDateTime::currentDateTimeUtc();
     QUrl url("https://example.com");
     QUuid uuid = QUuid::createUuid();
-    QTest::newRow("QDateTime") << QCborValue(dt) << dt.toString(Qt::ISODateWithMs);
-    QTest::newRow("QUrl") << QCborValue(url) << url.toString(QUrl::FullyEncoded);
-    QTest::newRow("QRegularExpression") << QCborValue(QRegularExpression(".*")) << ".*";
-    QTest::newRow("QUuid") << QCborValue(uuid) << uuid.toString(QUuid::WithoutBraces);
+    BOBUIest::newRow("QDateTime") << QCborValue(dt) << dt.toString(BobUI::ISODateWithMs);
+    BOBUIest::newRow("QUrl") << QCborValue(url) << url.toString(QUrl::FullyEncoded);
+    BOBUIest::newRow("QRegularExpression") << QCborValue(QRegularExpression(".*")) << ".*";
+    BOBUIest::newRow("QUuid") << QCborValue(uuid) << uuid.toString(QUuid::WithoutBraces);
 }
 
 void tst_QCborValue_Json::nonStringKeysInMaps()
@@ -338,6 +338,6 @@ void tst_QCborValue_Json::nonStringKeysInMaps()
     }
 }
 
-QTEST_MAIN(tst_QCborValue_Json)
+BOBUIEST_MAIN(tst_QCborValue_Json)
 
 #include "tst_qcborvalue_json.moc"

@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QSCTPSERVER_DEBUG
 
@@ -11,7 +11,7 @@
     \brief The QSctpServer class provides an SCTP-based server.
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     SCTP (Stream Control Transmission Protocol) is a transport layer
     protocol serving in a similar role as the popular protocols TCP
@@ -19,7 +19,7 @@
     in-sequence transport of messages with congestion control like
     TCP. See the QSctpSocket documentation for more protocol details.
 
-    QSctpServer is a convenience subclass of QTcpServer that allows
+    QSctpServer is a convenience subclass of BOBUIcpServer that allows
     you to accept incoming SCTP socket connections either in TCP
     emulation or in datagram mode.
 
@@ -34,13 +34,13 @@
 
     In TCP emulation mode, accepted clients use a single continuous
     byte stream for data transmission, and QSctpServer acts like a
-    plain QTcpServer. Call nextPendingConnection() to accept the
-    pending connection as a connected QTcpSocket. The function returns
-    a pointer to a QTcpSocket in QAbstractSocket::ConnectedState that
+    plain BOBUIcpServer. Call nextPendingConnection() to accept the
+    pending connection as a connected BOBUIcpSocket. The function returns
+    a pointer to a BOBUIcpSocket in QAbstractSocket::ConnectedState that
     you can use for communicating with the client. This mode gives
     access only to basic SCTP protocol features. The socket transmits SCTP
     packets over IP at system level and interacts through the
-    QTcpSocket interface with the application.
+    BOBUIcpSocket interface with the application.
 
     In contrast, datagram mode is message-oriented and provides a
     complete simultaneous transmission of multiple data streams
@@ -49,7 +49,7 @@
 
     \note This class is not supported on the Windows platform.
 
-    \sa QTcpServer, QSctpSocket, QAbstractSocket
+    \sa BOBUIcpServer, QSctpSocket, QAbstractSocket
 */
 
 #include "qsctpserver.h"
@@ -62,7 +62,7 @@
 #include <qdebug.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \internal
 */
@@ -81,7 +81,7 @@ QSctpServerPrivate::~QSctpServerPrivate()
 */
 void QSctpServerPrivate::configureCreatedSocket()
 {
-    QTcpServerPrivate::configureCreatedSocket();
+    BOBUIcpServerPrivate::configureCreatedSocket();
     if (socketEngine)
         socketEngine->setOption(QAbstractSocketEngine::MaxStreamsSocketOption,
                                 maximumChannelCount == -1 ? 1 : maximumChannelCount);
@@ -96,7 +96,7 @@ void QSctpServerPrivate::configureCreatedSocket()
     \sa setMaximumChannelCount(), listen(), setSocketDescriptor()
 */
 QSctpServer::QSctpServer(QObject *parent)
-    : QTcpServer(QAbstractSocket::SctpSocket, *new QSctpServerPrivate, parent)
+    : BOBUIcpServer(QAbstractSocket::SctpSocket, *new QSctpServerPrivate, parent)
 {
 #if defined(QSCTPSERVER_DEBUG)
     qDebug("QSctpServer::QSctpServer()");
@@ -209,6 +209,6 @@ QSctpSocket *QSctpServer::nextPendingDatagramConnection()
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsctpserver.cpp"

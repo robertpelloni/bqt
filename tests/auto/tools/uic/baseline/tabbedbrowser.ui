@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>TabbedBrowser</class>
  <widget class="QWidget" name="TabbedBrowser">
@@ -25,7 +25,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tab">
+    <widget class="BOBUIabWidget" name="tab">
      <widget class="QWidget" name="frontpage">
       <attribute name="title">
        <string>Untitled</string>
@@ -57,13 +57,13 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolClose">
+       <widget class="BOBUIoolButton" name="toolClose">
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/qt-project.org/assistant/images/close.png</normaloff>:/qt-project.org/assistant/images/close.png</iconset>
+          <normaloff>:/bobui-project.org/assistant/images/close.png</normaloff>:/bobui-project.org/assistant/images/close.png</iconset>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -87,16 +87,16 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolPrevious">
+       <widget class="BOBUIoolButton" name="toolPrevious">
         <property name="text">
          <string>Previous</string>
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/qt-project.org/assistant/images/win/previous.png</normaloff>:/qt-project.org/assistant/images/win/previous.png</iconset>
+          <normaloff>:/bobui-project.org/assistant/images/win/previous.png</normaloff>:/bobui-project.org/assistant/images/win/previous.png</iconset>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+         <enum>BobUI::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -104,7 +104,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="toolNext">
+       <widget class="BOBUIoolButton" name="toolNext">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -116,16 +116,16 @@
         </property>
         <property name="icon">
          <iconset>
-          <normaloff>:/qt-project.org/assistant/images/win/next.png</normaloff>:/qt-project.org/assistant/images/win/next.png</iconset>
+          <normaloff>:/bobui-project.org/assistant/images/win/next.png</normaloff>:/bobui-project.org/assistant/images/win/next.png</iconset>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+         <enum>BobUI::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
         </property>
         <property name="arrowType">
-         <enum>Qt::ArrowType::NoArrow</enum>
+         <enum>BobUI::ArrowType::NoArrow</enum>
         </property>
        </widget>
       </item>
@@ -158,23 +158,23 @@
          </size>
         </property>
         <property name="text">
-         <string>&lt;img src=&quot;:/qt-project.org/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</string>
+         <string>&lt;img src=&quot;:/bobui-project.org/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::TextFormat::RichText</enum>
+         <enum>BobUI::TextFormat::RichText</enum>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
         </property>
         <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+         <set>BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignVCenter</set>
         </property>
        </widget>
       </item>
       <item>
        <spacer>
         <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
+         <enum>BobUI::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>

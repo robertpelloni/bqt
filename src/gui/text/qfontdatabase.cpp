@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfontdatabase.h"
 #include "qfontdatabase_p.h"
@@ -7,51 +7,51 @@
 #include "qalgorithms.h"
 #include "qguiapplication.h"
 #include "qvarlengtharray.h" // here or earlier - workaround for VC++6
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qmutex.h"
 #include "qfile.h"
 #include "qfileinfo.h"
 #include "qfontengine_p.h"
 #include <qpa/qplatformintegration.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformfontdatabase.h>
 #include <qpa/qplatformtheme.h>
 
-#include <QtCore/qcache.h>
-#include <QtCore/qmath.h>
+#include <BobUICore/qcache.h>
+#include <BobUICore/qmath.h>
 
 #include <stdlib.h>
 #include <algorithm>
 
-#include <qtgui_tracepoints_p.h>
+#include <bobuigui_tracepoints_p.h>
 
 #ifdef Q_OS_WIN
-#include <QtGui/private/qwindowsfontdatabasebase_p.h>
+#include <BobUIGui/private/qwindowsfontdatabasebase_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcFontDb, "qt.text.font.db")
-Q_LOGGING_CATEGORY(lcFontMatch, "qt.text.font.match")
+Q_LOGGING_CATEGORY(lcFontDb, "bobui.text.font.db")
+Q_LOGGING_CATEGORY(lcFontMatch, "bobui.text.font.match")
 
 #define SMOOTH_SCALABLE 0xffff
 
-#if defined(QT_BUILD_INTERNAL)
-bool qt_enable_test_font = false;
+#if defined(BOBUI_BUILD_INTERNAL)
+bool bobui_enable_test_font = false;
 
-Q_AUTOTEST_EXPORT void qt_setQtEnableTestFont(bool value)
+Q_AUTOTEST_EXPORT void bobui_setBobUIEnableTestFont(bool value)
 {
-    qt_enable_test_font = value;
+    bobui_enable_test_font = value;
 }
 #endif
 
-Q_TRACE_POINT(qtgui, QFontDatabase_loadEngine, const QString &families, int pointSize);
-Q_TRACE_POINT(qtgui, QFontDatabasePrivate_addAppFont, const QString &fileName);
-Q_TRACE_POINT(qtgui, QFontDatabase_addApplicationFont, const QString &fileName);
-Q_TRACE_POINT(qtgui, QFontDatabase_load, const QString &family, int pointSize);
+Q_TRACE_POINT(bobuigui, QFontDatabase_loadEngine, const QString &families, int pointSize);
+Q_TRACE_POINT(bobuigui, QFontDatabasePrivate_addAppFont, const QString &fileName);
+Q_TRACE_POINT(bobuigui, QFontDatabase_addApplicationFont, const QString &fileName);
+Q_TRACE_POINT(bobuigui, QFontDatabase_load, const QString &family, int pointSize);
 
 static int getFontWeight(const QString &weightString)
 {
@@ -105,25 +105,25 @@ static int getFontWeight(const QString &weightString)
     // These are (very) slow compared to simple string ops, so we do these last.
     // As using translated values for such things is not very common, this should
     // not be too bad.
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Normal", "The Normal or Regular font weight"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Normal", "The Normal or Regular font weight"), BobUI::CaseInsensitive) == 0)
         return QFont::Normal;
     const QString translatedBold = QCoreApplication::translate("QFontDatabase", "Bold").toLower();
     if (s == translatedBold)
         return QFont::Bold;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Demi Bold"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Demi Bold"), BobUI::CaseInsensitive) == 0)
         return QFont::DemiBold;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Medium", "The Medium font weight"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Medium", "The Medium font weight"), BobUI::CaseInsensitive) == 0)
         return QFont::Medium;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Black"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Black"), BobUI::CaseInsensitive) == 0)
         return QFont::Black;
     const QString translatedLight = QCoreApplication::translate("QFontDatabase", "Light").toLower();
     if (s == translatedLight)
         return QFont::Light;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Thin"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Thin"), BobUI::CaseInsensitive) == 0)
         return QFont::Thin;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Extra Light"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Extra Light"), BobUI::CaseInsensitive) == 0)
         return QFont::ExtraLight;
-    if (s.compare(QCoreApplication::translate("QFontDatabase", "Extra Bold"), Qt::CaseInsensitive) == 0)
+    if (s.compare(QCoreApplication::translate("QFontDatabase", "Extra Bold"), BobUI::CaseInsensitive) == 0)
         return QFont::ExtraBold;
 
     // And now the contains() checks for the translated strings.
@@ -148,7 +148,7 @@ static int getFontWeight(const QString &weightString)
 }
 
 
-QtFontStyle::Key::Key(const QString &styleString)
+BobUIFontStyle::Key::Key(const QString &styleString)
     : style(QFont::StyleNormal), weight(QFont::Normal), stretch(0)
 {
     weight = getFontWeight(styleString);
@@ -168,7 +168,7 @@ QtFontStyle::Key::Key(const QString &styleString)
     }
 }
 
-QtFontSize *QtFontStyle::pixelSize(unsigned short size, bool add)
+BobUIFontSize *BobUIFontStyle::pixelSize(unsigned short size, bool add)
 {
     for (int i = 0; i < count; i++) {
         if (pixelSizes[i].pixelSize == size)
@@ -179,13 +179,13 @@ QtFontSize *QtFontStyle::pixelSize(unsigned short size, bool add)
 
     if (!pixelSizes) {
         // Most style have only one font size, we avoid waisting memory
-        QtFontSize *newPixelSizes = (QtFontSize *)malloc(sizeof(QtFontSize));
+        BobUIFontSize *newPixelSizes = (BobUIFontSize *)malloc(sizeof(BobUIFontSize));
         Q_CHECK_PTR(newPixelSizes);
         pixelSizes = newPixelSizes;
     } else if (!(count % 8) || count == 1) {
-        QtFontSize *newPixelSizes = (QtFontSize *)
+        BobUIFontSize *newPixelSizes = (BobUIFontSize *)
                      realloc(pixelSizes,
-                              (((count+8) >> 3) << 3) * sizeof(QtFontSize));
+                              (((count+8) >> 3) << 3) * sizeof(BobUIFontSize));
         Q_CHECK_PTR(newPixelSizes);
         pixelSizes = newPixelSizes;
     }
@@ -194,7 +194,7 @@ QtFontSize *QtFontStyle::pixelSize(unsigned short size, bool add)
     return pixelSizes + (count++);
 }
 
-QtFontStyle *QtFontFoundry::style(const QtFontStyle::Key &key, const QString &styleName, StyleRetrievalFlags flags)
+BobUIFontStyle *BobUIFontFoundry::style(const BobUIFontStyle::Key &key, const QString &styleName, StyleRetrievalFlags flags)
 {
     int pos = 0;
     for (; pos < count; pos++) {
@@ -221,54 +221,54 @@ QtFontStyle *QtFontFoundry::style(const QtFontStyle::Key &key, const QString &st
 
 //     qDebug("adding key (weight=%d, style=%d, oblique=%d stretch=%d) at %d", key.weight, key.style, key.oblique, key.stretch, pos);
     if (!(count % 8)) {
-        QtFontStyle **newStyles = (QtFontStyle **)
-                 realloc(styles, (((count+8) >> 3) << 3) * sizeof(QtFontStyle *));
+        BobUIFontStyle **newStyles = (BobUIFontStyle **)
+                 realloc(styles, (((count+8) >> 3) << 3) * sizeof(BobUIFontStyle *));
         Q_CHECK_PTR(newStyles);
         styles = newStyles;
     }
 
-    QtFontStyle *style = new QtFontStyle(key);
+    BobUIFontStyle *style = new BobUIFontStyle(key);
     style->styleName = styleName;
     styles[pos] = style;
     count++;
     return styles[pos];
 }
 
-QtFontFoundry *QtFontFamily::foundry(const QString &f, bool create)
+BobUIFontFoundry *BobUIFontFamily::foundry(const QString &f, bool create)
 {
     if (f.isNull() && count == 1)
         return foundries[0];
 
     for (int i = 0; i < count; i++) {
-        if (foundries[i]->name.compare(f, Qt::CaseInsensitive) == 0)
+        if (foundries[i]->name.compare(f, BobUI::CaseInsensitive) == 0)
             return foundries[i];
     }
     if (!create)
         return nullptr;
 
     if (!(count % 8)) {
-        QtFontFoundry **newFoundries = (QtFontFoundry **)
+        BobUIFontFoundry **newFoundries = (BobUIFontFoundry **)
                     realloc(foundries,
-                             (((count+8) >> 3) << 3) * sizeof(QtFontFoundry *));
+                             (((count+8) >> 3) << 3) * sizeof(BobUIFontFoundry *));
         Q_CHECK_PTR(newFoundries);
         foundries = newFoundries;
     }
 
-    foundries[count] = new QtFontFoundry(f);
+    foundries[count] = new BobUIFontFoundry(f);
     return foundries[count++];
 }
 
 static inline bool equalsCaseInsensitive(const QString &a, const QString &b)
 {
-    return a.size() == b.size() && a.compare(b, Qt::CaseInsensitive) == 0;
+    return a.size() == b.size() && a.compare(b, BobUI::CaseInsensitive) == 0;
 }
 
-bool QtFontFamily::matchesFamilyName(const QString &familyName) const
+bool BobUIFontFamily::matchesFamilyName(const QString &familyName) const
 {
-    return equalsCaseInsensitive(name, familyName) || aliases.contains(familyName, Qt::CaseInsensitive);
+    return equalsCaseInsensitive(name, familyName) || aliases.contains(familyName, BobUI::CaseInsensitive);
 }
 
-bool QtFontFamily::ensurePopulated()
+bool BobUIFontFamily::ensurePopulated()
 {
     if (populated)
         return true;
@@ -304,16 +304,16 @@ void QFontDatabasePrivate::invalidate()
     emit qGuiApp->fontDatabaseChanged();
 }
 
-QtFontFamily *QFontDatabasePrivate::family(const QString &f, FamilyRequestFlags flags)
+BobUIFontFamily *QFontDatabasePrivate::family(const QString &f, FamilyRequestFlags flags)
 {
-    QtFontFamily *fam = nullptr;
+    BobUIFontFamily *fam = nullptr;
 
     int low = 0;
     int high = count;
     int pos = count / 2;
     int res = 1;
     if (count) {
-        while ((res = families[pos]->name.compare(f, Qt::CaseInsensitive)) && pos != low) {
+        while ((res = families[pos]->name.compare(f, BobUI::CaseInsensitive)) && pos != low) {
             if (res > 0)
                 high = pos;
             else
@@ -330,15 +330,15 @@ QtFontFamily *QFontDatabasePrivate::family(const QString &f, FamilyRequestFlags 
 
         // qDebug() << "adding family " << f.toLatin1() << " at " << pos << " total=" << count;
         if (!(count % 8)) {
-            QtFontFamily **newFamilies = (QtFontFamily **)
+            BobUIFontFamily **newFamilies = (BobUIFontFamily **)
                        realloc(families,
-                                (((count+8) >> 3) << 3) * sizeof(QtFontFamily *));
+                                (((count+8) >> 3) << 3) * sizeof(BobUIFontFamily *));
             Q_CHECK_PTR(newFamilies);
             families = newFamilies;
         }
 
-        QtFontFamily *family = new QtFontFamily(f);
-        memmove(families + pos + 1, families + pos, (count-pos)*sizeof(QtFontFamily *));
+        BobUIFontFamily *family = new BobUIFontFamily(f);
+        memmove(families + pos + 1, families + pos, (count-pos)*sizeof(BobUIFontFamily *));
         families[pos] = family;
         count++;
 
@@ -394,7 +394,7 @@ static const int scriptForWritingSystem[] = {
 
 static_assert(sizeof(scriptForWritingSystem) / sizeof(scriptForWritingSystem[0]) == QFontDatabase::WritingSystemsCount);
 
-Q_GUI_EXPORT int qt_script_for_writing_system(QFontDatabase::WritingSystem writingSystem)
+Q_GUI_EXPORT int bobui_script_for_writing_system(QFontDatabase::WritingSystem writingSystem)
 {
     return scriptForWritingSystem[writingSystem];
 }
@@ -406,21 +406,21 @@ Q_GUI_EXPORT int qt_script_for_writing_system(QFontDatabase::WritingSystem writi
     Tests if the given family \a family supports writing system \a writingSystem,
     including the special case for Han script mapping to several subsequent writing systems
 */
-static bool familySupportsWritingSystem(QtFontFamily *family, size_t writingSystem)
+static bool familySupportsWritingSystem(BobUIFontFamily *family, size_t writingSystem)
 {
     Q_ASSERT(family != nullptr);
     Q_ASSERT(writingSystem != QFontDatabase::Any && writingSystem < QFontDatabase::WritingSystemsCount);
 
     size_t ws = writingSystem;
     do {
-        if ((family->writingSystems[ws] & QtFontFamily::Supported) != 0)
+        if ((family->writingSystems[ws] & BobUIFontFamily::Supported) != 0)
             return true;
     } while (writingSystem >= QFontDatabase::SimplifiedChinese && writingSystem <= QFontDatabase::Japanese && ++ws <= QFontDatabase::Japanese);
 
     return false;
 }
 
-Q_GUI_EXPORT QFontDatabase::WritingSystem qt_writing_system_for_script(int script)
+Q_GUI_EXPORT QFontDatabase::WritingSystem bobui_writing_system_for_script(int script)
 {
     if (script >= QChar::ScriptCount)
         return QFontDatabase::Any;
@@ -473,16 +473,16 @@ static void parseFontName(const QString &name, QString &foundry, QString &family
 }
 
 
-struct QtFontDesc
+struct BobUIFontDesc
 {
-    inline QtFontDesc() : family(nullptr), foundry(nullptr), style(nullptr), size(nullptr) {}
-    QtFontFamily *family;
-    QtFontFoundry *foundry;
-    QtFontStyle *style;
-    QtFontSize *size;
+    inline BobUIFontDesc() : family(nullptr), foundry(nullptr), style(nullptr), size(nullptr) {}
+    BobUIFontFamily *family;
+    BobUIFontFoundry *foundry;
+    BobUIFontStyle *style;
+    BobUIFontSize *size;
 };
 
-static void initFontDef(const QtFontDesc &desc, const QFontDef &request, QFontDef *fontDef, bool multi)
+static void initFontDef(const BobUIFontDesc &desc, const QFontDef &request, QFontDef *fontDef, bool multi)
 {
     QString family;
     family = desc.family->name;
@@ -526,7 +526,7 @@ static QStringList familyList(const QFontDef &req)
 Q_GLOBAL_STATIC(QRecursiveMutex, fontDatabaseMutex)
 
 // used in qguiapplication.cpp
-void qt_cleanupFontDatabase()
+void bobui_cleanupFontDatabase()
 {
     auto *db = QFontDatabasePrivate::instance();
     db->fallbacksCache.clear();
@@ -534,7 +534,7 @@ void qt_cleanupFontDatabase()
 }
 
 // used in qfont.cpp
-QRecursiveMutex *qt_fontdatabase_mutex()
+QRecursiveMutex *bobui_fontdatabase_mutex()
 {
     return fontDatabaseMutex();
 }
@@ -545,7 +545,7 @@ QFontDatabasePrivate *QFontDatabasePrivate::instance()
     return &instance;
 }
 
-void qt_registerFont(const QString &familyName, const QString &stylename,
+void bobui_registerFont(const QString &familyName, const QString &stylename,
                      const QString &foundryname, int weight,
                      QFont::Style style, int stretch, bool antialiased,
                      bool scalable, int pixelSize, bool fixedPitch, bool colorFont,
@@ -554,26 +554,26 @@ void qt_registerFont(const QString &familyName, const QString &stylename,
     auto *d = QFontDatabasePrivate::instance();
     qCDebug(lcFontDb) << "Adding font: familyName" << familyName << "stylename" << stylename << "weight" << weight
                       << "style" << style << "pixelSize" << pixelSize << "antialiased" << antialiased << "fixed" << fixedPitch << "colorFont" << colorFont;
-    QtFontStyle::Key styleKey;
+    BobUIFontStyle::Key styleKey;
     styleKey.style = style;
     styleKey.weight = weight;
     styleKey.stretch = stretch;
-    QtFontFamily *f = d->family(familyName, QFontDatabasePrivate::EnsureCreated);
+    BobUIFontFamily *f = d->family(familyName, QFontDatabasePrivate::EnsureCreated);
     f->fixedPitch = fixedPitch;
     f->colorFont = colorFont;
 
     for (int i = 0; i < QFontDatabase::WritingSystemsCount; ++i) {
         if (writingSystems.supported(QFontDatabase::WritingSystem(i)))
-            f->writingSystems[i] = QtFontFamily::Supported;
+            f->writingSystems[i] = BobUIFontFamily::Supported;
     }
 
-    QtFontFoundry *foundry = f->foundry(foundryname, true);
-    QtFontStyle *fontStyle = foundry->style(styleKey,
+    BobUIFontFoundry *foundry = f->foundry(foundryname, true);
+    BobUIFontStyle *fontStyle = foundry->style(styleKey,
                                             stylename,
-                                            QtFontFoundry::StyleRetrievalFlags::AllRetrievalFlags);
+                                            BobUIFontFoundry::StyleRetrievalFlags::AllRetrievalFlags);
     fontStyle->smoothScalable = scalable;
     fontStyle->antialiased = antialiased;
-    QtFontSize *size = fontStyle->pixelSize(pixelSize ? pixelSize : SMOOTH_SCALABLE, true);
+    BobUIFontSize *size = fontStyle->pixelSize(pixelSize ? pixelSize : SMOOTH_SCALABLE, true);
     if (size->handle) {
         QPlatformIntegration *integration = QGuiApplicationPrivate::platformIntegration();
         if (integration)
@@ -583,7 +583,7 @@ void qt_registerFont(const QString &familyName, const QString &stylename,
     f->populated = true;
 }
 
-void qt_registerFontFamily(const QString &familyName)
+void bobui_registerFontFamily(const QString &familyName)
 {
     qCDebug(lcFontDb) << "Registering family" << familyName;
 
@@ -591,7 +591,7 @@ void qt_registerFontFamily(const QString &familyName)
     QFontDatabasePrivate::instance()->family(familyName, QFontDatabasePrivate::EnsureCreated);
 }
 
-void qt_registerAliasToFontFamily(const QString &familyName, const QString &alias)
+void bobui_registerAliasToFontFamily(const QString &familyName, const QString &alias)
 {
     if (alias.isEmpty())
         return;
@@ -599,17 +599,17 @@ void qt_registerAliasToFontFamily(const QString &familyName, const QString &alia
     qCDebug(lcFontDb) << "Registering alias" << alias << "to family" << familyName;
 
     auto *d = QFontDatabasePrivate::instance();
-    QtFontFamily *f = d->family(familyName, QFontDatabasePrivate::RequestFamily);
+    BobUIFontFamily *f = d->family(familyName, QFontDatabasePrivate::RequestFamily);
     if (!f)
         return;
 
-    if (f->aliases.contains(alias, Qt::CaseInsensitive))
+    if (f->aliases.contains(alias, BobUI::CaseInsensitive))
         return;
 
     f->aliases.push_back(alias);
 }
 
-QString qt_resolveFontFamilyAlias(const QString &alias)
+QString bobui_resolveFontFamilyAlias(const QString &alias)
 {
     if (!alias.isEmpty()) {
         const auto *d = QFontDatabasePrivate::instance();
@@ -620,10 +620,10 @@ QString qt_resolveFontFamilyAlias(const QString &alias)
     return alias;
 }
 
-bool qt_isFontFamilyPopulated(const QString &familyName)
+bool bobui_isFontFamilyPopulated(const QString &familyName)
 {
     auto *d = QFontDatabasePrivate::instance();
-    QtFontFamily *f = d->family(familyName, QFontDatabasePrivate::RequestFamily);
+    BobUIFontFamily *f = d->family(familyName, QFontDatabasePrivate::RequestFamily);
     return f != nullptr && f->populated;
 }
 
@@ -645,13 +645,13 @@ QStringList QPlatformFontDatabase::fallbacksForFamily(const QString &family,
     QStringList preferredFallbacks;
     QStringList otherFallbacks;
 
-    auto writingSystem = qt_writing_system_for_script(script);
+    auto writingSystem = bobui_writing_system_for_script(script);
     if (writingSystem >= QFontDatabase::WritingSystemsCount)
         writingSystem = QFontDatabase::Any;
 
     auto *db = QFontDatabasePrivate::instance();
     for (int i = 0; i < db->count; ++i) {
-        QtFontFamily *f = db->families[i];
+        BobUIFontFamily *f = db->families[i];
 
         f->ensurePopulated();
 
@@ -659,7 +659,7 @@ QStringList QPlatformFontDatabase::fallbacksForFamily(const QString &family,
             continue;
 
         for (int j = 0; j < f->count; ++j) {
-            QtFontFoundry *foundry = f->foundries[j];
+            BobUIFontFoundry *foundry = f->foundries[j];
 
             for (int k = 0; k < foundry->count; ++k) {
                 QString name = foundry->name.isEmpty()
@@ -684,7 +684,7 @@ static QStringList fallbacksForFamily(const QString &family,
     QMutexLocker locker(fontDatabaseMutex());
     auto *db = QFontDatabasePrivate::ensureFontDatabase();
 
-    const QtFontFallbacksCacheKey cacheKey = { family, style, styleHint, script };
+    const BobUIFontFallbacksCacheKey cacheKey = { family, style, styleHint, script };
 
     if (const QStringList *fallbacks = db->fallbacksCache.object(cacheKey))
         return *fallbacks;
@@ -713,7 +713,7 @@ static QStringList fallbacksForFamily(const QString &family,
     return retList;
 }
 
-QStringList qt_fallbacksForFamily(const QString &family, QFont::Style style, QFont::StyleHint styleHint, QFontDatabasePrivate::ExtendedScript script)
+QStringList bobui_fallbacksForFamily(const QString &family, QFont::Style style, QFont::StyleHint styleHint, QFontDatabasePrivate::ExtendedScript script)
 {
     QMutexLocker locker(fontDatabaseMutex());
     return fallbacksForFamily(family, style, styleHint, script);
@@ -721,8 +721,8 @@ QStringList qt_fallbacksForFamily(const QString &family, QFont::Style style, QFo
 
 QFontEngine *QFontDatabasePrivate::loadSingleEngine(int script,
                               const QFontDef &request,
-                              QtFontFamily *family, QtFontFoundry *foundry,
-                              QtFontStyle *style, QtFontSize *size)
+                              BobUIFontFamily *family, BobUIFontFoundry *foundry,
+                              BobUIFontStyle *style, BobUIFontSize *size)
 {
     Q_UNUSED(foundry);
 
@@ -743,7 +743,7 @@ QFontEngine *QFontDatabasePrivate::loadSingleEngine(int script,
     QFontEngine *engine = fontCache->findEngine(key);
     if (!engine) {
         const bool cacheForCommonScript = script != QFontDatabasePrivate::Script_Common
-                && (family->writingSystems[QFontDatabase::Latin] & QtFontFamily::Supported) != 0;
+                && (family->writingSystems[QFontDatabase::Latin] & BobUIFontFamily::Supported) != 0;
 
         if (Q_LIKELY(cacheForCommonScript) && script < QChar::ScriptCount) {
             // fast path: check if engine was loaded for another script
@@ -800,8 +800,8 @@ QFontEngine *QFontDatabasePrivate::loadSingleEngine(int script,
 }
 
 QFontEngine *QFontDatabasePrivate::loadEngine(int script, const QFontDef &request,
-                        QtFontFamily *family, QtFontFoundry *foundry,
-                        QtFontStyle *style, QtFontSize *size)
+                        BobUIFontFamily *family, BobUIFontFoundry *foundry,
+                        BobUIFontStyle *style, BobUIFontSize *size)
 {
     QFontEngine *engine = loadSingleEngine(script, request, family, foundry, style, size);
 
@@ -836,7 +836,7 @@ QFontEngine *QFontDatabasePrivate::loadEngine(int script, const QFontDef &reques
     return engine;
 }
 
-QtFontStyle::~QtFontStyle()
+BobUIFontStyle::~BobUIFontStyle()
 {
    while (count) {
        // bitfield count-- in while condition does not work correctly in mwccsym2
@@ -849,14 +849,14 @@ QtFontStyle::~QtFontStyle()
    free(pixelSizes);
 }
 
-static QtFontStyle *bestStyle(QtFontFoundry *foundry, const QtFontStyle::Key &styleKey,
+static BobUIFontStyle *bestStyle(BobUIFontFoundry *foundry, const BobUIFontStyle::Key &styleKey,
                               const QString &styleName = QString())
 {
     int best = 0;
     int dist = 0xffff;
 
     for ( int i = 0; i < foundry->count; i++ ) {
-        QtFontStyle *style = foundry->styles[i];
+        BobUIFontStyle *style = foundry->styles[i];
 
         if (!styleName.isEmpty() && styleName == style->styleName) {
             dist = 0;
@@ -890,9 +890,9 @@ static QtFontStyle *bestStyle(QtFontFoundry *foundry, const QtFontStyle::Key &st
 
 
 unsigned int QFontDatabasePrivate::bestFoundry(int script, unsigned int score, int styleStrategy,
-                         const QtFontFamily *family, const QString &foundry_name,
-                         QtFontStyle::Key styleKey, int pixelSize, char pitch,
-                         QtFontDesc *desc, const QString &styleName)
+                         const BobUIFontFamily *family, const QString &foundry_name,
+                         BobUIFontStyle::Key styleKey, int pixelSize, char pitch,
+                         BobUIFontDesc *desc, const QString &styleName)
 {
     Q_UNUSED(script);
     Q_UNUSED(pitch);
@@ -907,14 +907,14 @@ unsigned int QFontDatabasePrivate::bestFoundry(int script, unsigned int score, i
             family->count);
 
     for (int x = 0; x < family->count; ++x) {
-        QtFontFoundry *foundry = family->foundries[x];
-        if (!foundry_name.isEmpty() && foundry->name.compare(foundry_name, Qt::CaseInsensitive) != 0)
+        BobUIFontFoundry *foundry = family->foundries[x];
+        if (!foundry_name.isEmpty() && foundry->name.compare(foundry_name, BobUI::CaseInsensitive) != 0)
             continue;
 
         qCDebug(lcFontMatch, "          looking for matching style in foundry '%s' %d",
                  foundry->name.isEmpty() ? "-- none --" : foundry->name.toLatin1().constData(), foundry->count);
 
-        QtFontStyle *style = bestStyle(foundry, styleKey, styleName);
+        BobUIFontStyle *style = bestStyle(foundry, styleKey, styleName);
 
         if (!style->smoothScalable && (styleStrategy & QFont::ForceOutline)) {
             qCDebug(lcFontMatch, "            ForceOutline set, but not smoothly scalable");
@@ -922,7 +922,7 @@ unsigned int QFontDatabasePrivate::bestFoundry(int script, unsigned int score, i
         }
 
         int px = -1;
-        QtFontSize *size = nullptr;
+        BobUIFontSize *size = nullptr;
 
         // 1. see if we have an exact matching size
         if (!(styleStrategy & QFont::ForceOutline)) {
@@ -1025,7 +1025,7 @@ unsigned int QFontDatabasePrivate::bestFoundry(int script, unsigned int score, i
     return score;
 }
 
-static bool matchFamilyName(const QString &familyName, QtFontFamily *f)
+static bool matchFamilyName(const QString &familyName, BobUIFontFamily *f)
 {
     if (familyName.isEmpty())
         return true;
@@ -1038,12 +1038,12 @@ static bool matchFamilyName(const QString &familyName, QtFontFamily *f)
     Tries to find the best match for a given request and family/foundry
 */
 int QFontDatabasePrivate::match(int script, const QFontDef &request, const QString &family_name,
-                     const QString &foundry_name, QtFontDesc *desc, const QList<int> &blacklistedFamilies,
+                     const QString &foundry_name, BobUIFontDesc *desc, const QList<int> &blacklistedFamilies,
                      unsigned int *resultingScore)
 {
     int result = -1;
 
-    QtFontStyle::Key styleKey;
+    BobUIFontStyle::Key styleKey;
     styleKey.style = request.style;
     styleKey.weight = request.weight;
     // Prefer a stretch closest to 100.
@@ -1074,7 +1074,7 @@ int QFontDatabasePrivate::match(int script, const QFontDef &request, const QStri
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate::ensureFontDatabase();
 
-    auto writingSystem = qt_writing_system_for_script(script);
+    auto writingSystem = bobui_writing_system_for_script(script);
     if (writingSystem >= QFontDatabase::WritingSystemsCount)
         writingSystem = QFontDatabase::Any;
 
@@ -1082,7 +1082,7 @@ int QFontDatabasePrivate::match(int script, const QFontDef &request, const QStri
     for (int x = 0; x < db->count; ++x) {
         if (blacklistedFamilies.contains(x))
             continue;
-        QtFontDesc test;
+        BobUIFontDesc test;
         test.family = db->families[x];
 
         if (!matchFamilyName(family_name, test.family))
@@ -1187,7 +1187,7 @@ QString QFontDatabase::styleString(const QFontInfo &fontInfo)
 /*!
     \class QFontDatabase
     \threadsafe
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QFontDatabase class provides information about the fonts available in the underlying window system.
 
@@ -1305,10 +1305,10 @@ QString QFontDatabase::styleString(const QFontInfo &fontInfo)
     The database is organized in multiple levels:
 
       - QFontDatabasePrivate::families
-        - QtFontFamily::foundries
-          - QtFontFoundry::styles
-            - QtFontStyle::sizes
-              - QtFontSize::pixelSize
+        - BobUIFontFamily::foundries
+          - BobUIFontFoundry::styles
+            - BobUIFontStyle::sizes
+              - BobUIFontSize::pixelSize
 
     The font database is the single source of truth when doing
     font matching, so the database must be sufficiently filled
@@ -1327,7 +1327,7 @@ QString QFontDatabase::styleString(const QFontInfo &fontInfo)
         b. Or fully registered with all styles, by calling
            QPlatformFontDatabase::registerFont().
 
-     2. The fonts registered by the application via Qt APIs
+     2. The fonts registered by the application via BobUI APIs
 
         Initiated via QFontDatabase::addApplicationFont() and
         QFontDatabase::addApplicationFontFromData().
@@ -1396,14 +1396,14 @@ QList<QFontDatabase::WritingSystem> QFontDatabase::writingSystems()
     static_assert(WritingSystemsCount < 64);
 
     for (int i = 0; i < d->count; ++i) {
-        QtFontFamily *family = d->families[i];
+        BobUIFontFamily *family = d->families[i];
         if (!family->ensurePopulated())
             continue;
 
         if (family->count == 0)
             continue;
         for (uint x = Latin; x < uint(WritingSystemsCount); ++x) {
-            if (family->writingSystems[x] & QtFontFamily::Supported)
+            if (family->writingSystems[x] & BobUIFontFamily::Supported)
                 writingSystemsFound |= quint64(1) << x;
         }
     }
@@ -1436,13 +1436,13 @@ QList<QFontDatabase::WritingSystem> QFontDatabase::writingSystems(const QString 
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
     QList<WritingSystem> list;
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f || f->count == 0)
         return list;
 
     for (int x = Latin; x < WritingSystemsCount; ++x) {
         const WritingSystem writingSystem = WritingSystem(x);
-        if (f->writingSystems[writingSystem] & QtFontFamily::Supported)
+        if (f->writingSystems[writingSystem] & BobUIFontFamily::Supported)
             list.append(writingSystem);
     }
     return list;
@@ -1466,13 +1466,13 @@ QStringList QFontDatabase::families(WritingSystem writingSystem)
 
     QStringList flist;
     for (int i = 0; i < d->count; i++) {
-        QtFontFamily *f = d->families[i];
+        BobUIFontFamily *f = d->families[i];
         if (f->populated && f->count == 0)
             continue;
         if (writingSystem != Any) {
             if (!f->ensurePopulated())
                 continue;
-            if (f->writingSystems[writingSystem] != QtFontFamily::Supported)
+            if (f->writingSystems[writingSystem] != BobUIFontFamily::Supported)
                 continue;
         }
         if (!f->populated || f->count == 1) {
@@ -1509,20 +1509,20 @@ QStringList QFontDatabase::styles(const QString &family)
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
     QStringList l;
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f)
         return l;
 
-    QtFontFoundry allStyles(foundryName);
+    BobUIFontFoundry allStyles(foundryName);
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+        BobUIFontFoundry *foundry = f->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
-                QtFontStyle::Key ke(foundry->styles[k]->key);
+                BobUIFontStyle::Key ke(foundry->styles[k]->key);
                 ke.stretch = 0;
                 allStyles.style(ke,
                                 foundry->styles[k]->styleName,
-                                QtFontFoundry::AddWhenMissing);
+                                BobUIFontFoundry::AddWhenMissing);
             }
         }
     }
@@ -1553,7 +1553,7 @@ bool QFontDatabase::isFixedPitch(const QString &family,
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFamily *f = d->family(familyName);
     return (f && f->fixedPitch);
 }
 
@@ -1576,14 +1576,14 @@ bool QFontDatabase::isBitmapScalable(const QString &family,
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f)
         return false;
 
-    QtFontStyle::Key styleKey(style);
+    BobUIFontStyle::Key styleKey(style);
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+        BobUIFontFoundry *foundry = f->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++)
                 if ((style.isEmpty() ||
                      foundry->styles[k]->styleName == style ||
@@ -1613,7 +1613,7 @@ bool QFontDatabase::isSmoothlyScalable(const QString &family, const QString &sty
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f) {
         for (int i = 0; i < d->count; i++) {
             if (d->families[i]->matchesFamilyName(familyName)) {
@@ -1626,12 +1626,12 @@ bool QFontDatabase::isSmoothlyScalable(const QString &family, const QString &sty
     if (!f)
         return false;
 
-    const QtFontStyle::Key styleKey(style);
+    const BobUIFontStyle::Key styleKey(style);
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+        BobUIFontFoundry *foundry = f->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
-                const QtFontStyle *fontStyle = foundry->styles[k];
+                const BobUIFontStyle *fontStyle = foundry->styles[k];
                 const bool smoothScalable =
                         fontStyle->smoothScalable
                         && ((style.isEmpty()
@@ -1684,24 +1684,24 @@ QList<int> QFontDatabase::pointSizes(const QString &family,
 
     QList<int> sizes;
 
-    QtFontFamily *fam = d->family(familyName);
+    BobUIFontFamily *fam = d->family(familyName);
     if (!fam) return sizes;
 
 
-    const int dpi = qt_defaultDpiY(); // embedded
+    const int dpi = bobui_defaultDpiY(); // embedded
 
-    QtFontStyle::Key styleKey(styleName);
+    BobUIFontStyle::Key styleKey(styleName);
     for (int j = 0; j < fam->count; j++) {
-        QtFontFoundry *foundry = fam->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
-            QtFontStyle *style = foundry->style(styleKey, styleName);
+        BobUIFontFoundry *foundry = fam->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
+            BobUIFontStyle *style = foundry->style(styleKey, styleName);
             if (!style) continue;
 
             if (style->smoothScalable)
                 return standardSizes();
 
             for (int l = 0; l < style->count; l++) {
-                const QtFontSize *size = style->pixelSizes + l;
+                const BobUIFontSize *size = style->pixelSizes + l;
 
                 if (size->pixelSize != 0 && size->pixelSize != SMOOTH_SCALABLE) {
                     const int pointSize = qRound(size->pixelSize * 72.0 / dpi);
@@ -1730,23 +1730,23 @@ QFont QFontDatabase::font(const QString &family, const QString &style,
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFoundry allStyles(foundryName);
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFoundry allStyles(foundryName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f) return QGuiApplication::font();
 
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+        BobUIFontFoundry *foundry = f->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
                 allStyles.style(foundry->styles[k]->key,
                                 foundry->styles[k]->styleName,
-                                QtFontFoundry::AddWhenMissing);
+                                BobUIFontFoundry::AddWhenMissing);
             }
         }
     }
 
-    QtFontStyle::Key styleKey(style);
-    QtFontStyle *s = bestStyle(&allStyles, styleKey, style);
+    BobUIFontStyle::Key styleKey(style);
+    BobUIFontStyle *s = bestStyle(&allStyles, styleKey, style);
 
     if (!s) // no styles found?
         return QGuiApplication::font();
@@ -1781,24 +1781,24 @@ QList<int> QFontDatabase::smoothSizes(const QString &family,
 
     QList<int> sizes;
 
-    QtFontFamily *fam = d->family(familyName);
+    BobUIFontFamily *fam = d->family(familyName);
     if (!fam)
         return sizes;
 
-    const int dpi = qt_defaultDpiY(); // embedded
+    const int dpi = bobui_defaultDpiY(); // embedded
 
-    QtFontStyle::Key styleKey(styleName);
+    BobUIFontStyle::Key styleKey(styleName);
     for (int j = 0; j < fam->count; j++) {
-        QtFontFoundry *foundry = fam->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
-            QtFontStyle *style = foundry->style(styleKey, styleName);
+        BobUIFontFoundry *foundry = fam->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
+            BobUIFontStyle *style = foundry->style(styleKey, styleName);
             if (!style) continue;
 
             if (style->smoothScalable)
                 return QFontDatabase::standardSizes();
 
             for (int l = 0; l < style->count; l++) {
-                const QtFontSize *size = style->pixelSizes + l;
+                const BobUIFontSize *size = style->pixelSizes + l;
 
                 if (size->pixelSize != 0 && size->pixelSize != SMOOTH_SCALABLE) {
                     const int pointSize = qRound(size->pixelSize * 72.0 / dpi);
@@ -1839,23 +1839,23 @@ bool QFontDatabase::italic(const QString &family, const QString &style)
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFoundry allStyles(foundryName);
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFoundry allStyles(foundryName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f) return false;
 
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
-        if (foundryName.isEmpty() || foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+        BobUIFontFoundry *foundry = f->foundries[j];
+        if (foundryName.isEmpty() || foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
                 allStyles.style(foundry->styles[k]->key,
                                 foundry->styles[k]->styleName,
-                                QtFontFoundry::AddWhenMissing);
+                                BobUIFontFoundry::AddWhenMissing);
             }
         }
     }
 
-    QtFontStyle::Key styleKey(style);
-    QtFontStyle *s = allStyles.style(styleKey, style);
+    BobUIFontStyle::Key styleKey(style);
+    BobUIFontStyle *s = allStyles.style(styleKey, style);
     return s && s->key.style == QFont::StyleItalic;
 }
 
@@ -1875,24 +1875,24 @@ bool QFontDatabase::bold(const QString &family,
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFoundry allStyles(foundryName);
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFoundry allStyles(foundryName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f) return false;
 
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
+        BobUIFontFoundry *foundry = f->foundries[j];
         if (foundryName.isEmpty() ||
-            foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+            foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
                 allStyles.style(foundry->styles[k]->key,
                                 foundry->styles[k]->styleName,
-                                QtFontFoundry::AddWhenMissing);
+                                BobUIFontFoundry::AddWhenMissing);
             }
         }
     }
 
-    QtFontStyle::Key styleKey(style);
-    QtFontStyle *s = allStyles.style(styleKey, style);
+    BobUIFontStyle::Key styleKey(style);
+    BobUIFontStyle *s = allStyles.style(styleKey, style);
     return s && s->key.weight >= QFont::Bold;
 }
 
@@ -1913,24 +1913,24 @@ int QFontDatabase::weight(const QString &family,
     QMutexLocker locker(fontDatabaseMutex());
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
-    QtFontFoundry allStyles(foundryName);
-    QtFontFamily *f = d->family(familyName);
+    BobUIFontFoundry allStyles(foundryName);
+    BobUIFontFamily *f = d->family(familyName);
     if (!f) return -1;
 
     for (int j = 0; j < f->count; j++) {
-        QtFontFoundry *foundry = f->foundries[j];
+        BobUIFontFoundry *foundry = f->foundries[j];
         if (foundryName.isEmpty() ||
-            foundry->name.compare(foundryName, Qt::CaseInsensitive) == 0) {
+            foundry->name.compare(foundryName, BobUI::CaseInsensitive) == 0) {
             for (int k = 0; k < foundry->count; k++) {
                 allStyles.style(foundry->styles[k]->key,
                                 foundry->styles[k]->styleName,
-                                QtFontFoundry::AddWhenMissing);
+                                BobUIFontFoundry::AddWhenMissing);
             }
         }
     }
 
-    QtFontStyle::Key styleKey(style);
-    QtFontStyle *s = allStyles.style(styleKey, style);
+    BobUIFontStyle::Key styleKey(style);
+    BobUIFontStyle *s = allStyles.style(styleKey, style);
     return s ? s->key.weight : -1;
 }
 
@@ -1946,10 +1946,10 @@ bool QFontDatabase::hasFamily(const QString &family)
     QFontDatabasePrivate *d = QFontDatabasePrivate::ensureFontDatabase();
 
     for (int i = 0; i < d->count; i++) {
-        QtFontFamily *f = d->families[i];
+        BobUIFontFamily *f = d->families[i];
         if (f->populated && f->count == 0)
             continue;
-        if (familyAlias.compare(f->name, Qt::CaseInsensitive) == 0)
+        if (familyAlias.compare(f->name, BobUI::CaseInsensitive) == 0)
             return true;
     }
 
@@ -1984,106 +1984,106 @@ QString QFontDatabase::writingSystemName(WritingSystem writingSystem)
     const char *name = nullptr;
     switch (writingSystem) {
     case Any:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Any");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Any");
         break;
     case Latin:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Latin");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Latin");
         break;
     case Greek:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Greek");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Greek");
         break;
     case Cyrillic:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Cyrillic");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Cyrillic");
         break;
     case Armenian:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Armenian");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Armenian");
         break;
     case Hebrew:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Hebrew");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Hebrew");
         break;
     case Arabic:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Arabic");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Arabic");
         break;
     case Syriac:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Syriac");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Syriac");
         break;
     case Thaana:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Thaana");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Thaana");
         break;
     case Devanagari:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Devanagari");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Devanagari");
         break;
     case Bengali:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Bengali");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Bengali");
         break;
     case Gurmukhi:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Gurmukhi");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Gurmukhi");
         break;
     case Gujarati:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Gujarati");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Gujarati");
         break;
     case Oriya:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Oriya");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Oriya");
         break;
     case Tamil:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Tamil");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Tamil");
         break;
     case Telugu:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Telugu");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Telugu");
         break;
     case Kannada:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Kannada");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Kannada");
         break;
     case Malayalam:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Malayalam");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Malayalam");
         break;
     case Sinhala:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Sinhala");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Sinhala");
         break;
     case Thai:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Thai");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Thai");
         break;
     case Lao:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Lao");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Lao");
         break;
     case Tibetan:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Tibetan");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Tibetan");
         break;
     case Myanmar:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Myanmar");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Myanmar");
         break;
     case Georgian:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Georgian");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Georgian");
         break;
     case Khmer:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Khmer");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Khmer");
         break;
     case SimplifiedChinese:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Simplified Chinese");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Simplified Chinese");
         break;
     case TraditionalChinese:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Traditional Chinese");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Traditional Chinese");
         break;
     case Japanese:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Japanese");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Japanese");
         break;
     case Korean:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Korean");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Korean");
         break;
     case Vietnamese:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Vietnamese");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Vietnamese");
         break;
     case Symbol:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Symbol");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Symbol");
         break;
     case Ogham:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Ogham");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Ogham");
         break;
     case Runic:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "Runic");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "Runic");
         break;
     case Nko:
-        name = QT_TRANSLATE_NOOP("QFontDatabase", "N'Ko");
+        name = BOBUI_TRANSLATE_NOOP("QFontDatabase", "N'Ko");
         break;
     default:
         Q_ASSERT_X(false, "QFontDatabase::writingSystemName", "invalid 'writingSystem' parameter");
@@ -2177,11 +2177,11 @@ QString QFontDatabase::writingSystemSample(WritingSystem writingSystem)
 
 void QFontDatabasePrivate::parseFontName(const QString &name, QString &foundry, QString &family)
 {
-    QT_PREPEND_NAMESPACE(parseFontName)(name, foundry, family);
+    BOBUI_PREPEND_NAMESPACE(parseFontName)(name, foundry, family);
 }
 
 // used from qfontengine_ft.cpp
-Q_GUI_EXPORT QByteArray qt_fontdata_from_index(int index)
+Q_GUI_EXPORT QByteArray bobui_fontdata_from_index(int index)
 {
     QMutexLocker locker(fontDatabaseMutex());
     return QFontDatabasePrivate::instance()->applicationFonts.value(index).data;
@@ -2440,7 +2440,7 @@ bool QFontDatabase::removeAllApplicationFonts()
 
     Adds \a familyName as an application-defined fallback font for \a script.
 
-    When Qt encounters characters that are not supported by the selected font, it will search
+    When BobUI encounters characters that are not supported by the selected font, it will search
     through a list of fallback fonts to find a match for them. This ensures that combining multiple
     scripts in a single string is possible, even if the main font does not support them.
 
@@ -2461,7 +2461,7 @@ bool QFontDatabase::removeAllApplicationFonts()
     be prioritized in reverse order, so that the last family added will be checked first and so
     on.
 
-    \note Qt's font matching algorithm considers \c{QChar::Script_Common} (undetermined script)
+    \note BobUI's font matching algorithm considers \c{QChar::Script_Common} (undetermined script)
     and \c{QChar::Script_Latin} the same. Adding a fallback for either of these will also apply
     to the other.
 
@@ -2515,7 +2515,7 @@ bool QFontDatabase::removeApplicationFallbackFontFamily(QChar::Script script, co
 
     Sets the list of application-defined fallback fonts for \a script to \a familyNames.
 
-    When Qt encounters a character in \a script which is not supported by the current font, it will
+    When BobUI encounters a character in \a script which is not supported by the current font, it will
     check the families in \a familyNames, in order from first to last, until it finds a match. See
     \l{addApplicationFallbackFontFamily()} for more details.
 
@@ -2569,7 +2569,7 @@ QStringList QFontDatabase::applicationFallbackFontFamilies(QChar::Script script)
 
     Adds \a familyName as an application-defined emoji font.
 
-    For displaying multi-color emojis or emoji sequences, Qt will by default prefer the system
+    For displaying multi-color emojis or emoji sequences, BobUI will by default prefer the system
     default emoji font. Sometimes the application may want to override the default, either to
     achieve a specific visual style or to show emojis that are not supported by the system.
 
@@ -2649,10 +2649,10 @@ QFontEngine *QFontDatabasePrivate::findFont(const QFontDef &req,
     const QFontDef &request = req;
 #endif
 
-#if defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_BUILD_INTERNAL)
     // For testing purpose only, emulates an exact-matching monospace font
-    if (qt_enable_test_font && request.families.first() == "__Qt__Box__Engine__"_L1) {
-        engine = new QTestFontEngine(request.pixelSize);
+    if (bobui_enable_test_font && request.families.first() == "__BobUI__Box__Engine__"_L1) {
+        engine = new BOBUIestFontEngine(request.pixelSize);
         engine->fontDef = request;
         return engine;
     }
@@ -2680,7 +2680,7 @@ QFontEngine *QFontDatabasePrivate::findFont(const QFontDef &req,
     QString family_name, foundry_name;
     const QString requestFamily = request.families.at(0);
     parseFontName(requestFamily, foundry_name, family_name);
-    QtFontDesc desc;
+    BobUIFontDesc desc;
     QList<int> blackListed;
     unsigned int score = UINT_MAX;
 
@@ -2770,7 +2770,7 @@ QFontEngine *QFontDatabasePrivate::findFont(const QFontDef &req,
                     QFontCache::Key key(def, cacheScript, multi ? 1 : 0);
                     engine = fontCache->findEngine(key);
                     if (!engine) {
-                        QtFontDesc desc;
+                        BobUIFontDesc desc;
                         do {
                             index = match(lookupScript,
                                           def,
@@ -2935,10 +2935,10 @@ QString QFontDatabasePrivate::resolveFontFamilyAlias(const QString &family)
     return QGuiApplicationPrivate::platformIntegration()->fontDatabase()->resolveFontFamilyAlias(family);
 }
 
-Q_GUI_EXPORT QStringList qt_sort_families_by_writing_system(QFontDatabasePrivate::ExtendedScript script,
+Q_GUI_EXPORT QStringList bobui_sort_families_by_writing_system(QFontDatabasePrivate::ExtendedScript script,
                                                             const QStringList &families)
 {
-    size_t writingSystem = qt_writing_system_for_script(script);
+    size_t writingSystem = bobui_writing_system_for_script(script);
     if (script != QFontDatabasePrivate::Script_Emoji
                 && (writingSystem == QFontDatabase::Any
                     || writingSystem >= QFontDatabase::WritingSystemsCount)) {
@@ -2950,7 +2950,7 @@ Q_GUI_EXPORT QStringList qt_sort_families_by_writing_system(QFontDatabasePrivate
     for (int i = 0; i < families.size(); ++i) {
         const QString &family = families.at(i);
 
-        QtFontFamily *testFamily = nullptr;
+        BobUIFontFamily *testFamily = nullptr;
         for (int x = 0; x < db->count; ++x) {
             if (Q_UNLIKELY(matchFamilyName(family, db->families[x]))) {
                 testFamily = db->families[x];
@@ -2972,7 +2972,7 @@ Q_GUI_EXPORT QStringList qt_sort_families_by_writing_system(QFontDatabasePrivate
     return supported.values();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfontdatabase.cpp"
 

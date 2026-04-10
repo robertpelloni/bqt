@@ -6,8 +6,8 @@ SOURCES       = glwidget.cpp \
 
 RESOURCES     = textures.qrc
 
-QT += widgets opengl openglwidgets
+BOBUI += widgets opengl openglwidgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/textures
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/textures
 INSTALLS += target

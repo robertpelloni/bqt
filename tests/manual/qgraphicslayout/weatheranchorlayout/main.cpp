@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QLabel>
@@ -53,25 +53,25 @@ public:
 
     void setGeometry(const QRectF &rect) override
     {
-        original->setTransform(QTransform::fromScale(rect.width() / r.width(),
+        original->setTransform(BOBUIransform::fromScale(rect.width() / r.width(),
                                                      rect.height() / r.height()), true);
         original->setPos(rect.x(), rect.y());
         r = rect;
     }
 
 protected:
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override
     {
         Q_UNUSED(constraint);
         QSizeF sh;
         switch (which) {
-            case Qt::MinimumSize:
+            case BobUI::MinimumSize:
                 sh = QSizeF(0, 0);
                 break;
-            case Qt::PreferredSize:
+            case BobUI::PreferredSize:
                 sh = QSizeF(50, 50);
                 break;
-            case Qt::MaximumSize:
+            case BobUI::MaximumSize:
                 sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
                 break;
             default:
@@ -105,7 +105,7 @@ public:
         painter->drawPixmap(QPointF(), scaled);
 
         QPixmap tmp(scaled.size());
-        tmp.fill(Qt::transparent);
+        tmp.fill(BobUI::transparent);
         QPainter p(&tmp);
 
         // create gradient
@@ -188,48 +188,48 @@ int main(int argc, char *argv[])
     layout->setSpacing(0);
 
     // setup the main widget
-    QGraphicsWidget *widget = new QGraphicsWidget(nullptr, Qt::Window);
+    QGraphicsWidget *widget = new QGraphicsWidget(nullptr, BobUI::Window);
     QPalette p;
-    p.setColor(QPalette::Window, Qt::black);
+    p.setColor(QPalette::Window, BobUI::black);
     widget->setPalette(p);
     widget->setPos(20, 20);
     widget->setLayout(layout);
 
     // vertical anchors
-    QGraphicsAnchor *anchor = layout->addAnchor(title, Qt::AnchorTop, layout, Qt::AnchorTop);
-    anchor = layout->addAnchor(place, Qt::AnchorTop, title, Qt::AnchorBottom);
+    QGraphicsAnchor *anchor = layout->addAnchor(title, BobUI::AnchorTop, layout, BobUI::AnchorTop);
+    anchor = layout->addAnchor(place, BobUI::AnchorTop, title, BobUI::AnchorBottom);
     anchor->setSpacing(12);
-    anchor = layout->addAnchor(place, Qt::AnchorBottom, layout, Qt::AnchorBottom);
+    anchor = layout->addAnchor(place, BobUI::AnchorBottom, layout, BobUI::AnchorBottom);
     anchor->setSpacing(12);
 
-    anchor = layout->addAnchor(sunnyWeather, Qt::AnchorTop, title, Qt::AnchorTop);
-    anchor = layout->addAnchor(sunnyWeather, Qt::AnchorBottom, layout, Qt::AnchorVerticalCenter);
+    anchor = layout->addAnchor(sunnyWeather, BobUI::AnchorTop, title, BobUI::AnchorTop);
+    anchor = layout->addAnchor(sunnyWeather, BobUI::AnchorBottom, layout, BobUI::AnchorVerticalCenter);
 
-    anchor = layout->addAnchor(tabbar, Qt::AnchorTop, title, Qt::AnchorBottom);
+    anchor = layout->addAnchor(tabbar, BobUI::AnchorTop, title, BobUI::AnchorBottom);
     anchor->setSpacing(5);
-    anchor = layout->addAnchor(details, Qt::AnchorTop, tabbar, Qt::AnchorBottom);
+    anchor = layout->addAnchor(details, BobUI::AnchorTop, tabbar, BobUI::AnchorBottom);
     anchor->setSpacing(2);
-    anchor = layout->addAnchor(details, Qt::AnchorBottom, layout, Qt::AnchorBottom);
+    anchor = layout->addAnchor(details, BobUI::AnchorBottom, layout, BobUI::AnchorBottom);
     anchor->setSpacing(12);
 
     // horizontal anchors
-    anchor = layout->addAnchor(layout, Qt::AnchorLeft, title, Qt::AnchorLeft);
-    anchor = layout->addAnchor(title, Qt::AnchorRight, layout, Qt::AnchorRight);
+    anchor = layout->addAnchor(layout, BobUI::AnchorLeft, title, BobUI::AnchorLeft);
+    anchor = layout->addAnchor(title, BobUI::AnchorRight, layout, BobUI::AnchorRight);
 
-    anchor = layout->addAnchor(place, Qt::AnchorLeft, layout, Qt::AnchorLeft);
+    anchor = layout->addAnchor(place, BobUI::AnchorLeft, layout, BobUI::AnchorLeft);
     anchor->setSpacing(15);
-    anchor = layout->addAnchor(place, Qt::AnchorRight, details, Qt::AnchorLeft);
+    anchor = layout->addAnchor(place, BobUI::AnchorRight, details, BobUI::AnchorLeft);
     anchor->setSpacing(35);
 
-    anchor = layout->addAnchor(sunnyWeather, Qt::AnchorLeft, place, Qt::AnchorHorizontalCenter);
-    anchor = layout->addAnchor(sunnyWeather, Qt::AnchorRight, layout, Qt::AnchorHorizontalCenter);
+    anchor = layout->addAnchor(sunnyWeather, BobUI::AnchorLeft, place, BobUI::AnchorHorizontalCenter);
+    anchor = layout->addAnchor(sunnyWeather, BobUI::AnchorRight, layout, BobUI::AnchorHorizontalCenter);
 
-    anchor = layout->addAnchor(tabbar, Qt::AnchorHorizontalCenter, details, Qt::AnchorHorizontalCenter);
-    anchor = layout->addAnchor(details, Qt::AnchorRight, layout, Qt::AnchorRight);
+    anchor = layout->addAnchor(tabbar, BobUI::AnchorHorizontalCenter, details, BobUI::AnchorHorizontalCenter);
+    anchor = layout->addAnchor(details, BobUI::AnchorRight, layout, BobUI::AnchorRight);
 
     // QGV setup
     scene.addItem(widget);
-    scene.setBackgroundBrush(Qt::white);
+    scene.setBackgroundBrush(BobUI::white);
     QGraphicsView *view = new QGraphicsView(&scene);
     view->show();
 

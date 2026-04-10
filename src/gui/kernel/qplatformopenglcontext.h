@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMOPENGLCONTEXT_H
 #define QPLATFORMOPENGLCONTEXT_H
@@ -10,22 +10,22 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qnamespace.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qnamespace.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtGui/qsurfaceformat.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qopengl.h>
-#include <QtGui/qopenglcontext.h>
+#include <BobUIGui/qsurfaceformat.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/qopenglcontext.h>
 
-#include <QtCore/qnativeinterface.h>
+#include <BobUICore/qnativeinterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPlatformOpenGLContextPrivate;
@@ -76,7 +76,7 @@ namespace QNativeInterface::Private {
 #if defined(Q_OS_MACOS)
 struct Q_GUI_EXPORT QCocoaGLIntegration
 {
-    QT_DECLARE_NATIVE_INTERFACE(QCocoaGLIntegration)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QCocoaGLIntegration)
     virtual QOpenGLContext *createOpenGLContext(NSOpenGLContext *, QOpenGLContext *shareContext) const = 0;
 };
 #endif
@@ -84,32 +84,32 @@ struct Q_GUI_EXPORT QCocoaGLIntegration
 #if defined(Q_OS_WIN)
 struct Q_GUI_EXPORT QWindowsGLIntegration
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWindowsGLIntegration)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWindowsGLIntegration)
     virtual HMODULE openGLModuleHandle() const = 0;
     virtual QOpenGLContext *createOpenGLContext(HGLRC context, HWND window, QOpenGLContext *shareContext) const = 0;
 };
 #endif
 
-#if QT_CONFIG(xcb_glx_plugin)
+#if BOBUI_CONFIG(xcb_glx_plugin)
 struct Q_GUI_EXPORT QGLXIntegration
 {
-    QT_DECLARE_NATIVE_INTERFACE(QGLXIntegration)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QGLXIntegration)
     virtual QOpenGLContext *createOpenGLContext(GLXContext context, void *visualInfo, QOpenGLContext *shareContext) const = 0;
 };
 #endif
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 struct Q_GUI_EXPORT QEGLIntegration
 {
-    QT_DECLARE_NATIVE_INTERFACE(QEGLIntegration)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QEGLIntegration)
     virtual QOpenGLContext *createOpenGLContext(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext) const = 0;
 };
 #endif
 
 } // QNativeInterface::Private
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QPLATFORMOPENGLCONTEXT_H

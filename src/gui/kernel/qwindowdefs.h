@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWDEFS_H
 #define QWINDOWDEFS_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobjectdefs.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qcontainerfwd.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobjectdefs.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qcontainerfwd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 // Class forward definitions
@@ -37,8 +37,8 @@ class QBitmap;
 class QMovie;
 class QImage;
 class QPicture;
-class QTimer;
-class QTime;
+class BOBUIimer;
+class BOBUIime;
 class QClipboard;
 class QString;
 class QByteArray;
@@ -47,30 +47,30 @@ class QApplication;
 typedef QList<QWidget *> QWidgetList;
 typedef QList<QWindow *> QWindowList;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // Window system dependent definitions
 
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
-#  include <QtGui/qwindowdefs_win.h>
+#  include <BobUIGui/qwindowdefs_win.h>
 #endif // Q_OS_WIN
 
 
 
 
-typedef QT_PREPEND_NAMESPACE(quintptr) WId;
+typedef BOBUI_PREPEND_NAMESPACE(quintptr) WId;
 
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 typedef QHash<WId, QWidget *> QWidgetMapper;
 typedef QSet<QWidget *> QWidgetSet;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#if defined(QT_NEEDS_QMAIN)
+#if defined(BOBUI_NEEDS_QMAIN)
 #define main qMain
 #endif
 

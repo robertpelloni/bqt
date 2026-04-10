@@ -1,4 +1,4 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 set(jpeg16_original_sources
     src/jcapistd.c
@@ -69,7 +69,7 @@ set(jpeg_original_sources
 # Make copies of the source files for the different bit counts, so that all the object file names
 # are unique in the static archive. This avoids duplicate warnings for certain linkers and debug
 # info extractors (like Apple's ld and dsymutil).
-function(qt_internal_copy_jpeg_sources in_sources infix out_var)
+function(bobui_internal_copy_jpeg_sources in_sources infix out_var)
     set(jpeg_sources "")
     foreach(src_file ${in_sources})
         get_filename_component(src_file_name "${src_file}" NAME_WLE)
@@ -82,11 +82,11 @@ function(qt_internal_copy_jpeg_sources in_sources infix out_var)
     set(${out_var} "${jpeg_sources}" PARENT_SCOPE)
 endfunction()
 
-qt_internal_copy_jpeg_sources("${jpeg16_original_sources}" "_16" jpeg16_sources)
-qt_internal_copy_jpeg_sources("${jpeg12_original_sources}" "_12" jpeg12_sources)
-qt_internal_copy_jpeg_sources("${jpeg_original_sources}" "" jpeg_sources)
+bobui_internal_copy_jpeg_sources("${jpeg16_original_sources}" "_16" jpeg16_sources)
+bobui_internal_copy_jpeg_sources("${jpeg12_original_sources}" "_12" jpeg12_sources)
+bobui_internal_copy_jpeg_sources("${jpeg_original_sources}" "" jpeg_sources)
 
-qt_internal_add_3rdparty_library(BundledLibjpeg16bits
+bobui_internal_add_3rdparty_library(BundledLibjpeg16bits
     STATIC
     SKIP_AUTOMOC
     SOURCES
@@ -99,7 +99,7 @@ qt_internal_add_3rdparty_library(BundledLibjpeg16bits
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-qt_internal_add_3rdparty_library(BundledLibjpeg12bits
+bobui_internal_add_3rdparty_library(BundledLibjpeg12bits
     STATIC
     SKIP_AUTOMOC
     SOURCES
@@ -112,7 +112,7 @@ qt_internal_add_3rdparty_library(BundledLibjpeg12bits
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-qt_internal_add_3rdparty_library(BundledLibjpeg
+bobui_internal_add_3rdparty_library(BundledLibjpeg
     QMAKE_LIB_NAME libjpeg
     STATIC
     SKIP_AUTOMOC
@@ -127,7 +127,7 @@ qt_internal_add_3rdparty_library(BundledLibjpeg
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-qt_internal_add_3rdparty_header_module(JpegPrivate
+bobui_internal_add_3rdparty_header_module(JpegPrivate
     EXTERNAL_HEADERS
         src/jpeglib.h
         src/jerror.h
@@ -135,14 +135,14 @@ qt_internal_add_3rdparty_header_module(JpegPrivate
         src/jmorecfg.h
 )
 
-qt_disable_warnings(BundledLibjpeg)
-qt_disable_warnings(BundledLibjpeg12bits)
-qt_disable_warnings(BundledLibjpeg16bits)
-qt_set_symbol_visibility_hidden(BundledLibjpeg)
-qt_set_symbol_visibility_hidden(BundledLibjpeg12bits)
-qt_set_symbol_visibility_hidden(BundledLibjpeg16bits)
+bobui_disable_warnings(BundledLibjpeg)
+bobui_disable_warnings(BundledLibjpeg12bits)
+bobui_disable_warnings(BundledLibjpeg16bits)
+bobui_set_symbol_visibility_hidden(BundledLibjpeg)
+bobui_set_symbol_visibility_hidden(BundledLibjpeg12bits)
+bobui_set_symbol_visibility_hidden(BundledLibjpeg16bits)
 
-qt_internal_extend_target(BundledLibjpeg CONDITION MSVC
+bobui_internal_extend_target(BundledLibjpeg CONDITION MSVC
     DEFINES
         _CRT_SECURE_NO_WARNINGS
 )

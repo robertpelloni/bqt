@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCORE_UNIX_P_H
 #define QCORE_UNIX_P_H
@@ -9,15 +9,15 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of Qt code on Unix. This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of BobUI code on Unix. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
 #include "qplatformdefs.h"
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qbytearray.h"
 #include "qdeadlinetimer.h"
 
@@ -48,7 +48,7 @@
 #  include <ioLib.h>
 #endif
 
-#ifdef QT_NO_NATIVE_POLL
+#ifdef BOBUI_NO_NATIVE_POLL
 #  include "qpoll_p.h"
 #else
 #  include <poll.h>
@@ -56,12 +56,12 @@
 
 struct sockaddr;
 
-#define QT_EINTR_LOOP(var, cmd)                 \
+#define BOBUI_EINTR_LOOP(var, cmd)                 \
     do {                                        \
         var = cmd;                              \
     } while (var == -1 && errno == EINTR)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_TYPEINFO(pollfd, Q_PRIMITIVE_TYPE);
 
@@ -89,10 +89,10 @@ static inline constexpr clockid_t SteadyClockClockId =
         ;
 
 static inline constexpr clockid_t QWaitConditionClockId =
-#if !QT_CONFIG(thread)
+#if !BOBUI_CONFIG(thread)
         // bootstrap mode, there are no wait conditions
         CLOCK_REALTIME
-#elif !QT_CONFIG(pthread_condattr_setclock)
+#elif !BOBUI_CONFIG(pthread_condattr_setclock)
         // OSes that lack pthread_condattr_setclock() (e.g., Darwin)
         CLOCK_REALTIME
 #elif defined(Q_OS_QNX)
@@ -230,35 +230,35 @@ inline timespec deadlineToAbstime(QDeadlineTimer deadline)
     return durationToTimespec(timePoint.time_since_epoch());
 }
 
-Q_CORE_EXPORT void qt_ignore_sigpipe() noexcept;
+Q_CORE_EXPORT void bobui_ignore_sigpipe() noexcept;
 
 #if defined(Q_PROCESSOR_X86_32) && defined(__GLIBC__)
 #  if !__GLIBC_PREREQ(2, 22)
-Q_CORE_EXPORT int qt_open64(const char *pathname, int flags, mode_t);
-#    undef QT_OPEN
-#    define QT_OPEN qt_open64
+Q_CORE_EXPORT int bobui_open64(const char *pathname, int flags, mode_t);
+#    undef BOBUI_OPEN
+#    define BOBUI_OPEN bobui_open64
 #  endif
 #endif
 
 #ifdef AT_FDCWD
-static inline int qt_safe_openat(int dfd, const char *pathname, int flags, mode_t mode = 0777)
+static inline int bobui_safe_openat(int dfd, const char *pathname, int flags, mode_t mode = 0777)
 {
     // everyone already has O_CLOEXEC
     int fd;
-    QT_EINTR_LOOP(fd, openat(dfd, pathname, flags | O_CLOEXEC, mode));
+    BOBUI_EINTR_LOOP(fd, openat(dfd, pathname, flags | O_CLOEXEC, mode));
     return fd;
 }
 #endif
 
-// don't call QT_OPEN or ::open
-// call qt_safe_open
-static inline int qt_safe_open(const char *pathname, int flags, mode_t mode = 0777)
+// don't call BOBUI_OPEN or ::open
+// call bobui_safe_open
+static inline int bobui_safe_open(const char *pathname, int flags, mode_t mode = 0777)
 {
 #ifdef O_CLOEXEC
     flags |= O_CLOEXEC;
 #endif
     int fd;
-    QT_EINTR_LOOP(fd, QT_OPEN(pathname, flags, mode));
+    BOBUI_EINTR_LOOP(fd, BOBUI_OPEN(pathname, flags, mode));
 
 #ifndef O_CLOEXEC
     if (fd != -1)
@@ -267,16 +267,16 @@ static inline int qt_safe_open(const char *pathname, int flags, mode_t mode = 07
 
     return fd;
 }
-#undef QT_OPEN
-#define QT_OPEN         qt_safe_open
+#undef BOBUI_OPEN
+#define BOBUI_OPEN         bobui_safe_open
 
 // don't call ::pipe
-// call qt_safe_pipe
-static inline int qt_safe_pipe(int pipefd[2], int flags = 0)
+// call bobui_safe_pipe
+static inline int bobui_safe_pipe(int pipefd[2], int flags = 0)
 {
     Q_ASSERT((flags & ~O_NONBLOCK) == 0);
 
-#ifdef QT_THREADSAFE_CLOEXEC
+#ifdef BOBUI_THREADSAFE_CLOEXEC
     // use pipe2
     flags |= O_CLOEXEC;
     return ::pipe2(pipefd, flags); // pipe2 is documented not to return EINTR
@@ -299,7 +299,7 @@ static inline int qt_safe_pipe(int pipefd[2], int flags = 0)
 }
 
 // don't call dup or fcntl(F_DUPFD)
-static inline int qt_safe_dup(int oldfd, int atleast = 0, int flags = FD_CLOEXEC)
+static inline int bobui_safe_dup(int oldfd, int atleast = 0, int flags = FD_CLOEXEC)
 {
     Q_ASSERT(flags == FD_CLOEXEC || flags == 0);
 
@@ -319,18 +319,18 @@ static inline int qt_safe_dup(int oldfd, int atleast = 0, int flags = FD_CLOEXEC
 }
 
 // don't call dup2
-// call qt_safe_dup2
-static inline int qt_safe_dup2(int oldfd, int newfd, int flags = FD_CLOEXEC)
+// call bobui_safe_dup2
+static inline int bobui_safe_dup2(int oldfd, int newfd, int flags = FD_CLOEXEC)
 {
     Q_ASSERT(flags == FD_CLOEXEC || flags == 0);
 
     int ret;
-#if QT_CONFIG(dup3)
+#if BOBUI_CONFIG(dup3)
     // use dup3
-    QT_EINTR_LOOP(ret, ::dup3(oldfd, newfd, flags ? O_CLOEXEC : 0));
+    BOBUI_EINTR_LOOP(ret, ::dup3(oldfd, newfd, flags ? O_CLOEXEC : 0));
     return ret;
 #else
-    QT_EINTR_LOOP(ret, ::dup2(oldfd, newfd));
+    BOBUI_EINTR_LOOP(ret, ::dup2(oldfd, newfd));
     if (ret == -1)
         return -1;
 
@@ -340,82 +340,82 @@ static inline int qt_safe_dup2(int oldfd, int newfd, int flags = FD_CLOEXEC)
 #endif
 }
 
-static inline qint64 qt_safe_read(int fd, void *data, qint64 maxlen)
+static inline qint64 bobui_safe_read(int fd, void *data, qint64 maxlen)
 {
     qint64 ret = 0;
-    QT_EINTR_LOOP(ret, QT_READ(fd, data, maxlen));
+    BOBUI_EINTR_LOOP(ret, BOBUI_READ(fd, data, maxlen));
     return ret;
 }
-#undef QT_READ
-#define QT_READ qt_safe_read
+#undef BOBUI_READ
+#define BOBUI_READ bobui_safe_read
 
-static inline qint64 qt_safe_write(int fd, const void *data, qint64 len)
+static inline qint64 bobui_safe_write(int fd, const void *data, qint64 len)
 {
     qint64 ret = 0;
-    QT_EINTR_LOOP(ret, QT_WRITE(fd, data, len));
+    BOBUI_EINTR_LOOP(ret, BOBUI_WRITE(fd, data, len));
     return ret;
 }
-#undef QT_WRITE
-#define QT_WRITE qt_safe_write
+#undef BOBUI_WRITE
+#define BOBUI_WRITE bobui_safe_write
 
-static inline qint64 qt_safe_write_nosignal(int fd, const void *data, qint64 len)
+static inline qint64 bobui_safe_write_nosignal(int fd, const void *data, qint64 len)
 {
-    qt_ignore_sigpipe();
-    return qt_safe_write(fd, data, len);
+    bobui_ignore_sigpipe();
+    return bobui_safe_write(fd, data, len);
 }
 
-static inline int qt_safe_close(int fd)
+static inline int bobui_safe_close(int fd)
 {
     int ret;
-    QT_EINTR_LOOP(ret, QT_CLOSE(fd));
+    BOBUI_EINTR_LOOP(ret, BOBUI_CLOSE(fd));
     return ret;
 }
-#undef QT_CLOSE
-#define QT_CLOSE qt_safe_close
+#undef BOBUI_CLOSE
+#define BOBUI_CLOSE bobui_safe_close
 
 // - VxWorks & iOS/tvOS/watchOS don't have processes
-#if QT_CONFIG(process)
-static inline int qt_safe_execve(const char *filename, char *const argv[],
+#if BOBUI_CONFIG(process)
+static inline int bobui_safe_execve(const char *filename, char *const argv[],
                                  char *const envp[])
 {
     int ret;
-    QT_EINTR_LOOP(ret, ::execve(filename, argv, envp));
+    BOBUI_EINTR_LOOP(ret, ::execve(filename, argv, envp));
     return ret;
 }
 
-static inline int qt_safe_execv(const char *path, char *const argv[])
+static inline int bobui_safe_execv(const char *path, char *const argv[])
 {
     int ret;
-    QT_EINTR_LOOP(ret, ::execv(path, argv));
+    BOBUI_EINTR_LOOP(ret, ::execv(path, argv));
     return ret;
 }
 
-static inline int qt_safe_execvp(const char *file, char *const argv[])
+static inline int bobui_safe_execvp(const char *file, char *const argv[])
 {
     int ret;
-    QT_EINTR_LOOP(ret, ::execvp(file, argv));
+    BOBUI_EINTR_LOOP(ret, ::execvp(file, argv));
     return ret;
 }
 
-static inline pid_t qt_safe_waitpid(pid_t pid, int *status, int options)
+static inline pid_t bobui_safe_waitpid(pid_t pid, int *status, int options)
 {
     int ret;
-    QT_EINTR_LOOP(ret, ::waitpid(pid, status, options));
+    BOBUI_EINTR_LOOP(ret, ::waitpid(pid, status, options));
     return ret;
 }
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
 #if !defined(_POSIX_MONOTONIC_CLOCK)
 #  define _POSIX_MONOTONIC_CLOCK -1
 #endif
 
-QByteArray qt_readlink(const char *path);
+QByteArray bobui_readlink(const char *path);
 
 /* non-static */
-inline bool qt_haveLinuxProcfs()
+inline bool bobui_haveLinuxProcfs()
 {
 #ifdef Q_OS_LINUX
-#  ifdef QT_LINUX_ALWAYS_HAVE_PROCFS
+#  ifdef BOBUI_LINUX_ALWAYS_HAVE_PROCFS
     return true;
 #  else
     static const bool present = (access("/proc/version", F_OK) == 0);
@@ -426,9 +426,9 @@ inline bool qt_haveLinuxProcfs()
 #endif
 }
 
-Q_CORE_EXPORT int qt_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline);
+Q_CORE_EXPORT int bobui_safe_poll(struct pollfd *fds, nfds_t nfds, QDeadlineTimer deadline);
 
-static inline struct pollfd qt_make_pollfd(int fd, short events)
+static inline struct pollfd bobui_make_pollfd(int fd, short events)
 {
     struct pollfd pfd = { fd, events, 0 };
     return pfd;
@@ -437,12 +437,12 @@ static inline struct pollfd qt_make_pollfd(int fd, short events)
 // according to X/OPEN we have to define semun ourselves
 // we use prefix as on some systems sem.h will have it
 struct semid_ds;
-union qt_semun {
+union bobui_semun {
     int val;                    /* value for SETVAL */
     struct semid_ds *buf;       /* buffer for IPC_STAT, IPC_SET */
     unsigned short *array;      /* array for GETALL, SETALL */
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

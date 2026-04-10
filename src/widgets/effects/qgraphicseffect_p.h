@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSEFFECT_P_H
 #define QGRAPHICSEFFECT_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp and qfiledialog.cpp.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgraphicseffect.h"
 
 #include <QPixmapCache>
@@ -24,9 +24,9 @@
 #include <private/qobject_p.h>
 #include <private/qpixmapfilter_p.h>
 
-QT_REQUIRE_CONFIG(graphicseffect);
+BOBUI_REQUIRE_CONFIG(graphicseffect);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsEffectSourcePrivate;
 class Q_WIDGETS_EXPORT QGraphicsEffectSource : public QObject
@@ -42,9 +42,9 @@ public:
     void draw(QPainter *painter);
     void update();
 
-    QRectF boundingRect(Qt::CoordinateSystem coordinateSystem = Qt::LogicalCoordinates) const;
+    QRectF boundingRect(BobUI::CoordinateSystem coordinateSystem = BobUI::LogicalCoordinates) const;
     QRect deviceRect() const;
-    QPixmap pixmap(Qt::CoordinateSystem system = Qt::LogicalCoordinates,
+    QPixmap pixmap(BobUI::CoordinateSystem system = BobUI::LogicalCoordinates,
                    QPoint *offset = nullptr,
                    QGraphicsEffect::PixmapPadMode mode = QGraphicsEffect::PadToEffectiveBoundingRect) const;
 
@@ -69,7 +69,7 @@ class QGraphicsEffectSourcePrivate : public QObjectPrivate
 public:
     QGraphicsEffectSourcePrivate()
         : QObjectPrivate()
-        , m_cachedSystem(Qt::DeviceCoordinates)
+        , m_cachedSystem(BobUI::DeviceCoordinates)
         , m_cachedMode(QGraphicsEffect::PadToTransparentBorder)
     {}
 
@@ -82,7 +82,7 @@ public:
 
     virtual ~QGraphicsEffectSourcePrivate();
     virtual void detach() = 0;
-    virtual QRectF boundingRect(Qt::CoordinateSystem system) const = 0;
+    virtual QRectF boundingRect(BobUI::CoordinateSystem system) const = 0;
     virtual QRect deviceRect() const = 0;
     virtual const QGraphicsItem *graphicsItem() const = 0;
     virtual const QWidget *widget() const = 0;
@@ -90,13 +90,13 @@ public:
     virtual void draw(QPainter *p) = 0;
     virtual void update() = 0;
     virtual bool isPixmap() const = 0;
-    virtual QPixmap pixmap(Qt::CoordinateSystem system, QPoint *offset = nullptr,
+    virtual QPixmap pixmap(BobUI::CoordinateSystem system, QPoint *offset = nullptr,
                            QGraphicsEffect::PixmapPadMode mode = QGraphicsEffect::PadToTransparentBorder) const = 0;
     virtual void effectBoundingRectChanged() = 0;
 
     void setCachedOffset(const QPoint &offset);
     void invalidateCache(InvalidateReason reason = SourceChanged) const;
-    Qt::CoordinateSystem currentCachedSystem() const { return m_cachedSystem; }
+    BobUI::CoordinateSystem currentCachedSystem() const { return m_cachedSystem; }
     QGraphicsEffect::PixmapPadMode currentCachedMode() const { return m_cachedMode; }
 
     friend class QGraphicsScenePrivate;
@@ -104,7 +104,7 @@ public:
     friend class QGraphicsItemPrivate;
 
 private:
-    mutable Qt::CoordinateSystem m_cachedSystem;
+    mutable BobUI::CoordinateSystem m_cachedSystem;
     mutable QGraphicsEffect::PixmapPadMode m_cachedMode;
     mutable QPoint m_cachedOffset;
     mutable QPixmapCache::Key m_cacheKey;
@@ -191,6 +191,6 @@ public:
     uint hasOpacityMask : 1;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSEFFECT_P_H

@@ -2,14 +2,14 @@
 #include <QDebug>
 
 OmniStackPane::OmniStackPane(QQuickItem *parent) 
-    : QQuickItem(parent), m_alignment(Qt::AlignCenter) {
+    : QQuickItem(parent), m_alignment(BobUI::AlignCenter) {
     setObjectName("OmniStackPane");
 }
 
 OmniStackPane::~OmniStackPane() = default;
 
-Qt::Alignment OmniStackPane::alignment() const { return m_alignment; }
-void OmniStackPane::setAlignment(Qt::Alignment align) {
+BobUI::Alignment OmniStackPane::alignment() const { return m_alignment; }
+void OmniStackPane::setAlignment(BobUI::Alignment align) {
     if (m_alignment != align) {
         m_alignment = align;
         emit alignmentChanged();
@@ -37,14 +37,14 @@ void OmniStackPane::layoutChildren() {
         qreal y = 0;
 
         // Horizontal Alignment
-        if (m_alignment & Qt::AlignLeft) x = 0;
-        else if (m_alignment & Qt::AlignRight) x = rect.width() - child->width();
-        else if (m_alignment & Qt::AlignHCenter) x = (rect.width() - child->width()) / 2.0;
+        if (m_alignment & BobUI::AlignLeft) x = 0;
+        else if (m_alignment & BobUI::AlignRight) x = rect.width() - child->width();
+        else if (m_alignment & BobUI::AlignHCenter) x = (rect.width() - child->width()) / 2.0;
 
         // Vertical Alignment
-        if (m_alignment & Qt::AlignTop) y = 0;
-        else if (m_alignment & Qt::AlignBottom) y = rect.height() - child->height();
-        else if (m_alignment & Qt::AlignVCenter) y = (rect.height() - child->height()) / 2.0;
+        if (m_alignment & BobUI::AlignTop) y = 0;
+        else if (m_alignment & BobUI::AlignBottom) y = rect.height() - child->height();
+        else if (m_alignment & BobUI::AlignVCenter) y = (rect.height() - child->height()) / 2.0;
 
         child->setPosition(QPointF(x, y));
     }

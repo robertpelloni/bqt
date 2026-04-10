@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qdebug.h>
 #include <private/qfontengine_p.h>
@@ -14,12 +14,12 @@
 #include "qpainter.h"
 #include "qpainterpath.h"
 #include "qvarlengtharray.h"
-#include "qtextengine_p.h"
+#include "bobuiextengine_p.h"
 #include <qmath.h>
 #include <qendian.h>
 #include <private/qstringiterator_p.h>
 
-#if QT_CONFIG(harfbuzz)
+#if BOBUI_CONFIG(harfbuzz)
 #  include "qharfbuzzng_p.h"
 #  include <hb-ot.h>
 #endif
@@ -27,21 +27,21 @@
 #include <algorithm>
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcColrv1, "qt.text.font.colrv1")
+Q_LOGGING_CATEGORY(lcColrv1, "bobui.text.font.colrv1")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static inline bool qtransform_equals_no_translate(const QTransform &a, const QTransform &b)
+static inline bool bobuiransform_equals_no_translate(const BOBUIransform &a, const BOBUIransform &b)
 {
-    if (a.type() <= QTransform::TxTranslate && b.type() <= QTransform::TxTranslate) {
+    if (a.type() <= BOBUIransform::TxTranslate && b.type() <= BOBUIransform::TxTranslate) {
         return true;
     } else {
         // We always use paths for perspective text anyway, so no
         // point in checking the full matrix...
-        Q_ASSERT(a.type() < QTransform::TxProject);
-        Q_ASSERT(b.type() < QTransform::TxProject);
+        Q_ASSERT(a.type() < BOBUIransform::TxProject);
+        Q_ASSERT(b.type() < BOBUIransform::TxProject);
 
         return a.m11() == b.m11()
             && a.m12() == b.m12()
@@ -71,14 +71,14 @@ int QFontEngine::getPointInOutline(glyph_t glyph, int flags, quint32 point, QFix
     return Err_Not_Covered;
 }
 
-static bool qt_get_font_table_default(void *user_data, uint tag, uchar *buffer, uint *length)
+static bool bobui_get_font_table_default(void *user_data, uint tag, uchar *buffer, uint *length)
 {
     QFontEngine *fe = (QFontEngine *)user_data;
     return fe->getSfntTableData(tag, buffer, length);
 }
 
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 // for testing purpose only, not thread-safe!
 static QList<QFontEngine *> *enginesCollector = nullptr;
 
@@ -96,7 +96,7 @@ Q_AUTOTEST_EXPORT QList<QFontEngine *> QFontEngine_stopCollectingEngines()
     enginesCollector = nullptr;
     return ret;
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 
 // QFontEngine
@@ -112,7 +112,7 @@ QFontEngine::QFontEngine(Type type)
       m_minRightBearing(kBearingNotInitialized)
 {
     faceData.user_data = this;
-    faceData.get_font_table = qt_get_font_table_default;
+    faceData.get_font_table = bobui_get_font_table_default;
 
     cache_cost = 0;
     fsType = 0;
@@ -122,7 +122,7 @@ QFontEngine::QFontEngine(Type type)
     glyphFormat = Format_None;
     m_subPixelPositionCount = 0;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     if (enginesCollector)
         enginesCollector->append(this);
 #endif
@@ -130,7 +130,7 @@ QFontEngine::QFontEngine(Type type)
 
 QFontEngine::~QFontEngine()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     if (enginesCollector)
         enginesCollector->removeOne(this);
 #endif
@@ -157,8 +157,8 @@ QFixed QFontEngine::underlinePosition() const
 void *QFontEngine::harfbuzzFont() const
 {
     Q_ASSERT(type() != QFontEngine::Multi);
-#if QT_CONFIG(harfbuzz)
-    return hb_qt_font_get_for_engine(const_cast<QFontEngine *>(this));
+#if BOBUI_CONFIG(harfbuzz)
+    return hb_bobui_font_get_for_engine(const_cast<QFontEngine *>(this));
 #else
     return nullptr;
 #endif
@@ -167,8 +167,8 @@ void *QFontEngine::harfbuzzFont() const
 void *QFontEngine::harfbuzzFace() const
 {
     Q_ASSERT(type() != QFontEngine::Multi);
-#if QT_CONFIG(harfbuzz)
-     return hb_qt_face_get_for_engine(const_cast<QFontEngine *>(this));
+#if BOBUI_CONFIG(harfbuzz)
+     return hb_bobui_face_get_for_engine(const_cast<QFontEngine *>(this));
 #else
     return nullptr;
 #endif
@@ -185,7 +185,7 @@ bool QFontEngine::supportsScript(QChar::Script script) const
     if (!scriptRequiresOpenType(script))
         return true;
 
-#if QT_CONFIG(harfbuzz)
+#if BOBUI_CONFIG(harfbuzz)
     // in AAT fonts, 'gsub' table is effectively replaced by 'mort'/'morx' table
     uint lenMort = 0, lenMorx = 0;
     if (getSfntTableData(QFont::Tag("mort").value(), nullptr, &lenMort)
@@ -193,11 +193,11 @@ bool QFontEngine::supportsScript(QChar::Script script) const
         return true;
     }
 
-    if (hb_face_t *face = hb_qt_face_get_for_engine(const_cast<QFontEngine *>(this))) {
+    if (hb_face_t *face = hb_bobui_face_get_for_engine(const_cast<QFontEngine *>(this))) {
         unsigned int script_count = HB_OT_MAX_TAGS_PER_SCRIPT;
         hb_tag_t script_tags[HB_OT_MAX_TAGS_PER_SCRIPT];
 
-        hb_ot_tags_from_script_and_language(hb_qt_script_to_script(script), HB_LANGUAGE_INVALID,
+        hb_ot_tags_from_script_and_language(hb_bobui_script_to_script(script), HB_LANGUAGE_INVALID,
                                             &script_count, script_tags,
                                             nullptr, nullptr);
 
@@ -219,11 +219,11 @@ bool QFontEngine::canRender(const QChar *str, int len) const
     return true;
 }
 
-glyph_metrics_t QFontEngine::boundingBox(glyph_t glyph, const QTransform &matrix)
+glyph_metrics_t QFontEngine::boundingBox(glyph_t glyph, const BOBUIransform &matrix)
 {
     glyph_metrics_t metrics = boundingBox(glyph);
 
-    if (matrix.type() > QTransform::TxTranslate) {
+    if (matrix.type() > BOBUIransform::TxTranslate) {
         return metrics.transformed(matrix);
     }
     return metrics;
@@ -250,9 +250,9 @@ QFixed QFontEngine::averageCharWidth() const
     return bb.xoff;
 }
 
-bool QFontEngine::supportsTransformation(const QTransform &transform) const
+bool QFontEngine::supportsTransformation(const BOBUIransform &transform) const
 {
-    return transform.type() < QTransform::TxProject;
+    return transform.type() < BOBUIransform::TxProject;
 }
 
 bool QFontEngine::expectsGammaCorrectedBlending() const
@@ -260,7 +260,7 @@ bool QFontEngine::expectsGammaCorrectedBlending() const
     return true;
 }
 
-void QFontEngine::getGlyphPositions(const QGlyphLayout &glyphs, const QTransform &matrix, QTextItem::RenderFlags flags,
+void QFontEngine::getGlyphPositions(const QGlyphLayout &glyphs, const BOBUIransform &matrix, BOBUIextItem::RenderFlags flags,
                                     QVarLengthArray<glyph_t> &glyphs_out, QVarLengthArray<QFixedPoint> &positions)
 {
     QFixed xpos;
@@ -276,7 +276,7 @@ void QFontEngine::getGlyphPositions(const QGlyphLayout &glyphs, const QTransform
     }
 
     int current = 0;
-    if (flags & QTextItem::RightToLeft) {
+    if (flags & BOBUIextItem::RightToLeft) {
         int i = glyphs.numGlyphs;
         int totalKashidas = 0;
         while(i--) {
@@ -422,12 +422,12 @@ void QFontEngine::initializeHeightMetrics() const
             || !getSfntTable(QFont::Tag("CBLC").value()).isEmpty()
             || !getSfntTable(QFont::Tag("bdat").value()).isEmpty();
 
-    // When porting applications from Qt 5 to Qt 6, users have noticed differences in line
+    // When porting applications from BobUI 5 to BobUI 6, users have noticed differences in line
     // metrics due to the effort to consolidate these across platforms instead of using the
     // system values directly. This environment variable gives a "last resort" for those users
-    // to tell Qt to prefer the metrics we get from the system, despite the fact these being
+    // to tell BobUI to prefer the metrics we get from the system, despite the fact these being
     // inconsistent across platforms.
-    static bool useSystemLineMetrics = qEnvironmentVariableIntValue("QT_USE_SYSTEM_LINE_METRICS") > 0;
+    static bool useSystemLineMetrics = qEnvironmentVariableIntValue("BOBUI_USE_SYSTEM_LINE_METRICS") > 0;
     if (!hasEmbeddedBitmaps && !useSystemLineMetrics) {
         // Get HHEA table values if available
         processHheaTable();
@@ -646,14 +646,14 @@ glyph_metrics_t QFontEngine::tightBoundingBox(const QGlyphLayout &glyphs)
 
 
 void QFontEngine::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path,
-                                   QTextItem::RenderFlags flags)
+                                   BOBUIextItem::RenderFlags flags)
 {
     if (!glyphs.numGlyphs)
         return;
 
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> positioned_glyphs;
-    QTransform matrix = QTransform::fromTranslate(x, y);
+    BOBUIransform matrix = BOBUIransform::fromTranslate(x, y);
     getGlyphPositions(glyphs, matrix, flags, positioned_glyphs, positions);
     addGlyphsToPath(positioned_glyphs.data(), positions.data(), positioned_glyphs.size(), path, flags);
 }
@@ -713,7 +713,7 @@ static void collectSingleContour(qreal x0, qreal y0, uint *grid, int x, int y, i
     path->closeSubpath();
 }
 
-Q_GUI_EXPORT void qt_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data, int bpl, int w, int h, QPainterPath *path)
+Q_GUI_EXPORT void bobui_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data, int bpl, int w, int h, QPainterPath *path)
 {
     uint *grid = new uint[(w+1)*(h+1)];
     // set up edges
@@ -753,7 +753,7 @@ Q_GUI_EXPORT void qt_addBitmapToPath(qreal x0, qreal y0, const uchar *image_data
 
 
 void QFontEngine::addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout &glyphs,
-                                      QPainterPath *path, QTextItem::RenderFlags flags)
+                                      QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
 // TODO what to do with 'flags' ??
     Q_UNUSED(flags);
@@ -796,13 +796,13 @@ void QFontEngine::addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout &glyp
         QFixedPoint offset = glyphs.offsets[i];
         advanceX += offset.x;
         advanceY += offset.y;
-        qt_addBitmapToPath((advanceX + metrics.x).toReal(), (advanceY + metrics.y).toReal(), bitmap_data, bitmap.bytesPerLine(), w, h, path);
+        bobui_addBitmapToPath((advanceX + metrics.x).toReal(), (advanceY + metrics.y).toReal(), bitmap_data, bitmap.bytesPerLine(), w, h, path);
         advanceX += glyphs.advances[i];
     }
 }
 
 void QFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nGlyphs,
-                                  QPainterPath *path, QTextItem::RenderFlags flags)
+                                  QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     qreal x = positions[0].x.toReal();
     qreal y = positions[0].y.toReal();
@@ -824,30 +824,30 @@ QImage QFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &/*subPixe
     return alphaMapForGlyph(glyph);
 }
 
-QImage QFontEngine::alphaMapForGlyph(glyph_t glyph, const QTransform &t)
+QImage QFontEngine::alphaMapForGlyph(glyph_t glyph, const BOBUIransform &t)
 {
     QImage i = alphaMapForGlyph(glyph);
-    if (t.type() > QTransform::TxTranslate)
+    if (t.type() > BOBUIransform::TxTranslate)
         i = i.transformed(t).convertToFormat(QImage::Format_Alpha8);
     Q_ASSERT(i.depth() <= 8); // To verify that transformed didn't change the format...
 
     return i;
 }
 
-QImage QFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &t)
+QImage QFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &t)
 {
     if (!supportsHorizontalSubPixelPositions() && !supportsVerticalSubPixelPositions())
         return alphaMapForGlyph(glyph, t);
 
     QImage i = alphaMapForGlyph(glyph, subPixelPosition);
-    if (t.type() > QTransform::TxTranslate)
+    if (t.type() > BOBUIransform::TxTranslate)
         i = i.transformed(t).convertToFormat(QImage::Format_Alpha8);
     Q_ASSERT(i.depth() <= 8); // To verify that transformed didn't change the format...
 
     return i;
 }
 
-QImage QFontEngine::alphaRGBMapForGlyph(glyph_t glyph, const QFixedPoint &/*subPixelPosition*/, const QTransform &t)
+QImage QFontEngine::alphaRGBMapForGlyph(glyph_t glyph, const QFixedPoint &/*subPixelPosition*/, const BOBUIransform &t)
 {
     const QImage alphaMask = alphaMapForGlyph(glyph, t);
     QImage rgbMask(alphaMask.width(), alphaMask.height(), QImage::Format_RGB32);
@@ -864,7 +864,7 @@ QImage QFontEngine::alphaRGBMapForGlyph(glyph_t glyph, const QFixedPoint &/*subP
     return rgbMask;
 }
 
-QImage QFontEngine::bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform&, const QColor &)
+QImage QFontEngine::bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform&, const QColor &)
 {
     Q_UNUSED(subPixelPosition);
 
@@ -894,18 +894,18 @@ QFixedPoint QFontEngine::subPixelPositionFor(const QFixedPoint &position) const
 QFontEngine::Glyph *QFontEngine::glyphData(glyph_t,
                                            const QFixedPoint &,
                                            QFontEngine::GlyphFormat,
-                                           const QTransform &)
+                                           const BOBUIransform &)
 {
     return nullptr;
 }
 
-#if QT_CONFIG(harfbuzz)
+#if BOBUI_CONFIG(harfbuzz)
 template <typename Functor>
 auto queryHarfbuzz(const QFontEngine *engine, Functor &&func)
 {
     decltype(func(nullptr)) result = {};
 
-    hb_face_t *hbFace = hb_qt_face_get_for_engine(const_cast<QFontEngine *>(engine));
+    hb_face_t *hbFace = hb_bobui_face_get_for_engine(const_cast<QFontEngine *>(engine));
     if (hb_font_t *hbFont = hb_font_create(hbFace)) {
         // explicitly use OpenType handlers for this font
         hb_ot_font_set_funcs(hbFont);
@@ -925,7 +925,7 @@ QString QFontEngine::glyphName(glyph_t index) const
     if (index >= glyph_t(glyphCount()))
         return result;
 
-#if QT_CONFIG(harfbuzz)
+#if BOBUI_CONFIG(harfbuzz)
     result = queryHarfbuzz(this, [index](hb_font_t *hbFont){
         QString result;
         // According to the OpenType specification, glyph names are limited to 63
@@ -946,7 +946,7 @@ glyph_t QFontEngine::findGlyph(QLatin1StringView name) const
 {
     glyph_t result = 0;
 
-#if QT_CONFIG(harfbuzz)
+#if BOBUI_CONFIG(harfbuzz)
     result = queryHarfbuzz(this, [name](hb_font_t *hbFont){
         // glyph names are all ASCII, so latin1 is fine here.
         hb_codepoint_t glyph;
@@ -999,13 +999,13 @@ QImage QFontEngine::renderedPathForGlyph(glyph_t glyph, const QColor &color)
     pt.x = -glyph_x;
     pt.y = -glyph_y; // the baseline
     QPainterPath path;
-    path.setFillRule(Qt::WindingFill);
+    path.setFillRule(BobUI::WindingFill);
     QImage im(glyph_width, glyph_height, QImage::Format_ARGB32_Premultiplied);
-    im.fill(Qt::transparent);
+    im.fill(BobUI::transparent);
     QPainter p(&im);
     p.setRenderHint(QPainter::Antialiasing);
     addGlyphsToPath(&glyph, &pt, 1, &path, { });
-    p.setPen(Qt::NoPen);
+    p.setPen(BobUI::NoPen);
     p.setBrush(color);
     p.drawPath(path);
     p.end();
@@ -1015,7 +1015,7 @@ QImage QFontEngine::renderedPathForGlyph(glyph_t glyph, const QColor &color)
 
 QImage QFontEngine::alphaMapForGlyph(glyph_t glyph)
 {
-    QImage im = renderedPathForGlyph(glyph, Qt::black);
+    QImage im = renderedPathForGlyph(glyph, BobUI::black);
     QImage alphaMap(im.width(), im.height(), QImage::Format_Alpha8);
 
     for (int y=0; y<im.height(); ++y) {
@@ -1118,7 +1118,7 @@ void QFontEngine::setGlyphCache(const void *context, QFontEngineGlyphCache *cach
 
 QFontEngineGlyphCache *QFontEngine::glyphCache(const void *context,
                                                GlyphFormat format,
-                                               const QTransform &transform,
+                                               const BOBUIransform &transform,
                                                const QColor &color) const
 {
     const QHash<const void*, GlyphCaches>::const_iterator caches = m_glyphCaches.constFind(context);
@@ -1129,7 +1129,7 @@ QFontEngineGlyphCache *QFontEngine::glyphCache(const void *context,
         QFontEngineGlyphCache *cache = e.cache.data();
         if (format == cache->glyphFormat()
                 && (format != Format_ARGB || color == cache->color())
-                && qtransform_equals_no_translate(cache->m_transform, transform)) {
+                && bobuiransform_equals_no_translate(cache->m_transform, transform)) {
             return cache;
         }
     }
@@ -1260,7 +1260,7 @@ void QFontEngine::loadKerningPairs(QFixed scalingFactor)
 end:
     std::sort(kerning_pairs.begin(), kerning_pairs.end());
 //    for (int i = 0; i < kerning_pairs.count(); ++i)
-//        qDebug() << 'i' << i << "left_right" << Qt::hex << kerning_pairs.at(i).left_right;
+//        qDebug() << 'i' << i << "left_right" << BobUI::hex << kerning_pairs.at(i).left_right;
 }
 
 
@@ -1278,7 +1278,7 @@ int QFontEngine::glyphCount() const
     return count;
 }
 
-Qt::HANDLE QFontEngine::handle() const
+BobUI::HANDLE QFontEngine::handle() const
 {
     return nullptr;
 }
@@ -1650,10 +1650,10 @@ QFontEngine::GlyphCacheEntry &QFontEngine::GlyphCacheEntry::operator=(const Glyp
 
 bool QFontEngine::disableEmojiSegmenter()
 {
-#if defined(QT_NO_EMOJISEGMENTER)
+#if defined(BOBUI_NO_EMOJISEGMENTER)
     return true;
 #else
-    static const bool sDisableEmojiSegmenter = qEnvironmentVariableIntValue("QT_DISABLE_EMOJI_SEGMENTER") > 0;
+    static const bool sDisableEmojiSegmenter = qEnvironmentVariableIntValue("BOBUI_DISABLE_EMOJI_SEGMENTER") > 0;
     return sDisableEmojiSegmenter;
 #endif
 }
@@ -1716,14 +1716,14 @@ void QFontEngineBox::recalcAdvances(QGlyphLayout *glyphs, QFontEngine::ShaperFla
         glyphs->advances[i] = _size;
 }
 
-void QFontEngineBox::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, QTextItem::RenderFlags flags)
+void QFontEngineBox::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs, QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     if (!glyphs.numGlyphs)
         return;
 
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> positioned_glyphs;
-    QTransform matrix = QTransform::fromTranslate(x, y - _size);
+    BOBUIransform matrix = BOBUIransform::fromTranslate(x, y - _size);
     getGlyphPositions(glyphs, matrix, flags, positioned_glyphs, positions);
 
     QSize s(_size - 3, _size - 3);
@@ -1740,7 +1740,7 @@ glyph_metrics_t QFontEngineBox::boundingBox(const QGlyphLayout &glyphs)
     return overall;
 }
 
-void QFontEngineBox::draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &ti)
+void QFontEngineBox::draw(QPaintEngine *p, qreal x, qreal y, const BOBUIextItemInt &ti)
 {
     if (!ti.glyphs.numGlyphs)
         return;
@@ -1750,7 +1750,7 @@ void QFontEngineBox::draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt 
 
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> glyphs;
-    QTransform matrix = QTransform::fromTranslate(x, y - _size);
+    BOBUIransform matrix = BOBUIransform::fromTranslate(x, y - _size);
     ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
     if (glyphs.size() == 0)
         return;
@@ -1758,7 +1758,7 @@ void QFontEngineBox::draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt 
 
     QPainter *painter = p->painter();
     painter->save();
-    painter->setBrush(Qt::NoBrush);
+    painter->setBrush(BobUI::NoBrush);
     QPen pen = painter->pen();
     pen.setWidthF(lineThickness().toReal());
     painter->setPen(pen);
@@ -1866,7 +1866,7 @@ QFontEngineMulti::~QFontEngineMulti()
     }
 }
 
-QStringList qt_fallbacksForFamily(const QString &family, QFont::Style style, QFont::StyleHint styleHint, QFontDatabasePrivate::ExtendedScript script);
+QStringList bobui_fallbacksForFamily(const QString &family, QFont::Style style, QFont::StyleHint styleHint, QFontDatabasePrivate::ExtendedScript script);
 
 void QFontEngineMulti::ensureFallbackFamiliesQueried()
 {
@@ -1874,7 +1874,7 @@ void QFontEngineMulti::ensureFallbackFamiliesQueried()
     if (styleHint == QFont::AnyStyle && fontDef.fixedPitch)
         styleHint = QFont::TypeWriter;
 
-    setFallbackFamiliesList(qt_fallbacksForFamily(fontDef.families.constFirst(),
+    setFallbackFamiliesList(bobui_fallbacksForFamily(fontDef.families.constFirst(),
                                                   QFont::Style(fontDef.style), styleHint,
                                                   QFontDatabasePrivate::ExtendedScript(m_script)));
 }
@@ -2224,7 +2224,7 @@ void QFontEngineMulti::getGlyphBearings(glyph_t glyph, qreal *leftBearing, qreal
 }
 
 void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs,
-                                        QPainterPath *path, QTextItem::RenderFlags flags)
+                                        QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     if (glyphs.numGlyphs <= 0)
         return;
@@ -2232,7 +2232,7 @@ void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &gl
     int which = highByte(glyphs.glyphs[0]);
     int start = 0;
     int end, i;
-    if (flags & QTextItem::RightToLeft) {
+    if (flags & BOBUIextItem::RightToLeft) {
         for (int gl = 0; gl < glyphs.numGlyphs; gl++)
             x += glyphs.advances[gl].toReal();
     }
@@ -2241,7 +2241,7 @@ void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &gl
         if (e == which)
             continue;
 
-        if (flags & QTextItem::RightToLeft) {
+        if (flags & BOBUIextItem::RightToLeft) {
             for (i = start; i < end; ++i)
                 x -= glyphs.advances[i].toReal();
         }
@@ -2255,7 +2255,7 @@ void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &gl
         for (i = start; i < end; ++i)
             glyphs.glyphs[i] = hi | glyphs.glyphs[i];
 
-        if (!(flags & QTextItem::RightToLeft)) {
+        if (!(flags & BOBUIextItem::RightToLeft)) {
             for (i = start; i < end; ++i)
                 x += glyphs.advances[i].toReal();
         }
@@ -2265,7 +2265,7 @@ void QFontEngineMulti::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &gl
         which = e;
     }
 
-    if (flags & QTextItem::RightToLeft) {
+    if (flags & BOBUIextItem::RightToLeft) {
         for (i = start; i < end; ++i)
             x -= glyphs.advances[i].toReal();
     }
@@ -2464,7 +2464,7 @@ QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subP
     return engine(which)->alphaMapForGlyph(stripped(glyph), subPixelPosition);
 }
 
-QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph, const QTransform &t)
+QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph, const BOBUIransform &t)
 {
     const int which = highByte(glyph);
     return engine(which)->alphaMapForGlyph(stripped(glyph), t);
@@ -2472,7 +2472,7 @@ QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph, const QTransform &t)
 
 QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph,
                                           const QFixedPoint &subPixelPosition,
-                                          const QTransform &t)
+                                          const BOBUIransform &t)
 {
     const int which = highByte(glyph);
     return engine(which)->alphaMapForGlyph(stripped(glyph), subPixelPosition, t);
@@ -2480,7 +2480,7 @@ QImage QFontEngineMulti::alphaMapForGlyph(glyph_t glyph,
 
 QImage QFontEngineMulti::alphaRGBMapForGlyph(glyph_t glyph,
                                              const QFixedPoint &subPixelPosition,
-                                             const QTransform &t)
+                                             const BOBUIransform &t)
 {
     const int which = highByte(glyph);
     return engine(which)->alphaRGBMapForGlyph(stripped(glyph), subPixelPosition, t);
@@ -2492,10 +2492,10 @@ QList<QFontVariableAxis> QFontEngineMulti::variableAxes() const
 }
 
 /*
-  This is used indirectly by Qt WebKit when using QTextLayout::setRawFont
+  This is used indirectly by BobUI WebKit when using BOBUIextLayout::setRawFont
 
   The purpose of this is to provide the necessary font fallbacks when drawing complex
-  text. Since Qt WebKit ends up repeatedly creating QTextLayout instances and passing them
+  text. Since BobUI WebKit ends up repeatedly creating BOBUIextLayout instances and passing them
   the same raw font over and over again, we want to cache the corresponding multi font engine
   as it may contain fallback font engines already.
 */
@@ -2530,8 +2530,8 @@ QFontEngine *QFontEngineMulti::createMultiFontEngine(QFontEngine *fe, int script
     return engine;
 }
 
-QTestFontEngine::QTestFontEngine(int size)
+BOBUIestFontEngine::BOBUIestFontEngine(int size)
     : QFontEngineBox(TestFontEngine, size)
 {}
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

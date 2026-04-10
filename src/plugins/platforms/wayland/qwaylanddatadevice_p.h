@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef QWAYLANDDATADEVICE_H
@@ -9,33 +9,33 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <qtwaylandclientglobal_p.h>
+#include <bobuiwaylandclientglobal_p.h>
 #include <QObject>
 #include <QPointer>
 #include <QPoint>
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
 
-QT_REQUIRE_CONFIG(wayland_datadevice);
+BOBUI_REQUIRE_CONFIG(wayland_datadevice);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMimeData;
-class QPlatformDragQtResponse;
+class QPlatformDragBobUIResponse;
 class QWindow;
 
-namespace QtWayland {
+namespace BobUIWayland {
 class xdg_toplevel_drag_v1;
 }
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 class QWaylandDataDeviceManager;
@@ -44,7 +44,7 @@ class QWaylandDataSource;
 class QWaylandInputDevice;
 class QWaylandWindow;
 
-class QWaylandDataDevice : public QObject, public QtWayland::wl_data_device
+class QWaylandDataDevice : public QObject, public BobUIWayland::wl_data_device
 {
     Q_OBJECT
 public:
@@ -56,16 +56,16 @@ public:
     QWaylandDataSource *selectionSource() const;
     void setSelectionSource(QWaylandDataSource *source);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QWaylandDataOffer *dragOffer() const;
-    bool startDrag(QMimeData *mimeData, Qt::DropActions supportedActions, QWaylandWindow *icon);
+    bool startDrag(QMimeData *mimeData, BobUI::DropActions supportedActions, QWaylandWindow *icon);
     void cancelDrag();
 #endif
 
 protected:
     void data_device_data_offer(struct ::wl_data_offer *id) override;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void data_device_drop() override;
     void data_device_enter(uint32_t serial, struct ::wl_surface *surface, wl_fixed_t x, wl_fixed_t y, struct ::wl_data_offer *id) override;
     void data_device_leave() override;
@@ -76,17 +76,17 @@ protected:
 private Q_SLOTS:
     void selectionSourceCancelled();
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void dragSourceCancelled();
 #endif
 
 private:
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPoint calculateDragPosition(int x, int y, QWindow *wnd) const;
 #endif
-    void sendResponse(Qt::DropActions supportedActions, const QPlatformDragQtResponse &response);
+    void sendResponse(BobUI::DropActions supportedActions, const QPlatformDragBobUIResponse &response);
 
-    static int dropActionsToWl(Qt::DropActions dropActions);
+    static int dropActionsToWl(BobUI::DropActions dropActions);
 
 
     QWaylandDisplay *m_display = nullptr;
@@ -98,11 +98,11 @@ private:
     QScopedPointer<QWaylandDataOffer> m_selectionOffer;
     QScopedPointer<QWaylandDataSource> m_selectionSource;
     QScopedPointer<QWaylandDataSource> m_dragSource;
-    QtWayland::xdg_toplevel_drag_v1 *m_toplevelDrag = nullptr;
+    BobUIWayland::xdg_toplevel_drag_v1 *m_toplevelDrag = nullptr;
 };
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDDATADEVICE_H

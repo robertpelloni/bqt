@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qtimer.h>
+#include <BOBUIest>
+#include <BobUICore/bobuiimer.h>
 
 #include <cstdio>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define COMPARE_WITH_TYPE(Type, arg1, arg2) \
 switch (Type) { \
-    case QTest::ComparisonOperation::CustomCompare:      QCOMPARE(arg1, arg2); break; \
-    case QTest::ComparisonOperation::Equal:              QCOMPARE_EQ(arg1, arg2); break; \
-    case QTest::ComparisonOperation::NotEqual:           QCOMPARE_NE(arg1, arg2); break; \
-    case QTest::ComparisonOperation::LessThan:           QCOMPARE_LT(arg1, arg2); break; \
-    case QTest::ComparisonOperation::LessThanOrEqual:    QCOMPARE_LE(arg1, arg2); break; \
-    case QTest::ComparisonOperation::GreaterThan:        QCOMPARE_GT(arg1, arg2); break; \
-    case QTest::ComparisonOperation::GreaterThanOrEqual: QCOMPARE_GE(arg1, arg2); break; \
-    case QTest::ComparisonOperation::ThreeWayCompare:    break; \
+    case BOBUIest::ComparisonOperation::CustomCompare:      QCOMPARE(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::Equal:              QCOMPARE_EQ(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::NotEqual:           QCOMPARE_NE(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::LessThan:           QCOMPARE_LT(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::LessThanOrEqual:    QCOMPARE_LE(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::GreaterThan:        QCOMPARE_GT(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::GreaterThanOrEqual: QCOMPARE_GE(arg1, arg2); break; \
+    case BOBUIest::ComparisonOperation::ThreeWayCompare:    break; \
 }
 
 class MyClass
@@ -94,14 +94,14 @@ static ClassWithPointerGetter getClassForValue(int val)
 }
 
 // various toString() overloads
-namespace QTest {
+namespace BOBUIest {
 
 template <> char *toString(const int *const &val)
 {
     return val ? toString(*val) : toString(nullptr);
 }
 
-} // namespace QTest
+} // namespace BOBUIest
 
 char *toString(const MyClass &val)
 {
@@ -152,42 +152,42 @@ private slots:
 
 void tst_ExtendedCompare::initTestCase_data()
 {
-    qRegisterMetaType<QTest::ComparisonOperation>();
-    QTest::addColumn<QTest::ComparisonOperation>("operation");
+    qRegisterMetaType<BOBUIest::ComparisonOperation>();
+    BOBUIest::addColumn<BOBUIest::ComparisonOperation>("operation");
     // Do not test plain old QCOMPARE() intentionally, as it's tested in other
     // places.
-    QTest::newRow("EQ") << QTest::ComparisonOperation::Equal;
-    QTest::newRow("NE") << QTest::ComparisonOperation::NotEqual;
-    QTest::newRow("LT") << QTest::ComparisonOperation::LessThan;
-    QTest::newRow("LE") << QTest::ComparisonOperation::LessThanOrEqual;
-    QTest::newRow("GT") << QTest::ComparisonOperation::GreaterThan;
-    QTest::newRow("GE") << QTest::ComparisonOperation::GreaterThanOrEqual;
+    BOBUIest::newRow("EQ") << BOBUIest::ComparisonOperation::Equal;
+    BOBUIest::newRow("NE") << BOBUIest::ComparisonOperation::NotEqual;
+    BOBUIest::newRow("LT") << BOBUIest::ComparisonOperation::LessThan;
+    BOBUIest::newRow("LE") << BOBUIest::ComparisonOperation::LessThanOrEqual;
+    BOBUIest::newRow("GT") << BOBUIest::ComparisonOperation::GreaterThan;
+    BOBUIest::newRow("GE") << BOBUIest::ComparisonOperation::GreaterThanOrEqual;
 }
 
 template <typename T> static void generateData(T val1, T val2)
 {
     Q_ASSERT(val1 < val2);
-    QTest::addColumn<T>("lhs");
-    QTest::addColumn<T>("rhs");
-    QTest::newRow("left == right") << val1 << val1;
-    QTest::newRow("left < right") << val1 << val2;
-    QTest::newRow("left > right") << val2 << val1;
+    BOBUIest::addColumn<T>("lhs");
+    BOBUIest::addColumn<T>("rhs");
+    BOBUIest::newRow("left == right") << val1 << val1;
+    BOBUIest::newRow("left < right") << val1 << val2;
+    BOBUIest::newRow("left > right") << val2 << val1;
 }
 
 template <typename T> static void executeComparison()
 {
-    QFETCH_GLOBAL(QTest::ComparisonOperation, operation);
+    QFETCH_GLOBAL(BOBUIest::ComparisonOperation, operation);
     QFETCH(T, lhs);
     QFETCH(T, rhs);
     switch (operation) {
-    case QTest::ComparisonOperation::CustomCompare:      QCOMPARE(lhs, rhs); break;
-    case QTest::ComparisonOperation::Equal:              QCOMPARE_EQ(lhs, rhs); break;
-    case QTest::ComparisonOperation::NotEqual:           QCOMPARE_NE(lhs, rhs); break;
-    case QTest::ComparisonOperation::LessThan:           QCOMPARE_LT(lhs, rhs); break;
-    case QTest::ComparisonOperation::LessThanOrEqual:    QCOMPARE_LE(lhs, rhs); break;
-    case QTest::ComparisonOperation::GreaterThan:        QCOMPARE_GT(lhs, rhs); break;
-    case QTest::ComparisonOperation::GreaterThanOrEqual: QCOMPARE_GE(lhs, rhs); break;
-    case QTest::ComparisonOperation::ThreeWayCompare:    break;
+    case BOBUIest::ComparisonOperation::CustomCompare:      QCOMPARE(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::Equal:              QCOMPARE_EQ(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::NotEqual:           QCOMPARE_NE(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::LessThan:           QCOMPARE_LT(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::LessThanOrEqual:    QCOMPARE_LE(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::GreaterThan:        QCOMPARE_GT(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::GreaterThanOrEqual: QCOMPARE_GE(lhs, rhs); break;
+    case BOBUIest::ComparisonOperation::ThreeWayCompare:    break;
     }
 }
 
@@ -256,12 +256,12 @@ void tst_ExtendedCompare::compareUnregistereEnum()
 
 void tst_ExtendedCompare::compareRegistereEnum_data()
 {
-    generateData(Qt::Monday, Qt::Sunday);
+    generateData(BobUI::Monday, BobUI::Sunday);
 }
 
 void tst_ExtendedCompare::compareRegistereEnum()
 {
-    executeComparison<Qt::DayOfWeek>();
+    executeComparison<BobUI::DayOfWeek>();
 }
 
 void tst_ExtendedCompare::compareCustomTypes_data()
@@ -281,7 +281,7 @@ void tst_ExtendedCompare::checkComparisonForTemporaryObjects()
     // This test checks that temporary objects live until the end of
     // comparison.
 
-    QFETCH_GLOBAL(QTest::ComparisonOperation, operation);
+    QFETCH_GLOBAL(BOBUIest::ComparisonOperation, operation);
     COMPARE_WITH_TYPE(operation, getClassForValue(0).getValuePointer(),
                       getClassForValue(1).getValuePointer());
 }
@@ -293,7 +293,7 @@ public:
 
     void setValueDeferred(int value)
     {
-        QTimer::singleShot(100, [this, value] { setValue(value); });
+        BOBUIimer::singleShot(100, [this, value] { setValue(value); });
     }
 };
 
@@ -306,36 +306,36 @@ char *toString(const ClassWithDeferredSetter &val)
 
 void tst_ExtendedCompare::checkComparisonWithTimeout()
 {
-    QFETCH_GLOBAL(QTest::ComparisonOperation, operation);
+    QFETCH_GLOBAL(BOBUIest::ComparisonOperation, operation);
     ClassWithDeferredSetter c(0);
     c.setValueDeferred(1);
     switch (operation) {
-    case QTest::ComparisonOperation::Equal:
-        QTRY_COMPARE_EQ_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
+    case BOBUIest::ComparisonOperation::Equal:
+        BOBUIRY_COMPARE_EQ_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
         break;
-    case QTest::ComparisonOperation::NotEqual:
-        QTRY_COMPARE_NE_WITH_TIMEOUT(c, ClassWithDeferredSetter(0), 300);
+    case BOBUIest::ComparisonOperation::NotEqual:
+        BOBUIRY_COMPARE_NE_WITH_TIMEOUT(c, ClassWithDeferredSetter(0), 300);
         break;
-    case QTest::ComparisonOperation::LessThan:
-        QTRY_COMPARE_LT_WITH_TIMEOUT(c, ClassWithDeferredSetter(0), 300);
+    case BOBUIest::ComparisonOperation::LessThan:
+        BOBUIRY_COMPARE_LT_WITH_TIMEOUT(c, ClassWithDeferredSetter(0), 300);
         break;
-    case QTest::ComparisonOperation::LessThanOrEqual:
-        QTRY_COMPARE_LE_WITH_TIMEOUT(c, ClassWithDeferredSetter(-1), 300);
+    case BOBUIest::ComparisonOperation::LessThanOrEqual:
+        BOBUIRY_COMPARE_LE_WITH_TIMEOUT(c, ClassWithDeferredSetter(-1), 300);
         break;
-    case QTest::ComparisonOperation::GreaterThan:
-        QTRY_COMPARE_GT_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
+    case BOBUIest::ComparisonOperation::GreaterThan:
+        BOBUIRY_COMPARE_GT_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
         break;
-    case QTest::ComparisonOperation::GreaterThanOrEqual:
-        QTRY_COMPARE_GE_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
+    case BOBUIest::ComparisonOperation::GreaterThanOrEqual:
+        BOBUIRY_COMPARE_GE_WITH_TIMEOUT(c, ClassWithDeferredSetter(1), 300);
         break;
-    case QTest::ComparisonOperation::CustomCompare:
+    case BOBUIest::ComparisonOperation::CustomCompare:
         QFAIL("Unexpected comparison operation");
         break;
-    case QTest::ComparisonOperation::ThreeWayCompare: break;
+    case BOBUIest::ComparisonOperation::ThreeWayCompare: break;
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_ExtendedCompare)
+BOBUIEST_MAIN(tst_ExtendedCompare)
 #include "tst_extendedcompare.moc"

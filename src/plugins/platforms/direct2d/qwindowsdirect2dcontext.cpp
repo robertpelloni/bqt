@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dhelpers.h"
 #include "qwindowsdirect2dintegration.h"
 
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/private/qcomptr_p.h>
 
 #include <d3d11_1.h>
 #include <d2d1_1.h>
@@ -14,7 +14,7 @@
 #include <dxgi1_2.h>
 #include <dwrite.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DContextPrivate
 {
@@ -78,10 +78,10 @@ public:
 
         D2D1_FACTORY_OPTIONS options = {};
 
-#ifdef QT_D2D_DEBUG_OUTPUT
+#ifdef BOBUI_D2D_DEBUG_OUTPUT
         qDebug("Turning on Direct2D debugging messages");
         options.debugLevel = D2D1_DEBUG_LEVEL_INFORMATION;
-#endif // QT_D2D_DEBUG_OUTPUT
+#endif // BOBUI_D2D_DEBUG_OUTPUT
 
         hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, options, d2dFactory.GetAddressOf());
         if (FAILED(hr)) {
@@ -180,4 +180,4 @@ IDWriteGdiInterop *QWindowsDirect2DContext::dwriteGdiInterop() const
     return d->directWriteGdiInterop.Get();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "cppwriteincludes.h"
 #include "driver.h"
@@ -9,18 +9,18 @@
 
 #include <qdebug.h>
 #include <qfileinfo.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
 #include <cstdio>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 enum { debugWriteIncludes = 0 };
 enum { warnHeaderGeneration = 0 };
 
-// Format a module header as 'QtCore/QObject'
+// Format a module header as 'BobUICore/QObject'
 static inline QString moduleHeader(const QString &module, const QString &header)
 {
     QString rc = module;
@@ -34,7 +34,7 @@ namespace CPP {
 WriteIncludes::WriteIncludes(Uic *uic) : WriteIncludesBase(uic),
     m_output(uic->output())
 {
-    // When possible (no namespace) use the "QtModule/QClass" convention
+    // When possible (no namespace) use the "BobUIModule/QClass" convention
     // and create a re-mapping of the old header "qclass.h" to it. Do not do this
     // for the "Phonon::Someclass" classes, however.
     const QLatin1StringView namespaceDelimiter = "::"_L1;
@@ -130,7 +130,7 @@ void WriteIncludes::addCppCustomWidget(const QString &className, const DomCustom
 {
     const DomHeader *domHeader = dcw->elementHeader();
     if (domHeader != nullptr && !domHeader->text().isEmpty()) {
-        // custom header unless it is a built-in qt class
+        // custom header unless it is a built-in bobui class
         QString header;
         bool global = false;
         if (!m_classToHeader.contains(className)) {
@@ -170,7 +170,7 @@ void WriteIncludes::writeHeaders(const OrderedSet &headers, bool global)
     const QChar openingQuote = global ? u'<' : u'"';
     const QChar closingQuote = global ? u'>' : u'"';
 
-    // Check for the old headers 'qslider.h' and replace by 'QtGui/QSlider'
+    // Check for the old headers 'qslider.h' and replace by 'BobUIGui/QSlider'
     for (const QString &header : headers) {
         const QString value = m_oldHeaderToNewHeader.value(header, header);
         const auto trimmed = QStringView(value).trimmed();
@@ -181,4 +181,4 @@ void WriteIncludes::writeHeaders(const OrderedSet &headers, bool global)
 
 } // namespace CPP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

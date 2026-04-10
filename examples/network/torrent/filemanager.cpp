@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "filemanager.h"
 #include "metainfo.h"
@@ -7,12 +7,12 @@
 #include <QByteArray>
 #include <QDir>
 #include <QFile>
-#include <QTimer>
-#include <QTimerEvent>
+#include <BOBUIimer>
+#include <BOBUIimerEvent>
 #include <QCryptographicHash>
 
 FileManager::FileManager(QObject *parent)
-    : QThread(parent)
+    : BOBUIhread(parent)
 {
     quit = false;
     totalLength = 0;
@@ -49,7 +49,7 @@ qint32 FileManager::read(qint32 pieceIndex, qint32 offset, qint32 length)
 
     if (!wokeUp) {
         wokeUp = true;
-        QMetaObject::invokeMethod(this, "wakeUp", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "wakeUp", BobUI::QueuedConnection);
     }
 
     return request.id;
@@ -67,7 +67,7 @@ void FileManager::write(qint32 pieceIndex, qint32 offset, const QByteArray &data
 
     if (!wokeUp) {
         wokeUp = true;
-        QMetaObject::invokeMethod(this, "wakeUp", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "wakeUp", BobUI::QueuedConnection);
     }
 }
 
@@ -79,7 +79,7 @@ void FileManager::verifyPiece(qint32 pieceIndex)
 
     if (!wokeUp) {
         wokeUp = true;
-        QMetaObject::invokeMethod(this, "wakeUp", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "wakeUp", BobUI::QueuedConnection);
     }
 }
 

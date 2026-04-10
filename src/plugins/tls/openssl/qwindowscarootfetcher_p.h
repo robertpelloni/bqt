@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWINDOWSCAROOTFETCHER_P_H
 #define QWINDOWSCAROOTFETCHER_P_H
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtNetwork/qsslcertificate.h>
-#include <QtNetwork/qsslsocket.h>
+#include <BobUINetwork/qsslcertificate.h>
+#include <BobUINetwork/qsslsocket.h>
 
-#include <QtCore/QtGlobal>
-#include <QtCore/QObject>
+#include <BobUICore/BobUIGlobal>
+#include <BobUICore/QObject>
 
 #include "../shared/qwincrypt_p.h"
 
@@ -19,14 +19,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsCaRootFetcher : public QObject
 {
@@ -55,6 +55,6 @@ private:
     QString peerVerifyName;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSCAROOTFETCHER_P_H

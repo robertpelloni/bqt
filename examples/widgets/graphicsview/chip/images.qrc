@@ -1,6 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>qt4logo.png</file>
+    <file>bobui4logo.png</file>
     <file>zoomin.png</file>
     <file>zoomout.png</file>
     <file>rotateleft.png</file>

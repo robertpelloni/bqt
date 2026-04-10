@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (C) 2024 Klaralvdalens Datakonsult AB (KDAB)
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 # The tika database at https://raw.githubusercontent.com/apache/tika/main/tika-core/src/main/resources/org/apache/tika/mime/tika-mimetypes.xml
 # uses a format that is *close* to the freedesktop.org shared-mime-info format, but not quite. They extended it with
@@ -11,7 +11,7 @@
 # It's also missing some crucial mimetypes that we need.
 # This script fixes all that.
 
-# Usage: download tika-mimetypes.xml as tika-mimetypes.xml.orig and run this script to produce Qt's version of tika-mimetypes.xml
+# Usage: download tika-mimetypes.xml as tika-mimetypes.xml.orig and run this script to produce BobUI's version of tika-mimetypes.xml
 # This is automated by update_tika_from_upstream.sh
 
 import sys, re
@@ -21,7 +21,7 @@ file = "tika-mimetypes.xml"
 
 def wrap_with_comment(line):
     if not '<!--' in line:
-        return "<!-- DISABLED FOR QT: " + line.rstrip('\n') + "-->\n"
+        return "<!-- DISABLED FOR BOBUI: " + line.rstrip('\n') + "-->\n"
     return line
 
 def transform_hex_value(line):
@@ -86,7 +86,7 @@ with open_input_file(inputfile) as f:
             pattern = re.compile(r'( *)<!-- (<glob pattern="[^"]*"/>)(.*?)conflicts with(.*?)-->')
             match = pattern.search(line)
             if match:
-                line = match.group(1) + match.group(2) + ' <!-- Re-enabled by Qt -->\n'
+                line = match.group(1) + match.group(2) + ' <!-- Re-enabled by BobUI -->\n'
 
             if not '<!--' in line:
                 line = line.replace("_comment>", "comment>")
@@ -99,12 +99,12 @@ with open_input_file(inputfile) as f:
                 # No type specified, assumed string
                 if '<match value=' in line and '>' in line and not 'type=' in line:
                     line = line.replace('<match ', '<match type="string" ')
-                    line = line.replace('>', '> <!-- type added by Qt -->')
+                    line = line.replace('>', '> <!-- type added by BobUI -->')
 
                 # No offset specified, spell out 0
                 if '<match value=' in line and '>' in line and not 'offset=' in line:
                     line = line.replace('<match ', '<match offset="0" ')
-                    line = line.replace('>', '> <!-- offset added by Qt -->')
+                    line = line.replace('>', '> <!-- offset added by BobUI -->')
 
                 # tika extensions, not supported
                 if 'type="unicodeLE"' in line or 'type="regex"' in line or '<match value="(?:\\\\x' in line:
@@ -112,16 +112,16 @@ with open_input_file(inputfile) as f:
 
                 if '<glob pattern="*.c"/>' in line.lower():
                     line = line.replace('/', ' case-sensitive="true"/')
-                    line = line.replace('>', '> <!-- case-sensitive added by Qt -->')
+                    line = line.replace('>', '> <!-- case-sensitive added by BobUI -->')
 
                 # Add aliases needed by the unittest
                 if '<mime-type type="audio/mpeg"' in line:
-                    line += '    <alias type="audio/mp3"/> <!-- added by Qt -->\n';
+                    line += '    <alias type="audio/mp3"/> <!-- added by BobUI -->\n';
                 if '<mime-type type="text/x-diff"' in line:
-                    line += '    <alias type="text/x-patch"/> <!-- added by Qt -->\n';
+                    line += '    <alias type="text/x-patch"/> <!-- added by BobUI -->\n';
                 if '<mime-type type="application/x-sh"' in line:
-                    line += '    <alias type="application/x-shellscript"/> <!-- added by Qt -->\n';
-                    line += '    <sub-class-of type="application/x-executable"/> <!-- added by Qt -->\n';
+                    line += '    <alias type="application/x-shellscript"/> <!-- added by BobUI -->\n';
+                    line += '    <sub-class-of type="application/x-executable"/> <!-- added by BobUI -->\n';
 
                 # Tika supports 0x syntax for strings, shared-mime-info requires escaping each char with \x
                 if 'value="0x' in line and 'type="string"' in line:
@@ -133,7 +133,7 @@ with open_input_file(inputfile) as f:
 
             if '<mime-info xmlns' in line:
                 line += """
-  <!-- Qt additions START -->
+  <!-- BobUI additions START -->
 
   <mime-type type="application/x-zerosize">
     <comment>Empty document</comment>
@@ -145,11 +145,11 @@ with open_input_file(inputfile) as f:
   </mime-type>
 
   <mime-type type="text/x-qml">
-    <comment>Qt Markup Language file</comment>
+    <comment>BobUI Markup Language file</comment>
     <sub-class-of type="text/plain"/>
     <magic>
       <match type="string" value="/bin/env qml" offset="2:16"/>
-      <match type="string" value="import Qt" offset="0:3000">
+      <match type="string" value="import BobUI" offset="0:3000">
         <match type="string" value="{" offset="9:3009"/>
       </match>
       <match type="string" value="import Qml" offset="0:3000">
@@ -181,7 +181,7 @@ with open_input_file(inputfile) as f:
     <generic-icon name="folder"/>
   </mime-type>
 
-  <!-- Qt additions END -->
+  <!-- BobUI additions END -->
 """
             out.write(line)
 

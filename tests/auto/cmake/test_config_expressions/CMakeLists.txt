@@ -1,16 +1,16 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 
 project(test_config_expressions)
 
-find_package(Qt6 REQUIRED)
-include(QtFeature)
+find_package(BobUI6 REQUIRED)
+include(BobUIFeature)
 
 function(assert expected_value)
     set(expression ${ARGN})
-    qt_evaluate_config_expression(result ${expression})
+    bobui_evaluate_config_expression(result ${expression})
     if(NOT "${result}" STREQUAL "${expected_value}")
         message(FATAL_ERROR
             "Unexpected value '${result}' when evaluating expression '${expression}'.")
@@ -27,7 +27,7 @@ endfunction()
 
 function(expect_failure expected_value)
     set(expression ${ARGN})
-    qt_evaluate_config_expression(result ${expression})
+    bobui_evaluate_config_expression(result ${expression})
     if("${result}" STREQUAL "${expected_value}")
         message(FATAL_ERROR
             "Expression '${expression}' unexpectedly evaluated to the correct value '${result}'.")

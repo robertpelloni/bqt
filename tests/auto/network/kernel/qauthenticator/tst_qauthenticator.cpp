@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QString>
-#include <QTest>
-#include <QtCore/QCoreApplication>
-#include <QtNetwork/QAuthenticator>
-#include <QtNetwork/QHttpHeaders>
+#include <BobUICore/QString>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
+#include <BobUINetwork/QAuthenticator>
+#include <BobUINetwork/QHttpHeaders>
 
 #include <private/qauthenticator_p.h>
 
@@ -39,15 +39,15 @@ tst_QAuthenticator::tst_QAuthenticator()
 
 void tst_QAuthenticator::basicAuth_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QString>("realm");
-    QTest::addColumn<QString>("user");
-    QTest::addColumn<QString>("password");
-    QTest::addColumn<QByteArray>("expectedReply");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<QString>("realm");
+    BOBUIest::addColumn<QString>("user");
+    BOBUIest::addColumn<QString>("password");
+    BOBUIest::addColumn<QByteArray>("expectedReply");
 
-    QTest::newRow("just-user") << "" << "" << "foo" << "" << QByteArray("foo:").toBase64();
-    QTest::newRow("user-password") << "" << "" << "foo" << "bar" << QByteArray("foo:bar").toBase64();
-    QTest::newRow("user-password-realm") << "realm=\"secure area\"" << "secure area" << "foo" << "bar" << QByteArray("foo:bar").toBase64();
+    BOBUIest::newRow("just-user") << "" << "" << "foo" << "" << QByteArray("foo:").toBase64();
+    BOBUIest::newRow("user-password") << "" << "" << "foo" << "bar" << QByteArray("foo:bar").toBase64();
+    BOBUIest::newRow("user-password-realm") << "realm=\"secure area\"" << "secure area" << "foo" << "bar" << QByteArray("foo:bar").toBase64();
 }
 
 void tst_QAuthenticator::basicAuth()
@@ -80,14 +80,14 @@ void tst_QAuthenticator::basicAuth()
 
 void tst_QAuthenticator::ntlmAuth_data()
 {
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QString>("realm");
-    QTest::addColumn<bool>("sso");
+    BOBUIest::addColumn<QString>("data");
+    BOBUIest::addColumn<QString>("realm");
+    BOBUIest::addColumn<bool>("sso");
 
-    QTest::newRow("no-realm") << "TlRMTVNTUAACAAAAHAAcADAAAAAFAoEATFZ3OLRQADIAAAAAAAAAAJYAlgBMAAAAUQBUAC0AVABFAFMAVAAtAEQATwBNAEEASQBOAAIAHABRAFQALQBUAEUAUwBUAC0ARABPAE0AQQBJAE4AAQAcAFEAVAAtAFQARQBTAFQALQBTAEUAUgBWAEUAUgAEABYAcQB0AC0AdABlAHMAdAAtAG4AZQB0AAMANABxAHQALQB0AGUAcwB0AC0AcwBlAHIAdgBlAHIALgBxAHQALQB0AGUAcwB0AC0AbgBlAHQAAAAAAA==" << "" << false;
-    QTest::newRow("with-realm") << "TlRMTVNTUAACAAAADAAMADgAAAAFAoECWCZkccFFAzwAAAAAAAAAAL4AvgBEAAAABQLODgAAAA9NAEcARABOAE8ASwACAAwATQBHAEQATgBPAEsAAQAcAE4ATwBLAC0AQQBNAFMAUwBTAEYARQAtADAAMQAEACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQADAD4AbgBvAGsALQBhAG0AcwBzAHMAZgBlAC0AMAAxAC4AbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAFACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAAAAAA" << "NOE" << false;
-    QTest::newRow("no-realm-sso") << "TlRMTVNTUAACAAAAHAAcADAAAAAFAoEATFZ3OLRQADIAAAAAAAAAAJYAlgBMAAAAUQBUAC0AVABFAFMAVAAtAEQATwBNAEEASQBOAAIAHABRAFQALQBUAEUAUwBUAC0ARABPAE0AQQBJAE4AAQAcAFEAVAAtAFQARQBTAFQALQBTAEUAUgBWAEUAUgAEABYAcQB0AC0AdABlAHMAdAAtAG4AZQB0AAMANABxAHQALQB0AGUAcwB0AC0AcwBlAHIAdgBlAHIALgBxAHQALQB0AGUAcwB0AC0AbgBlAHQAAAAAAA==" << "" << true;
-    QTest::newRow("with-realm-sso") << "TlRMTVNTUAACAAAADAAMADgAAAAFAoECWCZkccFFAzwAAAAAAAAAAL4AvgBEAAAABQLODgAAAA9NAEcARABOAE8ASwACAAwATQBHAEQATgBPAEsAAQAcAE4ATwBLAC0AQQBNAFMAUwBTAEYARQAtADAAMQAEACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQADAD4AbgBvAGsALQBhAG0AcwBzAHMAZgBlAC0AMAAxAC4AbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAFACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAAAAAA" << "NOE" << true;
+    BOBUIest::newRow("no-realm") << "TlRMTVNTUAACAAAAHAAcADAAAAAFAoEATFZ3OLRQADIAAAAAAAAAAJYAlgBMAAAAUQBUAC0AVABFAFMAVAAtAEQATwBNAEEASQBOAAIAHABRAFQALQBUAEUAUwBUAC0ARABPAE0AQQBJAE4AAQAcAFEAVAAtAFQARQBTAFQALQBTAEUAUgBWAEUAUgAEABYAcQB0AC0AdABlAHMAdAAtAG4AZQB0AAMANABxAHQALQB0AGUAcwB0AC0AcwBlAHIAdgBlAHIALgBxAHQALQB0AGUAcwB0AC0AbgBlAHQAAAAAAA==" << "" << false;
+    BOBUIest::newRow("with-realm") << "TlRMTVNTUAACAAAADAAMADgAAAAFAoECWCZkccFFAzwAAAAAAAAAAL4AvgBEAAAABQLODgAAAA9NAEcARABOAE8ASwACAAwATQBHAEQATgBPAEsAAQAcAE4ATwBLAC0AQQBNAFMAUwBTAEYARQAtADAAMQAEACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQADAD4AbgBvAGsALQBhAG0AcwBzAHMAZgBlAC0AMAAxAC4AbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAFACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAAAAAA" << "NOE" << false;
+    BOBUIest::newRow("no-realm-sso") << "TlRMTVNTUAACAAAAHAAcADAAAAAFAoEATFZ3OLRQADIAAAAAAAAAAJYAlgBMAAAAUQBUAC0AVABFAFMAVAAtAEQATwBNAEEASQBOAAIAHABRAFQALQBUAEUAUwBUAC0ARABPAE0AQQBJAE4AAQAcAFEAVAAtAFQARQBTAFQALQBTAEUAUgBWAEUAUgAEABYAcQB0AC0AdABlAHMAdAAtAG4AZQB0AAMANABxAHQALQB0AGUAcwB0AC0AcwBlAHIAdgBlAHIALgBxAHQALQB0AGUAcwB0AC0AbgBlAHQAAAAAAA==" << "" << true;
+    BOBUIest::newRow("with-realm-sso") << "TlRMTVNTUAACAAAADAAMADgAAAAFAoECWCZkccFFAzwAAAAAAAAAAL4AvgBEAAAABQLODgAAAA9NAEcARABOAE8ASwACAAwATQBHAEQATgBPAEsAAQAcAE4ATwBLAC0AQQBNAFMAUwBTAEYARQAtADAAMQAEACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQADAD4AbgBvAGsALQBhAG0AcwBzAHMAZgBlAC0AMAAxAC4AbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAFACAAbQBnAGQAbgBvAGsALgBuAG8AawBpAGEALgBjAG8AbQAAAAAA" << "NOE" << true;
 }
 
 void tst_QAuthenticator::ntlmAuth()
@@ -181,7 +181,7 @@ void tst_QAuthenticator::isMethodSupported()
     QVERIFY(QAuthenticatorPrivate::isMethodSupported("DIgesT"));
     QVERIFY(QAuthenticatorPrivate::isMethodSupported("NTLM"));
     QVERIFY(QAuthenticatorPrivate::isMethodSupported("ntlm"));
-#if QT_CONFIG(sspi) || QT_CONFIG(gssapi)
+#if BOBUI_CONFIG(sspi) || BOBUI_CONFIG(gssapi)
     QVERIFY(QAuthenticatorPrivate::isMethodSupported("negotiate"));
 #else
     QVERIFY(!QAuthenticatorPrivate::isMethodSupported("negotiate"));
@@ -211,6 +211,6 @@ void tst_QAuthenticator::testClear()
     QCOMPARE(qauth.realm(), QString());
 }
 
-QTEST_MAIN(tst_QAuthenticator);
+BOBUIEST_MAIN(tst_QAuthenticator);
 
 #include "tst_qauthenticator.moc"

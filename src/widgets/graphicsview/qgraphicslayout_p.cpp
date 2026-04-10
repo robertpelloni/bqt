@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qglobal.h"
 
@@ -9,7 +9,7 @@
 #include "qgraphicswidget.h"
 #include "qapplication.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \internal
@@ -32,8 +32,8 @@ void QGraphicsLayoutPrivate::reparentChildItems(QGraphicsItem *newParent)
             l->d_func()->reparentChildItems(newParent);
         } else if (QGraphicsItem *itemChild = layoutChild->graphicsItem()){
             QGraphicsItem *childParent = itemChild->parentItem();
-#ifdef QT_DEBUG
-            if (childParent && childParent != newParent && itemChild->isWidget() && qt_graphicsLayoutDebug()) {
+#ifdef BOBUI_DEBUG
+            if (childParent && childParent != newParent && itemChild->isWidget() && bobui_graphicsLayoutDebug()) {
                 QGraphicsWidget *w = static_cast<QGraphicsWidget*>(layoutChild);
                 qWarning("QGraphicsLayout::addChildLayout: widget %s \"%s\" in wrong parent; moved to correct parent",
                          w->metaObject()->className(), w->objectName().toLocal8Bit().constData());
@@ -67,7 +67,7 @@ void QGraphicsLayoutPrivate::getMargin(qreal *result, qreal userMargin, QStyle::
     }
 }
 
-Qt::LayoutDirection QGraphicsLayoutPrivate::visualDirection() const
+BobUI::LayoutDirection QGraphicsLayoutPrivate::visualDirection() const
 {
     if (QGraphicsItem *maybeWidget = parentItem()) {
         if (maybeWidget->isWidget())
@@ -124,7 +124,7 @@ void QGraphicsLayoutPrivate::addChildLayoutItem(QGraphicsLayoutItem *layoutItem)
             if (oldParent == newParent || !newParent)
                 return;
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
             if (oldParent && item->isWidget()) {
                 QGraphicsWidget *w = static_cast<QGraphicsWidget*>(item);
                 qWarning("QGraphicsLayout::addChildLayoutItem: %s \"%s\" in wrong parent; moved to correct parent",
@@ -158,4 +158,4 @@ void QGraphicsLayoutPrivate::activateRecursive(QGraphicsLayoutItem *item)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

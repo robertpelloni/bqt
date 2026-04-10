@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoperatingsystemversion_win_p.h"
 
 #include "qoperatingsystemversion_p.h"
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <qbytearray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline OSVERSIONINFOEX determineWinOsVersion()
 {
@@ -37,9 +37,9 @@ static inline OSVERSIONINFOEX determineWinOsVersion()
 OSVERSIONINFOEX qWindowsVersionInfo()
 {
     OSVERSIONINFOEX realResult = determineWinOsVersion();
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     {
-        if (Q_UNLIKELY(qEnvironmentVariableIsSet("QT_WINVER_OVERRIDE"))) {
+        if (Q_UNLIKELY(qEnvironmentVariableIsSet("BOBUI_WINVER_OVERRIDE"))) {
             OSVERSIONINFOEX result = realResult;
             result.dwMajorVersion = 0;
             result.dwMinorVersion = 0;
@@ -50,7 +50,7 @@ OSVERSIONINFOEX qWindowsVersionInfo()
             result.wServicePackMajor = 0;
             result.wServicePackMinor = 0;
 
-            const QByteArray winVerOverride = qgetenv("QT_WINVER_OVERRIDE");
+            const QByteArray winVerOverride = qgetenv("BOBUI_WINVER_OVERRIDE");
             if (winVerOverride == "WINDOWS10" || winVerOverride == "2016"
                 || winVerOverride == "2019" || winVerOverride == "2022") {
                 result.dwMajorVersion = 10;
@@ -88,4 +88,4 @@ QOperatingSystemVersionBase QOperatingSystemVersionBase::current_impl()
     return v;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

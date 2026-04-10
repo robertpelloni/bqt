@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qplatformdefs.h>
 #include "private/qxbmhandler_p.h"
 
-#ifndef QT_NO_IMAGEFORMAT_XBM
+#ifndef BOBUI_NO_IMAGEFORMAT_XBM
 
 #include <qimage.h>
 #include <qiodevice.h>
 #include <qloggingcategory.h>
 #include <qvariant.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 #include <private/qimage_p.h>
 
 #include <cstdio>
 
 #include <stdio.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtMiscUtils;
+using namespace BobUIMiscUtils;
 
 /*****************************************************************************
   X bitmap image read/write functions
@@ -28,7 +28,7 @@ using namespace QtMiscUtils;
 
 static inline int hex2byte(char *p)
 {
-    return QtMiscUtils::fromHex(p[0]) * 16 | QtMiscUtils::fromHex(p[1]);
+    return BobUIMiscUtils::fromHex(p[0]) * 16 | BobUIMiscUtils::fromHex(p[1]);
 }
 
 static bool read_xbm_header(QIODevice *device, int& w, int& h)
@@ -118,7 +118,7 @@ static bool read_xbm_body(QIODevice *device, int w, int h, QImage *outImage)
     if (!QImageIOHandler::allocateImage(QSize(w, h), QImage::Format_MonoLSB, outImage))
         return false;
 
-    outImage->fill(Qt::color0);       // in case the image data does not cover the full image
+    outImage->fill(BobUI::color0);       // in case the image data does not cover the full image
 
     outImage->setColorCount(2);
     outImage->setColor(0, qRgb(255,255,255));        // white
@@ -334,6 +334,6 @@ void QXbmHandler::setOption(ImageOption option, const QVariant &value)
         fileName = value.toString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_XBM
+#endif // BOBUI_NO_IMAGEFORMAT_XBM

@@ -1,22 +1,22 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:file-handling
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:file-handling
 
 #include "qandroidapkfileengine.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QReadWriteLock>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QReadWriteLock>
 
 #include <private/qjnihelpers_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_DECLARE_JNI_CLASS(JFileInfo, "org/qtproject/qt/android/JFileInfo")
+Q_DECLARE_JNI_CLASS(JFileInfo, "org/bobuiproject/bobui/android/JFileInfo")
 Q_DECLARE_JNI_CLASS(MappedByteBuffer, "java/nio/MappedByteBuffer")
 
-using namespace Qt::StringLiterals;
-using namespace QtJniTypes;
+using namespace BobUI::StringLiterals;
+using namespace BobUIJniTypes;
 using namespace QNativeInterface;
 
 typedef QList<QAndroidApkFileEngine::FileInfo> ApkFileInfos;
@@ -38,7 +38,7 @@ static ApkFileInfos *apkFileInfos()
     }
 
     QWriteLocker lock(&g_apkFileInfosGlobal->apkInfosLock);
-    ArrayList arrayList = QtApkFileEngine::callStaticMethod<ArrayList>(
+    ArrayList arrayList = BobUIApkFileEngine::callStaticMethod<ArrayList>(
                 "getApkFileInfos", QAndroidApkFileEngine::apkPath());
 
     for (int i = 0; i < arrayList.callMethod<int>("size"); ++i) {
@@ -74,7 +74,7 @@ QAndroidApkFileEngine::~QAndroidApkFileEngine()
 
 QString QAndroidApkFileEngine::apkPath()
 {
-    static QString apkPath = QtApkFileEngine::callStaticMethod<QString>("getAppApkFilePath");
+    static QString apkPath = BobUIApkFileEngine::callStaticMethod<QString>("getAppApkFilePath");
     return apkPath;
 }
 
@@ -213,7 +213,7 @@ bool QAndroidApkFileEngine::supportsExtension(Extension extension) const
     return false;
 }
 
-#ifndef QT_NO_FILESYSTEMITERATOR
+#ifndef BOBUI_NO_FILESYSTEMITERATOR
 QAbstractFileEngine::IteratorUniquePtr QAndroidApkFileEngine::beginEntryList(
         const QString &path, QDirListing::IteratorFlags filters, const QStringList &filterNames)
 {
@@ -257,10 +257,10 @@ QString QAndroidApkFileEngineIterator::currentFilePath() const
 std::unique_ptr<QAbstractFileEngine>
 QAndroidApkFileEngineHandler::create(const QString &fileName) const
 {
-    if (QtAndroidPrivate::resolveApkPath(fileName).isEmpty())
+    if (BobUIAndroidPrivate::resolveApkPath(fileName).isEmpty())
         return {};
 
     return std::make_unique<QAndroidApkFileEngine>(fileName);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

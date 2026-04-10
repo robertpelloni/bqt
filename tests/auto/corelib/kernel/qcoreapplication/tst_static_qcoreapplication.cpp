@@ -1,14 +1,14 @@
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 #include <private/qcoreapplication_p.h>
 #include <private/qhooks_p.h>
 
-#ifdef QT_WIDGETS_LIB
+#ifdef BOBUI_WIDGETS_LIB
 #  define tst_Static_QCoreApplication tst_Static_QApplication
 using App = QApplication;
-#elif defined(QT_GUI_LIB)
+#elif defined(BOBUI_GUI_LIB)
 #  define tst_Static_QCoreApplication tst_Static_QGuiApplication
 using App = QGuiApplication;
 #else
@@ -54,22 +54,22 @@ struct HookManager
 
     HookManager()
     {
-        qtHookData[QHooks::AddQObject] = reinterpret_cast<quintptr>(&addObject);
-        qtHookData[QHooks::RemoveQObject] = reinterpret_cast<quintptr>(&removeObject);
+        bobuiHookData[QHooks::AddQObject] = reinterpret_cast<quintptr>(&addObject);
+        bobuiHookData[QHooks::RemoveQObject] = reinterpret_cast<quintptr>(&removeObject);
     }
 
     ~HookManager()
     {
-        qtHookData[QHooks::AddQObject] = 0;
-        qtHookData[QHooks::RemoveQObject] = 0;
+        bobuiHookData[QHooks::AddQObject] = 0;
+        bobuiHookData[QHooks::RemoveQObject] = 0;
 
         auto app = qApp;
         if (app)
             qFatal("qApp was not destroyed = %p", app);
-#if !defined(QT_GUI_LIB) && !defined(Q_OS_WIN)
-        // Only tested for QtCore/QCoreApplication on Unix. QtGui has statics
+#if !defined(BOBUI_GUI_LIB) && !defined(Q_OS_WIN)
+        // Only tested for BobUICore/QCoreApplication on Unix. BobUIGui has statics
         // with QObject that haven't been cleaned up.
-        // For QtCore, we expect exactly one object: the QAdoptedThread for
+        // For BobUICore, we expect exactly one object: the QAdoptedThread for
         // represents the main thread.
         if (int c = objectCount.loadRelaxed(); c > 1)
             qFatal("%d objects still alive", c);
@@ -78,6 +78,6 @@ struct HookManager
 };
 static HookManager hookManager;
 
-QTEST_APPLESS_MAIN(tst_Static_QCoreApplication)
+BOBUIEST_APPLESS_MAIN(tst_Static_QCoreApplication)
 #include "tst_static_qcoreapplication.moc"
 

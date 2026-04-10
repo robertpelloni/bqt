@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QReadWriteLock>
 
 #include <qatomic.h>
 #include <qcoreapplication.h>
 #include <qmutex.h>
-#include <qthread.h>
+#include <bobuihread.h>
 #include <qwaitcondition.h>
 
 #define COND_WAIT_TIME 1
@@ -27,7 +27,7 @@ static const int iterations = 4;
 static const int ThreadCount = 4;
 
 // Terminate thread in destructor for threads instantiated on the stack
-class TerminatingThread : public QThread
+class TerminatingThread : public BOBUIhread
 {
 public:
     explicit TerminatingThread()
@@ -145,7 +145,7 @@ void tst_QWaitCondition::wait_QMutex()
             // test multiple threads waiting on separate wait conditions
             wait_QMutex_Thread_1 thread[ThreadCount];
 
-            const QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_mutex_")
+            const QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_mutex_")
                 + QString::number(i) + QLatin1Char('_');
 
             for (x = 0; x < ThreadCount; ++x) {
@@ -179,7 +179,7 @@ void tst_QWaitCondition::wait_QMutex()
             QWaitCondition cond1, cond2;
             wait_QMutex_Thread_2 thread[ThreadCount];
 
-            const QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_mutex_")
+            const QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_mutex_")
                 + QString::number(i) + QLatin1Char('_');
 
             mutex.lock();
@@ -287,7 +287,7 @@ void tst_QWaitCondition::wait_QReadWriteLock()
             // test multiple threads waiting on separate wait conditions
             wait_QReadWriteLock_Thread_1 thread[ThreadCount];
 
-            const QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_lockforread_");
+            const QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_lockforread_");
 
             for (x = 0; x < ThreadCount; ++x) {
                 thread[x].setObjectName(prefix + QString::number(x));
@@ -320,7 +320,7 @@ void tst_QWaitCondition::wait_QReadWriteLock()
             QWaitCondition cond1, cond2;
             wait_QReadWriteLock_Thread_2 thread[ThreadCount];
 
-            const QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_lockforwrite_");
+            const QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_lockforwrite_");
 
             readWriteLock.lockForWrite();
             for (x = 0; x < ThreadCount; ++x) {
@@ -372,7 +372,7 @@ public:
     { }
 
     static inline void sleep(ulong s)
-    { QThread::sleep(std::chrono::seconds{s}); }
+    { BOBUIhread::sleep(std::chrono::seconds{s}); }
 
     void run() override
     {
@@ -404,7 +404,7 @@ public:
     { }
 
     static inline void sleep(ulong s)
-    { QThread::sleep(std::chrono::seconds{s}); }
+    { BOBUIhread::sleep(std::chrono::seconds{s}); }
 
     void run() override
     {
@@ -438,7 +438,7 @@ void tst_QWaitCondition::wakeOne()
         wake_Thread thread[ThreadCount];
         bool thread_exited[ThreadCount];
 
-        QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_mutex_")
+        QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_mutex_")
             + QString::number(i) + QLatin1Char('_');
 
         mutex.lock();
@@ -487,7 +487,7 @@ void tst_QWaitCondition::wakeOne()
         QReadWriteLock readWriteLock;
         wake_Thread_2 rwthread[ThreadCount];
 
-        prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_readwritelock_")
+        prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_readwritelock_")
             + QString::number(i) + QLatin1Char('_');
 
         readWriteLock.lockForWrite();
@@ -542,7 +542,7 @@ void tst_QWaitCondition::wakeOne()
         wake_Thread thread[ThreadCount];
         bool thread_exited[ThreadCount];
 
-        QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_mutex2_")
+        QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_mutex2_")
             + QString::number(i) + QLatin1Char('_');
 
         mutex.lock();
@@ -593,7 +593,7 @@ void tst_QWaitCondition::wakeOne()
         QReadWriteLock readWriteLock;
         wake_Thread_2 rwthread[ThreadCount];
 
-        prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_readwritelock_")
+        prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_readwritelock_")
             + QString::number(i) + QLatin1Char('_');
 
         readWriteLock.lockForWrite();
@@ -653,7 +653,7 @@ void tst_QWaitCondition::wakeAll()
         // QMutex
         wake_Thread thread[ThreadCount];
 
-        QString prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_mutex_")
+        QString prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_mutex_")
             + QString::number(i) + QLatin1Char('_');
 
         mutex.lock();
@@ -689,7 +689,7 @@ void tst_QWaitCondition::wakeAll()
         QReadWriteLock readWriteLock;
         wake_Thread_2 rwthread[ThreadCount];
 
-        prefix = QLatin1String(QTest::currentTestFunction()) + QLatin1String("_readwritelock_")
+        prefix = QLatin1String(BOBUIest::currentTestFunction()) + QLatin1String("_readwritelock_")
             + QString::number(i) + QLatin1Char('_');
 
         readWriteLock.lockForWrite();
@@ -806,7 +806,7 @@ void tst_QWaitCondition::wait_RaceCondition()
             startup.wait(&mutex);
         }
 
-        QTest::qWait(2000);
+        BOBUIest::qWait(2000);
 
         waitCondition.wakeOne();
 
@@ -836,7 +836,7 @@ void tst_QWaitCondition::wait_RaceCondition()
             startup.wait(&readWriteLock);
         }
 
-        QTest::qWait(2000);
+        BOBUIest::qWait(2000);
 
         waitCondition.wakeOne();
 
@@ -849,5 +849,5 @@ void tst_QWaitCondition::wait_RaceCondition()
     }
 }
 
-QTEST_MAIN(tst_QWaitCondition)
+BOBUIEST_MAIN(tst_QWaitCondition)
 #include "tst_qwaitcondition.moc"

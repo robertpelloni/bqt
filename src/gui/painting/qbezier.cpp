@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qbezier_p.h"
 #include <qdebug.h>
@@ -11,7 +11,7 @@
 
 #include <tuple> // for std::tie()
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define QDEBUG_BEZIER
 
@@ -37,7 +37,7 @@ QPolygonF QBezier::toPolygon(qreal bezier_flattening_threshold) const
     return polygon;
 }
 
-QBezier QBezier::mapBy(const QTransform &transform) const
+QBezier QBezier::mapBy(const BOBUIransform &transform) const
 {
     return QBezier::fromPoints(transform.map(pt1()), transform.map(pt2()), transform.map(pt3()), transform.map(pt4()));
 }
@@ -202,7 +202,7 @@ static ShiftResult good_offset(const QBezier *b1, const QBezier *b2, qreal offse
     return Ok;
 }
 
-QT_WARNING_DISABLE_FLOAT_COMPARE
+BOBUI_WARNING_DISABLE_FLOAT_COMPARE
 
 static ShiftResult shift(const QBezier *orig, QBezier *shifted, qreal offset, qreal threshold)
 {
@@ -590,4 +590,4 @@ QBezier QBezier::bezierOnInterval(qreal t0, qreal t1) const
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

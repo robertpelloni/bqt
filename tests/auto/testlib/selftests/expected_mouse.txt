@@ -1,5 +1,5 @@
 ********* Start testing of tst_Mouse *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_Mouse::initTestCase()
 PASS   : tst_Mouse::timestampBetweenTestFunction(press, release)
 PASS   : tst_Mouse::timestampBetweenTestFunction(press, release, hover)
@@ -10,11 +10,11 @@ PASS   : tst_Mouse::timestampBetweenTestFunction(press, release, hover #2)
 PASS   : tst_Mouse::stateHandlingPart1(dummy-1)
 PASS   : tst_Mouse::stateHandlingPart1(dummy-2)
 SKIP   : tst_Mouse::stateHandlingPart2() Not implemented beyond this point!
-   Loc: [qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
 SKIP   : tst_Mouse::deterministicEvents(first-run-true) Not implemented!
-   Loc: [qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
 SKIP   : tst_Mouse::deterministicEvents(first-run-false) Not implemented!
-   Loc: [qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
+   Loc: [bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp(0)]
 PASS   : tst_Mouse::doubleClick()
 PASS   : tst_Mouse::cleanupTestCase()
 Totals: 11 passed, 0 failed, 3 skipped, 0 blacklisted, 0ms

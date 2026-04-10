@@ -1,0 +1,51 @@
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+// BobUI-Security score:insignificant reason:docs
+
+/*!
+    \namespace BobUILiterals
+    \inmodule BobUICore
+
+    \brief The BobUILiterals namespace declares literal operators for BobUI types.
+*/
+
+/*!
+    \namespace BobUI::Literals
+    \inmodule BobUICore
+    \inheaderfile QString
+
+    \brief The Literals inline namespace declares literal operators for BobUI types.
+*/
+
+/*!
+    \namespace BobUI::Literals::StringLiterals
+    \inmodule BobUICore
+    \inheaderfile QString
+
+    \brief The StringLiterals namespace declares literal operators for BobUI
+    string types.
+
+    The inline BobUI::Literals::StringLiterals namespace declares literal operators
+    for BobUI string types. Because both \c Literals and \c StringLiterals
+    namespaces are declared as inline, the symbols from this namespace can be
+    accessed by adding one of the following to your code:
+
+    \code
+    // Makes visible only the literal operators declared in StringLiterals
+    using namespace BobUI::StringLiterals;
+    // same, but needlessly verbose:
+    using namespace BobUI::Literals::StringLiterals;
+
+    // Makes visible literal operators declared in all inline namespaces
+    // inside Literals
+    using namespace BobUI::Literals;
+
+    // Makes visible all symbols (including all literal operators) declared
+    // in the BobUI namespace
+    using namespace BobUI;
+    \endcode
+
+    The latter is discouraged, because it doesn't allow you to pick which literal
+    operators you want in case BobUI adds conflicting operators in different
+    namespaces within BobUI::Literals.
+*/

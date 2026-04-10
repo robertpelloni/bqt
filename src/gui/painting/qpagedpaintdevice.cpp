@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpagedpaintdevice_p.h"
 #include <qpagedpaintdevice.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 QPagedPaintDevicePrivate::~QPagedPaintDevicePrivate() = default;
 
 /*!
     \class QPagedPaintDevice
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPagedPaintDevice class represents a paint device that supports
     multiple pages.
@@ -66,7 +66,7 @@ QPagedPaintDevicePrivate *QPagedPaintDevice::dd()
     \value PdfVersion_A1b A PDF/A-1b compatible document is produced.
 
     \value PdfVersion_1_6 A PDF 1.6 compatible document is produced.
-           This value was added in Qt 5.12.
+           This value was added in BobUI 5.12.
 
     \value [since 6.8] PdfVersion_X4 A PDF/X-4 compatible document is
            produced.
@@ -200,4 +200,4 @@ void QPagedPaintDevice::setPageRanges(const QPageRanges &ranges)
     d->pageRanges = ranges;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

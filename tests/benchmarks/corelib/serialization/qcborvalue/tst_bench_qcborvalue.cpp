@@ -1,10 +1,10 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCborMap>
 #include <QCborValue>
 
-#include <QTest>
+#include <BOBUIest>
 
 template <typename Char>
 struct SampleStrings
@@ -90,6 +90,6 @@ void tst_QCborValue::doConstruct()
     }
 }
 
-QTEST_MAIN(tst_QCborValue)
+BOBUIEST_MAIN(tst_QCborValue)
 
 #include "tst_bench_qcborvalue.moc"

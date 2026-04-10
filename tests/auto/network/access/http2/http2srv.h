@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef HTTP2SRV_H
 #define HTTP2SRV_H
 
-#include <QtNetwork/private/qhttpnetworkrequest_p.h>
-#include <QtNetwork/private/qhttpnetworkreply_p.h>
-#include <QtNetwork/private/http2protocol_p.h>
-#include <QtNetwork/private/http2frames_p.h>
-#include <QtNetwork/private/hpack_p.h>
+#include <BobUINetwork/private/qhttpnetworkrequest_p.h>
+#include <BobUINetwork/private/qhttpnetworkreply_p.h>
+#include <BobUINetwork/private/http2protocol_p.h>
+#include <BobUINetwork/private/http2frames_p.h>
+#include <BobUINetwork/private/hpack_p.h>
 
-#include <QtNetwork/qabstractsocket.h>
-#include <QtCore/qsharedpointer.h>
-#include <QtNetwork/qtcpserver.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qmap.h>
+#include <BobUINetwork/qabstractsocket.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUINetwork/bobuicpserver.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qmap.h>
 
 #include <vector>
 #include <map>
 #include <memory>
 #include <set>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // At the moment we do not have any public API parsing HTTP headers. Even worse -
 // the code that can do this exists only in QHttpNetworkReplyPrivate class.
@@ -47,7 +47,7 @@ enum class H2Type {
 
 using RawSettings = QMap<Http2::Settings, quint32>;
 
-class Http2Server : public QTcpServer
+class Http2Server : public BOBUIcpServer
 {
     Q_OBJECT
 public:
@@ -222,7 +222,7 @@ protected slots:
     void ignoreErrorSlot();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

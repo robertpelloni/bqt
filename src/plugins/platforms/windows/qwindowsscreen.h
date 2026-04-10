@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSSCREEN_H
 #define QWINDOWSSCREEN_H
 
-#include "qtwindowsglobal.h"
+#include "bobuiwindowsglobal.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qscopedpointer.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qscopedpointer.h>
 #include <qpa/qplatformscreen.h>
-#include <QtGui/qscreen_platform.h>
+#include <BobUIGui/qscreen_platform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QWindowsScreenData
 {
@@ -33,7 +33,7 @@ struct QWindowsScreenData
     QString manufacturer;
     QString model;
     QString serialNumber;
-    Qt::ScreenOrientation orientation = Qt::LandscapeOrientation;
+    BobUI::ScreenOrientation orientation = BobUI::LandscapeOrientation;
     qreal refreshRateHz = 60;
     HMONITOR hMonitor = nullptr;
     QString deviceName;
@@ -44,7 +44,7 @@ struct QWindowsScreenData
 class QWindowsScreen : public QPlatformScreen, public QNativeInterface::QWindowsScreen
 {
 public:
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     using CursorPtr = QScopedPointer<QPlatformCursor>;
 #endif
 
@@ -63,7 +63,7 @@ public:
     QString manufacturer() const override { return m_data.manufacturer; }
     QString model() const override { return m_data.model; }
     QString serialNumber() const override { return m_data.serialNumber; }
-    Qt::ScreenOrientation orientation() const override { return m_data.orientation; }
+    BobUI::ScreenOrientation orientation() const override { return m_data.orientation; }
     QList<QPlatformScreen *> virtualSiblings() const override;
     QWindow *topLevelAt(const QPoint &point) const override;
     static QWindow *windowAt(const QPoint &point, unsigned flags);
@@ -71,19 +71,19 @@ public:
     QPixmap grabWindow(WId window, int qX, int qY, int qWidth, int qHeight) const override;
     QPlatformScreen::SubpixelAntialiasingType subpixelAntialiasingTypeHint() const override;
 
-    static Qt::ScreenOrientation orientationPreference();
-    static bool setOrientationPreference(Qt::ScreenOrientation o);
+    static BobUI::ScreenOrientation orientationPreference();
+    static bool setOrientationPreference(BobUI::ScreenOrientation o);
 
     inline void handleChanges(const QWindowsScreenData &newData);
 
     HMONITOR handle() const override;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QPlatformCursor *cursor() const override { return m_cursor.data(); }
     const CursorPtr &cursorPtr() const { return m_cursor; }
 #else
     QPlatformCursor *cursor() const               { return 0; }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
     const QWindowsScreenData &data() const  { return m_data; }
 
@@ -92,7 +92,7 @@ public:
 
 private:
     QWindowsScreenData m_data;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     const CursorPtr m_cursor;
 #endif
 };
@@ -128,6 +128,6 @@ private:
     WindowsScreenList m_screens;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSSCREEN_H

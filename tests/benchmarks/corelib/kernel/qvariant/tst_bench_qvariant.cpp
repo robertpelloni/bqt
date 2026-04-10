@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#ifdef QT_GUI_LIB
-#  include <QtGui/QPixmap>
+#include <BobUICore>
+#ifdef BOBUI_GUI_LIB
+#  include <BobUIGui/QPixmap>
 #endif
-#include <qtest.h>
+#include <bobuiest.h>
 
 #define ITERATION_COUNT 1e5
 
@@ -28,7 +28,7 @@ private slots:
     void floatVariantCreation();
     void rectVariantCreation();
     void stringVariantCreation();
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
     void pixmapVariantCreation();
 #endif
     void stringListVariantCreation();
@@ -67,9 +67,9 @@ struct BigClass
     double n,i,e,r,o,b;
 };
 static_assert(sizeof(BigClass) > sizeof(QVariant::Private::MaxInternalSize));
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(BigClass, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 Q_DECLARE_METATYPE(BigClass);
 
 struct SmallClass
@@ -77,9 +77,9 @@ struct SmallClass
     char s;
 };
 static_assert(sizeof(SmallClass) <= sizeof(QVariant::Private::MaxInternalSize));
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(SmallClass, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 Q_DECLARE_METATYPE(SmallClass);
 
 void tst_QVariant::testBound()
@@ -153,7 +153,7 @@ void tst_QVariant::stringVariantCreation()
     variantCreation<QString>(QString());
 }
 
-#ifdef QT_GUI_LIB
+#ifdef BOBUI_GUI_LIB
 void tst_QVariant::pixmapVariantCreation()
 {
     variantCreation<QPixmap>(QPixmap());
@@ -310,14 +310,14 @@ void tst_QVariant::stringVariantValue()
 
 void tst_QVariant::createCoreType_data()
 {
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<int>("typeId");
     for (int i = QMetaType::FirstCoreType; i <= QMetaType::LastCoreType; ++i) {
         if (QMetaType metaType(i); metaType.isValid()) // QMetaType(27) does not exist
-            QTest::newRow(metaType.name()) << i;
+            BOBUIest::newRow(metaType.name()) << i;
     }
 }
 
-// Tests how fast a Qt core type can be default-constructed by a
+// Tests how fast a BobUI core type can be default-constructed by a
 // QVariant. The purpose of this benchmark is to measure the overhead
 // of creating (and destroying) a QVariant compared to creating the
 // type directly.
@@ -335,7 +335,7 @@ void tst_QVariant::createCoreTypeCopy_data()
     createCoreType_data();
 }
 
-// Tests how fast a Qt core type can be copy-constructed by a
+// Tests how fast a BobUI core type can be copy-constructed by a
 // QVariant. The purpose of this benchmark is to measure the overhead
 // of creating (and destroying) a QVariant compared to creating the
 // type directly.
@@ -351,6 +351,6 @@ void tst_QVariant::createCoreTypeCopy()
     }
 }
 
-QTEST_MAIN(tst_QVariant)
+BOBUIEST_MAIN(tst_QVariant)
 
 #include "tst_bench_qvariant.moc"

@@ -1,6 +1,6 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTDEVICE_H
 #define QPRINTDEVICE_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 #include "private/qprint_p.h"
 
-#include <QtCore/qsharedpointer.h>
-#include <QtGui/qpagelayout.h>
+#include <BobUICore/qsharedpointer.h>
+#include <BobUIGui/qpagelayout.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 class QPlatformPrintDevice;
 class QMarginsF;
@@ -102,11 +102,11 @@ public:
     bool setProperty(PrintDevicePropertyKey key, const QVariant &value);
     bool isFeatureAvailable(PrintDevicePropertyKey key, const QVariant &params) const;
 
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     QList<QMimeType> supportedMimeTypes() const;
 #endif
 
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
     void format(QDebug debug) const;
 #  endif
 
@@ -119,11 +119,11 @@ private:
 
 Q_DECLARE_SHARED(QPrintDevice)
 
-#  ifndef QT_NO_DEBUG_STREAM
+#  ifndef BOBUI_NO_DEBUG_STREAM
 Q_PRINTSUPPORT_EXPORT QDebug operator<<(QDebug debug, const QPrintDevice &);
 #  endif
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMPRINTDEVICE_H

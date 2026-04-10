@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     QVBoxLayout *layout = new QVBoxLayout;
 
     QLineEdit *edit = new QLineEdit(QLatin1String("Text on cube"));
-    QSlider *slider = new QSlider(Qt::Horizontal);
+    QSlider *slider = new QSlider(BobUI::Horizontal);
     ExampleRhiWidget *rw = new ExampleRhiWidget;
 
     QObject::connect(edit, &QLineEdit::textChanged, edit, [edit, rw] {
@@ -62,11 +62,11 @@ int main(int argc, char **argv)
     QObject::connect(btnMakeWindow, &QPushButton::clicked, btnMakeWindow, [rw, btnMakeWindow, layout] {
         if (rw->parentWidget()) {
             rw->setParent(nullptr);
-            rw->setAttribute(Qt::WA_DeleteOnClose, true);
+            rw->setAttribute(BobUI::WA_DeleteOnClose, true);
             rw->show();
             btnMakeWindow->setText(QLatin1String("Make child widget"));
         } else {
-            rw->setAttribute(Qt::WA_DeleteOnClose, false);
+            rw->setAttribute(BobUI::WA_DeleteOnClose, false);
             layout->addWidget(rw);
             btnMakeWindow->setText(QLatin1String("Make top-level window"));
         }

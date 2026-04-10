@@ -1,14 +1,14 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2015-2016 Oleksandr Tymoshenko <gonzo@bluezbox.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qpa/qplatformintegrationplugin.h>
 #include "qbsdfbintegration.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QBsdFbIntegrationPlugin : public QPlatformIntegrationPlugin
 {
@@ -21,13 +21,13 @@ public:
 QPlatformIntegration* QBsdFbIntegrationPlugin::create(const QString& system, const QStringList& paramList)
 {
     Q_UNUSED(paramList);
-    if (!system.compare("bsdfb"_L1, Qt::CaseInsensitive))
+    if (!system.compare("bsdfb"_L1, BobUI::CaseInsensitive))
         return new QBsdFbIntegration(paramList);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"
 

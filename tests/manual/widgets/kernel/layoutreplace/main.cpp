@@ -1,5 +1,5 @@
 // Copyright (C) 2013 Thorbjørn Martsum - tmartsum[at]gmail.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGridLayout>
 #include <QFormLayout>
@@ -59,11 +59,11 @@ int main(int argc, char **argv)                                                 
     QApplication app(argc, argv);
     QWidget wdg1;
     QGridLayout *l1 = new QGridLayout();
-    l1->addWidget(new ReplaceButton(), 1, 1, 2, 2, Qt::AlignCenter);
-    l1->addWidget(new ReplaceButton(), 3, 1, 1, 1, Qt::AlignRight);
-    l1->addWidget(new ReplaceButton(), 1, 3, 1, 1, Qt::AlignLeft);
-    l1->addWidget(new ReplaceButton(), 2, 3, 1, 1, Qt::AlignLeft);
-    l1->addWidget(new ReplaceButton(), 3, 2, 1, 1, Qt::AlignRight);
+    l1->addWidget(new ReplaceButton(), 1, 1, 2, 2, BobUI::AlignCenter);
+    l1->addWidget(new ReplaceButton(), 3, 1, 1, 1, BobUI::AlignRight);
+    l1->addWidget(new ReplaceButton(), 1, 3, 1, 1, BobUI::AlignLeft);
+    l1->addWidget(new ReplaceButton(), 2, 3, 1, 1, BobUI::AlignLeft);
+    l1->addWidget(new ReplaceButton(), 3, 2, 1, 1, BobUI::AlignRight);
     wdg1.setLayout(l1);
     wdg1.setWindowTitle("QGridLayout");
     wdg1.setGeometry(100, 100, 100, 100);

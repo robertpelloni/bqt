@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include "addressbook.h"
 
 AddressBook::AddressBook(QWidget *parent)
@@ -13,7 +13,7 @@ AddressBook::AddressBook(QWidget *parent)
     nameLine->setReadOnly(true);
 //! [setting readonly 1]
     QLabel *addressLabel = new QLabel(tr("Address:"));
-    addressText = new QTextEdit;
+    addressText = new BOBUIextEdit;
 //! [setting readonly 2]
     addressText->setReadOnly(true);
 //! [setting readonly 2]
@@ -36,7 +36,7 @@ AddressBook::AddressBook(QWidget *parent)
 //! [connecting signals and slots]
 //! [vertical layout]
     QVBoxLayout *buttonLayout1 = new QVBoxLayout;
-    buttonLayout1->addWidget(addButton, Qt::AlignTop);
+    buttonLayout1->addWidget(addButton, BobUI::AlignTop);
     buttonLayout1->addWidget(submitButton);
     buttonLayout1->addWidget(cancelButton);
     buttonLayout1->addStretch();
@@ -45,7 +45,7 @@ AddressBook::AddressBook(QWidget *parent)
     QGridLayout *mainLayout = new QGridLayout;
     mainLayout->addWidget(nameLabel, 0, 0);
     mainLayout->addWidget(nameLine, 0, 1);
-    mainLayout->addWidget(addressLabel, 1, 0, Qt::AlignTop);
+    mainLayout->addWidget(addressLabel, 1, 0, BobUI::AlignTop);
     mainLayout->addWidget(addressText, 1, 1);
     mainLayout->addLayout(buttonLayout1, 1, 2);
 //! [grid layout]
@@ -62,7 +62,7 @@ void AddressBook::addContact()
     addressText->clear();
 
     nameLine->setReadOnly(false);
-    nameLine->setFocus(Qt::OtherFocusReason);
+    nameLine->setFocus(BobUI::OtherFocusReason);
     addressText->setReadOnly(false);
 
     addButton->setEnabled(false);

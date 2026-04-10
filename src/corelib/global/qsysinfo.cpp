@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qsysinfo.h"
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUICore/qstring.h>
 
 #include <private/qoperatingsystemversion_p.h>
 
@@ -16,7 +16,7 @@
 #endif
 
 #ifdef Q_OS_ANDROID
-#include <QtCore/private/qjnihelpers_p.h>
+#include <BobUICore/private/qjnihelpers_p.h>
 #include <qjniobject.h>
 #endif
 
@@ -39,18 +39,18 @@
 #ifdef Q_OS_WIN
 #  include "qoperatingsystemversion_win_p.h"
 #  include "private/qwinregistry_p.h"
-#  include "qt_windows.h"
+#  include "bobui_windows.h"
 #endif // Q_OS_WIN
 
 #include "archdetect.cpp"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QSysInfo
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSysInfo class provides information about the system.
 
     \list
@@ -124,7 +124,7 @@ static const char *osVer_helper(QOperatingSystemVersion version = QOperatingSyst
 
 #elif defined(Q_OS_WIN)
 
-#  ifndef QT_BOOTSTRAPPED
+#  ifndef BOBUI_BOOTSTRAPPED
 class QWindowsSockInit
 {
 public:
@@ -139,7 +139,7 @@ QWindowsSockInit::QWindowsSockInit()
     WSAData wsadata;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsadata) != 0) {
-        qWarning("QTcpSocketAPI: WinSock v2.2 initialization failed.");
+        qWarning("BOBUIcpSocketAPI: WinSock v2.2 initialization failed.");
     } else {
         version = 0x22;
     }
@@ -150,7 +150,7 @@ QWindowsSockInit::~QWindowsSockInit()
     WSACleanup();
 }
 Q_GLOBAL_STATIC(QWindowsSockInit, winsockInit)
-#  endif // QT_BOOTSTRAPPED
+#  endif // BOBUI_BOOTSTRAPPED
 
 static QString readVersionRegistryString(const wchar_t *subKey)
 {
@@ -242,19 +242,19 @@ static QString unquote(QByteArrayView str)
 static QByteArray getEtcFileContent(const char *filename)
 {
     // we're avoiding QFile here
-    int fd = qt_safe_open(filename, O_RDONLY);
+    int fd = bobui_safe_open(filename, O_RDONLY);
     if (fd == -1)
         return QByteArray();
 
-    QT_STATBUF sbuf;
-    if (QT_FSTAT(fd, &sbuf) == -1) {
-        qt_safe_close(fd);
+    BOBUI_STATBUF sbuf;
+    if (BOBUI_FSTAT(fd, &sbuf) == -1) {
+        bobui_safe_close(fd);
         return QByteArray();
     }
 
-    QByteArray buffer(sbuf.st_size, Qt::Uninitialized);
-    buffer.resize(qt_safe_read(fd, buffer.data(), sbuf.st_size));
-    qt_safe_close(fd);
+    QByteArray buffer(sbuf.st_size, BobUI::Uninitialized);
+    buffer.resize(bobui_safe_read(fd, buffer.data(), sbuf.st_size));
+    bobui_safe_close(fd);
     return buffer;
 }
 
@@ -324,16 +324,16 @@ static bool readEtcLsbRelease(QUnixOSVersion &v)
 
         // we're still avoiding QFile here
         QByteArray distrorelease = "/etc/" + v.productType.toLatin1().toLower() + "-release";
-        int fd = qt_safe_open(distrorelease, O_RDONLY);
+        int fd = bobui_safe_open(distrorelease, O_RDONLY);
         if (fd != -1) {
-            QT_STATBUF sbuf;
-            if (QT_FSTAT(fd, &sbuf) != -1 && sbuf.st_size > v.prettyName.size()) {
+            BOBUI_STATBUF sbuf;
+            if (BOBUI_FSTAT(fd, &sbuf) != -1 && sbuf.st_size > v.prettyName.size()) {
                 // file apparently contains interesting information
-                QByteArray buffer(sbuf.st_size, Qt::Uninitialized);
-                buffer.resize(qt_safe_read(fd, buffer.data(), sbuf.st_size));
+                QByteArray buffer(sbuf.st_size, BobUI::Uninitialized);
+                buffer.resize(bobui_safe_read(fd, buffer.data(), sbuf.st_size));
                 v.prettyName = QString::fromLatin1(buffer.trimmed());
             }
-            qt_safe_close(fd);
+            bobui_safe_close(fd);
         }
     }
 
@@ -412,7 +412,7 @@ static const char *osVer_helper(QOperatingSystemVersion)
 {
     // https://source.android.com/source/build-numbers.html
     // https://developer.android.com/guide/topics/manifest/uses-sdk-element.html#ApiLevels
-    const int sdk_int = QtAndroidPrivate::androidSdkVersion();
+    const int sdk_int = BobUIAndroidPrivate::androidSdkVersion();
     switch (sdk_int) {
     case 3:
         return "Cupcake";
@@ -475,7 +475,7 @@ static const char *osVer_helper(QOperatingSystemVersion)
 /*!
     \since 5.4
 
-    Returns the architecture of the CPU that Qt was compiled for, in text
+    Returns the architecture of the CPU that BobUI was compiled for, in text
     format. Note that this may not match the actual CPU that the application is
     running on if there's an emulation layer or if the CPU supports multiple
     architectures (like x86-64 processors supporting i386 applications). To
@@ -580,15 +580,15 @@ QString QSysInfo::currentCpuArchitecture()
 
     // we could use detectUnixVersion() above, but we only need a field no other function does
     if (ret != -1) {
-        // the use of QT_BUILD_INTERNAL here is simply to ensure all branches build
+        // the use of BOBUI_BUILD_INTERNAL here is simply to ensure all branches build
         // as we don't often build on some of the less common platforms
-#  if defined(Q_PROCESSOR_ARM) || defined(QT_BUILD_INTERNAL)
+#  if defined(Q_PROCESSOR_ARM) || defined(BOBUI_BUILD_INTERNAL)
         if (strcmp(u.machine, "aarch64") == 0)
             return QStringLiteral("arm64");
         if (strncmp(u.machine, "armv", 4) == 0)
             return QStringLiteral("arm");
 #  endif
-#  if defined(Q_PROCESSOR_POWER) || defined(QT_BUILD_INTERNAL)
+#  if defined(Q_PROCESSOR_POWER) || defined(BOBUI_BUILD_INTERNAL)
         // harmonize "powerpc" and "ppc" to "power"
         if (strncmp(u.machine, "ppc", 3) == 0)
             return "power"_L1 + QLatin1StringView(u.machine + 3);
@@ -597,7 +597,7 @@ QString QSysInfo::currentCpuArchitecture()
         if (strcmp(u.machine, "Power Macintosh") == 0)
             return "power"_L1;
 #  endif
-#  if defined(Q_PROCESSOR_SPARC) || defined(QT_BUILD_INTERNAL)
+#  if defined(Q_PROCESSOR_SPARC) || defined(BOBUI_BUILD_INTERNAL)
         // Solaris sysinfo(2) (above) uses "sparcv9", but uname -m says "sun4u";
         // Linux says "sparc64"
         if (strcmp(u.machine, "sun4u") == 0 || strcmp(u.machine, "sparc64") == 0)
@@ -605,7 +605,7 @@ QString QSysInfo::currentCpuArchitecture()
         if (strcmp(u.machine, "sparc32") == 0)
             return QStringLiteral("sparc");
 #  endif
-#  if defined(Q_PROCESSOR_X86) || defined(QT_BUILD_INTERNAL)
+#  if defined(Q_PROCESSOR_X86) || defined(BOBUI_BUILD_INTERNAL)
         // harmonize all "i?86" to "i386"
         if (strlen(u.machine) == 4 && u.machine[0] == 'i'
                 && u.machine[2] == '8' && u.machine[3] == '6')
@@ -622,13 +622,13 @@ QString QSysInfo::currentCpuArchitecture()
 /*!
     \since 5.4
 
-    Returns the full architecture string that Qt was compiled for. This string
+    Returns the full architecture string that BobUI was compiled for. This string
     is useful for identifying different, incompatible builds. For example, it
     can be used as an identifier to request an upgrade package from a server.
 
     The values returned from this function are kept stable as follows: the
     mandatory components of the result will not change in future versions of
-    Qt, but optional suffixes may be added.
+    BobUI, but optional suffixes may be added.
 
     The returned value is composed of three or more parts, separated by dashes
     ("-"). They are:
@@ -640,13 +640,13 @@ QString QSysInfo::currentCpuArchitecture()
     \row    \li Word size           \li Whether it's a 32- or 64-bit application. Possible values are:
                                         "llp64" (Windows 64-bit), "lp64" (Unix 64-bit), "ilp32" (32-bit)
     \row    \li (Optional) ABI      \li Zero or more components identifying different ABIs possible in this architecture.
-                                        Currently, Qt has optional ABI components for ARM and MIPS processors: one
+                                        Currently, BobUI has optional ABI components for ARM and MIPS processors: one
                                         component is the main ABI (such as "eabi", "o32", "n32", "o64"); another is
                                         whether the calling convention is using hardware floating point registers ("hardfloat"
                                         is present).
 
-                                        Additionally, if Qt was configured with \c{-qreal float}, the ABI option tag "qreal_float"
-                                        will be present. If Qt was configured with another type as qreal, that type is present after
+                                        Additionally, if BobUI was configured with \c{-qreal float}, the ABI option tag "qreal_float"
+                                        will be present. If BobUI was configured with another type as qreal, that type is present after
                                         "qreal_", with all characters other than letters and digits escaped by an underscore, followed
                                         by two hex digits. For example, \c{-qreal long double} becomes "qreal_long_20double".
     \endtable
@@ -670,7 +670,7 @@ static QString unknownText()
 /*!
     \since 5.4
 
-    Returns the type of the operating system kernel Qt was compiled for. It's
+    Returns the type of the operating system kernel BobUI was compiled for. It's
     also the kernel the application is running on, unless the host operating
     system is running a form of compatibility or virtualization layer.
 
@@ -759,7 +759,7 @@ QString QSysInfo::kernelVersion()
     distribution name failed, it returns "unknown".
 
     \b{\macos note}: this function returns "macos" for all \macos systems,
-    regardless of Apple naming convention. Previously, in Qt 5, it returned
+    regardless of Apple naming convention. Previously, in BobUI 5, it returned
     "osx", again regardless of Apple naming conventions.
 
     \b{Darwin, iOS, tvOS, and watchOS note}: this function returns "ios" for
@@ -892,7 +892,7 @@ QString QSysInfo::productVersion()
     other tokens like the operating system type, codenames and other
     information. The result of this function is suitable for displaying to the
     user, but not for long-term storage, as the string may change with updates
-    to Qt.
+    to BobUI.
 
     If productType() is "unknown", this function will instead use the
     kernelType() and kernelVersion() functions.
@@ -943,7 +943,7 @@ QString QSysInfo::prettyProductName()
     return unknownText();
 }
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     \since 5.6
 
@@ -971,7 +971,7 @@ QString QSysInfo::machineHostName()
     return QString();
 #else
 #  ifdef Q_OS_WIN
-    // Important: QtNetwork depends on machineHostName() initializing ws2_32.dll
+    // Important: BobUINetwork depends on machineHostName() initializing ws2_32.dll
     winsockInit();
     QString hostName;
     hostName.resize(512);
@@ -995,7 +995,7 @@ QString QSysInfo::machineHostName()
 #  endif
 #endif
 }
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 enum {
     UuidStringLen = sizeof("00000000-0000-0000-0000-000000000000") - 1
@@ -1044,14 +1044,14 @@ QByteArray QSysInfo::machineUniqueId()
     // path is more than enough.
     static const char fullfilename[] = "/usr/local/var/lib/dbus/machine-id";
     const char *firstfilename = fullfilename + sizeof("/usr/local") - 1;
-    int fd = qt_safe_open(firstfilename, O_RDONLY);
+    int fd = bobui_safe_open(firstfilename, O_RDONLY);
     if (fd == -1 && errno == ENOENT)
-        fd = qt_safe_open(fullfilename, O_RDONLY);
+        fd = bobui_safe_open(fullfilename, O_RDONLY);
 
     if (fd != -1) {
         char buffer[32];    // 128 bits, hex-encoded
-        qint64 len = qt_safe_read(fd, buffer, sizeof(buffer));
-        qt_safe_close(fd);
+        qint64 len = bobui_safe_read(fd, buffer, sizeof(buffer));
+        bobui_safe_close(fd);
 
         if (len != -1)
             return QByteArray(buffer, len);
@@ -1083,11 +1083,11 @@ QByteArray QSysInfo::bootUniqueId()
 {
 #ifdef Q_OS_LINUX
     // use low-level API here for simplicity
-    int fd = qt_safe_open("/proc/sys/kernel/random/boot_id", O_RDONLY);
+    int fd = bobui_safe_open("/proc/sys/kernel/random/boot_id", O_RDONLY);
     if (fd != -1) {
         char uuid[UuidStringLen];
-        qint64 len = qt_safe_read(fd, uuid, sizeof(uuid));
-        qt_safe_close(fd);
+        qint64 len = bobui_safe_read(fd, uuid, sizeof(uuid));
+        bobui_safe_close(fd);
         if (len == UuidStringLen)
             return QByteArray(uuid, UuidStringLen);
     }
@@ -1102,4 +1102,4 @@ QByteArray QSysInfo::bootUniqueId()
     return QByteArray();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -236,19 +236,19 @@ METHODDEF(void)
 start_pass_fdctmgr(j_compress_ptr cinfo)
 {
   my_fdct_ptr fdct = (my_fdct_ptr)cinfo->fdct;
-  int ci, qtblno, i;
+  int ci, bobuiblno, i;
   jpeg_component_info *compptr;
-  JQUANT_TBL *qtbl;
+  JQUANT_TBL *bobuibl;
   DCTELEM *dtbl;
 
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {
-    qtblno = compptr->quant_tbl_no;
+    bobuiblno = compptr->quant_tbl_no;
     /* Make sure specified quantization table is present */
-    if (qtblno < 0 || qtblno >= NUM_QUANT_TBLS ||
-        cinfo->quant_tbl_ptrs[qtblno] == NULL)
-      ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, qtblno);
-    qtbl = cinfo->quant_tbl_ptrs[qtblno];
+    if (bobuiblno < 0 || bobuiblno >= NUM_QUANT_TBLS ||
+        cinfo->quant_tbl_ptrs[bobuiblno] == NULL)
+      ERREXIT1(cinfo, JERR_NO_QUANT_TABLE, bobuiblno);
+    bobuibl = cinfo->quant_tbl_ptrs[bobuiblno];
     /* Compute divisors for this quant table */
     /* We may do this more than once for same table, but it's not a big deal */
     switch (cinfo->dct_method) {
@@ -257,23 +257,23 @@ start_pass_fdctmgr(j_compress_ptr cinfo)
       /* For LL&M IDCT method, divisors are equal to raw quantization
        * coefficients multiplied by 8 (to counteract scaling).
        */
-      if (fdct->divisors[qtblno] == NULL) {
-        fdct->divisors[qtblno] = (DCTELEM *)
+      if (fdct->divisors[bobuiblno] == NULL) {
+        fdct->divisors[bobuiblno] = (DCTELEM *)
           (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
                                       (DCTSIZE2 * 4) * sizeof(DCTELEM));
       }
-      dtbl = fdct->divisors[qtblno];
+      dtbl = fdct->divisors[bobuiblno];
       for (i = 0; i < DCTSIZE2; i++) {
 #if BITS_IN_JSAMPLE == 8
 #ifdef WITH_SIMD
-        if (!compute_reciprocal(qtbl->quantval[i] << 3, &dtbl[i]) &&
+        if (!compute_reciprocal(bobuibl->quantval[i] << 3, &dtbl[i]) &&
             fdct->quantize == jsimd_quantize)
           fdct->quantize = quantize;
 #else
-        compute_reciprocal(qtbl->quantval[i] << 3, &dtbl[i]);
+        compute_reciprocal(bobuibl->quantval[i] << 3, &dtbl[i]);
 #endif
 #else
-        dtbl[i] = ((DCTELEM)qtbl->quantval[i]) << 3;
+        dtbl[i] = ((DCTELEM)bobuibl->quantval[i]) << 3;
 #endif
       }
       break;
@@ -301,30 +301,30 @@ start_pass_fdctmgr(j_compress_ptr cinfo)
         };
         SHIFT_TEMPS
 
-        if (fdct->divisors[qtblno] == NULL) {
-          fdct->divisors[qtblno] = (DCTELEM *)
+        if (fdct->divisors[bobuiblno] == NULL) {
+          fdct->divisors[bobuiblno] = (DCTELEM *)
             (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
                                         (DCTSIZE2 * 4) * sizeof(DCTELEM));
         }
-        dtbl = fdct->divisors[qtblno];
+        dtbl = fdct->divisors[bobuiblno];
         for (i = 0; i < DCTSIZE2; i++) {
 #if BITS_IN_JSAMPLE == 8
 #ifdef WITH_SIMD
           if (!compute_reciprocal(
-                DESCALE(MULTIPLY16V16((JLONG)qtbl->quantval[i],
+                DESCALE(MULTIPLY16V16((JLONG)bobuibl->quantval[i],
                                       (JLONG)aanscales[i]),
                         CONST_BITS - 3), &dtbl[i]) &&
               fdct->quantize == jsimd_quantize)
             fdct->quantize = quantize;
 #else
           compute_reciprocal(
-            DESCALE(MULTIPLY16V16((JLONG)qtbl->quantval[i],
+            DESCALE(MULTIPLY16V16((JLONG)bobuibl->quantval[i],
                                   (JLONG)aanscales[i]),
                     CONST_BITS-3), &dtbl[i]);
 #endif
 #else
           dtbl[i] = (DCTELEM)
-            DESCALE(MULTIPLY16V16((JLONG)qtbl->quantval[i],
+            DESCALE(MULTIPLY16V16((JLONG)bobuibl->quantval[i],
                                   (JLONG)aanscales[i]),
                     CONST_BITS - 3);
 #endif
@@ -350,17 +350,17 @@ start_pass_fdctmgr(j_compress_ptr cinfo)
           1.0, 0.785694958, 0.541196100, 0.275899379
         };
 
-        if (fdct->float_divisors[qtblno] == NULL) {
-          fdct->float_divisors[qtblno] = (FAST_FLOAT *)
+        if (fdct->float_divisors[bobuiblno] == NULL) {
+          fdct->float_divisors[bobuiblno] = (FAST_FLOAT *)
             (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
                                         DCTSIZE2 * sizeof(FAST_FLOAT));
         }
-        fdtbl = fdct->float_divisors[qtblno];
+        fdtbl = fdct->float_divisors[bobuiblno];
         i = 0;
         for (row = 0; row < DCTSIZE; row++) {
           for (col = 0; col < DCTSIZE; col++) {
             fdtbl[i] = (FAST_FLOAT)
-              (1.0 / (((double)qtbl->quantval[i] *
+              (1.0 / (((double)bobuibl->quantval[i] *
                        aanscalefactor[row] * aanscalefactor[col] * 8.0)));
             i++;
           }

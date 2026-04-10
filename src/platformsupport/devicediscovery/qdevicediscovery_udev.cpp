@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdevicediscovery_udev_p.h"
 
@@ -16,11 +16,11 @@
 #include <linux/input.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcDD, "qt.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(lcDD, "bobui.qpa.input")
 
 QDeviceDiscovery *QDeviceDiscovery::create(QDeviceTypes types, QObject *parent)
 {
@@ -106,9 +106,9 @@ QStringList QDeviceDiscoveryUDev::scanConnectedDevices()
         const char *syspath = udev_list_entry_get_name(entry);
         udev_device *udevice = udev_device_new_from_syspath(m_udev, syspath);
         QString candidate = QString::fromUtf8(udev_device_get_devnode(udevice));
-        if ((m_types & Device_InputMask) && candidate.startsWith(QT_EVDEV_DEVICE ""_L1))
+        if ((m_types & Device_InputMask) && candidate.startsWith(BOBUI_EVDEV_DEVICE ""_L1))
             devices << candidate;
-        if ((m_types & Device_VideoMask) && candidate.startsWith(QT_DRM_DEVICE ""_L1)) {
+        if ((m_types & Device_VideoMask) && candidate.startsWith(BOBUI_DRM_DEVICE ""_L1)) {
             if (m_types & Device_DRM_PrimaryGPU) {
                 udev_device *pci = udev_device_get_parent_with_subsystem_devtype(udevice, "pci", 0);
                 if (pci) {
@@ -152,9 +152,9 @@ void QDeviceDiscoveryUDev::handleUDevNotification()
 
     const char *subsystem;
     devNode = QString::fromUtf8(str);
-    if (devNode.startsWith(QT_EVDEV_DEVICE ""_L1))
+    if (devNode.startsWith(BOBUI_EVDEV_DEVICE ""_L1))
         subsystem = "input";
-    else if (devNode.startsWith(QT_DRM_DEVICE ""_L1))
+    else if (devNode.startsWith(BOBUI_DRM_DEVICE ""_L1))
         subsystem = "drm";
     else goto cleanup;
 
@@ -189,7 +189,7 @@ bool QDeviceDiscoveryUDev::checkDeviceType(udev_device *dev)
 
     if ((m_types & Device_Keyboard) && (qstrcmp(udev_device_get_property_value(dev, "ID_INPUT_KEYBOARD"), "1") == 0 )) {
         const QString capabilities_key = QString::fromUtf8(udev_device_get_sysattr_value(dev, "capabilities/key"));
-        const auto val = QStringView{capabilities_key}.split(u' ', Qt::SkipEmptyParts);
+        const auto val = QStringView{capabilities_key}.split(u' ', BobUI::SkipEmptyParts);
         if (!val.isEmpty()) {
             bool ok;
             unsigned long long keys = val.last().toULongLong(&ok, 16);
@@ -226,6 +226,6 @@ bool QDeviceDiscoveryUDev::checkDeviceType(udev_device *dev)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdevicediscovery_udev_p.cpp"

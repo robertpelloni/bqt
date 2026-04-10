@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import BobUIQuick 2.15
 import Omni.Physics 1.0
 
 OmniRigidBody {

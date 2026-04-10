@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsizepolicy.h"
 
@@ -8,7 +8,7 @@
 #include <qdebug.h>
 #include <qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QSizePolicy
@@ -16,7 +16,7 @@ QT_BEGIN_NAMESPACE
     and vertical resizing policy.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The size policy of a widget is an expression of its willingness to
     be resized in various ways, and affects how the widget is treated
@@ -177,15 +177,15 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn Qt::Orientations QSizePolicy::expandingDirections() const
+    \fn BobUI::Orientations QSizePolicy::expandingDirections() const
 
     Returns whether a widget can make use of more space than the
     QWidget::sizeHint() function indicates.
 
-    A value of Qt::Horizontal or Qt::Vertical means that the widget
+    A value of BobUI::Horizontal or BobUI::Vertical means that the widget
     can grow horizontally or vertically (i.e., the horizontal or
     vertical policy is \l Expanding or \l MinimumExpanding), whereas
-    Qt::Horizontal | Qt::Vertical means that it can grow in both
+    BobUI::Horizontal | BobUI::Vertical means that it can grow in both
     dimensions.
 
     \sa horizontalPolicy(), verticalPolicy()
@@ -390,8 +390,8 @@ void QSizePolicy::setControlType(ControlType type) noexcept
     \value RadioButton  A QRadioButton instance.
     \value Slider  A QAbstractSlider instance.
     \value SpinBox  A QAbstractSpinBox instance.
-    \value TabWidget  A QTabWidget instance.
-    \value ToolButton  A QToolButton instance.
+    \value TabWidget  A BOBUIabWidget instance.
+    \value ToolButton  A BOBUIoolButton instance.
 
     \sa setControlType(), controlType()
 */
@@ -404,7 +404,7 @@ QSizePolicy::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \relates QSizePolicy
@@ -412,11 +412,11 @@ QSizePolicy::operator QVariant() const
 
     Writes the size \a policy to the data stream \a stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &stream, const QSizePolicy &policy)
 {
-    // The order here is for historical reasons. (compatibility with Qt4)
+    // The order here is for historical reasons. (compatibility with BobUI4)
     quint32 data = (policy.bits.horPolicy |         // [0, 3]
                     policy.bits.verPolicy << 4 |    // [4, 7]
                     policy.bits.hfw << 8 |          // [8]
@@ -436,7 +436,7 @@ QDataStream &operator<<(QDataStream &stream, const QSizePolicy &policy)
 
     Reads the size \a policy from the data stream \a stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &stream, QSizePolicy &policy)
 {
@@ -452,9 +452,9 @@ QDataStream &operator>>(QDataStream &stream, QSizePolicy &policy)
     policy.bits.horStretch = VALUE_OF_BITS(data, 24, 8);
     return stream;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QSizePolicy &p)
 {
     QDebugStateSaver saver(dbg);
@@ -464,6 +464,6 @@ QDebug operator<<(QDebug dbg, const QSizePolicy &p)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsizepolicy.cpp"

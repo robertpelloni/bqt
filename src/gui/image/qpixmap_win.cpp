@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qbitmap.h"
 #include "qpixmap.h"
@@ -10,12 +10,12 @@
 
 #include <qdebug.h>
 #include <QScopedArrayPointer>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
 #include <algorithm>
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Int>
 static inline Int pad4(Int v)
@@ -23,7 +23,7 @@ static inline Int pad4(Int v)
     return (v + Int(3)) & ~Int(3);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const BITMAPINFOHEADER &bih)
 {
     QDebugStateSaver saver(d);
@@ -35,7 +35,7 @@ QDebug operator<<(QDebug d, const BITMAPINFOHEADER &bih)
       << bih.biSizeImage << ')';
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 static inline void initBitMapInfoHeader(int width, int height, bool topToBottom,
                                         DWORD compression, DWORD bitCount,
@@ -195,7 +195,7 @@ enum HBitmapFormat
     HBitmapAlpha
 };
 
-static HBITMAP qt_createIconMask(QImage bm)
+static HBITMAP bobui_createIconMask(QImage bm)
 {
     Q_ASSERT(bm.format() == QImage::Format_Mono);
     const int w = bm.width();
@@ -209,9 +209,9 @@ static HBITMAP qt_createIconMask(QImage bm)
     return hbm;
 }
 
-HBITMAP qt_createIconMask(const QBitmap &bitmap)
+HBITMAP bobui_createIconMask(const QBitmap &bitmap)
 {
-    return qt_createIconMask(bitmap.toImage().convertToFormat(QImage::Format_Mono));
+    return bobui_createIconMask(bitmap.toImage().convertToFormat(QImage::Format_Mono));
 }
 
 static inline QImage::Format format32(int hbitmapFormat)
@@ -227,7 +227,7 @@ static inline QImage::Format format32(int hbitmapFormat)
     return QImage::Format_ARGB32_Premultiplied;
 }
 
-HBITMAP qt_imageToWinHBITMAP(const QImage &imageIn, int hbitmapFormat)
+HBITMAP bobui_imageToWinHBITMAP(const QImage &imageIn, int hbitmapFormat)
 {
     if (imageIn.isNull())
         return nullptr;
@@ -278,7 +278,7 @@ HBITMAP qt_imageToWinHBITMAP(const QImage &imageIn, int hbitmapFormat)
         default:
             break;
         } // switch conversion format
-        return qt_imageToWinHBITMAP(imageIn.convertToFormat(fallbackFormat), hbitmapFormat);
+        return bobui_imageToWinHBITMAP(imageIn.convertToFormat(fallbackFormat), hbitmapFormat);
     }
     }
 
@@ -345,16 +345,16 @@ HBITMAP QImage::toHBITMAP() const
 {
     switch (format()) {
     case QImage::Format_ARGB32:
-        return qt_imageToWinHBITMAP(*this, HBitmapAlpha);
+        return bobui_imageToWinHBITMAP(*this, HBitmapAlpha);
     case QImage::Format_ARGB32_Premultiplied:
-        return qt_imageToWinHBITMAP(*this, HBitmapPremultipliedAlpha);
+        return bobui_imageToWinHBITMAP(*this, HBitmapPremultipliedAlpha);
     default:
         break;
     }
-    return qt_imageToWinHBITMAP(*this);
+    return bobui_imageToWinHBITMAP(*this);
 }
 
-HBITMAP qt_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat)
+HBITMAP bobui_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat)
 {
     if (p.isNull())
         return nullptr;
@@ -363,11 +363,11 @@ HBITMAP qt_pixmapToWinHBITMAP(const QPixmap &p, int hbitmapFormat)
     if (platformPixmap->classId() != QPlatformPixmap::RasterClass) {
         QRasterPlatformPixmap *data = new QRasterPlatformPixmap(p.depth() == 1 ?
             QRasterPlatformPixmap::BitmapType : QRasterPlatformPixmap::PixmapType);
-        data->fromImage(p.toImage(), Qt::AutoColor);
-        return qt_pixmapToWinHBITMAP(QPixmap(data), hbitmapFormat);
+        data->fromImage(p.toImage(), BobUI::AutoColor);
+        return bobui_pixmapToWinHBITMAP(QPixmap(data), hbitmapFormat);
     }
 
-    return qt_imageToWinHBITMAP(*static_cast<QRasterPlatformPixmap*>(platformPixmap)->buffer(), hbitmapFormat);
+    return bobui_imageToWinHBITMAP(*static_cast<QRasterPlatformPixmap*>(platformPixmap)->buffer(), hbitmapFormat);
 }
 
 static QImage::Format imageFromWinHBITMAP_Format(const BITMAPINFOHEADER &header, int hbitmapFormat)
@@ -453,7 +453,7 @@ static QImage imageFromWinHBITMAP_GetDiBits(HBITMAP bitmap, bool forceQuads, int
     return copyImageData(info.bmiHeader, bmiColorTable256.bmiColors, data.data(), imageFormat);
 }
 
-QImage qt_imageFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat)
+QImage bobui_imageFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat)
 {
     QImage result = imageFromWinHBITMAP_DibSection(bitmap, hbitmapFormat);
     if (result.isNull())
@@ -482,10 +482,10 @@ QImage qt_imageFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat)
 */
 QImage QImage::fromHBITMAP(HBITMAP hbitmap)
 {
-    return qt_imageFromWinHBITMAP(hbitmap);
+    return bobui_imageFromWinHBITMAP(hbitmap);
 }
 
-QPixmap qt_pixmapFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat)
+QPixmap bobui_pixmapFromWinHBITMAP(HBITMAP bitmap, int hbitmapFormat)
 {
     return QPixmap::fromImage(imageFromWinHBITMAP_GetDiBits(bitmap, /* forceQuads */ true, hbitmapFormat));
 }
@@ -518,13 +518,13 @@ HICON QImage::toHICON(const QImage &mask) const
     auto effectiveMask = mask;
     if (effectiveMask.isNull()) {
         effectiveMask = QImage(size(), QImage::Format_Mono);
-        effectiveMask.fill(Qt::color1);
+        effectiveMask.fill(BobUI::color1);
     }
 
     ICONINFO ii;
     ii.fIcon    = true;
-    ii.hbmMask  = qt_createIconMask(effectiveMask);
-    ii.hbmColor = qt_imageToWinHBITMAP(*this, HBitmapAlpha);
+    ii.hbmMask  = bobui_createIconMask(effectiveMask);
+    ii.hbmColor = bobui_imageToWinHBITMAP(*this, HBitmapAlpha);
     ii.xHotspot = 0;
     ii.yHotspot = 0;
 
@@ -536,7 +536,7 @@ HICON QImage::toHICON(const QImage &mask) const
     return hIcon;
 }
 
-HICON qt_pixmapToWinHICON(const QPixmap &p)
+HICON bobui_pixmapToWinHICON(const QPixmap &p)
 {
     QImage mask;
     QBitmap maskBitmap = p.mask();
@@ -545,7 +545,7 @@ HICON qt_pixmapToWinHICON(const QPixmap &p)
     return p.toImage().toHICON(mask);
 }
 
-QImage qt_imageFromWinHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h)
+QImage bobui_imageFromWinHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h)
 {
     QImage image(w, h, QImage::Format_ARGB32_Premultiplied);
     if (image.isNull())
@@ -557,7 +557,7 @@ QImage qt_imageFromWinHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h)
     return image;
 }
 
-static QImage qt_imageFromWinIconHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h)
+static QImage bobui_imageFromWinIconHBITMAP(HDC hdc, HBITMAP bitmap, int w, int h)
 {
     QImage image(w, h, QImage::Format_ARGB32_Premultiplied);
     if (image.isNull())
@@ -618,11 +618,11 @@ QImage QImage::fromHICON(HICON icon)
                                          nullptr, 0);
     HGDIOBJ oldhdc = static_cast<HBITMAP>(SelectObject(hdc, winBitmap));
     DrawIconEx(hdc, 0, 0, icon, w, h, 0, nullptr, DI_NORMAL);
-    QImage image = qt_imageFromWinIconHBITMAP(hdc, winBitmap, w, h);
+    QImage image = bobui_imageFromWinIconHBITMAP(hdc, winBitmap, w, h);
 
     if (!image.isNull() && !hasAlpha(image)) { //If no alpha was found, we use the mask to set alpha values
         DrawIconEx( hdc, 0, 0, icon, w, h, 0, nullptr, DI_MASK);
-        const QImage mask = qt_imageFromWinIconHBITMAP(hdc, winBitmap, w, h);
+        const QImage mask = bobui_imageFromWinIconHBITMAP(hdc, winBitmap, w, h);
 
         for (int y = 0 ; y < h ; y++){
             QRgb *scanlineImage = reinterpret_cast<QRgb *>(image.scanLine(y));
@@ -645,9 +645,9 @@ QImage QImage::fromHICON(HICON icon)
     return image;
 }
 
-QPixmap qt_pixmapFromWinHICON(HICON icon)
+QPixmap bobui_pixmapFromWinHICON(HICON icon)
 {
     return QPixmap::fromImage(QImage::fromHICON(icon));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

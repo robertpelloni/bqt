@@ -1,19 +1,19 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "androidbackendregister.h"
 
 #include "androidjnimain.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcAndroidBackendRegister, "qt.qpa.androidbackendregister")
+Q_LOGGING_CATEGORY(lcAndroidBackendRegister, "bobui.qpa.androidbackendregister")
 
-Q_DECLARE_JNI_CLASS(BackendRegister, "org/qtproject/qt/android/BackendRegister");
+Q_DECLARE_JNI_CLASS(BackendRegister, "org/bobuiproject/bobui/android/BackendRegister");
 
 bool AndroidBackendRegister::registerNatives()
 {
-    return QtJniTypes::BackendRegister::registerNativeMethods(
+    return BobUIJniTypes::BackendRegister::registerNativeMethods(
             { Q_JNI_NATIVE_SCOPED_METHOD(isNull, AndroidBackendRegister),
               Q_JNI_NATIVE_SCOPED_METHOD(registerBackend, AndroidBackendRegister),
               Q_JNI_NATIVE_SCOPED_METHOD(unregisterBackend, AndroidBackendRegister) });
@@ -21,13 +21,13 @@ bool AndroidBackendRegister::registerNatives()
 
 jboolean AndroidBackendRegister::isNull(JNIEnv *, jclass)
 {
-    return QtAndroid::backendRegister() == nullptr;
+    return BobUIAndroid::backendRegister() == nullptr;
 }
 
 void AndroidBackendRegister::registerBackend(JNIEnv *, jclass, jclass interfaceClass,
                                              jobject interface)
 {
-    if (AndroidBackendRegister *reg = QtAndroid::backendRegister()) {
+    if (AndroidBackendRegister *reg = BobUIAndroid::backendRegister()) {
         const QJniObject classObject(static_cast<jobject>(interfaceClass));
         QString name = classObject.callMethod<jstring>("getName").toString();
         name.replace('.', '/');
@@ -42,7 +42,7 @@ void AndroidBackendRegister::registerBackend(JNIEnv *, jclass, jclass interfaceC
 
 void AndroidBackendRegister::unregisterBackend(JNIEnv *, jclass, jclass interfaceClass)
 {
-    if (AndroidBackendRegister *reg = QtAndroid::backendRegister()) {
+    if (AndroidBackendRegister *reg = BobUIAndroid::backendRegister()) {
         const QJniObject classObject(static_cast<jobject>(interfaceClass));
         QString name = classObject.callMethod<jstring>("getName").toString();
         name.replace('.', '/');
@@ -55,4 +55,4 @@ void AndroidBackendRegister::unregisterBackend(JNIEnv *, jclass, jclass interfac
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

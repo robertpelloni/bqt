@@ -276,7 +276,7 @@
         to return a value instead of a reference, allowing you to return a
         temporary in the</tspan>
       <tspan x="1em" dy="1.2em">future without breaking source code compatibility. This is
-        also done for all Qt APIs.</tspan>
+        also done for all BobUI APIs.</tspan>
     </text>
   </g>
 </svg>

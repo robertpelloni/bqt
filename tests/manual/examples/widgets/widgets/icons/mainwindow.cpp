@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "iconpreviewarea.h"
@@ -23,7 +23,7 @@
 #include <QScreen>
 #include <QStandardPaths>
 #include <QStyleFactory>
-#include <QTableWidget>
+#include <BOBUIableWidget>
 #include <QWindow>
 
 //! [40]
@@ -74,7 +74,7 @@ void MainWindow::show()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Icons"),
-            tr("The <b>Icons</b> example illustrates how Qt renders an icon in "
+            tr("The <b>Icons</b> example illustrates how BobUI renders an icon in "
                "different modes (active, normal, disabled, and selected) and "
                "states (on and off) based on a set of images."));
 }
@@ -153,11 +153,11 @@ void MainWindow::changeIcon()
     QIcon icon;
 
     for (int row = 0; row < imagesTable->rowCount(); ++row) {
-        const QTableWidgetItem *fileItem = imagesTable->item(row, 0);
-        const QTableWidgetItem *modeItem = imagesTable->item(row, 1);
-        const QTableWidgetItem *stateItem = imagesTable->item(row, 2);
+        const BOBUIableWidgetItem *fileItem = imagesTable->item(row, 0);
+        const BOBUIableWidgetItem *modeItem = imagesTable->item(row, 1);
+        const BOBUIableWidgetItem *stateItem = imagesTable->item(row, 2);
 
-        if (fileItem->checkState() == Qt::Checked) {
+        if (fileItem->checkState() == BobUI::Checked) {
             const int modeIndex = IconPreviewArea::iconModeNames().indexOf(modeItem->text());
             Q_ASSERT(modeIndex >= 0);
             const int stateIndex = IconPreviewArea::iconStateNames().indexOf(stateItem->text());
@@ -167,7 +167,7 @@ void MainWindow::changeIcon()
 //! [6]
 
 //! [8]
-            const QString fileName = fileItem->data(Qt::UserRole).toString();
+            const QString fileName = fileItem->data(BobUI::UserRole).toString();
             QImage image(fileName);
             if (!image.isNull())
                 icon.addPixmap(QPixmap::fromImage(image), mode, state);
@@ -232,10 +232,10 @@ void MainWindow::loadImages(const QStringList &fileNames)
                .arg(QDir::toNativeSeparators(fileInfo.absolutePath()), fileInfo.fileName())
                .arg(fileInfo2x.exists() ? fileInfo2x.fileName() : tr("<None>"))
                .arg(image.width()).arg(image.height());
-        QTableWidgetItem *fileItem = new QTableWidgetItem(imageName);
-        fileItem->setData(Qt::UserRole, fileName);
+        BOBUIableWidgetItem *fileItem = new BOBUIableWidgetItem(imageName);
+        fileItem->setData(BobUI::UserRole, fileName);
         fileItem->setIcon(QPixmap::fromImage(image));
-        fileItem->setFlags((fileItem->flags() | Qt::ItemIsUserCheckable) & ~Qt::ItemIsEditable);
+        fileItem->setFlags((fileItem->flags() | BobUI::ItemIsUserCheckable) & ~BobUI::ItemIsEditable);
         fileItem->setToolTip(toolTip);
 //! [13]
 
@@ -243,32 +243,32 @@ void MainWindow::loadImages(const QStringList &fileNames)
         QIcon::Mode mode = QIcon::Normal;
         QIcon::State state = QIcon::Off;
         if (guessModeStateAct->isChecked()) {
-            if (imageName.contains(QLatin1String("_act"), Qt::CaseInsensitive))
+            if (imageName.contains(QLatin1String("_act"), BobUI::CaseInsensitive))
                 mode = QIcon::Active;
-            else if (imageName.contains(QLatin1String("_dis"), Qt::CaseInsensitive))
+            else if (imageName.contains(QLatin1String("_dis"), BobUI::CaseInsensitive))
                 mode = QIcon::Disabled;
-            else if (imageName.contains(QLatin1String("_sel"), Qt::CaseInsensitive))
+            else if (imageName.contains(QLatin1String("_sel"), BobUI::CaseInsensitive))
                 mode = QIcon::Selected;
 
-            if (imageName.contains(QLatin1String("_on"), Qt::CaseInsensitive))
+            if (imageName.contains(QLatin1String("_on"), BobUI::CaseInsensitive))
                 state = QIcon::On;
 //! [15]
         }
 
 //! [18]
         imagesTable->setItem(row, 0, fileItem);
-        QTableWidgetItem *modeItem =
-            new QTableWidgetItem(IconPreviewArea::iconModeNames().at(IconPreviewArea::iconModes().indexOf(mode)));
+        BOBUIableWidgetItem *modeItem =
+            new BOBUIableWidgetItem(IconPreviewArea::iconModeNames().at(IconPreviewArea::iconModes().indexOf(mode)));
         modeItem->setToolTip(toolTip);
         imagesTable->setItem(row, 1, modeItem);
-        QTableWidgetItem *stateItem =
-            new QTableWidgetItem(IconPreviewArea::iconStateNames().at(IconPreviewArea::iconStates().indexOf(state)));
+        BOBUIableWidgetItem *stateItem =
+            new BOBUIableWidgetItem(IconPreviewArea::iconStateNames().at(IconPreviewArea::iconStates().indexOf(state)));
         stateItem->setToolTip(toolTip);
         imagesTable->setItem(row, 2, stateItem);
         imagesTable->openPersistentEditor(modeItem);
         imagesTable->openPersistentEditor(stateItem);
 
-        fileItem->setCheckState(Qt::Checked);
+        fileItem->setCheckState(BobUI::Checked);
 //! [18]
     }
 }
@@ -286,7 +286,7 @@ QWidget *MainWindow::createImagesGroupBox()
 {
     QGroupBox *imagesGroupBox = new QGroupBox(tr("Images"));
 
-    imagesTable = new QTableWidget;
+    imagesTable = new BOBUIableWidget;
     imagesTable->setSelectionMode(QAbstractItemView::NoSelection);
     imagesTable->setItemDelegate(new ImageDelegate(this));
 //! [21]
@@ -304,7 +304,7 @@ QWidget *MainWindow::createImagesGroupBox()
 //! [22]
 
 //! [24]
-    connect(imagesTable, &QTableWidget::itemChanged,
+    connect(imagesTable, &BOBUIableWidget::itemChanged,
             this, &MainWindow::changeIcon);
 
     QVBoxLayout *layout = new QVBoxLayout(imagesGroupBox);
@@ -446,14 +446,14 @@ void MainWindow::createActions()
 
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(tr("&About"), this, &MainWindow::about);
-    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+    helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
 }
 //! [28]
 
 //! [30]
 void MainWindow::createContextMenu()
 {
-    imagesTable->setContextMenuPolicy(Qt::ActionsContextMenu);
+    imagesTable->setContextMenuPolicy(BobUI::ActionsContextMenu);
     imagesTable->addAction(addSampleImagesAct);
     imagesTable->addAction(addOtherImagesAct);
     imagesTable->addAction(removeAllImagesAct);

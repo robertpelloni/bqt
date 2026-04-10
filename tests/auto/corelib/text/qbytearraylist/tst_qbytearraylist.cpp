@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 by Southwest Research Institute (R)
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#define QT_USE_QSTRINGBUILDER
+#define BOBUI_USE_QSTRINGBUILDER
 
-#include <QTest>
+#include <BOBUIest>
 #include <qbytearraylist.h>
 
 #include <qmetatype.h>
@@ -66,19 +66,19 @@ void tst_QByteArrayList::join() const
 
 void tst_QByteArrayList::join_data() const
 {
-    QTest::addColumn<QByteArrayList>("input");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QByteArrayList>("input");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
-    QTest::newRow("data1") << QByteArrayList()
+    BOBUIest::newRow("data1") << QByteArrayList()
                            << QByteArray();
 
-    QTest::newRow("data2") << (QByteArrayList() << "one")
+    BOBUIest::newRow("data2") << (QByteArrayList() << "one")
                            << QByteArray("one");
 
-    QTest::newRow("data3") << (QByteArrayList() << "a" << "b")
+    BOBUIest::newRow("data3") << (QByteArrayList() << "a" << "b")
                            << QByteArray("ab");
 
-    QTest::newRow("data4") << (QByteArrayList() << "a" << "b" << "c")
+    BOBUIest::newRow("data4") << (QByteArrayList() << "a" << "b" << "c")
                            << QByteArray("abc");
 }
 
@@ -94,35 +94,35 @@ void tst_QByteArrayList::joinByteArray() const
 
 void tst_QByteArrayList::joinByteArray_data() const
 {
-    QTest::addColumn<QByteArrayList>("input");
-    QTest::addColumn<QByteArray>("separator");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QByteArrayList>("input");
+    BOBUIest::addColumn<QByteArray>("separator");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
-    QTest::newRow("data1") << QByteArrayList()
+    BOBUIest::newRow("data1") << QByteArrayList()
                            << QByteArray()
                            << QByteArray();
 
-    QTest::newRow("data2") << QByteArrayList()
+    BOBUIest::newRow("data2") << QByteArrayList()
                            << QByteArray("separator")
                            << QByteArray();
 
-    QTest::newRow("data3") << (QByteArrayList() << "one")
+    BOBUIest::newRow("data3") << (QByteArrayList() << "one")
                            << QByteArray("separator")
                            << QByteArray("one");
 
-    QTest::newRow("data4") << (QByteArrayList() << "a" << "b")
+    BOBUIest::newRow("data4") << (QByteArrayList() << "a" << "b")
                            << QByteArray(" ")
                            << QByteArray("a b");
 
-    QTest::newRow("data5") << (QByteArrayList() << "a" << "b" << "c")
+    BOBUIest::newRow("data5") << (QByteArrayList() << "a" << "b" << "c")
                            << QByteArray(" ")
                            << QByteArray("a b c");
 
-    QTest::newRow("data6") << (QByteArrayList()  << "a" << "b" << "c")
+    BOBUIest::newRow("data6") << (QByteArrayList()  << "a" << "b" << "c")
                            << QByteArray()
                            << QByteArray("abc");
 
-    QTest::newRow("data7") << (QByteArrayList()  << "a" << "b" << "c")
+    BOBUIest::newRow("data7") << (QByteArrayList()  << "a" << "b" << "c")
                            << QByteArray("") //empty
                            << QByteArray("abc");
 }
@@ -139,19 +139,19 @@ void tst_QByteArrayList::joinChar() const
 
 void tst_QByteArrayList::joinChar_data() const
 {
-    QTest::addColumn<QByteArrayList>("input");
-    QTest::addColumn<char>("separator");
-    QTest::addColumn<QByteArray>("expectedResult");
+    BOBUIest::addColumn<QByteArrayList>("input");
+    BOBUIest::addColumn<char>("separator");
+    BOBUIest::addColumn<QByteArray>("expectedResult");
 
-    QTest::newRow("data1") << QByteArrayList()
+    BOBUIest::newRow("data1") << QByteArrayList()
                            << ' '
                            << QByteArray();
 
-    QTest::newRow("data2") << (QByteArrayList() << "a a" << "b")
+    BOBUIest::newRow("data2") << (QByteArrayList() << "a a" << "b")
                            << ' '
                            << QByteArray("a a b");
 
-    QTest::newRow("data3") << (QByteArrayList() << "a" << "b" << "c c")
+    BOBUIest::newRow("data3") << (QByteArrayList() << "a" << "b" << "c c")
                            << ' '
                            << QByteArray("a b c c");
 }
@@ -240,42 +240,42 @@ void tst_QByteArrayList::operator_plus() const
 
 void tst_QByteArrayList::operator_plus_data() const
 {
-    QTest::addColumn<QByteArrayList>("lhs");
-    QTest::addColumn<QByteArrayList>("rhs");
-    QTest::addColumn<QByteArrayList>("expectedResult");
+    BOBUIest::addColumn<QByteArrayList>("lhs");
+    BOBUIest::addColumn<QByteArrayList>("rhs");
+    BOBUIest::addColumn<QByteArrayList>("expectedResult");
 
-    QTest::newRow("simpl") << ( QByteArrayList() << "a" )
+    BOBUIest::newRow("simpl") << ( QByteArrayList() << "a" )
                            << ( QByteArrayList() << "b" << "c" )
                            << ( QByteArrayList() << "a" << "b" << "c" );
 
-    QTest::newRow("blank1") << QByteArrayList()
+    BOBUIest::newRow("blank1") << QByteArrayList()
                             << QByteArrayList()
                             << QByteArrayList();
 
-    QTest::newRow("blank2") << ( QByteArrayList() )
+    BOBUIest::newRow("blank2") << ( QByteArrayList() )
                             << ( QByteArrayList() << "b" << "c" )
                             << ( QByteArrayList() << "b" << "c" );
 
-    QTest::newRow("empty1") << ( QByteArrayList() << "" )
+    BOBUIest::newRow("empty1") << ( QByteArrayList() << "" )
                             << ( QByteArrayList() << "b" << "c" )
                             << ( QByteArrayList() << "" << "b" << "c" );
 
-    QTest::newRow("empty2") << ( QByteArrayList() << "a" )
+    BOBUIest::newRow("empty2") << ( QByteArrayList() << "a" )
                             << ( QByteArrayList() << "" << "c" )
                             << ( QByteArrayList() << "a" << "" << "c" );
 }
 
 void tst_QByteArrayList::indexOf_data() const
 {
-    QTest::addColumn<QByteArrayList>("list");
-    QTest::addColumn<QByteArray>("item");
-    QTest::addColumn<int>("expectedResult");
+    BOBUIest::addColumn<QByteArrayList>("list");
+    BOBUIest::addColumn<QByteArray>("item");
+    BOBUIest::addColumn<int>("expectedResult");
 
-    QTest::newRow("empty") << QByteArrayList() << QByteArray("a") << -1;
-    QTest::newRow("found_1") << ( QByteArrayList() << "a" ) << QByteArray("a") << 0;
-    QTest::newRow("not_found_1") << ( QByteArrayList() << "a" ) << QByteArray("b") << -1;
-    QTest::newRow("found_2") << ( QByteArrayList() << "hello" << "world" ) << QByteArray("world") << 1;
-    QTest::newRow("returns_first") << ( QByteArrayList() << "hello" << "world" << "hello" << "again" ) << QByteArray("hello") << 0;
+    BOBUIest::newRow("empty") << QByteArrayList() << QByteArray("a") << -1;
+    BOBUIest::newRow("found_1") << ( QByteArrayList() << "a" ) << QByteArray("a") << 0;
+    BOBUIest::newRow("not_found_1") << ( QByteArrayList() << "a" ) << QByteArray("b") << -1;
+    BOBUIest::newRow("found_2") << ( QByteArrayList() << "hello" << "world" ) << QByteArray("world") << 1;
+    BOBUIest::newRow("returns_first") << ( QByteArrayList() << "hello" << "world" << "hello" << "again" ) << QByteArray("hello") << 0;
 }
 
 void tst_QByteArrayList::indexOf() const
@@ -300,5 +300,5 @@ void tst_QByteArrayList::initializerList() const
     QCOMPARE(v2, v1);
 }
 
-QTEST_APPLESS_MAIN(tst_QByteArrayList)
+BOBUIEST_APPLESS_MAIN(tst_QByteArrayList)
 #include "tst_qbytearraylist.moc"

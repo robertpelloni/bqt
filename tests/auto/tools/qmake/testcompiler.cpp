@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "testcompiler.h"
 
@@ -106,7 +106,7 @@ static inline QStringList systemEnvironment()
     if (result.isEmpty()) {
         const auto env = QProcess::systemEnvironment();
         for (const QString &variable : env) {
-            if (variable.startsWith(QStringLiteral("MAKEFLAGS="), Qt::CaseInsensitive)) {
+            if (variable.startsWith(QStringLiteral("MAKEFLAGS="), BobUI::CaseInsensitive)) {
                 qWarning("Removing environment setting '%s'", qPrintable(variable));
             } else {
                 result.push_back(variable);
@@ -270,8 +270,8 @@ bool TestCompiler::make( const QString &workPath, const QString &target, bool ex
     D.setCurrent( workPath );
 
     QStringList args = makeArgs_;
-    if (makeCmd_.contains("nmake", Qt::CaseInsensitive) ||
-        makeCmd_.contains("jom", Qt::CaseInsensitive)) {
+    if (makeCmd_.contains("nmake", BobUI::CaseInsensitive) ||
+        makeCmd_.contains("jom", BobUI::CaseInsensitive)) {
         args << "/NOLOGO";
     }
     if (!target.isEmpty())

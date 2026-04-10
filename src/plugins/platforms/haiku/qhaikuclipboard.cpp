@@ -1,16 +1,16 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
 
 #include "qhaikuclipboard.h"
 
 #include <QMimeData>
-#include <QThread>
+#include <BOBUIhread>
 
 #include <Clipboard.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QHaikuClipboard::QHaikuClipboard()
     : m_systemMimeData(nullptr)

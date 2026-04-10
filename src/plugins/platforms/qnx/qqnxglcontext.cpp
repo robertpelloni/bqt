@@ -1,5 +1,5 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxglcontext.h"
 #include "qqnxintegration.h"
@@ -8,15 +8,15 @@
 
 #include "private/qeglconvenience_p.h"
 
-#include <QtCore/QDebug>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QScreen>
+#include <BobUICore/QDebug>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QScreen>
 
 #include <dlfcn.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaGLContext, "qt.qpa.glcontext");
+Q_LOGGING_CATEGORY(lcQpaGLContext, "bobui.qpa.glcontext");
 
 static QEGLPlatformContext::Flags makeFlags()
 {
@@ -66,4 +66,4 @@ void QQnxGLContext::doneCurrent()
     QEGLPlatformContext::doneCurrent();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

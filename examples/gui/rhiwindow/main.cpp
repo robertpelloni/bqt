@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QGuiApplication>
 #include <QCommandLineParser>
@@ -14,9 +14,9 @@ int main(int argc, char **argv)
     // Use platform-specific defaults when no command-line arguments given.
 #if defined(Q_OS_WIN)
     graphicsApi = QRhi::D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = QRhi::Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = QRhi::Vulkan;
 #else
     graphicsApi = QRhi::OpenGLES2;
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     QSurfaceFormat::setDefaultFormat(fmt);
 
     // For Vulkan.
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     QVulkanInstance inst;
     if (graphicsApi == QRhi::Vulkan) {
         // Request validation, if available. This is completely optional
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 
     HelloWindow window(graphicsApi);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == QRhi::Vulkan)
         window.setVulkanInstance(&inst);
 #endif

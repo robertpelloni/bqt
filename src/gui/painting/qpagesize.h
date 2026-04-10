@@ -1,13 +1,13 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAGESIZE_H
 #define QPAGESIZE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qsharedpointer.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qsharedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if defined(B0)
 #undef B0 // Terminal hang-up.  We assume that you do not want that.
@@ -23,7 +23,7 @@ class Q_GUI_EXPORT QPageSize
 public:
 
     enum PageSizeId {
-        // Old Qt sizes
+        // Old BobUI sizes
         Letter,
         Legal,
         Executive,
@@ -196,14 +196,14 @@ public:
                        const QString &name = QString(),
                        SizeMatchPolicy matchPolicy = FuzzyMatch);
     QPageSize(const QPageSize &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPageSize)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPageSize)
     QPageSize &operator=(const QPageSize &other);
     ~QPageSize();
 
 
     void swap(QPageSize &other) noexcept { d.swap(other.d); }
 
-#if QT_GUI_REMOVED_SINCE(6, 4)
+#if BOBUI_GUI_REMOVED_SINCE(6, 4)
     friend Q_GUI_EXPORT bool operator==(const QPageSize &lhs, const QPageSize &rhs);
 #endif
     bool isEquivalentTo(const QPageSize &other) const;
@@ -264,14 +264,14 @@ private:
 
 Q_DECLARE_SHARED(QPageSize)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QPageSize &pageSize);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QPageSize, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QPageSize::PageSizeId, QPageSize__PageSizeId, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QPageSize::Unit, QPageSize__Unit, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QPageSize, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPageSize::PageSizeId, QPageSize__PageSizeId, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPageSize::Unit, QPageSize__Unit, Q_GUI_EXPORT)
 
 #endif // QPAGESIZE_H

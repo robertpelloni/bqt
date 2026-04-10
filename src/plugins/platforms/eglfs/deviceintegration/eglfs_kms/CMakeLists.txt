@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## EglFsKmsGbmSupportPrivate Module:
 #####################################################################
 
-qt_internal_add_module(EglFsKmsGbmSupportPrivate
+bobui_internal_add_module(EglFsKmsGbmSupportPrivate
     CONFIG_MODULE_NAME eglfs_kms_gbm_support
     INTERNAL_MODULE
     SOURCES
@@ -15,14 +15,14 @@ qt_internal_add_module(EglFsKmsGbmSupportPrivate
         qeglfskmsgbmscreen.cpp qeglfskmsgbmscreen_p.h
         qeglfskmsgbmwindow.cpp qeglfskmsgbmwindow_p.h
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     PUBLIC_LIBRARIES
         Libdrm::Libdrm
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::EglFsKmsSupportPrivate
-        Qt::GuiPrivate
-        Qt::KmsSupportPrivate
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::EglFsKmsSupportPrivate
+        BobUI::GuiPrivate
+        BobUI::KmsSupportPrivate
         gbm::gbm
     NO_GENERATE_CPP_EXPORTS
 )
@@ -30,20 +30,20 @@ qt_internal_add_module(EglFsKmsGbmSupportPrivate
 ## QEglFSKmsGbmIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QEglFSKmsGbmIntegrationPlugin
+bobui_internal_add_plugin(QEglFSKmsGbmIntegrationPlugin
     OUTPUT_NAME qeglfs-kms-integration
     PLUGIN_TYPE egldeviceintegrations
     SOURCES
         qeglfskmsgbmmain.cpp
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
     LIBRARIES
         Libdrm::Libdrm
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::EglFsKmsGbmSupportPrivate
-        Qt::EglFsKmsSupportPrivate
-        Qt::GuiPrivate
-        Qt::KmsSupportPrivate
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::EglFsKmsGbmSupportPrivate
+        BobUI::EglFsKmsSupportPrivate
+        BobUI::GuiPrivate
+        BobUI::KmsSupportPrivate
         gbm::gbm
 )

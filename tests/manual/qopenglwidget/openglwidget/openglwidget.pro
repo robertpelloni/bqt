@@ -1,4 +1,4 @@
-QT += widgets widgets-private gui-private core-private
+BOBUI += widgets widgets-private gui-private core-private
 
 TARGET = openglwidget
 TEMPLATE = app

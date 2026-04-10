@@ -1,12 +1,12 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc
-// Mutz <marc.mutz@kdab.com> Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Mutz <marc.mutz@kdab.com> Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qexpected_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QObject>
-#include <QtCore/qexceptionhandling.h>
+#include <BobUICore/qexceptionhandling.h>
 
 class tst_q23_expected : public QObject
 {
@@ -19,8 +19,8 @@ private Q_SLOTS:
 
 void tst_q23_expected::value_throw_exception_unreachable_data()
 {
-    QTest::addColumn<bool>("unexpected");
-    QTest::addRow("expected") << false;
+    BOBUIest::addColumn<bool>("unexpected");
+    BOBUIest::addRow("expected") << false;
 }
 
 void tst_q23_expected::value_throw_exception_unreachable()
@@ -34,5 +34,5 @@ void tst_q23_expected::value_throw_exception_unreachable()
     QCOMPARE(toExp(value, unexpected).value(), value);
 }
 
-QTEST_GUILESS_MAIN(tst_q23_expected)
+BOBUIEST_GUILESS_MAIN(tst_q23_expected)
 #include "tst_q23_expected.moc"

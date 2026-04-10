@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QGraphicsView>
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     scene.addItem(knob2);
 
     view.showMaximized();
-    view.fitInView(scene.sceneRect().adjusted(-20, -20, 20, 20), Qt::KeepAspectRatio);
+    view.fitInView(scene.sceneRect().adjusted(-20, -20, 20, 20), BobUI::KeepAspectRatio);
 
     return app.exec();
 }

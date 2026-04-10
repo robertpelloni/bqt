@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qhttpnetworkreply_p.h"
 #include "qhttpnetworkconnection_p.h"
 
-#ifndef QT_NO_SSL
-#    include <QtNetwork/qsslkey.h>
-#    include <QtNetwork/qsslcipher.h>
-#    include <QtNetwork/qsslconfiguration.h>
+#ifndef BOBUI_NO_SSL
+#    include <BobUINetwork/qsslkey.h>
+#    include <BobUINetwork/qsslcipher.h>
+#    include <BobUINetwork/qsslconfiguration.h>
 #endif
 
 #include <private/qdecompresshelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QHttpNetworkReply::QHttpNetworkReply(const QUrl &url, QObject *parent)
     : QObject(*new QHttpNetworkReplyPrivate(url), parent)
@@ -763,7 +763,7 @@ void QHttpNetworkReplyPrivate::eraseData()
 
 
 // SSL support below
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 QSslConfiguration QHttpNetworkReply::sslConfiguration() const
 {
@@ -801,9 +801,9 @@ void QHttpNetworkReply::ignoreSslErrors(const QList<QSslError> &errors)
 }
 
 
-#endif //QT_NO_SSL
+#endif //BOBUI_NO_SSL
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttpnetworkreply_p.cpp"

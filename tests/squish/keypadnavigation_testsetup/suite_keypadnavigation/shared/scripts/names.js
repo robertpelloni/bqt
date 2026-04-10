@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import { RegularExpression, Wildcard } from 'objectmaphelper.js';
 
@@ -23,4 +23,4 @@ export var scrollAreaLineEdit4QLineEdit = {"container": mStackWidgetScrollAreaQS
 export var scrollAreaHorizontalSlider2QSlider = {"container": mStackWidgetScrollAreaQScrollArea, "name": "horizontalSlider_2", "type": "QSlider", "visible": 1};
 export var scrollAreaScrollAreaWidgetContentsQWidget = {"container": mStackWidgetScrollAreaQScrollArea, "name": "scrollAreaWidgetContents", "type": "QWidget", "visible": 1};
 export var scrollAreaLabel7QLabel = {"container": mStackWidgetScrollAreaQScrollArea, "name": "label_7", "type": "QLabel", "visible": 1};
-export var scrollAreaQtSpinboxLineeditQLineEdit = {"container": mStackWidgetScrollAreaQScrollArea, "name": "qt_spinbox_lineedit", "type": "QLineEdit", "visible": 1};
+export var scrollAreaBobUISpinboxLineeditQLineEdit = {"container": mStackWidgetScrollAreaQScrollArea, "name": "bobui_spinbox_lineedit", "type": "QLineEdit", "visible": 1};

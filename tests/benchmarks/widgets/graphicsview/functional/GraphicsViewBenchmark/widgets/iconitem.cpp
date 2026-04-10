@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui>
+#include <BobUIGui>
 #include <QSvgRenderer>
 #include <QGraphicsEffect>
 
@@ -41,14 +41,14 @@ void IconItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->drawPixmap(0,0, m_pixmap);
 }
 
-QSizeF IconItem::sizeHint(Qt::SizeHint which,
+QSizeF IconItem::sizeHint(BobUI::SizeHint which,
     const QSizeF &constraint) const
 {
     switch (which)
     {
-    case Qt::MinimumSize:
-    case Qt::PreferredSize:
-    case Qt::MaximumSize:
+    case BobUI::MinimumSize:
+    case BobUI::PreferredSize:
+    case BobUI::MaximumSize:
         return m_pixmap.size();
 
     default:
@@ -66,10 +66,10 @@ void IconItem::reload()
     if (QPixmapCache::find(key, m_pixmap))
         return;
 
-    if (m_filename.endsWith(".svg", Qt::CaseInsensitive))
+    if (m_filename.endsWith(".svg", BobUI::CaseInsensitive))
     {
         m_pixmap = QPixmap(iconSize);
-        m_pixmap.fill(Qt::transparent);
+        m_pixmap.fill(BobUI::transparent);
         QSvgRenderer doc(m_filename);
         QPainter painter(&m_pixmap);
         painter.setViewport(0, 0, iconSize.width(), iconSize.height());

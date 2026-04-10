@@ -1,12 +1,12 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mimetypemodel.h"
 
 #include <QDebug>
 #include <QIcon>
 #include <QMimeDatabase>
-#include <QTextStream>
+#include <BOBUIextStream>
 #include <QVariant>
 
 #include <algorithm>
@@ -15,20 +15,20 @@ Q_DECLARE_METATYPE(QMimeType)
 
 typedef QList<QStandardItem *> StandardItemList;
 
-enum { mimeTypeRole = Qt::UserRole + 1, iconQueriedRole = Qt::UserRole + 2 };
+enum { mimeTypeRole = BobUI::UserRole + 1, iconQueriedRole = BobUI::UserRole + 2 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 bool operator<(const QMimeType &t1, const QMimeType &t2)
 {
     return t1.name() < t2.name();
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 static StandardItemList createRow(const QMimeType &t)
 {
     const QVariant v = QVariant::fromValue(t);
     QStandardItem *nameItem = new QStandardItem(t.name());
-    const Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    const BobUI::ItemFlags flags = BobUI::ItemIsSelectable | BobUI::ItemIsEnabled;
     nameItem->setData(v, mimeTypeRole);
     nameItem->setData(QVariant(false), iconQueriedRole);
     nameItem->setFlags(flags);
@@ -45,7 +45,7 @@ MimetypeModel::MimetypeModel(QObject *parent)
 
 QVariant MimetypeModel::data(const QModelIndex &index, int role) const
 {
-    if (role != Qt::DecorationRole || !index.isValid() || index.data(iconQueriedRole).toBool())
+    if (role != BobUI::DecorationRole || !index.isValid() || index.data(iconQueriedRole).toBool())
         return QStandardItemModel::data(index, role);
     QStandardItem *item = itemFromIndex(index);
     const QString iconName = qvariant_cast<QMimeType>(item->data(mimeTypeRole)).iconName();
@@ -112,7 +112,7 @@ void MimetypeModel::populate()
     }
 }
 
-QTextStream &operator<<(QTextStream &stream, const QStringList &list)
+BOBUIextStream &operator<<(BOBUIextStream &stream, const QStringList &list)
 {
     for (int i = 0, size = list.size(); i < size; ++i) {
         if (i)
@@ -125,7 +125,7 @@ QTextStream &operator<<(QTextStream &stream, const QStringList &list)
 QString MimetypeModel::formatMimeTypeInfo(const QMimeType &t)
 {
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str << "<html><head/><body><h3><center>" << t.name() << "</center></h3><br><table>";
 
     const QStringList &aliases = t.aliases();

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSTROKER_P_H
 #define QSTROKER_P_H
@@ -8,28 +8,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtGui/qpainterpath.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUIGui/qpainterpath.h"
 #include "private/qdatabuffer_p.h"
 #include "private/qnumeric_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // #define QFIXED_IS_26_6
 
 #if defined QFIXED_IS_26_6
 typedef int qfixed;
-#define qt_real_to_fixed(real) qfixed(real * 64)
-#define qt_int_to_fixed(real) qfixed(int(real) << 6)
-#define qt_fixed_to_real(fixed) qreal(fixed / qreal(64))
-#define qt_fixed_to_int(fixed) int(fixed >> 6)
+#define bobui_real_to_fixed(real) qfixed(real * 64)
+#define bobui_int_to_fixed(real) qfixed(int(real) << 6)
+#define bobui_fixed_to_real(fixed) qreal(fixed / qreal(64))
+#define bobui_fixed_to_int(fixed) int(fixed >> 6)
 struct qfixed2d
 {
     qfixed x;
@@ -39,8 +39,8 @@ struct qfixed2d
 };
 #elif defined QFIXED_IS_32_32
 typedef qint64 qfixed;
-#define qt_real_to_fixed(real) qfixed(real * double(qint64(1) << 32))
-#define qt_fixed_to_real(fixed) qreal(fixed / double(qint64(1) << 32))
+#define bobui_real_to_fixed(real) qfixed(real * double(qint64(1) << 32))
+#define bobui_fixed_to_real(fixed) qreal(fixed / double(qint64(1) << 32))
 struct qfixed2d
 {
     qfixed x;
@@ -50,8 +50,8 @@ struct qfixed2d
 };
 #elif defined QFIXED_IS_16_16
 typedef int qfixed;
-#define qt_real_to_fixed(real) qfixed(real * qreal(1 << 16))
-#define qt_fixed_to_real(fixed) qreal(fixed / qreal(1 << 16))
+#define bobui_real_to_fixed(real) qfixed(real * qreal(1 << 16))
+#define bobui_fixed_to_real(fixed) qreal(fixed / qreal(1 << 16))
 struct qfixed2d
 {
     qfixed x;
@@ -61,8 +61,8 @@ struct qfixed2d
 };
 #else
 typedef qreal qfixed;
-#define qt_real_to_fixed(real) qfixed(real)
-#define qt_fixed_to_real(fixed) fixed
+#define bobui_real_to_fixed(real) qfixed(real)
+#define bobui_fixed_to_real(fixed) fixed
 struct qfixed2d
 {
     qfixed x;
@@ -74,12 +74,12 @@ struct qfixed2d
 };
 #endif
 
-#define QT_PATH_KAPPA 0.5522847498
+#define BOBUI_PATH_KAPPA 0.5522847498
 
-QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLength,
+QPointF bobui_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLength,
                           QPointF *controlPoints, int *point_count);
 
-qreal qt_t_for_arc_angle(qreal angle);
+qreal bobui_t_for_arc_angle(qreal angle);
 
 typedef void (*qStrokerMoveToHook)(qfixed x, qfixed y, void *data);
 typedef void (*qStrokerLineToHook)(qfixed x, qfixed y, void *data);
@@ -88,8 +88,8 @@ typedef void (*qStrokerCubicToHook)(qfixed c1x, qfixed c1y,
                                     qfixed ex, qfixed ey,
                                     void *data);
 
-// qtransform.cpp
-Q_GUI_EXPORT bool qt_scaleForTransform(const QTransform &transform, qreal *scale);
+// bobuiransform.cpp
+Q_GUI_EXPORT bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale);
 
 class Q_GUI_EXPORT QStrokerOps
 {
@@ -120,18 +120,18 @@ public:
     inline void lineTo(qfixed x, qfixed y);
     inline void cubicTo(qfixed x1, qfixed y1, qfixed x2, qfixed y2, qfixed ex, qfixed ey);
 
-    void strokePath(const QPainterPath &path, void *data, const QTransform &matrix);
+    void strokePath(const QPainterPath &path, void *data, const BOBUIransform &matrix);
     void strokePolygon(const QPointF *points, int pointCount, bool implicit_close,
-                       void *data, const QTransform &matrix);
-    void strokeEllipse(const QRectF &ellipse, void *data, const QTransform &matrix);
+                       void *data, const BOBUIransform &matrix);
+    void strokeEllipse(const QRectF &ellipse, void *data, const BOBUIransform &matrix);
 
     QRectF clipRect() const { return m_clip_rect; }
     void setClipRect(const QRectF &clip) { m_clip_rect = clip; }
 
-    void setCurveThresholdFromTransform(const QTransform &transform)
+    void setCurveThresholdFromTransform(const BOBUIransform &transform)
     {
         qreal scale;
-        qt_scaleForTransform(transform, &scale);
+        bobui_scaleForTransform(transform, &scale);
         m_dashThreshold = scale == 0 ? qreal(0.5) : (qreal(0.5) / scale);
     }
 
@@ -176,16 +176,16 @@ public:
     void setStrokeWidth(qfixed width)
     {
         m_strokeWidth = width;
-        m_curveThreshold = qt_real_to_fixed(qBound(0.00025, 1.0 / qt_fixed_to_real(width), 0.25));
+        m_curveThreshold = bobui_real_to_fixed(qBound(0.00025, 1.0 / bobui_fixed_to_real(width), 0.25));
     }
     qfixed strokeWidth() const { return m_strokeWidth; }
 
-    void setCapStyle(Qt::PenCapStyle capStyle) { m_capStyle = joinModeForCap(capStyle); }
-    Qt::PenCapStyle capStyle() const { return capForJoinMode(m_capStyle); }
+    void setCapStyle(BobUI::PenCapStyle capStyle) { m_capStyle = joinModeForCap(capStyle); }
+    BobUI::PenCapStyle capStyle() const { return capForJoinMode(m_capStyle); }
     LineJoinMode capStyleMode() const { return m_capStyle; }
 
-    void setJoinStyle(Qt::PenJoinStyle style) { m_joinStyle = joinModeForJoin(style); }
-    Qt::PenJoinStyle joinStyle() const { return joinForJoinMode(m_joinStyle); }
+    void setJoinStyle(BobUI::PenJoinStyle style) { m_joinStyle = joinModeForJoin(style); }
+    BobUI::PenJoinStyle joinStyle() const { return joinForJoinMode(m_joinStyle); }
     LineJoinMode joinStyleMode() const { return m_joinStyle; }
 
     void setMiterLimit(qfixed length) { m_miterLimit = length; }
@@ -200,11 +200,11 @@ public:
     inline void emitCubicTo(qfixed c1x, qfixed c1y, qfixed c2x, qfixed c2y, qfixed ex, qfixed ey);
 
 protected:
-    static Qt::PenCapStyle capForJoinMode(LineJoinMode mode);
-    static LineJoinMode joinModeForCap(Qt::PenCapStyle);
+    static BobUI::PenCapStyle capForJoinMode(LineJoinMode mode);
+    static LineJoinMode joinModeForCap(BobUI::PenCapStyle);
 
-    static Qt::PenJoinStyle joinForJoinMode(LineJoinMode mode);
-    static LineJoinMode joinModeForJoin(Qt::PenJoinStyle joinStyle);
+    static BobUI::PenJoinStyle joinForJoinMode(LineJoinMode mode);
+    static LineJoinMode joinModeForJoin(BobUI::PenJoinStyle joinStyle);
 
     void processCurrentSubpath() override;
 
@@ -231,7 +231,7 @@ public:
 
     QStroker *stroker() const { return m_stroker; }
 
-    static QList<qfixed> patternForStyle(Qt::PenStyle style);
+    static QList<qfixed> patternForStyle(BobUI::PenStyle style);
     static int repetitionLimit() { return 10000; }
 
     void setDashPattern(const QList<qfixed> &dashPattern) { m_dashPattern = dashPattern; }
@@ -364,6 +364,6 @@ inline void QDashStroker::end()
         m_stroker->end();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTROKER_P_H

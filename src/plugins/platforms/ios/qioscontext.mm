@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qioscontext.h"
 
@@ -11,16 +11,16 @@
 
 #include <dlfcn.h>
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QOpenGLContext>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QOpenGLContext>
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CAEAGLLayer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaGLContext, "qt.qpa.glcontext");
+Q_LOGGING_CATEGORY(lcQpaGLContext, "bobui.qpa.glcontext");
 
 QIOSContext::QIOSContext(QOpenGLContext *context)
     : QPlatformOpenGLContext()
@@ -52,7 +52,7 @@ QIOSContext::QIOSContext(QOpenGLContext *context)
 
     // iOS internally double-buffers its rendering using copy instead of flipping,
     // so technically we could report that we are single-buffered so that clients
-    // could take advantage of the unchanged buffer, but this means clients (and Qt)
+    // could take advantage of the unchanged buffer, but this means clients (and BobUI)
     // will also assume that swapBufferes() is not needed, which is _not_ the case.
     m_format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
@@ -85,15 +85,15 @@ QSurfaceFormat QIOSContext::format() const
     return m_format;
 }
 
-#define QT_IOS_GL_STATUS_CASE(val) case val: return QLatin1StringView(#val)
+#define BOBUI_IOS_GL_STATUS_CASE(val) case val: return QLatin1StringView(#val)
 
 static QString fboStatusString(GLenum status)
 {
     switch (status) {
-        QT_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT);
-        QT_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS);
-        QT_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT);
-        QT_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_UNSUPPORTED);
+        BOBUI_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT);
+        BOBUI_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS);
+        BOBUI_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT);
+        BOBUI_IOS_GL_STATUS_CASE(GL_FRAMEBUFFER_UNSUPPORTED);
     default:
         return QString(QStringLiteral("unknown status: %x")).arg(status);
     }
@@ -263,31 +263,31 @@ bool QIOSContext::verifyGraphicsHardwareAvailability()
     // the resources are removed immediately. After your app exits its applicationDidEnterBackground:
     // method, it must not make any new OpenGL ES calls. If it makes an OpenGL ES call, it is
     // terminated by iOS.".
-    static bool applicationBackgrounded = QGuiApplication::applicationState() == Qt::ApplicationSuspended;
+    static bool applicationBackgrounded = QGuiApplication::applicationState() == BobUI::ApplicationSuspended;
 
     static dispatch_once_t onceToken = 0;
     dispatch_once(&onceToken, ^{
         QIOSApplicationState *applicationState = &QIOSIntegration::instance()->applicationState;
         connect(applicationState, &QIOSApplicationState::applicationStateWillChange,
-            [](Qt::ApplicationState oldState, Qt::ApplicationState newState) {
+            [](BobUI::ApplicationState oldState, BobUI::ApplicationState newState) {
                 Q_UNUSED(oldState);
-                if (applicationBackgrounded && newState != Qt::ApplicationSuspended) {
+                if (applicationBackgrounded && newState != BobUI::ApplicationSuspended) {
                     qCDebug(lcQpaGLContext) << "app no longer backgrounded, rendering enabled";
                     applicationBackgrounded = false;
                 }
             }
         );
         connect(applicationState, &QIOSApplicationState::applicationStateDidChange,
-            [](Qt::ApplicationState oldState, Qt::ApplicationState newState) {
+            [](BobUI::ApplicationState oldState, BobUI::ApplicationState newState) {
                 Q_UNUSED(oldState);
-                if (newState != Qt::ApplicationSuspended)
+                if (newState != BobUI::ApplicationSuspended)
                     return;
 
                 qCDebug(lcQpaGLContext) << "app backgrounded, rendering disabled";
                 applicationBackgrounded = true;
 
                 // By the time we receive this signal the application has moved into
-                // Qt::ApplactionStateSuspended, and all windows have been obscured,
+                // BobUI::ApplactionStateSuspended, and all windows have been obscured,
                 // which should stop all rendering. If there's still an active GL context,
                 // we follow Apple's advice and call glFinish before making it inactive.
                 if (QOpenGLContext *currentContext = QOpenGLContext::currentContext()) {
@@ -335,6 +335,6 @@ bool QIOSContext::isSharing() const
     return m_sharedContext;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qioscontext.cpp"

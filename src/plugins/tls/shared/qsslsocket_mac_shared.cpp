@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 ownCloud Inc
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qtlsbackend_p.h>
+#include <BobUINetwork/private/bobuilsbackend_p.h>
 
-#include <QtNetwork/qsslcertificate.h>
+#include <BobUINetwork/qsslcertificate.h>
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdebug.h>
 
 
 #ifdef Q_OS_MACOS
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CFArray.h>
 #include <Security/Security.h>
 
 #endif // Q_OS_MACOS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcX509, "qt.mac.shared.x509");
+Q_LOGGING_CATEGORY(lcX509, "bobui.mac.shared.x509");
 
 #ifdef Q_OS_MACOS
 namespace {
@@ -78,7 +78,7 @@ bool isCaCertificateTrusted(SecCertificateRef cfCert, int domain)
     return false;
 }
 
-bool canDERBeParsed(CFDataRef derData, const QSslCertificate &qtCert)
+bool canDERBeParsed(CFDataRef derData, const QSslCertificate &bobuiCert)
 {
     // We are observing certificates, that while accepted when we copy them
     // from the keychain(s), later give us 'Failed to create SslCertificate
@@ -105,19 +105,19 @@ bool canDERBeParsed(CFDataRef derData, const QSslCertificate &qtCert)
     };
 
     if (!checkDer(derData, "SecCertificateCopyData")) {
-        qCDebug(lcX509) << "Faulty QSslCertificate is:" << qtCert;// Just in case we managed to parse something.
+        qCDebug(lcX509) << "Faulty QSslCertificate is:" << bobuiCert;// Just in case we managed to parse something.
         return false;
     }
 
     // Generic parser failed?
-    if (qtCert.isNull()) {
+    if (bobuiCert.isNull()) {
         qCWarning(lcX509, "QSslCertificate failed to parse DER");
         return false;
     }
 
-    const QCFType<CFDataRef> qtDerData = qtCert.toDer().toCFData();
-    if (!checkDer(qtDerData, "QSslCertificate")) {
-        qCWarning(lcX509) << "Faulty QSslCertificate is:" << qtCert;
+    const QCFType<CFDataRef> bobuiDerData = bobuiCert.toDer().toCFData();
+    if (!checkDer(bobuiDerData, "QSslCertificate")) {
+        qCWarning(lcX509) << "Faulty QSslCertificate is:" << bobuiCert;
         return false;
     }
 
@@ -127,7 +127,7 @@ bool canDERBeParsed(CFDataRef derData, const QSslCertificate &qtCert)
 } // unnamed namespace
 #endif // Q_OS_MACOS
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 QList<QSslCertificate> systemCaCertificates()
 {
     QList<QSslCertificate> systemCerts;
@@ -164,6 +164,6 @@ QList<QSslCertificate> systemCaCertificates()
 #endif
     return systemCerts;
 }
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

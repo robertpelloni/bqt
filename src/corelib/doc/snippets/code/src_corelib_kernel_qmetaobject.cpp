@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QMetaObject>
 #include <QMetaMethod>
@@ -30,7 +30,7 @@ void wrapInFunction(QObject *obj, QObject *thread)
 
     {
         //! [2]
-        QMetaObject::invokeMethod(thread, "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(thread, "quit", BobUI::QueuedConnection);
         //! [2]
     }
 
@@ -43,7 +43,7 @@ void wrapInFunction(QObject *obj, QObject *thread)
     {
         //! [invokemethod-no-macro]
         QString retVal;
-        QMetaObject::invokeMethod(obj, "compute", Qt::DirectConnection,
+        QMetaObject::invokeMethod(obj, "compute", BobUI::DirectConnection,
                                   qReturnArg(retVal),
                                   QString("sqrt"), 42, 9.7);
         //! [invokemethod-no-macro]
@@ -52,7 +52,7 @@ void wrapInFunction(QObject *obj, QObject *thread)
     {
         //! [invokemethod-no-macro-other-types]
         QString retVal;
-        QMetaObject::invokeMethod(obj, "compute", Qt::DirectConnection,
+        QMetaObject::invokeMethod(obj, "compute", BobUI::DirectConnection,
                                   qReturnArg(retVal),
                                   QStringView(u"sqrt"), qsizetype(42), 9.7f);
         //! [invokemethod-no-macro-other-types]
@@ -61,7 +61,7 @@ void wrapInFunction(QObject *obj, QObject *thread)
     {
     //! [4]
         QString retVal;
-        QMetaObject::invokeMethod(obj, "compute", Qt::DirectConnection,
+        QMetaObject::invokeMethod(obj, "compute", BobUI::DirectConnection,
                                   Q_RETURN_ARG(QString, retVal),
                                   Q_ARG(QString, "sqrt"),
                                   Q_ARG(int, 42),
@@ -110,7 +110,7 @@ void examples(QObject *obj, QObject *pushButton)
         //! [6]
         int methodIndex = pushButton->metaObject()->indexOfMethod("animateClick()");
         QMetaMethod method = metaObject->method(methodIndex);
-        method.invoke(pushButton, Qt::QueuedConnection);
+        method.invoke(pushButton, BobUI::QueuedConnection);
         //! [6]
     }
 
@@ -126,7 +126,7 @@ void examples(QObject *obj, QObject *pushButton)
         QByteArray normalizedSignature = QMetaObject::normalizedSignature("compute(QString, int, double)");
         int methodIndex = obj->metaObject()->indexOfMethod(normalizedSignature);
         QMetaMethod method = obj->metaObject()->method(methodIndex);
-        method.invoke(obj, Qt::DirectConnection, qReturnArg(retVal),
+        method.invoke(obj, BobUI::DirectConnection, qReturnArg(retVal),
                       QString("sqrt"), 42, 9.7);
         //! [invoke-no-macro]
     }
@@ -137,7 +137,7 @@ void examples(QObject *obj, QObject *pushButton)
         QByteArray normalizedSignature = QMetaObject::normalizedSignature("compute(QByteArray, qint64, long double)");
         int methodIndex = obj->metaObject()->indexOfMethod(normalizedSignature);
         QMetaMethod method = obj->metaObject()->method(methodIndex);
-        method.invoke(obj, Qt::DirectConnection, qReturnArg(retVal),
+        method.invoke(obj, BobUI::DirectConnection, qReturnArg(retVal),
                       QByteArray("sqrt"), qint64(42), 9.7L);
         //! [invoke-no-macro-other-types]
     }
@@ -149,7 +149,7 @@ void examples(QObject *obj, QObject *pushButton)
         int methodIndex = obj->metaObject()->indexOfMethod(normalizedSignature);
         QMetaMethod method = obj->metaObject()->method(methodIndex);
         method.invoke(obj,
-                      Qt::DirectConnection,
+                      BobUI::DirectConnection,
                       Q_RETURN_ARG(QString, retVal),
                       Q_ARG(QString, "sqrt"),
                       Q_ARG(int, 42),

@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVNC_P_H
 #define QVNC_P_H
 
 #include "qvncscreen.h"
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qvarlengtharray.h>
 #include <qpa/qplatformcursor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcVnc)
 
-class QTcpSocket;
-class QTcpServer;
+class BOBUIcpSocket;
+class BOBUIcpServer;
 
 class QVncScreen;
 class QVncServer;
@@ -71,8 +71,8 @@ public:
         x = _x; y = _y; w = _w; h = _h;
     }
 
-    void read(QTcpSocket *s);
-    void write(QTcpSocket *s) const;
+    void read(BOBUIcpSocket *s);
+    void write(BOBUIcpSocket *s) const;
 
     quint16 x;
     quint16 y;
@@ -85,8 +85,8 @@ class QRfbPixelFormat
 public:
     static int size() { return 16; }
 
-    void read(QTcpSocket *s);
-    void write(QTcpSocket *s);
+    void read(BOBUIcpSocket *s);
+    void write(BOBUIcpSocket *s);
 
     int bitsPerPixel;
     int depth;
@@ -109,8 +109,8 @@ public:
     int size() const { return QRfbPixelFormat::size() + 8 + strlen(name); }
     void setName(const char *n);
 
-    void read(QTcpSocket *s);
-    void write(QTcpSocket *s);
+    void read(BOBUIcpSocket *s);
+    void write(BOBUIcpSocket *s);
 
     quint16 width;
     quint16 height;
@@ -121,7 +121,7 @@ public:
 class QRfbSetEncodings
 {
 public:
-    bool read(QTcpSocket *s);
+    bool read(BOBUIcpSocket *s);
 
     quint16 count;
 };
@@ -129,7 +129,7 @@ public:
 class QRfbFrameBufferUpdateRequest
 {
 public:
-    bool read(QTcpSocket *s);
+    bool read(BOBUIcpSocket *s);
 
     char incremental;
     QRfbRect rect;
@@ -138,7 +138,7 @@ public:
 class QRfbKeyEvent
 {
 public:
-    bool read(QTcpSocket *s);
+    bool read(BOBUIcpSocket *s);
 
     char down;
     int  keycode;
@@ -148,9 +148,9 @@ public:
 class QRfbPointerEvent
 {
 public:
-    bool read(QTcpSocket *s);
+    bool read(BOBUIcpSocket *s);
 
-    Qt::MouseButtons buttons;
+    BobUI::MouseButtons buttons;
     quint16 x;
     quint16 y;
 };
@@ -158,7 +158,7 @@ public:
 class QRfbClientCutText
 {
 public:
-    bool read(QTcpSocket *s);
+    bool read(BOBUIcpSocket *s);
 
     quint32 length;
 };
@@ -194,7 +194,7 @@ class QRfbSingleColorHextile
 public:
     QRfbSingleColorHextile(QRfbHextileEncoder<SRC> *e) : encoder(e) {}
     bool read(const uchar *data, int width, int height, int stride);
-    void write(QTcpSocket *socket) const;
+    void write(BOBUIcpSocket *socket) const;
 
 private:
     QRfbHextileEncoder<SRC> *encoder;
@@ -206,7 +206,7 @@ class QRfbDualColorHextile
 public:
     QRfbDualColorHextile(QRfbHextileEncoder<SRC> *e) : encoder(e) {}
     bool read(const uchar *data, int width, int height, int stride);
-    void write(QTcpSocket *socket) const;
+    void write(BOBUIcpSocket *socket) const;
 
 private:
     struct Rect {
@@ -251,7 +251,7 @@ class QRfbMultiColorHextile
 public:
     QRfbMultiColorHextile(QRfbHextileEncoder<SRC> *e) : encoder(e) {}
     bool read(const uchar *data, int width, int height, int stride);
-    void write(QTcpSocket *socket) const;
+    void write(BOBUIcpSocket *socket) const;
 
 private:
     inline quint8* rect(int r) {
@@ -328,7 +328,7 @@ private:
     friend class QRfbMultiColorHextile<SRC>;
 };
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 class QVncClientCursor : public QPlatformCursor
 {
 public:
@@ -346,7 +346,7 @@ public:
     QPoint hotspot;
     QList<QVncClient *> clients;
 };
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 class QVncServer : public QObject
 {
@@ -371,12 +371,12 @@ private slots:
     void init();
 
 private:
-    QTcpServer *serverSocket;
+    BOBUIcpServer *serverSocket;
     QList<QVncClient*> clients;
     QVncScreen *qvnc_screen;
     quint16 m_port;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QStyle>
 #include <QWidget>
@@ -40,7 +40,7 @@ void CheckBox::examples()
             opt.state |= QStyle::State_NoChange;
         else
             opt.state |= checked ? QStyle::State_On : QStyle::State_Off;
-        if (q->testAttribute(Qt::WA_Hover) && q->underMouse()) {
+        if (q->testAttribute(BobUI::WA_Hover) && q->underMouse()) {
             if (hovering)
                 opt.state |= QStyle::State_MouseOver;
             else
@@ -55,7 +55,7 @@ void CheckBox::examples()
     {
         QStyle::State state;
         QWidget *widget;
-        Qt::LayoutDirection direction;
+        BobUI::LayoutDirection direction;
         QRect rect;
         QPalette palette;
         QFontMetrics fontMetrics = widget->fontMetrics();
@@ -66,13 +66,13 @@ void CheckBox::examples()
             state |= QStyle::State_Enabled;
         if (widget->hasFocus())
             state |= QStyle::State_HasFocus;
-        if (widget->window()->testAttribute(Qt::WA_KeyboardFocusChange))
+        if (widget->window()->testAttribute(BobUI::WA_KeyboardFocusChange))
             state |= QStyle::State_KeyboardFocusChange;
         if (widget->underMouse())
             state |= QStyle::State_MouseOver;
         if (widget->window()->isActiveWindow())
             state |= QStyle::State_Active;
-    #ifdef QT_KEYPAD_NAVIGATION
+    #ifdef BOBUI_KEYPAD_NAVIGATION
         if (widget->hasEditFocus())
             state |= QStyle::State_HasEditFocus;
     #endif
@@ -125,9 +125,9 @@ void CommonStyle::examples()
 
     //! [4]
         const QStyleOptionButton *btn = qstyleoption_cast<const QStyleOptionButton *>(opt);
-        uint alignment = visualAlignment(btn->direction, Qt::AlignLeft | Qt::AlignVCenter);
+        uint alignment = visualAlignment(btn->direction, BobUI::AlignLeft | BobUI::AlignVCenter);
         if (!styleHint(SH_UnderlineShortcut, btn, widget))
-            alignment |= Qt::TextHideMnemonic;
+            alignment |= BobUI::TextHideMnemonic;
         QPixmap pix;
         QRect textRect = btn->rect;
         if (!btn->icon.isNull()) {
@@ -135,13 +135,13 @@ void CommonStyle::examples()
             pix = btn->icon.pixmap(btn->iconSize, dpr,
                                     btn->state & State_Enabled ? QIcon::Normal : QIcon::Disabled);
             drawItemPixmap(p, btn->rect, alignment, pix);
-            if (btn->direction == Qt::RightToLeft)
+            if (btn->direction == BobUI::RightToLeft)
                 textRect.setRight(textRect.right() - btn->iconSize.width() - 4);
             else
                 textRect.setLeft(textRect.left() + btn->iconSize.width() + 4);
         }
         if (!btn->text.isEmpty()){
-            drawItemText(p, textRect, alignment | Qt::TextShowMnemonic,
+            drawItemText(p, textRect, alignment | BobUI::TextShowMnemonic,
                 btn->palette, btn->state & State_Enabled, btn->text, QPalette::WindowText);
         }
     //! [4]

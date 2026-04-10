@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTDIALOG_H
 #define QPRINTDIALOG_H
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#include <QtPrintSupport/qabstractprintdialog.h>
+#include <BobUIPrintSupport/qabstractprintdialog.h>
 
-QT_REQUIRE_CONFIG(printdialog);
+BOBUI_REQUIRE_CONFIG(printdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPrintDialogPrivate;
 class QPushButton;
@@ -59,13 +59,13 @@ private:
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
     Q_PRIVATE_SLOT(d_func(), void _q_togglePageSetCombo(bool))
     Q_PRIVATE_SLOT(d_func(), void _q_collapseOrExpandDialog())
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
     Q_PRIVATE_SLOT(d_func(), void _q_checkFields())
-#endif // QT_CONFIG(messagebox)
+#endif // BOBUI_CONFIG(messagebox)
     friend class QUnixPrintWidget;
 # endif // Q_OS_UNIX
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPRINTDIALOG_H

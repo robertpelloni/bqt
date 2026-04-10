@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QITERABLE_IMPL_H
 #define QITERABLE_IMPL_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtIterablePrivate {
+namespace BobUIIterablePrivate {
 
 template<typename Callback>
 static QVariant retrieveElement(QMetaType type, Callback callback)
@@ -24,8 +24,8 @@ static QVariant retrieveElement(QMetaType type, Callback callback)
     return v;
 }
 
-} // namespace QtIterablePrivate
+} // namespace BobUIIterablePrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QITERABLE_IMPL_H

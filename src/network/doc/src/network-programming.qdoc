@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \group network
@@ -10,25 +10,25 @@
 */
 
 /*!
-    \page qtnetwork-programming.html
-    \title Network Programming with Qt
+    \page bobuinetwork-programming.html
+    \title Network Programming with BobUI
     \brief Programming applications with networking capabilities
 
-    The Qt Network module offers classes that allow you to write TCP/IP clients
-    and servers. It offers lower-level classes such as QTcpSocket,
-    QTcpServer and QUdpSocket that represent low level network concepts,
+    The BobUI Network module offers classes that allow you to write TCP/IP clients
+    and servers. It offers lower-level classes such as BOBUIcpSocket,
+    BOBUIcpServer and QUdpSocket that represent low level network concepts,
     and high level classes such as QNetworkRequest, QNetworkReply and
     QNetworkAccessManager to perform network operations using common protocols.
 
-    Qt Network also provides an API for Transport Layer Security (TLS) and
+    BobUI Network also provides an API for Transport Layer Security (TLS) and
     security functions using a native TLS backend, the \l{OpenSSL Toolkit}, or
     any appropriate TLS plugin. Refer to the
     \l{Secure Sockets Layer (SSL) Classes} for more information.
 
-    \section1 Qt's Classes for Network Programming
+    \section1 BobUI's Classes for Network Programming
 
-    The \l{Qt Network C++ Classes} page contains a list of the C++ classes
-    in Qt Network.
+    The \l{BobUI Network C++ Classes} page contains a list of the C++ classes
+    in BobUI Network.
 
     \section1 High Level Network Operations for HTTP
 
@@ -65,7 +65,7 @@
     Each application or library can create one or more instances of
     QNetworkAccessManager to handle network communication.
 
-    \section1 Using TCP with QTcpSocket and QTcpServer
+    \section1 Using TCP with BOBUIcpSocket and BOBUIcpServer
 
     TCP (Transmission Control Protocol) is a low-level network
     protocol used by most Internet protocols, including HTTP and FTP,
@@ -75,45 +75,45 @@
 
     \image tcpstream.png A TCP Stream
 
-    The QTcpSocket class provides an interface for TCP. You can use
-    QTcpSocket to implement standard network protocols such as POP3,
+    The BOBUIcpSocket class provides an interface for TCP. You can use
+    BOBUIcpSocket to implement standard network protocols such as POP3,
     SMTP, and NNTP, as well as custom protocols.
 
     A TCP connection must be established to a remote host and port
     before any data transfer can begin. Once the connection has been
     established, the IP address and port of the peer are available
-    through QTcpSocket::peerAddress() and QTcpSocket::peerPort(). At
+    through BOBUIcpSocket::peerAddress() and BOBUIcpSocket::peerPort(). At
     any time, the peer can close the connection, and data transfer
     will then stop immediately.
 
-    QTcpSocket works asynchronously and emits signals to report status
+    BOBUIcpSocket works asynchronously and emits signals to report status
     changes and errors, just like QNetworkAccessManager. It
     relies on the event loop to detect incoming data and to
     automatically flush outgoing data. You can write data to the
-    socket using QTcpSocket::write(), and read data using
-    QTcpSocket::read(). QTcpSocket represents two independent streams
+    socket using BOBUIcpSocket::write(), and read data using
+    BOBUIcpSocket::read(). BOBUIcpSocket represents two independent streams
     of data: one for reading and one for writing.
 
-    Since QTcpSocket inherits QIODevice, you can use it with
-    QTextStream and QDataStream. When reading from a QTcpSocket, you
+    Since BOBUIcpSocket inherits QIODevice, you can use it with
+    BOBUIextStream and QDataStream. When reading from a BOBUIcpSocket, you
     must make sure that enough data is available by calling
-    QTcpSocket::bytesAvailable() beforehand.
+    BOBUIcpSocket::bytesAvailable() beforehand.
 
     If you need to handle incoming TCP connections (e.g., in a server
-    application), use the QTcpServer class. Call QTcpServer::listen()
+    application), use the BOBUIcpServer class. Call BOBUIcpServer::listen()
     to set up the server, and connect to the
-    QTcpServer::newConnection() signal, which is emitted once for
+    BOBUIcpServer::newConnection() signal, which is emitted once for
     every client that connects. In your slot, call
-    QTcpServer::nextPendingConnection() to accept the connection and
-    use the returned QTcpSocket to communicate with the client.
+    BOBUIcpServer::nextPendingConnection() to accept the connection and
+    use the returned BOBUIcpSocket to communicate with the client.
 
     Although most of its functions work asynchronously, it's possible
-    to use QTcpSocket synchronously (i.e., blocking). To get blocking
-    behavior, call QTcpSocket's waitFor...() functions; these suspend
+    to use BOBUIcpSocket synchronously (i.e., blocking). To get blocking
+    behavior, call BOBUIcpSocket's waitFor...() functions; these suspend
     the calling thread until a signal has been emitted. For example,
-    after calling the non-blocking QTcpSocket::connectToHost()
-    function, call QTcpSocket::waitForConnected() to block the thread
-    until the \l{QTcpSocket::connected()}{connected()} signal has
+    after calling the non-blocking BOBUIcpSocket::connectToHost()
+    function, call BOBUIcpSocket::waitForConnected() to block the thread
+    until the \l{BOBUIcpSocket::connected()}{connected()} signal has
     been emitted.
 
     Synchronous sockets often lead to code with a simpler flow of
@@ -122,14 +122,14 @@
     blocking. If used in the GUI thread, this might freeze the
     application's user interface. For this reason, we recommend that
     you use synchronous sockets only in non-GUI threads. When used
-    synchronously, QTcpSocket doesn't require an event loop.
+    synchronously, BOBUIcpSocket doesn't require an event loop.
 
     The \l{fortuneclient}{Fortune Client} and
     \l{fortuneserver}{Fortune Server} examples show how to use
-    QTcpSocket and QTcpServer to write TCP client-server
+    BOBUIcpSocket and BOBUIcpServer to write TCP client-server
     applications. See also \l{blockingfortuneclient}{Blocking
     Fortune Client} for an example on how to use a synchronous
-    QTcpSocket in a separate thread (without using an event loop),
+    BOBUIcpSocket in a separate thread (without using an event loop),
     and \l{threadedfortuneserver}{Threaded Fortune Server}
     for an example of a multithreaded TCP server with one thread per
     active client.
@@ -146,7 +146,7 @@
 
     The QUdpSocket class allows you to send and receive UDP
     datagrams. It inherits QAbstractSocket, and it therefore shares
-    most of QTcpSocket's interface. The main difference is that
+    most of BOBUIcpSocket's interface. The main difference is that
     QUdpSocket transfers data as datagrams instead of as a continuous
     stream of data. In short, a datagram is a data packet of limited
     size (normally smaller than 512 bytes), containing the IP address
@@ -166,14 +166,14 @@
     to your local network's broadcast address.
 
     QUdpSocket::bind() prepares the socket for accepting incoming
-    datagrams, much like QTcpServer::listen() for TCP servers.
+    datagrams, much like BOBUIcpServer::listen() for TCP servers.
     Whenever one or more datagrams arrive, QUdpSocket emits the
     \l{QUdpSocket::readyRead()}{readyRead()} signal. Call
     QUdpSocket::readDatagram() to read the datagram.
 
     The \l{broadcastsender}{Broadcast Sender} and
     \l{broadcastreceiver}{Broadcast Receiver} examples show how to
-    write a UDP sender and a UDP receiver using Qt.
+    write a UDP sender and a UDP receiver using BobUI.
 
     QUdpSocket also supports multicasting. The
     \l{multicastsender}{Multicast Sender} and
@@ -182,7 +182,7 @@
 
     \section1 Resolving Host Names Using QHostInfo
 
-    Before establishing a network connection, QTcpSocket and
+    Before establishing a network connection, BOBUIcpSocket and
     QUdpSocket perform a name lookup, translating the host name
     you're connecting to into an IP address. This operation is
     usually performed using the DNS (Domain Name Service) protocol.
@@ -206,7 +206,7 @@
 
     \section1 Support for Network Proxies
 
-    Network communication with Qt can be performed through proxies,
+    Network communication with BobUI can be performed through proxies,
     which direct or filter network traffic between local and remote
     connections.
 

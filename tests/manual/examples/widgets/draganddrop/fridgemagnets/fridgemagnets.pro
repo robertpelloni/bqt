@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS     = draglabel.h \
               dragwidget.h
@@ -8,5 +8,5 @@ SOURCES     = draglabel.cpp \
               main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/draganddrop/fridgemagnets
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/draganddrop/fridgemagnets
 INSTALLS += target

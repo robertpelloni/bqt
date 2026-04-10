@@ -1,6 +1,6 @@
-Qt 3.3.5 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.3.4, Qt 3.3.3, Qt 3.3.2,
-Qt 3.3.1 and Qt 3.3.0.
+BobUI 3.3.5 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.3.4, BobUI 3.3.3, BobUI 3.3.2,
+BobUI 3.3.1 and BobUI 3.3.0.
 
 ****************************************************************************
 *                           General                                        *
@@ -9,7 +9,7 @@ Qt 3.3.1 and Qt 3.3.0.
 Platforms
 ---------
 
-- Qt now supports Mac OS X 10.4 (Tiger)
+- BobUI now supports Mac OS X 10.4 (Tiger)
 
 Compilers
 ---------
@@ -21,12 +21,12 @@ Windows Installer
 -----------------
 
 - The environment variables no longer contain invalid paths.
-- The user is warned if QTDIR is not set and the evaluation edition is
+- The user is warned if BOBUIDIR is not set and the evaluation edition is
   already installed, to avoid conflicts between the two packages.
 - A bug was fixed where a '\0' was appended to the end of a path.
 - Fixed the dependencies for image formats and styles.
 
-Qt Designer
+BobUI Designer
 -----------
 
 - Fixed a problem with long string literals on certain Visual Studio
@@ -48,14 +48,14 @@ Qt Designer
 - The action editor is now closed when there is no main window form.
 - Stability fixes
 
-Qt Linguist
+BobUI Linguist
 -----------
 
 - lupdate now understands strings longer than 16384 characters.
 - Fixed escaping bugs for string that contain both ampersands and
   double quotes.
 
-Qt Assistant
+BobUI Assistant
 ------------
 
 - When printing, assistant now always uses the Active color group.
@@ -100,7 +100,7 @@ The FreeType library was upgraded from version 2.0.9 to 2.1.9
         of the less secure vsprintf().
 
 - QDataStream
-        Fixed a data corruption bug when using stream version Qt_3_1 and using
+        Fixed a data corruption bug when using stream version BobUI_3_1 and using
         operator<<(qint64).
 
 - QDateTime
@@ -147,7 +147,7 @@ The FreeType library was upgraded from version 2.0.9 to 2.1.9
 - QLineEdit
         Fixed the behavior of the delete key on the keypad.
         Fixed support for transparent line edits.
-        Fixed a crash when opening the context menu in a QTextEdit
+        Fixed a crash when opening the context menu in a BOBUIextEdit
         subclass that returns 0 for createPopupMenu().
 
 - QListBox
@@ -227,7 +227,7 @@ The FreeType library was upgraded from version 2.0.9 to 2.1.9
 
 - QScriptEngine
         Fixed an issue with shaping of Hebrew text, which lead to
-        layout problems in QTextLayout.
+        layout problems in BOBUIextLayout.
         Fixed rendering of Hebrew text with punctuation.
         Fixed bugs in Gurmukhi shaping.
 
@@ -262,37 +262,37 @@ The FreeType library was upgraded from version 2.0.9 to 2.1.9
         Let replace() behave as documented when the index is larger
         than the length of the string.
 
-- QTable
+- BOBUIable
         Fixed positioning of QComboTableItems that span several rows.
 
-- QTextCodec
+- BOBUIextCodec
         Fixed occasional crash in fromUnicode().
         Fixed Big5 support to comply with the standards.
 
-- QTextEdit
+- BOBUIextEdit
         Fixed bug in undo/redo history when input methods are used.
         Fixed a crash caused by inserting text with an input method
         during a focus change.
         Fixed the behavior of the delete key on the keypad.
         Fixed setMaxLogLines() when there are already too many lines.
-        Fixed crash when clearing a QTextEdit when the IME is active.
+        Fixed crash when clearing a BOBUIextEdit when the IME is active.
         Fixed crash when the text edit is deleted while dragging text.
 
-- QTextLayout
+- BOBUIextLayout
         Fixed layout of lines that are too long and do not contain a
         possible break point.
 
-- QTimeEdit
+- BOBUIimeEdit
         Fixed several issues with stepUp() and stepDown().
 
-- QToolButton
+- BOBUIoolButton
         Fixed a crash when assigning a tooltip to a tool button which
         does not have QMainWindow as an ancestor.
 
-- QToolTip
+- BOBUIoolTip
         Fixed an occasional crash.
 
-- QTranslator
+- BOBUIranslator
         Fixed a bug when calling messages() before tr() when using
         compressed .qm files.
 
@@ -351,7 +351,7 @@ Platform-Specific Issues
 
 Windows:
 
-- ActiveQt
+- ActiveBobUI
         Unrelated types are no longer converted.
         The control container is now only reset if the CLSID changes.
         Fixed a bug where QAxObject::clear() did not reset the
@@ -382,7 +382,7 @@ Windows:
         Fixed a memory leak in QEventLoop.
 
 - QColor
-        Fixed failed initialization of the Qt colors (e.g., Qt::red) when
+        Fixed failed initialization of the BobUI colors (e.g., BobUI::red) when
         using the MinGW compiler.
  
 - QFile
@@ -426,13 +426,13 @@ Windows:
         now converted properly, so that a UNC path can be used on
         Windows.
 
-- QTranslator
+- BOBUIranslator
         Fixed an issue with isReadable() on NTFS.
 
 - QWindowsXPStyle
         XP style now works when compiled as a plugin.
         Fixed menu bar placement.
-        Fixed a bug in setting the background color of QTabWidget.
+        Fixed a bug in setting the background color of BOBUIabWidget.
         Fixed the position of the size grip in large QSizeGrip
         widgets.
         QGroupBox now uses the correct colors.
@@ -443,7 +443,7 @@ Windows:
 
 - qmake
         The Makefile generator now only searches for the latest
-        version of the Qt library, as opposed to searching all
+        version of the BobUI library, as opposed to searching all
         libraries.
         Dependency checking for pre-compiled headers were fixed.
         Fixed support for listing .pro files in SUBDIRS in subdir .pro
@@ -528,16 +528,16 @@ Mac:
 - QPushButton
         Icons are now drawn properly.
 
-- QTextBrowser
+- BOBUIextBrowser
         Fixed a bug where a text browser popup triggered by a
         hyperlink would pop up again when the user clicks inside the
         first popup.
 
-- QToolButton
+- BOBUIoolButton
         Fixed a painting problem when the button was pressed.
 
 - QWidget
-        Menubar popups no longer steal focus from QTextEdit.
+        Menubar popups no longer steal focus from BOBUIextEdit.
         Fixed collapsing of windows with no title bar decorations.
         Several window activation bugs have been fixed.
         Fixed a bug where modal dialogs would be modal to its own
@@ -589,7 +589,7 @@ X11:
 
 - QInputContext
         Fixed a bug that led to a corrupted display in QLineEdit and
-        QTextEdit when using Japanese input methods with very long
+        BOBUIextEdit when using Japanese input methods with very long
         input selections.
 
 - QPainter

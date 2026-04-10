@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QVBoxLayout>
@@ -8,14 +8,14 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDebug>
-#include <QtVersion>
+#include <BobUIVersion>
 
 class ShortcutTester : public QWidget
 {
 public:
     ShortcutTester()
     {
-        const QString title = QLatin1String(QT_VERSION_STR) + QLatin1Char(' ')
+        const QString title = QLatin1String(BOBUI_VERSION_STR) + QLatin1Char(' ')
             + qApp->platformName();
         setWindowTitle(title);
         setupLayout();
@@ -60,14 +60,14 @@ void ShortcutTester::setupLayout()
     int col = 0;
 
     const QKeyCombination keys1[] = {
-        Qt::AltModifier | Qt::ShiftModifier | Qt::Key_G,
-        Qt::AltModifier | Qt::Key_G,
-        Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_R,
-        Qt::ControlModifier | Qt::Key_R,
-        Qt::ControlModifier | Qt::Key_Return, Qt::ControlModifier | Qt::Key_Enter,
-        Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier | Qt::Key_R,
-        Qt::ShiftModifier | Qt::Key_5, Qt::ShiftModifier | Qt::Key_Percent,
-        Qt::Key_Percent, Qt::Key_5, Qt::Key_Q
+        BobUI::AltModifier | BobUI::ShiftModifier | BobUI::Key_G,
+        BobUI::AltModifier | BobUI::Key_G,
+        BobUI::ControlModifier | BobUI::ShiftModifier | BobUI::Key_R,
+        BobUI::ControlModifier | BobUI::Key_R,
+        BobUI::ControlModifier | BobUI::Key_Return, BobUI::ControlModifier | BobUI::Key_Enter,
+        BobUI::ControlModifier | BobUI::ShiftModifier | BobUI::AltModifier | BobUI::Key_R,
+        BobUI::ShiftModifier | BobUI::Key_5, BobUI::ShiftModifier | BobUI::Key_Percent,
+        BobUI::Key_Percent, BobUI::Key_5, BobUI::Key_Q
      };
 
     for (const auto k : keys1)
@@ -77,15 +77,15 @@ void ShortcutTester::setupLayout()
     col++;
 
     const QKeyCombination keys2[] = {
-        Qt::ControlModifier | Qt::Key_Percent,
-        Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_5,
-        Qt::ControlModifier | Qt::Key_5, Qt::AltModifier | Qt::Key_5,
-        Qt::ControlModifier | Qt::Key_Plus,
-        Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_Plus,
-        Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_Equal,
-        Qt::ControlModifier | Qt::Key_Y, Qt::ShiftModifier | Qt::Key_Comma,
-        Qt::ControlModifier | Qt::Key_Comma, Qt::ControlModifier | Qt::Key_Slash,
-        Qt::ControlModifier | Qt::Key_Backslash
+        BobUI::ControlModifier | BobUI::Key_Percent,
+        BobUI::ControlModifier | BobUI::ShiftModifier | BobUI::Key_5,
+        BobUI::ControlModifier | BobUI::Key_5, BobUI::AltModifier | BobUI::Key_5,
+        BobUI::ControlModifier | BobUI::Key_Plus,
+        BobUI::ControlModifier | BobUI::ShiftModifier | BobUI::Key_Plus,
+        BobUI::ControlModifier | BobUI::ShiftModifier | BobUI::Key_Equal,
+        BobUI::ControlModifier | BobUI::Key_Y, BobUI::ShiftModifier | BobUI::Key_Comma,
+        BobUI::ControlModifier | BobUI::Key_Comma, BobUI::ControlModifier | BobUI::Key_Slash,
+        BobUI::ControlModifier | BobUI::Key_Backslash
     };
 
     for (const auto k : keys2)
@@ -95,22 +95,22 @@ void ShortcutTester::setupLayout()
     col++;
 
     const QKeyCombination keys3[] = {
-        Qt::MetaModifier | Qt::ShiftModifier | Qt::Key_A,
-        Qt::MetaModifier | Qt::Key_A,
-        Qt::MetaModifier | Qt::Key_Q,
-        Qt::MetaModifier | Qt::ShiftModifier | Qt::Key_5,
-        Qt::ControlModifier | Qt::Key_BracketRight,
-        Qt::ShiftModifier | Qt::Key_F3,
-        Qt::ControlModifier | Qt::Key_F3,
-        Qt::Key_Backtab,
-        Qt::ShiftModifier | Qt::Key_Backtab,
+        BobUI::MetaModifier | BobUI::ShiftModifier | BobUI::Key_A,
+        BobUI::MetaModifier | BobUI::Key_A,
+        BobUI::MetaModifier | BobUI::Key_Q,
+        BobUI::MetaModifier | BobUI::ShiftModifier | BobUI::Key_5,
+        BobUI::ControlModifier | BobUI::Key_BracketRight,
+        BobUI::ShiftModifier | BobUI::Key_F3,
+        BobUI::ControlModifier | BobUI::Key_F3,
+        BobUI::Key_Backtab,
+        BobUI::ShiftModifier | BobUI::Key_Backtab,
     };
 
     for (const auto k : keys3)
         addShortcutToGrid(k, row, col);
 
      addShortcutToGrid(0x20AC, row, col); // EURO SIGN e.g. US (with euro on 5) on 3rd keyboard level
-     addShortcutToGrid(int(Qt::ControlModifier) | 0x20AC, row, col);
+     addShortcutToGrid(int(BobUI::ControlModifier) | 0x20AC, row, col);
 
     // with german (neo 2) layout on linux under ISO_Level3_Shift + ISO_Level5_Shift + I
     const QKeySequence greekPsi(QString(QStringLiteral("\u03A8")));
@@ -131,7 +131,7 @@ void ShortcutTester::setupLayout()
 
     // for sequence definitons see qplatformtheme.cpp
     addToGrid(new QLabel("QKeySequence::StandardKey(s)"), row, col);
-    addShortcutToGrid(QKeySequence(QKeySequence::Open), row, col); // Qt::CTRL | Qt::Key_O
+    addShortcutToGrid(QKeySequence(QKeySequence::Open), row, col); // BobUI::CTRL | BobUI::Key_O
 }
 
 int main(int argc, char *argv[])

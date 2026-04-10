@@ -1,4 +1,4 @@
-QT       = core
+BOBUI       = core
 TARGET   = qsysinfo
 TEMPLATE = app
 CONFIG   += cmdline

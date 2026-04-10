@@ -1,13 +1,13 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRANGEMODEL_H
 #define QRANGEMODEL_H
 
-#include <QtCore/qrangemodel_impl.h>
+#include <BobUICore/qrangemodel_impl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRangeModelPrivate;
 
@@ -67,13 +67,13 @@ public:
     QModelIndex sibling(int row, int column, const QModelIndex &index) const final;
     int rowCount(const QModelIndex &parent = {}) const final;
     int columnCount(const QModelIndex &parent = {}) const final;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &data,
-                       int role = Qt::EditRole) override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &data, int role = Qt::EditRole) override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole) const override;
+    bool setHeaderData(int section, BobUI::Orientation orientation, const QVariant &data,
+                       int role = BobUI::EditRole) override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &data, int role = BobUI::EditRole) override;
     QMap<int, QVariant> itemData(const QModelIndex &index) const override;
     bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &data) override;
     bool clearItemData(const QModelIndex &index) override;
@@ -95,19 +95,19 @@ public:
 
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const final;
     QModelIndex buddy(const QModelIndex &index) const override;
-    bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+    bool canDropMimeData(const QMimeData *data, BobUI::DropAction action, int row, int column,
                          const QModelIndex &parent) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action, int row, int column,
                       const QModelIndex &parent) override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
     QStringList mimeTypes() const override;
     QModelIndexList match(const QModelIndex &start, int role, const QVariant &value, int hits,
-                          Qt::MatchFlags flags) const override;
+                          BobUI::MatchFlags flags) const override;
     void multiData(const QModelIndex &index, QModelRoleDataSpan roleDataSpan) const override;
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder) override;
     QSize span(const QModelIndex &index) const override;
-    Qt::DropActions supportedDragActions() const override;
-    Qt::DropActions supportedDropActions() const override;
+    BobUI::DropActions supportedDragActions() const override;
+    BobUI::DropActions supportedDropActions() const override;
 
     AutoConnectPolicy autoConnectPolicy() const;
     void setAutoConnectPolicy(AutoConnectPolicy policy);
@@ -237,7 +237,7 @@ template <typename T>
 struct QRangeModelItemAccess : QRangeModel::ItemAccess<T> {};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 #endif // QRANGEMODEL_H

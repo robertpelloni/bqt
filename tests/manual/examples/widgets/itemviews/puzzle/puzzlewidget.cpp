@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "puzzlewidget.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 PuzzleWidget::PuzzleWidget(int imageSize, QWidget *parent)
     : QWidget(parent), m_ImageSize(imageSize)
@@ -45,7 +45,7 @@ void PuzzleWidget::dragMoveEvent(QDragMoveEvent *event)
         && findPiece(targetSquare(event->position().toPoint())) == -1) {
 
         highlightedRect = targetSquare(event->position().toPoint());
-        event->setDropAction(Qt::MoveAction);
+        event->setDropAction(BobUI::MoveAction);
         event->accept();
     } else {
         highlightedRect = QRect();
@@ -71,7 +71,7 @@ void PuzzleWidget::dropEvent(QDropEvent *event)
         highlightedRect = QRect();
         update(piece.rect);
 
-        event->setDropAction(Qt::MoveAction);
+        event->setDropAction(BobUI::MoveAction);
         event->accept();
 
         if (piece.location == piece.rect.topLeft() / pieceSize()) {
@@ -122,7 +122,7 @@ void PuzzleWidget::mousePressEvent(QMouseEvent *event)
     drag->setHotSpot(event->position().toPoint() - square.topLeft());
     drag->setPixmap(piece.pixmap);
 
-    if (drag->exec(Qt::MoveAction) == Qt::IgnoreAction) {
+    if (drag->exec(BobUI::MoveAction) == BobUI::IgnoreAction) {
         pieces.insert(found, piece);
         update(targetSquare(event->position().toPoint()));
 
@@ -134,11 +134,11 @@ void PuzzleWidget::mousePressEvent(QMouseEvent *event)
 void PuzzleWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(event->rect(), Qt::white);
+    painter.fillRect(event->rect(), BobUI::white);
 
     if (highlightedRect.isValid()) {
         painter.setBrush(QColor("#ffcccc"));
-        painter.setPen(Qt::NoPen);
+        painter.setPen(BobUI::NoPen);
         painter.drawRect(highlightedRect.adjusted(0, 0, -1, -1));
     }
 

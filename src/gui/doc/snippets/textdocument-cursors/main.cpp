@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
 QString tr(const char *text)
 {
@@ -11,19 +11,19 @@ QString tr(const char *text)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    QTextEdit *editor = new QTextEdit;
+    BOBUIextEdit *editor = new BOBUIextEdit;
 
 //! [0]
-    QTextDocument *document = editor->document();
-    QTextCursor redCursor(document);
+    BOBUIextDocument *document = editor->document();
+    BOBUIextCursor redCursor(document);
 //! [0] //! [1]
-    QTextCursor blueCursor(document);
+    BOBUIextCursor blueCursor(document);
 //! [1]
 
-    QTextCharFormat redFormat(redCursor.charFormat());
-    redFormat.setForeground(Qt::red);
-    QTextCharFormat blueFormat(blueCursor.charFormat());
-    blueFormat.setForeground(Qt::blue);
+    BOBUIextCharFormat redFormat(redCursor.charFormat());
+    redFormat.setForeground(BobUI::red);
+    BOBUIextCharFormat blueFormat(blueCursor.charFormat());
+    blueFormat.setForeground(BobUI::blue);
 
     redCursor.setCharFormat(redFormat);
     blueCursor.setCharFormat(blueFormat);

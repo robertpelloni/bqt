@@ -1,12 +1,12 @@
 // Copyright (C) 2021 David Faure <faure@kde.org>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#if QT_CONFIG(process)
+#include <BOBUIest>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
-#include <QtCore/QCommandLineParser>
+#include <BobUICore/QCommandLineParser>
 
 Q_DECLARE_METATYPE(char**)
 Q_DECLARE_METATYPE(QCommandLineParser::OptionsAfterPositionalArgumentsMode)
@@ -69,7 +69,7 @@ static int empty_argc = 1;
 void tst_QCommandLineParser::initTestCase()
 {
     Q_ASSERT(!empty_argv[0]);
-    empty_argv[0] = const_cast<char*>(QTest::currentAppName());
+    empty_argv[0] = const_cast<char*>(BOBUIest::currentAppName());
 }
 
 void tst_QCommandLineParser::cleanupTestCase()
@@ -81,17 +81,17 @@ Q_DECLARE_METATYPE(QCommandLineParser::SingleDashWordOptionMode)
 
 void tst_QCommandLineParser::parsingModes_data()
 {
-    QTest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
+    BOBUIest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
 
-    QTest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions;
-    QTest::newRow("implicitlylong") << QCommandLineParser::ParseAsLongOptions;
+    BOBUIest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions;
+    BOBUIest::newRow("implicitlylong") << QCommandLineParser::ParseAsLongOptions;
 }
 
 void tst_QCommandLineParser::testInvalidOptions()
 {
     QCoreApplication app(empty_argc, empty_argv);
     QCommandLineParser parser;
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineOption: Option names cannot start with a '-'");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineOption: Option names cannot start with a '-'");
     QVERIFY(!parser.addOption(QCommandLineOption(QStringLiteral("-v"), QStringLiteral("Displays version information."))));
 }
 
@@ -100,7 +100,7 @@ void tst_QCommandLineParser::testDuplicateOption()
     QCoreApplication app(empty_argc, empty_argv);
     QCommandLineParser parser;
     QVERIFY(parser.addOption(QCommandLineOption(QStringLiteral("h"), QStringLiteral("Hostname."), QStringLiteral("hostname"))));
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option already added: \"h\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option already added: \"h\"");
     parser.addHelpOption();
 }
 
@@ -127,12 +127,12 @@ void tst_QCommandLineParser::testPositionalArguments()
 
 void tst_QCommandLineParser::testBooleanOption_data()
 {
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QStringList>("expectedOptionNames");
-    QTest::addColumn<bool>("expectedIsSet");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QStringList>("expectedOptionNames");
+    BOBUIest::addColumn<bool>("expectedIsSet");
 
-    QTest::newRow("set") << (QStringList() << "tst_qcommandlineparser" << "-b") << (QStringList() << "b") << true;
-    QTest::newRow("unset") << (QStringList() << "tst_qcommandlineparser") << QStringList() << false;
+    BOBUIest::newRow("set") << (QStringList() << "tst_qcommandlineparser" << "-b") << (QStringList() << "b") << true;
+    BOBUIest::newRow("unset") << (QStringList() << "tst_qcommandlineparser") << QStringList() << false;
 }
 
 void tst_QCommandLineParser::testBooleanOption()
@@ -146,27 +146,27 @@ void tst_QCommandLineParser::testBooleanOption()
     QVERIFY(parser.parse(args));
     QCOMPARE(parser.optionNames(), expectedOptionNames);
     QCOMPARE(parser.isSet("b"), expectedIsSet);
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
     QCOMPARE(parser.values("b"), QStringList());
     QCOMPARE(parser.positionalArguments(), QStringList());
     // Should warn on typos
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option not defined: \"c\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option not defined: \"c\"");
     QVERIFY(!parser.isSet("c"));
 }
 
 void tst_QCommandLineParser::testOptionsAndPositional_data()
 {
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QStringList>("expectedOptionNames");
-    QTest::addColumn<bool>("expectedIsSet");
-    QTest::addColumn<QStringList>("expectedPositionalArguments");
-    QTest::addColumn<QCommandLineParser::OptionsAfterPositionalArgumentsMode>("parsingMode");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QStringList>("expectedOptionNames");
+    BOBUIest::addColumn<bool>("expectedIsSet");
+    BOBUIest::addColumn<QStringList>("expectedPositionalArguments");
+    BOBUIest::addColumn<QCommandLineParser::OptionsAfterPositionalArgumentsMode>("parsingMode");
 
     const QStringList arg = QStringList() << "arg";
-    QTest::newRow("before_positional_default") << (QStringList() << "tst_qcommandlineparser" << "-b" << "arg") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsOptions;
-    QTest::newRow("after_positional_default") << (QStringList() << "tst_qcommandlineparser" << "arg" << "-b") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsOptions;
-    QTest::newRow("before_positional_parseAsArg") << (QStringList() << "tst_qcommandlineparser" << "-b" << "arg") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsPositionalArguments;
-    QTest::newRow("after_positional_parseAsArg") << (QStringList() << "tst_qcommandlineparser" << "arg" << "-b") << (QStringList()) << false << (QStringList() << "arg" << "-b") << QCommandLineParser::ParseAsPositionalArguments;
+    BOBUIest::newRow("before_positional_default") << (QStringList() << "tst_qcommandlineparser" << "-b" << "arg") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsOptions;
+    BOBUIest::newRow("after_positional_default") << (QStringList() << "tst_qcommandlineparser" << "arg" << "-b") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsOptions;
+    BOBUIest::newRow("before_positional_parseAsArg") << (QStringList() << "tst_qcommandlineparser" << "-b" << "arg") << (QStringList() << "b") << true << arg << QCommandLineParser::ParseAsPositionalArguments;
+    BOBUIest::newRow("after_positional_parseAsArg") << (QStringList() << "tst_qcommandlineparser" << "arg" << "-b") << (QStringList()) << false << (QStringList() << "arg" << "-b") << QCommandLineParser::ParseAsPositionalArguments;
 }
 
 void tst_QCommandLineParser::testOptionsAndPositional()
@@ -195,7 +195,7 @@ void tst_QCommandLineParser::testOptionsAndPositional()
     QVERIFY(parser.parse(args));
     QCOMPARE(parser.optionNames(), expectedOptionNames);
     QCOMPARE(parser.isSet("b"), expectedIsSet);
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
     QCOMPARE(parser.values("b"), QStringList());
     QCOMPARE(parser.positionalArguments(), expectedPositionalArguments);
     QCOMPARE(parser.helpText(), expectedHelpText);
@@ -203,12 +203,12 @@ void tst_QCommandLineParser::testOptionsAndPositional()
 
 void tst_QCommandLineParser::testMultipleNames_data()
 {
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QStringList>("expectedOptionNames");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QStringList>("expectedOptionNames");
 
-    QTest::newRow("short") << (QStringList() << "tst_qcommandlineparser" << "-v") << (QStringList() << "v");
-    QTest::newRow("long") << (QStringList() << "tst_qcommandlineparser" << "--version") << (QStringList() << "version");
-    QTest::newRow("not_set") << (QStringList() << "tst_qcommandlineparser") << QStringList();
+    BOBUIest::newRow("short") << (QStringList() << "tst_qcommandlineparser" << "-v") << (QStringList() << "v");
+    BOBUIest::newRow("long") << (QStringList() << "tst_qcommandlineparser" << "--version") << (QStringList() << "version");
+    BOBUIest::newRow("not_set") << (QStringList() << "tst_qcommandlineparser") << QStringList();
 }
 
 void tst_QCommandLineParser::testMultipleNames()
@@ -229,14 +229,14 @@ void tst_QCommandLineParser::testMultipleNames()
 
 void tst_QCommandLineParser::testSingleValueOption_data()
 {
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QStringList>("defaults");
-    QTest::addColumn<bool>("expectedIsSet");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QStringList>("defaults");
+    BOBUIest::addColumn<bool>("expectedIsSet");
 
-    QTest::newRow("short") << (QStringList() << "tst" << "-s" << "oxygen") << QStringList() << true;
-    QTest::newRow("long") << (QStringList() << "tst" << "--style" << "oxygen") << QStringList() << true;
-    QTest::newRow("longequal") << (QStringList() << "tst" << "--style=oxygen") << QStringList() << true;
-    QTest::newRow("default") << (QStringList() << "tst") << (QStringList() << "oxygen") << false;
+    BOBUIest::newRow("short") << (QStringList() << "tst" << "-s" << "oxygen") << QStringList() << true;
+    BOBUIest::newRow("long") << (QStringList() << "tst" << "--style" << "oxygen") << QStringList() << true;
+    BOBUIest::newRow("longequal") << (QStringList() << "tst" << "--style=oxygen") << QStringList() << true;
+    BOBUIest::newRow("default") << (QStringList() << "tst") << (QStringList() << "oxygen") << false;
 }
 
 void tst_QCommandLineParser::testSingleValueOption()
@@ -263,7 +263,7 @@ void tst_QCommandLineParser::testSingleValueOption()
         QCOMPARE(parser.positionalArguments(), QStringList());
     }
     // Should warn on typos
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option not defined: \"c\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option not defined: \"c\"");
     QVERIFY(parser.values("c").isEmpty());
 }
 
@@ -318,23 +318,23 @@ void tst_QCommandLineParser::testMultipleValuesOption()
 
 void tst_QCommandLineParser::testUnknownOptionErrorHandling_data()
 {
-    QTest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
-    QTest::addColumn<QStringList>("args");
-    QTest::addColumn<QStringList>("expectedUnknownOptionNames");
-    QTest::addColumn<QString>("expectedErrorText");
+    BOBUIest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
+    BOBUIest::addColumn<QStringList>("args");
+    BOBUIest::addColumn<QStringList>("expectedUnknownOptionNames");
+    BOBUIest::addColumn<QString>("expectedErrorText");
 
     const QStringList args_hello = QStringList() << "tst_qcommandlineparser" << "--hello";
     const QString error_hello("Unknown option 'hello'.");
-    QTest::newRow("unknown_name_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_hello << QStringList("hello") << error_hello;
-    QTest::newRow("unknown_name_long") << QCommandLineParser::ParseAsLongOptions << args_hello << QStringList("hello") << error_hello;
+    BOBUIest::newRow("unknown_name_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_hello << QStringList("hello") << error_hello;
+    BOBUIest::newRow("unknown_name_long") << QCommandLineParser::ParseAsLongOptions << args_hello << QStringList("hello") << error_hello;
 
     const QStringList args_value = QStringList() << "tst_qcommandlineparser" << "-b=1";
-    QTest::newRow("bool_with_value_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_value << QStringList() << QString("Unexpected value after '-b'.");
-    QTest::newRow("bool_with_value_long") << QCommandLineParser::ParseAsLongOptions << args_value << QStringList() << QString("Unexpected value after '-b'.");
+    BOBUIest::newRow("bool_with_value_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_value << QStringList() << QString("Unexpected value after '-b'.");
+    BOBUIest::newRow("bool_with_value_long") << QCommandLineParser::ParseAsLongOptions << args_value << QStringList() << QString("Unexpected value after '-b'.");
 
     const QStringList args_dash_long = QStringList() << "tst_qcommandlineparser" << "-bool";
     const QString error_bool("Unknown options: o, o, l.");
-    QTest::newRow("unknown_name_long_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_dash_long << (QStringList() << "o" << "o" << "l") << error_bool;
+    BOBUIest::newRow("unknown_name_long_collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << args_dash_long << (QStringList() << "o" << "o" << "l") << error_bool;
 }
 
 void tst_QCommandLineParser::testUnknownOptionErrorHandling()
@@ -392,10 +392,10 @@ void tst_QCommandLineParser::testProcessNotCalled()
     QCoreApplication app(empty_argc, empty_argv);
     QCommandLineParser parser;
     QVERIFY(parser.addOption(QCommandLineOption(QStringLiteral("b"), QStringLiteral("a boolean option"))));
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: call process() or parse() before isSet");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: call process() or parse() before isSet");
     QVERIFY(!parser.isSet("b"));
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: call process() or parse() before values");
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: call process() or parse() before values");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: option not expecting values: \"b\"");
     QCOMPARE(parser.values("b"), QStringList());
 }
 
@@ -403,7 +403,7 @@ void tst_QCommandLineParser::testEmptyArgsList()
 {
     QCoreApplication app(empty_argc, empty_argv);
     QCommandLineParser parser;
-    QTest::ignoreMessage(QtWarningMsg, "QCommandLineParser: argument list cannot be empty, it should contain at least the executable name");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCommandLineParser: argument list cannot be empty, it should contain at least the executable name");
     QVERIFY(!parser.parse(QStringList())); // invalid call, argv[0] is missing
 }
 
@@ -479,43 +479,43 @@ void tst_QCommandLineParser::testStdinArgument()
 
 void tst_QCommandLineParser::testSingleDashWordOptionModes_data()
 {
-    QTest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
-    QTest::addColumn<QStringList>("commandLine");
-    QTest::addColumn<QStringList>("expectedOptionNames");
-    QTest::addColumn<QStringList>("expectedOptionValues");
-    QTest::addColumn<QStringList>("invalidOptionValues");
+    BOBUIest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
+    BOBUIest::addColumn<QStringList>("commandLine");
+    BOBUIest::addColumn<QStringList>("expectedOptionNames");
+    BOBUIest::addColumn<QStringList>("expectedOptionValues");
+    BOBUIest::addColumn<QStringList>("invalidOptionValues");
 
-    QTest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-abc" << "val")
+    BOBUIest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-abc" << "val")
                                << (QStringList() << "a" << "b" << "c") << (QStringList() << QString() << QString() << "val")
                                << (QStringList() << "a" << "b");
-    QTest::newRow("collapsed_with_equalsign_value") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-abc=val")
+    BOBUIest::newRow("collapsed_with_equalsign_value") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-abc=val")
                                << (QStringList() << "a" << "b" << "c") << (QStringList() << QString() << QString() << "val")
                                << (QStringList() << "a" << "b");
-    QTest::newRow("collapsed_explicit_longoption") << QCommandLineParser::ParseAsCompactedShortOptions << QStringList("--nn")
+    BOBUIest::newRow("collapsed_explicit_longoption") << QCommandLineParser::ParseAsCompactedShortOptions << QStringList("--nn")
                                << QStringList("nn") << QStringList() << QStringList();
-    QTest::newRow("collapsed_longoption_value") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "--abc" << "val")
+    BOBUIest::newRow("collapsed_longoption_value") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "--abc" << "val")
                                << QStringList("abc") << QStringList("val") << QStringList();
-    QTest::newRow("compiler")  << QCommandLineParser::ParseAsCompactedShortOptions << QStringList("-cab")
+    BOBUIest::newRow("compiler")  << QCommandLineParser::ParseAsCompactedShortOptions << QStringList("-cab")
                                << QStringList("c") << QStringList("ab") << QStringList();
-    QTest::newRow("compiler_with_space") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-c" << "val")
+    BOBUIest::newRow("compiler_with_space") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-c" << "val")
                                << QStringList("c") << QStringList("val") << QStringList();
 
-    QTest::newRow("implicitlylong") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-abc" << "val")
+    BOBUIest::newRow("implicitlylong") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-abc" << "val")
                                << QStringList("abc") << QStringList("val") << QStringList();
-    QTest::newRow("implicitlylong_equal") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-abc=val")
+    BOBUIest::newRow("implicitlylong_equal") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-abc=val")
                                << QStringList("abc") << QStringList("val") << QStringList();
-    QTest::newRow("implicitlylong_longoption") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "--nn")
+    BOBUIest::newRow("implicitlylong_longoption") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "--nn")
                                << QStringList("nn") << QStringList() << QStringList();
-    QTest::newRow("implicitlylong_longoption_value") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "--abc" << "val")
+    BOBUIest::newRow("implicitlylong_longoption_value") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "--abc" << "val")
                                << QStringList("abc") << QStringList("val") << QStringList();
-    QTest::newRow("implicitlylong_with_space") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-c" << "val")
+    BOBUIest::newRow("implicitlylong_with_space") << QCommandLineParser::ParseAsCompactedShortOptions << (QStringList() << "-c" << "val")
                                << QStringList("c") << QStringList("val") << QStringList();
 
-    QTest::newRow("forceshort_detached") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I" << "45")
+    BOBUIest::newRow("forceshort_detached") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I" << "45")
                                << QStringList("I") << QStringList("45") << QStringList();
-    QTest::newRow("forceshort_attached") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I46")
+    BOBUIest::newRow("forceshort_attached") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I46")
                                << QStringList("I") << QStringList("46") << QStringList();
-    QTest::newRow("forceshort_mixed") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I45" << "-nn")
+    BOBUIest::newRow("forceshort_mixed") << QCommandLineParser::ParseAsLongOptions << (QStringList() << "-I45" << "-nn")
                                << (QStringList() << "I" << "nn") << QStringList("45") << QStringList();
 }
 
@@ -546,7 +546,7 @@ void tst_QCommandLineParser::testSingleDashWordOptionModes()
         const QString option = parser.optionNames().at(i);
         if (invalidOptionValues.contains(option)) {
             QByteArray msg = QLatin1String("QCommandLineParser: option not expecting values: \"%1\"").arg(option).toLatin1();
-            QTest::ignoreMessage(QtWarningMsg, msg.data());
+            BOBUIest::ignoreMessage(BobUIWarningMsg, msg.data());
         }
         QCOMPARE(parser.value(option), expectedOptionValues.at(i));
     }
@@ -572,7 +572,7 @@ void tst_QCommandLineParser::testCpp11StyleInitialization()
 
 void tst_QCommandLineParser::testVersionOption()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #elif defined(Q_OS_ANDROID)
     QSKIP("Deploying executable applications to file system on Android not supported.");
@@ -588,13 +588,13 @@ void tst_QCommandLineParser::testVersionOption()
     output.replace(QStringLiteral("\r\n"), QStringLiteral("\n"));
 #endif
     QCOMPARE(output, QString("qcommandlineparser_test_helper 1.0\n"));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 static const char expectedOptionsHelp[] =
         "Options:\n"
         "  -h, --help                  Displays help on commandline options.\n"
-        "  --help-all                  Displays help, including generic Qt options.\n"
+        "  --help-all                  Displays help, including generic BobUI options.\n"
         "  -v, --version               Displays version information.\n"
         "  --load <url>                Load file from URL.\n"
         "  -o, --output <file>         Set output file.\n"
@@ -607,15 +607,15 @@ static const char expectedOptionsHelp[] =
         "                              testing automatic wrapping too). In addition,\n"
         "                              here, we test breaking after a comma. Testing\n"
         "                              -option. Long URL:\n"
-        "                              http://qt-project.org/wiki/How_to_create_a_library\n"
-        "                              _with_Qt_and_use_it_in_an_application\n"
+        "                              http://bobui-project.org/wiki/How_to_create_a_library\n"
+        "                              _with_BobUI_and_use_it_in_an_application\n"
         "                              abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\n"
         "                              yzabcdefghijklmnopqrstuvwxyz\n";
 
 void tst_QCommandLineParser::testHelpOption_data()
 {
-    QTest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
-    QTest::addColumn<QString>("expectedHelpOutput");
+    BOBUIest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
+    BOBUIest::addColumn<QString>("expectedHelpOutput");
 
     QString expectedOutput = QString::fromLatin1(
         "Usage: testhelper/qcommandlineparser_test_helper [options] parsingMode command\n"
@@ -633,13 +633,13 @@ void tst_QCommandLineParser::testHelpOption_data()
     expectedOutput.replace("testhelper/", "testhelper\\");
 #endif
 
-    QTest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << expectedOutput;
-    QTest::newRow("long")      << QCommandLineParser::ParseAsLongOptions << expectedOutput;
+    BOBUIest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << expectedOutput;
+    BOBUIest::newRow("long")      << QCommandLineParser::ParseAsLongOptions << expectedOutput;
 }
 
 void tst_QCommandLineParser::testHelpOption()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #elif defined(Q_OS_ANDROID)
     QSKIP("Deploying executable applications to file system on Android not supported.");
@@ -681,12 +681,12 @@ void tst_QCommandLineParser::testHelpOption()
     expectedResizeHelp.replace("testhelper/", "testhelper\\");
 #endif
     QCOMPARE(output, QString(expectedResizeHelp));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QCommandLineParser::testQuoteEscaping()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #elif defined(Q_OS_ANDROID)
     QSKIP("Deploying executable applications to file system on Android not supported.");
@@ -697,22 +697,22 @@ void tst_QCommandLineParser::testQuoteEscaping()
             QString::number(QCommandLineParser::ParseAsCompactedShortOptions) <<
             "\\\\server\\path" <<
             "-DKEY1=\"VALUE1\""
-            "-DQTBUG-15379=C:\\path\\'file.ext" <<
-            "-DQTBUG-30628=C:\\temp\\'file'.ext");
+            "-DBOBUIBUG-15379=C:\\path\\'file.ext" <<
+            "-DBOBUIBUG-30628=C:\\temp\\'file'.ext");
     QVERIFY(process.waitForFinished(5000));
     QCOMPARE(process.exitStatus(), QProcess::NormalExit);
     QString output = process.readAll();
     QVERIFY2(!output.contains("ERROR"), qPrintable(output));
     QVERIFY2(output.contains("\\\\server\\path"), qPrintable(output));
     QVERIFY2(output.contains("KEY1=\"VALUE1\""), qPrintable(output));
-    QVERIFY2(output.contains("QTBUG-15379=C:\\path\\'file.ext"), qPrintable(output));
-    QVERIFY2(output.contains("QTBUG-30628=C:\\temp\\'file'.ext"), qPrintable(output));
-#endif // QT_CONFIG(process)
+    QVERIFY2(output.contains("BOBUIBUG-15379=C:\\path\\'file.ext"), qPrintable(output));
+    QVERIFY2(output.contains("BOBUIBUG-30628=C:\\temp\\'file'.ext"), qPrintable(output));
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QCommandLineParser::testUnknownOption()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #elif defined(Q_OS_ANDROID)
     QSKIP("Deploying executable applications to file system on Android not supported.");
@@ -728,13 +728,13 @@ void tst_QCommandLineParser::testUnknownOption()
     QString output = process.readAll();
     QVERIFY2(output.contains("qcommandlineparser_test_helper"), qPrintable(output)); // separate in case of .exe extension
     QVERIFY2(output.contains(": Unknown option 'unknown-option'"), qPrintable(output));
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QCommandLineParser::testHelpAll_data()
 {
-    QTest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
-    QTest::addColumn<QString>("expectedHelpOutput");
+    BOBUIest::addColumn<QCommandLineParser::SingleDashWordOptionMode>("parsingMode");
+    BOBUIest::addColumn<QString>("expectedHelpOutput");
 
     QString expectedOutput = QString::fromLatin1(
         "Usage: testhelper/qcommandlineparser_test_helper [options] parsingMode command\n"
@@ -756,13 +756,13 @@ void tst_QCommandLineParser::testHelpAll_data()
     expectedOutput.replace("testhelper/", "testhelper\\");
 #endif
 
-    QTest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << expectedOutput;
-    QTest::newRow("long")      << QCommandLineParser::ParseAsLongOptions << expectedOutput;
+    BOBUIest::newRow("collapsed") << QCommandLineParser::ParseAsCompactedShortOptions << expectedOutput;
+    BOBUIest::newRow("long")      << QCommandLineParser::ParseAsLongOptions << expectedOutput;
 }
 
 void tst_QCommandLineParser::testHelpAll()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
 #ifdef Q_OS_ANDROID
@@ -782,12 +782,12 @@ void tst_QCommandLineParser::testHelpAll()
 #endif
     QCOMPARE(output.split('\n'), expectedHelpOutput.split('\n')); // easier to debug than the next line, on failure
     QCOMPARE(output, expectedHelpOutput);
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QCommandLineParser::testVeryLongOptionNames()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #elif defined(Q_OS_ANDROID)
     QSKIP("Deploying executable applications to file system on Android not supported.");
@@ -813,7 +813,7 @@ void tst_QCommandLineParser::testVeryLongOptionNames()
     QCOMPARE(lines.at(last - 2), "  parsingMode                                        The parsing mode to test.");
     QCOMPARE(lines.at(last - 1), "  command                                            The command to execute.");
 
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QCommandLineParser::testIgnoringOptions()
@@ -832,5 +832,5 @@ void tst_QCommandLineParser::testIgnoringOptions()
     QVERIFY(!parser.isSet("badOption"));
 }
 
-QTEST_APPLESS_MAIN(tst_QCommandLineParser)
+BOBUIEST_APPLESS_MAIN(tst_QCommandLineParser)
 #include "tst_qcommandlineparser.moc"

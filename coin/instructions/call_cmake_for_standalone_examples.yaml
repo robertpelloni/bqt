@@ -3,7 +3,7 @@ instructions:
   - type: ChangeDirectory
     directory: "{{.BuildDir}}"
   - type: ExecuteCommand
-    command: "{{.Env.EXAMPLES_ENV_PREFIX}} {{.Env.INSTALL_DIR_FOR_EXAMPLES}}\\bin\\qt-internal-configure-examples {{.Env.COIN_CMAKE_ARGS}}"
+    command: "{{.Env.EXAMPLES_ENV_PREFIX}} {{.Env.INSTALL_DIR_FOR_EXAMPLES}}\\bin\\bobui-internal-configure-examples {{.Env.COIN_CMAKE_ARGS}}"
     executeCommandArgumentSplitingBehavior: SplitAfterVariableSubstitution
     maxTimeInSeconds: 6000
     maxTimeBetweenOutput: 1200
@@ -14,7 +14,7 @@ instructions:
       property: host.os
       equals_value: Windows
   - type: ExecuteCommand
-    command: "{{.Env.EXAMPLES_ENV_PREFIX}} {{.Env.INSTALL_DIR_FOR_EXAMPLES}}/libexec/qt-internal-configure-examples {{.Env.COIN_CMAKE_ARGS}}"
+    command: "{{.Env.EXAMPLES_ENV_PREFIX}} {{.Env.INSTALL_DIR_FOR_EXAMPLES}}/libexec/bobui-internal-configure-examples {{.Env.COIN_CMAKE_ARGS}}"
     executeCommandArgumentSplitingBehavior: SplitAfterVariableSubstitution
     maxTimeInSeconds: 6000
     maxTimeBetweenOutput: 1200

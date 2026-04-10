@@ -11,7 +11,7 @@ The focus of this phase was transitioning from "Breadth" (creating stubs for 40+
 ### Immediate Next Steps (v42.0 - The "Integration" Phase)
 While the individual modules are incredibly robust, they currently run in isolated ApplicationWindow instances via their respective `main.cpp` binaries.
 1. **The OmniNexus Shell:** We need to build a master application that integrates *all* 30+ modules into a single, cohesive Desktop Environment or Window Manager.
-2. **Unified Simulation Clock:** Currently, modules like OmniPhysics, OmniKernel, and OmniGenesis use their own internal `QTimer` loops. We need to wire them up so the `OmniSimulationEngine` (or `OmniTimeMachine`) drives the tick rate for the entire framework universally.
+2. **Unified Simulation Clock:** Currently, modules like OmniPhysics, OmniKernel, and OmniGenesis use their own internal `BOBUIimer` loops. We need to wire them up so the `OmniSimulationEngine` (or `OmniTimeMachine`) drives the tick rate for the entire framework universally.
 3. **Cross-Module Interplay:**
     - Wire `OmniHardware` (GPIO pins) to trigger `OmniPortal` gate openings.
     - Tie `OmniMind` (BCI) intention detection directly into the `OmniCreator` compiler start/stop functions.
@@ -19,5 +19,5 @@ While the individual modules are incredibly robust, they currently run in isolat
 
 ### Long Term Objectives (v43.0+)
 - **Network Multiplayer:** Expand `OmniNet` to actually bind two different physical instances of OmniUI together, synchronizing their `OmniUniverseManager` states.
-- **Mobile Porting:** Ensure the massive QML layouts dynamically compress down into drawer-based UIs for iOS/Android targets using Qt Quick Controls.
+- **Mobile Porting:** Ensure the massive QML layouts dynamically compress down into drawer-based UIs for iOS/Android targets using BobUI Quick Controls.
 - **WebAssembly Build:** Establish a CI/CD pipeline to compile the entire OmniUI C++ backend into WASM for browser-based demonstration.

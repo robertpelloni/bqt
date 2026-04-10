@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDBusContext>
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 
-const char errorName[] = "org.qtproject.tst_QDBusContext.Error";
+const char errorName[] = "org.bobuiproject.tst_QDBusContext.Error";
 const char errorMsg[] = "A generic error";
 
 class TestObject: public QObject, protected QDBusContext
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.tst_QDBusContext.TestObject")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.tst_QDBusContext.TestObject")
     Q_PROPERTY(bool verifyDBus READ verifyDBus WRITE setVerifyDBus)
 public:
     inline TestObject(QObject *parent) : QObject(parent) { }
@@ -85,7 +85,7 @@ void tst_QDBusContext::calledFromDBusPropertyRead()
     QDBusInterface iface(QDBusConnection::sessionBus().baseService(), "/TestObject", "org.freedesktop.DBus.Properties");
     QVERIFY(iface.isValid());
 
-    QDBusReply<QVariant> reply = iface.call("Get", "org.qtproject.tst_QDBusContext.TestObject", "verifyDBus");
+    QDBusReply<QVariant> reply = iface.call("Get", "org.bobuiproject.tst_QDBusContext.TestObject", "verifyDBus");
     QVERIFY(reply.isValid());
     QVERIFY(reply.value().toBool());
 }
@@ -95,13 +95,13 @@ void tst_QDBusContext::calledFromDBusPropertyWrite()
     QDBusInterface iface(QDBusConnection::sessionBus().baseService(), "/TestObject", "org.freedesktop.DBus.Properties");
     QVERIFY(iface.isValid());
 
-    QDBusReply<void> reply = iface.callWithArgumentList(QDBus::Block, "Set", {"org.qtproject.tst_QDBusContext.TestObject", "verifyDBus", QVariant::fromValue(QDBusVariant(true))});
+    QDBusReply<void> reply = iface.callWithArgumentList(QDBus::Block, "Set", {"org.bobuiproject.tst_QDBusContext.TestObject", "verifyDBus", QVariant::fromValue(QDBusVariant(true))});
     QVERIFY(reply.isValid());
 }
 
 void tst_QDBusContext::calledFromDBusSlot()
 {
-    QDBusInterface iface(QDBusConnection::sessionBus().baseService(), "/TestObject", "org.qtproject.tst_QDBusContext.TestObject");
+    QDBusInterface iface(QDBusConnection::sessionBus().baseService(), "/TestObject", "org.bobuiproject.tst_QDBusContext.TestObject");
     QVERIFY(iface.isValid());
 
     QDBusReply<bool> reply = iface.call("someSlot");
@@ -116,6 +116,6 @@ void tst_QDBusContext::notCalledFromDBus()
     QVERIFY(!obj.someSlot());
 }
 
-QTEST_MAIN(tst_QDBusContext)
+BOBUIEST_MAIN(tst_QDBusContext)
 
 #include "tst_qdbuscontext.moc"

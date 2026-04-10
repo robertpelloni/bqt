@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCoreApplication>
 #include <QLoggingCategory>
-#include <QThread>
+#include <BOBUIhread>
 
 #ifdef Q_CC_GNU
 #define NEVER_INLINE __attribute__((__noinline__))
@@ -36,7 +36,7 @@ void MyClass::myFunction(int a)
     qDebug() << "from_a_function" << a;
 }
 
-class Thread : public QThread
+class Thread : public BOBUIhread
 {
 public:
     Thread() {

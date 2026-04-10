@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QCompleter>
 #include <QHBoxLayout>
@@ -7,11 +7,11 @@
 #include <QListWidget>
 #include <QSignalSpy>
 #include <QStyledItemDelegate>
-#include <QTest>
+#include <BOBUIest>
 #include <QLabel>
 #include <private/qlistwidget_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 using IntList = QList<int>;
 
@@ -94,10 +94,10 @@ private slots:
     void task199503_crashWhenCleared();
     void task217070_scrollbarsAdjusted();
     void task258949_keypressHangup();
-    void QTBUG8086_currentItemChangedOnClick();
-    void QTBUG14363_completerWithAnyKeyPressedEditTriggers();
+    void BOBUIBUG8086_currentItemChangedOnClick();
+    void BOBUIBUG14363_completerWithAnyKeyPressedEditTriggers();
     void mimeData();
-    void QTBUG50891_ensureSelectionModelSignalConnectionsAreSet();
+    void BOBUIBUG50891_ensureSelectionModelSignalConnectionsAreSet();
     void createPersistentOnLayoutAboutToBeChanged();
     void createPersistentOnLayoutAboutToBeChangedAutoSort();
     void clearItemData();
@@ -107,7 +107,7 @@ private slots:
     void moveRowsInvalid_data();
     void moveRowsInvalid();
     void noopDragDrop();
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void supportedDragActions();
 #endif
 
@@ -149,12 +149,12 @@ private:
 
 void tst_QListWidget::moveRowsInvalid_data()
 {
-    QTest::addColumn<QListWidget*>("baseWidget");
-    QTest::addColumn<QModelIndex>("startParent");
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<QModelIndex>("destinationParent");
-    QTest::addColumn<int>("destination");
+    BOBUIest::addColumn<QListWidget*>("baseWidget");
+    BOBUIest::addColumn<QModelIndex>("startParent");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<QModelIndex>("destinationParent");
+    BOBUIest::addColumn<int>("destination");
 
     const auto createWidget = []() -> QListWidget* {
         QListWidget* result = new QListWidget;
@@ -163,20 +163,20 @@ void tst_QListWidget::moveRowsInvalid_data()
     };
     constexpr int rowCount = 6;
 
-    QTest::addRow("destination_equal_source") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << 0;
-    QTest::addRow("count_equal_0") << createWidget() << QModelIndex() << 0 << 0 << QModelIndex() << 2;
+    BOBUIest::addRow("destination_equal_source") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << 0;
+    BOBUIest::addRow("count_equal_0") << createWidget() << QModelIndex() << 0 << 0 << QModelIndex() << 2;
     QListWidget* tempWidget = createWidget();
-    QTest::addRow("move_child") << tempWidget << tempWidget->model()->index(0, 0) << 0 << 1 << QModelIndex() << 2;
+    BOBUIest::addRow("move_child") << tempWidget << tempWidget->model()->index(0, 0) << 0 << 1 << QModelIndex() << 2;
     tempWidget = createWidget();
-    QTest::addRow("move_to_child") << tempWidget << QModelIndex() << 0 << 1 << tempWidget->model()->index(0, 0) << 2;
-    QTest::addRow("negative_count") << createWidget() << QModelIndex() << 0 << -1 << QModelIndex() << 2;
-    QTest::addRow("negative_source_row") << createWidget() << QModelIndex() << -1 << 1 << QModelIndex() << 2;
-    QTest::addRow("negative_destination_row") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << -1;
-    QTest::addRow("source_row_equal_rowCount") << createWidget() << QModelIndex() << rowCount << 1 << QModelIndex() << 1;
-    QTest::addRow("source_row_equal_destination_row") << createWidget() << QModelIndex() << 2 << 1 << QModelIndex() << 2;
-    QTest::addRow("source_row_equal_destination_row_plus1") << createWidget() << QModelIndex() << 2 << 1 << QModelIndex() << 3;
-    QTest::addRow("destination_row_greater_rowCount") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << rowCount + 1;
-    QTest::addRow("move_row_within_source_range") << createWidget() << QModelIndex() << 0 << 3 << QModelIndex() << 2;
+    BOBUIest::addRow("move_to_child") << tempWidget << QModelIndex() << 0 << 1 << tempWidget->model()->index(0, 0) << 2;
+    BOBUIest::addRow("negative_count") << createWidget() << QModelIndex() << 0 << -1 << QModelIndex() << 2;
+    BOBUIest::addRow("negative_source_row") << createWidget() << QModelIndex() << -1 << 1 << QModelIndex() << 2;
+    BOBUIest::addRow("negative_destination_row") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << -1;
+    BOBUIest::addRow("source_row_equal_rowCount") << createWidget() << QModelIndex() << rowCount << 1 << QModelIndex() << 1;
+    BOBUIest::addRow("source_row_equal_destination_row") << createWidget() << QModelIndex() << 2 << 1 << QModelIndex() << 2;
+    BOBUIest::addRow("source_row_equal_destination_row_plus1") << createWidget() << QModelIndex() << 2 << 1 << QModelIndex() << 3;
+    BOBUIest::addRow("destination_row_greater_rowCount") << createWidget() << QModelIndex() << 0 << 1 << QModelIndex() << rowCount + 1;
+    BOBUIest::addRow("move_row_within_source_range") << createWidget() << QModelIndex() << 0 << 3 << QModelIndex() << 2;
 }
 
 void tst_QListWidget::moveRowsInvalid()
@@ -200,28 +200,28 @@ void tst_QListWidget::moveRowsInvalid()
 
 void tst_QListWidget::moveRows_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<int>("destination");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("destination");
+    BOBUIest::addColumn<QStringList>("expected");
 
-    QTest::newRow("1_Item_from_top_to_middle") << 0 << 1 << 3 << QStringList{"B", "C", "A", "D", "E", "F"};
-    QTest::newRow("1_Item_from_top_to_bottom") << 0 << 1 << 6 << QStringList{"B", "C", "D", "E", "F", "A"};
-    QTest::newRow("1_Item_from_middle_to_top") << 2 << 1 << 0 << QStringList{"C", "A", "B", "D", "E", "F"};
-    QTest::newRow("1_Item_from_bottom_to_middle") << 5 << 1 << 2 << QStringList{"A", "B", "F", "C", "D", "E"};
-    QTest::newRow("1_Item_from_bottom to_top") << 5 << 1 << 0 << QStringList{"F", "A", "B", "C", "D", "E"};
-    QTest::newRow("1_Item_from_middle_to_bottom") << 2 << 1 << 6 << QStringList{"A", "B", "D", "E", "F", "C"};
-    QTest::newRow("1_Item_from_middle_to_middle_before") << 2 << 1 << 1 << QStringList{"A", "C", "B", "D", "E", "F"};
-    QTest::newRow("1_Item_from_middle_to_middle_after") << 2 << 1 << 4 << QStringList{"A", "B", "D", "C", "E", "F"};
+    BOBUIest::newRow("1_Item_from_top_to_middle") << 0 << 1 << 3 << QStringList{"B", "C", "A", "D", "E", "F"};
+    BOBUIest::newRow("1_Item_from_top_to_bottom") << 0 << 1 << 6 << QStringList{"B", "C", "D", "E", "F", "A"};
+    BOBUIest::newRow("1_Item_from_middle_to_top") << 2 << 1 << 0 << QStringList{"C", "A", "B", "D", "E", "F"};
+    BOBUIest::newRow("1_Item_from_bottom_to_middle") << 5 << 1 << 2 << QStringList{"A", "B", "F", "C", "D", "E"};
+    BOBUIest::newRow("1_Item_from_bottom to_top") << 5 << 1 << 0 << QStringList{"F", "A", "B", "C", "D", "E"};
+    BOBUIest::newRow("1_Item_from_middle_to_bottom") << 2 << 1 << 6 << QStringList{"A", "B", "D", "E", "F", "C"};
+    BOBUIest::newRow("1_Item_from_middle_to_middle_before") << 2 << 1 << 1 << QStringList{"A", "C", "B", "D", "E", "F"};
+    BOBUIest::newRow("1_Item_from_middle_to_middle_after") << 2 << 1 << 4 << QStringList{"A", "B", "D", "C", "E", "F"};
 
-    QTest::newRow("2_Items_from_top_to_middle") << 0 << 2 << 3 << QStringList{"C", "A", "B", "D", "E", "F"};
-    QTest::newRow("2_Items_from_top_to_bottom") << 0 << 2 << 6 << QStringList{"C", "D", "E", "F", "A", "B"};
-    QTest::newRow("2_Items_from_middle_to_top") << 2 << 2 << 0 << QStringList{"C", "D", "A", "B", "E", "F"};
-    QTest::newRow("2_Items_from_bottom_to_middle") << 4 << 2 << 2 << QStringList{"A", "B", "E", "F", "C", "D"};
-    QTest::newRow("2_Items_from_bottom_to_top") << 4 << 2 << 0 << QStringList{"E", "F", "A", "B", "C", "D"};
-    QTest::newRow("2_Items_from_middle_to_bottom") << 2 << 2 << 6 << QStringList{"A", "B", "E", "F", "C", "D"};
-    QTest::newRow("2_Items_from_middle_to_middle_before") << 3 << 2 << 1 << QStringList{"A", "D", "E", "B", "C", "F"};
-    QTest::newRow("2_Items_from_middle_to_middle_after") << 1 << 2 << 5 << QStringList{"A", "D", "E", "B", "C", "F"};
+    BOBUIest::newRow("2_Items_from_top_to_middle") << 0 << 2 << 3 << QStringList{"C", "A", "B", "D", "E", "F"};
+    BOBUIest::newRow("2_Items_from_top_to_bottom") << 0 << 2 << 6 << QStringList{"C", "D", "E", "F", "A", "B"};
+    BOBUIest::newRow("2_Items_from_middle_to_top") << 2 << 2 << 0 << QStringList{"C", "D", "A", "B", "E", "F"};
+    BOBUIest::newRow("2_Items_from_bottom_to_middle") << 4 << 2 << 2 << QStringList{"A", "B", "E", "F", "C", "D"};
+    BOBUIest::newRow("2_Items_from_bottom_to_top") << 4 << 2 << 0 << QStringList{"E", "F", "A", "B", "C", "D"};
+    BOBUIest::newRow("2_Items_from_middle_to_bottom") << 2 << 2 << 6 << QStringList{"A", "B", "E", "F", "C", "D"};
+    BOBUIest::newRow("2_Items_from_middle_to_middle_before") << 3 << 2 << 1 << QStringList{"A", "D", "E", "B", "C", "F"};
+    BOBUIest::newRow("2_Items_from_middle_to_middle_after") << 1 << 2 << 5 << QStringList{"A", "D", "E", "B", "C", "F"};
 }
 
 void tst_QListWidget::moveRows()
@@ -330,7 +330,7 @@ void tst_QListWidget::addItem2()
     QCOMPARE(testWidget->count(), count);
 
     QListWidgetItem *item = new QListWidgetItem(QString::number(count));
-    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setFlags(item->flags() | BobUI::ItemIsEditable);
     testWidget->addItem(item);
     QCOMPARE(testWidget->count(), ++count);
     QCOMPARE(testWidget->item(testWidget->count()-1), item);
@@ -424,11 +424,11 @@ void tst_QListWidget::setItemHidden()
 
 void tst_QListWidget::setCurrentItem_data()
 {
-    QTest::addColumn<int>("fill");
-    QTest::newRow("HasItems: 0") << 0;
-    QTest::newRow("HasItems: 1") << 1;
-    QTest::newRow("HasItems: 2") << 2;
-    QTest::newRow("HasItems: 3") << 3;
+    BOBUIest::addColumn<int>("fill");
+    BOBUIest::newRow("HasItems: 0") << 0;
+    BOBUIest::newRow("HasItems: 1") << 1;
+    BOBUIest::newRow("HasItems: 2") << 2;
+    BOBUIest::newRow("HasItems: 3") << 3;
 }
 
 void tst_QListWidget::setCurrentItem()
@@ -456,11 +456,11 @@ void tst_QListWidget::setCurrentItem()
 
 void tst_QListWidget::setCurrentRow_data()
 {
-    QTest::addColumn<int>("fill");
-    QTest::newRow("HasItems: 0") << 0;
-    QTest::newRow("HasItems: 1") << 1;
-    QTest::newRow("HasItems: 2") << 2;
-    QTest::newRow("HasItems: 3") << 3;
+    BOBUIest::addColumn<int>("fill");
+    BOBUIest::newRow("HasItems: 0") << 0;
+    BOBUIest::newRow("HasItems: 1") << 1;
+    BOBUIest::newRow("HasItems: 2") << 2;
+    BOBUIest::newRow("HasItems: 3") << 3;
 }
 
 void tst_QListWidget::setCurrentRow()
@@ -519,9 +519,9 @@ void tst_QListWidget::currentRow()
 
 void tst_QListWidget::editItem_data()
 {
-    QTest::addColumn<bool>("editable");
-    QTest::newRow("editable") << true;
-    QTest::newRow("not editable") << false;
+    BOBUIest::addColumn<bool>("editable");
+    BOBUIest::newRow("editable") << true;
+    BOBUIest::newRow("not editable") << false;
 }
 
 void tst_QListWidget::editItem()
@@ -533,16 +533,16 @@ void tst_QListWidget::editItem()
 
     QFETCH(bool, editable);
     if (editable)
-        item->setFlags(item->flags() | Qt::ItemIsEditable);
+        item->setFlags(item->flags() | BobUI::ItemIsEditable);
     testWidget->addItem(item);
 
     int childCount = testWidget->viewport()->children().size();
     QWidget *existsAlready = testWidget->indexWidget(testWidget->model()->index(testWidget->row(item), 0));
     testWidget->editItem(item);
-    Qt::ItemFlags flags = item->flags();
+    BobUI::ItemFlags flags = item->flags();
 
     // There doesn't seem to be a way to detect if the item has already been edited...
-    if (!existsAlready && flags & Qt::ItemIsEditable && flags & Qt::ItemIsEnabled) {
+    if (!existsAlready && flags & BobUI::ItemIsEditable && flags & BobUI::ItemIsEnabled) {
         QList<QObject *> children = testWidget->viewport()->children();
         QVERIFY(children.size() > childCount);
         bool found = false;
@@ -561,29 +561,29 @@ void tst_QListWidget::findItems()
     // This really just tests that the items that are returned are converted from index's to items correctly.
 
     // Boundary checking
-    QCOMPARE(testWidget->findItems("GirlsCanWearJeansAndCutTheirHairShort", Qt::MatchExactly).size(), 0);
+    QCOMPARE(testWidget->findItems("GirlsCanWearJeansAndCutTheirHairShort", BobUI::MatchExactly).size(), 0);
 
     populate();
 
     for (int i = 0; i < testWidget->count(); ++i)
-        QCOMPARE(testWidget->findItems(testWidget->item(i)->text(), Qt::MatchExactly).size(), 1);
+        QCOMPARE(testWidget->findItems(testWidget->item(i)->text(), BobUI::MatchExactly).size(), 1);
 }
 
 
 void tst_QListWidget::insertItem_data()
 {
-    QTest::addColumn<QStringList>("initialItems");
-    QTest::addColumn<int>("insertIndex");
-    QTest::addColumn<QString>("itemLabel");
-    QTest::addColumn<int>("expectedIndex");
+    BOBUIest::addColumn<QStringList>("initialItems");
+    BOBUIest::addColumn<int>("insertIndex");
+    BOBUIest::addColumn<QString>("itemLabel");
+    BOBUIest::addColumn<int>("expectedIndex");
 
     const QStringList initialItems{"foo", "bar"};
 
-    QTest::newRow("Insert less then 0") << initialItems << -1 << "inserted" << 0;
-    QTest::newRow("Insert at 0") << initialItems << 0 << "inserted" << 0;
-    QTest::newRow("Insert beyond count") << initialItems << initialItems.size()+1 << "inserted" << initialItems.size();
-    QTest::newRow("Insert at count") << initialItems << initialItems.size() << "inserted" << initialItems.size();
-    QTest::newRow("Insert in the middle") << initialItems << 1 << "inserted" << 1;
+    BOBUIest::newRow("Insert less then 0") << initialItems << -1 << "inserted" << 0;
+    BOBUIest::newRow("Insert at 0") << initialItems << 0 << "inserted" << 0;
+    BOBUIest::newRow("Insert beyond count") << initialItems << initialItems.size()+1 << "inserted" << initialItems.size();
+    BOBUIest::newRow("Insert at count") << initialItems << initialItems.size() << "inserted" << initialItems.size();
+    BOBUIest::newRow("Insert in the middle") << initialItems << 1 << "inserted" << 1;
 }
 
 void tst_QListWidget::insertItem()
@@ -609,25 +609,25 @@ void tst_QListWidget::insertItem()
 
 void tst_QListWidget::insertItems_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("insertType");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("insertType");
 
-    QTest::newRow("Insert 1 item using constructor") << 1 << 0;
-    QTest::newRow("Insert 10 items using constructor") << 10 << 0;
-    QTest::newRow("Insert 100 items using constructor") << 100 << 0;
+    BOBUIest::newRow("Insert 1 item using constructor") << 1 << 0;
+    BOBUIest::newRow("Insert 10 items using constructor") << 10 << 0;
+    BOBUIest::newRow("Insert 100 items using constructor") << 100 << 0;
 
-    QTest::newRow("Insert 1 item with insertItem") << 1 << 1;
-    QTest::newRow("Insert 10 items with insertItem") << 10 << 1;
-    QTest::newRow("Insert 100 items with insertItem") << 100 << 1;
+    BOBUIest::newRow("Insert 1 item with insertItem") << 1 << 1;
+    BOBUIest::newRow("Insert 10 items with insertItem") << 10 << 1;
+    BOBUIest::newRow("Insert 100 items with insertItem") << 100 << 1;
 
-    QTest::newRow("Insert/Create 1 item using insertItem") << 1 << 2;
-    QTest::newRow("Insert/Create 10 items using insertItem") << 10 << 2;
-    QTest::newRow("Insert/Create 100 items using insertItem") << 100 << 2;
+    BOBUIest::newRow("Insert/Create 1 item using insertItem") << 1 << 2;
+    BOBUIest::newRow("Insert/Create 10 items using insertItem") << 10 << 2;
+    BOBUIest::newRow("Insert/Create 100 items using insertItem") << 100 << 2;
 
-    QTest::newRow("Insert 0 items with insertItems") << 0 << 3;
-    QTest::newRow("Insert 1 item with insertItems") << 1 << 3;
-    QTest::newRow("Insert 10 items with insertItems") << 10 << 3;
-    QTest::newRow("Insert 100 items with insertItems") << 100 << 3;
+    BOBUIest::newRow("Insert 0 items with insertItems") << 0 << 3;
+    BOBUIest::newRow("Insert 1 item with insertItems") << 1 << 3;
+    BOBUIest::newRow("Insert 10 items with insertItems") << 10 << 3;
+    BOBUIest::newRow("Insert 100 items with insertItems") << 100 << 3;
 }
 
 void tst_QListWidget::insertItems()
@@ -683,33 +683,33 @@ void tst_QListWidget::insertItems()
 void tst_QListWidget::itemAssignment()
 {
     QListWidgetItem itemInWidget("inWidget", testWidget);
-    itemInWidget.setFlags(itemInWidget.flags() | Qt::ItemIsUserTristate);
+    itemInWidget.setFlags(itemInWidget.flags() | BobUI::ItemIsUserTristate);
     QListWidgetItem itemOutsideWidget("outsideWidget");
 
     QVERIFY(itemInWidget.listWidget());
     QCOMPARE(itemInWidget.text(), QString("inWidget"));
-    QVERIFY(itemInWidget.flags() & Qt::ItemIsUserTristate);
+    QVERIFY(itemInWidget.flags() & BobUI::ItemIsUserTristate);
 
     QVERIFY(!itemOutsideWidget.listWidget());
     QCOMPARE(itemOutsideWidget.text(), QString("outsideWidget"));
-    QVERIFY(!(itemOutsideWidget.flags() & Qt::ItemIsUserTristate));
+    QVERIFY(!(itemOutsideWidget.flags() & BobUI::ItemIsUserTristate));
 
     itemOutsideWidget = itemInWidget;
     QVERIFY(!itemOutsideWidget.listWidget());
     QCOMPARE(itemOutsideWidget.text(), QString("inWidget"));
-    QVERIFY(itemOutsideWidget.flags() & Qt::ItemIsUserTristate);
+    QVERIFY(itemOutsideWidget.flags() & BobUI::ItemIsUserTristate);
 }
 
 void tst_QListWidget::item_data()
 {
-    QTest::addColumn<int>("row");
-    QTest::addColumn<bool>("outOfBounds");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<bool>("outOfBounds");
 
-    QTest::newRow("First item, row: 0") << 0 << false;
-    QTest::newRow("Middle item, row: 1") << 1 << false;
-    QTest::newRow("Last item, row: 2") << 2 << false;
-    QTest::newRow("Out of bounds, row: -1") << -1 << true;
-    QTest::newRow("Out of bounds, row: 3") << 3 << true;
+    BOBUIest::newRow("First item, row: 0") << 0 << false;
+    BOBUIest::newRow("Middle item, row: 1") << 1 << false;
+    BOBUIest::newRow("Last item, row: 2") << 2 << false;
+    BOBUIest::newRow("Out of bounds, row: -1") << -1 << true;
+    BOBUIest::newRow("Out of bounds, row: 3") << 3 << true;
 }
 
 void tst_QListWidget::item()
@@ -735,14 +735,14 @@ void tst_QListWidget::item()
 
 void tst_QListWidget::takeItem_data()
 {
-    QTest::addColumn<int>("row");
-    QTest::addColumn<bool>("outOfBounds");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<bool>("outOfBounds");
 
-    QTest::newRow("First item, row: 0") << 0 << false;
-    QTest::newRow("Middle item, row: 1") << 1 << false;
-    QTest::newRow("Last item, row: 2") << 2 << false;
-    QTest::newRow("Out of bounds, row: -1") << -1 << true;
-    QTest::newRow("Out of bounds, row: 3") << 3 << true;
+    BOBUIest::newRow("First item, row: 0") << 0 << false;
+    BOBUIest::newRow("Middle item, row: 1") << 1 << false;
+    BOBUIest::newRow("Last item, row: 2") << 2 << false;
+    BOBUIest::newRow("Out of bounds, row: -1") << -1 << true;
+    BOBUIest::newRow("Out of bounds, row: 3") << 3 << true;
 }
 
 void tst_QListWidget::takeItem()
@@ -770,43 +770,43 @@ void tst_QListWidget::takeItem()
 
 void tst_QListWidget::selectedItems_data()
 {
-    QTest::addColumn<int>("itemCount");
-    QTest::addColumn<IntList>("hiddenRows");
-    QTest::addColumn<IntList>("selectedRows");
-    QTest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<int>("itemCount");
+    BOBUIest::addColumn<IntList>("hiddenRows");
+    BOBUIest::addColumn<IntList>("selectedRows");
+    BOBUIest::addColumn<IntList>("expectedRows");
 
 
-    QTest::newRow("none hidden, none selected")
+    BOBUIest::newRow("none hidden, none selected")
         << 3
         << IntList()
         << IntList()
         << IntList();
 
-    QTest::newRow("none hidden, all selected")
+    BOBUIest::newRow("none hidden, all selected")
         << 3
         << IntList()
         << (IntList() << 0 << 1 << 2)
         << (IntList() << 0 << 1 << 2);
 
-    QTest::newRow("first hidden, all selected")
+    BOBUIest::newRow("first hidden, all selected")
         << 3
         << (IntList() << 0)
         << (IntList() << 0 << 1 << 2)
         << (IntList() << 0 << 1 << 2);
 
-    QTest::newRow("last hidden, all selected")
+    BOBUIest::newRow("last hidden, all selected")
         << 3
         << (IntList() << 2)
         << (IntList() << 0 << 1 << 2)
         << (IntList() << 0 << 1 << 2);
 
-    QTest::newRow("middle hidden, all selected")
+    BOBUIest::newRow("middle hidden, all selected")
         << 3
         << (IntList() << 1)
         << (IntList() << 0 << 1 << 2)
         << (IntList() << 0 << 1 << 2);
 
-    QTest::newRow("all hidden, all selected")
+    BOBUIest::newRow("all hidden, all selected")
         << 3
         << (IntList() << 0 << 1 << 2)
         << (IntList() << 0 << 1 << 2)
@@ -864,16 +864,16 @@ void tst_QListWidget::selectedItems()
 
 void tst_QListWidget::removeItems_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("removeRows");
-    QTest::addColumn<int>("row");
-    QTest::addColumn<int>("expectedRowCount");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("removeRows");
+    BOBUIest::addColumn<int>("row");
+    BOBUIest::addColumn<int>("expectedRowCount");
 
-    QTest::newRow("Empty") << 0 << 1 << 0 << 0;
-    QTest::newRow("1:1") << 1 << 1 << 0 << 0;
-    QTest::newRow("3:1") << 3 << 1 << 0 << 2;
-    QTest::newRow("3:2") << 3 << 2 << 0 << 1;
-    QTest::newRow("100:10") << 100 << 10 << 0 << 90;
+    BOBUIest::newRow("Empty") << 0 << 1 << 0 << 0;
+    BOBUIest::newRow("1:1") << 1 << 1 << 0 << 0;
+    BOBUIest::newRow("3:1") << 3 << 1 << 0 << 2;
+    BOBUIest::newRow("3:2") << 3 << 2 << 0 << 1;
+    BOBUIest::newRow("100:10") << 100 << 10 << 0 << 90;
 }
 
 void tst_QListWidget::removeItems()
@@ -902,26 +902,26 @@ void tst_QListWidget::removeItems()
 
 void tst_QListWidget::moveItemsPriv_data()
 {
-    QTest::addColumn<int>("rowCount");
-    QTest::addColumn<int>("srcRow");
-    QTest::addColumn<int>("dstRow");
-    QTest::addColumn<bool>("shouldHaveSignaled");
+    BOBUIest::addColumn<int>("rowCount");
+    BOBUIest::addColumn<int>("srcRow");
+    BOBUIest::addColumn<int>("dstRow");
+    BOBUIest::addColumn<bool>("shouldHaveSignaled");
 
-    QTest::newRow("Empty") << 0 << 0 << 0 << false;
-    QTest::newRow("Overflow src") << 5 << 5 << 2 << false;
-    QTest::newRow("Underflow src") << 5 << -1 << 2 << false;
-    QTest::newRow("Overflow dst") << 5 << 2 << 6 << false;
-    QTest::newRow("Underflow dst") << 5 << 2 << -1 << false;
-    QTest::newRow("Same place") << 5 << 2 << 2 << false;
-    QTest::newRow("Up") << 5 << 4 << 2 << true;
-    QTest::newRow("Down") << 5 << 2 << 4 << true;
-    QTest::newRow("QTBUG-6532 assert") << 5 << 0 << 1 << false;
-    QTest::newRow("QTBUG-6565 to the end") << 5 << 3 << 5 << true;
-    QTest::newRow("Same place 2") << 2 << 0 << 1 << false;
-    QTest::newRow("swap") << 2 << 0 << 2 << true;
-    QTest::newRow("swap2") << 4 << 1 << 3 << true;
-    QTest::newRow("swap3") << 4 << 3 << 2 << true;
-    QTest::newRow("swap4") << 2 << 1 << 0 << true;
+    BOBUIest::newRow("Empty") << 0 << 0 << 0 << false;
+    BOBUIest::newRow("Overflow src") << 5 << 5 << 2 << false;
+    BOBUIest::newRow("Underflow src") << 5 << -1 << 2 << false;
+    BOBUIest::newRow("Overflow dst") << 5 << 2 << 6 << false;
+    BOBUIest::newRow("Underflow dst") << 5 << 2 << -1 << false;
+    BOBUIest::newRow("Same place") << 5 << 2 << 2 << false;
+    BOBUIest::newRow("Up") << 5 << 4 << 2 << true;
+    BOBUIest::newRow("Down") << 5 << 2 << 4 << true;
+    BOBUIest::newRow("BOBUIBUG-6532 assert") << 5 << 0 << 1 << false;
+    BOBUIest::newRow("BOBUIBUG-6565 to the end") << 5 << 3 << 5 << true;
+    BOBUIest::newRow("Same place 2") << 2 << 0 << 1 << false;
+    BOBUIest::newRow("swap") << 2 << 0 << 2 << true;
+    BOBUIest::newRow("swap2") << 4 << 1 << 3 << true;
+    BOBUIest::newRow("swap3") << 4 << 3 << 2 << true;
+    BOBUIest::newRow("swap4") << 2 << 1 << 0 << true;
 }
 
 void tst_QListWidget::moveItemsPriv()
@@ -965,10 +965,10 @@ void tst_QListWidget::moveItemsPriv()
 
 void tst_QListWidget::itemStreaming_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<QString>("toolTip");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<QString>("toolTip");
 
-    QTest::newRow("Data") << "item text" << "tool tip text";
+    BOBUIest::newRow("Data") << "item text" << "tool tip text";
 }
 
 void tst_QListWidget::itemStreaming()
@@ -1003,31 +1003,31 @@ void tst_QListWidget::itemStreaming()
 
 void tst_QListWidget::sortItems_data()
 {
-    QTest::addColumn<Qt::SortOrder>("order");
-    QTest::addColumn<QVariantList>("initialList");
-    QTest::addColumn<QVariantList>("expectedList");
-    QTest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<BobUI::SortOrder>("order");
+    BOBUIest::addColumn<QVariantList>("initialList");
+    BOBUIest::addColumn<QVariantList>("expectedList");
+    BOBUIest::addColumn<IntList>("expectedRows");
 
-    QTest::newRow("ascending strings")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("ascending strings")
+        << BobUI::AscendingOrder
         << (QVariantList() << QString("c") << QString("d") << QString("a") << QString("b"))
         << (QVariantList() << QString("a") << QString("b") << QString("c") << QString("d"))
         << (IntList() << 2 << 3 << 0 << 1);
 
-    QTest::newRow("descending strings")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("descending strings")
+        << BobUI::DescendingOrder
         << (QVariantList() << QString("c") << QString("d") << QString("a") << QString("b"))
         << (QVariantList() << QString("d") << QString("c") << QString("b") << QString("a"))
         << (IntList() << 1 << 0 << 3 << 2);
 
-    QTest::newRow("ascending numbers")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("ascending numbers")
+        << BobUI::AscendingOrder
         << (QVariantList() << 1 << 11 << 2 << 22)
         << (QVariantList() << 1 << 2 << 11 << 22)
         << (IntList() << 0 << 2 << 1 << 3);
 
-    QTest::newRow("descending numbers")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("descending numbers")
+        << BobUI::DescendingOrder
         << (QVariantList() << 1 << 11 << 2 << 22)
         << (QVariantList() << 22 << 11 << 2 << 1)
         << (IntList() << 3 << 1 << 2 << 0);
@@ -1035,14 +1035,14 @@ void tst_QListWidget::sortItems_data()
 
 void tst_QListWidget::sortItems()
 {
-    QFETCH(Qt::SortOrder, order);
+    QFETCH(BobUI::SortOrder, order);
     QFETCH(const QVariantList, initialList);
     QFETCH(const QVariantList, expectedList);
     QFETCH(const IntList, expectedRows);
 
     for (const QVariant &data : initialList) {
         QListWidgetItem *item = new QListWidgetItem(testWidget);
-        item->setData(Qt::DisplayRole, data);
+        item->setData(BobUI::DisplayRole, data);
     }
 
     QAbstractItemModel *model = testWidget->model();
@@ -1062,11 +1062,11 @@ void tst_QListWidget::sortItems()
 
 void tst_QListWidget::sortHiddenItems_data()
 {
-    QTest::addColumn<Qt::SortOrder>("order");
-    QTest::addColumn<QStringList>("initialList");
-    QTest::addColumn<QStringList>("expectedList");
-    QTest::addColumn<IntList>("expectedRows");
-    QTest::addColumn<IntList>("expectedVisibility");
+    BOBUIest::addColumn<BobUI::SortOrder>("order");
+    BOBUIest::addColumn<QStringList>("initialList");
+    BOBUIest::addColumn<QStringList>("expectedList");
+    BOBUIest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<IntList>("expectedVisibility");
 
     QStringList initial, expected;
     IntList rowOrder;
@@ -1078,22 +1078,22 @@ void tst_QListWidget::sortHiddenItems_data()
         visible << (i % 2);
 
     }
-    QTest::newRow("descending order, 20 items")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("descending order, 20 items")
+        << BobUI::DescendingOrder
         << initial
         << expected
         << rowOrder
         << visible;
 
-    QTest::newRow("ascending order")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("ascending order")
+        << BobUI::AscendingOrder
         << (QStringList() << "c" << "d" << "a" << "b")
         << (QStringList() << "a" << "b" << "c" << "d")
         << (IntList() << 2 << 3 << 0 << 1)
         << (IntList() << 1 << 0 << 1 << 0);
 
-    QTest::newRow("descending order")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("descending order")
+        << BobUI::DescendingOrder
         << (QStringList() << "c" << "d" << "a" << "b")
         << (QStringList() << "d" << "c" << "b" << "a")
         << (IntList() << 1 << 0 << 3 << 2)
@@ -1102,7 +1102,7 @@ void tst_QListWidget::sortHiddenItems_data()
 
 void tst_QListWidget::sortHiddenItems()
 {
-    QFETCH(Qt::SortOrder, order);
+    QFETCH(BobUI::SortOrder, order);
     QFETCH(QStringList, initialList);
     QFETCH(QStringList, expectedList);
     QFETCH(IntList, expectedRows);
@@ -1135,39 +1135,39 @@ void tst_QListWidget::sortHiddenItems()
 }
 
 void tst_QListWidget::sortCheckStability_data() {
-    QTest::addColumn<Qt::SortOrder>("order");
-    QTest::addColumn<QVariantList>("initialList");
-    QTest::addColumn<QVariantList>("expectedList");
+    BOBUIest::addColumn<BobUI::SortOrder>("order");
+    BOBUIest::addColumn<QVariantList>("initialList");
+    BOBUIest::addColumn<QVariantList>("expectedList");
 
-    QTest::newRow("ascending strings")
-            << Qt::AscendingOrder
+    BOBUIest::newRow("ascending strings")
+            << BobUI::AscendingOrder
             << QVariantList{ QString("a"), QString("b"), QString("b"), QString("a")}
             << QVariantList{ QString("a"), QString("a"), QString("b"), QString("b")};
 
-    QTest::newRow("descending strings")
-            << Qt::DescendingOrder
+    BOBUIest::newRow("descending strings")
+            << BobUI::DescendingOrder
             << QVariantList{ QString("a"), QString("b"), QString("b"), QString("a")}
             << QVariantList{ QString("b"), QString("b"), QString("a"), QString("a")};
 
-    QTest::newRow("ascending numbers")
-            << Qt::AscendingOrder
+    BOBUIest::newRow("ascending numbers")
+            << BobUI::AscendingOrder
             << QVariantList{ 1, 2, 2, 1}
             << QVariantList{ 1, 1, 2, 2};
 
-    QTest::newRow("descending numbers")
-            << Qt::DescendingOrder
+    BOBUIest::newRow("descending numbers")
+            << BobUI::DescendingOrder
             << QVariantList{ 1, 2, 2, 1}
             << QVariantList{ 2, 2, 1, 1};
 }
 
 void tst_QListWidget::sortCheckStability() {
-    QFETCH(Qt::SortOrder, order);
+    QFETCH(BobUI::SortOrder, order);
     QFETCH(const QVariantList, initialList);
     QFETCH(const QVariantList, expectedList);
 
     for (const QVariant &data : initialList) {
         QListWidgetItem *item = new QListWidgetItem(testWidget);
-        item->setData(Qt::DisplayRole, data);
+        item->setData(BobUI::DisplayRole, data);
     }
 
     QAbstractItemModel *model = testWidget->model();
@@ -1212,7 +1212,7 @@ void tst_QListWidget::closeEditor()
     TestListWidget w;
     w.addItems({"a", "b", "c", "d"});
     QListWidgetItem *item = w.item(0);
-    item->setFlags(item->flags() | Qt::ItemIsEditable);
+    item->setFlags(item->flags() | BobUI::ItemIsEditable);
     QVERIFY(item);
     w.editItem(item);
 
@@ -1225,11 +1225,11 @@ void tst_QListWidget::closeEditor()
 
 void tst_QListWidget::setData_data()
 {
-    QTest::addColumn<QStringList>("initialItems");
-    QTest::addColumn<int>("itemIndex");
-    QTest::addColumn<IntList>("roles");
-    QTest::addColumn<QVariantList>("values");
-    QTest::addColumn<int>("expectedSignalCount");
+    BOBUIest::addColumn<QStringList>("initialItems");
+    BOBUIest::addColumn<int>("itemIndex");
+    BOBUIest::addColumn<IntList>("roles");
+    BOBUIest::addColumn<QVariantList>("values");
+    BOBUIest::addColumn<int>("expectedSignalCount");
 
     QStringList initialItems;
     IntList roles;
@@ -1238,33 +1238,33 @@ void tst_QListWidget::setData_data()
     {
         initialItems.clear(); roles.clear(); values.clear();
         initialItems << "foo";
-        roles << Qt::DisplayRole;
+        roles << BobUI::DisplayRole;
         values << "xxx";
-        QTest::newRow("changing a role should emit")
+        BOBUIest::newRow("changing a role should emit")
             << initialItems << 0 << roles << values << 1;
     }
     {
         initialItems.clear(); roles.clear(); values.clear();
         initialItems << "foo";
-        roles << Qt::DisplayRole;
+        roles << BobUI::DisplayRole;
         values << "foo";
-        QTest::newRow("setting the same value should not emit")
+        BOBUIest::newRow("setting the same value should not emit")
             << initialItems << 0 << roles << values << 0;
     }
     {
         initialItems.clear(); roles.clear(); values.clear();
         initialItems << "foo";
-        roles << Qt::DisplayRole << Qt::DisplayRole;
+        roles << BobUI::DisplayRole << BobUI::DisplayRole;
         values << "bar" << "bar";
-        QTest::newRow("setting the same value twice should only emit once")
+        BOBUIest::newRow("setting the same value twice should only emit once")
             << initialItems << 0 << roles << values << 1;
     }
     {
         initialItems.clear(); roles.clear(); values.clear();
         initialItems << "foo";
-        roles << Qt::DisplayRole << Qt::ToolTipRole << Qt::WhatsThisRole;
+        roles << BobUI::DisplayRole << BobUI::ToolTipRole << BobUI::WhatsThisRole;
         values << "bar" << "bartooltip" << "barwhatsthis";
-        QTest::newRow("changing three roles should emit three times")
+        BOBUIest::newRow("changing three roles should emit three times")
             << initialItems << 0 << roles << values << 3;
     }
 }
@@ -1309,50 +1309,50 @@ void tst_QListWidget::setData()
 
 void tst_QListWidget::insertItemsWithSorting_data()
 {
-    QTest::addColumn<Qt::SortOrder>("sortOrder");
-    QTest::addColumn<QStringList>("initialItems");
-    QTest::addColumn<QStringList>("insertItems");
-    QTest::addColumn<QStringList>("expectedItems");
-    QTest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<BobUI::SortOrder>("sortOrder");
+    BOBUIest::addColumn<QStringList>("initialItems");
+    BOBUIest::addColumn<QStringList>("insertItems");
+    BOBUIest::addColumn<QStringList>("expectedItems");
+    BOBUIest::addColumn<IntList>("expectedRows");
 
-    QTest::newRow("() + (a) = (a)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("() + (a) = (a)")
+        << BobUI::AscendingOrder
         << QStringList()
         << (QStringList() << "a")
         << (QStringList() << "a")
         << IntList();
-    QTest::newRow("() + (c, b, a) = (a, b, c)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("() + (c, b, a) = (a, b, c)")
+        << BobUI::AscendingOrder
         << QStringList()
         << (QStringList() << "c" << "b" << "a")
         << (QStringList() << "a" << "b" << "c")
         << IntList();
-    QTest::newRow("() + (a, b, c) = (c, b, a)")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("() + (a, b, c) = (c, b, a)")
+        << BobUI::DescendingOrder
         << QStringList()
         << (QStringList() << "a" << "b" << "c")
         << (QStringList() << "c" << "b" << "a")
         << IntList();
-    QTest::newRow("(a) + (b) = (a, b)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("(a) + (b) = (a, b)")
+        << BobUI::AscendingOrder
         << QStringList("a")
         << (QStringList() << "b")
         << (QStringList() << "a" << "b")
         << (IntList() << 0);
-    QTest::newRow("(a) + (b) = (b, a)")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("(a) + (b) = (b, a)")
+        << BobUI::DescendingOrder
         << QStringList("a")
         << (QStringList() << "b")
         << (QStringList() << "b" << "a")
         << (IntList() << 1);
-    QTest::newRow("(a, c, b) + (d) = (a, b, c, d)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("(a, c, b) + (d) = (a, b, c, d)")
+        << BobUI::AscendingOrder
         << (QStringList() << "a" << "c" << "b")
         << (QStringList() << "d")
         << (QStringList() << "a" << "b" << "c" << "d")
         << (IntList() << 0 << 1 << 2);
-    QTest::newRow("(b, c, a) + (d) = (d, c, b, a)")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("(b, c, a) + (d) = (d, c, b, a)")
+        << BobUI::DescendingOrder
         << (QStringList() << "b" << "c" << "a")
         << (QStringList() << "d")
         << (QStringList() << "d" << "c" << "b" << "a")
@@ -1368,32 +1368,32 @@ void tst_QListWidget::insertItemsWithSorting_data()
             ascendingRows << i - 'a';
             reverseRows << 'z' - i + 'a';
         }
-        QTest::newRow("() + (sorted items) = (sorted items)")
-            << Qt::AscendingOrder
+        BOBUIest::newRow("() + (sorted items) = (sorted items)")
+            << BobUI::AscendingOrder
             << QStringList()
             << ascendingItems
             << ascendingItems
             << IntList();
-        QTest::newRow("(sorted items) + () = (sorted items)")
-            << Qt::AscendingOrder
+        BOBUIest::newRow("(sorted items) + () = (sorted items)")
+            << BobUI::AscendingOrder
             << ascendingItems
             << QStringList()
             << ascendingItems
             << ascendingRows;
-        QTest::newRow("() + (ascending items) = (reverse items)")
-            << Qt::DescendingOrder
+        BOBUIest::newRow("() + (ascending items) = (reverse items)")
+            << BobUI::DescendingOrder
             << QStringList()
             << ascendingItems
             << reverseItems
             << IntList();
-        QTest::newRow("(reverse items) + () = (ascending items)")
-            << Qt::AscendingOrder
+        BOBUIest::newRow("(reverse items) + () = (ascending items)")
+            << BobUI::AscendingOrder
             << reverseItems
             << QStringList()
             << ascendingItems
             << ascendingRows;
-        QTest::newRow("(reverse items) + () = (reverse items)")
-            << Qt::DescendingOrder
+        BOBUIest::newRow("(reverse items) + () = (reverse items)")
+            << BobUI::DescendingOrder
             << reverseItems
             << QStringList()
             << reverseItems
@@ -1403,7 +1403,7 @@ void tst_QListWidget::insertItemsWithSorting_data()
 
 void tst_QListWidget::insertItemsWithSorting()
 {
-    QFETCH(Qt::SortOrder, sortOrder);
+    QFETCH(BobUI::SortOrder, sortOrder);
     QFETCH(const QStringList, initialItems);
     QFETCH(const QStringList, insertItems);
     QFETCH(const QStringList, expectedItems);
@@ -1456,58 +1456,58 @@ void tst_QListWidget::insertItemsWithSorting()
 
 void tst_QListWidget::changeDataWithSorting_data()
 {
-    QTest::addColumn<Qt::SortOrder>("sortOrder");
-    QTest::addColumn<QStringList>("initialItems");
-    QTest::addColumn<int>("itemIndex");
-    QTest::addColumn<QString>("newValue");
-    QTest::addColumn<QStringList>("expectedItems");
-    QTest::addColumn<IntList>("expectedRows");
-    QTest::addColumn<bool>("reorderingExpected");
+    BOBUIest::addColumn<BobUI::SortOrder>("sortOrder");
+    BOBUIest::addColumn<QStringList>("initialItems");
+    BOBUIest::addColumn<int>("itemIndex");
+    BOBUIest::addColumn<QString>("newValue");
+    BOBUIest::addColumn<QStringList>("expectedItems");
+    BOBUIest::addColumn<IntList>("expectedRows");
+    BOBUIest::addColumn<bool>("reorderingExpected");
 
-    QTest::newRow("change a to b in (a)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change a to b in (a)")
+        << BobUI::AscendingOrder
         << (QStringList() << "a")
         << 0 << "b"
         << (QStringList() << "b")
         << (IntList() << 0)
         << false;
-    QTest::newRow("change a to b in (a, c)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change a to b in (a, c)")
+        << BobUI::AscendingOrder
         << (QStringList() << "a" << "c")
         << 0 << "b"
         << (QStringList() << "b" << "c")
         << (IntList() << 0 << 1)
         << false;
-    QTest::newRow("change a to c in (a, b)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change a to c in (a, b)")
+        << BobUI::AscendingOrder
         << (QStringList() << "a" << "b")
         << 0 << "c"
         << (QStringList() << "b" << "c")
         << (IntList() << 1 << 0)
         << true;
-    QTest::newRow("change c to a in (c, b)")
-        << Qt::DescendingOrder
+    BOBUIest::newRow("change c to a in (c, b)")
+        << BobUI::DescendingOrder
         << (QStringList() << "c" << "b")
         << 0 << "a"
         << (QStringList() << "b" << "a")
         << (IntList() << 1 << 0)
         << true;
-    QTest::newRow("change e to i in (a, c, e, g)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change e to i in (a, c, e, g)")
+        << BobUI::AscendingOrder
         << (QStringList() << "a" << "c" << "e" << "g")
         << 2 << "i"
         << (QStringList() << "a" << "c" << "g" << "i")
         << (IntList() << 0 << 1 << 3 << 2)
         << true;
-    QTest::newRow("change e to a in (c, e, g, i)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change e to a in (c, e, g, i)")
+        << BobUI::AscendingOrder
         << (QStringList() << "c" << "e" << "g" << "i")
         << 1 << "a"
         << (QStringList() << "a" << "c" << "g" << "i")
         << (IntList() << 1 << 0 << 2 << 3)
         << true;
-    QTest::newRow("change e to f in (c, e, g, i)")
-        << Qt::AscendingOrder
+    BOBUIest::newRow("change e to f in (c, e, g, i)")
+        << BobUI::AscendingOrder
         << (QStringList() << "c" << "e" << "g" << "i")
         << 1 << "f"
         << (QStringList() << "c" << "f" << "g" << "i")
@@ -1534,39 +1534,39 @@ void tst_QListWidget::itemData()
 {
     QListWidgetDataChanged widget;
     QListWidgetItem item(&widget);
-    item.setFlags(item.flags() | Qt::ItemIsEditable);
-    item.setData(Qt::DisplayRole,  QString("0"));
-    QCOMPARE(widget.currentRoles, QList<int>({ Qt::DisplayRole, Qt::EditRole }));
-    item.setData(Qt::CheckStateRole, Qt::PartiallyChecked);
-    QCOMPARE(widget.currentRoles, QList<int> { Qt::CheckStateRole });
+    item.setFlags(item.flags() | BobUI::ItemIsEditable);
+    item.setData(BobUI::DisplayRole,  QString("0"));
+    QCOMPARE(widget.currentRoles, QList<int>({ BobUI::DisplayRole, BobUI::EditRole }));
+    item.setData(BobUI::CheckStateRole, BobUI::PartiallyChecked);
+    QCOMPARE(widget.currentRoles, QList<int> { BobUI::CheckStateRole });
     for (int i = 0; i < 4; ++i)
     {
-        item.setData(Qt::UserRole + i, QString::number(i + 1));
-        QCOMPARE(widget.currentRoles, QList<int> { Qt::UserRole + i });
+        item.setData(BobUI::UserRole + i, QString::number(i + 1));
+        QCOMPARE(widget.currentRoles, QList<int> { BobUI::UserRole + i });
     }
     QMap<int, QVariant> flags = widget.model()->itemData(widget.model()->index(0, 0));
     QCOMPARE(flags.size(), 6);
     for (int i = 0; i < 4; ++i)
-        QCOMPARE(flags[Qt::UserRole + i].toString(), QString::number(i + 1));
+        QCOMPARE(flags[BobUI::UserRole + i].toString(), QString::number(i + 1));
 
-    item.setBackground(QBrush(Qt::red));
-    item.setForeground(QBrush(Qt::red));
+    item.setBackground(QBrush(BobUI::red));
+    item.setForeground(QBrush(BobUI::red));
     item.setSizeHint(QSize(10, 10));
-    QCOMPARE(item.data(Qt::BackgroundRole), QVariant(QBrush(Qt::red)));
-    QCOMPARE(item.data(Qt::ForegroundRole), QVariant(QBrush(Qt::red)));
-    QCOMPARE(item.data(Qt::SizeHintRole), QVariant(QSize(10, 10)));
+    QCOMPARE(item.data(BobUI::BackgroundRole), QVariant(QBrush(BobUI::red)));
+    QCOMPARE(item.data(BobUI::ForegroundRole), QVariant(QBrush(BobUI::red)));
+    QCOMPARE(item.data(BobUI::SizeHintRole), QVariant(QSize(10, 10)));
     // an empty brush should result in a QVariant()
     item.setBackground(QBrush());
     item.setForeground(QBrush());
     item.setSizeHint(QSize());
-    QCOMPARE(item.data(Qt::BackgroundRole), QVariant());
-    QCOMPARE(item.data(Qt::ForegroundRole), QVariant());
-    QCOMPARE(item.data(Qt::SizeHintRole), QVariant());
+    QCOMPARE(item.data(BobUI::BackgroundRole), QVariant());
+    QCOMPARE(item.data(BobUI::ForegroundRole), QVariant());
+    QCOMPARE(item.data(BobUI::SizeHintRole), QVariant());
 }
 
 void tst_QListWidget::changeDataWithSorting()
 {
-    QFETCH(Qt::SortOrder, sortOrder);
+    QFETCH(BobUI::SortOrder, sortOrder);
     QFETCH(QStringList, initialItems);
     QFETCH(int, itemIndex);
     QFETCH(QString, newValue);
@@ -1637,7 +1637,7 @@ public:
 
 void tst_QListWidget::fastScroll()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget topLevel;
@@ -1650,12 +1650,12 @@ void tst_QListWidget::fastScroll()
 
     // Force the mouse cursor off the widget as it causes item it is over to highlight,
     // which causes unexpected paint region.
-    QTest::mouseMove(&widget, QPoint(-10, -10));
+    BOBUIest::mouseMove(&widget, QPoint(-10, -10));
 
     // Make sure the widget gets the first full repaint. On
     // some WMs, we'll get two (first inactive exposure, then
     // active exposure.
-    QVERIFY(QTest::qWaitForWindowActive(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&topLevel));
 
     QSize itemSize = widget.visualItemRect(widget.item(0)).size();
     QVERIFY(!itemSize.isEmpty());
@@ -1668,7 +1668,7 @@ void tst_QListWidget::fastScroll()
 
     const QSize actualItemSize = widget.painted.boundingRect().size();
     if (actualItemSize != itemSize)
-        QEXPECT_FAIL("", "QTBUG-21098", Continue);
+        QEXPECT_FAIL("", "BOBUIBUG-21098", Continue);
 
     // only one item should be repainted, the rest should be scrolled in memory
     QCOMPARE(actualItemSize, itemSize);
@@ -1707,7 +1707,7 @@ void tst_QListWidget::task199503_crashWhenCleared()
 
 void tst_QListWidget::task217070_scrollbarsAdjusted()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     //This task was mailing for style using SH_ScrollView_FrameOnlyAroundContents such as QMotifStyle
@@ -1719,14 +1719,14 @@ void tst_QListWidget::task217070_scrollbarsAdjusted()
     v.setResizeMode(QListView::Adjust);
     v.setUniformItemSizes(true);
     v.resize(160, 100);
-    QVERIFY(QTest::qWaitForWindowActive(&v));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&v));
     QScrollBar *hbar = v.horizontalScrollBar();
     QScrollBar *vbar = v.verticalScrollBar();
     QVERIFY(hbar && vbar);
     const auto style = vbar->style();
     for (int f = 150; f > 90 ; f--) {
         v.resize(f, 100);
-        QTRY_VERIFY(style->styleHint(QStyle::SH_ScrollBar_Transient, nullptr, vbar) ||
+        BOBUIRY_VERIFY(style->styleHint(QStyle::SH_ScrollBar_Transient, nullptr, vbar) ||
                     vbar->isVisible());
         //the horizontal scrollbar must not be visible.
         QVERIFY(!hbar->isVisible());
@@ -1740,18 +1740,18 @@ void tst_QListWidget::task258949_keypressHangup()
         QListWidgetItem *lwi = new QListWidgetItem(&lw);
         lwi->setText(y ? "1" : "0");
         if (y)
-            lwi->setFlags(Qt::ItemIsSelectable);
+            lwi->setFlags(BobUI::ItemIsSelectable);
     }
 
     lw.show();
     lw.setCurrentIndex(lw.model()->index(0, 0));
     QCOMPARE(lw.currentIndex(), lw.model()->index(0, 0));
-    QTest::qWait(30);
-    QTest::keyPress(&lw, '1'); //this used to freeze
-    QTRY_COMPARE(lw.currentIndex(), lw.model()->index(0, 0));
+    BOBUIest::qWait(30);
+    BOBUIest::keyPress(&lw, '1'); //this used to freeze
+    BOBUIRY_COMPARE(lw.currentIndex(), lw.model()->index(0, 0));
 }
 
-void tst_QListWidget::QTBUG8086_currentItemChangedOnClick()
+void tst_QListWidget::BOBUIBUG8086_currentItemChangedOnClick()
 {
     QWidget win;
     QHBoxLayout layout(&win);
@@ -1769,11 +1769,11 @@ void tst_QListWidget::QTBUG8086_currentItemChangedOnClick()
 
     QSignalSpy spy(&list, &QListWidget::currentItemChanged);
 
-    QVERIFY(QTest::qWaitForWindowExposed(&win));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&win));
 
     QCOMPARE(spy.size(), 0);
 
-    QTest::mouseClick(list.viewport(), Qt::LeftButton, {},
+    BOBUIest::mouseClick(list.viewport(), BobUI::LeftButton, {},
                       list.visualItemRect(list.item(2)).center());
 
     QCOMPARE(spy.size(), 1);
@@ -1797,25 +1797,25 @@ public:
     }
 };
 
-void tst_QListWidget::QTBUG14363_completerWithAnyKeyPressedEditTriggers()
+void tst_QListWidget::BOBUIBUG14363_completerWithAnyKeyPressedEditTriggers()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QListWidget listWidget;
     listWidget.setEditTriggers(QAbstractItemView::AnyKeyPressed);
     listWidget.setItemDelegate(new ItemDelegate(&listWidget));
     QListWidgetItem *item = new QListWidgetItem(QLatin1String("select an item (don't start editing)"), &listWidget);
-    item->setFlags(Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsEditable);
+    item->setFlags(BobUI::ItemIsEnabled|BobUI::ItemIsSelectable|BobUI::ItemIsEditable);
     new QListWidgetItem(QLatin1String("try to type the letter 'c'"), &listWidget);
     new QListWidgetItem(QLatin1String("completer"), &listWidget);
     listWidget.show();
     listWidget.setCurrentItem(item);
-    QVERIFY(QTest::qWaitForWindowActive(&listWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&listWidget));
     listWidget.setFocus();
     QCOMPARE(QApplication::focusWidget(), &listWidget);
 
-    QTest::keyClick(listWidget.viewport(), Qt::Key_C);
+    BOBUIest::keyClick(listWidget.viewport(), BobUI::Key_C);
 
     QLineEdit *le = qobject_cast<QLineEdit*>(listWidget.itemWidget(item));
     QVERIFY(le);
@@ -1861,7 +1861,7 @@ void tst_QListWidget::mimeData()
     delete data2;
 }
 
-void tst_QListWidget::QTBUG50891_ensureSelectionModelSignalConnectionsAreSet()
+void tst_QListWidget::BOBUIBUG50891_ensureSelectionModelSignalConnectionsAreSet()
 {
     QListWidget list;
     for (int i = 0 ; i < 4; ++i)
@@ -1869,7 +1869,7 @@ void tst_QListWidget::QTBUG50891_ensureSelectionModelSignalConnectionsAreSet()
 
     list.setSelectionModel(new QItemSelectionModel(list.model()));
     list.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&list));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&list));
 
     QSignalSpy currentItemChangedSpy(&list, &QListWidget::currentItemChanged);
     QSignalSpy itemSelectionChangedSpy(&list, &QListWidget::itemSelectionChanged);
@@ -1877,7 +1877,7 @@ void tst_QListWidget::QTBUG50891_ensureSelectionModelSignalConnectionsAreSet()
     QCOMPARE(currentItemChangedSpy.size(), 0);
     QCOMPARE(itemSelectionChangedSpy.size(), 0);
 
-    QTest::mouseClick(list.viewport(), Qt::LeftButton, {},
+    BOBUIest::mouseClick(list.viewport(), BobUI::LeftButton, {},
                       list.visualItemRect(list.item(2)).center());
 
     QCOMPARE(currentItemChangedSpy.size(), 1);
@@ -1885,7 +1885,7 @@ void tst_QListWidget::QTBUG50891_ensureSelectionModelSignalConnectionsAreSet()
 
 }
 
-void tst_QListWidget::createPersistentOnLayoutAboutToBeChanged() // QTBUG-93466
+void tst_QListWidget::createPersistentOnLayoutAboutToBeChanged() // BOBUIBUG-93466
 {
     QListWidget widget;
     QCOMPARE(widget.model()->columnCount(), 1);
@@ -1918,7 +1918,7 @@ void tst_QListWidget::createPersistentOnLayoutAboutToBeChanged() // QTBUG-93466
     QCOMPARE(layoutChangedSpy.size(), 1);
 }
 
-void tst_QListWidget::createPersistentOnLayoutAboutToBeChangedAutoSort() // QTBUG-93466
+void tst_QListWidget::createPersistentOnLayoutAboutToBeChangedAutoSort() // BOBUIBUG-93466
 {
     QListWidget widget;
     QCOMPARE(widget.model()->columnCount(), 1);
@@ -1952,21 +1952,21 @@ void tst_QListWidget::createPersistentOnLayoutAboutToBeChangedAutoSort() // QTBU
 }
 
 // Test that dropping an item on or beneath itself remains a no-op
-void tst_QListWidget::noopDragDrop() // QTBUG-100128
+void tst_QListWidget::noopDragDrop() // BOBUIBUG-100128
 {
     QListWidget listWidget;
     QList<QListWidgetItem *> items;
     for (int i = 0; i < 5; ++i) {
         const QString number = QString::number(i);
         QListWidgetItem *item = new QListWidgetItem(&listWidget);
-        item->setData(Qt::UserRole, number);
+        item->setData(BobUI::UserRole, number);
         QLabel *label = new QLabel(number);
         listWidget.setItemWidget(item, label);
         items.append(item);
     }
 
     listWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&listWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&listWidget));
 
     const QRect &lastItemRect = listWidget.visualItemRect(items.at(4));
     const QPoint &dragStart = lastItemRect.center();
@@ -1974,7 +1974,7 @@ void tst_QListWidget::noopDragDrop() // QTBUG-100128
 
     // Implement check as a macro (not a method) to safely determine the error location.
     // The macro checks that item data and item widget remain unchanged when drag&drop are executed.
-    // In order to verify that the assets do *not* change, we can't use QTRY*: These macros would
+    // In order to verify that the assets do *not* change, we can't use BOBUIRY*: These macros would
     // spin the event loop only once, while 3/4 mouse events need to get processed.
     // That's why we spin the event loop 13 times, to make sure other unexpected or pending events
     // get processed.
@@ -1985,21 +1985,21 @@ void tst_QListWidget::noopDragDrop() // QTBUG-100128
         QLabel *label = qobject_cast<QLabel *>(listWidget.itemWidget(items.at(4)));\
         QVERIFY(label);\
         QCOMPARE(label->text(), number);\
-        const QString &data = items.at(4)->data(Qt::UserRole).toString();\
+        const QString &data = items.at(4)->data(BobUI::UserRole).toString();\
         QCOMPARE(data, number);\
     }
 
     // Test dropping last item beneath itself
-    QTest::mousePress(&listWidget, Qt::LeftButton, Qt::KeyboardModifiers(), dragStart);
-    QTest::mouseMove(&listWidget, dropPointNirvana);
-    QTest::mouseRelease(&listWidget, Qt::LeftButton);
+    BOBUIest::mousePress(&listWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), dragStart);
+    BOBUIest::mouseMove(&listWidget, dropPointNirvana);
+    BOBUIest::mouseRelease(&listWidget, BobUI::LeftButton);
     CHECK_ITEM;
 
     // Test dropping last item on itself
-    QTest::mousePress(&listWidget, Qt::LeftButton, Qt::KeyboardModifiers(), dragStart);
-    QTest::mouseMove(&listWidget, dropPointNirvana);
-    QTest::mouseMove(&listWidget, dragStart);
-    QTest::mouseRelease(&listWidget, Qt::LeftButton);
+    BOBUIest::mousePress(&listWidget, BobUI::LeftButton, BobUI::KeyboardModifiers(), dragStart);
+    BOBUIest::mouseMove(&listWidget, dropPointNirvana);
+    BOBUIest::mouseMove(&listWidget, dragStart);
+    BOBUIest::mouseRelease(&listWidget, BobUI::LeftButton);
     CHECK_ITEM;
 }
 
@@ -2023,26 +2023,26 @@ void tst_QListWidget::clearItemData()
     QCOMPARE(dataChangeSpy.size(), 0);
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 class MoveOnlyListWidget : public QListWidget
 {
     Q_OBJECT
 public:
     using QListWidget::QListWidget;
-    Qt::DropActions supportedDropActions() const override { return Qt::MoveAction; }
+    BobUI::DropActions supportedDropActions() const override { return BobUI::MoveAction; }
 };
 
 void tst_QListWidget::supportedDragActions()
 {
     MoveOnlyListWidget listWidget;
-    QCOMPARE(listWidget.model()->supportedDropActions(), Qt::MoveAction);
-    // For Qt < 6.8 compatibility reasons, supportedDragActions defaults to supportedDropActions
-    QCOMPARE(listWidget.model()->supportedDragActions(), Qt::MoveAction);
+    QCOMPARE(listWidget.model()->supportedDropActions(), BobUI::MoveAction);
+    // For BobUI < 6.8 compatibility reasons, supportedDragActions defaults to supportedDropActions
+    QCOMPARE(listWidget.model()->supportedDragActions(), BobUI::MoveAction);
 
-    listWidget.setSupportedDragActions(Qt::CopyAction);
-    QCOMPARE(listWidget.model()->supportedDragActions(), Qt::CopyAction);
+    listWidget.setSupportedDragActions(BobUI::CopyAction);
+    QCOMPARE(listWidget.model()->supportedDragActions(), BobUI::CopyAction);
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
-QTEST_MAIN(tst_QListWidget)
+BOBUIEST_MAIN(tst_QListWidget)
 #include "tst_qlistwidget.moc"

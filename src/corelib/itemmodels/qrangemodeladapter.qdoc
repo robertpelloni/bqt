@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
-// Qt-Security score:insignificant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+// BobUI-Security score:insignificant reason:default
 
-#include <QtCore/qrangemodeladapter.h>
+#include <BobUICore/qrangemodeladapter.h>
 
 /*!
     \class QRangeModelAdapter
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.11
     \preliminary
     \ingroup model-view
@@ -30,8 +30,8 @@
     \snippet qrangemodeladapter/main.cpp construct
 
     Constructing the adapter from a range implicitly constructs a QRangeModel
-    instance from that same range. Use model() to get it, and pass it to Qt
-    Widgets or Qt Quick item views as usual.
+    instance from that same range. Use model() to get it, and pass it to BobUI
+    Widgets or BobUI Quick item views as usual.
 
     \snippet qrangemodeladapter/main.cpp use-model
 

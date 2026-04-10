@@ -1,7 +1,7 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsgbmdevice_p.h"
 #include "qeglfskmsgbmscreen_p.h"
@@ -9,13 +9,13 @@
 #include <private/qeglfsintegration_p.h>
 #include <private/qeglfskmsintegration_p.h>
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qtimer.h>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsGbmDevice::QEglFSKmsGbmDevice(QKmsScreenConfig *screenConfig, const QString &path)
     : QEglFSKmsDevice(screenConfig, path)
@@ -29,7 +29,7 @@ bool QEglFSKmsGbmDevice::open()
     Q_ASSERT(fd() == -1);
     Q_ASSERT(m_gbm_device == nullptr);
 
-    int fd = qt_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
+    int fd = bobui_safe_open(devicePath().toLocal8Bit().constData(), O_RDWR | O_CLOEXEC);
     if (fd == -1) {
         qErrnoWarning("Could not open DRM device %s", qPrintable(devicePath()));
         return false;
@@ -40,7 +40,7 @@ bool QEglFSKmsGbmDevice::open()
     m_gbm_device = gbm_create_device(fd);
     if (!m_gbm_device) {
         qErrnoWarning("Could not create GBM device");
-        qt_safe_close(fd);
+        bobui_safe_close(fd);
         fd = -1;
         return false;
     }
@@ -71,7 +71,7 @@ void QEglFSKmsGbmDevice::close()
     }
 
     if (fd() != -1) {
-        qt_safe_close(fd());
+        bobui_safe_close(fd());
         setFd(-1);
     }
 }
@@ -122,9 +122,9 @@ QPlatformScreen *QEglFSKmsGbmDevice::createScreen(const QKmsOutput &output)
     //
     // Below is a work-around (without negative implications for other platforms).
     //
-    // interval of 0 and QMetaObject::invokeMethod (w/o Qt::QueuedConnection)
+    // interval of 0 and QMetaObject::invokeMethod (w/o BobUI::QueuedConnection)
     // do no help / will still trigger issue
-    QTimer::singleShot(1, [screen, this](){
+    BOBUIimer::singleShot(1, [screen, this](){
         createGlobalCursor(screen);
     });
 
@@ -184,8 +184,8 @@ void QEglFSKmsGbmDevice::unregisterScreen(QPlatformScreen *screen)
 
 bool QEglFSKmsGbmDevice::usesEventReader() const
 {
-    static const bool eventReaderThreadDisabled = qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_NO_EVENT_READER_THREAD");
+    static const bool eventReaderThreadDisabled = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_NO_EVENT_READER_THREAD");
     return !eventReaderThreadDisabled;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

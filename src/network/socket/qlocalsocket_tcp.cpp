@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qlocalsocket.h"
 #include "qlocalsocket_p.h"
@@ -10,9 +10,9 @@
 #include <qsettings.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QLocalSocketPrivate::QLocalSocketPrivate() : QIODevicePrivate(),
         tcpSocket(0),
@@ -202,7 +202,7 @@ void QLocalSocket::connectToServer(OpenMode openMode)
     else
         d->fullServerName = prefix + d->serverName;
 
-    QSettings settings("QtProject"_L1, "Qt"_L1);
+    QSettings settings("BobUIProject"_L1, "BobUI"_L1);
     bool ok;
     const quint16 port = settings.value(d->fullServerName).toUInt(&ok);
     if (!ok) {
@@ -239,7 +239,7 @@ bool QLocalSocket::setSocketDescriptor(qintptr socketDescriptor,
     QLocalServer* localServer = qobject_cast<QLocalServer*>( parent() );
     if (localServer) {
         for (QObject* child : localServer->children()) {
-            QTcpSocket* childTcpSocket = qobject_cast<QTcpSocket*>(child);
+            BOBUIcpSocket* childTcpSocket = qobject_cast<BOBUIcpSocket*>(child);
             if (childTcpSocket && childTcpSocket->socketDescriptor() == socketDescriptor) {
                 d->setSocket( static_cast<QLocalUnixSocket*>(childTcpSocket) );
                 return true;
@@ -417,4 +417,4 @@ bool QLocalSocket::waitForReadyRead(int msecs)
     return (d->tcpSocket->waitForReadyRead(msecs));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

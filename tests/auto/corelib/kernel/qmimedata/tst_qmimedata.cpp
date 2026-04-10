@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QMimeData>
 
@@ -50,8 +50,8 @@ void tst_QMimeData::clear() const
 void tst_QMimeData::colorData() const
 {
     QMimeData mimeData;
-    QColor red = Qt::red;
-    QColor blue = Qt::blue;
+    QColor red = BobUI::red;
+    QColor blue = BobUI::blue;
 
     // set, verify
     mimeData.setColorData(red);
@@ -59,7 +59,7 @@ void tst_QMimeData::colorData() const
     QCOMPARE(qvariant_cast<QColor>(mimeData.colorData()), red);
 
     // change, verify
-    mimeData.setColorData(QColor(Qt::blue));
+    mimeData.setColorData(QColor(BobUI::blue));
     QVERIFY(mimeData.hasColor());
     QCOMPARE(qvariant_cast<QColor>(mimeData.colorData()), blue);
 }
@@ -128,7 +128,7 @@ void tst_QMimeData::hasColor() const
     QVERIFY(!mimeData.hasColor());
 
     // set, verify
-    mimeData.setColorData(QColor(Qt::red));
+    mimeData.setColorData(QColor(BobUI::red));
     QVERIFY(mimeData.hasColor());
 
     // clear, verify
@@ -300,7 +300,7 @@ void tst_QMimeData::setUrls() const
     QList<QUrl> longUrlList;
 
     // set up
-    shortUrlList += QUrl("http://qt-project.org");
+    shortUrlList += QUrl("http://bobui-project.org");
     longUrlList = shortUrlList;
     longUrlList += QUrl("http://www.google.com");
 
@@ -310,12 +310,12 @@ void tst_QMimeData::setUrls() const
     // set a few, verify
     mimeData.setUrls(shortUrlList);
     QCOMPARE(mimeData.urls(), shortUrlList);
-    QCOMPARE(mimeData.text(), QString("http://qt-project.org"));
+    QCOMPARE(mimeData.text(), QString("http://bobui-project.org"));
 
     // change them, verify
     mimeData.setUrls(longUrlList);
     QCOMPARE(mimeData.urls(), longUrlList);
-    QCOMPARE(mimeData.text(), QString("http://qt-project.org\nhttp://www.google.com\n"));
+    QCOMPARE(mimeData.text(), QString("http://bobui-project.org\nhttp://www.google.com\n"));
 
     // test and verify that setData doesn't corrupt url content
     const auto allFormats = mimeData.formats();
@@ -332,5 +332,5 @@ void tst_QMimeData::setUrls() const
     QCOMPARE(mimeData.hasText(), false);
 }
 
-QTEST_APPLESS_MAIN(tst_QMimeData)
+BOBUIEST_APPLESS_MAIN(tst_QMimeData)
 #include "tst_qmimedata.moc"

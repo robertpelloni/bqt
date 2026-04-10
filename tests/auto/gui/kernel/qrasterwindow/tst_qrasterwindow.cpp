@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QRasterWindow>
-#include <QTest>
-#include <QtGui/QPainter>
+#include <BobUIGui/QRasterWindow>
+#include <BOBUIest>
+#include <BobUIGui/QPainter>
 
 class tst_QRasterWindow : public QObject
 {
@@ -21,7 +21,7 @@ void tst_QRasterWindow::create()
     w.resize(640, 480);
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 }
 
 class PainterWindow : public QRasterWindow
@@ -32,7 +32,7 @@ public:
     void paintEvent(QPaintEvent*) override {
         ++paintCount;
         QPainter p(this);
-        p.fillRect(QRect(0, 0, 100, 100), Qt::blue);
+        p.fillRect(QRect(0, 0, 100, 100), BobUI::blue);
         p.end();
     }
 
@@ -45,15 +45,15 @@ void tst_QRasterWindow::basic()
     w.reset();
     w.resize(400, 400);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QVERIFY(w.paintCount >= 1);
 
     w.reset();
     w.update();
-    QTRY_VERIFY(w.paintCount >= 1);
+    BOBUIRY_VERIFY(w.paintCount >= 1);
 }
 
 #include <tst_qrasterwindow.moc>
 
-QTEST_MAIN(tst_QRasterWindow)
+BOBUIEST_MAIN(tst_QRasterWindow)

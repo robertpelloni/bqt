@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QCOREAPPLICATION_H
 #define TST_QCOREAPPLICATION_H
 
-#include <QtCore/QtCore>
+#include <BobUICore/BobUICore>
 
 #include "apphelper.h"
 
@@ -19,18 +19,18 @@ private slots:
     void qAppName();
     void qAppVersion();
     void argc();
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     void libraryPaths();
-    void libraryPaths_qt_plugin_path();
-    void libraryPaths_qt_plugin_path_2();
+    void libraryPaths_bobui_plugin_path();
+    void libraryPaths_bobui_plugin_path_2();
 #endif
     void postEvent();
     void removePostedEvents();
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void deliverInDefinedOrder();
 #endif
     void applicationPid();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void globalPostedEventsCount();
 #endif
     void processEventsAlwaysSendsPostedEvents();
@@ -43,7 +43,7 @@ private slots:
     void eventLoopExecAfterExit();
     void customEventDispatcher();
     void testQuitLock();
-    void QTBUG31606_QEventDestructorDeadLock();
+    void BOBUIBUG31606_QEventDestructorDeadLock();
     void applicationEventFilters_mainThread();
     void applicationEventFilters_auxThread();
     void threadedEventDelivery_data();
@@ -57,7 +57,7 @@ private slots:
     void mainAppInAThread() { QCoreApplicationTestHelper::run(); }
 
     void testTrWithPercantegeAtTheEnd();
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     void addRemoveLibPaths();
 #endif
     void theMainThread();

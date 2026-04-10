@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#if QT_CONFIG(sortfilterproxymodel)
+#if BOBUI_CONFIG(sortfilterproxymodel)
 #include <QSortFilterProxyModel>
 #endif
 
 #include <qobject.h>
 #include <qmetaobject.h>
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
 #include <qabstractproxymodel.h>
 #endif
 #include <private/qmetaobject_p.h>
@@ -23,8 +23,8 @@ Q_DECLARE_METATYPE(const QMetaObject *)
 
 #ifdef USE_COMPAT_Q_ARG
 #  define tst_QMetaObject tst_QMetaObject_CompatQArg
-#  if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
-#    error "This is a Qt 6 compatibility check test"
+#  if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
+#    error "This is a BobUI 6 compatibility check test"
 #  endif
 
 #  undef Q_ARG
@@ -38,15 +38,15 @@ Q_DECLARE_METATYPE(const QMetaObject *)
 #  define Q_NO_ARG
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_DEPRECATED_SINCE(6, 10)
+#if BOBUI_DEPRECATED_SINCE(6, 10)
 static void eatIndexOfNonNormalizedWarning()
 {
     static const QRegularExpression rx(R"(QMetaObject::indexOf(Constructor|Method|Signal|Slot): )"
                                        R"(argument ".+" is not normalized, )"
                                        R"(because it contains "QVector<"\.)"_L1);
-    QTest::ignoreMessage(QtWarningMsg, rx);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, rx);
 }
 #define NORMALIZES_QVECTOR_QLIST
 #endif
@@ -348,7 +348,7 @@ private slots:
     void invokeQueuedAutoRegister();
     void invokeFreeFunction();
     void invokeBind();
-    void qtMetaObjectInheritance();
+    void bobuiMetaObjectInheritance();
     void normalizedSignature_data();
     void normalizedSignature();
     void normalizedType_data();
@@ -492,23 +492,23 @@ void tst_QMetaObject::connectSlotsByName()
     QCOMPARE(obj.invokeCount1, 0);
     QCOMPARE(obj.invokeCount2, 0);
 
-    QTest::ignoreMessage(QtWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child1_destroyed(QObject*)");
-    QTest::ignoreMessage(QtWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child1_destroyed(QObject*)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
     obj.fire("bubu");
     QCOMPARE(obj.invokeCount1, 0);
     QCOMPARE(obj.invokeCount2, 0);
 
-    QTest::ignoreMessage(QtWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
     obj.fire("child1");
     QCOMPARE(obj.invokeCount1, 1);
     QCOMPARE(obj.invokeCount2, 0);
 
-    QTest::ignoreMessage(QtWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child1_destroyed(QObject*)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child1_destroyed(QObject*)");
     obj.fire("child2");
     QCOMPARE(obj.invokeCount1, 1);
     QCOMPARE(obj.invokeCount2, 1);
 
-    QTest::ignoreMessage(QtWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, FUNCTION("connectSlotsByName") "No matching signal for on_child2_destroyed()");
     obj.fire("child1");
     QCOMPARE(obj.invokeCount1, 2);
     QCOMPARE(obj.invokeCount2, 1);
@@ -529,23 +529,23 @@ struct CountedStruct
     ~CountedStruct() { --countedStructObjectsCount; }
 };
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 class ObjectException : public std::exception { };
 #endif
 
-class QtTestObject: public QObject
+class BobUITestObject: public QObject
 {
     friend class tst_QMetaObject;
     Q_OBJECT
 
 public:
-    QtTestObject();
-    QtTestObject(const QString &s) : slotResult(s) {}
-    Q_INVOKABLE QtTestObject(QObject *parent);
-    Q_INVOKABLE QtTestObject(QObject *parent, int, int);
-    Q_INVOKABLE QtTestObject(QObject *parent, int);
-    Q_INVOKABLE QtTestObject(QList<int>, QObject *parent) : QtTestObject(parent) {}
-    Q_INVOKABLE QtTestObject(QObject *parent, QVector<int>) : QtTestObject(parent) {}
+    BobUITestObject();
+    BobUITestObject(const QString &s) : slotResult(s) {}
+    Q_INVOKABLE BobUITestObject(QObject *parent);
+    Q_INVOKABLE BobUITestObject(QObject *parent, int, int);
+    Q_INVOKABLE BobUITestObject(QObject *parent, int);
+    Q_INVOKABLE BobUITestObject(QList<int>, QObject *parent) : BobUITestObject(parent) {}
+    Q_INVOKABLE BobUITestObject(QObject *parent, QVector<int>) : BobUITestObject(parent) {}
 
 public slots:
     void sl0();
@@ -565,7 +565,7 @@ public slots:
     QObject *sl11();
     const char *sl12();
     QList<QString> sl13(QList<QString> l1);
-    // check Qt 6 QVector/QList alias:
+    // check BobUI 6 QVector/QList alias:
     QVector<QString> sl13v(QVector<QString> v1);
     qint64 sl14();
     qlonglong *sl15(qlonglong *);
@@ -581,22 +581,22 @@ public slots:
     void testReference(QString &str);
     void testLongLong(qint64 ll1, quint64 ll2);
 
-    void moveToThread(QThread *t)
+    void moveToThread(BOBUIhread *t)
     { QObject::moveToThread(t); }
 
     void slotWithUnregisteredParameterType(const MyForwardDeclaredType &);
     void slotWithOneUnregisteredParameterType(QString a1, const MyForwardDeclaredType &a2);
 
     CountedStruct throwingSlot(const CountedStruct &, CountedStruct s2) {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
         throw ObjectException();
 #endif
         return s2;
     }
 
-    void slotWithRegistrableArgument(QtTestObject *o1, QPointer<QtTestObject> o2,
-                                     QSharedPointer<QtTestObject> o3, QWeakPointer<QtTestObject> o4,
-                                     QList<QtTestObject *> o5, QList<QtTestObject *> o6)
+    void slotWithRegistrableArgument(BobUITestObject *o1, QPointer<BobUITestObject> o2,
+                                     QSharedPointer<BobUITestObject> o3, QWeakPointer<BobUITestObject> o4,
+                                     QList<BobUITestObject *> o5, QList<BobUITestObject *> o6)
     {
         slotResult = QLatin1String("slotWithRegistrableArgument:") + o1->slotResult + o2->slotResult
             + o3->slotResult + o4.toStrongRef()->slotResult + QString::number(o5.size())
@@ -615,73 +615,73 @@ signals:
     void sigWithOneUnregisteredParameterType(QString a1, const MyForwardDeclaredType &a2);
 
 protected:
-    QtTestObject(QVariant) {}
+    BobUITestObject(QVariant) {}
 private:
-    QtTestObject(QVariant, QVariant) {}
+    BobUITestObject(QVariant, QVariant) {}
 
 public:
     QString slotResult;
     static QString staticResult;
 };
 
-QString QtTestObject::staticResult;
+QString BobUITestObject::staticResult;
 
-QtTestObject::QtTestObject()
+BobUITestObject::BobUITestObject()
 {
     connect(this, SIGNAL(sig0()), this, SLOT(sl0()));
     connect(this, SIGNAL(sig1(QString)), this, SLOT(sl1(QString)));
 }
 
-QtTestObject::QtTestObject(QObject *parent)
+BobUITestObject::BobUITestObject(QObject *parent)
     : QObject(parent)
 {
 }
 
-QtTestObject::QtTestObject(QObject *parent, int, int)
+BobUITestObject::BobUITestObject(QObject *parent, int, int)
     : QObject(parent)
 { slotResult = "ii"; }
 
-QtTestObject::QtTestObject(QObject *parent, int)
+BobUITestObject::BobUITestObject(QObject *parent, int)
     : QObject(parent)
 { slotResult = "i"; }
 
-void QtTestObject::sl0() { slotResult = "sl0"; };
-QString QtTestObject::sl1(QString s1) { slotResult = "sl1:" + s1; return "yessir"; }
-void QtTestObject::sl2(QString s1, QString s2) { slotResult = "sl2:" + s1 + s2; }
-void QtTestObject::sl3(QString s1, QString s2, QString s3)
+void BobUITestObject::sl0() { slotResult = "sl0"; };
+QString BobUITestObject::sl1(QString s1) { slotResult = "sl1:" + s1; return "yessir"; }
+void BobUITestObject::sl2(QString s1, QString s2) { slotResult = "sl2:" + s1 + s2; }
+void BobUITestObject::sl3(QString s1, QString s2, QString s3)
 { slotResult = "sl3:" + s1 + s2 + s3; }
-void QtTestObject::sl4(QString s1, QString s2, QString s3, const QString s4)
+void BobUITestObject::sl4(QString s1, QString s2, QString s3, const QString s4)
 { slotResult = "sl4:" + s1 + s2 + s3 + s4; }
-void QtTestObject::sl5(QString s1, QString s2, QString s3, QString s4, const QString &s5)
+void BobUITestObject::sl5(QString s1, QString s2, QString s3, QString s4, const QString &s5)
 { slotResult = "sl5:" + s1 + s2 + s3 + s4 + s5; }
-void QtTestObject::sl6(QString s1, QString s2, QString s3, QString s4,
+void BobUITestObject::sl6(QString s1, QString s2, QString s3, QString s4,
                       const QString s5, QString s6)
 { slotResult = "sl6:" + s1 + s2 + s3 + s4 + s5 + s6; }
-void QtTestObject::sl7(QString s1, QString s2, QString s3, QString s4, QString s5,
+void BobUITestObject::sl7(QString s1, QString s2, QString s3, QString s4, QString s5,
                       QString s6, QString s7)
 { slotResult = "sl7:" + s1 + s2 + s3 + s4 + s5 + s6 + s7; }
-void QtTestObject::sl8(QString s1, QString s2, QString s3, QString s4, QString s5,
+void BobUITestObject::sl8(QString s1, QString s2, QString s3, QString s4, QString s5,
                       QString s6, QString s7, QString s8)
 { slotResult = "sl8:" + s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8; }
-void QtTestObject::sl9(QString s1, QString s2, QString s3, QString s4, QString s5,
+void BobUITestObject::sl9(QString s1, QString s2, QString s3, QString s4, QString s5,
                       QString s6, QString s7, QString s8, QString s9)
 { slotResult = "sl9:" + s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9; }
-void QtTestObject::sl10(QString s1, QString s2, QString s3, QString s4, QString s5,
+void BobUITestObject::sl10(QString s1, QString s2, QString s3, QString s4, QString s5,
                       QString s6, QString s7, QString s8, QString s9, QString s10)
 { slotResult = "sl10:" + s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8 + s9 + s10; }
-QObject *QtTestObject::sl11()
+QObject *BobUITestObject::sl11()
 { slotResult = "sl11"; return this; }
-const char *QtTestObject::sl12()
+const char *BobUITestObject::sl12()
 { slotResult = "sl12"; return "foo"; }
-QList<QString> QtTestObject::sl13(QList<QString> l1)
+QList<QString> BobUITestObject::sl13(QList<QString> l1)
 { slotResult = "sl13"; return l1; }
-QVector<QString> QtTestObject::sl13v(QVector<QString> v1)
+QVector<QString> BobUITestObject::sl13v(QVector<QString> v1)
 { slotResult = "sl13v"; return v1; }
-qint64 QtTestObject::sl14()
+qint64 BobUITestObject::sl14()
 { slotResult = "sl14"; return Q_INT64_C(123456789)*123456789; }
-qlonglong *QtTestObject::sl15(qlonglong *ptr)
+qlonglong *BobUITestObject::sl15(qlonglong *ptr)
 { slotResult = "sl15"; return ptr; }
-MyForwardDeclaredType *QtTestObject::sl16(MyForwardDeclaredType *ptr)
+MyForwardDeclaredType *BobUITestObject::sl16(MyForwardDeclaredType *ptr)
 {
     slotResult = "sl16:";
     if (ptr) {
@@ -692,44 +692,44 @@ MyForwardDeclaredType *QtTestObject::sl16(MyForwardDeclaredType *ptr)
     return getForwardDeclaredPointer();
 }
 
-void QtTestObject::overloadedSlot()
+void BobUITestObject::overloadedSlot()
 { slotResult = "overloadedSlot"; }
 
-void QtTestObject::overloadedSlot(int x, int y)
+void BobUITestObject::overloadedSlot(int x, int y)
 { slotResult = "overloadedSlot:" + QString::number(x) + ',' + QString::number(y); }
 
-void QtTestObject::overloadedSlot(int x)
+void BobUITestObject::overloadedSlot(int x)
 { slotResult = "overloadedSlot:" + QString::number(x); }
 
-void QtTestObject::testReference(QString &str)
+void BobUITestObject::testReference(QString &str)
 { slotResult = "testReference:" + str; str = "gotcha"; }
 
-void QtTestObject::testLongLong(qint64 ll1, quint64 ll2)
+void BobUITestObject::testLongLong(qint64 ll1, quint64 ll2)
 { slotResult = "testLongLong:" + QString::number(ll1) + "," + QString::number(ll2); }
 
-void QtTestObject::testSender()
+void BobUITestObject::testSender()
 {
     slotResult = QString::asprintf("%p", sender());
 }
 
-void QtTestObject::slotWithUnregisteredParameterType(const MyForwardDeclaredType &)
+void BobUITestObject::slotWithUnregisteredParameterType(const MyForwardDeclaredType &)
 { slotResult = "slotWithUnregisteredReturnType"; }
 
-void QtTestObject::slotWithOneUnregisteredParameterType(QString a1, const MyForwardDeclaredType &)
+void BobUITestObject::slotWithOneUnregisteredParameterType(QString a1, const MyForwardDeclaredType &)
 { slotResult = "slotWithUnregisteredReturnType-" + a1; }
 
-void QtTestObject::staticFunction0()
+void BobUITestObject::staticFunction0()
 {
     staticResult = "staticFunction0";
 }
 
-qint64 QtTestObject::staticFunction1()
+qint64 BobUITestObject::staticFunction1()
 { staticResult = "staticFunction1"; return Q_INT64_C(123456789)*123456789; }
 
 // this test is duplicated below
 void tst_QMetaObject::invokeMetaMember()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
@@ -742,10 +742,10 @@ void tst_QMetaObject::invokeMetaMember()
     QVERIFY(!QMetaObject::invokeMethod(nullptr, "sl0" Q_NO_ARG));
     QVERIFY(!QMetaObject::invokeMethod(&obj, nullCharArray Q_NO_ARG));
     QVERIFY(!QMetaObject::invokeMethod(&obj, nullConstCharArray Q_NO_ARG));
-    QVERIFY(!QMetaObject::invokeMethod(&obj, nullCharArray, Qt::AutoConnection Q_NO_ARG));
-    QVERIFY(!QMetaObject::invokeMethod(&obj, nullConstCharArray, Qt::AutoConnection Q_NO_ARG));
-    QVERIFY(!QMetaObject::invokeMethod(&obj, nullCharArray, Qt::AutoConnection, QGenericReturnArgument()));
-    QVERIFY(!QMetaObject::invokeMethod(&obj, nullConstCharArray, Qt::AutoConnection, QGenericReturnArgument()));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, nullCharArray, BobUI::AutoConnection Q_NO_ARG));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, nullConstCharArray, BobUI::AutoConnection Q_NO_ARG));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, nullCharArray, BobUI::AutoConnection, QGenericReturnArgument()));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, nullConstCharArray, BobUI::AutoConnection, QGenericReturnArgument()));
 
     QVERIFY(QMetaObject::invokeMethod(&obj, "sl0" Q_NO_ARG));
     QCOMPARE(obj.slotResult, QString("sl0"));
@@ -917,7 +917,7 @@ void tst_QMetaObject::invokeMetaMember()
     QCOMPARE(forwardPtr, getForwardDeclaredPointer());
     QCOMPARE(obj.slotResult, QString("sl16:null"));
 
-#ifndef QT_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
+#ifndef BOBUI_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
 #endif
     // test overloads
     QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot" Q_NO_ARG));
@@ -939,17 +939,17 @@ void tst_QMetaObject::invokeMetaMember()
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::doesNotExist()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::doesNotExist()");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist"));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString)(QString)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString)(QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl3(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl3(QString)\n"
                          "Candidates are:\n    sl3(QString,QString,QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString,QString,QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString,QString,QString)\n"
                          "Candidates are:\n    sl1(QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", Q_ARG(QString, "arg"), Q_ARG(QString, "arg"), Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Q_ARG(QString, exp)));
 
@@ -961,7 +961,7 @@ void tst_QMetaObject::invokeMetaMember()
 // this is a copy-paste-adapt of the above
 void tst_QMetaObject::invokeMetaMemberNoMacros()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
@@ -1111,17 +1111,17 @@ void tst_QMetaObject::invokeMetaMemberNoMacros()
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::doesNotExist()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::doesNotExist()");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist"));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString)(QString)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString)(QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl3(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl3(QString)\n"
                          "Candidates are:\n    sl3(QString,QString,QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString,QString,QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString,QString,QString)\n"
                          "Candidates are:\n    sl1(QString)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", QStringLiteral("arg"), QStringLiteral("arg"), QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", exp));
 
@@ -1135,40 +1135,40 @@ void testFunction(){}
 
 void tst_QMetaObject::invokePointer()
 {
-    QtTestObject obj;
-    QtTestObject *const nullTestObject = nullptr;
+    BobUITestObject obj;
+    BobUITestObject *const nullTestObject = nullptr;
 
     QString t1("1");
 
     // Test member functions
-    QVERIFY(!QMetaObject::invokeMethod(nullTestObject, &QtTestObject::sl0));
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl0));
+    QVERIFY(!QMetaObject::invokeMethod(nullTestObject, &BobUITestObject::sl0));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl0));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::testSender));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::testSender));
     QCOMPARE(obj.slotResult, QString("0x0"));
 
     qint64 return64 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl14, &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl14, &return64));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
     QCOMPARE(obj.slotResult, QString("sl14"));
 
     // signals
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sig0));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sig0));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
     // Test function pointers
     QVERIFY(!QMetaObject::invokeMethod(0, &testFunction));
     QVERIFY(QMetaObject::invokeMethod(&obj, &testFunction));
 
-    QVERIFY(!QMetaObject::invokeMethod(0, &QtTestObject::staticFunction0));
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::staticFunction0));
-    QCOMPARE(QtTestObject::staticResult, QString("staticFunction0"));
+    QVERIFY(!QMetaObject::invokeMethod(0, &BobUITestObject::staticFunction0));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::staticFunction0));
+    QCOMPARE(BobUITestObject::staticResult, QString("staticFunction0"));
 
     return64 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::staticFunction1, &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::staticFunction1, &return64));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
-    QCOMPARE(QtTestObject::staticResult, QString("staticFunction1"));
+    QCOMPARE(BobUITestObject::staticResult, QString("staticFunction1"));
 
     // Test lambdas
     QCOMPARE(countedStructObjectsCount, 0);
@@ -1197,26 +1197,26 @@ void tst_QMetaObject::invokePointer()
 
     // Invoking with parameters
     QString result;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, qReturnArg(result), u"bubu"_s));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, qReturnArg(result), u"bubu"_s));
     QCOMPARE(obj.slotResult, u"sl1:bubu");
     QCOMPARE(result, u"yessir");
 
     // without taking return value
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, u"bubu"_s));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, u"bubu"_s));
     QCOMPARE(obj.slotResult, u"sl1:bubu");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, Qt::DirectConnection, qReturnArg(result),
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, BobUI::DirectConnection, qReturnArg(result),
             u"byebye"_s));
     QCOMPARE(obj.slotResult, u"sl1:byebye");
     QCOMPARE(result, u"yessir");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, qOverload<int, int>(&QtTestObject::overloadedSlot), 1, 2));
+    QVERIFY(QMetaObject::invokeMethod(&obj, qOverload<int, int>(&BobUITestObject::overloadedSlot), 1, 2));
     QCOMPARE(obj.slotResult, u"overloadedSlot:1,2");
 
     // non-const ref parameter
     QString original = u"bubu"_s;
     QString &ref = original;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, qReturnArg(result), ref));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, qReturnArg(result), ref));
     QCOMPARE(obj.slotResult, u"sl1:bubu");
     QCOMPARE(result, u"yessir");
 
@@ -1301,28 +1301,28 @@ void tst_QMetaObject::invokePointer()
 
         // member fn
         i = 0;
-        QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl17, &i));
+        QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl17, &i));
         QCOMPARE(i, 242);
     }
 }
 
 void tst_QMetaObject::invokeQueuedMetaMember()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl0", Qt::QueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl0", BobUI::QueuedConnection Q_NO_ARG));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
     obj.slotResult = QString();
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::QueuedConnection, Q_ARG(QString, QString("hallo"))));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::QueuedConnection, Q_ARG(QString, QString("hallo"))));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl1:hallo"));
     obj.slotResult = QString();
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", Qt::QueuedConnection, Q_ARG(QString, "1"), Q_ARG(QString, "2"),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", BobUI::QueuedConnection, Q_ARG(QString, "1"), Q_ARG(QString, "2"),
                        Q_ARG(QString, "3"), Q_ARG(QString, "4"), Q_ARG(QString, "5"),
                        Q_ARG(QString, "6"), Q_ARG(QString, "7"), Q_ARG(QString, "8"),
                        Q_ARG(QString, "9")));
@@ -1333,71 +1333,71 @@ void tst_QMetaObject::invokeQueuedMetaMember()
     // pointers
     qint64 return64;
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::QueuedConnection, Q_ARG(qlonglong*, &return64)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::QueuedConnection, Q_ARG(qlonglong*, &return64)));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl15"));
 
-    // since Qt 6.5, this works even for pointers to forward-declared types
+    // since BobUI 6.5, this works even for pointers to forward-declared types
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::QueuedConnection, Q_ARG(MyForwardDeclaredType*, getForwardDeclaredPointer())));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::QueuedConnection, Q_ARG(MyForwardDeclaredType*, getForwardDeclaredPointer())));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl16:notnull"));
 
-#ifndef QT_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
+#ifndef BOBUI_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
 #endif
     // test overloads
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection Q_NO_ARG));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection, Q_ARG(int, 1)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection, Q_ARG(int, 1)));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection, Q_ARG(int, 1), Q_ARG(int, 42)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection, Q_ARG(int, 1), Q_ARG(int, 42)));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1,42"));
 
     // signals
 
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", Qt::QueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", BobUI::QueuedConnection Q_NO_ARG));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::QueuedConnection, Q_ARG(QString, "gogo")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::QueuedConnection, Q_ARG(QString, "gogo")));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl1:gogo"));
 
     QString exp;
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to invoke methods with return values in queued connections");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sig1", Qt::QueuedConnection, Q_RETURN_ARG(QString, exp),
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to invoke methods with return values in queued connections");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sig1", BobUI::QueuedConnection, Q_RETURN_ARG(QString, exp),
                               Q_ARG(QString, "nono")));
 
     qint64 ll1 = -1;
     quint64 ll2 = 0;
     QVERIFY(QMetaObject::invokeMethod(&obj,
                                       "testLongLong",
-                                      Qt::QueuedConnection,
+                                      BobUI::QueuedConnection,
                                       Q_ARG(qint64, ll1),
                                       Q_ARG(quint64, ll2)));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("testLongLong:-1,0"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Qt::QueuedConnection, Q_ARG(QString, exp)));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", BobUI::QueuedConnection, Q_ARG(QString, exp)));
 
     QString refStr = "whatever";
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'QString&'");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Qt::QueuedConnection, Q_ARG(QString&, refStr)));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'QString&'");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", BobUI::QueuedConnection, Q_ARG(QString&, refStr)));
     QCOMPARE(refStr, "whatever");
 
 #ifdef USE_COMPAT_Q_ARG     // this doesn't compile with the new API
     obj.slotResult.clear();
     {
         const MyForwardDeclaredType &t = getForwardDeclaredType();
-        QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
-        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithUnregisteredParameterType", Qt::QueuedConnection, Q_ARG(MyForwardDeclaredType, t)));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
+        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithUnregisteredParameterType", BobUI::QueuedConnection, Q_ARG(MyForwardDeclaredType, t)));
         QVERIFY(obj.slotResult.isEmpty());
     }
 
@@ -1405,8 +1405,8 @@ void tst_QMetaObject::invokeQueuedMetaMember()
     {
         QString a1("Cannot happen");
         const MyForwardDeclaredType &t = getForwardDeclaredType();
-        QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
-        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithOneUnregisteredParameterType", Qt::QueuedConnection,
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
+        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithOneUnregisteredParameterType", BobUI::QueuedConnection,
                                            Q_ARG(QString, a1), Q_ARG(MyForwardDeclaredType, t)));
         QVERIFY(obj.slotResult.isEmpty());
     }
@@ -1416,21 +1416,21 @@ void tst_QMetaObject::invokeQueuedMetaMember()
 // this is a copy-paste-adapt of the above
 void tst_QMetaObject::invokeQueuedMetaMemberNoMacro()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl0", Qt::QueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl0", BobUI::QueuedConnection));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
     obj.slotResult = QString();
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::QueuedConnection, QString("hallo")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::QueuedConnection, QString("hallo")));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl1:hallo"));
     obj.slotResult = QString();
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", Qt::QueuedConnection, QStringLiteral("1"), QStringLiteral("2"),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", BobUI::QueuedConnection, QStringLiteral("1"), QStringLiteral("2"),
                        QStringLiteral("3"), QStringLiteral("4"), QStringLiteral("5"),
                        QStringLiteral("6"), QStringLiteral("7"), QStringLiteral("8"),
                        QStringLiteral("9")));
@@ -1441,54 +1441,54 @@ void tst_QMetaObject::invokeQueuedMetaMemberNoMacro()
     // pointers
     qint64 return64;
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::QueuedConnection, &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::QueuedConnection, &return64));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl15"));
 
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::QueuedConnection, getForwardDeclaredPointer()));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::QueuedConnection, getForwardDeclaredPointer()));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl16:notnull"));
 
     // test overloads
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection, 1));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection, 1));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::QueuedConnection, 1, 42));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::QueuedConnection, 1, 42));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1,42"));
 
     // signals
 
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", Qt::QueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", BobUI::QueuedConnection));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::QueuedConnection, QStringLiteral("gogo")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::QueuedConnection, QStringLiteral("gogo")));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl1:gogo"));
 
     QString exp;
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to invoke methods with return values in queued connections");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sig1", Qt::QueuedConnection, qReturnArg(exp),
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to invoke methods with return values in queued connections");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sig1", BobUI::QueuedConnection, qReturnArg(exp),
                               QStringLiteral("nono")));
 
     qint64 ll1 = -1;
     quint64 ll2 = 0;
     QVERIFY(QMetaObject::invokeMethod(&obj,
                                       "testLongLong",
-                                      Qt::QueuedConnection,
+                                      BobUI::QueuedConnection,
                                       ll1,
                                       ll2));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("testLongLong:-1,0"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
     QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", exp));
     QCOMPARE(obj.slotResult, QString("testLongLong:-1,0"));
@@ -1496,16 +1496,16 @@ void tst_QMetaObject::invokeQueuedMetaMemberNoMacro()
 
     // this doesn't work yet
 //    QString refStr = "whatever";
-//    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'QString&'");
-//    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Qt::QueuedConnection, Q_ARG(QString&, refStr)));
+//    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'QString&'");
+//    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", BobUI::QueuedConnection, Q_ARG(QString&, refStr)));
 //    QCOMPARE(refStr, "whatever");
 
 #if 0       // this won't even compile any more
     obj.slotResult.clear();
     {
         const MyForwardDeclaredType &t = getForwardDeclaredType();
-        QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
-        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithUnregisteredParameterType", Qt::QueuedConnection, t));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
+        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithUnregisteredParameterType", BobUI::QueuedConnection, t));
         QVERIFY(obj.slotResult.isEmpty());
     }
 
@@ -1513,8 +1513,8 @@ void tst_QMetaObject::invokeQueuedMetaMemberNoMacro()
     {
         QString a1("Cannot happen");
         const MyForwardDeclaredType &t = getForwardDeclaredType();
-        QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
-        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithOneUnregisteredParameterType", Qt::QueuedConnection,
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: Unable to handle unregistered datatype 'MyForwardDeclaredType'");
+        QVERIFY(!QMetaObject::invokeMethod(&obj, "slotWithOneUnregisteredParameterType", BobUI::QueuedConnection,
                                            a1, t));
         QVERIFY(obj.slotResult.isEmpty());
     }
@@ -1523,27 +1523,27 @@ void tst_QMetaObject::invokeQueuedMetaMemberNoMacro()
 
 void tst_QMetaObject::invokeQueuedPointer()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
     // Test member function
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl0, Qt::QueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl0, BobUI::QueuedConnection));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
 
     // signals
     obj.slotResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sig0, Qt::QueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sig0, BobUI::QueuedConnection));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, QString("sl0"));
 
     // Test function pointers
-    QtTestObject::staticResult.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::staticFunction0, Qt::QueuedConnection));
-    QVERIFY(QtTestObject::staticResult.isEmpty());
+    BobUITestObject::staticResult.clear();
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::staticFunction0, BobUI::QueuedConnection));
+    QVERIFY(BobUITestObject::staticResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
-    QCOMPARE(QtTestObject::staticResult, QString("staticFunction0"));
+    QCOMPARE(BobUITestObject::staticResult, QString("staticFunction0"));
 
     // Test lambda
     QCOMPARE(countedStructObjectsCount, 0);
@@ -1551,7 +1551,7 @@ void tst_QMetaObject::invokeQueuedPointer()
         CountedStruct str;
         obj.slotResult.clear();
         QVERIFY(
-            QMetaObject::invokeMethod(&obj, [str, &obj]() { obj.sl0(); }, Qt::QueuedConnection));
+            QMetaObject::invokeMethod(&obj, [str, &obj]() { obj.sl0(); }, BobUI::QueuedConnection));
         QVERIFY(obj.slotResult.isEmpty());
         qApp->processEvents(QEventLoop::AllEvents);
         QCOMPARE(obj.slotResult, QString("sl0"));
@@ -1560,18 +1560,18 @@ void tst_QMetaObject::invokeQueuedPointer()
     {
         CountedStruct str;
         qint32 var = 0;
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QMetaObject::invokeMethod: Unable to invoke methods with return "
                              "values in queued connections");
         QVERIFY(!QMetaObject::invokeMethod(&obj, [str]() -> qint32 { return 1; },
-                                           Qt::QueuedConnection, &var));
+                                           BobUI::QueuedConnection, &var));
         QCOMPARE(var, 0);
     }
     QCOMPARE(countedStructObjectsCount, 0);
 
     // Invoking with parameters
-    using namespace Qt::StringLiterals;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, Qt::QueuedConnection, u"bubu"_s));
+    using namespace BobUI::StringLiterals;
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, BobUI::QueuedConnection, u"bubu"_s));
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult, u"sl1:bubu");
 }
@@ -1579,65 +1579,65 @@ void tst_QMetaObject::invokeQueuedPointer()
 // this test is duplicated below
 void tst_QMetaObject::invokeBlockingQueuedMetaMember()
 {
-    QThread t;
+    BOBUIhread t;
     t.start();
-    QtTestObject obj;
+    BobUITestObject obj;
     obj.moveToThread(&t);
 
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, Q_ARG(QString, t1)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1)));
     QCOMPARE(obj.slotResult, QString("sl1:1"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl2", Qt::BlockingQueuedConnection, Q_ARG(const QString, t1), Q_ARG(QString, t2)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl2", BobUI::BlockingQueuedConnection, Q_ARG(const QString, t1), Q_ARG(QString, t2)));
     QCOMPARE(obj.slotResult, QString("sl2:12"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl3", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2), Q_ARG(QString, t3)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl3", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2), Q_ARG(QString, t3)));
     QCOMPARE(obj.slotResult, QString("sl3:123"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl4", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl4", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4)));
     QCOMPARE(obj.slotResult, QString("sl4:1234"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl5", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl5", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4), Q_ARG(QString, "5")));
     QCOMPARE(obj.slotResult, QString("sl5:12345"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl6", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl6", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4), Q_ARG(QString, t5), Q_ARG(QString, t6)));
     QCOMPARE(obj.slotResult, QString("sl6:123456"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl7", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl7", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4), Q_ARG(QString, t5), Q_ARG(QString, t6),
                                       Q_ARG(QString, t7)));
     QCOMPARE(obj.slotResult, QString("sl7:1234567"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl8", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl8", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4), Q_ARG(QString, t5), Q_ARG(QString, t6),
                                       Q_ARG(QString, t7), Q_ARG(QString, t8)));
     QCOMPARE(obj.slotResult, QString("sl8:12345678"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", Qt::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", BobUI::BlockingQueuedConnection, Q_ARG(QString, t1), Q_ARG(QString, t2),
                                       Q_ARG(QString, t3), Q_ARG(QString, t4), Q_ARG(QString, t5), Q_ARG(QString, t6),
                                       Q_ARG(QString, t7), Q_ARG(QString, t8), Q_ARG(QString, t9)));
     QCOMPARE(obj.slotResult, QString("sl9:123456789"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection Q_NO_ARG));
     QCOMPARE(obj.slotResult, QString("sl11"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "testSender", Qt::BlockingQueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "testSender", BobUI::BlockingQueuedConnection Q_NO_ARG));
     QCOMPARE(obj.slotResult, QString("0x0"));
 
     QString refStr("whatever");
 #ifdef USE_COMPAT_Q_ARG
-    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", Qt::BlockingQueuedConnection, QGenericArgument("QString&", &refStr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", BobUI::BlockingQueuedConnection, QGenericArgument("QString&", &refStr)));
     QCOMPARE(obj.slotResult, QString("testReference:whatever"));
     QCOMPARE(refStr, QString("gotcha"));
     obj.slotResult.clear();
 #endif
     refStr = "whatever";
-    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", Qt::BlockingQueuedConnection, Q_ARG(QString&, refStr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", BobUI::BlockingQueuedConnection, Q_ARG(QString&, refStr)));
     QCOMPARE(obj.slotResult, QString("testReference:whatever"));
     QCOMPARE(refStr, QString("gotcha"));
 
@@ -1645,59 +1645,59 @@ void tst_QMetaObject::invokeBlockingQueuedMetaMember()
     quint64 ll2 = 0;
     QVERIFY(QMetaObject::invokeMethod(&obj,
                                       "testLongLong",
-                                      Qt::BlockingQueuedConnection,
+                                      BobUI::BlockingQueuedConnection,
                                       Q_ARG(qint64, ll1),
                                       Q_ARG(quint64, ll2)));
     QCOMPARE(obj.slotResult, QString("testLongLong:-1,0"));
 
     QString exp;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, Q_RETURN_ARG(QString, exp), Q_ARG(QString, "bubu")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(QString, exp), Q_ARG(QString, "bubu")));
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:bubu"));
 
     QObject *ptr = nullptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection, Q_RETURN_ARG(QObject*,ptr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(QObject*,ptr)));
     QCOMPARE(ptr, (QObject *)&obj);
     QCOMPARE(obj.slotResult, QString("sl11"));
     // try again with a space:
     ptr = nullptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection, Q_RETURN_ARG(QObject * , ptr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(QObject * , ptr)));
     QCOMPARE(ptr, (QObject *)&obj);
     QCOMPARE(obj.slotResult, QString("sl11"));
 
     const char *ptr2 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", Qt::BlockingQueuedConnection, Q_RETURN_ARG(const char*, ptr2)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(const char*, ptr2)));
     QVERIFY(ptr2 != 0);
     QCOMPARE(obj.slotResult, QString("sl12"));
     // try again with a space:
     ptr2 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", Qt::BlockingQueuedConnection, Q_RETURN_ARG(char const * , ptr2)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(char const * , ptr2)));
     QVERIFY(ptr2 != 0);
     QCOMPARE(obj.slotResult, QString("sl12"));
 
     // test w/ template args
     QList<QString> returnValue, argument;
     argument << QString("one") << QString("two") << QString("three");
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", BobUI::BlockingQueuedConnection,
                                       Q_RETURN_ARG(QList<QString>, returnValue),
                                       Q_ARG(QList<QString>, argument)));
     QCOMPARE(returnValue, argument);
     QCOMPARE(obj.slotResult, QString("sl13"));
     returnValue.clear();
     // same, testing QVector/QList aliasing:
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", BobUI::BlockingQueuedConnection,
                                       Q_RETURN_ARG(QVector<QString>, returnValue),
                                       Q_ARG(QVector<QString>, argument)));
     QCOMPARE(returnValue, argument);
     QCOMPARE(obj.slotResult, QString("sl13"));
     returnValue.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", BobUI::BlockingQueuedConnection,
                                       Q_RETURN_ARG(QList<QString>, returnValue),
                                       Q_ARG(QList<QString>, argument)));
     QCOMPARE(returnValue, argument);
     QCOMPARE(obj.slotResult, "sl13v"_L1);
     returnValue.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", BobUI::BlockingQueuedConnection,
                                       Q_RETURN_ARG(QVector<QString>, returnValue),
                                       Q_ARG(QVector<QString>, argument)));
     QCOMPARE(returnValue, argument);
@@ -1705,71 +1705,71 @@ void tst_QMetaObject::invokeBlockingQueuedMetaMember()
 
     // return qint64
     qint64 return64;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl14", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl14", BobUI::BlockingQueuedConnection,
                                       Q_RETURN_ARG(qint64, return64)));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
     QCOMPARE(obj.slotResult, QString("sl14"));
 
     // pointers
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::BlockingQueuedConnection, Q_ARG(qlonglong*, &return64)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::BlockingQueuedConnection, Q_ARG(qlonglong*, &return64)));
     QCOMPARE(obj.slotResult, QString("sl15"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::BlockingQueuedConnection, Q_ARG(MyForwardDeclaredType*, getForwardDeclaredPointer())));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::BlockingQueuedConnection, Q_ARG(MyForwardDeclaredType*, getForwardDeclaredPointer())));
     QCOMPARE(obj.slotResult, QString("sl16:notnull"));
 
     obj.slotResult.clear();
     qint64 *return64Ptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::BlockingQueuedConnection, Q_RETURN_ARG(qlonglong*, return64Ptr), Q_ARG(qlonglong*, &return64)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(qlonglong*, return64Ptr), Q_ARG(qlonglong*, &return64)));
     QCOMPARE(return64Ptr, &return64);
     QCOMPARE(obj.slotResult, QString("sl15"));
 
     obj.slotResult.clear();
     MyForwardDeclaredType *forwardPtr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::BlockingQueuedConnection, Q_RETURN_ARG(MyForwardDeclaredType*, forwardPtr),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(MyForwardDeclaredType*, forwardPtr),
                                       Q_ARG(MyForwardDeclaredType*, nullptr)));
     QCOMPARE(forwardPtr, getForwardDeclaredPointer());
     QCOMPARE(obj.slotResult, QString("sl16:null"));
 
-#ifndef QT_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
+#ifndef BOBUI_NO_DATA_RELOCATION // this doesn't work with the new API on Windows
 #endif
     // test overloads
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection Q_NO_ARG));
     QCOMPARE(obj.slotResult, QString("overloadedSlot"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection, Q_ARG(int, 1)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection, Q_ARG(int, 1)));
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection, Q_ARG(int, 1), Q_ARG(int, 42)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection, Q_ARG(int, 1), Q_ARG(int, 42)));
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1,42"));
 
     //test signals
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", Qt::BlockingQueuedConnection Q_NO_ARG));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", BobUI::BlockingQueuedConnection Q_NO_ARG));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::BlockingQueuedConnection, Q_ARG(QString, "baba")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::BlockingQueuedConnection, Q_ARG(QString, "baba")));
     QCOMPARE(obj.slotResult, QString("sl1:baba"));
 
     exp.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::BlockingQueuedConnection, Q_RETURN_ARG(QString, exp), Q_ARG(QString, "hehe")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::BlockingQueuedConnection, Q_RETURN_ARG(QString, exp), Q_ARG(QString, "hehe")));
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::doesNotExist()");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist", Qt::BlockingQueuedConnection Q_NO_ARG));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString)(QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", Qt::BlockingQueuedConnection, Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl3(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::doesNotExist()");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist", BobUI::BlockingQueuedConnection Q_NO_ARG));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString)(QString)");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", BobUI::BlockingQueuedConnection, Q_ARG(QString, "arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl3(QString)\n"
                          "Candidates are:\n    sl3(QString,QString,QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", Qt::BlockingQueuedConnection, Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString,QString,QString)\n"
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", BobUI::BlockingQueuedConnection, Q_ARG(QString, "arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString,QString,QString)\n"
                          "Candidates are:\n    sl1(QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, Q_ARG(QString, "arg"), Q_ARG(QString, "arg"), Q_ARG(QString, "arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, Q_ARG(QString, "arg"), Q_ARG(QString, "arg"), Q_ARG(QString, "arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Qt::BlockingQueuedConnection, Q_ARG(QString, exp)));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", BobUI::BlockingQueuedConnection, Q_ARG(QString, exp)));
 
     //should not have changed since last test.
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "moveToThread", Qt::BlockingQueuedConnection, Q_ARG(QThread*, QThread::currentThread())));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "moveToThread", BobUI::BlockingQueuedConnection, Q_ARG(BOBUIhread*, BOBUIhread::currentThread())));
     t.quit();
     QVERIFY(t.wait());
 }
@@ -1777,59 +1777,59 @@ void tst_QMetaObject::invokeBlockingQueuedMetaMember()
 // this is a copy-paste-adapt of the above
 void tst_QMetaObject::invokeBlockingQueuedMetaMemberNoMacros()
 {
-    QThread t;
+    BOBUIhread t;
     t.start();
-    QtTestObject obj;
+    BobUITestObject obj;
     obj.moveToThread(&t);
 
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, t1));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, t1));
     QCOMPARE(obj.slotResult, QString("sl1:1"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl2", Qt::BlockingQueuedConnection, t1, t2));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl2", BobUI::BlockingQueuedConnection, t1, t2));
     QCOMPARE(obj.slotResult, QString("sl2:12"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl3", Qt::BlockingQueuedConnection, t1, t2, t3));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl3", BobUI::BlockingQueuedConnection, t1, t2, t3));
     QCOMPARE(obj.slotResult, QString("sl3:123"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl4", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl4", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4));
     QCOMPARE(obj.slotResult, QString("sl4:1234"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl5", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl5", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4, QStringLiteral("5")));
     QCOMPARE(obj.slotResult, QString("sl5:12345"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl6", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl6", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4, t5, t6));
     QCOMPARE(obj.slotResult, QString("sl6:123456"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl7", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl7", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4, t5, t6,
                                       t7));
     QCOMPARE(obj.slotResult, QString("sl7:1234567"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl8", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl8", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4, t5, t6,
                                       t7, t8));
     QCOMPARE(obj.slotResult, QString("sl8:12345678"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", Qt::BlockingQueuedConnection, t1, t2,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl9", BobUI::BlockingQueuedConnection, t1, t2,
                                       t3, t4, t5, t6,
                                       t7, t8, t9));
     QCOMPARE(obj.slotResult, QString("sl9:123456789"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("sl11"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "testSender", Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "testSender", BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("0x0"));
 
     // this is not working
 //    QString refStr("whatever");
-//    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", Qt::BlockingQueuedConnection, refStr));
+//    QVERIFY(QMetaObject::invokeMethod(&obj, "testReference", BobUI::BlockingQueuedConnection, refStr));
 //    QCOMPARE(obj.slotResult, QString("testReference:whatever"));
 //    QCOMPARE(refStr, QString("gotcha"));
 
@@ -1837,46 +1837,46 @@ void tst_QMetaObject::invokeBlockingQueuedMetaMemberNoMacros()
     quint64 ll2 = 0;
     QVERIFY(QMetaObject::invokeMethod(&obj,
                                       "testLongLong",
-                                      Qt::BlockingQueuedConnection,
+                                      BobUI::BlockingQueuedConnection,
                                       ll1,
                                       ll2));
     QCOMPARE(obj.slotResult, QString("testLongLong:-1,0"));
 
     QString exp;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, qReturnArg(exp), QStringLiteral("bubu")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, qReturnArg(exp), QStringLiteral("bubu")));
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:bubu"));
 
     QObject *ptr = nullptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection, qReturnArg(ptr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection, qReturnArg(ptr)));
     QCOMPARE(ptr, (QObject *)&obj);
     QCOMPARE(obj.slotResult, QString("sl11"));
     // try again with a space:
     ptr = nullptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", Qt::BlockingQueuedConnection, qReturnArg(ptr)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl11", BobUI::BlockingQueuedConnection, qReturnArg(ptr)));
     QCOMPARE(ptr, (QObject *)&obj);
     QCOMPARE(obj.slotResult, QString("sl11"));
 
     const char *ptr2 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", Qt::BlockingQueuedConnection, qReturnArg(ptr2)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", BobUI::BlockingQueuedConnection, qReturnArg(ptr2)));
     QVERIFY(ptr2 != 0);
     QCOMPARE(obj.slotResult, QString("sl12"));
     // try again with a space:
     ptr2 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", Qt::BlockingQueuedConnection, qReturnArg(ptr2)));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl12", BobUI::BlockingQueuedConnection, qReturnArg(ptr2)));
     QVERIFY(ptr2 != 0);
     QCOMPARE(obj.slotResult, QString("sl12"));
 
     // test w/ template args
     QList<QString> returnValue, argument;
     argument << QString("one") << QString("two") << QString("three");
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13", BobUI::BlockingQueuedConnection,
                                       qReturnArg(returnValue),
                                       argument));
     QCOMPARE(returnValue, argument);
     QCOMPARE(obj.slotResult, QString("sl13"));
     returnValue.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl13v", BobUI::BlockingQueuedConnection,
                                       qReturnArg(returnValue),
                                       argument));
     QCOMPARE(returnValue, argument);
@@ -1884,122 +1884,122 @@ void tst_QMetaObject::invokeBlockingQueuedMetaMemberNoMacros()
 
     // return qint64
     qint64 return64;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl14", Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl14", BobUI::BlockingQueuedConnection,
                                       qReturnArg(return64)));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
     QCOMPARE(obj.slotResult, QString("sl14"));
 
     // pointers
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::BlockingQueuedConnection, &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::BlockingQueuedConnection, &return64));
     QCOMPARE(obj.slotResult, QString("sl15"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::BlockingQueuedConnection, getForwardDeclaredPointer()));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::BlockingQueuedConnection, getForwardDeclaredPointer()));
     QCOMPARE(obj.slotResult, QString("sl16:notnull"));
 
     obj.slotResult.clear();
     qint64 *return64Ptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", Qt::BlockingQueuedConnection, qReturnArg(return64Ptr), &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl15", BobUI::BlockingQueuedConnection, qReturnArg(return64Ptr), &return64));
     QCOMPARE(return64Ptr, &return64);
     QCOMPARE(obj.slotResult, QString("sl15"));
 
     obj.slotResult.clear();
     MyForwardDeclaredType *forwardPtr = nullptr;
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", Qt::BlockingQueuedConnection, qReturnArg(forwardPtr),
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sl16", BobUI::BlockingQueuedConnection, qReturnArg(forwardPtr),
                                       forwardPtr));
     QCOMPARE(forwardPtr, getForwardDeclaredPointer());
     QCOMPARE(obj.slotResult, QString("sl16:null"));
 
     // test overloads
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("overloadedSlot"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection, 1));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection, 1));
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1"));
-    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", Qt::BlockingQueuedConnection, 1, 42));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "overloadedSlot", BobUI::BlockingQueuedConnection, 1, 42));
     QCOMPARE(obj.slotResult, QString("overloadedSlot:1,42"));
 
     //test signals
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig0", BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::BlockingQueuedConnection, QStringLiteral("baba")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::BlockingQueuedConnection, QStringLiteral("baba")));
     QCOMPARE(obj.slotResult, QString("sl1:baba"));
 
     exp.clear();
-    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", Qt::BlockingQueuedConnection, qReturnArg(exp), QStringLiteral("hehe")));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "sig1", BobUI::BlockingQueuedConnection, qReturnArg(exp), QStringLiteral("hehe")));
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::doesNotExist()");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist", Qt::BlockingQueuedConnection));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString)(QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", Qt::BlockingQueuedConnection, QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl3(QString)\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::doesNotExist()");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "doesNotExist", BobUI::BlockingQueuedConnection));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString)(QString)");
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1(QString)", BobUI::BlockingQueuedConnection, QStringLiteral("arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl3(QString)\n"
                          "Candidates are:\n    sl3(QString,QString,QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", Qt::BlockingQueuedConnection, QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::sl1(QString,QString,QString)\n"
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl3", BobUI::BlockingQueuedConnection, QStringLiteral("arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::sl1(QString,QString,QString)\n"
                          "Candidates are:\n    sl1(QString)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", Qt::BlockingQueuedConnection, QStringLiteral("arg"), QStringLiteral("arg"), QStringLiteral("arg")));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::invokeMethod: No such method QtTestObject::testReference(QString)\n"
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "sl1", BobUI::BlockingQueuedConnection, QStringLiteral("arg"), QStringLiteral("arg"), QStringLiteral("arg")));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::invokeMethod: No such method BobUITestObject::testReference(QString)\n"
                          "Candidates are:\n    testReference(QString&)");
-    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", Qt::BlockingQueuedConnection, exp));
+    QVERIFY(!QMetaObject::invokeMethod(&obj, "testReference", BobUI::BlockingQueuedConnection, exp));
 
     //should not have changed since last test.
     QCOMPARE(exp, QString("yessir"));
     QCOMPARE(obj.slotResult, QString("sl1:hehe"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, "moveToThread", Qt::BlockingQueuedConnection, QThread::currentThread()));
+    QVERIFY(QMetaObject::invokeMethod(&obj, "moveToThread", BobUI::BlockingQueuedConnection, BOBUIhread::currentThread()));
     t.quit();
     QVERIFY(t.wait());
 }
 
 void tst_QMetaObject::invokeBlockingQueuedPointer()
 {
-    QtTestObject *const nullTestObject = nullptr;
+    BobUITestObject *const nullTestObject = nullptr;
 
-    QThread t;
+    BOBUIhread t;
     t.start();
-    QtTestObject obj;
+    BobUITestObject obj;
     obj.moveToThread(&t);
 
     QString t1("1");
 
     // Test member functions
-    QVERIFY(!QMetaObject::invokeMethod(nullTestObject, &QtTestObject::sl0, Qt::BlockingQueuedConnection));
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl0, Qt::BlockingQueuedConnection));
+    QVERIFY(!QMetaObject::invokeMethod(nullTestObject, &BobUITestObject::sl0, BobUI::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl0, BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::testSender, Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::testSender, BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("0x0"));
 
     // return qint64
     qint64 return64 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl14, Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl14, BobUI::BlockingQueuedConnection,
                                       &return64));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
     QCOMPARE(obj.slotResult, QString("sl14"));
 
     //test signals
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sig0, Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sig0, BobUI::BlockingQueuedConnection));
     QCOMPARE(obj.slotResult, QString("sl0"));
 
     // Test function pointers
-    QVERIFY(!QMetaObject::invokeMethod(0, &testFunction, Qt::BlockingQueuedConnection));
-    QVERIFY(QMetaObject::invokeMethod(&obj, &testFunction, Qt::BlockingQueuedConnection));
+    QVERIFY(!QMetaObject::invokeMethod(0, &testFunction, BobUI::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &testFunction, BobUI::BlockingQueuedConnection));
 
-    QVERIFY(!QMetaObject::invokeMethod(0, &QtTestObject::staticFunction0, Qt::BlockingQueuedConnection));
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::staticFunction0, Qt::BlockingQueuedConnection));
-    QCOMPARE(QtTestObject::staticResult, QString("staticFunction0"));
+    QVERIFY(!QMetaObject::invokeMethod(0, &BobUITestObject::staticFunction0, BobUI::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::staticFunction0, BobUI::BlockingQueuedConnection));
+    QCOMPARE(BobUITestObject::staticResult, QString("staticFunction0"));
 
     return64 = 0;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::staticFunction1, Qt::BlockingQueuedConnection, &return64));
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::staticFunction1, BobUI::BlockingQueuedConnection, &return64));
     QCOMPARE(return64, Q_INT64_C(123456789)*123456789);
-    QCOMPARE(QtTestObject::staticResult, QString("staticFunction1"));
+    QCOMPARE(BobUITestObject::staticResult, QString("staticFunction1"));
 
     // Test lambdas
     QCOMPARE(countedStructObjectsCount, 0);
     {
         CountedStruct str;
         QVERIFY(QMetaObject::invokeMethod(&obj, [str, &obj, &t1]() { obj.sl1(t1); },
-                                          Qt::BlockingQueuedConnection));
+                                          BobUI::BlockingQueuedConnection));
         QCOMPARE(obj.slotResult, QString("sl1:1"));
     }
     {
@@ -2007,7 +2007,7 @@ void tst_QMetaObject::invokeBlockingQueuedPointer()
         QString exp;
         QVERIFY(QMetaObject::invokeMethod(&obj,
                                           [&obj, str]() -> QString { return obj.sl1("bubu"); },
-                                          Qt::BlockingQueuedConnection, &exp));
+                                          BobUI::BlockingQueuedConnection, &exp));
         QCOMPARE(exp, QString("yessir"));
         QCOMPARE(obj.slotResult, QString("sl1:bubu"));
     }
@@ -2015,33 +2015,33 @@ void tst_QMetaObject::invokeBlockingQueuedPointer()
         std::unique_ptr<int> ptr(new int);
         QVERIFY(QMetaObject::invokeMethod(&obj,
                                           [&obj, p = std::move(ptr)]() { return obj.sl1("hehe"); },
-                                          Qt::BlockingQueuedConnection));
+                                          BobUI::BlockingQueuedConnection));
         QCOMPARE(obj.slotResult, QString("sl1:hehe"));
     }
 
     // Test with parameters
     QString result;
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl1, Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl1, BobUI::BlockingQueuedConnection,
             qReturnArg(result), u"bubu"_s));
     QCOMPARE(result, u"yessir");
     QCOMPARE(obj.slotResult, u"sl1:bubu");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, &QtTestObject::sl2, Qt::BlockingQueuedConnection,
+    QVERIFY(QMetaObject::invokeMethod(&obj, &BobUITestObject::sl2, BobUI::BlockingQueuedConnection,
             u"bubu"_s, u"baba"_s));
     QCOMPARE(obj.slotResult, u"sl2:bububaba");
 
-    QVERIFY(QMetaObject::invokeMethod(&obj, [&](){obj.moveToThread(QThread::currentThread());}, Qt::BlockingQueuedConnection));
+    QVERIFY(QMetaObject::invokeMethod(&obj, [&](){obj.moveToThread(BOBUIhread::currentThread());}, BobUI::BlockingQueuedConnection));
     t.quit();
     QVERIFY(t.wait());
     QCOMPARE(countedStructObjectsCount, 0);
 }
 
 
-void tst_QMetaObject::qtMetaObjectInheritance()
+void tst_QMetaObject::bobuiMetaObjectInheritance()
 {
     QVERIFY(!QObject::staticMetaObject.superClass());
-#if QT_CONFIG(sortfilterproxymodel)
-    QCOMPARE(QSortFilterProxyModel::staticMetaObject.indexOfEnumerator("Qt::CaseSensitivity"), -1);
+#if BOBUI_CONFIG(sortfilterproxymodel)
+    QCOMPARE(QSortFilterProxyModel::staticMetaObject.indexOfEnumerator("BobUI::CaseSensitivity"), -1);
     QCOMPARE(QSortFilterProxyModel::staticMetaObject.indexOfEnumerator("CaseSensitivity"), -1);
     int indexOfSortCaseSensitivity = QSortFilterProxyModel::staticMetaObject.indexOfProperty("sortCaseSensitivity");
     QVERIFY(indexOfSortCaseSensitivity != -1);
@@ -2058,12 +2058,12 @@ struct MyType
 
 typedef QString CustomString;
 
-class QtTestCustomObject: public QObject
+class BobUITestCustomObject: public QObject
 {
     Q_OBJECT
     friend class tst_QMetaObject;
 public:
-    QtTestCustomObject(): QObject(), sum(0) {}
+    BobUITestCustomObject(): QObject(), sum(0) {}
 
 public slots:
     void sl1(MyType myType);
@@ -2075,14 +2075,14 @@ public:
     int sum;
 };
 
-void QtTestCustomObject::sl1(MyType myType)
+void BobUITestCustomObject::sl1(MyType myType)
 {
     sum = myType.i1 + myType.i2 + myType.i3;
 }
 
 void tst_QMetaObject::invokeCustomTypes()
 {
-    QtTestCustomObject obj;
+    BobUITestCustomObject obj;
     MyType tp = {1, 1, 1};
 
     QCOMPARE(obj.sum, 0);
@@ -2110,7 +2110,7 @@ public:
 // this test is duplicated below
 void tst_QMetaObject::invokeMetaConstructor()
 {
-    const QMetaObject *mo = &QtTestObject::staticMetaObject;
+    const QMetaObject *mo = &BobUITestObject::staticMetaObject;
 #ifdef USE_COMPAT_Q_ARG
     {
         QObject *obj = mo->newInstance(QGenericArgument());
@@ -2118,16 +2118,16 @@ void tst_QMetaObject::invokeMetaConstructor()
     }
 #endif
     {
-        QtTestObject obj;
+        BobUITestObject obj;
         QObject *obj2 = mo->newInstance(Q_ARG(QObject*, &obj));
         QVERIFY(obj2 != 0);
         QCOMPARE(obj2->parent(), (QObject*)&obj);
-        QVERIFY(qobject_cast<QtTestObject*>(obj2) != 0);
+        QVERIFY(qobject_cast<BobUITestObject*>(obj2) != 0);
     }
     // class in namespace
     const QMetaObject *nsmo = &NamespaceWithConstructibleClass::ConstructibleClass::staticMetaObject;
     {
-        QtTestObject obj;
+        BobUITestObject obj;
         QObject *obj2 = nsmo->newInstance(Q_ARG(QObject*, &obj));
         QVERIFY(obj2 != 0);
         QCOMPARE(obj2->parent(), (QObject*)&obj);
@@ -2136,7 +2136,7 @@ void tst_QMetaObject::invokeMetaConstructor()
     // gadget shouldn't return a valid pointer
     {
         QCOMPARE(MyGadget::staticMetaObject.constructorCount(), 1);
-        QTest::ignoreMessage(QtWarningMsg, "QMetaObject::newInstance: type MyGadget does not inherit QObject");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::newInstance: type MyGadget does not inherit QObject");
         QVERIFY(!MyGadget::staticMetaObject.newInstance());
     }
 
@@ -2145,39 +2145,39 @@ void tst_QMetaObject::invokeMetaConstructor()
     {
         QObject *obj = mo->newInstance(Q_ARG(QObject*, &parent));
         QVERIFY(obj);
-        QCOMPARE(static_cast<QtTestObject*>(obj)->slotResult, "");
+        QCOMPARE(static_cast<BobUITestObject*>(obj)->slotResult, "");
     }
     {
         QObject *obj = mo->newInstance(Q_ARG(QObject*, &parent), Q_ARG(int, 1));
         QVERIFY(obj);
-        QCOMPARE(static_cast<QtTestObject*>(obj)->slotResult, "i");
+        QCOMPARE(static_cast<BobUITestObject*>(obj)->slotResult, "i");
     }
     {
         QObject *obj = mo->newInstance(Q_ARG(QObject*, &parent), Q_ARG(int, 1), Q_ARG(int, 42));
         QVERIFY(obj);
-        QCOMPARE(static_cast<QtTestObject*>(obj)->slotResult, "ii");
+        QCOMPARE(static_cast<BobUITestObject*>(obj)->slotResult, "ii");
     }
 }
 
 // this is a copy-paste-adapt of the above
 void tst_QMetaObject::invokeMetaConstructorNoMacro()
 {
-    const QMetaObject *mo = &QtTestObject::staticMetaObject;
+    const QMetaObject *mo = &BobUITestObject::staticMetaObject;
     {
         QObject *obj = mo->newInstance();
         QVERIFY(!obj);
     }
     {
-        QtTestObject obj;
+        BobUITestObject obj;
         QObject *obj2 = mo->newInstance(static_cast<QObject *>(&obj));
         QVERIFY(obj2 != 0);
         QCOMPARE(obj2->parent(), (QObject*)&obj);
-        QVERIFY(qobject_cast<QtTestObject*>(obj2) != 0);
+        QVERIFY(qobject_cast<BobUITestObject*>(obj2) != 0);
     }
     // class in namespace
     const QMetaObject *nsmo = &NamespaceWithConstructibleClass::ConstructibleClass::staticMetaObject;
     {
-        QtTestObject obj;
+        BobUITestObject obj;
         QObject *obj2 = nsmo->newInstance(static_cast<QObject *>(&obj));
         QVERIFY(obj2 != 0);
         QCOMPARE(obj2->parent(), (QObject*)&obj);
@@ -2186,7 +2186,7 @@ void tst_QMetaObject::invokeMetaConstructorNoMacro()
     // gadget shouldn't return a valid pointer
     {
         QCOMPARE(MyGadget::staticMetaObject.constructorCount(), 1);
-        QTest::ignoreMessage(QtWarningMsg, "QMetaObject::newInstance: type MyGadget does not inherit QObject");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::newInstance: type MyGadget does not inherit QObject");
         QVERIFY(!MyGadget::staticMetaObject.newInstance());
     }
 }
@@ -2194,8 +2194,8 @@ void tst_QMetaObject::invokeMetaConstructorNoMacro()
 void tst_QMetaObject::invokeTypedefTypes()
 {
     qRegisterMetaType<CustomString>("CustomString");
-    QtTestCustomObject obj;
-    QSignalSpy spy(&obj, &QtTestCustomObject::sig_custom);
+    BobUITestCustomObject obj;
+    QSignalSpy spy(&obj, &BobUITestCustomObject::sig_custom);
     QVERIFY(spy.isValid());
 
     QCOMPARE(spy.size(), 0);
@@ -2214,8 +2214,8 @@ void tst_QMetaObject::invokeTypedefTypes()
 
 void tst_QMetaObject::invokeException()
 {
-#ifndef QT_NO_EXCEPTIONS
-    QtTestObject obj;
+#ifndef BOBUI_NO_EXCEPTIONS
+    BobUITestObject obj;
     QCOMPARE(countedStructObjectsCount, 0);
     try {
         CountedStruct s;
@@ -2239,16 +2239,16 @@ void tst_QMetaObject::invokeException()
 
 void tst_QMetaObject::invokeQueuedAutoRegister()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
-    auto shared = QSharedPointer<QtTestObject>::create(QStringLiteral("myShared-"));
+    auto shared = QSharedPointer<BobUITestObject>::create(QStringLiteral("myShared-"));
 
     QVERIFY(QMetaObject::invokeMethod(
-        &obj, "slotWithRegistrableArgument", Qt::QueuedConnection,
-        Q_ARG(QtTestObject *, shared.data()), Q_ARG(QPointer<QtTestObject>, shared.data()),
-        Q_ARG(QSharedPointer<QtTestObject>, shared), Q_ARG(QWeakPointer<QtTestObject>, shared),
-        Q_ARG(QVector<QtTestObject *>, QVector<QtTestObject *>()), // check QVector/QList aliasing
-        Q_ARG(QList<QtTestObject *>, QList<QtTestObject *>())));
+        &obj, "slotWithRegistrableArgument", BobUI::QueuedConnection,
+        Q_ARG(BobUITestObject *, shared.data()), Q_ARG(QPointer<BobUITestObject>, shared.data()),
+        Q_ARG(QSharedPointer<BobUITestObject>, shared), Q_ARG(QWeakPointer<BobUITestObject>, shared),
+        Q_ARG(QVector<BobUITestObject *>, QVector<BobUITestObject *>()), // check QVector/QList aliasing
+        Q_ARG(QList<BobUITestObject *>, QList<BobUITestObject *>())));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult,
@@ -2256,11 +2256,11 @@ void tst_QMetaObject::invokeQueuedAutoRegister()
 
     obj.slotResult.clear();
     QVERIFY(QMetaObject::invokeMethod(
-        &obj, "slotWithRegistrableArgument", Qt::QueuedConnection,
-        shared.data(), QPointer<QtTestObject>(shared.data()),
-        QSharedPointer<QtTestObject>(shared), QWeakPointer<QtTestObject>(shared),
-        QList<QtTestObject *>(),
-        QList<QtTestObject *>()));
+        &obj, "slotWithRegistrableArgument", BobUI::QueuedConnection,
+        shared.data(), QPointer<BobUITestObject>(shared.data()),
+        QSharedPointer<BobUITestObject>(shared), QWeakPointer<BobUITestObject>(shared),
+        QList<BobUITestObject *>(),
+        QList<BobUITestObject *>()));
     QVERIFY(obj.slotResult.isEmpty());
     qApp->processEvents(QEventLoop::AllEvents);
     QCOMPARE(obj.slotResult,
@@ -2278,7 +2278,7 @@ namespace FunctionTest {
 void tst_QMetaObject::invokeFreeFunction()
 {
     using namespace FunctionTest;
-    QtTestObject obj;
+    BobUITestObject obj;
     QMetaObject::invokeMethod(&obj, function0);
     int retInt = -1;
     QMetaObject::invokeMethod(&obj, functionNoExcept, &retInt);
@@ -2287,7 +2287,7 @@ void tst_QMetaObject::invokeFreeFunction()
 
 void tst_QMetaObject::invokeBind()
 {
-    QtTestObject obj;
+    BobUITestObject obj;
 
     struct {
         int number;
@@ -2312,78 +2312,78 @@ void tst_QMetaObject::invokeBind()
 
 void tst_QMetaObject::normalizedSignature_data()
 {
-    QTest::addColumn<QString>("signature");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QString>("signature");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow("empty") << "" << "";
-    QTest::newRow("null") << QString{} << QString{};
-    QTest::newRow("function") << "void foo()" << "void foo()";
-    QTest::newRow("spaces") << "   void  foo( )   " << "void foo()";
-    QTest::newRow("void") << "void foo(void)" << "void foo()";
-    QTest::newRow("void spaces") << "void foo( void )" << "void foo()";
-    QTest::newRow("void*") << "void foo(void*)" << "void foo(void*)";
-    QTest::newRow("void* spaces") << "void foo( void * )" << "void foo(void*)";
-    QTest::newRow("function ptr") << "void foo(void(*)(void))" << "void foo(void(*)())";
-    QTest::newRow("function ptr spaces") << "void foo( void ( * ) ( void ))" << "void foo(void(*)())";
-    QTest::newRow("function ptr void*") << "void foo(void(*)(void*))" << "void foo(void(*)(void*))";
-    QTest::newRow("function ptr void* spaces") << "void foo( void ( * ) ( void * ))" << "void foo(void(*)(void*))";
-    QTest::newRow("template args") << " void  foo( QMap<a, a>, QList<b>) "
+    BOBUIest::newRow("empty") << "" << "";
+    BOBUIest::newRow("null") << QString{} << QString{};
+    BOBUIest::newRow("function") << "void foo()" << "void foo()";
+    BOBUIest::newRow("spaces") << "   void  foo( )   " << "void foo()";
+    BOBUIest::newRow("void") << "void foo(void)" << "void foo()";
+    BOBUIest::newRow("void spaces") << "void foo( void )" << "void foo()";
+    BOBUIest::newRow("void*") << "void foo(void*)" << "void foo(void*)";
+    BOBUIest::newRow("void* spaces") << "void foo( void * )" << "void foo(void*)";
+    BOBUIest::newRow("function ptr") << "void foo(void(*)(void))" << "void foo(void(*)())";
+    BOBUIest::newRow("function ptr spaces") << "void foo( void ( * ) ( void ))" << "void foo(void(*)())";
+    BOBUIest::newRow("function ptr void*") << "void foo(void(*)(void*))" << "void foo(void(*)(void*))";
+    BOBUIest::newRow("function ptr void* spaces") << "void foo( void ( * ) ( void * ))" << "void foo(void(*)(void*))";
+    BOBUIest::newRow("template args") << " void  foo( QMap<a, a>, QList<b>) "
                                    << "void foo(QMap<a,a>,QList<b>)";
-    QTest::newRow("void template args") << " void  foo( Foo<void>, Bar<void> ) "
+    BOBUIest::newRow("void template args") << " void  foo( Foo<void>, Bar<void> ) "
                                    << "void foo(Foo<void>,Bar<void>)";
-    QTest::newRow("void* template args") << " void  foo( Foo<void*>, Bar<void *> ) "
+    BOBUIest::newRow("void* template args") << " void  foo( Foo<void*>, Bar<void *> ) "
                                    << "void foo(Foo<void*>,Bar<void*>)";
 
-    QTest::newRow("template-args-void-function-ptr") << " void  foo( QList<void * (*)(void)>) "
+    BOBUIest::newRow("template-args-void-function-ptr") << " void  foo( QList<void * (*)(void)>) "
                                                      << "void foo(QList<void*(*)(void)>)";
 
-    QTest::newRow("template-args-nested-1")
+    BOBUIest::newRow("template-args-nested-1")
         << " void  foo( QMap<a, QList<std::unique_ptr< a  >>>,  QList<b  >) "
         << "void foo(QMap<a,QList<std::unique_ptr<a>>>,QList<b>)";
 
-    QTest::newRow("template-args-nested-2")
+    BOBUIest::newRow("template-args-nested-2")
         << " void  foo( QMap<a, QList<int const>>, QList<b>) "
         << "void foo(QMap<a,QList<const int>>,QList<b>)";
 
-    QTest::newRow("template-args-nested-3")
+    BOBUIest::newRow("template-args-nested-3")
         << " void  foo( QMap<std::vector<char const *>, QList<int const>>, QList<b>) "
         << "void foo(QMap<std::vector<const char*>,QList<const int>>,QList<b>)";
 
-    QTest::newRow("rettype") << "QList<int, int> foo()" << "QList<int,int>foo()";
-    QTest::newRow("rettype void template") << "Foo<void> foo()" << "Foo<void>foo()";
-    QTest::newRow("const rettype") << "const QString *foo()" << "const QString*foo()";
-    QTest::newRow("const ref") << "const QString &foo()" << "const QString&foo()";
-    QTest::newRow("reference") << "QString &foo()" << "QString&foo()";
-    QTest::newRow("const1") << "void foo(QString const *)" << "void foo(const QString*)";
-    QTest::newRow("const2") << "void foo(QString * const)" << "void foo(QString*)";
-    QTest::newRow("const3") << "void foo(QString const &)" << "void foo(QString)";
-    QTest::newRow("const4") << "void foo(const int)" << "void foo(int)";
-    QTest::newRow("const5") << "void foo(const int, int const, const int &, int const &)"
+    BOBUIest::newRow("rettype") << "QList<int, int> foo()" << "QList<int,int>foo()";
+    BOBUIest::newRow("rettype void template") << "Foo<void> foo()" << "Foo<void>foo()";
+    BOBUIest::newRow("const rettype") << "const QString *foo()" << "const QString*foo()";
+    BOBUIest::newRow("const ref") << "const QString &foo()" << "const QString&foo()";
+    BOBUIest::newRow("reference") << "QString &foo()" << "QString&foo()";
+    BOBUIest::newRow("const1") << "void foo(QString const *)" << "void foo(const QString*)";
+    BOBUIest::newRow("const2") << "void foo(QString * const)" << "void foo(QString*)";
+    BOBUIest::newRow("const3") << "void foo(QString const &)" << "void foo(QString)";
+    BOBUIest::newRow("const4") << "void foo(const int)" << "void foo(int)";
+    BOBUIest::newRow("const5") << "void foo(const int, int const, const int &, int const &)"
                             << "void foo(int,int,int,int)";
-    QTest::newRow("const6") << "void foo(QList<const int>)" << "void foo(QList<const int>)";
-    QTest::newRow("const7") << "void foo(QList<const int*>)" << "void foo(QList<const int*>)";
-    QTest::newRow("const8") << "void foo(QList<int const*>)" << "void foo(QList<const int*>)";
-    QTest::newRow("const9") << "void foo(const Foo<Bar>)" << "void foo(Foo<Bar>)";
-    QTest::newRow("const10") << "void foo(Foo<Bar>const)" << "void foo(Foo<Bar>)";
-    QTest::newRow("const11") << "void foo(Foo<Bar> *const)" << "void foo(Foo<Bar>*)";
-    QTest::newRow("const12") << "void foo(Foo<Bar>const*const *const)" << "void foo(const Foo<Bar>*const*)";
-    QTest::newRow("const13") << "void foo(const Foo<Bar>&)" << "void foo(Foo<Bar>)";
-    QTest::newRow("const14") << "void foo(Foo<Bar>const&)" << "void foo(Foo<Bar>)";
-    QTest::newRow("QVector") << "void foo(QVector<int>)" << "void foo(QList<int>)";
-    QTest::newRow("QVector1") << "void foo(const Template<QVector, MyQList<int> const>)"
+    BOBUIest::newRow("const6") << "void foo(QList<const int>)" << "void foo(QList<const int>)";
+    BOBUIest::newRow("const7") << "void foo(QList<const int*>)" << "void foo(QList<const int*>)";
+    BOBUIest::newRow("const8") << "void foo(QList<int const*>)" << "void foo(QList<const int*>)";
+    BOBUIest::newRow("const9") << "void foo(const Foo<Bar>)" << "void foo(Foo<Bar>)";
+    BOBUIest::newRow("const10") << "void foo(Foo<Bar>const)" << "void foo(Foo<Bar>)";
+    BOBUIest::newRow("const11") << "void foo(Foo<Bar> *const)" << "void foo(Foo<Bar>*)";
+    BOBUIest::newRow("const12") << "void foo(Foo<Bar>const*const *const)" << "void foo(const Foo<Bar>*const*)";
+    BOBUIest::newRow("const13") << "void foo(const Foo<Bar>&)" << "void foo(Foo<Bar>)";
+    BOBUIest::newRow("const14") << "void foo(Foo<Bar>const&)" << "void foo(Foo<Bar>)";
+    BOBUIest::newRow("QVector") << "void foo(QVector<int>)" << "void foo(QList<int>)";
+    BOBUIest::newRow("QVector1") << "void foo(const Template<QVector, MyQList<int> const>)"
                             << "void foo(Template<QList,const MyQList<int>>)";
-    QTest::newRow("MyQVector") << "void foo(MyQVector<int>)" << "void foo(MyQVector<int>)";
-    QTest::newRow("MyQVector1") << "void foo(const Template<QVector, MyQVector<int> const>)"
+    BOBUIest::newRow("MyQVector") << "void foo(MyQVector<int>)" << "void foo(MyQVector<int>)";
+    BOBUIest::newRow("MyQVector1") << "void foo(const Template<QVector, MyQVector<int> const>)"
                                 << "void foo(Template<QList,const MyQVector<int>>)";
 
-    QTest::newRow("refref") << "const char* foo(const X &&,X const &&, const X* &&) && "
+    BOBUIest::newRow("refref") << "const char* foo(const X &&,X const &&, const X* &&) && "
                             << "const char*foo(const X&&,const X&&,const X*&&)&&";
 
-    QTest::newRow("char-star-star") << "char * const * foo(const X)"
+    BOBUIest::newRow("char-star-star") << "char * const * foo(const X)"
                                     << "char*const*foo(X)";
 
 
-    QTest::newRow("invalid1") << "a( b" << "a(b";
+    BOBUIest::newRow("invalid1") << "a( b" << "a(b";
 }
 
 void tst_QMetaObject::normalizedSignature()
@@ -2396,74 +2396,74 @@ void tst_QMetaObject::normalizedSignature()
 
 void tst_QMetaObject::normalizedType_data()
 {
-    QTest::addColumn<QString>("type");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QString>("type");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow("null") << QString() << QString();
-    QTest::newRow("empty") << "" << "";
-    QTest::newRow("all_whitespaces") << "   " << "";
-    QTest::newRow("simple") << "int" << "int";
-    QTest::newRow("white") << "  int  " << "int";
-    QTest::newRow("const1") << "int const *" << "const int*";
-    QTest::newRow("const2") << "const int *" << "const int*";
-    QTest::newRow("template1") << "QList<int const *>" << "QList<const int*>";
-    QTest::newRow("template2") << "QList<const int *>" << "QList<const int*>";
-    QTest::newRow("template3") << "QMap<QString, int>" << "QMap<QString,int>";
-    QTest::newRow("template4") << "const QMap<QString, int> &" << "QMap<QString,int>";
-    QTest::newRow("template5") << "QList< ::Foo::Bar>" << "QList<::Foo::Bar>";
-    QTest::newRow("template6") << "QList<::Foo::Bar>" << "QList<::Foo::Bar>";
-    QTest::newRow("template7") << "QList<QList<int> >" << "QList<QList<int>>";
-    QTest::newRow("template8") << "QMap<const int, const short*>" << "QMap<const int,const short*>";
-    QTest::newRow("template9") << "QPair<const QPair<int, int const *> , QPair<QHash<int, const char*>  >  >"
+    BOBUIest::newRow("null") << QString() << QString();
+    BOBUIest::newRow("empty") << "" << "";
+    BOBUIest::newRow("all_whitespaces") << "   " << "";
+    BOBUIest::newRow("simple") << "int" << "int";
+    BOBUIest::newRow("white") << "  int  " << "int";
+    BOBUIest::newRow("const1") << "int const *" << "const int*";
+    BOBUIest::newRow("const2") << "const int *" << "const int*";
+    BOBUIest::newRow("template1") << "QList<int const *>" << "QList<const int*>";
+    BOBUIest::newRow("template2") << "QList<const int *>" << "QList<const int*>";
+    BOBUIest::newRow("template3") << "QMap<QString, int>" << "QMap<QString,int>";
+    BOBUIest::newRow("template4") << "const QMap<QString, int> &" << "QMap<QString,int>";
+    BOBUIest::newRow("template5") << "QList< ::Foo::Bar>" << "QList<::Foo::Bar>";
+    BOBUIest::newRow("template6") << "QList<::Foo::Bar>" << "QList<::Foo::Bar>";
+    BOBUIest::newRow("template7") << "QList<QList<int> >" << "QList<QList<int>>";
+    BOBUIest::newRow("template8") << "QMap<const int, const short*>" << "QMap<const int,const short*>";
+    BOBUIest::newRow("template9") << "QPair<const QPair<int, int const *> , QPair<QHash<int, const char*>  >  >"
                                << "std::pair<const std::pair<int,const int*>,std::pair<QHash<int,const char*>>>";
-    QTest::newRow("template10") << "QVector<int const * const> const" << "QList<const int*const>";
-    QTest::newRow("template11") << " QSharedPointer<QVarLengthArray< QString const, ( 16>> 2 )> > const & "
+    BOBUIest::newRow("template10") << "QVector<int const * const> const" << "QList<const int*const>";
+    BOBUIest::newRow("template11") << " QSharedPointer<QVarLengthArray< QString const, ( 16>> 2 )> > const & "
         << "QSharedPointer<QVarLengthArray<const QString,(16>>2)>>";
-    QTest::newRow("template_sub") << "X<( Y < 8), (Y >6)> const  & " << "X<(Y<8),(Y>6)>";
-    QTest::newRow("value1") << "const QString &" << "QString";
-    QTest::newRow("value2") << "QString const &" << "QString";
-    QTest::newRow("constInName1") << "constconst" << "constconst";
-    QTest::newRow("constInName2") << "constconst*" << "constconst*";
-    QTest::newRow("constInName3") << "const constconst&" << "constconst";
-    QTest::newRow("constInName4") << "constconst const*const" << "const constconst*";
-    QTest::newRow("class") << "const class foo&" << "foo";
-    QTest::newRow("struct") << "const struct foo*" << "const foo*";
-    QTest::newRow("struct2") << "struct foo const*" << "const foo*";
-    QTest::newRow("enum") << "enum foo" << "foo";
-    QTest::newRow("void") << "void" << "void";
-    QTest::newRow("QList") << "QList<int>" << "QList<int>";
-    QTest::newRow("QVector") << "QVector<int>" << "QList<int>";
-    QTest::newRow("refref") << "X const*const&&" << "const X*const&&";
-    QTest::newRow("refref2") << "const X<T const&&>&&" << "const X<const T&&>&&";
-    QTest::newRow("long1") << "long unsigned int long" << "qulonglong";
-    QTest::newRow("long2") << "int signed long" << "long";
-    QTest::newRow("long3") << "long unsigned" << "ulong";
-    QTest::newRow("long double") << " long  double" << "long double";
-    QTest::newRow("signed char") << "char signed" << "signed char";
-    QTest::newRow("unsigned char") << "char unsigned" << "uchar";
-    QTest::newRow("signed short") << "short signed" << "short";
-    QTest::newRow("unsigned short") << "unsigned short" << "ushort";
-    QTest::newRow("short unsigned") << "short unsigned" << "ushort";
-    QTest::newRow("array1") << "unsigned int [4]" << "uint[4]";
-    QTest::newRow("array2") << "unsigned int const [4][5]" << "const uint[4][5]";
-    QTest::newRow("array3") << "unsigned[] const" << "uint[]";
-    QTest::newRow("nttp1") << "S<'>', int const> const"
+    BOBUIest::newRow("template_sub") << "X<( Y < 8), (Y >6)> const  & " << "X<(Y<8),(Y>6)>";
+    BOBUIest::newRow("value1") << "const QString &" << "QString";
+    BOBUIest::newRow("value2") << "QString const &" << "QString";
+    BOBUIest::newRow("constInName1") << "constconst" << "constconst";
+    BOBUIest::newRow("constInName2") << "constconst*" << "constconst*";
+    BOBUIest::newRow("constInName3") << "const constconst&" << "constconst";
+    BOBUIest::newRow("constInName4") << "constconst const*const" << "const constconst*";
+    BOBUIest::newRow("class") << "const class foo&" << "foo";
+    BOBUIest::newRow("struct") << "const struct foo*" << "const foo*";
+    BOBUIest::newRow("struct2") << "struct foo const*" << "const foo*";
+    BOBUIest::newRow("enum") << "enum foo" << "foo";
+    BOBUIest::newRow("void") << "void" << "void";
+    BOBUIest::newRow("QList") << "QList<int>" << "QList<int>";
+    BOBUIest::newRow("QVector") << "QVector<int>" << "QList<int>";
+    BOBUIest::newRow("refref") << "X const*const&&" << "const X*const&&";
+    BOBUIest::newRow("refref2") << "const X<T const&&>&&" << "const X<const T&&>&&";
+    BOBUIest::newRow("long1") << "long unsigned int long" << "qulonglong";
+    BOBUIest::newRow("long2") << "int signed long" << "long";
+    BOBUIest::newRow("long3") << "long unsigned" << "ulong";
+    BOBUIest::newRow("long double") << " long  double" << "long double";
+    BOBUIest::newRow("signed char") << "char signed" << "signed char";
+    BOBUIest::newRow("unsigned char") << "char unsigned" << "uchar";
+    BOBUIest::newRow("signed short") << "short signed" << "short";
+    BOBUIest::newRow("unsigned short") << "unsigned short" << "ushort";
+    BOBUIest::newRow("short unsigned") << "short unsigned" << "ushort";
+    BOBUIest::newRow("array1") << "unsigned int [4]" << "uint[4]";
+    BOBUIest::newRow("array2") << "unsigned int const [4][5]" << "const uint[4][5]";
+    BOBUIest::newRow("array3") << "unsigned[] const" << "uint[]";
+    BOBUIest::newRow("nttp1") << "S<'>', int const> const"
                            << "S<'>',const int>";
-    QTest::newRow("nttp2") << "S< \"> \\\">const *   \\\\\"  , int const> const"
+    BOBUIest::newRow("nttp2") << "S< \"> \\\">const *   \\\\\"  , int const> const"
                            << "S<\"> \\\">const *   \\\\\",const int>";
-    QTest::newRow("nttp3") << "S<\"Q <\"  , int const> const*"
+    BOBUIest::newRow("nttp3") << "S<\"Q <\"  , int const> const*"
                            << "const S<\"Q <\",const int>*";
-    QTest::newRow("nttp4") << "S< 1'2 , int const> const"
+    BOBUIest::newRow("nttp4") << "S< 1'2 , int const> const"
                            << "S<1'2,const int>";
-    QTest::newRow("invalid") << "'const"
+    BOBUIest::newRow("invalid") << "'const"
                              << "'const";
-    QTest::newRow("anonym1") << "XX::<unnamed struct>"
+    BOBUIest::newRow("anonym1") << "XX::<unnamed struct>"
                              << "XX::<unnamed struct>";
-    QTest::newRow("anonym2") << "XX::{unnamed type#1}"
+    BOBUIest::newRow("anonym2") << "XX::{unnamed type#1}"
                              << "XX::{unnamed type#1}";
-    QTest::newRow("anonym3") << "struct XX::<unnamed-type-s>"
+    BOBUIest::newRow("anonym3") << "struct XX::<unnamed-type-s>"
                              << "XX::<unnamed-type-s>";
-    QTest::newRow("anonym4") << "XX::(anonymous struct at ./example.cpp:10:13)"
+    BOBUIest::newRow("anonym4") << "XX::(anonymous struct at ./example.cpp:10:13)"
                              << "XX::(anonymous struct at./example.cpp:10:13)";
 }
 
@@ -2488,13 +2488,13 @@ void tst_QMetaObject::customPropertyType()
 {
     QMetaProperty prop = metaObject()->property(metaObject()->indexOfProperty("value3"));
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
 
     QCOMPARE(prop.type(), QVariant::UserType);
 
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 #endif
 
     QCOMPARE(prop.userType(), QMetaType::fromType<MyStruct>().id());
@@ -2526,14 +2526,14 @@ void tst_QMetaObject::customQVectorSuffix()
 
 void tst_QMetaObject::keysToValue_data()
 {
-    QTest::addColumn<QObject *>("object");
-    QTest::addColumn<QByteArray>("name");
+    BOBUIest::addColumn<QObject *>("object");
+    BOBUIest::addColumn<QByteArray>("name");
 
     static MyNamespace::MyClass obj1;
     static MyNamespace::MyClass2 obj2;
 
-    QTest::newRow("MyClass") << static_cast<QObject*>(&obj1) << QByteArray("MyClass");
-    QTest::newRow("MyClass2") << static_cast<QObject*>(&obj2) << QByteArray("MyClass2");
+    BOBUIest::newRow("MyClass") << static_cast<QObject*>(&obj1) << QByteArray("MyClass");
+    BOBUIest::newRow("MyClass2") << static_cast<QObject*>(&obj2) << QByteArray("MyClass2");
 
 }
 
@@ -2646,32 +2646,32 @@ void tst_QMetaObject::keysToValue()
     // Test flags with extra '|'
     static const QRegularExpression endsWithBar(
         R"(QMetaEnum::keysToValue: malformed keys string, ends with '\|'.+)"_L1);
-    QTest::ignoreMessage(QtWarningMsg, endsWithBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, endsWithBar);
     QCOMPARE(mf.keysToValue64("MyFlag1|MyFlag2|"), std::nullopt);
-    QTest::ignoreMessage(QtWarningMsg, endsWithBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, endsWithBar);
     QCOMPARE(mf.keysToValue("MyFlag1|MyFlag2|", &ok), -1);
     QCOMPARE(ok, false);
 
     static const QRegularExpression startsWithBar(
         R"(QMetaEnum::keysToValue: malformed keys string, starts with '\|'.+)"_L1);
-    QTest::ignoreMessage(QtWarningMsg, startsWithBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, startsWithBar);
     QCOMPARE(mf.keysToValue64("|MyFlag1|MyFlag2|"), std::nullopt);
-    QTest::ignoreMessage(QtWarningMsg, startsWithBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, startsWithBar);
     QCOMPARE(mf.keysToValue("|MyFlag1|MyFlag2|", &ok), -1);
     QCOMPARE(ok, false);
 
     static const QRegularExpression doubleBar(
         R"(QMetaEnum::keysToValue: malformed keys string, has two consecutive '\|'.+)"_L1);
-    QTest::ignoreMessage(QtWarningMsg, doubleBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, doubleBar);
     QCOMPARE(mf.keysToValue64("MyFlag1||MyFlag2"), std::nullopt);
-    QTest::ignoreMessage(QtWarningMsg, doubleBar);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, doubleBar);
     QCOMPARE(mf.keysToValue("MyFlag1||MyFlag2", &ok), -1);
     QCOMPARE(ok, false);
 
     // Test empty string
-    QTest::ignoreMessage(QtWarningMsg, "QMetaEnum::keysToValue: empty keys string.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaEnum::keysToValue: empty keys string.");
     QCOMPARE(mf.keysToValue64(""), std::nullopt);
-    QTest::ignoreMessage(QtWarningMsg, "QMetaEnum::keysToValue: empty keys string.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaEnum::keysToValue: empty keys string.");
     QCOMPARE(mf.keysToValue("", &ok), -1);
     QCOMPARE(ok, false);
 }
@@ -2761,11 +2761,11 @@ void tst_QMetaObject::metaType()
 {
     QCOMPARE(QObject::staticMetaObject.metaType(), QMetaType::fromType<QObject>());
     QCOMPARE(MyGadget::staticMetaObject.metaType(), QMetaType::fromType<MyGadget>());
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
     QCOMPARE(QAbstractProxyModel::staticMetaObject.metaType(), QMetaType::fromType<QAbstractProxyModel>());
 #endif
-    auto qtNameSpaceMetaType = Qt::staticMetaObject.metaType();
-    QVERIFY2(!qtNameSpaceMetaType.isValid(), qtNameSpaceMetaType.name());
+    auto bobuiNameSpaceMetaType = BobUI::staticMetaObject.metaType();
+    QVERIFY2(!bobuiNameSpaceMetaType.isValid(), bobuiNameSpaceMetaType.name());
 }
 
 class ClassInfoTestObjectA : public QObject
@@ -2800,20 +2800,20 @@ void tst_QMetaObject::metaMethod()
     QCOMPARE(str, QString("foo"));
     QCOMPARE(ret, QString("bar"));
 
-    QtTestObject obj;
+    BobUITestObject obj;
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
 
-    int index = QtTestObject::staticMetaObject.indexOfMethod("sl5(QString,QString,QString,QString,QString)");
+    int index = BobUITestObject::staticMetaObject.indexOfMethod("sl5(QString,QString,QString,QString,QString)");
     QVERIFY(index > 0);
-    method = QtTestObject::staticMetaObject.method(index);
+    method = BobUITestObject::staticMetaObject.method(index);
     //wrong args
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: too few arguments (5) in call to QtTestObject::sl5(QString,QString,QString,QString,QString)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: too few arguments (5) in call to BobUITestObject::sl5(QString,QString,QString,QString,QString)");
     QVERIFY(!method.invoke(&obj, Q_ARG(QString, "1"), Q_ARG(QString, "2"), Q_ARG(QString, "3"), Q_ARG(QString, "4")));
     //QVERIFY(!method.invoke(&obj, Q_ARG(QString, "1"), Q_ARG(QString, "2"), Q_ARG(QString, "3"), Q_ARG(QString, "4"), Q_ARG(QString, "5"), Q_ARG(QString, "6")));
     //QVERIFY(!method.invoke(&obj, Q_ARG(QString, "1"), Q_ARG(QString, "2"), Q_ARG(QString, "3"), Q_ARG(QString, "4"), Q_ARG(int, 5)));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invokeMethod: return type mismatch for method "
-                                       "QtTestObject::sl5(QString,QString,QString,QString,QString): "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invokeMethod: return type mismatch for method "
+                                       "BobUITestObject::sl5(QString,QString,QString,QString,QString): "
                                        "cannot convert from void to QString during invocation");
     QVERIFY(!method.invoke(&obj, Q_RETURN_ARG(QString, ret), Q_ARG(QString, "1"), Q_ARG(QString, "2"), Q_ARG(QString, "3"), Q_ARG(QString, "4"), Q_ARG(QString, "5")));
 
@@ -2826,22 +2826,22 @@ void tst_QMetaObject::metaMethod()
     QVERIFY(method.invoke(&obj, Q_ARG(QString, "1"), Q_ARG(QString, "2"), Q_ARG(QString, "3"), Q_ARG(QString, "4"), Q_ARG(QString, "5")));
     QCOMPARE(obj.slotResult, QString("sl5:12345"));
 
-    // check Qt 6 QVector/QList alias:
+    // check BobUI 6 QVector/QList alias:
 #ifdef NORMALIZES_QVECTOR_QLIST
     eatIndexOfNonNormalizedWarning();
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13v(QVector<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13v(QVector<QString>)");
     QVERIFY(index > 0);
 #endif
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13v(QList<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13v(QList<QString>)");
     QVERIFY(index > 0);
 #ifdef NORMALIZES_QVECTOR_QLIST
     eatIndexOfNonNormalizedWarning();
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13(QVector<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13(QVector<QString>)");
     QVERIFY(index > 0);
 #endif
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13(QList<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13(QList<QString>)");
     QVERIFY(index > 0);
-    QMetaMethod sl13 = QtTestObject::staticMetaObject.method(index);
+    QMetaMethod sl13 = BobUITestObject::staticMetaObject.method(index);
     QList<QString> returnValue, argument;
     argument << QString("one") << QString("two") << QString("three");
     //wrong object
@@ -2853,24 +2853,24 @@ void tst_QMetaObject::metaMethod()
     QCOMPARE(returnValue, argument);
     QCOMPARE(obj.slotResult, QString("sl13"));
 
-    index = QtTestObject::staticMetaObject.indexOfConstructor("QtTestObject(QObject*,QList<int>)");
+    index = BobUITestObject::staticMetaObject.indexOfConstructor("BobUITestObject(QObject*,QList<int>)");
     QVERIFY(index > 0);
 #ifdef NORMALIZES_QVECTOR_QLIST
     eatIndexOfNonNormalizedWarning();
-    index = QtTestObject::staticMetaObject.indexOfConstructor("QtTestObject(QObject*,QVector<int>)");
+    index = BobUITestObject::staticMetaObject.indexOfConstructor("BobUITestObject(QObject*,QVector<int>)");
     QVERIFY(index > 0);
 #endif
-    QCOMPARE(QtTestObject::staticMetaObject.constructor(index).methodSignature(),
-             "QtTestObject(QObject*,QList<int>)");
-    index = QtTestObject::staticMetaObject.indexOfConstructor("QtTestObject(QList<int>,QObject*)");
+    QCOMPARE(BobUITestObject::staticMetaObject.constructor(index).methodSignature(),
+             "BobUITestObject(QObject*,QList<int>)");
+    index = BobUITestObject::staticMetaObject.indexOfConstructor("BobUITestObject(QList<int>,QObject*)");
     QVERIFY(index > 0);
 #ifdef NORMALIZES_QVECTOR_QLIST
     eatIndexOfNonNormalizedWarning();
-    index = QtTestObject::staticMetaObject.indexOfConstructor("QtTestObject(QVector<int>,QObject*)");
+    index = BobUITestObject::staticMetaObject.indexOfConstructor("BobUITestObject(QVector<int>,QObject*)");
     QVERIFY(index > 0);
 #endif
-    QCOMPARE(QtTestObject::staticMetaObject.constructor(index).methodSignature(),
-             "QtTestObject(QList<int>,QObject*)");
+    QCOMPARE(BobUITestObject::staticMetaObject.constructor(index).methodSignature(),
+             "BobUITestObject(QList<int>,QObject*)");
 }
 
 // this is a copy-paste-adapt of the above
@@ -2885,20 +2885,20 @@ void tst_QMetaObject::metaMethodNoMacro()
     QCOMPARE(str, QString("foo"));
     QCOMPARE(ret, QString("bar"));
 
-    QtTestObject obj;
+    BobUITestObject obj;
     QString t1("1"); QString t2("2"); QString t3("3"); QString t4("4"); QString t5("5");
     QString t6("6"); QString t7("7"); QString t8("8"); QString t9("9"); QString t10("X");
 
-    int index = QtTestObject::staticMetaObject.indexOfMethod("sl5(QString,QString,QString,QString,QString)");
+    int index = BobUITestObject::staticMetaObject.indexOfMethod("sl5(QString,QString,QString,QString,QString)");
     QVERIFY(index > 0);
-    method = QtTestObject::staticMetaObject.method(index);
+    method = BobUITestObject::staticMetaObject.method(index);
     //wrong args
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invoke: too few arguments (5) in call to QtTestObject::sl5(QString,QString,QString,QString,QString)");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invoke: too few arguments (5) in call to BobUITestObject::sl5(QString,QString,QString,QString,QString)");
     QVERIFY(!method.invoke(&obj, QStringLiteral("1"), QStringLiteral("2"), QStringLiteral("3"), QStringLiteral("4")));
     //QVERIFY(!method.invoke(&obj, "1", "2", "3", "4", "5", "6"));
     //QVERIFY(!method.invoke(&obj, "1", "2", "3", "4", 5));
-    QTest::ignoreMessage(QtWarningMsg, "QMetaMethod::invokeMethod: return type mismatch for method "
-                                       "QtTestObject::sl5(QString,QString,QString,QString,QString): "
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaMethod::invokeMethod: return type mismatch for method "
+                                       "BobUITestObject::sl5(QString,QString,QString,QString,QString): "
                                        "cannot convert from void to QString during invocation");
     QVERIFY(!method.invoke(&obj, qReturnArg(ret), QStringLiteral("1"), QStringLiteral("2"), QStringLiteral("3"), QStringLiteral("4"), QStringLiteral("5")));
 
@@ -2911,15 +2911,15 @@ void tst_QMetaObject::metaMethodNoMacro()
     QVERIFY(method.invoke(&obj, QStringLiteral("1"), QStringLiteral("2"), QStringLiteral("3"), QStringLiteral("4"), QStringLiteral("5")));
     QCOMPARE(obj.slotResult, QString("sl5:12345"));
 
-    // check Qt 6 QVector/QList alias:
+    // check BobUI 6 QVector/QList alias:
 #ifdef NORMALIZES_QVECTOR_QLIST
     eatIndexOfNonNormalizedWarning();
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13(QVector<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13(QVector<QString>)");
     QVERIFY(index > 0);
 #endif
-    index = QtTestObject::staticMetaObject.indexOfMethod("sl13(QList<QString>)");
+    index = BobUITestObject::staticMetaObject.indexOfMethod("sl13(QList<QString>)");
     QVERIFY(index > 0);
-    QMetaMethod sl13 = QtTestObject::staticMetaObject.method(index);
+    QMetaMethod sl13 = BobUITestObject::staticMetaObject.method(index);
     QList<QString> returnValue, argument;
     argument << QString("one") << QString("two") << QString("three");
     //wrong object
@@ -2934,14 +2934,14 @@ void tst_QMetaObject::metaMethodNoMacro()
 
 void tst_QMetaObject::indexOfMethod_data()
 {
-    QTest::addColumn<QObject *>("object");
-    QTest::addColumn<QByteArray>("name");
-    QTest::addColumn<bool>("isSignal");
-    QTest::addColumn<bool>("found");
+    BOBUIest::addColumn<QObject *>("object");
+    BOBUIest::addColumn<QByteArray>("name");
+    BOBUIest::addColumn<bool>("isSignal");
+    BOBUIest::addColumn<bool>("found");
 
     auto row = [this] (const char *fun, bool sig, bool found = true) {
         QObject *o = this;
-        QTest::addRow("%s", fun) << o << QByteArray(fun) << sig << found;
+        BOBUIest::addRow("%s", fun) << o << QByteArray(fun) << sig << found;
     };
 
     row("indexOfMethod_data()", false);
@@ -2962,8 +2962,8 @@ void tst_QMetaObject::indexOfMethod()
     QFETCH(bool, isSignal);
     QFETCH(const bool, found);
 #ifdef NORMALIZES_QVECTOR_QLIST
-    QEXPECT_FAIL("myQListChanged(MyQVector<int>)", "Qt 6 QVector -> QList kludge getting in the way", Abort);
-    if (qstrcmp(QTest::currentDataTag(), "myQListChanged(MyQVector<int>)") == 0)
+    QEXPECT_FAIL("myQListChanged(MyQVector<int>)", "BobUI 6 QVector -> QList kludge getting in the way", Abort);
+    if (qstrcmp(BOBUIest::currentDataTag(), "myQListChanged(MyQVector<int>)") == 0)
         eatIndexOfNonNormalizedWarning();
 #endif
     int idx = object->metaObject()->indexOfMethod(name);
@@ -2993,15 +2993,15 @@ public slots:
 
 void tst_QMetaObject::firstMethod_data()
 {
-    QTest::addColumn<QByteArray>("name");
-    QTest::addColumn<QMetaMethod>("method");
+    BOBUIest::addColumn<QByteArray>("name");
+    BOBUIest::addColumn<QMetaMethod>("method");
 
     const QMetaObject &derived = Derived::staticMetaObject;
     const QMetaObject &base = Base::staticMetaObject;
 
-    QTest::newRow("own method") << QByteArray("test") << derived.method(derived.indexOfMethod("test()"));
-    QTest::newRow("parent method") << QByteArray("baseOnly") << derived.method(base.indexOfMethod("baseOnly()"));
-    QTest::newRow("invalid") << QByteArray("invalid") << QMetaMethod();
+    BOBUIest::newRow("own method") << QByteArray("test") << derived.method(derived.indexOfMethod("test()"));
+    BOBUIest::newRow("parent method") << QByteArray("baseOnly") << derived.method(base.indexOfMethod("baseOnly()"));
+    BOBUIest::newRow("invalid") << QByteArray("invalid") << QMetaMethod();
 }
 
 void tst_QMetaObject::firstMethod()
@@ -3020,15 +3020,15 @@ void tst_QMetaObject::indexOfMethodPMF()
         void (ObjectType::*signal)Arguments = &ObjectType::Name; \
         void *signal_p = &signal; \
         void *args[] = { &idx, signal_p, 0}; \
-        ObjectType::qt_static_metacall(0, QMetaObject::IndexOfMethod, 0, args); \
+        ObjectType::bobui_static_metacall(0, QMetaObject::IndexOfMethod, 0, args); \
         QCOMPARE(ObjectType::staticMetaObject.indexOfMethod(QMetaObject::normalizedSignature(#Name #Arguments)), \
                  ObjectType::staticMetaObject.methodOffset() + idx); \
     }
 
     INDEXOFMETHODPMF_HELPER(tst_QMetaObject, value7Changed, (const QString&))
-    INDEXOFMETHODPMF_HELPER(QtTestObject, sig0, ())
-    INDEXOFMETHODPMF_HELPER(QtTestObject, sig10, (QString,QString,QString,QString,QString,QString,QString,QString,QString,QString))
-    INDEXOFMETHODPMF_HELPER(QtTestCustomObject, sig_custom, (const CustomString &))
+    INDEXOFMETHODPMF_HELPER(BobUITestObject, sig0, ())
+    INDEXOFMETHODPMF_HELPER(BobUITestObject, sig10, (QString,QString,QString,QString,QString,QString,QString,QString,QString,QString))
+    INDEXOFMETHODPMF_HELPER(BobUITestCustomObject, sig_custom, (const CustomString &))
 }
 
 namespace SignalTestHelper
@@ -3081,11 +3081,11 @@ static int signalIndex(const QMetaMethod &mm)
 
 void tst_QMetaObject::signalOffset_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaObject");
+    BOBUIest::addColumn<const QMetaObject *>("metaObject");
 
-    QTest::newRow("QObject") << &QObject::staticMetaObject;
-    QTest::newRow("tst_QMetaObject") << &tst_QMetaObject::staticMetaObject;
-    QTest::newRow("QtTestObject") << &QtTestObject::staticMetaObject;
+    BOBUIest::newRow("QObject") << &QObject::staticMetaObject;
+    BOBUIest::newRow("tst_QMetaObject") << &tst_QMetaObject::staticMetaObject;
+    BOBUIest::newRow("BobUITestObject") << &BobUITestObject::staticMetaObject;
 }
 
 void tst_QMetaObject::signalOffset()
@@ -3109,8 +3109,8 @@ void tst_QMetaObject::signalCount()
 
 void tst_QMetaObject::signal_data()
 {
-    QTest::addColumn<const QMetaObject *>("metaObject");
-    QTest::addColumn<int>("index");
+    BOBUIest::addColumn<const QMetaObject *>("metaObject");
+    BOBUIest::addColumn<int>("index");
 
     struct SignalTestDataHelper
     {
@@ -3122,14 +3122,14 @@ void tst_QMetaObject::signal_data()
                 QByteArray tag(mo->className());
                 tag.append("::");
                 tag.append(mm.methodSignature());
-                QTest::newRow(tag.constData()) << mo << i;
+                BOBUIest::newRow(tag.constData()) << mo << i;
             }
         }
     };
 
     SignalTestDataHelper::addSignals(&QObject::staticMetaObject);
     SignalTestDataHelper::addSignals(&tst_QMetaObject::staticMetaObject);
-    SignalTestDataHelper::addSignals(&QtTestObject::staticMetaObject);
+    SignalTestDataHelper::addSignals(&BobUITestObject::staticMetaObject);
 }
 
 void tst_QMetaObject::signal()
@@ -3158,17 +3158,17 @@ void tst_QMetaObject::signalIndex()
 
 void tst_QMetaObject::enumDebugStream_data()
 {
-    QTest::addColumn<int>("verbosity");
-    QTest::addColumn<QString>("normalEnumMsg");
-    QTest::addColumn<QString>("scopedEnumMsg");
-    QTest::addColumn<QString>("globalEnumMsg");
-    QTest::addColumn<QString>("normalFlagMsg");
-    QTest::addColumn<QString>("normalFlagsMsg");
-    QTest::addColumn<QString>("scopedFlagMsg");
-    QTest::addColumn<QString>("scopedFlagsMsg");
-    QTest::addColumn<QString>("flagAsEnumMsg");
+    BOBUIest::addColumn<int>("verbosity");
+    BOBUIest::addColumn<QString>("normalEnumMsg");
+    BOBUIest::addColumn<QString>("scopedEnumMsg");
+    BOBUIest::addColumn<QString>("globalEnumMsg");
+    BOBUIest::addColumn<QString>("normalFlagMsg");
+    BOBUIest::addColumn<QString>("normalFlagsMsg");
+    BOBUIest::addColumn<QString>("scopedFlagMsg");
+    BOBUIest::addColumn<QString>("scopedFlagsMsg");
+    BOBUIest::addColumn<QString>("flagAsEnumMsg");
 
-    QTest::newRow("verbosity=0") << 0
+    BOBUIest::newRow("verbosity=0") << 0
         << "hello MyEnum2 world"
         << "hello MyScopedEnum::Enum3 scoped world"
         << "WindowTitleHint Window SubWindow WindowSystemMenuHint"
@@ -3178,7 +3178,7 @@ void tst_QMetaObject::enumDebugStream_data()
         << "MyScopedFlag(MyFlag2|MyFlag3)"
         << "MyFlag1";
 
-    QTest::newRow("verbosity=1") << 1
+    BOBUIest::newRow("verbosity=1") << 1
         << "hello MyEnum::MyEnum2 world"
         << "hello MyScopedEnum::Enum3 scoped world"
         << "WindowType(WindowTitleHint) WindowType(Window) WindowType(SubWindow) WindowType(WindowSystemMenuHint)"
@@ -3188,22 +3188,22 @@ void tst_QMetaObject::enumDebugStream_data()
         << "MyScopedFlag(MyFlag2|MyFlag3)"
         << "MyFlag(MyFlag1)";
 
-    QTest::newRow("verbosity=2") << 2
+    BOBUIest::newRow("verbosity=2") << 2
         << "hello MyNamespace::MyClass::MyEnum2 world"
         << "hello MyNamespace::MyClass::MyScopedEnum::Enum3 scoped world"
-        << "QFlags<Qt::WindowType>(WindowTitleHint) QFlags<Qt::WindowType>(Window) "
-           "QFlags<Qt::WindowType>(SubWindow) QFlags<Qt::WindowType>(WindowSystemMenuHint)"
+        << "QFlags<BobUI::WindowType>(WindowTitleHint) QFlags<BobUI::WindowType>(Window) "
+           "QFlags<BobUI::WindowType>(SubWindow) QFlags<BobUI::WindowType>(WindowSystemMenuHint)"
         << "hello QFlags<MyNamespace::MyClass::MyFlag>(MyFlag1) world"
         << "QFlags<MyNamespace::MyClass::MyFlag>(MyFlag1) QFlags<MyNamespace::MyClass::MyFlag>(MyFlag2|MyFlag3)"
         << "QFlags<MyNamespace::MyClass::MyScopedFlag>(MyFlag2)"
         << "QFlags<MyNamespace::MyClass::MyScopedFlag>(MyFlag2|MyFlag3)"
         << "QFlags<MyNamespace::MyClass::MyFlag>(MyFlag1)";
 
-    QTest::newRow("verbosity=3") << 3
+    BOBUIest::newRow("verbosity=3") << 3
         << "hello MyNamespace::MyClass::MyEnum::MyEnum2 world"
         << "hello MyNamespace::MyClass::MyScopedEnum::Enum3 scoped world"
-        << "QFlags<Qt::WindowType>(WindowTitleHint) QFlags<Qt::WindowType>(Window) "
-           "QFlags<Qt::WindowType>(SubWindow) QFlags<Qt::WindowType>(WindowSystemMenuHint)"
+        << "QFlags<BobUI::WindowType>(WindowTitleHint) QFlags<BobUI::WindowType>(Window) "
+           "QFlags<BobUI::WindowType>(SubWindow) QFlags<BobUI::WindowType>(WindowSystemMenuHint)"
         << "hello QFlags<MyNamespace::MyClass::MyFlag>(MyFlag1) world"
         << "QFlags<MyNamespace::MyClass::MyFlag>(MyFlag1) QFlags<MyNamespace::MyClass::MyFlag>(MyFlag2|MyFlag3)"
         << "QFlags<MyNamespace::MyClass::MyScopedFlag>(MyFlag2)"
@@ -3226,55 +3226,55 @@ void tst_QMetaObject::enumDebugStream()
     QFETCH(QString, flagAsEnumMsg);
 
     // Enums
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(normalEnumMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(normalEnumMsg));
     qDebug().verbosity(verbosity) << "hello" << MyNamespace::MyClass::MyEnum2 << "world";
 
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(scopedEnumMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(scopedEnumMsg));
     qDebug().verbosity(verbosity) << "hello" << MyNamespace::MyClass::MyScopedEnum::Enum3 << "scoped world";
 
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(globalEnumMsg));
-    qDebug().verbosity(verbosity) << Qt::WindowTitleHint << Qt::Window << Qt::SubWindow << Qt::WindowSystemMenuHint;
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(globalEnumMsg));
+    qDebug().verbosity(verbosity) << BobUI::WindowTitleHint << BobUI::Window << BobUI::SubWindow << BobUI::WindowSystemMenuHint;
 
     // Flags
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(normalFlagMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(normalFlagMsg));
     MyNamespace::MyClass::MyFlags f1 = MyNamespace::MyClass::MyFlag1;
     qDebug().verbosity(verbosity) << "hello" << f1 << "world";
 
     MyNamespace::MyClass::MyFlags f2 = MyNamespace::MyClass::MyFlag2 | MyNamespace::MyClass::MyFlag3;
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(normalFlagsMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(normalFlagsMsg));
     qDebug().verbosity(verbosity) << f1 << f2;
 
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(scopedFlagMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(scopedFlagMsg));
     MyNamespace::MyClass::MyScopedFlags f3 = MyNamespace::MyClass::MyScopedFlag::MyFlag2;
     qDebug().verbosity(verbosity) << f3;
 
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(scopedFlagsMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(scopedFlagsMsg));
     f3 |= MyNamespace::MyClass::MyScopedFlag::MyFlag3;
     qDebug().verbosity(verbosity) << f3;
 
     // Single flag recognized as enum:
-    QTest::ignoreMessage(QtDebugMsg, qPrintable(flagAsEnumMsg));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, qPrintable(flagAsEnumMsg));
     MyNamespace::MyClass::MyFlag f4 = MyNamespace::MyClass::MyFlag1;
     qDebug().verbosity(verbosity) << f4;
 }
 
 void tst_QMetaObject::inherits_data()
 {
-    QTest::addColumn<const QMetaObject *>("derivedMetaObject");
-    QTest::addColumn<const QMetaObject *>("baseMetaObject");
-    QTest::addColumn<bool>("inheritsResult");
+    BOBUIest::addColumn<const QMetaObject *>("derivedMetaObject");
+    BOBUIest::addColumn<const QMetaObject *>("baseMetaObject");
+    BOBUIest::addColumn<bool>("inheritsResult");
 
-    QTest::newRow("MyClass inherits QObject")
+    BOBUIest::newRow("MyClass inherits QObject")
         << &MyNamespace::MyClass::staticMetaObject << &QObject::staticMetaObject << true;
-    QTest::newRow("QObject inherits MyClass")
+    BOBUIest::newRow("QObject inherits MyClass")
         << &QObject::staticMetaObject << &MyNamespace::MyClass::staticMetaObject << false;
-    QTest::newRow("MyClass inherits MyClass")
+    BOBUIest::newRow("MyClass inherits MyClass")
         << &MyNamespace::MyClass::staticMetaObject << &MyNamespace::MyClass::staticMetaObject << true;
-    QTest::newRow("MyClassSubclass inherits QObject")
+    BOBUIest::newRow("MyClassSubclass inherits QObject")
         << &MyNamespace::MyClassSubclass::staticMetaObject << &QObject::staticMetaObject << true;
-    QTest::newRow("MyClassSubclass2 inherits QObject")
+    BOBUIest::newRow("MyClassSubclass2 inherits QObject")
         << &MyNamespace::MyClassSubclass2::staticMetaObject << &QObject::staticMetaObject << true;
-    QTest::newRow("MyClassSubclass2 inherits MyClass2")
+    BOBUIest::newRow("MyClassSubclass2 inherits MyClass2")
         << &MyNamespace::MyClassSubclass2::staticMetaObject << &MyNamespace::MyClass2Subclass::staticMetaObject << false;
 }
 
@@ -3296,17 +3296,17 @@ void tst_QMetaObject::notifySignalsInParentClass()
     MyNamespace::ClassWithChangedSignalNewValue obj2;
     QCOMPARE(obj2.metaObject()->property(obj2.metaObject()->indexOfProperty("value2")).notifySignal().name(), QByteArray("propertiesChanged"));
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaProperty::notifySignal: cannot find the NOTIFY signal thisIsNotASignal in class MyNamespace::ClassWithChangedSignalNewValue for property 'value3'");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaProperty::notifySignal: cannot find the NOTIFY signal thisIsNotASignal in class MyNamespace::ClassWithChangedSignalNewValue for property 'value3'");
     obj2.metaObject()->property(obj2.metaObject()->indexOfProperty("value3")).notifySignal();
 }
 
 void tst_QMetaObject::connectByMetaMethodToPMF()
 {
-    QtTestObject o;
+    BobUITestObject o;
     QObject::disconnect(&o, nullptr, nullptr, nullptr);
-    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&QtTestObject::sig0);
+    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&BobUITestObject::sig0);
 
-    QMetaObject::Connection connection = QMetaObject::connect(&o, sig0Signal, &o, &QtTestObject::sl0);
+    QMetaObject::Connection connection = QMetaObject::connect(&o, sig0Signal, &o, &BobUITestObject::sl0);
     QVERIFY(connection);
 
     QVERIFY(o.slotResult.isEmpty());
@@ -3318,8 +3318,8 @@ void tst_QMetaObject::connectByMetaMethodToPMF()
     emit o.sig0();
     QVERIFY(o.slotResult.isEmpty());
 
-    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&QtTestObject::sig1);
-    connection = QMetaObject::connect(&o, sig1Signal, &o, &QtTestObject::sl1);
+    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&BobUITestObject::sig1);
+    connection = QMetaObject::connect(&o, sig1Signal, &o, &BobUITestObject::sl1);
     QVERIFY(connection);
     QCOMPARE(emit o.sig1(u"toto"_s), u"yessir"_s);
     QCOMPARE(o.slotResult, u"sl1:toto"_s);
@@ -3329,13 +3329,13 @@ void tst_QMetaObject::connectByMetaMethodToPMF()
     QCOMPARE(emit o.sig1(u"tata"_s), QString());
     QVERIFY(o.slotResult.isEmpty());
 
-    connection = QMetaObject::connect(&o, sig0Signal, &o, qOverload<>(&QtTestObject::overloadedSlot));
+    connection = QMetaObject::connect(&o, sig0Signal, &o, qOverload<>(&BobUITestObject::overloadedSlot));
     QVERIFY(connection);
     emit o.sig0();
     QCOMPARE(o.slotResult, u"overloadedSlot"_s);
 
     o.slotResult = QString();
-    connection = QMetaObject::connect(&o, sig1Signal, &o, &QtTestObject::sl1, Qt::QueuedConnection);
+    connection = QMetaObject::connect(&o, sig1Signal, &o, &BobUITestObject::sl1, BobUI::QueuedConnection);
     QVERIFY(connection);
     QCOMPARE(emit o.sig1(u"titi"_s), QString());
     QVERIFY(o.slotResult.isEmpty());
@@ -3344,8 +3344,8 @@ void tst_QMetaObject::connectByMetaMethodToPMF()
     QCOMPARE(o.slotResult, u"sl1:titi"_s);
     QVERIFY(QObject::disconnect(connection));
 
-    QMetaMethod sigWithOneUnregisteredParameterTypeSignal = QMetaMethod::fromSignal(&QtTestObject::sigWithOneUnregisteredParameterType);
-    connection = QMetaObject::connect(&o, sigWithOneUnregisteredParameterTypeSignal, &o, &QtTestObject::slotWithOneUnregisteredParameterType);
+    QMetaMethod sigWithOneUnregisteredParameterTypeSignal = QMetaMethod::fromSignal(&BobUITestObject::sigWithOneUnregisteredParameterType);
+    connection = QMetaObject::connect(&o, sigWithOneUnregisteredParameterTypeSignal, &o, &BobUITestObject::slotWithOneUnregisteredParameterType);
     QVERIFY(connection);
     emit o.sigWithOneUnregisteredParameterType(u"tutu"_s, getForwardDeclaredType());
     QCOMPARE(o.slotResult, u"slotWithUnregisteredReturnType-tutu"_s);
@@ -3354,9 +3354,9 @@ void tst_QMetaObject::connectByMetaMethodToPMF()
 
 void tst_QMetaObject::connectByMetaMethodToFunctor()
 {
-    QtTestObject o;
+    BobUITestObject o;
     QObject::disconnect(&o, nullptr, nullptr, nullptr);
-    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&QtTestObject::sig0);
+    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&BobUITestObject::sig0);
 
     int called = 0;
 
@@ -3371,7 +3371,7 @@ void tst_QMetaObject::connectByMetaMethodToFunctor()
     emit o.sig0();
     QCOMPARE(called, 1);
 
-    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&QtTestObject::sig1);
+    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&BobUITestObject::sig1);
     QString receivedValue;
     connection = QMetaObject::connect(&o, sig1Signal, &o, [&receivedValue](QString s1) { receivedValue = s1; return s1; });
     QVERIFY(connection);
@@ -3385,7 +3385,7 @@ void tst_QMetaObject::connectByMetaMethodToFunctor()
     QVERIFY(receivedValue.isEmpty());
     QVERIFY(returnValue.isEmpty());
 
-    connection = QMetaObject::connect(&o, sig1Signal, &o, [&receivedValue](QString s1) { receivedValue = s1; return s1; }, Qt::QueuedConnection);
+    connection = QMetaObject::connect(&o, sig1Signal, &o, [&receivedValue](QString s1) { receivedValue = s1; return s1; }, BobUI::QueuedConnection);
     QVERIFY(connection);
     returnValue = emit o.sig1(u"baz"_s);
     QVERIFY(receivedValue.isEmpty());
@@ -3402,18 +3402,18 @@ QString freeFunction(const QString &s)
 
 void tst_QMetaObject::connectByMetaMethodToFreeFunction()
 {
-    QtTestObject o;
+    BobUITestObject o;
     QObject::disconnect(&o, nullptr, nullptr, nullptr);
-    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&QtTestObject::sig0);
+    QMetaMethod sig0Signal = QMetaMethod::fromSignal(&BobUITestObject::sig0);
 
-    QMetaObject::Connection connection = QMetaObject::connect(&o, sig0Signal, &o, &QtTestObject::staticFunction0);
+    QMetaObject::Connection connection = QMetaObject::connect(&o, sig0Signal, &o, &BobUITestObject::staticFunction0);
     QVERIFY(connection);
 
     emit o.sig0();
     QCOMPARE(o.staticResult, u"staticFunction0"_s);
     QVERIFY(QObject::disconnect(connection));
 
-    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&QtTestObject::sig1);
+    QMetaMethod sig1Signal = QMetaMethod::fromSignal(&BobUITestObject::sig1);
     connection = QMetaObject::connect(&o, sig1Signal, &o, freeFunction);
     QVERIFY(connection);
     QCOMPARE(emit o.sig1(u"foo"_s), u"foofoo"_s);
@@ -3423,5 +3423,5 @@ void tst_QMetaObject::connectByMetaMethodToFreeFunction()
 # undef NORMALIZES_QVECTOR_QLIST
 #endif
 
-QTEST_MAIN(tst_QMetaObject)
+BOBUIEST_MAIN(tst_QMetaObject)
 #include "tst_qmetaobject.moc"

@@ -1,14 +1,14 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QRAWVECTOR_H
 #define QRAWVECTOR_H
 
-#include <QtCore/qiterator.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qlist.h>
-#include <QtCore/private/qtools_p.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/private/bobuiools_p.h>
 
 #include <iterator>
 #include <vector>
@@ -25,11 +25,11 @@ extern QVector<double> qrawvector_fill_and_return_helper();
 extern std::vector<double> stdvector_fill_and_return_helper();
 extern QVector<double> mixedvector_fill_and_return_helper();
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QVectorData
 {
-    QtPrivate::RefCount ref;
+    BobUIPrivate::RefCount ref;
     int size;
     uint alloc : 31;
     uint capacityReserved : 1;
@@ -127,7 +127,7 @@ public:
     iterator erase(iterator begin, iterator end);
     inline iterator erase(iterator pos) { return erase(pos, pos+1); }
 
-    // more Qt
+    // more BobUI
     inline int count() const { return m_size; }
     inline T& first() { Q_ASSERT(!isEmpty()); return *begin(); }
     inline const T &first() const { Q_ASSERT(!isEmpty()); return *begin(); }
@@ -200,7 +200,7 @@ private:
 public:
     QVector<T> mutateToVector()
     {
-        Q_ASSERT(!"Fix QTBUG-95061 before calling this; it is broken beyond repair");
+        Q_ASSERT(!"Fix BOBUIBUG-95061 before calling this; it is broken beyond repair");
         Data *d = toBase(m_begin);
         d->ref.initializeOwned();
         d->alloc = m_alloc;
@@ -294,7 +294,7 @@ QRawVector<T>::QRawVector(int asize)
 {
     m_size = m_alloc = asize;
     m_begin = allocate(asize);
-    if (QTypeInfo<T>::isComplex) {
+    if (BOBUIypeInfo<T>::isComplex) {
         T *b = m_begin;
         T *i = m_begin + m_size;
         while (i != b)
@@ -317,7 +317,7 @@ QRawVector<T>::QRawVector(int asize, const T &t)
 template <typename T>
 void QRawVector<T>::free(T *begin, int size)
 {
-    if (QTypeInfo<T>::isComplex) {
+    if (BOBUIypeInfo<T>::isComplex) {
         T *i = begin + size;
         while (i-- != begin)
              i->~T();
@@ -329,7 +329,7 @@ void QRawVector<T>::free(T *begin, int size)
 template <typename T>
 void QRawVector<T>::realloc(int asize, int aalloc, bool ref)
 {
-    if (QTypeInfo<T>::isComplex && asize < m_size && !ref) {
+    if (BOBUIypeInfo<T>::isComplex && asize < m_size && !ref) {
         // call the destructor on all objects that need to be
         // destroyed when shrinking
         T *pOld = m_begin + m_size;
@@ -345,13 +345,13 @@ void QRawVector<T>::realloc(int asize, int aalloc, bool ref)
     T *xbegin = m_begin;
     if (aalloc != xalloc || ref) {
         // (re)allocate memory
-        if (!QTypeInfo<T>::isRelocatable) {
+        if (!BOBUIypeInfo<T>::isRelocatable) {
             xbegin = allocate(aalloc);
             xsize = 0;
             changed = true;
         } else if (ref) {
             xbegin = allocate(aalloc);
-            if (QTypeInfo<T>::isComplex) {
+            if (BOBUIypeInfo<T>::isComplex) {
                 xsize = 0;
             } else {
                 ::memcpy(xbegin, m_begin, qMin(aalloc, xalloc) * sizeof(T));
@@ -359,23 +359,23 @@ void QRawVector<T>::realloc(int asize, int aalloc, bool ref)
             }
             changed = true;
         } else {
-            QT_TRY {
+            BOBUI_TRY {
                 QVectorData *mem = QVectorData::reallocate(toBase(m_begin),
                         offsetOfTypedData() + aalloc * sizeof(T),
                         offsetOfTypedData() + xalloc * sizeof(T), alignOfTypedData());
                 Q_CHECK_PTR(mem);
                 xbegin = fromBase(mem);
                 xsize = m_size;
-            } QT_CATCH (const std::bad_alloc &) {
+            } BOBUI_CATCH (const std::bad_alloc &) {
                 if (aalloc > xalloc) // ignore the error in case we are just shrinking.
-                    QT_RETHROW;
+                    BOBUI_RETHROW;
             }
         }
         xalloc = aalloc;
     }
 
-    if (QTypeInfo<T>::isComplex) {
-        QT_TRY {
+    if (BOBUIypeInfo<T>::isComplex) {
+        BOBUI_TRY {
             T *pOld = m_begin + xsize;
             T *pNew = xbegin + xsize;
             // copy objects from the old array into the new array
@@ -388,9 +388,9 @@ void QRawVector<T>::realloc(int asize, int aalloc, bool ref)
                 new (pNew++) T;
                 ++xsize;
             }
-        } QT_CATCH (...) {
+        } BOBUI_CATCH (...) {
             free(xbegin, xsize);
-            QT_RETHROW;
+            BOBUI_RETHROW;
         }
 
     } else if (asize > xsize) {
@@ -425,12 +425,12 @@ void QRawVector<T>::append(const T &t)
     if (m_size + 1 > m_alloc) {
         const T copy(t);
         realloc(m_size, QVectorData::grow(offsetOfTypedData(), m_size + 1, sizeof(T)), false);
-        if (QTypeInfo<T>::isComplex)
+        if (BOBUIypeInfo<T>::isComplex)
             new (m_begin + m_size) T(copy);
         else
             m_begin[m_size] = copy;
     } else {
-        if (QTypeInfo<T>::isComplex)
+        if (BOBUIypeInfo<T>::isComplex)
             new (m_begin + m_size) T(t);
         else
             m_begin[m_size] = t;
@@ -446,7 +446,7 @@ typename QRawVector<T>::iterator QRawVector<T>::insert(iterator before, size_typ
         const T copy(t);
         if (m_size + n > m_alloc)
             realloc(m_size, QVectorData::grow(offsetOfTypedData(), m_size + n, sizeof(T)), false);
-        if (!QTypeInfo<T>::isRelocatable) {
+        if (!BOBUIypeInfo<T>::isRelocatable) {
             T *b = m_begin + m_size;
             T *i = m_begin + m_size + n;
             while (i != b)
@@ -477,7 +477,7 @@ typename QRawVector<T>::iterator QRawVector<T>::erase(iterator abegin, iterator 
     int f = int(abegin - m_begin);
     int l = int(aend - m_begin);
     int n = l - f;
-    if (QTypeInfo<T>::isComplex) {
+    if (BOBUIypeInfo<T>::isComplex) {
         std::copy(m_begin + l, m_begin + m_size, m_begin + f);
         T *i = m_begin + m_size;
         T *b = m_begin + m_size - n;
@@ -530,7 +530,7 @@ QRawVector<T> &QRawVector<T>::operator+=(const QRawVector &l)
     T *i = l.m_begin + l.m_size;
     T *b = l.m_begin;
     while (i != b) {
-        if (QTypeInfo<T>::isComplex)
+        if (BOBUIypeInfo<T>::isComplex)
             new (--w) T(*--i);
         else
             *--w = *--i;
@@ -645,6 +645,6 @@ QList<T> QList<T>::fromVector(const QRawVector<T> &vector)
 Q_DECLARE_SEQUENTIAL_ITERATOR(RawVector)
 Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(RawVector)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRAWVECTOR_H

@@ -1,5 +1,5 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGETTID_P_H
 #define QGETTID_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -25,7 +25,7 @@
 #  define SYS_gettid __NR_gettid
 # endif
 
-static inline long qt_gettid()
+static inline long bobui_gettid()
 {
     // no error handling
     // this syscall has existed since Linux 2.4.11 and cannot fail
@@ -33,7 +33,7 @@ static inline long qt_gettid()
 }
 #elif defined(Q_OS_DARWIN)
 #  include <pthread.h>
-static inline int qt_gettid()
+static inline int bobui_gettid()
 {
     // no error handling: this call cannot fail
     __uint64_t tid;
@@ -42,20 +42,20 @@ static inline int qt_gettid()
 }
 #elif defined(Q_OS_FREEBSD_KERNEL) && defined(__FreeBSD_version) && __FreeBSD_version >= 900031
 #  include <pthread_np.h>
-static inline int qt_gettid()
+static inline int bobui_gettid()
 {
     return pthread_getthreadid_np();
 }
 #else
-#  include <qthread.h>
-static QT_PREPEND_NAMESPACE(qint64) qt_gettid()
+#  include <bobuihread.h>
+static BOBUI_PREPEND_NAMESPACE(qint64) bobui_gettid()
 {
-    QT_USE_NAMESPACE
-    return qintptr(QThread::currentThreadId());
+    BOBUI_USE_NAMESPACE
+    return qintptr(BOBUIhread::currentThreadId());
 }
 #endif
 
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGETTID_P_H

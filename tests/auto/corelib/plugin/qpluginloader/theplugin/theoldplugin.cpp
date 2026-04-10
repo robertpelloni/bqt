@@ -1,8 +1,8 @@
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "theoldplugin.h"
-#include <QtCore/QString>
-#include <QtCore/qplugin.h>
+#include <BobUICore/QString>
+#include <BobUICore/qplugin.h>
 
 QString TheOldPlugin::pluginName() const
 {
@@ -15,12 +15,12 @@ extern "C" Q_DECL_EXPORT int *pointerAddress()
     return &pluginVariable;
 }
 
-// This hardcodes the old plugin metadata from before Qt 6.2
-QT_PLUGIN_METADATA_SECTION
-static constexpr unsigned char qt_pluginMetaData_ThePlugin[] = {
+// This hardcodes the old plugin metadata from before BobUI 6.2
+BOBUI_PLUGIN_METADATA_SECTION
+static constexpr unsigned char bobui_pluginMetaData_ThePlugin[] = {
     'Q', 'T', 'M', 'E', 'T', 'A', 'D', 'A', 'T', 'A', ' ', '!',
-    // metadata version, Qt version, architectural requirements
-    0, QT_VERSION_MAJOR, QT_VERSION_MINOR, qPluginArchRequirements(),
+    // metadata version, BobUI version, architectural requirements
+    0, BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, qPluginArchRequirements(),
     0xbf,
     // "IID"
     0x02,  0x78,  0x2b,  'o',  'r',  'g',  '.',  'q',
@@ -77,4 +77,4 @@ static constexpr unsigned char qt_pluginMetaData_ThePlugin[] = {
     'g',  'e',  'o',  'm',  'e',  't',  'r',  'y',
     0xff,
 };
-QT_MOC_EXPORT_PLUGIN(TheOldPlugin, ThePlugin)
+BOBUI_MOC_EXPORT_PLUGIN(TheOldPlugin, ThePlugin)

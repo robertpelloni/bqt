@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDOM_H
 #define QDOM_H
 
-#include <QtXml/qtxmlglobal.h>
+#include <BobUIXml/bobuixmlglobal.h>
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainertools_impl.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainertools_impl.h>
+#include <BobUICore/qstring.h>
 
 #include <iterator>
 
-#if QT_CONFIG(dom)
+#if BOBUI_CONFIG(dom)
 
 class tst_QDom;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIODevice;
-class QTextStream;
+class BOBUIextStream;
 
 class QDomDocumentPrivate;
 class QDomDocumentTypePrivate;
@@ -79,7 +79,7 @@ public:
     static InvalidDataPolicy invalidDataPolicy();
     static void setInvalidDataPolicy(InvalidDataPolicy policy);
 
-    // Qt extension
+    // BobUI extension
     bool isNull();
 
 private:
@@ -154,7 +154,7 @@ public:
     QString prefix() const;
     void setPrefix(const QString& pre);
 
-    // Qt extensions
+    // BobUI extensions
     bool isAttr() const;
     bool isCDATASection() const;
     bool isDocumentFragment() const;
@@ -192,7 +192,7 @@ public:
     QDomCharacterData toCharacterData() const;
     QDomComment toComment() const;
 
-    void save(QTextStream&, int, EncodingPolicy=QDomNode::EncodingFromDocument) const;
+    void save(BOBUIextStream&, int, EncodingPolicy=QDomNode::EncodingFromDocument) const;
 
     QDomElement firstChildElement(const QString &tagName = QString(), const QString &namespaceURI = QString()) const;
     QDomElement lastChildElement(const QString &tagName = QString(), const QString &namespaceURI = QString()) const;
@@ -220,7 +220,7 @@ public:
     QDomNodeList();
     QDomNodeList(const QDomNodeList &nodeList);
     QDomNodeList& operator=(const QDomNodeList &other);
-#if QT_XML_REMOVED_SINCE(6, 9)
+#if BOBUI_XML_REMOVED_SINCE(6, 9)
     bool operator==(const QDomNodeList &other) const;
     bool operator!=(const QDomNodeList &other) const;
 #endif
@@ -228,13 +228,13 @@ public:
 
     // DOM functions
     QDomNode item(int index) const;
-    inline QDomNode at(int index) const { return item(index); } // Qt API consistency
+    inline QDomNode at(int index) const { return item(index); } // BobUI API consistency
 
     // DOM read only attributes
     int length() const;
-    inline int count() const { return length(); } // Qt API consitancy
-    inline int size() const { return length(); } // Qt API consistency
-    inline bool isEmpty() const { return length() == 0; } // Qt API consistency
+    inline int count() const { return length(); } // BobUI API consitancy
+    inline int size() const { return length(); } // BobUI API consistency
+    inline bool isEmpty() const { return length() == 0; } // BobUI API consistency
 
 private:
     Q_XML_EXPORT friend bool comparesEqual(const QDomNodeList &lhs, const QDomNodeList &rhs) noexcept;
@@ -267,7 +267,7 @@ private:
         using element_type = const QDomNode;
         using difference_type = qptrdiff; // difference to [container.reqmts]
         using reference = value_type;     // difference to [container.reqmts]
-        using pointer = QtPrivate::ArrowProxy<reference>;
+        using pointer = BobUIPrivate::ArrowProxy<reference>;
 
         reference operator*() const { return QDomNode(current); }
         pointer operator->() const { return { **this }; }
@@ -390,24 +390,24 @@ public:
     // Overridden from QDomNode
     inline QDomNode::NodeType nodeType() const { return DocumentNode; }
 
-    // Qt extensions
-#if QT_DEPRECATED_SINCE(6, 8)
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
+    // BobUI extensions
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
     bool setContent(const QByteArray &text, bool namespaceProcessing, QString *errorMsg = nullptr, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
     bool setContent(const QString &text, bool namespaceProcessing, QString *errorMsg = nullptr, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
     bool setContent(QIODevice *dev, bool namespaceProcessing, QString *errorMsg = nullptr, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
     bool setContent(const QByteArray &text, QString *errorMsg, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
     bool setContent(const QString &text, QString *errorMsg, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload returning ParseResult instead.")
     bool setContent(QIODevice *dev, QString *errorMsg, int *errorLine = nullptr, int *errorColumn = nullptr);
-    QT_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use the overload taking ParseOptions instead.")
     bool setContent(QXmlStreamReader *reader, bool namespaceProcessing, QString *errorMsg = nullptr,
                     int *errorLine = nullptr, int *errorColumn = nullptr);
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
     Q_WEAK_OVERLOAD
     ParseResult setContent(const QByteArray &data, ParseOptions options = ParseOption::Default)
@@ -416,7 +416,7 @@ public:
     ParseResult setContent(QIODevice *device, ParseOptions options = ParseOption::Default);
     ParseResult setContent(QXmlStreamReader *reader, ParseOptions options = ParseOption::Default);
 
-    // Qt extensions
+    // BobUI extensions
     QString toString(int indent = 1) const;
     QByteArray toByteArray(int indent = 1) const;
 
@@ -449,11 +449,11 @@ public:
 
     // DOM read only attributes
     int length() const;
-    int count() const { return length(); } // Qt API consitancy
-    inline int size() const { return length(); } // Qt API consistency
-    inline bool isEmpty() const { return length() == 0; } // Qt API consistency
+    int count() const { return length(); } // BobUI API consitancy
+    inline int size() const { return length(); } // BobUI API consistency
+    inline bool isEmpty() const { return length() == 0; } // BobUI API consistency
 
-    // Qt extension
+    // BobUI extension
     bool contains(const QString& name) const;
 
 private:
@@ -584,7 +584,7 @@ public:
 
     // DOM read only attributes
     QString tagName() const;
-    void setTagName(const QString& name); // Qt extension
+    void setTagName(const QString& name); // BobUI extension
 
     // Overridden from QDomNode
     QDomNamedNodeMap attributes() const;
@@ -739,9 +739,9 @@ private:
 };
 
 
-Q_XML_EXPORT QTextStream& operator<<(QTextStream& stream, const QDomNode& node);
+Q_XML_EXPORT BOBUIextStream& operator<<(BOBUIextStream& stream, const QDomNode& node);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature dom
 

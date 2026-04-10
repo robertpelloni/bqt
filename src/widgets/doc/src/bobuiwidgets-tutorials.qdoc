@@ -1,0 +1,15 @@
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \page widget-tutorials.html
+    \title BobUI Widgets Tutorials
+    \brief Tutorials of how to use different kinds of widgets.
+
+    \image notepad1.png "Notepad application"
+
+    BobUI comes with a large range of standard widgets that users of modern
+    applications have come to expect.
+
+    \annotatedlist widget-tutorials
+*/

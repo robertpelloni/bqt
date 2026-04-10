@@ -1,12 +1,12 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/qcompare.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qurl.h>
+#include <BOBUIest>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qurl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class MyClass
 {
@@ -19,10 +19,10 @@ public:
     {
         return lhs.m_value == rhs.m_value;
     }
-    friend Qt::strong_ordering compareThreeWay(const MyClass &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const MyClass &lhs,
                                                const MyClass &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.m_value, rhs.m_value);
+        return BobUI::compareThreeWay(lhs.m_value, rhs.m_value);
     }
     Q_DECLARE_STRONGLY_ORDERED(MyClass);
 private:
@@ -62,14 +62,14 @@ static ClassWithPointerGetter getClassForValue(int val)
 #endif
 
 // various toString() overloads
-namespace QTest {
+namespace BOBUIest {
 
 template <> char *toString(const int *const &val)
 {
     return val ? toString(*val) : toString(nullptr);
 }
 
-} // namespace QTest
+} // namespace BOBUIest
 
 char *toString(const MyClass &val)
 {
@@ -110,27 +110,27 @@ private:
     template <typename T, typename OrderingType> void executeComparison();
 
 private slots:
-    void compareInts_data() { generateData(1, 2, Qt::strong_ordering::equal); }
-    void compareInts() { executeComparison<int, Qt::strong_ordering>(); }
-    void compareFloats_data() { generateData(1.0f, 1.1f, Qt::partial_ordering::less); }
-    void compareFloats() { executeComparison<float, Qt::partial_ordering>(); }
-    void compareDoubles_data() { generateData(0.0, 0.1, Qt::partial_ordering::greater); }
-    void compareDoubles() { executeComparison<double, Qt::partial_ordering>(); }
+    void compareInts_data() { generateData(1, 2, BobUI::strong_ordering::equal); }
+    void compareInts() { executeComparison<int, BobUI::strong_ordering>(); }
+    void compareFloats_data() { generateData(1.0f, 1.1f, BobUI::partial_ordering::less); }
+    void compareFloats() { executeComparison<float, BobUI::partial_ordering>(); }
+    void compareDoubles_data() { generateData(0.0, 0.1, BobUI::partial_ordering::greater); }
+    void compareDoubles() { executeComparison<double, BobUI::partial_ordering>(); }
     void comparePointers_data()
-    { generateData(&values[0], &values[1], Qt::strong_ordering::equal); }
-    void comparePointers() { executeComparison<const int *, Qt::strong_ordering>(); }
-    void compareToNullptr_data() { generateData(ptr, &value, Qt::strong_ordering::equivalent); }
-    void compareToNullptr() { executeComparison<const int *, Qt::strong_ordering>(); }
+    { generateData(&values[0], &values[1], BobUI::strong_ordering::equal); }
+    void comparePointers() { executeComparison<const int *, BobUI::strong_ordering>(); }
+    void compareToNullptr_data() { generateData(ptr, &value, BobUI::strong_ordering::equivalent); }
+    void compareToNullptr() { executeComparison<const int *, BobUI::strong_ordering>(); }
     void compareUnregisteredEnum_data()
     { generateData(MyUnregisteredEnumValue1,
-                   MyUnregisteredEnumValue2, Qt::strong_ordering::less); }
+                   MyUnregisteredEnumValue2, BobUI::strong_ordering::less); }
     void compareUnregisteredEnum()
-    { executeComparison<MyUnregisteredEnum, Qt::strong_ordering>(); }
+    { executeComparison<MyUnregisteredEnum, BobUI::strong_ordering>(); }
     void compareRegisteredEnum_data()
-    { generateData(Qt::Monday, Qt::Sunday, Qt::strong_ordering::greater); }
-    void compareRegisteredEnum() { executeComparison<Qt::DayOfWeek, Qt::strong_ordering>(); }
-    void compareCustomTypes_data() { generateData(val1, val2, Qt::strong_ordering::less); }
-    void compareCustomTypes() { executeComparison<MyClass, Qt::strong_ordering>(); }
+    { generateData(BobUI::Monday, BobUI::Sunday, BobUI::strong_ordering::greater); }
+    void compareRegisteredEnum() { executeComparison<BobUI::DayOfWeek, BobUI::strong_ordering>(); }
+    void compareCustomTypes_data() { generateData(val1, val2, BobUI::strong_ordering::less); }
+    void compareCustomTypes() { executeComparison<MyClass, BobUI::strong_ordering>(); }
     void stdCompareInts_data() { generateData(1, -2, std::strong_ordering::equal); }
     void stdCompareInts() { (executeComparison<int, std::strong_ordering>()); }
     void stdCompareFloats_data()
@@ -150,8 +150,8 @@ private slots:
     void stdCompareUnregisteredEnum()
     { executeComparison<MyUnregisteredEnum, std::strong_ordering>(); }
     void stdCompareRegisteredEnum_data()
-    { generateData(Qt::Monday, Qt::Friday, std::strong_ordering::greater); }
-    void stdCompareRegisteredEnum() { executeComparison<Qt::DayOfWeek, std::strong_ordering>(); }
+    { generateData(BobUI::Monday, BobUI::Friday, std::strong_ordering::greater); }
+    void stdCompareRegisteredEnum() { executeComparison<BobUI::DayOfWeek, std::strong_ordering>(); }
     void stdCompareCustomTypes_data() { generateData(val1, val2, std::strong_ordering::less); }
     void stdCompareCustomTypes() { executeComparison<MyClass, std::strong_ordering>(); }
 
@@ -170,27 +170,27 @@ template <typename OrderingType> inline QByteArray typeName()
         return QByteArray("std::partial_ordering");
 #endif
 
-    if constexpr (std::is_same_v<OrderingType, Qt::strong_ordering>)
-        return QByteArray("Qt::strong_ordering");
-    if constexpr (std::is_same_v<OrderingType, Qt::partial_ordering>)
-        return QByteArray("Qt::partial_ordering");
-    if constexpr (std::is_same_v<OrderingType, Qt::weak_ordering>)
-        return QByteArray("Qt::weak_ordering");
+    if constexpr (std::is_same_v<OrderingType, BobUI::strong_ordering>)
+        return QByteArray("BobUI::strong_ordering");
+    if constexpr (std::is_same_v<OrderingType, BobUI::partial_ordering>)
+        return QByteArray("BobUI::partial_ordering");
+    if constexpr (std::is_same_v<OrderingType, BobUI::weak_ordering>)
+        return QByteArray("BobUI::weak_ordering");
 }
 
 template <typename T, typename OrderingType>
 void tst_ThreeWayCompare::generateData(T val1, T val2, OrderingType order)
 {
 #ifdef __cpp_lib_three_way_comparison
-    QTest::addColumn<T>("lhs");
-    QTest::addColumn<T>("rhs");
-    QTest::addColumn<OrderingType>("expectedOrder");
+    BOBUIest::addColumn<T>("lhs");
+    BOBUIest::addColumn<T>("rhs");
+    BOBUIest::addColumn<OrderingType>("expectedOrder");
 
-    QTest::newRow(typeName<OrderingType>().append("::equivalent").constData())
+    BOBUIest::newRow(typeName<OrderingType>().append("::equivalent").constData())
             << val1 << val1 << order;
-    QTest::newRow(typeName<OrderingType>().append("::less").constData())
+    BOBUIest::newRow(typeName<OrderingType>().append("::less").constData())
             << val1 << val2 << order;
-    QTest::newRow(typeName<OrderingType>().append("::greater").constData())
+    BOBUIest::newRow(typeName<OrderingType>().append("::greater").constData())
             << val2 << val1 << order;
 #else
     Q_UNUSED(val1)
@@ -215,7 +215,7 @@ void tst_ThreeWayCompare::checkComparisonForTemporaryObjects()
 #ifdef __cpp_lib_three_way_comparison
     QCOMPARE_3WAY(getClassForValue(0).getValuePointer(),
                   getClassForValue(1).getValuePointer(),
-                  Qt::strong_ordering::less);
+                  BobUI::strong_ordering::less);
 
     QCOMPARE_3WAY(getClassForValue(0).getValuePointer(),
                   getClassForValue(1).getValuePointer(),
@@ -231,13 +231,13 @@ void tst_ThreeWayCompare::checkWeakComparison()
 
     QCOMPARE_3WAY(example_left, example_right, std::weak_ordering::less);
 
-    QDateTime june(QDate(2012, 6, 20), QTime(14, 33, 2, 500), QTimeZone::UTC);
+    QDateTime june(QDate(2012, 6, 20), BOBUIime(14, 33, 2, 500), BOBUIimeZone::UTC);
     QDateTime juneLater = june.addMSecs(1);
-    QCOMPARE_3WAY(june, juneLater, Qt::weak_ordering::greater);
+    QCOMPARE_3WAY(june, juneLater, BobUI::weak_ordering::greater);
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QTEST_MAIN(tst_ThreeWayCompare)
+BOBUIEST_MAIN(tst_ThreeWayCompare)
 #include "tst_threewaycompare.moc"

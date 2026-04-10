@@ -1,27 +1,27 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Rafael Roquetto <rafael.roquetto@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "etw.h"
 #include "provider.h"
 #include "helpers.h"
-#include "qtheaders.h"
+#include "bobuiheaders.h"
 
 #include <qfile.h>
 #include <qfileinfo.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
 // This is a bootstrapped tool, so we can't rely on QCryptographicHash for the
 // faster SHA1 implementations from OpenSSL.
 #include "../../3rdparty/sha1/sha1.cpp"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline QString providerVar(const QString &providerName)
 {
     return providerName + "_provider"_L1;
 }
 
-static void writeEtwMacro(QTextStream &stream, const Tracepoint::Field &field)
+static void writeEtwMacro(BOBUIextStream &stream, const Tracepoint::Field &field)
 {
     const QString &name = field.name;
 
@@ -35,27 +35,27 @@ static void writeEtwMacro(QTextStream &stream, const Tracepoint::Field &field)
     }
 
     switch (field.backendType) {
-    case Tracepoint::Field::QtString:
+    case Tracepoint::Field::BobUIString:
         stream << "TraceLoggingCountedWideString(reinterpret_cast<LPCWSTR>("
                << name << ".utf16()), static_cast<ULONG>(" << name << ".size()), \""
                << name << "\")";
         return;
-    case Tracepoint::Field::QtByteArray:
+    case Tracepoint::Field::BobUIByteArray:
         stream << "TraceLoggingBinary(" << name << ".constData(), "
                << name << ".size(), \"" << name << "\")";
         return;
-    case Tracepoint::Field::QtUrl:
+    case Tracepoint::Field::BobUIUrl:
         stream << "TraceLoggingValue(" << name << ".toEncoded().constData(), \"" << name << "\")";
         return;
-    case Tracepoint::Field::QtRect:
-    case Tracepoint::Field::QtRectF:
+    case Tracepoint::Field::BobUIRect:
+    case Tracepoint::Field::BobUIRectF:
         stream << "TraceLoggingValue(" << name << ".x(), \"x\"), "
                << "TraceLoggingValue(" << name << ".y(), \"y\"), "
                << "TraceLoggingValue(" << name << ".width(), \"width\"), "
                << "TraceLoggingValue(" << name << ".height(), \"height\")";
         return;
-    case Tracepoint::Field::QtSize:
-    case Tracepoint::Field::QtSizeF:
+    case Tracepoint::Field::BobUISize:
+    case Tracepoint::Field::BobUISizeF:
         stream << "TraceLoggingValue(" << name << ".width(), \"width\"), "
                << "TraceLoggingValue(" << name << ".height(), \"height\")";
         return;
@@ -86,7 +86,7 @@ static QString createGuid(QByteArrayView name)
 
     Sha1State state;
     sha1InitState(&state);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     // namespace {00000000-0000-0000-0000-000000000000} for compatibility
     sha1Update(&state, uuid, 16);
 #endif
@@ -101,10 +101,10 @@ static QString createGuid(QByteArrayView name)
 
     QString guid;
 
-    QTextStream stream(&guid);
+    BOBUIextStream stream(&guid);
 
-    Qt::hex(stream);
-    Qt::showbase(stream);
+    BobUI::hex(stream);
+    BobUI::showbase(stream);
 
     stream << "("
            << qFromBigEndian<quint32>(uuid + 0) << ", "
@@ -123,7 +123,7 @@ static QString createGuid(QByteArrayView name)
     return guid;
 }
 
-static void writePrologue(QTextStream &stream, const QString &fileName, const Provider &provider)
+static void writePrologue(BOBUIextStream &stream, const QString &fileName, const Provider &provider)
 {
     writeCommonPrologue(stream);
 
@@ -134,7 +134,7 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
     stream << "#ifndef " << guard << "\n"
            << "#define " << guard << "\n"
            << "\n"
-           << "#include <qt_windows.h>\n"
+           << "#include <bobui_windows.h>\n"
            << "#include <TraceLoggingProvider.h>\n"
            << "\n";
 
@@ -147,7 +147,7 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
               "#define _TlgPragmaUtf8End\n";
 
     stream << "\n";
-    stream << qtHeaders();
+    stream << bobuiHeaders();
     stream << "\n";
 
     if (!provider.prefixText.isEmpty())
@@ -175,13 +175,13 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
            << "#endif // TRACEPOINT_DEFINE\n\n";
 }
 
-static void writeEpilogue(QTextStream &stream, const QString &fileName)
+static void writeEpilogue(BOBUIextStream &stream, const QString &fileName)
 {
     stream << "\n#endif // " << includeGuard(fileName) << "\n"
-           << "#include <private/qtrace_p.h>\n";
+           << "#include <private/bobuirace_p.h>\n";
 }
 
-static void writeWrapper(QTextStream &stream, const Provider &provider, const Tracepoint &tracepoint,
+static void writeWrapper(BOBUIextStream &stream, const Provider &provider, const Tracepoint &tracepoint,
                          const QString &providerName)
 {
     const QString argList = formatFunctionSignature(tracepoint.args);
@@ -225,7 +225,7 @@ static void writeWrapper(QTextStream &stream, const Provider &provider, const Tr
            << "}\n";
 }
 
-static void writeEnumConverter(QTextStream &stream, const TraceEnum &enumeration)
+static void writeEnumConverter(BOBUIextStream &stream, const TraceEnum &enumeration)
 {
     stream << "inline QString trace_convert_" << typeToTypeName(enumeration.name) << "(" << enumeration.name << " val)\n";
     stream << "{\n";
@@ -249,7 +249,7 @@ static void writeEnumConverter(QTextStream &stream, const TraceEnum &enumeration
     stream << "    }\n    return ret;\n}\n";
 }
 
-static void writeFlagConverter(QTextStream &stream, const TraceFlags &flag)
+static void writeFlagConverter(BOBUIextStream &stream, const TraceFlags &flag)
 {
     stream << "inline QString trace_convert_" << typeToTypeName(flag.name) << "(" << flag.name << " val)\n";
     stream << "{\n    QString ret;\n";
@@ -271,7 +271,7 @@ static void writeFlagConverter(QTextStream &stream, const TraceFlags &flag)
     stream << "    return ret;\n}\n";
 }
 
-static void writeTracepoints(QTextStream &stream, const Provider &provider)
+static void writeTracepoints(BOBUIextStream &stream, const Provider &provider)
 {
     if (provider.tracepoints.isEmpty())
         return;
@@ -280,8 +280,8 @@ static void writeTracepoints(QTextStream &stream, const Provider &provider)
 
     stream << "#if !defined(" << includeGuard << ") && !defined(TRACEPOINT_DEFINE)\n"
            << "#define " << includeGuard << "\n"
-           << "QT_BEGIN_NAMESPACE\n"
-           << "namespace QtPrivate {\n";
+           << "BOBUI_BEGIN_NAMESPACE\n"
+           << "namespace BobUIPrivate {\n";
 
     for (const auto &enumeration : provider.enumerations)
         writeEnumConverter(stream, enumeration);
@@ -292,14 +292,14 @@ static void writeTracepoints(QTextStream &stream, const Provider &provider)
     for (const Tracepoint &t : provider.tracepoints)
         writeWrapper(stream, provider, t, provider.name);
 
-    stream << "} // namespace QtPrivate\n"
-           << "QT_END_NAMESPACE\n"
+    stream << "} // namespace BobUIPrivate\n"
+           << "BOBUI_END_NAMESPACE\n"
            << "#endif // " << includeGuard << "\n\n";
 }
 
 void writeEtw(QFile &file, const Provider &provider)
 {
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     const QString fileName = QFileInfo(file.fileName()).fileName();
 

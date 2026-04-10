@@ -1,15 +1,15 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qiconengineplugin.h>
 #include <qiconengine.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class TestIconPlugin : public QIconEnginePlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QIconEngineFactoryInterface" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "org.bobui-project.BobUI.QIconEngineFactoryInterface" FILE "plugin.json")
 
 public:
     QIconEngine *create(const QString &icon) override;
@@ -68,6 +68,6 @@ QIconEngine *TestIconPlugin::create(const QString &icon)
     return new TestIconEngine(icon);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

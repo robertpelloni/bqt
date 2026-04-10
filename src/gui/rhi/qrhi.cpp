@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qrhi_p.h"
 #include <qmath.h>
@@ -7,55 +7,55 @@
 #include "private/qloggingregistry_p.h"
 
 #include "qrhinull_p.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 #include "qrhigles2_p.h"
 #endif
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qrhivulkan_p.h"
 #endif
 #ifdef Q_OS_WIN
 #include "qrhid3d11_p.h"
 #include "qrhid3d12_p.h"
 #endif
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
 #include "qrhimetal_p.h"
 #endif
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Play nice with QSG_INFO since that is still the most commonly used
-// way to get graphics info printed from Qt Quick apps, and the Quick
+// way to get graphics info printed from BobUI Quick apps, and the Quick
 // scenegraph is our primary user.
-Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(QRHI_LOG_INFO, "QSG_INFO", "qt.rhi.general")
+Q_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(QRHI_LOG_INFO, "QSG_INFO", "bobui.rhi.general")
 
-Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
+Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "bobui.rhi.rub")
 
 /*!
     \class QRhi
     \ingroup painting-3D
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
     \brief Accelerated 2D/3D graphics API abstraction.
 
-    The Qt Rendering Hardware Interface is an abstraction for hardware accelerated
+    The BobUI Rendering Hardware Interface is an abstraction for hardware accelerated
     graphics APIs, such as, \l{https://www.khronos.org/opengl/}{OpenGL},
     \l{https://www.khronos.org/opengles/}{OpenGL ES},
     \l{https://docs.microsoft.com/en-us/windows/desktop/direct3d}{Direct3D},
     \l{https://developer.apple.com/metal/}{Metal}, and
     \l{https://www.khronos.org/vulkan/}{Vulkan}.
 
-    \warning The QRhi family of classes in the Qt Gui module, including QShader
+    \warning The QRhi family of classes in the BobUI Gui module, including QShader
     and QShaderDescription, offer limited compatibility guarantees. There are
     no source or binary compatibility guarantees for these classes, meaning the
-    API is only guaranteed to work with the Qt version the application was
+    API is only guaranteed to work with the BobUI version the application was
     developed against. Source incompatible changes are however aimed to be kept
     at a minimum and will only be made in minor releases (6.7, 6.8, and so on).
     To use these classes in an application, link to
-    \c{Qt::GuiPrivate} (if using CMake), and include the headers with the \c
+    \c{BobUI::GuiPrivate} (if using CMake), and include the headers with the \c
     rhi prefix, for example \c{#include <rhi/qrhi.h>}.
 
     Each QRhi instance is backed by a backend for a specific graphics API. The
@@ -76,7 +76,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     \l{QRhi::Feature}{feature flags} at runtime to check for features that are
     not supported in the OpenGL context backing the QRhi. The OpenGL backend
     builds on QOpenGLContext, QOpenGLFunctions, and the related cross-platform
-    infrastructure of the Qt GUI module.
+    infrastructure of the BobUI GUI module.
 
     \li Direct3D 11.2 and newer (with DXGI 1.3 and newer), using Shader Model
     5.0 or newer. When the D3D runtime has no support for 11.2 features or
@@ -86,7 +86,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     adapter} is still an option.
 
     \li Direct3D 12 on Windows 10 version 1703 and newer, with Shader Model 5.0
-    or newer. Qt requires ID3D12Device2 to be present, hence the requirement
+    or newer. BobUI requires ID3D12Device2 to be present, hence the requirement
     for at least version 1703 of Windows 10. The D3D12 device is by default
     created with specifying a minimum feature level of
     \c{D3D_FEATURE_LEVEL_11_0}.
@@ -100,15 +100,15 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
     \endlist
 
-    In order to allow shader code to be written once in Qt applications and
+    In order to allow shader code to be written once in BobUI applications and
     libraries, all shaders are expected to be written in a single language
     which is then compiled into SPIR-V. Versions for various shading language
     are then generated from that, together with reflection information (inputs,
     outputs, shader resources). This is then packed into easily and efficiently
     serializable QShader instances. The compilers and tools to generate such
-    shaders are not part of QRhi and the Qt GUI module, but the core classes
+    shaders are not part of QRhi and the BobUI GUI module, but the core classes
     for using such shaders, QShader and QShaderDescription, are. The APIs and
-    tools for performing compilation and translation are part of the Qt Shader
+    tools for performing compilation and translation are part of the BobUI Shader
     Tools module.
 
     See the \l{RHI Window Example} for an introductory example of creating a
@@ -149,10 +149,10 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
     To manually compile and transpile these shaders to a number of targets
     (SPIR-V, HLSL, MSL, GLSL) and generate the \c{.qsb} files the application
-    loads at run time, run \c{qsb --qt6 color.vert -o color.vert.qsb} and
-    \c{qsb --qt6 color.frag -o color.frag.qsb}. Alternatively, the Qt Shader
+    loads at run time, run \c{qsb --bobui6 color.vert -o color.vert.qsb} and
+    \c{qsb --bobui6 color.frag -o color.frag.qsb}. Alternatively, the BobUI Shader
     Tools module offers build system integration for CMake, the
-    \c qt_add_shaders() CMake function, that can achieve the same at build time.
+    \c bobui_add_shaders() CMake function, that can achieve the same at build time.
 
     \section1 Security Considerations
 
@@ -289,7 +289,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     compute support is introduced, but the model of well defined
     \c{frame-start} and \c{frame-end} points, combined with a dedicated,
     "frame" command buffer, where \c{frame-end} implies presenting, is going to
-    remain the primary way of operating since this is what fits Qt's various UI
+    remain the primary way of operating since this is what fits BobUI's various UI
     technologies best.
 
     \section2 Threading
@@ -299,7 +299,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     rendering to multiple QWindows in an application, having a dedicated thread
     and QRhi instance for each window is often advisable, as this can eliminate
     issues with unexpected throttling caused by presenting to multiple windows.
-    Conceptually that is then the same as how Qt Quick scene graph's threaded
+    Conceptually that is then the same as how BobUI Quick scene graph's threaded
     render loop operates when working directly with OpenGL: one thread for each
     window, one QOpenGLContext for each thread. When moving onto QRhi,
     QOpenGLContext is replaced by QRhi, making the migration straightforward.
@@ -481,12 +481,12 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
     Additional debug messages can be enabled via the following logging
     categories. Messages from these categories are not printed by default
-    unless explicitly enabled via QLoggingCategory or the \c QT_LOGGING_RULES
-    environment variable. For better interoperation with Qt Quick, the
+    unless explicitly enabled via QLoggingCategory or the \c BOBUI_LOGGING_RULES
+    environment variable. For better interoperation with BobUI Quick, the
     environment variable \c{QSG_INFO} also enables these debug prints.
 
     \list
-    \li \c{qt.rhi.general}
+    \li \c{bobui.rhi.general}
     \endlist
 
     Additionally, applications can query the \l{QRhi::backendName()}{QRhi
@@ -514,12 +514,12 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     (note that this assumes that the validation layers are actually installed
     and available, e.g. from the Vulkan SDK) By default, QVulkanInstance conveniently
     redirects the Vulkan debug messages to qDebug, meaning the validation messages get
-    printed just like other Qt warnings.
+    printed just like other BobUI warnings.
 
     \li With Direct 3D 11 and 12, a graphics device with the debug layer
     enabled can be requested by toggling the \c enableDebugLayer flag in the
     appropriate \l{QRhiD3D11InitParams}{init params struct}. The messages appear on the
-    debug output, which is visible in Qt Creator's messages panel or via a tool
+    debug output, which is visible in BobUI Creator's messages panel or via a tool
     such as \l{https://learn.microsoft.com/en-us/sysinternals/downloads/debugview}{DebugView}.
 
     \li For Metal, controlling Metal Validation is outside of QRhi's scope.
@@ -534,15 +534,15 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
     \section2 Frame captures and performance profiling
 
-    A Qt application rendering with QRhi to a window while relying on a 3D API
+    A BobUI application rendering with QRhi to a window while relying on a 3D API
     under the hood, is, from the windowing and graphics pipeline perspective at
-    least, no different from any other (non-Qt) applications using the same 3D
+    least, no different from any other (non-BobUI) applications using the same 3D
     API. This means that tools and practices for debugging and profiling
-    applications involving 3D graphics, such as games, all apply to such a Qt
+    applications involving 3D graphics, such as games, all apply to such a BobUI
     application as well.
 
     A few examples of tools that can provide insights into the rendering
-    internals of Qt applications that use QRhi, which includes Qt Quick and Qt
+    internals of BobUI applications that use QRhi, which includes BobUI Quick and BobUI
     Quick 3D based projects as well:
 
     \list
@@ -553,7 +553,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     figure out why some parts of the 3D scene do not show up as expected,
     RenderDoc is often a fast and efficient way to check the pipeline stages
     and the related state and discover the missing or incorrect value. It is
-    also a tool that is actively used when developing Qt itself.
+    also a tool that is actively used when developing BobUI itself.
 
     \li For NVIDIA-based systems,
     \l{https://developer.nvidia.com/nsight-graphics}{Nsight Graphics} provides
@@ -609,11 +609,11 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     When destroying a QRhi object without properly destroying all buffers,
     textures, and other resources created from it, warnings about this are
     printed to the debug output whenever the application is a debug build, or
-    when the \c QT_RHI_LEAK_CHECK environment variable is set to a non-zero
+    when the \c BOBUI_RHI_LEAK_CHECK environment variable is set to a non-zero
     value. This is a simple way to discover design issues around resource
     handling within the application rendering logic. Note however that some
     platforms and underlying graphics APIs may perform their own allocation and
-    resource leak detection as well, over which Qt will have no direct control.
+    resource leak detection as well, over which BobUI will have no direct control.
     For example, when using Vulkan, the memory allocator may raise failing
     assertions in debug builds when resources that own graphics memory
     allocations are not destroyed before the QRhi. In addition, the Vulkan
@@ -686,7 +686,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     HLSL source compilation happening. With OpenGL the "pipeline cache" is
     simulated by retrieving and loading shader program binaries (if supported
     by the driver). With OpenGL there are additional, disk-based caching
-    mechanisms for shader/program binaries provided by Qt. Writing to those may
+    mechanisms for shader/program binaries provided by BobUI. Writing to those may
     get disabled whenever this flag is set since storing program binaries to
     multiple caches is not sensible.
 
@@ -695,8 +695,8 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     produce qWarning() calls. For example, with D3D11, passing this flag
     makes a number of warning messages (that appear due to QRhi::create()
     failing) to become categorized debug prints instead under the commonly used
-    \c{qt.rhi.general} logging category. This can be used by engines, such as
-    Qt Quick, that feature fallback logic, i.e. they retry calling create()
+    \c{bobui.rhi.general} logging category. This can be used by engines, such as
+    BobUI Quick, that feature fallback logic, i.e. they retry calling create()
     with a different set of flags (such as, \l PreferSoftwareRenderer), in order
     to hide the unconditional warnings from the output that would be printed
     when the first create() attempt had failed.
@@ -952,7 +952,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     list. Geometry Shaders are considered an experimental feature in QRhi and
     can only be expected to be supported with Vulkan, Direct 3D 11 and 12,
     OpenGL (3.2+) and OpenGL ES (3.2+), assuming the implementation reports it
-    as supported at run time. Starting with Qt 6.11 geometry shaders are
+    as supported at run time. Starting with BobUI 6.11 geometry shaders are
     automatically translated to HLSL, and therefore no injection of handwritten
     HLSL geometry shaders is necessary anymore (but note that gl_in and
     expressions such as gl_in[0].gl_Position are not supported; rather, pass the
@@ -1012,7 +1012,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
     \value ThreeDimensionalTextureMipmaps Indicates that generating 3D texture
     mipmaps are supported. This is typically supported with all backends starting
-    with Qt 6.10.
+    with BobUI 6.10.
 
     \value MultiView Indicates that multiview, see e.g.
     \l{https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_multiview.html}{VK_KHR_multiview}
@@ -1032,13 +1032,13 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     corresponding to each view. Therefore this feature implies \l TextureArrays
     as well. Multiview rendering is not supported in combination with
     tessellation or geometry shaders. See QRhiColorAttachment::setMultiViewCount()
-    for further details on multiview rendering. This enum value has been introduced in Qt 6.7.
+    for further details on multiview rendering. This enum value has been introduced in BobUI 6.7.
 
     \value TextureViewFormat Indicates that setting a
     \l{QRhiTexture::setWriteViewFormat()}{view format} on a QRhiTexture is
     effective. When reported as supported, setting the read (sampling) or write
     (render target / image load-store) view mode changes the texture's viewing
-    format. When unsupported, setting a view format has no effect. Note that Qt
+    format. When unsupported, setting a view format has no effect. Note that BobUI
     has no knowledge or control over format compatibility or resource view rules
     in the underlying 3D API and its implementation. Passing in unsuitable,
     incompatible formats may lead to errors and unspecified behavior. This is
@@ -1050,7 +1050,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     \c CastingFullyTypedFormatSupported is supported, see
     \l{https://microsoft.github.io/DirectX-Specs/d3d/RelaxedCasting.html} (and
     note that QRhi always uses fully typed formats for textures.) This enum
-    value has been introduced in Qt 6.8.
+    value has been introduced in BobUI 6.8.
 
     \value ResolveDepthStencil Indicates that resolving a multisample depth or
     depth-stencil texture is supported. Otherwise,
@@ -1064,7 +1064,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     provided for the rare case when resolving into a non-multisample depth
     texture becomes necessary, for example when rendering into an
     OpenXR-provided depth texture (XR_KHR_composition_layer_depth). This enum
-    value has been introduced in Qt 6.8.
+    value has been introduced in BobUI 6.8.
 
     \value VariableRateShading Indicates that per-draw (per-pipeline) variable
     rate shading is supported. When reported as supported, \l
@@ -1075,7 +1075,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     always supported, other typical values are 2x2, 1x2, 2x1, 2x4, 4x2, 4x4).
     This feature can be expected to be supported with Direct 3D 12 and Vulkan,
     assuming the implementation and GPU used at run time supports VRS. This enum
-    value has been introduced in Qt 6.9.
+    value has been introduced in BobUI 6.9.
 
     \value VariableRateShadingMap Indicates that image-based specification of
     the shading rate is possible. The "image" is not necessarily a texture, it
@@ -1091,24 +1091,24 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     QRhiShadingRateMap consumes some other type of native objects, for example
     an MTLRasterizationRateMap in case of Metal. Use the createFrom() overload
     taking a NativeShadingRateMap in this case. This enum value has been
-    introduced in Qt 6.9.
+    introduced in BobUI 6.9.
 
     \value VariableRateShadingMapWithTexture Indicates that image-based
     specification of the shading rate is supported via regular textures. In
     practice this may be supported with Direct 3D 12 and Vulkan. This enum value
-    has been introduced in Qt 6.9.
+    has been introduced in BobUI 6.9.
 
     \value PerRenderTargetBlending Indicates that per rendertarget blending is
     supported i.e. different render targets in MRT framebuffer can have different
     blending modes. In practice this can be expected to be supported everywhere
     except OpenGL ES, where it is only available with GLES 3.2 implementations.
-    This enum value has been introduced in Qt 6.9.
+    This enum value has been introduced in BobUI 6.9.
 
     \value SampleVariables Indicates that gl_SampleID, gl_SamplePosition,
     gl_SampleMaskIn and gl_SampleMask variables are available in fragment shaders.
     In practice this can be expected to be supported everywhere except OpenGL ES,
     where it is only available with GLES 3.2 implementations.
-    This enum value has been introduced in Qt 6.9.
+    This enum value has been introduced in BobUI 6.9.
 
     \value InstanceIndexIncludesBaseInstance Indicates that \c gl_InstanceIndex
     includes the base instance (the \c firstInstance argument in draw calls) in
@@ -1116,7 +1116,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
     indicates that \c gl_InstanceIndex always starts at 0, not the base value.
     In practice this will be the case for Direct 3D 11 and 12 at the moment.
     With Vulkan and Metal this feature is expected to be reported as supported
-    always. This enum value has been introduced in Qt 6.11.
+    always. This enum value has been introduced in BobUI 6.11.
  */
 
 /*!
@@ -1234,7 +1234,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
 /*!
     \class QRhiInitParams
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Base class for backend-specific initialization parameters.
@@ -1247,7 +1247,7 @@ Q_LOGGING_CATEGORY(QRHI_LOG_RUB, "qt.rhi.rub")
 
 /*!
     \class QRhiDepthStencilClearValue
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Specifies clear values for a depth or stencil buffer.
@@ -1313,7 +1313,7 @@ QRhiDepthStencilClearValue::QRhiDepthStencilClearValue(float d, quint32 s)
     \qhash{QRhiDepthStencilClearValue}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiDepthStencilClearValue &v)
 {
     QDebugStateSaver saver(dbg);
@@ -1326,7 +1326,7 @@ QDebug operator<<(QDebug dbg, const QRhiDepthStencilClearValue &v)
 
 /*!
     \class QRhiViewport
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Specifies a viewport rectangle.
@@ -1341,7 +1341,7 @@ QDebug operator<<(QDebug dbg, const QRhiDepthStencilClearValue &v)
     \code
       const QSize outputSizeInPixels = swapchain->currentPixelSize();
       const QRhiViewport viewport(0, 0, outputSizeInPixels.width(), outputSizeInPixels.height());
-      cb->beginPass(swapchain->currentFrameRenderTarget(), Qt::black, { 1.0f, 0 });
+      cb->beginPass(swapchain->currentFrameRenderTarget(), BobUI::black, { 1.0f, 0 });
       cb->setGraphicsPipeline(ps);
       cb->setViewport(viewport);
       // ...
@@ -1433,7 +1433,7 @@ QRhiViewport::QRhiViewport(float x, float y, float w, float h, float minDepth, f
     \qhash{QRhiViewport}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiViewport &v)
 {
     QDebugStateSaver saver(dbg);
@@ -1451,7 +1451,7 @@ QDebug operator<<(QDebug dbg, const QRhiViewport &v)
 
 /*!
     \class QRhiScissor
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Specifies a scissor rectangle.
@@ -1526,7 +1526,7 @@ QRhiScissor::QRhiScissor(int x, int y, int w, int h)
     \qhash{QRhiScissor}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiScissor &s)
 {
     QDebugStateSaver saver(dbg);
@@ -1542,7 +1542,7 @@ QDebug operator<<(QDebug dbg, const QRhiScissor &s)
 
 /*!
     \class QRhiVertexInputBinding
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes a vertex input binding.
@@ -1678,7 +1678,7 @@ QRhiVertexInputBinding::QRhiVertexInputBinding(quint32 stride, Classification cl
     \qhash{QRhiVertexInputBinding}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiVertexInputBinding &b)
 {
     QDebugStateSaver saver(dbg);
@@ -1692,7 +1692,7 @@ QDebug operator<<(QDebug dbg, const QRhiVertexInputBinding &b)
 
 /*!
     \class QRhiVertexInputAttribute
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes a single vertex input element.
@@ -1916,7 +1916,7 @@ QRhiVertexInputAttribute::QRhiVertexInputAttribute(int binding, int location, Fo
     \qhash{QRhiVertexInputAttribute}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiVertexInputAttribute &a)
 {
     QDebugStateSaver saver(dbg);
@@ -2044,7 +2044,7 @@ quint32 QRhiImplementation::byteSizePerVertexForVertexInputFormat(QRhiVertexInpu
 
 /*!
     \class QRhiVertexInputLayout
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the layout of vertex inputs consumed by a vertex shader.
@@ -2159,7 +2159,7 @@ quint32 QRhiImplementation::byteSizePerVertexForVertexInputFormat(QRhiVertexInpu
     \qhash{QRhiVertexInputLayout}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiVertexInputLayout &v)
 {
     QDebugStateSaver saver(dbg);
@@ -2172,7 +2172,7 @@ QDebug operator<<(QDebug dbg, const QRhiVertexInputLayout &v)
 
 /*!
     \class QRhiShaderStage
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Specifies the type and the shader code for a shader stage in the pipeline.
@@ -2304,7 +2304,7 @@ QRhiShaderStage::QRhiShaderStage(Type type, const QShader &shader, QShader::Vari
     \qhash{QRhiShaderStage}
  */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiShaderStage &s)
 {
     QDebugStateSaver saver(dbg);
@@ -2318,7 +2318,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderStage &s)
 
 /*!
     \class QRhiColorAttachment
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the a single color attachment of a render target.
@@ -2545,7 +2545,7 @@ QRhiColorAttachment::QRhiColorAttachment(QRhiRenderBuffer *renderBuffer)
 
     See
     \l{https://registry.khronos.org/OpenGL/extensions/OVR/OVR_multiview.txt}{GL_OVR_multiview}
-    for more details regarding multiview rendering. Do note that Qt requires
+    for more details regarding multiview rendering. Do note that BobUI requires
     \l{https://registry.khronos.org/OpenGL/extensions/OVR/OVR_multiview2.txt}{GL_OVR_multiview2}
     as well, when running on OpenGL (ES).
 
@@ -2571,7 +2571,7 @@ QRhiColorAttachment::QRhiColorAttachment(QRhiRenderBuffer *renderBuffer)
 
 /*!
     \class QRhiTextureRenderTargetDescription
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the color and depth or depth/stencil attachments of a render target.
@@ -2862,7 +2862,7 @@ QRhiTextureRenderTargetDescription::QRhiTextureRenderTargetDescription(const QRh
 
 /*!
     \class QRhiTextureSubresourceUploadDescription
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the source for one mip level in a layer in a texture upload operation.
@@ -3039,7 +3039,7 @@ QRhiTextureSubresourceUploadDescription::QRhiTextureSubresourceUploadDescription
     \fn void QRhiTextureSubresourceUploadDescription::setDestinationTopLeft(const QPoint &p)
     Sets the destination top-left position \a p.
 
-    \note In the most common case of sourcing the image data from a QImage, Qt
+    \note In the most common case of sourcing the image data from a QImage, BobUI
     performs clamping of invalid texture upload sizes when the destination
     position + the source size exceeds the size of the targeted texture
     subresource (i.e, the size at the given mip level). There is also a
@@ -3083,7 +3083,7 @@ QRhiTextureSubresourceUploadDescription::QRhiTextureSubresourceUploadDescription
 
 /*!
     \class QRhiTextureUploadEntry
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
@@ -3148,7 +3148,7 @@ QRhiTextureUploadEntry::QRhiTextureUploadEntry(int layer, int level,
 
 /*!
     \class QRhiTextureUploadDescription
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes a texture upload operation.
@@ -3164,7 +3164,7 @@ QRhiTextureUploadEntry::QRhiTextureUploadEntry(int layer, int level,
 
     \code
         QImage image(256, 256, QImage::Format_RGBA8888);
-        image.fill(Qt::green); // or could use a QPainter targeting image
+        image.fill(BobUI::green); // or could use a QPainter targeting image
         QRhiTexture *texture = rhi->newTexture(QRhiTexture::RGBA8, QSize(256, 256));
         texture->create();
         QRhiResourceUpdateBatch *u = rhi->nextResourceUpdateBatch();
@@ -3298,7 +3298,7 @@ QRhiTextureUploadDescription::QRhiTextureUploadDescription(std::initializer_list
 
 /*!
     \class QRhiTextureCopyDescription
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes a texture-to-texture copy operation.
@@ -3407,7 +3407,7 @@ QRhiTextureUploadDescription::QRhiTextureUploadDescription(std::initializer_list
 
 /*!
     \class QRhiReadbackDescription
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes a readback (reading back texture contents from possibly GPU-only memory) operation.
@@ -3527,7 +3527,7 @@ QRhiReadbackDescription::QRhiReadbackDescription(QRhiTexture *texture)
 
 /*!
     \class QRhiReadbackResult
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the results of a potentially asynchronous buffer or texture readback operation.
@@ -3570,7 +3570,7 @@ QRhiReadbackDescription::QRhiReadbackDescription(QRhiTexture *texture)
 
 /*!
     \class QRhiNativeHandles
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Base class for classes exposing backend-specific collections of native resource objects.
@@ -3581,7 +3581,7 @@ QRhiReadbackDescription::QRhiReadbackDescription(QRhiTexture *texture)
 
 /*!
     \class QRhiResource
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Base class for classes encapsulating native resource objects.
@@ -3764,7 +3764,7 @@ QRhi *QRhiResource::rhi() const
 
 /*!
     \class QRhiBuffer
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Vertex, index, or uniform (constant) buffer resource.
@@ -3945,7 +3945,7 @@ QRhi *QRhiResource::rhi() const
 
 /*!
     \class QRhiBuffer::NativeBuffer
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Contains information about the underlying native resources of a buffer.
  */
@@ -4154,7 +4154,7 @@ void QRhiBuffer::fullDynamicBufferUpdateForCurrentFrame(const void *data, quint3
 
 /*!
     \class QRhiRenderBuffer
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Renderbuffer resource.
@@ -4195,7 +4195,7 @@ void QRhiBuffer::fullDynamicBufferUpdateForCurrentFrame(const void *data, quint3
 
 /*!
     \struct QRhiRenderBuffer::NativeRenderBuffer
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Wraps a native renderbuffer object.
  */
@@ -4343,7 +4343,7 @@ bool QRhiRenderBuffer::createFrom(NativeRenderBuffer src)
 
 /*!
     \class QRhiTexture
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Texture resource.
@@ -4379,7 +4379,7 @@ bool QRhiRenderBuffer::createFrom(NativeRenderBuffer src)
         if (!texture->create()) { error(); }
         QRhiResourceUpdateBatch *batch = rhi->nextResourceUpdateBatch();
         QImage image(512, 512, QImage::Format_RGBA8888);
-        image.fill(Qt::green);
+        image.fill(BobUI::green);
         batch->uploadTexture(texture, image);
         // ...
         commandBuffer->resourceUpdate(batch); // or, alternatively, pass 'batch' to a beginPass() call
@@ -4584,7 +4584,7 @@ bool QRhiRenderBuffer::createFrom(NativeRenderBuffer src)
 
 /*!
     \struct QRhiTexture::NativeTexture
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \brief Contains information about the underlying native resources of a texture.
  */
@@ -4815,7 +4815,7 @@ void QRhiTexture::setNativeLayout(int layout)
 
 /*!
     \struct QRhiTexture::ViewFormat
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.8
     \brief Specifies the view format for reading or writing from or to the texture.
@@ -4897,7 +4897,7 @@ void QRhiTexture::setNativeLayout(int layout)
 
 /*!
     \class QRhiSampler
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Sampler resource.
@@ -5035,7 +5035,7 @@ QRhiResource::Type QRhiSampler::resourceType() const
 
 /*!
     \class QRhiShadingRateMap
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.9
     \brief An object that wraps a texture or another kind of native 3D API object.
@@ -5044,7 +5044,7 @@ QRhiResource::Type QRhiSampler::resourceType() const
     for details.
 
     For an introduction to Variable Rate Shading (VRS), see
-    \l{https://learn.microsoft.com/en-us/windows/win32/direct3d12/vrs}. Qt
+    \l{https://learn.microsoft.com/en-us/windows/win32/direct3d12/vrs}. BobUI
     supports a subset of the VRS features offered by Direct 3D 12 and Vulkan. In
     addition, Metal's somewhat different mechanism is supported by making it
     possible to set up a QRhiShadingRateMap with an existing
@@ -5053,7 +5053,7 @@ QRhiResource::Type QRhiSampler::resourceType() const
 
 /*!
     \struct QRhiShadingRateMap::NativeShadingRateMap
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.9
     \brief Wraps a native shading rate map.
@@ -5099,7 +5099,7 @@ QRhiResource::Type QRhiShadingRateMap::resourceType() const
     shading is supported by the GPU.
 
     \note With Metal, the \c object field of \a src is expected to contain an
-    id<MTLRasterizationRateMap>. Note that Qt does not perform anything else
+    id<MTLRasterizationRateMap>. Note that BobUI does not perform anything else
     apart from passing the MTLRasterizationRateMap on to the
     MTLRenderPassDescriptor. If any special scaling is required, it is up to the
     application (or the XR compositor) to perform that.
@@ -5145,7 +5145,7 @@ bool QRhiShadingRateMap::createFrom(QRhiTexture *src)
 
 /*!
     \class QRhiRenderPassDescriptor
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Render pass resource.
@@ -5290,7 +5290,7 @@ const QRhiNativeHandles *QRhiRenderPassDescriptor::nativeHandles()
 
 /*!
     \class QRhiRenderTarget
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Represents an onscreen (swapchain) or offscreen (texture) render target.
@@ -5373,7 +5373,7 @@ QRhiSwapChainRenderTarget::QRhiSwapChainRenderTarget(QRhiImplementation *rhi, QR
 
 /*!
     \class QRhiSwapChainRenderTarget
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Swapchain render target resource.
@@ -5404,7 +5404,7 @@ QRhiResource::Type QRhiSwapChainRenderTarget::resourceType() const
 
 /*!
     \class QRhiTextureRenderTarget
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Texture render target resource.
@@ -5475,7 +5475,7 @@ QRhiResource::Type QRhiSwapChainRenderTarget::resourceType() const
     QRhiTexture, not QRhiRenderBuffer, is used as the depth-stencil buffer,
     because for QRhiRenderBuffer this is implicit. When a depthResolveTexture is
     set, the flag is not relevant, because the behavior is then as if the flag
-    was set. This enum value is introduced in Qt 6.8.
+    was set. This enum value is introduced in BobUI 6.8.
  */
 
 /*!
@@ -5571,7 +5571,7 @@ QRhiResource::Type QRhiTextureRenderTarget::resourceType() const
 
 /*!
     \class QRhiShaderResourceBindings
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Encapsulates resources for making buffer, texture, sampler resources visible to shaders.
@@ -5779,7 +5779,7 @@ void QRhiImplementation::updateLayoutDesc(QRhiShaderResourceBindings *srb)
 
 /*!
     \class QRhiShaderResourceBinding
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the shader resource for a single binding point.
@@ -6573,7 +6573,7 @@ bool operator!=(const QRhiShaderResourceBinding &a, const QRhiShaderResourceBind
 size_t qHash(const QRhiShaderResourceBinding &b, size_t seed) noexcept
 {
     const QRhiShaderResourceBinding::Data *d = QRhiImplementation::shaderResourceBindingData(b);
-    QtPrivate::QHashCombineWithSeed hash(seed);
+    BobUIPrivate::QHashCombineWithSeed hash(seed);
     seed = hash(seed, d->binding);
     seed = hash(seed, d->stage);
     seed = hash(seed, d->type);
@@ -6605,7 +6605,7 @@ size_t qHash(const QRhiShaderResourceBinding &b, size_t seed) noexcept
     return seed;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiShaderResourceBinding &b)
 {
     QDebugStateSaver saver(dbg);
@@ -6691,7 +6691,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderResourceBinding &b)
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiShaderResourceBindings &srb)
 {
     QDebugStateSaver saver(dbg);
@@ -6704,7 +6704,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderResourceBindings &srb)
 
 /*!
     \class QRhiGraphicsPipeline
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Graphics pipeline state resource.
@@ -6962,7 +6962,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderResourceBindings &srb)
 
 /*!
     \struct QRhiGraphicsPipeline::TargetBlend
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the blend state for one color attachment.
@@ -6970,7 +6970,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderResourceBindings &srb)
     Defaults to color write enabled, blending disabled. The blend values are
     set up for pre-multiplied alpha (One, OneMinusSrcAlpha, One,
     OneMinusSrcAlpha) by default. This means that to get the alpha blending
-    mode Qt Quick uses, it is enough to set the \c enable flag to true while
+    mode BobUI Quick uses, it is enough to set the \c enable flag to true while
     leaving other values at their defaults.
 
     \note This is a RHI API with limited compatibility guarantees, see \l QRhi
@@ -7011,7 +7011,7 @@ QDebug operator<<(QDebug dbg, const QRhiShaderResourceBindings &srb)
 
 /*!
     \struct QRhiGraphicsPipeline::StencilOpState
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Describes the stencil operation state.
@@ -7080,13 +7080,13 @@ QRhiResource::Type QRhiGraphicsPipeline::resourceType() const
 
     \note Drivers may also employ various persistent (disk-based) caching
     strategies for shader and pipeline data, which is hidden to and is outside
-    of Qt's control. In some cases, depending on the graphics API and the QRhi
+    of BobUI's control. In some cases, depending on the graphics API and the QRhi
     backend, there are facilities within QRhi for manually managing such a
     cache, allowing the retrieval of a serializable blob that can then be
     reloaded in the future runs of the application to ensure faster pipeline
     creation times. See QRhi::pipelineCacheData() and
     QRhi::setPipelineCacheData() for details. Note also that when working with
-    a QRhi instance managed by a higher level Qt framework, such as Qt Quick,
+    a QRhi instance managed by a higher level BobUI framework, such as BobUI Quick,
     it is possible that such disk-based caching is taken care of automatically,
     for example QQuickWindow uses a disk-based pipeline cache by default (which
     comes in addition to any driver-level caching).
@@ -7448,7 +7448,7 @@ QRhiResource::Type QRhiGraphicsPipeline::resourceType() const
 
 /*!
     \class QRhiSwapChain
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Swapchain resource.
@@ -7594,7 +7594,7 @@ QRhiResource::Type QRhiGraphicsPipeline::resourceType() const
     Flag values to describe swapchain properties
 
     \value SurfaceHasPreMulAlpha Indicates that the target surface has
-    transparency with premultiplied alpha. For example, this is what Qt Quick
+    transparency with premultiplied alpha. For example, this is what BobUI Quick
     uses when the alpha channel is enabled on the target QWindow, because the
     scenegraph rendrerer always outputs fragments with alpha multiplied into
     the red, green, and blue values. To ensure identical behavior across
@@ -7992,7 +7992,7 @@ QRhiRenderTarget *QRhiSwapChain::currentFrameRenderTarget(StereoTargetBuffer tar
 
 /*!
     \struct QRhiSwapChainHdrInfo
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
@@ -8107,7 +8107,7 @@ QRhiRenderTarget *QRhiSwapChain::currentFrameRenderTarget(StereoTargetBuffer tar
     the system settings while the application is running are not necessarily
     reflected in the returned values, meaning calling hdrInfo() again may still
     return the same luminance range as before for the rest of the process'
-    lifetime. The exact behavior is up to DXGI and Qt has no control over it.
+    lifetime. The exact behavior is up to DXGI and BobUI has no control over it.
 
     \note The Windows compositor works in scene-referred mode for HDR content.
     A color component value of 1.0 corresponds to a luminance of 80 nits. When
@@ -8204,7 +8204,7 @@ QRhiSwapChainHdrInfo QRhiSwapChain::hdrInfo()
     return info;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiSwapChainHdrInfo &info)
 {
     QDebugStateSaver saver(dbg);
@@ -8234,7 +8234,7 @@ QDebug operator<<(QDebug dbg, const QRhiSwapChainHdrInfo &info)
 
 /*!
     \class QRhiComputePipeline
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Compute pipeline state resource.
@@ -8318,7 +8318,7 @@ QRhiComputePipeline::QRhiComputePipeline(QRhiImplementation *rhi)
 
 /*!
     \class QRhiCommandBuffer
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Command buffer resource.
@@ -8431,12 +8431,12 @@ QRhiImplementation::~QRhiImplementation()
     // Be nice and show something about leaked stuff. Though we may not get
     // this far with some backends where the allocator or the api may check
     // and freak out for unfreed graphics objects in the derived dtor already.
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     // debug builds: just do it always
     static bool leakCheck = true;
 #else
     // release builds: opt-in
-    static bool leakCheck = qEnvironmentVariableIntValue("QT_RHI_LEAK_CHECK");
+    static bool leakCheck = qEnvironmentVariableIntValue("BOBUI_RHI_LEAK_CHECK");
 #endif
     if (!resources.isEmpty()) {
         if (leakCheck) {
@@ -8725,7 +8725,7 @@ bool QRhiImplementation::sanityCheckGraphicsPipeline(QRhiGraphicsPipeline *ps)
 
 bool QRhiImplementation::sanityCheckShaderResourceBindings(QRhiShaderResourceBindings *srb)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     bool bindingsOk = true;
     const int CHECKED_BINDINGS_COUNT = 64;
     bool bindingSeen[CHECKED_BINDINGS_COUNT] = {};
@@ -8815,10 +8815,10 @@ int QRhiImplementation::effectiveSampleCount(int sampleCount) const
     const QList<int> supported = supportedSampleCounts();
     int result = 1;
 
-    // Stay compatible with Qt 5 in that requesting an unsupported sample count
+    // Stay compatible with BobUI 5 in that requesting an unsupported sample count
     // is not an error (although we still do a categorized debug print about
     // this), and rather a supported value, preferably a close one, not just 1,
-    // is used instead. This is actually deviating from Qt 5 as that performs a
+    // is used instead. This is actually deviating from BobUI 5 as that performs a
     // clamping only and does not handle cases such as when sample count 2 is
     // not supported but 4 is. (OpenGL handles things like that gracefully,
     // other APIs may not, so improve this by picking the next largest, or in
@@ -8876,22 +8876,22 @@ QRhiImplementation *QRhiImplementation::newInstance(QRhi::Implementation impl, Q
         d = new QRhiNull(static_cast<QRhiNullInitParams *>(params));
         break;
     case QRhi::Vulkan:
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         d = new QRhiVulkan(static_cast<QRhiVulkanInitParams *>(params),
                            static_cast<QRhiVulkanNativeHandles *>(importDevice));
         break;
 #else
         Q_UNUSED(importDevice);
-        qWarning("This build of Qt has no Vulkan support");
+        qWarning("This build of BobUI has no Vulkan support");
         break;
 #endif
     case QRhi::OpenGLES2:
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         d = new QRhiGles2(static_cast<QRhiGles2InitParams *>(params),
                           static_cast<QRhiGles2NativeHandles *>(importDevice));
         break;
 #else
-        qWarning("This build of Qt has no OpenGL support");
+        qWarning("This build of BobUI has no OpenGL support");
         break;
 #endif
     case QRhi::D3D11:
@@ -8904,7 +8904,7 @@ QRhiImplementation *QRhiImplementation::newInstance(QRhi::Implementation impl, Q
         break;
 #endif
     case QRhi::Metal:
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
         d = new QRhiMetal(static_cast<QRhiMetalInitParams *>(params),
                           static_cast<QRhiMetalNativeHandles *>(importDevice));
         break;
@@ -8919,9 +8919,9 @@ QRhiImplementation *QRhiImplementation::newInstance(QRhi::Implementation impl, Q
                           static_cast<QRhiD3D12NativeHandles *>(importDevice));
         break;
 #else
-        qWarning("Qt was built without Direct3D 12 support. "
-                 "This is likely due to having ancient SDK headers (such as d3d12.h) in the Qt build environment. "
-                 "Rebuild Qt with an SDK supporting D3D12 features introduced in Windows 10 version 1703, "
+        qWarning("BobUI was built without Direct3D 12 support. "
+                 "This is likely due to having ancient SDK headers (such as d3d12.h) in the BobUI build environment. "
+                 "Rebuild BobUI with an SDK supporting D3D12 features introduced in Windows 10 version 1703, "
                  "or use an MSVC build as those typically are built with more up-to-date SDKs.");
         break;
 #endif
@@ -8941,7 +8941,7 @@ void QRhiImplementation::prepareForCreate(QRhi *rhi, QRhi::Implementation impl, 
     debugMarkers = flags.testFlag(QRhi::EnableDebugMarkers);
 
     implType = impl;
-    implThread = QThread::currentThread();
+    implThread = BOBUIhread::currentThread();
 
     requestedRhiAdapter = adapter;
 }
@@ -8973,7 +8973,7 @@ QRhi *QRhi::create(Implementation impl, QRhiInitParams *params, Flags flags, QRh
 
     QRhi by design does not implement any fallback logic: if the specified API
     cannot be initialized, create() will fail, with warnings printed on the
-    debug output by the backends. The clients of QRhi, for example Qt Quick,
+    debug output by the backends. The clients of QRhi, for example BobUI Quick,
     may however provide additional logic that allow falling back to an API
     different than what was requested, depending on the platform. If the
     intention is just to test if initialization would succeed when calling
@@ -9040,7 +9040,7 @@ bool QRhi::probe(QRhi::Implementation impl, QRhiInitParams *params)
     // create() and then drop the result.
 
     if (impl == Metal) {
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
         ok = QRhiMetal::probe(static_cast<QRhiMetalInitParams *>(params));
 #endif
     } else {
@@ -9078,7 +9078,7 @@ bool QRhi::probe(QRhi::Implementation impl, QRhiInitParams *params)
     The caller is expected to destroy the QRhiAdapter objects in the list. Apart
     from querying \l{QRhiAdapter::}{info()}, the only purpose of these objects is
     to be passed on to create(), or the corresponding functions in higher layers
-    such as Qt Quick.
+    such as BobUI Quick.
 
     The following snippet, written specifically for Vulkan, shows how to
     enumerate the available physical devices and request to create a QRhi for
@@ -9124,10 +9124,10 @@ bool QRhi::probe(QRhi::Implementation impl, QRhiInitParams *params)
     in practice:
 
     \code
-      // enumerateAdapters-based approach from Qt 6.10 on
+      // enumerateAdapters-based approach from BobUI 6.10 on
       QRhiD3D12InitParams initParams;
       QRhiD3D12NativeHandles nativeHandles;
-      nativeHandles.adapterLuidLow = luid.LowPart; // retrieved a LUID from somewhere, now pass it on to Qt
+      nativeHandles.adapterLuidLow = luid.LowPart; // retrieved a LUID from somewhere, now pass it on to BobUI
       nativeHandles.adapterLuidHigh = luid.HighPart;
       QRhi::AdapterList adapters = QRhi::enumerateAdapters(QRhi::D3D12, &initParams, &nativeHandles);
       if (adapters.isEmpty()) { qWarning("Requested adapter was not found"); }
@@ -9139,7 +9139,7 @@ bool QRhi::probe(QRhi::Implementation impl, QRhiInitParams *params)
       // traditional approach, more lightweight
       QRhiD3D12InitParams initParams;
       QRhiD3D12NativeHandles nativeHandles;
-      nativeHandles.adapterLuidLow = luid.LowPart; // retrieved a LUID from somewhere, now pass it on to Qt
+      nativeHandles.adapterLuidLow = luid.LowPart; // retrieved a LUID from somewhere, now pass it on to BobUI
       nativeHandles.adapterLuidHigh = luid.HighPart;
       QRhi *rhi = QRhi::create(QRhi::D3D12, &initParams, {}, &nativeHandles, nullptr);
     \endcode
@@ -9158,7 +9158,7 @@ QRhi::AdapterList QRhi::enumerateAdapters(Implementation impl, QRhiInitParams *p
 
 /*!
     \struct QRhiSwapChainProxyData
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
@@ -9197,7 +9197,7 @@ QRhi::AdapterList QRhi::enumerateAdapters(Implementation impl, QRhiInitParams *p
  */
 QRhiSwapChainProxyData QRhi::updateSwapChainProxyData(QRhi::Implementation impl, QWindow *window)
 {
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (impl == Metal)
         return QRhiMetal::updateSwapChainProxyData(window);
 #else
@@ -9265,7 +9265,7 @@ const char *QRhi::backendName() const
 
 /*!
     \struct QRhiDriverInfo
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
@@ -9308,7 +9308,7 @@ const char *QRhi::backendName() const
     \sa QRhi::driverInfo(), QRhiDriverInfo::DeviceType
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static inline const char *deviceTypeStr(QRhiDriverInfo::DeviceType type)
 {
     switch (type) {
@@ -9332,7 +9332,7 @@ QDebug operator<<(QDebug dbg, const QRhiDriverInfo &info)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace() << "QRhiDriverInfo(deviceName=" << info.deviceName
-                  << " deviceId=0x" << Qt::hex << info.deviceId
+                  << " deviceId=0x" << BobUI::hex << info.deviceId
                   << " vendorId=0x" << info.vendorId
                   << " deviceType=" << deviceTypeStr(info.deviceType)
                   << ')';
@@ -9351,7 +9351,7 @@ QRhiDriverInfo QRhi::driverInfo() const
 
 /*!
     \class QRhiAdapter
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.10
 
@@ -9391,7 +9391,7 @@ QRhiAdapter::~QRhiAdapter()
 /*!
     \return the thread on which the QRhi was \l{QRhi::create()}{initialized}.
  */
-QThread *QRhi::thread() const
+BOBUIhread *QRhi::thread() const
 {
     return d->implThread;
 }
@@ -9453,7 +9453,7 @@ void QRhiImplementation::runCleanup()
 
 /*!
     \class QRhiResourceUpdateBatch
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
     \brief Records upload and copy type of operations.
@@ -9918,7 +9918,7 @@ QRhiResourceUpdateBatch *QRhi::nextResourceUpdateBatch()
     // QRhiBufferData until frame no. current+FramesInFlight-1, but
     // implementations may vary), combined with the desire to reuse container
     // and QRhiBufferData allocations in bufferOps instead of flooding every
-    // frame with allocs. See free(). In typical Qt Quick scenes this leads to
+    // frame with allocs. See free(). In typical BobUI Quick scenes this leads to
     // eventually seeding all 4 (or more) resource batches with buffer operation
     // data allocations which may (*) then be reused in subsequent frames. This
     // comes at the expense of using more memory, but has proven good results
@@ -10007,7 +10007,7 @@ void QRhiResourceUpdateBatchPrivate::free()
     // bufferOps is not touched in many cases, to allow reusing allocations
     // (incl. in the elements' QRhiBufferData) as much as possible when this
     // batch is used again in the future, which is important for performance, in
-    // particular with Qt Quick where it is easy for scenes to produce lots of,
+    // particular with BobUI Quick where it is easy for scenes to produce lots of,
     // typically small buffer changes on every frame.
     //
     // However, ensure that even in the unlikely case of having the max number
@@ -10049,7 +10049,7 @@ void QRhiResourceUpdateBatchPrivate::trimOpLists()
     // squeeze() to only keep the stack prealloc of the QVLAs)
     //
     // This (e.g. just the destruction of bufferOps elements) may have a
-    // non-negligible performance impact e.g. with Qt Quick with scenes where
+    // non-negligible performance impact e.g. with BobUI Quick with scenes where
     // there are lots of buffer operations per frame.
 
     activeBufferOpCount = 0;
@@ -10679,7 +10679,7 @@ void QRhiCommandBuffer::endExternal()
     call this function accordingly.
 
     Care must be exercised with the interpretation of the value, as its
-    precision and granularity is often not controlled by Qt, and depends on the
+    precision and granularity is often not controlled by BobUI, and depends on the
     underlying graphics API and its implementation. In particular, comparing
     the values between different graphics APIs and hardware is discouraged and
     may be meaningless.
@@ -10713,16 +10713,16 @@ void QRhiCommandBuffer::endExternal()
     changes, depending on the platform. For example, on Windows the returned
     timing may vary in a quite wide range between frames with modern graphics
     cards, even when submitting frames with a similar, or the same workload.
-    This is out of scope for Qt to control and solve, generally speaking.
+    This is out of scope for BobUI to control and solve, generally speaking.
     However, the D3D12 backend automatically calls
     \l{https://learn.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12device-setstablepowerstate}{ID3D12Device::SetStablePowerState()}
-    whenever the environment variable \c QT_D3D_STABLE_POWER_STATE is set to a
+    whenever the environment variable \c BOBUI_D3D_STABLE_POWER_STATE is set to a
     non-zero value. This can greatly stabilize the result. It can also have a
     non-insignificant effect on the CPU-side timings measured via QElapsedTimer
     for example, especially when offscreen frames are involved.
 
     \note Do not and never ship applications to production with
-    \c QT_D3D_STABLE_POWER_STATE set. See the Windows API documentation for details.
+    \c BOBUI_D3D_STABLE_POWER_STATE set. See the Windows API documentation for details.
 
     \sa QRhi::Timestamps, QRhi::EnableTimestamps
  */
@@ -10882,7 +10882,7 @@ const QRhiNativeHandles *QRhi::nativeHandles()
     With OpenGL this makes the OpenGL context current on the current thread.
     The function has no effect with other backends.
 
-    Calling this function is relevant typically in Qt framework code, when one
+    Calling this function is relevant typically in BobUI framework code, when one
     has to ensure external OpenGL code provided by the application can still
     run like it did before with direct usage of OpenGL, as long as the QRhi is
     using the OpenGL backend.
@@ -10970,11 +10970,11 @@ void QRhi::releaseCachedResources()
     the graphics driver, or due to errors that lead to a graphics device reset.
     Some of these can happen under perfectly normal circumstances as well, for
     example the upgrade of the graphics driver to a newer version is a common
-    task that can happen at any time while a Qt application is running. Users
+    task that can happen at any time while a BobUI application is running. Users
     may very well expect applications to be able to survive this, even when the
     application is actively using an API like OpenGL or Direct3D.
 
-    Qt's own frameworks built on top of QRhi, such as, Qt Quick, can be
+    BobUI's own frameworks built on top of QRhi, such as, BobUI Quick, can be
     expected to handle and take appropriate measures when a device loss occurs.
     If the data for graphics resources, such as textures and buffers, are still
     available on the CPU side, such an event may not be noticeable on the
@@ -11012,7 +11012,7 @@ bool QRhi::isDeviceLost() const
     create(), the returned QByteArray may be empty, even when the
     PipelineCacheDataLoadSave feature is supported.
 
-    When the returned data is non-empty, it is always specific to the Qt
+    When the returned data is non-empty, it is always specific to the BobUI
     version and QRhi backend. In addition, in some cases there is a strong
     dependency to the graphics device and the exact driver version used. QRhi
     takes care of adding the appropriate header and safeguards that ensure that
@@ -11044,7 +11044,7 @@ QByteArray QRhi::pipelineCacheData()
     When the PipelineCacheDataLoadSave is reported as unsupported, the function
     is safe to call, but has no effect.
 
-    The blob returned by pipelineCacheData() is always specific to the Qt
+    The blob returned by pipelineCacheData() is always specific to the BobUI
     version, the QRhi backend, and, in some cases, also to the graphics device,
     and a given version of the graphics driver. QRhi takes care of adding the
     appropriate header and safeguards that ensure that the data can always be
@@ -11077,7 +11077,7 @@ QByteArray QRhi::pipelineCacheData()
     internal caching mechanism, if any. This means that, depending on the
     graphics API and its implementation, the exact effects of retrieving and
     then reloading \a data are not predictable. Improved performance may not be
-    visible at all in case other caching mechanisms outside of Qt's control are
+    visible at all in case other caching mechanisms outside of BobUI's control are
     already active.
 
     \note Minimize the number of calls to this function. Loading the blob is
@@ -11085,7 +11085,7 @@ QByteArray QRhi::pipelineCacheData()
     called at a low frequency, ideally only once e.g. when starting the
     application.
 
-    \warning Serialized pipeline cache data is assumed to be trusted content. Qt
+    \warning Serialized pipeline cache data is assumed to be trusted content. BobUI
     performs robust parsing of the header and metadata included in \a data,
     application developers are however advised to never pass in data from
     untrusted sources.
@@ -11099,7 +11099,7 @@ void QRhi::setPipelineCacheData(const QByteArray &data)
 
 /*!
     \struct QRhiStats
-    \inmodule QtGuiPrivate
+    \inmodule BobUIGuiPrivate
     \inheaderfile rhi/qrhi.h
     \since 6.6
 
@@ -11164,7 +11164,7 @@ void QRhi::setPipelineCacheData(const QByteArray &data)
     \sa QRhi::statistics()
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRhiStats &info)
 {
     QDebugStateSaver saver(dbg);
@@ -11185,7 +11185,7 @@ QDebug operator<<(QDebug dbg, const QRhiStats &info)
     graphics resources.
 
     Data about memory allocations is only available with some backends, where
-    such operations are under Qt's control. With graphics APIs where there is
+    such operations are under BobUI's control. With graphics APIs where there is
     no lower level control over resource memory allocations, this will never be
     supported and all relevant fields in the results are 0.
 
@@ -11215,10 +11215,10 @@ QDebug operator<<(QDebug dbg, const QRhiStats &info)
     their implementations.
 
     \note Additionally, many drivers will likely employ various caching
-    strategies for shaders, programs, pipelines. (independently of Qt's own
+    strategies for shaders, programs, pipelines. (independently of BobUI's own
     similar facilities, such as setPipelineCacheData() or the OpenGL-specific
     program binary disk cache). Because such internal behavior is transparent
-    to the API client, Qt and QRhi have no knowledge or control over the exact
+    to the API client, BobUI and QRhi have no knowledge or control over the exact
     caching strategy, persistency, invalidation of the cached data, etc. When
     reading timings, such as the time spent on pipeline creation, the potential
     presence and unspecified behavior of driver-level caching mechanisms should
@@ -11921,4 +11921,4 @@ QSize QRhiImplementation::clampedSubResourceUploadSize(QSize size, QPoint dstPos
     return size;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

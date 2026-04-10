@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#include <QTest>
+#include <BOBUIest>
 #define AUTOTEST
 #include "../main.cpp"
 
@@ -127,8 +127,8 @@ Q_DECLARE_METATYPE(DFA);
 
 void tst_LexGen::nfa_toDFA_data()
 {
-    QTest::addColumn<NFA>("nfa");
-    QTest::addColumn<DFA>("expectedDFA");
+    BOBUIest::addColumn<NFA>("nfa");
+    BOBUIest::addColumn<DFA>("expectedDFA");
 
     NFA a = NFA::createSingleInputNFA('a');
     NFA b = NFA::createSingleInputNFA('b');
@@ -144,7 +144,7 @@ void tst_LexGen::nfa_toDFA_data()
 
     nfa = NFA::createConcatenatingNFA(a, b);
 
-    QTest::newRow("simple concat") << nfa << dfa;
+    BOBUIest::newRow("simple concat") << nfa << dfa;
 
     dfa.clear();
     dfa.resize(3);
@@ -153,7 +153,7 @@ void tst_LexGen::nfa_toDFA_data()
 
     nfa = NFA::createAlternatingNFA(a, b);
 
-    QTest::newRow("simple alternate") << nfa << dfa;
+    BOBUIest::newRow("simple alternate") << nfa << dfa;
 
 }
 
@@ -181,15 +181,15 @@ void tst_LexGen::nfa_toDFA()
 
 void tst_LexGen::lexgen_data()
 {
-    QTest::addColumn<QString>("ruleFile");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedOutput");
+    BOBUIest::addColumn<QString>("ruleFile");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expectedOutput");
 
     QDir d(QString(SRCDIR));
     d.cd("testdata");
     foreach (QString test, d.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         QString dir = d.absoluteFilePath(test) + '/';
-        QTest::newRow(qPrintable(test))
+        BOBUIest::newRow(qPrintable(test))
             << dir + "rules.lexgen"
             << dir + "input"
             << dir + "output"
@@ -243,5 +243,5 @@ void tst_LexGen::lexgen()
     }
 }
 
-QTEST_MAIN(tst_LexGen)
+BOBUIEST_MAIN(tst_LexGen)
 #include "tst_lexgen.moc"

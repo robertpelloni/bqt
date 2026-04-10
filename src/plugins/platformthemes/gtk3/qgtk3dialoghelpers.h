@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGTK3DIALOGHELPERS_H
 #define QGTK3DIALOGHELPERS_H
 
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qstring.h>
 #include <qpa/qplatformdialoghelper.h>
 
 typedef struct _GtkWidget GtkWidget;
 typedef struct _GtkDialog GtkDialog;
 typedef struct _GtkFileFilter GtkFileFilter;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGtk3Dialog;
 class QColor;
@@ -29,7 +29,7 @@ public:
     QGtk3ColorDialogHelper();
     ~QGtk3ColorDialogHelper();
 
-    bool show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent) override;
     void exec() override;
     void hide() override;
 
@@ -51,7 +51,7 @@ public:
     QGtk3FileDialogHelper();
     ~QGtk3FileDialogHelper();
 
-    bool show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent) override;
     void exec() override;
     void hide() override;
 
@@ -90,7 +90,7 @@ public:
     QGtk3FontDialogHelper();
     ~QGtk3FontDialogHelper();
 
-    bool show(Qt::WindowFlags flags, Qt::WindowModality modality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags flags, BobUI::WindowModality modality, QWindow *parent) override;
     void exec() override;
     void hide() override;
 
@@ -104,6 +104,6 @@ private:
     QScopedPointer<QGtk3Dialog> d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGTK3DIALOGHELPERS_H

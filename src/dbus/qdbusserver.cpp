@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusserver.h"
 #include "qdbusconnection_p.h"
 #include "qdbusconnectionmanager_p.h"
 #include "qdbusutil_p.h"
 
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/private/qlocking_p.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDBusServer
-    \inmodule QtDBus
+    \inmodule BobUIDBus
 
     \brief The QDBusServer class provides peer-to-peer communication
     between processes on the same computer.
@@ -156,8 +156,8 @@ bool QDBusServer::isAnonymousAuthenticationAllowed() const
   established to the server.
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusserver.cpp"
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

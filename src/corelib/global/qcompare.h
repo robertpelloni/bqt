@@ -1,17 +1,17 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOMPARE_H
 #define QCOMPARE_H
 
 #if 0
-#pragma qt_class(QtCompare)
+#pragma bobui_class(BobUICompare)
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qcompare_impl.h>
-#include <QtCore/qstdlibdetection.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcompare_impl.h>
+#include <BobUICore/qstdlibdetection.h>
 
 #ifdef __cpp_lib_bit_cast
 #include <bit>
@@ -20,11 +20,11 @@
 #include <compare>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 using CompareUnderlyingType = qint8;
-constexpr CompareUnderlyingType LegacyUncomparableValue = -127; // historic Qt value
+constexpr CompareUnderlyingType LegacyUncomparableValue = -127; // historic BobUI value
 
 // [cmp.categories.pre] / 1
 enum class Ordering : CompareUnderlyingType
@@ -49,7 +49,7 @@ enum class Uncomparable : CompareUnderlyingType
     Unordered =
         #if   defined(Q_STL_LIBCPP)
                 -127
-        #elif defined(Q_STL_LIBSTDCPP) && QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+        #elif defined(Q_STL_LIBSTDCPP) && BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         // GCC 10 to 15 ABI
                    2
         #elif defined(Q_STL_LIBSTDCPP)
@@ -60,7 +60,7 @@ enum class Uncomparable : CompareUnderlyingType
               defined(Q_STL_ROGUEWAVE)  || \
               defined(Q_STL_STLPORT)    || \
               defined(Q_STL_SGI)
-                QtPrivate::LegacyUncomparableValue
+                BobUIPrivate::LegacyUncomparableValue
         // We haven't seen C++20 of these libraries, so we haven't chosen a value yet.
         # ifdef __cpp_lib_three_way_comparison
         #  error Please report the numeric value of std::partial_ordering::unordered in your STL in a bug report.
@@ -68,14 +68,14 @@ enum class Uncomparable : CompareUnderlyingType
         #else
         #   error Please handle any newly-added Q_STL_ checks in the above ifdef-ery.
         #endif
-#endif // future Qt
+#endif // future BobUI
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-namespace QtOrderingPrivate {
+namespace BobUIOrderingPrivate {
 
-using QtPrivate::Ordering;
-using QtPrivate::Uncomparable;
+using BobUIPrivate::Ordering;
+using BobUIPrivate::Uncomparable;
 
 #if defined(__cpp_lib_bit_cast) && defined(__cpp_lib_three_way_comparison)
 inline constexpr bool OrderingValuesAreEqual =
@@ -98,16 +98,16 @@ constexpr O reversed(O o) noexcept
 
 template <typename O> constexpr auto toUnderlying(O o) noexcept;
 
-} // namespace QtOrderingPrivate
+} // namespace BobUIOrderingPrivate
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4702)   // unreachable code
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4702)   // unreachable code
 
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100903
-QT_WARNING_DISABLE_GCC("-Wzero-as-null-pointer-constant")
-QT_WARNING_DISABLE_CLANG("-Wzero-as-null-pointer-constant")
+BOBUI_WARNING_DISABLE_GCC("-Wzero-as-null-pointer-constant")
+BOBUI_WARNING_DISABLE_CLANG("-Wzero-as-null-pointer-constant")
 
-namespace Qt {
+namespace BobUI {
 
 class weak_ordering;
 class strong_ordering;
@@ -121,63 +121,63 @@ public:
     static const partial_ordering unordered;
 
     friend constexpr bool operator==(partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order == 0; }
 
     friend constexpr bool operator!=(partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return !lhs.isOrdered() || lhs.m_order != 0; }
 
     friend constexpr bool operator< (partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order <  0; }
 
     friend constexpr bool operator<=(partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order <= 0; }
 
     friend constexpr bool operator> (partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order >  0; }
 
     friend constexpr bool operator>=(partial_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order >= 0; }
 
 
-    friend constexpr bool operator==(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator==(BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return rhs.isOrdered() && 0 == rhs.m_order; }
 
-    friend constexpr bool operator!=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator!=(BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return !rhs.isOrdered() || 0 != rhs.m_order; }
 
-    friend constexpr bool operator< (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator< (BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return rhs.isOrdered() && 0 <  rhs.m_order; }
 
-    friend constexpr bool operator<=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator<=(BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return rhs.isOrdered() && 0 <= rhs.m_order; }
 
-    friend constexpr bool operator> (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator> (BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return rhs.isOrdered() && 0 >  rhs.m_order; }
 
-    friend constexpr bool operator>=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator>=(BobUIPrivate::CompareAgainstLiteralZero,
                                      partial_ordering rhs) noexcept
     { return rhs.isOrdered() && 0 >= rhs.m_order; }
 
 
 #ifdef __cpp_lib_three_way_comparison
     friend constexpr std::partial_ordering
-    operator<=>(partial_ordering lhs, QtPrivate::CompareAgainstLiteralZero) noexcept
+    operator<=>(partial_ordering lhs, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs; } // https://eel.is/c++draft/cmp.partialord#4
 
     friend constexpr std::partial_ordering
-    operator<=>(QtPrivate::CompareAgainstLiteralZero, partial_ordering rhs) noexcept
-    { return QtOrderingPrivate::reversed(rhs); }
+    operator<=>(BobUIPrivate::CompareAgainstLiteralZero, partial_ordering rhs) noexcept
+    { return BobUIOrderingPrivate::reversed(rhs); }
 #endif // __cpp_lib_three_way_comparison
 
 
@@ -192,32 +192,32 @@ public:
         : m_order{} // == equivalent
     {
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual) {
-            m_order = std::bit_cast<QtPrivate::CompareUnderlyingType>(stdorder);
-            if constexpr (!QtOrderingPrivate::UnorderedValueIsEqual) {
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual) {
+            m_order = std::bit_cast<BobUIPrivate::CompareUnderlyingType>(stdorder);
+            if constexpr (!BobUIOrderingPrivate::UnorderedValueIsEqual) {
                 if (stdorder == std::partial_ordering::unordered)
-                    m_order = qToUnderlying(QtPrivate::Uncomparable::Unordered);
+                    m_order = qToUnderlying(BobUIPrivate::Uncomparable::Unordered);
             }
             return;
         }
 #endif // __cpp_lib_bit_cast
         if (stdorder < 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Less);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Less);
         else if (stdorder > 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Greater);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Greater);
         else if (stdorder != 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Uncomparable::Unordered);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Uncomparable::Unordered);
     }
 
     constexpr Q_IMPLICIT operator std::partial_ordering() const noexcept
     {
         static_assert(sizeof(*this) == sizeof(std::partial_ordering));
-        using O = QtPrivate::Ordering;
-        using U = QtPrivate::Uncomparable;
+        using O = BobUIPrivate::Ordering;
+        using U = BobUIPrivate::Uncomparable;
         using R = std::partial_ordering;
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual) {
-            if constexpr (!QtOrderingPrivate::UnorderedValueIsEqual) {
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual) {
+            if constexpr (!BobUIOrderingPrivate::UnorderedValueIsEqual) {
                 if (m_order == qToUnderlying(U::Unordered))
                     return R::unordered;
             }
@@ -273,13 +273,13 @@ public:
 private:
     friend class weak_ordering;
     friend class strong_ordering;
-    template <typename O> friend constexpr auto QtOrderingPrivate::toUnderlying(O o) noexcept;
+    template <typename O> friend constexpr auto BobUIOrderingPrivate::toUnderlying(O o) noexcept;
 
-    constexpr explicit partial_ordering(QtPrivate::Ordering order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit partial_ordering(BobUIPrivate::Ordering order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
-    constexpr explicit partial_ordering(QtPrivate::Uncomparable order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit partial_ordering(BobUIPrivate::Uncomparable order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
 
     friend constexpr bool is_eq  (partial_ordering o) noexcept { return o == 0; }
@@ -292,15 +292,15 @@ private:
     // instead of the exposition only is_ordered member in [cmp.partialord],
     // use a private function
     constexpr bool isOrdered() const noexcept
-    { return m_order != static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Uncomparable::Unordered); }
+    { return m_order != static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Uncomparable::Unordered); }
 
-    QtPrivate::CompareUnderlyingType m_order;
+    BobUIPrivate::CompareUnderlyingType m_order;
 };
 
-inline constexpr partial_ordering partial_ordering::less(QtPrivate::Ordering::Less);
-inline constexpr partial_ordering partial_ordering::equivalent(QtPrivate::Ordering::Equivalent);
-inline constexpr partial_ordering partial_ordering::greater(QtPrivate::Ordering::Greater);
-inline constexpr partial_ordering partial_ordering::unordered(QtPrivate::Uncomparable::Unordered);
+inline constexpr partial_ordering partial_ordering::less(BobUIPrivate::Ordering::Less);
+inline constexpr partial_ordering partial_ordering::equivalent(BobUIPrivate::Ordering::Equivalent);
+inline constexpr partial_ordering partial_ordering::greater(BobUIPrivate::Ordering::Greater);
+inline constexpr partial_ordering partial_ordering::unordered(BobUIPrivate::Uncomparable::Unordered);
 
 class weak_ordering
 {
@@ -310,66 +310,66 @@ public:
     static const weak_ordering greater;
 
     constexpr Q_IMPLICIT operator partial_ordering() const noexcept
-    { return partial_ordering(static_cast<QtPrivate::Ordering>(m_order)); }
+    { return partial_ordering(static_cast<BobUIPrivate::Ordering>(m_order)); }
 
     friend constexpr bool operator==(weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order == 0; }
 
     friend constexpr bool operator!=(weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order != 0; }
 
     friend constexpr bool operator< (weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order <  0; }
 
     friend constexpr bool operator<=(weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order <= 0; }
 
     friend constexpr bool operator> (weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order >  0; }
 
     friend constexpr bool operator>=(weak_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order >= 0; }
 
 
-    friend constexpr bool operator==(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator==(BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 == rhs.m_order; }
 
-    friend constexpr bool operator!=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator!=(BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 != rhs.m_order; }
 
-    friend constexpr bool operator< (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator< (BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 <  rhs.m_order; }
 
-    friend constexpr bool operator<=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator<=(BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 <= rhs.m_order; }
 
-    friend constexpr bool operator> (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator> (BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 > rhs.m_order; }
 
-    friend constexpr bool operator>=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator>=(BobUIPrivate::CompareAgainstLiteralZero,
                                      weak_ordering rhs) noexcept
     { return 0 >= rhs.m_order; }
 
 
 #ifdef __cpp_lib_three_way_comparison
     friend constexpr std::weak_ordering
-    operator<=>(weak_ordering lhs, QtPrivate::CompareAgainstLiteralZero) noexcept
+    operator<=>(weak_ordering lhs, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs; } // https://eel.is/c++draft/cmp.weakord#5
 
     friend constexpr std::weak_ordering
-    operator<=>(QtPrivate::CompareAgainstLiteralZero, weak_ordering rhs) noexcept
-    { return QtOrderingPrivate::reversed(rhs); }
+    operator<=>(BobUIPrivate::CompareAgainstLiteralZero, weak_ordering rhs) noexcept
+    { return BobUIOrderingPrivate::reversed(rhs); }
 #endif // __cpp_lib_three_way_comparison
 
 
@@ -396,24 +396,24 @@ public:
         : m_order{} // == equivalent
     {
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual) {
-            m_order = std::bit_cast<QtPrivate::CompareUnderlyingType>(stdorder);
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual) {
+            m_order = std::bit_cast<BobUIPrivate::CompareUnderlyingType>(stdorder);
             return;
         }
 #endif // __cpp_lib_bit_cast
         if (stdorder < 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Less);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Less);
         else if (stdorder > 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Greater);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Greater);
     }
 
     constexpr Q_IMPLICIT operator std::weak_ordering() const noexcept
     {
         static_assert(sizeof(*this) == sizeof(std::weak_ordering));
-        using O = QtPrivate::Ordering;
+        using O = BobUIPrivate::Ordering;
         using R = std::weak_ordering;
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual)
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual)
             return std::bit_cast<R>(*this);
 #endif // __cpp_lib_bit_cast
         switch (m_order) {
@@ -463,10 +463,10 @@ public:
 
 private:
     friend class strong_ordering;
-    template <typename O> friend constexpr auto QtOrderingPrivate::toUnderlying(O o) noexcept;
+    template <typename O> friend constexpr auto BobUIOrderingPrivate::toUnderlying(O o) noexcept;
 
-    constexpr explicit weak_ordering(QtPrivate::Ordering order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit weak_ordering(BobUIPrivate::Ordering order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
 
     friend constexpr bool is_eq  (weak_ordering o) noexcept { return o == 0; }
@@ -476,12 +476,12 @@ private:
     friend constexpr bool is_gt  (weak_ordering o) noexcept { return o >  0; }
     friend constexpr bool is_gteq(weak_ordering o) noexcept { return o >= 0; }
 
-    QtPrivate::CompareUnderlyingType m_order;
+    BobUIPrivate::CompareUnderlyingType m_order;
 };
 
-inline constexpr weak_ordering weak_ordering::less(QtPrivate::Ordering::Less);
-inline constexpr weak_ordering weak_ordering::equivalent(QtPrivate::Ordering::Equivalent);
-inline constexpr weak_ordering weak_ordering::greater(QtPrivate::Ordering::Greater);
+inline constexpr weak_ordering weak_ordering::less(BobUIPrivate::Ordering::Less);
+inline constexpr weak_ordering weak_ordering::equivalent(BobUIPrivate::Ordering::Equivalent);
+inline constexpr weak_ordering weak_ordering::greater(BobUIPrivate::Ordering::Greater);
 
 class strong_ordering
 {
@@ -492,69 +492,69 @@ public:
     static const strong_ordering greater;
 
     constexpr Q_IMPLICIT operator partial_ordering() const noexcept
-    { return partial_ordering(static_cast<QtPrivate::Ordering>(m_order)); }
+    { return partial_ordering(static_cast<BobUIPrivate::Ordering>(m_order)); }
 
     constexpr Q_IMPLICIT operator weak_ordering() const noexcept
-    { return weak_ordering(static_cast<QtPrivate::Ordering>(m_order)); }
+    { return weak_ordering(static_cast<BobUIPrivate::Ordering>(m_order)); }
 
     friend constexpr bool operator==(strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order == 0; }
 
     friend constexpr bool operator!=(strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order != 0; }
 
     friend constexpr bool operator< (strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order <  0; }
 
     friend constexpr bool operator<=(strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order <= 0; }
 
     friend constexpr bool operator> (strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order >  0; }
 
     friend constexpr bool operator>=(strong_ordering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.m_order >= 0; }
 
 
-    friend constexpr bool operator==(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator==(BobUIPrivate::CompareAgainstLiteralZero,
                                      strong_ordering rhs) noexcept
     { return 0 == rhs.m_order; }
 
-    friend constexpr bool operator!=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator!=(BobUIPrivate::CompareAgainstLiteralZero,
                                      strong_ordering rhs) noexcept
     { return 0 != rhs.m_order; }
 
-    friend constexpr bool operator< (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator< (BobUIPrivate::CompareAgainstLiteralZero,
                                     strong_ordering rhs) noexcept
     { return 0 <  rhs.m_order; }
 
-    friend constexpr bool operator<=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator<=(BobUIPrivate::CompareAgainstLiteralZero,
                                      strong_ordering rhs) noexcept
     { return 0 <= rhs.m_order; }
 
-    friend constexpr bool operator> (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator> (BobUIPrivate::CompareAgainstLiteralZero,
                                     strong_ordering rhs) noexcept
     { return 0 >  rhs.m_order; }
 
-    friend constexpr bool operator>=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator>=(BobUIPrivate::CompareAgainstLiteralZero,
                                      strong_ordering rhs) noexcept
     { return 0 >= rhs.m_order; }
 
 
 #ifdef __cpp_lib_three_way_comparison
     friend constexpr std::strong_ordering
-    operator<=>(strong_ordering lhs, QtPrivate::CompareAgainstLiteralZero) noexcept
+    operator<=>(strong_ordering lhs, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs; } // https://eel.is/c++draft/cmp.strongord#6
 
     friend constexpr std::strong_ordering
-    operator<=>(QtPrivate::CompareAgainstLiteralZero, strong_ordering rhs) noexcept
-    { return QtOrderingPrivate::reversed(rhs); }
+    operator<=>(BobUIPrivate::CompareAgainstLiteralZero, strong_ordering rhs) noexcept
+    { return BobUIOrderingPrivate::reversed(rhs); }
 #endif // __cpp_lib_three_way_comparison
 
 
@@ -593,24 +593,24 @@ public:
         : m_order{} // == equivalent
     {
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual) {
-            m_order = std::bit_cast<QtPrivate::CompareUnderlyingType>(stdorder);
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual) {
+            m_order = std::bit_cast<BobUIPrivate::CompareUnderlyingType>(stdorder);
             return;
         }
 #endif // __cpp_lib_bit_cast
         if (stdorder < 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Less);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Less);
         else if (stdorder > 0)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Greater);
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Greater);
     }
 
     constexpr Q_IMPLICIT operator std::strong_ordering() const noexcept
     {
         static_assert(sizeof(*this) == sizeof(std::strong_ordering));
-        using O = QtPrivate::Ordering;
+        using O = BobUIPrivate::Ordering;
         using R = std::strong_ordering;
 #ifdef __cpp_lib_bit_cast
-        if constexpr (QtOrderingPrivate::OrderingValuesAreEqual)
+        if constexpr (BobUIOrderingPrivate::OrderingValuesAreEqual)
             return std::bit_cast<R>(*this);
 #endif // __cpp_lib_bit_cast
         switch (m_order) {
@@ -659,10 +659,10 @@ public:
 #endif // __cpp_lib_three_way_comparison
 
 private:
-    template <typename O> friend constexpr auto QtOrderingPrivate::toUnderlying(O o) noexcept;
+    template <typename O> friend constexpr auto BobUIOrderingPrivate::toUnderlying(O o) noexcept;
 
-    constexpr explicit strong_ordering(QtPrivate::Ordering order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit strong_ordering(BobUIPrivate::Ordering order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
 
     friend constexpr bool is_eq  (strong_ordering o) noexcept { return o == 0; }
@@ -672,36 +672,36 @@ private:
     friend constexpr bool is_gt  (strong_ordering o) noexcept { return o >  0; }
     friend constexpr bool is_gteq(strong_ordering o) noexcept { return o >= 0; }
 
-    QtPrivate::CompareUnderlyingType m_order;
+    BobUIPrivate::CompareUnderlyingType m_order;
 };
 
-inline constexpr strong_ordering strong_ordering::less(QtPrivate::Ordering::Less);
-inline constexpr strong_ordering strong_ordering::equivalent(QtPrivate::Ordering::Equivalent);
-inline constexpr strong_ordering strong_ordering::equal(QtPrivate::Ordering::Equal);
-inline constexpr strong_ordering strong_ordering::greater(QtPrivate::Ordering::Greater);
+inline constexpr strong_ordering strong_ordering::less(BobUIPrivate::Ordering::Less);
+inline constexpr strong_ordering strong_ordering::equivalent(BobUIPrivate::Ordering::Equivalent);
+inline constexpr strong_ordering strong_ordering::equal(BobUIPrivate::Ordering::Equal);
+inline constexpr strong_ordering strong_ordering::greater(BobUIPrivate::Ordering::Greater);
 
-} // namespace Qt
+} // namespace BobUI
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-namespace QtOrderingPrivate {
-template<> constexpr auto toUnderlying<Qt::partial_ordering>(Qt::partial_ordering o) noexcept
+namespace BobUIOrderingPrivate {
+template<> constexpr auto toUnderlying<BobUI::partial_ordering>(BobUI::partial_ordering o) noexcept
 { return o.m_order; }
 
-template<> constexpr auto toUnderlying<Qt::weak_ordering>(Qt::weak_ordering o) noexcept
+template<> constexpr auto toUnderlying<BobUI::weak_ordering>(BobUI::weak_ordering o) noexcept
 { return o.m_order; }
 
-template<> constexpr auto toUnderlying<Qt::strong_ordering>(Qt::strong_ordering o) noexcept
+template<> constexpr auto toUnderlying<BobUI::strong_ordering>(BobUI::strong_ordering o) noexcept
 { return o.m_order; }
 }
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 
-// This is intentionally included after Qt::*_ordering types and before
+// This is intentionally included after BobUI::*_ordering types and before
 // qCompareThreeWay. Do not change!
-#include <QtCore/qcomparehelpers.h>
+#include <BobUICore/qcomparehelpers.h>
 
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 #if defined(Q_QDOC)
 
@@ -713,18 +713,18 @@ auto qCompareThreeWay(const LeftType &lhs, const RightType &rhs);
 template <typename LT, typename RT,
           std::enable_if_t<
                   std::disjunction_v<
-                          QtOrderingPrivate::CompareThreeWayTester::HasCompareThreeWay<LT, RT>,
-                          QtOrderingPrivate::CompareThreeWayTester::HasCompareThreeWay<RT, LT>>,
+                          BobUIOrderingPrivate::CompareThreeWayTester::HasCompareThreeWay<LT, RT>,
+                          BobUIOrderingPrivate::CompareThreeWayTester::HasCompareThreeWay<RT, LT>>,
                   bool> = true>
 auto qCompareThreeWay(const LT &lhs, const RT &rhs)
-        noexcept(QtOrderingPrivate::CompareThreeWayTester::compareThreeWayNoexcept<LT, RT>())
+        noexcept(BobUIOrderingPrivate::CompareThreeWayTester::compareThreeWayNoexcept<LT, RT>())
 {
-    using Qt::compareThreeWay;
-    if constexpr (QtOrderingPrivate::CompareThreeWayTester::hasCompareThreeWay_v<LT, RT>) {
+    using BobUI::compareThreeWay;
+    if constexpr (BobUIOrderingPrivate::CompareThreeWayTester::hasCompareThreeWay_v<LT, RT>) {
         return compareThreeWay(lhs, rhs);
     } else {
         const auto retval = compareThreeWay(rhs, lhs);
-        return QtOrderingPrivate::reversed(retval);
+        return BobUIOrderingPrivate::reversed(retval);
     }
 }
 
@@ -734,10 +734,10 @@ auto qCompareThreeWay(const LT &lhs, const RT &rhs)
 // Legacy QPartialOrdering
 //
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 enum class LegacyUncomparable : CompareUnderlyingType
 {
-    Unordered = QtPrivate::LegacyUncomparableValue
+    Unordered = BobUIPrivate::LegacyUncomparableValue
 };
 }
 
@@ -756,63 +756,63 @@ public:
     static const QPartialOrdering unordered;
 
     friend constexpr bool operator==(QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order == 0; }
 
     friend constexpr bool operator!=(QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return !lhs.isOrdered() || lhs.m_order != 0; }
 
     friend constexpr bool operator< (QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order <  0; }
 
     friend constexpr bool operator<=(QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order <= 0; }
 
     friend constexpr bool operator> (QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order >  0; }
 
     friend constexpr bool operator>=(QPartialOrdering lhs,
-                                     QtPrivate::CompareAgainstLiteralZero) noexcept
+                                     BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs.isOrdered() && lhs.m_order >= 0; }
 
 
-    friend constexpr bool operator==(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator==(BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return rhs.isOrdered() && 0 == rhs.m_order; }
 
-    friend constexpr bool operator!=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator!=(BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return !rhs.isOrdered() || 0 != rhs.m_order; }
 
-    friend constexpr bool operator< (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator< (BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return rhs.isOrdered() && 0 <  rhs.m_order; }
 
-    friend constexpr bool operator<=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator<=(BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return rhs.isOrdered() && 0 <= rhs.m_order; }
 
-    friend constexpr bool operator> (QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator> (BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return rhs.isOrdered() && 0 >  rhs.m_order; }
 
-    friend constexpr bool operator>=(QtPrivate::CompareAgainstLiteralZero,
+    friend constexpr bool operator>=(BobUIPrivate::CompareAgainstLiteralZero,
                                      QPartialOrdering rhs) noexcept
     { return rhs.isOrdered() && 0 >= rhs.m_order; }
 
 
 #ifdef __cpp_lib_three_way_comparison
     friend constexpr std::partial_ordering
-    operator<=>(QPartialOrdering lhs, QtPrivate::CompareAgainstLiteralZero) noexcept
+    operator<=>(QPartialOrdering lhs, BobUIPrivate::CompareAgainstLiteralZero) noexcept
     { return lhs; } // https://eel.is/c++draft/cmp.partialord#4
 
     friend constexpr std::partial_ordering
-    operator<=>(QtPrivate::CompareAgainstLiteralZero, QPartialOrdering rhs) noexcept
-    { return QtOrderingPrivate::reversed(rhs); }
+    operator<=>(BobUIPrivate::CompareAgainstLiteralZero, QPartialOrdering rhs) noexcept
+    { return BobUIOrderingPrivate::reversed(rhs); }
 #endif // __cpp_lib_three_way_comparison
 
 
@@ -822,28 +822,28 @@ public:
     friend constexpr bool operator!=(QPartialOrdering lhs, QPartialOrdering rhs) noexcept
     { return lhs.m_order != rhs.m_order; }
 
-    constexpr Q_IMPLICIT QPartialOrdering(Qt::partial_ordering order) noexcept
+    constexpr Q_IMPLICIT QPartialOrdering(BobUI::partial_ordering order) noexcept
         : m_order{} // == equivalent
     {
-        if (order == Qt::partial_ordering::less)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Less);
-        else if (order == Qt::partial_ordering::greater)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::Ordering::Greater);
-        else if (order == Qt::partial_ordering::unordered)
-            m_order = static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::LegacyUncomparable::Unordered);
+        if (order == BobUI::partial_ordering::less)
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Less);
+        else if (order == BobUI::partial_ordering::greater)
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::Ordering::Greater);
+        else if (order == BobUI::partial_ordering::unordered)
+            m_order = static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::LegacyUncomparable::Unordered);
     }
 
-    constexpr Q_IMPLICIT QPartialOrdering(Qt::weak_ordering stdorder) noexcept
-        : QPartialOrdering(Qt::partial_ordering{stdorder}) {}
+    constexpr Q_IMPLICIT QPartialOrdering(BobUI::weak_ordering stdorder) noexcept
+        : QPartialOrdering(BobUI::partial_ordering{stdorder}) {}
 
-    constexpr Q_IMPLICIT QPartialOrdering(Qt::strong_ordering stdorder) noexcept
-        : QPartialOrdering(Qt::partial_ordering{stdorder}) {}
+    constexpr Q_IMPLICIT QPartialOrdering(BobUI::strong_ordering stdorder) noexcept
+        : QPartialOrdering(BobUI::partial_ordering{stdorder}) {}
 
-    constexpr Q_IMPLICIT operator Qt::partial_ordering() const noexcept
+    constexpr Q_IMPLICIT operator BobUI::partial_ordering() const noexcept
     {
-        using O = QtPrivate::Ordering;
-        using U = QtPrivate::LegacyUncomparable;
-        using R = Qt::partial_ordering;
+        using O = BobUIPrivate::Ordering;
+        using U = BobUIPrivate::LegacyUncomparable;
+        using R = BobUI::partial_ordering;
         switch (m_order) {
         case qToUnderlying(O::Less):       return R::less;
         case qToUnderlying(O::Greater):    return R::greater;
@@ -852,27 +852,27 @@ public:
         }
         // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-        // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+        // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
         Q_UNREACHABLE();
 #endif
         return R::unordered;
     }
 
-    friend constexpr bool operator==(QPartialOrdering lhs, Qt::partial_ordering rhs) noexcept
-    { Qt::partial_ordering qt = lhs; return qt == rhs; }
+    friend constexpr bool operator==(QPartialOrdering lhs, BobUI::partial_ordering rhs) noexcept
+    { BobUI::partial_ordering bobui = lhs; return bobui == rhs; }
 
-    friend constexpr bool operator!=(QPartialOrdering lhs, Qt::partial_ordering rhs) noexcept
-    { Qt::partial_ordering qt = lhs; return qt != rhs; }
+    friend constexpr bool operator!=(QPartialOrdering lhs, BobUI::partial_ordering rhs) noexcept
+    { BobUI::partial_ordering bobui = lhs; return bobui != rhs; }
 
-    friend constexpr bool operator==(Qt::partial_ordering lhs, QPartialOrdering rhs) noexcept
-    { Qt::partial_ordering qt = rhs; return lhs == qt; }
+    friend constexpr bool operator==(BobUI::partial_ordering lhs, QPartialOrdering rhs) noexcept
+    { BobUI::partial_ordering bobui = rhs; return lhs == bobui; }
 
-    friend constexpr bool operator!=(Qt::partial_ordering lhs, QPartialOrdering rhs) noexcept
-    { Qt::partial_ordering qt = rhs; return lhs != qt; }
+    friend constexpr bool operator!=(BobUI::partial_ordering lhs, QPartialOrdering rhs) noexcept
+    { BobUI::partial_ordering bobui = rhs; return lhs != bobui; }
 
 #ifdef __cpp_lib_three_way_comparison
     constexpr Q_IMPLICIT QPartialOrdering(std::partial_ordering stdorder) noexcept
-        : QPartialOrdering(Qt::partial_ordering(stdorder)) {}
+        : QPartialOrdering(BobUI::partial_ordering(stdorder)) {}
 
     constexpr Q_IMPLICIT QPartialOrdering(std::weak_ordering stdorder) noexcept
         : QPartialOrdering(std::partial_ordering(stdorder)) {}
@@ -882,8 +882,8 @@ public:
 
     constexpr Q_IMPLICIT operator std::partial_ordering() const noexcept
     {
-        using O = QtPrivate::Ordering;
-        using U = QtPrivate::LegacyUncomparable;
+        using O = BobUIPrivate::Ordering;
+        using U = BobUIPrivate::LegacyUncomparable;
         using R = std::partial_ordering;
         switch (m_order) {
         case qToUnderlying(O::Less):       return R::less;
@@ -908,43 +908,43 @@ public:
 #endif // __cpp_lib_three_way_comparison
 
 private:
-    constexpr explicit QPartialOrdering(QtPrivate::Ordering order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit QPartialOrdering(BobUIPrivate::Ordering order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
-    constexpr explicit QPartialOrdering(QtPrivate::LegacyUncomparable order) noexcept
-        : m_order(static_cast<QtPrivate::CompareUnderlyingType>(order))
+    constexpr explicit QPartialOrdering(BobUIPrivate::LegacyUncomparable order) noexcept
+        : m_order(static_cast<BobUIPrivate::CompareUnderlyingType>(order))
     {}
 
-    QT_WARNING_PUSH
+    BOBUI_WARNING_PUSH
     // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100903
-    QT_WARNING_DISABLE_GCC("-Wzero-as-null-pointer-constant")
-    QT_WARNING_DISABLE_CLANG("-Wzero-as-null-pointer-constant")
+    BOBUI_WARNING_DISABLE_GCC("-Wzero-as-null-pointer-constant")
+    BOBUI_WARNING_DISABLE_CLANG("-Wzero-as-null-pointer-constant")
     friend constexpr bool is_eq  (QPartialOrdering o) noexcept { return o == 0; }
     friend constexpr bool is_neq (QPartialOrdering o) noexcept { return o != 0; }
     friend constexpr bool is_lt  (QPartialOrdering o) noexcept { return o <  0; }
     friend constexpr bool is_lteq(QPartialOrdering o) noexcept { return o <= 0; }
     friend constexpr bool is_gt  (QPartialOrdering o) noexcept { return o >  0; }
     friend constexpr bool is_gteq(QPartialOrdering o) noexcept { return o >= 0; }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 
     // instead of the exposition only is_ordered member in [cmp.partialord],
     // use a private function
     constexpr bool isOrdered() const noexcept
-    { return m_order != static_cast<QtPrivate::CompareUnderlyingType>(QtPrivate::LegacyUncomparable::Unordered); }
+    { return m_order != static_cast<BobUIPrivate::CompareUnderlyingType>(BobUIPrivate::LegacyUncomparable::Unordered); }
 
-    QtPrivate::CompareUnderlyingType m_order;
+    BobUIPrivate::CompareUnderlyingType m_order;
 };
 
-inline constexpr QPartialOrdering QPartialOrdering::Less(QtPrivate::Ordering::Less);
-inline constexpr QPartialOrdering QPartialOrdering::Equivalent(QtPrivate::Ordering::Equivalent);
-inline constexpr QPartialOrdering QPartialOrdering::Greater(QtPrivate::Ordering::Greater);
-inline constexpr QPartialOrdering QPartialOrdering::Unordered(QtPrivate::LegacyUncomparable::Unordered);
+inline constexpr QPartialOrdering QPartialOrdering::Less(BobUIPrivate::Ordering::Less);
+inline constexpr QPartialOrdering QPartialOrdering::Equivalent(BobUIPrivate::Ordering::Equivalent);
+inline constexpr QPartialOrdering QPartialOrdering::Greater(BobUIPrivate::Ordering::Greater);
+inline constexpr QPartialOrdering QPartialOrdering::Unordered(BobUIPrivate::LegacyUncomparable::Unordered);
 
-inline constexpr QPartialOrdering QPartialOrdering::less(QtPrivate::Ordering::Less);
-inline constexpr QPartialOrdering QPartialOrdering::equivalent(QtPrivate::Ordering::Equivalent);
-inline constexpr QPartialOrdering QPartialOrdering::greater(QtPrivate::Ordering::Greater);
-inline constexpr QPartialOrdering QPartialOrdering::unordered(QtPrivate::LegacyUncomparable::Unordered);
+inline constexpr QPartialOrdering QPartialOrdering::less(BobUIPrivate::Ordering::Less);
+inline constexpr QPartialOrdering QPartialOrdering::equivalent(BobUIPrivate::Ordering::Equivalent);
+inline constexpr QPartialOrdering QPartialOrdering::greater(BobUIPrivate::Ordering::Greater);
+inline constexpr QPartialOrdering QPartialOrdering::unordered(BobUIPrivate::LegacyUncomparable::Unordered);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPARE_H

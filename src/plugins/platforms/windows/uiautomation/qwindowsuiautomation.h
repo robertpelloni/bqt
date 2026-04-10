@@ -1,11 +1,11 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSUIAUTOMATION_H
 #define QWINDOWSUIAUTOMATION_H
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include <uiautomation.h>
 
@@ -112,6 +112,6 @@ __CRT_UUID_DECL(ISelectionProvider2,  0x14f68475, 0xee1c, 0x44f6, 0xa8, 0x69, 0x
 
 #endif // !Q_CC_MSVC
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif // QWINDOWSUIAUTOMATION_H

@@ -9,20 +9,20 @@ not ok 2 - compare_unregistered_enums()
   found: 0 (MyUnregisteredEnumValue1)
   expected: 1 (MyUnregisteredEnumValue2)
   actual: 0 (MyUnregisteredEnumValue1)
-  at: tst_Cmptest::compare_unregistered_enums() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_unregistered_enums() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 3 - compare_registered_enums()
   ---
   type: QCOMPARE
   message: Compared values are not the same
-  wanted: Sunday (Qt::Sunday)
-  found: Monday (Qt::Monday)
-  expected: Sunday (Qt::Sunday)
-  actual: Monday (Qt::Monday)
-  at: tst_Cmptest::compare_registered_enums() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  wanted: Sunday (BobUI::Sunday)
+  found: Monday (BobUI::Monday)
+  expected: Sunday (BobUI::Sunday)
+  actual: Monday (BobUI::Monday)
+  at: tst_Cmptest::compare_registered_enums() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 4 - compare_class_enums()
@@ -33,8 +33,8 @@ not ok 4 - compare_class_enums()
   found: MyClassEnumValue1 (MyClassEnum::MyClassEnumValue1)
   expected: MyClassEnumValue2 (MyClassEnum::MyClassEnumValue2)
   actual: MyClassEnumValue1 (MyClassEnum::MyClassEnumValue1)
-  at: tst_Cmptest::compare_class_enums() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_class_enums() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 5 - test_windowflags(pass)
@@ -46,8 +46,8 @@ not ok 6 - test_windowflags(fail1)
   found: Window|WindowSystemMenuHint|WindowStaysOnBottomHint (actualWindowFlags)
   expected: Window|FramelessWindowHint|WindowSystemMenuHint|WindowStaysOnBottomHint (expectedWindowFlags)
   actual: Window|WindowSystemMenuHint|WindowStaysOnBottomHint (actualWindowFlags)
-  at: tst_Cmptest::test_windowflags() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::test_windowflags() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 7 - test_windowflags(fail2)
@@ -58,8 +58,8 @@ not ok 7 - test_windowflags(fail2)
   found: Window (actualWindowFlags)
   expected: Window|FramelessWindowHint (expectedWindowFlags)
   actual: Window (actualWindowFlags)
-  at: tst_Cmptest::test_windowflags() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::test_windowflags() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 8 - test_unregistered_flags(pass)
@@ -71,8 +71,8 @@ not ok 9 - test_unregistered_flags(fail1)
   found: 0x3 (actualFlags)
   expected: 0x5 (expectedFlags)
   actual: 0x3 (actualFlags)
-  at: tst_Cmptest::test_unregistered_flags() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::test_unregistered_flags() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 10 - test_unregistered_flags(fail2)
@@ -83,8 +83,8 @@ not ok 10 - test_unregistered_flags(fail2)
   found: 0x1 (actualFlags)
   expected: 0x5 (expectedFlags)
   actual: 0x1 (actualFlags)
-  at: tst_Cmptest::test_unregistered_flags() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::test_unregistered_flags() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 11 - compare_boolfuncs()
@@ -98,8 +98,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected:  (u"")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -110,8 +110,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: ==  (u"")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -122,8 +122,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: abcd (u"abcd")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -134,8 +134,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: == abcd (u"abcd")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -146,8 +146,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected:  ("")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -158,8 +158,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: ==  ("")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -170,8 +170,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: abcd ("abcd")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 14 - compare_stringLiterals()
@@ -182,8 +182,8 @@ not ok 14 - compare_stringLiterals()
   found: "abc" (lhs)
   expected: == abcd ("abcd")
   actual: "abc" (lhs)
-  at: tst_Cmptest::compare_stringLiterals() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_stringLiterals() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 15 - compare_tostring(int, string)
@@ -194,8 +194,8 @@ not ok 15 - compare_tostring(int, string)
   found: QVariant(int,123) (actual)
   expected: QVariant(QString,hi) (expected)
   actual: QVariant(int,123) (actual)
-  at: tst_Cmptest::compare_tostring() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_tostring() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 16 - compare_tostring(both invalid)
@@ -207,8 +207,8 @@ not ok 17 - compare_tostring(null hash, invalid)
   found: QVariant(QVariantHash) (actual)
   expected: QVariant() (expected)
   actual: QVariant(QVariantHash) (actual)
-  at: tst_Cmptest::compare_tostring() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_tostring() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 18 - compare_tostring(string, null user type)
@@ -219,8 +219,8 @@ not ok 18 - compare_tostring(string, null user type)
   found: QVariant(QString,A simple string) (actual)
   expected: QVariant(PhonyClass) (expected)
   actual: QVariant(QString,A simple string) (actual)
-  at: tst_Cmptest::compare_tostring() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_tostring() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 19 - compare_tostring(both non-null user type)
@@ -231,8 +231,8 @@ not ok 19 - compare_tostring(both non-null user type)
   found: QVariant(PhonyClass,<value not representable as string>) (actual)
   expected: QVariant(PhonyClass,<value not representable as string>) (expected)
   actual: QVariant(PhonyClass,<value not representable as string>) (actual)
-  at: tst_Cmptest::compare_tostring() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_tostring() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 20 - compare_unknown()
@@ -240,8 +240,8 @@ not ok 20 - compare_unknown()
   # Compared values are not the same
    Actual   : a
    Expected : b
-  at: tst_Cmptest::compare_unknown() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_unknown() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 21 - compare_textFromDebug()
@@ -252,8 +252,8 @@ not ok 21 - compare_textFromDebug()
   found: QDebug stream: 0 (a)
   expected: QDebug stream: 1 (b)
   actual: QDebug stream: 0 (a)
-  at: tst_Cmptest::compare_textFromDebug() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compare_textFromDebug() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 22 - compareQObjects()
@@ -264,8 +264,8 @@ not ok 22 - compareQObjects()
   found: QObject/"object1" (&object1)
   expected: QObject/"object2" (&object2)
   actual: QObject/"object1" (&object1)
-  at: tst_Cmptest::compareQObjects() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQObjects() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 22 - compareQObjects()
@@ -276,8 +276,8 @@ not ok 22 - compareQObjects()
   found: QObject/"object1" (&object1)
   expected: "nullptr" (nullptr)
   actual: QObject/"object1" (&object1)
-  at: tst_Cmptest::compareQObjects() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQObjects() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 22 - compareQObjects()
@@ -288,8 +288,8 @@ not ok 22 - compareQObjects()
   found: "nullptr" (nullptr)
   expected: QObject/"object2" (&object2)
   actual: "nullptr" (nullptr)
-  at: tst_Cmptest::compareQObjects() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQObjects() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 23 - compareQStringLists(empty lists)
@@ -302,8 +302,8 @@ not ok 25 - compareQStringLists(last item different)
   found: "string3" (opA)
   expected: "DIFFERS" (opB)
   actual: "string3" (opA)
-  at: tst_Cmptest::compareQStringLists() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQStringLists() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 26 - compareQStringLists(second-last item different)
@@ -314,8 +314,8 @@ not ok 26 - compareQStringLists(second-last item different)
   found: "string3" (opA)
   expected: "DIFFERS" (opB)
   actual: "string3" (opA)
-  at: tst_Cmptest::compareQStringLists() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQStringLists() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 27 - compareQStringLists(prefix)
@@ -323,8 +323,8 @@ not ok 27 - compareQStringLists(prefix)
   # Compared lists have different sizes.
    Actual   (opA) size: 2
    Expected (opB) size: 1
-  at: tst_Cmptest::compareQStringLists() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQStringLists() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 28 - compareQStringLists(short list second)
@@ -332,8 +332,8 @@ not ok 28 - compareQStringLists(short list second)
   # Compared lists have different sizes.
    Actual   (opA) size: 12
    Expected (opB) size: 1
-  at: tst_Cmptest::compareQStringLists() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQStringLists() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 29 - compareQStringLists(short list first)
@@ -341,8 +341,8 @@ not ok 29 - compareQStringLists(short list first)
   # Compared lists have different sizes.
    Actual   (opA) size: 1
    Expected (opB) size: 12
-  at: tst_Cmptest::compareQStringLists() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQStringLists() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 30 - compareQListInt(match)
@@ -351,8 +351,8 @@ not ok 31 - compareQListInt(size mismatch)
   # Compared lists have different sizes.
    Actual   (actual) size: 2
    Expected (expected) size: 3
-  at: tst_Cmptest::compareQListInt() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListInt() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 32 - compareQListInt(value mismatch)
@@ -363,8 +363,8 @@ not ok 32 - compareQListInt(value mismatch)
   found: 4 (actual)
   expected: 3 (expected)
   actual: 4 (actual)
-  at: tst_Cmptest::compareQListInt() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListInt() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 33 - compareQListIntToArray(match)
@@ -373,8 +373,8 @@ not ok 34 - compareQListIntToArray(size mismatch)
   # Compared lists have different sizes.
    Actual   (actual) size: 2
    Expected (expected) size: 3
-  at: tst_Cmptest::compareQListIntToArray() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListIntToArray() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 35 - compareQListIntToArray(value mismatch)
@@ -385,8 +385,8 @@ not ok 35 - compareQListIntToArray(value mismatch)
   found: 4 (actual)
   expected: 3 (expected)
   actual: 4 (actual)
-  at: tst_Cmptest::compareQListIntToArray() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListIntToArray() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 36 - compareQListIntToInitializerList(match)
@@ -395,8 +395,8 @@ not ok 37 - compareQListIntToInitializerList(size mismatch)
   # Compared lists have different sizes.
    Actual   (actual) size: 2
    Expected (ARG({1, 2, 3})) size: 3
-  at: tst_Cmptest::compareQListIntToInitializerList() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListIntToInitializerList() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 38 - compareQListIntToInitializerList(value mismatch)
@@ -407,13 +407,13 @@ not ok 38 - compareQListIntToInitializerList(value mismatch)
   found: 4 (actual)
   expected: 3 (ARG({1, 2, 3}))
   actual: 4 (actual)
-  at: tst_Cmptest::compareQListIntToInitializerList() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQListIntToInitializerList() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 39 - compareContainerToInitializerList()
-ok 40 - compareQColor(Qt::yellow vs "yellow")
-not ok 41 - compareQColor(Qt::yellow vs Qt::green)
+ok 40 - compareQColor(BobUI::yellow vs "yellow")
+not ok 41 - compareQColor(BobUI::yellow vs BobUI::green)
   ---
   type: QCOMPARE
   message: Compared values are not the same
@@ -421,8 +421,8 @@ not ok 41 - compareQColor(Qt::yellow vs Qt::green)
   found: #ffffff00 (colorA)
   expected: #ff00ff00 (colorB)
   actual: #ffffff00 (colorA)
-  at: tst_Cmptest::compareQColor() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQColor() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 42 - compareQColor(0x88ff0000 vs 0xffff0000)
@@ -433,8 +433,8 @@ not ok 42 - compareQColor(0x88ff0000 vs 0xffff0000)
   found: #88ff0000 (colorA)
   expected: #ffff0000 (colorB)
   actual: #88ff0000 (colorA)
-  at: tst_Cmptest::compareQColor() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQColor() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 43 - compareQPixmaps(both null)
@@ -446,8 +446,8 @@ not ok 44 - compareQPixmaps(one null)
   found: 1 (opA).isNull()
   expected: 0 (opB).isNull()
   actual: 1 (opA).isNull()
-  at: tst_Cmptest::compareQPixmaps() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPixmaps() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 45 - compareQPixmaps(other null)
@@ -458,8 +458,8 @@ not ok 45 - compareQPixmaps(other null)
   found: 0 (opA).isNull()
   expected: 1 (opB).isNull()
   actual: 0 (opA).isNull()
-  at: tst_Cmptest::compareQPixmaps() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPixmaps() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 46 - compareQPixmaps(equal)
@@ -471,15 +471,15 @@ not ok 47 - compareQPixmaps(different size)
   found: 11x20 (opA)
   expected: 20x20 (opB)
   actual: 11x20 (opA)
-  at: tst_Cmptest::compareQPixmaps() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPixmaps() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 48 - compareQPixmaps(different pixels)
   ---
   # Compared values are not the same
-  at: tst_Cmptest::compareQPixmaps() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPixmaps() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 49 - compareQPixmaps(different dpr)
@@ -490,8 +490,8 @@ not ok 49 - compareQPixmaps(different dpr)
   found: 1 (opA)
   expected: 2 (opB)
   actual: 1 (opA)
-  at: tst_Cmptest::compareQPixmaps() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPixmaps() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 50 - compareQImages(both null)
@@ -503,8 +503,8 @@ not ok 51 - compareQImages(one null)
   found: 1 (opA).isNull()
   expected: 0 (opB).isNull()
   actual: 1 (opA).isNull()
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 52 - compareQImages(other null)
@@ -515,8 +515,8 @@ not ok 52 - compareQImages(other null)
   found: 0 (opA).isNull()
   expected: 1 (opB).isNull()
   actual: 0 (opA).isNull()
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 53 - compareQImages(equal)
@@ -528,8 +528,8 @@ not ok 54 - compareQImages(different size)
   found: 11x20 (opA)
   expected: 20x20 (opB)
   actual: 11x20 (opA)
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 55 - compareQImages(different format)
@@ -540,15 +540,15 @@ not ok 55 - compareQImages(different format)
   found: 6 (opA)
   expected: 3 (opB)
   actual: 6 (opA)
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 56 - compareQImages(different pixels)
   ---
   # Compared values are not the same
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 57 - compareQImages(different dpr)
@@ -559,8 +559,8 @@ not ok 57 - compareQImages(different dpr)
   found: 1 (opA)
   expected: 2 (opB)
   actual: 1 (opA)
-  at: tst_Cmptest::compareQImages() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQImages() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 58 - compareQRegion(equal-empty)
@@ -572,8 +572,8 @@ not ok 59 - compareQRegion(1-empty)
   found: QRegion(200x50+10+10) (rA)
   expected: QRegion(null) (rB)
   actual: QRegion(200x50+10+10) (rA)
-  at: tst_Cmptest::compareQRegion() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQRegion() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 60 - compareQRegion(equal)
@@ -585,8 +585,8 @@ not ok 61 - compareQRegion(different lists)
   found: QRegion(200x50+10+10) (rA)
   expected: QRegion(2 rectangles, 50x200+100+200, 200x50+10+10) (rB)
   actual: QRegion(200x50+10+10) (rA)
-  at: tst_Cmptest::compareQRegion() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQRegion() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 62 - compareQVector2D()
@@ -597,8 +597,8 @@ not ok 62 - compareQVector2D()
   found: QVector2D(1, 2) (v2a)
   expected: QVector2D(1, 3) (v2b)
   actual: QVector2D(1, 2) (v2a)
-  at: tst_Cmptest::compareQVector2D() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQVector2D() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 63 - compareQVector3D()
@@ -609,8 +609,8 @@ not ok 63 - compareQVector3D()
   found: QVector3D(1, 2, 3) (v3a)
   expected: QVector3D(1, 3, 3) (v3b)
   actual: QVector3D(1, 2, 3) (v3a)
-  at: tst_Cmptest::compareQVector3D() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQVector3D() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 64 - compareQVector4D()
@@ -621,8 +621,8 @@ not ok 64 - compareQVector4D()
   found: QVector4D(1, 2, 3, 4) (v4a)
   expected: QVector4D(1, 3, 3, 4) (v4b)
   actual: QVector4D(1, 2, 3, 4) (v4a)
-  at: tst_Cmptest::compareQVector4D() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQVector4D() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 65 - compareQPalettes(all roles are different)
@@ -633,8 +633,8 @@ not ok 65 - compareQPalettes(all roles are different)
   found: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000001,Disabled:#ff000001,Inactive:#ff000001],Light:[Active:#ff000002,Disabled:#ff000002,Inactive:#ff000002],Midlight:[Active:#ff000003,Disabled:#ff000003,Inactive:#ff000003],Dark:[Active:#ff000004,Disabled:#ff000004,Inactive:#ff000004],Mid:[Active:#ff000005,Disabled:#ff000005,Inactive:#ff000005],Text:[Active:#ff000006,Disabled:#ff000006,Inactive:#ff000006],BrightText:[Active:#ff000007,Disabled:#ff000007,Inactive:#ff000007],ButtonText:[Active:#ff000008,Disabled:#ff000008,Inactive:#ff000008],Base:[Active:#ff000009,Disabled:#ff000009,Inactive:#ff000009],Window:[Active:#ff00000a,Disabled:#ff00000a,Inactive:#ff00000a],Shadow:[Active:#ff00000b,Disabled:#ff00000b,Inactive:#ff00000b],Highlight:[Active:#ff00000c,Disabled:#ff00000c,Inactive:#ff00000c],HighlightedText:[Active:#ff00000d,Disabled:#ff00000d,Inactive:#ff00000d],Link:[Active:#ff00000e,Disabled:#ff00000e,Inactive:#ff00000e],LinkVisited:[Active:#ff00000f,Disabled:#ff00000f,Inactive:#ff00000f],AlternateBase:[Active:#ff000010,Disabled:#ff000010,Inactive:#ff000010],ToolTipBase:[Active:#ff000012,Disabled:#ff000012,Inactive:#ff000012],ToolTipText:[Active:#ff000013,Disabled:#ff000013,Inactive:#ff000013],PlaceholderText:[Active:#ff000014,Disabled:#ff000014,Inactive:#ff000014],Accent:[Active:#ff000015,Disabled:#ff000015,Inactive:#ff000015]") (actualPalette)
   expected: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Light:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Midlight:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Dark:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Mid:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Text:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],BrightText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],ButtonText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Base:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Window:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Shadow:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Highlight:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],HighlightedText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Link:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],LinkVisited:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],AlternateBase:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],ToolTipBase:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],ToolTipText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],PlaceholderText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Accent:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000]") (expectedPalette)
   actual: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000001,Disabled:#ff000001,Inactive:#ff000001],Light:[Active:#ff000002,Disabled:#ff000002,Inactive:#ff000002],Midlight:[Active:#ff000003,Disabled:#ff000003,Inactive:#ff000003],Dark:[Active:#ff000004,Disabled:#ff000004,Inactive:#ff000004],Mid:[Active:#ff000005,Disabled:#ff000005,Inactive:#ff000005],Text:[Active:#ff000006,Disabled:#ff000006,Inactive:#ff000006],BrightText:[Active:#ff000007,Disabled:#ff000007,Inactive:#ff000007],ButtonText:[Active:#ff000008,Disabled:#ff000008,Inactive:#ff000008],Base:[Active:#ff000009,Disabled:#ff000009,Inactive:#ff000009],Window:[Active:#ff00000a,Disabled:#ff00000a,Inactive:#ff00000a],Shadow:[Active:#ff00000b,Disabled:#ff00000b,Inactive:#ff00000b],Highlight:[Active:#ff00000c,Disabled:#ff00000c,Inactive:#ff00000c],HighlightedText:[Active:#ff00000d,Disabled:#ff00000d,Inactive:#ff00000d],Link:[Active:#ff00000e,Disabled:#ff00000e,Inactive:#ff00000e],LinkVisited:[Active:#ff00000f,Disabled:#ff00000f,Inactive:#ff00000f],AlternateBase:[Active:#ff000010,Disabled:#ff000010,Inactive:#ff000010],ToolTipBase:[Active:#ff000012,Disabled:#ff000012,Inactive:#ff000012],ToolTipText:[Active:#ff000013,Disabled:#ff000013,Inactive:#ff000013],PlaceholderText:[Active:#ff000014,Disabled:#ff000014,Inactive:#ff000014],Accent:[Active:#ff000015,Disabled:#ff000015,Inactive:#ff000015]") (actualPalette)
-  at: tst_Cmptest::compareQPalettes() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPalettes() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 66 - compareQPalettes(one role is different)
@@ -645,8 +645,8 @@ not ok 66 - compareQPalettes(one role is different)
   found: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000001,Disabled:#ff000001,Inactive:#ff000001],Light:[Active:#ff000002,Disabled:#ff000002,Inactive:#ff000002],Midlight:[Active:#ff000003,Disabled:#ff000003,Inactive:#ff000003],Dark:[Active:#ff000004,Disabled:#ff000004,Inactive:#ff000004],Mid:[Active:#ff000005,Disabled:#ff000005,Inactive:#ff000005],Text:[Active:#ff000006,Disabled:#ff000006,Inactive:#ff000006],BrightText:[Active:#ff000007,Disabled:#ff000007,Inactive:#ff000007],ButtonText:[Active:#ff000008,Disabled:#ff000008,Inactive:#ff000008],Base:[Active:#ff000009,Disabled:#ff000009,Inactive:#ff000009],Window:[Active:#ff00000a,Disabled:#ff00000a,Inactive:#ff00000a],Shadow:[Active:#ff00000b,Disabled:#ff00000b,Inactive:#ff00000b],Highlight:[Active:#ff00000c,Disabled:#ff00000c,Inactive:#ff00000c],HighlightedText:[Active:#ff00000d,Disabled:#ff00000d,Inactive:#ff00000d],Link:[Active:#ff00000e,Disabled:#ff00000e,Inactive:#ff00000e],LinkVisited:[Active:#ff00000f,Disabled:#ff00000f,Inactive:#ff00000f],AlternateBase:[Active:#ff000010,Disabled:#ff000010,Inactive:#ff000010],ToolTipBase:[Active:#ff000012,Disabled:#ff000012,Inactive:#ff000012],ToolTipText:[Active:#ff000013,Disabled:#ff000013,Inactive:#ff000013],PlaceholderText:[Active:#ff000014,Disabled:#ff000014,Inactive:#ff000014],Accent:[Active:#ff000015,Disabled:#ff000015,Inactive:#ff000015]") (actualPalette)
   expected: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000001,Disabled:#ff000001,Inactive:#ff000001],Light:[Active:#ff000002,Disabled:#ff000002,Inactive:#ff000002],Midlight:[Active:#ff000003,Disabled:#ff000003,Inactive:#ff000003],Dark:[Active:#ff000004,Disabled:#ff000004,Inactive:#ff000004],Mid:[Active:#ff000005,Disabled:#ff000005,Inactive:#ff000005],Text:[Active:#ff000006,Disabled:#ff000006,Inactive:#ff000006],BrightText:[Active:#ff000007,Disabled:#ff000007,Inactive:#ff000007],ButtonText:[Active:#ff000008,Disabled:#ff000008,Inactive:#ff000008],Base:[Active:#ff000009,Disabled:#ff000009,Inactive:#ff000009],Window:[Active:#ff00000a,Disabled:#ff00000a,Inactive:#ff00000a],Shadow:[Active:#ff00000b,Disabled:#ff00000b,Inactive:#ff00000b],Highlight:[Active:#ff00000c,Disabled:#ff00000c,Inactive:#ff00000c],HighlightedText:[Active:#ff00000d,Disabled:#ff00000d,Inactive:#ff00000d],Link:[Active:#ff00000e,Disabled:#ff00000e,Inactive:#ff00000e],LinkVisited:[Active:#ff00000f,Disabled:#ff00000f,Inactive:#ff00000f],AlternateBase:[Active:#ff000010,Disabled:#ff000010,Inactive:#ff000010],ToolTipBase:[Active:#ff000012,Disabled:#ff000012,Inactive:#ff000012],ToolTipText:[Active:#ff000013,Disabled:#ff000013,Inactive:#ff000013],PlaceholderText:[Active:#ff000014,Disabled:#ff000014,Inactive:#ff000014],Accent:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000]") (expectedPalette)
   actual: QPalette(resolve=0x7fffffffffffffff,"WindowText:[Active:#ff000000,Disabled:#ff000000,Inactive:#ff000000],Button:[Active:#ff000001,Disabled:#ff000001,Inactive:#ff000001],Light:[Active:#ff000002,Disabled:#ff000002,Inactive:#ff000002],Midlight:[Active:#ff000003,Disabled:#ff000003,Inactive:#ff000003],Dark:[Active:#ff000004,Disabled:#ff000004,Inactive:#ff000004],Mid:[Active:#ff000005,Disabled:#ff000005,Inactive:#ff000005],Text:[Active:#ff000006,Disabled:#ff000006,Inactive:#ff000006],BrightText:[Active:#ff000007,Disabled:#ff000007,Inactive:#ff000007],ButtonText:[Active:#ff000008,Disabled:#ff000008,Inactive:#ff000008],Base:[Active:#ff000009,Disabled:#ff000009,Inactive:#ff000009],Window:[Active:#ff00000a,Disabled:#ff00000a,Inactive:#ff00000a],Shadow:[Active:#ff00000b,Disabled:#ff00000b,Inactive:#ff00000b],Highlight:[Active:#ff00000c,Disabled:#ff00000c,Inactive:#ff00000c],HighlightedText:[Active:#ff00000d,Disabled:#ff00000d,Inactive:#ff00000d],Link:[Active:#ff00000e,Disabled:#ff00000e,Inactive:#ff00000e],LinkVisited:[Active:#ff00000f,Disabled:#ff00000f,Inactive:#ff00000f],AlternateBase:[Active:#ff000010,Disabled:#ff000010,Inactive:#ff000010],ToolTipBase:[Active:#ff000012,Disabled:#ff000012,Inactive:#ff000012],ToolTipText:[Active:#ff000013,Disabled:#ff000013,Inactive:#ff000013],PlaceholderText:[Active:#ff000014,Disabled:#ff000014,Inactive:#ff000014],Accent:[Active:#ff000015,Disabled:#ff000015,Inactive:#ff000015]") (actualPalette)
-  at: tst_Cmptest::compareQPalettes() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::compareQPalettes() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 67 - compareQPalettes(all roles are the same)
@@ -658,8 +658,8 @@ not ok 68 - tryCompare()
   found: DeferredFlag(true) (c)
   expected: DeferredFlag(false) (DeferredFlag())
   actual: DeferredFlag(true) (c)
-  at: tst_Cmptest::tryCompare() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::tryCompare() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   extensions:
     messages:
@@ -674,8 +674,8 @@ not ok 69 - verify()
   found: false (opaqueFunc() < 2)
   expected: true (opaqueFunc() < 2)
   actual: false (opaqueFunc() < 2)
-  at: tst_Cmptest::verify() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::verify() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 70 - verify2()
@@ -686,8 +686,8 @@ not ok 70 - verify2()
   found: false (opaqueFunc() < 2)
   expected: true (opaqueFunc() < 2)
   actual: false (opaqueFunc() < 2)
-  at: tst_Cmptest::verify2() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::verify2() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 not ok 71 - tryVerify()
@@ -698,8 +698,8 @@ not ok 71 - tryVerify()
   found: false (!c)
   expected: true (!c)
   actual: false (!c)
-  at: tst_Cmptest::tryVerify() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::tryVerify() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   extensions:
     messages:
@@ -714,8 +714,8 @@ not ok 72 - tryVerify2()
   found: false (!c)
   expected: true (!c)
   actual: false (!c)
-  at: tst_Cmptest::tryVerify2() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+  at: tst_Cmptest::tryVerify2() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
   line: 0
   ...
 ok 73 - verifyExplicitOperatorBool()
@@ -725,8 +725,8 @@ not ok 74 - defaultTryVerifyTimeout(times-out) # TODO The timeout (std::chrono::
     messages:
     - severity: xfail
       message: The timeout (std::chrono::milliseconds) is deliberately too short
-      at: tst_Cmptest::defaultTryVerifyTimeout() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+      at: tst_Cmptest::defaultTryVerifyTimeout() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
       line: 0
   ...
 ok 75 - defaultTryVerifyTimeout(ample-time)
@@ -736,8 +736,8 @@ not ok 76 - defaultTryCompareTimeout(times-out) # TODO The timeout (std::chrono:
     messages:
     - severity: xfail
       message: The timeout (std::chrono::milliseconds) is deliberately too short
-      at: tst_Cmptest::defaultTryCompareTimeout() (qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
-      file: qtbase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
+      at: tst_Cmptest::defaultTryCompareTimeout() (bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp:0)
+      file: bobuibase/tests/auto/testlib/selftests/cmptest/tst_cmptest.cpp
       line: 0
   ...
 ok 77 - defaultTryCompareTimeout(ample-time)

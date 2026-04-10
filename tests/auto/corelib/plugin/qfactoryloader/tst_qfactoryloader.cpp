@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qfileinfo.h>
-#include <QtCore/qplugin.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUITest/bobuiest.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qfileinfo.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qversionnumber.h>
 #include <private/qfactoryloader_p.h>
 #include <private/qlibrary_p.h>
 #include "plugin1/plugininterface1.h"
 #include "plugin2/plugininterface2.h"
 
-#if !QT_CONFIG(library)
+#if !BOBUI_CONFIG(library)
 Q_IMPORT_PLUGIN(Plugin1)
 Q_IMPORT_PLUGIN(Plugin2)
 #endif
@@ -45,17 +45,17 @@ void tst_QFactoryLoader::initTestCase()
 
 void tst_QFactoryLoader::usingTwoFactoriesFromSameDir()
 {
-#if QT_CONFIG(library) && !defined(Q_OS_ANDROID)
+#if BOBUI_CONFIG(library) && !defined(Q_OS_ANDROID)
     // set the library path to contain the directory where the 'bin' dir is located
     QCoreApplication::setLibraryPaths( { QFileInfo(binFolder).absolutePath() });
 #endif
     auto versionNumber = [](const QCborValue &value) {
-        // Qt plugins only store major & minor versions in the metadata, so
+        // BobUI plugins only store major & minor versions in the metadata, so
         // the low 8 bits are always zero.
         qint64 v = value.toInteger();
         return QVersionNumber(v >> 16, uchar(v >> 8));
     };
-    QVersionNumber qtVersion(QT_VERSION_MAJOR, 0);
+    QVersionNumber bobuiVersion(BOBUI_VERSION_MAJOR, 0);
 
     const QString suffix = QLatin1Char('/') + QLatin1String(binFolderC);
     QFactoryLoader loader1(PluginInterface1_iid, suffix);
@@ -63,12 +63,12 @@ void tst_QFactoryLoader::usingTwoFactoriesFromSameDir()
     const QList<QCborArray> keys1 = loader1.metaDataKeys();
     QCOMPARE(list1.size(), 1);
     QCOMPARE(keys1.size(), 1);
-    QCOMPARE_GE(versionNumber(list1[0].value(QtPluginMetaDataKeys::QtVersion)), qtVersion);
-    QCOMPARE(list1[0].value(QtPluginMetaDataKeys::IID), PluginInterface1_iid);
-    QCOMPARE(list1[0].value(QtPluginMetaDataKeys::ClassName), "Plugin1");
+    QCOMPARE_GE(versionNumber(list1[0].value(BobUIPluginMetaDataKeys::BobUIVersion)), bobuiVersion);
+    QCOMPARE(list1[0].value(BobUIPluginMetaDataKeys::IID), PluginInterface1_iid);
+    QCOMPARE(list1[0].value(BobUIPluginMetaDataKeys::ClassName), "Plugin1");
 
     // plugin1's Q_PLUGIN_METADATA has FILE "plugin1.json"
-    QCborValue metadata1 = list1[0].value(QtPluginMetaDataKeys::MetaData);
+    QCborValue metadata1 = list1[0].value(BobUIPluginMetaDataKeys::MetaData);
     QCOMPARE(metadata1.type(), QCborValue::Map);
     QCOMPARE(metadata1["Keys"], QCborArray{ "plugin1" });
     QCOMPARE(keys1[0], QCborArray{ "plugin1" });
@@ -81,12 +81,12 @@ void tst_QFactoryLoader::usingTwoFactoriesFromSameDir()
     const QList<QCborArray> keys2 = loader2.metaDataKeys();
     QCOMPARE(list2.size(), 1);
     QCOMPARE(keys2.size(), 1);
-    QCOMPARE_GE(versionNumber(list2[0].value(QtPluginMetaDataKeys::QtVersion)), qtVersion);
-    QCOMPARE(list2[0].value(QtPluginMetaDataKeys::IID), PluginInterface2_iid);
-    QCOMPARE(list2[0].value(QtPluginMetaDataKeys::ClassName), "Plugin2");
+    QCOMPARE_GE(versionNumber(list2[0].value(BobUIPluginMetaDataKeys::BobUIVersion)), bobuiVersion);
+    QCOMPARE(list2[0].value(BobUIPluginMetaDataKeys::IID), PluginInterface2_iid);
+    QCOMPARE(list2[0].value(BobUIPluginMetaDataKeys::ClassName), "Plugin2");
 
     // plugin2's Q_PLUGIN_METADATA does not have FILE
-    QCOMPARE(list2[0].value(QtPluginMetaDataKeys::MetaData), QCborValue());
+    QCOMPARE(list2[0].value(BobUIPluginMetaDataKeys::MetaData), QCborValue());
     QCOMPARE(keys2[0], QCborArray());
     QCOMPARE(loader2.indexOf("Plugin1"), -1);
     QCOMPARE(loader2.indexOf("Plugin2"), -1);
@@ -111,7 +111,7 @@ void tst_QFactoryLoader::usingTwoFactoriesFromSameDir()
 
 void tst_QFactoryLoader::extraSearchPath()
 {
-#if defined(Q_OS_ANDROID) && !QT_CONFIG(library)
+#if defined(Q_OS_ANDROID) && !BOBUI_CONFIG(library)
     QSKIP("Test not applicable in this configuration.");
 #else
 #ifdef Q_OS_ANDROID
@@ -152,10 +152,10 @@ void tst_QFactoryLoader::extraSearchPath()
 
 void tst_QFactoryLoader::multiplePaths()
 {
-#if !QT_CONFIG(library) || !(defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)) || defined(Q_OS_ANDROID)
+#if !BOBUI_CONFIG(library) || !(defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)) || defined(Q_OS_ANDROID)
     QSKIP("Test not applicable in this configuration.");
 #else
-    QTemporaryDir dir;
+    BOBUIemporaryDir dir;
     QVERIFY(dir.isValid());
 
     QString pluginsPath = QFileInfo(binFolder, binFolderC).absolutePath();
@@ -176,16 +176,16 @@ void tst_QFactoryLoader::multiplePaths()
 Q_IMPORT_PLUGIN(StaticPlugin1)
 Q_IMPORT_PLUGIN(StaticPlugin2)
 constexpr bool IsDebug =
-#ifdef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
         false &&
 #endif
         true;
 
 void tst_QFactoryLoader::staticPlugin_data()
 {
-    QTest::addColumn<QString>("iid");
+    BOBUIest::addColumn<QString>("iid");
     auto addRow = [](const char *iid) {
-        QTest::addRow("%s", iid) << QString(iid);
+        BOBUIest::addRow("%s", iid) << QString(iid);
     };
     addRow("StaticPlugin1");
     addRow("StaticPlugin2");
@@ -199,13 +199,13 @@ void tst_QFactoryLoader::staticPlugin()
     QCOMPARE(list.size(), 1);
 
     QCborMap map = list.at(0).toCbor();
-    QCOMPARE(map[int(QtPluginMetaDataKeys::QtVersion)],
-            QT_VERSION_CHECK(QT_VERSION_MAJOR, QT_VERSION_MINOR, 0));
-    QCOMPARE(map[int(QtPluginMetaDataKeys::IID)], iid);
-    QCOMPARE(map[int(QtPluginMetaDataKeys::ClassName)], iid);
-    QCOMPARE(map[int(QtPluginMetaDataKeys::IsDebug)], IsDebug);
+    QCOMPARE(map[int(BobUIPluginMetaDataKeys::BobUIVersion)],
+            BOBUI_VERSION_CHECK(BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, 0));
+    QCOMPARE(map[int(BobUIPluginMetaDataKeys::IID)], iid);
+    QCOMPARE(map[int(BobUIPluginMetaDataKeys::ClassName)], iid);
+    QCOMPARE(map[int(BobUIPluginMetaDataKeys::IsDebug)], IsDebug);
 
-    QCborValue metaData = map[int(QtPluginMetaDataKeys::MetaData)];
+    QCborValue metaData = map[int(BobUIPluginMetaDataKeys::MetaData)];
     QVERIFY(metaData.isMap());
     QCOMPARE(metaData["Keys"], QCborArray{ "Value" });
     QCOMPARE(loader.metaDataKeys(), QList{ QCborArray{ "Value" } });
@@ -217,5 +217,5 @@ void tst_QFactoryLoader::staticPlugin()
     QCOMPARE(instance->metaObject()->className(), iid);
 }
 
-QTEST_MAIN(tst_QFactoryLoader)
+BOBUIEST_MAIN(tst_QFactoryLoader)
 #include "tst_qfactoryloader.moc"

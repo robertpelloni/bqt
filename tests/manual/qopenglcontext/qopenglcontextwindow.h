@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QOPENGLCONTEXTWINDOW_H
 #define QOPENGLCONTEXTWINDOW_H
 
-#include <QtGui/QWindow>
-#include <QtGui/QOpenGLContext>
-#include <QtOpenGL/QOpenGLTextureBlitter>
-#include <QtGui/QImage>
-#include <QtCore/QVariant>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIOpenGL/QOpenGLTextureBlitter>
+#include <BobUIGui/QImage>
+#include <BobUICore/QVariant>
 
 class QOpenGLContextWindow : public QWindow
 {

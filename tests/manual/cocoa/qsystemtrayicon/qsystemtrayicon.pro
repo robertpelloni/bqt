@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = qsystemtrayicon
 INCLUDEPATH += .
-QT += widgets
+BOBUI += widgets
 
 SOURCES += main.cpp
 RESOURCES += icons.qrc

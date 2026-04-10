@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QMargins>
 #ifdef QVARIANT_H
@@ -30,7 +30,7 @@ CHECK(const &&);
 
 #undef CHECK
 
-#include <QTest>
+#include <BOBUIest>
 #include <qmargins.h>
 #include <private/qcomparisontesthelper_p.h>
 
@@ -55,20 +55,20 @@ private slots:
     void isNull();
 
     void getSetCheck();
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void dataStreamCheck();
 #endif
     void operators();
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void debugStreamCheck();
 #endif
 
     void getSetCheckF();
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void dataStreamCheckF();
 #endif
     void operatorsF();
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     void debugStreamCheckF();
 #endif
 
@@ -80,18 +80,18 @@ private slots:
 
 void tst_QMargins::comparisonCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMargins>();
-    QTestPrivate::testEqualityOperatorsCompile<QMarginsF>();
-    QTestPrivate::testEqualityOperatorsCompile<QMarginsF, QMargins>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMargins>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMarginsF>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMarginsF, QMargins>();
 }
 
 void tst_QMargins::comparison_data()
 {
-    QTest::addColumn<QMarginsF>("lhs");
-    QTest::addColumn<QMarginsF>("rhs");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<bool>("floatResult");
-    QTest::addColumn<bool>("mixedResult");
+    BOBUIest::addColumn<QMarginsF>("lhs");
+    BOBUIest::addColumn<QMarginsF>("rhs");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<bool>("floatResult");
+    BOBUIest::addColumn<bool>("mixedResult");
 
     auto row = [](const QMarginsF &lhs, const QMarginsF &rhs, bool res, bool fRes, bool mRes) {
         QString str;
@@ -99,7 +99,7 @@ void tst_QMargins::comparison_data()
         dbg.nospace() << "(" << lhs.left() << ", " << lhs.top() << ", " << lhs.right() << ", "
                       << lhs.bottom() << ") vs (" << rhs.left() << ", " << rhs.top() << ", "
                       << rhs.right() << ", " << rhs.bottom() << ")";
-        QTest::addRow("%s", str.toLatin1().constData()) << lhs << rhs << res << fRes << mRes;
+        BOBUIest::addRow("%s", str.toLatin1().constData()) << lhs << rhs << res << fRes << mRes;
     };
 
     row(QMarginsF(0.0, 0.0, 0.0, 0.0), QMarginsF(0.0, 0.0, 0.0, 0.0), true, true, true);
@@ -116,13 +116,13 @@ void tst_QMargins::comparison()
     QFETCH(const bool, floatResult);
     QFETCH(const bool, mixedResult);
 
-    QT_TEST_EQUALITY_OPS(lhs, rhs, floatResult);
+    BOBUI_TEST_EQUALITY_OPS(lhs, rhs, floatResult);
 
     const QMargins lhsInt = lhs.toMargins();
     const QMargins rhsInt = rhs.toMargins();
-    QT_TEST_EQUALITY_OPS(lhsInt, rhsInt, result);
+    BOBUI_TEST_EQUALITY_OPS(lhsInt, rhsInt, result);
 
-    QT_TEST_EQUALITY_OPS(lhs, rhsInt, mixedResult);
+    BOBUI_TEST_EQUALITY_OPS(lhs, rhsInt, mixedResult);
 }
 
 void tst_QMargins::fuzzyComparison_data()
@@ -141,15 +141,15 @@ void tst_QMargins::fuzzyComparison()
 
 void tst_QMargins::isNull_data()
 {
-    QTest::addColumn<QMarginsF>("margins");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QMarginsF>("margins");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("null") << QMarginsF(0.0, 0.0, 0.0, 0.0) << true;
-    QTest::newRow("non_null_left") << QMarginsF(1.0, 0.0, 0.0, 0.0) << false;
-    QTest::newRow("non_null_top") << QMarginsF(0.0, 0.5, 0.0, 0.0) << false;
-    QTest::newRow("non_null_right") << QMarginsF(0.0, 0.0, -2.0, 0.0) << false;
-    QTest::newRow("non_null_bottom") << QMarginsF(0.0, 0.0, 0.0, -0.6) << false;
-    QTest::newRow("almost_null") << QMarginsF(qreal_min, -qreal_min, qreal_min, -qreal_min) << true;
+    BOBUIest::newRow("null") << QMarginsF(0.0, 0.0, 0.0, 0.0) << true;
+    BOBUIest::newRow("non_null_left") << QMarginsF(1.0, 0.0, 0.0, 0.0) << false;
+    BOBUIest::newRow("non_null_top") << QMarginsF(0.0, 0.5, 0.0, 0.0) << false;
+    BOBUIest::newRow("non_null_right") << QMarginsF(0.0, 0.0, -2.0, 0.0) << false;
+    BOBUIest::newRow("non_null_bottom") << QMarginsF(0.0, 0.0, 0.0, -0.6) << false;
+    BOBUIest::newRow("almost_null") << QMarginsF(qreal_min, -qreal_min, qreal_min, -qreal_min) << true;
 }
 
 void tst_QMargins::isNull()
@@ -243,7 +243,7 @@ void tst_QMargins::operators()
     QCOMPARE(-m3, QMargins(-10, -11, -12, -13));
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 // Testing QDebug operators
 void tst_QMargins::debugStreamCheck()
 {
@@ -255,7 +255,7 @@ void tst_QMargins::debugStreamCheck()
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 // Testing QDataStream operators
 void tst_QMargins::dataStreamCheck()
 {
@@ -354,7 +354,7 @@ void tst_QMargins::operatorsF()
     QCOMPARE(-m3, QMarginsF(-10.3, -11.4, -12.5, -13.6));
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 // Testing QDataStream operators
 void tst_QMargins::dataStreamCheckF()
 {
@@ -381,7 +381,7 @@ void tst_QMargins::dataStreamCheckF()
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 // Testing QDebug operators
 void tst_QMargins::debugStreamCheckF()
 {
@@ -449,11 +449,11 @@ void tst_QMargins::structuredBinding()
 
 void tst_QMargins::toMarginsF_data()
 {
-    QTest::addColumn<QMargins>("input");
-    QTest::addColumn<QMarginsF>("result");
+    BOBUIest::addColumn<QMargins>("input");
+    BOBUIest::addColumn<QMarginsF>("result");
 
     auto row = [](int x1, int y1, int x2, int y2) {
-        QTest::addRow("(%d, %d, %d, %d)", x1, y1, x2, y2)
+        BOBUIest::addRow("(%d, %d, %d, %d)", x1, y1, x2, y2)
                 << QMargins(x1, y1, x2, y2) << QMarginsF(x1, y1, x2, y2);
     };
     constexpr std::array samples = {-1, 0, 1};
@@ -490,5 +490,5 @@ static_assert(mf.right() == 25.0);
 static_assert(mf.bottom() == 30.0);
 } // namespace ConstexprTests
 
-QTEST_APPLESS_MAIN(tst_QMargins)
+BOBUIEST_APPLESS_MAIN(tst_QMargins)
 #include "tst_qmargins.moc"

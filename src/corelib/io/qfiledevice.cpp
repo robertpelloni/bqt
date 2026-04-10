@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-parsing-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-parsing-only
 
 #include "qplatformdefs.h"
 #include "qfiledevice.h"
 #include "qfiledevice_p.h"
 #include "qfsfileengine_p.h"
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 #define tr(X) QString::fromLatin1(X)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef QFILE_WRITEBUFFER_SIZE
 #define QFILE_WRITEBUFFER_SIZE 16384
@@ -48,7 +48,7 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, const QString &err
 void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
 {
     error = err;
-    errorString = qt_error_string(errNum);
+    errorString = bobui_error_string(errNum);
 }
 
 /*!
@@ -94,11 +94,11 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
     \value WriteOther The file is writable by others.
     \value ExeOther The file is executable by others.
 
-    \warning Because of differences in the platforms supported by Qt,
+    \warning Because of differences in the platforms supported by BobUI,
     the semantics of ReadUser, WriteUser and ExeUser are
     platform-dependent: On Unix, the rights of the owner of the file
     are returned and on Windows the rights of the current user are
-    returned. This behavior might change in a future Qt version.
+    returned. This behavior might change in a future BobUI version.
 
     \note On NTFS file systems, ownership and permissions checking is
     disabled by default for performance reasons. To enable it,
@@ -107,16 +107,16 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
     \snippet ntfsp.cpp 0
 
     Permission checking is then turned on and off by incrementing and
-    decrementing \c qt_ntfs_permission_lookup by 1.
+    decrementing \c bobui_ntfs_permission_lookup by 1.
 
     \snippet ntfsp.cpp 1
 
     \note Since this is a non-atomic global variable, it is only safe
-    to increment or decrement \c qt_ntfs_permission_lookup before any
+    to increment or decrement \c bobui_ntfs_permission_lookup before any
     threads other than the main thread have started or after every thread
     other than the main thread has ended.
 
-    \note From Qt 6.6 the variable \c qt_ntfs_permission_lookup is
+    \note From BobUI 6.6 the variable \c bobui_ntfs_permission_lookup is
     deprecated. Please use the following alternatives.
 
     The safe and easy way to manage permission checks is to use the RAII class
@@ -135,7 +135,7 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
 
 /*!
     \class QFileDevice
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.0
 
     \brief The QFileDevice class provides an interface for reading from and writing to open files.
@@ -145,7 +145,7 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
     \reentrant
 
     QFileDevice is the base class for I/O devices that can read and write text and binary files
-    and \l{The Qt Resource System}{resources}. QFile offers the main functionality,
+    and \l{The BobUI Resource System}{resources}. QFile offers the main functionality,
     QFileDevice serves as a base class for sharing functionality with other file devices such
     as QSaveFile, by providing all the operations that can be done on files that have
     been opened by QFile or QSaveFile.
@@ -163,42 +163,42 @@ void QFileDevicePrivate::setError(QFileDevice::FileError err, int errNum)
     \value AutoCloseHandle The file handle passed into open() should be
     closed by close(), the default behavior is that close just flushes
     the file and the application is responsible for closing the file handle.
-    When opening a file by name, this flag is ignored as Qt always owns the
+    When opening a file by name, this flag is ignored as BobUI always owns the
     file handle and must close it.
     \value DontCloseHandle If not explicitly closed, the underlying file
     handle is left open when the QFile object is destroyed.
  */
 
 /*!
-    \macro QT_USE_NODISCARD_FILE_OPEN
-    \macro QT_NO_USE_NODISCARD_FILE_OPEN
+    \macro BOBUI_USE_NODISCARD_FILE_OPEN
+    \macro BOBUI_NO_USE_NODISCARD_FILE_OPEN
     \relates QFileDevice
     \since 6.8
 
-    File-related I/O classes (such as QFile, QSaveFile, QTemporaryFile)
+    File-related I/O classes (such as QFile, QSaveFile, BOBUIemporaryFile)
     have an \c{open()} method to open the file they act upon. It is
     important to check the return value of the call to \c{open()}
     before proceeding with reading or writing data into the file.
 
-    For this reason, starting with Qt 6.8, some overloads of \c{open()}
+    For this reason, starting with BobUI 6.8, some overloads of \c{open()}
     have been marked with the \c{[[nodiscard]]} attribute. Since this
     change may raise warnings in existing codebases, user code can
     opt-in or opt-out from having the attribute applied by defining
     certain macros:
 
     \list
-        \li If the \c{QT_USE_NODISCARD_FILE_OPEN} macro is defined,
+        \li If the \c{BOBUI_USE_NODISCARD_FILE_OPEN} macro is defined,
         overloads of \c{open()} are marked as \c{[[nodiscard]]}.
-        \li If the \c{QT_NO_USE_NODISCARD_FILE_OPEN} is defined, the
+        \li If the \c{BOBUI_NO_USE_NODISCARD_FILE_OPEN} is defined, the
         overloads of \c{open()} are \e{not} marked as \c{[[nodiscard]]}.
         \li If neither macro is defined, then the default up to and
-        including Qt 6.9 is not to have the attribute. Starting from Qt 6.10,
+        including BobUI 6.9 is not to have the attribute. Starting from BobUI 6.10,
         the attribute is automatically applied.
         \li If both macros are defined, the program is ill-formed.
     \endlist
 */
 
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
 QFileDevice::QFileDevice()
     : QIODevice(*new QFileDevicePrivate)
 {
@@ -490,7 +490,7 @@ qint64 QFileDevice::readData(char *data, qint64 len)
 */
 bool QFileDevicePrivate::putCharHelper(char c)
 {
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     return QIODevicePrivate::putCharHelper(c);
 #else
 
@@ -693,7 +693,7 @@ bool QFileDevice::setPermissions(Permissions permissions)
     be written to disk.  Any such modifications will be lost when the
     memory is unmapped.  It is unspecified whether modifications made
     to the file made after the mapping is created will be visible through
-    the mapped memory. This enum value was introduced in Qt 5.4.
+    the mapped memory. This enum value was introduced in BobUI 5.4.
 */
 
 /*!
@@ -810,8 +810,8 @@ bool QFileDevice::setFileTime(const QDateTime &newDate, QFileDevice::FileTime fi
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qfiledevice.cpp"
 #endif

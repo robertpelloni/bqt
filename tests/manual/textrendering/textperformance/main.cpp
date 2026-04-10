@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include <QApplication>
 #include <QDialog>
@@ -9,7 +9,7 @@
 #include <QPainter>
 #include <QRandomGenerator>
 #include <QElapsedTimer>
-#include <QTimer>
+#include <BOBUIimer>
 
 static const int lastMeasurementsCount = 50;
 
@@ -22,7 +22,7 @@ public:
         : QWidget(parent)
         , m_currentMode(0)
     {
-        setFocusPolicy(Qt::StrongFocus);
+        setFocusPolicy(BobUI::StrongFocus);
     }
 
     void paintEvent(QPaintEvent *event)
@@ -40,8 +40,8 @@ public:
 
         const QFontMetrics fm = p.fontMetrics();
         p.setOpacity(0.7);
-        p.fillRect(0, 0, width(), fm.height(), Qt::gray);
-        p.fillRect(0, height() - fm.height(), width(), height(), Qt::gray);
+        p.fillRect(0, 0, width(), fm.height(), BobUI::gray);
+        p.fillRect(0, height() - fm.height(), width(), height(), BobUI::gray);
         p.setOpacity(1);
         p.setPen(palette().color(QPalette::Text));
         p.drawText(2, fm.ascent(), m_modes[m_currentMode].name);
@@ -58,7 +58,7 @@ public:
             );
         }
 
-        QTimer::singleShot(0, this, SLOT(repaint()));
+        BOBUIimer::singleShot(0, this, SLOT(repaint()));
     }
 
     /*
@@ -68,7 +68,7 @@ public:
     */
     static void paintDifferentFontStyles(QPainter &p, const QSize &size)
     {
-        static const QString text = QLatin1String("Qt rocks!!!");
+        static const QString text = QLatin1String("BobUI rocks!!!");
         static const int textsPerPaint = 30;
         for (int i = 0; i < textsPerPaint; i++) {
             const int fontSize = 4 + QRandomGenerator::global()->bounded(5);
@@ -118,7 +118,7 @@ public:
         text.append(QLatin1Char('.'));
 
         p.drawText(QRectF(QPointF(0, 0), QSizeF(size)),
-                   Qt::AlignTop | Qt::AlignAbsolute | Qt::TextWordWrap, text);
+                   BobUI::AlignTop | BobUI::AlignAbsolute | BobUI::TextWordWrap, text);
     }
 
     /*
@@ -141,7 +141,7 @@ public:
             text.append(samples.at(QRandomGenerator::global()->bounded(samples.count())));
         }
         p.drawText(QRectF(QPointF(0, 0), QSizeF(size)),
-                   Qt::AlignTop | Qt::AlignAbsolute | Qt::TextWordWrap, text);
+                   BobUI::AlignTop | BobUI::AlignAbsolute | BobUI::TextWordWrap, text);
     }
 
 protected:
@@ -176,7 +176,7 @@ private:
 };
 
 const struct FontBlaster::mode FontBlaster::m_modes[] = {
-    { QLatin1String("Qt rocks!!!"), FontBlaster::paintDifferentFontStyles },
+    { QLatin1String("BobUI rocks!!!"), FontBlaster::paintDifferentFontStyles },
     { QLatin1String("Latin"), FontBlaster::paintLongLatinText },
     { QLatin1String("International"), FontBlaster::paintInternationalText }
 };

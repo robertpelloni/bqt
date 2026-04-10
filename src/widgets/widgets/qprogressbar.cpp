@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprogressbar.h"
 
@@ -10,14 +10,14 @@
 #include <qstylepainter.h>
 #include <qstyleoption.h>
 #include <private/qwidget_p.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <qaccessible.h>
 #endif
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QProgressBarPrivate : public QWidgetPrivate
 {
@@ -33,11 +33,11 @@ public:
     int minimum;
     int maximum;
     int value;
-    Qt::Alignment alignment;
+    BobUI::Alignment alignment;
     uint textVisible : 1;
     uint defaultFormat: 1;
     int lastPaintedValue;
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     bool invertedAppearance;
     QProgressBar::Direction textDirection;
     QString format;
@@ -46,8 +46,8 @@ public:
 };
 
 QProgressBarPrivate::QProgressBarPrivate()
-    : minimum(0), maximum(100), value(-1), alignment(Qt::AlignLeft), textVisible(true),
-      defaultFormat(true), lastPaintedValue(-1), orientation(Qt::Horizontal), invertedAppearance(false),
+    : minimum(0), maximum(100), value(-1), alignment(BobUI::AlignLeft), textVisible(true),
+      defaultFormat(true), lastPaintedValue(-1), orientation(BobUI::Horizontal), invertedAppearance(false),
       textDirection(QProgressBar::TopToBottom)
 {
     initDefaultFormat();
@@ -70,10 +70,10 @@ void QProgressBarPrivate::init()
 {
     Q_Q(QProgressBar);
     QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    if (orientation == Qt::Vertical)
+    if (orientation == BobUI::Vertical)
         sp.transpose();
     q->setSizePolicy(sp);
-    q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     resetLayoutItemMargins();
 }
 
@@ -101,7 +101,7 @@ void QProgressBar::initStyleOption(QStyleOptionProgressBar *option) const
     Q_D(const QProgressBar);
     option->initFrom(this);
 
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         option->state |= QStyle::State_Horizontal;
     option->minimum = d->minimum;
     option->maximum = d->maximum;
@@ -144,7 +144,7 @@ bool QProgressBarPrivate::repaintRequired() const
     QStyleOptionProgressBar opt;
     q->initStyleOption(&opt);
     QRect groove = q->style()->subElementRect(QStyle::SE_ProgressBarGroove, &opt, q);
-    int grooveBlock = (q->orientation() == Qt::Horizontal) ? groove.width() : groove.height();
+    int grooveBlock = (q->orientation() == BobUI::Horizontal) ? groove.width() : groove.height();
     const double pixelSize = static_cast<double>(totalSteps) / grooveBlock;
     return valueDifference > pixelSize;
 }
@@ -154,7 +154,7 @@ bool QProgressBarPrivate::repaintRequired() const
     \brief The QProgressBar widget provides a horizontal or vertical progress bar.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-progressbar.png {Progress bar showing 42%}
 
@@ -296,7 +296,7 @@ void QProgressBar::setValue(int value)
         return;
     d->value = value;
     emit valueChanged(value);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (isVisible()) {
         QAccessibleValueChangeEvent event(this, value);
         QAccessible::updateAccessibility(&event);
@@ -365,7 +365,7 @@ bool QProgressBar::isTextVisible() const
     \property QProgressBar::alignment
     \brief the alignment of the progress bar
 */
-void QProgressBar::setAlignment(Qt::Alignment alignment)
+void QProgressBar::setAlignment(BobUI::Alignment alignment)
 {
     if (d_func()->alignment != alignment) {
         d_func()->alignment = alignment;
@@ -373,7 +373,7 @@ void QProgressBar::setAlignment(Qt::Alignment alignment)
     }
 }
 
-Qt::Alignment QProgressBar::alignment() const
+BobUI::Alignment QProgressBar::alignment() const
 {
     return d_func()->alignment;
 }
@@ -412,7 +412,7 @@ QSize QProgressBar::sizeHint() const
 QSize QProgressBar::minimumSizeHint() const
 {
     QSize size;
-    if (orientation() == Qt::Horizontal)
+    if (orientation() == BobUI::Horizontal)
         size = QSize(sizeHint().width(), fontMetrics().height() + 2);
     else
         size = QSize(fontMetrics().height() + 2, sizeHint().height());
@@ -467,28 +467,28 @@ QString QProgressBar::text() const
     \property QProgressBar::orientation
     \brief the orientation of the progress bar
 
-    The orientation must be \l Qt::Horizontal (the default) or \l
-    Qt::Vertical.
+    The orientation must be \l BobUI::Horizontal (the default) or \l
+    BobUI::Vertical.
 
     \sa invertedAppearance, textDirection
 */
 
-void QProgressBar::setOrientation(Qt::Orientation orientation)
+void QProgressBar::setOrientation(BobUI::Orientation orientation)
 {
     Q_D(QProgressBar);
     if (d->orientation == orientation)
         return;
     d->orientation = orientation;
-    if (!testAttribute(Qt::WA_WState_OwnSizePolicy)) {
+    if (!testAttribute(BobUI::WA_WState_OwnSizePolicy)) {
         setSizePolicy(sizePolicy().transposed());
-        setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+        setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     }
     d->resetLayoutItemMargins();
     update();
     updateGeometry();
 }
 
-Qt::Orientation QProgressBar::orientation() const
+BobUI::Orientation QProgressBar::orientation() const
 {
     Q_D(const QProgressBar);
     return d->orientation;
@@ -599,6 +599,6 @@ QString QProgressBar::format() const
     return d->format;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprogressbar.cpp"

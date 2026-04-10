@@ -1,5 +1,5 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Rafael Roquetto <rafael.roquetto@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PROVIDER_H
 #define PROVIDER_H
@@ -7,7 +7,7 @@
 #include <qlist.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtypeinfo.h>
+#include <bobuiypeinfo.h>
 
 struct Tracepoint
 {
@@ -28,13 +28,13 @@ struct Tracepoint
             Float,
             String,
             Pointer,
-            QtString,
-            QtByteArray,
-            QtUrl,
-            QtRect,
-            QtSize,
-            QtRectF,
-            QtSizeF,
+            BobUIString,
+            BobUIByteArray,
+            BobUIUrl,
+            BobUIRect,
+            BobUISize,
+            BobUIRectF,
+            BobUISizeF,
             EnumeratedType,
             FlagType,
             Unknown

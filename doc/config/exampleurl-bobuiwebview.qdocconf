@@ -1,0 +1,4 @@
+url.examples = "https://code.bobui.io/cgit/bobui/bobuiwebview.git/tree/examples/\1?h=$BOBUI_VER"
+
+# Automatic linking to declarations of C++ APIs
+url.sources  = "https://code.bobui.io/cgit/bobui/bobuiwebview.git/tree/\1?h=$BOBUI_VER#n\2"

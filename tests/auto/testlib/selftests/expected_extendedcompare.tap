@@ -10,8 +10,8 @@ not ok 3 - compareInts(EQ:left < right)
   found: 1 (lhs)
   expected: == 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 4 - compareInts(EQ:left > right)
@@ -22,8 +22,8 @@ not ok 4 - compareInts(EQ:left > right)
   found: 2 (lhs)
   expected: == 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 5 - compareInts(NE:left == right)
@@ -34,8 +34,8 @@ not ok 5 - compareInts(NE:left == right)
   found: 1 (lhs)
   expected: != 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 6 - compareInts(NE:left < right)
@@ -48,8 +48,8 @@ not ok 8 - compareInts(LT:left == right)
   found: 1 (lhs)
   expected: < 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 9 - compareInts(LT:left < right)
@@ -61,8 +61,8 @@ not ok 10 - compareInts(LT:left > right)
   found: 2 (lhs)
   expected: < 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 11 - compareInts(LE:left == right)
@@ -75,8 +75,8 @@ not ok 13 - compareInts(LE:left > right)
   found: 2 (lhs)
   expected: <= 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 14 - compareInts(GT:left == right)
@@ -87,8 +87,8 @@ not ok 14 - compareInts(GT:left == right)
   found: 1 (lhs)
   expected: > 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 15 - compareInts(GT:left < right)
@@ -99,8 +99,8 @@ not ok 15 - compareInts(GT:left < right)
   found: 1 (lhs)
   expected: > 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 16 - compareInts(GT:left > right)
@@ -113,8 +113,8 @@ not ok 18 - compareInts(GE:left < right)
   found: 1 (lhs)
   expected: >= 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareInts() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareInts() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 19 - compareInts(GE:left > right)
@@ -127,8 +127,8 @@ not ok 21 - compareFloats(EQ:left < right)
   found: 1 (0x1p+0) (lhs)
   expected: == 1.1 (0x1.19999ap+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 22 - compareFloats(EQ:left > right)
@@ -139,8 +139,8 @@ not ok 22 - compareFloats(EQ:left > right)
   found: 1.1 (0x1.19999ap+0) (lhs)
   expected: == 1 (0x1p+0) (rhs)
   actual: 1.1 (0x1.19999ap+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 23 - compareFloats(NE:left == right)
@@ -151,8 +151,8 @@ not ok 23 - compareFloats(NE:left == right)
   found: 1 (0x1p+0) (lhs)
   expected: != 1 (0x1p+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 24 - compareFloats(NE:left < right)
@@ -165,8 +165,8 @@ not ok 26 - compareFloats(LT:left == right)
   found: 1 (0x1p+0) (lhs)
   expected: < 1 (0x1p+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 27 - compareFloats(LT:left < right)
@@ -178,8 +178,8 @@ not ok 28 - compareFloats(LT:left > right)
   found: 1.1 (0x1.19999ap+0) (lhs)
   expected: < 1 (0x1p+0) (rhs)
   actual: 1.1 (0x1.19999ap+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 29 - compareFloats(LE:left == right)
@@ -192,8 +192,8 @@ not ok 31 - compareFloats(LE:left > right)
   found: 1.1 (0x1.19999ap+0) (lhs)
   expected: <= 1 (0x1p+0) (rhs)
   actual: 1.1 (0x1.19999ap+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 32 - compareFloats(GT:left == right)
@@ -204,8 +204,8 @@ not ok 32 - compareFloats(GT:left == right)
   found: 1 (0x1p+0) (lhs)
   expected: > 1 (0x1p+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 33 - compareFloats(GT:left < right)
@@ -216,8 +216,8 @@ not ok 33 - compareFloats(GT:left < right)
   found: 1 (0x1p+0) (lhs)
   expected: > 1.1 (0x1.19999ap+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 34 - compareFloats(GT:left > right)
@@ -230,8 +230,8 @@ not ok 36 - compareFloats(GE:left < right)
   found: 1 (0x1p+0) (lhs)
   expected: >= 1.1 (0x1.19999ap+0) (rhs)
   actual: 1 (0x1p+0) (lhs)
-  at: tst_ExtendedCompare::compareFloats() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareFloats() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 37 - compareFloats(GE:left > right)
@@ -244,8 +244,8 @@ not ok 39 - compareDoubles(EQ:left < right)
   found: 0 (0x0p+0) (lhs)
   expected: == 0.1 (0x1.999999999999ap-4) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 40 - compareDoubles(EQ:left > right)
@@ -256,8 +256,8 @@ not ok 40 - compareDoubles(EQ:left > right)
   found: 0.1 (0x1.999999999999ap-4) (lhs)
   expected: == 0 (0x0p+0) (rhs)
   actual: 0.1 (0x1.999999999999ap-4) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 41 - compareDoubles(NE:left == right)
@@ -268,8 +268,8 @@ not ok 41 - compareDoubles(NE:left == right)
   found: 0 (0x0p+0) (lhs)
   expected: != 0 (0x0p+0) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 42 - compareDoubles(NE:left < right)
@@ -282,8 +282,8 @@ not ok 44 - compareDoubles(LT:left == right)
   found: 0 (0x0p+0) (lhs)
   expected: < 0 (0x0p+0) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 45 - compareDoubles(LT:left < right)
@@ -295,8 +295,8 @@ not ok 46 - compareDoubles(LT:left > right)
   found: 0.1 (0x1.999999999999ap-4) (lhs)
   expected: < 0 (0x0p+0) (rhs)
   actual: 0.1 (0x1.999999999999ap-4) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 47 - compareDoubles(LE:left == right)
@@ -309,8 +309,8 @@ not ok 49 - compareDoubles(LE:left > right)
   found: 0.1 (0x1.999999999999ap-4) (lhs)
   expected: <= 0 (0x0p+0) (rhs)
   actual: 0.1 (0x1.999999999999ap-4) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 50 - compareDoubles(GT:left == right)
@@ -321,8 +321,8 @@ not ok 50 - compareDoubles(GT:left == right)
   found: 0 (0x0p+0) (lhs)
   expected: > 0 (0x0p+0) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 51 - compareDoubles(GT:left < right)
@@ -333,8 +333,8 @@ not ok 51 - compareDoubles(GT:left < right)
   found: 0 (0x0p+0) (lhs)
   expected: > 0.1 (0x1.999999999999ap-4) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 52 - compareDoubles(GT:left > right)
@@ -347,8 +347,8 @@ not ok 54 - compareDoubles(GE:left < right)
   found: 0 (0x0p+0) (lhs)
   expected: >= 0.1 (0x1.999999999999ap-4) (rhs)
   actual: 0 (0x0p+0) (lhs)
-  at: tst_ExtendedCompare::compareDoubles() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareDoubles() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 55 - compareDoubles(GE:left > right)
@@ -361,8 +361,8 @@ not ok 57 - comparePointers(EQ:left < right)
   found: 1 (lhs)
   expected: == 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 58 - comparePointers(EQ:left > right)
@@ -373,8 +373,8 @@ not ok 58 - comparePointers(EQ:left > right)
   found: 2 (lhs)
   expected: == 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 59 - comparePointers(NE:left == right)
@@ -385,8 +385,8 @@ not ok 59 - comparePointers(NE:left == right)
   found: 1 (lhs)
   expected: != 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 60 - comparePointers(NE:left < right)
@@ -399,8 +399,8 @@ not ok 62 - comparePointers(LT:left == right)
   found: 1 (lhs)
   expected: < 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 63 - comparePointers(LT:left < right)
@@ -412,8 +412,8 @@ not ok 64 - comparePointers(LT:left > right)
   found: 2 (lhs)
   expected: < 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 65 - comparePointers(LE:left == right)
@@ -426,8 +426,8 @@ not ok 67 - comparePointers(LE:left > right)
   found: 2 (lhs)
   expected: <= 1 (rhs)
   actual: 2 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 68 - comparePointers(GT:left == right)
@@ -438,8 +438,8 @@ not ok 68 - comparePointers(GT:left == right)
   found: 1 (lhs)
   expected: > 1 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 69 - comparePointers(GT:left < right)
@@ -450,8 +450,8 @@ not ok 69 - comparePointers(GT:left < right)
   found: 1 (lhs)
   expected: > 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 70 - comparePointers(GT:left > right)
@@ -464,8 +464,8 @@ not ok 72 - comparePointers(GE:left < right)
   found: 1 (lhs)
   expected: >= 2 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::comparePointers() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::comparePointers() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 73 - comparePointers(GE:left > right)
@@ -478,8 +478,8 @@ not ok 75 - compareToNullptr(EQ:left < right)
   found: "nullptr" (lhs)
   expected: == 1 (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 76 - compareToNullptr(EQ:left > right)
@@ -490,8 +490,8 @@ not ok 76 - compareToNullptr(EQ:left > right)
   found: 1 (lhs)
   expected: == "nullptr" (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 77 - compareToNullptr(NE:left == right)
@@ -502,8 +502,8 @@ not ok 77 - compareToNullptr(NE:left == right)
   found: "nullptr" (lhs)
   expected: != "nullptr" (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 78 - compareToNullptr(NE:left < right)
@@ -516,8 +516,8 @@ not ok 80 - compareToNullptr(LT:left == right)
   found: "nullptr" (lhs)
   expected: < "nullptr" (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 81 - compareToNullptr(LT:left < right)
@@ -529,8 +529,8 @@ not ok 82 - compareToNullptr(LT:left > right)
   found: 1 (lhs)
   expected: < "nullptr" (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 83 - compareToNullptr(LE:left == right)
@@ -543,8 +543,8 @@ not ok 85 - compareToNullptr(LE:left > right)
   found: 1 (lhs)
   expected: <= "nullptr" (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 86 - compareToNullptr(GT:left == right)
@@ -555,8 +555,8 @@ not ok 86 - compareToNullptr(GT:left == right)
   found: "nullptr" (lhs)
   expected: > "nullptr" (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 87 - compareToNullptr(GT:left < right)
@@ -567,8 +567,8 @@ not ok 87 - compareToNullptr(GT:left < right)
   found: "nullptr" (lhs)
   expected: > 1 (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 88 - compareToNullptr(GT:left > right)
@@ -581,8 +581,8 @@ not ok 90 - compareToNullptr(GE:left < right)
   found: "nullptr" (lhs)
   expected: >= 1 (rhs)
   actual: "nullptr" (lhs)
-  at: tst_ExtendedCompare::compareToNullptr() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareToNullptr() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 91 - compareToNullptr(GE:left > right)
@@ -595,8 +595,8 @@ not ok 93 - compareUnregistereEnum(EQ:left < right)
   found: 0 (lhs)
   expected: == 1 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 94 - compareUnregistereEnum(EQ:left > right)
@@ -607,8 +607,8 @@ not ok 94 - compareUnregistereEnum(EQ:left > right)
   found: 1 (lhs)
   expected: == 0 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 95 - compareUnregistereEnum(NE:left == right)
@@ -619,8 +619,8 @@ not ok 95 - compareUnregistereEnum(NE:left == right)
   found: 0 (lhs)
   expected: != 0 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 96 - compareUnregistereEnum(NE:left < right)
@@ -633,8 +633,8 @@ not ok 98 - compareUnregistereEnum(LT:left == right)
   found: 0 (lhs)
   expected: < 0 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 99 - compareUnregistereEnum(LT:left < right)
@@ -646,8 +646,8 @@ not ok 100 - compareUnregistereEnum(LT:left > right)
   found: 1 (lhs)
   expected: < 0 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 101 - compareUnregistereEnum(LE:left == right)
@@ -660,8 +660,8 @@ not ok 103 - compareUnregistereEnum(LE:left > right)
   found: 1 (lhs)
   expected: <= 0 (rhs)
   actual: 1 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 104 - compareUnregistereEnum(GT:left == right)
@@ -672,8 +672,8 @@ not ok 104 - compareUnregistereEnum(GT:left == right)
   found: 0 (lhs)
   expected: > 0 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 105 - compareUnregistereEnum(GT:left < right)
@@ -684,8 +684,8 @@ not ok 105 - compareUnregistereEnum(GT:left < right)
   found: 0 (lhs)
   expected: > 1 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 106 - compareUnregistereEnum(GT:left > right)
@@ -698,8 +698,8 @@ not ok 108 - compareUnregistereEnum(GE:left < right)
   found: 0 (lhs)
   expected: >= 1 (rhs)
   actual: 0 (lhs)
-  at: tst_ExtendedCompare::compareUnregistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareUnregistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 109 - compareUnregistereEnum(GE:left > right)
@@ -712,8 +712,8 @@ not ok 111 - compareRegistereEnum(EQ:left < right)
   found: Monday (lhs)
   expected: == Sunday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 112 - compareRegistereEnum(EQ:left > right)
@@ -724,8 +724,8 @@ not ok 112 - compareRegistereEnum(EQ:left > right)
   found: Sunday (lhs)
   expected: == Monday (rhs)
   actual: Sunday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 113 - compareRegistereEnum(NE:left == right)
@@ -736,8 +736,8 @@ not ok 113 - compareRegistereEnum(NE:left == right)
   found: Monday (lhs)
   expected: != Monday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 114 - compareRegistereEnum(NE:left < right)
@@ -750,8 +750,8 @@ not ok 116 - compareRegistereEnum(LT:left == right)
   found: Monday (lhs)
   expected: < Monday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 117 - compareRegistereEnum(LT:left < right)
@@ -763,8 +763,8 @@ not ok 118 - compareRegistereEnum(LT:left > right)
   found: Sunday (lhs)
   expected: < Monday (rhs)
   actual: Sunday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 119 - compareRegistereEnum(LE:left == right)
@@ -777,8 +777,8 @@ not ok 121 - compareRegistereEnum(LE:left > right)
   found: Sunday (lhs)
   expected: <= Monday (rhs)
   actual: Sunday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 122 - compareRegistereEnum(GT:left == right)
@@ -789,8 +789,8 @@ not ok 122 - compareRegistereEnum(GT:left == right)
   found: Monday (lhs)
   expected: > Monday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 123 - compareRegistereEnum(GT:left < right)
@@ -801,8 +801,8 @@ not ok 123 - compareRegistereEnum(GT:left < right)
   found: Monday (lhs)
   expected: > Sunday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 124 - compareRegistereEnum(GT:left > right)
@@ -815,8 +815,8 @@ not ok 126 - compareRegistereEnum(GE:left < right)
   found: Monday (lhs)
   expected: >= Sunday (rhs)
   actual: Monday (lhs)
-  at: tst_ExtendedCompare::compareRegistereEnum() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareRegistereEnum() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 127 - compareRegistereEnum(GE:left > right)
@@ -829,8 +829,8 @@ not ok 129 - compareCustomTypes(EQ:left < right)
   found: MyClass(1) (lhs)
   expected: == MyClass(2) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 130 - compareCustomTypes(EQ:left > right)
@@ -841,8 +841,8 @@ not ok 130 - compareCustomTypes(EQ:left > right)
   found: MyClass(2) (lhs)
   expected: == MyClass(1) (rhs)
   actual: MyClass(2) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 131 - compareCustomTypes(NE:left == right)
@@ -853,8 +853,8 @@ not ok 131 - compareCustomTypes(NE:left == right)
   found: MyClass(1) (lhs)
   expected: != MyClass(1) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 132 - compareCustomTypes(NE:left < right)
@@ -867,8 +867,8 @@ not ok 134 - compareCustomTypes(LT:left == right)
   found: MyClass(1) (lhs)
   expected: < MyClass(1) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 135 - compareCustomTypes(LT:left < right)
@@ -880,8 +880,8 @@ not ok 136 - compareCustomTypes(LT:left > right)
   found: MyClass(2) (lhs)
   expected: < MyClass(1) (rhs)
   actual: MyClass(2) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 137 - compareCustomTypes(LE:left == right)
@@ -894,8 +894,8 @@ not ok 139 - compareCustomTypes(LE:left > right)
   found: MyClass(2) (lhs)
   expected: <= MyClass(1) (rhs)
   actual: MyClass(2) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 140 - compareCustomTypes(GT:left == right)
@@ -906,8 +906,8 @@ not ok 140 - compareCustomTypes(GT:left == right)
   found: MyClass(1) (lhs)
   expected: > MyClass(1) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 141 - compareCustomTypes(GT:left < right)
@@ -918,8 +918,8 @@ not ok 141 - compareCustomTypes(GT:left < right)
   found: MyClass(1) (lhs)
   expected: > MyClass(2) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 142 - compareCustomTypes(GT:left > right)
@@ -932,8 +932,8 @@ not ok 144 - compareCustomTypes(GE:left < right)
   found: MyClass(1) (lhs)
   expected: >= MyClass(2) (rhs)
   actual: MyClass(1) (lhs)
-  at: tst_ExtendedCompare::compareCustomTypes() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::compareCustomTypes() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 145 - compareCustomTypes(GE:left > right)
@@ -945,8 +945,8 @@ not ok 146 - checkComparisonForTemporaryObjects(EQ)
   found: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
   expected: == MyClass(1) on memory address with index 1 (getClassForValue(1).getValuePointer())
   actual: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
-  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 147 - checkComparisonForTemporaryObjects(NE)
@@ -960,8 +960,8 @@ not ok 150 - checkComparisonForTemporaryObjects(GT)
   found: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
   expected: > MyClass(1) on memory address with index 1 (getClassForValue(1).getValuePointer())
   actual: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
-  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 151 - checkComparisonForTemporaryObjects(GE)
@@ -972,8 +972,8 @@ not ok 151 - checkComparisonForTemporaryObjects(GE)
   found: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
   expected: >= MyClass(1) on memory address with index 1 (getClassForValue(1).getValuePointer())
   actual: MyClass(2) on memory address with index 0 (getClassForValue(0).getValuePointer())
-  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonForTemporaryObjects() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 152 - checkComparisonWithTimeout(EQ)
@@ -986,8 +986,8 @@ not ok 154 - checkComparisonWithTimeout(LT)
   found: ClassWithDeferredSetter(1) (c)
   expected: < ClassWithDeferredSetter(0) (ClassWithDeferredSetter(0))
   actual: ClassWithDeferredSetter(1) (c)
-  at: tst_ExtendedCompare::checkComparisonWithTimeout() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonWithTimeout() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 155 - checkComparisonWithTimeout(LE)
@@ -998,8 +998,8 @@ not ok 155 - checkComparisonWithTimeout(LE)
   found: ClassWithDeferredSetter(1) (c)
   expected: <= ClassWithDeferredSetter(-1) (ClassWithDeferredSetter(-1))
   actual: ClassWithDeferredSetter(1) (c)
-  at: tst_ExtendedCompare::checkComparisonWithTimeout() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonWithTimeout() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 not ok 156 - checkComparisonWithTimeout(GT)
@@ -1010,8 +1010,8 @@ not ok 156 - checkComparisonWithTimeout(GT)
   found: ClassWithDeferredSetter(1) (c)
   expected: > ClassWithDeferredSetter(1) (ClassWithDeferredSetter(1))
   actual: ClassWithDeferredSetter(1) (c)
-  at: tst_ExtendedCompare::checkComparisonWithTimeout() (qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
+  at: tst_ExtendedCompare::checkComparisonWithTimeout() (bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/extendedcompare/tst_extendedcompare.cpp
   line: 0
   ...
 ok 157 - checkComparisonWithTimeout(GE)

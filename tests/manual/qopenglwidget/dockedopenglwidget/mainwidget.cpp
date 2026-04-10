@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwidget.h"
 #include <QMouseEvent>
@@ -49,7 +49,7 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     angularSpeed += acc;
 }
 
-void MainWidget::timerEvent(QTimerEvent *)
+void MainWidget::timerEvent(BOBUIimerEvent *)
 {
     // Decrease angular speed (friction)
     angularSpeed *= 0.99;
@@ -81,7 +81,7 @@ void MainWidget::initializeGL()
 
     geometries = new GeometryEngine;
 
-    // Use QBasicTimer because its faster than QTimer
+    // Use QBasicTimer because its faster than BOBUIimer
     timer.start(12, this);
 
     connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &MainWidget::cleanup);

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSEMAPHORE_H
 #define QSEMAPHORE_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qdeadlinetimer.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qdeadlinetimer.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSemaphorePrivate;
 class Q_CORE_EXPORT QSemaphore
@@ -21,10 +21,10 @@ public:
 
     void acquire(int n = 1);
     bool tryAcquire(int n = 1);
-    QT_CORE_INLINE_SINCE(6, 6)
+    BOBUI_CORE_INLINE_SINCE(6, 6)
     bool tryAcquire(int n, int timeout);
     bool tryAcquire(int n, QDeadlineTimer timeout);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     template <typename Rep, typename Period>
     bool tryAcquire(int n, std::chrono::duration<Rep, Period> timeout)
     { return tryAcquire(n, QDeadlineTimer(timeout)); }
@@ -55,7 +55,7 @@ private:
     };
 };
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 6)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 6)
 bool QSemaphore::tryAcquire(int n, int timeout)
 {
     return tryAcquire(n, QDeadlineTimer(timeout));
@@ -76,7 +76,7 @@ public:
     Q_NODISCARD_CTOR
     QSemaphoreReleaser(QSemaphoreReleaser &&other) noexcept
         : m_sem(other.cancel()), m_n(other.m_n) {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSemaphoreReleaser)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSemaphoreReleaser)
 
     ~QSemaphoreReleaser()
     {
@@ -86,7 +86,7 @@ public:
 
     void swap(QSemaphoreReleaser &other) noexcept
     {
-        qt_ptr_swap(m_sem, other.m_sem);
+        bobui_ptr_swap(m_sem, other.m_sem);
         std::swap(m_n, other.m_n);
     }
 
@@ -103,6 +103,6 @@ private:
     int m_n = 0;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSEMAPHORE_H

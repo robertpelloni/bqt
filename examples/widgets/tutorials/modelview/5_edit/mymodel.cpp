@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mymodel.h"
 
@@ -23,7 +23,7 @@ int MyModel::columnCount(const QModelIndex & /*parent*/) const
 //-----------------------------------------------------------------
 QVariant MyModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole && checkIndex(index))
+    if (role == BobUI::DisplayRole && checkIndex(index))
             return m_gridData[index.row()][index.column()];
 
     return QVariant();
@@ -33,7 +33,7 @@ QVariant MyModel::data(const QModelIndex &index, int role) const
 //! [quoting mymodel_e]
 bool MyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole) {
+    if (role == BobUI::EditRole) {
         if (!checkIndex(index))
             return false;
         //save value from editor to member m_gridData
@@ -53,8 +53,8 @@ bool MyModel::setData(const QModelIndex &index, const QVariant &value, int role)
 
 //-----------------------------------------------------------------
 //! [quoting mymodel_f]
-Qt::ItemFlags MyModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags MyModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
+    return BobUI::ItemIsEditable | QAbstractTableModel::flags(index);
 }
 //! [quoting mymodel_f]

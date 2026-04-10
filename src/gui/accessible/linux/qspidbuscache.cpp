@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qspidbuscache_p.h"
 #include "qspiaccessiblebridge_p.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "cache_adaptor.h"
 
 #define QSPI_OBJECT_PATH_CACHE "/org/a11y/atspi/cache"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtGuiPrivate; // for D-Bus accessibility wrappers
+using namespace BobUI::StringLiterals;
+using namespace BobUIGuiPrivate; // for D-Bus accessibility wrappers
 
 /*!
     \class QSpiDBusCache
@@ -29,7 +29,7 @@ using namespace QtGuiPrivate; // for D-Bus accessibility wrappers
     Additionally the AddAccessible and RemoveAccessible signals
     are responsible for adding/removing objects from the cache.
 
-    Currently the Qt bridge chooses to ignore these.
+    Currently the BobUI bridge chooses to ignore these.
 */
 
 QSpiDBusCache::QSpiDBusCache(QDBusConnection c, QObject* parent)
@@ -54,7 +54,7 @@ QSpiAccessibleCacheArray QSpiDBusCache::GetItems()
     return QSpiAccessibleCacheArray();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qspidbuscache_p.cpp"
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

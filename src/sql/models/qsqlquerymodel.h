@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSQLQUERYMODEL_H
 #define QSQLQUERYMODEL_H
 
-#include <QtSql/qtsqlglobal.h>
-#include <QtCore/qabstractitemmodel.h>
-#include <QtSql/qsqldatabase.h>
+#include <BobUISql/bobuisqlglobal.h>
+#include <BobUICore/qabstractitemmodel.h>
+#include <BobUISql/qsqldatabase.h>
 
-QT_REQUIRE_CONFIG(sqlmodel);
+BOBUI_REQUIRE_CONFIG(sqlmodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSqlQueryModelPrivate;
 class QSqlError;
@@ -32,26 +32,26 @@ public:
     QSqlRecord record(int row) const;
     QSqlRecord record() const;
 
-    QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value,
-                       int role = Qt::EditRole) override;
+    QVariant data(const QModelIndex &item, int role = BobUI::DisplayRole) const override;
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole) const override;
+    bool setHeaderData(int section, BobUI::Orientation orientation, const QVariant &value,
+                       int role = BobUI::EditRole) override;
 
     bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex()) override;
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
-    QT_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Pass it by move instead.")
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
+    BOBUI_DEPRECATED_VERSION_X_6_2("QSqlQuery is not meant to be copied. Pass it by move instead.")
     void setQuery(const QSqlQuery &query);
 #endif
     void setQuery(QSqlQuery &&query);
     void setQuery(const QString &query, const QSqlDatabase &db = QSqlDatabase());
     void refresh();
-#if QT_SQL_REMOVED_SINCE(6, 5)
+#if BOBUI_SQL_REMOVED_SINCE(6, 5)
     QSqlQuery query() const;
 #endif
-    const QSqlQuery &query(QT6_DECL_NEW_OVERLOAD) const;
+    const QSqlQuery &query(BOBUI6_DECL_NEW_OVERLOAD) const;
 
     virtual void clear();
 
@@ -84,6 +84,6 @@ protected:
     QSqlQueryModel(QSqlQueryModelPrivate &dd, QObject *parent = nullptr);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSQLQUERYMODEL_H

@@ -1,14 +1,14 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandwindow_p.h"
 #include "qwaylandvulkaninstance_p.h"
 #include "qwaylandscreen_p.h"
 #include "qwaylanddisplay_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandVulkanInstance::QWaylandVulkanInstance(QVulkanInstance *instance)
     : m_instance(instance)
@@ -90,7 +90,7 @@ void QWaylandVulkanInstance::presentAboutToBeQueued(QWindow *window)
     }
 
     bool ok;
-    int frameCallbackTimeout = qEnvironmentVariableIntValue("QT_WAYLAND_FRAME_CALLBACK_TIMEOUT", &ok);
+    int frameCallbackTimeout = qEnvironmentVariableIntValue("BOBUI_WAYLAND_FRAME_CALLBACK_TIMEOUT", &ok);
 
     if (ok)
         mFrameCallbackTimeout = frameCallbackTimeout;
@@ -121,6 +121,6 @@ void QWaylandVulkanInstance::endFrame(QWindow *window)
     w->endFrame();
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

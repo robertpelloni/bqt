@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Kurt Pattyn <pattyn.kurt@gmail.com>.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSSLSERVER_P_H
 #define QSSLSERVER_P_H
@@ -10,25 +10,25 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-#include <QtCore/qhash.h>
-#include <QtCore/qtimer.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/bobuiimer.h>
 
-#include <QtNetwork/QSslConfiguration>
-#include <QtNetwork/private/qtcpserver_p.h>
+#include <BobUINetwork/QSslConfiguration>
+#include <BobUINetwork/private/bobuicpserver_p.h>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class Q_NETWORK_EXPORT QSslServerPrivate : public QTcpServerPrivate
+class Q_NETWORK_EXPORT QSslServerPrivate : public BOBUIcpServerPrivate
 {
     static constexpr int DefaultHandshakeTimeout = 5'000; // 5 seconds
 public:
@@ -44,10 +44,10 @@ public:
     struct SocketData {
         QMetaObject::Connection readyReadConnection;
         QMetaObject::Connection destroyedConnection;
-        std::shared_ptr<QTimer> timeoutTimer; // shared_ptr because QHash demands copying
+        std::shared_ptr<BOBUIimer> timeoutTimer; // shared_ptr because QHash demands copying
 
         SocketData(QMetaObject::Connection readyRead, QMetaObject::Connection destroyed,
-                   std::shared_ptr<QTimer> &&timer)
+                   std::shared_ptr<BOBUIimer> &&timer)
             : readyReadConnection(readyRead),
               destroyedConnection(destroyed),
               timeoutTimer(std::move(timer))
@@ -67,6 +67,6 @@ public:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSSLSERVER_P_H

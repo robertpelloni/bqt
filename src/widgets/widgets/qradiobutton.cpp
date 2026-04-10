@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qradiobutton.h"
 #include "qapplication.h"
 #include "qbitmap.h"
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
 #include "qbuttongroup.h"
 #endif
 #include "qstylepainter.h"
@@ -15,7 +15,7 @@
 
 #include "private/qabstractbutton_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRadioButtonPrivate : public QAbstractButtonPrivate
 {
@@ -38,7 +38,7 @@ void QRadioButtonPrivate::init()
     q->setAutoExclusive(true);
     q->setMouseTracking(true);
     q->setForegroundRole(QPalette::WindowText);
-    q->setAttribute(Qt::WA_MacShowFocusRect);
+    q->setAttribute(BobUI::WA_MacShowFocusRect);
     setLayoutItemMargins(QStyle::SE_RadioButtonLayoutItem);
 }
 
@@ -47,7 +47,7 @@ QStyle::State QRadioButtonPrivate::styleButtonState(QStyle::State state) const
     Q_Q(const QRadioButton);
     state = QAbstractButtonPrivate::styleButtonState(state);
     state |= (checked ? QStyle::State_On : QStyle::State_Off);
-    if (q->testAttribute(Qt::WA_Hover) && q->underMouse())
+    if (q->testAttribute(BobUI::WA_Hover) && q->underMouse())
         state.setFlag(QStyle::State_MouseOver, hovering);
     return state;
 }
@@ -57,7 +57,7 @@ QStyle::State QRadioButtonPrivate::styleButtonState(QStyle::State state) const
     \brief The QRadioButton widget provides a radio button with a text label.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-radiobutton.png {Two radio buttons representing two options}
 
@@ -94,7 +94,7 @@ QStyle::State QRadioButtonPrivate::styleButtonState(QStyle::State state) const
     setDown(), isDown(), autoRepeat(), group(), setAutoRepeat(),
     toggle(), pressed(), released(), clicked(), and toggled().
 
-    \sa QPushButton, QToolButton, QCheckBox
+    \sa QPushButton, BOBUIoolButton, QCheckBox
 */
 
 
@@ -161,7 +161,7 @@ QSize QRadioButton::sizeHint() const
     ensurePolished();
     QStyleOptionButton opt;
     initStyleOption(&opt);
-    QSize sz = style()->itemTextRect(fontMetrics(), QRect(), Qt::TextShowMnemonic,
+    QSize sz = style()->itemTextRect(fontMetrics(), QRect(), BobUI::TextShowMnemonic,
                                      false, text()).size();
     if (!opt.icon.isNull())
         sz = QSize(sz.width() + opt.iconSize.width() + 4, qMax(sz.height(), opt.iconSize.height()));
@@ -193,7 +193,7 @@ bool QRadioButton::hitButton(const QPoint &pos) const
 void QRadioButton::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QRadioButton);
-    if (testAttribute(Qt::WA_Hover)) {
+    if (testAttribute(BobUI::WA_Hover)) {
         bool hit = false;
         if (underMouse())
             hit = hitButton(e->position().toPoint());
@@ -231,6 +231,6 @@ bool QRadioButton::event(QEvent *e)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qradiobutton.cpp"

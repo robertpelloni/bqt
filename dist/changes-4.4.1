@@ -1,15 +1,15 @@
-Qt 4.4.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.4.0.
+BobUI 4.4.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.4.0.
 
-The Qt version 4.4 series is binary compatible with the 4.3.x series.
-The Qt for Embedded Linux version 4.4 series is binary compatible with
-the Qtopia Core 4.3.x series. Applications compiled for 4.0, 4.1, 4.2,
+The BobUI version 4.4 series is binary compatible with the 4.3.x series.
+The BobUI for Embedded Linux version 4.4 series is binary compatible with
+the BobUIopia Core 4.3.x series. Applications compiled for 4.0, 4.1, 4.2,
 and 4.3 will continue to run with 4.4.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain
 more information about a particular change.
@@ -28,7 +28,7 @@ General Improvements
 Third party components
 ----------------------
 
-- Updated Qt's libpng version to 1.2.29.
+- Updated BobUI's libpng version to 1.2.29.
 
 
 ****************************************************************************
@@ -82,11 +82,11 @@ Third party components
 - QSslSocket
     * [212177] QSslSocket::peerVerifyError() supports all errors now.
     * [212022] Fixed a bug that would cause no default CA certificates
-    to be present in static Qt builds.
+    to be present in static BobUI builds.
     * [212412] Fixed a bug that could cause a deadlock in
     waitForReadyRead() in encrypted mode.
 
-- QtWebKit
+- BobUIWebKit
     * Ensured that relative URLs are converted to absolute URLs.
     * Ensured that the cursor is changed into a resize cursor when hovering
       over and dragging the resizeable frame borders.
@@ -117,12 +117,12 @@ Third party components
 
 - QWidget
     * Fixed a regression when setting masks for splashscreens on Mac OS X Tiger.
-    * [210544] Fixed a regression where Qt::WA_PaintOnScreen widgets were painted on
+    * [210544] Fixed a regression where BobUI::WA_PaintOnScreen widgets were painted on
       top of overlapping siblings.
     * [211796] Fixed a crash occurring when calling render() from a resize event.
     * [210960] Fixed a regression where an invisible top-level widget was resized when calling render().
     * [210822] Fixed a bug causing QGLWidgets to not behave correctly when setting window title.
-    * [208413] Fixed issues when creating a child widget of Qt::WA_PaintOnScreen widgets.
+    * [208413] Fixed issues when creating a child widget of BobUI::WA_PaintOnScreen widgets.
   
 - QWidgetAction
     * [207433] Fix enabling and disabling toolbar containings actions widget.
@@ -152,7 +152,7 @@ Third party components
       intersect, and union).
 
 - QRasterPaintEngine
-    * [208644] Fixed a crash in qt_intersect_spans.
+    * [208644] Fixed a crash in bobui_intersect_spans.
 
 - QApplication
     * [213116] Fixd a regression on Mac OS X where you could not access the
@@ -189,15 +189,15 @@ Third party components
     invalid results if you called result() before the last addData()
     call.
 
-- QTcpSocket
-    * [208948] Fixed a bug that would cause QTcpSocket and QSslSocket
+- BOBUIcpSocket
+    * [208948] Fixed a bug that would cause BOBUIcpSocket and QSslSocket
     not to flush all of their buffers if the socket disconnects and
     reconnects.
-    * [182669/192445] Fixed a bug that would cause QTcpSocket to stop
+    * [182669/192445] Fixed a bug that would cause BOBUIcpSocket to stop
     emitting readyRead() if a previous waitForReadyRead() timed out.
 
 - QDataStream
-    * [211301] Fixed an issue where Qt 2 and Qt 3 applications might
+    * [211301] Fixed an issue where BobUI 2 and BobUI 3 applications might
     crash or hang when run under KDE 4.
 
 - QDateTime
@@ -223,7 +223,7 @@ Third party components
     Unix platforms.
 
 - QFuture
-    * [214874] Fixed possible deadlock when using nested calls to QtConcurrent::run().
+    * [214874] Fixed possible deadlock when using nested calls to BobUIConcurrent::run().
 
 - QGLContext
     * [210427] In 4.4.0 we removed the automatic mipmap generation for
@@ -231,7 +231,7 @@ Third party components
     reverted for compatibility reasons.
     * [214078] Fixed a problem that caused OpenGL textures to always be
     downscaled to 64x64 in size on Intel graphics hardware. This caused,
-    among other things, the Qt Demo to look utterly broken on these systems.
+    among other things, the BobUI Demo to look utterly broken on these systems.
 
 - QOpenGLPaintEngine
     * [191777] Set default values for GL_PACK_*/GL_UNPACK_* values with
@@ -249,7 +249,7 @@ Third party components
 - QHttp
     * [213220] Fixed a bug that could make QHttp open unencrypted
     connections if HTTPS mode was requested but SSL support was not
-    present in Qt.
+    present in BobUI.
     * [193738] Fixed a bug that would make QHttp continue reading the
     HTTP server's response and emit a readyRead() signal even if
     abort() had already been called.
@@ -269,12 +269,12 @@ Third party components
     * [210275] Fixed a crash in QPixmap::resize().
 
 - QSharedMemory
-    * Compile fix on QNX when QT_NO_SHAREDMEMORY was defined
+    * Compile fix on QNX when BOBUI_NO_SHAREDMEMORY was defined
 
 - QStyleSheetStyle
    * [179629] Fixed SpinBox with gradient background.
-   * [188305] Respect the max-with property for more elements (such as QTabBar::tab)
-   * [189951] Fixed the align: property for QTabBar
+   * [188305] Respect the max-with property for more elements (such as BOBUIabBar::tab)
+   * [189951] Fixed the align: property for BOBUIabBar
    * [194149] Fixed the background:transparent property
    * [198926] Fixed the background:none property on some component of the scrollbar
    * [206238] Fixed inconsistency with rules without selector applied to widget. They
@@ -286,41 +286,41 @@ Third party components
 - QHeaderView
     * [207869] Fixed possible division by zero.
 
-- QTableView
+- BOBUIableView
     * [207270] Painting errors in reverse mode and when there was spans.
     * [210608] Fixed regression in the handling of spanning cells.
 
-- QTableWidget
+- BOBUIableWidget
     * [213118] Fixed a bug where moving the first or the last row triggered an assert.
 
-- QTreeView
+- BOBUIreeView
     * [213737] Fixed regression where ctrl+a would select all items regardless of the selection mode.
     * [202355] Fixed issue where items inserted in a view with all header sections hidden did not show
       themselves properly later.
     * [211296] When a column is hidden QItemSelectionModel::selectedRows and QItemSelectionModel::selectedColumns returns the wrong values.
 
-- QTreeWidget
+- BOBUIreeWidget
     * [305084] Fixed duplicate items that may appears when programaticaly
       expanding items.
     * [209590] itemSelectionChanged was being emited before item selection was updated
 
 - Q3DragObject
-    * [203288] Fixed regression against Qt 3 so that the drag() function now correctly uses
+    * [203288] Fixed regression against BobUI 3 so that the drag() function now correctly uses
       MoveAction (and not CopyAction) as the default action.
 
 - Q3TextBrowser
     * [197836] Fix assert when zooming out.
 
-- QTextDocument
+- BOBUIextDocument
     * [204965] Fix html export to use indent as textIndent
 
-- QTextBrowser
+- BOBUIextBrowser
     * [192803] Fix loading of files from resources with a resource prefix.
 
-- QTextEdit
+- BOBUIextEdit
     * [211617] Fixed crash when moving the first paragraph by drag and Drop
 
-- QTextTable
+- BOBUIextTable
     * [194229] Fix removing of a row with merged cells causing a crash.
     * [194253] Fix calling removeColumn on a Column with selectedCell causing an assert.
     * Fix assert on selecting the whole table after an insert/remove of column.
@@ -335,14 +335,14 @@ Third party components
 - QScrollBar
     * [209492] Fixed a bug causing the scroll bar actions to be invoked twice.
 
-- QToolbBarLayout
+- BOBUIoolbBarLayout
     * [207946] Prevented a crash caused by assuming that the parent widget always exists.
 
-- QThreadPool
-    * Fixed issues with thread termination during dll unloading on windows. QThreadPool::
+- BOBUIhreadPool
+    * Fixed issues with thread termination during dll unloading on windows. BOBUIhreadPool::
       waitForDone() now completely stops all threads, on all platforms. In addition, the
       QCoreApplication destructor now calls waitForDone() to make sure all threads are 
-      stopped before the Qt dlls are unloaded.
+      stopped before the BobUI dlls are unloaded.
       
 - QNetworkReply
     * [207283] Fixed support for HTTP 101 responses.
@@ -357,7 +357,7 @@ Third party components
 - QItemDelegate
     * [206762] Fixed painting when using a QBrush() for the text.
 
-- QtXmlPatterns
+- BobUIXmlPatterns
     * [207584] When using the same QXmlQuery for a new query then evaluateTo()
       can return false even if the query is valid.
     * [214180] Fixed fn:replace fails when inside function.
@@ -392,7 +392,7 @@ Third party components
 
 X11
 ---
-    * [208354] Fixed a crash in Qt's XIM implementation when exiting
+    * [208354] Fixed a crash in BobUI's XIM implementation when exiting
       applications after using the skim input method.
     * [207800] Fixed a regression from 4.3 to 4.4 where putting a
       QX11EmbedContainer into a QWidgetStack would case the container
@@ -400,7 +400,7 @@ X11
     * [207423] In QDesktopWidget, workaround a change in behavior in
       newer X.Org X servers where Xinerama would always be used even
       when using a multi-screen setup.
-    * [206139] Fixed a bug where Qt could incorrectly recurse into the
+    * [206139] Fixed a bug where BobUI could incorrectly recurse into the
       Xlib error handler (causing Xlib to assert).
     * [207057] Fixed a regression from 4.3 to 4.4 where
       QX11EmbedContainer would sometimes destroy the embedded client's
@@ -409,7 +409,7 @@ X11
       object" warning.
     * QPrintDialog crashed on unix in some cases.
     * [214103] Fixed a regression with string to double conversion
-      becoming locale-aware in QTextStream.
+      becoming locale-aware in BOBUIextStream.
     * [210922] Fix crash in input methods when toggling the InputMethodEnabled
       attribute.
     * [210831] Fixed a problem where preview pages in the QPrintPreviewDialog
@@ -433,7 +433,7 @@ Windows
     * [208859] Fixed a problem with strokes not being printed correctly. Both
       the stroke offsets and thinkness of the stroke were sometimes printed
       incorrectly.
-    * [206473] Entering UNC paths is slow in the Qt file dialog.
+    * [206473] Entering UNC paths is slow in the BobUI file dialog.
     * [309241] Trying to stream mp3 content with phonon would cause a crash.
     * [210115] Fixed a problem causing "mailto" links not to work when the
       mail application path contains unexpanded environment variables.
@@ -441,7 +441,7 @@ Windows
       open using QFile.
     * [205685] Fixed the handling of TranslateAccelerator for windows key messages.
     * Add support for (not) embedding manifests in plugins, on Windows.
-    * [211893] Fixed a crash related to using QtDotNetStyle.
+    * [211893] Fixed a crash related to using BobUIDotNetStyle.
 
 
 Mac OS X
@@ -466,11 +466,11 @@ Mac OS X
     * [211195] Fixed problem that caused crashes with the Mac binary package
       when entering long licensee names during the installation.
 
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
 - QWSEmbedWidget
-   * Fixed propagation of the Qt::WindowStaysOnTopHint window property.
+   * Fixed propagation of the BobUI::WindowStaysOnTopHint window property.
 
 - QDirectPainter
    * [209068] Fixed region coordinates for QDirectPainter when used on a
@@ -481,7 +481,7 @@ Qt for Embedded Linux
    * Improved deallocation of resources when an application exits unexpectedly.
    * Fixed bug in QPixmap::rotate().
    * Fixed QPixmap::fromImage() with an image of format QImage::Format_Indexed8
-     when compiling with QT_NO_DIRECTFB_PALETTE.
+     when compiling with BOBUI_NO_DIRECTFB_PALETTE.
    * Fixed small memory leak in QPainter::drawImage()
 
 - LinuxFB screen driver
@@ -499,7 +499,7 @@ Qt for Embedded Linux
    * Fixed QScreen::setMode().
    * Improved support for different screen modes.
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 
    * Support for Visual Studio 2008 added
@@ -517,7 +517,7 @@ Qt for Windows CE
 ****************************************************************************
 
 - Build System
-    * [209866, 213084] Fix compilation errors in QtWebKit when using
+    * [209866, 213084] Fix compilation errors in BobUIWebKit when using
       GCC 3.4 with precompiled headers. Precompiled header support is
       documented as experimental in the GCC 3.4 documentation, and as
       such, precompiled header support is disabled by default with
@@ -541,11 +541,11 @@ Qt for Windows CE
     * [212444] Use the default help collection when registering or unregistering
       help files without having a collection file specified.
     * [210704] Make sure the sql-plugin is correctly used when building
-      Qt statically.
+      BobUI statically.
     * [208834] When highlighting a find result, ensure that the active
       highlighting color is used.
     * Introduced the -assistant-webkit configure flag to make use of WebKit as
-      html renderer in Qt Assistant.
+      html renderer in BobUI Assistant.
 
 
 - Designer
@@ -589,7 +589,7 @@ Qt for Windows CE
 - uic
 
    * [205439] Added a warning that is  printed when encountering
-   non-obvious Qt3 dependencies (qPixmapFromMimeSource).
+   non-obvious BobUI3 dependencies (qPixmapFromMimeSource).
 
 - uic3
 
@@ -615,5 +615,5 @@ Qt for Windows CE
 Unix
 ----
     * [203063] Changed the behaviour of qFatal and Q_ASSERT to always
-    produce a SIGABRT signal in all build modes of Qt. (Previous
-    versions called the exit function if Qt was built in release mode)
+    produce a SIGABRT signal in all build modes of BobUI. (Previous
+    versions called the exit function if BobUI was built in release mode)

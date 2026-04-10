@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QRandomGenerator>
 #include <QStack>
 #include <QStandardItemModel>
-#include <QTest>
+#include <BOBUIest>
 #include "viewstotest.cpp"
 
 /*!
     See viewstotest.cpp for instructions on how to have your view tested with these tests.
 
-    Each test such as visualRect have a _data() function which populate the QTest data with
+    Each test such as visualRect have a _data() function which populate the BOBUIest data with
     tests specified by viewstotest.cpp and any extra data needed for that particular test.
 
-    setupWithNoTestData() fills QTest data with only the tests it is used by most tests.
+    setupWithNoTestData() fills BOBUIest data with only the tests it is used by most tests.
 
     There are some basic qDebug statements sprikled about that might be helpfull for
     fixing your issues.
@@ -67,7 +67,7 @@ class CheckerModel : public QStandardItemModel
 public:
     using QStandardItemModel::QStandardItemModel;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override
     {
         if (!index.isValid()) {
             qWarning("%s: index is not valid", Q_FUNC_INFO);
@@ -76,16 +76,16 @@ public:
         return QStandardItemModel::data(index, role);
     }
 
-    Qt::ItemFlags flags(const QModelIndex &index) const override
+    BobUI::ItemFlags flags(const QModelIndex &index) const override
     {
         if (!index.isValid()) {
             qWarning("%s: index is not valid", Q_FUNC_INFO);
-            return Qt::ItemFlags();
+            return BobUI::ItemFlags();
         }
         if (index.row() == 2 || index.row() == rowCount() - 3
             || index.column() == 2 || index.column() == columnCount() - 3) {
-            Qt::ItemFlags f = QStandardItemModel::flags(index);
-            f.setFlag(Qt::ItemIsEnabled, false);
+            BobUI::ItemFlags f = QStandardItemModel::flags(index);
+            f.setFlag(BobUI::ItemIsEnabled, false);
             return f;
         }
         return QStandardItemModel::flags(index);
@@ -100,16 +100,16 @@ public:
         return QStandardItemModel::parent(child);
     }
 
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override
+    QVariant headerData(int section, BobUI::Orientation orientation,
+                        int role = BobUI::DisplayRole) const override
     {
-        if (orientation == Qt::Horizontal
+        if (orientation == BobUI::Horizontal
             && (section < 0 || section > columnCount())) {
             qWarning("%s: invalid section %d, must be in range 0..%d",
                      Q_FUNC_INFO, section, columnCount());
             return QVariant();
         }
-        if (orientation == Qt::Vertical
+        if (orientation == BobUI::Vertical
             && (section < 0 || section > rowCount())) {
             qWarning("%s: invalid section %d, must be in range 0..%d",
                      Q_FUNC_INFO, section, rowCount());
@@ -119,7 +119,7 @@ public:
     }
 
     bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override
+                 int role = BobUI::EditRole) override
     {
         if (!index.isValid()) {
             qWarning("%s: index is not valid", Q_FUNC_INFO);
@@ -128,7 +128,7 @@ public:
         return QStandardItemModel::setData(index, value, role);
     }
 
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override
+    void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder) override
     {
         if (column < 0 || column > columnCount())
             qWarning("%s: invalid column %d, must be in range 0..%d",
@@ -139,7 +139,7 @@ public:
 
     QModelIndexList match(const QModelIndex &start, int role,
                           const QVariant &value, int hits = 1,
-                          Qt::MatchFlags flags = Qt::MatchFlags(Qt::MatchStartsWith | Qt::MatchWrap)) const override
+                          BobUI::MatchFlags flags = BobUI::MatchFlags(BobUI::MatchStartsWith | BobUI::MatchWrap)) const override
     {
         if (hits <= 0) {
             qWarning("%s: hits must be greater than zero", Q_FUNC_INFO);
@@ -152,16 +152,16 @@ public:
         return QAbstractItemModel::match(start, role, value, hits, flags);
     }
 
-    bool setHeaderData(int section, Qt::Orientation orientation,
-                       const QVariant &value, int role = Qt::EditRole) override
+    bool setHeaderData(int section, BobUI::Orientation orientation,
+                       const QVariant &value, int role = BobUI::EditRole) override
     {
-        if (orientation == Qt::Horizontal
+        if (orientation == BobUI::Horizontal
             && (section < 0 || section > columnCount())) {
             qWarning("%s: invalid section %d, must be in range 0..%d",
                      Q_FUNC_INFO, section, columnCount());
             return false;
         }
-        if (orientation == Qt::Vertical
+        if (orientation == BobUI::Vertical
             && (section < 0 || section > rowCount())) {
             qWarning("%s: invalid section %d, must be in range 0..%d",
                      Q_FUNC_INFO, section, rowCount());
@@ -190,15 +190,15 @@ void tst_QItemView::cleanup()
 void tst_QItemView::setupWithNoTestData()
 {
     ViewsToTest testViews;
-    QTest::addColumn<QString>("viewType");
-    QTest::addColumn<bool>("displays");
-    QTest::addColumn<QAbstractItemView::ScrollMode>("vscroll");
-    QTest::addColumn<QAbstractItemView::ScrollMode>("hscroll");
+    BOBUIest::addColumn<QString>("viewType");
+    BOBUIest::addColumn<bool>("displays");
+    BOBUIest::addColumn<QAbstractItemView::ScrollMode>("vscroll");
+    BOBUIest::addColumn<QAbstractItemView::ScrollMode>("hscroll");
     for (int i = 0; i < testViews.tests.size(); ++i) {
         QString view = testViews.tests.at(i).viewType;
         QString test = view + " ScrollPerPixel";
         bool displayIndexes = (testViews.tests.at(i).display == ViewsToTest::DisplayRoot);
-        QTest::newRow(test.toLatin1().data()) << view << displayIndexes
+        BOBUIest::newRow(test.toLatin1().data()) << view << displayIndexes
                                               << QAbstractItemView::ScrollPerPixel
                                               << QAbstractItemView::ScrollPerPixel
                                               ;
@@ -207,7 +207,7 @@ void tst_QItemView::setupWithNoTestData()
         QString view = testViews.tests.at(i).viewType;
         QString test = view + " ScrollPerItem";
         bool displayIndexes = (testViews.tests.at(i).display == ViewsToTest::DisplayRoot);
-        QTest::newRow(test.toLatin1().data()) << view << displayIndexes
+        BOBUIest::newRow(test.toLatin1().data()) << view << displayIndexes
                                               << QAbstractItemView::ScrollPerItem
                                               << QAbstractItemView::ScrollPerItem
                                               ;
@@ -234,7 +234,7 @@ void tst_QItemView::populate()
             for (int y = 0; y < treeModel->columnCount(); ++y) {
                 QModelIndex index = treeModel->index(x, y, parent);
                 treeModel->setData(index, xS + QLatin1Char('_') + QString::number(y) + QLatin1Char('_') + iS);
-                treeModel->setData(index, QVariant(QColor(Qt::blue)), Qt::ForegroundRole);
+                treeModel->setData(index, QVariant(QColor(BobUI::blue)), BobUI::ForegroundRole);
             }
         }
     }
@@ -312,7 +312,7 @@ void tst_QItemView::nonDestructiveBasicTest()
     QCOMPARE(view->tabKeyNavigation(), false);
     view->setTabKeyNavigation(true);
     QCOMPARE(view->tabKeyNavigation(), true);
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // setDropIndicatorShown
     view->setDropIndicatorShown(false);
     QCOMPARE(view->showDropIndicator(), false);
@@ -381,24 +381,24 @@ void tst_QItemView::spider_data()
     setupWithNoTestData();
 }
 
-void touch(QWidget *widget, Qt::KeyboardModifier modifier, Qt::Key keyPress)
+void touch(QWidget *widget, BobUI::KeyboardModifier modifier, BobUI::Key keyPress)
 {
     int width = widget->width();
     int height = widget->height();
     for (int i = 0; i < 5; ++i) {
-        QTest::mouseClick(widget, Qt::LeftButton, modifier,
+        BOBUIest::mouseClick(widget, BobUI::LeftButton, modifier,
                           QPoint(QRandomGenerator::global()->bounded(width), QRandomGenerator::global()->bounded(height)));
-        QTest::mouseDClick(widget, Qt::LeftButton, modifier,
+        BOBUIest::mouseDClick(widget, BobUI::LeftButton, modifier,
                            QPoint(QRandomGenerator::global()->bounded(width), QRandomGenerator::global()->bounded(height)));
         QPoint press(QRandomGenerator::global()->bounded(width), QRandomGenerator::global()->bounded(height));
         QPoint releasePoint(QRandomGenerator::global()->bounded(width), QRandomGenerator::global()->bounded(height));
-        QTest::mousePress(widget, Qt::LeftButton, modifier, press);
-        QTest::mouseMove(widget, releasePoint);
+        BOBUIest::mousePress(widget, BobUI::LeftButton, modifier, press);
+        BOBUIest::mouseMove(widget, releasePoint);
         if (QRandomGenerator::global()->bounded(1) == 0)
-            QTest::mouseRelease(widget, Qt::LeftButton, {}, releasePoint);
+            BOBUIest::mouseRelease(widget, BobUI::LeftButton, {}, releasePoint);
         else
-            QTest::mouseRelease(widget, Qt::LeftButton, modifier, releasePoint);
-        QTest::keyClick(widget, keyPress);
+            BOBUIest::mouseRelease(widget, BobUI::LeftButton, modifier, releasePoint);
+        BOBUIest::keyClick(widget, keyPress);
     }
 }
 
@@ -410,7 +410,7 @@ void touch(QWidget *widget, Qt::KeyboardModifier modifier, Qt::Key keyPress)
   */
 void tst_QItemView::spider()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QFETCH(QString, viewType);
@@ -423,11 +423,11 @@ void tst_QItemView::spider()
     view->setHorizontalScrollMode(hscroll);
     view->setModel(treeModel);
     view->show();
-    QVERIFY(QTest::qWaitForWindowActive(view));
-    touch(view->viewport(), Qt::NoModifier, Qt::Key_Left);
-    touch(view->viewport(), Qt::ShiftModifier, Qt::Key_Enter);
-    touch(view->viewport(), Qt::ControlModifier, Qt::Key_Backspace);
-    touch(view->viewport(), Qt::AltModifier, Qt::Key_Up);
+    QVERIFY(BOBUIest::qWaitForWindowActive(view));
+    touch(view->viewport(), BobUI::NoModifier, BobUI::Key_Left);
+    touch(view->viewport(), BobUI::ShiftModifier, BobUI::Key_Enter);
+    touch(view->viewport(), BobUI::ControlModifier, BobUI::Key_Backspace);
+    touch(view->viewport(), BobUI::AltModifier, BobUI::Key_Up);
 }
 
 void tst_QItemView::resize_data()
@@ -456,7 +456,7 @@ void tst_QItemView::resize()
     for (int w = 100; w < 400; w += 10) {
         for (int h = 100; h < 400; h += 10) {
             view->resize(w, h);
-            QTest::qWait(1);
+            BOBUIest::qWait(1);
             QCoreApplication::processEvents();
         }
     }
@@ -584,7 +584,7 @@ void checkChildren(const QAbstractItemView *currentView, const QModelIndex &pare
         for (int c = 0; c < columns; ++c) {
             QModelIndex index = currentModel->index(r, c, parent);
             walkIndex(index, currentView);
-            if (QTest::currentTestFailed())
+            if (BOBUIest::currentTestFailed())
                 return;
 
             // recursivly go down
@@ -592,7 +592,7 @@ void checkChildren(const QAbstractItemView *currentView, const QModelIndex &pare
                 checkChildren(currentView, index, ++currentDepth);
                 // Because this is recursive we will return at the first failure rather then
                 // reporting it over and over
-                if (QTest::currentTestFailed())
+                if (BOBUIest::currentTestFailed())
                     return;
             }
         }
@@ -675,9 +675,9 @@ void tst_QItemView::moveCursor_data()
 
 struct Event
 {
-    Event(Qt::Key k, const QModelIndex &s, const QModelIndex &e, const QString &n)
+    Event(BobUI::Key k, const QModelIndex &s, const QModelIndex &e, const QString &n)
         : key(k), start(s), end(e), name(n){}
-    Qt::Key key;
+    BobUI::Key key;
     QModelIndex start;
     QModelIndex end;
     QString name;
@@ -709,96 +709,96 @@ void tst_QItemView::moveCursor()
 
     QStack<Event> events;
 
-    events.push(Event(Qt::Key_Up, invalidIndex,      firstRow, "inv, first"));
-    events.push(Event(Qt::Key_Up, hiddenRowT,        firstRow, "hid, first"));
-    events.push(Event(Qt::Key_Up, disabledRowT,      firstRow, "dis, first"));
-    events.push(Event(Qt::Key_Up, firstRow,          firstRow, "first, first"));
-    events.push(Event(Qt::Key_Up, secondRow,         firstRow, "sec, first"));
-    events.push(Event(Qt::Key_Up, hiddenRowB,        firstRow, "hidB, first"));
-    events.push(Event(Qt::Key_Up, disabledRowB,      secondToLastRow, "disB, secLast"));
-    events.push(Event(Qt::Key_Up, lastRow,           secondToLastRow, "last, secLast"));
+    events.push(Event(BobUI::Key_Up, invalidIndex,      firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_Up, hiddenRowT,        firstRow, "hid, first"));
+    events.push(Event(BobUI::Key_Up, disabledRowT,      firstRow, "dis, first"));
+    events.push(Event(BobUI::Key_Up, firstRow,          firstRow, "first, first"));
+    events.push(Event(BobUI::Key_Up, secondRow,         firstRow, "sec, first"));
+    events.push(Event(BobUI::Key_Up, hiddenRowB,        firstRow, "hidB, first"));
+    events.push(Event(BobUI::Key_Up, disabledRowB,      secondToLastRow, "disB, secLast"));
+    events.push(Event(BobUI::Key_Up, lastRow,           secondToLastRow, "last, secLast"));
 
-    events.push(Event(Qt::Key_Down, invalidIndex,    firstRow, "inv, first"));
-    events.push(Event(Qt::Key_Down, hiddenRowT,      firstRow, "hid, first"));
-    events.push(Event(Qt::Key_Down, disabledRowT,    secondRow, "dis, sec"));
-    events.push(Event(Qt::Key_Down, firstRow,        secondRow, "first, sec"));
-    events.push(Event(Qt::Key_Down, secondToLastRow, lastRow, "secLast, last" ));
-    events.push(Event(Qt::Key_Down, disabledRowB,    lastRow, "disB, last"));
-    events.push(Event(Qt::Key_Down, hiddenRowB,      firstRow, "hidB, first"));
-    events.push(Event(Qt::Key_Down, lastRow,         lastRow, "last, last"));
+    events.push(Event(BobUI::Key_Down, invalidIndex,    firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_Down, hiddenRowT,      firstRow, "hid, first"));
+    events.push(Event(BobUI::Key_Down, disabledRowT,    secondRow, "dis, sec"));
+    events.push(Event(BobUI::Key_Down, firstRow,        secondRow, "first, sec"));
+    events.push(Event(BobUI::Key_Down, secondToLastRow, lastRow, "secLast, last" ));
+    events.push(Event(BobUI::Key_Down, disabledRowB,    lastRow, "disB, last"));
+    events.push(Event(BobUI::Key_Down, hiddenRowB,      firstRow, "hidB, first"));
+    events.push(Event(BobUI::Key_Down, lastRow,         lastRow, "last, last"));
 
-    events.push(Event(Qt::Key_Home, invalidIndex,    firstRow, "inv, first"));
-    events.push(Event(Qt::Key_End, invalidIndex,     firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_Home, invalidIndex,    firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_End, invalidIndex,     firstRow, "inv, first"));
 
-    if (view->objectName() == "QTableView") {
+    if (view->objectName() == "BOBUIableView") {
         // In a table we move to the first/last column
-        events.push(Event(Qt::Key_Home, hiddenRowT,      firstRow, "hid, first"));
-        events.push(Event(Qt::Key_Home, disabledRowT,    disabledRowT, "dis, dis"));
-        events.push(Event(Qt::Key_Home, firstRow,        firstRow, "first, first"));
-        events.push(Event(Qt::Key_Home, secondRow,       secondRow, "sec, sec"));
-        events.push(Event(Qt::Key_Home, disabledRowB,    disabledRowB, "disB, disB"));
-        events.push(Event(Qt::Key_Home, hiddenRowB,      firstRow, "hidB, first"));
-        events.push(Event(Qt::Key_Home, secondToLastRow, secondToLastRow, "secLast, secLast"));
-        events.push(Event(Qt::Key_Home, lastRow,         lastRow, "last, last"));
+        events.push(Event(BobUI::Key_Home, hiddenRowT,      firstRow, "hid, first"));
+        events.push(Event(BobUI::Key_Home, disabledRowT,    disabledRowT, "dis, dis"));
+        events.push(Event(BobUI::Key_Home, firstRow,        firstRow, "first, first"));
+        events.push(Event(BobUI::Key_Home, secondRow,       secondRow, "sec, sec"));
+        events.push(Event(BobUI::Key_Home, disabledRowB,    disabledRowB, "disB, disB"));
+        events.push(Event(BobUI::Key_Home, hiddenRowB,      firstRow, "hidB, first"));
+        events.push(Event(BobUI::Key_Home, secondToLastRow, secondToLastRow, "secLast, secLast"));
+        events.push(Event(BobUI::Key_Home, lastRow,         lastRow, "last, last"));
 
         int col = treeModel->columnCount() - 1;
-        events.push(Event(Qt::Key_End, hiddenRowT,      firstRow, "hidT, hidT"));
-        events.push(Event(Qt::Key_End, disabledRowT,    disabledRowT, "disT, disT"));
-        events.push(Event(Qt::Key_End, firstRow,        firstRow.sibling(firstRow.row(), col), "first, first_C"));
-        events.push(Event(Qt::Key_End, secondRow,       secondRow.sibling(secondRow.row(), col), "sec, sec_C"));
-        events.push(Event(Qt::Key_End, disabledRowB,    disabledRowB, "disB, disB"));
-        events.push(Event(Qt::Key_End, hiddenRowB,      firstRow, "hidB, hidB"));
-        events.push(Event(Qt::Key_End, secondToLastRow, secondToLastRow.sibling(secondToLastRow.row(), col), "secLast, secLast_C"));
-        events.push(Event(Qt::Key_End, lastRow,         lastRow.sibling(lastRow.row(), col), "last, last_C"));
+        events.push(Event(BobUI::Key_End, hiddenRowT,      firstRow, "hidT, hidT"));
+        events.push(Event(BobUI::Key_End, disabledRowT,    disabledRowT, "disT, disT"));
+        events.push(Event(BobUI::Key_End, firstRow,        firstRow.sibling(firstRow.row(), col), "first, first_C"));
+        events.push(Event(BobUI::Key_End, secondRow,       secondRow.sibling(secondRow.row(), col), "sec, sec_C"));
+        events.push(Event(BobUI::Key_End, disabledRowB,    disabledRowB, "disB, disB"));
+        events.push(Event(BobUI::Key_End, hiddenRowB,      firstRow, "hidB, hidB"));
+        events.push(Event(BobUI::Key_End, secondToLastRow, secondToLastRow.sibling(secondToLastRow.row(), col), "secLast, secLast_C"));
+        events.push(Event(BobUI::Key_End, lastRow,         lastRow.sibling(lastRow.row(), col), "last, last_C"));
     } else {
-        events.push(Event(Qt::Key_Home, hiddenRowT,      firstRow, "hid, first"));
-        events.push(Event(Qt::Key_Home, disabledRowT,    firstRow, "dis, first"));
-        events.push(Event(Qt::Key_Home, firstRow,        firstRow, "first, first"));
-        events.push(Event(Qt::Key_Home, secondRow,       firstRow, "sec, first"));
-        events.push(Event(Qt::Key_Home, disabledRowB,    firstRow, "disB, first"));
-        events.push(Event(Qt::Key_Home, hiddenRowB,      firstRow, "hidB, first"));
-        events.push(Event(Qt::Key_Home, secondToLastRow, firstRow, "sec, first"));
-        events.push(Event(Qt::Key_Home, lastRow,         firstRow, "last, first"));
+        events.push(Event(BobUI::Key_Home, hiddenRowT,      firstRow, "hid, first"));
+        events.push(Event(BobUI::Key_Home, disabledRowT,    firstRow, "dis, first"));
+        events.push(Event(BobUI::Key_Home, firstRow,        firstRow, "first, first"));
+        events.push(Event(BobUI::Key_Home, secondRow,       firstRow, "sec, first"));
+        events.push(Event(BobUI::Key_Home, disabledRowB,    firstRow, "disB, first"));
+        events.push(Event(BobUI::Key_Home, hiddenRowB,      firstRow, "hidB, first"));
+        events.push(Event(BobUI::Key_Home, secondToLastRow, firstRow, "sec, first"));
+        events.push(Event(BobUI::Key_Home, lastRow,         firstRow, "last, first"));
 
-        events.push(Event(Qt::Key_End, hiddenRowT,       firstRow, "hid, last"));
-        events.push(Event(Qt::Key_End, disabledRowT,     lastRow, "dis, last"));
-        events.push(Event(Qt::Key_End, firstRow,         lastRow, "first, last"));
-        events.push(Event(Qt::Key_End, secondRow,        lastRow, "sec, last"));
-        events.push(Event(Qt::Key_End, disabledRowB,     lastRow, "disB, last"));
-        events.push(Event(Qt::Key_End, hiddenRowB,       firstRow, "hidB, last"));
-        events.push(Event(Qt::Key_End, secondToLastRow,  lastRow, "sec, last"));
-        events.push(Event(Qt::Key_End, lastRow,          lastRow, "last, last"));
+        events.push(Event(BobUI::Key_End, hiddenRowT,       firstRow, "hid, last"));
+        events.push(Event(BobUI::Key_End, disabledRowT,     lastRow, "dis, last"));
+        events.push(Event(BobUI::Key_End, firstRow,         lastRow, "first, last"));
+        events.push(Event(BobUI::Key_End, secondRow,        lastRow, "sec, last"));
+        events.push(Event(BobUI::Key_End, disabledRowB,     lastRow, "disB, last"));
+        events.push(Event(BobUI::Key_End, hiddenRowB,       firstRow, "hidB, last"));
+        events.push(Event(BobUI::Key_End, secondToLastRow,  lastRow, "sec, last"));
+        events.push(Event(BobUI::Key_End, lastRow,          lastRow, "last, last"));
     }
 
-    events.push(Event(Qt::Key_PageDown, invalidIndex,    firstRow, "inv, first"));
-    events.push(Event(Qt::Key_PageDown, firstRow,        QModelIndex(), "first, x"));
-    events.push(Event(Qt::Key_PageDown, secondRow,       QModelIndex(), "sec, x"));
-    events.push(Event(Qt::Key_PageDown, hiddenRowT,      QModelIndex(), "hid, x"));
-    events.push(Event(Qt::Key_PageDown, disabledRowT,    QModelIndex(), "dis, x"));
-    events.push(Event(Qt::Key_PageDown, disabledRowB,    lastRow, "disB, last"));
-    events.push(Event(Qt::Key_PageDown, hiddenRowB,      lastRow, "hidB, last"));
-    events.push(Event(Qt::Key_PageDown, secondToLastRow, lastRow, "secLast, last"));
-    events.push(Event(Qt::Key_PageDown, lastRow,         lastRow, "last, last"));
+    events.push(Event(BobUI::Key_PageDown, invalidIndex,    firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_PageDown, firstRow,        QModelIndex(), "first, x"));
+    events.push(Event(BobUI::Key_PageDown, secondRow,       QModelIndex(), "sec, x"));
+    events.push(Event(BobUI::Key_PageDown, hiddenRowT,      QModelIndex(), "hid, x"));
+    events.push(Event(BobUI::Key_PageDown, disabledRowT,    QModelIndex(), "dis, x"));
+    events.push(Event(BobUI::Key_PageDown, disabledRowB,    lastRow, "disB, last"));
+    events.push(Event(BobUI::Key_PageDown, hiddenRowB,      lastRow, "hidB, last"));
+    events.push(Event(BobUI::Key_PageDown, secondToLastRow, lastRow, "secLast, last"));
+    events.push(Event(BobUI::Key_PageDown, lastRow,         lastRow, "last, last"));
 
-    events.push(Event(Qt::Key_PageUp, invalidIndex,    firstRow, "inv, first"));
-    events.push(Event(Qt::Key_PageUp, firstRow,        firstRow, "first, first"));
-    events.push(Event(Qt::Key_PageUp, secondRow,       firstRow, "sec, first"));
-    events.push(Event(Qt::Key_PageUp, secondToLastRow, QModelIndex(), "secLast, x"));
-    events.push(Event(Qt::Key_PageUp, lastRow,         QModelIndex(), "last, x"));
+    events.push(Event(BobUI::Key_PageUp, invalidIndex,    firstRow, "inv, first"));
+    events.push(Event(BobUI::Key_PageUp, firstRow,        firstRow, "first, first"));
+    events.push(Event(BobUI::Key_PageUp, secondRow,       firstRow, "sec, first"));
+    events.push(Event(BobUI::Key_PageUp, secondToLastRow, QModelIndex(), "secLast, x"));
+    events.push(Event(BobUI::Key_PageUp, lastRow,         QModelIndex(), "last, x"));
 
-    if (view->objectName() == "QTableView") {
-        events.push(Event(Qt::Key_Left, firstRow,                      firstRow, "first_0, first"));
-        events.push(Event(Qt::Key_Left, firstRow.sibling(0, 1),        firstRow, "first_1, first"));
-        events.push(Event(Qt::Key_Left, firstRow.sibling(0, 2),        firstRow, "first_2, first"));
-        events.push(Event(Qt::Key_Left, firstRow.sibling(0, 3),        firstRow, "first_3, first"));
-        events.push(Event(Qt::Key_Left, secondRow,        secondRow, "sec, sec"));
+    if (view->objectName() == "BOBUIableView") {
+        events.push(Event(BobUI::Key_Left, firstRow,                      firstRow, "first_0, first"));
+        events.push(Event(BobUI::Key_Left, firstRow.sibling(0, 1),        firstRow, "first_1, first"));
+        events.push(Event(BobUI::Key_Left, firstRow.sibling(0, 2),        firstRow, "first_2, first"));
+        events.push(Event(BobUI::Key_Left, firstRow.sibling(0, 3),        firstRow, "first_3, first"));
+        events.push(Event(BobUI::Key_Left, secondRow,        secondRow, "sec, sec"));
 
-        events.push(Event(Qt::Key_Right, firstRow,                      firstRow.sibling(0, 3), "first, first_3"));
-        events.push(Event(Qt::Key_Right, firstRow.sibling(0, 1),        firstRow, "first_1, first"));
-        events.push(Event(Qt::Key_Right, firstRow.sibling(0, 2),        firstRow.sibling(0, 3), "first_2, first_3"));
-        events.push(Event(Qt::Key_Right, firstRow.sibling(0, treeModel->columnCount()-1), firstRow.sibling(0, treeModel->columnCount()-1), "first_3, sec"));
+        events.push(Event(BobUI::Key_Right, firstRow,                      firstRow.sibling(0, 3), "first, first_3"));
+        events.push(Event(BobUI::Key_Right, firstRow.sibling(0, 1),        firstRow, "first_1, first"));
+        events.push(Event(BobUI::Key_Right, firstRow.sibling(0, 2),        firstRow.sibling(0, 3), "first_2, first_3"));
+        events.push(Event(BobUI::Key_Right, firstRow.sibling(0, treeModel->columnCount()-1), firstRow.sibling(0, treeModel->columnCount()-1), "first_3, sec"));
     }
 }
 
-QTEST_MAIN(tst_QItemView)
+BOBUIEST_MAIN(tst_QItemView)
 #include "tst_qitemview.moc"

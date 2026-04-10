@@ -1,25 +1,25 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2013 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformdialoghelpers.h"
 #include "androidjnimain.h"
 
-#include <QTextDocument>
+#include <BOBUIextDocument>
 
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtAndroidDialogHelpers {
+namespace BobUIAndroidDialogHelpers {
 static jclass g_messageDialogHelperClass = nullptr;
 
 QAndroidPlatformMessageDialogHelper::QAndroidPlatformMessageDialogHelper()
     : m_javaMessageDialog(g_messageDialogHelperClass, "(Landroid/app/Activity;)V",
-                          QtAndroidPrivate::activity().object())
+                          BobUIAndroidPrivate::activity().object())
 {
 }
 
@@ -31,20 +31,20 @@ QAndroidPlatformMessageDialogHelper::~QAndroidPlatformMessageDialogHelper()
 void QAndroidPlatformMessageDialogHelper::exec()
 {
     if (!m_shown)
-        show(Qt::Dialog, Qt::ApplicationModal, 0);
+        show(BobUI::Dialog, BobUI::ApplicationModal, 0);
     m_loop.exec();
 }
 
 static QString htmlText(QString text)
 {
-    if (Qt::mightBeRichText(text))
+    if (BobUI::mightBeRichText(text))
         return text;
     text.remove(u'\r');
     return text.toHtmlEscaped().replace(u'\n', "<br />"_L1);
 }
 
-bool QAndroidPlatformMessageDialogHelper::show(Qt::WindowFlags windowFlags,
-                                               Qt::WindowModality windowModality,
+bool QAndroidPlatformMessageDialogHelper::show(BobUI::WindowFlags windowFlags,
+                                               BobUI::WindowModality windowModality,
                                                QWindow *parent)
 {
     Q_UNUSED(windowFlags);
@@ -83,7 +83,7 @@ bool QAndroidPlatformMessageDialogHelper::show(Qt::WindowFlags windowFlags,
                                              QJniObject::fromString(str).object());
     }
 
-    const int *currentLayout = buttonLayout(Qt::Horizontal, AndroidLayout);
+    const int *currentLayout = buttonLayout(BobUI::Horizontal, AndroidLayout);
     while (*currentLayout != QPlatformDialogHelper::EOL) {
         const int role = (*currentLayout & ~QPlatformDialogHelper::Reverse);
         addButtons(opt, static_cast<ButtonRole>(role));
@@ -147,7 +147,7 @@ void QAndroidPlatformMessageDialogHelper::dialogResult(int buttonID)
 static void dialogResult(JNIEnv * /*env*/, jobject /*thiz*/, jlong handler, int buttonID)
 {
     QObject *object = reinterpret_cast<QObject *>(handler);
-    QMetaObject::invokeMethod(object, "dialogResult", Qt::QueuedConnection, Q_ARG(int, buttonID));
+    QMetaObject::invokeMethod(object, "dialogResult", BobUI::QueuedConnection, Q_ARG(int, buttonID));
 }
 
 static const JNINativeMethod methods[] = {
@@ -158,24 +158,24 @@ static const JNINativeMethod methods[] = {
 #define FIND_AND_CHECK_CLASS(CLASS_NAME) \
     clazz = env->FindClass(CLASS_NAME); \
     if (!clazz) { \
-        __android_log_print(ANDROID_LOG_FATAL, QtAndroid::qtTagText(), QtAndroid::classErrorMsgFmt(), CLASS_NAME); \
+        __android_log_print(ANDROID_LOG_FATAL, BobUIAndroid::bobuiTagText(), BobUIAndroid::classErrorMsgFmt(), CLASS_NAME); \
         return false; \
     }
 
 bool registerNatives(QJniEnvironment &env)
 {
-    const char QtMessageHandlerHelperClassName[] = "org/qtproject/qt/android/QtMessageDialogHelper";
-    jclass clazz = env.findClass(QtMessageHandlerHelperClassName);
+    const char BobUIMessageHandlerHelperClassName[] = "org/bobuiproject/bobui/android/BobUIMessageDialogHelper";
+    jclass clazz = env.findClass(BobUIMessageHandlerHelperClassName);
     if (!clazz) {
-        __android_log_print(ANDROID_LOG_FATAL, QtAndroid::qtTagText(), QtAndroid::classErrorMsgFmt()
-                            , QtMessageHandlerHelperClassName);
+        __android_log_print(ANDROID_LOG_FATAL, BobUIAndroid::bobuiTagText(), BobUIAndroid::classErrorMsgFmt()
+                            , BobUIMessageHandlerHelperClassName);
         return false;
     }
     g_messageDialogHelperClass = static_cast<jclass>(env->NewGlobalRef(clazz));
 
-    if (!env.registerNativeMethods("org/qtproject/qt/android/QtNativeDialogHelper",
+    if (!env.registerNativeMethods("org/bobuiproject/bobui/android/BobUINativeDialogHelper",
                                   methods, sizeof(methods) / sizeof(methods[0]))) {
-        __android_log_print(ANDROID_LOG_FATAL, "Qt", "RegisterNatives failed");
+        __android_log_print(ANDROID_LOG_FATAL, "BobUI", "RegisterNatives failed");
         return false;
     }
 
@@ -183,4 +183,4 @@ bool registerNatives(QJniEnvironment &env)
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

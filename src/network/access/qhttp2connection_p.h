@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef HTTP2CONNECTION_P_H
 #define HTTP2CONNECTION_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience
+// This file is not part of the BobUI API. It exists for the convenience
 // of the Network Access API. This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <private/qtnetworkglobal_p.h>
+#include <private/bobuinetworkglobal_p.h>
 
-#include <QtCore/qobject.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qset.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qxpfunctional.h>
-#include <QtNetwork/qhttp2configuration.h>
-#include <QtNetwork/qtcpsocket.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qxpfunctional.h>
+#include <BobUINetwork/qhttp2configuration.h>
+#include <BobUINetwork/bobuicpsocket.h>
 
 #include <private/http2protocol_p.h>
 #include <private/http2streams_p.h>
@@ -38,7 +38,7 @@
 
 class tst_QHttp2Connection;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T, typename Err>
 class QH2Expected
@@ -445,6 +445,6 @@ private:
     friend tst_QHttp2Connection;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // HTTP2CONNECTION_P_H

@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qioring_p.h"
 
-#include <QtCore/q26numeric.h>
+#include <BobUICore/q26numeric.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQIORing, "qt.core.ioring", QtCriticalMsg)
+Q_LOGGING_CATEGORY(lcQIORing, "bobui.core.ioring", BobUICriticalMsg)
 
 QIORing *QIORing::sharedInstance()
 {
@@ -34,7 +34,7 @@ auto QIORing::queueRequestInternal(GenericRequestType &request) -> QueuedRequest
     }
     if (!lastUnqueuedIterator) {
         lastUnqueuedIterator.emplace(addrItMap[&request]);
-    } else if (request.operation() == QtPrivate::Operation::Cancel) {
+    } else if (request.operation() == BobUIPrivate::Operation::Cancel) {
         // We want to fast-track cancellations because they may be cancelling
         // unqueued things, so we push it up front in the queue:
         auto &it = addrItMap[&request];
@@ -63,7 +63,7 @@ auto QIORing::queueRequestInternal(GenericRequestType &request) -> QueuedRequest
     stagePending = true;
     // We are not a QObject, but we always have the notifier, so use that for context:
     QMetaObject::invokeMethod(
-            std::addressof(*notifier), [this] { submitRequests(); }, Qt::QueuedConnection);
+            std::addressof(*notifier), [this] { submitRequests(); }, BobUI::QueuedConnection);
     return requestQueuedState;
 }
 
@@ -82,7 +82,7 @@ bool QIORing::waitForRequest(RequestHandle handle, QDeadlineTimer deadline)
     return !addrItMap.contains(handle);
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T>
 using DetectResult = decltype(std::declval<const T &>().result);
 
@@ -93,7 +93,7 @@ constexpr bool HasResultMember = qxp::is_detected_v<DetectResult, T>;
 void QIORing::setFileErrorResult(QIORing::GenericRequestType &req, QFileDevice::FileError error)
 {
     invokeOnOp(req, [error](auto *concreteRequest) {
-        if constexpr (QtPrivate::HasResultMember<decltype(*concreteRequest)>)
+        if constexpr (BobUIPrivate::HasResultMember<decltype(*concreteRequest)>)
             setFileErrorResult(*concreteRequest, error);
     });
 }
@@ -101,7 +101,7 @@ void QIORing::setFileErrorResult(QIORing::GenericRequestType &req, QFileDevice::
 void QIORing::finishRequestWithError(QIORing::GenericRequestType &req, QFileDevice::FileError error)
 {
     invokeOnOp(req, [error](auto *concreteRequest) {
-        if constexpr (QtPrivate::HasResultMember<decltype(*concreteRequest)>)
+        if constexpr (BobUIPrivate::HasResultMember<decltype(*concreteRequest)>)
             setFileErrorResult(*concreteRequest, error);
         invokeCallback(*concreteRequest);
     });
@@ -117,7 +117,7 @@ QIORing::ReadWriteStatus QIORing::handleReadCompletion(size_t value, QSpan<std::
         setResultFn(qint64(0));
         return ReadWriteStatus::Finished;
     }
-    if (auto *extra = static_cast<QtPrivate::ReadWriteExtra *>(voidExtra)) {
+    if (auto *extra = static_cast<BobUIPrivate::ReadWriteExtra *>(voidExtra)) {
         const qsizetype bytesRead = q26::saturate_cast<qsizetype>(value);
         qCDebug(lcQIORing) << "Partial read of" << bytesRead << "bytes completed";
         extra->totalProcessed = setResultFn(bytesRead);
@@ -146,7 +146,7 @@ QIORing::ReadWriteStatus QIORing::handleWriteCompletion(size_t value,
                                                         const QSpan<const std::byte> *sources,
                                                         void *voidExtra, SetResultFn setResultFn)
 {
-    if (auto *extra = static_cast<QtPrivate::ReadWriteExtra *>(voidExtra)) {
+    if (auto *extra = static_cast<BobUIPrivate::ReadWriteExtra *>(voidExtra)) {
         const qsizetype bytesWritten = q26::saturate_cast<qsizetype>(value);
         qCDebug(lcQIORing) << "Partial write of" << bytesWritten << "bytes completed";
         extra->totalProcessed = setResultFn(bytesWritten);
@@ -190,6 +190,6 @@ void QIORing::finalizeReadWriteCompletion(GenericRequestType *request, ReadWrite
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qioring_p.cpp"

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'browserwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,22 +9,22 @@
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSplitter>
+#include <BobUIWidgets/BOBUIableView>
+#include <BobUIWidgets/BOBUIextEdit>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "connectionwidget.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Browser
 {
@@ -34,10 +34,10 @@ public:
     QVBoxLayout *vboxLayout;
     QSplitter *splitter_2;
     ConnectionWidget *connectionWidget;
-    QTableView *table;
+    BOBUIableView *table;
     QGroupBox *groupBox;
     QVBoxLayout *vboxLayout1;
-    QTextEdit *sqlEdit;
+    BOBUIextEdit *sqlEdit;
     QHBoxLayout *hboxLayout;
     QSpacerItem *spacerItem;
     QPushButton *clearButton;
@@ -67,7 +67,7 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(splitter_2->sizePolicy().hasHeightForWidth());
         splitter_2->setSizePolicy(sizePolicy);
-        splitter_2->setOrientation(Qt::Orientation::Horizontal);
+        splitter_2->setOrientation(BobUI::Orientation::Horizontal);
         connectionWidget = new ConnectionWidget(splitter_2);
         connectionWidget->setObjectName("connectionWidget");
         QSizePolicy sizePolicy1(QSizePolicy::Policy::Ignored, QSizePolicy::Policy::Expanding);
@@ -76,14 +76,14 @@ public:
         sizePolicy1.setHeightForWidth(connectionWidget->sizePolicy().hasHeightForWidth());
         connectionWidget->setSizePolicy(sizePolicy1);
         splitter_2->addWidget(connectionWidget);
-        table = new QTableView(splitter_2);
+        table = new BOBUIableView(splitter_2);
         table->setObjectName("table");
         QSizePolicy sizePolicy2(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
         sizePolicy2.setHorizontalStretch(2);
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(table->sizePolicy().hasHeightForWidth());
         table->setSizePolicy(sizePolicy2);
-        table->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+        table->setContextMenuPolicy(BobUI::ContextMenuPolicy::ActionsContextMenu);
         table->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
         splitter_2->addWidget(table);
 
@@ -105,7 +105,7 @@ public:
         vboxLayout1->setContentsMargins(9, 9, 9, 9);
 #endif
         vboxLayout1->setObjectName("vboxLayout1");
-        sqlEdit = new QTextEdit(groupBox);
+        sqlEdit = new BOBUIextEdit(groupBox);
         sqlEdit->setObjectName("sqlEdit");
         QSizePolicy sizePolicy4(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::MinimumExpanding);
         sizePolicy4.setHorizontalStretch(0);
@@ -155,15 +155,15 @@ public:
 
     void retranslateUi(QWidget *Browser)
     {
-        Browser->setWindowTitle(QCoreApplication::translate("Browser", "Qt SQL Browser", nullptr));
+        Browser->setWindowTitle(QCoreApplication::translate("Browser", "BobUI SQL Browser", nullptr));
         insertRowAction->setText(QCoreApplication::translate("Browser", "&Insert Row", nullptr));
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
         insertRowAction->setStatusTip(QCoreApplication::translate("Browser", "Inserts a new Row", nullptr));
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
         deleteRowAction->setText(QCoreApplication::translate("Browser", "&Delete Row", nullptr));
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
         deleteRowAction->setStatusTip(QCoreApplication::translate("Browser", "Deletes the current Row", nullptr));
-#endif // QT_CONFIG(statustip)
+#endif // BOBUI_CONFIG(statustip)
         groupBox->setTitle(QCoreApplication::translate("Browser", "SQL Query", nullptr));
         clearButton->setText(QCoreApplication::translate("Browser", "&Clear", nullptr));
         submitButton->setText(QCoreApplication::translate("Browser", "&Submit", nullptr));
@@ -175,6 +175,6 @@ namespace Ui {
     class Browser: public Ui_Browser {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BROWSERWIDGET_H

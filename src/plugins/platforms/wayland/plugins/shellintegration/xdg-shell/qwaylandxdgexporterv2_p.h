@@ -1,17 +1,17 @@
 // Copyright (C) 2022 David Reondo <kde@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
 #include <qwayland-xdg-foreign-unstable-v2.h>
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-class QWaylandXdgExportedV2 : public QtWayland::zxdg_exported_v2
+class QWaylandXdgExportedV2 : public BobUIWayland::zxdg_exported_v2
 {
 public:
     explicit QWaylandXdgExportedV2(::zxdg_exported_v2 *object);
@@ -23,7 +23,7 @@ private:
     QString mHandle;
 };
 
-class QWaylandXdgExporterV2 : public QtWayland::zxdg_exporter_v2
+class QWaylandXdgExporterV2 : public BobUIWayland::zxdg_exporter_v2
 {
 public:
     QWaylandXdgExporterV2(wl_registry *registry, uint32_t id, int version);
@@ -32,4 +32,4 @@ public:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

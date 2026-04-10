@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_SkipCleanupTestCase: public QObject
 {
@@ -21,5 +21,5 @@ void tst_SkipCleanupTestCase::cleanupTestCase() const
     QSKIP("Skip inside cleanupTestCase.");
 }
 
-QTEST_APPLESS_MAIN(tst_SkipCleanupTestCase)
+BOBUIEST_APPLESS_MAIN(tst_SkipCleanupTestCase)
 #include "tst_skipcleanuptestcase.moc"

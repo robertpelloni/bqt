@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 
@@ -6,33 +6,33 @@ cmake_minimum_required(VERSION 3.16)
 
 project(test_moc_macro_target)
 
-find_package(Qt6Core REQUIRED)
+find_package(BobUI6Core REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-qt_generate_moc(main_gen_test.cpp
+bobui_generate_moc(main_gen_test.cpp
   "${CMAKE_CURRENT_BINARY_DIR}/main_gen_test.moc"
-  TARGET QtGenerateMacroTest
+  TARGET BobUIGenerateMacroTest
 )
 list(APPEND CMAKE_AUTOMOC_MACRO_NAMES MySpecialMacro)
-add_executable(QtGenerateMacroTest main_gen_test.cpp "${CMAKE_CURRENT_BINARY_DIR}/main_gen_test.moc")
-get_target_property(current_macros QtGenerateMacroTest AUTOMOC_MACRO_NAMES)
+add_executable(BobUIGenerateMacroTest main_gen_test.cpp "${CMAKE_CURRENT_BINARY_DIR}/main_gen_test.moc")
+get_target_property(current_macros BobUIGenerateMacroTest AUTOMOC_MACRO_NAMES)
 
 if(NOT "${CMAKE_AUTOMOC_MACRO_NAMES}" STREQUAL "${current_macros}")
     message(FATAL_ERROR "Expected ${CMAKE_AUTOMOC_MACRO_NAMES} but received ${current_macros}")
 endif()
 
-target_include_directories(QtGenerateMacroTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/interface")
-target_link_libraries(QtGenerateMacroTest PRIVATE Qt6::Core)
+target_include_directories(BobUIGenerateMacroTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/interface")
+target_link_libraries(BobUIGenerateMacroTest PRIVATE BobUI6::Core)
 
-qt_wrap_cpp(moc_file mywrapobject.h
-  TARGET QtWrapMacroTest
+bobui_wrap_cpp(moc_file mywrapobject.h
+  TARGET BobUIWrapMacroTest
 )
-add_executable(QtWrapMacroTest main_wrap_test.cpp ${moc_file})
-target_include_directories(QtWrapMacroTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/interface")
-target_link_libraries(QtWrapMacroTest PRIVATE Qt::Core)
+add_executable(BobUIWrapMacroTest main_wrap_test.cpp ${moc_file})
+target_include_directories(BobUIWrapMacroTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/interface")
+target_link_libraries(BobUIWrapMacroTest PRIVATE BobUI::Core)
 
-target_compile_definitions(QtWrapMacroTest PRIVATE "$<$<BOOL:TRUE>:MY_OPTION>"
+target_compile_definitions(BobUIWrapMacroTest PRIVATE "$<$<BOOL:TRUE>:MY_OPTION>"
                                                    "$<$<BOOL:TRUE>:DEFINE_CMDLINE_SIGNAL=void cmdlineSignal(const QMap<int$<COMMA> int$<ANGLE-R> &i)>"
                                                     "DEFINE_CMDLINE_SIGNAL=void cmdlineSignal(const QMap<int, int> &i)")
 
@@ -48,7 +48,7 @@ else()
   endif()
 endif()
 
-add_custom_command(TARGET QtWrapMacroTest
+add_custom_command(TARGET BobUIWrapMacroTest
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} "-DPARAMETERS_FILE_PATH=${parameters_file}" -P check_moc_parameters.cmake
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfont.h"
 #include "qdebug.h"
@@ -14,22 +14,22 @@
 #include "qstringlist.h"
 #include "qscreen.h"
 
-#include "qthread.h"
-#include "qthreadstorage.h"
+#include "bobuihread.h"
+#include "bobuihreadstorage.h"
 
 #include "qfont_p.h"
 #include <private/qfontengine_p.h>
 #include <private/qpainter_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextengine_p.h>
 #include <limits.h>
 
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformfontdatabase.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#include <QtCore/QMutexLocker>
-#include <QtCore/QMutex>
+#include <BobUICore/QMutexLocker>
+#include <BobUICore/QMutex>
 
 #include <algorithm>
 #include <array>
@@ -41,7 +41,7 @@
 #  define FC_DEBUG if (false) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef QFONTCACHE_DECREASE_TRIGGER_LIMIT
 #  define QFONTCACHE_DECREASE_TRIGGER_LIMIT 256
@@ -109,14 +109,14 @@ bool QFontDef::exactMatch(const QFontDef &other) const
        );
 }
 
-extern bool qt_is_tty_app;
+extern bool bobui_is_tty_app;
 
-Q_GUI_EXPORT int qt_defaultDpiX()
+Q_GUI_EXPORT int bobui_defaultDpiX()
 {
-    if (QCoreApplication::instance()->testAttribute(Qt::AA_Use96Dpi))
+    if (QCoreApplication::instance()->testAttribute(BobUI::AA_Use96Dpi))
         return 96;
 
-    if (qt_is_tty_app)
+    if (bobui_is_tty_app)
         return 75;
 
     if (const QScreen *screen = QGuiApplication::primaryScreen())
@@ -126,12 +126,12 @@ Q_GUI_EXPORT int qt_defaultDpiX()
     return 100;
 }
 
-Q_GUI_EXPORT int qt_defaultDpiY()
+Q_GUI_EXPORT int bobui_defaultDpiY()
 {
-    if (QCoreApplication::instance()->testAttribute(Qt::AA_Use96Dpi))
+    if (QCoreApplication::instance()->testAttribute(BobUI::AA_Use96Dpi))
         return 96;
 
-    if (qt_is_tty_app)
+    if (bobui_is_tty_app)
         return 75;
 
     if (const QScreen *screen = QGuiApplication::primaryScreen())
@@ -141,12 +141,12 @@ Q_GUI_EXPORT int qt_defaultDpiY()
     return 100;
 }
 
-Q_GUI_EXPORT int qt_defaultDpi()
+Q_GUI_EXPORT int bobui_defaultDpi()
 {
-    return qt_defaultDpiY();
+    return bobui_defaultDpiY();
 }
 
-/* Helper function to convert between legacy Qt and OpenType font weights. */
+/* Helper function to convert between legacy BobUI and OpenType font weights. */
 static int convertWeights(int weight, bool inverted)
 {
     static constexpr std::array<int, 2> legacyToOpenTypeMap[] = {
@@ -195,20 +195,20 @@ static QStringList splitIntoFamilies(const QString &family)
     return familyList;
 }
 
-/* Converts from legacy Qt font weight (Qt < 6.0) to OpenType font weight (Qt >= 6.0) */
-Q_GUI_EXPORT int qt_legacyToOpenTypeWeight(int weight)
+/* Converts from legacy BobUI font weight (BobUI < 6.0) to OpenType font weight (BobUI >= 6.0) */
+Q_GUI_EXPORT int bobui_legacyToOpenTypeWeight(int weight)
 {
     return convertWeights(weight, false);
 }
 
-/* Converts from  OpenType font weight (Qt >= 6.0) to legacy Qt font weight (Qt < 6.0) */
-Q_GUI_EXPORT int qt_openTypeToLegacyWeight(int weight)
+/* Converts from  OpenType font weight (BobUI >= 6.0) to legacy BobUI font weight (BobUI < 6.0) */
+Q_GUI_EXPORT int bobui_openTypeToLegacyWeight(int weight)
 {
     return convertWeights(weight, true);
 }
 
 QFontPrivate::QFontPrivate()
-    : engineData(nullptr), dpi(qt_defaultDpi()),
+    : engineData(nullptr), dpi(bobui_defaultDpi()),
       underline(false), overline(false), strikeOut(false), kerning(true),
       capital(0), letterSpacingIsAbsolute(false), scFont(nullptr)
 {
@@ -238,13 +238,13 @@ QFontPrivate::~QFontPrivate()
     scFont = nullptr;
 }
 
-extern QRecursiveMutex *qt_fontdatabase_mutex();
+extern QRecursiveMutex *bobui_fontdatabase_mutex();
 
-#define QT_FONT_ENGINE_FROM_DATA(data, script) data->engines[script]
+#define BOBUI_FONT_ENGINE_FROM_DATA(data, script) data->engines[script]
 
 QFontEngine *QFontPrivate::engineForScript(int script) const
 {
-    QMutexLocker locker(qt_fontdatabase_mutex());
+    QMutexLocker locker(bobui_fontdatabase_mutex());
     if (script <= QChar::Script_Latin)
         script = QChar::Script_Common;
     if (engineData && engineData->fontCacheId != QFontCache::instance()->id()) {
@@ -253,9 +253,9 @@ QFontEngine *QFontPrivate::engineForScript(int script) const
             delete engineData;
         engineData = nullptr;
     }
-    if (!engineData || !QT_FONT_ENGINE_FROM_DATA(engineData, script))
+    if (!engineData || !BOBUI_FONT_ENGINE_FROM_DATA(engineData, script))
         QFontDatabasePrivate::load(this, script);
-    return QT_FONT_ENGINE_FROM_DATA(engineData, script);
+    return BOBUI_FONT_ENGINE_FROM_DATA(engineData, script);
 }
 
 QFontEngine *QFontPrivate::engineForCharacter(char32_t c, EngineQueryOptions opt) const
@@ -428,13 +428,13 @@ QFontEngineData::~QFontEngineData()
     \ingroup appearance
     \ingroup shared
     \ingroup richtext-processing
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QFont can be regarded as a query for one or more fonts on the system.
 
     When you create a QFont object you specify various attributes that
-    you want the font to have. Qt will use the font with the specified
-    attributes, or if no matching font exists, Qt will use the closest
+    you want the font to have. BobUI will use the font with the specified
+    attributes, or if no matching font exists, BobUI will use the closest
     matching installed font. The attributes of the font that is
     actually used are retrievable from a QFontInfo object. If the
     window system provides an exact match exactMatch() returns \c true.
@@ -518,7 +518,7 @@ QFontEngineData::~QFontEngineData()
     \endlist
 
     \note If the selected font, though supporting the writing system in general,
-    is missing glyphs for one or more specific characters, then Qt will try to
+    is missing glyphs for one or more specific characters, then BobUI will try to
     find a fallback font for this or these particular characters. This feature
     can be disabled using QFont::NoFontMerging style strategy.
 
@@ -927,7 +927,7 @@ int QFont::pointSize() const
            text layout may look different on devices with different pixel densities.
 
     Please note that this enum only describes a preference, as the full range of hinting levels
-    are not supported on all of Qt's supported platforms. The following table details the effect
+    are not supported on all of BobUI's supported platforms. The following table details the effect
     of a given hinting preference on a selected set of target platforms.
 
     \table
@@ -938,7 +938,7 @@ int QFont::pointSize() const
     \li PreferVerticalHinting
     \li PreferFullHinting
     \row
-    \li Windows and DirectWrite enabled in Qt
+    \li Windows and DirectWrite enabled in BobUI
     \li Full hinting
     \li Vertical hinting
     \li Vertical hinting
@@ -1153,7 +1153,7 @@ QFont::Weight QFont::weight() const
 /*!
     \enum QFont::Weight
 
-    Qt uses a weighting scale from 1 to 1000 compatible with OpenType. A weight of 1 will be
+    BobUI uses a weighting scale from 1 to 1000 compatible with OpenType. A weight of 1 will be
     thin, whilst 1000 will be extremely black.
 
     This enum contains the predefined font weights:
@@ -1169,14 +1169,14 @@ QFont::Weight QFont::weight() const
     \value Black 900
 */
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \deprecated [6.0] Use setWeight() instead.
 
     Sets the weight of the font to \a legacyWeight using the legacy font
-    weight scale of Qt 5 and previous versions.
+    weight scale of BobUI 5 and previous versions.
 
-    Since Qt 6, the OpenType standard's font weight scale is used instead
+    Since BobUI 6, the OpenType standard's font weight scale is used instead
     of a non-standard scale. This requires conversion from values that
     use the old scale. For convenience, this function may be used when
     porting from code which uses the old weight scale.
@@ -1187,16 +1187,16 @@ QFont::Weight QFont::weight() const
 */
 void QFont::setLegacyWeight(int legacyWeight)
 {
-    setWeight(QFont::Weight(qt_legacyToOpenTypeWeight(legacyWeight)));
+    setWeight(QFont::Weight(bobui_legacyToOpenTypeWeight(legacyWeight)));
 }
 
 /*!
     \deprecated [6.0] Use weight() instead.
 
     Returns the weight of the font converted to the non-standard font
-    weight scale used in Qt 5 and earlier versions.
+    weight scale used in BobUI 5 and earlier versions.
 
-    Since Qt 6, the OpenType standard's font weight scale is used instead
+    Since BobUI 6, the OpenType standard's font weight scale is used instead
     of a non-standard scale. This requires conversion from values that
     use the old scale. For convenience, this function may be used when
     porting from code which uses the old weight scale.
@@ -1205,9 +1205,9 @@ void QFont::setLegacyWeight(int legacyWeight)
 */
 int QFont::legacyWeight() const
 {
-    return qt_openTypeToLegacyWeight(weight());
+    return bobui_openTypeToLegacyWeight(weight());
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 /*!
     Sets the weight of the font to \a weight, using the scale defined by
@@ -1478,7 +1478,7 @@ QFont::StyleHint QFont::styleHint() const
     \value NoSubpixelAntialias avoid subpixel antialiasing on the fonts if possible.
     \value PreferAntialias antialias if possible.
     \value [since 6.8] ContextFontMerging If the selected font does not contain a certain character,
-           then Qt automatically chooses a similar-looking fallback font that contains the
+           then BobUI automatically chooses a similar-looking fallback font that contains the
            character. By default this is done on a character-by-character basis. This means that in
            certain uncommon cases, multiple fonts may be used to represent one string of text even
            if it's in the same script. Setting \c ContextFontMerging will try finding the fallback
@@ -1496,22 +1496,22 @@ QFont::StyleHint QFont::styleHint() const
            line spacing, many applications prefer the \c win metrics unless the \c{USE_TYPO_METRICS}
            flag is set in the
            \l{https://learn.microsoft.com/en-us/typography/opentype/spec/os2#fsselection}{fsSelection}
-           field of the font. For backwards-compatibility reasons, this is also the case for Qt
+           field of the font. For backwards-compatibility reasons, this is also the case for BobUI
            applications. This is not an issue for fonts that set the \c{USE_TYPO_METRICS} flag to
            indicate that the \c{typo} metrics are valid, nor for fonts where the \c{win} metrics
            and \c{typo} metrics match up. However, for certain fonts the \c{win} metrics may be
            larger than the preferable line spacing and the \c{USE_TYPO_METRICS} flag may be unset
            by mistake. For such fonts, setting \c{PreferTypoLineMetrics} may give superior results.
     \value NoFontMerging If the font selected for a certain writing system
-           does not contain a character requested to draw, then Qt automatically chooses a similar
+           does not contain a character requested to draw, then BobUI automatically chooses a similar
            looking font that contains the character. The NoFontMerging flag disables this feature.
-           Please note that enabling this flag will not prevent Qt from automatically picking a
+           Please note that enabling this flag will not prevent BobUI from automatically picking a
            suitable font when the selected font does not support the writing system of the text.
     \value PreferNoShaping Sometimes, a font will apply complex rules to a set of characters in
            order to display them correctly. In some writing systems, such as Brahmic scripts, this is
            required in order for the text to be legible, but in e.g. Latin script, it is merely
            a cosmetic feature. The PreferNoShaping flag will disable all such features when they
-           are not required, which will improve performance in most cases (since Qt 5.10).
+           are not required, which will improve performance in most cases (since BobUI 5.10).
 
     Any of these may be OR-ed with one of these flags:
 
@@ -1529,7 +1529,7 @@ QFont::StyleHint QFont::styleHint() const
     If these aren't set explicitly the style hint will default to
     \c AnyStyle and the style strategy to \c PreferDefault.
 
-    Qt does not support style hints on X11 since this information
+    BobUI does not support style hints on X11 since this information
     is not provided by the window system.
 
     \sa StyleHint, styleHint(), StyleStrategy, styleStrategy(), QFontInfo
@@ -2047,7 +2047,7 @@ QStringList QFont::substitutions()
     return ret;
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*  \internal
     Internal function. Converts boolean font settings to an unsigned
     8-bit number. Used for serialization etc.
@@ -2068,7 +2068,7 @@ static quint8 get_font_bits(int version, const QFontPrivate *f)
         bits |= 0x08;
     // if (f.hintSetByUser)
     // bits |= 0x10;
-    if (version >= QDataStream::Qt_4_0) {
+    if (version >= QDataStream::BobUI_4_0) {
         if (f->kerning)
             bits |= 0x10;
     }
@@ -2101,7 +2101,7 @@ static void set_font_bits(int version, quint8 bits, QFontPrivate *f)
     f->strikeOut             = (bits & 0x04) != 0;
     f->request.fixedPitch    = (bits & 0x08) != 0;
     // f->hintSetByUser      = (bits & 0x10) != 0;
-    if (version >= QDataStream::Qt_4_0)
+    if (version >= QDataStream::BobUI_4_0)
         f->kerning               = (bits & 0x10) != 0;
     if ((bits & 0x80) != 0)
         f->request.style         = QFont::StyleOblique;
@@ -2261,7 +2261,7 @@ bool QFont::fromString(const QString &descrip)
         if (count >= 16)
             setWeight(QFont::Weight(l[4].toInt()));
         else
-            setWeight(QFont::Weight(qt_legacyToOpenTypeWeight(l[4].toInt())));
+            setWeight(QFont::Weight(bobui_legacyToOpenTypeWeight(l[4].toInt())));
         setStyle((QFont::Style)l[5].toInt());
         setUnderline(l[6].toInt());
         setStrikeOut(l[7].toInt());
@@ -2348,7 +2348,7 @@ void QFont::cacheStatistics()
     \class QFont::Tag
     \brief The QFont::Tag type provides access to advanced font features.
     \since 6.7
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     QFont provides access to advanced features when shaping text. A feature is defined
     by a tag, which can be represented as a four-character string, or as a 32bit integer
@@ -2395,7 +2395,7 @@ void QFont::cacheStatistics()
 
 /*!
     \fn bool QFont::Tag::comparesEqual(const QFont::Tag &lhs, const QFont::Tag &rhs) noexcept
-    \fn Qt::strong_ordering QFont::Tag::compareThreeWay(const QFont::Tag &lhs, const QFont::Tag &rhs) noexcept
+    \fn BobUI::strong_ordering QFont::Tag::compareThreeWay(const QFont::Tag &lhs, const QFont::Tag &rhs) noexcept
 
     Compare \a lhs with \a rhs for equality and ordering.
 */
@@ -2482,7 +2482,7 @@ std::optional<QFont::Tag> QFont::Tag::fromString(QAnyStringView view) noexcept
     Variable fonts provide a way to store multiple variations (with different weights, widths
     or styles) in the same font file. The variations are given as floating point values for
     a pre-defined set of parameters, called "variable axes". Specific instances are typically
-    given names by the font designer, and, in Qt, these can be selected using setStyleName()
+    given names by the font designer, and, in BobUI, these can be selected using setStyleName()
     just like traditional sub-families.
 
     In some cases, it is also useful to provide arbitrary values for the different axes. For
@@ -2631,7 +2631,7 @@ void QFont::clearVariableAxes()
     If a font supports the \c frac feature, then it can be enabled in the shaper by setting
     \c{features["frac"] = 1} in the font feature map.
 
-    \note By default, Qt will enable and disable certain font features based on other font
+    \note By default, BobUI will enable and disable certain font features based on other font
     properties. In particular, the \c kern feature will be enabled/disabled depending on the
     \l kerning() property of the QFont. In addition, all ligature features
     (\c liga, \c clig, \c dlig, \c hlig) will be disabled if a \l letterSpacing() is applied,
@@ -2739,7 +2739,7 @@ void QFont::clearFeatures()
     d->features.clear();
 }
 
-extern QStringList qt_fallbacksForFamily(const QString &family,
+extern QStringList bobui_fallbacksForFamily(const QString &family,
                                          QFont::Style style,
                                          QFont::StyleHint styleHint,
                                          QFontDatabasePrivate::ExtendedScript script);
@@ -2754,7 +2754,7 @@ extern QStringList qt_fallbacksForFamily(const QString &family,
 */
 QString QFont::defaultFamily() const
 {
-    const QStringList fallbacks = qt_fallbacksForFamily(QString(),
+    const QStringList fallbacks = bobui_fallbacksForFamily(QString(),
                                                         QFont::StyleNormal,
                                                         QFont::StyleHint(d->request.styleHint),
                                                         QFontDatabasePrivate::Script_Common);
@@ -2808,7 +2808,7 @@ void QFont::setFamilies(const QStringList &families)
 /*****************************************************************************
   QFont stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 /*!
     \relates QFont
@@ -2816,7 +2816,7 @@ void QFont::setFamilies(const QStringList &families)
     Writes the font \a font to the data stream \a s. (toString()
     writes to a text stream.)
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator<<(QDataStream &s, const QFont &font)
 {
@@ -2824,11 +2824,11 @@ QDataStream &operator<<(QDataStream &s, const QFont &font)
         s << font.d->request.families.constFirst().toLatin1();
     } else {
         s << font.d->request.families.constFirst();
-        if (s.version() >= QDataStream::Qt_5_4)
+        if (s.version() >= QDataStream::BobUI_5_4)
             s << font.d->request.styleName;
     }
 
-    if (s.version() >= QDataStream::Qt_4_0) {
+    if (s.version() >= QDataStream::BobUI_4_0) {
         // 4.0
         double pointSize = font.d->request.pointSize;
         qint32 pixelSize = font.d->request.pixelSize;
@@ -2846,42 +2846,42 @@ QDataStream &operator<<(QDataStream &s, const QFont &font)
     }
 
     s << (quint8) font.d->request.styleHint;
-    if (s.version() >= QDataStream::Qt_3_1) {
+    if (s.version() >= QDataStream::BobUI_3_1) {
         // Continue writing 8 bits for versions < 5.4 so that we don't write too much,
         // even though we need 16 to store styleStrategy, so there is some data loss.
-        if (s.version() >= QDataStream::Qt_5_4)
+        if (s.version() >= QDataStream::BobUI_5_4)
             s << (quint16) font.d->request.styleStrategy;
         else
             s << (quint8) font.d->request.styleStrategy;
     }
 
-    if (s.version() < QDataStream::Qt_6_0)
-        s << quint8(0) << quint8(qt_openTypeToLegacyWeight(font.d->request.weight));
+    if (s.version() < QDataStream::BobUI_6_0)
+        s << quint8(0) << quint8(bobui_openTypeToLegacyWeight(font.d->request.weight));
     else
         s << quint16(font.d->request.weight);
 
     s << get_font_bits(s.version(), font.d.data());
-    if (s.version() >= QDataStream::Qt_4_3)
+    if (s.version() >= QDataStream::BobUI_4_3)
         s << (quint16)font.d->request.stretch;
-    if (s.version() >= QDataStream::Qt_4_4)
+    if (s.version() >= QDataStream::BobUI_4_4)
         s << get_extended_font_bits(font.d.data());
-    if (s.version() >= QDataStream::Qt_4_5) {
+    if (s.version() >= QDataStream::BobUI_4_5) {
         s << font.d->letterSpacing.value();
         s << font.d->wordSpacing.value();
     }
-    if (s.version() >= QDataStream::Qt_5_4)
+    if (s.version() >= QDataStream::BobUI_5_4)
         s << (quint8)font.d->request.hintingPreference;
-    if (s.version() >= QDataStream::Qt_5_6)
+    if (s.version() >= QDataStream::BobUI_5_6)
         s << (quint8)font.d->capital;
-    if (s.version() >= QDataStream::Qt_5_13) {
-        if (s.version() < QDataStream::Qt_6_0)
+    if (s.version() >= QDataStream::BobUI_5_13) {
+        if (s.version() < QDataStream::BobUI_6_0)
             s << font.d->request.families.mid(1);
         else
             s << font.d->request.families;
     }
-    if (s.version() >= QDataStream::Qt_6_6)
+    if (s.version() >= QDataStream::BobUI_6_6)
         s << font.d->features;
-    if (s.version() >= QDataStream::Qt_6_7)
+    if (s.version() >= QDataStream::BobUI_6_7)
         s << font.d->request.variableAxisValues;
     return s;
 }
@@ -2893,7 +2893,7 @@ QDataStream &operator<<(QDataStream &s, const QFont &font)
     Reads the font \a font from the data stream \a s. (fromString()
     reads from a text stream.)
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 QDataStream &operator>>(QDataStream &s, QFont &font)
 {
@@ -2911,11 +2911,11 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
         QString fam;
         s >> fam;
         font.d->request.families = QStringList(fam);
-        if (s.version() >= QDataStream::Qt_5_4)
+        if (s.version() >= QDataStream::BobUI_5_4)
             s >> font.d->request.styleName;
     }
 
-    if (s.version() >= QDataStream::Qt_4_0) {
+    if (s.version() >= QDataStream::BobUI_4_0) {
         // 4.0
         double pointSize;
         qint32 pixelSize;
@@ -2932,8 +2932,8 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
         font.d->request.pixelSize = pixelSize;
     }
     s >> styleHint;
-    if (s.version() >= QDataStream::Qt_3_1) {
-        if (s.version() >= QDataStream::Qt_5_4) {
+    if (s.version() >= QDataStream::BobUI_3_1) {
+        if (s.version() >= QDataStream::BobUI_5_4) {
             s >> styleStrategy;
         } else {
             quint8 tempStyleStrategy;
@@ -2942,12 +2942,12 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
         }
     }
 
-    if (s.version() < QDataStream::Qt_6_0) {
+    if (s.version() < QDataStream::BobUI_6_0) {
         quint8 charSet;
         quint8 weight;
         s >> charSet;
         s >> weight;
-        font.d->request.weight = qt_legacyToOpenTypeWeight(weight);
+        font.d->request.weight = bobui_legacyToOpenTypeWeight(weight);
     } else {
         quint16 weight;
         s >> weight;
@@ -2961,47 +2961,47 @@ QDataStream &operator>>(QDataStream &s, QFont &font)
 
     set_font_bits(s.version(), bits, font.d.data());
 
-    if (s.version() >= QDataStream::Qt_4_3) {
+    if (s.version() >= QDataStream::BobUI_4_3) {
         quint16 stretch;
         s >> stretch;
         font.d->request.stretch = stretch;
     }
 
-    if (s.version() >= QDataStream::Qt_4_4) {
+    if (s.version() >= QDataStream::BobUI_4_4) {
         quint8 extendedBits;
         s >> extendedBits;
         set_extended_font_bits(extendedBits, font.d.data());
     }
-    if (s.version() >= QDataStream::Qt_4_5) {
+    if (s.version() >= QDataStream::BobUI_4_5) {
         int value;
         s >> value;
         font.d->letterSpacing.setValue(value);
         s >> value;
         font.d->wordSpacing.setValue(value);
     }
-    if (s.version() >= QDataStream::Qt_5_4) {
+    if (s.version() >= QDataStream::BobUI_5_4) {
         quint8 value;
         s >> value;
         font.d->request.hintingPreference = QFont::HintingPreference(value);
     }
-    if (s.version() >= QDataStream::Qt_5_6) {
+    if (s.version() >= QDataStream::BobUI_5_6) {
         quint8 value;
         s >> value;
         font.d->capital = QFont::Capitalization(value);
     }
-    if (s.version() >= QDataStream::Qt_5_13) {
+    if (s.version() >= QDataStream::BobUI_5_13) {
         QStringList value;
         s >> value;
-        if (s.version() < QDataStream::Qt_6_0)
+        if (s.version() < QDataStream::BobUI_6_0)
             font.d->request.families.append(value);
         else
             font.d->request.families = value;
     }
-    if (s.version() >= QDataStream::Qt_6_6) {
+    if (s.version() >= QDataStream::BobUI_6_6) {
         font.d->features.clear();
         s >> font.d->features;
     }
-    if (s.version() >= QDataStream::Qt_6_7) {
+    if (s.version() >= QDataStream::BobUI_6_7) {
         font.d->request.variableAxisValues.clear();
         s >> font.d->request.variableAxisValues;
     }
@@ -3026,7 +3026,7 @@ QDataStream &operator>>(QDataStream &stream, QFont::Tag &tag)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
 /*****************************************************************************
@@ -3038,7 +3038,7 @@ QDataStream &operator>>(QDataStream &stream, QFont::Tag &tag)
     \reentrant
 
     \brief The QFontInfo class provides general information about fonts.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \ingroup appearance
     \ingroup shared
@@ -3247,14 +3247,14 @@ QFont::Style QFontInfo::style() const
 }
 
 
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
 /*!
     \deprecated Use weight() instead.
 
     Returns the weight of the font converted to the non-standard font
-    weight scale used in Qt 5 and earlier versions.
+    weight scale used in BobUI 5 and earlier versions.
 
-    Since Qt 6, the OpenType standard's font weight scale is used instead
+    Since BobUI 6, the OpenType standard's font weight scale is used instead
     of a non-standard scale. This requires conversion from values that
     use the old scale. For convenience, this function may be used when
     porting from code which uses the old weight scale.
@@ -3263,9 +3263,9 @@ QFont::Style QFontInfo::style() const
 */
 int QFontInfo::legacyWeight() const
 {
-    return qt_openTypeToLegacyWeight(weight());
+    return bobui_openTypeToLegacyWeight(weight());
 }
-#endif // QT_DEPRECATED_SINCE(6, 0)
+#endif // BOBUI_DEPRECATED_SINCE(6, 0)
 
 
 /*!
@@ -3419,7 +3419,7 @@ static constexpr auto slow_timeout = 5min;
 #  define QFONTCACHE_MIN_COST 4*1024 // 4mb
 #endif
 const uint QFontCache::min_cost = QFONTCACHE_MIN_COST;
-Q_GLOBAL_STATIC(QThreadStorage<QFontCache *>, theFontCache)
+Q_GLOBAL_STATIC(BOBUIhreadStorage<QFontCache *>, theFontCache)
 
 QFontCache *QFontCache::instance()
 {
@@ -3431,10 +3431,10 @@ QFontCache *QFontCache::instance()
 
 void QFontCache::cleanup()
 {
-    QThreadStorage<QFontCache *> *cache = nullptr;
-    QT_TRY {
+    BOBUIhreadStorage<QFontCache *> *cache = nullptr;
+    BOBUI_TRY {
         cache = theFontCache();
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         // no cache - just ignore
     }
     if (cache && cache->hasLocalData())
@@ -3447,7 +3447,7 @@ QFontCache::QFontCache()
     : QObject(), total_cost(0), max_cost(min_cost),
       current_timestamp(0), fast(false),
       autoClean(QGuiApplication::instance()
-                && (QGuiApplication::instance()->thread() == QThread::currentThread())),
+                && (QGuiApplication::instance()->thread() == BOBUIhread::currentThread())),
       m_id(font_cache_id.fetchAndAddRelaxed(1) + 1)
 {
 }
@@ -3640,7 +3640,7 @@ void QFontCache::decreaseCost(uint cost)
             cost, total_cost, max_cost);
 }
 
-void QFontCache::timerEvent(QTimerEvent *)
+void QFontCache::timerEvent(BOBUIimerEvent *)
 {
     FC_DEBUG("QFontCache::timerEvent: performing cache maintenance (timestamp %u)",
               current_timestamp);
@@ -3811,7 +3811,7 @@ void QFontCache::decreaseCache()
 }
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug stream, const QFont &font)
 {
     QDebugStateSaver saver(stream);
@@ -3919,6 +3919,6 @@ QDebug operator<<(QDebug debug, QFont::Tag tag)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfont.cpp"

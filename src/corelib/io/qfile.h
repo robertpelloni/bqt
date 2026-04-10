@@ -1,26 +1,26 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFILE_H
 #define QFILE_H
 
-#include <QtCore/qfiledevice.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qfiledevice.h>
+#include <BobUICore/qstring.h>
 #include <stdio.h>
 
 #ifdef open
 #error qfile.h must be included before any header file that defines open
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if defined(Q_OS_WIN) || defined(Q_QDOC)
 
-#if QT_DEPRECATED_SINCE(6,6)
-QT_DEPRECATED_VERSION_X_6_6("Use QNtfsPermissionCheckGuard RAII class instead.")
-Q_CORE_EXPORT extern int qt_ntfs_permission_lookup;      // defined in qfilesystemengine_win.cpp
+#if BOBUI_DEPRECATED_SINCE(6,6)
+BOBUI_DEPRECATED_VERSION_X_6_6("Use QNtfsPermissionCheckGuard RAII class instead.")
+Q_CORE_EXPORT extern int bobui_ntfs_permission_lookup;      // defined in qfilesystemengine_win.cpp
 #endif
 
 Q_CORE_EXPORT bool qEnableNtfsPermissionChecks() noexcept;
@@ -44,22 +44,22 @@ public:
 };
 #endif // Q_OS_WIN
 
-#if QT_CONFIG(cxx17_filesystem)
-namespace QtPrivate {
-// Both std::filesystem::path and QString (without QT_NO_CAST_FROM_ASCII) can be implicitly
+#if BOBUI_CONFIG(cxx17_filesystem)
+namespace BobUIPrivate {
+// Both std::filesystem::path and QString (without BOBUI_NO_CAST_FROM_ASCII) can be implicitly
 // constructed from string literals so we force the std::fs::path parameter to only
 // accept std::fs::path with no implicit conversions.
-// ### Qt7: use Q_WEAK_OVERLOAD
+// ### BobUI7: use Q_WEAK_OVERLOAD
 template<typename T>
 using ForceFilesystemPath = typename std::enable_if_t<std::is_same_v<std::filesystem::path, T>, int>;
 }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
-class QTemporaryFile;
+class BOBUIemporaryFile;
 class QFilePrivate;
 
-// ### Qt 7: remove this, and make constructors always explicit.
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)) || defined(QT_EXPLICIT_QFILE_CONSTRUCTION_FROM_PATH)
+// ### BobUI 7: remove this, and make constructors always explicit.
+#if (BOBUI_VERSION >= BOBUI_VERSION_CHECK(6, 9, 0)) || defined(BOBUI_EXPLICIT_QFILE_CONSTRUCTION_FROM_PATH)
 #  define QFILE_MAYBE_EXPLICIT explicit
 #else
 #  define QFILE_MAYBE_EXPLICIT Q_IMPLICIT
@@ -67,7 +67,7 @@ class QFilePrivate;
 
 class Q_CORE_EXPORT QFile : public QFileDevice
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_OBJECT
 #endif
     Q_DECLARE_PRIVATE(QFile)
@@ -77,43 +77,43 @@ public:
     QFILE_MAYBE_EXPLICIT QFile(const QString &name);
 #ifdef Q_QDOC
     QFILE_MAYBE_EXPLICIT QFile(const std::filesystem::path &name);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    QFILE_MAYBE_EXPLICIT QFile(const T &name) : QFile(QtPrivate::fromFilesystemPath(name))
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    QFILE_MAYBE_EXPLICIT QFile(const T &name) : QFile(BobUIPrivate::fromFilesystemPath(name))
     {
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     explicit QFile(QObject *parent);
     QFile(const QString &name, QObject *parent);
 
 #ifdef Q_QDOC
     QFile(const std::filesystem::path &path, QObject *parent);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
-    QFile(const T &path, QObject *parent) : QFile(QtPrivate::fromFilesystemPath(path), parent)
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
+    QFile(const T &path, QObject *parent) : QFile(BobUIPrivate::fromFilesystemPath(path), parent)
     {
     }
-#endif // QT_CONFIG(cxx17_filesystem)
-#endif // !QT_NO_QOBJECT
+#endif // BOBUI_CONFIG(cxx17_filesystem)
+#endif // !BOBUI_NO_QOBJECT
     ~QFile();
 
     QString fileName() const override;
-#if QT_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
+#if BOBUI_CONFIG(cxx17_filesystem) || defined(Q_QDOC)
     std::filesystem::path filesystemFileName() const
-    { return QtPrivate::toFilesystemPath(fileName()); }
+    { return BobUIPrivate::toFilesystemPath(fileName()); }
 #endif
     void setFileName(const QString &name);
 #ifdef Q_QDOC
     void setFileName(const std::filesystem::path &name);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     void setFileName(const T &name)
     {
-        setFileName(QtPrivate::fromFilesystemPath(name));
+        setFileName(BobUIPrivate::fromFilesystemPath(name));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
 #if defined(Q_OS_DARWIN)
     // Mac always expects filenames in UTF-8... and decomposed...
@@ -149,55 +149,55 @@ public:
     static bool exists(const QString &fileName);
 #ifdef Q_QDOC
     static bool exists(const std::filesystem::path &fileName);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool exists(const T &fileName)
     {
-        return exists(QtPrivate::fromFilesystemPath(fileName));
+        return exists(BobUIPrivate::fromFilesystemPath(fileName));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     QString symLinkTarget() const;
     static QString symLinkTarget(const QString &fileName);
 #ifdef Q_QDOC
     std::filesystem::path filesystemSymLinkTarget() const;
     static std::filesystem::path filesystemSymLinkTarget(const std::filesystem::path &fileName);
-#elif QT_CONFIG(cxx17_filesystem)
+#elif BOBUI_CONFIG(cxx17_filesystem)
     std::filesystem::path filesystemSymLinkTarget() const
     {
-        return QtPrivate::toFilesystemPath(symLinkTarget());
+        return BobUIPrivate::toFilesystemPath(symLinkTarget());
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static std::filesystem::path filesystemSymLinkTarget(const T &fileName)
     {
-        return QtPrivate::toFilesystemPath(symLinkTarget(QtPrivate::fromFilesystemPath(fileName)));
+        return BobUIPrivate::toFilesystemPath(symLinkTarget(BobUIPrivate::fromFilesystemPath(fileName)));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     bool remove();
     static bool remove(const QString &fileName);
 #ifdef Q_QDOC
     static bool remove(const std::filesystem::path &fileName);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool remove(const T &fileName)
     {
-        return remove(QtPrivate::fromFilesystemPath(fileName));
+        return remove(BobUIPrivate::fromFilesystemPath(fileName));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     Q_DECL_PURE_FUNCTION static bool supportsMoveToTrash();
     bool moveToTrash();
     static bool moveToTrash(const QString &fileName, QString *pathInTrash = nullptr);
 #ifdef Q_QDOC
     static bool moveToTrash(const std::filesystem::path &fileName, QString *pathInTrash = nullptr);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool moveToTrash(const T &fileName, QString *pathInTrash = nullptr)
     {
-        return moveToTrash(QtPrivate::fromFilesystemPath(fileName), pathInTrash);
+        return moveToTrash(BobUIPrivate::fromFilesystemPath(fileName), pathInTrash);
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     bool rename(const QString &newName);
     static bool rename(const QString &oldName, const QString &newName);
@@ -205,19 +205,19 @@ public:
     bool rename(const std::filesystem::path &newName);
     static bool rename(const std::filesystem::path &oldName,
                        const std::filesystem::path &newName);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     bool rename(const T &newName)
     {
-        return rename(QtPrivate::fromFilesystemPath(newName));
+        return rename(BobUIPrivate::fromFilesystemPath(newName));
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool rename(const T &oldName, const T &newName)
     {
-        return rename(QtPrivate::fromFilesystemPath(oldName),
-                      QtPrivate::fromFilesystemPath(newName));
+        return rename(BobUIPrivate::fromFilesystemPath(oldName),
+                      BobUIPrivate::fromFilesystemPath(newName));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     bool link(const QString &newName);
     static bool link(const QString &fileName, const QString &newName);
@@ -225,21 +225,21 @@ public:
     bool link(const std::filesystem::path &newName);
     static bool link(const std::filesystem::path &fileName,
                      const std::filesystem::path &newName);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     bool link(const T &newName)
     {
-        return link(QtPrivate::fromFilesystemPath(newName));
+        return link(BobUIPrivate::fromFilesystemPath(newName));
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool link(const T &fileName, const T &newName)
     {
-        return link(QtPrivate::fromFilesystemPath(fileName),
-                    QtPrivate::fromFilesystemPath(newName));
+        return link(BobUIPrivate::fromFilesystemPath(fileName),
+                    BobUIPrivate::fromFilesystemPath(newName));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
-#if QT_CONFIG(temporaryfile)
+#if BOBUI_CONFIG(temporaryfile)
     bool copy(const QString &newName);
     static bool copy(const QString &fileName, const QString &newName);
 #endif
@@ -247,19 +247,19 @@ public:
     bool copy(const std::filesystem::path &newName);
     static bool copy(const std::filesystem::path &fileName,
                      const std::filesystem::path &newName);
-#elif QT_CONFIG(cxx17_filesystem) && QT_CONFIG(temporaryfile)
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem) && BOBUI_CONFIG(temporaryfile)
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     bool copy(const T &newName)
     {
-        return copy(QtPrivate::fromFilesystemPath(newName));
+        return copy(BobUIPrivate::fromFilesystemPath(newName));
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool copy(const T &fileName, const T &newName)
     {
-        return copy(QtPrivate::fromFilesystemPath(fileName),
-                    QtPrivate::fromFilesystemPath(newName));
+        return copy(BobUIPrivate::fromFilesystemPath(fileName),
+                    BobUIPrivate::fromFilesystemPath(newName));
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
     QFILE_MAYBE_NODISCARD bool open(OpenMode flags) override;
     QFILE_MAYBE_NODISCARD bool open(OpenMode flags, Permissions permissions);
@@ -278,31 +278,31 @@ public:
 #ifdef Q_QDOC
     static Permissions permissions(const std::filesystem::path &filename);
     static bool setPermissions(const std::filesystem::path &filename, Permissions permissionSpec);
-#elif QT_CONFIG(cxx17_filesystem)
-    template<typename T,  QtPrivate::ForceFilesystemPath<T> = 0>
+#elif BOBUI_CONFIG(cxx17_filesystem)
+    template<typename T,  BobUIPrivate::ForceFilesystemPath<T> = 0>
     static Permissions permissions(const T &filename)
     {
-        return permissions(QtPrivate::fromFilesystemPath(filename));
+        return permissions(BobUIPrivate::fromFilesystemPath(filename));
     }
-    template<typename T, QtPrivate::ForceFilesystemPath<T> = 0>
+    template<typename T, BobUIPrivate::ForceFilesystemPath<T> = 0>
     static bool setPermissions(const T &filename, Permissions permissionSpec)
     {
-        return setPermissions(QtPrivate::fromFilesystemPath(filename), permissionSpec);
+        return setPermissions(BobUIPrivate::fromFilesystemPath(filename), permissionSpec);
     }
-#endif // QT_CONFIG(cxx17_filesystem)
+#endif // BOBUI_CONFIG(cxx17_filesystem)
 
 protected:
-#ifdef QT_NO_QOBJECT
+#ifdef BOBUI_NO_QOBJECT
     QFile(QFilePrivate &dd);
 #else
     QFile(QFilePrivate &dd, QObject *parent = nullptr);
 #endif
 
 private:
-    friend class QTemporaryFile;
+    friend class BOBUIemporaryFile;
     Q_DISABLE_COPY(QFile)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFILE_H

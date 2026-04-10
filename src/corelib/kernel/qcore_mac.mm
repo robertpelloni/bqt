@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 Petroules Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qcore_mac_p.h>
 
@@ -8,7 +8,7 @@
 #include <AppKit/AppKit.h>
 #endif
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #include <UIKit/UIKit.h>
 #endif
 
@@ -33,16 +33,16 @@
 #include "qvarlengtharray.h"
 #include "private/qlocking_p.h"
 
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
 #include <thread>
 #endif
 
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
 extern "C" {
 typedef uint32_t csr_config_t;
 extern int csr_get_active_config(csr_config_t *) __attribute__((weak_import));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 int responsibility_spawnattrs_setdisclaim(posix_spawnattr_t attrs, int disclaim)
 __attribute__((availability(macos,introduced=10.14),weak_import));
 pid_t responsibility_get_pid_responsible_for_pid(pid_t) __attribute__((weak_import));
@@ -52,9 +52,9 @@ extern char **environ;
 }
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // --------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ QCFString::operator CFStringRef() const
 
 // --------------------------------------------------------------------------
 
-#if defined(QT_USE_APPLE_UNIFIED_LOGGING)
+#if defined(BOBUI_USE_APPLE_UNIFIED_LOGGING)
 
 bool AppleUnifiedLogger::preventsStderrLogging()
 {
@@ -111,7 +111,7 @@ bool AppleUnifiedLogger::preventsStderrLogging()
     // NSLog is plumbed to CFLog, and will respond to the same
     // environment variables as CFLog.
 
-    // We want to disable Qt's default stderr log handler when
+    // We want to disable BobUI's default stderr log handler when
     // os_log has already mirrored to stderr.
     static bool willMirror = qEnvironmentVariableIsSet("OS_ACTIVITY_DT_MODE")
                           || qEnvironmentVariableIsSet("ACTIVITY_LOG_STDERR")
@@ -124,8 +124,8 @@ bool AppleUnifiedLogger::preventsStderrLogging()
     return willMirror || disableStderr;
 }
 
-QT_MAC_WEAK_IMPORT(_os_log_default);
-bool AppleUnifiedLogger::messageHandler(QtMsgType msgType, const QMessageLogContext &context,
+BOBUI_MAC_WEAK_IMPORT(_os_log_default);
+bool AppleUnifiedLogger::messageHandler(BobUIMsgType msgType, const QMessageLogContext &context,
                                         const QString &message, const QString &optionalSubsystem)
 {
     QString subsystem = optionalSubsystem;
@@ -165,22 +165,22 @@ bool AppleUnifiedLogger::messageHandler(QtMsgType msgType, const QMessageLogCont
     return preventsStderrLogging();
 }
 
-os_log_type_t AppleUnifiedLogger::logTypeForMessageType(QtMsgType msgType)
+os_log_type_t AppleUnifiedLogger::logTypeForMessageType(BobUIMsgType msgType)
 {
     switch (msgType) {
-    case QtDebugMsg: return OS_LOG_TYPE_DEBUG;
-    case QtInfoMsg: return OS_LOG_TYPE_INFO;
-    case QtWarningMsg: return OS_LOG_TYPE_DEFAULT;
-    case QtCriticalMsg: return OS_LOG_TYPE_ERROR;
-    case QtFatalMsg: return OS_LOG_TYPE_FAULT;
+    case BobUIDebugMsg: return OS_LOG_TYPE_DEBUG;
+    case BobUIInfoMsg: return OS_LOG_TYPE_INFO;
+    case BobUIWarningMsg: return OS_LOG_TYPE_DEFAULT;
+    case BobUICriticalMsg: return OS_LOG_TYPE_ERROR;
+    case BobUIFatalMsg: return OS_LOG_TYPE_FAULT;
     }
 
     return OS_LOG_TYPE_DEFAULT;
 }
 
-#endif // QT_USE_APPLE_UNIFIED_LOGGING
+#endif // BOBUI_USE_APPLE_UNIFIED_LOGGING
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 // -------------------------------------------------------------------------
 
 QDebug operator<<(QDebug dbg, id obj)
@@ -264,28 +264,28 @@ QDebug operator<<(QDebug dbg, UIEdgeInsets insets)
 
 // Prevents breaking the ODR in case we introduce support for more types
 // later on, and lets the user override our default QDebug operators.
-#define QT_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE(CFType) \
+#define BOBUI_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE(CFType) \
     __attribute__((weak)) Q_DECLARE_QDEBUG_OPERATOR_FOR_CF_TYPE(CFType)
 
-QT_FOR_EACH_CORE_FOUNDATION_TYPE(QT_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
-QT_FOR_EACH_MUTABLE_CORE_FOUNDATION_TYPE(QT_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
-QT_FOR_EACH_CORE_GRAPHICS_TYPE(QT_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
-QT_FOR_EACH_MUTABLE_CORE_GRAPHICS_TYPE(QT_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
-#endif // QT_NO_DEBUG_STREAM
+BOBUI_FOR_EACH_CORE_FOUNDATION_TYPE(BOBUI_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
+BOBUI_FOR_EACH_MUTABLE_CORE_FOUNDATION_TYPE(BOBUI_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
+BOBUI_FOR_EACH_CORE_GRAPHICS_TYPE(BOBUI_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
+BOBUI_FOR_EACH_MUTABLE_CORE_GRAPHICS_TYPE(BOBUI_DECLARE_WEAK_QDEBUG_OPERATOR_FOR_CF_TYPE);
+#endif // BOBUI_NO_DEBUG_STREAM
 
 // -------------------------------------------------------------------------
 
-QT_END_NAMESPACE
-QT_USE_NAMESPACE
+BOBUI_END_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-#ifdef QT_DEBUG
-@interface QT_MANGLE_NAMESPACE(QMacAutoReleasePoolTracker) : NSObject
+#ifdef BOBUI_DEBUG
+@interface BOBUI_MANGLE_NAMESPACE(QMacAutoReleasePoolTracker) : NSObject
 @end
 
-@implementation QT_MANGLE_NAMESPACE(QMacAutoReleasePoolTracker)
+@implementation BOBUI_MANGLE_NAMESPACE(QMacAutoReleasePoolTracker)
 @end
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QMacAutoReleasePoolTracker);
-#endif // QT_DEBUG
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QMacAutoReleasePoolTracker);
+#endif // BOBUI_DEBUG
 
 // Use the direct runtime interface to manage autorelease pools, as it
 // has less overhead then allocating NSAutoreleasePools, and allows for
@@ -297,13 +297,13 @@ void *objc_autoreleasePoolPush(void);
 void objc_autoreleasePoolPop(void *pool);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QMacAutoReleasePool::QMacAutoReleasePool()
     : pool(objc_autoreleasePoolPush())
 {
-#ifdef QT_DEBUG
-    static const bool debugAutoReleasePools = qEnvironmentVariableIsSet("QT_DARWIN_DEBUG_AUTORELEASEPOOLS");
+#ifdef BOBUI_DEBUG
+    static const bool debugAutoReleasePools = qEnvironmentVariableIsSet("BOBUI_DARWIN_DEBUG_AUTORELEASEPOOLS");
     if (!debugAutoReleasePools)
         return;
 
@@ -340,7 +340,7 @@ QMacAutoReleasePool::QMacAutoReleasePool()
     }
 
     [[trackerClass new] autorelease];
-#endif // QT_DEBUG
+#endif // BOBUI_DEBUG
 }
 
 QMacAutoReleasePool::~QMacAutoReleasePool()
@@ -348,7 +348,7 @@ QMacAutoReleasePool::~QMacAutoReleasePool()
     objc_autoreleasePoolPop(pool);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QMacAutoReleasePool *pool)
 {
     QDebugStateSaver saver(debug);
@@ -362,10 +362,10 @@ QDebug operator<<(QDebug debug, const QCFString &string)
     debug << static_cast<QString>(string);
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-#if defined(Q_OS_MACOS) && !defined(QT_BOOTSTRAPPED)
-bool qt_mac_runningUnderRosetta()
+#if defined(Q_OS_MACOS) && !defined(BOBUI_BOOTSTRAPPED)
+bool bobui_mac_runningUnderRosetta()
 {
     int translated = 0;
     auto size = sizeof(translated);
@@ -374,7 +374,7 @@ bool qt_mac_runningUnderRosetta()
     return false;
 }
 
-bool qt_apple_runningWithLiquidGlass()
+bool bobui_apple_runningWithLiquidGlass()
 {
     static const bool runningWithLiquidGlass = []{
         if (QMacVersion::buildSDK(QMacVersion::ApplicationBinary).majorVersion() < 26)
@@ -400,10 +400,10 @@ bool qt_apple_runningWithLiquidGlass()
     return runningWithLiquidGlass;
 }
 
-std::optional<uint32_t> qt_mac_sipConfiguration()
+std::optional<uint32_t> bobui_mac_sipConfiguration()
 {
     static auto configuration = []() -> std::optional<uint32_t> {
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
         csr_config_t config;
         if (csr_get_active_config && csr_get_active_config(&config) == 0)
             return config;
@@ -421,7 +421,7 @@ std::optional<uint32_t> qt_mac_sipConfiguration()
             return {}; // SIP config is not available
 
         if (auto type = CFGetTypeID(csrConfig); type != CFDataGetTypeID()) {
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
             qWarning() << "Unexpected SIP config type" << CFCopyTypeIDDescription(type);
 #endif
             return {};
@@ -438,7 +438,7 @@ std::optional<uint32_t> qt_mac_sipConfiguration()
     return configuration;
 }
 
-bool qt_mac_processHasEntitlement(const QString &entitlement)
+bool bobui_mac_processHasEntitlement(const QString &entitlement)
 {
     if (QCFType<SecTaskRef> task = SecTaskCreateFromSelf(kCFAllocatorDefault)) {
         if (QCFType<CFTypeRef> value = SecTaskCopyValueForEntitlement(task,
@@ -459,10 +459,10 @@ bool qt_mac_processHasEntitlement(const QString &entitlement)
         return; \
     }
 
-#ifdef QT_BUILD_INTERNAL
-void qt_mac_ensureResponsible()
+#ifdef BOBUI_BUILD_INTERNAL
+void bobui_mac_ensureResponsible()
 {
-#if !defined(QT_APPLE_NO_PRIVATE_APIS)
+#if !defined(BOBUI_APPLE_NO_PRIVATE_APIS)
     if (!responsibility_get_pid_responsible_for_pid || !responsibility_spawnattrs_setdisclaim)
         return;
 
@@ -497,28 +497,28 @@ void qt_mac_ensureResponsible()
     posix_spawnattr_destroy(&attr);
 #endif
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 #endif
 
-bool qt_apple_isApplicationExtension()
+bool bobui_apple_isApplicationExtension()
 {
     static bool isExtension = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSExtension"];
     return isExtension;
 }
 
-#if !defined(QT_BOOTSTRAPPED) && !defined(Q_OS_WATCHOS)
-AppleApplication *qt_apple_sharedApplication()
+#if !defined(BOBUI_BOOTSTRAPPED) && !defined(Q_OS_WATCHOS)
+AppleApplication *bobui_apple_sharedApplication()
 {
     // Application extensions are not allowed to access the shared application
-    if (qt_apple_isApplicationExtension()) {
+    if (bobui_apple_isApplicationExtension()) {
         qWarning() << "accessing the shared" << [AppleApplication class]
             << "is not allowed in application extensions";
 
         // In practice the application is actually available, but the App
         // review process will likely catch uses of it, so we return nil just
         // in case, unless we don't care about being App Store compliant.
-#if QT_CONFIG(appstore_compliant)
+#if BOBUI_CONFIG(appstore_compliant)
         return nil;
 #endif
     }
@@ -529,30 +529,30 @@ AppleApplication *qt_apple_sharedApplication()
 }
 #endif
 
-#if !defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_BOOTSTRAPPED)
 
-bool qt_apple_isSandboxed()
+bool bobui_apple_isSandboxed()
 {
 #if defined(Q_OS_MACOS)
-    static bool isSandboxed = qt_mac_processHasEntitlement(u"com.apple.security.app-sandbox"_s);
+    static bool isSandboxed = bobui_mac_processHasEntitlement(u"com.apple.security.app-sandbox"_s);
     return isSandboxed;
 #else
     return true; // All other Apple platforms
 #endif
 }
 
-QT_END_NAMESPACE
-@implementation NSObject (QtExtras)
-- (id)qt_valueForPrivateKey:(NSString *)key
+BOBUI_END_NAMESPACE
+@implementation NSObject (BobUIExtras)
+- (id)bobui_valueForPrivateKey:(NSString *)key
 {
-    if (qt_apple_isSandboxed())
+    if (bobui_apple_isSandboxed())
         return nil;
 
     return [self valueForKey:key];
 }
 @end
-QT_BEGIN_NAMESPACE
-#endif // !QT_BOOTSTRAPPED
+BOBUI_BEGIN_NAMESPACE
+#endif // !BOBUI_BOOTSTRAPPED
 
 #ifdef Q_OS_MACOS
 /*
@@ -563,14 +563,14 @@ QT_BEGIN_NAMESPACE
     methods called, which is useful for debugging object ownership graphs, etc.
 */
 
-QT_END_NAMESPACE
-#define ROOT_LEVEL_POOL_MARKER QT_ROOT_LEVEL_POOL__THESE_OBJECTS_WILL_BE_RELEASED_WHEN_QAPP_GOES_OUT_OF_SCOPE
-@interface QT_MANGLE_NAMESPACE(ROOT_LEVEL_POOL_MARKER) : NSObject @end
-@implementation QT_MANGLE_NAMESPACE(ROOT_LEVEL_POOL_MARKER) @end
-QT_NAMESPACE_ALIAS_OBJC_CLASS(ROOT_LEVEL_POOL_MARKER);
-QT_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
+#define ROOT_LEVEL_POOL_MARKER BOBUI_ROOT_LEVEL_POOL__THESE_OBJECTS_WILL_BE_RELEASED_WHEN_QAPP_GOES_OUT_OF_SCOPE
+@interface BOBUI_MANGLE_NAMESPACE(ROOT_LEVEL_POOL_MARKER) : NSObject @end
+@implementation BOBUI_MANGLE_NAMESPACE(ROOT_LEVEL_POOL_MARKER) @end
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(ROOT_LEVEL_POOL_MARKER);
+BOBUI_BEGIN_NAMESPACE
 
-const char ROOT_LEVEL_POOL_DISABLE_SWITCH[] = "QT_DISABLE_ROOT_LEVEL_AUTORELEASE_POOL";
+const char ROOT_LEVEL_POOL_DISABLE_SWITCH[] = "BOBUI_DISABLE_ROOT_LEVEL_AUTORELEASE_POOL";
 
 QMacRootLevelAutoReleasePool::QMacRootLevelAutoReleasePool()
 {
@@ -595,8 +595,8 @@ QMacRootLevelAutoReleasePool::~QMacRootLevelAutoReleasePool()
 
 // -------------------------------------------------------------------------
 
-#ifndef QT_BOOTSTRAPPED
-void qt_apple_check_os_version()
+#ifndef BOBUI_BOOTSTRAPPED
+void bobui_apple_check_os_version()
 {
 #if defined(__WATCH_OS_VERSION_MIN_REQUIRED)
     const char *os = "watchOS";
@@ -634,7 +634,7 @@ void qt_apple_check_os_version()
             applicationName = NSProcessInfo.processInfo.processName;
 
         fprintf(stderr, "Sorry, \"%s\" cannot be run on this version of %s. "
-            "Qt requires %s %ld.%ld.%ld or later, you have %s %ld.%ld.%ld.\n",
+            "BobUI requires %s %ld.%ld.%ld or later, you have %s %ld.%ld.%ld.\n",
             applicationName.UTF8String, os,
             os, long(required.majorVersion()), long(required.minorVersion()), long(required.microVersion()),
             os, long(current.majorVersion()), long(current.minorVersion()), long(current.microVersion()));
@@ -642,8 +642,8 @@ void qt_apple_check_os_version()
         exit(1);
     }
 }
-Q_CONSTRUCTOR_FUNCTION(qt_apple_check_os_version);
-#endif // QT_BOOTSTRAPPED
+Q_CONSTRUCTOR_FUNCTION(bobui_apple_check_os_version);
+#endif // BOBUI_BOOTSTRAPPED
 
 // -------------------------------------------------------------------------
 
@@ -674,8 +674,8 @@ void QMacKeyValueObserver::removeObserver() {
 
 KeyValueObserver *QMacKeyValueObserver::observer = [[KeyValueObserver alloc] init];
 
-QT_END_NAMESPACE
-@implementation QT_MANGLE_NAMESPACE(KeyValueObserver)
+BOBUI_END_NAMESPACE
+@implementation BOBUI_MANGLE_NAMESPACE(KeyValueObserver)
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
         change:(NSDictionary<NSKeyValueChangeKey, id> *)change context:(void *)context
 {
@@ -686,16 +686,16 @@ QT_END_NAMESPACE
     (*reinterpret_cast<QMacKeyValueObserver::Callback*>(context))();
 }
 @end
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // -------------------------------------------------------------------------
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 QOperatingSystemVersion QMacVersion::buildSDK(VersionTarget target)
 {
     switch (target) {
     case ApplicationBinary: return applicationVersion().second;
-    case QtLibraries: return libraryVersion().second;
+    case BobUILibraries: return libraryVersion().second;
     }
     Q_UNREACHABLE();
 }
@@ -704,7 +704,7 @@ QOperatingSystemVersion QMacVersion::deploymentTarget(VersionTarget target)
 {
     switch (target) {
     case ApplicationBinary: return applicationVersion().first;
-    case QtLibraries: return libraryVersion().first;
+    case BobUILibraries: return libraryVersion().first;
     }
     Q_UNREACHABLE();
 }
@@ -803,14 +803,14 @@ QMacVersion::VersionTuple QMacVersion::applicationVersion()
 QMacVersion::VersionTuple QMacVersion::libraryVersion()
 {
     static VersionTuple version = []() {
-        Dl_info qtCoreImage;
-        dladdr((const void *)&QMacVersion::libraryVersion, &qtCoreImage);
-        Q_ASSERT_X(qtCoreImage.dli_fbase, "QMacVersion", "Failed to resolve Mach-O header of QtCore");
-        return versionsForImage(static_cast<mach_header*>(qtCoreImage.dli_fbase));
+        Dl_info bobuiCoreImage;
+        dladdr((const void *)&QMacVersion::libraryVersion, &bobuiCoreImage);
+        Q_ASSERT_X(bobuiCoreImage.dli_fbase, "QMacVersion", "Failed to resolve Mach-O header of BobUICore");
+        return versionsForImage(static_cast<mach_header*>(bobuiCoreImage.dli_fbase));
     }();
     return version;
 }
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
 // -------------------------------------------------------------------------
 
@@ -850,5 +850,5 @@ NSObject *QObjCWeakPointerBase::get() const
 
 // -------------------------------------------------------------------------
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

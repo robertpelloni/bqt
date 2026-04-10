@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstandardgestures_p.h"
 #include "qgesture.h"
 #include "qgesture_p.h"
 #include "qevent.h"
 #include "qwidget.h"
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 #include "qabstractscrollarea.h"
 #endif
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
 #include <qgraphicssceneevent.h>
 #endif
 #include "qdebug.h"
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // If the change in scale for a single touch event is out of this range,
 // we consider it to be spurious.
@@ -29,12 +29,12 @@ static const qreal kSingleStepScaleMin = 0.1;
 QGesture *QPanGestureRecognizer::create(QObject *target)
 {
     if (target && target->isWidgetType()) {
-#if (defined(Q_OS_MACOS) || defined(Q_OS_WIN)) && !defined(QT_NO_NATIVE_GESTURES) && QT_CONFIG(scrollarea)
+#if (defined(Q_OS_MACOS) || defined(Q_OS_WIN)) && !defined(BOBUI_NO_NATIVE_GESTURES) && BOBUI_CONFIG(scrollarea)
         // for scroll areas on Windows and OS X we want to use native gestures instead
         if (!qobject_cast<QAbstractScrollArea *>(target->parent()))
-            static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+            static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
 #else
-        static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+        static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
 #endif
     }
     return new QPanGesture;
@@ -65,8 +65,8 @@ QGestureRecognizer::Result QPanGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchEnd: {
-        if (q->state() != Qt::NoGesture) {
-            const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        if (q->state() != BobUI::NoGesture) {
+            const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
             if (ev->points().size() == d->pointCount) {
                 d->lastOffset = d->offset;
                 d->offset = panOffset(ev->points(), d->pointCount);
@@ -78,7 +78,7 @@ QGestureRecognizer::Result QPanGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchUpdate: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
         if (ev->points().size() >= d->pointCount) {
             d->lastOffset = d->offset;
             d->offset = panOffset(ev->points(), d->pointCount);
@@ -121,7 +121,7 @@ QPinchGestureRecognizer::QPinchGestureRecognizer()
 QGesture *QPinchGestureRecognizer::create(QObject *target)
 {
     if (target && target->isWidgetType()) {
-        static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+        static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
     return new QPinchGesture;
 }
@@ -141,7 +141,7 @@ QGestureRecognizer::Result QPinchGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchEnd: {
-        if (q->state() != Qt::NoGesture) {
+        if (q->state() != BobUI::NoGesture) {
             result = QGestureRecognizer::FinishGesture;
         } else {
             result = QGestureRecognizer::CancelGesture;
@@ -149,7 +149,7 @@ QGestureRecognizer::Result QPinchGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchUpdate: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
         d->changeFlags = { };
         if (ev->points().size() == 2) {
             const QEventPoint &p1 = ev->points().at(0);
@@ -205,7 +205,7 @@ QGestureRecognizer::Result QPinchGestureRecognizer::recognize(QGesture *state,
             result = QGestureRecognizer::TriggerGesture;
         } else {
             d->isNewSequence = true;
-            if (q->state() == Qt::NoGesture)
+            if (q->state() == BobUI::NoGesture)
                 result = QGestureRecognizer::Ignore;
             else
                 result = QGestureRecognizer::FinishGesture;
@@ -246,7 +246,7 @@ QSwipeGestureRecognizer::QSwipeGestureRecognizer()
 QGesture *QSwipeGestureRecognizer::create(QObject *target)
 {
     if (target && target->isWidgetType()) {
-        static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+        static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
     return new QSwipeGesture;
 }
@@ -269,7 +269,7 @@ QGestureRecognizer::Result QSwipeGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchEnd: {
-        if (q->state() != Qt::NoGesture) {
+        if (q->state() != BobUI::NoGesture) {
             result = QGestureRecognizer::FinishGesture;
         } else {
             result = QGestureRecognizer::CancelGesture;
@@ -277,7 +277,7 @@ QGestureRecognizer::Result QSwipeGestureRecognizer::recognize(QGesture *state,
         break;
     }
     case QEvent::TouchUpdate: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
         if (d->state == QSwipeGesturePrivate::NoGesture)
             result = QGestureRecognizer::CancelGesture;
         else if (ev->points().size() == 3) {
@@ -316,7 +316,7 @@ QGestureRecognizer::Result QSwipeGestureRecognizer::recognize(QGesture *state,
                 d->lastPositions[1] = p2.globalPosition().toPoint();
                 d->lastPositions[2] = p3.globalPosition().toPoint();
                 result = QGestureRecognizer::TriggerGesture;
-                // QTBUG-46195, small changes in direction should not cause the gesture to be canceled.
+                // BOBUIBUG-46195, small changes in direction should not cause the gesture to be canceled.
                 if (d->verticalDirection == QSwipeGesture::NoDirection || qAbs(yDistance) > directionChangeThreshold) {
                     const QSwipeGesture::SwipeDirection vertical = yDistance > 0
                         ? QSwipeGesture::Down : QSwipeGesture::Up;
@@ -332,7 +332,7 @@ QGestureRecognizer::Result QSwipeGestureRecognizer::recognize(QGesture *state,
                     d->horizontalDirection = horizontal;
                 }
             } else {
-                if (q->state() != Qt::NoGesture)
+                if (q->state() != BobUI::NoGesture)
                     result = QGestureRecognizer::TriggerGesture;
                 else
                     result = QGestureRecognizer::MayBeGesture;
@@ -384,33 +384,33 @@ void QSwipeGestureRecognizer::reset(QGesture *state)
 }
 
 //
-// QTapGestureRecognizer
+// BOBUIapGestureRecognizer
 //
 
-QTapGestureRecognizer::QTapGestureRecognizer()
+BOBUIapGestureRecognizer::BOBUIapGestureRecognizer()
 {
 }
 
-QGesture *QTapGestureRecognizer::create(QObject *target)
+QGesture *BOBUIapGestureRecognizer::create(QObject *target)
 {
     if (target && target->isWidgetType()) {
-        static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+        static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
-    return new QTapGesture;
+    return new BOBUIapGesture;
 }
 
-QGestureRecognizer::Result QTapGestureRecognizer::recognize(QGesture *state,
+QGestureRecognizer::Result BOBUIapGestureRecognizer::recognize(QGesture *state,
                                                             QObject *,
                                                             QEvent *event)
 {
-    QTapGesture *q = static_cast<QTapGesture *>(state);
-    QTapGesturePrivate *d = q->d_func();
+    BOBUIapGesture *q = static_cast<BOBUIapGesture *>(state);
+    BOBUIapGesturePrivate *d = q->d_func();
 
     QGestureRecognizer::Result result = QGestureRecognizer::CancelGesture;
 
     switch (event->type()) {
     case QEvent::TouchBegin: {
-        const auto ev = static_cast<const QTouchEvent *>(event);
+        const auto ev = static_cast<const BOBUIouchEvent *>(event);
         d->position = ev->points().at(0).position();
         q->setHotSpot(ev->points().at(0).globalPosition());
         result = QGestureRecognizer::TriggerGesture;
@@ -418,8 +418,8 @@ QGestureRecognizer::Result QTapGestureRecognizer::recognize(QGesture *state,
     }
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd: {
-        const auto ev = static_cast<const QTouchEvent *>(event);
-        if (q->state() != Qt::NoGesture && ev->points().size() == 1) {
+        const auto ev = static_cast<const BOBUIouchEvent *>(event);
+        if (q->state() != BobUI::NoGesture && ev->points().size() == 1) {
             const QEventPoint &p = ev->points().at(0);
             QPoint delta = p.position().toPoint() - p.pressPosition().toPoint();
             enum { TapRadius = 40 };
@@ -444,10 +444,10 @@ QGestureRecognizer::Result QTapGestureRecognizer::recognize(QGesture *state,
     return result;
 }
 
-void QTapGestureRecognizer::reset(QGesture *state)
+void BOBUIapGestureRecognizer::reset(QGesture *state)
 {
-    QTapGesture *q = static_cast<QTapGesture *>(state);
-    QTapGesturePrivate *d = q->d_func();
+    BOBUIapGesture *q = static_cast<BOBUIapGesture *>(state);
+    BOBUIapGesturePrivate *d = q->d_func();
 
     d->position = QPointF();
 
@@ -455,27 +455,27 @@ void QTapGestureRecognizer::reset(QGesture *state)
 }
 
 //
-// QTapAndHoldGestureRecognizer
+// BOBUIapAndHoldGestureRecognizer
 //
 
-QTapAndHoldGestureRecognizer::QTapAndHoldGestureRecognizer()
+BOBUIapAndHoldGestureRecognizer::BOBUIapAndHoldGestureRecognizer()
 {
 }
 
-QGesture *QTapAndHoldGestureRecognizer::create(QObject *target)
+QGesture *BOBUIapAndHoldGestureRecognizer::create(QObject *target)
 {
     if (target && target->isWidgetType()) {
-        static_cast<QWidget *>(target)->setAttribute(Qt::WA_AcceptTouchEvents);
+        static_cast<QWidget *>(target)->setAttribute(BobUI::WA_AcceptTouchEvents);
     }
-    return new QTapAndHoldGesture;
+    return new BOBUIapAndHoldGesture;
 }
 
 QGestureRecognizer::Result
-QTapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
+BOBUIapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
                                         QEvent *event)
 {
-    QTapAndHoldGesture *q = static_cast<QTapAndHoldGesture *>(state);
-    QTapAndHoldGesturePrivate *d = q->d_func();
+    BOBUIapAndHoldGesture *q = static_cast<BOBUIapAndHoldGesture *>(state);
+    BOBUIapAndHoldGesturePrivate *d = q->d_func();
 
     if (object == state && event->type() == QEvent::Timer) {
         d->tapAndHoldTimer.stop();
@@ -485,12 +485,12 @@ QTapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
     enum { TapRadius = 40 };
 
     switch (event->type()) {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     case QEvent::GraphicsSceneMousePress: {
         const QGraphicsSceneMouseEvent *gsme = static_cast<const QGraphicsSceneMouseEvent *>(event);
         d->position = gsme->screenPos();
         q->setHotSpot(d->position);
-        d->tapAndHoldTimer.start(QTapAndHoldGesturePrivate::Timeout * 1ms, q);
+        d->tapAndHoldTimer.start(BOBUIapAndHoldGesturePrivate::Timeout * 1ms, q);
         return QGestureRecognizer::MayBeGesture; // we don't show a sign of life until the timeout
     }
 #endif
@@ -498,24 +498,24 @@ QTapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
         const QMouseEvent *me = static_cast<const QMouseEvent *>(event);
         d->position = me->globalPosition().toPoint();
         q->setHotSpot(d->position);
-        d->tapAndHoldTimer.start(QTapAndHoldGesturePrivate::Timeout * 1ms, q);
+        d->tapAndHoldTimer.start(BOBUIapAndHoldGesturePrivate::Timeout * 1ms, q);
         return QGestureRecognizer::MayBeGesture; // we don't show a sign of life until the timeout
     }
     case QEvent::TouchBegin: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
         d->position = ev->points().at(0).globalPressPosition();
         q->setHotSpot(d->position);
-        d->tapAndHoldTimer.start(QTapAndHoldGesturePrivate::Timeout * 1ms, q);
+        d->tapAndHoldTimer.start(BOBUIapAndHoldGesturePrivate::Timeout * 1ms, q);
         return QGestureRecognizer::MayBeGesture; // we don't show a sign of life until the timeout
     }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     case QEvent::GraphicsSceneMouseRelease:
 #endif
     case QEvent::MouseButtonRelease:
     case QEvent::TouchEnd:
         return QGestureRecognizer::CancelGesture; // get out of the MayBeGesture state
     case QEvent::TouchUpdate: {
-        const QTouchEvent *ev = static_cast<const QTouchEvent *>(event);
+        const BOBUIouchEvent *ev = static_cast<const BOBUIouchEvent *>(event);
         if (d->tapAndHoldTimer.isActive() && ev->points().size() == 1) {
             const QEventPoint &p = ev->points().at(0);
             QPoint delta = p.position().toPoint() - p.pressPosition().toPoint();
@@ -531,7 +531,7 @@ QTapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
             return QGestureRecognizer::MayBeGesture;
         return QGestureRecognizer::CancelGesture;
     }
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     case QEvent::GraphicsSceneMouseMove: {
         const QGraphicsSceneMouseEvent *gsme = static_cast<const QGraphicsSceneMouseEvent *>(event);
         QPoint delta = gsme->screenPos() - d->position.toPoint();
@@ -545,10 +545,10 @@ QTapAndHoldGestureRecognizer::recognize(QGesture *state, QObject *object,
     }
 }
 
-void QTapAndHoldGestureRecognizer::reset(QGesture *state)
+void BOBUIapAndHoldGestureRecognizer::reset(QGesture *state)
 {
-    QTapAndHoldGesture *q = static_cast<QTapAndHoldGesture *>(state);
-    QTapAndHoldGesturePrivate *d = q->d_func();
+    BOBUIapAndHoldGesture *q = static_cast<BOBUIapAndHoldGesture *>(state);
+    BOBUIapAndHoldGesturePrivate *d = q->d_func();
 
     d->position = QPointF();
     d->tapAndHoldTimer.stop();
@@ -556,6 +556,6 @@ void QTapAndHoldGestureRecognizer::reset(QGesture *state)
     QGestureRecognizer::reset(state);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES

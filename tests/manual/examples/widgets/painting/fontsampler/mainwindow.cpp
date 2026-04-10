@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
+#include <BobUIWidgets>
+#if defined(BOBUI_PRINTSUPPORT_LIB)
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
+#if BOBUI_CONFIG(printdialog)
 #include <QPrinter>
 #include <QPrintDialog>
-#if QT_CONFIG(printpreviewdialog)
+#if BOBUI_CONFIG(printpreviewdialog)
 #include <QPrintPreviewDialog>
 #endif
 #endif
@@ -26,9 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(quitAction, &QAction::triggered,
             qApp, &QApplication::quit);
-    connect(fontTree, &QTreeWidget::currentItemChanged,
+    connect(fontTree, &BOBUIreeWidget::currentItemChanged,
             this, &MainWindow::showFont);
-    connect(fontTree, &QTreeWidget::itemChanged,
+    connect(fontTree, &BOBUIreeWidget::itemChanged,
             this, &MainWindow::updateStyles);
 
     fontTree->topLevelItem(0)->setSelected(true);
@@ -46,49 +46,49 @@ void MainWindow::setupFontTree()
         if (styles.isEmpty())
             continue;
 
-        QTreeWidgetItem *familyItem = new QTreeWidgetItem(fontTree);
+        BOBUIreeWidgetItem *familyItem = new BOBUIreeWidgetItem(fontTree);
         familyItem->setText(0, family);
-        familyItem->setCheckState(0, Qt::Unchecked);
-        familyItem->setFlags(familyItem->flags() | Qt::ItemIsAutoTristate);
+        familyItem->setCheckState(0, BobUI::Unchecked);
+        familyItem->setFlags(familyItem->flags() | BobUI::ItemIsAutoTristate);
 
         for (const QString &style : styles) {
-            QTreeWidgetItem *styleItem = new QTreeWidgetItem(familyItem);
+            BOBUIreeWidgetItem *styleItem = new BOBUIreeWidgetItem(familyItem);
             styleItem->setText(0, style);
-            styleItem->setCheckState(0, Qt::Unchecked);
-            styleItem->setData(0, Qt::UserRole, QVariant(QFontDatabase::weight(family, style)));
-            styleItem->setData(0, Qt::UserRole + 1, QVariant(QFontDatabase::italic(family, style)));
+            styleItem->setCheckState(0, BobUI::Unchecked);
+            styleItem->setData(0, BobUI::UserRole, QVariant(QFontDatabase::weight(family, style)));
+            styleItem->setData(0, BobUI::UserRole + 1, QVariant(QFontDatabase::italic(family, style)));
         }
     }
 }
 
 void MainWindow::on_clearAction_triggered()
 {
-    const QList<QTreeWidgetItem *> items = fontTree->selectedItems();
-    for (QTreeWidgetItem *item : items)
+    const QList<BOBUIreeWidgetItem *> items = fontTree->selectedItems();
+    for (BOBUIreeWidgetItem *item : items)
         item->setSelected(false);
     fontTree->currentItem()->setSelected(true);
 }
 
 void MainWindow::on_markAction_triggered()
 {
-    markUnmarkFonts(Qt::Checked);
+    markUnmarkFonts(BobUI::Checked);
 }
 
 void MainWindow::on_unmarkAction_triggered()
 {
-    markUnmarkFonts(Qt::Unchecked);
+    markUnmarkFonts(BobUI::Unchecked);
 }
 
-void MainWindow::markUnmarkFonts(Qt::CheckState state)
+void MainWindow::markUnmarkFonts(BobUI::CheckState state)
 {
-    const QList<QTreeWidgetItem *> items = fontTree->selectedItems();
-    for (QTreeWidgetItem *item : items) {
+    const QList<BOBUIreeWidgetItem *> items = fontTree->selectedItems();
+    for (BOBUIreeWidgetItem *item : items) {
         if (item->checkState(0) != state)
             item->setCheckState(0, state);
     }
 }
 
-void MainWindow::showFont(QTreeWidgetItem *item)
+void MainWindow::showFont(BOBUIreeWidgetItem *item)
 {
     if (!item)
         return;
@@ -101,13 +101,13 @@ void MainWindow::showFont(QTreeWidgetItem *item)
     if (item->parent()) {
         family = item->parent()->text(0);
         style = item->text(0);
-        weight = item->data(0, Qt::UserRole).toInt();
-        italic = item->data(0, Qt::UserRole + 1).toBool();
+        weight = item->data(0, BobUI::UserRole).toInt();
+        italic = item->data(0, BobUI::UserRole + 1).toBool();
     } else {
         family = item->text(0);
         style = item->child(0)->text(0);
-        weight = item->child(0)->data(0, Qt::UserRole).toInt();
-        italic = item->child(0)->data(0, Qt::UserRole + 1).toBool();
+        weight = item->child(0)->data(0, BobUI::UserRole).toInt();
+        italic = item->child(0)->data(0, BobUI::UserRole + 1).toBool();
     }
 
     QString oldText = textEdit->toPlainText().trimmed();
@@ -117,9 +117,9 @@ void MainWindow::showFont(QTreeWidgetItem *item)
     font.setStyleName(style);
     textEdit->document()->setDefaultFont(font);
 
-    QTextCursor cursor = textEdit->textCursor();
-    QTextBlockFormat blockFormat;
-    blockFormat.setAlignment(Qt::AlignCenter);
+    BOBUIextCursor cursor = textEdit->textCursor();
+    BOBUIextBlockFormat blockFormat;
+    blockFormat.setAlignment(BobUI::AlignCenter);
     cursor.insertBlock(blockFormat);
 
     if (modified)
@@ -130,17 +130,17 @@ void MainWindow::showFont(QTreeWidgetItem *item)
     textEdit->document()->setModified(modified);
 }
 
-void MainWindow::updateStyles(QTreeWidgetItem *item, int column)
+void MainWindow::updateStyles(BOBUIreeWidgetItem *item, int column)
 {
     if (!item || column != 0)
         return;
 
-    Qt::CheckState state = item->checkState(0);
-    QTreeWidgetItem *parent = item->parent();
+    BobUI::CheckState state = item->checkState(0);
+    BOBUIreeWidgetItem *parent = item->parent();
 
     if (parent) {
         // Only count style items.
-        if (state == Qt::Checked)
+        if (state == BobUI::Checked)
             ++markedCount;
         else
             --markedCount;
@@ -155,17 +155,17 @@ QMap<QString, StyleItems> MainWindow::currentPageMap()
     QMap<QString, StyleItems> pageMap;
 
     for (int row = 0; row < fontTree->topLevelItemCount(); ++row) {
-        QTreeWidgetItem *familyItem = fontTree->topLevelItem(row);
+        BOBUIreeWidgetItem *familyItem = fontTree->topLevelItem(row);
         QString family;
 
-        if (familyItem->checkState(0) == Qt::Checked) {
+        if (familyItem->checkState(0) == BobUI::Checked) {
             family = familyItem->text(0);
             pageMap[family] = StyleItems();
         }
 
         for (int childRow = 0; childRow < familyItem->childCount(); ++childRow) {
-            QTreeWidgetItem *styleItem = familyItem->child(childRow);
-            if (styleItem->checkState(0) == Qt::Checked)
+            BOBUIreeWidgetItem *styleItem = familyItem->child(childRow);
+            if (styleItem->checkState(0) == BobUI::Checked)
                 pageMap[family].append(styleItem);
         }
     }
@@ -175,7 +175,7 @@ QMap<QString, StyleItems> MainWindow::currentPageMap()
 
 void MainWindow::on_printAction_triggered()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     pageMap = currentPageMap();
 
     if (pageMap.count() == 0)
@@ -197,12 +197,12 @@ void MainWindow::on_printAction_triggered()
 
 void MainWindow::printDocument(QPrinter *printer)
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     printer->setFromTo(1, pageMap.count());
 
     QProgressDialog progress(tr("Preparing font samples..."), tr("&Cancel"),
                              0, pageMap.count(), this);
-    progress.setWindowModality(Qt::ApplicationModal);
+    progress.setWindowModality(BobUI::ApplicationModal);
     progress.setWindowTitle(tr("Font Sampler"));
     progress.setMinimum(printer->fromPage() - 1);
     progress.setMaximum(printer->toPage());
@@ -231,7 +231,7 @@ void MainWindow::printDocument(QPrinter *printer)
 
 void MainWindow::on_printPreviewAction_triggered()
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printpreviewdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printpreviewdialog)
     pageMap = currentPageMap();
 
     if (pageMap.count() == 0)
@@ -247,17 +247,17 @@ void MainWindow::on_printPreviewAction_triggered()
 
 void MainWindow::printPage(int index, QPainter *painter, QPrinter *printer)
 {
-#if defined(QT_PRINTSUPPORT_LIB) && QT_CONFIG(printdialog)
+#if defined(BOBUI_PRINTSUPPORT_LIB) && BOBUI_CONFIG(printdialog)
     const QString family = std::next(pageMap.begin(), index).key();
     const StyleItems items = pageMap.value(family);
 
     // Find the dimensions of the text on each page.
     qreal width = 0.0;
     qreal height = 0.0;
-    for (const QTreeWidgetItem *item : items) {
+    for (const BOBUIreeWidgetItem *item : items) {
         QString style = item->text(0);
-        int weight = item->data(0, Qt::UserRole).toInt();
-        bool italic = item->data(0, Qt::UserRole + 1).toBool();
+        int weight = item->data(0, BobUI::UserRole).toInt();
+        bool italic = item->data(0, BobUI::UserRole + 1).toBool();
 
         // Calculate the maximum width and total height of the text.
         for (int size : std::as_const(sampleSizes)) {
@@ -283,15 +283,15 @@ void MainWindow::printPage(int index, QPainter *painter, QPrinter *printer)
     painter->save();
     painter->translate(printer->pageRect(QPrinter::DevicePixel).width() / 2.0, printer->pageRect(QPrinter::DevicePixel).height() / 2.0);
     painter->scale(scale, scale);
-    painter->setBrush(QBrush(Qt::black));
+    painter->setBrush(QBrush(BobUI::black));
 
     qreal x = -width / 2.0;
     qreal y = -height / 2.0 - remainingHeight / 4.0 + spaceHeight;
 
-    for (const QTreeWidgetItem *item : items) {
+    for (const BOBUIreeWidgetItem *item : items) {
         QString style = item->text(0);
-        int weight = item->data(0, Qt::UserRole).toInt();
-        bool italic = item->data(0, Qt::UserRole + 1).toBool();
+        int weight = item->data(0, BobUI::UserRole).toInt();
+        bool italic = item->data(0, BobUI::UserRole + 1).toBool();
 
         // Draw each line of text.
         for (int size : std::as_const(sampleSizes)) {

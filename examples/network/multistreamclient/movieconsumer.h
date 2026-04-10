@@ -1,14 +1,14 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MOVIECONSUMER_H
 #define MOVIECONSUMER_H
 
 #include "consumer.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLabel;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class MovieConsumer : public Consumer
 {

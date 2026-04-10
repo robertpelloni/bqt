@@ -96,8 +96,8 @@ not ok 7 - test3(data1)
   found: "hello1" (str)
   expected: "hello0" (QString("hello0"))
   actual: "hello1" (str)
-  at: tst_Subtest::test3() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::test3() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   extensions:
     messages:
@@ -115,8 +115,8 @@ not ok 8 - test3(data2)
   found: "hello2" (str)
   expected: "hello0" (QString("hello0"))
   actual: "hello2" (str)
-  at: tst_Subtest::test3() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::test3() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   extensions:
     messages:
@@ -129,8 +129,8 @@ not ok 8 - test3(data2)
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   extensions:
     messages:
@@ -140,78 +140,78 @@ not ok 9 - multiFail()
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # This failure message should be repeated ten times
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 not ok 9 - multiFail()
   ---
   # But this test should only contribute one to the failure count
-  at: tst_Subtest::multiFail() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiFail() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   ...
 # debug: cleanup multiFail (null)
 ok 10 - multiSkip() # SKIP This skip should be repeated ten times
   ---
-  at: tst_Subtest::multiSkip() (qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
+  at: tst_Subtest::multiSkip() (bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/subtest/tst_subtest.cpp
   line: 0
   extensions:
     messages:

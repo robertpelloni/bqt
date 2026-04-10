@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#if QT_CONFIG(process)
+#include <BOBUIest>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
-#include <QtCore/QList>
-#include <QtCore/QSystemSemaphore>
-#include <QtCore/QTemporaryDir>
+#include <BobUICore/QList>
+#include <BobUICore/QSystemSemaphore>
+#include <BobUICore/BOBUIemporaryDir>
 
 #include "../ipctestcommon.h"
 
 #define HELPERWAITTIME 10000
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QSystemSemaphore : public QObject
 {
@@ -94,12 +94,12 @@ void tst_QSystemSemaphore::cleanup()
 
 void tst_QSystemSemaphore::nativeKey_data()
 {
-    QTest::addColumn<QString>("constructorKey");
-    QTest::addColumn<QString>("setKey");
+    BOBUIest::addColumn<QString>("constructorKey");
+    BOBUIest::addColumn<QString>("setKey");
 
-    QTest::newRow("null, null") << QString() << QString();
-    QTest::newRow("null, one") << QString() << QString("one");
-    QTest::newRow("one, two") << QString("one") << QString("two");
+    BOBUIest::newRow("null, null") << QString() << QString();
+    BOBUIest::newRow("null, one") << QString() << QString("one");
+    BOBUIest::newRow("one, two") << QString("one") << QString("two");
 }
 
 /*!
@@ -131,8 +131,8 @@ void tst_QSystemSemaphore::nativeKey()
     }
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QSystemSemaphore::legacyKey()
 {
     QFETCH(QString, constructorKey);
@@ -148,7 +148,7 @@ void tst_QSystemSemaphore::legacyKey()
     QCOMPARE(sem.error(), QSystemSemaphore::NoError);
     QCOMPARE(sem.errorString(), QString());
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void tst_QSystemSemaphore::changeKeyType()
 {
@@ -231,7 +231,7 @@ void tst_QSystemSemaphore::twoSemaphores()
 
 void tst_QSystemSemaphore::basicProcesses()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QNativeIpcKey key = platformSafeKey("store");
@@ -258,17 +258,17 @@ void tst_QSystemSemaphore::basicProcesses()
 
 void tst_QSystemSemaphore::processes_data()
 {
-    QTest::addColumn<int>("processes");
+    BOBUIest::addColumn<int>("processes");
     for (int i = 0; i < 5; ++i) {
-        QTest::addRow("1 process (%d)", i) << 1;
-        QTest::addRow("3 process (%d)", i) << 3;
-        QTest::addRow("10 process (%d)", i) << 10;
+        BOBUIest::addRow("1 process (%d)", i) << 1;
+        BOBUIest::addRow("3 process (%d)", i) << 3;
+        BOBUIest::addRow("10 process (%d)", i) << 10;
     }
 }
 
 void tst_QSystemSemaphore::processes()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QNativeIpcKey key = platformSafeKey("store");
@@ -296,7 +296,7 @@ void tst_QSystemSemaphore::processes()
 
 void tst_QSystemSemaphore::undo()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QNativeIpcKey key = platformSafeKey("store");
@@ -330,7 +330,7 @@ void tst_QSystemSemaphore::undo()
 
 void tst_QSystemSemaphore::initialValue()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QNativeIpcKey key = platformSafeKey("store");
@@ -363,6 +363,6 @@ void tst_QSystemSemaphore::initialValue()
 #endif
 }
 
-QTEST_MAIN(tst_QSystemSemaphore)
+BOBUIEST_MAIN(tst_QSystemSemaphore)
 #include "tst_qsystemsemaphore.moc"
 

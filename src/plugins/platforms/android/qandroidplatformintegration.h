@@ -1,5 +1,5 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMINTERATION_H
 #define QANDROIDPLATFORMINTERATION_H
@@ -7,7 +7,7 @@
 #include "qandroidinputcontext.h"
 #include "qandroidplatformscreen.h"
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformmenu.h>
 #include <qpa/qplatformnativeinterface.h>
@@ -15,12 +15,12 @@
 #include <qpa/qplatformoffscreensurface.h>
 #include <qpa/qplatformtheme.h>
 #include <private/qflatmap_p.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include <EGL/egl.h>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformServices;
 class QAndroidSystemLocale;
@@ -40,7 +40,7 @@ protected:
 };
 
 class QAndroidPlatformIntegration : public QPlatformIntegration
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
                                   , QNativeInterface::Private::QEGLIntegration
                                   , QNativeInterface::Private::QAndroidOffScreenIntegration
 #endif
@@ -58,13 +58,13 @@ public:
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
     QOpenGLContext *createOpenGLContext(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext) const override;
 #endif
     QAbstractEventDispatcher *createEventDispatcher() const override;
     QAndroidPlatformScreen *screen() { return m_primaryScreen; }
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
     QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const override;
     QOffscreenSurface *createOffscreenSurface(ANativeWindow *nativeSurface) const override;
 #endif
@@ -81,7 +81,7 @@ public:
     void handleScreenChanged(int displayId);
     void handleScreenRemoved(int displayId);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QPlatformClipboard *clipboard() const override;
 #endif
 
@@ -89,27 +89,27 @@ public:
     QPlatformNativeInterface *nativeInterface() const override;
     QPlatformServices *services() const override;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     virtual QPlatformAccessibility *accessibility() const override;
 #endif
 
     QVariant styleHint(StyleHint hint) const override;
-    Qt::WindowState defaultWindowState(Qt::WindowFlags flags) const override;
+    BobUI::WindowState defaultWindowState(BobUI::WindowFlags flags) const override;
 
     QStringList themeNames() const override;
     QPlatformTheme *createPlatformTheme(const QString &name) const override;
 
-    static void setScreenOrientation(Qt::ScreenOrientation currentOrientation,
-                                     Qt::ScreenOrientation nativeOrientation);
+    static void setScreenOrientation(BobUI::ScreenOrientation currentOrientation,
+                                     BobUI::ScreenOrientation nativeOrientation);
 
     QPointingDevice *touchDevice() const { return m_touchDevice; }
     void setTouchDevice(QPointingDevice *touchDevice) { m_touchDevice = touchDevice; }
 
     void flushPendingUpdates();
 
-    static void updateColorScheme(Qt::ColorScheme colorScheme);
-    static Qt::ColorScheme colorScheme() { return m_colorScheme; }
-#if QT_CONFIG(vulkan)
+    static void updateColorScheme(BobUI::ColorScheme colorScheme);
+    static BobUI::ColorScheme colorScheme() { return m_colorScheme; }
+#if BOBUI_CONFIG(vulkan)
     QPlatformVulkanInstance *createPlatformVulkanInstance(QVulkanInstance *instance) const override;
 #endif
 
@@ -119,12 +119,12 @@ private:
 
     QAndroidPlatformScreen *m_primaryScreen;
 
-    QThread *m_mainThread;
+    BOBUIhread *m_mainThread;
 
-    static Qt::ColorScheme m_colorScheme;
+    static BobUI::ColorScheme m_colorScheme;
 
-    static Qt::ScreenOrientation m_orientation;
-    static Qt::ScreenOrientation m_nativeOrientation;
+    static BobUI::ScreenOrientation m_orientation;
+    static BobUI::ScreenOrientation m_nativeOrientation;
     static bool m_showPasswordEnabled;
 
     QPlatformFontDatabase *m_androidFDB;
@@ -142,18 +142,18 @@ private:
     // but nevertheless it is retrieved
     int m_primaryDisplayId = 0;
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QPlatformClipboard *m_androidPlatformClipboard;
 #endif
 
     QAndroidSystemLocale *m_androidSystemLocale;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     mutable QPlatformAccessibility *m_accessibility;
 #endif
 
     QScopedPointer<QPlatformInputContext> m_inputContext;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

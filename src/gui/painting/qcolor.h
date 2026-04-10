@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOLOR_H
 #define QCOLOR_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qrgb.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstringlist.h>
-#include <QtGui/qrgba64.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qrgb.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUIGui/qrgba64.h>
 
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QColor;
 class QVariant;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QColor &);
 #endif
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QColor &);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QColor &);
 #endif
@@ -29,14 +29,14 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QColor &);
 class Q_GUI_EXPORT QColor
 {
 public:
-    // ### Qt7: make this "enum Spec: quint8 {...}" and reorder the members below for tighter
+    // ### BobUI7: make this "enum Spec: quint8 {...}" and reorder the members below for tighter
     //          struct packing. QColor could fit into the inline storage of a QVariant on 32bit.
     enum Spec { Invalid, Rgb, Hsv, Cmyk, Hsl, ExtendedRgb };
     enum NameFormat { HexRgb, HexArgb };
 
     constexpr QColor() noexcept
         : cspec(Invalid), ct(USHRT_MAX, 0, 0, 0, 0) {}
-    QColor(Qt::GlobalColor color) noexcept;
+    QColor(BobUI::GlobalColor color) noexcept;
     constexpr QColor(int r, int g, int b, int a = 255) noexcept
         : cspec(isRgbaValid(r, g, b, a) ? Rgb : Invalid),
           ct(ushort(cspec == Rgb ? a * 0x0101 : 0),
@@ -54,18 +54,18 @@ public:
 
     static QColor fromString(QAnyStringView name) noexcept;
 
-    QColor &operator=(Qt::GlobalColor color) noexcept;
+    QColor &operator=(BobUI::GlobalColor color) noexcept;
 
     bool isValid() const noexcept;
 
     QString name(NameFormat format = HexRgb) const;
 
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
     void setNamedColor(const QString& name);
-    QT_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
     void setNamedColor(QStringView name);
-    QT_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use fromString() instead.")
     void setNamedColor(QLatin1StringView name);
 #endif
 
@@ -191,12 +191,12 @@ public:
 
     operator QVariant() const;
 
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
     static bool isValidColor(const QString &name);
-    QT_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
     static bool isValidColor(QStringView) noexcept;
-    QT_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_6("Use isValidColorName() instead.")
     static bool isValidColor(QLatin1StringView) noexcept;
 #endif
     static bool isValidColorName(QAnyStringView) noexcept;
@@ -255,7 +255,7 @@ private:
         ushort array[5];
     } ct;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QColor &);
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QColor &);
 #endif
@@ -285,7 +285,7 @@ inline bool QColor::isValid() const noexcept
 
 namespace QColorConstants
 {
-    // Qt::GlobalColor names
+    // BobUI::GlobalColor names
     constexpr inline QColor Color0      {QColor::Rgb, 0xff * 0x101, 0x00 * 0x101, 0x00 * 0x101, 0x00 * 0x101};
     constexpr inline QColor Color1      {QColor::Rgb, 0xff * 0x101, 0xff * 0x101, 0xff * 0x101, 0xff * 0x101};
     constexpr inline QColor Black       {QColor::Rgb, 0xff * 0x101, 0x00 * 0x101, 0x00 * 0x101, 0x00 * 0x101};
@@ -459,6 +459,6 @@ namespace Svg {
 }  // namespace Svg
 }  // namespace QColorConstants
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLOR_H

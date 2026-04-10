@@ -1,19 +1,19 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QCoreApplication>
 #include <QDebug>
 
 #define QPROMISE_TEST
 
-#include <QTest>
+#include <BOBUIest>
 #include <qfuture.h>
 #include <qfuturewatcher.h>
 #include <qpromise.h>
-#include <QtCore/qsemaphore.h>
+#include <BobUICore/qsemaphore.h>
 
 #include <algorithm>
 #include <memory>
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 #include <chrono>
 
 using namespace std::chrono_literals;
@@ -35,9 +35,9 @@ private slots:
     void addResult();
     void addResultWithBracedInitializer();
     void addResultOutOfOrder();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void setException();
-    void setExceptionAfterCancelDoesNothing(); // QTBUG-128405
+    void setExceptionAfterCancelDoesNothing(); // BOBUIBUG-128405
     void setExceptionAfterFinishDoesNothing();
 #endif
     void cancel();
@@ -45,17 +45,17 @@ private slots:
 
     // complicated test cases
     void addInThread();
-    void addInThreadMoveOnlyObject();  // separate test case - QTBUG-84736
+    void addInThreadMoveOnlyObject();  // separate test case - BOBUIBUG-84736
     void reportFromMultipleThreads();
     void reportFromMultipleThreadsByMovedPromise();
     void doNotCancelWhenFinished();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void cancelWhenDestroyed();
 #endif
     void cancelWhenReassigned();
     void cancelWhenDestroyedWithoutStarting();
     void cancelWhenDestroyedRunsContinuations();
-    void cancelWhenDestroyedWithFailureHandler();  // QTBUG-114606
+    void cancelWhenDestroyedWithFailureHandler();  // BOBUIBUG-114606
     void continuationsRunWhenFinished();
     void finishWhenSwapped();
     void cancelWhenMoved();
@@ -93,7 +93,7 @@ bool operator==(const MoveOnlyType &a, const MoveOnlyType &b) { return a.field =
 #define RUN_TEST_FUNC(test, ...) \
 do { \
     test(__VA_ARGS__); \
-    if (QTest::currentTestFailed()) \
+    if (BOBUIest::currentTestFailed()) \
         QFAIL("Test case " #test "(" #__VA_ARGS__ ") failed"); \
 } while (false)
 
@@ -101,9 +101,9 @@ do { \
 // a scope to prevent potential std::terminate
 struct ThreadWrapper
 {
-    std::unique_ptr<QThread> t;
+    std::unique_ptr<BOBUIhread> t;
     template<typename Function>
-    ThreadWrapper(Function &&f) : t(QThread::create(std::forward<Function>(f)))
+    ThreadWrapper(Function &&f) : t(BOBUIhread::create(std::forward<Function>(f)))
     {
         t->start();
     }
@@ -233,7 +233,7 @@ void tst_QPromise::addResult()
     }
 }
 
-void tst_QPromise::addResultWithBracedInitializer() // QTBUG-111826
+void tst_QPromise::addResultWithBracedInitializer() // BOBUIBUG-111826
 {
     struct MyClass
     {
@@ -299,7 +299,7 @@ void tst_QPromise::addResultOutOfOrder()
     }
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QPromise::setException()
 {
     struct TestException {};  // custom exception class
@@ -441,7 +441,7 @@ void tst_QPromise::progress()
 
 void tst_QPromise::addInThread()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     const auto testAddResult = [] (auto promise, const auto &result) {
@@ -465,7 +465,7 @@ void tst_QPromise::addInThread()
 
 void tst_QPromise::addInThreadMoveOnlyObject()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<MoveOnlyType> promise;
@@ -484,7 +484,7 @@ void tst_QPromise::addInThreadMoveOnlyObject()
 
 void tst_QPromise::reportFromMultipleThreads()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> promise;
@@ -509,7 +509,7 @@ void tst_QPromise::reportFromMultipleThreads()
 
 void tst_QPromise::reportFromMultipleThreadsByMovedPromise()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> initialPromise;
@@ -542,7 +542,7 @@ void tst_QPromise::reportFromMultipleThreadsByMovedPromise()
 
 void tst_QPromise::doNotCancelWhenFinished()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     const auto testFinishedPromise = [] (auto promise) {
@@ -565,10 +565,10 @@ void tst_QPromise::doNotCancelWhenFinished()
     RUN_TEST_FUNC(testFinishedPromise, QPromise<MoveOnlyType>());
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 void tst_QPromise::cancelWhenDestroyed()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> initialPromise;
@@ -603,7 +603,7 @@ void tst_QPromise::cancelWhenDestroyed()
 
 void tst_QPromise::cancelWhenReassigned()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> promise;
@@ -612,7 +612,7 @@ void tst_QPromise::cancelWhenReassigned()
 
     ThreadWrapper thr([&] {
         auto p = std::move(promise);
-        QThread::sleep(100ms);
+        BOBUIhread::sleep(100ms);
         p = QPromise<int>();  // assign new promise, old must be correctly destroyed
     });
 
@@ -684,7 +684,7 @@ static inline void testCancelWhenDestroyedWithFailureHandler()
 
 void tst_QPromise::cancelWhenDestroyedWithFailureHandler()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     RUN_TEST_FUNC(testCancelWhenDestroyedWithFailureHandler<void>);
     RUN_TEST_FUNC(testCancelWhenDestroyedWithFailureHandler<int>);
     RUN_TEST_FUNC(testCancelWhenDestroyedWithFailureHandler<CopyOnlyType>);
@@ -721,7 +721,7 @@ void tst_QPromise::continuationsRunWhenFinished()
 
 void tst_QPromise::finishWhenSwapped()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> promise1;
@@ -733,7 +733,7 @@ void tst_QPromise::finishWhenSwapped()
     promise2.start();
 
     ThreadWrapper thr([&promise1, &promise2] () mutable {
-        QThread::sleep(100ms);
+        BOBUIhread::sleep(100ms);
         promise1.addResult(0);
         promise2.addResult(1);
         swap(promise1, promise2);  // ADL must resolve this
@@ -763,7 +763,7 @@ void tst_QPromise::finishWhenSwapped()
 template <typename T>
 void testCancelWhenMoved()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<T> promise1;
@@ -778,7 +778,7 @@ void testCancelWhenMoved()
     ThreadWrapper thr([&] {
         auto p1 = std::move(promise1);
         auto p2 = std::move(promise2);
-        QThread::sleep(100ms);
+        BOBUIhread::sleep(100ms);
         p1 = std::move(p2);
         p1.finish();  // this finish is for future #2
     });
@@ -805,8 +805,8 @@ void tst_QPromise::cancelWhenMoved()
 
 void tst_QPromise::waitUntilResumed()
 {
-#if !QT_CONFIG(cxx11_future)
-    QSKIP("This test requires QThread::create");
+#if !BOBUI_CONFIG(cxx11_future)
+    QSKIP("This test requires BOBUIhread::create");
 #else
     QPromise<int> promise;
     promise.start();
@@ -822,7 +822,7 @@ void tst_QPromise::waitUntilResumed()
 
     while (!f.isSuspended()) {  // busy wait until worker thread suspends
         QCOMPARE(f.isFinished(), false);  // exit condition in case of failure
-        QThread::sleep(50ms);  // allow another thread to actually carry on
+        BOBUIhread::sleep(50ms);  // allow another thread to actually carry on
     }
 
     f.resume();
@@ -835,7 +835,7 @@ void tst_QPromise::waitUntilResumed()
 
 void tst_QPromise::waitUntilCanceled()
 {
-#if !QT_CONFIG(cxx11_future)
+#if !BOBUI_CONFIG(cxx11_future)
     QSKIP("This test requires C++11 std threading enabled (and working) in the standard library.");
 #endif
     QPromise<int> promise;
@@ -852,7 +852,7 @@ void tst_QPromise::waitUntilCanceled()
 
     while (!f.isSuspended()) {  // busy wait until worker thread suspends
         QCOMPARE(f.isFinished(), false);  // exit condition in case of failure
-        QThread::sleep(50ms);  // allow another thread to actually carry on
+        BOBUIhread::sleep(50ms);  // allow another thread to actually carry on
     }
 
     f.cancel();
@@ -878,5 +878,5 @@ void tst_QPromise::snippet_suspendExample()
     snippet_QPromise::suspendExample();
 }
 
-QTEST_MAIN(tst_QPromise)
+BOBUIEST_MAIN(tst_QPromise)
 #include "tst_qpromise.moc"

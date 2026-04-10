@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTITEMMODEL_P_H
 #define QABSTRACTITEMMODEL_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of QAbstractItemModel*.  This header file may change from version
 // to version without notice, or even be removed.
 //
@@ -17,15 +17,15 @@
 //
 //
 
-#include "QtCore/qabstractitemmodel.h"
-#include "QtCore/private/qobject_p.h"
-#include "QtCore/qstack.h"
-#include "QtCore/qset.h"
-#include "QtCore/qhash.h"
+#include "BobUICore/qabstractitemmodel.h"
+#include "BobUICore/private/qobject_p.h"
+#include "BobUICore/qstack.h"
+#include "BobUICore/qset.h"
+#include "BobUICore/qhash.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_REQUIRE_CONFIG(itemmodel);
+BOBUI_REQUIRE_CONFIG(itemmodel);
 
 class QPersistentModelIndexData
 {
@@ -38,9 +38,9 @@ public:
     static void destroy(QPersistentModelIndexData *data);
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // This class is just a wrapper so we can use the fixed qHash() function for QModelIndex.
-struct QModelIndexWrapper // ### Qt 7: Remove again, use QModelIndex directly.
+struct QModelIndexWrapper // ### BobUI 7: Remove again, use QModelIndex directly.
 {
     QModelIndex index;
     Q_IMPLICIT QModelIndexWrapper(const QModelIndex &i) : index(i) { }
@@ -51,7 +51,7 @@ struct QModelIndexWrapper // ### Qt 7: Remove again, use QModelIndex directly.
     friend bool operator!=(const QModelIndexWrapper &l, const QModelIndex &r) { return !(operator==(l.index,r)); }
     friend bool operator==(const QModelIndex &l, const QModelIndexWrapper &r) { return l == r.index; }
     friend bool operator!=(const QModelIndex &l, const QModelIndexWrapper &r) { return !(operator==(l,r.index)); }
-    friend inline size_t qHash(const QtPrivate::QModelIndexWrapper &index, size_t seed = 0) noexcept
+    friend inline size_t qHash(const BobUIPrivate::QModelIndexWrapper &index, size_t seed = 0) noexcept
     {
         return qHashMulti(seed, index.index.row(), index.index.column(), index.index.internalId());
     }
@@ -70,7 +70,7 @@ public:
 
     void removePersistentIndexData(QPersistentModelIndexData *data);
     void movePersistentIndexes(const QList<QPersistentModelIndexData *> &indexes, int change, const QModelIndex &parent,
-                               Qt::Orientation orientation);
+                               BobUI::Orientation orientation);
     void rowsAboutToBeInserted(const QModelIndex &parent, int first, int last);
     void rowsInserted(const QModelIndex &parent, int first, int last);
     void rowsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
@@ -82,11 +82,11 @@ public:
     static QAbstractItemModel *staticEmptyModel();
     static bool variantLessThan(const QVariant &v1, const QVariant &v2);
 
-    void itemsAboutToBeMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, Qt::Orientation);
-    void itemsMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, Qt::Orientation orientation);
-    bool allowMove(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, Qt::Orientation orientation);
+    void itemsAboutToBeMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, BobUI::Orientation);
+    void itemsMoved(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, BobUI::Orientation orientation);
+    bool allowMove(const QModelIndex &srcParent, int srcFirst, int srcLast, const QModelIndex &destinationParent, int destinationChild, BobUI::Orientation orientation);
 
-    // ugly hack for QTreeModel, see QTBUG-94546
+    // ugly hack for BOBUIreeModel, see BOBUIBUG-94546
     virtual void executePendingOperations() const;
 
     inline QModelIndex createIndex(int row, int column, void *data = nullptr) const {
@@ -132,7 +132,7 @@ public:
 
     struct Persistent {
         Persistent() {}
-        QMultiHash<QtPrivate::QModelIndexWrapper, QPersistentModelIndexData *> indexes;
+        QMultiHash<BobUIPrivate::QModelIndexWrapper, QPersistentModelIndexData *> indexes;
         QStack<QList<QPersistentModelIndexData *>> moved;
         QStack<QList<QPersistentModelIndexData *>> invalidated;
         void insertMultiAtEnd(const QModelIndex& key, QPersistentModelIndexData *data);
@@ -142,29 +142,29 @@ public:
 
     static const QHash<int,QByteArray> &defaultRoleNames();
     static bool isVariantLessThan(const QVariant &left, const QVariant &right,
-                                  Qt::CaseSensitivity cs = Qt::CaseSensitive, bool isLocaleAware = false);
+                                  BobUI::CaseSensitivity cs = BobUI::CaseSensitive, bool isLocaleAware = false);
 };
 Q_DECLARE_TYPEINFO(QAbstractItemModelPrivate::Change, Q_RELOCATABLE_TYPE);
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 /*!
     \internal
-    This is a workaround for QTBUG-75172.
+    This is a workaround for BOBUIBUG-75172.
 
     Some predefined model roles are supposed to use certain enum/flag
-    types (e.g. fetching Qt::TextAlignmentRole is supposed to return a
-    variant containing a Qt::Alignment object).
+    types (e.g. fetching BobUI::TextAlignmentRole is supposed to return a
+    variant containing a BobUI::Alignment object).
 
     For historical reasons, a plain `int` was used sometimes. This is
-    surprising to end-users and also sloppy on Qt's part; users were
+    surprising to end-users and also sloppy on BobUI's part; users were
     forced to use `int` rather than the correct datatype.
 
     This function tries both the "right" type and plain `int`, for a
     given QVariant. This fixes the problem (using the correct datatype)
     but also keeps compatibility with existing code using `int`.
 
-    ### Qt 7: get rid of this. Always use the correct datatype.
+    ### BobUI 7: get rid of this. Always use the correct datatype.
 */
 template <typename T>
 T legacyEnumValueFromModelData(const QVariant &data)
@@ -193,9 +193,9 @@ T legacyFlagValueFromModelData(const QVariant &data)
     return T();
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTITEMMODEL_P_H

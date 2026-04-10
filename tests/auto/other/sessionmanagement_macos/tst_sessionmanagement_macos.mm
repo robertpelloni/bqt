@@ -1,8 +1,8 @@
 // Copyright (C) 2019 Samuel Gaist <samuel.gaist@idiap.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QSessionManager>
 #include <AppKit/AppKit.h>
@@ -25,12 +25,12 @@ void tst_SessionManagement_macOS::stopApplication()
     int argc = 0;
     QGuiApplication app(argc, nullptr);
     QSignalSpy spy(&app, &QGuiApplication::commitDataRequest);
-    QTimer::singleShot(1000, []() {
+    BOBUIimer::singleShot(1000, []() {
          [NSApp terminate:nil];
     });
     app.exec();
     QCOMPARE(spy.count(), 1);
 }
 
-QTEST_APPLESS_MAIN(tst_SessionManagement_macOS)
+BOBUIEST_APPLESS_MAIN(tst_SessionManagement_macOS)
 #include "tst_sessionmanagement_macos.moc"

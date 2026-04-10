@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "xbelwriter.h"
 
-#include <QTreeWidget>
+#include <BOBUIreeWidget>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
-XbelWriter::XbelWriter(const QTreeWidget *treeWidget) : treeWidget(treeWidget)
+XbelWriter::XbelWriter(const BOBUIreeWidget *treeWidget) : treeWidget(treeWidget)
 {
     xml.setAutoFormatting(true);
 }
@@ -32,9 +32,9 @@ bool XbelWriter::writeFile(QIODevice *device)
 //! [1]
 
 //! [2]
-void XbelWriter::writeItem(const QTreeWidgetItem *item)
+void XbelWriter::writeItem(const BOBUIreeWidgetItem *item)
 {
-    QString tagName = item->data(0, Qt::UserRole).toString();
+    QString tagName = item->data(0, BobUI::UserRole).toString();
     if (tagName == "folder"_L1) {
         bool folded = !item->isExpanded();
         xml.writeStartElement(tagName);

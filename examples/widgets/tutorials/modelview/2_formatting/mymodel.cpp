@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mymodel.h"
 
@@ -33,31 +33,31 @@ QVariant MyModel::data(const QModelIndex &index, int role) const
             .arg(row).arg(col).arg(role);
 
     switch (role) {
-    case Qt::DisplayRole:
+    case BobUI::DisplayRole:
         if (row == 0 && col == 1) return QString("<--left");
         if (row == 1 && col == 1) return QString("right-->");
 
         return QString("Row%1, Column%2")
                 .arg(row + 1)
                 .arg(col +1);
-    case Qt::FontRole:
+    case BobUI::FontRole:
         if (row == 0 && col == 0) { // change font only for cell(0,0)
             QFont boldFont;
             boldFont.setBold(true);
             return boldFont;
         }
         break;
-    case Qt::BackgroundRole:
+    case BobUI::BackgroundRole:
         if (row == 1 && col == 2)  // change background only for cell(1,2)
-            return QBrush(Qt::red);
+            return QBrush(BobUI::red);
         break;
-    case Qt::TextAlignmentRole:
+    case BobUI::TextAlignmentRole:
         if (row == 1 && col == 1) // change text alignment only for cell(1,1)
-            return int(Qt::AlignRight | Qt::AlignVCenter);
+            return int(BobUI::AlignRight | BobUI::AlignVCenter);
         break;
-    case Qt::CheckStateRole:
+    case BobUI::CheckStateRole:
         if (row == 1 && col == 0) // add a checkbox to cell(1,0)
-            return Qt::Checked;
+            return BobUI::Checked;
         break;
     }
     return QVariant();

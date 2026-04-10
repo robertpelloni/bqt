@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'calculatorform.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,17 +9,17 @@
 #ifndef CALCULATORFORM_H
 #define CALCULATORFORM_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/QSpinBox>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_CalculatorForm
 {
@@ -86,7 +86,7 @@ public:
 
         label_3 = new QLabel(CalculatorForm);
         label_3->setObjectName("label_3");
-        label_3->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label_3->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         hboxLayout->addWidget(label_3);
 
@@ -112,7 +112,7 @@ public:
 
         label_3_2 = new QLabel(CalculatorForm);
         label_3_2->setObjectName("label_3_2");
-        label_3_2->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        label_3_2->setAlignment(BobUI::AlignmentFlag::AlignCenter);
 
         hboxLayout->addWidget(label_3_2);
 
@@ -131,7 +131,7 @@ public:
         outputWidget->setObjectName("outputWidget");
         outputWidget->setFrameShape(QFrame::Shape::Box);
         outputWidget->setFrameShadow(QFrame::Shadow::Sunken);
-        outputWidget->setAlignment(Qt::AlignmentFlag::AlignAbsolute|Qt::AlignmentFlag::AlignBaseline|Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignCenter|Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignHorizontal_Mask|Qt::AlignmentFlag::AlignJustify|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTop|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter|Qt::AlignmentFlag::AlignVertical_Mask);
+        outputWidget->setAlignment(BobUI::AlignmentFlag::AlignAbsolute|BobUI::AlignmentFlag::AlignBaseline|BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignCenter|BobUI::AlignmentFlag::AlignHCenter|BobUI::AlignmentFlag::AlignHorizontal_Mask|BobUI::AlignmentFlag::AlignJustify|BobUI::AlignmentFlag::AlignLeading|BobUI::AlignmentFlag::AlignLeft|BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTop|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter|BobUI::AlignmentFlag::AlignVertical_Mask);
 
         vboxLayout2->addWidget(outputWidget);
 
@@ -172,6 +172,6 @@ namespace Ui {
     class CalculatorForm: public Ui_CalculatorForm {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CALCULATORFORM_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "certificateinfo.h"
 #include "sslclient.h"
@@ -24,7 +24,7 @@ void SslClient::updateEnabledState()
 {
     const bool unconnected = socket->state() == QAbstractSocket::UnconnectedState;
     form->hostNameEdit->setReadOnly(!unconnected);
-    form->hostNameEdit->setFocusPolicy(unconnected ? Qt::StrongFocus : Qt::NoFocus);
+    form->hostNameEdit->setFocusPolicy(unconnected ? BobUI::StrongFocus : BobUI::NoFocus);
     form->hostNameLabel->setEnabled(unconnected);
     form->portBox->setEnabled(unconnected);
     form->portLabel->setEnabled(unconnected);
@@ -144,13 +144,13 @@ void SslClient::setupUi()
     connect(form->sendButton, &QPushButton::clicked,
             this, &SslClient::sendData);
 
-    padLock = new QToolButton;
+    padLock = new BOBUIoolButton;
     padLock->setIcon(QIcon(":/encrypted.png"));
-    connect(padLock, &QToolButton::clicked,
+    connect(padLock, &BOBUIoolButton::clicked,
             this, &SslClient::displayCertificateInfo);
 
-#if QT_CONFIG(cursor)
-    padLock->setCursor(Qt::ArrowCursor);
+#if BOBUI_CONFIG(cursor)
+    padLock->setCursor(BobUI::ArrowCursor);
 #endif
     padLock->setToolTip(tr("Display encryption details."));
 
@@ -191,8 +191,8 @@ void SslClient::setupSecureSocket()
 
 void SslClient::appendString(const QString &line)
 {
-    QTextCursor cursor(form->sessionOutput->textCursor());
-    cursor.movePosition(QTextCursor::End);
+    BOBUIextCursor cursor(form->sessionOutput->textCursor());
+    cursor.movePosition(BOBUIextCursor::End);
     cursor.insertText(line);
     form->sessionOutput->verticalScrollBar()->setValue(form->sessionOutput->verticalScrollBar()->maximum());
 }

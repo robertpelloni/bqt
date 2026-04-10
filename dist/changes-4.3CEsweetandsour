@@ -1,12 +1,12 @@
-Changes for Qt/CE 4.3.x "SweetAndSour" release.
+Changes for BobUI/CE 4.3.x "SweetAndSour" release.
 
 ****************************************************************************
 *                           Features                                       *
 ****************************************************************************
 
-- Added QtScript
+- Added BobUIScript
 
-- Added cetest/QtRemote
+- Added cetest/BobUIRemote
 
 - Added MIPS/SH4 compilation support
 
@@ -35,7 +35,7 @@ Changes for Qt/CE 4.3.x "SweetAndSour" release.
    * Fixed deadlock bug caused by invalid state.
 
 - QDateTimeEdit
-   * Fixed support for QT_KEYPAD_NAVIGATION
+   * Fixed support for BOBUI_KEYPAD_NAVIGATION
 
 - QPixmap
    * Fixed toWinHBITMAP

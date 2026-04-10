@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BOBUIest>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/Foundation.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void tst_QUrl_mactypes_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("cfOutput");
-    QTest::addColumn<QString>("nsOutput");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("cfOutput");
+    BOBUIest::addColumn<QString>("nsOutput");
 
     auto addSimple = [](const char *label, QLatin1StringView urll1) {
         QString url = urll1;
-        QTest::addRow("%s", label) << url << url << url;
+        BOBUIest::addRow("%s", label) << url << url << url;
     };
     addSimple("empty", {});
 
@@ -35,7 +35,7 @@ void tst_QUrl_mactypes_data()
     addSimple("uri-relative-dotdot", "../README.txt"_L1);
 
     // QUrl retains [] unencoded, unlike CFURL & NSURL
-    QTest::newRow("gen-delims") << "x://:@host/:@/[]?:/?@[]?#:/?@[]"
+    BOBUIest::newRow("gen-delims") << "x://:@host/:@/[]?:/?@[]?#:/?@[]"
                                 << "x://:@host/:@/%5B%5D?:/?@%5B%5D?#:/?@%5B%5D"
                                 << "x://:@host/:@/%5B%5D?:/?@%5B%5D?#:/?@%5B%5D";
 }
@@ -45,32 +45,32 @@ void tst_QUrl_mactypes()
     QFETCH(QString, input);
     QFETCH(QString, cfOutput);
     QFETCH(QString, nsOutput);
-    QUrl qtUrl(input);
-    QUrl otherUrl = qtUrl.isEmpty() ? QUrl("https://example.com") : QUrl();
+    QUrl bobuiUrl(input);
+    QUrl otherUrl = bobuiUrl.isEmpty() ? QUrl("https://example.com") : QUrl();
 
     // confirm the conversions result in what we expect it to result
-    CFURLRef cfUrl = qtUrl.toCFURL();
+    CFURLRef cfUrl = bobuiUrl.toCFURL();
     QCFString cfStr = CFURLGetString(cfUrl);
     QCOMPARE(QString(cfStr), cfOutput);
 
-    const NSURL *nsUrl = qtUrl.toNSURL();
+    const NSURL *nsUrl = bobuiUrl.toNSURL();
     QVERIFY(nsUrl);
     const NSString *nsString = [nsUrl absoluteString];
     QVERIFY(nsString);
     QCOMPARE(QString::fromNSString(nsString), nsOutput);
 
     // confirm that roundtripping works and the equality operator does too
-    QUrl qtCfUrl = QUrl::fromCFURL(cfUrl);
+    QUrl bobuiCfUrl = QUrl::fromCFURL(cfUrl);
     if (input == cfOutput) {
-        QCOMPARE(qtCfUrl, qtUrl);
-        QCOMPARE_NE(qtCfUrl, otherUrl);
+        QCOMPARE(bobuiCfUrl, bobuiUrl);
+        QCOMPARE_NE(bobuiCfUrl, otherUrl);
     }
-    QCOMPARE(qtCfUrl.isEmpty(), qtUrl.isEmpty());
+    QCOMPARE(bobuiCfUrl.isEmpty(), bobuiUrl.isEmpty());
 
-    QUrl qtNsUrl = QUrl::fromNSURL(nsUrl);
+    QUrl bobuiNsUrl = QUrl::fromNSURL(nsUrl);
     if (input == nsOutput) {
-        QCOMPARE(qtNsUrl, qtUrl);
-        QCOMPARE_NE(qtNsUrl, otherUrl);
+        QCOMPARE(bobuiNsUrl, bobuiUrl);
+        QCOMPARE_NE(bobuiNsUrl, otherUrl);
     }
-    QCOMPARE(qtNsUrl.isEmpty(), qtUrl.isEmpty());
+    QCOMPARE(bobuiNsUrl.isEmpty(), bobuiUrl.isEmpty());
 }

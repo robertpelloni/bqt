@@ -1,9 +1,9 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtNetwork>
-#include <QtCore>
+#include <BobUIWidgets>
+#include <BobUINetwork>
+#include <BobUICore>
 
 #include "sender.h"
 
@@ -26,7 +26,7 @@ Sender::Sender(QWidget *parent)
 
     connect(startButton, &QPushButton::clicked, this, &Sender::startBroadcasting);
     connect(quitButton, &QPushButton::clicked, qApp, &QCoreApplication::quit);
-    connect(&timer, &QTimer::timeout, this, &Sender::broadcastDatagram);
+    connect(&timer, &BOBUIimer::timeout, this, &Sender::broadcastDatagram);
 
     auto mainLayout = new QVBoxLayout;
     mainLayout->addWidget(statusLabel);

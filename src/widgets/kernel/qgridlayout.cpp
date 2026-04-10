@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qgridlayout.h"
@@ -12,7 +12,7 @@
 #include "qlayoutengine_p.h"
 #include "qlayout_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QGridLayoutSizeTriple
 {
@@ -38,15 +38,15 @@ public:
     QSize sizeHint() const { return item_->sizeHint(); }
     QSize minimumSize() const { return item_->minimumSize(); }
     QSize maximumSize() const { return item_->maximumSize(); }
-    Qt::Orientations expandingDirections() const { return item_->expandingDirections(); }
+    BobUI::Orientations expandingDirections() const { return item_->expandingDirections(); }
     bool isEmpty() const { return item_->isEmpty(); }
 
     bool hasHeightForWidth() const { return item_->hasHeightForWidth(); }
     int heightForWidth(int w) const { return item_->heightForWidth(w); }
 
-    void setAlignment(Qt::Alignment a) { item_->setAlignment(a); }
+    void setAlignment(BobUI::Alignment a) { item_->setAlignment(a); }
     void setGeometry(const QRect &r) { item_->setGeometry(r); }
-    Qt::Alignment alignment() const { return item_->alignment(); }
+    BobUI::Alignment alignment() const { return item_->alignment(); }
     QLayoutItem *item() { return item_; }
     void setItem(QLayoutItem *newitem) { item_ = newitem; }
     QLayoutItem *takeItem() { QLayoutItem *i = item_; item_ = nullptr; return i; }
@@ -80,7 +80,7 @@ public:
     QSize minimumSize(int hSpacing, int vSpacing) const;
     QSize maximumSize(int hSpacing, int vSpacing) const;
 
-    Qt::Orientations expandingDirections(int hSpacing, int vSpacing) const;
+    BobUI::Orientations expandingDirections(int hSpacing, int vSpacing) const;
 
     void distribute(QRect rect, int hSpacing, int vSpacing);
     inline int numRows() const { return rr; }
@@ -170,7 +170,7 @@ private:
     void addData(QGridBox *b, const QGridLayoutSizeTriple &sizes, bool r, bool c);
     void setSize(int rows, int cols);
     void setupSpacings(QList<QLayoutStruct> &chain, QGridBox *grid[], int fixedSpacing,
-                       Qt::Orientation orientation);
+                       BobUI::Orientation orientation);
     void setupLayoutData(int hSpacing, int vSpacing);
     void setupHfwLayoutData();
     void effectiveMargins(int *left, int *top, int *right, int *bottom) const;
@@ -225,7 +225,7 @@ void QGridLayoutPrivate::effectiveMargins(int *left, int *top, int *right, int *
         QLayoutItem *itm = box->item();
         w = itm->widget();
         if (w) {
-            bool visualHReversed = hReversed != (w->layoutDirection() == Qt::RightToLeft);
+            bool visualHReversed = hReversed != (w->layoutDirection() == BobUI::RightToLeft);
             QRect lir = itm->geometry();
             QRect wr = w->geometry();
             if (box->col <= leftMost) {
@@ -417,21 +417,21 @@ QSize QGridLayoutPrivate::findSize(int QLayoutStruct::*size, int hSpacing, int v
     return QSize(w, h);
 }
 
-Qt::Orientations QGridLayoutPrivate::expandingDirections(int hSpacing, int vSpacing) const
+BobUI::Orientations QGridLayoutPrivate::expandingDirections(int hSpacing, int vSpacing) const
 {
     QGridLayoutPrivate *that = const_cast<QGridLayoutPrivate*>(this);
     that->setupLayoutData(hSpacing, vSpacing);
-    Qt::Orientations ret;
+    BobUI::Orientations ret;
 
     for (int r = 0; r < rr; r++) {
         if (rowData.at(r).expansive) {
-            ret |= Qt::Vertical;
+            ret |= BobUI::Vertical;
             break;
         }
     }
     for (int c = 0; c < cc; c++) {
         if (colData.at(c).expansive) {
-            ret |= Qt::Horizontal;
+            ret |= BobUI::Horizontal;
             break;
         }
     }
@@ -566,7 +566,7 @@ void QGridLayoutPrivate::addData(QGridBox *box, const QGridLayoutSizeTriple &siz
         data->minimumSize = qMax(sizes.minS.width(), data->minimumSize);
 
         qMaxExpCalc(data->maximumSize, data->expansive, data->empty, sizes.maxS.width(),
-                    box->expandingDirections() & Qt::Horizontal, box->isEmpty());
+                    box->expandingDirections() & BobUI::Horizontal, box->isEmpty());
     }
     if (r) {
         QLayoutStruct *data = &rowData[box->row];
@@ -576,7 +576,7 @@ void QGridLayoutPrivate::addData(QGridBox *box, const QGridLayoutSizeTriple &siz
         data->minimumSize = qMax(sizes.minS.height(), data->minimumSize);
 
         qMaxExpCalc(data->maximumSize, data->expansive, data->empty, sizes.maxS.height(),
-                    box->expandingDirections() & Qt::Vertical, box->isEmpty());
+                    box->expandingDirections() & BobUI::Vertical, box->isEmpty());
     }
 }
 
@@ -656,21 +656,21 @@ static void distributeMultiBox(QList<QLayoutStruct> &chain, int start, int end, 
 }
 
 static QGridBox *&gridAt(QGridBox *grid[], int r, int c, int cc,
-                         Qt::Orientation orientation = Qt::Vertical)
+                         BobUI::Orientation orientation = BobUI::Vertical)
 {
-    if (orientation == Qt::Horizontal)
+    if (orientation == BobUI::Horizontal)
         qSwap(r, c);
     return grid[(r * cc) + c];
 }
 
 void QGridLayoutPrivate::setupSpacings(QList<QLayoutStruct> &chain, QGridBox *grid[],
-                                       int fixedSpacing, Qt::Orientation orientation)
+                                       int fixedSpacing, BobUI::Orientation orientation)
 {
     Q_Q(QGridLayout);
     int numRows = rr;       // or columns if orientation is horizontal
     int numColumns = cc;    // or rows if orientation is horizontal
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         qSwap(numRows, numColumns);
     }
 
@@ -699,15 +699,15 @@ void QGridLayoutPrivate::setupSpacings(QList<QLayoutStruct> &chain, QGridBox *gr
                     if (box)
                         controlTypes2 = box->item()->controlTypes();
 
-                    if ((orientation == Qt::Horizontal && hReversed)
-                            || (orientation == Qt::Vertical && vReversed))
+                    if ((orientation == BobUI::Horizontal && hReversed)
+                            || (orientation == BobUI::Vertical && vReversed))
                         qSwap(controlTypes1, controlTypes2);
 
                     if (style)
                         spacing = style->combinedLayoutSpacing(controlTypes1, controlTypes2,
                                              orientation, nullptr, q->parentWidget());
                 } else {
-                    if (orientation == Qt::Vertical) {
+                    if (orientation == BobUI::Vertical) {
                         QGridBox *sibling = vReversed ? previousBox : box;
                         if (sibling) {
                             if (sibling->item()->isEmpty()) {
@@ -731,13 +731,13 @@ void QGridLayoutPrivate::setupSpacings(QList<QLayoutStruct> &chain, QGridBox *gr
     }
 }
 
-//#define QT_LAYOUT_DISABLE_CACHING
+//#define BOBUI_LAYOUT_DISABLE_CACHING
 
 void QGridLayoutPrivate::setupLayoutData(int hSpacing, int vSpacing)
 {
     Q_Q(QGridLayout);
 
-#ifndef QT_LAYOUT_DISABLE_CACHING
+#ifndef BOBUI_LAYOUT_DISABLE_CACHING
     if (!needRecalc)
         return;
 #endif
@@ -799,8 +799,8 @@ void QGridLayoutPrivate::setupLayoutData(int hSpacing, int vSpacing)
         }
     }
 
-    setupSpacings(colData, grid.data(), hSpacing, Qt::Horizontal);
-    setupSpacings(rowData, grid.data(), vSpacing, Qt::Vertical);
+    setupSpacings(colData, grid.data(), hSpacing, BobUI::Horizontal);
+    setupSpacings(rowData, grid.data(), vSpacing, BobUI::Vertical);
 
     /*
         Insert multicell items to our row and column data structures.
@@ -964,7 +964,7 @@ QRect QGridLayoutPrivate::cellRect(int row, int col) const
     \brief The QGridLayout class lays out widgets in a grid.
 
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGridLayout takes the space made available to it (by its parent
     layout or by the parentWidget()), divides it up into rows and
@@ -1024,7 +1024,7 @@ QRect QGridLayoutPrivate::cellRect(int row, int col) const
     automatically allocated spacing between neighboring boxes.
 
     The default contents margin values are provided by the
-    \l{QStyle::pixelMetric()}{style}. The default value Qt styles specify
+    \l{QStyle::pixelMetric()}{style}. The default value BobUI styles specify
     is 9 for child widgets and 11 for windows. The spacing defaults to the same as
     the margin width for a top-level layout, or to the same as the
     parent layout.
@@ -1059,15 +1059,15 @@ QGridLayout::QGridLayout(QWidget *parent)
 \internal (mostly)
 
 Sets the positioning mode used by addItem(). If \a orient is
-Qt::Horizontal, this layout is expanded to \a n columns, and items
+BobUI::Horizontal, this layout is expanded to \a n columns, and items
 will be added columns-first. Otherwise it is expanded to \a n rows and
 items will be added rows-first.
 */
 
-void QGridLayout::setDefaultPositioning(int n, Qt::Orientation orient)
+void QGridLayout::setDefaultPositioning(int n, BobUI::Orientation orient)
 {
     Q_D(QGridLayout);
-    if (orient == Qt::Horizontal) {
+    if (orient == BobUI::Horizontal) {
         d->expand(1, n);
         d->addVertical = false;
     } else {
@@ -1230,9 +1230,9 @@ QSize QGridLayout::maximumSize() const
     d->effectiveMargins(&left, &top, &right, &bottom);
     s += QSize(left + right, top + bottom);
     s = s.boundedTo(QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX));
-    if (alignment() & Qt::AlignHorizontal_Mask)
+    if (alignment() & BobUI::AlignHorizontal_Mask)
         s.setWidth(QLAYOUTSIZE_MAX);
-    if (alignment() & Qt::AlignVertical_Mask)
+    if (alignment() & BobUI::AlignVertical_Mask)
         s.setHeight(QLAYOUTSIZE_MAX);
     return s;
 }
@@ -1349,7 +1349,7 @@ void QGridLayout::setGeometry(const QRect &rect)
     in the grid. Returns an invalid rectangle if \a row or \a column is
     outside the grid.
 
-    \warning in the current version of Qt this function does not
+    \warning in the current version of BobUI this function does not
     return valid results until setGeometry() has been called, i.e.
     after the parentWidget() is visible.
 */
@@ -1380,7 +1380,7 @@ void QGridLayout::addItem(QLayoutItem *item)
     \warning Do not use this function to add child layouts or child
     widget items. Use addLayout() or addWidget() instead.
 */
-void QGridLayout::addItem(QLayoutItem *item, int row, int column, int rowSpan, int columnSpan, Qt::Alignment alignment)
+void QGridLayout::addItem(QLayoutItem *item, int row, int column, int rowSpan, int columnSpan, BobUI::Alignment alignment)
 {
     Q_D(QGridLayout);
     QGridBox *b = new QGridBox(item);
@@ -1397,7 +1397,7 @@ void QGridLayout::addItem(QLayoutItem *item, int row, int column, int rowSpan, i
     alignment is 0, which means that the widget fills the entire cell.
 
 */
-void QGridLayout::addWidget(QWidget *widget, int row, int column, Qt::Alignment alignment)
+void QGridLayout::addWidget(QWidget *widget, int row, int column, BobUI::Alignment alignment)
 {
     Q_D(QGridLayout);
     if (!d->checkWidget(widget))
@@ -1426,7 +1426,7 @@ void QGridLayout::addWidget(QWidget *widget, int row, int column, Qt::Alignment 
 
 */
 void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn,
-                            int rowSpan, int columnSpan, Qt::Alignment alignment)
+                            int rowSpan, int columnSpan, BobUI::Alignment alignment)
 {
     Q_D(QGridLayout);
     if (!d->checkWidget(widget))
@@ -1461,7 +1461,7 @@ void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn,
 
     \a layout becomes a child of the grid layout.
 */
-void QGridLayout::addLayout(QLayout *layout, int row, int column, Qt::Alignment alignment)
+void QGridLayout::addLayout(QLayout *layout, int row, int column, BobUI::Alignment alignment)
 {
     Q_D(QGridLayout);
     if (!d->checkLayout(layout))
@@ -1483,7 +1483,7 @@ void QGridLayout::addLayout(QLayout *layout, int row, int column, Qt::Alignment 
     and/or right edge, respectively.
 */
 void QGridLayout::addLayout(QLayout *layout, int row, int column,
-                                      int rowSpan, int columnSpan, Qt::Alignment alignment)
+                                      int rowSpan, int columnSpan, BobUI::Alignment alignment)
 {
     Q_D(QGridLayout);
     if (!d->checkLayout(layout))
@@ -1612,7 +1612,7 @@ int QGridLayout::columnMinimumWidth(int column) const
 /*!
     \reimp
 */
-Qt::Orientations QGridLayout::expandingDirections() const
+BobUI::Orientations QGridLayout::expandingDirections() const
 {
     Q_D(const QGridLayout);
     return d->expandingDirections(horizontalSpacing(), verticalSpacing());
@@ -1621,24 +1621,24 @@ Qt::Orientations QGridLayout::expandingDirections() const
 /*!
     Sets the grid's origin corner, i.e. position (0, 0), to \a corner.
 */
-void QGridLayout::setOriginCorner(Qt::Corner corner)
+void QGridLayout::setOriginCorner(BobUI::Corner corner)
 {
     Q_D(QGridLayout);
-    d->setReversed(corner == Qt::BottomLeftCorner || corner == Qt::BottomRightCorner,
-                   corner == Qt::TopRightCorner || corner == Qt::BottomRightCorner);
+    d->setReversed(corner == BobUI::BottomLeftCorner || corner == BobUI::BottomRightCorner,
+                   corner == BobUI::TopRightCorner || corner == BobUI::BottomRightCorner);
 }
 
 /*!
     Returns the corner that's used for the grid's origin, i.e. for
     position (0, 0).
 */
-Qt::Corner QGridLayout::originCorner() const
+BobUI::Corner QGridLayout::originCorner() const
 {
     Q_D(const QGridLayout);
     if (d->horReversed()) {
-        return d->verReversed() ? Qt::BottomRightCorner : Qt::TopRightCorner;
+        return d->verReversed() ? BobUI::BottomRightCorner : BobUI::TopRightCorner;
     } else {
-        return d->verReversed() ? Qt::BottomLeftCorner : Qt::TopLeftCorner;
+        return d->verReversed() ? BobUI::BottomLeftCorner : BobUI::TopLeftCorner;
     }
 }
 
@@ -1652,6 +1652,6 @@ void QGridLayout::invalidate()
     QLayout::invalidate();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgridlayout.cpp"

@@ -1,16 +1,16 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PYTHONWRITEIMPORTS_H
 #define PYTHONWRITEIMPORTS_H
 
 #include <writeincludesbase.h>
 
-#include <QtCore/qhash.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace Python {
 
@@ -29,7 +29,7 @@ protected:
 
 private:
     void addPythonCustomWidget(const QString &className, const DomCustomWidget *dcw);
-    bool addQtClass(const QString &className);
+    bool addBobUIClass(const QString &className);
     void addEnumBaseClass(const QString &v);
     void writeResourceImport(const QString &module);
     QString resourceAbsolutePath(QString resource) const;
@@ -37,13 +37,13 @@ private:
     QHash<QString, QString> m_classToModule;
     // Module->class (modules sorted)
 
-    ClassesPerModule m_qtClasses;
+    ClassesPerModule m_bobuiClasses;
     ClassesPerModule m_customWidgets;
     QStringList m_plainCustomWidgets; // Custom widgets without any module
 };
 
 } // namespace Python
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PYTHONWRITEIMPORTS_H

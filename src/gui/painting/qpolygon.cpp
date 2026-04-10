@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpolygon.h"
 #include "qrect.h"
 #include "qdatastream.h"
 #include "qdebug.h"
 #include "qpainterpath.h"
-#include "qtransform.h"
+#include "bobuiransform.h"
 #include "qvariant.h"
 #include "qpainterpath_p.h"
 #include "qbezier_p.h"
 
 #include <stdarg.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-//same as qt_painterpath_isect_line in qpainterpath.cpp
-static void qt_polygon_isect_line(const QPointF &p1, const QPointF &p2, const QPointF &pos,
+//same as bobui_painterpath_isect_line in qpainterpath.cpp
+static void bobui_polygon_isect_line(const QPointF &p1, const QPointF &p2, const QPointF &pos,
                                   int *winding)
 {
     qreal x1 = p1.x();
@@ -50,7 +50,7 @@ static void qt_polygon_isect_line(const QPointF &p1, const QPointF &p2, const QP
     \class QPolygon
     \brief The QPolygon class provides a list of points using
     integer precision.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \reentrant
 
@@ -75,7 +75,7 @@ static void qt_polygon_isect_line(const QPointF &p1, const QPointF &p2, const QP
     from a specified index (resizing the polygon if necessary).
 
     QPolygon provides the boundingRect() and translate() functions for
-    geometry functions. Use the QTransform::map() function for more
+    geometry functions. Use the BOBUIransform::map() function for more
     general transformations of QPolygons.
 
     The QPolygon class is \l {Implicit Data Sharing}{implicitly
@@ -416,10 +416,10 @@ QRect QPolygon::boundingRect() const
 */
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPolygon &a)
 {
-    return QtPrivate::printSequentialContainer(dbg, "QPolygon", a);
+    return BobUIPrivate::printSequentialContainer(dbg, "QPolygon", a);
 }
 #endif
 
@@ -428,7 +428,7 @@ QDebug operator<<(QDebug dbg, const QPolygon &a)
     \class QPolygonF
     \brief The QPolygonF class provides a list of points using
     floating point precision.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \reentrant
     \ingroup painting
@@ -442,7 +442,7 @@ QDebug operator<<(QDebug dbg, const QPolygon &a)
 
     In addition to the functions provided by QList, QPolygonF
     provides the boundingRect() and translate() functions for geometry
-    operations. Use the QTransform::map() function for more general
+    operations. Use the BOBUIransform::map() function for more general
     transformations of QPolygonFs.
 
     QPolygonF also provides the isClosed() function to determine
@@ -643,7 +643,7 @@ QPolygon::operator QVariant() const
 /*****************************************************************************
   QPolygon stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPolygon &polygon)
     \since 4.4
@@ -652,7 +652,7 @@ QPolygon::operator QVariant() const
     Writes the given \a polygon to the given \a stream, and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &s, const QPolygon &a)
 {
@@ -668,19 +668,19 @@ QDataStream &operator<<(QDataStream &s, const QPolygon &a)
     Reads a polygon from the given \a stream into the given \a
     polygon, and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &s, QPolygon &a)
 {
     QList<QPoint> &v = a;
     return s >> v;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*****************************************************************************
   QPolygonF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPolygonF &polygon)
     \relates QPolygonF
@@ -688,7 +688,7 @@ QDataStream &operator>>(QDataStream &s, QPolygon &a)
     Writes the given \a polygon to the given \a stream, and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QPolygonF &a)
@@ -703,19 +703,19 @@ QDataStream &operator<<(QDataStream &s, const QPolygonF &a)
     Reads a polygon from the given \a stream into the given \a
     polygon, and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QPolygonF &a)
 {
     return s >> static_cast<QList<QPointF> &>(a);
 }
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPolygonF &a)
 {
-    return QtPrivate::printSequentialContainer(dbg, "QPolygonF", a);
+    return BobUIPrivate::printSequentialContainer(dbg, "QPolygonF", a);
 }
 #endif
 
@@ -723,12 +723,12 @@ QDebug operator<<(QDebug dbg, const QPolygonF &a)
 /*!
     \since 4.3
 
-    \fn bool QPolygonF::containsPoint(const QPointF &point, Qt::FillRule fillRule) const
+    \fn bool QPolygonF::containsPoint(const QPointF &point, BobUI::FillRule fillRule) const
 
     Returns \c true if the given \a point is inside the polygon according to
     the specified \a fillRule; otherwise returns \c false.
 */
-bool QPolygonF::containsPoint(const QPointF &pt, Qt::FillRule fillRule) const
+bool QPolygonF::containsPoint(const QPointF &pt, BobUI::FillRule fillRule) const
 {
     if (isEmpty())
         return false;
@@ -739,15 +739,15 @@ bool QPolygonF::containsPoint(const QPointF &pt, Qt::FillRule fillRule) const
     QPointF last_start = at(0);
     for (int i = 1; i < size(); ++i) {
         const QPointF &e = at(i);
-        qt_polygon_isect_line(last_pt, e, pt, &winding_number);
+        bobui_polygon_isect_line(last_pt, e, pt, &winding_number);
         last_pt = e;
     }
 
     // implicitly close last subpath
     if (last_pt != last_start)
-        qt_polygon_isect_line(last_pt, last_start, pt, &winding_number);
+        bobui_polygon_isect_line(last_pt, last_start, pt, &winding_number);
 
-    return (fillRule == Qt::WindingFill
+    return (fillRule == BobUI::WindingFill
             ? (winding_number != 0)
             : ((winding_number % 2) != 0));
 }
@@ -755,11 +755,11 @@ bool QPolygonF::containsPoint(const QPointF &pt, Qt::FillRule fillRule) const
 /*!
     \since 4.3
 
-    \fn bool QPolygon::containsPoint(const QPoint &point, Qt::FillRule fillRule) const
+    \fn bool QPolygon::containsPoint(const QPoint &point, BobUI::FillRule fillRule) const
     Returns \c true if the given \a point is inside the polygon according to
     the specified \a fillRule; otherwise returns \c false.
 */
-bool QPolygon::containsPoint(const QPoint &pt, Qt::FillRule fillRule) const
+bool QPolygon::containsPoint(const QPoint &pt, BobUI::FillRule fillRule) const
 {
     if (isEmpty())
         return false;
@@ -770,15 +770,15 @@ bool QPolygon::containsPoint(const QPoint &pt, Qt::FillRule fillRule) const
     QPoint last_start = at(0);
     for (int i = 1; i < size(); ++i) {
         const QPoint &e = at(i);
-        qt_polygon_isect_line(last_pt, e, pt, &winding_number);
+        bobui_polygon_isect_line(last_pt, e, pt, &winding_number);
         last_pt = e;
     }
 
     // implicitly close last subpath
     if (last_pt != last_start)
-        qt_polygon_isect_line(last_pt, last_start, pt, &winding_number);
+        bobui_polygon_isect_line(last_pt, last_start, pt, &winding_number);
 
-    return (fillRule == Qt::WindingFill
+    return (fillRule == BobUI::WindingFill
             ? (winding_number != 0)
             : ((winding_number % 2) != 0));
 }
@@ -943,4 +943,4 @@ QPolygonF::operator QVariant() const
     return QVariant::fromValue(*this);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

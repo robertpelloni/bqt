@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsWidget>
@@ -18,10 +18,10 @@ AbstractScrollArea::AbstractScrollArea(QGraphicsWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     setContentsMargins(0, 0, 0, 0);
 
-    m_horizontalScrollBar = new ScrollBar(Qt::Horizontal, this);
+    m_horizontalScrollBar = new ScrollBar(BobUI::Horizontal, this);
     m_horizontalScrollBar->hide();
     m_horizontalScrollBar->setContentsMargins(0, 0, 0, 0);
-    m_horizontalScrollBarPolicy = Qt::ScrollBarAsNeeded;
+    m_horizontalScrollBarPolicy = BobUI::ScrollBarAsNeeded;
     m_horizontalScrollBar->setZValue(zValue()+1); // Raise scroll bar to top
     m_horizontalScrollBar->setVisible(false);
 
@@ -30,10 +30,10 @@ AbstractScrollArea::AbstractScrollArea(QGraphicsWidget *parent)
     connect(m_horizontalScrollBar, SIGNAL(sliderPressed()),
             this, SLOT(horizontalScrollStart()));
 
-    m_verticalScrollBar = new ScrollBar(Qt::Vertical, this);
+    m_verticalScrollBar = new ScrollBar(BobUI::Vertical, this);
     m_verticalScrollBar->hide();
     m_verticalScrollBar->setContentsMargins(0, 0, 0, 0);
-    m_verticalScrollBarPolicy = Qt::ScrollBarAsNeeded;
+    m_verticalScrollBarPolicy = BobUI::ScrollBarAsNeeded;
     m_verticalScrollBar->setZValue(zValue()+1); // Raise scroll bar to top
     m_verticalScrollBar->setVisible(false);
 
@@ -60,22 +60,22 @@ ScrollBar *AbstractScrollArea::horizontalScrollBar() const
     return m_horizontalScrollBar;
 }
 
-void AbstractScrollArea::setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void AbstractScrollArea::setHorizontalScrollBarPolicy(BobUI::ScrollBarPolicy policy)
 {
     m_horizontalScrollBarPolicy = policy;
 }
 
-void AbstractScrollArea::setVerticalScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void AbstractScrollArea::setVerticalScrollBarPolicy(BobUI::ScrollBarPolicy policy)
 {
     m_verticalScrollBarPolicy = policy;
 }
 
-Qt::ScrollBarPolicy AbstractScrollArea::verticalScrollBarPolicy() const
+BobUI::ScrollBarPolicy AbstractScrollArea::verticalScrollBarPolicy() const
 {
     return m_verticalScrollBarPolicy;
 }
 
-Qt::ScrollBarPolicy AbstractScrollArea::horizontalScrollBarPolicy() const
+BobUI::ScrollBarPolicy AbstractScrollArea::horizontalScrollBarPolicy() const
 {
     return m_horizontalScrollBarPolicy;
 }
@@ -125,9 +125,9 @@ bool AbstractScrollArea::event(QEvent *e)
 
         QSizeF vpSize = newSize;
 
-        if (m_horizontalScrollBarPolicy != Qt::ScrollBarAlwaysOff)
+        if (m_horizontalScrollBarPolicy != BobUI::ScrollBarAlwaysOff)
             vpSize.setHeight(newSize.height() - hrect.height());
-        if (m_verticalScrollBarPolicy != Qt::ScrollBarAlwaysOff)
+        if (m_verticalScrollBarPolicy != BobUI::ScrollBarAlwaysOff)
             vpSize.setWidth(newSize.width() - vrect.width());
 
         m_viewport->resize(vpSize);
@@ -176,7 +176,7 @@ void AbstractScrollArea::horizontalScroll(qreal value)
 
 void AbstractScrollArea::adjustScrollBars()
 {
-    if (m_horizontalScrollBarPolicy == Qt::ScrollBarAlwaysOff) {
+    if (m_horizontalScrollBarPolicy == BobUI::ScrollBarAlwaysOff) {
         m_horizontalScrollBar->hide();
     } else {
         m_horizontalScrollBar->show();
@@ -188,7 +188,7 @@ void AbstractScrollArea::adjustScrollBars()
         m_horizontalScrollBar->setGeometry(sbgeom);
     }
 
-    if (m_verticalScrollBarPolicy == Qt::ScrollBarAlwaysOff) {
+    if (m_verticalScrollBarPolicy == BobUI::ScrollBarAlwaysOff) {
         m_verticalScrollBar->hide();
         QRectF sbgeom = boundingRect();
         sbgeom.setLeft(sbgeom.right());
@@ -200,7 +200,7 @@ void AbstractScrollArea::adjustScrollBars()
         QRectF sbgeom = boundingRect();
 
         sbgeom.setLeft(sbgeom.right() - m_verticalScrollBar->boundingRect().width());
-        if (m_horizontalScrollBarPolicy != Qt::ScrollBarAlwaysOff)
+        if (m_horizontalScrollBarPolicy != BobUI::ScrollBarAlwaysOff)
             sbgeom.setBottom(sbgeom.bottom() - m_horizontalScrollBar->boundingRect().height());
         m_verticalScrollBar->setGeometry(sbgeom);
     }

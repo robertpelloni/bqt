@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPROGRESSDIALOG_H
 #define QPROGRESSDIALOG_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
 
-#include <QtWidgets/qdialog.h>
+#include <BobUIWidgets/qdialog.h>
 
-QT_REQUIRE_CONFIG(progressdialog);
+BOBUI_REQUIRE_CONFIG(progressdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPushButton;
 class QLabel;
 class QProgressBar;
-class QTimer;
+class BOBUIimer;
 class QProgressDialogPrivate;
 
 class Q_WIDGETS_EXPORT QProgressDialog : public QDialog
@@ -33,10 +33,10 @@ class Q_WIDGETS_EXPORT QProgressDialog : public QDialog
     Q_PROPERTY(QString labelText READ labelText WRITE setLabelText)
 
 public:
-    explicit QProgressDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit QProgressDialog(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     QProgressDialog(const QString &labelText, const QString &cancelButtonText,
                     int minimum, int maximum, QWidget *parent = nullptr,
-                    Qt::WindowFlags flags = Qt::WindowFlags());
+                    BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QProgressDialog();
 
     void setLabel(QLabel *label);
@@ -92,6 +92,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_disconnectOnClose())
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROGRESSDIALOG_H

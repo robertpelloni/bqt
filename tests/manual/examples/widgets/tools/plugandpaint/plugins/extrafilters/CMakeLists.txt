@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-qt_add_plugin(pnp_extrafilters
+bobui_add_plugin(pnp_extrafilters
     CLASS_NAME ExtraFiltersPlugin
     extrafiltersplugin.cpp extrafiltersplugin.h
 )
@@ -15,9 +15,9 @@ target_include_directories(pnp_extrafilters PRIVATE
 )
 
 target_link_libraries(pnp_extrafilters PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::Widgets
 )
 
 install(TARGETS pnp_extrafilters

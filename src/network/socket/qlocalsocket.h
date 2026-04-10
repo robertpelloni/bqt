@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLOCALSOCKET_H
 #define QLOCALSOCKET_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qiodevice.h>
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUINetwork/qabstractsocket.h>
 
-QT_REQUIRE_CONFIG(localserver);
+BOBUI_REQUIRE_CONFIG(localserver);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QLocalSocketPrivate;
@@ -109,7 +109,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(QLocalSocket)
-#if defined(QT_LOCALSOCKET_TCP)
+#if defined(BOBUI_LOCALSOCKET_TCP)
     Q_PRIVATE_SLOT(d_func(), void _q_stateChanged(QAbstractSocket::SocketState))
     Q_PRIVATE_SLOT(d_func(), void _q_errorOccurred(QAbstractSocket::SocketError))
 #elif defined(Q_OS_WIN)
@@ -123,15 +123,15 @@ private:
 #endif
 };
 
-#if QT_NETWORK_REMOVED_SINCE(6, 12)
-#ifndef QT_NO_DEBUG_STREAM
+#if BOBUI_NETWORK_REMOVED_SINCE(6, 12)
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, QLocalSocket::LocalSocketError);
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, QLocalSocket::LocalSocketState);
 #endif
-#endif // QT_NETWORK_REMOVED_SINCE(6, 12)
+#endif // BOBUI_NETWORK_REMOVED_SINCE(6, 12)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QLocalSocket::SocketOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCALSOCKET_H

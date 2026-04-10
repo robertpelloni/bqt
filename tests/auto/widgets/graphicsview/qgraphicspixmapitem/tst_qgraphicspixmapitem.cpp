@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicsscene.h>
 #include <qgraphicsitem.h>
 #include <qpainterpath.h>
@@ -82,12 +82,12 @@ void tst_QGraphicsPixmapItem::qgraphicspixmapitem()
     QCOMPARE(item.offset(), QPointF());
     QCOMPARE(item.pixmap(), QPixmap());
     QCOMPARE(item.shapeMode(), QGraphicsPixmapItem::MaskShape);
-    QCOMPARE(item.transformationMode(), Qt::FastTransformation);
+    QCOMPARE(item.transformationMode(), BobUI::FastTransformation);
     item.setOffset(0, 0);
     item.setOffset(QPointF(0, 0));
     item.setPixmap(QPixmap());
     item.setShapeMode(QGraphicsPixmapItem::MaskShape);
-    item.setTransformationMode(Qt::FastTransformation);
+    item.setTransformationMode(BobUI::FastTransformation);
     item.shape();
     item.type();
     item.call_extension(QVariant());
@@ -97,10 +97,10 @@ void tst_QGraphicsPixmapItem::qgraphicspixmapitem()
 
 void tst_QGraphicsPixmapItem::boundingRect_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QRectF>("boundingRect");
-    QTest::newRow("null") << QPixmap() << QRectF();
-    QTest::newRow("10x10") << QPixmap(10, 10) << QRectF(0, 0, 10, 10);
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QRectF>("boundingRect");
+    BOBUIest::newRow("null") << QPixmap() << QRectF();
+    BOBUIest::newRow("10x10") << QPixmap(10, 10) << QRectF(0, 0, 10, 10);
 }
 
 // public QRectF boundingRect() const
@@ -115,14 +115,14 @@ void tst_QGraphicsPixmapItem::boundingRect()
 
 void tst_QGraphicsPixmapItem::contains_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QPointF>("point");
-    QTest::addColumn<bool>("contains");
-    QTest::newRow("null") << QPixmap() << QPointF() << false;
-    QTest::newRow("10x10, 100x100") << QPixmap(10, 10) << QPointF(100, 100) << false;
-    QTest::newRow("10x10, 5x5") << QPixmap(10, 10) << QPointF(5, 5) << true;
-    QTest::newRow("border-1") << QPixmap(10, 10) << QPointF(10.5, 10.5) << false;
-    QTest::newRow("border-2") << QPixmap(10, 10) << QPointF(-0.5, -0.5) << false;
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<bool>("contains");
+    BOBUIest::newRow("null") << QPixmap() << QPointF() << false;
+    BOBUIest::newRow("10x10, 100x100") << QPixmap(10, 10) << QPointF(100, 100) << false;
+    BOBUIest::newRow("10x10, 5x5") << QPixmap(10, 10) << QPointF(5, 5) << true;
+    BOBUIest::newRow("border-1") << QPixmap(10, 10) << QPointF(10.5, 10.5) << false;
+    BOBUIest::newRow("border-2") << QPixmap(10, 10) << QPointF(-0.5, -0.5) << false;
 }
 
 // public bool contains(QPointF const& point) const
@@ -146,15 +146,15 @@ void tst_QGraphicsPixmapItem::contains()
 
 void tst_QGraphicsPixmapItem::isObscuredBy_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QPixmap>("otherPixmap");
-    QTest::addColumn<bool>("isObscuredBy");
-    QTest::newRow("null") << QPixmap() << QPixmap() << false;
-    QTest::newRow("(10, 10) vs. (5, 5)") << QPixmap(10, 10) << QPixmap(5, 5) << false;
-    QTest::newRow("(5, 5) vs. (10, 10)") << QPixmap(5, 5) << QPixmap(10, 10) << true;
-    QTest::newRow("(10, 10) vs. (10, 10)") << QPixmap(10, 10) << QPixmap(10, 10) << false;
-    QTest::newRow("(9, 9) vs. (10, 10)") << QPixmap(8, 8) << QPixmap(10, 10) << true;
-    QTest::newRow("(10, 10) vs. (9, 9)") << QPixmap(10, 10) << QPixmap(8, 8) << false;
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QPixmap>("otherPixmap");
+    BOBUIest::addColumn<bool>("isObscuredBy");
+    BOBUIest::newRow("null") << QPixmap() << QPixmap() << false;
+    BOBUIest::newRow("(10, 10) vs. (5, 5)") << QPixmap(10, 10) << QPixmap(5, 5) << false;
+    BOBUIest::newRow("(5, 5) vs. (10, 10)") << QPixmap(5, 5) << QPixmap(10, 10) << true;
+    BOBUIest::newRow("(10, 10) vs. (10, 10)") << QPixmap(10, 10) << QPixmap(10, 10) << false;
+    BOBUIest::newRow("(9, 9) vs. (10, 10)") << QPixmap(8, 8) << QPixmap(10, 10) << true;
+    BOBUIest::newRow("(10, 10) vs. (9, 9)") << QPixmap(10, 10) << QPixmap(8, 8) << false;
 }
 
 // public bool isObscuredBy(QGraphicsItem const* item) const
@@ -182,10 +182,10 @@ void tst_QGraphicsPixmapItem::isObscuredBy()
 
 void tst_QGraphicsPixmapItem::offset_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QPointF>("offset");
-    QTest::newRow("null") << QPixmap() << QPointF();
-    QTest::newRow("10x10, 1x1") << QPixmap(10, 10) << QPointF(1, 1);
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QPointF>("offset");
+    BOBUIest::newRow("null") << QPixmap() << QPointF();
+    BOBUIest::newRow("10x10, 1x1") << QPixmap(10, 10) << QPointF(1, 1);
 }
 
 // public QPointF offset() const
@@ -204,9 +204,9 @@ void tst_QGraphicsPixmapItem::offset()
 Q_DECLARE_METATYPE(QPainterPath)
 void tst_QGraphicsPixmapItem::opaqueArea_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QPainterPath>("opaqueArea");
-    QTest::newRow("null") << QPixmap() << QPainterPath();
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QPainterPath>("opaqueArea");
+    BOBUIest::newRow("null") << QPixmap() << QPainterPath();
     // Currently QGraphicsPixmapItem just calls QGraphicsItem test there
 }
 
@@ -222,9 +222,9 @@ void tst_QGraphicsPixmapItem::opaqueArea()
 
 void tst_QGraphicsPixmapItem::pixmap_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::newRow("null") << QPixmap();
-    QTest::newRow("10x10") << QPixmap(10, 10);
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::newRow("null") << QPixmap();
+    BOBUIest::newRow("10x10") << QPixmap(10, 10);
 }
 
 // public QPixmap pixmap() const
@@ -238,9 +238,9 @@ void tst_QGraphicsPixmapItem::pixmap()
 
 void tst_QGraphicsPixmapItem::setPixmap_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::newRow("null") << QPixmap();
-    QTest::newRow("10x10") << QPixmap(10, 10);
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::newRow("null") << QPixmap();
+    BOBUIest::newRow("10x10") << QPixmap(10, 10);
 }
 
 // public void setPixmap(QPixmap const& pixmap)
@@ -256,11 +256,11 @@ void tst_QGraphicsPixmapItem::setPixmap()
 Q_DECLARE_METATYPE(QGraphicsPixmapItem::ShapeMode)
 void tst_QGraphicsPixmapItem::setShapeMode_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QGraphicsPixmapItem::ShapeMode>("mode");
-    QTest::newRow("MaskShape") << QPixmap() << QGraphicsPixmapItem::MaskShape;
-    QTest::newRow("BoundingRectShape") << QPixmap() << QGraphicsPixmapItem::BoundingRectShape;
-    QTest::newRow("HeuristicMaskShape") << QPixmap() << QGraphicsPixmapItem::HeuristicMaskShape;
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QGraphicsPixmapItem::ShapeMode>("mode");
+    BOBUIest::newRow("MaskShape") << QPixmap() << QGraphicsPixmapItem::MaskShape;
+    BOBUIest::newRow("BoundingRectShape") << QPixmap() << QGraphicsPixmapItem::BoundingRectShape;
+    BOBUIest::newRow("HeuristicMaskShape") << QPixmap() << QGraphicsPixmapItem::HeuristicMaskShape;
 }
 
 // public void setShapeMode(QGraphicsPixmapItem::ShapeMode mode)
@@ -274,20 +274,20 @@ void tst_QGraphicsPixmapItem::setShapeMode()
     QCOMPARE(item.shapeMode(), mode);
 }
 
-Q_DECLARE_METATYPE(Qt::TransformationMode)
+Q_DECLARE_METATYPE(BobUI::TransformationMode)
 void tst_QGraphicsPixmapItem::setTransformationMode_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<Qt::TransformationMode>("mode");
-    QTest::newRow("FastTransformation") << QPixmap() << Qt::FastTransformation;
-    QTest::newRow("SmoothTransformation") << QPixmap() << Qt::SmoothTransformation;
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<BobUI::TransformationMode>("mode");
+    BOBUIest::newRow("FastTransformation") << QPixmap() << BobUI::FastTransformation;
+    BOBUIest::newRow("SmoothTransformation") << QPixmap() << BobUI::SmoothTransformation;
 }
 
-// public void setTransformationMode(Qt::TransformationMode mode)
+// public void setTransformationMode(BobUI::TransformationMode mode)
 void tst_QGraphicsPixmapItem::setTransformationMode()
 {
     QFETCH(QPixmap, pixmap);
-    QFETCH(Qt::TransformationMode, mode);
+    QFETCH(BobUI::TransformationMode, mode);
 
     SubQGraphicsPixmapItem item(pixmap);
     item.setTransformationMode(mode);
@@ -296,9 +296,9 @@ void tst_QGraphicsPixmapItem::setTransformationMode()
 
 void tst_QGraphicsPixmapItem::shape_data()
 {
-    QTest::addColumn<QPixmap>("pixmap");
-    QTest::addColumn<QPainterPath>("shape");
-    QTest::newRow("null") << QPixmap() << QPainterPath();
+    BOBUIest::addColumn<QPixmap>("pixmap");
+    BOBUIest::addColumn<QPainterPath>("shape");
+    BOBUIest::newRow("null") << QPixmap() << QPainterPath();
     // ### what does a normal shape look like?
 }
 
@@ -315,9 +315,9 @@ void tst_QGraphicsPixmapItem::shape()
 Q_DECLARE_METATYPE(SubQGraphicsPixmapItem::Extension)
 void tst_QGraphicsPixmapItem::extension_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<QVariant>("extension");
-    QTest::newRow("null") << QVariant() << QVariant();
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<QVariant>("extension");
+    BOBUIest::newRow("null") << QVariant() << QVariant();
 }
 
 // protected QVariant extension(QVariant const& variant) const
@@ -332,9 +332,9 @@ void tst_QGraphicsPixmapItem::extension()
 
 void tst_QGraphicsPixmapItem::setExtension_data()
 {
-    QTest::addColumn<SubQGraphicsPixmapItem::Extension>("extension");
-    QTest::addColumn<QVariant>("variant");
-    QTest::newRow("null") << SubQGraphicsPixmapItem::UserExtension << QVariant();
+    BOBUIest::addColumn<SubQGraphicsPixmapItem::Extension>("extension");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::newRow("null") << SubQGraphicsPixmapItem::UserExtension << QVariant();
 }
 
 // protected void setExtension(QGraphicsItem::Extension extension, QVariant const& variant)
@@ -349,9 +349,9 @@ void tst_QGraphicsPixmapItem::setExtension()
 
 void tst_QGraphicsPixmapItem::supportsExtension_data()
 {
-    QTest::addColumn<SubQGraphicsPixmapItem::Extension>("extension");
-    QTest::addColumn<bool>("supportsExtension");
-    QTest::newRow("null") << SubQGraphicsPixmapItem::UserExtension << false;
+    BOBUIest::addColumn<SubQGraphicsPixmapItem::Extension>("extension");
+    BOBUIest::addColumn<bool>("supportsExtension");
+    BOBUIest::newRow("null") << SubQGraphicsPixmapItem::UserExtension << false;
 }
 
 // protected bool supportsExtension(QGraphicsItem::Extension extension) const
@@ -364,6 +364,6 @@ void tst_QGraphicsPixmapItem::supportsExtension()
     QCOMPARE(item.call_supportsExtension(extension), supportsExtension);
 }
 
-QTEST_MAIN(tst_QGraphicsPixmapItem)
+BOBUIEST_MAIN(tst_QGraphicsPixmapItem)
 #include "tst_qgraphicspixmapitem.moc"
 

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVENTLOOP_H
 #define QEVENTLOOP_H
 
-#include <QtCore/qobject.h>
-#include <QtCore/qdeadlinetimer.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qdeadlinetimer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEventLoopLocker;
 class QEventLoopPrivate;
@@ -60,12 +60,12 @@ class QEventLoopLocker
 public:
     Q_NODISCARD_CTOR Q_CORE_EXPORT QEventLoopLocker() noexcept;
     Q_NODISCARD_CTOR Q_CORE_EXPORT explicit QEventLoopLocker(QEventLoop *loop) noexcept;
-    Q_NODISCARD_CTOR Q_CORE_EXPORT explicit QEventLoopLocker(QThread *thread) noexcept;
+    Q_NODISCARD_CTOR Q_CORE_EXPORT explicit QEventLoopLocker(BOBUIhread *thread) noexcept;
     Q_CORE_EXPORT ~QEventLoopLocker();
 
     Q_NODISCARD_CTOR QEventLoopLocker(QEventLoopLocker &&other) noexcept
         : p{std::exchange(other.p, 0)} {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QEventLoopLocker)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QEventLoopLocker)
 
     void swap(QEventLoopLocker &other) noexcept { std::swap(p, other.p); }
     friend void swap(QEventLoopLocker &lhs, QEventLoopLocker &rhs) noexcept { lhs.swap(rhs); }
@@ -92,6 +92,6 @@ private:
     void visit(Func func) const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEVENTLOOP_H

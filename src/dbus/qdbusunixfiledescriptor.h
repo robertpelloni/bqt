@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QDBUSUNIXFILEDESCRIPTOR_H
 #define QDBUSUNIXFILEDESCRIPTOR_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtCore/qshareddata.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUICore/qshareddata.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusUnixFileDescriptorPrivate;
@@ -48,9 +48,9 @@ protected:
 
 Q_DECLARE_SHARED(QDBusUnixFileDescriptor)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDBusUnixFileDescriptor, Q_DBUS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDBusUnixFileDescriptor, Q_DBUS_EXPORT)
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif // QDBUSUNIXFILEDESCRIPTOR_H

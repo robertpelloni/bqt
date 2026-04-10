@@ -1,4 +1,4 @@
-QT += widgets core-private gui-private
+BOBUI += widgets core-private gui-private
 SOURCES += main.cpp
 CONFIG -= app_bundle
 darwin {

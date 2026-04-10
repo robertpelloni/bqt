@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSCREEN_PLATFORM_H
 #define QSCREEN_PLATFORM_H
@@ -10,19 +10,19 @@
 //
 // This file is part of the native interface APIs. Usage of
 // this API may make your code source and binary incompatible
-// with future versions of Qt.
+// with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qnativeinterface.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUIGui/qguiapplication.h>
 
 #if defined(Q_OS_WIN32)
-#include <QtGui/qwindowdefs_win.h>
+#include <BobUIGui/qwindowdefs_win.h>
 #endif
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
 struct wl_output;
 #endif
 
@@ -30,22 +30,22 @@ struct wl_output;
 Q_FORWARD_DECLARE_OBJC_CLASS(NSScreen);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QNativeInterface {
 
 #if defined(Q_OS_WIN32) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QWindowsScreen
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWindowsScreen, 1, QScreen)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWindowsScreen, 1, QScreen)
     virtual HMONITOR handle() const = 0;
 };
 #endif
 
-#if QT_CONFIG(wayland) || defined(Q_QDOC)
+#if BOBUI_CONFIG(wayland) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QWaylandScreen
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWaylandScreen, 1, QScreen)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWaylandScreen, 1, QScreen)
     virtual wl_output *output() const = 0;
 };
 #endif
@@ -53,7 +53,7 @@ struct Q_GUI_EXPORT QWaylandScreen
 #if defined(Q_OS_ANDROID) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QAndroidScreen
 {
-    QT_DECLARE_NATIVE_INTERFACE(QAndroidScreen, 1, QScreen)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QAndroidScreen, 1, QScreen)
     virtual int displayId() const = 0;
 };
 #endif
@@ -61,13 +61,13 @@ struct Q_GUI_EXPORT QAndroidScreen
 #if defined(Q_OS_MACOS) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QCocoaScreen
 {
-    QT_DECLARE_NATIVE_INTERFACE(QCocoaScreen, 1, QScreen)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QCocoaScreen, 1, QScreen)
     virtual NSScreen *nativeScreen() const = 0;
 };
 #endif
 
 } // namespace QNativeInterface
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

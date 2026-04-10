@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRAWFONT_H
 #define QRAWFONT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpoint.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qtransform.h>
-#include <QtGui/qfontdatabase.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpoint.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUIGui/qfontdatabase.h>
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QRawFontPrivate;
@@ -43,7 +43,7 @@ public:
              qreal pixelSize,
              QFont::HintingPreference hintingPreference = QFont::PreferDefaultHinting);
     QRawFont(const QRawFont &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRawFont)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRawFont)
     QRawFont &operator=(const QRawFont &other);
     ~QRawFont();
 
@@ -73,7 +73,7 @@ public:
 
     QImage alphaMapForGlyph(quint32 glyphIndex,
                             AntialiasingType antialiasingType = SubPixelAntialiasing,
-                            const QTransform &transform = QTransform()) const;
+                            const BOBUIransform &transform = BOBUIransform()) const;
     QPainterPath pathForGlyph(quint32 glyphIndex) const;
     QRectF boundingRect(quint32 glyphIndex) const;
 
@@ -116,8 +116,8 @@ public:
 
 private:
     friend class QRawFontPrivate;
-    friend class QTextLayout;
-    friend class QTextEngine;
+    friend class BOBUIextLayout;
+    friend class BOBUIextEngine;
 
     QExplicitlySharedDataPointer<QRawFontPrivate> d;
 };
@@ -135,8 +135,8 @@ inline QList<QPointF> QRawFont::advancesForGlyphIndexes(const QList<quint32> &gl
     return advancesForGlyphIndexes(glyphIndexes, QRawFont::SeparateAdvances);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
 #endif // QRAWFONT_H

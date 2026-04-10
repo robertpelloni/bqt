@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 /*
  * This file exists because tst_qsharedpointer.cpp is compiled with
- * QT_SHAREDPOINTER_TRACK_POINTERS. That changes some behavior.
+ * BOBUI_SHAREDPOINTER_TRACK_POINTERS. That changes some behavior.
  *
  * Note that most of these tests may yield false-positives in debug mode, but
  * they should not yield false negatives. That is, they may report PASS when
@@ -15,7 +15,7 @@
  */
 
 #include <qsharedpointer.h>
-#include <QTest>
+#include <BOBUIest>
 
 #include "nontracked.h"
 
@@ -54,12 +54,12 @@ public:
 int DerivedData::derivedDestructorCounter = 0;
 
 
-#ifndef QTEST_NO_RTTI
+#ifndef BOBUIEST_NO_RTTI
 void dynamicCastFailureNoLeak()
 {
     Data::destructorCounter = DerivedData::derivedDestructorCounter = 0;
 
-    // see QTBUG-28924
+    // see BOBUIBUG-28924
     QSharedPointer<Data> a(new Data);
     QSharedPointer<DerivedData> b = a.dynamicCast<DerivedData>();
     QVERIFY(!a.isNull());

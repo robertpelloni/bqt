@@ -20,7 +20,7 @@ HTML.endheader = \
 
 HTML.postheader = \
     "<body>\n" \
-    "<div class=\"header\" id=\"qtdocheader\">\n"\
+    "<div class=\"header\" id=\"bobuidocheader\">\n"\
     "    <div class=\"main\">\n" \
     "    <div class=\"main-rounded\">\n" \
     "        <div class=\"navigationbar\">\n"\

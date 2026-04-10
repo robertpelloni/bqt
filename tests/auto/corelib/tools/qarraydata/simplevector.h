@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #ifndef QARRAY_TEST_SIMPLE_VECTOR_H
 #define QARRAY_TEST_SIMPLE_VECTOR_H
 
-#include <QtCore/qarraydata.h>
-#include <QtCore/qarraydatapointer.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qarraydata.h>
+#include <BobUICore/qarraydatapointer.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include <algorithm>
 
@@ -15,7 +15,7 @@ template <class T>
 struct SimpleVector
 {
 private:
-    typedef QTypedArrayData<T> Data;
+    typedef BOBUIypedArrayData<T> Data;
     typedef QArrayDataPointer<T> DataPointer;
 
 public:

@@ -1,44 +1,44 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qcssutil_p.h"
 #include "private/qcssparser_p.h"
 #include "qpainter.h"
 #include <qmath.h>
 
-#ifndef QT_NO_CSSPARSER
+#ifndef BOBUI_NO_CSSPARSER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QCss;
 
 static QPen qPenFromStyle(const QBrush& b, qreal width, BorderStyle s)
 {
-    Qt::PenStyle ps = Qt::NoPen;
+    BobUI::PenStyle ps = BobUI::NoPen;
 
     switch (s) {
     case BorderStyle_Dotted:
-        ps  = Qt::DotLine;
+        ps  = BobUI::DotLine;
         break;
     case BorderStyle_Dashed:
-        ps = Qt::DashLine;
+        ps = BobUI::DashLine;
         break;
     case BorderStyle_DotDash:
-        ps = Qt::DashDotLine;
+        ps = BobUI::DashDotLine;
         break;
     case BorderStyle_DotDotDash:
-        ps = Qt::DashDotDotLine;
+        ps = BobUI::DashDotDotLine;
         break;
     case BorderStyle_Inset:
     case BorderStyle_Outset:
     case BorderStyle_Solid:
-        ps = Qt::SolidLine;
+        ps = BobUI::SolidLine;
         break;
     default:
         break;
     }
 
-    return QPen(b, width, ps, Qt::FlatCap);
+    return QPen(b, width, ps, BobUI::FlatCap);
 }
 
 void qDrawRoundedCorners(QPainter *p, qreal x1, qreal y1, qreal x2, qreal y2,
@@ -102,9 +102,9 @@ void qDrawRoundedCorners(QPainter *p, qreal x1, qreal y1, qreal x2, qreal y2,
 
     p->save();
     qreal pwby2 = pw/2;
-    p->setBrush(Qt::NoBrush);
+    p->setBrush(BobUI::NoBrush);
     QPen pen = qPenFromStyle(c, pw, s);
-    pen.setCapStyle(Qt::SquareCap); // this eliminates the offby1 errors that we might hit below
+    pen.setCapStyle(BobUI::SquareCap); // this eliminates the offby1 errors that we might hit below
     p->setPen(pen);
     switch (edge) {
     case TopEdge:
@@ -163,7 +163,7 @@ void qDrawEdge(QPainter *p, qreal x1, qreal y1, qreal x2, qreal y2, qreal dw1, q
             c = c.color().lighter();
         Q_FALLTHROUGH();
     case BorderStyle_Solid: {
-        p->setPen(Qt::NoPen);
+        p->setPen(BobUI::NoPen);
         p->setBrush(c);
         if (width == 1 || (dw1 == 0 && dw2 == 0)) {
             p->drawRect(QRectF(x1, y1, x2-x1, y2-y1));
@@ -299,7 +299,7 @@ static bool paintsOver(const QCss::BorderStyle *styles, const QBrush *colors, QC
     QCss::BorderStyle s1 = styles[e1];
     QCss::BorderStyle s2 = styles[e2];
 
-    if (s2 == BorderStyle_None || colors[e2] == Qt::transparent)
+    if (s2 == BorderStyle_None || colors[e2] == BobUI::transparent)
         return true;
 
     if ((s1 == BorderStyle_Solid && s2 == BorderStyle_Solid) && (colors[e1] == colors[e2])
@@ -368,6 +368,6 @@ void qDrawBorder(QPainter *p, const QRect &rect, const QCss::BorderStyle *styles
     }
 }
 
-#endif //QT_NO_CSSPARSER
+#endif //BOBUI_NO_CSSPARSER
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef RANGECONTROLS_H
 #define RANGECONTROLS_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/qaccessiblewidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 class QAbstractSpinBox;
 class QAbstractSlider;
@@ -31,7 +31,7 @@ class QDoubleSpinBox;
 class QDial;
 class QAccessibleLineEdit;
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 class QAccessibleAbstractSpinBox:
         public QAccessibleWidgetV2,
         public QAccessibleValueInterface,
@@ -106,9 +106,9 @@ public:
 protected:
     QDoubleSpinBox *doubleSpinBox() const;
 };
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 class QAccessibleAbstractSlider: public QAccessibleWidgetV2, public QAccessibleValueInterface
 {
 public:
@@ -129,9 +129,9 @@ public:
 protected:
     QAbstractSlider *abstractSlider() const;
 };
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 
-#if QT_CONFIG(scrollbar)
+#if BOBUI_CONFIG(scrollbar)
 class QAccessibleScrollBar : public QAccessibleAbstractSlider
 {
 public:
@@ -141,9 +141,9 @@ public:
 protected:
     QScrollBar *scrollBar() const;
 };
-#endif // QT_CONFIG(scrollbar)
+#endif // BOBUI_CONFIG(scrollbar)
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
 class QAccessibleSlider : public QAccessibleAbstractSlider
 {
 public:
@@ -153,9 +153,9 @@ public:
 protected:
     QSlider *slider() const;
 };
-#endif // QT_CONFIG(slider)
+#endif // BOBUI_CONFIG(slider)
 
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
 class QAccessibleDial : public QAccessibleAbstractSlider
 {
 public:
@@ -166,10 +166,10 @@ public:
 protected:
     QDial *dial() const;
 };
-#endif // QT_CONFIG(dial)
+#endif // BOBUI_CONFIG(dial)
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // RANGECONTROLS_H

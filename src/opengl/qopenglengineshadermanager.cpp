@@ -1,24 +1,24 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglengineshadermanager_p.h"
 #include "qopenglengineshadersource_p.h"
 #include "qopenglpaintengine_p.h"
 #include <private/qopenglshadercache_p.h>
 
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtCore/qthreadstorage.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUICore/bobuihreadstorage.h>
 
 #include <algorithm>
 #include <memory>
 
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
 #include <QMetaEnum>
 #endif
 
-// #define QT_GL_SHARED_SHADER_DEBUG
+// #define BOBUI_GL_SHARED_SHADER_DEBUG
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLEngineSharedShadersResource : public QOpenGLSharedResource
 {
@@ -63,14 +63,14 @@ public:
     }
 
 private:
-    QThreadStorage<QOpenGLMultiGroupSharedResource *> m_storage;
+    BOBUIhreadStorage<QOpenGLMultiGroupSharedResource *> m_storage;
 };
 
-Q_GLOBAL_STATIC(QOpenGLShaderStorage, qt_shader_storage);
+Q_GLOBAL_STATIC(QOpenGLShaderStorage, bobui_shader_storage);
 
 QOpenGLEngineSharedShaders *QOpenGLEngineSharedShaders::shadersForContext(QOpenGLContext *context)
 {
-    return qt_shader_storage()->shadersForThread(context);
+    return bobui_shader_storage()->shadersForThread(context);
 }
 
 const char* QOpenGLEngineSharedShaders::qShaderSnippets[] = {
@@ -207,7 +207,7 @@ QOpenGLEngineSharedShaders::QOpenGLEngineSharedShaders(QOpenGLContext* context)
     code[DifferenceCompositionModeFragmentShader] = qopenglslDifferenceCompositionModeFragmentShader;
     code[ExclusionCompositionModeFragmentShader] = qopenglslExclusionCompositionModeFragmentShader;
 
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
     // Check that all the elements have been filled:
     for (int i = 0; i < TotalSnippetCount; ++i) {
         if (Q_UNLIKELY(!qShaderSnippets[i])) {
@@ -243,10 +243,10 @@ QOpenGLEngineSharedShaders::QOpenGLEngineSharedShaders(QOpenGLContext* context)
         if (!simpleShaderProg->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragSource))
             qWarning("Fragment shader for simpleShaderProg (MainFragmentShader & ShockingPinkSrcFragmentShader) failed to compile");
 
-        simpleShaderProg->bindAttributeLocation("vertexCoordsArray", QT_VERTEX_COORDS_ATTR);
-        simpleShaderProg->bindAttributeLocation("pmvMatrix1", QT_PMV_MATRIX_1_ATTR);
-        simpleShaderProg->bindAttributeLocation("pmvMatrix2", QT_PMV_MATRIX_2_ATTR);
-        simpleShaderProg->bindAttributeLocation("pmvMatrix3", QT_PMV_MATRIX_3_ATTR);
+        simpleShaderProg->bindAttributeLocation("vertexCoordsArray", BOBUI_VERTEX_COORDS_ATTR);
+        simpleShaderProg->bindAttributeLocation("pmvMatrix1", BOBUI_PMV_MATRIX_1_ATTR);
+        simpleShaderProg->bindAttributeLocation("pmvMatrix2", BOBUI_PMV_MATRIX_2_ATTR);
+        simpleShaderProg->bindAttributeLocation("pmvMatrix3", BOBUI_PMV_MATRIX_3_ATTR);
     }
 
     simpleShaderProg->link();
@@ -279,8 +279,8 @@ QOpenGLEngineSharedShaders::QOpenGLEngineSharedShaders(QOpenGLContext* context)
         if (!blitShaderProg->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragSource))
             qWarning("Fragment shader for blitShaderProg (MainFragmentShader & ImageSrcFragmentShader) failed to compile");
 
-        blitShaderProg->bindAttributeLocation("textureCoordArray", QT_TEXTURE_COORDS_ATTR);
-        blitShaderProg->bindAttributeLocation("vertexCoordsArray", QT_VERTEX_COORDS_ATTR);
+        blitShaderProg->bindAttributeLocation("textureCoordArray", BOBUI_TEXTURE_COORDS_ATTR);
+        blitShaderProg->bindAttributeLocation("vertexCoordsArray", BOBUI_VERTEX_COORDS_ATTR);
     }
 
     blitShaderProg->link();
@@ -291,15 +291,15 @@ QOpenGLEngineSharedShaders::QOpenGLEngineSharedShaders(QOpenGLContext* context)
             blitShaderCache.store(blitShaderProg, context);
     }
 
-#ifdef QT_GL_SHARED_SHADER_DEBUG
-    qDebug(" -> QOpenGLEngineSharedShaders() %p for thread %p.", this, QThread::currentThread());
+#ifdef BOBUI_GL_SHARED_SHADER_DEBUG
+    qDebug(" -> QOpenGLEngineSharedShaders() %p for thread %p.", this, BOBUIhread::currentThread());
 #endif
 }
 
 QOpenGLEngineSharedShaders::~QOpenGLEngineSharedShaders()
 {
-#ifdef QT_GL_SHARED_SHADER_DEBUG
-    qDebug(" -> ~QOpenGLEngineSharedShaders() %p for thread %p.", this, QThread::currentThread());
+#ifdef BOBUI_GL_SHARED_SHADER_DEBUG
+    qDebug(" -> ~QOpenGLEngineSharedShaders() %p for thread %p.", this, BOBUIhread::currentThread());
 #endif
     qDeleteAll(cachedPrograms);
     cachedPrograms.clear();
@@ -315,7 +315,7 @@ QOpenGLEngineSharedShaders::~QOpenGLEngineSharedShaders()
     }
 }
 
-#if defined (QT_DEBUG)
+#if defined (BOBUI_DEBUG)
 QByteArray QOpenGLEngineSharedShaders::snippetNameStr(SnippetName name)
 {
     QMetaEnum m = staticMetaObject.enumerator(staticMetaObject.indexOfEnumerator("SnippetName"));
@@ -368,7 +368,7 @@ QOpenGLEngineShaderProg *QOpenGLEngineSharedShaders::findProgramInCache(const QO
         if (!inCache) {
             if (!shaderProgram->addCacheableShaderFromSourceCode(QOpenGLShader::Vertex, vertexSource)) {
                 QByteArray description;
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
                 description.append("Vertex shader: main=");
                 description.append(snippetNameStr(prog.mainVertexShader));
                 description.append(", position=");
@@ -379,7 +379,7 @@ QOpenGLEngineShaderProg *QOpenGLEngineSharedShaders::findProgramInCache(const QO
             }
             if (!shaderProgram->addCacheableShaderFromSourceCode(QOpenGLShader::Fragment, fragSource)) {
                 QByteArray description;
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
                 description.append("Fragment shader: main=");
                 description.append(snippetNameStr(prog.mainFragShader));
                 description.append(", srcPixel=");
@@ -398,15 +398,15 @@ QOpenGLEngineShaderProg *QOpenGLEngineSharedShaders::findProgramInCache(const QO
             }
 
             // We have to bind the vertex attribute names before the program is linked:
-            shaderProgram->bindAttributeLocation("vertexCoordsArray", QT_VERTEX_COORDS_ATTR);
+            shaderProgram->bindAttributeLocation("vertexCoordsArray", BOBUI_VERTEX_COORDS_ATTR);
             if (prog.useTextureCoords)
-                shaderProgram->bindAttributeLocation("textureCoordArray", QT_TEXTURE_COORDS_ATTR);
+                shaderProgram->bindAttributeLocation("textureCoordArray", BOBUI_TEXTURE_COORDS_ATTR);
             if (prog.useOpacityAttribute)
-                shaderProgram->bindAttributeLocation("opacityArray", QT_OPACITY_ATTR);
+                shaderProgram->bindAttributeLocation("opacityArray", BOBUI_OPACITY_ATTR);
             if (prog.usePmvMatrixAttribute) {
-                shaderProgram->bindAttributeLocation("pmvMatrix1", QT_PMV_MATRIX_1_ATTR);
-                shaderProgram->bindAttributeLocation("pmvMatrix2", QT_PMV_MATRIX_2_ATTR);
-                shaderProgram->bindAttributeLocation("pmvMatrix3", QT_PMV_MATRIX_3_ATTR);
+                shaderProgram->bindAttributeLocation("pmvMatrix1", BOBUI_PMV_MATRIX_1_ATTR);
+                shaderProgram->bindAttributeLocation("pmvMatrix2", BOBUI_PMV_MATRIX_2_ATTR);
+                shaderProgram->bindAttributeLocation("pmvMatrix3", BOBUI_PMV_MATRIX_3_ATTR);
             }
         }
 
@@ -428,7 +428,7 @@ QOpenGLEngineShaderProg *QOpenGLEngineSharedShaders::findProgramInCache(const QO
 
         if (newProg->maskFragShader != QOpenGLEngineSharedShaders::NoMaskFragmentShader) {
             GLuint location = newProg->program->uniformLocation("maskTexture");
-            newProg->program->setUniformValue(location, QT_MASK_TEXTURE_UNIT);
+            newProg->program->setUniformValue(location, BOBUI_MASK_TEXTURE_UNIT);
         }
 
         if (cachedPrograms.size() > 30) {
@@ -464,7 +464,7 @@ QOpenGLEngineShaderManager::QOpenGLEngineShaderManager(QOpenGLContext* context)
     : ctx(context),
       shaderProgNeedsChanging(true),
       complexGeometry(false),
-      srcPixelType(Qt::NoBrush),
+      srcPixelType(BobUI::NoBrush),
       opacityMode(NoOpacity),
       maskType(NoMask),
       compositionMode(QPainter::CompositionMode_SourceOver),
@@ -517,7 +517,7 @@ GLuint QOpenGLEngineShaderManager::getUniformLocation(Uniform id)
 }
 
 
-void QOpenGLEngineShaderManager::optimiseForBrushTransform(QTransform::TransformationType transformType)
+void QOpenGLEngineShaderManager::optimiseForBrushTransform(BOBUIransform::TransformationType transformType)
 {
     Q_UNUSED(transformType); // Currently ignored
 }
@@ -527,9 +527,9 @@ void QOpenGLEngineShaderManager::setDirty()
     shaderProgNeedsChanging = true;
 }
 
-void QOpenGLEngineShaderManager::setSrcPixelType(Qt::BrushStyle style)
+void QOpenGLEngineShaderManager::setSrcPixelType(BobUI::BrushStyle style)
 {
-    Q_ASSERT(style != Qt::NoBrush);
+    Q_ASSERT(style != BobUI::NoBrush);
     if (srcPixelType == PixelSrcType(style))
         return;
 
@@ -608,9 +608,9 @@ void QOpenGLEngineShaderManager::useSimpleProgram()
 
     QOpenGL2PaintEngineEx *active_engine = static_cast<QOpenGL2PaintEngineEx *>(ctx_d->active_engine);
 
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_VERTEX_COORDS_ATTR, true);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_TEXTURE_COORDS_ATTR, false);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_OPACITY_ATTR, false);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_VERTEX_COORDS_ATTR, true);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_TEXTURE_COORDS_ATTR, false);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_OPACITY_ATTR, false);
 
     shaderProgNeedsChanging = true;
 }
@@ -620,9 +620,9 @@ void QOpenGLEngineShaderManager::useBlitProgram()
     sharedShaders->blitProgram()->bind();
     QOpenGLContextPrivate* ctx_d = ctx->d_func();
     QOpenGL2PaintEngineEx *active_engine = static_cast<QOpenGL2PaintEngineEx *>(ctx_d->active_engine);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_VERTEX_COORDS_ATTR, true);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_TEXTURE_COORDS_ATTR, true);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_OPACITY_ATTR, false);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_VERTEX_COORDS_ATTR, true);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_TEXTURE_COORDS_ATTR, true);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_OPACITY_ATTR, false);
     shaderProgNeedsChanging = true;
 }
 
@@ -646,7 +646,7 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
         return false;
 
     bool useCustomSrc = customSrcStage != nullptr;
-    if (useCustomSrc && srcPixelType != QOpenGLEngineShaderManager::ImageSrc && srcPixelType != Qt::TexturePattern) {
+    if (useCustomSrc && srcPixelType != QOpenGLEngineShaderManager::ImageSrc && srcPixelType != BobUI::TexturePattern) {
         useCustomSrc = false;
         qWarning("QOpenGLEngineShaderManager - Ignoring custom shader stage for non image src");
     }
@@ -660,7 +660,7 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
     requiredProgram.positionVertexShader = QOpenGLEngineSharedShaders::InvalidSnippetName;
     requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::InvalidSnippetName;
     bool isAffine = brushTransform.isAffine();
-    if ( (srcPixelType >= Qt::Dense1Pattern) && (srcPixelType <= Qt::DiagCrossPattern) ) {
+    if ( (srcPixelType >= BobUI::Dense1Pattern) && (srcPixelType <= BobUI::DiagCrossPattern) ) {
         if (isAffine)
             requiredProgram.positionVertexShader = QOpenGLEngineSharedShaders::AffinePositionWithPatternBrushVertexShader;
         else
@@ -670,8 +670,8 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
     }
     else switch (srcPixelType) {
         default:
-        case Qt::NoBrush:
-            qFatal("QOpenGLEngineShaderManager::useCorrectShaderProg() - Qt::NoBrush style is set");
+        case BobUI::NoBrush:
+            qFatal("QOpenGLEngineShaderManager::useCorrectShaderProg() - BobUI::NoBrush style is set");
             break;
         case QOpenGLEngineShaderManager::ImageSrc:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::ImageSrcFragmentShader;
@@ -703,26 +703,26 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
             requiredProgram.positionVertexShader = isAffine ? QOpenGLEngineSharedShaders::AffinePositionWithTextureBrushVertexShader
                                                 : QOpenGLEngineSharedShaders::PositionWithTextureBrushVertexShader;
             break;
-        case Qt::SolidPattern:
+        case BobUI::SolidPattern:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::SolidBrushSrcFragmentShader;
             requiredProgram.positionVertexShader = QOpenGLEngineSharedShaders::PositionOnlyVertexShader;
             break;
-        case Qt::LinearGradientPattern:
+        case BobUI::LinearGradientPattern:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::LinearGradientBrushSrcFragmentShader;
             requiredProgram.positionVertexShader = isAffine ? QOpenGLEngineSharedShaders::AffinePositionWithLinearGradientBrushVertexShader
                                                 : QOpenGLEngineSharedShaders::PositionWithLinearGradientBrushVertexShader;
             break;
-        case Qt::ConicalGradientPattern:
+        case BobUI::ConicalGradientPattern:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::ConicalGradientBrushSrcFragmentShader;
             requiredProgram.positionVertexShader = isAffine ? QOpenGLEngineSharedShaders::AffinePositionWithConicalGradientBrushVertexShader
                                                 : QOpenGLEngineSharedShaders::PositionWithConicalGradientBrushVertexShader;
             break;
-        case Qt::RadialGradientPattern:
+        case BobUI::RadialGradientPattern:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::RadialGradientBrushSrcFragmentShader;
             requiredProgram.positionVertexShader = isAffine ? QOpenGLEngineSharedShaders::AffinePositionWithRadialGradientBrushVertexShader
                                                 : QOpenGLEngineSharedShaders::PositionWithRadialGradientBrushVertexShader;
             break;
-        case Qt::TexturePattern:
+        case BobUI::TexturePattern:
             requiredProgram.srcPixelFragShader = QOpenGLEngineSharedShaders::TextureBrushSrcFragmentShader;
             requiredProgram.positionVertexShader = isAffine ? QOpenGLEngineSharedShaders::AffinePositionWithTextureBrushVertexShader
                                                 : QOpenGLEngineSharedShaders::PositionWithTextureBrushVertexShader;
@@ -826,7 +826,7 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
     }
     requiredProgram.useTextureCoords = texCoords;
     requiredProgram.useOpacityAttribute = (opacityMode == AttributeOpacity);
-    if (complexGeometry && srcPixelType == Qt::SolidPattern) {
+    if (complexGeometry && srcPixelType == BobUI::SolidPattern) {
         requiredProgram.positionVertexShader = QOpenGLEngineSharedShaders::ComplexGeometryPositionOnlyVertexShader;
         requiredProgram.usePmvMatrixAttribute = false;
     } else {
@@ -848,14 +848,14 @@ bool QOpenGLEngineShaderManager::useCorrectShaderProg()
     // doesn't use are disabled)
     QOpenGLContextPrivate* ctx_d = ctx->d_func();
     QOpenGL2PaintEngineEx *active_engine = static_cast<QOpenGL2PaintEngineEx *>(ctx_d->active_engine);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_VERTEX_COORDS_ATTR, true);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_TEXTURE_COORDS_ATTR, currentShaderProg && currentShaderProg->useTextureCoords);
-    active_engine->d_func()->setVertexAttribArrayEnabled(QT_OPACITY_ATTR, currentShaderProg && currentShaderProg->useOpacityAttribute);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_VERTEX_COORDS_ATTR, true);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_TEXTURE_COORDS_ATTR, currentShaderProg && currentShaderProg->useTextureCoords);
+    active_engine->d_func()->setVertexAttribArrayEnabled(BOBUI_OPACITY_ATTR, currentShaderProg && currentShaderProg->useOpacityAttribute);
 
     shaderProgNeedsChanging = false;
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qopenglengineshadermanager_p.cpp"

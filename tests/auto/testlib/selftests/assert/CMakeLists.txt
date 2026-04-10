@@ -1,21 +1,21 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## assert Binary:
 #####################################################################
 
-qt_internal_add_executable(assert
+bobui_internal_add_executable(assert
     NO_INSTALL
     EXCEPTIONS
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     SOURCES
         tst_assert.cpp
     LIBRARIES
-        Qt::Test
+        BobUI::Test
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_apply_testlib_coverage_options(assert)
+bobui_internal_apply_testlib_coverage_options(assert)

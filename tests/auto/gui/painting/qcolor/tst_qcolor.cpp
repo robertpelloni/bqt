@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QFloat16>
 
 #include <limits.h>
@@ -13,8 +13,8 @@
 #include <private/qdrawingprimitive_sse2_p.h>
 #include <qrgba64.h>
 
-#if QT_DEPRECATED_SINCE(6, 6)
-# define DEPRECATED_IN_6_6(...) QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED __VA_ARGS__ QT_WARNING_POP
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+# define DEPRECATED_IN_6_6(...) BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED __VA_ARGS__ BOBUI_WARNING_POP
 #else
 # define DEPRECATED_IN_6_6(...)
 #endif
@@ -218,19 +218,19 @@ tst_QColor::tst_QColor()
 
 void tst_QColor::isValid_data()
 {
-    QTest::addColumn<QColor>("color");
-    QTest::addColumn<bool>("isValid");
+    BOBUIest::addColumn<QColor>("color");
+    BOBUIest::addColumn<bool>("isValid");
 
-    QTest::newRow("defaultConstructor") << QColor() << false;
-    QTest::newRow("rgbConstructor-valid") << QColor(2,5,7) << true;
-    QTest::newRow("rgbConstructor-invalid") << QColor(2,5,999) << false;
-    QTest::newRow("nameQStringConstructor-valid") << QColor::fromString("#ffffff") << true;
-    QTest::newRow("nameQStringConstructor-invalid") << QColor::fromString("#ffffgg") << false;
-    QTest::newRow("nameQStringConstructor-empty") << QColor::fromString("") << false;
-    QTest::newRow("nameQStringConstructor-named") << QColor::fromString("red") << true;
-    QTest::newRow("nameCharConstructor-valid") << QColor::fromString("#ffffff") << true;
-    QTest::newRow("nameCharConstructor-invalid") << QColor::fromString("#ffffgg") << false;
-    QTest::newRow("nameCharConstructor-invalid-2") << QColor::fromString("#fffffg") << false;
+    BOBUIest::newRow("defaultConstructor") << QColor() << false;
+    BOBUIest::newRow("rgbConstructor-valid") << QColor(2,5,7) << true;
+    BOBUIest::newRow("rgbConstructor-invalid") << QColor(2,5,999) << false;
+    BOBUIest::newRow("nameQStringConstructor-valid") << QColor::fromString("#ffffff") << true;
+    BOBUIest::newRow("nameQStringConstructor-invalid") << QColor::fromString("#ffffgg") << false;
+    BOBUIest::newRow("nameQStringConstructor-empty") << QColor::fromString("") << false;
+    BOBUIest::newRow("nameQStringConstructor-named") << QColor::fromString("red") << true;
+    BOBUIest::newRow("nameCharConstructor-valid") << QColor::fromString("#ffffff") << true;
+    BOBUIest::newRow("nameCharConstructor-invalid") << QColor::fromString("#ffffgg") << false;
+    BOBUIest::newRow("nameCharConstructor-invalid-2") << QColor::fromString("#fffffg") << false;
 }
 
 void tst_QColor::isValid()
@@ -244,31 +244,31 @@ Q_DECLARE_METATYPE(QColor::NameFormat);
 
 void tst_QColor::name_data()
 {
-    QTest::addColumn<QColor>("color");
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QColor::NameFormat>("nameFormat");
+    BOBUIest::addColumn<QColor>("color");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QColor::NameFormat>("nameFormat");
 
-    QTest::newRow("invalid") << QColor() << "#000000" << QColor::HexRgb;
-    QTest::newRow("global color black") << QColor(Qt::black) << "#000000" << QColor::HexRgb;
-    QTest::newRow("global color white") << QColor(Qt::white) << "#ffffff" << QColor::HexRgb;
-    QTest::newRow("global color darkGray") << QColor(Qt::darkGray) << "#808080" << QColor::HexRgb;
-    QTest::newRow("global color gray") << QColor(Qt::gray) << "#a0a0a4" << QColor::HexRgb;
-    QTest::newRow("global color lightGray") << QColor(Qt::lightGray) << "#c0c0c0" << QColor::HexRgb;
-    QTest::newRow("global color red") << QColor(Qt::red) << "#ff0000" << QColor::HexRgb;
-    QTest::newRow("global color green") << QColor(Qt::green) << "#00ff00" << QColor::HexRgb;
-    QTest::newRow("global color blue") << QColor(Qt::blue) << "#0000ff" << QColor::HexRgb;
-    QTest::newRow("global color cyan") << QColor(Qt::cyan) << "#00ffff" << QColor::HexRgb;
-    QTest::newRow("global color magenta") << QColor(Qt::magenta) << "#ff00ff" << QColor::HexRgb;
-    QTest::newRow("global color yellow") << QColor(Qt::yellow) << "#ffff00" << QColor::HexRgb;
-    QTest::newRow("global color darkRed") << QColor(Qt::darkRed) << "#800000" << QColor::HexRgb;
-    QTest::newRow("global color darkGreen") << QColor(Qt::darkGreen) << "#008000" << QColor::HexRgb;
-    QTest::newRow("global color darkBlue") << QColor(Qt::darkBlue) << "#000080" << QColor::HexRgb;
-    QTest::newRow("global color darkCyan") << QColor(Qt::darkCyan) << "#008080" << QColor::HexRgb;
-    QTest::newRow("global color darkMagenta") << QColor(Qt::darkMagenta) << "#800080" << QColor::HexRgb;
-    QTest::newRow("global color darkYellow") << QColor(Qt::darkYellow) << "#808000" << QColor::HexRgb;
-    QTest::newRow("transparent red") << QColor(255, 0, 0, 102) << "#66ff0000" << QColor::HexArgb;
-    QTest::newRow("fully_transparent_green_rgb") << QColor(0, 0, 255, 0) << "#0000ff" << QColor::HexRgb;
-    QTest::newRow("fully_transparent_green_argb") << QColor(0, 0, 255, 0) << "#000000ff" << QColor::HexArgb;
+    BOBUIest::newRow("invalid") << QColor() << "#000000" << QColor::HexRgb;
+    BOBUIest::newRow("global color black") << QColor(BobUI::black) << "#000000" << QColor::HexRgb;
+    BOBUIest::newRow("global color white") << QColor(BobUI::white) << "#ffffff" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkGray") << QColor(BobUI::darkGray) << "#808080" << QColor::HexRgb;
+    BOBUIest::newRow("global color gray") << QColor(BobUI::gray) << "#a0a0a4" << QColor::HexRgb;
+    BOBUIest::newRow("global color lightGray") << QColor(BobUI::lightGray) << "#c0c0c0" << QColor::HexRgb;
+    BOBUIest::newRow("global color red") << QColor(BobUI::red) << "#ff0000" << QColor::HexRgb;
+    BOBUIest::newRow("global color green") << QColor(BobUI::green) << "#00ff00" << QColor::HexRgb;
+    BOBUIest::newRow("global color blue") << QColor(BobUI::blue) << "#0000ff" << QColor::HexRgb;
+    BOBUIest::newRow("global color cyan") << QColor(BobUI::cyan) << "#00ffff" << QColor::HexRgb;
+    BOBUIest::newRow("global color magenta") << QColor(BobUI::magenta) << "#ff00ff" << QColor::HexRgb;
+    BOBUIest::newRow("global color yellow") << QColor(BobUI::yellow) << "#ffff00" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkRed") << QColor(BobUI::darkRed) << "#800000" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkGreen") << QColor(BobUI::darkGreen) << "#008000" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkBlue") << QColor(BobUI::darkBlue) << "#000080" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkCyan") << QColor(BobUI::darkCyan) << "#008080" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkMagenta") << QColor(BobUI::darkMagenta) << "#800080" << QColor::HexRgb;
+    BOBUIest::newRow("global color darkYellow") << QColor(BobUI::darkYellow) << "#808000" << QColor::HexRgb;
+    BOBUIest::newRow("transparent red") << QColor(255, 0, 0, 102) << "#66ff0000" << QColor::HexArgb;
+    BOBUIest::newRow("fully_transparent_green_rgb") << QColor(0, 0, 255, 0) << "#0000ff" << QColor::HexRgb;
+    BOBUIest::newRow("fully_transparent_green_argb") << QColor(0, 0, 255, 0) << "#000000ff" << QColor::HexArgb;
 }
 
 void tst_QColor::name()
@@ -281,35 +281,35 @@ void tst_QColor::name()
 
 void tst_QColor::namehex_data()
 {
-    QTest::addColumn<QString>("hexcolor");
-    QTest::addColumn<QColor>("color");
+    BOBUIest::addColumn<QString>("hexcolor");
+    BOBUIest::addColumn<QColor>("color");
 
-    QTest::newRow("global color black") << "#000000" << QColor(Qt::black);
-    QTest::newRow("global color white") << "#ffffff" << QColor(Qt::white);
-    QTest::newRow("global color darkGray") << "#808080" << QColor(Qt::darkGray);
-    QTest::newRow("global color gray") << "#a0a0a4" << QColor(Qt::gray);
-    QTest::newRow("global color lightGray") << "#c0c0c0" << QColor(Qt::lightGray);
-    QTest::newRow("global color red") << "#ff0000" << QColor(Qt::red);
-    QTest::newRow("global color green") << "#00ff00" << QColor(Qt::green);
-    QTest::newRow("global color blue") << "#0000ff" << QColor(Qt::blue);
-    QTest::newRow("global color cyan") << "#00ffff" << QColor(Qt::cyan);
-    QTest::newRow("global color magenta") << "#ff00ff" << QColor(Qt::magenta);
-    QTest::newRow("global color yellow") << "#ffff00" << QColor(Qt::yellow);
-    QTest::newRow("global color darkRed") << "#800000" << QColor(Qt::darkRed);
-    QTest::newRow("global color darkGreen") << "#008000" << QColor(Qt::darkGreen);
-    QTest::newRow("global color darkBlue") << "#000080" << QColor(Qt::darkBlue);
-    QTest::newRow("global color darkCyan") << "#008080" << QColor(Qt::darkCyan);
-    QTest::newRow("global color darkMagenta") << "#800080" << QColor(Qt::darkMagenta);
-    QTest::newRow("global color darkYellow") << "#808000" << QColor(Qt::darkYellow);
-    QTest::newRow("#RGB") << "#888" << QColor(0x88, 0x88, 0x88);
-    QTest::newRow("#RRRGGGBBB") << "#80F80F80F" << QColor(qRgba64(0x80f8, 0x80f8, 0x80f8, 0xffff));
-    QTest::newRow("#RRRRGGGGBBBB") << "#808180818081" << QColor(qRgba64(0x8081, 0x8081, 0x8081, 0xffff));
-    QTest::newRow("transparent red") << "#66ff0000" << QColor(255, 0, 0, 102);
-    QTest::newRow("invalid red") << "#gg0000" << QColor();
-    QTest::newRow("invalid transparent") << "#gg00ff00" << QColor();
+    BOBUIest::newRow("global color black") << "#000000" << QColor(BobUI::black);
+    BOBUIest::newRow("global color white") << "#ffffff" << QColor(BobUI::white);
+    BOBUIest::newRow("global color darkGray") << "#808080" << QColor(BobUI::darkGray);
+    BOBUIest::newRow("global color gray") << "#a0a0a4" << QColor(BobUI::gray);
+    BOBUIest::newRow("global color lightGray") << "#c0c0c0" << QColor(BobUI::lightGray);
+    BOBUIest::newRow("global color red") << "#ff0000" << QColor(BobUI::red);
+    BOBUIest::newRow("global color green") << "#00ff00" << QColor(BobUI::green);
+    BOBUIest::newRow("global color blue") << "#0000ff" << QColor(BobUI::blue);
+    BOBUIest::newRow("global color cyan") << "#00ffff" << QColor(BobUI::cyan);
+    BOBUIest::newRow("global color magenta") << "#ff00ff" << QColor(BobUI::magenta);
+    BOBUIest::newRow("global color yellow") << "#ffff00" << QColor(BobUI::yellow);
+    BOBUIest::newRow("global color darkRed") << "#800000" << QColor(BobUI::darkRed);
+    BOBUIest::newRow("global color darkGreen") << "#008000" << QColor(BobUI::darkGreen);
+    BOBUIest::newRow("global color darkBlue") << "#000080" << QColor(BobUI::darkBlue);
+    BOBUIest::newRow("global color darkCyan") << "#008080" << QColor(BobUI::darkCyan);
+    BOBUIest::newRow("global color darkMagenta") << "#800080" << QColor(BobUI::darkMagenta);
+    BOBUIest::newRow("global color darkYellow") << "#808000" << QColor(BobUI::darkYellow);
+    BOBUIest::newRow("#RGB") << "#888" << QColor(0x88, 0x88, 0x88);
+    BOBUIest::newRow("#RRRGGGBBB") << "#80F80F80F" << QColor(qRgba64(0x80f8, 0x80f8, 0x80f8, 0xffff));
+    BOBUIest::newRow("#RRRRGGGGBBBB") << "#808180818081" << QColor(qRgba64(0x8081, 0x8081, 0x8081, 0xffff));
+    BOBUIest::newRow("transparent red") << "#66ff0000" << QColor(255, 0, 0, 102);
+    BOBUIest::newRow("invalid red") << "#gg0000" << QColor();
+    BOBUIest::newRow("invalid transparent") << "#gg00ff00" << QColor();
     // when configured with "-sanitize undefined", this resulted in:
     // "runtime error: left shift of negative value -1"
-    QTest::newRow("oss-fuzz 23968") << "#ÿÿÿÿÿÿÿÿÿ" << QColor();
+    BOBUIest::newRow("oss-fuzz 23968") << "#ÿÿÿÿÿÿÿÿÿ" << QColor();
 }
 
 void tst_QColor::namehex()
@@ -324,28 +324,28 @@ void tst_QColor::namehex()
 
 void tst_QColor::globalColors_data()
 {
-    QTest::addColumn<QColor>("color");
-    QTest::addColumn<uint>("argb");
+    BOBUIest::addColumn<QColor>("color");
+    BOBUIest::addColumn<uint>("argb");
 
-    QTest::newRow("invalid") << QColor() << 0xff000000;
-    QTest::newRow("global color black") << QColor(Qt::black) << 0xff000000;
-    QTest::newRow("global color white") << QColor(Qt::white) << 0xffffffff;
-    QTest::newRow("global color darkGray") << QColor(Qt::darkGray) << 0xff808080;
-    QTest::newRow("global color gray") << QColor(Qt::gray) << 0xffa0a0a4;
-    QTest::newRow("global color lightGray") << QColor(Qt::lightGray) << 0xffc0c0c0;
-    QTest::newRow("global color red") << QColor(Qt::red) << 0xffff0000;
-    QTest::newRow("global color green") << QColor(Qt::green) << 0xff00ff00;
-    QTest::newRow("global color blue") << QColor(Qt::blue) << 0xff0000ff;
-    QTest::newRow("global color cyan") << QColor(Qt::cyan) << 0xff00ffff;
-    QTest::newRow("global color magenta") << QColor(Qt::magenta) << 0xffff00ff;
-    QTest::newRow("global color yellow") << QColor(Qt::yellow) << 0xffffff00;
-    QTest::newRow("global color darkRed") << QColor(Qt::darkRed) << 0xff800000;
-    QTest::newRow("global color darkGreen") << QColor(Qt::darkGreen) << 0xff008000;
-    QTest::newRow("global color darkBlue") << QColor(Qt::darkBlue) << 0xff000080;
-    QTest::newRow("global color darkCyan") << QColor(Qt::darkCyan) << 0xff008080;
-    QTest::newRow("global color darkMagenta") << QColor(Qt::darkMagenta) << 0xff800080;
-    QTest::newRow("global color darkYellow") << QColor(Qt::darkYellow) << 0xff808000;
-    QTest::newRow("global color transparent") << QColor(Qt::transparent) << 0x00000000u;
+    BOBUIest::newRow("invalid") << QColor() << 0xff000000;
+    BOBUIest::newRow("global color black") << QColor(BobUI::black) << 0xff000000;
+    BOBUIest::newRow("global color white") << QColor(BobUI::white) << 0xffffffff;
+    BOBUIest::newRow("global color darkGray") << QColor(BobUI::darkGray) << 0xff808080;
+    BOBUIest::newRow("global color gray") << QColor(BobUI::gray) << 0xffa0a0a4;
+    BOBUIest::newRow("global color lightGray") << QColor(BobUI::lightGray) << 0xffc0c0c0;
+    BOBUIest::newRow("global color red") << QColor(BobUI::red) << 0xffff0000;
+    BOBUIest::newRow("global color green") << QColor(BobUI::green) << 0xff00ff00;
+    BOBUIest::newRow("global color blue") << QColor(BobUI::blue) << 0xff0000ff;
+    BOBUIest::newRow("global color cyan") << QColor(BobUI::cyan) << 0xff00ffff;
+    BOBUIest::newRow("global color magenta") << QColor(BobUI::magenta) << 0xffff00ff;
+    BOBUIest::newRow("global color yellow") << QColor(BobUI::yellow) << 0xffffff00;
+    BOBUIest::newRow("global color darkRed") << QColor(BobUI::darkRed) << 0xff800000;
+    BOBUIest::newRow("global color darkGreen") << QColor(BobUI::darkGreen) << 0xff008000;
+    BOBUIest::newRow("global color darkBlue") << QColor(BobUI::darkBlue) << 0xff000080;
+    BOBUIest::newRow("global color darkCyan") << QColor(BobUI::darkCyan) << 0xff008080;
+    BOBUIest::newRow("global color darkMagenta") << QColor(BobUI::darkMagenta) << 0xff800080;
+    BOBUIest::newRow("global color darkYellow") << QColor(BobUI::darkYellow) << 0xff808000;
+    BOBUIest::newRow("global color transparent") << QColor(BobUI::transparent) << 0x00000000u;
 }
 
 
@@ -358,178 +358,178 @@ void tst_QColor::globalColors()
 
 void tst_QColor::colorConstants_data()
 {
-    QTest::addColumn<QColor>("color");
-    QTest::addColumn<QRgb>("argb");
+    BOBUIest::addColumn<QColor>("color");
+    BOBUIest::addColumn<QRgb>("argb");
 
-    QTest::newRow("invalid") << QColor() << 0xff000000;
-    QTest::newRow("global color color0") << QColorConstants::Color0 << 0xff000000u;
-    QTest::newRow("global color color1") << QColorConstants::Color1 << 0xffffffffu;
-    QTest::newRow("global color black") << QColorConstants::Black << 0xff000000u;
-    QTest::newRow("global color white") << QColorConstants::White << 0xffffffffu;
-    QTest::newRow("global color darkGray") << QColorConstants::DarkGray << 0xff808080u;
-    QTest::newRow("global color gray") << QColorConstants::Gray << 0xffa0a0a4u;
-    QTest::newRow("global color lightGray") << QColorConstants::LightGray << 0xffc0c0c0u;
-    QTest::newRow("global color red") << QColorConstants::Red << 0xffff0000u;
-    QTest::newRow("global color green") << QColorConstants::Green << 0xff00ff00u;
-    QTest::newRow("global color blue") << QColorConstants::Blue << 0xff0000ffu;
-    QTest::newRow("global color cyan") << QColorConstants::Cyan << 0xff00ffffu;
-    QTest::newRow("global color magenta") << QColorConstants::Magenta << 0xffff00ffu;
-    QTest::newRow("global color yellow") << QColorConstants::Yellow << 0xffffff00u;
-    QTest::newRow("global color darkRed") << QColorConstants::DarkRed << 0xff800000u;
-    QTest::newRow("global color darkGreen") << QColorConstants::DarkGreen << 0xff008000u;
-    QTest::newRow("global color darkBlue") << QColorConstants::DarkBlue << 0xff000080u;
-    QTest::newRow("global color darkCyan") << QColorConstants::DarkCyan << 0xff008080u;
-    QTest::newRow("global color darkMagenta") << QColorConstants::DarkMagenta << 0xff800080u;
-    QTest::newRow("global color darkYellow") << QColorConstants::DarkYellow << 0xff808000u;
-    QTest::newRow("global color transparent") << QColorConstants::Transparent << 0x00000000u;
+    BOBUIest::newRow("invalid") << QColor() << 0xff000000;
+    BOBUIest::newRow("global color color0") << QColorConstants::Color0 << 0xff000000u;
+    BOBUIest::newRow("global color color1") << QColorConstants::Color1 << 0xffffffffu;
+    BOBUIest::newRow("global color black") << QColorConstants::Black << 0xff000000u;
+    BOBUIest::newRow("global color white") << QColorConstants::White << 0xffffffffu;
+    BOBUIest::newRow("global color darkGray") << QColorConstants::DarkGray << 0xff808080u;
+    BOBUIest::newRow("global color gray") << QColorConstants::Gray << 0xffa0a0a4u;
+    BOBUIest::newRow("global color lightGray") << QColorConstants::LightGray << 0xffc0c0c0u;
+    BOBUIest::newRow("global color red") << QColorConstants::Red << 0xffff0000u;
+    BOBUIest::newRow("global color green") << QColorConstants::Green << 0xff00ff00u;
+    BOBUIest::newRow("global color blue") << QColorConstants::Blue << 0xff0000ffu;
+    BOBUIest::newRow("global color cyan") << QColorConstants::Cyan << 0xff00ffffu;
+    BOBUIest::newRow("global color magenta") << QColorConstants::Magenta << 0xffff00ffu;
+    BOBUIest::newRow("global color yellow") << QColorConstants::Yellow << 0xffffff00u;
+    BOBUIest::newRow("global color darkRed") << QColorConstants::DarkRed << 0xff800000u;
+    BOBUIest::newRow("global color darkGreen") << QColorConstants::DarkGreen << 0xff008000u;
+    BOBUIest::newRow("global color darkBlue") << QColorConstants::DarkBlue << 0xff000080u;
+    BOBUIest::newRow("global color darkCyan") << QColorConstants::DarkCyan << 0xff008080u;
+    BOBUIest::newRow("global color darkMagenta") << QColorConstants::DarkMagenta << 0xff800080u;
+    BOBUIest::newRow("global color darkYellow") << QColorConstants::DarkYellow << 0xff808000u;
+    BOBUIest::newRow("global color transparent") << QColorConstants::Transparent << 0x00000000u;
 
-    QTest::newRow("SVG aliceblue") << QColorConstants::Svg::aliceblue << 0xfff0f8ffu;
-    QTest::newRow("SVG antiquewhite") << QColorConstants::Svg::antiquewhite << 0xfffaebd7u;
-    QTest::newRow("SVG aqua") << QColorConstants::Svg::aqua << 0xff00ffffu;
-    QTest::newRow("SVG aquamarine") << QColorConstants::Svg::aquamarine << 0xff7fffd4u;
-    QTest::newRow("SVG azure") << QColorConstants::Svg::azure << 0xfff0ffffu;
-    QTest::newRow("SVG beige") << QColorConstants::Svg::beige << 0xfff5f5dcu;
-    QTest::newRow("SVG bisque") << QColorConstants::Svg::bisque << 0xffffe4c4u;
-    QTest::newRow("SVG black") << QColorConstants::Svg::black << 0xff000000u;
-    QTest::newRow("SVG blanchedalmond") << QColorConstants::Svg::blanchedalmond << 0xffffebcdu;
-    QTest::newRow("SVG blue") << QColorConstants::Svg::blue << 0xff0000ffu;
-    QTest::newRow("SVG blueviolet") << QColorConstants::Svg::blueviolet << 0xff8a2be2u;
-    QTest::newRow("SVG brown") << QColorConstants::Svg::brown << 0xffa52a2au;
-    QTest::newRow("SVG burlywood") << QColorConstants::Svg::burlywood << 0xffdeb887u;
-    QTest::newRow("SVG cadetblue") << QColorConstants::Svg::cadetblue << 0xff5f9ea0u;
-    QTest::newRow("SVG chartreuse") << QColorConstants::Svg::chartreuse << 0xff7fff00u;
-    QTest::newRow("SVG chocolate") << QColorConstants::Svg::chocolate << 0xffd2691eu;
-    QTest::newRow("SVG coral") << QColorConstants::Svg::coral << 0xffff7f50u;
-    QTest::newRow("SVG cornflowerblue") << QColorConstants::Svg::cornflowerblue << 0xff6495edu;
-    QTest::newRow("SVG cornsilk") << QColorConstants::Svg::cornsilk << 0xfffff8dcu;
-    QTest::newRow("SVG crimson") << QColorConstants::Svg::crimson << 0xffdc143cu;
-    QTest::newRow("SVG cyan") << QColorConstants::Svg::cyan << 0xff00ffffu;
-    QTest::newRow("SVG darkblue") << QColorConstants::Svg::darkblue << 0xff00008bu;
-    QTest::newRow("SVG darkcyan") << QColorConstants::Svg::darkcyan << 0xff008b8bu;
-    QTest::newRow("SVG darkgoldenrod") << QColorConstants::Svg::darkgoldenrod << 0xffb8860bu;
-    QTest::newRow("SVG darkgray") << QColorConstants::Svg::darkgray << 0xffa9a9a9u;
-    QTest::newRow("SVG darkgreen") << QColorConstants::Svg::darkgreen << 0xff006400u;
-    QTest::newRow("SVG darkgrey") << QColorConstants::Svg::darkgrey << 0xffa9a9a9u;
-    QTest::newRow("SVG darkkhaki") << QColorConstants::Svg::darkkhaki << 0xffbdb76bu;
-    QTest::newRow("SVG darkmagenta") << QColorConstants::Svg::darkmagenta << 0xff8b008bu;
-    QTest::newRow("SVG darkolivegreen") << QColorConstants::Svg::darkolivegreen << 0xff556b2fu;
-    QTest::newRow("SVG darkorange") << QColorConstants::Svg::darkorange << 0xffff8c00u;
-    QTest::newRow("SVG darkorchid") << QColorConstants::Svg::darkorchid << 0xff9932ccu;
-    QTest::newRow("SVG darkred") << QColorConstants::Svg::darkred << 0xff8b0000u;
-    QTest::newRow("SVG darksalmon") << QColorConstants::Svg::darksalmon << 0xffe9967au;
-    QTest::newRow("SVG darkseagreen") << QColorConstants::Svg::darkseagreen << 0xff8fbc8fu;
-    QTest::newRow("SVG darkslateblue") << QColorConstants::Svg::darkslateblue << 0xff483d8bu;
-    QTest::newRow("SVG darkslategray") << QColorConstants::Svg::darkslategray << 0xff2f4f4fu;
-    QTest::newRow("SVG darkslategrey") << QColorConstants::Svg::darkslategrey << 0xff2f4f4fu;
-    QTest::newRow("SVG darkturquoise") << QColorConstants::Svg::darkturquoise << 0xff00ced1u;
-    QTest::newRow("SVG darkviolet") << QColorConstants::Svg::darkviolet << 0xff9400d3u;
-    QTest::newRow("SVG deeppink") << QColorConstants::Svg::deeppink << 0xffff1493u;
-    QTest::newRow("SVG deepskyblue") << QColorConstants::Svg::deepskyblue << 0xff00bfffu;
-    QTest::newRow("SVG dimgray") << QColorConstants::Svg::dimgray << 0xff696969u;
-    QTest::newRow("SVG dimgrey") << QColorConstants::Svg::dimgrey << 0xff696969u;
-    QTest::newRow("SVG dodgerblue") << QColorConstants::Svg::dodgerblue << 0xff1e90ffu;
-    QTest::newRow("SVG firebrick") << QColorConstants::Svg::firebrick << 0xffb22222u;
-    QTest::newRow("SVG floralwhite") << QColorConstants::Svg::floralwhite << 0xfffffaf0u;
-    QTest::newRow("SVG forestgreen") << QColorConstants::Svg::forestgreen << 0xff228b22u;
-    QTest::newRow("SVG fuchsia") << QColorConstants::Svg::fuchsia << 0xffff00ffu;
-    QTest::newRow("SVG gainsboro") << QColorConstants::Svg::gainsboro << 0xffdcdcdcu;
-    QTest::newRow("SVG ghostwhite") << QColorConstants::Svg::ghostwhite << 0xfff8f8ffu;
-    QTest::newRow("SVG gold") << QColorConstants::Svg::gold << 0xffffd700u;
-    QTest::newRow("SVG goldenrod") << QColorConstants::Svg::goldenrod << 0xffdaa520u;
-    QTest::newRow("SVG gray") << QColorConstants::Svg::gray << 0xff808080u;
-    QTest::newRow("SVG green") << QColorConstants::Svg::green << 0xff008000u;
-    QTest::newRow("SVG greenyellow") << QColorConstants::Svg::greenyellow << 0xffadff2fu;
-    QTest::newRow("SVG grey") << QColorConstants::Svg::grey << 0xff808080u;
-    QTest::newRow("SVG honeydew") << QColorConstants::Svg::honeydew << 0xfff0fff0u;
-    QTest::newRow("SVG hotpink") << QColorConstants::Svg::hotpink << 0xffff69b4u;
-    QTest::newRow("SVG indianred") << QColorConstants::Svg::indianred << 0xffcd5c5cu;
-    QTest::newRow("SVG indigo") << QColorConstants::Svg::indigo << 0xff4b0082u;
-    QTest::newRow("SVG ivory") << QColorConstants::Svg::ivory << 0xfffffff0u;
-    QTest::newRow("SVG khaki") << QColorConstants::Svg::khaki << 0xfff0e68cu;
-    QTest::newRow("SVG lavender") << QColorConstants::Svg::lavender << 0xffe6e6fau;
-    QTest::newRow("SVG lavenderblush") << QColorConstants::Svg::lavenderblush << 0xfffff0f5u;
-    QTest::newRow("SVG lawngreen") << QColorConstants::Svg::lawngreen << 0xff7cfc00u;
-    QTest::newRow("SVG lemonchiffon") << QColorConstants::Svg::lemonchiffon << 0xfffffacdu;
-    QTest::newRow("SVG lightblue") << QColorConstants::Svg::lightblue << 0xffadd8e6u;
-    QTest::newRow("SVG lightcoral") << QColorConstants::Svg::lightcoral << 0xfff08080u;
-    QTest::newRow("SVG lightcyan") << QColorConstants::Svg::lightcyan << 0xffe0ffffu;
-    QTest::newRow("SVG lightgoldenrodyellow") << QColorConstants::Svg::lightgoldenrodyellow << 0xfffafad2u;
-    QTest::newRow("SVG lightgray") << QColorConstants::Svg::lightgray << 0xffd3d3d3u;
-    QTest::newRow("SVG lightgreen") << QColorConstants::Svg::lightgreen << 0xff90ee90u;
-    QTest::newRow("SVG lightgrey") << QColorConstants::Svg::lightgrey << 0xffd3d3d3u;
-    QTest::newRow("SVG lightpink") << QColorConstants::Svg::lightpink << 0xffffb6c1u;
-    QTest::newRow("SVG lightsalmon") << QColorConstants::Svg::lightsalmon << 0xffffa07au;
-    QTest::newRow("SVG lightseagreen") << QColorConstants::Svg::lightseagreen << 0xff20b2aau;
-    QTest::newRow("SVG lightskyblue") << QColorConstants::Svg::lightskyblue << 0xff87cefau;
-    QTest::newRow("SVG lightslategray") << QColorConstants::Svg::lightslategray << 0xff778899u;
-    QTest::newRow("SVG lightslategrey") << QColorConstants::Svg::lightslategrey << 0xff778899u;
-    QTest::newRow("SVG lightsteelblue") << QColorConstants::Svg::lightsteelblue << 0xffb0c4deu;
-    QTest::newRow("SVG lightyellow") << QColorConstants::Svg::lightyellow << 0xffffffe0u;
-    QTest::newRow("SVG lime") << QColorConstants::Svg::lime << 0xff00ff00u;
-    QTest::newRow("SVG limegreen") << QColorConstants::Svg::limegreen << 0xff32cd32u;
-    QTest::newRow("SVG linen") << QColorConstants::Svg::linen << 0xfffaf0e6u;
-    QTest::newRow("SVG magenta") << QColorConstants::Svg::magenta << 0xffff00ffu;
-    QTest::newRow("SVG maroon") << QColorConstants::Svg::maroon << 0xff800000u;
-    QTest::newRow("SVG mediumaquamarine") << QColorConstants::Svg::mediumaquamarine << 0xff66cdaau;
-    QTest::newRow("SVG mediumblue") << QColorConstants::Svg::mediumblue << 0xff0000cdu;
-    QTest::newRow("SVG mediumorchid") << QColorConstants::Svg::mediumorchid << 0xffba55d3u;
-    QTest::newRow("SVG mediumpurple") << QColorConstants::Svg::mediumpurple << 0xff9370dbu;
-    QTest::newRow("SVG mediumseagreen") << QColorConstants::Svg::mediumseagreen << 0xff3cb371u;
-    QTest::newRow("SVG mediumslateblue") << QColorConstants::Svg::mediumslateblue << 0xff7b68eeu;
-    QTest::newRow("SVG mediumspringgreen") << QColorConstants::Svg::mediumspringgreen << 0xff00fa9au;
-    QTest::newRow("SVG mediumturquoise") << QColorConstants::Svg::mediumturquoise << 0xff48d1ccu;
-    QTest::newRow("SVG mediumvioletred") << QColorConstants::Svg::mediumvioletred << 0xffc71585u;
-    QTest::newRow("SVG midnightblue") << QColorConstants::Svg::midnightblue << 0xff191970u;
-    QTest::newRow("SVG mintcream") << QColorConstants::Svg::mintcream << 0xfff5fffau;
-    QTest::newRow("SVG mistyrose") << QColorConstants::Svg::mistyrose << 0xffffe4e1u;
-    QTest::newRow("SVG moccasin") << QColorConstants::Svg::moccasin << 0xffffe4b5u;
-    QTest::newRow("SVG navajowhite") << QColorConstants::Svg::navajowhite << 0xffffdeadu;
-    QTest::newRow("SVG navy") << QColorConstants::Svg::navy << 0xff000080u;
-    QTest::newRow("SVG oldlace") << QColorConstants::Svg::oldlace << 0xfffdf5e6u;
-    QTest::newRow("SVG olive") << QColorConstants::Svg::olive << 0xff808000u;
-    QTest::newRow("SVG olivedrab") << QColorConstants::Svg::olivedrab << 0xff6b8e23u;
-    QTest::newRow("SVG orange") << QColorConstants::Svg::orange << 0xffffa500u;
-    QTest::newRow("SVG orangered") << QColorConstants::Svg::orangered << 0xffff4500u;
-    QTest::newRow("SVG orchid") << QColorConstants::Svg::orchid << 0xffda70d6u;
-    QTest::newRow("SVG palegoldenrod") << QColorConstants::Svg::palegoldenrod << 0xffeee8aau;
-    QTest::newRow("SVG palegreen") << QColorConstants::Svg::palegreen << 0xff98fb98u;
-    QTest::newRow("SVG paleturquoise") << QColorConstants::Svg::paleturquoise << 0xffafeeeeu;
-    QTest::newRow("SVG palevioletred") << QColorConstants::Svg::palevioletred << 0xffdb7093u;
-    QTest::newRow("SVG papayawhip") << QColorConstants::Svg::papayawhip << 0xffffefd5u;
-    QTest::newRow("SVG peachpuff") << QColorConstants::Svg::peachpuff << 0xffffdab9u;
-    QTest::newRow("SVG peru") << QColorConstants::Svg::peru << 0xffcd853fu;
-    QTest::newRow("SVG pink") << QColorConstants::Svg::pink << 0xffffc0cbu;
-    QTest::newRow("SVG plum") << QColorConstants::Svg::plum << 0xffdda0ddu;
-    QTest::newRow("SVG powderblue") << QColorConstants::Svg::powderblue << 0xffb0e0e6u;
-    QTest::newRow("SVG purple") << QColorConstants::Svg::purple << 0xff800080u;
-    QTest::newRow("SVG red") << QColorConstants::Svg::red << 0xffff0000u;
-    QTest::newRow("SVG rosybrown") << QColorConstants::Svg::rosybrown << 0xffbc8f8fu;
-    QTest::newRow("SVG royalblue") << QColorConstants::Svg::royalblue << 0xff4169e1u;
-    QTest::newRow("SVG saddlebrown") << QColorConstants::Svg::saddlebrown << 0xff8b4513u;
-    QTest::newRow("SVG salmon") << QColorConstants::Svg::salmon << 0xfffa8072u;
-    QTest::newRow("SVG sandybrown") << QColorConstants::Svg::sandybrown << 0xfff4a460u;
-    QTest::newRow("SVG seagreen") << QColorConstants::Svg::seagreen << 0xff2e8b57u;
-    QTest::newRow("SVG seashell") << QColorConstants::Svg::seashell << 0xfffff5eeu;
-    QTest::newRow("SVG sienna") << QColorConstants::Svg::sienna << 0xffa0522du;
-    QTest::newRow("SVG silver") << QColorConstants::Svg::silver << 0xffc0c0c0u;
-    QTest::newRow("SVG skyblue") << QColorConstants::Svg::skyblue << 0xff87ceebu;
-    QTest::newRow("SVG slateblue") << QColorConstants::Svg::slateblue << 0xff6a5acdu;
-    QTest::newRow("SVG slategray") << QColorConstants::Svg::slategray << 0xff708090u;
-    QTest::newRow("SVG slategrey") << QColorConstants::Svg::slategrey << 0xff708090u;
-    QTest::newRow("SVG snow") << QColorConstants::Svg::snow << 0xfffffafau;
-    QTest::newRow("SVG springgreen") << QColorConstants::Svg::springgreen << 0xff00ff7fu;
-    QTest::newRow("SVG steelblue") << QColorConstants::Svg::steelblue << 0xff4682b4u;
-    QTest::newRow("SVG tan") << QColorConstants::Svg::tan << 0xffd2b48cu;
-    QTest::newRow("SVG teal") << QColorConstants::Svg::teal << 0xff008080u;
-    QTest::newRow("SVG thistle") << QColorConstants::Svg::thistle << 0xffd8bfd8u;
-    QTest::newRow("SVG tomato") << QColorConstants::Svg::tomato << 0xffff6347u;
-    QTest::newRow("SVG turquoise") << QColorConstants::Svg::turquoise << 0xff40e0d0u;
-    QTest::newRow("SVG violet") << QColorConstants::Svg::violet << 0xffee82eeu;
-    QTest::newRow("SVG wheat") << QColorConstants::Svg::wheat << 0xfff5deb3u;
-    QTest::newRow("SVG white") << QColorConstants::Svg::white << 0xffffffffu;
-    QTest::newRow("SVG whitesmoke") << QColorConstants::Svg::whitesmoke << 0xfff5f5f5u;
-    QTest::newRow("SVG yellow") << QColorConstants::Svg::yellow << 0xffffff00u;
-    QTest::newRow("SVG yellowgreen") << QColorConstants::Svg::yellowgreen << 0xff9acd32u;
+    BOBUIest::newRow("SVG aliceblue") << QColorConstants::Svg::aliceblue << 0xfff0f8ffu;
+    BOBUIest::newRow("SVG antiquewhite") << QColorConstants::Svg::antiquewhite << 0xfffaebd7u;
+    BOBUIest::newRow("SVG aqua") << QColorConstants::Svg::aqua << 0xff00ffffu;
+    BOBUIest::newRow("SVG aquamarine") << QColorConstants::Svg::aquamarine << 0xff7fffd4u;
+    BOBUIest::newRow("SVG azure") << QColorConstants::Svg::azure << 0xfff0ffffu;
+    BOBUIest::newRow("SVG beige") << QColorConstants::Svg::beige << 0xfff5f5dcu;
+    BOBUIest::newRow("SVG bisque") << QColorConstants::Svg::bisque << 0xffffe4c4u;
+    BOBUIest::newRow("SVG black") << QColorConstants::Svg::black << 0xff000000u;
+    BOBUIest::newRow("SVG blanchedalmond") << QColorConstants::Svg::blanchedalmond << 0xffffebcdu;
+    BOBUIest::newRow("SVG blue") << QColorConstants::Svg::blue << 0xff0000ffu;
+    BOBUIest::newRow("SVG blueviolet") << QColorConstants::Svg::blueviolet << 0xff8a2be2u;
+    BOBUIest::newRow("SVG brown") << QColorConstants::Svg::brown << 0xffa52a2au;
+    BOBUIest::newRow("SVG burlywood") << QColorConstants::Svg::burlywood << 0xffdeb887u;
+    BOBUIest::newRow("SVG cadetblue") << QColorConstants::Svg::cadetblue << 0xff5f9ea0u;
+    BOBUIest::newRow("SVG chartreuse") << QColorConstants::Svg::chartreuse << 0xff7fff00u;
+    BOBUIest::newRow("SVG chocolate") << QColorConstants::Svg::chocolate << 0xffd2691eu;
+    BOBUIest::newRow("SVG coral") << QColorConstants::Svg::coral << 0xffff7f50u;
+    BOBUIest::newRow("SVG cornflowerblue") << QColorConstants::Svg::cornflowerblue << 0xff6495edu;
+    BOBUIest::newRow("SVG cornsilk") << QColorConstants::Svg::cornsilk << 0xfffff8dcu;
+    BOBUIest::newRow("SVG crimson") << QColorConstants::Svg::crimson << 0xffdc143cu;
+    BOBUIest::newRow("SVG cyan") << QColorConstants::Svg::cyan << 0xff00ffffu;
+    BOBUIest::newRow("SVG darkblue") << QColorConstants::Svg::darkblue << 0xff00008bu;
+    BOBUIest::newRow("SVG darkcyan") << QColorConstants::Svg::darkcyan << 0xff008b8bu;
+    BOBUIest::newRow("SVG darkgoldenrod") << QColorConstants::Svg::darkgoldenrod << 0xffb8860bu;
+    BOBUIest::newRow("SVG darkgray") << QColorConstants::Svg::darkgray << 0xffa9a9a9u;
+    BOBUIest::newRow("SVG darkgreen") << QColorConstants::Svg::darkgreen << 0xff006400u;
+    BOBUIest::newRow("SVG darkgrey") << QColorConstants::Svg::darkgrey << 0xffa9a9a9u;
+    BOBUIest::newRow("SVG darkkhaki") << QColorConstants::Svg::darkkhaki << 0xffbdb76bu;
+    BOBUIest::newRow("SVG darkmagenta") << QColorConstants::Svg::darkmagenta << 0xff8b008bu;
+    BOBUIest::newRow("SVG darkolivegreen") << QColorConstants::Svg::darkolivegreen << 0xff556b2fu;
+    BOBUIest::newRow("SVG darkorange") << QColorConstants::Svg::darkorange << 0xffff8c00u;
+    BOBUIest::newRow("SVG darkorchid") << QColorConstants::Svg::darkorchid << 0xff9932ccu;
+    BOBUIest::newRow("SVG darkred") << QColorConstants::Svg::darkred << 0xff8b0000u;
+    BOBUIest::newRow("SVG darksalmon") << QColorConstants::Svg::darksalmon << 0xffe9967au;
+    BOBUIest::newRow("SVG darkseagreen") << QColorConstants::Svg::darkseagreen << 0xff8fbc8fu;
+    BOBUIest::newRow("SVG darkslateblue") << QColorConstants::Svg::darkslateblue << 0xff483d8bu;
+    BOBUIest::newRow("SVG darkslategray") << QColorConstants::Svg::darkslategray << 0xff2f4f4fu;
+    BOBUIest::newRow("SVG darkslategrey") << QColorConstants::Svg::darkslategrey << 0xff2f4f4fu;
+    BOBUIest::newRow("SVG darkturquoise") << QColorConstants::Svg::darkturquoise << 0xff00ced1u;
+    BOBUIest::newRow("SVG darkviolet") << QColorConstants::Svg::darkviolet << 0xff9400d3u;
+    BOBUIest::newRow("SVG deeppink") << QColorConstants::Svg::deeppink << 0xffff1493u;
+    BOBUIest::newRow("SVG deepskyblue") << QColorConstants::Svg::deepskyblue << 0xff00bfffu;
+    BOBUIest::newRow("SVG dimgray") << QColorConstants::Svg::dimgray << 0xff696969u;
+    BOBUIest::newRow("SVG dimgrey") << QColorConstants::Svg::dimgrey << 0xff696969u;
+    BOBUIest::newRow("SVG dodgerblue") << QColorConstants::Svg::dodgerblue << 0xff1e90ffu;
+    BOBUIest::newRow("SVG firebrick") << QColorConstants::Svg::firebrick << 0xffb22222u;
+    BOBUIest::newRow("SVG floralwhite") << QColorConstants::Svg::floralwhite << 0xfffffaf0u;
+    BOBUIest::newRow("SVG forestgreen") << QColorConstants::Svg::forestgreen << 0xff228b22u;
+    BOBUIest::newRow("SVG fuchsia") << QColorConstants::Svg::fuchsia << 0xffff00ffu;
+    BOBUIest::newRow("SVG gainsboro") << QColorConstants::Svg::gainsboro << 0xffdcdcdcu;
+    BOBUIest::newRow("SVG ghostwhite") << QColorConstants::Svg::ghostwhite << 0xfff8f8ffu;
+    BOBUIest::newRow("SVG gold") << QColorConstants::Svg::gold << 0xffffd700u;
+    BOBUIest::newRow("SVG goldenrod") << QColorConstants::Svg::goldenrod << 0xffdaa520u;
+    BOBUIest::newRow("SVG gray") << QColorConstants::Svg::gray << 0xff808080u;
+    BOBUIest::newRow("SVG green") << QColorConstants::Svg::green << 0xff008000u;
+    BOBUIest::newRow("SVG greenyellow") << QColorConstants::Svg::greenyellow << 0xffadff2fu;
+    BOBUIest::newRow("SVG grey") << QColorConstants::Svg::grey << 0xff808080u;
+    BOBUIest::newRow("SVG honeydew") << QColorConstants::Svg::honeydew << 0xfff0fff0u;
+    BOBUIest::newRow("SVG hotpink") << QColorConstants::Svg::hotpink << 0xffff69b4u;
+    BOBUIest::newRow("SVG indianred") << QColorConstants::Svg::indianred << 0xffcd5c5cu;
+    BOBUIest::newRow("SVG indigo") << QColorConstants::Svg::indigo << 0xff4b0082u;
+    BOBUIest::newRow("SVG ivory") << QColorConstants::Svg::ivory << 0xfffffff0u;
+    BOBUIest::newRow("SVG khaki") << QColorConstants::Svg::khaki << 0xfff0e68cu;
+    BOBUIest::newRow("SVG lavender") << QColorConstants::Svg::lavender << 0xffe6e6fau;
+    BOBUIest::newRow("SVG lavenderblush") << QColorConstants::Svg::lavenderblush << 0xfffff0f5u;
+    BOBUIest::newRow("SVG lawngreen") << QColorConstants::Svg::lawngreen << 0xff7cfc00u;
+    BOBUIest::newRow("SVG lemonchiffon") << QColorConstants::Svg::lemonchiffon << 0xfffffacdu;
+    BOBUIest::newRow("SVG lightblue") << QColorConstants::Svg::lightblue << 0xffadd8e6u;
+    BOBUIest::newRow("SVG lightcoral") << QColorConstants::Svg::lightcoral << 0xfff08080u;
+    BOBUIest::newRow("SVG lightcyan") << QColorConstants::Svg::lightcyan << 0xffe0ffffu;
+    BOBUIest::newRow("SVG lightgoldenrodyellow") << QColorConstants::Svg::lightgoldenrodyellow << 0xfffafad2u;
+    BOBUIest::newRow("SVG lightgray") << QColorConstants::Svg::lightgray << 0xffd3d3d3u;
+    BOBUIest::newRow("SVG lightgreen") << QColorConstants::Svg::lightgreen << 0xff90ee90u;
+    BOBUIest::newRow("SVG lightgrey") << QColorConstants::Svg::lightgrey << 0xffd3d3d3u;
+    BOBUIest::newRow("SVG lightpink") << QColorConstants::Svg::lightpink << 0xffffb6c1u;
+    BOBUIest::newRow("SVG lightsalmon") << QColorConstants::Svg::lightsalmon << 0xffffa07au;
+    BOBUIest::newRow("SVG lightseagreen") << QColorConstants::Svg::lightseagreen << 0xff20b2aau;
+    BOBUIest::newRow("SVG lightskyblue") << QColorConstants::Svg::lightskyblue << 0xff87cefau;
+    BOBUIest::newRow("SVG lightslategray") << QColorConstants::Svg::lightslategray << 0xff778899u;
+    BOBUIest::newRow("SVG lightslategrey") << QColorConstants::Svg::lightslategrey << 0xff778899u;
+    BOBUIest::newRow("SVG lightsteelblue") << QColorConstants::Svg::lightsteelblue << 0xffb0c4deu;
+    BOBUIest::newRow("SVG lightyellow") << QColorConstants::Svg::lightyellow << 0xffffffe0u;
+    BOBUIest::newRow("SVG lime") << QColorConstants::Svg::lime << 0xff00ff00u;
+    BOBUIest::newRow("SVG limegreen") << QColorConstants::Svg::limegreen << 0xff32cd32u;
+    BOBUIest::newRow("SVG linen") << QColorConstants::Svg::linen << 0xfffaf0e6u;
+    BOBUIest::newRow("SVG magenta") << QColorConstants::Svg::magenta << 0xffff00ffu;
+    BOBUIest::newRow("SVG maroon") << QColorConstants::Svg::maroon << 0xff800000u;
+    BOBUIest::newRow("SVG mediumaquamarine") << QColorConstants::Svg::mediumaquamarine << 0xff66cdaau;
+    BOBUIest::newRow("SVG mediumblue") << QColorConstants::Svg::mediumblue << 0xff0000cdu;
+    BOBUIest::newRow("SVG mediumorchid") << QColorConstants::Svg::mediumorchid << 0xffba55d3u;
+    BOBUIest::newRow("SVG mediumpurple") << QColorConstants::Svg::mediumpurple << 0xff9370dbu;
+    BOBUIest::newRow("SVG mediumseagreen") << QColorConstants::Svg::mediumseagreen << 0xff3cb371u;
+    BOBUIest::newRow("SVG mediumslateblue") << QColorConstants::Svg::mediumslateblue << 0xff7b68eeu;
+    BOBUIest::newRow("SVG mediumspringgreen") << QColorConstants::Svg::mediumspringgreen << 0xff00fa9au;
+    BOBUIest::newRow("SVG mediumturquoise") << QColorConstants::Svg::mediumturquoise << 0xff48d1ccu;
+    BOBUIest::newRow("SVG mediumvioletred") << QColorConstants::Svg::mediumvioletred << 0xffc71585u;
+    BOBUIest::newRow("SVG midnightblue") << QColorConstants::Svg::midnightblue << 0xff191970u;
+    BOBUIest::newRow("SVG mintcream") << QColorConstants::Svg::mintcream << 0xfff5fffau;
+    BOBUIest::newRow("SVG mistyrose") << QColorConstants::Svg::mistyrose << 0xffffe4e1u;
+    BOBUIest::newRow("SVG moccasin") << QColorConstants::Svg::moccasin << 0xffffe4b5u;
+    BOBUIest::newRow("SVG navajowhite") << QColorConstants::Svg::navajowhite << 0xffffdeadu;
+    BOBUIest::newRow("SVG navy") << QColorConstants::Svg::navy << 0xff000080u;
+    BOBUIest::newRow("SVG oldlace") << QColorConstants::Svg::oldlace << 0xfffdf5e6u;
+    BOBUIest::newRow("SVG olive") << QColorConstants::Svg::olive << 0xff808000u;
+    BOBUIest::newRow("SVG olivedrab") << QColorConstants::Svg::olivedrab << 0xff6b8e23u;
+    BOBUIest::newRow("SVG orange") << QColorConstants::Svg::orange << 0xffffa500u;
+    BOBUIest::newRow("SVG orangered") << QColorConstants::Svg::orangered << 0xffff4500u;
+    BOBUIest::newRow("SVG orchid") << QColorConstants::Svg::orchid << 0xffda70d6u;
+    BOBUIest::newRow("SVG palegoldenrod") << QColorConstants::Svg::palegoldenrod << 0xffeee8aau;
+    BOBUIest::newRow("SVG palegreen") << QColorConstants::Svg::palegreen << 0xff98fb98u;
+    BOBUIest::newRow("SVG paleturquoise") << QColorConstants::Svg::paleturquoise << 0xffafeeeeu;
+    BOBUIest::newRow("SVG palevioletred") << QColorConstants::Svg::palevioletred << 0xffdb7093u;
+    BOBUIest::newRow("SVG papayawhip") << QColorConstants::Svg::papayawhip << 0xffffefd5u;
+    BOBUIest::newRow("SVG peachpuff") << QColorConstants::Svg::peachpuff << 0xffffdab9u;
+    BOBUIest::newRow("SVG peru") << QColorConstants::Svg::peru << 0xffcd853fu;
+    BOBUIest::newRow("SVG pink") << QColorConstants::Svg::pink << 0xffffc0cbu;
+    BOBUIest::newRow("SVG plum") << QColorConstants::Svg::plum << 0xffdda0ddu;
+    BOBUIest::newRow("SVG powderblue") << QColorConstants::Svg::powderblue << 0xffb0e0e6u;
+    BOBUIest::newRow("SVG purple") << QColorConstants::Svg::purple << 0xff800080u;
+    BOBUIest::newRow("SVG red") << QColorConstants::Svg::red << 0xffff0000u;
+    BOBUIest::newRow("SVG rosybrown") << QColorConstants::Svg::rosybrown << 0xffbc8f8fu;
+    BOBUIest::newRow("SVG royalblue") << QColorConstants::Svg::royalblue << 0xff4169e1u;
+    BOBUIest::newRow("SVG saddlebrown") << QColorConstants::Svg::saddlebrown << 0xff8b4513u;
+    BOBUIest::newRow("SVG salmon") << QColorConstants::Svg::salmon << 0xfffa8072u;
+    BOBUIest::newRow("SVG sandybrown") << QColorConstants::Svg::sandybrown << 0xfff4a460u;
+    BOBUIest::newRow("SVG seagreen") << QColorConstants::Svg::seagreen << 0xff2e8b57u;
+    BOBUIest::newRow("SVG seashell") << QColorConstants::Svg::seashell << 0xfffff5eeu;
+    BOBUIest::newRow("SVG sienna") << QColorConstants::Svg::sienna << 0xffa0522du;
+    BOBUIest::newRow("SVG silver") << QColorConstants::Svg::silver << 0xffc0c0c0u;
+    BOBUIest::newRow("SVG skyblue") << QColorConstants::Svg::skyblue << 0xff87ceebu;
+    BOBUIest::newRow("SVG slateblue") << QColorConstants::Svg::slateblue << 0xff6a5acdu;
+    BOBUIest::newRow("SVG slategray") << QColorConstants::Svg::slategray << 0xff708090u;
+    BOBUIest::newRow("SVG slategrey") << QColorConstants::Svg::slategrey << 0xff708090u;
+    BOBUIest::newRow("SVG snow") << QColorConstants::Svg::snow << 0xfffffafau;
+    BOBUIest::newRow("SVG springgreen") << QColorConstants::Svg::springgreen << 0xff00ff7fu;
+    BOBUIest::newRow("SVG steelblue") << QColorConstants::Svg::steelblue << 0xff4682b4u;
+    BOBUIest::newRow("SVG tan") << QColorConstants::Svg::tan << 0xffd2b48cu;
+    BOBUIest::newRow("SVG teal") << QColorConstants::Svg::teal << 0xff008080u;
+    BOBUIest::newRow("SVG thistle") << QColorConstants::Svg::thistle << 0xffd8bfd8u;
+    BOBUIest::newRow("SVG tomato") << QColorConstants::Svg::tomato << 0xffff6347u;
+    BOBUIest::newRow("SVG turquoise") << QColorConstants::Svg::turquoise << 0xff40e0d0u;
+    BOBUIest::newRow("SVG violet") << QColorConstants::Svg::violet << 0xffee82eeu;
+    BOBUIest::newRow("SVG wheat") << QColorConstants::Svg::wheat << 0xfff5deb3u;
+    BOBUIest::newRow("SVG white") << QColorConstants::Svg::white << 0xffffffffu;
+    BOBUIest::newRow("SVG whitesmoke") << QColorConstants::Svg::whitesmoke << 0xfff5f5f5u;
+    BOBUIest::newRow("SVG yellow") << QColorConstants::Svg::yellow << 0xffffff00u;
+    BOBUIest::newRow("SVG yellowgreen") << QColorConstants::Svg::yellowgreen << 0xff9acd32u;
 }
 
 void tst_QColor::colorConstants()
@@ -707,12 +707,12 @@ static const int rgbTblSize = sizeof(rgbTbl) / sizeof(RGBData);
 
 void tst_QColor::fromString_data()
 {
-#if QT_DEPRECATED_SINCE(6, 6)
-    QTest::addColumn<QColor>("byCtor");
-    QTest::addColumn<QColor>("bySetNamedColor");
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUIest::addColumn<QColor>("byCtor");
+    BOBUIest::addColumn<QColor>("bySetNamedColor");
 #endif
-    QTest::addColumn<QColor>("byFromString");
-    QTest::addColumn<QColor>("expected");
+    BOBUIest::addColumn<QColor>("byFromString");
+    BOBUIest::addColumn<QColor>("expected");
 
     for (const auto e : rgbTbl) {
         QColor expected;
@@ -720,20 +720,20 @@ void tst_QColor::fromString_data()
 
 #define ROW(expr) row(expr, #expr)
         auto row = [&] (auto expr, const char *exprS) {
-            QT_WARNING_PUSH
-        #if QT_DEPRECATED_SINCE(6, 6)
-            QT_WARNING_DISABLE_DEPRECATED
+            BOBUI_WARNING_PUSH
+        #if BOBUI_DEPRECATED_SINCE(6, 6)
+            BOBUI_WARNING_DISABLE_DEPRECATED
             QColor bySetNamedColor;
             bySetNamedColor.setNamedColor(expr);
             auto byCtor = QColor(expr);
         #endif
-            QTest::addRow("%s: %s", e.name, exprS)
-        #if QT_DEPRECATED_SINCE(6, 6)
+            BOBUIest::addRow("%s: %s", e.name, exprS)
+        #if BOBUI_DEPRECATED_SINCE(6, 6)
                 << byCtor << bySetNamedColor
         #endif
                 << QColor::fromString(expr)
                 << expected;
-            QT_WARNING_POP
+            BOBUI_WARNING_POP
         };
 
         const auto l1 = QLatin1String(e.name);
@@ -763,14 +763,14 @@ void tst_QColor::fromString_data()
 
 void tst_QColor::fromString()
 {
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
     QFETCH(QColor, byCtor);
     QFETCH(QColor, bySetNamedColor);
 #endif
     QFETCH(QColor, byFromString);
     QFETCH(QColor, expected);
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
     QCOMPARE(byCtor, expected);
     QCOMPARE(bySetNamedColor, expected);
 #endif
@@ -825,13 +825,13 @@ bool veryFuzzyCompare(double a, double b)
 
 void tst_QColor::setRed()
 {
-    QColor c = QColor(Qt::blue).toHsv();
+    QColor c = QColor(BobUI::blue).toHsv();
     c.setRed(127);
     QCOMPARE(c.red(), 127);
     QCOMPARE(c.green(), 0);
     QCOMPARE(c.blue(), 255);
 
-    c = QColor(Qt::blue).toHsv();
+    c = QColor(BobUI::blue).toHsv();
     c.setRedF(0.5);
     QVERIFY(veryFuzzyCompare(c.redF(), 0.5));
     QCOMPARE(c.greenF(), 0.0f);
@@ -840,13 +840,13 @@ void tst_QColor::setRed()
 
 void tst_QColor::setGreen()
 {
-    QColor c = QColor(Qt::blue).toHsv();
+    QColor c = QColor(BobUI::blue).toHsv();
     c.setGreen(127);
     QCOMPARE(c.red(), 0);
     QCOMPARE(c.green(), 127);
     QCOMPARE(c.blue(), 255);
 
-    c = QColor(Qt::blue).toHsv();
+    c = QColor(BobUI::blue).toHsv();
     c.setGreenF(0.5);
     QCOMPARE(c.redF(), 0.0f);
     QVERIFY(veryFuzzyCompare(c.greenF(), 0.5));
@@ -855,13 +855,13 @@ void tst_QColor::setGreen()
 
 void tst_QColor::setBlue()
 {
-    QColor c = QColor(Qt::red).toHsv();
+    QColor c = QColor(BobUI::red).toHsv();
     c.setBlue(127);
     QCOMPARE(c.red(), 255);
     QCOMPARE(c.green(), 0);
     QCOMPARE(c.blue(), 127);
 
-    c = QColor(Qt::red).toHsv();
+    c = QColor(BobUI::red).toHsv();
     c.setBlueF(0.5);
     QCOMPARE(c.redF(), 1.0f);
     QCOMPARE(c.greenF(), 0.0f);
@@ -1045,9 +1045,9 @@ void tst_QColor::setRgbF()
     QVERIFY(color.isValid());
     QColor invalidRgb = color;
     QColor invalidRgbF = color;
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setRgb: RGB parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setRgb: RGB parameters out of range");
     invalidRgb.setRgb(-1, -1, -1);
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setRgb: RGB parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setRgb: RGB parameters out of range");
     invalidRgbF.setRgb(-1, -1, -1, -1);
     QVERIFY(!invalidRgb.isValid());
     QVERIFY(!invalidRgbF.isValid());
@@ -1169,9 +1169,9 @@ void tst_QColor::setHsv()
     QVERIFY(color.isValid());
     QColor invalidHsv = color;
     QColor invalidHsvF = color;
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setHsv: HSV parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setHsv: HSV parameters out of range");
     invalidHsv.setHsv(-1, -1, -1);
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setHsvF: HSV parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setHsvF: HSV parameters out of range");
     invalidHsvF.setHsvF(-1, -1, -1);
     QVERIFY(!invalidHsv.isValid());
     QVERIFY(!invalidHsvF.isValid());
@@ -1303,9 +1303,9 @@ void tst_QColor::setCmyk()
     QVERIFY(color.isValid());
     QColor invalidCmyk = color;
     QColor invalidCmykF = color;
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setCmyk: CMYK parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setCmyk: CMYK parameters out of range");
     invalidCmyk.setCmyk(-1, -1, -1, -1, -1);
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setCmykF: CMYK parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setCmykF: CMYK parameters out of range");
     invalidCmykF.setCmykF(-1, -1, -1, -1, -1);
     QVERIFY(!invalidCmyk.isValid());
     QVERIFY(!invalidCmykF.isValid());
@@ -1413,9 +1413,9 @@ void tst_QColor::setHsl()
     QVERIFY(color.isValid());
     QColor invalidHsl = color;
     QColor invalidHslF = color;
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setHsl: HSL parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setHsl: HSL parameters out of range");
     invalidHsl.setHsl(-1, -1, -1, -1);
-    QTest::ignoreMessage(QtWarningMsg, "QColor::setHslF: HSL parameters out of range");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QColor::setHslF: HSL parameters out of range");
     invalidHslF.setHslF(-1, -1, -1, -1);
     QVERIFY(!invalidHsl.isValid());
     QVERIFY(!invalidHslF.isValid());
@@ -1423,60 +1423,60 @@ void tst_QColor::setHsl()
 
 void tst_QColor::toRgb_data()
 {
-    QTest::addColumn<QColor>("expectedColor");
-    QTest::addColumn<QColor>("hsvColor");
-    QTest::addColumn<QColor>("cmykColor");
-    QTest::addColumn<QColor>("hslColor");
+    BOBUIest::addColumn<QColor>("expectedColor");
+    BOBUIest::addColumn<QColor>("hsvColor");
+    BOBUIest::addColumn<QColor>("cmykColor");
+    BOBUIest::addColumn<QColor>("hslColor");
 
-    QTest::newRow("black")
+    BOBUIest::newRow("black")
         << QColor::fromRgbF(0.0f, 0.0f, 0.0f)
         << QColor::fromHsvF(-1.0f, 0.0f, 0.0f)
         << QColor::fromCmykF(0.0f, 0.0f, 0.0f, 1.0f)
         << QColor::fromHslF(-1.0f, 0.0f, 0.0f);
 
-    QTest::newRow("white")
+    BOBUIest::newRow("white")
         << QColor::fromRgbF(1.0f, 1.0f, 1.0f)
         << QColor::fromHsvF(-1.0f, 0.0f, 1.0f)
         << QColor::fromCmykF(0.0f, 0.0f, 0.0f, 0.0f)
         << QColor::fromHslF(-1.0f, 0.0f, 1.0f);
 
-    QTest::newRow("red")
+    BOBUIest::newRow("red")
         << QColor::fromRgbF(1.0f, 0.0f, 0.0f)
         << QColor::fromHsvF(0.0f, 1.0f, 1.0f)
         << QColor::fromCmykF(0.0f, 1.0f, 1.0f, 0.0f)
         << QColor::fromHslF(0.0f, 1.0f, 0.5f, 1.0f);
 
-    QTest::newRow("green")
+    BOBUIest::newRow("green")
         << QColor::fromRgbF(0.0f, 1.0f, 0.0f)
         << QColor::fromHsvF(0.33333f, 1.0f, 1.0f)
         << QColor::fromCmykF(1.0, 0.0f, 1.0f, 0.0f)
         << QColor::fromHslF(0.33333f, 1.0f, 0.5f);
 
-    QTest::newRow("blue")
+    BOBUIest::newRow("blue")
         << QColor::fromRgbF(0.0f, 0.0f, 1.0f)
         << QColor::fromHsvF(0.66667f, 1.0f, 1.0f)
         << QColor::fromCmykF(1.0f, 1.0f, 0.0f, 0.0f)
         << QColor::fromHslF(0.66667f, 1.0f, 0.5f);
 
-    QTest::newRow("cyan")
+    BOBUIest::newRow("cyan")
         << QColor::fromRgbF(0.0f, 1.0f, 1.0f)
         << QColor::fromHsvF(0.5f, 1.0f, 1.0f)
         << QColor::fromCmykF(1.0f, 0.0f, 0.0f, 0.0f)
         << QColor::fromHslF(0.5f, 1.0f, 0.5f);
 
-    QTest::newRow("magenta")
+    BOBUIest::newRow("magenta")
         << QColor::fromRgbF(1.0f, 0.0f, 1.0f)
         << QColor::fromHsvF(0.83333f, 1.0f, 1.0f)
         << QColor::fromCmykF(0.0f, 1.0f, 0.0f, 0.0f)
         << QColor::fromHslF(0.83333f, 1.0f, 0.5f);
 
-    QTest::newRow("yellow")
+    BOBUIest::newRow("yellow")
         << QColor::fromRgbF(1.0f, 1.0f, 0.0f)
         << QColor::fromHsvF(0.16667f, 1.0f, 1.0f)
         << QColor::fromCmykF(0.0f, 0.0f, 1.0f, 0.0f)
         << QColor::fromHslF(0.16667f, 1.0f, 0.5f);
 
-    QTest::newRow("gray")
+    BOBUIest::newRow("gray")
         << QColor::fromRgbF(0.6431375f, 0.6431375f, 0.6431375f)
         << QColor::fromHsvF(-1.0f, 0.0f, 0.6431375f)
         << QColor::fromCmykF(0.0f, 0.0f, 0.0f, 0.356863f)
@@ -1502,18 +1502,18 @@ void tst_QColor::toRgb()
 
 void tst_QColor::toHsv_data()
 {
-    QTest::addColumn<QColor>("expectedColor");
-    QTest::addColumn<QColor>("rgbColor");
-    QTest::addColumn<QColor>("cmykColor");
-    QTest::addColumn<QColor>("hslColor");
+    BOBUIest::addColumn<QColor>("expectedColor");
+    BOBUIest::addColumn<QColor>("rgbColor");
+    BOBUIest::addColumn<QColor>("cmykColor");
+    BOBUIest::addColumn<QColor>("hslColor");
 
-    QTest::newRow("data0")
+    BOBUIest::newRow("data0")
         << QColor::fromHsv(300, 255, 255)
         << QColor(255, 0, 255)
         << QColor::fromCmyk(0, 255, 0, 0)
         << QColor::fromHslF(300.f/360.f, 1.f, 0.5f, 1.0f);
 
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
         << QColor::fromHsvF(1., 1., 1., 1.)
         << QColor(255, 0, 0, 255)
         << QColor::fromCmykF(0., 1., 1., 0.)
@@ -1548,18 +1548,18 @@ void tst_QColor::toHsvNonDestructive()
 
 void tst_QColor::toCmyk_data()
 {
-    QTest::addColumn<QColor>("expectedColor");
-    QTest::addColumn<QColor>("rgbColor");
-    QTest::addColumn<QColor>("hsvColor");
-    QTest::addColumn<QColor>("hslColor");
+    BOBUIest::addColumn<QColor>("expectedColor");
+    BOBUIest::addColumn<QColor>("rgbColor");
+    BOBUIest::addColumn<QColor>("hsvColor");
+    BOBUIest::addColumn<QColor>("hslColor");
 
-    QTest::newRow("data0")
+    BOBUIest::newRow("data0")
         << QColor::fromCmykF(1.0f, 0.0f, 0.0f, 0.0f)
         << QColor(0, 255, 255)
         << QColor::fromHsv(180, 255, 255)
         << QColor::fromHslF(180./360., 1., 0.5, 1.0);
 
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
         << QColor::fromCmyk(0, 0, 0, 255)
         << QColor::fromRgb(0, 0, 0)
         << QColor::fromRgb(0, 0, 0).toHsv()
@@ -1588,19 +1588,19 @@ void tst_QColor::toCmykNonDestructive()
 
 void tst_QColor::toHsl_data()
 {
-    QTest::addColumn<QColor>("expectedColor");
-    QTest::addColumn<QColor>("hsvColor");
-    QTest::addColumn<QColor>("rgbColor");
-    QTest::addColumn<QColor>("cmykColor");
+    BOBUIest::addColumn<QColor>("expectedColor");
+    BOBUIest::addColumn<QColor>("hsvColor");
+    BOBUIest::addColumn<QColor>("rgbColor");
+    BOBUIest::addColumn<QColor>("cmykColor");
 
 
-    QTest::newRow("data0")
+    BOBUIest::newRow("data0")
         << QColor::fromHslF(300.f/360.f, 1., 0.5f, 1.0)
         << QColor::fromHsv(300, 255, 255)
         << QColor(255, 0, 255)
         << QColor::fromCmyk(0, 255, 0, 0);
 
-    QTest::newRow("data1")
+    BOBUIest::newRow("data1")
         << QColor::fromHslF(1., 1., 0.5f, 1.0)
         << QColor::fromHsvF(1., 1., 1., 1.)
         << QColor(255, 0, 0, 255)
@@ -1633,7 +1633,7 @@ void tst_QColor::toHslNonDestructive()
 
 void tst_QColor::convertTo()
 {
-    QColor color(Qt::black);
+    QColor color(BobUI::black);
 
     QColor rgb = color.convertTo(QColor::Rgb);
     QCOMPARE(rgb.spec(), QColor::Rgb);
@@ -1653,14 +1653,14 @@ void tst_QColor::convertTo()
 
 void tst_QColor::lighter()
 {
-    QColor gray(Qt::gray);
+    QColor gray(BobUI::gray);
     QColor lighter = gray.lighter();
     QVERIFY(lighter.value() > gray.value());
 }
 
 void tst_QColor::darker()
 {
-    QColor gray(Qt::gray);
+    QColor gray(BobUI::gray);
     QColor darker = gray.darker();
     QVERIFY(darker.value() < gray.value());
 }
@@ -1669,12 +1669,12 @@ Q_DECLARE_METATYPE(QColor::Spec);
 
 void tst_QColor::specConstructor_data()
 {
-    QTest::addColumn<QColor::Spec>("spec");
+    BOBUIest::addColumn<QColor::Spec>("spec");
 
-    QTest::newRow("Invalid") << QColor::Invalid;
-    QTest::newRow("Rgb") << QColor::Rgb;
-    QTest::newRow("Hsv") << QColor::Hsv;
-    QTest::newRow("Cmyk") << QColor::Cmyk;
+    BOBUIest::newRow("Invalid") << QColor::Invalid;
+    BOBUIest::newRow("Rgb") << QColor::Rgb;
+    BOBUIest::newRow("Hsv") << QColor::Hsv;
+    BOBUIest::newRow("Cmyk") << QColor::Cmyk;
 }
 
 void tst_QColor::specConstructor()
@@ -1686,7 +1686,7 @@ void tst_QColor::specConstructor()
 
 void tst_QColor::achromaticHslHue()
 {
-    QColor color = Qt::black;
+    QColor color = BobUI::black;
 
     QColor hsl = color.toHsl();
     QCOMPARE(hsl.hslHue(), -1);
@@ -1694,8 +1694,8 @@ void tst_QColor::achromaticHslHue()
 
 void tst_QColor::equality()
 {
-    QColor red = Qt::red;
-    QColor black = Qt::black;
+    QColor red = BobUI::red;
+    QColor black = BobUI::black;
 
     QCOMPARE(red, red);
     QCOMPARE(black, black);
@@ -1724,7 +1724,7 @@ void tst_QColor::premultiply()
 void tst_QColor::unpremultiply_sse4()
 {
     // Tests that qUnpremultiply_sse4 returns the same as qUnpremultiply.
-#if QT_COMPILER_SUPPORTS_HERE(SSE4_1)
+#if BOBUI_COMPILER_SUPPORTS_HERE(SSE4_1)
     if (qCpuHasFeature(SSE4_1)) {
         int minorDifferences = 0;
         for (uint a = 0; a < 256; a++) {
@@ -1855,14 +1855,14 @@ void tst_QColor::qrgba64Equivalence()
 
 void tst_QColor::qcolorprofile_data()
 {
-    QTest::addColumn<float>("gammaC");
-    QTest::addColumn<int>("tolerance");
+    BOBUIest::addColumn<float>("gammaC");
+    BOBUIest::addColumn<int>("tolerance");
 
-    QTest::newRow("gamma=1.0") << 1.0f << 0;
-    QTest::newRow("gamma=1.5") << 1.5f << 1;
-    QTest::newRow("gamma=1.7") << 1.7f << 2;
-    QTest::newRow("gamma=2.0") << 2.0f << 8;
-    QTest::newRow("gamma=2.31") << 2.31f << 33;
+    BOBUIest::newRow("gamma=1.0") << 1.0f << 0;
+    BOBUIest::newRow("gamma=1.5") << 1.5f << 1;
+    BOBUIest::newRow("gamma=1.7") << 1.7f << 2;
+    BOBUIest::newRow("gamma=2.0") << 2.0f << 8;
+    BOBUIest::newRow("gamma=2.31") << 2.31f << 33;
 }
 
 void tst_QColor::qcolorprofile()
@@ -1882,5 +1882,5 @@ void tst_QColor::qcolorprofile()
     QVERIFY(error <= tolerance);
 }
 
-QTEST_MAIN(tst_QColor)
+BOBUIEST_MAIN(tst_QColor)
 #include "tst_qcolor.moc"

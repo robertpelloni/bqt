@@ -1,38 +1,38 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qmenu Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qmenu LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qmenu
+bobui_internal_add_test(tst_qmenu
     SOURCES
         tst_qmenu.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::TestPrivate
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::TestPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qmenu CONDITION MACOS
+bobui_internal_extend_target(tst_qmenu CONDITION MACOS
     SOURCES
         tst_qmenu_mac.mm
     LIBRARIES
         objc
 )
 
-qt_internal_extend_target(tst_qmenu CONDITION NOT MACOS
+bobui_internal_extend_target(tst_qmenu CONDITION NOT MACOS
     DEFINES
-        QTEST_QPA_MOUSE_HANDLING
+        BOBUIEST_QPA_MOUSE_HANDLING
 )

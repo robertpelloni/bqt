@@ -1,8 +1,8 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qwidget.h>
 #include <qlabel.h>
 
@@ -54,12 +54,12 @@ struct StreamingTraits
 
 void tst_QWidgetMetaType::saveAndLoadBuiltin_data()
 {
-    QTest::addColumn<int>("type");
-    QTest::addColumn<bool>("isStreamable");
+    BOBUIest::addColumn<int>("type");
+    BOBUIest::addColumn<bool>("isStreamable");
 
 #define ADD_METATYPE_TEST_ROW(MetaTypeName, MetaTypeId, RealType) \
-    QTest::newRow(#RealType) << MetaTypeId << bool(StreamingTraits<RealType>::isStreamable);
-    QT_FOR_EACH_STATIC_WIDGETS_CLASS(ADD_METATYPE_TEST_ROW)
+    BOBUIest::newRow(#RealType) << MetaTypeId << bool(StreamingTraits<RealType>::isStreamable);
+    BOBUI_FOR_EACH_STATIC_WIDGETS_CLASS(ADD_METATYPE_TEST_ROW)
 #undef ADD_METATYPE_TEST_ROW
 }
 
@@ -90,5 +90,5 @@ void tst_QWidgetMetaType::saveAndLoadBuiltin()
 }
 
 
-QTEST_MAIN(tst_QWidgetMetaType)
+BOBUIEST_MAIN(tst_QWidgetMetaType)
 #include "tst_qwidgetmetatype.moc"

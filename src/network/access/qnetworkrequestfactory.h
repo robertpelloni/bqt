@@ -1,30 +1,30 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKREQUESTFACTORY_H
 #define QNETWORKREQUESTFACTORY_H
 
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qhttpheaders.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qhttpheaders.h>
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qurlquery.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qurlquery.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qvariant.h>
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 class QSslConfiguration;
 #endif
 
 class QNetworkRequestFactoryPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QNetworkRequestFactoryPrivate, Q_NETWORK_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QNetworkRequestFactoryPrivate, Q_NETWORK_EXPORT)
 
 class QNetworkRequestFactory
 {
@@ -37,13 +37,13 @@ public:
     QNetworkRequestFactory(QNetworkRequestFactory &&other) noexcept = default;
     Q_NETWORK_EXPORT QNetworkRequestFactory &operator=(const QNetworkRequestFactory &other);
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QNetworkRequestFactory)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QNetworkRequestFactory)
     void swap(QNetworkRequestFactory &other) noexcept { d.swap(other.d); }
 
     Q_NETWORK_EXPORT QUrl baseUrl() const;
     Q_NETWORK_EXPORT void setBaseUrl(const QUrl &url);
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     Q_NETWORK_EXPORT QSslConfiguration sslConfiguration() const;
     Q_NETWORK_EXPORT void setSslConfiguration(const QSslConfiguration &configuration);
 #endif
@@ -87,7 +87,7 @@ public:
     Q_NETWORK_EXPORT void clearAttributes();
 
 private:
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QNetworkRequestFactory &reply);
 #endif
 
@@ -96,6 +96,6 @@ private:
 
 Q_DECLARE_SHARED(QNetworkRequestFactory)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNETWORKREQUESTFACTORY_H

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QSignalSpy>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
 #include <QIODevice>
 #include <QElapsedTimer>
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 #include <QLabel>
 #endif
 #include <QMovie>
 
 #include <QProperty>
-#include <QtCore/qthread.h>
+#include <BobUICore/bobuihread.h>
 
 #include <chrono>
 #include <memory>
@@ -48,13 +48,13 @@ private slots:
     void jumpToFrame();
     void frameDelay();
     void changeMovieFile();
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     void infiniteLoop();
 #endif
     void emptyMovie();
     void bindings();
     void automatedBindings();
-#ifndef QT_NO_ICO
+#ifndef BOBUI_NO_ICO
     void multiFrameImage();
 #endif
 
@@ -114,7 +114,7 @@ void tst_QMovie::cleanup()
 
 void tst_QMovie::exitLoopSlot()
 {
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QMovie::construction()
@@ -127,11 +127,11 @@ void tst_QMovie::construction()
 
 void tst_QMovie::playMovie_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<int>("frameCount");
-#ifdef QTEST_HAVE_GIF
-    QTest::newRow("comicsecard") << QString("animations/comicsecard.gif") << 5;
-    QTest::newRow("trolltech") << QString("animations/trolltech.gif") << 34;
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<int>("frameCount");
+#ifdef BOBUIEST_HAVE_GIF
+    BOBUIest::newRow("comicsecard") << QString("animations/comicsecard.gif") << 5;
+    BOBUIest::newRow("trolltech") << QString("animations/trolltech.gif") << 34;
 #endif
 }
 
@@ -149,7 +149,7 @@ void tst_QMovie::playMovieCreatedInThread()
 
     const auto app = QCoreApplication::instance()->thread();
     std::unique_ptr<QMovie> movie;
-    const std::unique_ptr<QThread> t{QThread::create([&] {
+    const std::unique_ptr<BOBUIhread> t{BOBUIhread::create([&] {
             movie = std::make_unique<QMovie>(QFINDTESTDATA(fileName));
             movie->moveToThread(app);
         })};
@@ -178,15 +178,15 @@ void tst_QMovie::playMovieImpl(QMovie &movie)
 
     connect(&movie, SIGNAL(finished()), this, SLOT(exitLoopSlot()));
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
     QFETCH(int, frameCount);
 
     QLabel label;
     label.setMovie(&movie);
     label.show();
 
-    QTestEventLoop::instance().enterLoop(20);
-    QVERIFY2(!QTestEventLoop::instance().timeout(),
+    BOBUIestEventLoop::instance().enterLoop(20);
+    QVERIFY2(!BOBUIestEventLoop::instance().timeout(),
             "Timed out while waiting for finished() signal");
 
     QCOMPARE(movie.state(), QMovie::NotRunning);
@@ -198,7 +198,7 @@ void tst_QMovie::playMovieImpl(QMovie &movie)
     movie.setSpeed(0);
     movie.start();
     QCOMPARE(movie.state(), QMovie::Running);
-    QTestEventLoop::instance().enterLoop(2);
+    BOBUIestEventLoop::instance().enterLoop(2);
     QCOMPARE(finishedSpy.size(), 0);
     QCOMPARE(movie.state(), QMovie::Running);
     QCOMPARE(movie.currentFrameNumber(), 0);
@@ -239,7 +239,7 @@ void tst_QMovie::changeMovieFile()
     QCOMPARE(movie.currentFrameNumber(), -1);
 }
 
-#ifndef QT_NO_WIDGETS
+#ifndef BOBUI_NO_WIDGETS
 void tst_QMovie::infiniteLoop()
 {
     QLabel label;
@@ -248,8 +248,8 @@ void tst_QMovie::infiniteLoop()
     label.setMovie(movie);
     movie->start();
 
-    QTestEventLoop::instance().enterLoop(1);
-    QTestEventLoop::instance().timeout();
+    BOBUIestEventLoop::instance().enterLoop(1);
+    BOBUIestEventLoop::instance().timeout();
 }
 #endif
 
@@ -268,7 +268,7 @@ void tst_QMovie::bindings()
     // speed property
     QCOMPARE(movie.speed(), 100);
     QProperty<int> speed;
-    movie.bindableSpeed().setBinding(Qt::makePropertyBinding(speed));
+    movie.bindableSpeed().setBinding(BobUI::makePropertyBinding(speed));
     speed = 50;
     QCOMPARE(movie.speed(), 50);
 
@@ -280,7 +280,7 @@ void tst_QMovie::bindings()
     // chacheMode property
     QCOMPARE(movie.cacheMode(), QMovie::CacheNone);
     QProperty<QMovie::CacheMode> cacheMode;
-    movie.bindableCacheMode().setBinding(Qt::makePropertyBinding(cacheMode));
+    movie.bindableCacheMode().setBinding(BobUI::makePropertyBinding(cacheMode));
     cacheMode = QMovie::CacheAll;
     QCOMPARE(movie.cacheMode(), QMovie::CacheAll);
 
@@ -297,21 +297,21 @@ void tst_QMovie::automatedBindings()
 {
     QMovie movie;
 
-    QTestPrivate::testReadWritePropertyBasics(movie, 50, 100, "speed");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(movie, 50, 100, "speed");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QMovie::speed");
         return;
     }
 
-    QTestPrivate::testReadWritePropertyBasics(movie, QMovie::CacheAll, QMovie::CacheNone,
+    BOBUIestPrivate::testReadWritePropertyBasics(movie, QMovie::CacheAll, QMovie::CacheNone,
                                               "cacheMode");
-    if (QTest::currentTestFailed()) {
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QMovie::cacheMode");
         return;
     }
 }
 
-#ifndef QT_NO_ICO
+#ifndef BOBUI_NO_ICO
 /*! \internal
     Test behavior of QMovie with image formats that are multi-frame,
     but not normally intended as animation formats (such as tiff and ico).
@@ -330,7 +330,7 @@ void tst_QMovie::multiFrameImage()
     QSignalSpy finishedSpy(&movie, &QMovie::finished);
     playTimer.start();
     movie.start();
-    QTRY_COMPARE(finishedSpy.size(), 1);
+    BOBUIRY_COMPARE(finishedSpy.size(), 1);
     QCOMPARE_GE(playTimer.elapsed(), 100 * expectedFrameCount);
     const int delay = movie.nextFrameDelay(); // delay is equal to 100ms minus processing time
     QCOMPARE_GE(delay, 50);
@@ -342,16 +342,16 @@ void tst_QMovie::multiFrameImage()
 
 void tst_QMovie::setScaledSize_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QSize>("scaledSize");
-    QTest::addColumn<QSize>("expectedSize");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QSize>("scaledSize");
+    BOBUIest::addColumn<QSize>("expectedSize");
 
-    QTest::newRow("trolltech (50, 50)") << QString("animations/trolltech.gif") << QSize(50, 50) << QSize(50, 50);
-    QTest::newRow("trolltech (400, 400)") << QString("animations/trolltech.gif") << QSize(400, 400) << QSize(400, 400);
-    QTest::newRow("trolltech (50, 0)") << QString("animations/trolltech.gif") << QSize(50, 0) << QSize(50, 25);
-    QTest::newRow("trolltech (50, -1)") << QString("animations/trolltech.gif") << QSize(50, -1) << QSize(50, 25);
-    QTest::newRow("trolltech (0, 50)") << QString("animations/trolltech.gif") << QSize(0, 50) << QSize(100, 50);
-    QTest::newRow("trolltech (-1, 50)") << QString("animations/trolltech.gif") << QSize(-1, 50) << QSize(100, 50);
+    BOBUIest::newRow("trolltech (50, 50)") << QString("animations/trolltech.gif") << QSize(50, 50) << QSize(50, 50);
+    BOBUIest::newRow("trolltech (400, 400)") << QString("animations/trolltech.gif") << QSize(400, 400) << QSize(400, 400);
+    BOBUIest::newRow("trolltech (50, 0)") << QString("animations/trolltech.gif") << QSize(50, 0) << QSize(50, 25);
+    BOBUIest::newRow("trolltech (50, -1)") << QString("animations/trolltech.gif") << QSize(50, -1) << QSize(50, 25);
+    BOBUIest::newRow("trolltech (0, 50)") << QString("animations/trolltech.gif") << QSize(0, 50) << QSize(100, 50);
+    BOBUIest::newRow("trolltech (-1, 50)") << QString("animations/trolltech.gif") << QSize(-1, 50) << QSize(100, 50);
 }
 
 void tst_QMovie::setScaledSize()
@@ -368,5 +368,5 @@ void tst_QMovie::setScaledSize()
     QCOMPARE(movie.currentImage().size(), expectedSize);
 }
 
-QTEST_MAIN(tst_QMovie)
+BOBUIEST_MAIN(tst_QMovie)
 #include "tst_qmovie.moc"

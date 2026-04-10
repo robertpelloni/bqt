@@ -1,10 +1,10 @@
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef Q_QNX_PLATFORMDEFS_H
 #define Q_QNX_PLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -41,14 +41,14 @@
 // for htonl
 #include <arpa/inet.h>
 
-#define QT_USE_XOPEN_LFS_EXTENSIONS
+#define BOBUI_USE_XOPEN_LFS_EXTENSIONS
 #if !defined(__EXT_QNX__READDIR64_R)
-#define QT_NO_READDIR64
+#define BOBUI_NO_READDIR64
 #endif
 #include "../posix/qplatformdefs.h"
 
-#define QT_SNPRINTF ::snprintf
-#define QT_VSNPRINTF ::vsnprintf
+#define BOBUI_SNPRINTF ::snprintf
+#define BOBUI_VSNPRINTF ::vsnprintf
 
 // QNX6 doesn't have getpagesize()
 inline int getpagesize()

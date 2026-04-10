@@ -1,16 +1,16 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRANGEMODELADAPTER_H
 #define QRANGEMODELADAPTER_H
 
-#include <QtCore/qrangemodeladapter_impl.h>
+#include <BobUICore/qrangemodeladapter_impl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename Range, typename Protocol = void, typename Model = QRangeModel>
-class QT_TECH_PREVIEW_API QRangeModelAdapter
+class BOBUI_TECH_PREVIEW_API QRangeModelAdapter
 {
     using Impl = QRangeModelDetails::RangeImplementation<Range, Protocol>;
     using Storage = QRangeModelDetails::AdapterStorage<Model, Impl>;
@@ -209,7 +209,7 @@ public:
         template <typename Value>
         void assign(Value &&value)
         {
-            constexpr Qt::ItemDataRole dataRole = Qt::RangeModelAdapterRole;
+            constexpr BobUI::ItemDataRole dataRole = BobUI::RangeModelAdapterRole;
 
             if (m_index.isValid()) {
                 auto model = const_cast<QAbstractItemModel *>(m_index.model());
@@ -221,7 +221,7 @@ public:
                                                 QVariant::fromValue(std::forward<Value>(value)),
                                                 dataRole);
                 }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
                 if (!couldWrite) {
                     qWarning() << "Writing value of type"
                                << QMetaType::fromType<q20::remove_cvref_t<Value>>().name()
@@ -253,13 +253,13 @@ public:
             rhs = lhsValue; // no point in moving, we have to go through QVariant anyway
         }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         friend inline QDebug operator<<(QDebug dbg, const DataReference &ref)
         {
             return dbg << ref.get();
         }
 #endif
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
         friend inline QDataStream &operator<<(QDataStream &ds, const DataReference &ref)
         {
             return ds << ref.get();
@@ -366,7 +366,7 @@ public:
             Q_ASSERT(lhs.m_rowIndex == rhs.m_rowIndex);
             return lhs.m_column == rhs.m_column;
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs, const Iterator &rhs)
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs, const Iterator &rhs)
         {
             Q_ASSERT(lhs.m_rowIndex == rhs.m_rowIndex);
             return qCompareThreeWay(lhs.m_column, rhs.m_column);
@@ -374,7 +374,7 @@ public:
 
         Q_DECLARE_STRONGLY_ORDERED_NON_NOEXCEPT(Iterator)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         friend inline QDebug operator<<(QDebug dbg, const Iterator &it)
         {
             QDebugStateSaver saver(dbg);
@@ -588,7 +588,7 @@ public:
             Q_ASSERT(lhs.m_adapter == rhs.m_adapter);
             return lhs.m_index == rhs.m_index;
         }
-        friend Qt::strong_ordering compareThreeWay(const Reference &lhs, const Reference &rhs)
+        friend BobUI::strong_ordering compareThreeWay(const Reference &lhs, const Reference &rhs)
         {
             Q_ASSERT(lhs.m_adapter == rhs.m_adapter);
             return qCompareThreeWay(lhs.m_index, rhs.m_index);
@@ -602,7 +602,7 @@ public:
         }
         Q_DECLARE_EQUALITY_COMPARABLE_NON_NOEXCEPT(Reference, row_type)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         friend inline QDebug operator<<(QDebug dbg, const Reference &ref)
         {
             QDebugStateSaver saver(dbg);
@@ -610,7 +610,7 @@ public:
             return dbg << "RowReference(" << ref.m_index << ")";
         }
 #endif
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
         friend inline QDataStream &operator<<(QDataStream &ds, const Reference &ref)
         {
             return ds << ref.get();
@@ -803,7 +803,7 @@ public:
             }
         }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
         friend inline QDataStream &operator>>(QDataStream &ds, RowReference &ref)
         {
             row_type value;
@@ -903,7 +903,7 @@ public:
         {
             return lhs.m_row == rhs.m_row && lhs.root() == rhs.root();
         }
-        friend Qt::strong_ordering compareThreeWay(const Iterator &lhs, const Iterator &rhs) noexcept
+        friend BobUI::strong_ordering compareThreeWay(const Iterator &lhs, const Iterator &rhs) noexcept
         {
             if (lhs.root() == rhs.root())
                 return qCompareThreeWay(lhs.m_row, rhs.m_row);
@@ -912,7 +912,7 @@ public:
 
         Q_DECLARE_STRONGLY_ORDERED(Iterator)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         friend inline QDebug operator<<(QDebug dbg, const Iterator &it)
         {
             QDebugStateSaver saver(dbg);
@@ -1208,7 +1208,7 @@ public:
     }
 
     template <typename I = Impl, if_list<I> = true, if_writable<I> = true>
-    bool setData(int row, const QVariant &value, int role = Qt::EditRole)
+    bool setData(int row, const QVariant &value, int role = BobUI::EditRole)
     {
         return storage->setData(index(row), value, role);
     }
@@ -1226,7 +1226,7 @@ public:
     }
 
     template <typename I = Impl, unless_list<I> = true, if_writable<I> = true>
-    bool setData(int row, int column, const QVariant &value, int role = Qt::EditRole)
+    bool setData(int row, int column, const QVariant &value, int role = BobUI::EditRole)
     {
         return storage->setData(index(row, column), value, role);
     }
@@ -1244,7 +1244,7 @@ public:
     }
 
     template <typename I = Impl, if_tree<I> = true, if_writable<I> = true>
-    bool setData(QSpan<const int> path, int column, const QVariant &value, int role = Qt::EditRole)
+    bool setData(QSpan<const int> path, int column, const QVariant &value, int role = BobUI::EditRole)
     {
         return storage->setData(index(path, column), value, role);
     }
@@ -1617,7 +1617,7 @@ private:
     static auto selfInsertion(LHS *lhs, LHS *rhs) -> decltype(lhs == rhs)
     {
         if (lhs == rhs) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             qCritical("Inserting data into itself is not supported");
 #endif
             return true;
@@ -1756,6 +1756,6 @@ template <typename Range,
           QRangeModelDetails::if_can_construct<Range> = true>
 QRangeModelAdapter(Range &&) -> QRangeModelAdapter<Range, void>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRANGEMODELADAPTER_H

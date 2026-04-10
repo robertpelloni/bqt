@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = wigglywidget.h \
                 dialog.h
@@ -7,5 +7,5 @@ SOURCES       = wigglywidget.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/wiggly
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/wiggly
 INSTALLS += target

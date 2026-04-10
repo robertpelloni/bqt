@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef VIEW_H
 #define VIEW_H
 
 #include <QFrame>
 
-QT_FORWARD_DECLARE_CLASS(QGraphicsView)
-QT_FORWARD_DECLARE_CLASS(QLabel)
-QT_FORWARD_DECLARE_CLASS(QSlider)
-QT_FORWARD_DECLARE_CLASS(QToolButton)
+BOBUI_FORWARD_DECLARE_CLASS(QGraphicsView)
+BOBUI_FORWARD_DECLARE_CLASS(QLabel)
+BOBUI_FORWARD_DECLARE_CLASS(QSlider)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIoolButton)
 
 class View : public QFrame
 {
@@ -32,15 +32,15 @@ private slots:
     void rotateLeft();
     void rotateRight();
 
-    void timerEvent(QTimerEvent *);
+    void timerEvent(BOBUIimerEvent *);
 
 private:
     QGraphicsView *graphicsView;
     QLabel *label;
-    QToolButton *openGlButton;
-    QToolButton *antialiasButton;
-    QToolButton *printButton;
-    QToolButton *resetButton;
+    BOBUIoolButton *openGlButton;
+    BOBUIoolButton *antialiasButton;
+    BOBUIoolButton *printButton;
+    BOBUIoolButton *resetButton;
     QSlider *zoomSlider;
     QSlider *rotateSlider;
 };

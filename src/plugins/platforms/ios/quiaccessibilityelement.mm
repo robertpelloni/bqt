@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "quiaccessibilityelement.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 #include "private/qaccessiblecache_p.h"
 #include "private/qcore_mac_p.h"
 #include "uistrings_p.h"
 #include "qioswindow.h"
 
-#include <QtGui/private/qaccessiblebridgeutils_p.h>
+#include <BobUIGui/private/qaccessiblebridgeutils_p.h>
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QMacAccessibilityElement);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QMacAccessibilityElement);
 
 @implementation QMacAccessibilityElement
 

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QStandardItemModel>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QWidget>
 
 namespace src_gui_itemviews_qstandarditemmodel {
@@ -45,9 +45,9 @@ for (int i = 0; i < 4; ++i) {
 
 void MyWidget::wrapper2() {
 //! [2]
-QTreeView *treeView = new QTreeView(this);
+BOBUIreeView *treeView = new BOBUIreeView(this);
 treeView->setModel(myStandardItemModel);
-connect(treeView, &QTreeView::clicked,
+connect(treeView, &BOBUIreeView::clicked,
         this, &MyWidget::clicked);
 //! [2]
 
@@ -64,7 +64,7 @@ void MyWidget::clicked(const QModelIndex &index)
 
 
 void wrapper3() {
-QTreeView *treeView = nullptr;
+BOBUIreeView *treeView = nullptr;
 MyWidget *item = nullptr;
 //! [4]
 treeView->scrollTo(item->index());

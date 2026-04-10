@@ -1,18 +1,18 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFONTVARIABLEAXIS_H
 #define QFONTVARIABLEAXIS_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qfont.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qfont.h>
 
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qshareddata.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFontVariableAxisPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QFontVariableAxisPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QFontVariableAxisPrivate)
 
 class QFontVariableAxis
 {
@@ -29,7 +29,7 @@ public:
     QFontVariableAxis(QFontVariableAxis &&other) noexcept = default;
     Q_GUI_EXPORT QFontVariableAxis(const QFontVariableAxis &axis);
     Q_GUI_EXPORT ~QFontVariableAxis();
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontVariableAxis)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFontVariableAxis)
     void swap(QFontVariableAxis &other) noexcept
     {
         d_ptr.swap(other.d_ptr);
@@ -56,7 +56,7 @@ private:
     QByteArray tagString() const { return tag().toString(); }
     void detach();
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     Q_GUI_EXPORT friend QDebug operator<<(QDebug debug, const QFontVariableAxis &axis);
 #endif
 
@@ -65,7 +65,7 @@ private:
 
 Q_DECLARE_SHARED(QFontVariableAxis)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFONTVARIABLEAXIS_H
 

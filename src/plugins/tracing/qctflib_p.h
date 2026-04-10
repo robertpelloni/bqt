@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef QT_CTFLIB_H
-#define QT_CTFLIB_H
+#ifndef BOBUI_CTFLIB_H
+#define BOBUI_CTFLIB_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -23,12 +23,12 @@
 #include <qelapsedtimer.h>
 #include <qhash.h>
 #include <qset.h>
-#include <qthreadstorage.h>
-#include <qthread.h>
+#include <bobuihreadstorage.h>
+#include <bobuihread.h>
 #include <qloggingcategory.h>
 #include "qctfserver_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcDebugTrace)
 
@@ -55,7 +55,7 @@ class QCtfLibImpl : public QCtfLib, public QCtfServer::ServerCallback
         quint64 minTimestamp = 0;
         quint64 maxTimestamp = 0;
         quint64 seqnumber = 0;
-        QThread *thread = nullptr;
+        BOBUIhread *thread = nullptr;
         quint32 threadIndex = 0;
         QByteArray threadName;
         quint32 threadNameLength = 0;
@@ -106,8 +106,8 @@ private:
     QString m_metadata;
     QString m_location;
     Session m_session;
-    QHash<QThread*, quint32> m_threadIndices;
-    QThreadStorage<Channel> m_threadData;
+    QHash<BOBUIhread*, quint32> m_threadIndices;
+    BOBUIhreadStorage<Channel> m_threadData;
     QList<Channel *> m_channels;
     QHash<QString, const QCtfTraceMetadata *> m_additionalMetadata;
     QSet<QString> m_newAdditionalMetadata;
@@ -120,6 +120,6 @@ private:
     friend struct Channel;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

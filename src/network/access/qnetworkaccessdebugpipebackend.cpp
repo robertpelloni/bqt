@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkaccessdebugpipebackend_p.h"
-#include "QtCore/qdatastream.h"
+#include "BobUICore/qdatastream.h"
 #include <QCoreApplication>
 #include <QStringList>
 #include <QUrlQuery>
 #include "private/qnoncontiguousbytedevice_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 
 enum {
     ReadBufferSize = 16384,
@@ -82,7 +82,7 @@ void QNetworkAccessDebugPipeBackend::open()
         createUploadByteDevice();
         QObject::connect(uploadByteDevice(), SIGNAL(readyRead()), this,
                          SLOT(uploadReadyReadSlot()));
-        QMetaObject::invokeMethod(this, "uploadReadyReadSlot", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "uploadReadyReadSlot", BobUI::QueuedConnection);
     }
 }
 
@@ -135,7 +135,7 @@ void QNetworkAccessDebugPipeBackend::pushFromUpstreamToSocket()
             if (socket.bytesToWrite() >= WriteBufferSize)
                 return;
 
-            QByteArray data(WriteBufferSize, Qt::Uninitialized);
+            QByteArray data(WriteBufferSize, BobUI::Uninitialized);
             qint64 haveRead = uploadByteDevice()->peek(data.data(), data.size());
             if (haveRead == -1) {
                 // EOF
@@ -238,6 +238,6 @@ void QNetworkAccessDebugPipeBackend::socketConnected()
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkaccessdebugpipebackend_p.cpp"

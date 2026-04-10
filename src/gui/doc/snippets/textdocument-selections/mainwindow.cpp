@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include "mainwindow.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 MainWindow::MainWindow()
 {
@@ -38,11 +38,11 @@ MainWindow::MainWindow()
     menuBar()->addMenu(editMenu);
     menuBar()->addMenu(selectMenu);
 
-    editor = new QTextEdit(this);
-    document = new QTextDocument(this);
+    editor = new BOBUIextEdit(this);
+    document = new BOBUIextDocument(this);
     editor->setDocument(document);
 
-    connect(editor, &QTextEdit::selectionChanged,
+    connect(editor, &BOBUIextEdit::selectionChanged,
             this, &MainWindow::updateMenus);
 
     setCentralWidget(editor);
@@ -78,7 +78,7 @@ void MainWindow::openFile()
 
 void MainWindow::cutSelection()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     if (cursor.hasSelection()) {
         selection = cursor.selection();
         cursor.removeSelectedText();
@@ -87,7 +87,7 @@ void MainWindow::cutSelection()
 
 void MainWindow::copySelection()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     if (cursor.hasSelection()) {
         selection = cursor.selection();
         cursor.clearSelection();
@@ -96,19 +96,19 @@ void MainWindow::copySelection()
 
 void MainWindow::pasteSelection()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     cursor.insertFragment(selection);
 }
 
 void MainWindow::selectWord()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
 
 //! [0]
     cursor.beginEditBlock();
 //! [1]
-    cursor.movePosition(QTextCursor::StartOfWord);
-    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+    cursor.movePosition(BOBUIextCursor::StartOfWord);
+    cursor.movePosition(BOBUIextCursor::EndOfWord, BOBUIextCursor::KeepAnchor);
 //! [1]
     cursor.endEditBlock();
 //! [0]
@@ -118,11 +118,11 @@ void MainWindow::selectWord()
 
 void MainWindow::selectLine()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
 
     cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::StartOfLine);
-    cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+    cursor.movePosition(BOBUIextCursor::StartOfLine);
+    cursor.movePosition(BOBUIextCursor::EndOfLine, BOBUIextCursor::KeepAnchor);
     cursor.endEditBlock();
 
     editor->setTextCursor(cursor);
@@ -130,11 +130,11 @@ void MainWindow::selectLine()
 
 void MainWindow::selectBlock()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
 
     cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::StartOfBlock);
-    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+    cursor.movePosition(BOBUIextCursor::StartOfBlock);
+    cursor.movePosition(BOBUIextCursor::EndOfBlock, BOBUIextCursor::KeepAnchor);
     cursor.endEditBlock();
 
     editor->setTextCursor(cursor);
@@ -142,12 +142,12 @@ void MainWindow::selectBlock()
 
 void MainWindow::selectFrame()
 {
-    QTextCursor cursor = editor->textCursor();
-    QTextFrame *frame = cursor.currentFrame();
+    BOBUIextCursor cursor = editor->textCursor();
+    BOBUIextFrame *frame = cursor.currentFrame();
 
     cursor.beginEditBlock();
     cursor.setPosition(frame->firstPosition());
-    cursor.setPosition(frame->lastPosition(), QTextCursor::KeepAnchor);
+    cursor.setPosition(frame->lastPosition(), BOBUIextCursor::KeepAnchor);
     cursor.endEditBlock();
 
     editor->setTextCursor(cursor);
@@ -155,7 +155,7 @@ void MainWindow::selectFrame()
 
 void MainWindow::updateMenus()
 {
-    QTextCursor cursor = editor->textCursor();
+    BOBUIextCursor cursor = editor->textCursor();
     cutAction->setEnabled(cursor.hasSelection());
     copyAction->setEnabled(cursor.hasSelection());
 

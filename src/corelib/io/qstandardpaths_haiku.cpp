@@ -1,12 +1,12 @@
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Tobias Koenig <tobias.koenig@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:provides-trusted-directory-paths
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:provides-trusted-directory-paths
 
 #include "qstandardpaths.h"
 
-#ifndef QT_NO_STANDARDPATHS
+#ifndef BOBUI_NO_STANDARDPATHS
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 #include <qcoreapplication.h>
 #endif
 
@@ -17,13 +17,13 @@
 #include <PathFinder.h>
 #include <StringList.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
 void appendOrganizationAndApp(QString &path)
 {
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     const QString org = QCoreApplication::organizationName();
     if (!org.isEmpty())
         path += u'/' + org;
@@ -186,6 +186,6 @@ QStringList QStandardPaths::standardLocations(StandardLocation type)
     return paths;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_STANDARDPATHS
+#endif // BOBUI_NO_STANDARDPATHS

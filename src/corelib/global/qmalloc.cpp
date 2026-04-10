@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmalloc.h"
 #include "qplatformdefs.h"
@@ -12,7 +12,7 @@
     users can easily override them.
 */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void *qMallocAligned(size_t size, size_t alignment)
 {
@@ -76,4 +76,4 @@ void qFreeAligned(void *ptr)
     free(ptr2[-1]);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

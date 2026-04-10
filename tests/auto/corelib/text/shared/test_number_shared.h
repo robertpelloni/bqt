@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <limits>
-#include <QtCore/qstring.h>
-#include <QtCore/qlocale.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlocale.h>
 
 struct NumberDoubleTestData
 {

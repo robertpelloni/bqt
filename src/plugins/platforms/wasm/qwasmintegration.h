@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMINTEGRATION_H
 #define QWASMINTEGRATION_H
@@ -12,7 +12,7 @@
 #include <qpa/qplatformscreen.h>
 #include <qpa/qplatforminputcontext.h>
 
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 
 #include <private/qstdweb_p.h>
 
@@ -22,7 +22,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWasmEventTranslator;
 class QWasmFontDatabase;
@@ -48,28 +48,28 @@ public:
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformWindow *createForeignWindow(QWindow *window, WId nativeHandle) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
 #endif
     QPlatformOffscreenSurface *createPlatformOffscreenSurface(QOffscreenSurface *surface) const override;
     QPlatformFontDatabase *fontDatabase() const override;
     QAbstractEventDispatcher *createEventDispatcher() const override;
     QVariant styleHint(QPlatformIntegration::StyleHint hint) const override;
-    Qt::WindowState defaultWindowState(Qt::WindowFlags flags) const override;
+    BobUI::WindowState defaultWindowState(BobUI::WindowFlags flags) const override;
     QStringList themeNames() const override;
     QPlatformTheme *createPlatformTheme(const QString &name) const override;
     QPlatformServices *services() const override;
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QPlatformClipboard *clipboard() const override;
 #endif
-#ifndef QT_NO_ACCESSIBILITY
+#ifndef BOBUI_NO_ACCESSIBILITY
     QPlatformAccessibility *accessibility() const override;
 #endif
     void initialize() override;
     QPlatformInputContext *inputContext() const override;
     QWasmInputContext *wasmInputContext() const { return m_wasmInputContext; }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #endif
 
@@ -113,12 +113,12 @@ private:
 
     QWasmInputContext *m_wasmInputContext = nullptr;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     std::unique_ptr<QWasmDrag> m_drag;
 #endif
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWASMINTEGRATION_H

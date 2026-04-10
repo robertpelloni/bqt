@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef DETAILSDIALOG_H
 #define DETAILSDIALOG_H
@@ -8,15 +8,15 @@
 #include <QList>
 #include <QPair>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
-class QTableWidget;
-class QTextEdit;
+class BOBUIableWidget;
+class BOBUIextEdit;
 class QWidget;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class DetailsDialog : public QDialog
@@ -43,8 +43,8 @@ private:
     QCheckBox *offersCheckBox;
     QLineEdit *nameEdit;
     QStringList items;
-    QTableWidget *itemsTable;
-    QTextEdit *addressEdit;
+    BOBUIableWidget *itemsTable;
+    BOBUIextEdit *addressEdit;
     QDialogButtonBox *buttonBox;
 };
 //! [0]

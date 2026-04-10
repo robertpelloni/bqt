@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -19,14 +19,14 @@ project(tst_qaddpreroutine
         VERSION "${project_version}"
 )
 
-find_package(Qt6 COMPONENTS Core BuildInternals CONFIG REQUIRED)
-qt_prepare_standalone_project()
+find_package(BobUI6 COMPONENTS Core BuildInternals CONFIG REQUIRED)
+bobui_prepare_standalone_project()
 
-find_package(Qt6 COMPONENTS GuiPrivate Test CONFIG REQUIRED)
+find_package(BobUI6 COMPONENTS GuiPrivate Test CONFIG REQUIRED)
 
-qt_internal_add_plugin(QTBUG_90341ThemePlugin
+bobui_internal_add_plugin(BOBUIBUG_90341ThemePlugin
     NO_UNITY_BUILD
-    OUTPUT_NAME QTBUG_90341
+    OUTPUT_NAME BOBUIBUG_90341
     OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
     CLASS_NAME ThemePlugin
     PLUGIN_TYPE platformthemes
@@ -35,18 +35,18 @@ qt_internal_add_plugin(QTBUG_90341ThemePlugin
         plugin.cpp
     SKIP_INSTALL
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
-qt_internal_add_test(tst_qaddpreroutine
+bobui_internal_add_test(tst_qaddpreroutine
     SOURCES
         tst_qaddpreroutine.cpp
     LIBRARIES
-        Qt::Gui
+        BobUI::Gui
 )
 
 
 target_compile_definitions(tst_qaddpreroutine
-    PRIVATE QT_QPA_PLATFORM_PLUGIN_PATH=\"${CMAKE_BINARY_DIR}\")
+    PRIVATE BOBUI_QPA_PLATFORM_PLUGIN_PATH=\"${CMAKE_BINARY_DIR}\")

@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qvariantanimation.h"
 #include "qvariantanimation_p.h"
 
-#include <QtCore/qrect.h>
-#include <QtCore/qline.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/private/qlocking_p.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qline.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/private/qlocking_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QVariantAnimation
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup animation
     \brief The QVariantAnimation class provides a base class for animations.
     \since 4.6
@@ -27,8 +27,8 @@ QT_BEGIN_NAMESPACE
 
     The class performs interpolation over
     \l{QVariant}s, but leaves using the interpolated values to its
-    subclasses. Currently, Qt provides QPropertyAnimation, which
-    animates Qt \l{Qt's Property System}{properties}. See the
+    subclasses. Currently, BobUI provides QPropertyAnimation, which
+    animates BobUI \l{BobUI's Property System}{properties}. See the
     QPropertyAnimation class description if you wish to animate such
     properties.
 
@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
     the virtual interpolated() function.
 
     Subclassing QVariantAnimation can be an alternative if you have
-    \l{QVariant}s that you do not wish to declare as Qt properties.
+    \l{QVariant}s that you do not wish to declare as BobUI properties.
     Note, however, that you in most cases will be better off declaring
     your QVariant as a property.
 
@@ -410,7 +410,7 @@ void QVariantAnimation::registerInterpolator(QVariantAnimation::Interpolator fun
     // in such an order that we get here with interpolators == NULL,
     // to continue causes the app to crash on exit with a SEGV
     if (interpolators) {
-        const auto locker = qt_scoped_lock(registeredInterpolatorsMutex);
+        const auto locker = bobui_scoped_lock(registeredInterpolatorsMutex);
         if (interpolationType >= interpolators->size())
             interpolators->resize(interpolationType + 1);
         interpolators->replace(interpolationType, func);
@@ -427,7 +427,7 @@ QVariantAnimation::Interpolator QVariantAnimationPrivate::getInterpolator(int in
 {
     {
         QInterpolatorVector *interpolators = registeredInterpolators();
-        const auto locker = qt_scoped_lock(registeredInterpolatorsMutex);
+        const auto locker = bobui_scoped_lock(registeredInterpolatorsMutex);
         QVariantAnimation::Interpolator ret = nullptr;
         if (interpolationType < interpolators->size()) {
             ret = interpolators->at(interpolationType);
@@ -613,7 +613,7 @@ void QVariantAnimation::setKeyValues(const KeyValues &keyValues)
     QVariantAnimation calls the virtual updateCurrentValue() function
     when the current value changes. This is particularly useful for
     subclasses that need to track updates. For example,
-    QPropertyAnimation uses this function to animate Qt \l{Qt's
+    QPropertyAnimation uses this function to animate BobUI \l{BobUI's
     Property System}{properties}.
 
     \sa startValue, endValue
@@ -659,7 +659,7 @@ void QVariantAnimation::updateState(QAbstractAnimation::State newState,
 
     You should call the QVariantAnimation implementation of this
     function if you want your class to handle the types already
-    supported by Qt (see class QVariantAnimation description for a
+    supported by BobUI (see class QVariantAnimation description for a
     list of supported types).
 
     \sa QEasingCurve
@@ -677,6 +677,6 @@ void QVariantAnimation::updateCurrentTime(int)
     d_func()->recalculateCurrentInterval();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvariantanimation.cpp"

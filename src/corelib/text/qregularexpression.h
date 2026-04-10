@@ -1,30 +1,30 @@
 // Copyright (C) 2020 Giuseppe D'Angelo <dangelog@gmail.com>.
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-impl-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-impl-only
 
 #ifndef QREGULAREXPRESSION_H
 #define QREGULAREXPRESSION_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qvariant.h>
 
 #include <iterator>
 
-QT_REQUIRE_CONFIG(regularexpression);
+BOBUI_REQUIRE_CONFIG(regularexpression);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRegularExpressionMatch;
 class QRegularExpressionMatchIterator;
 struct QRegularExpressionPrivate;
 class QRegularExpression;
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionPrivate, Q_CORE_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionPrivate, Q_CORE_EXPORT)
 
 Q_CORE_EXPORT size_t qHash(const QRegularExpression &key, size_t seed = 0) noexcept;
 
@@ -55,7 +55,7 @@ public:
     QRegularExpression(QRegularExpression &&re) = default;
     ~QRegularExpression();
     QRegularExpression &operator=(const QRegularExpression &re) noexcept;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRegularExpression)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QRegularExpression)
 
     void swap(QRegularExpression &other) noexcept { d.swap(other.d); }
 
@@ -81,7 +81,7 @@ public:
         NoMatchOption              = 0x0000,
         AnchorAtOffsetMatchOption  = 0x0001,
         AnchoredMatchOption Q_DECL_ENUMERATOR_DEPRECATED_X(
-            "Use AnchorAtOffsetMatchOption instead") = AnchorAtOffsetMatchOption, // Rename@Qt6.0
+            "Use AnchorAtOffsetMatchOption instead") = AnchorAtOffsetMatchOption, // Rename@BobUI6.0
         DontCheckSubjectStringMatchOption = 0x0002
     };
     Q_DECLARE_FLAGS(MatchOptions, MatchOption)
@@ -92,9 +92,9 @@ public:
                                   MatchType matchType       = NormalMatch,
                                   MatchOptions matchOptions = NoMatchOption) const;
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
     [[nodiscard]]
-    QT_DEPRECATED_VERSION_X_6_8("Use matchView instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use matchView instead.")
     QRegularExpressionMatch match(QStringView subjectView,
                                   qsizetype offset          = 0,
                                   MatchType matchType       = NormalMatch,
@@ -113,9 +113,9 @@ public:
                                                 MatchType matchType       = NormalMatch,
                                                 MatchOptions matchOptions = NoMatchOption) const;
 
-#if QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
     [[nodiscard]]
-    QT_DEPRECATED_VERSION_X_6_8("Use globalMatchView instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_8("Use globalMatchView instead.")
     QRegularExpressionMatchIterator globalMatch(QStringView subjectView,
                                                 qsizetype offset          = 0,
                                                 MatchType matchType       = NormalMatch,
@@ -156,9 +156,9 @@ public:
     static QString wildcardToRegularExpression(QStringView str, WildcardConversionOptions options = DefaultWildcardConversion);
     static QString anchoredPattern(QStringView expression);
 
-    static QRegularExpression fromWildcard(QStringView pattern, Qt::CaseSensitivity cs = Qt::CaseInsensitive,
+    static QRegularExpression fromWildcard(QStringView pattern, BobUI::CaseSensitivity cs = BobUI::CaseInsensitive,
                                            WildcardConversionOptions options = DefaultWildcardConversion);
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QRegularExpression &re) const;
     inline bool operator!=(const QRegularExpression &re) const { return !operator==(re); }
 #endif
@@ -182,23 +182,23 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QRegularExpression::PatternOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QRegularExpression::MatchOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QRegularExpression::WildcardConversionOptions)
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &out, const QRegularExpression &re);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &in, QRegularExpression &re);
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QRegularExpression &re);
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, QRegularExpression::PatternOptions patternOptions);
 #endif
 
 [[nodiscard]] inline qsizetype QStringView::count(const QRegularExpression &re) const
 {
-    return QtPrivate::count(*this, re);
+    return BobUIPrivate::count(*this, re);
 }
 
 struct QRegularExpressionMatchPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionMatchPrivate, Q_CORE_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionMatchPrivate, Q_CORE_EXPORT)
 
 class Q_CORE_EXPORT QRegularExpressionMatch
 {
@@ -223,7 +223,7 @@ public:
 
     int lastCapturedIndex() const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool hasCaptured(const QString &name) const
     { return hasCaptured(qToAnyStringViewIgnoringNull(name)); }
     bool hasCaptured(QStringView name) const;
@@ -234,7 +234,7 @@ public:
     QString captured(int nth = 0) const;
     QStringView capturedView(int nth = 0) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     QString captured(const QString &name) const
     { return captured(qToAnyStringViewIgnoringNull(name)); }
 
@@ -250,7 +250,7 @@ public:
     qsizetype capturedLength(int nth = 0) const;
     qsizetype capturedEnd(int nth = 0) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     qsizetype capturedStart(const QString &name) const
     { return capturedStart(qToAnyStringViewIgnoringNull(name)); }
     qsizetype capturedLength(const QString &name) const
@@ -277,17 +277,17 @@ private:
 
 Q_DECLARE_SHARED(QRegularExpressionMatch)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QRegularExpressionMatch &match);
 #endif
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class QRegularExpressionMatchIteratorRangeBasedForIterator;
 class QRegularExpressionMatchIteratorRangeBasedForIteratorSentinel {};
 }
 
 struct QRegularExpressionMatchIteratorPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionMatchIteratorPrivate, Q_CORE_EXPORT)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(QRegularExpressionMatchIteratorPrivate, Q_CORE_EXPORT)
 
 class Q_CORE_EXPORT QRegularExpressionMatchIterator
 {
@@ -313,14 +313,14 @@ public:
 
 private:
     friend class QRegularExpression;
-    friend Q_CORE_EXPORT QtPrivate::QRegularExpressionMatchIteratorRangeBasedForIterator begin(const QRegularExpressionMatchIterator &iterator);
-    friend QtPrivate::QRegularExpressionMatchIteratorRangeBasedForIteratorSentinel end(const QRegularExpressionMatchIterator &) { return {}; }
+    friend Q_CORE_EXPORT BobUIPrivate::QRegularExpressionMatchIteratorRangeBasedForIterator begin(const QRegularExpressionMatchIterator &iterator);
+    friend BobUIPrivate::QRegularExpressionMatchIteratorRangeBasedForIteratorSentinel end(const QRegularExpressionMatchIterator &) { return {}; }
 
     QRegularExpressionMatchIterator(QRegularExpressionMatchIteratorPrivate &dd);
     QExplicitlySharedDataPointer<QRegularExpressionMatchIteratorPrivate> d;
 };
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 // support for range-based for loop
 class QRegularExpressionMatchIteratorRangeBasedForIterator
@@ -399,10 +399,10 @@ private:
     bool m_atEnd;
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 Q_DECLARE_SHARED(QRegularExpressionMatchIterator)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QREGULAREXPRESSION_H

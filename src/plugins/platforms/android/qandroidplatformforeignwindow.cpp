@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformforeignwindow.h"
 #include "androidjnimain.h"
-#include <QtCore/qvariant.h>
+#include <BobUICore/qvariant.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/qjnitypes.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/qjnitypes.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAndroidPlatformForeignWindow::QAndroidPlatformForeignWindow(QWindow *window, WId nativeHandle)
     : QAndroidPlatformWindow(window)
@@ -27,7 +27,7 @@ void QAndroidPlatformForeignWindow::initialize()
     }
 
     if (m_view.isValid())
-        QtAndroid::setViewVisibility(m_view.object(), false);
+        BobUIAndroid::setViewVisibility(m_view.object(), false);
 }
 
 QAndroidPlatformForeignWindow::~QAndroidPlatformForeignWindow()
@@ -36,9 +36,9 @@ QAndroidPlatformForeignWindow::~QAndroidPlatformForeignWindow()
         return;
 
     if (m_view.isValid())
-        QtAndroid::setViewVisibility(m_view.object(), false);
+        BobUIAndroid::setViewVisibility(m_view.object(), false);
 
-    m_nativeQtWindow.callMethod<void>("removeNativeView");
+    m_nativeBobUIWindow.callMethod<void>("removeNativeView");
 
 }
 
@@ -52,23 +52,23 @@ void QAndroidPlatformForeignWindow::setVisible(bool visible)
     if (!m_view.isValid())
         return;
 
-    QtAndroid::setViewVisibility(m_view.object(), visible);
-    m_nativeQtWindow.callMethod<void>("setVisible", visible);
+    BobUIAndroid::setViewVisibility(m_view.object(), visible);
+    m_nativeBobUIWindow.callMethod<void>("setVisible", visible);
 
     if (!visible && m_nativeViewInserted) {
-        m_nativeQtWindow.callMethod<void>("removeNativeView");
+        m_nativeBobUIWindow.callMethod<void>("removeNativeView");
         m_nativeViewInserted = false;
     } else if (!m_nativeViewInserted) {
         addViewToWindow();
     }
 }
 
-void QAndroidPlatformForeignWindow::applicationStateChanged(Qt::ApplicationState state)
+void QAndroidPlatformForeignWindow::applicationStateChanged(BobUI::ApplicationState state)
 {
     if (!isEmbeddingContainer()) {
-        if (state <= Qt::ApplicationHidden
+        if (state <= BobUI::ApplicationHidden
                 && m_nativeViewInserted) {
-            m_nativeQtWindow.callMethod<void>("removeNativeView");
+            m_nativeBobUIWindow.callMethod<void>("removeNativeView");
             m_nativeViewInserted = false;
         } else if (m_view.isValid() && !m_nativeViewInserted){
             addViewToWindow();
@@ -82,8 +82,8 @@ WId QAndroidPlatformForeignWindow::winId() const
 {
     if (isEmbeddingContainer() && m_view.isValid())
         return reinterpret_cast<WId>(m_view.object());
-    if (m_nativeQtWindow.isValid())
-        return reinterpret_cast<WId>(m_nativeQtWindow.object());
+    if (m_nativeBobUIWindow.isValid())
+        return reinterpret_cast<WId>(m_nativeBobUIWindow.object());
     return 0L;
 }
 
@@ -92,8 +92,8 @@ void QAndroidPlatformForeignWindow::addViewToWindow()
     if (isEmbeddingContainer())
         return;
 
-    m_nativeQtWindow.callMethod<void>("setNativeView", m_view);
+    m_nativeBobUIWindow.callMethod<void>("setNativeView", m_view);
     m_nativeViewInserted = true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

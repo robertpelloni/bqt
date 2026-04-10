@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDATETIME_P_H
 #define QDATETIME_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qplatformdefs.h"
-#include "QtCore/qatomic.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qshareddata.h"
-#include "QtCore/qtimezone.h"
+#include "BobUICore/qatomic.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qshareddata.h"
+#include "BobUICore/bobuiimezone.h"
 
-#if QT_CONFIG(timezone)
-#include "qtimezone.h"
+#if BOBUI_CONFIG(timezone)
+#include "bobuiimezone.h"
 #endif
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDateTimePrivate : public QSharedData
 {
@@ -105,10 +105,10 @@ public:
             : when(w), offset(o), dst(d), valid(v) {}
     };
 
-    static QDateTime::Data create(QDate toDate, QTime toTime, const QTimeZone &timeZone,
+    static QDateTime::Data create(QDate toDate, BOBUIime toTime, const BOBUIimeZone &timeZone,
                                   QDateTime::TransitionResolution resolve);
-#if QT_CONFIG(timezone)
-    static ZoneState zoneStateAtMillis(const QTimeZone &zone, qint64 millis,
+#if BOBUI_CONFIG(timezone)
+    static ZoneState zoneStateAtMillis(const BOBUIimeZone &zone, qint64 millis,
                                        TransitionOptions resolve);
 #endif // timezone
 
@@ -117,16 +117,16 @@ public:
     static ZoneState localStateAtMillis(qint64 millis, TransitionOptions resolve);
     static QString localNameAtMillis(qint64 millis, DaylightStatus dst); // empty if unknown
 
-    StatusFlags m_status = StatusFlag(Qt::LocalTime << TimeSpecShift);
+    StatusFlags m_status = StatusFlag(BobUI::LocalTime << TimeSpecShift);
     qint64 m_msecs = 0;
     int m_offsetFromUtc = 0;
-    QTimeZone m_timeZone;
+    BOBUIimeZone m_timeZone;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimePrivate::StatusFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimePrivate::TransitionOptions)
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 namespace DateTimeConstants {
 using namespace std::chrono;
 inline
@@ -158,6 +158,6 @@ constexpr qint64 JulianDayMin = Q_INT64_C(-784350574879);
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDATETIME_P_H

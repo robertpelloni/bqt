@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtWidgets/QtWidgets>
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIWidgets/BobUIWidgets>
 
 #include <emscripten/val.h>
 #include <emscripten.h>
@@ -13,7 +13,7 @@ public:
     {
         setAcceptDrops(true);
         setFrameStyle(QFrame::Box | QFrame::Sunken);
-        setAlignment(Qt::AlignCenter);
+        setAlignment(BobUI::AlignCenter);
         setText("Drop files here\n(will read first file)");
         setMinimumSize(400, 150);
         setStyleSheet("QLabel { background-color: #f0f0f0; border: 2px dashed #999; padding: 20px; }");
@@ -121,13 +121,13 @@ public:
         connect(m_dropZone, &DropZone::filesDropped, this, &AppWindow::onFilesDropped);
 
         m_fileInfo = addWidget<QLabel>("Opened file:");
-        m_fileInfo->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        m_fileInfo->setTextInteractionFlags(BobUI::TextSelectableByMouse);
 
         m_fileHash = addWidget<QLabel>("Sha256:");
-        m_fileHash->setTextInteractionFlags(Qt::TextSelectableByMouse);
+        m_fileHash->setTextInteractionFlags(BobUI::TextSelectableByMouse);
 
         addWidget<QLabel>("Saved file name");
-        m_savedFileNameEdit = addWidget<QLineEdit>("qttestresult");
+        m_savedFileNameEdit = addWidget<QLineEdit>("bobuitestresult");
 
         m_saveFile = addWidget<QPushButton>("Save File");
         m_saveFile->setEnabled(false);
@@ -191,7 +191,7 @@ private Q_SLOTS:
         m_fileInfo->setText(QString("Opened file: %1 size: %2").arg(fileName).arg(fileContents.size()));
         m_saveFile->setEnabled(true);
 
-        QTimer::singleShot(100, this, &AppWindow::computeAndDisplayFileHash); // update UI before computing hash
+        BOBUIimer::singleShot(100, this, &AppWindow::computeAndDisplayFileHash); // update UI before computing hash
     }
 
     void computeAndDisplayFileHash()

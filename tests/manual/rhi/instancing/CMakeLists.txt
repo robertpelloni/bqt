@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## instancing Binary:
 #####################################################################
 
-qt_internal_add_manual_test(tst_manual_instancing
+bobui_internal_add_manual_test(tst_manual_instancing
     GUI
     SOURCES
         instancing.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # Resources:
@@ -20,7 +20,7 @@ set(instancing_resource_files
     "inst.vert.qsb"
 )
 
-qt_internal_add_resource(tst_manual_instancing "instancing"
+bobui_internal_add_resource(tst_manual_instancing "instancing"
     PREFIX
         "/"
     FILES

@@ -1,22 +1,22 @@
 
-QT_FOR_CONFIG += core-private
+BOBUI_FOR_CONFIG += core-private
 
 # DESTDIR will be empty if not set in the app .pro file; make sure it has a value
 isEmpty(DESTDIR): DESTDIR = $$OUT_PWD
 
-exists($$QMAKE_QT_CONFIG) {
+exists($$QMAKE_BOBUI_CONFIG) {
 ## this may be subject to change
 
     ## qmake puts a space if done otherwise
-    !isEmpty(QT_WASM_EXTRA_EXPORTED_METHODS): {
-        EXPORTED_METHODS = UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS,callMain,$$QT_WASM_EXTRA_EXPORTED_METHODS
+    !isEmpty(BOBUI_WASM_EXTRA_EXPORTED_METHODS): {
+        EXPORTED_METHODS = UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS,callMain,$$BOBUI_WASM_EXTRA_EXPORTED_METHODS
     } else {
         EXPORTED_METHODS = UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS,callMain
     }
     EMCC_LFLAGS += -s EXPORTED_RUNTIME_METHODS=$$EXPORTED_METHODS
 
-    !isEmpty(QT_WASM_EXPORT_NAME): {
-        EXPORT_NAME = $$QT_WASM_EXPORT_NAME
+    !isEmpty(BOBUI_WASM_EXPORT_NAME): {
+        EXPORT_NAME = $$BOBUI_WASM_EXPORT_NAME
     } else {
         TARGET_SANITIZED = $$replace(TARGET, [^a-zA-Z0-9_], _)
         EXPORT_NAME = $${TARGET_SANITIZED}_entry
@@ -25,7 +25,7 @@ exists($$QMAKE_QT_CONFIG) {
     EMCC_LFLAGS += -s EXPORT_NAME=$$EXPORT_NAME
 
 
-    qtConfig(thread) {
+    bobuiConfig(thread) {
 
         EMCC_LFLAGS += -pthread
         EMCC_CFLAGS += -pthread
@@ -33,8 +33,8 @@ exists($$QMAKE_QT_CONFIG) {
         # Create worker threads at startup. This is supposed to be an optimization,
         # however exceeding the pool size has been obesverved to hang the application.
         POOL_SIZE = 4
-        !isEmpty(QT_WASM_PTHREAD_POOL_SIZE) {
-            POOL_SIZE = $$QT_WASM_PTHREAD_POOL_SIZE
+        !isEmpty(BOBUI_WASM_PTHREAD_POOL_SIZE) {
+            POOL_SIZE = $$BOBUI_WASM_PTHREAD_POOL_SIZE
         }
 
         message("Setting PTHREAD_POOL_SIZE to" $$POOL_SIZE)
@@ -43,34 +43,34 @@ exists($$QMAKE_QT_CONFIG) {
 
     # Set memory options
     EMCC_LFLAGS += -sALLOW_MEMORY_GROWTH
-    isEmpty(QT_WASM_INITIAL_MEMORY) {
+    isEmpty(BOBUI_WASM_INITIAL_MEMORY) {
         INITIAL_MEMORY = 50MB # emscripten default is 16MB, we need slightly more
     } else {
-        INITIAL_MEMORY = $$QT_WASM_INITIAL_MEMORY
+        INITIAL_MEMORY = $$BOBUI_WASM_INITIAL_MEMORY
     }
     EMCC_LFLAGS += -s INITIAL_MEMORY=$$INITIAL_MEMORY
-    isEmpty(QT_WASM_MAXIMUM_MEMORY) {
+    isEmpty(BOBUI_WASM_MAXIMUM_MEMORY) {
         contains(QMAKE_CFLAGS, -s MEMORY64=1) {
             MAXIMUM_MEMORY = 16GB
         } else {
             MAXIMUM_MEMORY = 4GB
         }
     } else {
-        MAXIMUM_MEMORY = $$QT_WASM_MAXIMUM_MEMORY
+        MAXIMUM_MEMORY = $$BOBUI_WASM_MAXIMUM_MEMORY
     }
     EMCC_LFLAGS += -s MAXIMUM_MEMORY=$$MAXIMUM_MEMORY
 
     target_filename_base = $$replace(TARGET, \.js$, )
-    QMAKE_DISTCLEAN += qtloader.js qtlogo.svg $${target_filename_base}.wasm $${target_filename_base}.js $${target_filename_base}.html
+    QMAKE_DISTCLEAN += bobuiloader.js bobuilogo.svg $${target_filename_base}.wasm $${target_filename_base}.js $${target_filename_base}.html
 
-    qtConfig(sse2) {
+    bobuiConfig(sse2) {
         QMAKE_CFLAGS += -O2 -msimd128 -msse -msse2
         QMAKE_CXXFLAGS += -O2 -msimd128 -msse -msse2
         QMAKE_LFLAGS       += -msimd128 -msse -msse2
         QMAKE_LFLAGS_DEBUG += -msimd128 -msse -msse2
     }
 
-    qtConfig(shared) {
+    bobuiConfig(shared) {
         contains(TEMPLATE, .*app) {
             EMCC_MODULE_FLAGS = -s MAIN_MODULE=1
         }
@@ -81,11 +81,11 @@ exists($$QMAKE_QT_CONFIG) {
         EMCC_LFLAGS += $$EMCC_MODULE_FLAGS
     }
 
-    qtConfig(wasm-jspi) {
+    bobuiConfig(wasm-jspi) {
         EMCC_LFLAGS += -sJSPI
     }
 
-    qtConfig(wasm-exceptions) {
+    bobuiConfig(wasm-exceptions) {
         EMCC_LFLAGS += -fwasm-exceptions
     }
 
@@ -114,10 +114,10 @@ contains(TEMPLATE, .*app) {
     INSTALLS += js_file
 
     # Copy hosting html and javascript to the application build directory.
-    exists($$[QT_INSTALL_PLUGINS]/platforms/wasm_shell.html) {
+    exists($$[BOBUI_INSTALL_PLUGINS]/platforms/wasm_shell.html) {
         # don't pass this until it's installed somewhere
-        # otherwise makespec test fails during qt configure
-        WASM_PLUGIN_PATH = $$[QT_INSTALL_PLUGINS]/platforms
+        # otherwise makespec test fails during bobui configure
+        WASM_PLUGIN_PATH = $$[BOBUI_INSTALL_PLUGINS]/platforms
     } else {
         ## internal build. not installed
         WASM_PLUGIN_PATH = $$PWD/../../../src/plugins/platforms/wasm
@@ -125,7 +125,7 @@ contains(TEMPLATE, .*app) {
 
     PRELOAD = ""
     shared {
-        PRELOAD = "preload:\ ['qt_plugins.json',\ 'qt_qml_imports.json'],"
+        PRELOAD = "preload:\ ['bobui_plugins.json',\ 'bobui_qml_imports.json'],"
     }
 
     # Copy/Generate main .html file (e.g. myapp.html) from the webassembly_shell.html by
@@ -137,17 +137,17 @@ contains(TEMPLATE, .*app) {
     apphtml.depends = $$apphtml.input
     QMAKE_EXTRA_COMPILERS += apphtml
 
-    appjs.name = application qtloader.js
-    appjs.output = $$DESTDIR/qtloader.js
-    appjs.commands = $$QMAKE_COPY $$shell_path($$WASM_PLUGIN_PATH/qtloader.js) $$shell_path($$DESTDIR)
-    appjs.input = $$WASM_PLUGIN_PATH/qtloader.js
+    appjs.name = application bobuiloader.js
+    appjs.output = $$DESTDIR/bobuiloader.js
+    appjs.commands = $$QMAKE_COPY $$shell_path($$WASM_PLUGIN_PATH/bobuiloader.js) $$shell_path($$DESTDIR)
+    appjs.input = $$WASM_PLUGIN_PATH/bobuiloader.js
     appjs.depends = $$appjs.input
     QMAKE_EXTRA_COMPILERS += appjs
 
-    appsvg.name = application qtlogo.svg
-    appsvg.output = $$DESTDIR/qtlogo.svg
-    appsvg.commands = $$QMAKE_COPY $$shell_path($$WASM_PLUGIN_PATH/qtlogo.svg) $$shell_path($$DESTDIR)
-    appsvg.input = $$WASM_PLUGIN_PATH/qtlogo.svg
+    appsvg.name = application bobuilogo.svg
+    appsvg.output = $$DESTDIR/bobuilogo.svg
+    appsvg.commands = $$QMAKE_COPY $$shell_path($$WASM_PLUGIN_PATH/bobuilogo.svg) $$shell_path($$DESTDIR)
+    appsvg.input = $$WASM_PLUGIN_PATH/bobuilogo.svg
     appsvg.depends = $$appsvg.input
     QMAKE_EXTRA_COMPILERS += appsvg
 
@@ -159,29 +159,29 @@ contains(TEMPLATE, .*app) {
     shellfiles.depends = apphtml appjs appsvg
     QMAKE_EXTRA_TARGETS += shellfiles
 
-    # emscripten ports are linked into the main module (this app), not the Qt
+    # emscripten ports are linked into the main module (this app), not the BobUI
     # libs which reference them
-    qt {
-        qt_depends = $$resolve_depends(QT, "QT.")
-        contains(qt_depends, core(-private)?): QMAKE_LFLAGS += \
+    bobui {
+        bobui_depends = $$resolve_depends(BOBUI, "BOBUI.")
+        contains(bobui_depends, core(-private)?): QMAKE_LFLAGS += \
             $$QMAKE_LIBS_THREAD $$QMAKE_LIBS_ZLIB
-        contains(qt_depends, gui(-private)?): QMAKE_LFLAGS += \
+        contains(bobui_depends, gui(-private)?): QMAKE_LFLAGS += \
             $$QMAKE_LIBS_FREETYPE $$QMAKE_LIBS_LIBPNG
     }
 }
 
-qtConfTest_emccVersion()
+bobuiConfTest_emccVersion()
 
-CONFIG(debug):!isEmpty(QT_WASM_SOURCE_MAP) {
+CONFIG(debug):!isEmpty(BOBUI_WASM_SOURCE_MAP) {
 
-    EMCC_VERSION = $$qtSystemEmccVersion()
+    EMCC_VERSION = $$bobuiSystemEmccVersion()
 
     QMAKE_LFLAGS += -gsource-map
     # Pass --source-map-base on the linker line. This informs the
     # browser where to find the source files when debugging.
     WASM_SOURCE_MAP_BASE = http://localhost:8000/
-    !isEmpty(QT_WASM_SOURCE_MAP_BASE):\
-        WASM_SOURCE_MAP_BASE = $$QT_WASM_SOURCE_MAP_BASE
+    !isEmpty(BOBUI_WASM_SOURCE_MAP_BASE):\
+        WASM_SOURCE_MAP_BASE = $$BOBUI_WASM_SOURCE_MAP_BASE
     QMAKE_LFLAGS += --source-map-base $$WASM_SOURCE_MAP_BASE
 }
 

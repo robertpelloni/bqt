@@ -1,35 +1,35 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qloggingregistry_p.h"
 
-#include <QtCore/qfile.h>
-#include <QtCore/qlibraryinfo.h>
-#include <QtCore/private/qlocking_p.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qstringtokenizer.h>
-#include <QtCore/qdir.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlibraryinfo.h>
+#include <BobUICore/private/qlocking_p.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUICore/qstringtokenizer.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/qcoreapplication.h>
 #include <qplatformdefs.h>
 
-#if QT_CONFIG(settings)
-#include <QtCore/qsettings.h>
-#include <QtCore/private/qsettings_p.h>
+#if BOBUI_CONFIG(settings)
+#include <BobUICore/qsettings.h>
+#include <BobUICore/private/qsettings_p.h>
 #endif
 
 // We can't use the default macros because this would lead to recursion.
 // Instead let's define our own one that unconditionally logs...
-#define debugMsg QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, "qt.core.logging").debug
-#define warnMsg QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, "qt.core.logging").warning
-#define registryMsg QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, "_logging_categories").debug
+#define debugMsg QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC, "bobui.core.logging").debug
+#define warnMsg QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC, "bobui.core.logging").warning
+#define registryMsg QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC, "_logging_categories").debug
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_GLOBAL_STATIC(QLoggingRegistry, qtLoggingRegistry)
+Q_GLOBAL_STATIC(QLoggingRegistry, bobuiLoggingRegistry)
 alignas(QLoggingCategory) static unsigned char defaultLoggingCategory[sizeof(QLoggingCategory)];
 
 /*!
@@ -54,7 +54,7 @@ QLoggingRule::QLoggingRule(QStringView pattern, bool enabled) : enabled(enabled)
     Return value 1 means filter passed, 0 means filter doesn't influence this
     category, -1 means category doesn't pass this filter.
  */
-int QLoggingRule::pass(QLatin1StringView cat, QtMsgType msgType) const
+int QLoggingRule::pass(QLatin1StringView cat, BobUIMsgType msgType) const
 {
     // check message type
     if (messageType > -1 && messageType != msgType)
@@ -90,9 +90,9 @@ int QLoggingRule::pass(QLatin1StringView cat, QtMsgType msgType) const
     \internal
     Parses \a pattern.
     Allowed is f.ex.:
-             qt.core.io.debug      FullText, QtDebugMsg
-             qt.core.*             LeftFilter, all types
-             *.io.warning          RightFilter, QtWarningMsg
+             bobui.core.io.debug      FullText, BobUIDebugMsg
+             bobui.core.*             LeftFilter, all types
+             *.io.warning          RightFilter, BobUIWarningMsg
              *.core.*              MidFilter
  */
 void QLoggingRule::parse(QStringView pattern)
@@ -102,16 +102,16 @@ void QLoggingRule::parse(QStringView pattern)
     // strip trailing ".messagetype"
     if (pattern.endsWith(".debug"_L1)) {
         p = pattern.chopped(6); // strlen(".debug")
-        messageType = QtDebugMsg;
+        messageType = BobUIDebugMsg;
     } else if (pattern.endsWith(".info"_L1)) {
         p = pattern.chopped(5); // strlen(".info")
-        messageType = QtInfoMsg;
+        messageType = BobUIInfoMsg;
     } else if (pattern.endsWith(".warning"_L1)) {
         p = pattern.chopped(8); // strlen(".warning")
-        messageType = QtWarningMsg;
+        messageType = BobUIWarningMsg;
     } else if (pattern.endsWith(".critical"_L1)) {
         p = pattern.chopped(9); // strlen(".critical")
-        messageType = QtCriticalMsg;
+        messageType = BobUICriticalMsg;
     } else {
         p = pattern;
     }
@@ -170,7 +170,7 @@ void QLoggingSettingsParser::setContent(FILE *stream)
     _rules.clear();
 
     constexpr size_t ChunkSize = 240;
-    QByteArray buffer(ChunkSize, Qt::Uninitialized);
+    QByteArray buffer(ChunkSize, BobUI::Uninitialized);
     auto readline = [&](FILE *stream) {
         // Read one line into the buffer
 
@@ -218,7 +218,7 @@ void QLoggingSettingsParser::parseNextLine(QStringView line)
     if (line.startsWith(u'[') && line.endsWith(u']')) {
         // new section
         auto sectionName = line.mid(1).chopped(1).trimmed();
-        m_inRulesSection = sectionName.compare("rules"_L1, Qt::CaseInsensitive) == 0;
+        m_inRulesSection = sectionName.compare("rules"_L1, BobUI::CaseInsensitive) == 0;
         return;
     }
 
@@ -227,7 +227,7 @@ void QLoggingSettingsParser::parseNextLine(QStringView line)
         if (equalPos != -1) {
             if (line.lastIndexOf(u'=') == equalPos) {
                 const auto key = line.left(equalPos).trimmed();
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
                 QString tmp;
                 QSettingsPrivate::iniUnescapedKey(key.toUtf8(), tmp);
                 QStringView pattern = qToStringViewIgnoringNull(tmp);
@@ -265,13 +265,13 @@ QLoggingRegistry::QLoggingRegistry()
 
     // can't use std::construct_at here - private constructor
     auto cat = new (defaultLoggingCategory) QLoggingCategory(U{}, defaultCategoryName);
-    categories.emplace(cat, QtDebugMsg);
+    categories.emplace(cat, BobUIDebugMsg);
 
 #if defined(Q_OS_ANDROID)
     // Unless QCoreApplication has been constructed we can't be sure that
-    // we are on Qt's main thread. If we did allow logging here, we would
-    // potentially set Qt's main thread to Android's thread 0, which would
-    // confuse Qt later when running main().
+    // we are on BobUI's main thread. If we did allow logging here, we would
+    // potentially set BobUI's main thread to Android's thread 0, which would
+    // confuse BobUI later when running main().
     if (!qApp)
         return;
 #endif
@@ -279,12 +279,12 @@ QLoggingRegistry::QLoggingRegistry()
     initializeRules(); // Init on first use
 }
 
-static bool qtLoggingDebug()
+static bool bobuiLoggingDebug()
 {
     static const bool debugEnv = [] {
-        bool debug = qEnvironmentVariableIsSet("QT_LOGGING_DEBUG");
+        bool debug = qEnvironmentVariableIsSet("BOBUI_LOGGING_DEBUG");
         if (debug)
-            debugMsg("QT_LOGGING_DEBUG environment variable is set.");
+            debugMsg("BOBUI_LOGGING_DEBUG environment variable is set.");
         return debug;
     }();
     return Q_UNLIKELY(debugEnv);
@@ -293,15 +293,15 @@ static bool qtLoggingDebug()
 static QList<QLoggingRule> loadRulesFromFile(const QString &filePath)
 {
     Q_ASSERT(!filePath.isEmpty());
-    if (qtLoggingDebug()) {
+    if (bobuiLoggingDebug()) {
         debugMsg("Checking \"%s\" for rules",
                  QDir::toNativeSeparators(filePath).toUtf8().constData());
     }
 
     // We bypass QFile here because QFile is a QObject.
     if (Q_UNLIKELY(filePath.at(0) == u':')) {
-        if (qtLoggingDebug()) {
-            warnMsg("Attempted to load config rules from Qt resource path \"%ls\"",
+        if (bobuiLoggingDebug()) {
+            warnMsg("Attempted to load config rules from BobUI resource path \"%ls\"",
                     qUtf16Printable(filePath));
         }
         return {};
@@ -311,19 +311,19 @@ static QList<QLoggingRule> loadRulesFromFile(const QString &filePath)
     // text mode: let the runtime do CRLF translation
     FILE *f = _wfopen(reinterpret_cast<const wchar_t *>(filePath.constBegin()), L"rtN");
 #else
-    FILE *f = QT_FOPEN(QFile::encodeName(filePath).constBegin(), "re");
+    FILE *f = BOBUI_FOPEN(QFile::encodeName(filePath).constBegin(), "re");
 #endif
     if (f) {
         QLoggingSettingsParser parser;
         parser.setContent(f);
         fclose(f);
-        if (qtLoggingDebug())
+        if (bobuiLoggingDebug())
             debugMsg("Loaded %td rules from \"%ls\"", static_cast<ptrdiff_t>(parser.rules().size()),
                      qUtf16Printable(filePath));
         return parser.rules();
     } else if (int err = errno; err != ENOENT) {
         warnMsg("Failed to load file \"%ls\": %ls", qUtf16Printable(filePath),
-                qUtf16Printable(qt_error_string(err)));
+                qUtf16Printable(bobui_error_string(err)));
     }
     return QList<QLoggingRule>();
 }
@@ -331,39 +331,39 @@ static QList<QLoggingRule> loadRulesFromFile(const QString &filePath)
 /*!
     \internal
     Initializes the rules database by loading
-    $QT_LOGGING_CONF, $QT_LOGGING_RULES, and .config/QtProject/qtlogging.ini.
+    $BOBUI_LOGGING_CONF, $BOBUI_LOGGING_RULES, and .config/BobUIProject/bobuilogging.ini.
  */
 void QLoggingRegistry::initializeRules()
 {
-    if (qtLoggingDebug()) {
+    if (bobuiLoggingDebug()) {
         debugMsg("Initializing the rules database ...");
-        debugMsg("Checking %s environment variable", "QT_LOGGING_CONF");
+        debugMsg("Checking %s environment variable", "BOBUI_LOGGING_CONF");
     }
     QList<QLoggingRule> er, qr, cr;
     // get rules from environment
-    if (QString rulesFilePath = qEnvironmentVariable("QT_LOGGING_CONF"); !rulesFilePath.isEmpty())
+    if (QString rulesFilePath = qEnvironmentVariable("BOBUI_LOGGING_CONF"); !rulesFilePath.isEmpty())
         er = loadRulesFromFile(rulesFilePath);
 
-    if (qtLoggingDebug())
-        debugMsg("Checking %s environment variable", "QT_LOGGING_RULES");
+    if (bobuiLoggingDebug())
+        debugMsg("Checking %s environment variable", "BOBUI_LOGGING_RULES");
 
-    const QString rulesSrc = qEnvironmentVariable("QT_LOGGING_RULES");
+    const QString rulesSrc = qEnvironmentVariable("BOBUI_LOGGING_RULES");
     if (!rulesSrc.isEmpty()) {
         QLoggingSettingsParser parser;
         parser.setImplicitRulesSection(true);
         parser.setContent(rulesSrc, u';');
 
-        if (qtLoggingDebug())
+        if (bobuiLoggingDebug())
             debugMsg("Loaded %td rules", static_cast<ptrdiff_t>(parser.rules().size()));
 
         er += parser.rules();
     }
 
-    const QString configFileName = u"QtProject/qtlogging.ini"_s;
-    QStringView baseConfigFileName = QStringView(configFileName).sliced(strlen("QtProject"));
+    const QString configFileName = u"BobUIProject/bobuilogging.ini"_s;
+    QStringView baseConfigFileName = QStringView(configFileName).sliced(strlen("BobUIProject"));
     Q_ASSERT(baseConfigFileName.startsWith(u'/'));
 
-    // get rules from Qt data configuration path
+    // get rules from BobUI data configuration path
     qr = loadRulesFromFile(QLibraryInfo::path(QLibraryInfo::DataPath) + baseConfigFileName);
 
     // get rules from user's/system configuration
@@ -376,10 +376,10 @@ void QLoggingRegistry::initializeRules()
     const QMutexLocker locker(&registryMutex);
 
     ruleSets[EnvironmentRules] = std::move(er);
-    ruleSets[QtConfigRules] = std::move(qr);
+    ruleSets[BobUIConfigRules] = std::move(qr);
     ruleSets[ConfigRules] = std::move(cr);
 
-    if (!ruleSets[EnvironmentRules].isEmpty() || !ruleSets[QtConfigRules].isEmpty() || !ruleSets[ConfigRules].isEmpty())
+    if (!ruleSets[EnvironmentRules].isEmpty() || !ruleSets[BobUIConfigRules].isEmpty() || !ruleSets[ConfigRules].isEmpty())
         updateRules();
 }
 
@@ -389,9 +389,9 @@ void QLoggingRegistry::initializeRules()
 
     This method might be called concurrently for the same category object.
 */
-void QLoggingRegistry::registerCategory(QLoggingCategory *cat, QtMsgType enableForLevel)
+void QLoggingRegistry::registerCategory(QLoggingCategory *cat, BobUIMsgType enableForLevel)
 {
-    const auto locker = qt_scoped_lock(registryMutex);
+    const auto locker = bobui_scoped_lock(registryMutex);
 
     auto r = categories.tryEmplace(cat, enableForLevel);
     if (r.inserted) {
@@ -406,7 +406,7 @@ void QLoggingRegistry::registerCategory(QLoggingCategory *cat, QtMsgType enableF
 */
 void QLoggingRegistry::unregisterCategory(QLoggingCategory *cat)
 {
-    const auto locker = qt_scoped_lock(registryMutex);
+    const auto locker = bobui_scoped_lock(registryMutex);
     categories.remove(cat);
 }
 
@@ -416,12 +416,12 @@ void QLoggingRegistry::unregisterCategory(QLoggingCategory *cat)
 
     Registers the environment variable \a environment as the control variable
     for enabling debugging by default for category \a categoryName. The
-    category name must start with "qt."
+    category name must start with "bobui."
 */
 void QLoggingRegistry::registerEnvironmentOverrideForCategory(const char *categoryName,
                                                               const char *environment)
 {
-    qtCategoryEnvironmentOverrides.insert_or_assign(categoryName, environment);
+    bobuiCategoryEnvironmentOverrides.insert_or_assign(categoryName, environment);
 }
 
 /*!
@@ -434,7 +434,7 @@ void QLoggingRegistry::setApiRules(const QString &content)
     parser.setImplicitRulesSection(true);
     parser.setContent(content);
 
-    if (qtLoggingDebug())
+    if (bobuiLoggingDebug())
         debugMsg("Loading logging rules set by QLoggingCategory::setFilterRules ...");
 
     const QMutexLocker locker(&registryMutex);
@@ -463,7 +463,7 @@ void QLoggingRegistry::updateRules()
 QLoggingCategory::CategoryFilter
 QLoggingRegistry::installFilter(QLoggingCategory::CategoryFilter filter)
 {
-    const auto locker = qt_scoped_lock(registryMutex);
+    const auto locker = bobui_scoped_lock(registryMutex);
 
     if (!filter)
         filter = defaultCategoryFilter;
@@ -482,7 +482,7 @@ QLoggingRegistry *QLoggingRegistry::instance()
     if (recursionGuard)
         return nullptr;
     QScopedValueRollback<bool> rollback(recursionGuard, true);
-    return qtLoggingRegistry();
+    return bobuiLoggingRegistry();
 }
 
 QLoggingCategory *QLoggingRegistry::defaultCategory()
@@ -507,26 +507,26 @@ void QLoggingRegistry::defaultCategoryFilter(QLoggingCategory *cat)
 {
     const QLoggingRegistry *reg = self;
     Q_ASSERT(reg->categories.contains(cat));
-    QtMsgType enableForLevel = reg->categories.value(cat);
+    BobUIMsgType enableForLevel = reg->categories.value(cat);
 
-    // NB: note that the numeric values of the Qt*Msg constants are
+    // NB: note that the numeric values of the BobUI*Msg constants are
     //     not in severity order.
-    bool debug = (enableForLevel == QtDebugMsg);
-    bool info = debug || (enableForLevel == QtInfoMsg);
-    bool warning = info || (enableForLevel == QtWarningMsg);
-    bool critical = warning || (enableForLevel == QtCriticalMsg);
+    bool debug = (enableForLevel == BobUIDebugMsg);
+    bool info = debug || (enableForLevel == BobUIInfoMsg);
+    bool warning = info || (enableForLevel == BobUIWarningMsg);
+    bool critical = warning || (enableForLevel == BobUICriticalMsg);
 
     // hard-wired implementation of
-    //   qt.*.debug=false
-    //   qt.debug=false
+    //   bobui.*.debug=false
+    //   bobui.debug=false
     if (const char *categoryName = cat->categoryName()) {
-        // == "qt" or startsWith("qt.")
-        if (strcmp(categoryName, "qt") == 0) {
+        // == "bobui" or startsWith("bobui.")
+        if (strcmp(categoryName, "bobui") == 0) {
             debug = false;
-        } else if (strncmp(categoryName, "qt.", 3) == 0) {
+        } else if (strncmp(categoryName, "bobui.", 3) == 0) {
             // may be overridden
-            auto it = reg->qtCategoryEnvironmentOverrides.find(categoryName);
-            if (it == reg->qtCategoryEnvironmentOverrides.end())
+            auto it = reg->bobuiCategoryEnvironmentOverrides.find(categoryName);
+            if (it == reg->bobuiCategoryEnvironmentOverrides.end())
                 debug = false;
             else
                 debug = qEnvironmentVariableIntValue(it->second);
@@ -537,30 +537,30 @@ void QLoggingRegistry::defaultCategoryFilter(QLoggingCategory *cat)
 
     for (const auto &ruleSet : reg->ruleSets) {
         for (const auto &rule : ruleSet) {
-            int filterpass = rule.pass(categoryName, QtDebugMsg);
+            int filterpass = rule.pass(categoryName, BobUIDebugMsg);
             if (filterpass != 0)
                 debug = (filterpass > 0);
-            filterpass = rule.pass(categoryName, QtInfoMsg);
+            filterpass = rule.pass(categoryName, BobUIInfoMsg);
             if (filterpass != 0)
                 info = (filterpass > 0);
-            filterpass = rule.pass(categoryName, QtWarningMsg);
+            filterpass = rule.pass(categoryName, BobUIWarningMsg);
             if (filterpass != 0)
                 warning = (filterpass > 0);
-            filterpass = rule.pass(categoryName, QtCriticalMsg);
+            filterpass = rule.pass(categoryName, BobUICriticalMsg);
             if (filterpass != 0)
                 critical = (filterpass > 0);
         }
     }
 
-    cat->setEnabled(QtDebugMsg, debug);
-    cat->setEnabled(QtInfoMsg, info);
-    cat->setEnabled(QtWarningMsg, warning);
-    cat->setEnabled(QtCriticalMsg, critical);
+    cat->setEnabled(BobUIDebugMsg, debug);
+    cat->setEnabled(BobUIInfoMsg, info);
+    cat->setEnabled(BobUIWarningMsg, warning);
+    cat->setEnabled(BobUICriticalMsg, critical);
 
     for (const auto &ruleSet : reg->ruleSets) {
         for (const auto &rule : ruleSet) {
             // this must be an exact match
-            if (rule.messageType != QtDebugMsg && rule.flags != QLoggingRule::FullText)
+            if (rule.messageType != BobUIDebugMsg && rule.flags != QLoggingRule::FullText)
                 continue;
             if (rule.category != "_logging_categories"_L1)
                 continue;
@@ -579,4 +579,4 @@ void QLoggingRegistry::defaultCategoryFilter(QLoggingCategory *cat)
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

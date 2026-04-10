@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 // This file contains benchmarks for comparing QList against std::vector
 
-#include <QtCore>
+#include <BobUICore>
 #include <QList>
 #include <vector>
 
-#include <qtest.h>
+#include <bobuiest.h>
 
 template <typename T> // T is the item type
 class UseCases {
@@ -128,13 +128,13 @@ private slots:
 
 void tst_vector_vs_std::insert_int_data()
 {
-    QTest::addColumn<bool>("useStd");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useStd");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < 20000; size += 100) {
         const QByteArray sizeString = QByteArray::number(size);
-        QTest::newRow(QByteArray("std::vector-int--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("QList-int--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("std::vector-int--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("QList-int--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -151,13 +151,13 @@ void tst_vector_vs_std::insert_int()
 
 void tst_vector_vs_std::insert_Large_data()
 {
-    QTest::addColumn<bool>("useStd");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useStd");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < LARGE_MAX_SIZE; size += 100) {
         const QByteArray sizeString = QByteArray::number(size);
-        QTest::newRow(QByteArray("std::vector-Large--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("QList-Large--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("std::vector-Large--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("QList-Large--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -174,13 +174,13 @@ void tst_vector_vs_std::insert_Large()
 
 void tst_vector_vs_std::lookup_int_data()
 {
-    QTest::addColumn<bool>("useStd");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useStd");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < 20000; size += 100) {
         const QByteArray sizeString = QByteArray::number(size);
-        QTest::newRow(QByteArray("std::vector-int--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("QList-int--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("std::vector-int--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("QList-int--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -197,13 +197,13 @@ void tst_vector_vs_std::lookup_int()
 
 void tst_vector_vs_std::lookup_Large_data()
 {
-    QTest::addColumn<bool>("useStd");
-    QTest::addColumn<int>("size");
+    BOBUIest::addColumn<bool>("useStd");
+    BOBUIest::addColumn<int>("size");
 
     for (int size = 10; size < LARGE_MAX_SIZE; size += 100) {
         const QByteArray sizeString = QByteArray::number(size);
-        QTest::newRow(QByteArray("std::vector-Large--" + sizeString).constData()) << true << size;
-        QTest::newRow(QByteArray("QList-Large--" + sizeString).constData()) << false << size;
+        BOBUIest::newRow(QByteArray("std::vector-Large--" + sizeString).constData()) << true << size;
+        BOBUIest::newRow(QByteArray("QList-Large--" + sizeString).constData()) << false << size;
     }
 }
 
@@ -218,6 +218,6 @@ void tst_vector_vs_std::lookup_Large()
         useCases_QList_Large->lookup(size);
 }
 
-QTEST_MAIN(tst_vector_vs_std)
+BOBUIEST_MAIN(tst_vector_vs_std)
 
 #include "tst_bench_containers_sequential.moc"

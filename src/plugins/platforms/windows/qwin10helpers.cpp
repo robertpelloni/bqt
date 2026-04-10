@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwin10helpers.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 #include <winstring.h>
 #include <roapi.h>
 
@@ -58,10 +58,10 @@ public:
 } // namespace ABI
 #endif // HAS_UI_VIEW_SETTINGS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Return tablet mode, note: Does not work for GetDesktopWindow().
-bool qt_windowsIsTabletMode(HWND hwnd)
+bool bobui_windowsIsTabletMode(HWND hwnd)
 {
     bool result = false;
 
@@ -97,4 +97,4 @@ bool qt_windowsIsTabletMode(HWND hwnd)
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

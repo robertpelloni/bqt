@@ -1,33 +1,33 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include <qstringconverter.h>
 #include <private/qstringconverter_p.h>
-#include <qthreadpool.h>
+#include <bobuihreadpool.h>
 
 #include <array>
 #include <numeric>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
 template <typename T>
 char *toString(const std::optional<T> &opt)
 {
     if (opt)
-        return QTest::toString(*opt);
+        return BOBUIest::toString(*opt);
     else
         return qstrdup("std::nullopt");
 }
-} // namespace QTest
-QT_END_NAMESPACE
+} // namespace BOBUIest
+BOBUI_END_NAMESPACE
 
-using QTest::toString;
+using BOBUIest::toString;
 
 static constexpr bool IsBigEndian = QSysInfo::ByteOrder == QSysInfo::BigEndian;
 enum CodecLimitation {
@@ -37,7 +37,7 @@ enum CodecLimitation {
 };
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 static bool localeIsUtf8()
 {
     return GetACP() == CP_UTF8;
@@ -110,7 +110,7 @@ static const std::array testStrings = {
     ROW("euro", "€"),
     ROW("character+bom", "b\ufeff"),
     /* Check that the codec does NOT flag EFBFBF.
-     * This is a regression test; see QTBUG-33229
+     * This is a regression test; see BOBUIBUG-33229
      */
     ROW("last-bmp", "\uffff"),
     ROW("character+last-bmp", "b\uffff"),
@@ -151,7 +151,7 @@ private slots:
 
     void convertL1U16();
 
-#if QT_CONFIG(icu) || QT_CONFIG(winsdkicu)
+#if BOBUI_CONFIG(icu) || BOBUI_CONFIG(winsdkicu)
     void roundtripIcu_data();
     void roundtripIcu();
     void icuInvalidCharacter_data();
@@ -296,13 +296,13 @@ void tst_QStringConverter::invalidConverter()
 
 void tst_QStringConverter::convertUtf8_data()
 {
-    QTest::addColumn<QStringConverter::Encoding>("encoding");
-    QTest::addColumn<QUtf8StringView>("utf8");
-    QTest::addColumn<QStringView>("utf16");
+    BOBUIest::addColumn<QStringConverter::Encoding>("encoding");
+    BOBUIest::addColumn<QUtf8StringView>("utf8");
+    BOBUIest::addColumn<QStringView>("utf16");
     auto addRow = [](const TestString &s) {
-        QTest::addRow("Utf8:%s", s.description) << QStringDecoder::Utf8 << s.utf8 << s.utf16;
+        BOBUIest::addRow("Utf8:%s", s.description) << QStringDecoder::Utf8 << s.utf8 << s.utf16;
         if (localeIsUtf8())
-            QTest::addRow("System:%s", s.description) << QStringDecoder::System << s.utf8 << s.utf16;
+            BOBUIest::addRow("System:%s", s.description) << QStringDecoder::System << s.utf8 << s.utf16;
     };
 
     for (const TestString &s : testStrings)
@@ -419,8 +419,8 @@ void tst_QStringConverter::convertL1U16()
 
 void tst_QStringConverter::roundtrip_data()
 {
-    QTest::addColumn<QStringView>("utf16");
-    QTest::addColumn<QStringConverter::Encoding>("code");
+    BOBUIest::addColumn<QStringView>("utf16");
+    BOBUIest::addColumn<QStringConverter::Encoding>("code");
 
     for (const auto &code : codes) {
         for (const TestString &s : testStrings) {
@@ -431,7 +431,7 @@ void tst_QStringConverter::roundtrip_data()
                 continue;
             if (code.limitation < s.limitation)
                 continue;
-            QTest::addRow("%s:%s", code.name, s.description) << s.utf16 << code.code;
+            BOBUIest::addRow("%s:%s", code.name, s.description) << s.utf16 << code.code;
         }
 
         if (code.limitation == FullUnicode) {
@@ -445,7 +445,7 @@ void tst_QStringConverter::roundtrip_data()
                 return r;
             }();
             for (int i = 0; i < int(chakmaDigits.size()); ++i)
-                QTest::addRow("%s:Chakma-digit-%d", code.name, i) << QStringView(chakmaDigits[i]) << code.code;
+                BOBUIest::addRow("%s:Chakma-digit-%d", code.name, i) << QStringView(chakmaDigits[i]) << code.code;
         }
     }
 }
@@ -507,15 +507,15 @@ void tst_QStringConverter::convertL1U8()
     }
 }
 
-#if QT_CONFIG(icu) || QT_CONFIG(winsdkicu)
+#if BOBUI_CONFIG(icu) || BOBUI_CONFIG(winsdkicu)
 
 void tst_QStringConverter::roundtripIcu_data()
 {
-    QTest::addColumn<QString>("original");
-    QTest::addColumn<QByteArray>("codec");
+    BOBUIest::addColumn<QString>("original");
+    BOBUIest::addColumn<QByteArray>("codec");
 
-    QTest::addRow("shift_jis") << u"古池や　蛙飛び込む　水の音"_s << QByteArray("shift_jis");
-    QTest::addRow("UTF7") << u"Übermäßig: čçö"_s << QByteArray("UTF-7");
+    BOBUIest::addRow("shift_jis") << u"古池や　蛙飛び込む　水の音"_s << QByteArray("shift_jis");
+    BOBUIest::addRow("UTF7") << u"Übermäßig: čçö"_s << QByteArray("UTF-7");
 }
 
 void tst_QStringConverter::roundtripIcu()
@@ -533,16 +533,16 @@ void tst_QStringConverter::roundtripIcu()
 
 void tst_QStringConverter::icuEncodeEdgeCases_data()
 {
-    QTest::addColumn<QString>("source");
-    QTest::addColumn<QByteArray>("expected") ;
-    QTest::addColumn<QByteArray>("codec");
+    BOBUIest::addColumn<QString>("source");
+    BOBUIest::addColumn<QByteArray>("expected") ;
+    BOBUIest::addColumn<QByteArray>("codec");
 
-    QTest::addRow("empty") << QString() << QByteArray() << QByteArray("ISO-2022-CN");
-    QTest::addRow("BOMonly") << QString(QChar(QChar::ByteOrderMark)) << QByteArray() << QByteArray("ISO-2022-CN");
-    QTest::addRow("1to6") << u"좋"_s << QByteArray::fromHex("1b2428434141") << QByteArray("ISO-2022-JP-2");
-    QTest::addRow("1to7") << u"漢"_s << QByteArray::fromHex("1b2429470e6947") << QByteArray("ISO-2022-CN");
-    QTest::addRow("1to8") << u"墎"_s << QByteArray::fromHex("1b242a481b4e4949")  << QByteArray("ISO-2022-CN");
-    QTest::addRow("utf7") << u"Übergröße"_s << QByteArray("+ANw-bergr+APYA3w-e") << QByteArray("UTF-7");
+    BOBUIest::addRow("empty") << QString() << QByteArray() << QByteArray("ISO-2022-CN");
+    BOBUIest::addRow("BOMonly") << QString(QChar(QChar::ByteOrderMark)) << QByteArray() << QByteArray("ISO-2022-CN");
+    BOBUIest::addRow("1to6") << u"좋"_s << QByteArray::fromHex("1b2428434141") << QByteArray("ISO-2022-JP-2");
+    BOBUIest::addRow("1to7") << u"漢"_s << QByteArray::fromHex("1b2429470e6947") << QByteArray("ISO-2022-CN");
+    BOBUIest::addRow("1to8") << u"墎"_s << QByteArray::fromHex("1b242a481b4e4949")  << QByteArray("ISO-2022-CN");
+    BOBUIest::addRow("utf7") << u"Übergröße"_s << QByteArray("+ANw-bergr+APYA3w-e") << QByteArray("UTF-7");
 }
 
 void tst_QStringConverter::icuEncodeEdgeCases()
@@ -560,12 +560,12 @@ void tst_QStringConverter::icuEncodeEdgeCases()
 
 void tst_QStringConverter::charByCharConsistency_data()
 {
-    QTest::addColumn<QStringView>("source");
-    QTest::addColumn<QByteArray>("codec");
+    BOBUIest::addColumn<QStringView>("source");
+    BOBUIest::addColumn<QByteArray>("codec");
 
     auto addRow = [](const TestString &s) {
-        QTest::addRow("%s_shift_jis", s.description) << s.utf16 << QByteArray("shift_jis");
-        QTest::addRow("%s_EUC-CN", s.description) << s.utf16 << QByteArray("EUC-CN");
+        BOBUIest::addRow("%s_shift_jis", s.description) << s.utf16 << QByteArray("shift_jis");
+        BOBUIest::addRow("%s_EUC-CN", s.description) << s.utf16 << QByteArray("EUC-CN");
     };
 
     for (const TestString &s : testStrings) {
@@ -594,10 +594,10 @@ void tst_QStringConverter::charByCharConsistency()
     };
 
     check(QStringEncoder(codec));
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     check(QStringEncoder(codec, QStringConverter::Flag::ConvertInvalidToNull));
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     // moved codecs also work:
 
@@ -605,26 +605,26 @@ void tst_QStringConverter::charByCharConsistency()
         QStringEncoder dec(codec);
         check(std::move(dec));
     }
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     {
         QStringEncoder dec(codec, QStringConverter::Flag::ConvertInvalidToNull);
         check(std::move(dec));
     }
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
 }
 
 void tst_QStringConverter::byteByByteConsistency_data()
 {
-    QTest::addColumn<QByteArray>("source");
-    QTest::addColumn<QByteArray>("codec");
+    BOBUIest::addColumn<QByteArray>("source");
+    BOBUIest::addColumn<QByteArray>("codec");
 
-    QTest::addRow("plain_ascii_utf7") << QByteArray("Hello, world!") << QByteArray("UTF-7");
+    BOBUIest::addRow("plain_ascii_utf7") << QByteArray("Hello, world!") << QByteArray("UTF-7");
     QFile eucKr(":/euc_kr.txt");
     if (eucKr.open(QFile::ReadOnly))
-        QTest::addRow("euc_kr_storing_jp") << eucKr.readAll() << QByteArray("EUC-KR");
-    QTest::addRow("incomplete_euc_jp") << QByteArrayLiteral("test\x8Ftest") << QByteArray("EUC-JP");
+        BOBUIest::addRow("euc_kr_storing_jp") << eucKr.readAll() << QByteArray("EUC-KR");
+    BOBUIest::addRow("incomplete_euc_jp") << QByteArrayLiteral("test\x8Ftest") << QByteArray("EUC-JP");
 }
 
 void tst_QStringConverter::byteByByteConsistency()
@@ -648,10 +648,10 @@ void tst_QStringConverter::byteByByteConsistency()
     };
 
     check(QStringDecoder(codec));
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     check(QStringDecoder(codec, QStringConverter::Flag::ConvertInvalidToNull));
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     // moved codecs also work:
 
@@ -659,13 +659,13 @@ void tst_QStringConverter::byteByByteConsistency()
         QStringDecoder dec(codec);
         check(std::move(dec));
     }
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
     {
         QStringDecoder dec(codec, QStringConverter::Flag::ConvertInvalidToNull);
         check(std::move(dec));
     }
-    if (QTest::currentTestResolved()) return;
+    if (BOBUIest::currentTestResolved()) return;
 
 }
 
@@ -711,35 +711,35 @@ void tst_QStringConverter::icuUsableAfterMove()
 
 void tst_QStringConverter::icuInvalidCharacter_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QByteArray>("bytearray");
-    QTest::addColumn<QByteArray>("codec");
-    QTest::addColumn<QStringConverter::Flags>("flags");
-    QTest::addColumn<bool>("shouldDecode");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QByteArray>("bytearray");
+    BOBUIest::addColumn<QByteArray>("codec");
+    BOBUIest::addColumn<QStringConverter::Flags>("flags");
+    BOBUIest::addColumn<bool>("shouldDecode");
 
     using Flags = QStringConverter::Flags;
     using Flag = QStringConverter::Flag;
-    QTest::addRow("encode")
+    BOBUIest::addRow("encode")
             << u"Test👪Test"_s
             << QByteArrayLiteral("\xE3\x85\xA2\xA3\x3F\xE3\x85\xA2\xA3")
             << QByteArray("IBM-037") << Flags(Flag::Default)
             << false;
-    QTest::addRow("encode_null")
+    BOBUIest::addRow("encode_null")
             << u"Test👪Test"_s
             << QByteArrayLiteral("\xE3\x85\xA2\xA3\0\xE3\x85\xA2\xA3")
             << QByteArray("IBM-037") << Flags(Flag::ConvertInvalidToNull)
             << false;
-    QTest::addRow("decode_incomplete_EUC-JP")
+    BOBUIest::addRow("decode_incomplete_EUC-JP")
             << u"test"_s
             << QByteArrayLiteral("test\x8F")
             << QByteArray("EUC-JP") << Flags(Flag::Stateless)
             << true;
-    QTest::addRow("decode_invalid_EUC-JP_sequence")
+    BOBUIest::addRow("decode_invalid_EUC-JP_sequence")
             << u"test\0test"_s
             << QByteArrayLiteral("test\x8Ftest")
             << QByteArray("EUC-JP") << Flags(Flag::ConvertInvalidToNull)
             << true;
-    QTest::addRow("encode_incomplete_surrogate")
+    BOBUIest::addRow("encode_incomplete_surrogate")
             << u"test"_s + QChar::highSurrogate(0x11136)
             << QByteArray("test")
             << QByteArray("EUC-JP") << Flags(Flag::Stateless)
@@ -808,33 +808,33 @@ static QString fromInvalidUtf8Sequence(const QByteArray &ba)
 // copied from tst_QString::fromUtf8_data()
 void tst_QStringConverter::utf8Codec_data()
 {
-    QTest::addColumn<QByteArray>("utf8");
-    QTest::addColumn<QString>("res");
-    QTest::addColumn<int>("len");
+    BOBUIest::addColumn<QByteArray>("utf8");
+    BOBUIest::addColumn<QString>("res");
+    BOBUIest::addColumn<int>("len");
     QString str;
 
-    QTest::newRow("str0") << QByteArray("abcdefgh") << QString("abcdefgh") << -1;
-    QTest::newRow("str0-len") << QByteArray("abcdefgh") << QString("abc") << 3;
-    QTest::newRow("str1") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
+    BOBUIest::newRow("str0") << QByteArray("abcdefgh") << QString("abcdefgh") << -1;
+    BOBUIest::newRow("str0-len") << QByteArray("abcdefgh") << QString("abc") << 3;
+    BOBUIest::newRow("str1") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
                           << QString::fromLatin1("\366\344\374\326\304\334\370\346\345\330\306\305") << -1;
-    QTest::newRow("str1-len") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
+    BOBUIest::newRow("str1-len") << QByteArray("\303\266\303\244\303\274\303\226\303\204\303\234\303\270\303\246\303\245\303\230\303\206\303\205")
                               << QString::fromLatin1("\366\344\374\326\304") << 10;
 
     str += QChar(0x05e9);
     str += QChar(0x05d3);
     str += QChar(0x05d2);
-    QTest::newRow("str2") << QByteArray("\327\251\327\223\327\222") << str << -1;
+    BOBUIest::newRow("str2") << QByteArray("\327\251\327\223\327\222") << str << -1;
 
     str = QChar(0x05e9);
-    QTest::newRow("str2-len") << QByteArray("\327\251\327\223\327\222") << str << 2;
+    BOBUIest::newRow("str2-len") << QByteArray("\327\251\327\223\327\222") << str << 2;
 
     str = QChar(0x20ac);
     str += " some text";
-    QTest::newRow("str3") << QByteArray("\342\202\254 some text") << str << -1;
+    BOBUIest::newRow("str3") << QByteArray("\342\202\254 some text") << str << -1;
 
     str = QChar(0x20ac);
     str += " some ";
-    QTest::newRow("str3-len") << QByteArray("\342\202\254 some text") << str << 9;
+    BOBUIest::newRow("str3-len") << QByteArray("\342\202\254 some text") << str << 9;
 
     str = "hello";
     str += QChar::ReplacementCharacter;
@@ -845,8 +845,8 @@ void tst_QStringConverter::utf8Codec_data()
     str += QChar::ReplacementCharacter;
     str += QChar(0x61);
     str += QChar::ReplacementCharacter;
-    QTest::newRow("invalid utf8") << QByteArray("hello\344h\344\344\366\344a\304") << str << -1;
-    QTest::newRow("invalid utf8-len") << QByteArray("hello\344h\344\344\366\344a\304") << QString("hello") << 5;
+    BOBUIest::newRow("invalid utf8") << QByteArray("hello\344h\344\344\366\344a\304") << str << -1;
+    BOBUIest::newRow("invalid utf8-len") << QByteArray("hello\344h\344\344\366\344a\304") << QString("hello") << 5;
 
     str = "Prohl";
     str += QChar::ReplacementCharacter;
@@ -857,17 +857,17 @@ void tst_QStringConverter::utf8Codec_data()
     str += QChar::ReplacementCharacter;
     str += " Netscape";
 
-    QTest::newRow("task28417") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << str << -1;
-    QTest::newRow("task28417-len") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << QString("") << 0;
+    BOBUIest::newRow("task28417") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << str << -1;
+    BOBUIest::newRow("task28417-len") << QByteArray("Prohl\355\276e\350 plugin\371 Netscape") << QString("") << 0;
 
-    QTest::newRow("null-1") << QByteArray() << QString() << -1;
-    QTest::newRow("null0") << QByteArray() << QString() << 0;
-    // QTest::newRow("null5") << QByteArray() << QString() << 5;
-    QTest::newRow("empty-1") << QByteArray("\0abcd", 5) << QString() << -1;
-    QTest::newRow("empty0") << QByteArray() << QString() << 0;
-    QTest::newRow("empty5") << QByteArray("\0abcd", 5) << QString::fromLatin1("\0abcd", 5) << 5;
-    QTest::newRow("other-1") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab") << -1;
-    QTest::newRow("other5") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab\0cd", 5) << 5;
+    BOBUIest::newRow("null-1") << QByteArray() << QString() << -1;
+    BOBUIest::newRow("null0") << QByteArray() << QString() << 0;
+    // BOBUIest::newRow("null5") << QByteArray() << QString() << 5;
+    BOBUIest::newRow("empty-1") << QByteArray("\0abcd", 5) << QString() << -1;
+    BOBUIest::newRow("empty0") << QByteArray() << QString() << 0;
+    BOBUIest::newRow("empty5") << QByteArray("\0abcd", 5) << QString::fromLatin1("\0abcd", 5) << 5;
+    BOBUIest::newRow("other-1") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab") << -1;
+    BOBUIest::newRow("other5") << QByteArray("ab\0cd", 5) << QString::fromLatin1("ab\0cd", 5) << 5;
 
     str = "Old Italic: ";
     str += QChar(0xd800);
@@ -880,9 +880,9 @@ void tst_QStringConverter::utf8Codec_data()
     str += QChar(0xdf03);
     str += QChar(0xd800);
     str += QChar(0xdf04);
-    QTest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str << -1;
+    BOBUIest::newRow("surrogate") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str << -1;
 
-    QTest::newRow("surrogate-len") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str.left(16) << 20;
+    BOBUIest::newRow("surrogate-len") << QByteArray("Old Italic: \360\220\214\200\360\220\214\201\360\220\214\202\360\220\214\203\360\220\214\204") << str.left(16) << 20;
 
     // from http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html
 
@@ -890,14 +890,14 @@ void tst_QStringConverter::utf8Codec_data()
     QByteArray utf8;
     utf8 += char(0x00);
     str = QChar(QChar::Null);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.1") << utf8 << str << 1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.1") << utf8 << str << 1;
 
     // 2.1.2 U+00000080
     utf8.clear();
     utf8 += char(0xc2);
     utf8 += char(0x80);
     str = QChar(0x80);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.2") << utf8 << str << -1;
 
     // 2.1.3 U+00000800
     utf8.clear();
@@ -905,7 +905,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xa0);
     utf8 += char(0x80);
     str = QChar(0x800);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.3") << utf8 << str << -1;
 
     // 2.1.4 U+00010000
     utf8.clear();
@@ -916,7 +916,7 @@ void tst_QStringConverter::utf8Codec_data()
     str.clear();
     str += QChar(0xd800);
     str += QChar(0xdc00);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.4") << utf8 << str << -1;
 
     // 2.1.5 U+00200000 (not a valid Unicode character)
     utf8.clear();
@@ -926,7 +926,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.5") << utf8 << str << -1;
 
     // 2.1.6 U+04000000 (not a valid Unicode character)
     utf8.clear();
@@ -937,20 +937,20 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.1.6") << utf8 << str << -1;
 
     // 2.2.1 U+0000007F
     utf8.clear();
     utf8 += char(0x7f);
     str = QChar(0x7f);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.1") << utf8 << str << -1;
 
     // 2.2.2 U+000007FF
     utf8.clear();
     utf8 += char(0xdf);
     utf8 += char(0xbf);
     str = QChar(0x7ff);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.2") << utf8 << str << -1;
 
     // 2.2.3 U+000FFFF - non-character code
     utf8.clear();
@@ -958,7 +958,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = QString::fromUtf8(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.3") << utf8 << str << -1;
 
     // 2.2.4 U+001FFFFF
     utf8.clear();
@@ -967,7 +967,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.4") << utf8 << str << -1;
 
     // 2.2.5 U+03FFFFFF (not a valid Unicode character)
     utf8.clear();
@@ -977,7 +977,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.5") << utf8 << str << -1;
 
     // 2.2.6 U+7FFFFFFF
     utf8.clear();
@@ -988,7 +988,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.2.6") << utf8 << str << -1;
 
     // 2.3.1 U+0000D7FF
     utf8.clear();
@@ -996,7 +996,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x9f);
     utf8 += char(0xbf);
     str = QChar(0xd7ff);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.1") << utf8 << str << -1;
 
     // 2.3.2 U+0000E000
     utf8.clear();
@@ -1004,7 +1004,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = QChar(0xe000);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.2") << utf8 << str << -1;
 
     // 2.3.3 U+0000FFFD
     utf8.clear();
@@ -1012,7 +1012,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbd);
     str = QChar(QChar::ReplacementCharacter);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.3") << utf8 << str << -1;
 
     // 2.3.4 U+0010FFFD
     utf8.clear();
@@ -1023,7 +1023,7 @@ void tst_QStringConverter::utf8Codec_data()
     str.clear();
     str += QChar(0xdbff);
     str += QChar(0xdffd);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.4") << utf8 << str << -1;
 
     // 2.3.5 U+00110000
     utf8.clear();
@@ -1032,26 +1032,26 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 2.3.5") << utf8 << str << -1;
 
     // 3.1.1
     utf8.clear();
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.1") << utf8 << str << -1;
 
     // 3.1.2
     utf8.clear();
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.2") << utf8 << str << -1;
 
     // 3.1.3
     utf8.clear();
     utf8 += char(0x80);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.3") << utf8 << str << -1;
 
     // 3.1.4
     utf8.clear();
@@ -1059,7 +1059,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.4") << utf8 << str << -1;
 
     // 3.1.5
     utf8.clear();
@@ -1068,7 +1068,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.5") << utf8 << str << -1;
 
     // 3.1.6
     utf8.clear();
@@ -1078,7 +1078,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.6") << utf8 << str << -1;
 
     // 3.1.7
     utf8.clear();
@@ -1089,7 +1089,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.7") << utf8 << str << -1;
 
     // 3.1.8
     utf8.clear();
@@ -1101,14 +1101,14 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.8") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.8") << utf8 << str << -1;
 
     // 3.1.9
     utf8.clear();
     for (uint i = 0x80; i<= 0xbf; ++i)
         utf8 += i;
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.9") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.1.9") << utf8 << str << -1;
 
     // 3.2.1
     utf8.clear();
@@ -1120,7 +1120,7 @@ void tst_QStringConverter::utf8Codec_data()
         str += QChar::ReplacementCharacter;
         str += QChar(0x0020);
     }
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.1") << utf8 << str << -1;
 
     // 3.2.2
     utf8.clear();
@@ -1132,7 +1132,7 @@ void tst_QStringConverter::utf8Codec_data()
         str += QChar::ReplacementCharacter;
         str += QChar(0x0020);
     }
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.2") << utf8 << str << -1;
 
     // 3.2.3
     utf8.clear();
@@ -1144,7 +1144,7 @@ void tst_QStringConverter::utf8Codec_data()
         str += QChar::ReplacementCharacter;
         str += QChar(0x0020);
     }
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.3") << utf8 << str << -1;
 
     // 3.2.4
     utf8.clear();
@@ -1156,7 +1156,7 @@ void tst_QStringConverter::utf8Codec_data()
         str += QChar::ReplacementCharacter;
         str += QChar(0x0020);
     }
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.4") << utf8 << str << -1;
 
     // 3.2.5
     utf8.clear();
@@ -1168,34 +1168,34 @@ void tst_QStringConverter::utf8Codec_data()
         str += QChar::ReplacementCharacter;
         str += QChar(0x0020);
     }
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.2.5") << utf8 << str << -1;
 
     // 3.3.1
     utf8.clear();
     utf8 += char(0xc0);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.1") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.1-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.1-1") << utf8 << str << -1;
 
     // 3.3.2
     utf8.clear();
     utf8 += char(0xe0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xe0);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-2") << utf8 << str << -1;
     utf8 += 0x30;
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.2-3") << utf8 << str << -1;
 
     // 3.3.3
     utf8.clear();
@@ -1203,27 +1203,27 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf0);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.3-5") << utf8 << str << -1;
 
     // 3.3.4
     utf8.clear();
@@ -1232,37 +1232,37 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf8);
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf8);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-5") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf8);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-6") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.4-7") << utf8 << str << -1;
 
     // 3.3.5
     utf8.clear();
@@ -1272,10 +1272,10 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfc);
@@ -1283,64 +1283,64 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfc);
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-5") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfc);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-6") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-7") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfc);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-8") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-8") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-9") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.5-9") << utf8 << str << -1;
 
     // 3.3.6
     utf8.clear();
     utf8 += char(0xdf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.6") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.6-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.6-1") << utf8 << str << -1;
 
     // 3.3.7
     utf8.clear();
     utf8 += char(0xef);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xef);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.7-3") << utf8 << str << -1;
 
     // 3.3.8
     utf8.clear();
@@ -1348,27 +1348,27 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf7);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xf7);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.8-5") << utf8 << str << -1;
 
     // 3.3.9
     utf8.clear();
@@ -1377,37 +1377,37 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfb);
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfb);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-5") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfb);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-6") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.9-7") << utf8 << str << -1;
 
     // 3.3.10
     utf8.clear();
@@ -1417,10 +1417,10 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-1") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfd);
@@ -1428,37 +1428,37 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-2") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-3") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfd);
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-4") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-5") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfd);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-6") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-7") << utf8 << str << -1;
 
     utf8.clear();
     utf8 += char(0xfd);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-8") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-8") << utf8 << str << -1;
     utf8 += char(0x30);
     str += QChar(0x30);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-9") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.3.10-9") << utf8 << str << -1;
 
     // 3.4
     utf8.clear();
@@ -1493,19 +1493,19 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.4") << utf8 << str << -1;
 
     // 3.5.1
     utf8.clear();
     utf8 += char(0xfe);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.1") << utf8 << str << -1;
 
     // 3.5.2
     utf8.clear();
     utf8 += char(0xff);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.2") << utf8 << str << -1;
 
     // 3.5.2
     utf8.clear();
@@ -1513,14 +1513,14 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xfe);
     utf8 += char(0xff);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.2-1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 3.5.2-1") << utf8 << str << -1;
 
     // 4.1.1
     utf8.clear();
     utf8 += char(0xc0);
     utf8 += char(0xaf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.1") << utf8 << str << -1;
 
     // 4.1.2
     utf8.clear();
@@ -1528,7 +1528,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xaf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.2") << utf8 << str << -1;
 
     // 4.1.3
     utf8.clear();
@@ -1537,7 +1537,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xaf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.3") << utf8 << str << -1;
 
     // 4.1.4
     utf8.clear();
@@ -1547,7 +1547,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xaf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.4") << utf8 << str << -1;
 
     // 4.1.5
     utf8.clear();
@@ -1558,14 +1558,14 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0xaf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.1.5") << utf8 << str << -1;
 
     // 4.2.1
     utf8.clear();
     utf8 += char(0xc1);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.1") << utf8 << str << -1;
 
     // 4.2.2
     utf8.clear();
@@ -1573,7 +1573,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x9f);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.2") << utf8 << str << -1;
 
     // 4.2.3
     utf8.clear();
@@ -1582,7 +1582,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.3") << utf8 << str << -1;
 
     // 4.2.4
     utf8.clear();
@@ -1592,7 +1592,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.4") << utf8 << str << -1;
 
     // 4.2.5
     utf8.clear();
@@ -1603,14 +1603,14 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.2.5") << utf8 << str << -1;
 
     // 4.3.1
     utf8.clear();
     utf8 += char(0xc0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.1") << utf8 << str << -1;
 
     // 4.3.2
     utf8.clear();
@@ -1618,7 +1618,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.2") << utf8 << str << -1;
 
     // 4.3.3
     utf8.clear();
@@ -1627,7 +1627,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.3") << utf8 << str << -1;
 
     // 4.3.4
     utf8.clear();
@@ -1637,7 +1637,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.4") << utf8 << str << -1;
 
     // 4.3.5
     utf8.clear();
@@ -1648,7 +1648,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0x80);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 4.3.5") << utf8 << str << -1;
 
     // 5.1.1
     utf8.clear();
@@ -1656,7 +1656,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xa0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.1") << utf8 << str << -1;
 
     // 5.1.2
     utf8.clear();
@@ -1664,7 +1664,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xad);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.2") << utf8 << str << -1;
 
     // 5.1.3
     utf8.clear();
@@ -1672,7 +1672,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xae);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.3") << utf8 << str << -1;
 
     // 5.1.4
     utf8.clear();
@@ -1680,7 +1680,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xaf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.4") << utf8 << str << -1;
 
     // 5.1.5
     utf8.clear();
@@ -1688,7 +1688,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xb0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.5") << utf8 << str << -1;
 
     // 5.1.6
     utf8.clear();
@@ -1696,7 +1696,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbe);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.6") << utf8 << str << -1;
 
     // 5.1.7
     utf8.clear();
@@ -1704,7 +1704,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.1.7") << utf8 << str << -1;
 
     // 5.2.1
     utf8.clear();
@@ -1715,7 +1715,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xb0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.1") << utf8 << str << -1;
 
     // 5.2.2
     utf8.clear();
@@ -1726,7 +1726,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.2") << utf8 << str << -1;
 
     // 5.2.3
     utf8.clear();
@@ -1737,7 +1737,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xb0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.3") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.3") << utf8 << str << -1;
 
     // 5.2.4
     utf8.clear();
@@ -1748,7 +1748,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.4") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.4") << utf8 << str << -1;
 
     // 5.2.5
     utf8.clear();
@@ -1759,7 +1759,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xb0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.5") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.5") << utf8 << str << -1;
 
     // 5.2.6
     utf8.clear();
@@ -1770,7 +1770,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.6") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.6") << utf8 << str << -1;
 
     // 5.2.7
     utf8.clear();
@@ -1781,7 +1781,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xb0);
     utf8 += char(0x80);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.7") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.7") << utf8 << str << -1;
 
     // 5.2.8
     utf8.clear();
@@ -1792,7 +1792,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     utf8 += char(0xbf);
     str = fromInvalidUtf8Sequence(utf8);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.8") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.2.8") << utf8 << str << -1;
 
     // 5.3.1 - non-character code
     utf8.clear();
@@ -1801,7 +1801,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbe);
     //str = QChar(QChar::ReplacementCharacter);
     str = QChar(0xfffe);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.3.1") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.3.1") << utf8 << str << -1;
 
     // 5.3.2 - non-character code
     utf8.clear();
@@ -1810,7 +1810,7 @@ void tst_QStringConverter::utf8Codec_data()
     utf8 += char(0xbf);
     //str = QChar(QChar::ReplacementCharacter);
     str = QChar(0xffff);
-    QTest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.3.2") << utf8 << str << -1;
+    BOBUIest::newRow("http://www.w3.org/2001/06/utf-8-wrong/UTF-8-test.html 5.3.2") << utf8 << str << -1;
 }
 
 void tst_QStringConverter::utf8Codec()
@@ -1827,47 +1827,47 @@ void tst_QStringConverter::utf8Codec()
     QCOMPARE(str, res);
 }
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QStringConverter::utf8bom_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QString>("result");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QString>("result");
 
-    QTest::newRow("nobom")
+    BOBUIest::newRow("nobom")
         << QByteArray("\302\240", 2)
         << QString::fromLatin1("\240");
 
     {
         static const char16_t data[] = { 0x201d };
-        QTest::newRow("nobom 2")
+        BOBUIest::newRow("nobom 2")
             << QByteArray("\342\200\235", 3)
             << QString::fromUtf16(data, std::size(data));
     }
 
     {
         static const char16_t data[] = { 0xf000 };
-        QTest::newRow("bom1")
+        BOBUIest::newRow("bom1")
             << QByteArray("\357\200\200", 3)
             << QString::fromUtf16(data, std::size(data));
     }
 
     {
         static const char16_t data[] = { 0xfec0 };
-        QTest::newRow("bom2")
+        BOBUIest::newRow("bom2")
             << QByteArray("\357\273\200", 3)
             << QString::fromUtf16(data, std::size(data));
     }
 
     {
-        QTest::newRow("normal-bom")
+        BOBUIest::newRow("normal-bom")
             << QByteArray("\357\273\277a", 4)
             << QString("a");
     }
 
     { // test the non-SIMD code-path
         static const char16_t data[] = { 0x61, 0xfeff, 0x62 };
-        QTest::newRow("middle-bom (non SIMD)")
+        BOBUIest::newRow("middle-bom (non SIMD)")
             << QByteArray("a\357\273\277b")
             << QString::fromUtf16(data, std::size(data));
     }
@@ -1875,12 +1875,12 @@ void tst_QStringConverter::utf8bom_data()
     { // test the SIMD code-path
         static const char16_t data[] = { 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
                                          0x68, 0x69, 0x6a, 0x6b, 0x6c, 0xfeff, 0x6d };
-        QTest::newRow("middle-bom (SIMD)")
+        BOBUIest::newRow("middle-bom (SIMD)")
             << QByteArray("abcdefghijkl\357\273\277m")
             << QString::fromUtf16(data, std::size(data));
     }
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void tst_QStringConverter::utf8bom()
 {
@@ -1895,8 +1895,8 @@ void tst_QStringConverter::utf8bom()
 // someone set us up the BOM!
 void tst_QStringConverter::roundtripBom_data()
 {
-    QTest::addColumn<QStringView>("utf16");
-    QTest::addColumn<QStringConverter::Encoding>("code");
+    BOBUIest::addColumn<QStringView>("utf16");
+    BOBUIest::addColumn<QStringConverter::Encoding>("code");
 
     for (const auto &code : codes) {
         if (size_t(code.code) >= encodedBoms.size())
@@ -1907,7 +1907,7 @@ void tst_QStringConverter::roundtripBom_data()
         for (const TestString &s : testStrings) {
             if (s.utf16.isEmpty())
                 continue;
-            QTest::addRow("%s:%s", code.name, s.description) << s.utf16 << code.code;
+            BOBUIest::addRow("%s:%s", code.name, s.description) << s.utf16 << code.code;
         }
     }
 }
@@ -1939,53 +1939,53 @@ void tst_QStringConverter::roundtripBom()
 
 void tst_QStringConverter::utf8stateful_data()
 {
-    QTest::addColumn<QByteArray>("buffer1");
-    QTest::addColumn<QByteArray>("buffer2");
-    QTest::addColumn<QString>("result");    // null QString indicates decoder error
+    BOBUIest::addColumn<QByteArray>("buffer1");
+    BOBUIest::addColumn<QByteArray>("buffer2");
+    BOBUIest::addColumn<QString>("result");    // null QString indicates decoder error
 
     // valid buffer continuations
-    QTest::newRow("1of2+valid") << QByteArray("\xc2") << QByteArray("\xa0") << "\xc2\xa0";
-    QTest::newRow("1of3+valid") << QByteArray("\xe0") << QByteArray("\xa0\x80") << "\xe0\xa0\x80";
-    QTest::newRow("2of3+valid") << QByteArray("\xe0\xa0") << QByteArray("\x80") << "\xe0\xa0\x80";
-    QTest::newRow("1of4+valid") << QByteArray("\360") << QByteArray("\220\210\203") << "\360\220\210\203";
-    QTest::newRow("2of4+valid") << QByteArray("\360\220") << QByteArray("\210\203") << "\360\220\210\203";
-    QTest::newRow("3of4+valid") << QByteArray("\360\220\210") << QByteArray("\203") << "\360\220\210\203";
-    QTest::newRow("1ofBom+valid") << QByteArray("\xef") << QByteArray("\xbb\xbf") << "";
-    QTest::newRow("2ofBom+valid") << QByteArray("\xef\xbb") << QByteArray("\xbf") << "";
+    BOBUIest::newRow("1of2+valid") << QByteArray("\xc2") << QByteArray("\xa0") << "\xc2\xa0";
+    BOBUIest::newRow("1of3+valid") << QByteArray("\xe0") << QByteArray("\xa0\x80") << "\xe0\xa0\x80";
+    BOBUIest::newRow("2of3+valid") << QByteArray("\xe0\xa0") << QByteArray("\x80") << "\xe0\xa0\x80";
+    BOBUIest::newRow("1of4+valid") << QByteArray("\360") << QByteArray("\220\210\203") << "\360\220\210\203";
+    BOBUIest::newRow("2of4+valid") << QByteArray("\360\220") << QByteArray("\210\203") << "\360\220\210\203";
+    BOBUIest::newRow("3of4+valid") << QByteArray("\360\220\210") << QByteArray("\203") << "\360\220\210\203";
+    BOBUIest::newRow("1ofBom+valid") << QByteArray("\xef") << QByteArray("\xbb\xbf") << "";
+    BOBUIest::newRow("2ofBom+valid") << QByteArray("\xef\xbb") << QByteArray("\xbf") << "";
 
     // invalid continuation
-    QTest::newRow("1of2+invalid") << QByteArray("\xc2") << QByteArray("a") << QString();
-    QTest::newRow("1of3+invalid") << QByteArray("\xe0") << QByteArray("a") << QString();
-    QTest::newRow("2of3+invalid") << QByteArray("\xe0\xa0") << QByteArray("a") << QString();
-    QTest::newRow("1of4+invalid") << QByteArray("\360") << QByteArray("a") << QString();
-    QTest::newRow("2of4+invalid") << QByteArray("\360\220") << QByteArray("a") << QString();
-    QTest::newRow("3of4+invalid") << QByteArray("\360\220\210") << QByteArray("a") << QString();
+    BOBUIest::newRow("1of2+invalid") << QByteArray("\xc2") << QByteArray("a") << QString();
+    BOBUIest::newRow("1of3+invalid") << QByteArray("\xe0") << QByteArray("a") << QString();
+    BOBUIest::newRow("2of3+invalid") << QByteArray("\xe0\xa0") << QByteArray("a") << QString();
+    BOBUIest::newRow("1of4+invalid") << QByteArray("\360") << QByteArray("a") << QString();
+    BOBUIest::newRow("2of4+invalid") << QByteArray("\360\220") << QByteArray("a") << QString();
+    BOBUIest::newRow("3of4+invalid") << QByteArray("\360\220\210") << QByteArray("a") << QString();
 
     // overlong sequence:
-    QTest::newRow("overlong-1of2") << QByteArray("\xc1") << QByteArray("\x81") << QString();
-    QTest::newRow("overlong-1of3") << QByteArray("\xe0") << QByteArray("\x81\x81") << QString();
-    QTest::newRow("overlong-2of3") << QByteArray("\xe0\x81") << QByteArray("\x81") << QString();
-    QTest::newRow("overlong-1of4") << QByteArray("\xf0") << QByteArray("\x80\x81\x81") << QString();
-    QTest::newRow("overlong-2of4") << QByteArray("\xf0\x80") << QByteArray("\x81\x81") << QString();
-    QTest::newRow("overlong-3of4") << QByteArray("\xf0\x80\x81") << QByteArray("\x81") << QString();
+    BOBUIest::newRow("overlong-1of2") << QByteArray("\xc1") << QByteArray("\x81") << QString();
+    BOBUIest::newRow("overlong-1of3") << QByteArray("\xe0") << QByteArray("\x81\x81") << QString();
+    BOBUIest::newRow("overlong-2of3") << QByteArray("\xe0\x81") << QByteArray("\x81") << QString();
+    BOBUIest::newRow("overlong-1of4") << QByteArray("\xf0") << QByteArray("\x80\x81\x81") << QString();
+    BOBUIest::newRow("overlong-2of4") << QByteArray("\xf0\x80") << QByteArray("\x81\x81") << QString();
+    BOBUIest::newRow("overlong-3of4") << QByteArray("\xf0\x80\x81") << QByteArray("\x81") << QString();
 
     // out of range:
     // leading byte 0xF4 can produce codepoints above U+10FFFF, which aren't valid
-    QTest::newRow("outofrange1-1of4") << QByteArray("\xf4") << QByteArray("\x90\x80\x80") << QString();
-    QTest::newRow("outofrange1-2of4") << QByteArray("\xf4\x90") << QByteArray("\x80\x80") << QString();
-    QTest::newRow("outofrange1-3of4") << QByteArray("\xf4\x90\x80") << QByteArray("\x80") << QString();
-    QTest::newRow("outofrange2-1of4") << QByteArray("\xf5") << QByteArray("\x90\x80\x80") << QString();
-    QTest::newRow("outofrange2-2of4") << QByteArray("\xf5\x90") << QByteArray("\x80\x80") << QString();
-    QTest::newRow("outofrange2-3of4") << QByteArray("\xf5\x90\x80") << QByteArray("\x80") << QString();
-    QTest::newRow("outofrange-1of5") << QByteArray("\xf8") << QByteArray("\x88\x80\x80\x80") << QString();
-    QTest::newRow("outofrange-2of5") << QByteArray("\xf8\x88") << QByteArray("\x80\x80\x80") << QString();
-    QTest::newRow("outofrange-3of5") << QByteArray("\xf8\x88\x80") << QByteArray("\x80\x80") << QString();
-    QTest::newRow("outofrange-4of5") << QByteArray("\xf8\x88\x80\x80") << QByteArray("\x80") << QString();
-    QTest::newRow("outofrange-1of6") << QByteArray("\xfc") << QByteArray("\x84\x80\x80\x80\x80") << QString();
-    QTest::newRow("outofrange-2of6") << QByteArray("\xfc\x84") << QByteArray("\x80\x80\x80\x80") << QString();
-    QTest::newRow("outofrange-3of6") << QByteArray("\xfc\x84\x80") << QByteArray("\x80\x80\x80") << QString();
-    QTest::newRow("outofrange-4of6") << QByteArray("\xfc\x84\x80\x80") << QByteArray("\x80\x80") << QString();
-    QTest::newRow("outofrange-5of6") << QByteArray("\xfc\x84\x80\x80\x80") << QByteArray("\x80") << QString();
+    BOBUIest::newRow("outofrange1-1of4") << QByteArray("\xf4") << QByteArray("\x90\x80\x80") << QString();
+    BOBUIest::newRow("outofrange1-2of4") << QByteArray("\xf4\x90") << QByteArray("\x80\x80") << QString();
+    BOBUIest::newRow("outofrange1-3of4") << QByteArray("\xf4\x90\x80") << QByteArray("\x80") << QString();
+    BOBUIest::newRow("outofrange2-1of4") << QByteArray("\xf5") << QByteArray("\x90\x80\x80") << QString();
+    BOBUIest::newRow("outofrange2-2of4") << QByteArray("\xf5\x90") << QByteArray("\x80\x80") << QString();
+    BOBUIest::newRow("outofrange2-3of4") << QByteArray("\xf5\x90\x80") << QByteArray("\x80") << QString();
+    BOBUIest::newRow("outofrange-1of5") << QByteArray("\xf8") << QByteArray("\x88\x80\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-2of5") << QByteArray("\xf8\x88") << QByteArray("\x80\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-3of5") << QByteArray("\xf8\x88\x80") << QByteArray("\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-4of5") << QByteArray("\xf8\x88\x80\x80") << QByteArray("\x80") << QString();
+    BOBUIest::newRow("outofrange-1of6") << QByteArray("\xfc") << QByteArray("\x84\x80\x80\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-2of6") << QByteArray("\xfc\x84") << QByteArray("\x80\x80\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-3of6") << QByteArray("\xfc\x84\x80") << QByteArray("\x80\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-4of6") << QByteArray("\xfc\x84\x80\x80") << QByteArray("\x80\x80") << QString();
+    BOBUIest::newRow("outofrange-5of6") << QByteArray("\xfc\x84\x80\x80\x80") << QByteArray("\x80") << QString();
 }
 
 void tst_QStringConverter::utf8stateful()
@@ -2033,159 +2033,159 @@ void tst_QStringConverter::utf8stateful()
 
 void tst_QStringConverter::utfHeaders_data()
 {
-    QTest::addColumn<QStringConverter::Encoding>("encoding");
-    QTest::addColumn<QStringConverter::Flag>("flags");
-    QTest::addColumn<QByteArray>("encoded");
-    QTest::addColumn<QString>("unicode");
+    BOBUIest::addColumn<QStringConverter::Encoding>("encoding");
+    BOBUIest::addColumn<QStringConverter::Flag>("flags");
+    BOBUIest::addColumn<QByteArray>("encoded");
+    BOBUIest::addColumn<QString>("unicode");
 
-    QTest::newRow("utf8 bom")
+    BOBUIest::newRow("utf8 bom")
         << QStringConverter::Utf8
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xef\xbb\xbfhello")
         << QString::fromLatin1("hello");
-    QTest::newRow("utf8 nobom")
+    BOBUIest::newRow("utf8 nobom")
         << QStringConverter::Utf8
         << QStringConverter::Flag::WriteBom
         << QByteArray("hello")
         << QString::fromLatin1("hello");
-    QTest::newRow("utf8 bom ignore header")
+    BOBUIest::newRow("utf8 bom ignore header")
         << QStringConverter::Utf8
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("\xef\xbb\xbfhello")
         << (QString(QChar(0xfeff)) + QString::fromLatin1("hello"));
-    QTest::newRow("utf8 nobom ignore header")
+    BOBUIest::newRow("utf8 nobom ignore header")
         << QStringConverter::Utf8
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("hello")
         << QString::fromLatin1("hello");
 
-    QTest::newRow("utf16 bom be")
+    BOBUIest::newRow("utf16 bom be")
         << QStringConverter::Utf16
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xfe\xff\0h\0e\0l", 8)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf16 bom le")
+    BOBUIest::newRow("utf16 bom le")
         << QStringConverter::Utf16
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xff\xfeh\0e\0l\0", 8)
         << QString::fromLatin1("hel");
     if (QSysInfo::ByteOrder == QSysInfo::BigEndian) {
-        QTest::newRow("utf16 nobom")
+        BOBUIest::newRow("utf16 nobom")
             << QStringConverter::Utf16
             << QStringConverter::Flag::WriteBom
             << QByteArray("\0h\0e\0l", 6)
             << QString::fromLatin1("hel");
-        QTest::newRow("utf16 bom be ignore header")
+        BOBUIest::newRow("utf16 bom be ignore header")
             << QStringConverter::Utf16
             << QStringConverter::Flag::ConvertInitialBom
             << QByteArray("\xfe\xff\0h\0e\0l", 8)
             << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
     } else {
-        QTest::newRow("utf16 nobom")
+        BOBUIest::newRow("utf16 nobom")
             << QStringConverter::Utf16
             << QStringConverter::Flag::WriteBom
             << QByteArray("h\0e\0l\0", 6)
             << QString::fromLatin1("hel");
-        QTest::newRow("utf16 bom le ignore header")
+        BOBUIest::newRow("utf16 bom le ignore header")
             << QStringConverter::Utf16
             << QStringConverter::Flag::ConvertInitialBom
             << QByteArray("\xff\xfeh\0e\0l\0", 8)
             << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
     }
 
-    QTest::newRow("utf16-be bom be")
+    BOBUIest::newRow("utf16-be bom be")
         << QStringConverter::Utf16BE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xfe\xff\0h\0e\0l", 8)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf16-be nobom")
+    BOBUIest::newRow("utf16-be nobom")
         << QStringConverter::Utf16BE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\0h\0e\0l", 6)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf16-be bom be ignore header")
+    BOBUIest::newRow("utf16-be bom be ignore header")
         << QStringConverter::Utf16BE
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("\xfe\xff\0h\0e\0l", 8)
         << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
 
-    QTest::newRow("utf16-le bom le")
+    BOBUIest::newRow("utf16-le bom le")
         << QStringConverter::Utf16LE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xff\xfeh\0e\0l\0", 8)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf16-le nobom")
+    BOBUIest::newRow("utf16-le nobom")
         << QStringConverter::Utf16LE
         << QStringConverter::Flag::WriteBom
         << QByteArray("h\0e\0l\0", 6)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf16-le bom le ignore header")
+    BOBUIest::newRow("utf16-le bom le ignore header")
         << QStringConverter::Utf16LE
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("\xff\xfeh\0e\0l\0", 8)
         << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
 
-    QTest::newRow("utf32 bom be")
+    BOBUIest::newRow("utf32 bom be")
         << QStringConverter::Utf32
         << QStringConverter::Flag::WriteBom
         << QByteArray("\0\0\xfe\xff\0\0\0h\0\0\0e\0\0\0l", 16)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf32 bom le")
+    BOBUIest::newRow("utf32 bom le")
         << QStringConverter::Utf32
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xff\xfe\0\0h\0\0\0e\0\0\0l\0\0\0", 16)
         << QString::fromLatin1("hel");
     if (QSysInfo::ByteOrder == QSysInfo::BigEndian) {
-        QTest::newRow("utf32 nobom")
+        BOBUIest::newRow("utf32 nobom")
             << QStringConverter::Utf32
             << QStringConverter::Flag::WriteBom
             << QByteArray("\0\0\0h\0\0\0e\0\0\0l", 12)
             << QString::fromLatin1("hel");
-        QTest::newRow("utf32 bom be ignore header")
+        BOBUIest::newRow("utf32 bom be ignore header")
             << QStringConverter::Utf32
             << QStringConverter::Flag::ConvertInitialBom
             << QByteArray("\0\0\xfe\xff\0\0\0h\0\0\0e\0\0\0l", 16)
             << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
     } else {
-        QTest::newRow("utf32 nobom")
+        BOBUIest::newRow("utf32 nobom")
             << QStringConverter::Utf32
             << QStringConverter::Flag::WriteBom
             << QByteArray("h\0\0\0e\0\0\0l\0\0\0", 12)
             << QString::fromLatin1("hel");
-        QTest::newRow("utf32 bom le ignore header")
+        BOBUIest::newRow("utf32 bom le ignore header")
             << QStringConverter::Utf32
             << QStringConverter::Flag::ConvertInitialBom
             << QByteArray("\xff\xfe\0\0h\0\0\0e\0\0\0l\0\0\0", 16)
             << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
     }
 
-    QTest::newRow("utf32-be bom be")
+    BOBUIest::newRow("utf32-be bom be")
         << QStringConverter::Utf32BE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\0\0\xfe\xff\0\0\0h\0\0\0e\0\0\0l", 16)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf32-be nobom")
+    BOBUIest::newRow("utf32-be nobom")
         << QStringConverter::Utf32BE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\0\0\0h\0\0\0e\0\0\0l", 12)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf32-be bom be ignore header")
+    BOBUIest::newRow("utf32-be bom be ignore header")
         << QStringConverter::Utf32BE
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("\0\0\xfe\xff\0\0\0h\0\0\0e\0\0\0l", 16)
         << (QString(QChar(0xfeff)) + QString::fromLatin1("hel"));
 
-    QTest::newRow("utf32-le bom le")
+    BOBUIest::newRow("utf32-le bom le")
         << QStringConverter::Utf32LE
         << QStringConverter::Flag::WriteBom
         << QByteArray("\xff\xfe\0\0h\0\0\0e\0\0\0l\0\0\0", 16)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf32-le nobom")
+    BOBUIest::newRow("utf32-le nobom")
         << QStringConverter::Utf32LE
         << QStringConverter::Flag::WriteBom
         << QByteArray("h\0\0\0e\0\0\0l\0\0\0", 12)
         << QString::fromLatin1("hel");
-    QTest::newRow("utf32-le bom le ignore header")
+    BOBUIest::newRow("utf32-le bom le ignore header")
         << QStringConverter::Utf32LE
         << QStringConverter::Flag::ConvertInitialBom
         << QByteArray("\xff\xfe\0\0h\0\0\0e\0\0\0l\0\0\0", 16)
@@ -2200,7 +2200,7 @@ void tst_QStringConverter::utfHeaders()
     QFETCH(QString, unicode);
 
     QLatin1String ignoreReverseTestOn = (QSysInfo::ByteOrder == QSysInfo::BigEndian) ? QLatin1String(" le") : QLatin1String(" be");
-    QString rowName(QTest::currentDataTag());
+    QString rowName(BOBUIest::currentDataTag());
 
     {
         QStringDecoder decode(encoding, flags);
@@ -2243,12 +2243,12 @@ void tst_QStringConverter::utfHeaders()
 
 void tst_QStringConverter::encodingForName_data()
 {
-    QTest::addColumn<QByteArray>("name");
-    QTest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
+    BOBUIest::addColumn<QByteArray>("name");
+    BOBUIest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
 
     auto row = [](const char *name, std::optional<QStringConverter::Encoding> expected = std::nullopt) {
         auto protect = [](auto p) { return p ? *p ? p : "<empty>" : "<nullptr>"; };
-        QTest::addRow("%s", protect(name)) << QByteArray(name) << expected;
+        BOBUIest::addRow("%s", protect(name)) << QByteArray(name) << expected;
     };
 
     row("UTF-8",       QStringConverter::Utf8);
@@ -2287,13 +2287,13 @@ void tst_QStringConverter::encodingForName()
 
 void tst_QStringConverter::nameForEncoding_data()
 {
-    QTest::addColumn<QByteArray>("name");
-    QTest::addColumn<QStringConverter::Encoding>("encoding");
+    BOBUIest::addColumn<QByteArray>("name");
+    BOBUIest::addColumn<QStringConverter::Encoding>("encoding");
 
-    QTest::newRow("UTF-8") << QByteArray("UTF-8") << QStringConverter::Utf8;
-    QTest::newRow("UTF-16") << QByteArray("UTF-16") << QStringConverter::Utf16;
-    QTest::newRow("UTF-16LE") << QByteArray("UTF-16LE") << QStringConverter::Utf16LE;
-    QTest::newRow("ISO-8859-1") << QByteArray("ISO-8859-1") << QStringConverter::Latin1;
+    BOBUIest::newRow("UTF-8") << QByteArray("UTF-8") << QStringConverter::Utf8;
+    BOBUIest::newRow("UTF-16") << QByteArray("UTF-16") << QStringConverter::Utf16;
+    BOBUIest::newRow("UTF-16LE") << QByteArray("UTF-16LE") << QStringConverter::Utf16LE;
+    BOBUIest::newRow("ISO-8859-1") << QByteArray("ISO-8859-1") << QStringConverter::Latin1;
 }
 
 void tst_QStringConverter::nameForEncoding()
@@ -2307,46 +2307,46 @@ void tst_QStringConverter::nameForEncoding()
 
 void tst_QStringConverter::encodingForData_data()
 {
-    QTest::addColumn<QByteArray>("encoded");
-    QTest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
+    BOBUIest::addColumn<QByteArray>("encoded");
+    BOBUIest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
 
 
-    QTest::newRow("utf8 bom")
+    BOBUIest::newRow("utf8 bom")
         << QByteArray("\xef\xbb\xbfhello")
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8);
-    QTest::newRow("utf8 nobom")
+    BOBUIest::newRow("utf8 nobom")
         << QByteArray("hello")
         << std::optional<QStringConverter::Encoding>();
 
-    QTest::newRow("utf16 bom be")
+    BOBUIest::newRow("utf16 bom be")
         << QByteArray("\xfe\xff\0h\0e\0l", 8)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16BE);
-    QTest::newRow("utf16 bom le")
+    BOBUIest::newRow("utf16 bom le")
         << QByteArray("\xff\xfeh\0e\0l\0", 8)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16LE);
-    QTest::newRow("utf16 nobom be")
+    BOBUIest::newRow("utf16 nobom be")
         << QByteArray("\0<\0e\0l", 6)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16BE);
-    QTest::newRow("utf16 nobom le")
+    BOBUIest::newRow("utf16 nobom le")
         << QByteArray("<\0e\0l\0", 6)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16LE);
-    QTest::newRow("utf16 nobom no match")
+    BOBUIest::newRow("utf16 nobom no match")
         << QByteArray("h\0e\0l\0", 6)
         << std::optional<QStringConverter::Encoding>();
 
-    QTest::newRow("utf32 bom be")
+    BOBUIest::newRow("utf32 bom be")
         << QByteArray("\0\0\xfe\xff\0\0\0h\0\0\0e\0\0\0l", 16)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf32BE);
-    QTest::newRow("utf32 bom le")
+    BOBUIest::newRow("utf32 bom le")
         << QByteArray("\xff\xfe\0\0h\0\0\0e\0\0\0l\0\0\0", 16)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf32LE);
-    QTest::newRow("utf32 nobom be")
+    BOBUIest::newRow("utf32 nobom be")
         << QByteArray("\0\0\0<\0\0\0e\0\0\0l", 12)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf32BE);
-    QTest::newRow("utf32 nobom")
+    BOBUIest::newRow("utf32 nobom")
         << QByteArray("<\0\0\0e\0\0\0l\0\0\0", 12)
         << std::optional<QStringConverter::Encoding>(QStringConverter::Utf32LE);
-    QTest::newRow("utf32 nobom no match")
+    BOBUIest::newRow("utf32 nobom no match")
         << QByteArray("\0\0\0h\0\0\0e\0\0\0l", 12)
         << std::optional<QStringConverter::Encoding>();
 }
@@ -2363,104 +2363,104 @@ void tst_QStringConverter::encodingForData()
 
 void tst_QStringConverter::encodingForHtml_data()
 {
-    QTest::addColumn<QByteArray>("html");
-    QTest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
-    QTest::addColumn<QByteArray>("name"); // ICU name if we have ICU support
+    BOBUIest::addColumn<QByteArray>("html");
+    BOBUIest::addColumn<std::optional<QStringConverter::Encoding>>("encoding");
+    BOBUIest::addColumn<QByteArray>("name"); // ICU name if we have ICU support
 
     QByteArray html = "<html><head></head><body>blah</body></html>";
-    QTest::newRow("no charset") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("no charset") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-15\" /></head></html>";
-    QTest::newRow("latin 15") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-8859-15");
+    BOBUIest::newRow("latin 15") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-8859-15");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=SJIS\" /></head></html>";
-    QTest::newRow("sjis") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Shift_JIS");
+    BOBUIest::newRow("sjis") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Shift_JIS");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-2022-JP\" /></head></html>";
-    QTest::newRow("ISO-2022-JP") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-2022-JP");
+    BOBUIest::newRow("ISO-2022-JP") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-2022-JP");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-2022\" /></head></html>";
-    QTest::newRow("ISO-2022") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-2022-JP");
+    BOBUIest::newRow("ISO-2022") << html << std::optional<QStringConverter::Encoding>() << QByteArray("ISO-2022-JP");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=GB2312\" /></head></html>";
-    QTest::newRow("GB2312") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB2312");
+    BOBUIest::newRow("GB2312") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB2312");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=Big5\" /></head></html>";
-    QTest::newRow("Big5") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Big5");
+    BOBUIest::newRow("Big5") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Big5");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=GB18030\" /></head></html>";
-    QTest::newRow("GB18030") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB18030");
+    BOBUIest::newRow("GB18030") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB18030");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=GB2312-HKSCS\" /></head></html>";
-    QTest::newRow("GB2312-HKSCS") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB2312-HKSCS");
+    BOBUIest::newRow("GB2312-HKSCS") << html << std::optional<QStringConverter::Encoding>() << QByteArray("GB2312-HKSCS");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=Big5-HKSCS\" /></head></html>";
-    QTest::newRow("Big5-HKSCS") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Big5-HKSCS");
+    BOBUIest::newRow("Big5-HKSCS") << html << std::optional<QStringConverter::Encoding>() << QByteArray("Big5-HKSCS");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=EucJP\" /></head></html>";
-    QTest::newRow("EucJP") << html << std::optional<QStringConverter::Encoding>() << QByteArray("EUC-JP");
+    BOBUIest::newRow("EucJP") << html << std::optional<QStringConverter::Encoding>() << QByteArray("EUC-JP");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=EucKR\" /></head></html>";
-    QTest::newRow("EucKR") << html << std::optional<QStringConverter::Encoding>() << QByteArray("EUC-KR");
+    BOBUIest::newRow("EucKR") << html << std::optional<QStringConverter::Encoding>() << QByteArray("EUC-KR");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=KOI8-R\" /></head></html>";
-    QTest::newRow("KOI8-R") << html << std::optional<QStringConverter::Encoding>() << QByteArray("KOI8-R");
+    BOBUIest::newRow("KOI8-R") << html << std::optional<QStringConverter::Encoding>() << QByteArray("KOI8-R");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=KOI8-U\" /></head></html>";
-    QTest::newRow("KOI8-U") << html << std::optional<QStringConverter::Encoding>() << QByteArray("KOI8-U");
+    BOBUIest::newRow("KOI8-U") << html << std::optional<QStringConverter::Encoding>() << QByteArray("KOI8-U");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=ISO-8859-1\" /></head></html>";
-    QTest::newRow("latin 1") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Latin1) << QByteArray("ISO-8859-1");
+    BOBUIest::newRow("latin 1") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Latin1) << QByteArray("ISO-8859-1");
 
     html = "<!DOCTYPE html><html><head><meta charset=\"ISO_8859-1:1987\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><title>Test</title></head>";
-    QTest::newRow("latin 1 (#2)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Latin1) << QByteArray("ISO-8859-1");
+    BOBUIest::newRow("latin 1 (#2)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Latin1) << QByteArray("ISO-8859-1");
 
     html = "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><title>Test</title></head>";
-    QTest::newRow("UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><meta charset=\"utf-8\"><title>Test</title></head>";
-    QTest::newRow("UTF-8 (#2)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8 (#2)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8/></head></html>";
-    QTest::newRow("UTF-8, no quotes") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8, no quotes") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset='UTF-8'/></head></html>";
-    QTest::newRow("UTF-8, single quotes") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8, single quotes") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta charset=utf-8><title>Test</title></head>";
-    QTest::newRow("UTF-8, > terminator") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8, > terminator") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta charset= utf-8 ><title>Test</title></head>";
-    QTest::newRow("UTF-8, > terminator with spaces") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("UTF-8, > terminator with spaces") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     // Test invalid charsets.
     html = "<!DOCTYPE html><html><head><meta charset= utf/8 ><title>Test</title></head>";
-    QTest::newRow("utf/8") << html << std::optional<QStringConverter::Encoding>()  << QByteArray();
+    BOBUIest::newRow("utf/8") << html << std::optional<QStringConverter::Encoding>()  << QByteArray();
 
     html = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=invalid-foo\" /></head></html>";
-    QTest::newRow("invalid charset, no default") << html << std::optional<QStringConverter::Encoding>() << QByteArray("UTF-8");
+    BOBUIest::newRow("invalid charset, no default") << html << std::optional<QStringConverter::Encoding>() << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><meta charset=\"";
     html.prepend(QByteArray().fill(' ', 512 - html.size()));
-    QTest::newRow("invalid charset (large header)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("invalid charset (large header)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
 
     html = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><meta charset=\"utf-8";
-    QTest::newRow("invalid charset (no closing double quote)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("invalid charset (no closing double quote)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
 
     html = "<!DOCTYPE html><html><head><meta http-equiv=\"X-UA-Compatible\" content=\"IE=9,chrome=1\"><meta charset='utf-8";
-    QTest::newRow("invalid charset (no closing single quote)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("invalid charset (no closing single quote)") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta charset=utf-8 foo=bar><title>Test</title></head>";
-    QTest::newRow("invalid (space terminator)") << html << std::optional<QStringConverter::Encoding>() << QByteArray();
+    BOBUIest::newRow("invalid (space terminator)") << html << std::optional<QStringConverter::Encoding>() << QByteArray();
 
     html = "<!DOCTYPE html><html><head><meta charset=\" utf' 8 /><title>Test</title></head>";
-    QTest::newRow("invalid charset, early terminator (')") << html << std::optional<QStringConverter::Encoding>() << QByteArray();
+    BOBUIest::newRow("invalid charset, early terminator (')") << html << std::optional<QStringConverter::Encoding>() << QByteArray();
 
     const char src[] = { char(0xff), char(0xfe), char(0x7a), char(0x03), 0, 0 };
     html = src;
-    QTest::newRow("greek text UTF-16LE") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16LE)  << QByteArray("UTF-16LE");
+    BOBUIest::newRow("greek text UTF-16LE") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf16LE)  << QByteArray("UTF-16LE");
 
 
     html = "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><span style=\"color: rgb(0, 0, 0); font-family: "
@@ -2468,11 +2468,11 @@ void tst_QStringConverter::encodingForHtml_data()
         "line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: "
         "auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; display: inline !important; float: "
         "none;\">&#x37b</span>\000";
-    QTest::newRow("greek text UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+    BOBUIest::newRow("greek text UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 
     html = "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=unicode\">"
-            "<head/><body><p>bla</p></body></html>"; // QTBUG-41998, ICU will return UTF-16.
-    QTest::newRow("legacy unicode UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
+            "<head/><body><p>bla</p></body></html>"; // BOBUIBUG-41998, ICU will return UTF-16.
+    BOBUIest::newRow("legacy unicode UTF-8") << html << std::optional<QStringConverter::Encoding>(QStringConverter::Utf8) << QByteArray("UTF-8");
 }
 
 void tst_QStringConverter::encodingForHtml()
@@ -2499,11 +2499,11 @@ void tst_QStringConverter::availableCodesAreAvailable()
 
 void tst_QStringConverter::finalizeEncoder_data()
 {
-    QTest::addColumn<QString>("incompleteInput");
-    QTest::addColumn<QByteArray>("incompleteOutput");
+    BOBUIest::addColumn<QString>("incompleteInput");
+    BOBUIest::addColumn<QByteArray>("incompleteOutput");
 
-    QTest::newRow("no-prefix") << QString(QChar(0xd800)) << QByteArray();
-    QTest::newRow("with-prefix") << "a" + QString(QChar(0xd800)) << "a"_ba;
+    BOBUIest::newRow("no-prefix") << QString(QChar(0xd800)) << QByteArray();
+    BOBUIest::newRow("with-prefix") << "a" + QString(QChar(0xd800)) << "a"_ba;
 }
 
 // explicitly cast to void to ensure that QCOMPARE doesn't treat char*
@@ -2542,11 +2542,11 @@ void tst_QStringConverter::finalizeEncoder()
 
 void tst_QStringConverter::finalizeDecoder_data()
 {
-    QTest::addColumn<QByteArray>("incompleteInput");
-    QTest::addColumn<QString>("incompleteOutput");
+    BOBUIest::addColumn<QByteArray>("incompleteInput");
+    BOBUIest::addColumn<QString>("incompleteOutput");
 
-    QTest::newRow("no-prefix") << QByteArray("\xf0") << QString();
-    QTest::newRow("with-prefix") << "a\xf0"_ba << "a";
+    BOBUIest::newRow("no-prefix") << QByteArray("\xf0") << QString();
+    BOBUIest::newRow("with-prefix") << "a\xf0"_ba << "a";
 }
 
 void tst_QStringConverter::finalizeDecoder()
@@ -2577,7 +2577,7 @@ void tst_QStringConverter::finalizeDecoder()
 
 void tst_QStringConverter::finalizeStateful()
 {
-#if !QT_CONFIG(icu) && !QT_CONFIG(winsdkicu)
+#if !BOBUI_CONFIG(icu) && !BOBUI_CONFIG(winsdkicu)
     // Technically there is _access_ to stateful encoding on Windows, but only
     // through the System encoder.
     QSKIP("ICU is not enabled in this build => stateful encoding is not tested.");
@@ -2660,19 +2660,19 @@ void tst_QStringConverter::initTestCase()
 void tst_QStringConverter::threadSafety()
 {
 #if defined(Q_OS_WASM)
-    QSKIP("This test misbehaves on WASM. Investigation needed (QTBUG-110067)");
+    QSKIP("This test misbehaves on WASM. Investigation needed (BOBUIBUG-110067)");
 #endif
 
-    QThreadPool::globalInstance()->setMaxThreadCount(12);
+    BOBUIhreadPool::globalInstance()->setMaxThreadCount(12);
 
     QList<QString> res;
     res.resize(QStringConverter::LastEncoding + 1);
     for (int i = 0; i < QStringConverter::LastEncoding + 1; ++i) {
-        QThreadPool::globalInstance()->start(new LoadAndConvert(QStringConverter::Encoding(i), &res[i]));
+        BOBUIhreadPool::globalInstance()->start(new LoadAndConvert(QStringConverter::Encoding(i), &res[i]));
     }
 
     // wait for all threads to finish working
-    QThreadPool::globalInstance()->waitForDone();
+    BOBUIhreadPool::globalInstance()->waitForDone();
 
     for (auto b : res)
         QCOMPARE(b, QString::fromLatin1("abcdefghijklmonpqrstufvxyz"));
@@ -2681,20 +2681,20 @@ void tst_QStringConverter::threadSafety()
 #ifdef Q_OS_WIN
 void tst_QStringConverter::fromLocal8Bit_data()
 {
-    QTest::addColumn<QByteArray>("eightBit");
-    QTest::addColumn<QString>("utf16");
-    QTest::addColumn<quint32>("codePage");
+    BOBUIest::addColumn<QByteArray>("eightBit");
+    BOBUIest::addColumn<QString>("utf16");
+    BOBUIest::addColumn<quint32>("codePage");
 
     constexpr uint WINDOWS_1252 = 1252u;
-    QTest::newRow("windows-1252") << "Hello, world!"_ba << u"Hello, world!"_s << WINDOWS_1252;
+    BOBUIest::newRow("windows-1252") << "Hello, world!"_ba << u"Hello, world!"_s << WINDOWS_1252;
     constexpr uint SHIFT_JIS = 932u;
     // Mostly two byte characters, but the comma is a single byte character (0xa4)
-    QTest::newRow("shiftJIS")
+    BOBUIest::newRow("shiftJIS")
             << "\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd\xa4\x90\xa2\x8a\x45\x81\x49"_ba
             << u"こんにちは､世界！"_s << SHIFT_JIS;
 
     constexpr uint GB_18030 = 54936u;
-    QTest::newRow("GB-18030") << "\xc4\xe3\xba\xc3\xca\xc0\xbd\xe7\xa3\xa1"_ba << u"你好世界！"_s
+    BOBUIest::newRow("GB-18030") << "\xc4\xe3\xba\xc3\xca\xc0\xbd\xe7\xa3\xa1"_ba << u"你好世界！"_s
                               << GB_18030;
 }
 
@@ -2777,7 +2777,7 @@ void tst_QStringConverter::fromLocal8Bit_special_cases()
     QCOMPARE(result, QChar::ReplacementCharacter + u"你."_s);
     QCOMPARE(state.remainingChars, 0);
 
-    // Test QTBUG-118834, which is failing
+    // Test BOBUIBUG-118834, which is failing
     result.clear();
     state.clear();
     result = QLocal8Bit::convertToUnicode_sys("\xe4\xe4\xbd", UTF8, &state);
@@ -2785,11 +2785,11 @@ void tst_QStringConverter::fromLocal8Bit_special_cases()
     QVERIFY(result.isNull());
     // Remaining octet:
     result += QLocal8Bit::convertToUnicode_sys("\xa0", UTF8, &state);
-    QEXPECT_FAIL("", "QTBUG-118834: We don't output anything because it's "
+    QEXPECT_FAIL("", "BOBUIBUG-118834: We don't output anything because it's "
                      "within the size of our internal state, and we cannot "
                      "signal that it needs to be drained.", Continue);
     QCOMPARE(result, QChar::ReplacementCharacter + u"你"_s);
-    QEXPECT_FAIL("", "QTBUG-118834: As above", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-118834: As above", Continue);
     QCOMPARE(state.remainingChars, 0);
 
     // Now try a 4-octet GB 18030 sequence:
@@ -2818,14 +2818,14 @@ void tst_QStringConverter::fromLocal8Bit_special_cases()
 
 void tst_QStringConverter::fromLocal8Bit_2GiB()
 {
-#if QT_POINTER_SIZE == 4
+#if BOBUI_POINTER_SIZE == 4
     QSKIP("This test is only relevant for 64-bit builds");
 #else
     qsizetype size = qsizetype(std::numeric_limits<int>::max()) + 3;
     QByteArray input;
-    QT_TRY {
+    BOBUI_TRY {
         input.reserve(size);
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         QSKIP("Out of memory");
     }
     // fill with '､' - a single octet character in Shift-JIS
@@ -2840,9 +2840,9 @@ void tst_QStringConverter::fromLocal8Bit_2GiB()
     constexpr uint SHIFT_JIS = 932u;
     QStringConverter::State state;
     QString result;
-    QT_TRY {
+    BOBUI_TRY {
         result = QLocal8Bit::convertToUnicode_sys(input, SHIFT_JIS, &state);
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         QSKIP("Out of memory");
     }
     QCOMPARE(result.size(), size - 1); // The 2-octet character is only 1 code unit in UTF-16
@@ -2932,14 +2932,14 @@ void tst_QStringConverter::toLocal8Bit_special_cases()
 
 void tst_QStringConverter::toLocal8Bit_2GiB()
 {
-#if QT_POINTER_SIZE == 4
+#if BOBUI_POINTER_SIZE == 4
     QSKIP("This test is only relevant for 64-bit builds");
 #else
     constexpr qsizetype TwoGiB = qsizetype(std::numeric_limits<int>::max());
     QString input;
-    QT_TRY {
+    BOBUI_TRY {
         input.reserve(TwoGiB + 1);
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         QSKIP("Out of memory");
     }
     // Fill with a single code unit character
@@ -2951,9 +2951,9 @@ void tst_QStringConverter::toLocal8Bit_2GiB()
     constexpr uint UTF8 = 65001u;
     QStringConverter::State state;
     QByteArray result;
-    QT_TRY {
+    BOBUI_TRY {
         result = QLocal8Bit::convertFromUnicode_sys(input, UTF8, &state);
-    } QT_CATCH (const std::bad_alloc &) {
+    } BOBUI_CATCH (const std::bad_alloc &) {
         QSKIP("Out of memory");
     }
     QUtf8StringView rView = result;
@@ -2973,5 +2973,5 @@ struct DontCrashAtExit {
 } dontCrashAtExit;
 
 
-QTEST_MAIN(tst_QStringConverter)
+BOBUIEST_MAIN(tst_QStringConverter)
 #include "tst_qstringconverter.moc"

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 class tst_Exception: public QObject
 {
@@ -21,11 +21,11 @@ void tst_Exception::throwException() const
 {
     /* When exceptions are disabled, some compilers, at least linux-g++, treat
      * exception clauses as hard errors. */
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     throw 3;
 #endif
 }
 
-QTEST_MAIN(tst_Exception)
+BOBUIEST_MAIN(tst_Exception)
 
 #include "tst_exceptionthrow.moc"

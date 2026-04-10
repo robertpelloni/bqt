@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qbaselinetest.h>
 #include <qwidgetbaselinetest.h>
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 class tst_Text : public QWidgetBaselineTest
 {
@@ -34,7 +34,7 @@ tst_Text::tst_Text()
 
 void tst_Text::loadTestFiles()
 {
-    QTest::addColumn<QString>("html");
+    BOBUIest::addColumn<QString>("html");
 
     QStringList htmlFiles;
     // first add generic test files
@@ -42,7 +42,7 @@ void tst_Text::loadTestFiles()
         htmlFiles << htmlDir.absoluteFilePath(qssFile);
 
     // then test-function specific files
-    const QString testFunction = QString(QTest::currentTestFunction()).remove("tst_").toLower();
+    const QString testFunction = QString(BOBUIest::currentTestFunction()).remove("tst_").toLower();
     if (htmlDir.cd(testFunction)) {
         for (const auto &htmlFile : htmlDir.entryList({QStringLiteral("*.html")}, QDir::Files | QDir::Readable))
             htmlFiles << htmlDir.absoluteFilePath(htmlFile);
@@ -67,18 +67,18 @@ void tst_Text::tst_render()
 {
     QFETCH(QString, html);
 
-    QTextDocument textDocument;
+    BOBUIextDocument textDocument;
     textDocument.setPageSize(QSizeF(800, 600));
     textDocument.setHtml(html);
 
     QImage image(800, 600, QImage::Format_ARGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     {
         QPainter painter(&image);
 
         QAbstractTextDocumentLayout::PaintContext context;
-        context.palette.setColor(QPalette::Text, Qt::black);
+        context.palette.setColor(QPalette::Text, BobUI::black);
         textDocument.documentLayout()->draw(&painter, context);
     }
 
@@ -87,18 +87,18 @@ void tst_Text::tst_render()
 
 void tst_Text::tst_differentScriptsBackgrounds()
 {
-    QTextDocument textDocument;
+    BOBUIextDocument textDocument;
     textDocument.setPageSize(QSizeF(800, 600));
     textDocument.setHtml(QString::fromUtf8("<i><font style=\"font-size:72px\"><font style=\"background:#FFFF00\">イ雨ｴ</font></font></i>"));
 
     QImage image(800, 600, QImage::Format_ARGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     {
         QPainter painter(&image);
 
         QAbstractTextDocumentLayout::PaintContext context;
-        context.palette.setColor(QPalette::Text, Qt::black);
+        context.palette.setColor(QPalette::Text, BobUI::black);
         textDocument.documentLayout()->draw(&painter, context);
     }
 
@@ -112,7 +112,7 @@ void tst_Text::tst_synthesizedObliqueAndRotation()
     font.setItalic(true);
 
     QImage image(800, 600, QImage::Format_ARGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     {
         QPainter painter(&image);
@@ -130,7 +130,7 @@ void tst_Text::tst_synthesizedObliqueAndRotation()
 
 void tst_Text::tst_disableEmojiParsing_data()
 {
-    QTest::addColumn<QString>("html");
+    BOBUIest::addColumn<QString>("html");
 
     QStringList htmlFiles;
     // first add generic test files
@@ -138,7 +138,7 @@ void tst_Text::tst_disableEmojiParsing_data()
         htmlFiles << htmlDir.absoluteFilePath(qssFile);
 
     // then test-function specific files
-    const QString testFunction = QString(QTest::currentTestFunction()).remove("tst_").toLower();
+    const QString testFunction = QString(BOBUIest::currentTestFunction()).remove("tst_").toLower();
     if (htmlDir.cd(testFunction)) {
         for (const auto &htmlFile : htmlDir.entryList({QStringLiteral("*.html")}, QDir::Files | QDir::Readable))
             htmlFiles << htmlDir.absoluteFilePath(htmlFile);
@@ -158,22 +158,22 @@ void tst_Text::tst_disableEmojiParsing()
 {
     QFETCH(QString, html);
 
-    QTextDocument textDocument;
+    BOBUIextDocument textDocument;
     textDocument.setPageSize(QSizeF(800, 600));
     textDocument.setHtml(html);
 
-    QTextOption opt = textDocument.defaultTextOption();
-    opt.setFlags(QTextOption::DisableEmojiParsing);
+    BOBUIextOption opt = textDocument.defaultTextOption();
+    opt.setFlags(BOBUIextOption::DisableEmojiParsing);
     textDocument.setDefaultTextOption(opt);
 
     QImage image(800, 600, QImage::Format_ARGB32);
-    image.fill(Qt::white);
+    image.fill(BobUI::white);
 
     {
         QPainter painter(&image);
 
         QAbstractTextDocumentLayout::PaintContext context;
-        context.palette.setColor(QPalette::Text, Qt::black);
+        context.palette.setColor(QPalette::Text, BobUI::black);
         textDocument.documentLayout()->draw(&painter, context);
     }
 

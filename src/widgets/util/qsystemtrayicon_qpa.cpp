@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemtrayicon_p.h"
 
-#include <QtGui/qpa/qplatformsystemtrayicon.h>
+#include <BobUIGui/qpa/qplatformsystemtrayicon.h>
 #include <qpa/qplatformtheme.h>
 #include <private/qguiapplication_p.h>
 #include <private/qhighdpiscaling_p.h>
@@ -12,9 +12,9 @@
 #include <QApplication>
 #include <QStyle>
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QSystemTrayIconPrivate::QSystemTrayIconPrivate()
     : qpa_sys(QGuiApplicationPrivate::platformTheme()->createPlatformSystemTrayIcon())
@@ -44,7 +44,7 @@ QRect QSystemTrayIconPrivate::geometry_sys() const
     if (!qpa_sys)
         return QRect();
     auto screen = QGuiApplication::primaryScreen();
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (menu)
         screen = menu->screen();
 #endif
@@ -59,7 +59,7 @@ void QSystemTrayIconPrivate::updateIcon_sys()
 
 void QSystemTrayIconPrivate::updateMenu_sys()
 {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (qpa_sys) {
         if (menu) {
             addPlatformMenu(menu);
@@ -103,6 +103,6 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &title, const QString
                         static_cast<QPlatformSystemTrayIcon::MessageIcon>(msgIcon), msecs);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMACCLIPBOARD_H
 #define QMACCLIPBOARD_H
 
-#include <QtGui/qutimimeconverter.h>
+#include <BobUIGui/qutimimeconverter.h>
 
-#include <QtCore/qpointer.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qvariant.h>
 
 #include <ApplicationServices/ApplicationServices.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUtiMimeConverter;
 
@@ -71,8 +71,8 @@ public:
     bool sync() const;
 };
 
-QString qt_mac_get_pasteboardString(PasteboardRef paste);
+QString bobui_mac_get_pasteboardString(PasteboardRef paste);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

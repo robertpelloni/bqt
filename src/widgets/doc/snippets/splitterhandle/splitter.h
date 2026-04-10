@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SPLITTER_H
 #define SPLITTER_H
@@ -14,7 +14,7 @@ class QPaintEvent;
 class Splitter : public QSplitter
 {
 public:
-    Splitter(Qt::Orientation orientation, QWidget *parent = nullptr);
+    Splitter(BobUI::Orientation orientation, QWidget *parent = nullptr);
 
 protected:
     QSplitterHandle *createHandle() override;
@@ -24,7 +24,7 @@ protected:
 class SplitterHandle : public QSplitterHandle
 {
 public:
-    SplitterHandle(Qt::Orientation orientation, QSplitter *parent);
+    SplitterHandle(BobUI::Orientation orientation, QSplitter *parent);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

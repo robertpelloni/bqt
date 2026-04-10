@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcheckbox.h"
 #include "qapplication.h"
@@ -10,13 +10,13 @@
 #include "qstyle.h"
 #include "qstyleoption.h"
 #include "qevent.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
 #include "private/qabstractbutton_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCheckBoxPrivate : public QAbstractButtonPrivate
 {
@@ -24,13 +24,13 @@ class QCheckBoxPrivate : public QAbstractButtonPrivate
 public:
     QCheckBoxPrivate()
         : QAbstractButtonPrivate(QSizePolicy::CheckBox), tristate(false), noChange(false),
-          hovering(true), publishedState(Qt::Unchecked) {}
+          hovering(true), publishedState(BobUI::Unchecked) {}
     QStyle::State styleButtonState(QStyle::State state) const override;
 
     uint tristate : 1;
     uint noChange : 1;
     uint hovering : 1;
-    Qt::CheckState publishedState : 3;
+    BobUI::CheckState publishedState : 3;
 
     void init();
 };
@@ -43,7 +43,7 @@ QStyle::State QCheckBoxPrivate::styleButtonState(QStyle::State state) const
         state |= QStyle::State_NoChange;
     else
         state |= (checked ? QStyle::State_On : QStyle::State_Off);
-    if (q->testAttribute(Qt::WA_Hover) && q->underMouse())
+    if (q->testAttribute(BobUI::WA_Hover) && q->underMouse())
         state.setFlag(QStyle::State_MouseOver, hovering);
     return state;
 }
@@ -53,7 +53,7 @@ QStyle::State QCheckBoxPrivate::styleButtonState(QStyle::State state) const
     \brief The QCheckBox widget provides a checkbox with a text label.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-checkbox.png {Check box for the save option}
 
@@ -103,22 +103,22 @@ QStyle::State QCheckBoxPrivate::styleButtonState(QStyle::State state) const
 /*!
     \fn void QCheckBox::stateChanged(int state)
 
-    \deprecated [6.9] Use checkStateChanged(Qt::CheckState) instead.
+    \deprecated [6.9] Use checkStateChanged(BobUI::CheckState) instead.
 
     This signal is emitted whenever the checkbox's state changes, i.e.,
     whenever the user checks or unchecks it.
 
-    \a state contains the checkbox's new Qt::CheckState.
+    \a state contains the checkbox's new BobUI::CheckState.
 */
 
 /*!
-    \fn void QCheckBox::checkStateChanged(Qt::CheckState state)
+    \fn void QCheckBox::checkStateChanged(BobUI::CheckState state)
     \since 6.7
 
     This signal is emitted whenever the checkbox's state changes, i.e.,
     whenever the user checks or unchecks it.
 
-    \a state contains the checkbox's new Qt::CheckState.
+    \a state contains the checkbox's new BobUI::CheckState.
 */
 
 /*!
@@ -134,7 +134,7 @@ void QCheckBoxPrivate::init()
     q->setCheckable(true);
     q->setMouseTracking(true);
     q->setForegroundRole(QPalette::WindowText);
-    q->setAttribute(Qt::WA_MacShowFocusRect);
+    q->setAttribute(BobUI::WA_MacShowFocusRect);
     setLayoutItemMargins(QStyle::SE_CheckBoxLayoutItem);
 }
 
@@ -206,14 +206,14 @@ bool QCheckBox::isTristate() const
     Returns the checkbox's check state. If you do not need tristate support,
     you can also use \l QAbstractButton::isChecked(), which returns a boolean.
 
-    \sa setCheckState(), Qt::CheckState
+    \sa setCheckState(), BobUI::CheckState
 */
-Qt::CheckState QCheckBox::checkState() const
+BobUI::CheckState QCheckBox::checkState() const
 {
     Q_D(const QCheckBox);
     if (d->tristate &&  d->noChange)
-        return Qt::PartiallyChecked;
-    return d->checked ? Qt::Checked : Qt::Unchecked;
+        return BobUI::PartiallyChecked;
+    return d->checked ? BobUI::Checked : BobUI::Unchecked;
 }
 
 /*!
@@ -221,35 +221,35 @@ Qt::CheckState QCheckBox::checkState() const
     support, you can also use \l QAbstractButton::setChecked(), which takes a
     boolean.
 
-    \sa checkState(), Qt::CheckState
+    \sa checkState(), BobUI::CheckState
 */
-void QCheckBox::setCheckState(Qt::CheckState state)
+void QCheckBox::setCheckState(BobUI::CheckState state)
 {
     Q_D(QCheckBox);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     bool noChange = d->noChange;
 #endif
-    if (state == Qt::PartiallyChecked) {
+    if (state == BobUI::PartiallyChecked) {
         d->tristate = true;
         d->noChange = true;
     } else {
         d->noChange = false;
     }
     d->blockRefresh = true;
-    setChecked(state != Qt::Unchecked);
+    setChecked(state != BobUI::Unchecked);
     d->blockRefresh = false;
     d->refresh();
     if (state != d->publishedState) {
         d->publishedState = state;
         emit checkStateChanged(state);
-#if QT_DEPRECATED_SINCE(6, 9)
-        QT_IGNORE_DEPRECATIONS(
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+        BOBUI_IGNORE_DEPRECATIONS(
         emit stateChanged(state);
         )
 #endif
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (noChange != d->noChange) {
         QAccessible::State s;
         s.checkStateMixed = true;
@@ -272,7 +272,7 @@ QSize QCheckBox::sizeHint() const
     QFontMetrics fm = fontMetrics();
     QStyleOptionButton opt;
     initStyleOption(&opt);
-    QSize sz = style()->itemTextRect(fm, QRect(), Qt::TextShowMnemonic, false,
+    QSize sz = style()->itemTextRect(fm, QRect(), BobUI::TextShowMnemonic, false,
                                      text()).size();
     if (!opt.icon.isNull())
         sz = QSize(sz.width() + opt.iconSize.width() + 4, qMax(sz.height(), opt.iconSize.height()));
@@ -306,7 +306,7 @@ void QCheckBox::paintEvent(QPaintEvent *)
 void QCheckBox::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QCheckBox);
-    if (testAttribute(Qt::WA_Hover)) {
+    if (testAttribute(BobUI::WA_Hover)) {
         bool hit = false;
         if (underMouse())
             hit = hitButton(e->position().toPoint());
@@ -338,12 +338,12 @@ void QCheckBox::checkStateSet()
 {
     Q_D(QCheckBox);
     d->noChange = false;
-    Qt::CheckState state = checkState();
+    BobUI::CheckState state = checkState();
     if (state != d->publishedState) {
         d->publishedState = state;
         emit checkStateChanged(state);
-#if QT_DEPRECATED_SINCE(6, 9)
-        QT_IGNORE_DEPRECATIONS(
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+        BOBUI_IGNORE_DEPRECATIONS(
         emit stateChanged(state);
         )
 #endif
@@ -357,7 +357,7 @@ void QCheckBox::nextCheckState()
 {
     Q_D(QCheckBox);
     if (d->tristate)
-        setCheckState((Qt::CheckState)((checkState() + 1) % 3));
+        setCheckState((BobUI::CheckState)((checkState() + 1) % 3));
     else {
         QAbstractButton::nextCheckState();
         QCheckBox::checkStateSet();
@@ -381,6 +381,6 @@ bool QCheckBox::event(QEvent *e)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcheckbox.cpp"

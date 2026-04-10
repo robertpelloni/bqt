@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -7,19 +7,19 @@
 
 # The bootstrap library has a few manual tweaks compared to other
 # libraries.
-qt_add_library(Bootstrap STATIC)
-qt_internal_add_sbom(Bootstrap
-    SBOM_ENTITY_TYPE QT_MODULE
+bobui_add_library(Bootstrap STATIC)
+bobui_internal_add_sbom(Bootstrap
+    SBOM_ENTITY_TYPE BOBUI_MODULE
     NO_INSTALL
 )
 
-qt_internal_add_sync_header_dependencies(Bootstrap Core)
+bobui_internal_add_sync_header_dependencies(Bootstrap Core)
 
-qt_internal_extend_target(Bootstrap
+bobui_internal_extend_target(Bootstrap
     SOURCES
         ../../corelib/global/qalloc.cpp
         ../../corelib/global/qassert.cpp
-        ../../corelib/global/qtenvironmentvariables.cpp
+        ../../corelib/global/bobuienvironmentvariables.cpp
         ../../corelib/io/qabstractfileengine.cpp
         ../../corelib/io/qdir.cpp
         ../../corelib/io/qfile.cpp
@@ -43,7 +43,7 @@ qt_internal_extend_target(Bootstrap
         ../../corelib/serialization/qjsonparser.cpp
         ../../corelib/serialization/qjsonvalue.cpp
         ../../corelib/serialization/qjsonwriter.cpp
-        ../../corelib/serialization/qtextstream.cpp
+        ../../corelib/serialization/bobuiextstream.cpp
         ../../corelib/text/qbytearray.cpp
         ../../corelib/text/qbytearraylist.cpp
         ../../corelib/text/qbytearraymatcher.cpp
@@ -60,7 +60,7 @@ qt_internal_extend_target(Bootstrap
         ../../corelib/time/qgregoriancalendar.cpp
         ../../corelib/time/qlocaltime.cpp
         ../../corelib/time/qromancalendar.cpp
-        ../../corelib/time/qtimezone.cpp
+        ../../corelib/time/bobuiimezone.cpp
         ../../corelib/tools/qarraydata.cpp
         ../../corelib/tools/qcommandlineoption.cpp
         ../../corelib/tools/qcommandlineparser.cpp
@@ -68,17 +68,17 @@ qt_internal_extend_target(Bootstrap
         ../../corelib/tools/qringbuffer.cpp
     DEFINES
         HAVE_CONFIG_H
-        QT_TYPESAFE_FLAGS
+        BOBUI_TYPESAFE_FLAGS
     PUBLIC_DEFINES
-        QT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
-        QT_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-        QT_VERSION_PATCH=${PROJECT_VERSION_PATCH}
-        QT_VERSION_STR="${PROJECT_VERSION}"
-        QT_USE_QSTRINGBUILDER
-        QT_BOOTSTRAPPED
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_CAST_TO_ASCII
-        QT_NO_FOREACH
+        BOBUI_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+        BOBUI_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+        BOBUI_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+        BOBUI_VERSION_STR="${PROJECT_VERSION}"
+        BOBUI_USE_QSTRINGBUILDER
+        BOBUI_BOOTSTRAPPED
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_CAST_TO_ASCII
+        BOBUI_NO_FOREACH
     INCLUDE_DIRECTORIES
         ..
         ../../3rdparty/tinycbor/src
@@ -86,14 +86,14 @@ qt_internal_extend_target(Bootstrap
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
         ../../corelib/global
     PUBLIC_LIBRARIES
-        Qt::Platform
+        BobUI::Platform
     NO_UNITY_BUILD
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(Bootstrap CONDITION UNIX
+bobui_internal_extend_target(Bootstrap CONDITION UNIX
     SOURCES
         ../../corelib/io/qfilesystemengine_unix.cpp
         ../../corelib/io/qfilesystemiterator_unix.cpp
@@ -102,12 +102,12 @@ qt_internal_extend_target(Bootstrap CONDITION UNIX
 )
 if(APPLE)
     set_source_files_properties(../../corelib/io/qfilesystemengine_unix.cpp PROPERTIES LANGUAGE OBJCXX)
-    qt_internal_extend_target(Bootstrap CONDITION
+    bobui_internal_extend_target(Bootstrap CONDITION
         PUBLIC_LIBRARIES ${FWUniformTypeIdentifiers}
     )
 endif()
 
-qt_internal_extend_target(Bootstrap CONDITION WIN32
+bobui_internal_extend_target(Bootstrap CONDITION WIN32
     SOURCES
         ../../corelib/io/qfilesystemengine_win.cpp
         ../../corelib/io/qfilesystemiterator_win.cpp
@@ -121,12 +121,12 @@ qt_internal_extend_target(Bootstrap CONDITION WIN32
         user32
 )
 
-qt_internal_extend_target(Bootstrap CONDITION MSVC AND CLANG
+bobui_internal_extend_target(Bootstrap CONDITION MSVC AND CLANG
     LIBRARIES
         clang_rt.builtins-$<IF:$<STREQUAL:${TEST_architecture_arch},arm64>,aarch64,x86_64>
 )
 
-qt_internal_extend_target(Bootstrap CONDITION APPLE
+bobui_internal_extend_target(Bootstrap CONDITION APPLE
     SOURCES
         ../../corelib/kernel/qcore_foundation.mm
         ../../corelib/kernel/qcore_mac.mm
@@ -143,18 +143,18 @@ if(APPLE)
     set_source_files_properties(../../corelib/kernel/qcore_mac.mm PROPERTIES COMPILE_FLAGS -fobjc-weak)
 endif()
 
-qt_internal_extend_target(Bootstrap CONDITION MACOS
+bobui_internal_extend_target(Bootstrap CONDITION MACOS
     SOURCES
     LIBRARIES
         ${FWCoreServices}
 )
 
-qt_internal_extend_target(Bootstrap CONDITION UIKIT
+bobui_internal_extend_target(Bootstrap CONDITION UIKIT
     LIBRARIES
         ${FWUIKit}
 )
 
-qt_internal_extend_target(Bootstrap CONDITION CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_pcre2
+bobui_internal_extend_target(Bootstrap CONDITION CMAKE_CROSSCOMPILING OR NOT BOBUI_FEATURE_system_pcre2
     SOURCES
         ../../3rdparty/pcre2/src/config.h
         ../../3rdparty/pcre2/src/pcre2.h
@@ -201,42 +201,42 @@ qt_internal_extend_target(Bootstrap CONDITION CMAKE_CROSSCOMPILING OR NOT QT_FEA
         ../../3rdparty/pcre2
 )
 
-qt_internal_extend_target(Bootstrap
-    CONDITION WIN32 AND (CMAKE_CROSSCOMPILING OR NOT QT_FEATURE_system_pcre2)
+bobui_internal_extend_target(Bootstrap
+    CONDITION WIN32 AND (CMAKE_CROSSCOMPILING OR NOT BOBUI_FEATURE_system_pcre2)
     PUBLIC_DEFINES PCRE2_STATIC
 )
 
-qt_internal_extend_target(Bootstrap CONDITION QT_FEATURE_system_pcre2 AND NOT CMAKE_CROSSCOMPILING
+bobui_internal_extend_target(Bootstrap CONDITION BOBUI_FEATURE_system_pcre2 AND NOT CMAKE_CROSSCOMPILING
     LIBRARIES
         WrapPCRE2::WrapPCRE2
 )
 
-qt_internal_extend_target(Bootstrap CONDITION MINGW AND WIN32
+bobui_internal_extend_target(Bootstrap CONDITION MINGW AND WIN32
     PUBLIC_LIBRARIES
         uuid
 )
 
 target_link_libraries(Bootstrap PRIVATE PlatformCommonInternal)
-qt_internal_apply_gc_binaries(Bootstrap PUBLIC)
+bobui_internal_apply_gc_binaries(Bootstrap PUBLIC)
 set_target_properties(Bootstrap PROPERTIES AUTOMOC OFF AUTOUIC OFF AUTORCC OFF)
-qt_internal_add_target_aliases(Bootstrap)
-qt_internal_add_target_optimized_flags_for_debug_config_in_current_scope(Bootstrap)
-qt_internal_enable_optimized_tools_lto(Bootstrap)
-qt_internal_workaround_static_lib_gcc_lto_issue(Bootstrap)
+bobui_internal_add_target_aliases(Bootstrap)
+bobui_internal_add_target_optimized_flags_for_debug_config_in_current_scope(Bootstrap)
+bobui_internal_enable_optimized_tools_lto(Bootstrap)
+bobui_internal_workaround_static_lib_gcc_lto_issue(Bootstrap)
 
-qt_set_msvc_cplusplus_options(Bootstrap PUBLIC)
-qt_set_common_target_properties(Bootstrap)
-qt_internal_apply_intel_cet(Bootstrap PUBLIC)
+bobui_set_msvc_cplusplus_options(Bootstrap PUBLIC)
+bobui_set_common_target_properties(Bootstrap)
+bobui_internal_apply_intel_cet(Bootstrap PUBLIC)
 
 if(WARNINGS_ARE_ERRORS)
-    qt_internal_set_warnings_are_errors_flags(Bootstrap PRIVATE)
+    bobui_internal_set_warnings_are_errors_flags(Bootstrap PRIVATE)
 endif()
-qt_internal_extend_target(Bootstrap CONDITION MSVC
+bobui_internal_extend_target(Bootstrap CONDITION MSVC
     DEFINES
         _CRT_SECURE_NO_WARNINGS
 )
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.20.0" AND QT_FEATURE_debug_and_release)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.20.0" AND BOBUI_FEATURE_debug_and_release)
     set_property(TARGET Bootstrap
-        PROPERTY EXCLUDE_FROM_ALL "$<NOT:$<CONFIG:${QT_MULTI_CONFIG_FIRST_CONFIG}>>")
+        PROPERTY EXCLUDE_FROM_ALL "$<NOT:$<CONFIG:${BOBUI_MULTI_CONFIG_FIRST_CONFIG}>>")
 endif()

@@ -1,13 +1,13 @@
 // Copyright (C) 2013 Teo Mrnjavac <teo@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbsessionmanager.h"
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qvarlengtharray.h>
 #include <qpa/qwindowsysteminterface.h>
 
 #include <qguiapplication.h>
@@ -20,7 +20,7 @@
 
 #include <cerrno> // ERANGE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QSmSocketReceiver : public QObject
 {
@@ -47,7 +47,7 @@ static bool sm_waitingForInteraction;
 static bool sm_isshutdown;
 static bool sm_phase2;
 static bool sm_in_phase2;
-bool qt_sm_blockUserInput = false;
+bool bobui_sm_blockUserInput = false;
 
 static QSmSocketReceiver* sm_receiver = nullptr;
 
@@ -69,7 +69,7 @@ static void resetSmState()
     sm_interactionActive = false;
     sm_interactStyle = SmInteractStyleNone;
     sm_smActive = false;
-    qt_sm_blockUserInput = false;
+    bobui_sm_blockUserInput = false;
     sm_isshutdown = false;
     sm_phase2 = false;
     sm_in_phase2 = false;
@@ -125,7 +125,7 @@ static void sm_setProperty(const QString &name, const QStringList &value)
 
 
 // workaround for broken libsm, see below
-struct QT_smcConn {
+struct BOBUI_smcConn {
     unsigned int save_yourself_in_progress : 1;
     unsigned int shutdown_in_progress : 1;
 };
@@ -143,9 +143,9 @@ static void sm_saveYourselfCallback(SmcConn smcConn, SmPointer clientData,
 
     // ugly workaround for broken libSM. libSM should do that _before_
     // actually invoking the callback in sm_process.c
-    ((QT_smcConn*)smcConn)->save_yourself_in_progress = true;
+    ((BOBUI_smcConn*)smcConn)->save_yourself_in_progress = true;
     if (sm_isshutdown)
-        ((QT_smcConn*)smcConn)->shutdown_in_progress = true;
+        ((BOBUI_smcConn*)smcConn)->shutdown_in_progress = true;
 
     sm_performSaveYourself((QXcbSessionManager*) clientData);
     if (!sm_isshutdown) // we cannot expect a confirmation message in that case
@@ -155,7 +155,7 @@ static void sm_saveYourselfCallback(SmcConn smcConn, SmPointer clientData,
 static void sm_performSaveYourself(QXcbSessionManager *sm)
 {
     if (sm_isshutdown)
-        qt_sm_blockUserInput = true;
+        bobui_sm_blockUserInput = true;
 
     // generate a new session key
     timeval tv;
@@ -198,7 +198,7 @@ static void sm_performSaveYourself(QXcbSessionManager *sm)
     restart << argument0 << "-session"_L1 << sm->sessionId() + u'_' + sm->sessionKey();
 
     QFileInfo fi(QCoreApplication::applicationFilePath());
-    if (qAppName().compare(fi.fileName(), Qt::CaseInsensitive) != 0)
+    if (qAppName().compare(fi.fileName(), BobUI::CaseInsensitive) != 0)
         restart << "-name"_L1 << qAppName();
     sm->setRestartCommand(restart);
     QStringList discard;
@@ -222,7 +222,7 @@ static void sm_performSaveYourself(QXcbSessionManager *sm)
 
     if (sm_phase2 && !sm_in_phase2) {
         SmcRequestSaveYourselfPhase2(smcConnection, sm_saveYourselfPhase2Callback, (SmPointer*) sm);
-        qt_sm_blockUserInput = false;
+        bobui_sm_blockUserInput = false;
     } else {
         // close eventual interaction monitors and cancel the
         // shutdown, if required. Note that we can only cancel when
@@ -341,7 +341,7 @@ QXcbSessionManager::QXcbSessionManager(const QString &id, const QString &key)
 
     QString error = QString::fromLocal8Bit(cerror);
     if (!smcConnection)
-        qWarning("Qt: Session management error: %s", qPrintable(error));
+        qWarning("BobUI: Session management error: %s", qPrintable(error));
     else
         sm_receiver = new QSmSocketReceiver(IceConnectionNumber(SmcGetIceConnection(smcConnection)));
 }
@@ -383,7 +383,7 @@ bool QXcbSessionManager::allowsInteraction()
         sm_waitingForInteraction = false;
         if (sm_smActive) { // not cancelled
             sm_interactionActive = true;
-            qt_sm_blockUserInput = false;
+            bobui_sm_blockUserInput = false;
             return true;
         }
     }
@@ -413,7 +413,7 @@ bool QXcbSessionManager::allowsErrorInteraction()
         sm_waitingForInteraction = false;
         if (sm_smActive) { // not cancelled
             sm_interactionActive = true;
-            qt_sm_blockUserInput = false;
+            bobui_sm_blockUserInput = false;
             return true;
         }
     }
@@ -426,7 +426,7 @@ void QXcbSessionManager::release()
         SmcInteractDone(smcConnection, False);
         sm_interactionActive = false;
         if (sm_smActive && sm_isshutdown)
-            qt_sm_blockUserInput = true;
+            bobui_sm_blockUserInput = true;
     }
 }
 

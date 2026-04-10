@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 add_subdirectory(qanystringview)
@@ -12,9 +12,9 @@ add_subdirectory(qchar)
 add_subdirectory(qcollator)
 add_subdirectory(qlatin1stringmatcher)
 add_subdirectory(qlatin1stringview)
-if(NOT QT_BUILD_WASM_BATCHED_TESTS)
+if(NOT BOBUI_BUILD_WASM_BATCHED_TESTS)
     add_subdirectory(qlocale)
-    if(QT_FEATURE_developer_build)
+    if(BOBUI_FEATURE_developer_build)
         add_subdirectory(qlocaledata)
     endif()
 endif()
@@ -29,6 +29,6 @@ add_subdirectory(qstringlist)
 add_subdirectory(qstringmatcher)
 add_subdirectory(qstringtokenizer)
 add_subdirectory(qstringview)
-add_subdirectory(qtextboundaryfinder)
+add_subdirectory(bobuiextboundaryfinder)
 add_subdirectory(qunicodetools)
 add_subdirectory(qutf8stringview)

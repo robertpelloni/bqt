@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
 #include "qprintdialog.h"
 
@@ -22,11 +22,11 @@
 #define START_PAGE_GENERAL  0XFFFFFFFF
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-//extern void qt_win_eatMouseMove();
+//extern void bobui_win_eatMouseMove();
 
 class QPrintDialogPrivate : public QAbstractPrintDialogPrivate
 {
@@ -43,7 +43,7 @@ public:
     QWin32PrintEnginePrivate *ep;
 };
 
-static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWindow *parentWindow,
+static void bobui_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWindow *parentWindow,
                                     QPrintDialog *pdlg,
                                     QPrintDialogPrivate *d, HGLOBAL *tempDevNames)
 {
@@ -104,7 +104,7 @@ static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWindow *parentWindow,
         pd->Flags |= PD_PRINTTOFILE;
 
     WId wId = parentWindow ? parentWindow->winId() : 0;
-    //QTBUG-118899 PrintDlg needs valid window handle in hwndOwner
+    //BOBUIBUG-118899 PrintDlg needs valid window handle in hwndOwner
     //So in case there is no valid handle in the application,
     //use the desktop as valid handle.
     pd->hwndOwner = wId != 0 ? HWND(wId) : GetDesktopWindow();
@@ -113,7 +113,7 @@ static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWindow *parentWindow,
     pd->nCopies = d->printer->copyCount();
 }
 
-static void qt_win_read_back_PRINTDLGEX(PRINTDLGEX *pd, QPrintDialog *pdlg, QPrintDialogPrivate *d)
+static void bobui_win_read_back_PRINTDLGEX(PRINTDLGEX *pd, QPrintDialog *pdlg, QPrintDialogPrivate *d)
 {
     if (pd->Flags & PD_SELECTION) {
         pdlg->setPrintRange(QPrintDialog::Selection);
@@ -156,7 +156,7 @@ QPrintDialog::QPrintDialog(QPrinter *printer, QWidget *parent)
         return;
     d->engine = static_cast<QWin32PrintEngine *>(d->printer->printEngine());
     d->ep = static_cast<QWin32PrintEngine *>(d->printer->printEngine())->d_func();
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPrintDialog::QPrintDialog(QWidget *parent)
@@ -167,7 +167,7 @@ QPrintDialog::QPrintDialog(QWidget *parent)
         return;
     d->engine = static_cast<QWin32PrintEngine *>(d->printer->printEngine());
     d->ep = static_cast<QWin32PrintEngine *>(d->printer->printEngine())->d_func();
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPrintDialog::~QPrintDialog()
@@ -214,7 +214,7 @@ int QPrintDialogPrivate::openWindowsPrintDialogModally()
     memset(&pd, 0, sizeof(PRINTDLGEX));
     pd.lStructSize = sizeof(PRINTDLGEX);
     pd.lpPageRanges = &pageRange;
-    qt_win_setup_PRINTDLGEX(&pd, parentWindow, q, this, tempDevNames);
+    bobui_win_setup_PRINTDLGEX(&pd, parentWindow, q, this, tempDevNames);
 
     do {
         done = true;
@@ -244,13 +244,13 @@ int QPrintDialogPrivate::openWindowsPrintDialogModally()
 
     q->QDialog::setVisible(false);
 
-//    qt_win_eatMouseMove();
+//    bobui_win_eatMouseMove();
 
     // write values back...
     if (result && (pd.dwResultAction == PD_RESULT_PRINT
                    || pd.dwResultAction == PD_RESULT_APPLY))
     {
-        qt_win_read_back_PRINTDLGEX(&pd, q, this);
+        bobui_win_read_back_PRINTDLGEX(&pd, q, this);
         // update printer validity
         printer->d_func()->validPrinter = !printer->printerName().isEmpty();
     }
@@ -278,6 +278,6 @@ void QPrintDialog::setVisible(bool visible)
     return;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprintdialog.cpp"

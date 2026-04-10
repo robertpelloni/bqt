@@ -1,15 +1,15 @@
 // Copyright (C) 2018 Kitware, Inc.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QMOCKPLUGIN_H
 #define QMOCKPLUGIN_H
 
-#include <QtCore/QString>
-#include <QtCore/QtPlugin>
+#include <BobUICore/QString>
+#include <BobUICore/BobUIPlugin>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#define QMockPlugin_iid "org.qt-project.Qt.Tests.QMockPlugin"
+#define QMockPlugin_iid "org.bobui-project.BobUI.Tests.QMockPlugin"
 
 class QMockPlugin
 {
@@ -20,6 +20,6 @@ public:
 
 Q_DECLARE_INTERFACE(QMockPlugin, QMockPlugin_iid)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMOCKPLUGIN_H

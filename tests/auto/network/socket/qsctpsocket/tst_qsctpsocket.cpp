@@ -1,15 +1,15 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
-#include <QTestEventLoop>
+#include <BOBUIestEventLoop>
 #include <QByteArray>
 #include <QString>
 #include <QHostAddress>
 #include <QHostInfo>
 #include <QNetworkInterface>
-#include <QTime>
+#include <BOBUIime>
 
 #include <QSctpSocket>
 #include <QSctpServer>
@@ -30,7 +30,7 @@ public:
     static void enterLoop(int secs)
     {
         ++loopLevel;
-        QTestEventLoop::instance().enterLoop(secs);
+        BOBUIestEventLoop::instance().enterLoop(secs);
         --loopLevel;
     }
     static void exitLoop()
@@ -38,11 +38,11 @@ public:
         // Safe exit - if we aren't in an event loop, don't
         // exit one.
         if (loopLevel > 0)
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
     }
     static bool timeout()
     {
-        return QTestEventLoop::instance().timeout();
+        return BOBUIestEventLoop::instance().timeout();
     }
 
 private slots:
@@ -103,9 +103,9 @@ void tst_QSctpSocket::constructing()
 //----------------------------------------------------------------------------------
 void tst_QSctpSocket::bind_data()
 {
-    QTest::addColumn<QString>("stringAddr");
-    QTest::addColumn<bool>("successExpected");
-    QTest::addColumn<QString>("stringExpectedLocalAddress");
+    BOBUIest::addColumn<QString>("stringAddr");
+    BOBUIest::addColumn<bool>("successExpected");
+    BOBUIest::addColumn<QString>("stringExpectedLocalAddress");
 
     // iterate all interfaces, add all addresses on them as test data
     QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
@@ -119,7 +119,7 @@ void tst_QSctpSocket::bind_data()
                 continue; // link-local bind will fail, at least on Linux, so skip it.
 
             QString ip(entry.ip().toString());
-            QTest::newRow(ip.toLatin1().constData()) << ip << true << ip;
+            BOBUIest::newRow(ip.toLatin1().constData()) << ip << true << ip;
         }
     }
 
@@ -133,7 +133,7 @@ void tst_QSctpSocket::bind_data()
     };
 
     for (const QString &badAddress : knownBad)
-        QTest::newRow(badAddress.toLatin1().constData()) << badAddress << false << QString();
+        BOBUIest::newRow(badAddress.toLatin1().constData()) << badAddress << false << QString();
 }
 
 // Testing bind function
@@ -225,9 +225,9 @@ void tst_QSctpSocket::hostNotFound()
 {
     QSctpSocket socket;
 
-    socket.connectToHost("nosuchserver.qt-project.org", 80);
+    socket.connectToHost("nosuchserver.bobui-project.org", 80);
     QVERIFY(!socket.waitForConnected(3000));
-    QCOMPARE(socket.state(), QTcpSocket::UnconnectedState);
+    QCOMPARE(socket.state(), BOBUIcpSocket::UnconnectedState);
     QCOMPARE(socket.error(), QAbstractSocket::HostNotFoundError);
 }
 
@@ -287,17 +287,17 @@ void tst_QSctpSocket::readAndWrite()
 //----------------------------------------------------------------------------------
 void tst_QSctpSocket::loop_data()
 {
-    QTest::addColumn<QByteArray>("peterDatagram");
-    QTest::addColumn<QByteArray>("paulDatagram");
-    QTest::addColumn<int>("peterChannel");
-    QTest::addColumn<int>("paulChannel");
+    BOBUIest::addColumn<QByteArray>("peterDatagram");
+    BOBUIest::addColumn<QByteArray>("paulDatagram");
+    BOBUIest::addColumn<int>("peterChannel");
+    BOBUIest::addColumn<int>("paulChannel");
 
-    QTest::newRow("\"Almond!\" | \"Joy!\"") << QByteArray("Almond!") << QByteArray("Joy!") << 0 << 0;
-    QTest::newRow("\"A\" | \"B\"") << QByteArray("A") << QByteArray("B") << 1 << 1;
-    QTest::newRow("\"AB\" | \"B\"") << QByteArray("AB") << QByteArray("B") << 0 << 1;
-    QTest::newRow("\"AB\" | \"BB\"") << QByteArray("AB") << QByteArray("BB") << 1 << 0;
-    QTest::newRow("\"A\\0B\" | \"B\\0B\"") << QByteArray::fromRawData("A\0B", 3) << QByteArray::fromRawData("B\0B", 3) << 0 << 1;
-    QTest::newRow("BigDatagram") << QByteArray(600, '@') << QByteArray(600, '@') << 1 << 0;
+    BOBUIest::newRow("\"Almond!\" | \"Joy!\"") << QByteArray("Almond!") << QByteArray("Joy!") << 0 << 0;
+    BOBUIest::newRow("\"A\" | \"B\"") << QByteArray("A") << QByteArray("B") << 1 << 1;
+    BOBUIest::newRow("\"AB\" | \"B\"") << QByteArray("AB") << QByteArray("B") << 0 << 1;
+    BOBUIest::newRow("\"AB\" | \"BB\"") << QByteArray("AB") << QByteArray("BB") << 1 << 0;
+    BOBUIest::newRow("\"A\\0B\" | \"B\\0B\"") << QByteArray::fromRawData("A\0B", 3) << QByteArray::fromRawData("B\0B", 3) << 0 << 1;
+    BOBUIest::newRow("BigDatagram") << QByteArray(600, '@') << QByteArray(600, '@') << 1 << 0;
 }
 
 void tst_QSctpSocket::loop()
@@ -342,15 +342,15 @@ void tst_QSctpSocket::loop()
 //----------------------------------------------------------------------------------
 void tst_QSctpSocket::loopInTCPMode_data()
 {
-    QTest::addColumn<QByteArray>("peterDatagram");
-    QTest::addColumn<QByteArray>("paulDatagram");
+    BOBUIest::addColumn<QByteArray>("peterDatagram");
+    BOBUIest::addColumn<QByteArray>("paulDatagram");
 
-    QTest::newRow("\"Almond!\" | \"Joy!\"") << QByteArray("Almond!") << QByteArray("Joy!");
-    QTest::newRow("\"A\" | \"B\"") << QByteArray("A") << QByteArray("B");
-    QTest::newRow("\"AB\" | \"B\"") << QByteArray("AB") << QByteArray("B");
-    QTest::newRow("\"AB\" | \"BB\"") << QByteArray("AB") << QByteArray("BB");
-    QTest::newRow("\"A\\0B\" | \"B\\0B\"") << QByteArray::fromRawData("A\0B", 3) << QByteArray::fromRawData("B\0B", 3);
-    QTest::newRow("BigDatagram") << QByteArray(600, '@') << QByteArray(600, '@');
+    BOBUIest::newRow("\"Almond!\" | \"Joy!\"") << QByteArray("Almond!") << QByteArray("Joy!");
+    BOBUIest::newRow("\"A\" | \"B\"") << QByteArray("A") << QByteArray("B");
+    BOBUIest::newRow("\"AB\" | \"B\"") << QByteArray("AB") << QByteArray("B");
+    BOBUIest::newRow("\"AB\" | \"BB\"") << QByteArray("AB") << QByteArray("BB");
+    BOBUIest::newRow("\"A\\0B\" | \"B\\0B\"") << QByteArray::fromRawData("A\0B", 3) << QByteArray::fromRawData("B\0B", 3);
+    BOBUIest::newRow("BigDatagram") << QByteArray(600, '@') << QByteArray(600, '@');
 }
 
 void tst_QSctpSocket::loopInTCPMode()
@@ -369,7 +369,7 @@ void tst_QSctpSocket::loopInTCPMode()
     QVERIFY(peter.waitForConnected(3000));
     QVERIFY(server.waitForNewConnection(3000));
 
-    QTcpSocket *paul = server.nextPendingConnection();
+    BOBUIcpSocket *paul = server.nextPendingConnection();
     QVERIFY(paul);
 
     QCOMPARE(peter.write(peterDatagram), qint64(peterDatagram.size()));
@@ -454,6 +454,6 @@ void tst_QSctpSocket::clientSendDataOnDelayedDisconnect()
     QCOMPARE(datagram.data(), sendData);
 }
 
-QTEST_MAIN(tst_QSctpSocket)
+BOBUIEST_MAIN(tst_QSctpSocket)
 
 #include "tst_qsctpsocket.moc"

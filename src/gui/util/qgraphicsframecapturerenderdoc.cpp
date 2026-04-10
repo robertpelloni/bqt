@@ -1,26 +1,26 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicsframecapturerenderdoc_p_p.h"
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qlibrary.h>
-#include <QtCore/qmutex.h>
-#include "QtGui/rhi/qrhi.h"
-#include "QtGui/rhi/qrhi_platform.h"
-#include "QtGui/qopenglcontext.h"
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qlibrary.h>
+#include <BobUICore/qmutex.h>
+#include "BobUIGui/rhi/qrhi.h"
+#include "BobUIGui/rhi/qrhi_platform.h"
+#include "BobUIGui/qopenglcontext.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcGraphicsFrameCapture, "qt.gui.graphicsframecapture")
+Q_LOGGING_CATEGORY(lcGraphicsFrameCapture, "bobui.gui.graphicsframecapture")
 
 RENDERDOC_API_1_6_0 *QGraphicsFrameCaptureRenderDoc::s_rdocApi = nullptr;
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 QBasicMutex QGraphicsFrameCaptureRenderDoc::s_frameCaptureMutex;
 #endif
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 static void *glNativeContext(QOpenGLContext *context) {
     void *nctx = nullptr;
     if (context != nullptr && context->isValid()) {
@@ -29,26 +29,26 @@ static void *glNativeContext(QOpenGLContext *context) {
 #endif
 
 #ifdef Q_OS_LINUX
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
         QNativeInterface::QEGLContext *eglItf = context->nativeInterface<QNativeInterface::QEGLContext>();
         if (eglItf)
             nctx = eglItf->nativeContext();
 #endif
 
-#if QT_CONFIG(xcb_glx_plugin)
+#if BOBUI_CONFIG(xcb_glx_plugin)
         QNativeInterface::QGLXContext *glxItf = context->nativeInterface<QNativeInterface::QGLXContext>();
         if (glxItf)
             nctx = glxItf->nativeContext();
 #endif
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
         nctx = context->nativeInterface<QNativeInterface::QCocoaGLContext>()->nativeContext();
 #endif
     }
     return nctx;
 }
-#endif // QT_CONFIG(opengl)
+#endif // BOBUI_CONFIG(opengl)
 
 /*!
     \class QGraphicsFrameCaptureRenderDoc
@@ -56,7 +56,7 @@ static void *glNativeContext(QOpenGLContext *context) {
     \brief The QGraphicsFrameCaptureRenderDoc class provides a way to capture a record of draw calls
            for different graphics APIs.
     \since 6.6
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     For applications that render using graphics APIs like Vulkan or OpenGL, it would be
     convenient to have a way to check the draw calls done by the application. Specially
@@ -129,7 +129,7 @@ void QGraphicsFrameCaptureRenderDoc::setRhi(QRhi *rhi)
         break;
     }
     case QRhi::Implementation::Vulkan: {
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         const  QRhiVulkanNativeHandles *vknh = static_cast<const QRhiVulkanNativeHandles *>(nh);
         m_nativeHandle = RENDERDOC_DEVICEPOINTER_FROM_VKINSTANCE(vknh->inst->vkInstance());
         break;
@@ -138,7 +138,7 @@ void QGraphicsFrameCaptureRenderDoc::setRhi(QRhi *rhi)
         break;
     }
     case QRhi::Implementation::OpenGLES2: {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         const  QRhiGles2NativeHandles *glnh = static_cast<const QRhiGles2NativeHandles *>(nh);
         m_nativeHandle = glNativeContext(glnh->context);
         if (m_nativeHandle)
@@ -172,7 +172,7 @@ void QGraphicsFrameCaptureRenderDoc::startCaptureFrame()
         return;
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // There is a single instance of RenderDoc library and it needs mutex for multithreading access.
     QMutexLocker locker(&s_frameCaptureMutex);
 #endif
@@ -203,7 +203,7 @@ void QGraphicsFrameCaptureRenderDoc::endCaptureFrame()
         return;
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // There is a single instance of RenderDoc library and it needs mutex for multithreading access.
     QMutexLocker locker(&s_frameCaptureMutex);
 #endif
@@ -268,7 +268,7 @@ void QGraphicsFrameCaptureRenderDoc::openCapture()
         return;
     }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // There is a single instance of RenderDoc library and it needs mutex for multithreading access.
     QMutexLocker locker(&s_frameCaptureMutex);
 #endif
@@ -280,7 +280,7 @@ void QGraphicsFrameCaptureRenderDoc::openCapture()
 
 void QGraphicsFrameCaptureRenderDoc::init()
 {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     // There is a single instance of RenderDoc library and it needs mutex for multithreading access.
     QMutexLocker locker(&s_frameCaptureMutex);
 #endif
@@ -308,4 +308,4 @@ void QGraphicsFrameCaptureRenderDoc::init()
     s_rdocApi->SetCaptureFilePathTemplate(rdocFilePathTemplate.toUtf8().constData());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

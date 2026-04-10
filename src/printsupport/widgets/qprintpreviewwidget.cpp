@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprintpreviewwidget.h"
 #include "private/qwidget_p.h"
 #include <private/qprinter_p.h>
 
-#include <QtCore/qmath.h>
-#include <QtWidgets/qboxlayout.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtWidgets/qgraphicsview.h>
-#include <QtWidgets/qscrollbar.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUICore/qmath.h>
+#include <BobUIWidgets/qboxlayout.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#include <BobUIWidgets/qscrollbar.h>
+#include <BobUIWidgets/qstyleoption.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 class PageItem : public QGraphicsItem
 {
 public:
@@ -51,8 +51,8 @@ void PageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 #if 0
     // Draw item bounding rect, for debugging
     painter->save();
-    painter->setPen(QPen(Qt::red, 0));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(BobUI::red, 0));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(QRectF(-border()+1.0, -border()+1.0, boundingRect().width()-2, boundingRect().height()-2));
     painter->restore();
 #endif
@@ -82,7 +82,7 @@ void PageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->fillRect(cshadow, QBrush(cgrad));
 
     painter->setClipRect(paperRect & option->exposedRect);
-    painter->fillRect(paperRect, Qt::white);
+    painter->fillRect(paperRect, BobUI::white);
     if (!pagePicture)
         return;
     painter->drawPicture(pageRect.topLeft(), *pagePicture);
@@ -91,14 +91,14 @@ void PageItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     QPainterPath path;
     path.addRect(paperRect);
     path.addRect(pageRect);
-    painter->setPen(QPen(Qt::NoPen));
+    painter->setPen(QPen(BobUI::NoPen));
     painter->setBrush(QColor(255, 255, 255, 180));
     painter->drawPath(path);
 
 #if 0
     // Draw frame around paper.
-    painter->setPen(QPen(Qt::black, 0));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(BobUI::black, 0));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(paperRect);
 #endif
 
@@ -123,7 +123,7 @@ protected:
     void resizeEvent(QResizeEvent* e) override
     {
         {
-            const QSignalBlocker blocker(verticalScrollBar()); // Don't change page, QTBUG-14517
+            const QSignalBlocker blocker(verticalScrollBar()); // Don't change page, BOBUIBUG-14517
             QGraphicsView::resizeEvent(e);
         }
         emit resized();
@@ -136,10 +136,10 @@ protected:
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-using GraphicsView = QtPrivate::GraphicsView;
-using PageItem = QtPrivate::PageItem;
+using GraphicsView = BobUIPrivate::GraphicsView;
+using PageItem = BobUIPrivate::PageItem;
 
 class QPrintPreviewWidgetPrivate : public QWidgetPrivate
 {
@@ -194,7 +194,7 @@ void QPrintPreviewWidgetPrivate::_q_fit(bool doFitting)
     if (doFitting && fitting) {
         QRect viewRect = graphicsView->viewport()->rect();
         if (zoomMode == QPrintPreviewWidget::FitInView) {
-            const QList<QGraphicsItem*> containedItems = graphicsView->items(viewRect, Qt::ContainsItemBoundingRect);
+            const QList<QGraphicsItem*> containedItems = graphicsView->items(viewRect, BobUI::ContainsItemBoundingRect);
             for (QGraphicsItem* item : containedItems) {
                 PageItem* pg = static_cast<PageItem*>(item);
                 if (pg->pageNumber() == curPage)
@@ -219,7 +219,7 @@ void QPrintPreviewWidgetPrivate::_q_fit(bool doFitting)
     }
 
     if (zoomMode == QPrintPreviewWidget::FitToWidth) {
-        QTransform t;
+        BOBUIransform t;
         qreal scale = graphicsView->viewport()->width() / target.width();
         t.scale(scale, scale);
         graphicsView->setTransform(t);
@@ -229,7 +229,7 @@ void QPrintPreviewWidgetPrivate::_q_fit(bool doFitting)
             graphicsView->ensureVisible(viewSceneRect); // Nah...
         }
     } else {
-        graphicsView->fitInView(target, Qt::KeepAspectRatio);
+        graphicsView->fitInView(target, BobUI::KeepAspectRatio);
         if (zoomMode == QPrintPreviewWidget::FitInView) {
             const int step = qRound(graphicsView->transform().mapRect(target).height());
             graphicsView->verticalScrollBar()->setSingleStep(step);
@@ -288,7 +288,7 @@ void QPrintPreviewWidgetPrivate::init()
     QObject::connect(graphicsView, SIGNAL(resized()), q, SLOT(_q_fit()));
 
     scene = new QGraphicsScene(graphicsView);
-    scene->setBackgroundBrush(Qt::gray);
+    scene->setBackgroundBrush(BobUI::gray);
     graphicsView->setScene(scene);
 
     QVBoxLayout *layout = new QVBoxLayout(q);
@@ -425,7 +425,7 @@ void QPrintPreviewWidgetPrivate::setZoomFactor(qreal _zoomFactor)
     previewing page layouts for printer output.
 
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     QPrintPreviewDialog uses a QPrintPreviewWidget internally, and the
     purpose of QPrintPreviewWidget is to make it possible to embed the
@@ -490,7 +490,7 @@ void QPrintPreviewWidgetPrivate::setZoomFactor(qreal _zoomFactor)
 
     \sa QWidget::setWindowFlags()
 */
-QPrintPreviewWidget::QPrintPreviewWidget(QPrinter *printer, QWidget *parent, Qt::WindowFlags flags)
+QPrintPreviewWidget::QPrintPreviewWidget(QPrinter *printer, QWidget *parent, BobUI::WindowFlags flags)
     : QWidget(*new QPrintPreviewWidgetPrivate, parent, flags)
 {
     Q_D(QPrintPreviewWidget);
@@ -506,7 +506,7 @@ QPrintPreviewWidget::QPrintPreviewWidget(QPrinter *printer, QWidget *parent, Qt:
     constructed QPrinter object, which will be used to generate the
     preview.
 */
-QPrintPreviewWidget::QPrintPreviewWidget(QWidget *parent, Qt::WindowFlags flags)
+QPrintPreviewWidget::QPrintPreviewWidget(QWidget *parent, BobUI::WindowFlags flags)
     : QWidget(*new QPrintPreviewWidgetPrivate, parent, flags)
 {
     Q_D(QPrintPreviewWidget);
@@ -545,7 +545,7 @@ void QPrintPreviewWidget::setViewMode(ViewMode mode)
     d->viewMode = mode;
     d->layoutPages();
     if (d->viewMode == AllPagesView) {
-        d->graphicsView->fitInView(d->scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+        d->graphicsView->fitInView(d->scene->itemsBoundingRect(), BobUI::KeepAspectRatio);
         d->fitting = false;
         d->zoomMode = QPrintPreviewWidget::CustomZoom;
         d->zoomFactor = d->graphicsView->transform().m11() * (float(d->printer->logicalDpiY()) / logicalDpiY());
@@ -794,7 +794,7 @@ void QPrintPreviewWidget::setVisible(bool visible)
 */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprintpreviewwidget.cpp"
 #include "qprintpreviewwidget.moc"

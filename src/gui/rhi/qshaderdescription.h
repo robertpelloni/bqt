@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSHADERDESCRIPTION_H
 #define QSHADERDESCRIPTION_H
@@ -10,15 +10,15 @@
 //
 // This file is part of the RHI API, with limited compatibility guarantees.
 // Usage of this API may make your code source and binary incompatible with
-// future versions of Qt.
+// future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qlist.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qlist.h>
 #include <array>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QShaderDescriptionPrivate;
 class QDataStream;
@@ -319,7 +319,7 @@ public:
 private:
     QShaderDescriptionPrivate *d;
     friend struct QShaderDescriptionPrivate;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
     friend Q_GUI_EXPORT QDebug operator<<(QDebug, const QShaderDescription &);
 #endif
     friend Q_GUI_EXPORT bool operator==(const QShaderDescription &lhs, const QShaderDescription &rhs) noexcept;
@@ -328,7 +328,7 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QShaderDescription::ImageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QShaderDescription::QualifierFlags)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QShaderDescription &);
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QShaderDescription::InOutVariable &);
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QShaderDescription::BlockVariable &);
@@ -381,6 +381,6 @@ inline bool operator!=(const QShaderDescription::BuiltinVariable &lhs, const QSh
     return !(lhs == rhs);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

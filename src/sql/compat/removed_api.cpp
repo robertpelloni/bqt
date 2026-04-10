@@ -1,44 +1,44 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#define QT_SQL_BUILD_REMOVED_API
+#define BOBUI_SQL_BUILD_REMOVED_API
 
-#include "qtsqlglobal.h"
+#include "bobuisqlglobal.h"
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-#if QT_SQL_REMOVED_SINCE(6, 4)
+#if BOBUI_SQL_REMOVED_SINCE(6, 4)
 
-#endif // QT_SQL_REMOVED_SINCE(6, 4)
+#endif // BOBUI_SQL_REMOVED_SINCE(6, 4)
 
-#if QT_SQL_REMOVED_SINCE(6, 5)
+#if BOBUI_SQL_REMOVED_SINCE(6, 5)
 
-#if QT_CONFIG(sqlmodel)
+#if BOBUI_CONFIG(sqlmodel)
 
 #include "qsqlquerymodel.h"
 #include "qsqlquery.h"
 
 QSqlQuery QSqlQueryModel::query() const
 {
-    QT_IGNORE_DEPRECATIONS(return query(QT6_CALL_NEW_OVERLOAD);)
+    BOBUI_IGNORE_DEPRECATIONS(return query(BOBUI6_CALL_NEW_OVERLOAD);)
 }
 
 #include "qsqltablemodel.h"
 
 void QSqlTableModel::setQuery(const QSqlQuery &query)
 {
-    QT_IGNORE_DEPRECATIONS(QSqlQueryModel::setQuery(query);)
+    BOBUI_IGNORE_DEPRECATIONS(QSqlQueryModel::setQuery(query);)
 }
 
-#endif // QT_CONFIG(sqlmodel)
+#endif // BOBUI_CONFIG(sqlmodel)
 
-#endif // QT_SQL_REMOVED_SINCE(6, 5)
+#endif // BOBUI_SQL_REMOVED_SINCE(6, 5)
 
-#if QT_SQL_REMOVED_SINCE(6, 6)
+#if BOBUI_SQL_REMOVED_SINCE(6, 6)
 
 #include "qsqlresult.h"
-#include <QtSql/private/qsqlresult_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
 
 // #include <qotherheader.h>
 // // implement removed functions from qotherheader.h
@@ -50,9 +50,9 @@ QList<QVariant> &QSqlResult::boundValues() const
     return const_cast<QSqlResultPrivate *>(d)->values;
 }
 
-#endif // QT_SQL_REMOVED_SINCE(6, 6)
+#endif // BOBUI_SQL_REMOVED_SINCE(6, 6)
 
-#if QT_SQL_REMOVED_SINCE(6, 8)
+#if BOBUI_SQL_REMOVED_SINCE(6, 8)
 
 #include "qsqlrecord.h"
 #include "qsqlfield.h"
@@ -119,9 +119,9 @@ QVariant QSqlQuery::value(const QString &name) const
     return value(QStringView(name));
 }
 
-#endif // QT_SQL_REMOVED_SINCE(6, 8)
+#endif // BOBUI_SQL_REMOVED_SINCE(6, 8)
 
-#if QT_SQL_REMOVED_SINCE(6, 10)
+#if BOBUI_SQL_REMOVED_SINCE(6, 10)
 
 #include "qsqldatabase.h"
 
@@ -131,4 +131,4 @@ const char *QSqlDatabase::defaultConnection = QSqlDatabaseDefaultConnectionName:
 // // implement removed functions from qotherheader.h
 // order sections alphabetically to reduce chances of merge conflicts
 
-#endif // QT_SQL_REMOVED_SINCE(6, 10)
+#endif // BOBUI_SQL_REMOVED_SINCE(6, 10)

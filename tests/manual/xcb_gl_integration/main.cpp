@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
-#include <QtGui/QOpenGLContext>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QOpenGLContext>
 
-#include <QtGui/qpa/qplatformnativeinterface.h>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 int main (int argc, char **argv)
 {

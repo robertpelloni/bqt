@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcolormap.h"
 #include "qcolor.h"
@@ -8,14 +8,14 @@
 #include "qscreen.h"
 #include "qguiapplication.h"
 
-#include <QtCore/qmutex.h>
+#include <BobUICore/qmutex.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 class QColormapPrivate
 {
@@ -100,40 +100,40 @@ int QColormap::size() const
     return d->numcolors;
 }
 
-#ifndef QT_QWS_DEPTH16_RGB
-#define QT_QWS_DEPTH16_RGB 565
+#ifndef BOBUI_QWS_DEPTH16_RGB
+#define BOBUI_QWS_DEPTH16_RGB 565
 #endif
-static const int qt_rbits = (QT_QWS_DEPTH16_RGB/100);
-static const int qt_gbits = (QT_QWS_DEPTH16_RGB/10%10);
-static const int qt_bbits = (QT_QWS_DEPTH16_RGB%10);
-static const int qt_red_shift = qt_bbits+qt_gbits-(8-qt_rbits);
-static const int qt_green_shift = qt_bbits-(8-qt_gbits);
-static const int qt_neg_blue_shift = 8-qt_bbits;
-static const int qt_blue_mask = (1<<qt_bbits)-1;
-static const int qt_green_mask = (1<<(qt_gbits+qt_bbits))-(1<<qt_bbits);
-static const int qt_red_mask = (1<<(qt_rbits+qt_gbits+qt_bbits))-(1<<(qt_gbits+qt_bbits));
+static const int bobui_rbits = (BOBUI_QWS_DEPTH16_RGB/100);
+static const int bobui_gbits = (BOBUI_QWS_DEPTH16_RGB/10%10);
+static const int bobui_bbits = (BOBUI_QWS_DEPTH16_RGB%10);
+static const int bobui_red_shift = bobui_bbits+bobui_gbits-(8-bobui_rbits);
+static const int bobui_green_shift = bobui_bbits-(8-bobui_gbits);
+static const int bobui_neg_blue_shift = 8-bobui_bbits;
+static const int bobui_blue_mask = (1<<bobui_bbits)-1;
+static const int bobui_green_mask = (1<<(bobui_gbits+bobui_bbits))-(1<<bobui_bbits);
+static const int bobui_red_mask = (1<<(bobui_rbits+bobui_gbits+bobui_bbits))-(1<<(bobui_gbits+bobui_bbits));
 
-static const int qt_red_rounding_shift = qt_red_shift + qt_rbits;
-static const int qt_green_rounding_shift = qt_green_shift + qt_gbits;
-static const int qt_blue_rounding_shift = qt_bbits - qt_neg_blue_shift;
+static const int bobui_red_rounding_shift = bobui_red_shift + bobui_rbits;
+static const int bobui_green_rounding_shift = bobui_green_shift + bobui_gbits;
+static const int bobui_blue_rounding_shift = bobui_bbits - bobui_neg_blue_shift;
 
-inline ushort qt_convRgbTo16(QRgb c)
+inline ushort bobui_convRgbTo16(QRgb c)
 {
-    const int tr = qRed(c) << qt_red_shift;
-    const int tg = qGreen(c) << qt_green_shift;
-    const int tb = qBlue(c) >> qt_neg_blue_shift;
+    const int tr = qRed(c) << bobui_red_shift;
+    const int tg = qGreen(c) << bobui_green_shift;
+    const int tb = qBlue(c) >> bobui_neg_blue_shift;
 
-    return (tb & qt_blue_mask) | (tg & qt_green_mask) | (tr & qt_red_mask);
+    return (tb & bobui_blue_mask) | (tg & bobui_green_mask) | (tr & bobui_red_mask);
 }
 
-inline QRgb qt_conv16ToRgb(ushort c)
+inline QRgb bobui_conv16ToRgb(ushort c)
 {
-    const int r=(c & qt_red_mask);
-    const int g=(c & qt_green_mask);
-    const int b=(c & qt_blue_mask);
-    const int tr = r >> qt_red_shift | r >> qt_red_rounding_shift;
-    const int tg = g >> qt_green_shift | g >> qt_green_rounding_shift;
-    const int tb = b << qt_neg_blue_shift | b >> qt_blue_rounding_shift;
+    const int r=(c & bobui_red_mask);
+    const int g=(c & bobui_green_mask);
+    const int b=(c & bobui_blue_mask);
+    const int tr = r >> bobui_red_shift | r >> bobui_red_rounding_shift;
+    const int tg = g >> bobui_green_shift | g >> bobui_green_rounding_shift;
+    const int tb = b << bobui_neg_blue_shift | b >> bobui_blue_rounding_shift;
 
     return qRgb(tr,tg,tb);
 }
@@ -144,7 +144,7 @@ uint QColormap::pixel(const QColor &color) const
     if (d->mode == QColormap::Direct) {
         switch(d->depth) {
         case 16:
-            return qt_convRgbTo16(rgb);
+            return bobui_convRgbTo16(rgb);
         case 24:
         case 32:
         {
@@ -163,7 +163,7 @@ uint QColormap::pixel(const QColor &color) const
         }
     }
     //XXX
-    //return qt_screen->alloc(qRed(rgb), qGreen(rgb), qBlue(rgb));
+    //return bobui_screen->alloc(qRed(rgb), qGreen(rgb), qBlue(rgb));
     return 0;
 }
 
@@ -171,7 +171,7 @@ const QColor QColormap::colorAt(uint pixel) const
 {
     if (d->mode == Direct) {
         if (d->depth == 16) {
-            pixel = qt_conv16ToRgb(pixel);
+            pixel = bobui_conv16ToRgb(pixel);
         }
         const int red_shift = 16;
         const int green_shift = 8;
@@ -183,8 +183,8 @@ const QColor QColormap::colorAt(uint pixel) const
                       (pixel & blue_mask));
     }
 #if 0 // XXX
-    Q_ASSERT_X(int(pixel) < qt_screen->numCols(), "QColormap::colorAt", "pixel out of bounds of palette");
-    return QColor(qt_screen->clut()[pixel]);
+    Q_ASSERT_X(int(pixel) < bobui_screen->numCols(), "QColormap::colorAt", "pixel out of bounds of palette");
+    return QColor(bobui_screen->clut()[pixel]);
 #endif
     return QColor();
 }
@@ -197,8 +197,8 @@ const QList<QColor> QColormap::colormap() const
 QColormap &QColormap::operator=(const QColormap &colormap)
 { qAtomicAssign(d, colormap.d); return *this; }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
-#endif // QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 11)
+#endif // BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 11)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

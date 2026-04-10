@@ -1,6 +1,6 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QATOMICWAIT_P_H
 #define QATOMICWAIT_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an implementation
+// This file is not part of the BobUI API. It exists purely as an implementation
 // detail. This header file may change from version to version without notice,
 // or even be removed.
 //
@@ -19,9 +19,9 @@
 #include "qbasicatomic.h"
 #include <private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 enum class WakeMode { One = 1, All = -1 };
 
 #ifdef QATOMICWAIT_USE_FALLBACK
@@ -36,14 +36,14 @@ Q_ATOMICWAIT_EXPORT void _q_atomicWake(void *address, WakeMode) noexcept;
 #undef Q_ATOMICWAIT_EXPORT
 }
 
-namespace QtFallbackAtomicWait {
+namespace BobUIFallbackAtomicWait {
 // C++20- & C23-like API
 template <typename T> std::enable_if_t<std::has_unique_object_representations_v<T>>
 atomic_wait_explicit(const std::atomic<T> *atomic, T old, std::memory_order mo) noexcept
 {
     Q_ASSERT(mo == std::memory_order_relaxed || mo == std::memory_order_acquire
              || mo == std::memory_order_seq_cst);
-    QtPrivate::_q_atomicWait(atomic, &old, sizeof(T));
+    BobUIPrivate::_q_atomicWait(atomic, &old, sizeof(T));
     std::atomic_thread_fence(mo);
 }
 
@@ -56,15 +56,15 @@ atomic_wait(const std::atomic<T> *atomic, T old) noexcept
 template <typename T> std::enable_if_t<std::has_unique_object_representations_v<T>>
 atomic_notify_one(std::atomic<T> *atomic)
 {
-    QtPrivate::_q_atomicWake(atomic, QtPrivate::WakeMode::One);
+    BobUIPrivate::_q_atomicWake(atomic, BobUIPrivate::WakeMode::One);
 }
 
 template <typename T> std::enable_if_t<std::has_unique_object_representations_v<T>>
 atomic_notify_all(std::atomic<T> *atomic)
 {
-    QtPrivate::_q_atomicWake(atomic, QtPrivate::WakeMode::All);
+    BobUIPrivate::_q_atomicWake(atomic, BobUIPrivate::WakeMode::All);
 }
-} // namespace QtFallbackAtomicWait
+} // namespace BobUIFallbackAtomicWait
 
 namespace q20 {
 #ifdef __cpp_lib_atomic_wait
@@ -73,13 +73,13 @@ using std::atomic_wait_explicit;
 using std::atomic_notify_all;
 using std::atomic_notify_one;
 #else
-using QtFallbackAtomicWait::atomic_wait;
-using QtFallbackAtomicWait::atomic_wait_explicit;
-using QtFallbackAtomicWait::atomic_notify_all;
-using QtFallbackAtomicWait::atomic_notify_one;
+using BobUIFallbackAtomicWait::atomic_wait;
+using BobUIFallbackAtomicWait::atomic_wait_explicit;
+using BobUIFallbackAtomicWait::atomic_notify_all;
+using BobUIFallbackAtomicWait::atomic_notify_one;
 #endif
-} // namespace QtNativeAtomicWait
+} // namespace BobUINativeAtomicWait
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QATOMICWAIT_P_H

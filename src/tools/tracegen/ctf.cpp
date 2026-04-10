@@ -1,26 +1,26 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "ctf.h"
 #include "provider.h"
 #include "helpers.h"
 #include "panic.h"
-#include "qtheaders.h"
+#include "bobuiheaders.h"
 
 #include <qfile.h>
 #include <qfileinfo.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qdebug.h>
 
 
-static void writePrologue(QTextStream &stream, const QString &fileName, const Provider &provider)
+static void writePrologue(BOBUIextStream &stream, const QString &fileName, const Provider &provider)
 {
     writeCommonPrologue(stream);
     const QString guard = includeGuard(fileName);
 
-    // include prefix text or qt headers only once
+    // include prefix text or bobui headers only once
     stream << "#if !defined(" << guard << ")\n";
-    stream << qtHeaders();
+    stream << bobuiHeaders();
     stream << "\n";
     if (!provider.prefixText.isEmpty())
         stream << provider.prefixText.join(u'\n') << "\n\n";
@@ -40,20 +40,20 @@ static void writePrologue(QTextStream &stream, const QString &fileName, const Pr
     const QString namespaceGuard = guard + QStringLiteral("_USE_NAMESPACE");
     stream << "#if !defined(" << namespaceGuard << ")\n"
            << "#define " << namespaceGuard << "\n"
-           << "QT_USE_NAMESPACE\n"
+           << "BOBUI_USE_NAMESPACE\n"
            << "#endif // " << namespaceGuard << "\n\n";
 
     stream << "TRACEPOINT_PROVIDER(" << provider.name << ");\n\n";
 }
 
-static void writeEpilogue(QTextStream &stream, const QString &fileName)
+static void writeEpilogue(BOBUIextStream &stream, const QString &fileName)
 {
     stream << "\n";
     stream << "#endif // " << includeGuard(fileName) << "\n"
-           << "#include <private/qtrace_p.h>\n";
+           << "#include <private/bobuirace_p.h>\n";
 }
 
-static void writeWrapper(QTextStream &stream,
+static void writeWrapper(BOBUIextStream &stream,
         const Tracepoint &tracepoint, const Provider &provider)
 {
     const QString argList = formatFunctionSignature(tracepoint.args);
@@ -66,8 +66,8 @@ static void writeWrapper(QTextStream &stream,
     stream << "\n"
            << "#ifndef " << includeGuard << "\n"
            << "#define " << includeGuard << "\n"
-           << "QT_BEGIN_NAMESPACE\n"
-           << "namespace QtPrivate {\n";
+           << "BOBUI_BEGIN_NAMESPACE\n"
+           << "namespace BobUIPrivate {\n";
 
     stream << "inline void trace_" << name << "(" << argList << ")\n"
            << "{\n"
@@ -84,13 +84,13 @@ static void writeWrapper(QTextStream &stream,
            << "    return tracepoint_enabled(" << provider.name << ", " << name << ");\n"
            << "}\n";
 
-    stream << "} // namespace QtPrivate\n"
-           << "QT_END_NAMESPACE\n"
+    stream << "} // namespace BobUIPrivate\n"
+           << "BOBUI_END_NAMESPACE\n"
            << "#endif // " << includeGuard << "\n\n";
 }
 
 
-static void writeMetadataGenerators(QTextStream &stream)
+static void writeMetadataGenerators(BOBUIextStream &stream)
 {
     stream << R"CPP(
 template <typename T>
@@ -156,9 +156,9 @@ inline QString floatArrayToMetadata(const QString &size, const QString &name)
 inline QString pointerToMetadata(const QString &name)
 {
     QString ret;
-    if (QT_POINTER_SIZE == 8)
+    if (BOBUI_POINTER_SIZE == 8)
         ret += QStringLiteral("intptr64_t ");
-    else if (QT_POINTER_SIZE == 4)
+    else if (BOBUI_POINTER_SIZE == 4)
         ret += QStringLiteral("intptr32_t ");
     ret += name + QLatin1Char(';');
     return ret;
@@ -167,7 +167,7 @@ inline QString pointerToMetadata(const QString &name)
 )CPP";
 }
 
-static void writeTracepoint(QTextStream &stream,
+static void writeTracepoint(BOBUIextStream &stream,
                             const Tracepoint &tracepoint, const QString &providerName)
 {
     stream  << "TRACEPOINT_EVENT(\n"
@@ -224,7 +224,7 @@ static void writeTracepoint(QTextStream &stream,
             case Tracepoint::Field::IntegerHex: {
                 stream << "pointerToMetadata(QStringLiteral(\"" << formatType(arg.type) << "_"
                        << arg.name << "\"))";
-                eventSize += QStringLiteral("QT_POINTER_SIZE");
+                eventSize += QStringLiteral("BOBUI_POINTER_SIZE");
             } break;
             case Tracepoint::Field::Float: {
                 if (array) {
@@ -239,33 +239,33 @@ static void writeTracepoint(QTextStream &stream,
                 if (array)
                     eventSize += QStringLiteral(" * ") + QString::number(field.arrayLen);
             } break;
-            case Tracepoint::Field::QtUrl:
-            case Tracepoint::Field::QtString:
+            case Tracepoint::Field::BobUIUrl:
+            case Tracepoint::Field::BobUIString:
             case Tracepoint::Field::String: {
                 stream << "QStringLiteral(\"string " << arg.name << ";\")";
                 eventSize += QStringLiteral("1");
                 variableSize = true;
             } break;
-            case Tracepoint::Field::QtRect: {
+            case Tracepoint::Field::BobUIRect: {
                 stream << "QStringLiteral(\"int32_t QRect_" << arg.name << "_x;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"int32_t QRect_" << arg.name << "_y;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"int32_t QRect_" << arg.name << "_width;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"int32_t QRect_" << arg.name << "_height;\\n\\\n        \")";
                 eventSize += QStringLiteral("16");
             } break;
-            case Tracepoint::Field::QtSize: {
+            case Tracepoint::Field::BobUISize: {
                 stream << "QStringLiteral(\"int32_t QSize_" << arg.name << "_width;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"int32_t QSize_" << arg.name << "_height;\\n\\\n        \")";
                 eventSize += QStringLiteral("8");
             } break;
-            case Tracepoint::Field::QtRectF: {
+            case Tracepoint::Field::BobUIRectF: {
                 stream << "QStringLiteral(\"float QRectF_" << arg.name << "_x;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"float QRectF_" << arg.name << "_y;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"float QRectF_" << arg.name << "_width;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"float QRectF_" << arg.name << "_height;\\n\\\n        \")";
                 eventSize += QStringLiteral("16");
             } break;
-            case Tracepoint::Field::QtSizeF: {
+            case Tracepoint::Field::BobUISizeF: {
                 stream << "QStringLiteral(\"float QSizeF_" << arg.name << "_width;\\n\\\n        \")";
                 stream << " + QStringLiteral(\"float QSizeF_" << arg.name << "_height;\\n\\\n        \")";
                 eventSize += QStringLiteral("8");
@@ -283,7 +283,7 @@ static void writeTracepoint(QTextStream &stream,
                 eventSize += QStringLiteral("2");
                 variableSize = true;
             } break;
-            case Tracepoint::Field::QtByteArray:
+            case Tracepoint::Field::BobUIByteArray:
             case Tracepoint::Field::Sequence:
                 panic("Unhandled type '%s %s", qPrintable(arg.type), qPrintable(arg.name));
                 break;
@@ -303,7 +303,7 @@ static void writeTracepoint(QTextStream &stream,
     stream << ")\n\n";
 }
 
-static void writeTracepoints(QTextStream &stream, const Provider &provider)
+static void writeTracepoints(BOBUIextStream &stream, const Provider &provider)
 {
     for (const Tracepoint &t : provider.tracepoints) {
         writeTracepoint(stream, t, provider.name);
@@ -311,7 +311,7 @@ static void writeTracepoints(QTextStream &stream, const Provider &provider)
     }
 }
 
-static void writeEnums(QTextStream &stream, const Provider &provider)
+static void writeEnums(BOBUIextStream &stream, const Provider &provider)
 {
     for (const auto &e : provider.enumerations) {
         QString name = e.name;
@@ -338,7 +338,7 @@ static void writeEnums(QTextStream &stream, const Provider &provider)
     stream << "\n";
 }
 
-static void writeFlags(QTextStream &stream, const Provider &provider)
+static void writeFlags(BOBUIextStream &stream, const Provider &provider)
 {
     for (const auto &e : provider.flags) {
         QString name = e.name;
@@ -363,7 +363,7 @@ static void writeFlags(QTextStream &stream, const Provider &provider)
 
 void writeCtf(QFile &file, const Provider &provider)
 {
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     const QString fileName = QFileInfo(file.fileName()).fileName();
 

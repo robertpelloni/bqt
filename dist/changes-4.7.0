@@ -1,16 +1,16 @@
-Qt 4.7 introduces many new features and improvements as well as bugfixes
+BobUI 4.7 introduces many new features and improvements as well as bugfixes
 over the 4.6.x series. For more details, refer to the online documentation
 included in this distribution. The documentation is also available online:
 
-  http://qt.nokia.com/doc/4.7
+  http://bobui.nokia.com/doc/4.7
 
-The Qt version 4.7 series is binary compatible with the 4.6.x series.
+The BobUI version 4.7 series is binary compatible with the 4.6.x series.
 Applications compiled for 4.6 will continue to run with 4.7.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  http://bugreports.qt.nokia.com/
+  http://bugreports.bobui.nokia.com/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -50,13 +50,13 @@ Third party components
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
  - QString
     * Added QString(const QChar *) constructor.
       NOTE: This is source-incompatible for the bogus QString(0) case.
-    * Removed internal but exported qt_winQString2MB() and qt_winMB2QString()
+    * Removed internal but exported bobui_winQString2MB() and bobui_winMB2QString()
     * Added setRawData() function (also revived the one in QByteArray)
     * Various performance improvements
  - QList
@@ -64,22 +64,22 @@ QtCore
     * Various performance improvements
  - QMetaType
     * Significantly improved performance of the type() function
-    * [QTBUG-8235] Support QEasingCurve as a built in metatype.
+    * [BOBUIBUG-8235] Support QEasingCurve as a built in metatype.
     * Added possibility to register several name for the same type with
       qRegisterMetaType<>() (ie. for typedef)
  - QState
-    * [QTBUG-7741] Added a function to get the out-going transitions
+    * [BOBUIBUG-7741] Added a function to get the out-going transitions
  - QXmlStreamReader
-    * [QTBUG-9196] fixed crash when parsing
- - QTimer
+    * [BOBUIBUG-9196] fixed crash when parsing
+ - BOBUIimer
     * singleShot with 0 timeout will now avoid allocating objects
  - QAbstractAnimation
-    * [QTBUG-10654] Avoids animation with loopCount == 0 to change state
+    * [BOBUIBUG-10654] Avoids animation with loopCount == 0 to change state
       to running and stopped.
  - QVarLenghtArray
     * Added some API to be more consistant with other containers
 
-QtGui
+BobUIGui
 -----
  
  - QAbstractItemView
@@ -87,10 +87,10 @@ QtGui
       properly when used within 400 milliseconds of midnight.
 
  - QComboBox
-    * [QTBUG-8796] Made ForegroundRole work for all styles.
+    * [BOBUIBUG-8796] Made ForegroundRole work for all styles.
 
  - QCommandLinkButton
-    * [QTBUG-5995] Fixed text and icon alignment issues.
+    * [BOBUIBUG-5995] Fixed text and icon alignment issues.
 	
  - QPrinter
     * Obsoleted the slightly confusing setNumCopies() and numCopies()
@@ -101,114 +101,114 @@ QtGui
     * Added support for printing the current page.
 
  - QCommonStyle
-    * Fixed a bug that led to missing text pixels in QTabBar when using
-      small font sizes. (QTBUG-7137)
+    * Fixed a bug that led to missing text pixels in BOBUIabBar when using
+      small font sizes. (BOBUIBUG-7137)
 
  - QGraphicsEffect
     * Fixed rendering bugs when scrolling graphics items with drop
       shadows.
 
  - QGraphicsItem
-    * [QTBUG-8112] itemChange() is now called when transformation
+    * [BOBUIBUG-8112] itemChange() is now called when transformation
       properties change (setRotation, setScale, setTransformOriginPoint).
-    * [QTBUG-9024] Improved performance when calling update() on items that
+    * [BOBUIBUG-9024] Improved performance when calling update() on items that
       are clipped by an ancestor (QGraphicsItem::ItemClipsChildrenToShape).
-    * [QTBUG-7703], [QTBUG-8378] Fixed scrolling issues
-    * [QTBUG-12112] Fixed focusItem() returning incorrect value.
+    * [BOBUIBUG-7703], [BOBUIBUG-8378] Fixed scrolling issues
+    * [BOBUIBUG-12112] Fixed focusItem() returning incorrect value.
 
  - QGraphicsTextItem
-    * [QTBUG-7333] Fixed keyboard shortcuts not being triggered when the
+    * [BOBUIBUG-7333] Fixed keyboard shortcuts not being triggered when the
       the item has focus and something else has the same shortcut sequence.
-    * [QTBUG-10574] Fixed crash when flag "QGraphicsItem::ItemIgnoresTransformations"
+    * [BOBUIBUG-10574] Fixed crash when flag "QGraphicsItem::ItemIgnoresTransformations"
       is set.
 
  - QGraphicsView
-    * [QTBUG-7438] Fixed viewport cursor getting reset when releasing
+    * [BOBUIBUG-7438] Fixed viewport cursor getting reset when releasing
       the mouse.
-    * [QTBUG-10338] Fixed drawing artifacts due to rounding errors.
+    * [BOBUIBUG-10338] Fixed drawing artifacts due to rounding errors.
 
  - QGraphicsWidget
-    * [QTBUG-12056] Fixed a crash occuring when adding a QGraphicsWidget
+    * [BOBUIBUG-12056] Fixed a crash occuring when adding a QGraphicsWidget
       to a scene after removing and deleting another QGraphicsWidget.
 
  - QImage
-    * [QTBUG-9640] Prevented unneccessary copy in QImage::setAlphaChannel().
-    * [QTBUG-7982] Added QImage::bitPlaneCount().
-    * [QTBUG-9072] Fixed alpha check for 1-bit-per-pixel images.
+    * [BOBUIBUG-9640] Prevented unneccessary copy in QImage::setAlphaChannel().
+    * [BOBUIBUG-7982] Added QImage::bitPlaneCount().
+    * [BOBUIBUG-9072] Fixed alpha check for 1-bit-per-pixel images.
 
  - QLineEdit
-    * [QTBUG-9823] Placeholder text is now correctly aligned with text.
+    * [BOBUIBUG-9823] Placeholder text is now correctly aligned with text.
 
  - QPicture
-    * [QTBUG-4974] Printing QPictures containing text to a high resolution
+    * [BOBUIBUG-4974] Printing QPictures containing text to a high resolution
       QPrinter would in many cases cause incorrect character spacing.
 
  - QPainter
     * Added QPainter::drawPixmapFragments(), which makes it possible to draw
       pixmaps, or sub-rectangles of pixmaps, at various positions with
       different scale, opacity and rotation.
-    * [QTBUG-10018] Fixed image drawing inconsistencies when drawing
+    * [BOBUIBUG-10018] Fixed image drawing inconsistencies when drawing
       1x1 source rects with rotating / shear / perspective transforms.
     * Optimized various blending and rendering operations for ARM
       processors with a NEON vector unit.
     * Fixed some performance issues when drawing sub-pixmaps of large
       pixmaps and falling back to raster in the X11 paint engine.
-    * [QTBUG-7596] Safeguard ourselves against corrupt registry values for
+    * [BOBUIBUG-7596] Safeguard ourselves against corrupt registry values for
       ClearType gamma on Windows.
-    * [QTBUG-9218] Fixed flattening of largely scaled, thin, dashed beziers.
-    * [QTBUG-9437] Fixed crash in the raster paint engine when drawing largely
+    * [BOBUIBUG-9218] Fixed flattening of largely scaled, thin, dashed beziers.
+    * [BOBUIBUG-9437] Fixed crash in the raster paint engine when drawing largely
       scaled images.
 
  - QPainterPath
-    * [QTBUG-3778] Fixed bug in painter path polygon intersection code.
-    * [QTBUG-7396] Optimized painter path intersections for when at
+    * [BOBUIBUG-3778] Fixed bug in painter path polygon intersection code.
+    * [BOBUIBUG-7396] Optimized painter path intersections for when at
       least one of the paths is a rectangle by special casing.
-    * [QTBUG-8035] Got rid of bezier intersection code in the boolean
+    * [BOBUIBUG-8035] Got rid of bezier intersection code in the boolean
       operators (intersect, subtract, unite) to prevent numerical
       stability issues.
-    * [QTBUG-11291] Fixed infinite recursion when drawing very large painter
+    * [BOBUIBUG-11291] Fixed infinite recursion when drawing very large painter
       paths.
 
  - QPixmap
-    * [QTBUG-4149] Fixed QPixmap::grabWidget() on widgets that have not yet
+    * [BOBUIBUG-4149] Fixed QPixmap::grabWidget() on widgets that have not yet
       been shown.
     
  - QPlastiqueStyle
-    * [QTBUG-6516] Respect AlternateBase role for list views.
+    * [BOBUIBUG-6516] Respect AlternateBase role for list views.
 
  - QRegion
-    * [QTBUG-7699] Fixed crash caused by large x-coordinates.
+    * [BOBUIBUG-7699] Fixed crash caused by large x-coordinates.
 
  - QSplitter
-    * [QTBUG-9335] Improve support for 1-pixel splitters by using a 
+    * [BOBUIBUG-9335] Improve support for 1-pixel splitters by using a 
       larger drag area.
 	  	  
- - QTextDocumentWriter
+ - BOBUIextDocumentWriter
     * Fixed tab-stops and table padding in ODF export.
 
- - QTextLayout
-    * [QTBUG-11427] Fix possible crash in QTextLayout for glyphless 
+ - BOBUIextLayout
+    * [BOBUIBUG-11427] Fix possible crash in BOBUIextLayout for glyphless 
       items.
-    * [QTBUG-8864] Fix regression in right alignment of text with 
+    * [BOBUIBUG-8864] Fix regression in right alignment of text with 
       negative right bearing.
 	  
- - QTransform
-    * [QTBUG-8557] Fixed bug in QTransform::type() potentially occuring
+ - BOBUIransform
+    * [BOBUIBUG-8557] Fixed bug in BOBUIransform::type() potentially occuring
       after using operator/ or operator* or their overloads.
 	  
-QtOpenGL
+BobUIOpenGL
 --------
  - Improve performance of text by adding special cased fragment shader.
  
  - Made width and height of glyph cache power-of-two for performance 
    improvements on some hardware.
    
- - [QTBUG-9706] Improved appearance of text antialiasing.
+ - [BOBUIBUG-9706] Improved appearance of text antialiasing.
 
- - QTreeView
+ - BOBUIreeView
     * Optimized
 
-QtNetwork
+BobUINetwork
 ---------
  - QHostInfo: Added a small 60 second DNS cache
  - QNetworkAccessManager
@@ -218,158 +218,158 @@ QtNetwork
   * Fix problem with canReadLine()
   * Fix problem with HTTP 100 reply
   * Some new attributes for QNetworkRequest
-  * [QTBUG-8206] add method to send custom requests
-  * [QTBUG-9618] [MR 2372] send secure cookies only over secure connections
-  * [QTBUG-7713] Fix bug related to re-sending request
-  * [QTBUG-7673] Fix issue with some webservers
-  * [QTBUG-11029] do not accept cookies with non-alpha-numerical domain
+  * [BOBUIBUG-8206] add method to send custom requests
+  * [BOBUIBUG-9618] [MR 2372] send secure cookies only over secure connections
+  * [BOBUIBUG-7713] Fix bug related to re-sending request
+  * [BOBUIBUG-7673] Fix issue with some webservers
+  * [BOBUIBUG-11029] do not accept cookies with non-alpha-numerical domain
  - Sockets
-  * Better support for derived QTcpServer
-  * [QTBUG-7054] Fix error handling with waitFor*() for socket engine
-  * [QTBUG-7316, QTBUG-7317] Also handle unknown errors from socket engine
+  * Better support for derived BOBUIcpServer
+  * [BOBUIBUG-7054] Fix error handling with waitFor*() for socket engine
+  * [BOBUIBUG-7316, BOBUIBUG-7317] Also handle unknown errors from socket engine
  - SSL
-  * [QTBUG-2515] Do not make OpenSSL prompt for a password
-  * [QTBUG-6504, QTBUG-8924, QTBUG-5645] Fix memleak
-  * [QTBUG-9973] QSslCertificate: support large serial numbers
-  * [QTBUG-8833] make QSslSocket::systemCaCertificates() use system certs
-  * [QT-3567] QSslSocket: improve error handling (fixes Secunia Advisory SA40389)
+  * [BOBUIBUG-2515] Do not make OpenSSL prompt for a password
+  * [BOBUIBUG-6504, BOBUIBUG-8924, BOBUIBUG-5645] Fix memleak
+  * [BOBUIBUG-9973] QSslCertificate: support large serial numbers
+  * [BOBUIBUG-8833] make QSslSocket::systemCaCertificates() use system certs
+  * [BOBUI-3567] QSslSocket: improve error handling (fixes Secunia Advisory SA40389)
   * [QBTUG-4455, MR 731] Fix handling of SSL certificates with wildcard domain names
 
-QtScript
+BobUIScript
 --------
  - Updated src/3rdparty/javascriptcore to a more recent version
- - Significantly improved performance of the Qt/C++<-->JavaScript bridge
+ - Significantly improved performance of the BobUI/C++<-->JavaScript bridge
  - QScriptValueIterator: Significantly improved performance
- - [QTBUG-3637] Added a wrap option for excluding slots from a QObject binding
- - [QTBUG-6238] Added a function for reporting additional memory cost
- - [QTBUG-6908] Significantly improved performance of qsTr()
+ - [BOBUIBUG-3637] Added a wrap option for excluding slots from a QObject binding
+ - [BOBUIBUG-6238] Added a function for reporting additional memory cost
+ - [BOBUIBUG-6908] Significantly improved performance of qsTr()
 
-QtSvg
+BobUISvg
 -----
  - QSvgRenderer
-  * [QTBUG-8264] Fixed rounded rectangles when 'rx' or 'ry' is zero.
-  * [QTBUG-10022] Fixed assert failure when loading an invalid SVG.
+  * [BOBUIBUG-8264] Fixed rounded rectangles when 'rx' or 'ry' is zero.
+  * [BOBUIBUG-10022] Fixed assert failure when loading an invalid SVG.
 
-QtXmlPatterns
+BobUIXmlPatterns
 -------------
 
- - [QTBUG-8920] fixed crash with anonymous types in XsdSchemaChecker
- - [QTBUG-8394] include/import/redefine schemas only once
+ - [BOBUIBUG-8920] fixed crash with anonymous types in XsdSchemaChecker
+ - [BOBUIBUG-8394] include/import/redefine schemas only once
  - QXmlSchema: fix crash with referencing elements
  - [QBTUG-6485] QXmlSchema: allow usage of xsd:all
 
-Qt Plugins
+BobUI Plugins
 ----------
 
  - Jpeg image IO plugin
-    * Fixed failure to store certain QImage formats as jpeg (QTBUG-7780)
+    * Fixed failure to store certain QImage formats as jpeg (BOBUIBUG-7780)
     * Optimized smoothscaling
-    * Optimized to avoid data copy when reading from memory device (QTBUG-9095)
+    * Optimized to avoid data copy when reading from memory device (BOBUIBUG-9095)
 
  - SVG image IO plugin
-    * Added support for svgz format (QTBUG-8227)
+    * Added support for svgz format (BOBUIBUG-8227)
     * Fixed canRead() so that it can be used also for non-sequential
-      devices. (QTBUG-9053)
+      devices. (BOBUIBUG-9053)
     * Added support for clipping and scaling and backgroundcolor
-    * Optimized to avoid data copy when reading from memory device (QTBUG-9095)
+    * Optimized to avoid data copy when reading from memory device (BOBUIBUG-9095)
 
 ****************************************************************************
 *                          Database Drivers                                *
 ****************************************************************************
  - Sqlite
-   * [QTBUG-11904] Pointer aliasing problem in sqlite
+   * [BOBUIBUG-11904] Pointer aliasing problem in sqlite
  - OCI
-   * [QTBUG-10919] Unable to insert unicode chars with codepoint > 255 
+   * [BOBUIBUG-10919] Unable to insert unicode chars with codepoint > 255 
      in nvarchar2 column on oracle
-   * [QTBUG-8210] Oracle - DATE in db with a year greater or equal to 2800 
+   * [BOBUIBUG-8210] Oracle - DATE in db with a year greater or equal to 2800 
      returns an invalid date
 
 ****************************************************************************
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
  - QGtkStyle
-    * Fixed rtl issues with sliders (QTBUG-8986)
-    * Fixed missing pressed appearance on scroll bar handles. (QTBUG-10396)
-    * Fixed crash when creating QGtkStyle before QApplication. (QTBUG-10758)
+    * Fixed rtl issues with sliders (BOBUIBUG-8986)
+    * Fixed missing pressed appearance on scroll bar handles. (BOBUIBUG-10396)
+    * Fixed crash when creating QGtkStyle before QApplication. (BOBUIBUG-10758)
 
  - QFontDatabase
-    * [QTBUG-4428] Fixed regression when using bitmap fonts on some 
+    * [BOBUIBUG-4428] Fixed regression when using bitmap fonts on some 
       Linux systems.
  
  - QFontEngine
-     * [QTBUG-9442] Avoid possible square root of negative number in 
+     * [BOBUIBUG-9442] Avoid possible square root of negative number in 
       FreeType font engine.
 	  
  - QFontMetrics
-    * [QTBUG-10448] Fix crash when using fonts in non-gui QApplication.
+    * [BOBUIBUG-10448] Fix crash when using fonts in non-gui QApplication.
 	  
  	
-Qt for Windows
+BobUI for Windows
 --------------
- - Popup windows now implicitly activate when shown. (QTBUG-7386)
- - QComboBox [QTBUG-7552] Fix an issue where only "..." would be shown for
+ - Popup windows now implicitly activate when shown. (BOBUIBUG-7386)
+ - QComboBox [BOBUIBUG-7552] Fix an issue where only "..." would be shown for
    QComboBox with certain DPI settings.
  - Fixed a problem where menus exec'ed on system tray icons did not 
-   disappear. (QTBUG-7386)
- - Improved look and feel for QWizard on Windows 7 and Vista. (QTBUG-9873), 
-   (QTBUG-11974) and (QTBUG-6120)    
+   disappear. (BOBUIBUG-7386)
+ - Improved look and feel for QWizard on Windows 7 and Vista. (BOBUIBUG-9873), 
+   (BOBUIBUG-11974) and (BOBUIBUG-6120)    
  - QLocalSocket
     * Pipe handle leak fixed, when closing a QLocalSocket that still has
-      unwritten data. (QTBUG-7815)
-    * Fixed closing state for local sockets with unwritten data. (QTBUG-9681)
+      unwritten data. (BOBUIBUG-7815)
+    * Fixed closing state for local sockets with unwritten data. (BOBUIBUG-9681)
     * Improved performance of writing to QLocalSocket.
 
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
  - QMacStyle
-    * Removed frame around statusbar items. (QTBUG-3574)
-    * More native appearance of item view headers and frames. (QTBUG-10047)
-    * Increased spacing between tree view items. (QTBUG-10190)
-    * Removed frame around status bar items. (QTBUG-3574)
+    * Removed frame around statusbar items. (BOBUIBUG-3574)
+    * More native appearance of item view headers and frames. (BOBUIBUG-10047)
+    * Increased spacing between tree view items. (BOBUIBUG-10190)
+    * Removed frame around status bar items. (BOBUIBUG-3574)
 
  - QFontEngine	
     * Enable fractional metrics for the font engine on Mac in all 
       stages of text layout.
-    * [QTBUG-5529] Enable design metrics for correct character spacing 
+    * [BOBUIBUG-5529] Enable design metrics for correct character spacing 
       in ATSUI font engine. (Mac/Carbon)
 
-- QTextDocument
-    * [QTBUG-8791] Fix misalignment of fixed width fonts between 
+- BOBUIextDocument
+    * [BOBUIBUG-8791] Fix misalignment of fixed width fonts between 
       format changes on Cocoa.
 	  
- - QTextLayout
-    * [QTBUG-9879] Fix off-by-one in vertical position for elided and 
+ - BOBUIextLayout
+    * [BOBUIBUG-9879] Fix off-by-one in vertical position for elided and 
 	  non-elided text.
  
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
-  * Add support for WA_TranslucentBackground (QTBUG-5739)
-  * Add support for QFont::NoAntialias (QTBUG-5936)
+  * Add support for WA_TranslucentBackground (BOBUIBUG-5739)
+  * Add support for QFont::NoAntialias (BOBUIBUG-5936)
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 
  - Core changes
-    * Fixed menu handling on Windows mobile. (QTBUG-8754)
+    * Fixed menu handling on Windows mobile. (BOBUIBUG-8754)
     * Fixed a crash when receiving a certain type of WM_SETTINGSCHANGE
-      message. (QTBUG-7943)
+      message. (BOBUIBUG-7943)
 
  - QWindowsMobileStyle
-    * Huge performance penalty for QTabWidget fixed for
-      Windows mobile 6.5. (QTBUG-8419)
-    * QTabBar scroll button size has been fixed. (QTBUG-8757)
-    * Detection of Windows mobile 6.5 fixed. (QTBUG-8418)
+    * Huge performance penalty for BOBUIabWidget fixed for
+      Windows mobile 6.5. (BOBUIBUG-8419)
+    * BOBUIabBar scroll button size has been fixed. (BOBUIBUG-8757)
+    * Detection of Windows mobile 6.5 fixed. (BOBUIBUG-8418)
 
-Qt for Symbian
+BobUI for Symbian
 --------------
 
  - QSplashScreen
-    * [QTBUG-11129] Fixed a hanging bug in QSplashScreen on 3.1 devices.
+    * [BOBUIBUG-11129] Fixed a hanging bug in QSplashScreen on 3.1 devices.
 
  - QS60Main... classes
     * The future compatibility of QS60MainAppUi, QS60MainDocument and
@@ -388,35 +388,35 @@ Qt for Symbian
 
 - Build System
 
- - [QT-3540] Fixed Symbian resources not honoring TARGET with a path.
+ - [BOBUI-3540] Fixed Symbian resources not honoring TARGET with a path.
  - "configure -fast" on Windows now also works for other make tools than
-   nmake. (QTBUG-8562)
- - [QTBUG-11351] Fixed memory restrictions not being passed on to elf2e32.
- - [QTBUG-11385] Removed the need to specify -arch symbian when compiling
+   nmake. (BOBUIBUG-8562)
+ - [BOBUIBUG-11351] Fixed memory restrictions not being passed on to elf2e32.
+ - [BOBUIBUG-11385] Removed the need to specify -arch symbian when compiling
    for Symbian on Linux.
- - [QTBUG-11396] "configure -qtlibinfix" now works when compiling for
+ - [BOBUIBUG-11396] "configure -bobuilibinfix" now works when compiling for
    Symbian on Linux.
- - [QTBUG-11670] Fixed a bug which caused "make runonphone" to look for
+ - [BOBUIBUG-11670] Fixed a bug which caused "make runonphone" to look for
    package in the wrong place.
- - [QTBUG-11727] Fixed a bug which made builds outside of the Qt tree fail
+ - [BOBUIBUG-11727] Fixed a bug which made builds outside of the BobUI tree fail
    to compile.
- - [QTBUG-11927] "configure -silent" now works with the
+ - [BOBUIBUG-11927] "configure -silent" now works with the
    symbian/linux-armcc and symbian/linux-gcce mkspecs.
 
 - Assistant
 
 
 - Designer
- - [QTBUG-9351] Fixed a bug that caused modified headerview-properties
+ - [BOBUIBUG-9351] Fixed a bug that caused modified headerview-properties
    of item views to be duplicated in the UI-file.
- - [QTBUG-8347] Fixed a layout problem caused by embedded images in the rich
+ - [BOBUIBUG-8347] Fixed a layout problem caused by embedded images in the rich
    text of a QLabel.
- - [QTBUG-8041], [QTBUG-8213] Fixed a crash related to undo while moving
+ - [BOBUIBUG-8041], [BOBUIBUG-8213] Fixed a crash related to undo while moving
    widgets by arrow keys.
- - [QTBUG-7822] Added support for the 'windowOpacity'-property.
- - [QTBUG-7764] Fixed the emission of the propertyChanged()-signal of
+ - [BOBUIBUG-7822] Added support for the 'windowOpacity'-property.
+ - [BOBUIBUG-7764] Fixed the emission of the propertyChanged()-signal of
    QDesignerPropertyEditorInterface.
- - [QTBUG-5492] Made widgetbox-filter match on class names, too.
+ - [BOBUIBUG-5492] Made widgetbox-filter match on class names, too.
 
 - Linguist
   * The GNU gettext PO format support has been improved
@@ -431,7 +431,7 @@ Qt for Symbian
 
 - uic3
 
- - [QTBUG-9207] Fixed export of image files of type XPM, added
+ - [BOBUIBUG-9207] Fixed export of image files of type XPM, added
    compatibility option -limit-xpm-linelength.
 
 - qmake
@@ -463,10 +463,10 @@ Qt for Symbian
 - configure
 
 
-- qtconfig
+- bobuiconfig
 
 
-- qt3to4
+- bobui3to4
 
 
 ****************************************************************************
@@ -478,7 +478,7 @@ Qt for Symbian
 *                   Important Behavior Changes                             *
 ****************************************************************************
 
-QtScript: Changes due to updating src/3rdparty/javascriptcore:
+BobUIScript: Changes due to updating src/3rdparty/javascriptcore:
  - It is no longer possible to delete an undeletable property from C++
    using QScriptValue::setProperty().
  - The QScriptEngineAgent::positionChange() callback will always report
@@ -486,28 +486,28 @@ QtScript: Changes due to updating src/3rdparty/javascriptcore:
  - QScriptValueIterator will include the "length" property when iterating
    over Array objects.
 
-QtCore:
+BobUICore:
   - QChar no longer carries the Q_PACKED tag on ARM. This flag was
     used to allow proper alignment of QChar on 2 bytes on older ARM
-    ABIs, but it also allowed for unaligned access. Qt never generates
+    ABIs, but it also allowed for unaligned access. BobUI never generates
     or uses unaligned access and the new EABI aligns as expected, so
     the flag was removed.
-  - QTextBoundaryFinder is now consistent with ICU when it comes to
+  - BOBUIextBoundaryFinder is now consistent with ICU when it comes to
     line breaking, reporting the index of the boundary at which the line
     break should occur rather than the index of the character.
 
-QtGui:
+BobUIGui:
   - QWidget::setLayoutDirection no longer affects the text layout
-    direction (Qt::LeftToRight or Qt::RightToLeft) of QTextEdit, QLineEdit
+    direction (BobUI::LeftToRight or BobUI::RightToLeft) of BOBUIextEdit, QLineEdit
     and widgets based on them. The default text layout direction
-    (Qt::LayoutDirectionAuto) is now detected from keyboard layout and
+    (BobUI::LayoutDirectionAuto) is now detected from keyboard layout and
     language of the text (conforms to Unicode standards). To
-    programmatically force the text direction of a QTextEdit, you can
-    change the defaultTextOption of the QTextDocument associated with that
-    widget with a new QTextOption of different textDirection property. For
-    QLineEdit, the only way so far is sending a Qt::Key_Direction_L/R
+    programmatically force the text direction of a BOBUIextEdit, you can
+    change the defaultTextOption of the BOBUIextDocument associated with that
+    widget with a new BOBUIextOption of different textDirection property. For
+    QLineEdit, the only way so far is sending a BobUI::Key_Direction_L/R
     keyboard event to that widget.
 
-QtNetwork:
-  - Qt does no longer provide its own CA bundle, but uses system APIs for
+BobUINetwork:
+  - BobUI does no longer provide its own CA bundle, but uses system APIs for
     retrieving the default system certificates.

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QPainter>
 #include <QWidget>
 
@@ -19,7 +19,7 @@ void SnippetWrappers::wrapper0() {
 //! [0]
 QPainter painter(this);
 
-painter.setPen(Qt::darkGreen);
+painter.setPen(BobUI::darkGreen);
 // Using the (x  y  w  h) overload
 painter.drawRect(1, 2, 6, 4);
 //! [0]
@@ -32,7 +32,7 @@ void SnippetWrappers::wrapper1() {
 //! [1]
 QPainter painter(this);
 
-painter.setPen(Qt::darkGreen);
+painter.setPen(BobUI::darkGreen);
 painter.drawLine(2, 7, 6, 1);
 //! [1]
 
@@ -45,7 +45,7 @@ void SnippetWrappers::wrapper2() {
 QPainter painter(this);
 painter.setRenderHint(
     QPainter::Antialiasing);
-painter.setPen(Qt::darkGreen);
+painter.setPen(BobUI::darkGreen);
 // Using the (x  y  w  h) overload
 painter.drawRect(1, 2, 6, 4);
 //! [2]
@@ -59,7 +59,7 @@ void SnippetWrappers::wrapper3() {
 QPainter painter(this);
 painter.setRenderHint(
     QPainter::Antialiasing);
-painter.setPen(Qt::darkGreen);
+painter.setPen(BobUI::darkGreen);
 painter.drawLine(2, 7, 6, 1);
 //! [3]
 

@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDialog>
 #include <QMainWindow>
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 #include <qapplication.h>
@@ -12,12 +12,12 @@
 #include <qactiongroup.h>
 #include <qmenu.h>
 #include <qmenubar.h>
-#include <qtoolbar.h>
+#include <bobuioolbar.h>
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformintegration.h>
 #include <private/qguiapplication_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QAction : public QObject
 {
@@ -33,17 +33,17 @@ private slots:
     void cleanup();
     void setUnknownFont();
     void actionEvent();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void alternateShortcuts();
     void enabledVisibleInteraction();
 #endif
     void task229128TriggeredSignalWhenInActiongroup();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void repeat();
-    void keysequence(); // QTBUG-53381
+    void keysequence(); // BOBUIBUG-53381
     void disableShortcutsWithBlockedWidgets_data();
     void disableShortcutsWithBlockedWidgets();
-    void shortcutFromKeyEvent(); // QTBUG-48325
+    void shortcutFromKeyEvent(); // BOBUIBUG-48325
     void disableShortcutInMenuAction_data();
     void disableShortcutInMenuAction();
 #endif
@@ -75,7 +75,7 @@ class MyWidget : public QWidget
     Q_OBJECT
 public:
     explicit MyWidget(tst_QAction *tst, QWidget *parent = nullptr) : QWidget(parent), m_test(tst)
-    { setWindowTitle(QTest::currentTestFunction()); }
+    { setWindowTitle(BOBUIest::currentTestFunction()); }
 
 protected:
     void actionEvent(QActionEvent *e) override { m_test->updateState(e); }
@@ -84,7 +84,7 @@ private:
     tst_QAction *m_test;
 };
 
-void tst_QAction::setUnknownFont() // QTBUG-42728
+void tst_QAction::setUnknownFont() // BOBUIBUG-42728
 {
     QAction action(nullptr);
     QFont font("DoesNotExist", 11);
@@ -134,7 +134,7 @@ void tst_QAction::actionEvent()
     QCOMPARE(m_lastAction, &a);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAction::alternateShortcuts()
 {
@@ -153,11 +153,11 @@ void tst_QAction::alternateShortcuts()
         QSignalSpy spy(&act, &QAction::triggered);
 
         act.setAutoRepeat(true);
-        QTest::keyClick(&testWidget, Qt::Key_A, Qt::ControlModifier);
+        BOBUIest::keyClick(&testWidget, BobUI::Key_A, BobUI::ControlModifier);
         QCOMPARE(spy.size(), 1); //act should have been triggered
 
         act.setAutoRepeat(false);
-        QTest::keyClick(&testWidget, Qt::Key_A, Qt::ControlModifier);
+        BOBUIest::keyClick(&testWidget, BobUI::Key_A, BobUI::ControlModifier);
         QCOMPARE(spy.size(), 2); //act should have been triggered a 2nd time
 
         //end of the scope of the action, it will be destroyed and removed from wid
@@ -166,7 +166,7 @@ void tst_QAction::alternateShortcuts()
 
 
     //this tests a crash (if the action did not unregister its alternate shortcuts)
-    QTest::keyClick(&testWidget, Qt::Key_A, Qt::ControlModifier);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_A, BobUI::ControlModifier);
 }
 
 void tst_QAction::keysequence()
@@ -186,12 +186,12 @@ void tst_QAction::keysequence()
         QSignalSpy spy(&act, &QAction::triggered);
 
         act.setAutoRepeat(true);
-        QTest::keySequence(&testWidget, ks);
+        BOBUIest::keySequence(&testWidget, ks);
         QCoreApplication::processEvents();
         QCOMPARE(spy.size(), 1); // act should have been triggered
 
         act.setAutoRepeat(false);
-        QTest::keySequence(&testWidget, ks);
+        BOBUIest::keySequence(&testWidget, ks);
         QCoreApplication::processEvents();
         QCOMPARE(spy.size(), 2); //act should have been triggered a 2nd time
 
@@ -200,7 +200,7 @@ void tst_QAction::keysequence()
     }
 
     // this tests a crash (if the action did not unregister its alternate shortcuts)
-    QTest::keyClick(&testWidget, Qt::Key_A, Qt::ControlModifier);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_A, BobUI::ControlModifier);
 }
 
 void tst_QAction::enabledVisibleInteraction()
@@ -228,19 +228,19 @@ void tst_QAction::enabledVisibleInteraction()
     QSignalSpy spy(&act, SIGNAL(triggered()));
     act.setEnabled(true);
     act.setVisible(false);
-    QTest::keyClick(&testWidget, Qt::Key_T, Qt::ControlModifier);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_T, BobUI::ControlModifier);
     QCOMPARE(spy.size(), 0); //act is not visible, so don't trigger
     act.setVisible(false);
     act.setEnabled(true);
-    QTest::keyClick(&testWidget, Qt::Key_T, Qt::ControlModifier);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_T, BobUI::ControlModifier);
     QCOMPARE(spy.size(), 0); //act is not visible, so don't trigger
     act.setVisible(true);
     act.setEnabled(true);
-    QTest::keyClick(&testWidget, Qt::Key_T, Qt::ControlModifier);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_T, BobUI::ControlModifier);
     QCOMPARE(spy.size(), 1); //act is visible and enabled, so trigger
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QAction::task229128TriggeredSignalWhenInActiongroup()
 {
@@ -263,67 +263,67 @@ void tst_QAction::task229128TriggeredSignalWhenInActiongroup()
     QCOMPARE(actionSpy.size(), 1);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QAction::repeat()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     MyWidget testWidget(this);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testWidget));
 
     QAction act(&testWidget);
     testWidget.addAction(&act);
-    act.setShortcut(QKeySequence(Qt::Key_F));
+    act.setShortcut(QKeySequence(BobUI::Key_F));
     QSignalSpy spy(&act, SIGNAL(triggered()));
 
     act.setAutoRepeat(true);
-    QTest::keyPress(&testWidget, Qt::Key_F);
-    QTest::keyRelease(&testWidget, Qt::Key_F);
+    BOBUIest::keyPress(&testWidget, BobUI::Key_F);
+    BOBUIest::keyRelease(&testWidget, BobUI::Key_F);
     QCOMPARE(spy.size(), 1);
 
     spy.clear();
-    QTest::keyPress(&testWidget, Qt::Key_F);
+    BOBUIest::keyPress(&testWidget, BobUI::Key_F);
     // repeat event
-    QTest::simulateEvent(&testWidget, true, Qt::Key_F, Qt::NoModifier, QString("f"), true);
-    QTest::simulateEvent(&testWidget, true, Qt::Key_F, Qt::NoModifier, QString("f"), true);
-    QTest::keyRelease(&testWidget, Qt::Key_F);
+    BOBUIest::simulateEvent(&testWidget, true, BobUI::Key_F, BobUI::NoModifier, QString("f"), true);
+    BOBUIest::simulateEvent(&testWidget, true, BobUI::Key_F, BobUI::NoModifier, QString("f"), true);
+    BOBUIest::keyRelease(&testWidget, BobUI::Key_F);
     QCOMPARE(spy.size(), 3);
 
     spy.clear();
     act.setAutoRepeat(false);
-    QTest::keyPress(&testWidget, Qt::Key_F);
-    QTest::simulateEvent(&testWidget, true, Qt::Key_F, Qt::NoModifier, QString("f"), true);
-    QTest::simulateEvent(&testWidget, true, Qt::Key_F, Qt::NoModifier, QString("f"), true);
-    QTest::keyRelease(&testWidget, Qt::Key_F);
+    BOBUIest::keyPress(&testWidget, BobUI::Key_F);
+    BOBUIest::simulateEvent(&testWidget, true, BobUI::Key_F, BobUI::NoModifier, QString("f"), true);
+    BOBUIest::simulateEvent(&testWidget, true, BobUI::Key_F, BobUI::NoModifier, QString("f"), true);
+    BOBUIest::keyRelease(&testWidget, BobUI::Key_F);
     QCOMPARE(spy.size(), 1);
 
     spy.clear();
     act.setAutoRepeat(true);
-    QTest::keyPress(&testWidget, Qt::Key_F);
-    QTest::simulateEvent(&testWidget, true, Qt::Key_F, Qt::NoModifier, QString("f"), true);
-    QTest::keyRelease(&testWidget, Qt::Key_F);
+    BOBUIest::keyPress(&testWidget, BobUI::Key_F);
+    BOBUIest::simulateEvent(&testWidget, true, BobUI::Key_F, BobUI::NoModifier, QString("f"), true);
+    BOBUIest::keyRelease(&testWidget, BobUI::Key_F);
     QCOMPARE(spy.size(), 2);
 }
 
 void tst_QAction::disableShortcutsWithBlockedWidgets_data()
 {
-    QTest::addColumn<Qt::ShortcutContext>("shortcutContext");
-    QTest::addColumn<Qt::WindowModality>("windowModality");
+    BOBUIest::addColumn<BobUI::ShortcutContext>("shortcutContext");
+    BOBUIest::addColumn<BobUI::WindowModality>("windowModality");
 
-    QTest::newRow("application modal dialog should block window shortcut.")
-        << Qt::WindowShortcut << Qt::ApplicationModal;
+    BOBUIest::newRow("application modal dialog should block window shortcut.")
+        << BobUI::WindowShortcut << BobUI::ApplicationModal;
 
-    QTest::newRow("application modal dialog should block application shortcut.")
-        << Qt::ApplicationShortcut << Qt::ApplicationModal;
+    BOBUIest::newRow("application modal dialog should block application shortcut.")
+        << BobUI::ApplicationShortcut << BobUI::ApplicationModal;
 
-    QTest::newRow("window modal dialog should block application shortcut.")
-        << Qt::ApplicationShortcut << Qt::WindowModal;
+    BOBUIest::newRow("window modal dialog should block application shortcut.")
+        << BobUI::ApplicationShortcut << BobUI::WindowModal;
 
-    QTest::newRow("window modal dialog should block window shortcut.")
-        << Qt::WindowShortcut << Qt::WindowModal;
+    BOBUIest::newRow("window modal dialog should block window shortcut.")
+        << BobUI::WindowShortcut << BobUI::WindowModal;
 }
 
 
@@ -334,26 +334,26 @@ void tst_QAction::disableShortcutsWithBlockedWidgets()
 
     QMainWindow window;
 
-    QFETCH(Qt::ShortcutContext, shortcutContext);
+    QFETCH(BobUI::ShortcutContext, shortcutContext);
     QAction action(&window);
     window.addAction(&action);
-    action.setShortcut(QKeySequence(Qt::Key_1));
+    action.setShortcut(QKeySequence(BobUI::Key_1));
     action.setShortcutContext(shortcutContext);
 
     window.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&window));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&window));
 
     QDialog dialog(&window);
-    QFETCH(Qt::WindowModality, windowModality);
+    QFETCH(BobUI::WindowModality, windowModality);
     dialog.setWindowModality(windowModality);
 
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
 
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
 
     QSignalSpy spy(&action, &QAction::triggered);
-    QTest::keyPress(&window, Qt::Key_1);
+    BOBUIest::keyPress(&window, BobUI::Key_1);
     QCOMPARE(spy.size(), 0);
 }
 
@@ -375,22 +375,22 @@ protected:
 // ShortcutOverride event first before passing it on as a normal KeyEvent.
 void tst_QAction::shortcutFromKeyEvent()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     ShortcutOverrideWidget testWidget;
     QAction action;
-    action.setShortcut(Qt::Key_1);
+    action.setShortcut(BobUI::Key_1);
     testWidget.addAction(&action);
     testWidget.show();
     QSignalSpy spy(&action, &QAction::triggered);
     QVERIFY(spy.isValid());
-    QVERIFY(QTest::qWaitForWindowActive(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testWidget));
     QCOMPARE(testWidget.shortcutOverrideCount, 0);
 
-    // Don't use the QTest::keyPress approach as this will take the
+    // Don't use the BOBUIest::keyPress approach as this will take the
     // shortcut route for us
-    QKeyEvent e(QEvent::KeyPress, Qt::Key_1, Qt::NoModifier);
+    QKeyEvent e(QEvent::KeyPress, BobUI::Key_1, BobUI::NoModifier);
     QApplication::sendEvent(&testWidget, &e);
     QCOMPARE(spy.size(), 1);
     QCOMPARE(testWidget.shortcutOverrideCount, 1);
@@ -399,14 +399,14 @@ void tst_QAction::shortcutFromKeyEvent()
 /*
     Ignore actions in menus whose menu action has been hidden or disabled.
     The menu entry will not be in the menu bar or parent menu, so the action
-    is not reachable through interactive means. QTBUG-25743
+    is not reachable through interactive means. BOBUIBUG-25743
 */
 void tst_QAction::disableShortcutInMenuAction_data()
 {
-    QTest::addColumn<QByteArray>("property");
+    BOBUIest::addColumn<QByteArray>("property");
 
-    QTest::addRow("visible") << QByteArray("visible");
-    QTest::addRow("enabled") << QByteArray("enabled");
+    BOBUIest::addRow("visible") << QByteArray("visible");
+    BOBUIest::addRow("enabled") << QByteArray("enabled");
 }
 
 void tst_QAction::disableShortcutInMenuAction()
@@ -419,17 +419,17 @@ void tst_QAction::disableShortcutInMenuAction()
     QMainWindow mw;
     QMenu *testMenu = mw.menuBar()->addMenu("Test");
     QAction *testAction = testMenu->addAction("Test Action");
-    testAction->setShortcut(Qt::ControlModifier | Qt::Key_A);
-    QToolBar *toolBar = new QToolBar;
+    testAction->setShortcut(BobUI::ControlModifier | BobUI::Key_A);
+    BOBUIoolBar *toolBar = new BOBUIoolBar;
     mw.addToolBar(toolBar);
 
     mw.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mw));
 
     int expectedTriggerCount = 0;
     QSignalSpy spy(testAction, &QAction::triggered);
 
-    QKeyEvent event(QEvent::KeyPress, Qt::Key_A, Qt::ControlModifier);
+    QKeyEvent event(QEvent::KeyPress, BobUI::Key_A, BobUI::ControlModifier);
     QApplication::sendEvent(&mw, &event);
     QCOMPARE(spy.size(), ++expectedTriggerCount);
 
@@ -469,7 +469,7 @@ void tst_QAction::disableShortcutInMenuAction()
     QCOMPARE(spy.size(), ++expectedTriggerCount);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-QTEST_MAIN(tst_QAction)
+BOBUIEST_MAIN(tst_QAction)
 #include "tst_qaction.moc"

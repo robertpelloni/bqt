@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylanddataoffer_p.h"
 #include "qwaylanddatadevicemanager_p.h"
 #include "qwaylanddisplay_p.h"
 
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformclipboard.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 using namespace std::chrono;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 static QString plainText()
 {
@@ -49,7 +49,7 @@ static QByteArray convertData(const QString &originalMime, const QString &newMim
 
     // Convert text/x-moz-url, which is an UTF-16 string of
     // URL and page title pairs, all separated by line breaks, to text/uri-list.
-    // see also qtbase/src/plugins/platforms/xcb/qxcbmime.cpp
+    // see also bobuibase/src/plugins/platforms/xcb/qxcbmime.cpp
     if (originalMime == uriList() && newMime == mozUrl()) {
         if (data.size() > 1) {
             const quint8 byte0 = data.at(0);
@@ -87,7 +87,7 @@ static QByteArray convertData(const QString &originalMime, const QString &newMim
 }
 
 QWaylandDataOffer::QWaylandDataOffer(QWaylandDisplay *display, struct ::wl_data_offer *offer)
-    : QtWayland::wl_data_offer(offer)
+    : BobUIWayland::wl_data_offer(offer)
     , m_display(display)
     , m_mimeData(new QWaylandMimeData(this))
 {
@@ -112,10 +112,10 @@ QMimeData *QWaylandDataOffer::mimeData()
     return m_mimeData.data();
 }
 
-Qt::DropActions QWaylandDataOffer::supportedActions() const
+BobUI::DropActions QWaylandDataOffer::supportedActions() const
 {
     if (version() < 3) {
-        return Qt::MoveAction | Qt::CopyAction;
+        return BobUI::MoveAction | BobUI::CopyAction;
     }
 
     return m_supportedActions;
@@ -136,16 +136,16 @@ void QWaylandDataOffer::data_offer_action(uint32_t dnd_action)
 {
     Q_UNUSED(dnd_action);
     // This is the compositor telling the drag target what action it should perform
-    // It does not map nicely into Qt final drop semantics, other than pretending there is only one supported action?
+    // It does not map nicely into BobUI final drop semantics, other than pretending there is only one supported action?
 }
 
 void QWaylandDataOffer::data_offer_source_actions(uint32_t source_actions)
 {
-    m_supportedActions = Qt::DropActions();
+    m_supportedActions = BobUI::DropActions();
     if (source_actions & WL_DATA_DEVICE_MANAGER_DND_ACTION_MOVE)
-        m_supportedActions |= Qt::MoveAction;
+        m_supportedActions |= BobUI::MoveAction;
     if (source_actions & WL_DATA_DEVICE_MANAGER_DND_ACTION_COPY)
-        m_supportedActions |= Qt::CopyAction;
+        m_supportedActions |= BobUI::CopyAction;
 }
 
 QWaylandMimeData::QWaylandMimeData(QWaylandAbstractDataOffer *dataOffer)
@@ -213,7 +213,7 @@ QVariant QWaylandMimeData::retrieveData_sys(const QString &mimeType, QMetaType t
     }
 
     int pipefd[2];
-    if (qt_safe_pipe(pipefd) == -1) {
+    if (bobui_safe_pipe(pipefd) == -1) {
         qWarning("QWaylandMimeData: pipe2() failed");
         return QVariant();
     }
@@ -245,16 +245,16 @@ int QWaylandMimeData::readData(int fd, QByteArray &data) const
     readset.events = POLLIN;
 
     Q_FOREVER {
-        int ready = qt_safe_poll(&readset, 1, QDeadlineTimer(1s));
+        int ready = bobui_safe_poll(&readset, 1, QDeadlineTimer(1s));
         if (ready < 0) {
-            qWarning() << "QWaylandDataOffer: qt_safe_poll() failed";
+            qWarning() << "QWaylandDataOffer: bobui_safe_poll() failed";
             return -1;
         } else if (ready == 0) {
             qWarning("QWaylandDataOffer: timeout reading from pipe");
             return -1;
         } else {
             char buf[4096];
-            int n = QT_READ(fd, buf, sizeof buf);
+            int n = BOBUI_READ(fd, buf, sizeof buf);
 
             if (n < 0) {
                 qWarning("QWaylandDataOffer: read() failed");
@@ -270,4 +270,4 @@ int QWaylandMimeData::readData(int fd, QByteArray &data) const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

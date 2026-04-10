@@ -1,3 +1,3 @@
 #! [qmake_use]
-QT += concurrent
+BOBUI += concurrent
 #! [qmake_use]

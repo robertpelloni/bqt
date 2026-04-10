@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfactoryloader_p.h"
 
@@ -19,13 +19,13 @@
 #include "qplugin.h"
 #include "qpluginloader.h"
 
-#include <qtcore_tracepoints_p.h>
+#include <bobuicore_tracepoints_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_POINT(qtcore, QFactoryLoader_update, const QString &fileName);
+Q_TRACE_POINT(bobuicore, QFactoryLoader_update, const QString &fileName);
 
 namespace {
 struct IterationResult
@@ -61,9 +61,9 @@ struct QFactoryLoaderIidSearch
         return IterationResult::ContinueSearch;
     }
 
-    IterationResult::Result operator()(QtPluginMetaDataKeys key, QCborStreamReader &reader)
+    IterationResult::Result operator()(BobUIPluginMetaDataKeys key, QCborStreamReader &reader)
     {
-        if (key != QtPluginMetaDataKeys::IID)
+        if (key != BobUIPluginMetaDataKeys::IID)
             return skip(reader);
         matchesIid = (reader.readAllString() == iid);
         return IterationResult::FinishedSearch;
@@ -81,13 +81,13 @@ struct QFactoryLoaderMetaDataKeysExtractor : QFactoryLoaderIidSearch
         : QFactoryLoaderIidSearch(iid)
     {}
 
-    IterationResult::Result operator()(QtPluginMetaDataKeys key, QCborStreamReader &reader)
+    IterationResult::Result operator()(BobUIPluginMetaDataKeys key, QCborStreamReader &reader)
     {
-        if (key == QtPluginMetaDataKeys::IID) {
+        if (key == BobUIPluginMetaDataKeys::IID) {
             QFactoryLoaderIidSearch::operator()(key, reader);
             return IterationResult::ContinueSearch;
         }
-        if (key != QtPluginMetaDataKeys::MetaData)
+        if (key != BobUIPluginMetaDataKeys::MetaData)
             return skip(reader);
 
         if (!matchesIid)
@@ -137,7 +137,7 @@ template <typename F> static IterationResult iterateInPluginMetaData(QByteArrayV
         if (reader.isInteger()) {
             // integer key, one of ours
             qint64 value = reader.toInteger();
-            auto key = QtPluginMetaDataKeys(value);
+            auto key = BobUIPluginMetaDataKeys(value);
             if (qint64(key) != value)
                 return IterationResult::InvalidHeaderItem;
             if (!reader.next())
@@ -207,10 +207,10 @@ bool QPluginParsedMetaData::parse(QByteArrayView raw)
                                 : decodeVersion1ArchRequirements(header.plugin_arch_requirements);
 
     // insert the keys not stored in the top-level CBOR map
-    map[int(QtPluginMetaDataKeys::QtVersion)] =
-               QT_VERSION_CHECK(header.qt_major_version, header.qt_minor_version, 0);
-    map[int(QtPluginMetaDataKeys::IsDebug)] = archReq.isDebug;
-    map[int(QtPluginMetaDataKeys::Requirements)] = archReq.level;
+    map[int(BobUIPluginMetaDataKeys::BobUIVersion)] =
+               BOBUI_VERSION_CHECK(header.bobui_major_version, header.bobui_minor_version, 0);
+    map[int(BobUIPluginMetaDataKeys::IsDebug)] = archReq.isDebug;
+    map[int(BobUIPluginMetaDataKeys::Requirements)] = archReq.level;
 
     data = std::move(map);
     return true;
@@ -226,7 +226,7 @@ QJsonObject QPluginParsedMetaData::toJson() const
             switch (it.first.toInteger()) {
 #define CONVERT_TO_STRING(IntKey, StringKey, Description) \
             case int(IntKey): key = QStringLiteral(StringKey); break;
-                QT_PLUGIN_FOREACH_METADATA(CONVERT_TO_STRING)
+                BOBUI_PLUGIN_FOREACH_METADATA(CONVERT_TO_STRING)
             }
         } else {
             key = it.first.toString();
@@ -238,10 +238,10 @@ QJsonObject QPluginParsedMetaData::toJson() const
     return o;
 }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 
-Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(lcFactoryLoader, "QT_DEBUG_PLUGINS",
-                                            "qt.core.plugin.factoryloader")
+Q_STATIC_LOGGING_CATEGORY_WITH_ENV_OVERRIDE(lcFactoryLoader, "BOBUI_DEBUG_PLUGINS",
+                                            "bobui.core.plugin.factoryloader")
 
 namespace {
 struct QFactoryLoaderGlobals
@@ -253,7 +253,7 @@ struct QFactoryLoaderGlobals
 };
 }
 
-Q_GLOBAL_STATIC(QFactoryLoaderGlobals, qt_factoryloader_global)
+Q_GLOBAL_STATIC(QFactoryLoaderGlobals, bobui_factoryloader_global)
 
 inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
 {
@@ -277,7 +277,7 @@ inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
                 QDirListing::IteratorFlag::FilesOnly | QDirListing::IteratorFlag::ResolveSymlinks);
 
     auto versionFromLib = [](const QLibraryPrivate *lib) {
-        return lib->metaData.value(QtPluginMetaDataKeys::QtVersion).toInteger();
+        return lib->metaData.value(BobUIPluginMetaDataKeys::BobUIVersion).toInteger();
     };
 
     for (const auto &dirEntry : plugins) {
@@ -295,7 +295,7 @@ inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
         QLibraryPrivate::UniquePtr library;
         library.reset(QLibraryPrivate::findOrCreate(dirEntry.canonicalFilePath()));
         if (!library->isPlugin()) {
-            qCDebug(lcFactoryLoader) << library->errorString << Qt::endl
+            qCDebug(lcFactoryLoader) << library->errorString << BobUI::endl
                                      << "         not a plugin";
             continue;
         }
@@ -303,9 +303,9 @@ inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
         QStringList keys;
         bool metaDataOk = false;
 
-        QString iid = library->metaData.value(QtPluginMetaDataKeys::IID).toString();
+        QString iid = library->metaData.value(BobUIPluginMetaDataKeys::IID).toString();
         if (iid == QLatin1StringView(this->iid.constData(), this->iid.size())) {
-            QCborMap object = library->metaData.value(QtPluginMetaDataKeys::MetaData).toMap();
+            QCborMap object = library->metaData.value(BobUIPluginMetaDataKeys::MetaData).toMap();
             metaDataOk = true;
 
             const QCborArray k = object.value("Keys"_L1).toArray();
@@ -317,12 +317,12 @@ inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
         if (!metaDataOk)
             continue;
 
-        static constexpr qint64 QtVersionNoPatch = QT_VERSION_CHECK(QT_VERSION_MAJOR, QT_VERSION_MINOR, 0);
+        static constexpr qint64 BobUIVersionNoPatch = BOBUI_VERSION_CHECK(BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, 0);
         qint64 thisVersion = versionFromLib(library.get());
-        if (iid.startsWith(QStringLiteral("org.qt-project.Qt.QPA"))) {
-            // QPA plugins must match Qt Major.Minor
-            if (thisVersion != QtVersionNoPatch) {
-                qCDebug(lcFactoryLoader) << "Ignoring QPA plugin due to mismatching Qt versions" << QtVersionNoPatch << thisVersion;
+        if (iid.startsWith(QStringLiteral("org.bobui-project.BobUI.QPA"))) {
+            // QPA plugins must match BobUI Major.Minor
+            if (thisVersion != BobUIVersionNoPatch) {
+                qCDebug(lcFactoryLoader) << "Ignoring QPA plugin due to mismatching BobUI versions" << BobUIVersionNoPatch << thisVersion;
                 continue;
             }
         }
@@ -331,23 +331,23 @@ inline void QFactoryLoader::Private::updateSinglePath(const QString &path)
         for (const QString &key : std::as_const(keys)) {
             QLibraryPrivate *&keyMapEntry = keyMap[key];
             if (QLibraryPrivate *existingLibrary = keyMapEntry) {
-                static constexpr bool QtBuildIsDebug = QT_CONFIG(debug);
-                bool existingIsDebug = existingLibrary->metaData.value(QtPluginMetaDataKeys::IsDebug).toBool();
-                bool thisIsDebug = library->metaData.value(QtPluginMetaDataKeys::IsDebug).toBool();
+                static constexpr bool BobUIBuildIsDebug = BOBUI_CONFIG(debug);
+                bool existingIsDebug = existingLibrary->metaData.value(BobUIPluginMetaDataKeys::IsDebug).toBool();
+                bool thisIsDebug = library->metaData.value(BobUIPluginMetaDataKeys::IsDebug).toBool();
                 bool configsAreDifferent = thisIsDebug != existingIsDebug;
-                bool thisConfigDoesNotMatchQt = thisIsDebug != QtBuildIsDebug;
-                if (configsAreDifferent && thisConfigDoesNotMatchQt)
-                    continue; // Existing library matches Qt's build config
+                bool thisConfigDoesNotMatchBobUI = thisIsDebug != BobUIBuildIsDebug;
+                if (configsAreDifferent && thisConfigDoesNotMatchBobUI)
+                    continue; // Existing library matches BobUI's build config
 
-                // If the existing library was built with a future Qt version,
-                // whereas the one we're considering has a Qt version that fits
+                // If the existing library was built with a future BobUI version,
+                // whereas the one we're considering has a BobUI version that fits
                 // better, we prioritize the better match.
                 qint64 existingVersion = versionFromLib(existingLibrary);
-                if (existingVersion == QtVersionNoPatch)
-                    continue; // Prefer exact Qt version match
-                if (existingVersion < QtVersionNoPatch && thisVersion > QtVersionNoPatch)
+                if (existingVersion == BobUIVersionNoPatch)
+                    continue; // Prefer exact BobUI version match
+                if (existingVersion < BobUIVersionNoPatch && thisVersion > BobUIVersionNoPatch)
                     continue; // Better too old than too new
-                if (existingVersion < QtVersionNoPatch && thisVersion < existingVersion)
+                if (existingVersion < BobUIVersionNoPatch && thisVersion < existingVersion)
                     continue; // Otherwise prefer newest
             }
 
@@ -371,7 +371,7 @@ void QFactoryLoader::setLoadHints(QLibrary::LoadHints loadHints)
 
 void QFactoryLoader::update()
 {
-#ifdef QT_SHARED
+#ifdef BOBUI_SHARED
     if (!d->extraSearchPath.isEmpty())
         d->updateSinglePath(d->extraSearchPath);
 
@@ -392,12 +392,12 @@ void QFactoryLoader::update()
 
 QFactoryLoader::~QFactoryLoader()
 {
-    if (!qt_factoryloader_global.isDestroyed()) {
-        QMutexLocker locker(&qt_factoryloader_global->mutex);
-        qt_factoryloader_global->loaders.removeOne(this);
+    if (!bobui_factoryloader_global.isDestroyed()) {
+        QMutexLocker locker(&bobui_factoryloader_global->mutex);
+        bobui_factoryloader_global->loaders.removeOne(this);
     }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     for (qsizetype i = 0; i < d->loadedLibraries.size(); ++i) {
         if (d->loadedLibraries.at(i)) {
             auto &plugin = d->libraries[i];
@@ -407,7 +407,7 @@ QFactoryLoader::~QFactoryLoader()
     }
 #endif
 
-    for (QtPluginInstanceFunction staticInstance : d->usedStaticInstances) {
+    for (BobUIPluginInstanceFunction staticInstance : d->usedStaticInstances) {
         if (staticInstance)
             delete staticInstance();
     }
@@ -425,24 +425,24 @@ QLibraryPrivate *QFactoryLoader::library(const QString &key) const
 
 void QFactoryLoader::refreshAll()
 {
-    if (qt_factoryloader_global.exists()) {
-        QMutexLocker locker(&qt_factoryloader_global->mutex);
-        for (QFactoryLoader *loader : std::as_const(qt_factoryloader_global->loaders))
+    if (bobui_factoryloader_global.exists()) {
+        QMutexLocker locker(&bobui_factoryloader_global->mutex);
+        for (QFactoryLoader *loader : std::as_const(bobui_factoryloader_global->loaders))
             loader->update();
     }
 }
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
 QFactoryLoader::QFactoryLoader(const char *iid,
                                const QString &suffix,
-                               Qt::CaseSensitivity cs)
+                               BobUI::CaseSensitivity cs)
 {
     Q_ASSERT_X(suffix.startsWith(u'/'), "QFactoryLoader",
                "For historical reasons, the suffix must start with '/' (and it can't be empty)");
 
     d->iid = iid;
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     d->cs = cs;
     d->suffix = suffix;
 # ifdef Q_OS_ANDROID
@@ -450,9 +450,9 @@ QFactoryLoader::QFactoryLoader(const char *iid,
         d->suffix.remove(0, 1);
 # endif
 
-    QMutexLocker locker(&qt_factoryloader_global->mutex);
+    QMutexLocker locker(&bobui_factoryloader_global->mutex);
     update();
-    qt_factoryloader_global->loaders.append(this);
+    bobui_factoryloader_global->loaders.append(this);
 #else
     Q_UNUSED(suffix);
     Q_UNUSED(cs);
@@ -461,11 +461,11 @@ QFactoryLoader::QFactoryLoader(const char *iid,
 
 void QFactoryLoader::setExtraSearchPath(const QString &path)
 {
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     if (d->extraSearchPath == path)
         return;             // nothing to do
 
-    QMutexLocker locker(&qt_factoryloader_global->mutex);
+    QMutexLocker locker(&bobui_factoryloader_global->mutex);
     QString oldPath = std::exchange(d->extraSearchPath, path);
     if (oldPath.isEmpty()) {
         // easy case, just update this directory
@@ -492,7 +492,7 @@ void QFactoryLoader::setExtraSearchPath(const QString &path)
 QFactoryLoader::MetaDataList QFactoryLoader::metaData() const
 {
     QList<QPluginParsedMetaData> metaData;
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     QMutexLocker locker(&d->mutex);
     metaData.reserve(qsizetype(d->libraries.size()));
     for (const auto &library : d->libraries)
@@ -505,7 +505,7 @@ QFactoryLoader::MetaDataList QFactoryLoader::metaData() const
     for (const QStaticPlugin &plugin : staticPlugins) {
         QByteArrayView pluginData(static_cast<const char *>(plugin.rawMetaData), plugin.rawMetaDataSize);
         QPluginParsedMetaData parsed(pluginData);
-        if (parsed.isError() || parsed.value(QtPluginMetaDataKeys::IID) != iid)
+        if (parsed.isError() || parsed.value(BobUIPluginMetaDataKeys::IID) != iid)
             continue;
         metaData.append(std::move(parsed));
     }
@@ -518,11 +518,11 @@ QFactoryLoader::MetaDataList QFactoryLoader::metaData() const
 QList<QCborArray> QFactoryLoader::metaDataKeys() const
 {
     QList<QCborArray> metaData;
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     QMutexLocker locker(&d->mutex);
     metaData.reserve(qsizetype(d->libraries.size()));
     for (const auto &library : d->libraries) {
-        const QCborValue md = library->metaData.value(QtPluginMetaDataKeys::MetaData);
+        const QCborValue md = library->metaData.value(BobUIPluginMetaDataKeys::MetaData);
         metaData.append(md["Keys"_L1].toArray());
     }
     locker.unlock();
@@ -559,7 +559,7 @@ QObject *QFactoryLoader::instance(int index) const
 
 inline QObject *QFactoryLoader::instanceHelper_locked(int index) const
 {
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     if (size_t(index) < d->libraries.size()) {
         QLibraryPrivate *library = d->libraries[index].get();
         d->loadedLibraries[index] = true;
@@ -608,11 +608,11 @@ int QFactoryLoader::indexOf(const QString &needle) const
     for (int i = 0; i < int(metaDataList.size()); ++i) {
         const QCborArray &keys = metaDataList[i];
         for (QCborValueConstRef key : keys) {
-            if (key.toString().compare(needle, Qt::CaseInsensitive) == 0)
+            if (key.toString().compare(needle, BobUI::CaseInsensitive) == 0)
                 return i;
         }
     }
     return -1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

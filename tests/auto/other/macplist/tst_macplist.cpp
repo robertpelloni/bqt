@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QProcess>
+#include <BOBUIest>
+#include <BobUICore/QDir>
+#include <BobUICore/QFile>
+#include <BobUICore/QProcess>
 
 class tst_MacPlist : public QObject
 {
@@ -23,9 +23,9 @@ private slots:
 #ifdef Q_OS_MAC
 void tst_MacPlist::test_plist_data()
 {
-    QTest::addColumn<QString>("test_plist");
+    BOBUIest::addColumn<QString>("test_plist");
 
-    QTest::newRow("control") << QString::fromLatin1(
+    BOBUIest::newRow("control") << QString::fromLatin1(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -41,7 +41,7 @@ void tst_MacPlist::test_plist_data()
 "</dict>\n"
 "</plist>\n");
 
-    QTest::newRow("LSUIElement-as-string") << QString::fromLatin1(
+    BOBUIest::newRow("LSUIElement-as-string") << QString::fromLatin1(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -59,7 +59,7 @@ void tst_MacPlist::test_plist_data()
 "</dict>\n"
 "</plist>\n");
 
-    QTest::newRow("LSUIElement-as-bool") << QString::fromLatin1(
+    BOBUIest::newRow("LSUIElement-as-bool") << QString::fromLatin1(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -77,7 +77,7 @@ void tst_MacPlist::test_plist_data()
 "</dict>\n"
 "</plist>\n");
 
-    QTest::newRow("LSUIElement-as-int") << QString::fromLatin1(
+    BOBUIest::newRow("LSUIElement-as-int") << QString::fromLatin1(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -95,7 +95,7 @@ void tst_MacPlist::test_plist_data()
 "</dict>\n"
 "</plist>\n");
 
-    QTest::newRow("LSUIElement-as-garbage") << QString::fromLatin1(
+    BOBUIest::newRow("LSUIElement-as-garbage") << QString::fromLatin1(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -145,5 +145,5 @@ void tst_MacPlist::test_plist()
 }
 #endif
 
-QTEST_MAIN(tst_MacPlist)
+BOBUIEST_MAIN(tst_MacPlist)
 #include "tst_macplist.moc"

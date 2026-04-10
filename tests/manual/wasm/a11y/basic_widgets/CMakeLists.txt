@@ -1,6 +1,6 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
-qt_internal_add_manual_test(a11y_basic_widgets
+bobui_internal_add_manual_test(a11y_basic_widgets
     GUI
     SOURCES
         tabswidget.cpp
@@ -9,9 +9,9 @@ qt_internal_add_manual_test(a11y_basic_widgets
         basica11ywidget.cpp
         main.cpp
     LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Core
+        BobUI::Gui
+        BobUI::Widgets
 )
 
 add_custom_command(

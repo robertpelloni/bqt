@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessibilityhints.h"
 #include "qaccessibilityhints_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-void QAccessibilityHintsPrivate::updateContrastPreference(Qt::ContrastPreference contrastPreference)
+void QAccessibilityHintsPrivate::updateContrastPreference(BobUI::ContrastPreference contrastPreference)
 {
     if (m_contrastPreference == contrastPreference)
         return;
@@ -26,7 +26,7 @@ QAccessibilityHintsPrivate *QAccessibilityHintsPrivate::get(QAccessibilityHints 
     \class QAccessibilityHints
     \since 6.10
     \brief The QAccessibilityHints class contains platform specific accessibility hints and settings.
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This class bundles together platform specific accessibility settings, and can be accessed from
     \l QStyleHints::accessibility.
@@ -47,12 +47,12 @@ QAccessibilityHints::~QAccessibilityHints() = default;
     This property can be used by the application to determine what contrast settings the system
     is currently using.
 
-    Qt styles use this property in order to adjust palette colors and outlines.
+    BobUI styles use this property in order to adjust palette colors and outlines.
 
-    \sa Qt::ColorScheme, QGuiApplication::palette(), QEvent::PaletteChange
+    \sa BobUI::ColorScheme, QGuiApplication::palette(), QEvent::PaletteChange
     \since 6.10
 */
-Qt::ContrastPreference QAccessibilityHints::contrastPreference() const
+BobUI::ContrastPreference QAccessibilityHints::contrastPreference() const
 {
     Q_D(const QAccessibilityHints);
     return d->m_contrastPreference;
@@ -66,6 +66,6 @@ bool QAccessibilityHints::event(QEvent *event)
     return QObject::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qaccessibilityhints.cpp"

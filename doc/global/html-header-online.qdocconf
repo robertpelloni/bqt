@@ -1,4 +1,4 @@
-# HTML Header with qt.io branding and online links
+# HTML Header with bobui.io branding and online links
 
 HTML.stylesheets = template/style/online.css \
                    template/style/cookie-confirm.css \
@@ -12,7 +12,7 @@ HTML.stylesheets = template/style/online.css \
                    template/style/cookiebar-x.png \
                    template/style/doc_search.png \
                    template/style/tech_preview.svg \
-                   template/style/theqtcompany.png
+                   template/style/thebobuicompany.png
 
 
 #for including files into the qch file. Relative to the outputdir of a QDoc build.
@@ -28,23 +28,23 @@ qhp.extraFiles += style/online.css \
                   style/cookiebar-x.png \
                   style/doc_search.png \
                   style/tech_preview.svg \
-                  style/theqtcompany.png
+                  style/thebobuicompany.png
 
 HTML.headerstyles = \
     "  <link rel=\"stylesheet\" type=\"text/css\" href=\"style/online.css\" />\n" \
-    "  <link rel=\"shortcut icon\" href=\"//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/images/favicon.ico.gzip\" />\n"
+    "  <link rel=\"shortcut icon\" href=\"//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/assets/images/favicon.ico.gzip\" />\n"
 
 HTML.headerscripts = \
-    "  <script type=\"text/javascript\"> wpThemeFolder = \'http://qt.io/wp-content/themes/oneqt\'; </script>\n" \
+    "  <script type=\"text/javascript\"> wpThemeFolder = \'http://bobui.io/wp-content/themes/onebobui\'; </script>\n" \
     "  <script type=\"text/javascript\" src=\"//d33sqmjvzgs8hq.cloudfront.net/wp-includes/js/jquery/jquery.js.gzip\"></script>\n" \
     "  <script type=\"text/javascript\" src=\"//d33sqmjvzgs8hq.cloudfront.net/wp-includes/js/jquery/jquery-migrate.min.js.gzip\"></script>\n" \
-    "  <script type=\"text/javascript\" src=\"//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/js/combo.js.gzip\"></script>\n" \
+    "  <script type=\"text/javascript\" src=\"//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/onebobui/js/combo.js.gzip\"></script>\n" \
     "  <script type=\"text/javascript\" src=\"scripts/main.js\"></script>\n" \
     "  <script type=\"text/javascript\" src=\"scripts/extras.js\"></script>\n" \
     "  <script type=\"text/javascript\">\n" \
     "  \$(function(){\n" \
-    "     \$(\"#footer\").load(\"/style/qt-footer.html\");\n" \
-    "     \$(\"#sidebar-content\").load(\"style/qt5-sidebar.html\");\n" \
+    "     \$(\"#footer\").load(\"/style/bobui-footer.html\");\n" \
+    "     \$(\"#sidebar-content\").load(\"style/bobui5-sidebar.html\");\n" \
     "  });\n" \
     "  </script>\n" \
     "  <script type=\"text/javascript\">\n" \
@@ -54,7 +54,7 @@ HTML.headerscripts = \
     "        }, i[r].l = 1 * new Date(); a = s.createElement(o),\n" \
     "        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)\n" \
     "    })(window, document, \'script\', \'//www.google-analytics.com/analytics.js\', \'ga\');\n\n" \
-    "    ga(\'create\', \'UA-54043535-2\', \'qt.io\');\n" \
+    "    ga(\'create\', \'UA-54043535-2\', \'bobui.io\');\n" \
     "    ga(\'set\', \'forceSSL\', true);\n" \
     "    ga(\'send\', \'pageview\');\n" \
     "  </script>\n"
@@ -70,7 +70,7 @@ HTML.postheader = \
     "<body>\n" \
     "<div class=\"header\" id=\"tmpl_header\">\n" \
     "<header class=\"\" id=\"navbar\"><div id=\"cookie-confirmation\" style=\"display:none\"><div id=\"cookie-confirmation-inner\"><p>We bake cookies in your browser for a better experience.  Using this site means that you consent.\n" \
-    "<a href=\"https://www1.qt.io/terms-conditions/ \">Read more</a></p><div id=\"cookie-confirmation-buttons-area\"><a href=\"#\" id=\"confirmation-button\">Continue »</a>\n" \
+    "<a href=\"https://www1.bobui.io/terms-conditions/ \">Read more</a></p><div id=\"cookie-confirmation-buttons-area\"><a href=\"#\" id=\"confirmation-button\">Continue »</a>\n" \
     "</div></div>\n" \
     "<script>\n" \
     "    $('#confirmation-button').on('click', function() { $('#cookie-confirmation').fadeOut(); createCookie(\"cookies_nom\", \"yum\", 180); });\n" \
@@ -81,12 +81,12 @@ HTML.postheader = \
     "    <div class=\"navbar-header cf\">\n" \
     "        <div id=\"mm-wrap\">\n" \
     "            <ul id=\"mm-helper\" class=\"mm-menu\" data-event=\"hover_intent\" data-effect=\"fade\" data-effect-speed=\"200\" data-panel-width=\"#navbar\" data-panel-inner-width=\"1280px\" data-second-click=\"go\" data-document-click=\"collapse\" data-vertical-behaviour=\"accordion\" data-breakpoint=\"0\">\n" \
-    "                <li class=\"mm-item\"><a class=\"mm-link\" href=\"http://blog.qt.io/\" tabindex=\"0\">Blog</a></li>\n" \
-    "                <li class=\"mm-item\"><a class=\"mm-link\" href=\"https://www.qt.io/contact-us/\" tabindex=\"0\">Contact Us</a></li>\n" \
-    "                <li class=\"mm-item\"><a title=\"Qt Account\" class=\"mm-link\" href=\"https://account.qt.io/\" tabindex=\"0\"></a></li>\n" \
+    "                <li class=\"mm-item\"><a class=\"mm-link\" href=\"http://blog.bobui.io/\" tabindex=\"0\">Blog</a></li>\n" \
+    "                <li class=\"mm-item\"><a class=\"mm-link\" href=\"https://www.bobui.io/contact-us/\" tabindex=\"0\">Contact Us</a></li>\n" \
+    "                <li class=\"mm-item\"><a title=\"BobUI Account\" class=\"mm-link\" href=\"https://account.bobui.io/\" tabindex=\"0\"></a></li>\n" \
     "            </ul>\n" \
     "        </div>\n" \
-    "        <a class=\"navbar-oneQt retina\" data-icon=\"\" href=\"https://www.qt.io/\"></a>\n" \
+    "        <a class=\"navbar-oneBobUI retina\" data-icon=\"\" href=\"https://www.bobui.io/\"></a>\n" \
     "    </div>\n" \
     "</div>\n" \
     "</header>\n" \
@@ -95,14 +95,14 @@ HTML.postheader = \
     "<div class=\"main-rounded\">\n" \
     "<div class=\"navigationbar\">\n" \
     "    <ul class=\"sub-navigation\">\n" \
-    "        <li><a href=\"http://wiki.qt.io/\">Wiki</a></li>\n" \
-    "        <li><a href=\"http://doc.qt.io/\" class=\"active\">Documentation</a></li>\n" \
-    "        <li><a href=\"http://forum.qt.io/\">Forum</a></li>\n" \
-    "        <li><a href=\"https://bugreports.qt.io/\">Bug Reports</a></li>\n" \
-    "        <li><a href=\"https://codereview.qt-project.org/\">Code Review</a></li>\n" \
+    "        <li><a href=\"http://wiki.bobui.io/\">Wiki</a></li>\n" \
+    "        <li><a href=\"http://doc.bobui.io/\" class=\"active\">Documentation</a></li>\n" \
+    "        <li><a href=\"http://forum.bobui.io/\">Forum</a></li>\n" \
+    "        <li><a href=\"https://bugreports.bobui.io/\">Bug Reports</a></li>\n" \
+    "        <li><a href=\"https://codereview.bobui-project.org/\">Code Review</a></li>\n" \
     "    </ul>\n" \
     "    <div id=\"main_title_bar\">\n" \
-    "        <h1>Qt Documentation</h1>\n" \
+    "        <h1>BobUI Documentation</h1>\n" \
     "        <div class=\"search_bar\">\n" \
     "        <script>\n" \
     "            (function() {\n" \

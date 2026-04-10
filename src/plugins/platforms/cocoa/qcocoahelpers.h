@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAHELPERS_H
 #define QCOCOAHELPERS_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It provides helper functions
+// This file is not part of the BobUI API.  It provides helper functions
 // for the Cocoa plugin. This header file may
 // change from version to version without notice, or even be removed.
 //
@@ -17,9 +17,9 @@
 //
 
 #include <private/qguiapplication_p.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qscreen.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qscreen.h>
 #include <qpa/qplatformdialoghelper.h>
 
 #include <objc/runtime.h>
@@ -31,11 +31,11 @@
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSButton.h>
 
-Q_FORWARD_DECLARE_OBJC_CLASS(QT_MANGLE_NAMESPACE(QNSView));
+Q_FORWARD_DECLARE_OBJC_CLASS(BOBUI_MANGLE_NAMESPACE(QNSView));
 
 struct mach_header;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindow)
 Q_DECLARE_LOGGING_CATEGORY(lcQpaDrawing)
@@ -52,42 +52,42 @@ class QPixmap;
 class QString;
 
 // Conversion functions
-QStringList qt_mac_NSArrayToQStringList(NSArray<NSString *> *nsarray);
-NSMutableArray<NSString *> *qt_mac_QStringListToNSMutableArray(const QStringList &list);
+QStringList bobui_mac_NSArrayToQStringList(NSArray<NSString *> *nsarray);
+NSMutableArray<NSString *> *bobui_mac_QStringListToNSMutableArray(const QStringList &list);
 
-NSDragOperation qt_mac_mapDropAction(Qt::DropAction action);
-NSDragOperation qt_mac_mapDropActions(Qt::DropActions actions);
-Qt::DropAction qt_mac_mapNSDragOperation(NSDragOperation nsActions);
-Qt::DropActions qt_mac_mapNSDragOperations(NSDragOperation nsActions);
+NSDragOperation bobui_mac_mapDropAction(BobUI::DropAction action);
+NSDragOperation bobui_mac_mapDropActions(BobUI::DropActions actions);
+BobUI::DropAction bobui_mac_mapNSDragOperation(NSDragOperation nsActions);
+BobUI::DropActions bobui_mac_mapNSDragOperations(NSDragOperation nsActions);
 
-QT_MANGLE_NAMESPACE(QNSView) *qnsview_cast(NSView *view);
+BOBUI_MANGLE_NAMESPACE(QNSView) *qnsview_cast(NSView *view);
 
 // Misc
-void qt_mac_transformProccessToForegroundApplication();
-QString qt_mac_applicationName();
+void bobui_mac_transformProccessToForegroundApplication();
+QString bobui_mac_applicationName();
 
-QPointF qt_mac_flip(const QPointF &pos, const QRectF &reference);
-QRectF qt_mac_flip(const QRectF &rect, const QRectF &reference);
+QPointF bobui_mac_flip(const QPointF &pos, const QRectF &reference);
+QRectF bobui_mac_flip(const QRectF &rect, const QRectF &reference);
 
-Qt::MouseButton cocoaButton2QtButton(NSInteger buttonNum);
-Qt::MouseButton cocoaButton2QtButton(NSEvent *event);
+BobUI::MouseButton cocoaButton2BobUIButton(NSInteger buttonNum);
+BobUI::MouseButton cocoaButton2BobUIButton(NSEvent *event);
 
-QEvent::Type cocoaEvent2QtMouseEvent(NSEvent *event);
+QEvent::Type cocoaEvent2BobUIMouseEvent(NSEvent *event);
 
-Qt::MouseButtons cocoaMouseButtons2QtMouseButtons(NSInteger pressedMouseButtons);
-Qt::MouseButtons currentlyPressedMouseButtons();
+BobUI::MouseButtons cocoaMouseButtons2BobUIMouseButtons(NSInteger pressedMouseButtons);
+BobUI::MouseButtons currentlyPressedMouseButtons();
 
 // strip out '&' characters, and convert "&&" to a single '&', in menu
 // text - since menu text is sometimes decorated with these for Windows
 // accelerators.
-QString qt_mac_removeAmpersandEscapes(QString s);
+QString bobui_mac_removeAmpersandEscapes(QString s);
 
 // Similar to __NXKitString for localized AppKit strings
-NSString *qt_mac_AppKitString(NSString *table, NSString *key);
+NSString *bobui_mac_AppKitString(NSString *table, NSString *key);
 
 enum {
-    QtCocoaEventSubTypeWakeup       = SHRT_MAX,
-    QtCocoaEventSubTypePostMessage  = SHRT_MAX-1
+    BobUICocoaEventSubTypeWakeup       = SHRT_MAX,
+    BobUICocoaEventSubTypePostMessage  = SHRT_MAX-1
 };
 
 class QCocoaPostMessageArgs {
@@ -114,7 +114,7 @@ public:
 };
 
 template<typename T>
-T qt_mac_resolveOption(const T &fallback, const QByteArray &environment)
+T bobui_mac_resolveOption(const T &fallback, const QByteArray &environment)
 {
     // check for environment variable
     if (!environment.isEmpty()) {
@@ -127,7 +127,7 @@ T qt_mac_resolveOption(const T &fallback, const QByteArray &environment)
 }
 
 template<typename T>
-T qt_mac_resolveOption(const T &fallback, QWindow *window, const QByteArray &property, const QByteArray &environment)
+T bobui_mac_resolveOption(const T &fallback, QWindow *window, const QByteArray &property, const QByteArray &environment)
 {
     // check for environment variable
     if (!environment.isEmpty()) {
@@ -159,10 +159,10 @@ struct backwards_t {
 template<class R>
 constexpr backwards_t<R> backwards(R&& r) { return {std::forward<R>(r)}; }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // @compatibility_alias doesn't work with protocols
-#define QNSPanelDelegate QT_MANGLE_NAMESPACE(QNSPanelDelegate)
+#define QNSPanelDelegate BOBUI_MANGLE_NAMESPACE(QNSPanelDelegate)
 
 @protocol QNSPanelDelegate
 @required
@@ -170,7 +170,7 @@ QT_END_NAMESPACE
 - (void)onCancelClicked;
 @end
 
-@interface QT_MANGLE_NAMESPACE(QNSPanelContentsWrapper) : NSView
+@interface BOBUI_MANGLE_NAMESPACE(QNSPanelContentsWrapper) : NSView
 
 @property (nonatomic, readonly) NSButton *okButton;
 @property (nonatomic, readonly) NSButton *cancelButton;
@@ -185,9 +185,9 @@ QT_END_NAMESPACE
 
 @end
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSPanelContentsWrapper);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QNSPanelContentsWrapper);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // -------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ struct InputMethodQueryResult : public QHash<int, QVariant>
     operator bool() { return !isEmpty(); }
 };
 
-InputMethodQueryResult queryInputMethod(QObject *object, Qt::InputMethodQueries queries = Qt::ImEnabled);
+InputMethodQueryResult queryInputMethod(QObject *object, BobUI::InputMethodQueries queries = BobUI::ImEnabled);
 
 // -------------------------------------------------------------------------
 
@@ -205,8 +205,8 @@ struct KeyEvent
     ulong timestamp = 0;
     QEvent::Type type = QEvent::None;
 
-    Qt::Key key = Qt::Key_unknown;
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    BobUI::Key key = BobUI::Key_unknown;
+    BobUI::KeyboardModifiers modifiers = BobUI::NoModifier;
     QString text;
     bool isRepeat = false;
 
@@ -230,7 +230,7 @@ QDebug operator<<(QDebug, SEL);
 
 #endif // __OBJC__
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QCOCOAHELPERS_H
 

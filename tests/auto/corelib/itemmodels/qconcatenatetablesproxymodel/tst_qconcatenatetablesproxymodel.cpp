@@ -1,16 +1,16 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author David Faure <david.faure@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QSignalSpy>
 #include <QSortFilterProxyModel>
-#include <QTest>
+#include <BOBUIest>
 #include <QStandardItemModel>
 #include <QIdentityProxyModel>
 #include <QItemSelectionModel>
 #include <QMimeData>
 #include <QStringListModel>
 #include <QAbstractItemModelTester>
-#include <QTransposeProxyModel>
+#include <BOBUIransposeProxyModel>
 
 #include <qconcatenatetablesproxymodel.h>
 
@@ -84,8 +84,8 @@ private Q_SLOTS:
     void shouldPropagateDropAfterLastRow_data();
     void shouldPropagateDropAfterLastRow();
     void addModelWithFilterOnTop();
-    void qtbug91788();
-    void qtbug91878();
+    void bobuibug91788();
+    void bobuibug91878();
     void createPersistentOnLayoutAboutToBeChanged();
     void shouldMergeRoleNames();
 
@@ -102,13 +102,13 @@ void tst_QConcatenateTablesProxyModel::init()
     mod.appendRow({ new QStandardItem(QStringLiteral("A")), new QStandardItem(QStringLiteral("B")), new QStandardItem(QStringLiteral("C")) });
     mod.setHorizontalHeaderLabels(QStringList() << QStringLiteral("H1") << QStringLiteral("H2") << QStringLiteral("H3"));
     mod.setVerticalHeaderLabels(QStringList() << QStringLiteral("One"));
-    mod.setItemRoleNames({ { Qt::UserRole, "user" } });
+    mod.setItemRoleNames({ { BobUI::UserRole, "user" } });
 
     mod2.clear();
     mod2.appendRow({ new QStandardItem(QStringLiteral("D")), new QStandardItem(QStringLiteral("E")), new QStandardItem(QStringLiteral("F")) });
     mod2.setHorizontalHeaderLabels(QStringList() << QStringLiteral("H1") << QStringLiteral("H2") << QStringLiteral("H3"));
     mod2.setVerticalHeaderLabels(QStringList() << QStringLiteral("Two"));
-    mod2.setItemRoleNames({ { Qt::UserRole + 1, "user+1" } });
+    mod2.setItemRoleNames({ { BobUI::UserRole + 1, "user+1" } });
 
     mod3.clear();
     mod3.appendRow({ new QStandardItem(QStringLiteral("1")), new QStandardItem(QStringLiteral("2")), new QStandardItem(QStringLiteral("3")) });
@@ -131,11 +131,11 @@ void tst_QConcatenateTablesProxyModel::shouldAggregateTwoModelsCorrectly()
     QCOMPARE(extractRowTexts(&pm, 1), QStringLiteral("DEF"));
 
     // ... and correct headers
-    QCOMPARE(pm.headerData(0, Qt::Horizontal).toString(), QStringLiteral("H1"));
-    QCOMPARE(pm.headerData(1, Qt::Horizontal).toString(), QStringLiteral("H2"));
-    QCOMPARE(pm.headerData(2, Qt::Horizontal).toString(), QStringLiteral("H3"));
-    QCOMPARE(pm.headerData(0, Qt::Vertical).toString(), QStringLiteral("One"));
-    QCOMPARE(pm.headerData(1, Qt::Vertical).toString(), QStringLiteral("Two"));
+    QCOMPARE(pm.headerData(0, BobUI::Horizontal).toString(), QStringLiteral("H1"));
+    QCOMPARE(pm.headerData(1, BobUI::Horizontal).toString(), QStringLiteral("H2"));
+    QCOMPARE(pm.headerData(2, BobUI::Horizontal).toString(), QStringLiteral("H3"));
+    QCOMPARE(pm.headerData(0, BobUI::Vertical).toString(), QStringLiteral("One"));
+    QCOMPARE(pm.headerData(1, BobUI::Vertical).toString(), QStringLiteral("Two"));
 
     QVERIFY(!pm.canFetchMore(QModelIndex()));
 }
@@ -191,11 +191,11 @@ void tst_QConcatenateTablesProxyModel::shouldAggregateTwoEmptyModelsWhichThenGet
     QCOMPARE(extractRowTexts(&pm, 1), QStringLiteral("DEF"));
 
     // ... and correct headers
-    QCOMPARE(pm.headerData(0, Qt::Horizontal).toString(), QStringLiteral("H1"));
-    QCOMPARE(pm.headerData(1, Qt::Horizontal).toString(), QStringLiteral("H2"));
-    QCOMPARE(pm.headerData(2, Qt::Horizontal).toString(), QStringLiteral("H3"));
-    QCOMPARE(pm.headerData(0, Qt::Vertical).toString(), QStringLiteral("One"));
-    QCOMPARE(pm.headerData(1, Qt::Vertical).toString(), QStringLiteral("Two"));
+    QCOMPARE(pm.headerData(0, BobUI::Horizontal).toString(), QStringLiteral("H1"));
+    QCOMPARE(pm.headerData(1, BobUI::Horizontal).toString(), QStringLiteral("H2"));
+    QCOMPARE(pm.headerData(2, BobUI::Horizontal).toString(), QStringLiteral("H3"));
+    QCOMPARE(pm.headerData(0, BobUI::Vertical).toString(), QStringLiteral("One"));
+    QCOMPARE(pm.headerData(1, BobUI::Vertical).toString(), QStringLiteral("Two"));
 
     QVERIFY(!pm.canFetchMore(QModelIndex()));
 }
@@ -210,7 +210,7 @@ void tst_QConcatenateTablesProxyModel::shouldHandleDataChanged()
     QSignalSpy dataChangedSpy(&pm, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
 
     // When a cell in a source model changes
-    mod.item(0, 0)->setData("a", Qt::EditRole);
+    mod.item(0, 0)->setData("a", BobUI::EditRole);
 
     // Then the change should be notified to the proxy
     QCOMPARE(dataChangedSpy.size(), 1);
@@ -218,7 +218,7 @@ void tst_QConcatenateTablesProxyModel::shouldHandleDataChanged()
     QCOMPARE(extractRowTexts(&pm, 0), QStringLiteral("aBC"));
 
     // Same test with the other model
-    mod2.item(0, 2)->setData("f", Qt::EditRole);
+    mod2.item(0, 2)->setData("f", BobUI::EditRole);
 
     QCOMPARE(dataChangedSpy.size(), 2);
     QCOMPARE(dataChangedSpy.at(1).at(0).toModelIndex(), pm.index(1, 2));
@@ -260,23 +260,23 @@ void tst_QConcatenateTablesProxyModel::shouldHandleSetItemData()
     QSignalSpy dataChangedSpy(&pm, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
 
     // When changing a cell using setData
-    pm.setItemData(pm.index(0, 0), QMap<int, QVariant>{ std::make_pair<int, QVariant>(Qt::DisplayRole, QStringLiteral("X")),
-                                                        std::make_pair<int, QVariant>(Qt::UserRole, 88) });
+    pm.setItemData(pm.index(0, 0), QMap<int, QVariant>{ std::make_pair<int, QVariant>(BobUI::DisplayRole, QStringLiteral("X")),
+                                                        std::make_pair<int, QVariant>(BobUI::UserRole, 88) });
 
     // Then the change should be notified to the proxy
     QCOMPARE(dataChangedSpy.size(), 1);
     QCOMPARE(dataChangedSpy.at(0).at(0).toModelIndex(), pm.index(0, 0));
     QCOMPARE(extractRowTexts(&pm, 0), QStringLiteral("XBC"));
-    QCOMPARE(pm.index(0, 0).data(Qt::UserRole).toInt(), 88);
+    QCOMPARE(pm.index(0, 0).data(BobUI::UserRole).toInt(), 88);
 
     // Same test with the other model
-    pm.setItemData(pm.index(1, 2), QMap<int, QVariant>{ std::make_pair<int, QVariant>(Qt::DisplayRole, QStringLiteral("Y")),
-                                                        std::make_pair<int, QVariant>(Qt::UserRole, 89) });
+    pm.setItemData(pm.index(1, 2), QMap<int, QVariant>{ std::make_pair<int, QVariant>(BobUI::DisplayRole, QStringLiteral("Y")),
+                                                        std::make_pair<int, QVariant>(BobUI::UserRole, 89) });
 
     QCOMPARE(dataChangedSpy.size(), 2);
     QCOMPARE(dataChangedSpy.at(1).at(0).toModelIndex(), pm.index(1, 2));
     QCOMPARE(extractRowTexts(&pm, 1), QStringLiteral("DEY"));
-    QCOMPARE(pm.index(1, 2).data(Qt::UserRole).toInt(), 89);
+    QCOMPARE(pm.index(1, 2).data(BobUI::UserRole).toInt(), 89);
 }
 
 void tst_QConcatenateTablesProxyModel::shouldHandleRowInsertionAndRemoval()
@@ -428,7 +428,7 @@ void tst_QConcatenateTablesProxyModel::shouldUseSmallestColumnCount()
     QVERIFY(indexD.isValid());
     QCOMPARE(indexD, pm.index(1, 0));
 
-    // Test setData in an ignored column (QTBUG-91253)
+    // Test setData in an ignored column (BOBUIBUG-91253)
     QSignalSpy dataChangedSpy(&pm, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
     mod.setData(mod.index(0, 1), "b");
     QCOMPARE(dataChangedSpy.size(), 0);
@@ -535,7 +535,7 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateLayoutChanged()
     QSignalSpy layoutChangedSpy(&pm, SIGNAL(layoutChanged()));
 
     // When changing the sorting in the QSFPM
-    qsfpm.sort(0, Qt::DescendingOrder);
+    qsfpm.sort(0, BobUI::DescendingOrder);
 
     // Then the proxy should emit the layoutChanged signals, and show re-sorted data
     QCOMPARE(extractRowTexts(&pm, 0), QStringLiteral("ABC"));
@@ -587,8 +587,8 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateColumnMove()
     // and two transpose proxies (so it becomes columns)
     QStringListModel model1({ "0", "1", "2" });
     QStringListModel model2({ "A", "B", "C" });
-    QTransposeProxyModel transpose1;
-    QTransposeProxyModel transpose2;
+    BOBUIransposeProxyModel transpose1;
+    BOBUIransposeProxyModel transpose2;
     transpose1.setSourceModel(&model1);
     transpose2.setSourceModel(&model2);
 
@@ -702,14 +702,14 @@ void tst_QConcatenateTablesProxyModel::shouldUpdateColumnsOnModelReset()
 
 void tst_QConcatenateTablesProxyModel::shouldPropagateDropOnItem_data()
 {
-    QTest::addColumn<int>("sourceRow");
-    QTest::addColumn<int>("destRow");
-    QTest::addColumn<QString>("expectedResult");
+    BOBUIest::addColumn<int>("sourceRow");
+    BOBUIest::addColumn<int>("destRow");
+    BOBUIest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("0-3") << 0 << 3 << QStringLiteral("ABCA");
-    QTest::newRow("1-2") << 1 << 2 << QStringLiteral("ABBD");
-    QTest::newRow("2-1") << 2 << 1 << QStringLiteral("ACCD");
-    QTest::newRow("3-0") << 3 << 0 << QStringLiteral("DBCD");
+    BOBUIest::newRow("0-3") << 0 << 3 << QStringLiteral("ABCA");
+    BOBUIest::newRow("1-2") << 1 << 2 << QStringLiteral("ABBD");
+    BOBUIest::newRow("2-1") << 2 << 1 << QStringLiteral("ACCD");
+    BOBUIest::newRow("3-0") << 3 << 0 << QStringLiteral("DBCD");
 
 }
 
@@ -718,7 +718,7 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropOnItem()
     // Given two source models who handle drops
 
     // Note: QStandardItemModel handles drop onto items by inserting child rows,
-    // which is good for QTreeView but not for QTableView or QConcatenateTablesProxyModel.
+    // which is good for BOBUIreeView but not for BOBUIableView or QConcatenateTablesProxyModel.
     // So we use QStringListModel here instead.
     QConcatenateTablesProxyModel pm;
     QStringListModel model1({QStringLiteral("A"), QStringLiteral("B")});
@@ -735,8 +735,8 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropOnItem()
 
     // and dropping onto another item
     QFETCH(int, destRow);
-    QVERIFY(pm.canDropMimeData(mimeData, Qt::CopyAction, -1, -1, pm.index(destRow, 0)));
-    QVERIFY(pm.dropMimeData(mimeData, Qt::CopyAction, -1, -1, pm.index(destRow, 0)));
+    QVERIFY(pm.canDropMimeData(mimeData, BobUI::CopyAction, -1, -1, pm.index(destRow, 0)));
+    QVERIFY(pm.dropMimeData(mimeData, BobUI::CopyAction, -1, -1, pm.index(destRow, 0)));
     delete mimeData;
 
     // Then the result should be as expected
@@ -767,8 +767,8 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropBetweenItems()
 
     // and dropping it before row 1
     const int destRow = 1;
-    QVERIFY(pm.canDropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
-    QVERIFY(pm.dropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.canDropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.dropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
     delete mimeData;
 
     // Then a new row should be inserted
@@ -802,8 +802,8 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropBetweenItemsAtModelBou
 
     // and dropping it before row 2
     const int destRow = 2;
-    QVERIFY(pm.canDropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
-    QVERIFY(pm.dropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.canDropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.dropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
     delete mimeData;
 
     // Then a new row should be inserted
@@ -819,13 +819,13 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropBetweenItemsAtModelBou
 
 void tst_QConcatenateTablesProxyModel::shouldPropagateDropAfterLastRow_data()
 {
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("destRow");
 
     // Dropping after the last row is documented to be done with destRow == -1.
-    QTest::newRow("-1") << -1;
-    // However, sometimes QTreeView calls dropMimeData with destRow == rowCount...
+    BOBUIest::newRow("-1") << -1;
+    // However, sometimes BOBUIreeView calls dropMimeData with destRow == rowCount...
     // Not sure if that's a bug or not, but let's support it in the model, just in case.
-    QTest::newRow("3") << 3;
+    BOBUIest::newRow("3") << 3;
 }
 
 void tst_QConcatenateTablesProxyModel::shouldPropagateDropAfterLastRow()
@@ -852,8 +852,8 @@ void tst_QConcatenateTablesProxyModel::shouldPropagateDropAfterLastRow()
     QVERIFY(mimeData);
 
     // and dropping it after the last row
-    QVERIFY(pm.canDropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
-    QVERIFY(pm.dropMimeData(mimeData, Qt::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.canDropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
+    QVERIFY(pm.dropMimeData(mimeData, BobUI::CopyAction, destRow, 0, QModelIndex()));
     delete mimeData;
 
     // Then a new row should be inserted at the end
@@ -876,7 +876,7 @@ public:
     }
 };
 
-void tst_QConcatenateTablesProxyModel::addModelWithFilterOnTop() // QTBUG-134210
+void tst_QConcatenateTablesProxyModel::addModelWithFilterOnTop() // BOBUIBUG-134210
 {
     // Given a QSFPM -> QConcatenateTablesProxyModel and a QStandardItemModel
     QStandardItemModel sim;
@@ -898,7 +898,7 @@ void tst_QConcatenateTablesProxyModel::addModelWithFilterOnTop() // QTBUG-134210
     QCOMPARE(proxyFilter.columnCount(), 1);
 }
 
-void tst_QConcatenateTablesProxyModel::qtbug91788()
+void tst_QConcatenateTablesProxyModel::bobuibug91788()
 {
     QConcatenateTablesProxyModel proxyConcat;
     QStringList strList{QString("one"),QString("two")};
@@ -911,7 +911,7 @@ void tst_QConcatenateTablesProxyModel::qtbug91788()
     QCOMPARE(proxyConcat.columnCount(), 0);
 }
 
-void tst_QConcatenateTablesProxyModel::qtbug91878()
+void tst_QConcatenateTablesProxyModel::bobuibug91878()
 {
     QStandardItemModel m;
     m.setRowCount(4);
@@ -927,7 +927,7 @@ void tst_QConcatenateTablesProxyModel::qtbug91878()
     QCOMPARE(pm.rowCount(), 4);
 }
 
-void tst_QConcatenateTablesProxyModel::createPersistentOnLayoutAboutToBeChanged() // QTBUG-93466
+void tst_QConcatenateTablesProxyModel::createPersistentOnLayoutAboutToBeChanged() // BOBUIBUG-93466
 {
     QStandardItemModel model1(3, 1);
     QStandardItemModel model2(3, 1);
@@ -977,18 +977,18 @@ void tst_QConcatenateTablesProxyModel::shouldMergeRoleNames()
 
     // Then the role names should be merged
     const auto roleNames = pm.roleNames();
-    QCOMPARE(roleNames[Qt::DisplayRole], "display");
-    QCOMPARE(roleNames[Qt::UserRole], "user");
-    QCOMPARE(roleNames[Qt::UserRole + 1], "user+1");
+    QCOMPARE(roleNames[BobUI::DisplayRole], "display");
+    QCOMPARE(roleNames[BobUI::UserRole], "user");
+    QCOMPARE(roleNames[BobUI::UserRole + 1], "user+1");
 
     // When removing a source model
     pm.removeSourceModel(&mod2);
 
     // Then the role names should be updated
     const auto roleNamesAfterMod2Removal = pm.roleNames();
-    QVERIFY(!roleNamesAfterMod2Removal.contains(Qt::UserRole + 1));
+    QVERIFY(!roleNamesAfterMod2Removal.contains(BobUI::UserRole + 1));
 }
 
-QTEST_GUILESS_MAIN(tst_QConcatenateTablesProxyModel)
+BOBUIEST_GUILESS_MAIN(tst_QConcatenateTablesProxyModel)
 
 #include "tst_qconcatenatetablesproxymodel.moc"

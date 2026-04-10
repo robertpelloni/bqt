@@ -1,15 +1,15 @@
 // Copyright (C) 2011 - 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxnavigatoreventnotifier.h"
 
 #include "qqnxnavigatoreventhandler.h"
 
-#include <QtCore/QByteArray>
-#include <QtCore/QDebug>
-#include <QtCore/QList>
-#include <QtCore/QSocketNotifier>
-#include <QtCore/private/qcore_unix_p.h>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QDebug>
+#include <BobUICore/QList>
+#include <BobUICore/QSocketNotifier>
+#include <BobUICore/private/qcore_unix_p.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -17,9 +17,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// Q_LOGGING_CATEGORY(lcQpaQnxNavigatorEvents, "qt.qpa.qnx.navigator.events");
+// Q_LOGGING_CATEGORY(lcQpaQnxNavigatorEvents, "bobui.qpa.qnx.navigator.events");
 
 const char *QQnxNavigatorEventNotifier::navigatorControlPath = "/pps/services/navigator/control";
 const size_t QQnxNavigatorEventNotifier::ppsBufferSize = 4096;
@@ -161,7 +161,7 @@ void QQnxNavigatorEventNotifier::readData()
 
     // attempt to read pps data
     errno = 0;
-    int bytes = qt_safe_read(m_fd, buffer, ppsBufferSize - 1);
+    int bytes = bobui_safe_read(m_fd, buffer, ppsBufferSize - 1);
     if (Q_UNLIKELY(bytes == -1))
         qFatal("QQNX: failed to read navigator pps, errno=%d", errno);
 
@@ -181,4 +181,4 @@ void QQnxNavigatorEventNotifier::readData()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "controller.h"
 #include "ui_controller.h"
@@ -29,7 +29,7 @@ Controller::~Controller()
 void Controller::updateRange()
 {
     if (ui->gbRange->isChecked()) {
-        QTextCursor cursor = ui->teSourceString->textCursor();
+        BOBUIextCursor cursor = ui->teSourceString->textCursor();
         if (cursor.hasSelection()) {
             ui->sbFrom->setValue(cursor.selectionStart());
             ui->sbTo->setValue(cursor.selectionEnd() - 1);
@@ -48,7 +48,7 @@ void Controller::updateViews()
     s.replace('\n', QChar::LineSeparator);
     ui->view->updateLayout(s,
                            qreal(ui->hsLineWidth->value()) * ui->hsLineWidth->width() / 100.0f,
-                           ui->cbWrap ? QTextOption::WrapAtWordBoundaryOrAnywhere : QTextOption::ManualWrap,
+                           ui->cbWrap ? BOBUIextOption::WrapAtWordBoundaryOrAnywhere : BOBUIextOption::ManualWrap,
                            ui->fcbFont->currentFont());
 
     int start = ui->gbRange->isChecked() ? ui->sbFrom->value() : -1;

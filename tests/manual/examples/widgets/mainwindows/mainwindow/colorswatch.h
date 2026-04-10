@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef COLORSWATCH_H
 #define COLORSWATCH_H
 
 #include <QDockWidget>
 
-QT_FORWARD_DECLARE_CLASS(QAction)
-QT_FORWARD_DECLARE_CLASS(QActionGroup)
-QT_FORWARD_DECLARE_CLASS(QMenu)
+BOBUI_FORWARD_DECLARE_CLASS(QAction)
+BOBUI_FORWARD_DECLARE_CLASS(QActionGroup)
+BOBUI_FORWARD_DECLARE_CLASS(QMenu)
 
 class ColorSwatch : public QDockWidget
 {
     Q_OBJECT
 
 public:
-    explicit ColorSwatch(const QString &colorName, QMainWindow *parent = nullptr, Qt::WindowFlags flags = { });
+    explicit ColorSwatch(const QString &colorName, QMainWindow *parent = nullptr, BobUI::WindowFlags flags = { });
 
     void setCustomSizeHint(const QSize &size);
     QMenu *colorSwatchMenu() const { return menu; }
 
 protected:
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event) override;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     void resizeEvent(QResizeEvent *e) override;
 
 private slots:
@@ -48,8 +48,8 @@ private slots:
     void tabInto(QAction *action);
 
 private:
-    void allow(Qt::DockWidgetArea area, bool allow);
-    void place(Qt::DockWidgetArea area, bool place);
+    void allow(BobUI::DockWidgetArea area, bool allow);
+    void place(BobUI::DockWidgetArea area, bool place);
 
     QAction *closableAction;
     QAction *movableAction;

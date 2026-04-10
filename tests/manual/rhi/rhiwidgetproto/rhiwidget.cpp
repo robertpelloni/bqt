@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "rhiwidget_p.h"
 
@@ -9,7 +9,7 @@
 
 /*!
     \class QRhiWidget
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \since 6.x
 
     \brief The QRhiWidget class is a widget for rendering 3D graphics via an
@@ -38,7 +38,7 @@
 /*!
     Constructs a widget which is a child of \a parent, with widget flags set to \a f.
  */
-QRhiWidget::QRhiWidget(QWidget *parent, Qt::WindowFlags f)
+QRhiWidget::QRhiWidget(QWidget *parent, BobUI::WindowFlags f)
     : QWidget(*(new QRhiWidgetPrivate), parent, f)
 {
     Q_D(QRhiWidget);
@@ -525,7 +525,7 @@ void QRhiWidget::initialize(QRhi *rhi, QRhiTexture *outputTexture)
     To request updates, call QWidget::update(). Calling update() from within
     render() will lead to updating continuously, throttled by vsync.
 
-    \a cb is the QRhiCommandBuffer for the current frame of the Qt Quick
+    \a cb is the QRhiCommandBuffer for the current frame of the BobUI Quick
     scenegraph. The function is called with a frame being recorded, but without
     an active render pass.
 

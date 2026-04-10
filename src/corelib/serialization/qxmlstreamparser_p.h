@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -23,10 +23,10 @@
 // be lost!
 //
 // To regenerate this file, run:
-//    qlalr --no-debug --no-lines --qt qxmlstream.g
+//    qlalr --no-debug --no-lines --bobui qxmlstream.g
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include <qxmlstream.h>
 #include "qxmlstream_p.h"
 #include "qxmlutils_p.h"
@@ -37,15 +37,15 @@
 #ifndef QXMLSTREAMPARSER_P_H
 #define QXMLSTREAMPARSER_P_H
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 
 bool QXmlStreamReaderPrivate::parse()
 {
     // cleanup currently reported token
 
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     switch (type) {
     case QXmlStreamReader::StartElement:
@@ -543,7 +543,7 @@ bool QXmlStreamReaderPrivate::parse()
             processingInstructionTarget = symString(3);
             if (scanUntil("?>")) {
                 processingInstructionData = XmlStringRef(&textBuffer, pos, textBuffer.size() - pos - 2);
-                if (!processingInstructionTarget.view().compare("xml"_L1, Qt::CaseInsensitive)) {
+                if (!processingInstructionTarget.view().compare("xml"_L1, BobUI::CaseInsensitive)) {
                     raiseWellFormedError(QXmlStream::tr("XML declaration not at start of document."));
                 }
                 else if (!QXmlUtils::isNCName(processingInstructionTarget))
@@ -558,7 +558,7 @@ bool QXmlStreamReaderPrivate::parse()
         case 97:
             setType(QXmlStreamReader::ProcessingInstruction);
             processingInstructionTarget = symString(3);
-            if (!processingInstructionTarget.view().compare("xml"_L1, Qt::CaseInsensitive))
+            if (!processingInstructionTarget.view().compare("xml"_L1, BobUI::CaseInsensitive))
                 raiseWellFormedError(QXmlStream::tr("Invalid processing instruction name."));
         break;
 
@@ -1001,7 +1001,7 @@ bool QXmlStreamReaderPrivate::parse()
 
 #endif // feature xmlstreamreader
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

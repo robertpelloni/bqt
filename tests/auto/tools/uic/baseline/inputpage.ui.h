@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputpage.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,17 +9,17 @@
 #ifndef INPUTPAGE_H
 #define INPUTPAGE_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_InputPage
 {
@@ -29,7 +29,7 @@ public:
     QLabel *label;
     QHBoxLayout *hboxLayout;
     QLineEdit *fileLineEdit;
-    QToolButton *browseButton;
+    BOBUIoolButton *browseButton;
     QSpacerItem *spacerItem1;
 
     void setupUi(QWidget *InputPage)
@@ -61,7 +61,7 @@ public:
 
         hboxLayout->addWidget(fileLineEdit);
 
-        browseButton = new QToolButton(InputPage);
+        browseButton = new BOBUIoolButton(InputPage);
         browseButton->setObjectName("browseButton");
 
         hboxLayout->addWidget(browseButton);
@@ -92,6 +92,6 @@ namespace Ui {
     class InputPage: public Ui_InputPage {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // INPUTPAGE_H

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>HelpDialog</class>
  <widget class="QWidget" name="HelpDialog">
@@ -28,7 +28,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="BOBUIabWidget" name="tabWidget">
      <property name="whatsThis">
       <string>Displays help topics organized by category, index or bookmarks. Another tab inherits the full text search.</string>
      </property>
@@ -47,9 +47,9 @@
         <number>5</number>
        </property>
        <item>
-        <widget class="QTreeWidget" name="listContents">
+        <widget class="BOBUIreeWidget" name="listContents">
          <property name="contextMenuPolicy">
-          <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+          <enum>BobUI::ContextMenuPolicy::CustomContextMenu</enum>
          </property>
          <property name="whatsThis">
           <string>&lt;b&gt;Help topics organized by category.&lt;/b&gt;&lt;p&gt;Double-click an item to see the topics in that category. To view a topic, just double-click it.&lt;/p&gt;</string>
@@ -103,7 +103,7 @@
        <item>
         <widget class="QListView" name="listIndex">
          <property name="contextMenuPolicy">
-          <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+          <enum>BobUI::ContextMenuPolicy::CustomContextMenu</enum>
          </property>
          <property name="whatsThis">
           <string>&lt;b&gt;List of available help topics.&lt;/b&gt;&lt;p&gt;Double-click on an item to open its help page. If more than one is found, you must specify which page you want.&lt;/p&gt;</string>
@@ -124,9 +124,9 @@
         <number>5</number>
        </property>
        <item>
-        <widget class="QTreeWidget" name="listBookmarks">
+        <widget class="BOBUIreeWidget" name="listBookmarks">
          <property name="contextMenuPolicy">
-          <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+          <enum>BobUI::ContextMenuPolicy::CustomContextMenu</enum>
          </property>
          <property name="whatsThis">
           <string>Displays the list of bookmarks.</string>
@@ -152,7 +152,7 @@
          <item>
           <spacer>
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>BobUI::Orientation::Horizontal</enum>
            </property>
            <property name="sizeType">
             <enum>QSizePolicy::Policy::Expanding</enum>
@@ -209,7 +209,7 @@
        <item row="3" column="0">
         <spacer>
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>BobUI::Orientation::Vertical</enum>
          </property>
          <property name="sizeType">
           <enum>QSizePolicy::Policy::Fixed</enum>
@@ -245,7 +245,7 @@
        <item row="5" column="0">
         <widget class="QListWidget" name="resultBox">
          <property name="contextMenuPolicy">
-          <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+          <enum>BobUI::ContextMenuPolicy::CustomContextMenu</enum>
          </property>
          <property name="whatsThis">
           <string>&lt;b&gt;Found documents&lt;/b&gt;&lt;p&gt;This list contains all found documents from the last search. The documents are ordered, i.e. the first document has the most matches.&lt;/p&gt;</string>
@@ -286,7 +286,7 @@
          <item>
           <spacer>
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>BobUI::Orientation::Horizontal</enum>
            </property>
            <property name="sizeType">
             <enum>QSizePolicy::Policy::Expanding</enum>

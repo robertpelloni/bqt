@@ -1,7 +1,7 @@
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qlist.h>
 #include <qobject.h>
 #include <qrandom.h>
@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <random>
 
-#if !QT_CONFIG(getentropy) && (defined(Q_OS_BSD4) || defined(Q_OS_WIN))
+#if !BOBUI_CONFIG(getentropy) && (defined(Q_OS_BSD4) || defined(Q_OS_WIN))
 #  define HAVE_FALLBACK_ENGINE
 #endif
 
@@ -18,7 +18,7 @@
     do {\
         if (!static_cast<bool>(statement))\
             if (!static_cast<bool>(statement))\
-                if (!QTest::qVerify(static_cast<bool>(statement), #statement, "3rd try", __FILE__, __LINE__))\
+                if (!BOBUIest::qVerify(static_cast<bool>(statement), #statement, "3rd try", __FILE__, __LINE__))\
                     return;\
     } while (0)
 
@@ -29,8 +29,8 @@ static const double RandomValueFP = double(0.3010463714599609);
 
 static void setRNGControl(uint v)
 {
-#ifdef QT_BUILD_INTERNAL
-    qt_randomdevice_control.storeRelaxed(v);
+#ifdef BOBUI_BUILD_INTERNAL
+    bobui_randomdevice_control.storeRelaxed(v);
 #else
     Q_UNUSED(v);
 #endif
@@ -106,8 +106,8 @@ static const quint32 defaultRngResults[] = {
 
 
 using namespace std;
-QT_WARNING_DISABLE_GCC("-Wfloat-equal")
-QT_WARNING_DISABLE_CLANG("-Wfloat-equal")
+BOBUI_WARNING_DISABLE_GCC("-Wfloat-equal")
+BOBUI_WARNING_DISABLE_CLANG("-Wfloat-equal")
 
 struct RandomGenerator : public QRandomGenerator
 {
@@ -125,11 +125,11 @@ void tst_QRandomGenerator::basics()
     // default constructible
     QRandomGenerator rng;
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-move")
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-move")
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
 #if defined(Q_CC_GNU_ONLY) && Q_CC_GNU >= 1301
-QT_WARNING_DISABLE_GCC("-Wself-move")
+BOBUI_WARNING_DISABLE_GCC("-Wself-move")
 #endif
     // copyable && movable
     rng = rng;
@@ -139,7 +139,7 @@ QT_WARNING_DISABLE_GCC("-Wself-move")
     QRandomGenerator64 rng64;
     rng64 = rng64;
     rng64 = std::move(rng64);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     // 32- and 64-bit should be interchangeable:
     rng = rng64;
@@ -270,7 +270,7 @@ void tst_QRandomGenerator::systemRng()
     rng->bounded(100);
     rng->bounded(100U);
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     quint32 setpoint = std::numeric_limits<int>::max();
     ++setpoint;
     quint64 setpoint64 = quint64(setpoint) << 32 | setpoint;
@@ -300,13 +300,13 @@ void tst_QRandomGenerator::securelySeeding()
 
 void tst_QRandomGenerator::generate32_data()
 {
-    QTest::addColumn<uint>("control");
-    QTest::newRow("fixed") << (RandomValue32 & RandomDataMask);
-    QTest::newRow("global") << 0U;
-#ifdef QT_BUILD_INTERNAL
-    QTest::newRow("system") << uint(UseSystemRNG);
+    BOBUIest::addColumn<uint>("control");
+    BOBUIest::newRow("fixed") << (RandomValue32 & RandomDataMask);
+    BOBUIest::newRow("global") << 0U;
+#ifdef BOBUI_BUILD_INTERNAL
+    BOBUIest::newRow("system") << uint(UseSystemRNG);
 #  ifdef HAVE_FALLBACK_ENGINE
-    QTest::newRow("system-fallback") << uint(UseSystemRNG | SkipSystemRNG);
+    BOBUIest::newRow("system-fallback") << uint(UseSystemRNG | SkipSystemRNG);
 #  endif
 #endif
 }
@@ -506,13 +506,13 @@ void tst_QRandomGenerator::generateNonContiguous()
 
 void tst_QRandomGenerator::bounded_data()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("Test only possible in developer builds");
 #endif
 
-    QTest::addColumn<uint>("control");
-    QTest::addColumn<quint32>("sup");
-    QTest::addColumn<quint32>("expected");
+    BOBUIest::addColumn<uint>("control");
+    BOBUIest::addColumn<quint32>("sup");
+    BOBUIest::addColumn<quint32>("expected");
 
     auto newRow = [&](quint32 val, quint32 sup) {
         // calculate the scaled value
@@ -524,7 +524,7 @@ void tst_QRandomGenerator::bounded_data()
         Q_ASSERT((shifted & RandomDataMask) == shifted);
 
         unsigned control = SetRandomData | shifted;
-        QTest::addRow("%u,%u", val, sup) << control << sup << val;
+        BOBUIest::addRow("%u,%u", val, sup) << control << sup << val;
     };
 
     // useless: we can only generate zeroes:
@@ -644,19 +644,19 @@ void tst_QRandomGenerator::bounded64Quality()
 
 void tst_QRandomGenerator::bounded64_data()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("Test only possible in developer builds");
 #endif
 
-    QTest::addColumn<uint>("control");
-    QTest::addColumn<quint64>("sup");
-    QTest::addColumn<quint64>("expected");
+    BOBUIest::addColumn<uint>("control");
+    BOBUIest::addColumn<quint64>("sup");
+    BOBUIest::addColumn<quint64>("expected");
 
     auto newRow = [&](unsigned val, unsigned sup) {
         Q_ASSERT((val & ~RandomDataMask) == 0);
 
         unsigned control = SetRandomData | val;
-        QTest::addRow("%u,%u", val, sup) << control << quint64(sup) << quint64(val);
+        BOBUIest::addRow("%u,%u", val, sup) << control << quint64(sup) << quint64(val);
     };
 
     // useless: we can only generate zeroes:
@@ -799,21 +799,21 @@ void tst_QRandomGenerator::seedStdRandomEngines()
 
 void tst_QRandomGenerator::stdUniformIntDistribution_data()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("Test only possible in developer builds");
 #endif
 
-    QTest::addColumn<uint>("control");
-    QTest::addColumn<quint32>("max");
+    BOBUIest::addColumn<uint>("control");
+    BOBUIest::addColumn<quint32>("max");
 
     auto newRow = [&](quint32 max) {
-#ifdef QT_BUILD_INTERNAL
-        QTest::addRow("system:%u", max) << uint(UseSystemRNG) << max;
+#ifdef BOBUI_BUILD_INTERNAL
+        BOBUIest::addRow("system:%u", max) << uint(UseSystemRNG) << max;
 #  ifdef HAVE_FALLBACK_ENGINE
-        QTest::addRow("system-fallback:%u", max) << uint(UseSystemRNG | SkipSystemRNG) << max;
+        BOBUIest::addRow("system-fallback:%u", max) << uint(UseSystemRNG | SkipSystemRNG) << max;
 #  endif
 #endif
-        QTest::addRow("global:%u", max) << 0U << max;
+        BOBUIest::addRow("global:%u", max) << 0U << max;
     };
 
     // useless: we can only generate zeroes:
@@ -911,22 +911,22 @@ void tst_QRandomGenerator::stdGenerateCanonical()
 
 void tst_QRandomGenerator::stdUniformRealDistribution_data()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("Test only possible in developer builds");
 #endif
 
-    QTest::addColumn<uint>("control");
-    QTest::addColumn<double>("min");
-    QTest::addColumn<double>("sup");
+    BOBUIest::addColumn<uint>("control");
+    BOBUIest::addColumn<double>("min");
+    BOBUIest::addColumn<double>("sup");
 
     auto newRow = [&](double min, double sup) {
-#ifdef QT_BUILD_INTERNAL
-        QTest::addRow("system:%g-%g", min, sup) << uint(UseSystemRNG) << min << sup;
+#ifdef BOBUI_BUILD_INTERNAL
+        BOBUIest::addRow("system:%g-%g", min, sup) << uint(UseSystemRNG) << min << sup;
 #  ifdef HAVE_FALLBACK_ENGINE
-        QTest::addRow("system-fallback:%g-%g", min, sup) << uint(UseSystemRNG | SkipSystemRNG) << min << sup;
+        BOBUIest::addRow("system-fallback:%g-%g", min, sup) << uint(UseSystemRNG | SkipSystemRNG) << min << sup;
 #  endif
 #endif
-        QTest::addRow("global:%g-%g", min, sup) << 0U << min << sup;
+        BOBUIest::addRow("global:%g-%g", min, sup) << 0U << min << sup;
     };
 
     newRow(0, 0);   // useless: we can only generate zeroes
@@ -1001,6 +1001,6 @@ void tst_QRandomGenerator::stdRandomDistributions()
     stdRandomDistributions_template<QRandomGenerator64>();
 }
 
-QTEST_APPLESS_MAIN(tst_QRandomGenerator)
+BOBUIEST_APPLESS_MAIN(tst_QRandomGenerator)
 
 #include "tst_qrandomgenerator.moc"

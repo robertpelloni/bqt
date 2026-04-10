@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "bubble.h"
 
@@ -21,7 +21,7 @@ void Bubble::updateCache()
     cache->fill(0x00000000);
     QPainter p(cache);
     p.setRenderHint(QPainter::Antialiasing);
-    QPen pen(Qt::white);
+    QPen pen(BobUI::white);
     pen.setWidth(2);
     p.setPen(pen);
     p.setBrush(brush);

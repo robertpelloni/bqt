@@ -1,5 +1,5 @@
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
 
@@ -11,14 +11,14 @@
 #include <QPixmap>
 #include <QDrag>
 #include <QWindow>
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #include <QOpenGLWindow>
 #endif
 #include <QRasterWindow>
 
-#include <QtTest/QtTest>
-#include <QtWaylandClient/private/qwaylandintegration_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUITest/BobUITest>
+#include <BobUIWaylandClient/private/qwaylandintegration_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include "wl-socket.h"
 
@@ -66,7 +66,7 @@ public:
         ++mouseReleaseEventCount;
     }
 
-    void touchEvent(QTouchEvent *event) override
+    void touchEvent(BOBUIouchEvent *event) override
     {
         Q_UNUSED(event);
         ++touchEventCount;
@@ -101,7 +101,7 @@ public:
 
 private Q_SLOTS:
 //core
-    void cleanup() { QTRY_VERIFY2(m_comp->isClean(), qPrintable(m_comp->dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(m_comp->isClean(), qPrintable(m_comp->dirtyMessage())); }
     void basicWindow();
     void multipleScreens();
 
@@ -132,7 +132,7 @@ void tst_WaylandReconnect::triggerReconnect()
     m_comp.reset(new DefaultCompositor(CoreCompositor::Default, dup(socketFd)));
     m_comp->m_config.autoEnter = false;
 
-    QTest::qWait(50); //we need to spin the main loop to actually reconnect
+    BOBUIest::qWait(50); //we need to spin the main loop to actually reconnect
 }
 
 void tst_WaylandReconnect::basicWindow()
@@ -167,7 +167,7 @@ void tst_WaylandReconnect::multipleScreens()
         m_comp->surface(0)->sendEnter(m_comp->output(0));
         m_comp->surface(1)->sendEnter(m_comp->output(1));
     });
-    QTRY_VERIFY(window1.screen() != window2.screen());
+    BOBUIRY_VERIFY(window1.screen() != window2.screen());
 
     auto originalScreens = QGuiApplication::screens();
 
@@ -198,18 +198,18 @@ void tst_WaylandReconnect::keyFocus()
     window.show();
 
     configureWindow();
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
     exec([&] {
         m_comp->keyboard()->sendEnter(m_comp->surface());
     });
-    QTRY_COMPARE(window.focusInEventCount, 1);
+    BOBUIRY_COMPARE(window.focusInEventCount, 1);
 
     uint keyCode = 80;
     QCOMPARE(window.keyPressEventCount, 0);
     exec([&] {
         m_comp->keyboard()->sendKey(m_comp->client(), keyCode - 8, Keyboard::key_state_pressed);
     });
-    QTRY_COMPARE(window.keyPressEventCount, 1);
+    BOBUIRY_COMPARE(window.keyPressEventCount, 1);
     QCOMPARE(QGuiApplication::focusWindow(), &window);
 
     triggerReconnect();
@@ -217,7 +217,7 @@ void tst_WaylandReconnect::keyFocus()
 
     // on reconnect our knowledge of focus is reset to a clean slate
     QCOMPARE(QGuiApplication::focusWindow(), nullptr);
-    QTRY_COMPARE(window.focusOutEventCount, 1);
+    BOBUIRY_COMPARE(window.focusOutEventCount, 1);
 
     // fake the user explicitly focussing this window afterwards
     exec([&] {
@@ -226,8 +226,8 @@ void tst_WaylandReconnect::keyFocus()
     exec([&] {
         m_comp->keyboard()->sendKey(m_comp->client(), keyCode - 8, Keyboard::key_state_pressed);
     });
-    QTRY_COMPARE(window.focusInEventCount, 2);
-    QTRY_COMPARE(window.keyPressEventCount, 2);
+    BOBUIRY_COMPARE(window.focusInEventCount, 2);
+    BOBUIRY_COMPARE(window.keyPressEventCount, 2);
 }
 
 
@@ -246,15 +246,15 @@ int main(int argc, char **argv)
     // Note when debugging that a failing reconnect will exit this
     // test rather than fail. Making sure it finishes is important!
 
-    QTemporaryDir tmpRuntimeDir;
-    qputenv("QT_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
-    qputenv("QT_WAYLAND_RECONNECT", "1");
-    qputenv("XDG_CURRENT_DESKTOP", "qtwaylandtests");
+    BOBUIemporaryDir tmpRuntimeDir;
+    qputenv("BOBUI_QPA_PLATFORM", "wayland"); // force QGuiApplication to use wayland plugin
+    qputenv("BOBUI_WAYLAND_RECONNECT", "1");
+    qputenv("XDG_CURRENT_DESKTOP", "bobuiwaylandtests");
 
     tst_WaylandReconnect tc;
     QGuiApplication app(argc, argv);
-    QTEST_SET_MAIN_SOURCE_PATH
-    return QTest::qExec(&tc, argc, argv);
+    BOBUIEST_SET_MAIN_SOURCE_PATH
+    return BOBUIest::qExec(&tc, argc, argv);
 }
 
 #include "tst_reconnect.moc"

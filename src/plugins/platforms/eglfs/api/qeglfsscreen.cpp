@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qtextstream.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatformcursor.h>
-#ifndef QT_NO_OPENGL
-# include <QtOpenGL/private/qopenglcompositor_p.h>
+#ifndef BOBUI_NO_OPENGL
+# include <BobUIOpenGL/private/qopenglcompositor_p.h>
 #endif
 
 #include "qeglfsscreen_p.h"
 #include "qeglfswindow_p.h"
 #include "qeglfshooks_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSScreen::QEglFSScreen(EGLDisplay dpy)
     : m_dpy(dpy),
       m_surface(EGL_NO_SURFACE),
       m_cursor(nullptr)
 {
-    m_cursor = qt_egl_device_integration()->createCursor(this);
+    m_cursor = bobui_egl_device_integration()->createCursor(this);
 }
 
 QEglFSScreen::~QEglFSScreen()
@@ -33,7 +33,7 @@ QRect QEglFSScreen::geometry() const
 {
     QRect r = rawGeometry();
 
-    static int rotation = qEnvironmentVariableIntValue("QT_QPA_EGLFS_ROTATION");
+    static int rotation = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_ROTATION");
     switch (rotation) {
     case 0:
     case 180:
@@ -47,7 +47,7 @@ QRect QEglFSScreen::geometry() const
         break;
     }
     default:
-        qWarning("Invalid rotation %d specified in QT_QPA_EGLFS_ROTATION", rotation);
+        qWarning("Invalid rotation %d specified in BOBUI_QPA_EGLFS_ROTATION", rotation);
         break;
     }
 
@@ -56,42 +56,42 @@ QRect QEglFSScreen::geometry() const
 
 QRect QEglFSScreen::rawGeometry() const
 {
-    return QRect(QPoint(0, 0), qt_egl_device_integration()->screenSize());
+    return QRect(QPoint(0, 0), bobui_egl_device_integration()->screenSize());
 }
 
 int QEglFSScreen::depth() const
 {
-    return qt_egl_device_integration()->screenDepth();
+    return bobui_egl_device_integration()->screenDepth();
 }
 
 QImage::Format QEglFSScreen::format() const
 {
-    return qt_egl_device_integration()->screenFormat();
+    return bobui_egl_device_integration()->screenFormat();
 }
 
 QSizeF QEglFSScreen::physicalSize() const
 {
-    return qt_egl_device_integration()->physicalScreenSize();
+    return bobui_egl_device_integration()->physicalScreenSize();
 }
 
 QDpi QEglFSScreen::logicalDpi() const
 {
-    return qt_egl_device_integration()->logicalDpi();
+    return bobui_egl_device_integration()->logicalDpi();
 }
 
 QDpi QEglFSScreen::logicalBaseDpi() const
 {
-    return qt_egl_device_integration()->logicalBaseDpi();
+    return bobui_egl_device_integration()->logicalBaseDpi();
 }
 
-Qt::ScreenOrientation QEglFSScreen::nativeOrientation() const
+BobUI::ScreenOrientation QEglFSScreen::nativeOrientation() const
 {
-    return qt_egl_device_integration()->nativeOrientation();
+    return bobui_egl_device_integration()->nativeOrientation();
 }
 
-Qt::ScreenOrientation QEglFSScreen::orientation() const
+BobUI::ScreenOrientation QEglFSScreen::orientation() const
 {
-    return qt_egl_device_integration()->orientation();
+    return bobui_egl_device_integration()->orientation();
 }
 
 QPlatformCursor *QEglFSScreen::cursor() const
@@ -101,7 +101,7 @@ QPlatformCursor *QEglFSScreen::cursor() const
 
 qreal QEglFSScreen::refreshRate() const
 {
-    return qt_egl_device_integration()->refreshRate();
+    return bobui_egl_device_integration()->refreshRate();
 }
 
 void QEglFSScreen::setPrimarySurface(EGLSurface surface)
@@ -111,7 +111,7 @@ void QEglFSScreen::setPrimarySurface(EGLSurface surface)
 
 void QEglFSScreen::handleCursorMove(const QPoint &pos)
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     const QOpenGLCompositor *compositor = QOpenGLCompositor::instance();
     const QList<QOpenGLCompositorWindow *> windows = compositor->windows();
     QEglFSIntegration *platformIntegration = static_cast<QEglFSIntegration *>(QGuiApplicationPrivate::platformIntegration());
@@ -158,7 +158,7 @@ void QEglFSScreen::handleCursorMove(const QPoint &pos)
 
 QPixmap QEglFSScreen::grabWindow(WId wid, int x, int y, int width, int height) const
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLCompositor *compositor = QOpenGLCompositor::instance();
     const QList<QOpenGLCompositorWindow *> windows = compositor->windows();
     Q_ASSERT(!windows.isEmpty());
@@ -202,7 +202,7 @@ QPixmap QEglFSScreen::grabWindow(WId wid, int x, int y, int width, int height) c
             return QPixmap::fromImage(img).copy(rect);
         }
     }
-#else // QT_NO_OPENGL
+#else // BOBUI_NO_OPENGL
     Q_UNUSED(wid);
     Q_UNUSED(x);
     Q_UNUSED(y);
@@ -214,7 +214,7 @@ QPixmap QEglFSScreen::grabWindow(WId wid, int x, int y, int width, int height) c
 
 QWindow *QEglFSScreen::topLevelAt(const QPoint &point) const
 {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOpenGLCompositor *compositor = QOpenGLCompositor::instance();
     const QList<QOpenGLCompositorWindow *> windows = compositor->windows();
     const int windowCount = windows.size();
@@ -230,4 +230,4 @@ QWindow *QEglFSScreen::topLevelAt(const QPoint &point) const
     return QPlatformScreen::topLevelAt(point);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

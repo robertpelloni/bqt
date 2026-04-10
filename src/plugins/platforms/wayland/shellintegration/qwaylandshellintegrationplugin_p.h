@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Jolla Ltd
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDSHELLINTEGRATIONPLUGIN_H
 #define QWAYLANDSHELLINTEGRATIONPLUGIN_H
@@ -8,27 +8,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
 
-#include <QtCore/qplugin.h>
-#include <QtCore/qfactoryinterface.h>
-#include <QtCore/QObject>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qplugin.h>
+#include <BobUICore/qfactoryinterface.h>
+#include <BobUICore/QObject>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandShellIntegration;
 
-#define QWaylandShellIntegrationFactoryInterface_iid "org.qt-project.Qt.WaylandClient.QWaylandShellIntegrationFactoryInterface.5.3"
+#define QWaylandShellIntegrationFactoryInterface_iid "org.bobui-project.BobUI.WaylandClient.QWaylandShellIntegrationFactoryInterface.5.3"
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandShellIntegrationPlugin : public QObject
 {
@@ -42,6 +42,6 @@ public:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDSHELLINTEGRATIONPLUGIN_H

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QEglFSVivIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QEglFSVivIntegrationPlugin
+bobui_internal_add_plugin(QEglFSVivIntegrationPlugin
     OUTPUT_NAME qeglfs-viv-integration
     PLUGIN_TYPE egldeviceintegrations
     SOURCES
@@ -17,9 +17,9 @@ qt_internal_add_plugin(QEglFSVivIntegrationPlugin
     INCLUDE_DIRECTORIES
         ../../api
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::EglFSDeviceIntegrationPrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::EglFSDeviceIntegrationPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )

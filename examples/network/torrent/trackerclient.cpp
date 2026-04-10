@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "bencodeparser.h"
 #include "connectionmanager.h"
@@ -7,7 +7,7 @@
 #include "torrentserver.h"
 #include "trackerclient.h"
 
-#include <QtCore>
+#include <BobUICore>
 #include <QNetworkRequest>
 
 TrackerClient::TrackerClient(TorrentClient *downloader, QObject *parent)
@@ -20,7 +20,7 @@ TrackerClient::TrackerClient(TorrentClient *downloader, QObject *parent)
 void TrackerClient::start(const MetaInfo &info)
 {
     metaInfo = info;
-    QTimer::singleShot(0, this, &TrackerClient::fetchPeerList);
+    BOBUIimer::singleShot(0, this, &TrackerClient::fetchPeerList);
 
     if (metaInfo.fileForm() == MetaInfo::SingleFileForm) {
         length = metaInfo.singleFile().length;
@@ -43,7 +43,7 @@ void TrackerClient::stop()
     fetchPeerList();
 }
 
-void TrackerClient::timerEvent(QTimerEvent *event)
+void TrackerClient::timerEvent(BOBUIimerEvent *event)
 {
     if (event->id() == requestIntervalTimer.id()) {
         fetchPeerList();

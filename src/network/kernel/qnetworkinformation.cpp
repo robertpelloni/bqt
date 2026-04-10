@@ -1,28 +1,28 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // #define DEBUG_LOADING
 
 #include "qnetworkinformation.h"
-#include <QtNetwork/private/qnetworkinformation_p.h>
-#include <QtNetwork/qnetworkinformation.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/qnetworkinformation.h>
 
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qthread.h>
-#include <QtCore/private/qfactoryloader_p.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/private/qfactoryloader_p.h>
 
 #include <algorithm>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfo)
-Q_LOGGING_CATEGORY(lcNetInfo, "qt.network.info");
+Q_LOGGING_CATEGORY(lcNetInfo, "bobui.network.info");
 
 struct QNetworkInformationDeleter
 {
@@ -100,7 +100,7 @@ bool QNetworkInformationPrivate::initializeList()
     Q_CONSTINIT static QBasicMutex mutex;
     QMutexLocker initLocker(&mutex);
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
     qniLoader->update();
 #endif
     // Instantiates the plugins (and registers the factories)
@@ -118,7 +118,7 @@ bool QNetworkInformationPrivate::initializeList()
         auto bFeaturesSupported = qPopulationCount(unsigned(b->featuresSupported()));
         return aFeaturesSupported > bFeaturesSupported
                 || (aFeaturesSupported == bFeaturesSupported
-                    && a->name().compare(b->name(), Qt::CaseInsensitive) < 0);
+                    && a->name().compare(b->name(), BobUI::CaseInsensitive) < 0);
     };
     QMutexLocker instanceLocker(&dataHolder->instanceMutex);
     std::sort(dataHolder->factories.begin(), dataHolder->factories.end(), featuresNameOrder);
@@ -185,7 +185,7 @@ QNetworkInformation *QNetworkInformationPrivate::create(QStringView name)
 
 
     const auto nameMatches = [name](QNetworkInformationBackendFactory *factory) {
-        return factory->name().compare(name, Qt::CaseInsensitive) == 0;
+        return factory->name().compare(name, BobUI::CaseInsensitive) == 0;
     };
     auto it = std::find_if(dataHolder->factories.cbegin(), dataHolder->factories.cend(),
                             nameMatches);
@@ -213,7 +213,7 @@ QNetworkInformation *QNetworkInformationPrivate::create(QStringView name)
         return nullptr;
     dataHolder->instanceHolder.reset(new QNetworkInformation(backend));
     Q_ASSERT(name.isEmpty()
-             || dataHolder->instanceHolder->backendName().compare(name, Qt::CaseInsensitive) == 0);
+             || dataHolder->instanceHolder->backendName().compare(name, BobUI::CaseInsensitive) == 0);
     return dataHolder->instanceHolder.get();
 }
 
@@ -404,7 +404,7 @@ QNetworkInformationBackendFactory::~QNetworkInformationBackendFactory()
 
 /*!
     \class QNetworkInformation
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \since 6.1
     \brief QNetworkInformation exposes various network information
     through native backends.
@@ -534,7 +534,7 @@ QNetworkInformationBackendFactory::~QNetworkInformationBackendFactory()
 
     \value Unknown
         Returned if either the OS reports no active medium, the active medium is
-        not recognized by Qt, or the TransportMedium feature is not supported.
+        not recognized by BobUI, or the TransportMedium feature is not supported.
     \value Ethernet
         Indicates that the currently active connection is using ethernet.
         Note: This value may also be returned when Windows is connected to a
@@ -566,7 +566,7 @@ QNetworkInformation::QNetworkInformation(QNetworkInformationBackend *backend)
     connect(backend, &QNetworkInformationBackend::isMeteredChanged, this,
            &QNetworkInformation::isMeteredChanged);
 
-    QThread *main = nullptr;
+    BOBUIhread *main = nullptr;
 
     if (QCoreApplication::instance())
         main = QCoreApplication::instance()->thread();
@@ -765,10 +765,10 @@ bool QNetworkInformation::loadBackendByName(QStringView backend)
         return QNetworkInformationPrivate::createDummy() != nullptr;
 
     auto loadedBackend = QNetworkInformationPrivate::create(backend);
-    return loadedBackend && loadedBackend->backendName().compare(backend, Qt::CaseInsensitive) == 0;
+    return loadedBackend && loadedBackend->backendName().compare(backend, BobUI::CaseInsensitive) == 0;
 }
 
-#if QT_DEPRECATED_SINCE(6,4)
+#if BOBUI_DEPRECATED_SINCE(6,4)
 /*!
     \deprecated [6.4] Use loadBackendByName() instead.
 
@@ -778,7 +778,7 @@ bool QNetworkInformation::load(QStringView backend)
 {
     return loadBackendByName(backend);
 }
-#endif // QT_DEPRECATED_SINCE(6,4)
+#endif // BOBUI_DEPRECATED_SINCE(6,4)
 
 /*!
     \since 6.4
@@ -795,7 +795,7 @@ bool QNetworkInformation::loadBackendByFeatures(Features features)
     return loadedBackend && loadedBackend->supports(features);
 }
 
-#if QT_DEPRECATED_SINCE(6,4)
+#if BOBUI_DEPRECATED_SINCE(6,4)
 /*!
     \deprecated [6.4] Use loadBackendByFeatures() instead.
 
@@ -805,7 +805,7 @@ bool QNetworkInformation::load(Features features)
 {
     return loadBackendByFeatures(features);
 }
-#endif // QT_DEPRECATED_SINCE(6,4)
+#endif // BOBUI_DEPRECATED_SINCE(6,4)
 
 /*!
     Returns a list of the names of all currently available backends.
@@ -827,7 +827,7 @@ QNetworkInformation *QNetworkInformation::instance()
     return QNetworkInformationPrivate::instance();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkinformation.cpp"
 #include "moc_qnetworkinformation_p.cpp"

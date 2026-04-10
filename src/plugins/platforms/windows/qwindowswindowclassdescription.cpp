@@ -1,28 +1,28 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowswindowclassdescription.h"
 
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qwindow.h>
 
 #include "qwindowswindowclassregistry.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QString QWindowsWindowClassDescription::classNameSuffix(Qt::WindowFlags type, unsigned int style, bool hasIcon)
+QString QWindowsWindowClassDescription::classNameSuffix(BobUI::WindowFlags type, unsigned int style, bool hasIcon)
 {
     QString suffix;
 
     switch (type) {
-        case Qt::Popup:
+        case BobUI::Popup:
             suffix += "Popup"_L1;
             break;
-        case Qt::Tool:
+        case BobUI::Tool:
             suffix += "Tool"_L1;
             break;
-        case Qt::ToolTip:
+        case BobUI::ToolTip:
             suffix += "ToolTip"_L1;
             break;
         default:
@@ -41,40 +41,40 @@ QString QWindowsWindowClassDescription::classNameSuffix(Qt::WindowFlags type, un
     return suffix;
 }
 
-bool QWindowsWindowClassDescription::computeHasIcon(Qt::WindowFlags flags, Qt::WindowFlags type)
+bool QWindowsWindowClassDescription::computeHasIcon(BobUI::WindowFlags flags, BobUI::WindowFlags type)
 {
     bool hasIcon = true;
 
     switch (type) {
-        case Qt::Tool:
-        case Qt::ToolTip:
-        case Qt::Popup:
+        case BobUI::Tool:
+        case BobUI::ToolTip:
+        case BobUI::Popup:
             hasIcon = false;
             break;
-        case Qt::Dialog:
-            if (!(flags & Qt::WindowSystemMenuHint))
-                hasIcon = false; // QTBUG-2027, dialogs without system menu.
+        case BobUI::Dialog:
+            if (!(flags & BobUI::WindowSystemMenuHint))
+                hasIcon = false; // BOBUIBUG-2027, dialogs without system menu.
             break;
     }
 
     return hasIcon;
 }
 
-unsigned int QWindowsWindowClassDescription::computeWindowStyles(Qt::WindowFlags flags, Qt::WindowFlags type, WindowStyleOptions options)
+unsigned int QWindowsWindowClassDescription::computeWindowStyles(BobUI::WindowFlags flags, BobUI::WindowFlags type, WindowStyleOptions options)
 {
     unsigned int style = CS_DBLCLKS;
 
     // The following will not set CS_OWNDC for any widget window, even if it contains a
     // QOpenGLWidget or QQuickWidget later on. That cannot be detected at this stage.
-    if (options.testFlag(WindowStyleOption::GLSurface) || (flags & Qt::MSWindowsOwnDC))
+    if (options.testFlag(WindowStyleOption::GLSurface) || (flags & BobUI::MSWindowsOwnDC))
         style |= CS_OWNDC;
-    if (!(flags & Qt::NoDropShadowWindowHint) && (type == Qt::Popup || options.testFlag(WindowStyleOption::DropShadow)))
+    if (!(flags & BobUI::NoDropShadowWindowHint) && (type == BobUI::Popup || options.testFlag(WindowStyleOption::DropShadow)))
         style |= CS_DROPSHADOW;
 
     switch (type) {
-        case Qt::Tool:
-        case Qt::ToolTip:
-        case Qt::Popup:
+        case BobUI::Tool:
+        case BobUI::ToolTip:
+        case BobUI::Popup:
             style |= CS_SAVEBITS; // Save/restore background
             break;
     }
@@ -91,8 +91,8 @@ QWindowsWindowClassDescription QWindowsWindowClassDescription::fromWindow(const 
 {
     Q_ASSERT(window);
 
-    const Qt::WindowFlags flags = window->flags();
-    const Qt::WindowFlags type = flags & Qt::WindowType_Mask;
+    const BobUI::WindowFlags flags = window->flags();
+    const BobUI::WindowFlags type = flags & BobUI::WindowType_Mask;
 
     WindowStyleOptions options = WindowStyleOption::None;
     if (window->surfaceType() == QSurface::OpenGLSurface)
@@ -112,11 +112,11 @@ QWindowsWindowClassDescription QWindowsWindowClassDescription::fromWindow(const 
 QDebug operator<<(QDebug dbg, const QWindowsWindowClassDescription &description)
 {
     dbg << description.name
-        << " style=0x" << Qt::hex << description.style << Qt::dec
+        << " style=0x" << BobUI::hex << description.style << BobUI::dec
         << " brush=" << description.brush
         << " hasIcon=" << description.hasIcon;
 
     return dbg;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

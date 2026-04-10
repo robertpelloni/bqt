@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSSCENE_P_H
 #define QGRAPHICSSCENE_P_H
@@ -9,14 +9,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgraphicsscene.h"
 
 #include "qgraphicssceneevent.h"
@@ -25,21 +25,21 @@
 #include "qgraphicsitem_p.h"
 
 #include <private/qobject_p.h>
-#include <QtCore/qbitarray.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qset.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qpalette.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUICore/qbitarray.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qset.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qstyleoption.h>
 
 #include <set>
 #include <tuple>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsSceneIndex;
 class QGraphicsView;
@@ -139,7 +139,7 @@ public:
     int activationRefCount;
     int childExplicitActivation;
     void setActivePanelHelper(QGraphicsItem *item, bool duringActivationEvent);
-    void setFocusItemHelper(QGraphicsItem *item, Qt::FocusReason focusReason,
+    void setFocusItemHelper(QGraphicsItem *item, BobUI::FocusReason focusReason,
                             bool emitFocusChanged = true);
 
     QList<QGraphicsWidget *> popupWidgets;
@@ -159,14 +159,14 @@ public:
 
     QGraphicsItem *dragDropItem;
     QGraphicsWidget *enterWidget;
-    Qt::DropAction lastDropAction;
+    BobUI::DropAction lastDropAction;
     QList<QGraphicsItem *> cachedItemsUnderMouse;
     QList<QGraphicsItem *> hoverItems;
     QPointF lastSceneMousePos;
     void enableMouseTrackingOnViews();
-    QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownPos;
-    QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownScenePos;
-    QMap<Qt::MouseButton, QPoint> mouseGrabberButtonDownScreenPos;
+    QMap<BobUI::MouseButton, QPointF> mouseGrabberButtonDownPos;
+    QMap<BobUI::MouseButton, QPointF> mouseGrabberButtonDownScenePos;
+    QMap<BobUI::MouseButton, QPoint> mouseGrabberButtonDownScreenPos;
     QList<QGraphicsItem *> itemsAtPosition(const QPoint &screenPos,
                                            const QPointF &scenePos,
                                            QWidget *widget) const;
@@ -201,14 +201,14 @@ public:
                         const QStyleOptionGraphicsItem *option, QWidget *widget,
                         bool painterStateProtection);
 
-    void drawItems(QPainter *painter, const QTransform *const viewTransform,
+    void drawItems(QPainter *painter, const BOBUIransform *const viewTransform,
                    QRegion *exposedRegion, QWidget *widget);
 
-    void drawSubtreeRecursive(QGraphicsItem *item, QPainter *painter, const QTransform *const,
+    void drawSubtreeRecursive(QGraphicsItem *item, QPainter *painter, const BOBUIransform *const,
                               QRegion *exposedRegion, QWidget *widget, qreal parentOpacity = qreal(1.0),
-                              const QTransform *const effectTransform = nullptr);
-    void draw(QGraphicsItem *, QPainter *, const QTransform *const, const QTransform *const,
-              QRegion *, QWidget *, qreal, const QTransform *const, bool, bool);
+                              const BOBUIransform *const effectTransform = nullptr);
+    void draw(QGraphicsItem *, QPainter *, const BOBUIransform *const, const BOBUIransform *const,
+              QRegion *, QWidget *, qreal, const BOBUIransform *const, bool, bool);
 
     void markDirty(QGraphicsItem *item, const QRectF &rect = QRectF(), bool invalidateChildren = false,
                    bool force = false, bool ignoreOpacity = false, bool removingItemFromScene = false,
@@ -230,7 +230,7 @@ public:
         item->d_ptr->fullUpdatePending = 0;
         item->d_ptr->ignoreVisible = 0;
         item->d_ptr->ignoreOpacity = 0;
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         QGraphicsEffect::ChangeFlags flags;
         if (item->d_ptr->notifyBoundingRectChanged) {
             flags |= QGraphicsEffect::SourceBoundingRectChanged;
@@ -240,21 +240,21 @@ public:
             flags |= QGraphicsEffect::SourceInvalidated;
             item->d_ptr->notifyInvalidated = 0;
         }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
         if (recursive) {
             for (int i = 0; i < item->d_ptr->children.size(); ++i)
                 resetDirtyItem(item->d_ptr->children.at(i), recursive);
         }
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         if (flags && item->d_ptr->graphicsEffect)
             item->d_ptr->graphicsEffect->sourceChanged(flags);
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
     }
 
     inline void ensureSortedTopLevelItems()
     {
         if (needSortTopLevelItems) {
-            std::sort(topLevelItems.begin(), topLevelItems.end(), qt_notclosestLeaf);
+            std::sort(topLevelItems.begin(), topLevelItems.end(), bobui_notclosestLeaf);
             topLevelSequentialOrdering = false;
             needSortTopLevelItems = false;
         }
@@ -276,29 +276,29 @@ public:
 
     QMap<int, QEventPoint> sceneCurrentTouchPoints;
     QMap<int, QGraphicsItem *> itemForTouchPointId;
-    static void updateTouchPointsForItem(QGraphicsItem *item, QTouchEvent *touchEvent);
+    static void updateTouchPointsForItem(QGraphicsItem *item, BOBUIouchEvent *touchEvent);
     int findClosestTouchPointId(const QPointF &scenePos);
-    void touchEventHandler(QTouchEvent *touchEvent);
-    bool sendTouchBeginEvent(QGraphicsItem *item, QTouchEvent *touchEvent);
+    void touchEventHandler(BOBUIouchEvent *touchEvent);
+    bool sendTouchBeginEvent(QGraphicsItem *item, BOBUIouchEvent *touchEvent);
     void enableTouchEventsOnViews();
 
     QList<QGraphicsObject *> cachedTargetItems;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     QHash<QGraphicsObject *, QSet<QGesture *> > cachedItemGestures;
     QHash<QGraphicsObject *, QSet<QGesture *> > cachedAlreadyDeliveredGestures;
     QHash<QGesture *, QGraphicsObject *> gestureTargets;
-    QHash<Qt::GestureType, int>  grabbedGestures;
+    QHash<BobUI::GestureType, int>  grabbedGestures;
     void gestureEventHandler(QGestureEvent *event);
     void gestureTargetsAtHotSpots(const QSet<QGesture *> &gestures,
-                           Qt::GestureFlag flag,
+                           BobUI::GestureFlag flag,
                            QHash<QGraphicsObject *, QSet<QGesture *> > *targets,
                            QSet<QGraphicsObject *> *itemsSet = nullptr,
                            QSet<QGesture *> *normal = nullptr,
                            QSet<QGesture *> *conflicts = nullptr);
     void cancelGesturesForChildren(QGesture *original);
-    void grabGesture(QGraphicsItem *, Qt::GestureType gesture);
-    void ungrabGesture(QGraphicsItem *, Qt::GestureType gesture);
-#endif // QT_NO_GESTURES
+    void grabGesture(QGraphicsItem *, BobUI::GestureType gesture);
+    void ungrabGesture(QGraphicsItem *, BobUI::GestureType gesture);
+#endif // BOBUI_NO_GESTURES
 
     void updateInputMethodSensitivityInViews();
 
@@ -335,6 +335,6 @@ static inline QRectF adjustedItemEffectiveBoundingRect(const QGraphicsItem *item
     return boundingRect;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

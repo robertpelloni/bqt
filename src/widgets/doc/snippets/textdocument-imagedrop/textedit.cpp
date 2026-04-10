@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
-#include <QTextEdit>
+#include <BobUIGui>
+#include <BOBUIextEdit>
 
-class TextEdit : public QTextEdit
+class TextEdit : public BOBUIextEdit
 {
     Q_OBJECT
 public:
@@ -15,7 +15,7 @@ public:
 };
 
 TextEdit::TextEdit(QWidget *parent)
-    : QTextEdit(parent)
+    : BOBUIextEdit(parent)
 {
 }
 
@@ -25,7 +25,7 @@ bool TextEdit::canInsertFromMimeData( const QMimeData *source ) const
     if (source->hasImage())
         return true;
     else
-        return QTextEdit::canInsertFromMimeData(source);
+        return BOBUIextEdit::canInsertFromMimeData(source);
 }
 //! [0]
 
@@ -35,9 +35,9 @@ void TextEdit::insertFromMimeData( const QMimeData *source )
     if (source->hasImage())
     {
         QImage image = qvariant_cast<QImage>(source->imageData());
-        QTextCursor cursor = this->textCursor();
-        QTextDocument *document = this->document();
-        document->addResource(QTextDocument::ImageResource, QUrl("image"), image);
+        BOBUIextCursor cursor = this->textCursor();
+        BOBUIextDocument *document = this->document();
+        document->addResource(BOBUIextDocument::ImageResource, QUrl("image"), image);
         cursor.insertImage("image");
     }
 }

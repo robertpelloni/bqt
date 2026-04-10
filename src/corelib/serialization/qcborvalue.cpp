@@ -1,6 +1,6 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcborvalue.h"
 #include "qcborvalue_p.h"
@@ -8,27 +8,27 @@
 #include "qcborarray.h"
 #include "qcbormap.h"
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
 #include "qcborstreamreader.h"
 #endif
 
-#if QT_CONFIG(cborstreamwriter)
+#if BOBUI_CONFIG(cborstreamwriter)
 #include "qcborstreamwriter.h"
 #endif
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 #include <qendian.h>
 #include <qlocale.h>
 #include <qdatetime.h>
-#include <qtimezone.h>
+#include <bobuiimezone.h>
 #include <private/qnumeric_p.h>
 #include <private/qsimd_p.h>
 
 #include <new>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QCborContainerPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QCborContainerPrivate)
 
 // Worst case memory allocation for a corrupt stream: 256 MB for 32-bit, 1 GB for 64-bit
 static constexpr quint64 MaxAcceptableMemoryUse = (sizeof(void*) == 4 ? 256 : 1024) * 1024 * 1024;
@@ -43,13 +43,13 @@ static constexpr quint64 MaxAcceptableMemoryUse = (sizeof(void*) == 4 ? 256 : 10
 // grow the container.
 Q_DECL_UNUSED static constexpr int MaximumRecursionDepth = 1024;
 Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
-        MaxAcceptableMemoryUse / MaximumRecursionDepth / sizeof(QtCbor::Element) - 1;
+        MaxAcceptableMemoryUse / MaximumRecursionDepth / sizeof(BobUICbor::Element) - 1;
 
 /*!
     \class QCborValue
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.12
 
@@ -76,7 +76,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
     "tag" to one of the above types to convey more information. For example, a
     UUID is represented by a tag and a byte array containing the 16 bytes of
     the UUID content. QCborValue supports creating and decoding several of those
-    extended types directly with Qt classes (like QUuid).
+    extended types directly with BobUI classes (like QUuid).
 
     For the complete list, see \l QCborValue::Type. The type of a QCborValue can
     be queried using type() or one of the "isXxxx" functions.
@@ -94,7 +94,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
     can later be retrieved by tag() and the tagged value using taggedValue().
 
     In order to support future compatibility, QCborValues containing extended
-    Qt types compare equal to the tag type of the same contents. In other
+    BobUI types compare equal to the tag type of the same contents. In other
     words, the following expression is true:
 
     \snippet code/src_corelib_serialization_qcborvalue.cpp 0
@@ -139,7 +139,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
     There are currently no other defined CBOR simple types. QCborValue supports
     them simply by their number with API like isSimpleType() and
     toSimpleType(), available for compatibility with future specifications
-    before the Qt API can be updated. Their use before such a specification is
+    before the BobUI API can be updated. Their use before such a specification is
     discouraged, as other CBOR implementations may not support them fully.
 
     \section1 CBOR support
@@ -203,7 +203,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
 
 /*!
     \class QCborParserError
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
     \reentrant
     \since 5.12
@@ -534,7 +534,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
     retrieved using tag() and the tagged value using taggedValue().
 
     This function also returns true for extended types that the API
-    recognizes. For code that handles extended types directly before the Qt API
+    recognizes. For code that handles extended types directly before the BobUI API
     is updated to support them, it is possible to recreate the tag + tagged
     value pair by using taggedValue().
 
@@ -751,7 +751,7 @@ Q_DECL_UNUSED static constexpr quint64 MaximumPreallocatedElementCount =
     \sa isDouble(), isInteger(), toInteger()
  */
 
-using namespace QtCbor;
+using namespace BobUICbor;
 
 static QCborContainerPrivate *assignContainer(QCborContainerPrivate *&d, QCborContainerPrivate *x)
 {
@@ -778,7 +778,7 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
     };
 
     switch (tag) {
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case qint64(QCborKnownTags::DateTimeString):
     case qint64(QCborKnownTags::UnixTime_t): {
         QDateTime dt;
@@ -786,12 +786,12 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
             e.type == QCborValue::String && (e.flags & Element::StringIsUtf16) == 0) {
             // The data is supposed to be US-ASCII. If it isn't (contains UTF-8),
             // QDateTime::fromString will fail anyway.
-            dt = QDateTime::fromString(b->asLatin1(), Qt::ISODateWithMs);
+            dt = QDateTime::fromString(b->asLatin1(), BobUI::ISODateWithMs);
         } else if (tag == qint64(QCborKnownTags::UnixTime_t)) {
             qint64 msecs;
             bool ok = false;
             if (e.type == QCborValue::Integer) {
-#if QT_POINTER_SIZE == 8
+#if BOBUI_POINTER_SIZE == 8
                 // we don't have a fast 64-bit qMulOverflow implementation on
                 // 32-bit architectures.
                 ok = !qMulOverflow(e.value, qint64(1000), &msecs);
@@ -805,10 +805,10 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
                 ok = convertDoubleTo(round(e.fpvalue() * 1000), &msecs);
             }
             if (ok)
-                dt = QDateTime::fromMSecsSinceEpoch(msecs, QTimeZone::UTC);
+                dt = QDateTime::fromMSecsSinceEpoch(msecs, BOBUIimeZone::UTC);
         }
         if (dt.isValid()) {
-            QByteArray text = dt.toString(Qt::ISODateWithMs).toLatin1();
+            QByteArray text = dt.toString(BobUI::ISODateWithMs).toLatin1();
             if (!text.isEmpty()) {
                 replaceByteData(text, text.size(), Element::StringIsAscii);
                 e.type = QCborValue::String;
@@ -820,7 +820,7 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
     }
 #endif
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case qint64(QCborKnownTags::Url):
         if (e.type == QCborValue::String) {
             if (b) {
@@ -836,16 +836,16 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
             return QCborValue::Url;
         }
         break;
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     case quint64(QCborKnownTags::RegularExpression):
         if (e.type == QCborValue::String) {
             // no normalization is necessary
             return QCborValue::RegularExpression;
         }
         break;
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
     case qint64(QCborKnownTags::Uuid):
         if (e.type == QCborValue::ByteArray) {
@@ -864,20 +864,20 @@ static QCborValue::Type convertToExtendedType(QCborContainerPrivate *d)
     return QCborValue::Tag;
 }
 
-#if QT_CONFIG(cborstreamwriter) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_CONFIG(cborstreamwriter) && !defined(BOBUI_BOOTSTRAPPED)
 static void writeDoubleToCbor(QCborStreamWriter &writer, double d, QCborValue::EncodingOptions opt)
 {
-    if (qt_is_nan(d)) {
+    if (bobui_is_nan(d)) {
         if (opt & QCborValue::UseFloat) {
             if ((opt & QCborValue::UseFloat16) == QCborValue::UseFloat16)
                 return writer.append(std::numeric_limits<qfloat16>::quiet_NaN());
             return writer.append(std::numeric_limits<float>::quiet_NaN());
         }
-        return writer.append(qt_qnan());
+        return writer.append(bobui_qnan());
     }
 
-    if (qt_is_inf(d)) {
-        d = d > 0 ? qt_inf() : -qt_inf();
+    if (bobui_is_inf(d)) {
+        d = d > 0 ? bobui_inf() : -bobui_inf();
     } else if (opt & QCborValue::UseIntegers) {
         quint64 i;
         if (convertDoubleTo(d, &i)) {
@@ -903,7 +903,7 @@ static void writeDoubleToCbor(QCborStreamWriter &writer, double d, QCborValue::E
 
     writer.append(d);
 }
-#endif // QT_CONFIG(cborstreamwriter) && !QT_BOOTSTRAPPED
+#endif // BOBUI_CONFIG(cborstreamwriter) && !BOBUI_BOOTSTRAPPED
 
 static inline int typeOrder(QCborValue::Type e1, QCborValue::Type  e2)
 {
@@ -1051,12 +1051,12 @@ void QCborContainerPrivate::replaceAt_complex(Element &e, const QCborValue &valu
 }
 
 // in qstring.cpp
-void qt_to_latin1_unchecked(uchar *dst, const char16_t *uc, qsizetype len);
+void bobui_to_latin1_unchecked(uchar *dst, const char16_t *uc, qsizetype len);
 
 Q_NEVER_INLINE void QCborContainerPrivate::appendAsciiString(QStringView s)
 {
     qsizetype len = s.size();
-    QtCbor::Element e;
+    BobUICbor::Element e;
     e.value = addByteData(nullptr, len);
     e.type = QCborValue::String;
     e.flags = Element::HasByteData | Element::StringIsAscii;
@@ -1064,13 +1064,13 @@ Q_NEVER_INLINE void QCborContainerPrivate::appendAsciiString(QStringView s)
 
     char *ptr = data.data() + e.value + sizeof(ByteData);
     uchar *l = reinterpret_cast<uchar *>(ptr);
-    qt_to_latin1_unchecked(l, s.utf16(), len);
+    bobui_to_latin1_unchecked(l, s.utf16(), len);
 }
 
 void QCborContainerPrivate::appendNonAsciiString(QStringView s)
 {
     appendByteData(reinterpret_cast<const char *>(s.utf16()), s.size() * 2,
-                   QCborValue::String, QtCbor::Element::StringIsUtf16);
+                   QCborValue::String, BobUICbor::Element::StringIsUtf16);
 }
 
 QCborValue QCborContainerPrivate::extractAt_complex(Element e)
@@ -1213,7 +1213,7 @@ static int compareStringsInUtf8(QStringView lhs, QUtf8StringView rhs, Comparison
     return -compareStringsInUtf8(rhs, lhs, mode);
 }
 
-QT_WARNING_DISABLE_MSVC(4146)   // unary minus operator applied to unsigned type, result still unsigned
+BOBUI_WARNING_DISABLE_MSVC(4146)   // unary minus operator applied to unsigned type, result still unsigned
 static int compareContainer(const QCborContainerPrivate *c1, const QCborContainerPrivate *c2,
                             Comparison mode) noexcept;
 static int compareElementNoData(const Element &e1, const Element &e2) noexcept
@@ -1349,7 +1349,7 @@ inline int QCborContainerPrivate::compareElement_helper(const QCborContainerPriv
     contents, false otherwise. If each QCborValue contains an array or map, the
     comparison is recursive to elements contained in them.
 
-    For more information on CBOR equality in Qt, see, compare().
+    For more information on CBOR equality in BobUI, see, compare().
 
     \sa compare(), QCborMap::operator==(), operator!=(), operator<()
  */
@@ -1361,7 +1361,7 @@ inline int QCborContainerPrivate::compareElement_helper(const QCborContainerPriv
     false otherwise. If each QCborValue contains an array or map, the comparison
     is recursive to elements contained in them.
 
-    For more information on CBOR equality in Qt, see, QCborValue::compare().
+    For more information on CBOR equality in BobUI, see, QCborValue::compare().
 
     \sa compare(), QCborMap::operator==(), operator==(), operator<()
  */
@@ -1445,13 +1445,13 @@ bool comparesEqual(const QCborValue &lhs,
 
     \snippet code/src_corelib_serialization_qcborvalue.cpp 3
 
-    Do note that Qt types like \l QUrl and \l QDateTime will normalize and
+    Do note that BobUI types like \l QUrl and \l QDateTime will normalize and
     otherwise modify their arguments. The expression above is true only because
     the string on the right side is the normalized value that the QCborValue on
     the left would take. If, for example, the "https" part were uppercase in
     both sides, the comparison would fail. For information on normalizations
     performed by QCborValue, please consult the documentation of the
-    constructor taking the Qt type in question.
+    constructor taking the BobUI type in question.
 
     \section3 Sorting order
 
@@ -1513,13 +1513,13 @@ bool QCborArray::comparesEqual_helper(const QCborArray &lhs, const QCborValue &r
     return compareContainer(lhs.d.constData(), rhs.container, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborArray::compareThreeWay_helper(const QCborArray &lhs, const QCborValue &rhs) noexcept
 {
     int c = typeOrder(QCborValue::Array, rhs.type());
     if (c == 0)
         c = compareContainer(lhs.d.constData(), rhs.container, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
 bool comparesEqual(const QCborMap &lhs, const QCborMap &rhs) noexcept
@@ -1539,16 +1539,16 @@ bool QCborMap::comparesEqual_helper(const QCborMap &lhs, const QCborValue &rhs) 
     return compareContainer(lhs.d.constData(), rhs.container, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborMap::compareThreeWay_helper(const QCborMap &lhs, const QCborValue &rhs) noexcept
 {
     int c = typeOrder(QCborValue::Map, rhs.type());
     if (c == 0)
         c = compareContainer(lhs.d.constData(), rhs.container, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
-#if QT_CONFIG(cborstreamwriter) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_CONFIG(cborstreamwriter) && !defined(BOBUI_BOOTSTRAPPED)
 static void encodeToCbor(QCborStreamWriter &writer, const QCborContainerPrivate *d, qsizetype idx,
                          QCborValue::EncodingOptions opt)
 {
@@ -1638,9 +1638,9 @@ static void encodeToCbor(QCborStreamWriter &writer, const QCborContainerPrivate 
         qWarning("QCborValue: found unknown type 0x%x", e.type);
     }
 }
-#endif // QT_CONFIG(cborstreamwriter) && !QT_BOOTSTRAPPED
+#endif // BOBUI_CONFIG(cborstreamwriter) && !BOBUI_BOOTSTRAPPED
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
 // confirm that our basic Types match QCborStreamReader::Types
 static_assert(int(QCborValue::Integer) == int(QCborStreamReader::UnsignedInteger));
 static_assert(int(QCborValue::ByteArray) == int(QCborStreamReader::ByteArray));
@@ -1781,13 +1781,13 @@ static QCborValue taggedValueFromCbor(QCborStreamReader &reader, int remainingRe
 }
 
 // in qcborstream.cpp
-extern void qt_cbor_stream_set_error(QCborStreamReaderPrivate *d, QCborError error);
+extern void bobui_cbor_stream_set_error(QCborStreamReaderPrivate *d, QCborError error);
 inline void QCborContainerPrivate::setErrorInReader(QCborStreamReader &reader, QCborError error)
 {
-    qt_cbor_stream_set_error(reader.d.get(), error);
+    bobui_cbor_stream_set_error(reader.d.get(), error);
 }
 
-extern QCborStreamReader::StringResultCode qt_cbor_append_string_chunk(QCborStreamReader &reader, QByteArray *data);
+extern QCborStreamReader::StringResultCode bobui_cbor_append_string_chunk(QCborStreamReader &reader, QByteArray *data);
 
 void QCborContainerPrivate::decodeStringFromCbor(QCborStreamReader &reader)
 {
@@ -1820,8 +1820,8 @@ void QCborContainerPrivate::decodeStringFromCbor(QCborStreamReader &reader)
         size_t offset = data.size();
 
         // add space for aligned ByteData (this can't overflow)
-        offset += sizeof(QtCbor::ByteData) + alignof(QtCbor::ByteData);
-        offset &= ~(alignof(QtCbor::ByteData) - 1);
+        offset += sizeof(BobUICbor::ByteData) + alignof(BobUICbor::ByteData);
+        offset &= ~(alignof(BobUICbor::ByteData) - 1);
         if (offset > size_t(QByteArray::maxSize())) {
             // overflow
             setErrorInReader(reader, { QCborError::DataTooLarge });
@@ -1841,14 +1841,14 @@ void QCborContainerPrivate::decodeStringFromCbor(QCborStreamReader &reader)
         }
         if (newCapacity > size_t(data.capacity()))
             data.reserve(newCapacity);
-        data.resize(offset + sizeof(QtCbor::ByteData));
+        data.resize(offset + sizeof(BobUICbor::ByteData));
         e.value = offset;
         e.flags = Element::HasByteData;
     }
 
     // read chunks
     bool isAscii = (e.type == QCborValue::String);
-    QCborStreamReader::StringResultCode status = qt_cbor_append_string_chunk(reader, &data);
+    QCborStreamReader::StringResultCode status = bobui_cbor_append_string_chunk(reader, &data);
     while (status == QCborStreamReader::Ok) {
         if (e.type == QCborValue::String && len) {
             // verify UTF-8 string validity
@@ -1863,7 +1863,7 @@ void QCborContainerPrivate::decodeStringFromCbor(QCborStreamReader &reader)
         rawlen = reader.currentStringChunkSize();
         len = rawlen;
         if (len == rawlen) {
-            status = qt_cbor_append_string_chunk(reader, &data);
+            status = bobui_cbor_append_string_chunk(reader, &data);
         } else {
             // error
             setErrorInReader(reader, { QCborError::DataTooLarge });
@@ -1931,7 +1931,7 @@ void QCborContainerPrivate::decodeValueFromCbor(QCborStreamReader &reader, int r
         return;                 // probably a decode error
     }
 }
-#endif // QT_CONFIG(cborstreamreader)
+#endif // BOBUI_CONFIG(cborstreamreader)
 
 /*!
     Creates a QCborValue with byte array value \a ba. The value can later be
@@ -2043,7 +2043,7 @@ QCborValue::QCborValue(const QCborValue &other) noexcept
         container->ref.ref();
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 /*!
     Creates a QCborValue object of the date/time extended type and containing
     the value represented by \a dt. The value can later be retrieved using
@@ -2058,7 +2058,7 @@ QCborValue::QCborValue(const QCborValue &other) noexcept
     \sa toDateTime(), isDateTime(), taggedValue()
  */
 QCborValue::QCborValue(const QDateTime &dt)
-    : QCborValue(QCborKnownTags::DateTimeString, dt.toString(Qt::ISODateWithMs).toLatin1())
+    : QCborValue(QCborKnownTags::DateTimeString, dt.toString(BobUI::ISODateWithMs).toLatin1())
 {
     // change types
     t = DateTime;
@@ -2066,7 +2066,7 @@ QCborValue::QCborValue(const QDateTime &dt)
 }
 #endif
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     Creates a QCborValue object of the URL extended type and containing the
     value represented by \a url. The value can later be retrieved using toUrl().
@@ -2084,7 +2084,7 @@ QCborValue::QCborValue(const QUrl &url)
     container->elements[1].type = String;
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     Creates a QCborValue object of the regular expression pattern extended type
     and containing the value represented by \a rx. The value can later be retrieved
@@ -2103,7 +2103,7 @@ QCborValue::QCborValue(const QRegularExpression &rx)
     // change type
     t = RegularExpression;
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
     Creates a QCborValue object of the UUID extended type and containing the
@@ -2235,7 +2235,7 @@ QAnyStringView QCborValue::toStringView(QAnyStringView defaultValue) const
     return container->anyStringViewAt(n);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 /*!
     Returns the date/time value stored in this QCborValue, if it is of the
     date/time extended type. Otherwise, it returns \a defaultValue.
@@ -2257,11 +2257,11 @@ QDateTime QCborValue::toDateTime(const QDateTime &defaultValue) const
 
     // Our data must be US-ASCII.
     Q_ASSERT((container->elements.at(1).flags & Element::StringIsUtf16) == 0);
-    return QDateTime::fromString(byteData->asLatin1(), Qt::ISODateWithMs);
+    return QDateTime::fromString(byteData->asLatin1(), BobUI::ISODateWithMs);
 }
 #endif
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 /*!
     Returns the URL value stored in this QCborValue, if it is of the URL
     extended type. Otherwise, it returns \a defaultValue.
@@ -2283,7 +2283,7 @@ QUrl QCborValue::toUrl(const QUrl &defaultValue) const
     return QUrl::fromEncoded(byteData->asByteArrayView());
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     Returns the regular expression value stored in this QCborValue, if it is of
     the regular expression pattern extended type. Otherwise, it returns \a
@@ -2302,7 +2302,7 @@ QRegularExpression QCborValue::toRegularExpression(const QRegularExpression &def
     Q_ASSERT(n == -1);
     return QRegularExpression(container->stringAt(1));
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
     Returns the UUID value stored in this QCborValue, if it is of the UUID
@@ -2549,11 +2549,11 @@ QCborContainerPrivate::findOrAddMapKey(QCborValueRef self, KeyType key)
     if (e.type == QCborValue::Array) {
         convertArrayToMap(e.container);
     } else if (e.type != QCborValue::Map) {
-        if (e.flags & QtCbor::Element::IsContainer)
+        if (e.flags & BobUICbor::Element::IsContainer)
             e.container->deref();
         e.container = nullptr;
     }
-    e.flags = QtCbor::Element::IsContainer;
+    e.flags = BobUICbor::Element::IsContainer;
     e.type = QCborValue::Map;
 
     QCborValueRef result = findOrAddMapKey<KeyType>(e.container, key);
@@ -2624,7 +2624,7 @@ QCborValueRef QCborValue::operator[](qint64 key)
     return QCborContainerPrivate::findOrAddMapKey(*this, key);
 }
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
 /*!
     Decodes one item from the CBOR stream found in \a reader and returns the
     equivalent representation. This function is recursive: if the item is a map
@@ -2739,9 +2739,9 @@ QCborValue QCborValue::fromCbor(const QByteArray &ba, QCborParserError *error)
     overload of this function that accepts a QByteArray, also passing \a error,
     if provided.
 */
-#endif // QT_CONFIG(cborstreamreader)
+#endif // BOBUI_CONFIG(cborstreamreader)
 
-#if QT_CONFIG(cborstreamwriter) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_CONFIG(cborstreamwriter) && !defined(BOBUI_BOOTSTRAPPED)
 /*!
     Encodes this QCborValue object to its CBOR representation, using the
     options specified in \a opt, and return the byte array containing that
@@ -2860,13 +2860,13 @@ Q_NEVER_INLINE void QCborValue::toCbor(QCborStreamWriter &writer, EncodingOption
     }
 }
 
-#  if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 void QCborValueRef::toCbor(QCborStreamWriter &writer, QCborValue::EncodingOptions opt)
 {
     concrete().toCbor(writer, opt);
 }
 #  endif
-#endif // QT_CONFIG(cborstreamwriter) && !QT_BOOTSTRAPPED
+#endif // BOBUI_CONFIG(cborstreamwriter) && !BOBUI_BOOTSTRAPPED
 
 void QCborValueRef::assign(QCborValueRef that, const QCborValue &other)
 {
@@ -2886,7 +2886,7 @@ void QCborValueRef::assign(QCborValueRef that, const QCborValueRef other)
 
 bool QCborValueConstRef::concreteBoolean(QCborValueConstRef self, bool defaultValue) noexcept
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     if (e.type != QCborValue::False && e.type != QCborValue::True)
         return defaultValue;
     return e.type == QCborValue::True;
@@ -2894,7 +2894,7 @@ bool QCborValueConstRef::concreteBoolean(QCborValueConstRef self, bool defaultVa
 
 double QCborValueConstRef::concreteDouble(QCborValueConstRef self, double defaultValue) noexcept
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     if (e.type == QCborValue::Integer)
         return e.value;
     if (e.type != QCborValue::Double)
@@ -2904,7 +2904,7 @@ double QCborValueConstRef::concreteDouble(QCborValueConstRef self, double defaul
 
 qint64 QCborValueConstRef::concreteIntegral(QCborValueConstRef self, qint64 defaultValue) noexcept
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     QCborValue::Type t = e.type;
     if (t == QCborValue::Double)
         return e.fpvalue();
@@ -2916,7 +2916,7 @@ qint64 QCborValueConstRef::concreteIntegral(QCborValueConstRef self, qint64 defa
 QByteArray QCborValueConstRef::concreteByteArray(QCborValueConstRef self,
                                                  const QByteArray &defaultValue)
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     if (e.type != QCborValue::ByteArray)
         return defaultValue;
     return self.d->byteArrayAt(self.i);
@@ -2924,7 +2924,7 @@ QByteArray QCborValueConstRef::concreteByteArray(QCborValueConstRef self,
 
 QString QCborValueConstRef::concreteString(QCborValueConstRef self, const QString &defaultValue)
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     if (e.type != QCborValue::String)
         return defaultValue;
     return self.d->stringAt(self.i);
@@ -2932,7 +2932,7 @@ QString QCborValueConstRef::concreteString(QCborValueConstRef self, const QStrin
 
 QAnyStringView QCborValueConstRef::concreteStringView(QCborValueConstRef self, QAnyStringView defaultValue)
 {
-    QtCbor::Element e = self.d->elements.at(self.i);
+    BobUICbor::Element e = self.d->elements.at(self.i);
     if (e.type != QCborValue::String)
         return defaultValue;
     return self.d->anyStringViewAt(self.i);
@@ -2941,71 +2941,71 @@ QAnyStringView QCborValueConstRef::concreteStringView(QCborValueConstRef self, Q
 bool
 QCborValueConstRef::comparesEqual_helper(QCborValueConstRef lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e1 = lhs.d->elements.at(lhs.i);
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e1 = lhs.d->elements.at(lhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     return compareElementRecursive(lhs.d, e1, rhs.d, e2, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborValueConstRef::compareThreeWay_helper(QCborValueConstRef lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e1 = lhs.d->elements.at(lhs.i);
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e1 = lhs.d->elements.at(lhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     int c = compareElementRecursive(lhs.d, e1, rhs.d, e2, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
 bool
 QCborValueConstRef::comparesEqual_helper(QCborValueConstRef lhs, const QCborValue &rhs) noexcept
 {
-    QtCbor::Element e1 = lhs.d->elements.at(lhs.i);
-    QtCbor::Element e2 = QCborContainerPrivate::elementFromValue(rhs);
+    BobUICbor::Element e1 = lhs.d->elements.at(lhs.i);
+    BobUICbor::Element e2 = QCborContainerPrivate::elementFromValue(rhs);
     return compareElementRecursive(lhs.d, e1, rhs.container, e2, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborValueConstRef::compareThreeWay_helper(QCborValueConstRef lhs, const QCborValue &rhs) noexcept
 {
-    QtCbor::Element e1 = lhs.d->elements.at(lhs.i);
-    QtCbor::Element e2 = QCborContainerPrivate::elementFromValue(rhs);
+    BobUICbor::Element e1 = lhs.d->elements.at(lhs.i);
+    BobUICbor::Element e2 = QCborContainerPrivate::elementFromValue(rhs);
     int c = compareElementRecursive(lhs.d, e1, rhs.container, e2, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
 bool QCborArray::comparesEqual_helper(const QCborArray &lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     if (typeOrder(QCborValue::Array, e2.type))
         return false;
     return compareContainer(lhs.d.constData(), e2.container, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborArray::compareThreeWay_helper(const QCborArray &lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     int c = typeOrder(QCborValue::Array, e2.type);
     if (c == 0)
         c = compareContainer(lhs.d.constData(), e2.container, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
 bool QCborMap::comparesEqual_helper(const QCborMap &lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     if (typeOrder(QCborValue::Array, e2.type))
         return false;
     return compareContainer(lhs.d.constData(), e2.container, Comparison::ForEquality) == 0;
 }
 
-Qt::strong_ordering
+BobUI::strong_ordering
 QCborMap::compareThreeWay_helper(const QCborMap &lhs, QCborValueConstRef rhs) noexcept
 {
-    QtCbor::Element e2 = rhs.d->elements.at(rhs.i);
+    BobUICbor::Element e2 = rhs.d->elements.at(rhs.i);
     int c = typeOrder(QCborValue::Map, e2.type);
     if (c == 0)
         c = compareContainer(lhs.d.constData(), e2.container, Comparison::ForOrdering);
-    return Qt::compareThreeWay(c, 0);
+    return BobUI::compareThreeWay(c, 0);
 }
 
 QCborValue QCborValueConstRef::concrete(QCborValueConstRef self) noexcept
@@ -3036,7 +3036,7 @@ const QCborValue QCborValueConstRef::operator[](qint64 key) const
     return item[key];
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
 QCborValue QCborValueRef::concrete(QCborValueRef self) noexcept
 {
     return self.d->valueAt(self.i);
@@ -3164,12 +3164,12 @@ QCborValueRef QCborValueRef::operator[](qint64 key)
     auto &e = d->elements[i];
     if (shouldArrayRemainArray(key, e.type, e.container)) {
         e.container = maybeGrow(e.container, key);
-        e.flags |= QtCbor::Element::IsContainer;
+        e.flags |= BobUICbor::Element::IsContainer;
         return { e.container, qsizetype(key) };
     }
     return QCborContainerPrivate::findOrAddMapKey(*this, key);
 }
-#endif // < Qt 7
+#endif // < BobUI 7
 
 inline QCborArray::QCborArray(QCborContainerPrivate &dd) noexcept
     : d(&dd)
@@ -3208,14 +3208,14 @@ size_t qHash(const QCborValue &value, size_t seed)
         return seed;
     case QCborValue::Double:
         return qHash(value.toDouble(), seed);
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case QCborValue::DateTime:
         return qHash(value.toDateTime(), seed);
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case QCborValue::Url:
         return qHash(value.toUrl(), seed);
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     case QCborValue::RegularExpression:
         return qHash(value.toRegularExpression(), seed);
 #  endif
@@ -3232,7 +3232,7 @@ size_t qHash(const QCborValue &value, size_t seed)
     return qHash(value.toSimpleType(), seed);
 }
 
-Q_CORE_EXPORT const char *qt_cbor_simpletype_id(QCborSimpleType st)
+Q_CORE_EXPORT const char *bobui_cbor_simpletype_id(QCborSimpleType st)
 {
     switch (st) {
     case QCborSimpleType::False:
@@ -3247,7 +3247,7 @@ Q_CORE_EXPORT const char *qt_cbor_simpletype_id(QCborSimpleType st)
     return nullptr;
 }
 
-Q_CORE_EXPORT const char *qt_cbor_tag_id(QCborTag tag)
+Q_CORE_EXPORT const char *bobui_cbor_tag_id(QCborTag tag)
 {
     // Casting to QCborKnownTags's underlying type will make the comparison
     // below fail if the tag value is out of range.
@@ -3305,7 +3305,7 @@ Q_CORE_EXPORT const char *qt_cbor_tag_id(QCborTag tag)
     return nullptr;
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 static QDebug debugContents(QDebug &dbg, const QCborValue &v)
 {
     switch (v.type()) {
@@ -3321,7 +3321,7 @@ static QDebug debugContents(QDebug &dbg, const QCborValue &v)
         return dbg << v.toMap();
     case QCborValue::Tag: {
         QCborTag tag = v.tag();
-        const char *id = qt_cbor_tag_id(tag);
+        const char *id = bobui_cbor_tag_id(tag);
         if (id)
             dbg.nospace() << "QCborKnownTags::" << id << ", ";
         else
@@ -3345,14 +3345,14 @@ static QDebug debugContents(QDebug &dbg, const QCborValue &v)
         else
             return dbg << v.toDouble();
     }
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     case QCborValue::DateTime:
         return dbg << v.toDateTime();
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     case QCborValue::Url:
         return dbg << v.toUrl();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     case QCborValue::RegularExpression:
         return dbg << v.toRegularExpression();
 #endif
@@ -3366,7 +3366,7 @@ static QDebug debugContents(QDebug &dbg, const QCborValue &v)
     }
     if (v.isSimpleType())
         return dbg << v.toSimpleType();
-    return dbg << "<unknown type 0x" << Qt::hex << int(v.type()) << Qt::dec << '>';
+    return dbg << "<unknown type 0x" << BobUI::hex << int(v.type()) << BobUI::dec << '>';
 }
 QDebug operator<<(QDebug dbg, const QCborValue &v)
 {
@@ -3378,7 +3378,7 @@ QDebug operator<<(QDebug dbg, const QCborValue &v)
 QDebug operator<<(QDebug dbg, QCborSimpleType st)
 {
     QDebugStateSaver saver(dbg);
-    const char *id = qt_cbor_simpletype_id(st);
+    const char *id = bobui_cbor_simpletype_id(st);
     if (id)
         return dbg.nospace() << "QCborSimpleType::" << id;
 
@@ -3388,7 +3388,7 @@ QDebug operator<<(QDebug dbg, QCborSimpleType st)
 QDebug operator<<(QDebug dbg, QCborTag tag)
 {
     QDebugStateSaver saver(dbg);
-    const char *id = qt_cbor_tag_id(tag);
+    const char *id = bobui_cbor_tag_id(tag);
     dbg.nospace() << "QCborTag(";
     if (id)
         dbg.nospace() << "QCborKnownTags::" << id;
@@ -3401,7 +3401,7 @@ QDebug operator<<(QDebug dbg, QCborTag tag)
 QDebug operator<<(QDebug dbg, QCborKnownTags tag)
 {
     QDebugStateSaver saver(dbg);
-    const char *id = qt_cbor_tag_id(QCborTag(int(tag)));
+    const char *id = bobui_cbor_tag_id(QCborTag(int(tag)));
     if (id)
         return dbg.nospace() << "QCborKnownTags::" << id;
 
@@ -3409,8 +3409,8 @@ QDebug operator<<(QDebug dbg, QCborKnownTags tag)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 QDataStream &operator<<(QDataStream &stream, const QCborValue &value)
 {
     stream << QCborValue(value).toCbor();
@@ -3418,7 +3418,7 @@ QDataStream &operator<<(QDataStream &stream, const QCborValue &value)
 }
 #endif
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
 QDataStream &operator>>(QDataStream &stream, QCborValue &value)
 {
     QByteArray buffer;
@@ -3430,14 +3430,14 @@ QDataStream &operator>>(QDataStream &stream, QCborValue &value)
     return stream;
 }
 #endif
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcborarray.cpp"
 #include "qcbormap.cpp"
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qcborvalue.cpp"
 #endif

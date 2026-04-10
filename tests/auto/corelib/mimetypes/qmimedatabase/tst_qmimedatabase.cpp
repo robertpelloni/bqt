@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qmimedatabase.h"
 #include <qmimedatabase.h>
@@ -13,24 +13,24 @@
 #include <sys/stat.h>
 #endif
 
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/qspan.h>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QTemporaryDir>
-#include <QtCore/QTextStream>
-#include <QtConcurrent/QtConcurrentRun>
-#include <QtCore/private/qduplicatetracker_p.h>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QFile>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/qspan.h>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/BOBUIemporaryDir>
+#include <BobUICore/BOBUIextStream>
+#include <BobUIConcurrent/BobUIConcurrentRun>
+#include <BobUICore/private/qduplicatetracker_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
-#include <QTemporaryFile>
-#if QT_CONFIG(process)
+#include <BOBUIemporaryFile>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const std::array additionalGlobalMimeFiles = {
     "yast2-metapackage-handler-mimetypes.xml",
@@ -53,7 +53,7 @@ static const std::array additionalLocalMimeFiles = {
 };
 
 static const auto s_additionalFilesResourcePrefix = ":/tst_qmimedatabase/qmime/"_L1;
-static const auto s_resourcePrefix = ":/qt-project.org/qmime/"_L1;
+static const auto s_resourcePrefix = ":/bobui-project.org/qmime/"_L1;
 static const auto s_inodeMimetype = "inode/directory"_L1;
 
 void initializeLang()
@@ -67,7 +67,7 @@ static inline QString testSuiteWarning()
 {
     const auto smiVersion = "2.4"_L1;
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str << "\nCannot find the shared-mime-info test suite\nin the parent of: "
         << QDir::toNativeSeparators(QDir::currentPath()) << "\n"
            "cd " << QDir::toNativeSeparators(QStringLiteral("tests/auto/corelib/mimetypes/qmimedatabase")) << "\n"
@@ -129,7 +129,7 @@ void tst_QMimeDatabase::initTestCase()
     QStandardPaths::setTestModeEnabled(true);
     m_localMimeDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/mime";
     if (QDir(m_localMimeDir).exists()) {
-        QVERIFY2(QDir(m_localMimeDir).removeRecursively(), qPrintable(m_localMimeDir + ": " + qt_error_string()));
+        QVERIFY2(QDir(m_localMimeDir).removeRecursively(), qPrintable(m_localMimeDir + ": " + bobui_error_string()));
     }
 
     m_isUsingCacheProvider = useCacheProvider();
@@ -239,51 +239,51 @@ void tst_QMimeDatabase::mimeTypeForName()
 
 void tst_QMimeDatabase::mimeTypeForFileName_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QString>("expectedMimeType");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QString>("expectedMimeType");
 
-    QTest::newRow("text") << "textfile.txt" << "text/plain";
-    QTest::newRow("case-insensitive search") << "textfile.TxT" << "text/plain";
+    BOBUIest::newRow("text") << "textfile.txt" << "text/plain";
+    BOBUIest::newRow("case-insensitive search") << "textfile.TxT" << "text/plain";
 
     // Needs shared-mime-info > 0.91. Earlier versions wrote .Z to the mime.cache file...
-    //QTest::newRow("case-insensitive match on a non-lowercase glob") << "foo.z" << "application/x-compress";
+    //BOBUIest::newRow("case-insensitive match on a non-lowercase glob") << "foo.z" << "application/x-compress";
 
-    QTest::newRow("case-sensitive uppercase match") << "textfile.C" << "text/x-c++src";
-    QTest::newRow("case-sensitive lowercase match") << "textfile.c" << "text/x-csrc";
-    QTest::newRow("case-sensitive long-extension match") << "foo.PS.gz" << "application/x-gzpostscript";
-    QTest::newRow("case-sensitive-only-match-core") << "core" << "application/x-core";
-    QTest::newRow("case-sensitive-only-match-Core") << "Core" << "application/octet-stream"; // #198477
+    BOBUIest::newRow("case-sensitive uppercase match") << "textfile.C" << "text/x-c++src";
+    BOBUIest::newRow("case-sensitive lowercase match") << "textfile.c" << "text/x-csrc";
+    BOBUIest::newRow("case-sensitive long-extension match") << "foo.PS.gz" << "application/x-gzpostscript";
+    BOBUIest::newRow("case-sensitive-only-match-core") << "core" << "application/x-core";
+    BOBUIest::newRow("case-sensitive-only-match-Core") << "Core" << "application/octet-stream"; // #198477
 
-    QTest::newRow("desktop file") << "foo.desktop"
+    BOBUIest::newRow("desktop file") << "foo.desktop"
                                   << "application/x-desktop";
-    QTest::newRow("double-extension file") << "foo.tar.bz2"
+    BOBUIest::newRow("double-extension file") << "foo.tar.bz2"
                                            << "application/x-bzip2-compressed-tar";
-    QTest::newRow("single-extension file") << "foo.bz2"
+    BOBUIest::newRow("single-extension file") << "foo.bz2"
                                            << "application/x-bzip2";
-    QTest::newRow(".doc should assume msword") << "somefile.doc" << "application/msword"; // #204139
-    QTest::newRow("glob that uses [] syntax, 1") << "Makefile" << "text/x-makefile";
-    QTest::newRow("glob that uses [] syntax, 2") << "makefile" << "text/x-makefile";
+    BOBUIest::newRow(".doc should assume msword") << "somefile.doc" << "application/msword"; // #204139
+    BOBUIest::newRow("glob that uses [] syntax, 1") << "Makefile" << "text/x-makefile";
+    BOBUIest::newRow("glob that uses [] syntax, 2") << "makefile" << "text/x-makefile";
     if (m_hasFreedesktopOrg) {
-        QTest::newRow("glob that ends with *, no extension") << "README"
+        BOBUIest::newRow("glob that ends with *, no extension") << "README"
                                                              << "text/x-readme";
-        QTest::newRow("glob that ends with *, extension") << "README.foo"
+        BOBUIest::newRow("glob that ends with *, extension") << "README.foo"
                                                           << "text/x-readme";
-        QTest::newRow("glob that ends with *, also matches *.txt. Higher weight wins.")
+        BOBUIest::newRow("glob that ends with *, also matches *.txt. Higher weight wins.")
                 << "README.txt"
                 << "text/plain";
-        QTest::newRow("glob that ends with *, also matches *.nfo. Higher weight wins.")
+        BOBUIest::newRow("glob that ends with *, also matches *.nfo. Higher weight wins.")
                 << "README.nfo"
                 << "text/x-nfo";
         // fdo bug 15436, needs shared-mime-info >= 0.40 (and this tests the globs2-parsing code).
-        QTest::newRow("glob that ends with *, also matches *.pdf. *.pdf has higher weight")
+        BOBUIest::newRow("glob that ends with *, also matches *.pdf. *.pdf has higher weight")
                 << "README.pdf"
                 << "application/pdf";
     }
-    QTest::newRow("directory") << "/" << "inode/directory";
-    QTest::newRow("resource-directory") << ":/files/" << "inode/directory";
-    QTest::newRow("doesn't exist, no extension") << "IDontExist" << "application/octet-stream";
-    QTest::newRow("doesn't exist but has known extension") << "IDontExist.txt" << "text/plain";
-    QTest::newRow("empty") << "" << "application/octet-stream";
+    BOBUIest::newRow("directory") << "/" << "inode/directory";
+    BOBUIest::newRow("resource-directory") << ":/files/" << "inode/directory";
+    BOBUIest::newRow("doesn't exist, no extension") << "IDontExist" << "application/octet-stream";
+    BOBUIest::newRow("doesn't exist but has known extension") << "IDontExist.txt" << "text/plain";
+    BOBUIest::newRow("empty") << "" << "application/octet-stream";
 }
 
 static inline QByteArray msgMimeTypeForFileNameFailed(const QList<QMimeType> &actual,
@@ -320,18 +320,18 @@ void tst_QMimeDatabase::mimeTypeForFileName()
 
 void tst_QMimeDatabase::mimeTypesForFileName_data()
 {
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QStringList>("expectedMimeTypes");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QStringList>("expectedMimeTypes");
 
-    QTest::newRow("txt, 1 hit") << "foo.txt" << (QStringList() << "text/plain");
-    QTest::newRow("txtfoobar, 0 hit") << "foo.foobar" << QStringList();
-    QTest::newRow("m, 2 hits") << "foo.m" << (QStringList() << "text/x-matlab" << "text/x-objcsrc");
+    BOBUIest::newRow("txt, 1 hit") << "foo.txt" << (QStringList() << "text/plain");
+    BOBUIest::newRow("txtfoobar, 0 hit") << "foo.foobar" << QStringList();
+    BOBUIest::newRow("m, 2 hits") << "foo.m" << (QStringList() << "text/x-matlab" << "text/x-objcsrc");
     if (m_hasFreedesktopOrg)
-        QTest::newRow("sub, 3 hits") << "foo.sub"
+        BOBUIest::newRow("sub, 3 hits") << "foo.sub"
                                      << (QStringList() << "text/x-microdvd"
                                                        << "text/x-mpsub"
                                                        << "text/x-subviewer");
-    QTest::newRow("non_ascii") << QString::fromUtf8("AİİA.pdf") << (QStringList() << "application/pdf");
+    BOBUIest::newRow("non_ascii") << QString::fromUtf8("AİİA.pdf") << (QStringList() << "application/pdf");
 }
 
 static QStringList mimeTypeNames(const QList<QMimeType> &mimes)
@@ -456,24 +456,24 @@ void tst_QMimeDatabase::aliases()
 
 void tst_QMimeDatabase::listAliases_data()
 {
-    QTest::addColumn<QString>("inputMime");
-    QTest::addColumn<QString>("expectedAliases");
+    BOBUIest::addColumn<QString>("inputMime");
+    BOBUIest::addColumn<QString>("expectedAliases");
 
     if (m_hasFreedesktopOrg) {
-        QTest::newRow("csv") << "text/csv"
+        BOBUIest::newRow("csv") << "text/csv"
                              << "text/x-csv,text/x-comma-separated-values";
-        QTest::newRow("xml") << "application/xml"
+        BOBUIest::newRow("xml") << "application/xml"
                              << "text/xml";
-        QTest::newRow("xml2") << "text/xml" /* gets resolved to application/xml */ << "text/xml";
+        BOBUIest::newRow("xml2") << "text/xml" /* gets resolved to application/xml */ << "text/xml";
     } else {
-        QTest::newRow("csv") << "text/csv"
+        BOBUIest::newRow("csv") << "text/csv"
                              << "";
-        QTest::newRow("xml") << "application/xml"
+        BOBUIest::newRow("xml") << "application/xml"
                              << "text/xml,application/x-xml";
-        QTest::newRow("xml2") << "text/xml" /* gets resolved to application/xml */
+        BOBUIest::newRow("xml2") << "text/xml" /* gets resolved to application/xml */
                               << "text/xml,application/x-xml";
     }
-    QTest::newRow("no_mime") << "message/news" << "";
+    BOBUIest::newRow("no_mime") << "message/news" << "";
 }
 
 void tst_QMimeDatabase::listAliases()
@@ -481,7 +481,7 @@ void tst_QMimeDatabase::listAliases()
     QFETCH(QString, inputMime);
     QFETCH(QString, expectedAliases);
     QMimeDatabase db;
-    QStringList expectedAliasesList = expectedAliases.split(',', Qt::SkipEmptyParts);
+    QStringList expectedAliasesList = expectedAliases.split(',', BobUI::SkipEmptyParts);
     expectedAliasesList.sort();
     QMimeType mime = db.mimeTypeForName(inputMime);
     QVERIFY(mime.isValid());
@@ -533,7 +533,7 @@ void tst_QMimeDatabase::mimeTypeForFileWithContent()
 
     // Test a real PDF file.
     // If we find x-matlab because it starts with '%' then we are not ordering by priority.
-    QTemporaryFile tempFile;
+    BOBUIemporaryFile tempFile;
     QVERIFY(tempFile.open());
     QString tempFileName = tempFile.fileName();
     tempFile.write("%PDF-");
@@ -550,7 +550,7 @@ void tst_QMimeDatabase::mimeTypeForFileWithContent()
 
     // Test the case where the extension doesn't match the contents: extension wins
     {
-        QTemporaryFile txtTempFile(QDir::tempPath() + QLatin1String("/tst_QMimeDatabase_XXXXXX.txt"));
+        BOBUIemporaryFile txtTempFile(QDir::tempPath() + QLatin1String("/tst_QMimeDatabase_XXXXXX.txt"));
         QVERIFY(txtTempFile.open());
         txtTempFile.write("%PDF-");
         QString txtTempFileName = txtTempFile.fileName();
@@ -565,7 +565,7 @@ void tst_QMimeDatabase::mimeTypeForFileWithContent()
     // Now the case where extension differs from contents, but contents has >80 magic rule
     // XDG spec says: contents wins. But we can't sniff all files...
     if (m_hasFreedesktopOrg) {
-        QTemporaryFile txtTempFile(QDir::tempPath() + QLatin1String("/tst_QMimeDatabase_XXXXXX.txt"));
+        BOBUIemporaryFile txtTempFile(QDir::tempPath() + QLatin1String("/tst_QMimeDatabase_XXXXXX.txt"));
         QVERIFY(txtTempFile.open());
         txtTempFile.write("<smil");
         QString txtTempFileName = txtTempFile.fileName();
@@ -576,7 +576,7 @@ void tst_QMimeDatabase::mimeTypeForFileWithContent()
         QCOMPARE(mime.name(), QString::fromLatin1("application/smil+xml"));
     }
 
-    // Test what happens with Qt resources (file engines in general)
+    // Test what happens with BobUI resources (file engines in general)
     {
         QFile rccFile(":/files/test.txt");
 
@@ -634,19 +634,19 @@ void tst_QMimeDatabase::mimeTypeForUrl()
 
 void tst_QMimeDatabase::mimeTypeForData_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QString>("expectedMimeTypeName");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QString>("expectedMimeTypeName");
 
-    QTest::newRow("tnef data, needs smi >= 0.20") << QByteArray("\x78\x9f\x3e\x22") << "application/vnd.ms-tnef";
-    QTest::newRow("PDF magic") << QByteArray("%PDF-") << "application/pdf";
-    QTest::newRow("PHP, High-priority rule")
+    BOBUIest::newRow("tnef data, needs smi >= 0.20") << QByteArray("\x78\x9f\x3e\x22") << "application/vnd.ms-tnef";
+    BOBUIest::newRow("PDF magic") << QByteArray("%PDF-") << "application/pdf";
+    BOBUIest::newRow("PHP, High-priority rule")
             << QByteArray("<?php") << (m_hasFreedesktopOrg ? "application/x-php" : "text/x-php");
     if (m_hasFreedesktopOrg)
-        QTest::newRow("diff\\t") << QByteArray("diff\t") << "text/x-patch";
+        BOBUIest::newRow("diff\\t") << QByteArray("diff\t") << "text/x-patch";
     else
-        QTest::newRow("diff_space") << QByteArray("diff ") << "text/x-diff";
-    QTest::newRow("unknown") << QByteArray("\001abc?}") << "application/octet-stream";
-    QTest::newRow("ambigous svg/xml") << QByteArray(R"(<?xml version="1.0"?>
+        BOBUIest::newRow("diff_space") << QByteArray("diff ") << "text/x-diff";
+    BOBUIest::newRow("unknown") << QByteArray("\001abc?}") << "application/octet-stream";
+    BOBUIest::newRow("ambigous svg/xml") << QByteArray(R"(<?xml version="1.0"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 </svg>)") << "image/svg+xml";
 }
@@ -670,23 +670,23 @@ void tst_QMimeDatabase::mimeTypeForData()
 
 void tst_QMimeDatabase::mimeTypeForFileNameAndData_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<QString>("expectedMimeTypeName");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QString>("expectedMimeTypeName");
 
-    QTest::newRow("plain text, no extension") << QString::fromLatin1("textfile") << QByteArray("Hello world") << "text/plain";
-    QTest::newRow("plain text, unknown extension") << QString::fromLatin1("textfile.foo") << QByteArray("Hello world") << "text/plain";
+    BOBUIest::newRow("plain text, no extension") << QString::fromLatin1("textfile") << QByteArray("Hello world") << "text/plain";
+    BOBUIest::newRow("plain text, unknown extension") << QString::fromLatin1("textfile.foo") << QByteArray("Hello world") << "text/plain";
     // Needs kde/mimetypes.xml
-    //QTest::newRow("plain text, doc extension") << QString::fromLatin1("textfile.doc") << QByteArray("Hello world") << "text/plain";
+    //BOBUIest::newRow("plain text, doc extension") << QString::fromLatin1("textfile.doc") << QByteArray("Hello world") << "text/plain";
 
     // If you get powerpoint instead, then you're hit by https://bugs.freedesktop.org/show_bug.cgi?id=435,
     // upgrade to shared-mime-info >= 0.22
     const QByteArray oleData("\320\317\021\340\241\261\032\341"); // same as \xD0\xCF\x11\xE0 \xA1\xB1\x1A\xE1
     if (m_hasFreedesktopOrg)
-        QTest::newRow("msword file, unknown extension")
+        BOBUIest::newRow("msword file, unknown extension")
                 << QString::fromLatin1("mswordfile") << oleData << "application/x-ole-storage";
-    QTest::newRow("excel file, found by extension") << QString::fromLatin1("excelfile.xls") << oleData << "application/vnd.ms-excel";
-    QTest::newRow("text.xls, found by extension, user is in control") << QString::fromLatin1("text.xls") << oleData << "application/vnd.ms-excel";
+    BOBUIest::newRow("excel file, found by extension") << QString::fromLatin1("excelfile.xls") << oleData << "application/vnd.ms-excel";
+    BOBUIest::newRow("text.xls, found by extension, user is in control") << QString::fromLatin1("text.xls") << oleData << "application/vnd.ms-excel";
 }
 
 void tst_QMimeDatabase::mimeTypeForFileNameAndData()
@@ -717,8 +717,8 @@ void tst_QMimeDatabase::mimeTypeForUnixSpecials_data()
     if (!m_hasFreedesktopOrg)
         QSKIP("Special devices are not available in tika");
 
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<QString>("expected");
 
     static const char * const mimeTypes[] = {
         "inode/blockdevice",
@@ -769,7 +769,7 @@ void tst_QMimeDatabase::mimeTypeForUnixSpecials_data()
             continue;       // we've already seen such a type
 
         const char *mimeType = mimeTypes[type];
-        QTest::addRow("%s", mimeType)
+        BOBUIest::addRow("%s", mimeType)
                 << u"/dev/"_s + QFile::decodeName(ent->d_name) << mimeType;
         found |= (1U << type);
     }
@@ -815,35 +815,35 @@ void tst_QMimeDatabase::allMimeTypes()
 
 void tst_QMimeDatabase::suffixes_data()
 {
-    QTest::addColumn<QString>("mimeType");
-    QTest::addColumn<QString>("patterns");
-    QTest::addColumn<QString>("preferredSuffix");
+    BOBUIest::addColumn<QString>("mimeType");
+    BOBUIest::addColumn<QString>("patterns");
+    BOBUIest::addColumn<QString>("preferredSuffix");
 
-    QTest::newRow("mimetype with a single pattern") << "application/pdf" << "*.pdf" << "pdf";
-    QTest::newRow("mimetype-with-multiple-patterns-kpr") << "application/x-kpresenter" << "*.kpr;*.kpt" << "kpr";
+    BOBUIest::newRow("mimetype with a single pattern") << "application/pdf" << "*.pdf" << "pdf";
+    BOBUIest::newRow("mimetype-with-multiple-patterns-kpr") << "application/x-kpresenter" << "*.kpr;*.kpt" << "kpr";
     // The preferred suffix for image/jpeg is *.jpg, as per https://bugs.kde.org/show_bug.cgi?id=176737
-    QTest::newRow("jpeg") << "image/jpeg"
+    BOBUIest::newRow("jpeg") << "image/jpeg"
                           << (m_hasFreedesktopOrg ? "*.jfif;*.jpe;*.jpg;*.jpeg"
                                                   : "*.jfi;*.jfif;*.jif;*.jpe;*.jpeg;*.jpg")
                           << "jpg";
-    QTest::newRow("mimetype with many patterns")
+    BOBUIest::newRow("mimetype with many patterns")
             << "application/vnd.wordperfect"
             << (m_hasFreedesktopOrg ? "*.wp;*.wp4;*.wp5;*.wp6;*.wpd;*.wpp"
                                     : "*.w60;*.wp;*.wp5;*.wp6;*.wp61;*.wpd;*.wpt")
             << (m_hasFreedesktopOrg ? "wp" : "wpd");
-    QTest::newRow("oasis text mimetype") << "application/vnd.oasis.opendocument.text" << "*.odt" << "odt";
-    QTest::newRow("oasis presentation mimetype") << "application/vnd.oasis.opendocument.presentation" << "*.odp" << "odp";
+    BOBUIest::newRow("oasis text mimetype") << "application/vnd.oasis.opendocument.text" << "*.odt" << "odt";
+    BOBUIest::newRow("oasis presentation mimetype") << "application/vnd.oasis.opendocument.presentation" << "*.odp" << "odp";
     if (m_hasFreedesktopOrg) { // tika has a very very long list of patterns for text/plain
-        QTest::newRow("mimetype-multiple-patterns-text-plain") << "text/plain"
+        BOBUIest::newRow("mimetype-multiple-patterns-text-plain") << "text/plain"
                                                                << "*.asc;*.txt;*,v"
                                                                << "txt";
-        QTest::newRow("mimetype with uncommon pattern") << "text/x-readme"
+        BOBUIest::newRow("mimetype with uncommon pattern") << "text/x-readme"
                                                         << "README*" << QString();
     }
-    QTest::newRow("mimetype with no patterns")
+    BOBUIest::newRow("mimetype with no patterns")
             << "application/x-zerosize" << QString() << QString();
     if (m_hasFreedesktopOrg) // tika has a long list of patterns for application/octet-stream
-        QTest::newRow("default_mimetype") << "application/octet-stream" << QString() << QString();
+        BOBUIest::newRow("default_mimetype") << "application/octet-stream" << QString() << QString();
 }
 
 void tst_QMimeDatabase::suffixes()
@@ -882,17 +882,17 @@ void tst_QMimeDatabase::knownSuffix()
 
 void tst_QMimeDatabase::filterString_data()
 {
-    QTest::addColumn<QString>("mimeType");
-    QTest::addColumn<QString>("expectedFilterString");
+    BOBUIest::addColumn<QString>("mimeType");
+    BOBUIest::addColumn<QString>("expectedFilterString");
 
-    QTest::newRow("single-pattern")
+    BOBUIest::newRow("single-pattern")
             << "application/pdf"
             << (m_hasFreedesktopOrg ? "PDF document (*.pdf)" : "Portable Document Format (*.pdf)");
     if (m_hasFreedesktopOrg)
-        QTest::newRow("multiple-patterns-text-plain") << "text/plain"
+        BOBUIest::newRow("multiple-patterns-text-plain") << "text/plain"
                                                       << "Plain text document (*.txt *.asc *,v)";
     else
-        QTest::newRow("multiple-patterns-kword") << "application/vnd.kde.kword"
+        BOBUIest::newRow("multiple-patterns-kword") << "application/vnd.kde.kword"
                                                  << "KWord File (*.kwd *.kwt)";
 }
 
@@ -905,13 +905,13 @@ void tst_QMimeDatabase::filterString()
     QCOMPARE(db.mimeTypeForName(mimeType).filterString(), expectedFilterString);
 }
 
-void tst_QMimeDatabase::symlinkToFifo() // QTBUG-48529
+void tst_QMimeDatabase::symlinkToFifo() // BOBUIBUG-48529
 {
 #if defined(Q_OS_UNIX) && !defined(Q_OS_INTEGRITY)
     if (!m_hasFreedesktopOrg)
         QSKIP("Special devices are not available in tika");
 
-    QTemporaryDir tempDir;
+    BOBUIemporaryDir tempDir;
     QVERIFY(tempDir.isValid());
     const QString dir = tempDir.path();
     const QString fifo = dir + "/fifo";
@@ -932,9 +932,9 @@ void tst_QMimeDatabase::symlinkToFifo() // QTBUG-48529
 
 void tst_QMimeDatabase::findByFileName_data()
 {
-    QTest::addColumn<QString>("filePath");
-    QTest::addColumn<QString>("mimeTypeName");
-    QTest::addColumn<QString>("xFail");
+    BOBUIest::addColumn<QString>("filePath");
+    BOBUIest::addColumn<QString>("mimeTypeName");
+    BOBUIest::addColumn<QString>("xFail");
 
     if (m_testSuite.isEmpty())
         QSKIP("shared-mime-info test suite not available.");
@@ -945,7 +945,7 @@ void tst_QMimeDatabase::findByFileName_data()
     QVERIFY2(f.open(QIODevice::ReadOnly|QIODevice::Text),
              qPrintable(QString::fromLatin1("Cannot open %1: %2").arg(fileName, f.errorString())));
 
-    QByteArray line(1024, Qt::Uninitialized);
+    QByteArray line(1024, BobUI::Uninitialized);
 
     QDuplicateTracker<QString, 800> seen;
 
@@ -956,7 +956,7 @@ void tst_QMimeDatabase::findByFileName_data()
             continue;
 
         QString string = QString::fromLatin1(line.constData(), len - 1).trimmed();
-        QStringList list = string.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        QStringList list = string.split(QLatin1Char(' '), BobUI::SkipEmptyParts);
         QVERIFY(list.size() >= 2);
 
         QString filePath = list.at(0);
@@ -972,7 +972,7 @@ void tst_QMimeDatabase::findByFileName_data()
             rowTag += "_2";
         }
 
-        QTest::newRow(rowTag.toLatin1().constData())
+        BOBUIest::newRow(rowTag.toLatin1().constData())
                 << QString(prefix + filePath) << mimeTypeType << xFail;
     }
 }
@@ -1080,21 +1080,21 @@ void tst_QMimeDatabase::findByFile()
 
 void tst_QMimeDatabase::fromThreads()
 {
-    QThreadPool tp;
+    BOBUIhreadPool tp;
     tp.setMaxThreadCount(20);
-    // Note that data-based tests cannot be used here (QTest::fetchData asserts).
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::mimeTypeForName, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::aliases, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::allMimeTypes, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::icons, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::inheritance, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::knownSuffix, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::mimeTypeForFileWithContent, this));
-    Q_UNUSED(QtConcurrent::run(&tp, &tst_QMimeDatabase::allMimeTypes, this)); // a second time
+    // Note that data-based tests cannot be used here (BOBUIest::fetchData asserts).
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::mimeTypeForName, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::aliases, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::allMimeTypes, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::icons, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::inheritance, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::knownSuffix, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::mimeTypeForFileWithContent, this));
+    Q_UNUSED(BobUIConcurrent::run(&tp, &tst_QMimeDatabase::allMimeTypes, this)); // a second time
     QVERIFY(tp.waitForDone(60000));
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 
 enum {
     UpdateMimeDatabaseTimeout = 4 * 60 * 1000 // 4min
@@ -1108,7 +1108,7 @@ static bool runUpdateMimeDatabase(const QString &path) // TODO make it a QMimeDa
         qWarning("%s does not exist.", qPrintable(umdCommand));
         return false;
     }
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QElapsedTimer timer;
     QProcess proc;
     proc.setProcessChannelMode(QProcess::MergedChannels); // silence output
@@ -1132,13 +1132,13 @@ static bool waitAndRunUpdateMimeDatabase(const QString &path)
     QFileInfo mimeCacheInfo(path + QString::fromLatin1("/mime.cache"));
     if (mimeCacheInfo.exists()) {
         // Wait until the beginning of the next second
-        while (mimeCacheInfo.lastModified(QTimeZone::UTC).secsTo(QDateTime::currentDateTimeUtc()) == 0) {
-            QTest::qSleep(200);
+        while (mimeCacheInfo.lastModified(BOBUIimeZone::UTC).secsTo(QDateTime::currentDateTimeUtc()) == 0) {
+            BOBUIest::qSleep(200);
         }
     }
     return runUpdateMimeDatabase(path);
 }
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 
 static void checkHasMimeType(const QString &mimeType)
 {
@@ -1159,14 +1159,14 @@ static void checkHasMimeType(const QString &mimeType)
 static void ignoreInvalidMimetypeWarnings(const QString &mimeDir)
 {
     const QByteArray basePath = QFile::encodeName(mimeDir) + "/packages/";
-    QTest::ignoreMessage(QtWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic1.xml\nInvalid magic rule value \"foo\"").constData());
-    QTest::ignoreMessage(QtWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic2.xml\nInvalid magic rule mask \"ffff\"").constData());
-    QTest::ignoreMessage(QtWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic3.xml\nInvalid magic rule mask size \"0xffff\"").constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic1.xml\nInvalid magic rule value \"foo\"").constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic2.xml\nInvalid magic rule mask \"ffff\"").constData());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ("QMimeDatabase: Error parsing " + basePath + "invalid-magic3.xml\nInvalid magic rule mask size \"0xffff\"").constData());
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 extern Q_CORE_EXPORT int qmime_secondsBetweenChecks; // see qmimeprovider.cpp
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void copyFiles(const QSpan<const char *const> &additionalMimeFiles, const QString &destDir)
 {
@@ -1198,7 +1198,7 @@ void tst_QMimeDatabase::installNewGlobalMimeType()
     QSKIP("This test requires XDG_DATA_DIRS");
 #endif
 
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     qmime_secondsBetweenChecks = 0;
@@ -1212,7 +1212,7 @@ void tst_QMimeDatabase::installNewGlobalMimeType()
         QVERIFY(QDir(m_globalXdgDir).mkpath(destDir));
 
     copyFiles(additionalGlobalMimeFiles, destDir);
-    QVERIFY(!QTest::currentTestFailed());
+    QVERIFY(!BOBUIest::currentTestFailed());
     if (m_isUsingCacheProvider && !waitAndRunUpdateMimeDatabase(mimeDir))
         QSKIP("shared-mime-info not found, skipping mime.cache test");
 
@@ -1254,28 +1254,28 @@ void tst_QMimeDatabase::installNewGlobalMimeType()
     QCOMPARE(db.mimeTypeForFile(QLatin1String("foo.ymu"), QMimeDatabase::MatchExtension).name(),
              QString::fromLatin1("application/octet-stream"));
     QVERIFY(!db.mimeTypeForName(QLatin1String("text/x-suse-ymp")).isValid());
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 }
 
 void tst_QMimeDatabase::installNewLocalMimeType_data()
 {
-    QTest::addColumn<bool>("useLocalBinaryCache");
+    BOBUIest::addColumn<bool>("useLocalBinaryCache");
 
     // Test mixing the providers:
     // * m_isUsingCacheProvider is about the global directory.
     // ** when true, we'll test both for the local directory.
-    // ** when false, we can't, because QT_NO_MIME_CACHE is set, so it's XML+XML only
+    // ** when false, we can't, because BOBUI_NO_MIME_CACHE is set, so it's XML+XML only
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     if (m_isUsingCacheProvider)
-        QTest::newRow("with_binary_cache") << true;
+        BOBUIest::newRow("with_binary_cache") << true;
 #endif
-    QTest::newRow("without_binary_cache") << false;
+    BOBUIest::newRow("without_binary_cache") << false;
 }
 
 void tst_QMimeDatabase::installNewLocalMimeType()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("This test requires QProcess support");
 #else
     QFETCH(bool, useLocalBinaryCache);
@@ -1292,7 +1292,7 @@ void tst_QMimeDatabase::installNewLocalMimeType()
     QVERIFY(QDir().mkpath(destDir));
 
     copyFiles(additionalLocalMimeFiles, destDir);
-    QVERIFY(!QTest::currentTestFailed());
+    QVERIFY(!BOBUIest::currentTestFailed());
     if (useLocalBinaryCache && !waitAndRunUpdateMimeDatabase(m_localMimeDir)) {
         const QString skipWarning = QStringLiteral("shared-mime-info not found, skipping mime.cache test (")
                                     + QDir::toNativeSeparators(m_localMimeDir) + QLatin1Char(')');
@@ -1315,7 +1315,7 @@ void tst_QMimeDatabase::installNewLocalMimeType()
     QCOMPARE(db.mimeTypeForName(QLatin1String("text/x-SuSE-ymu")).comment(), QString("URL of a YaST Meta Package"));
     checkHasMimeType("text/x-suse-ymp");
 
-    { // QTBUG-85436
+    { // BOBUIBUG-85436
         QMimeType objcsrc = db.mimeTypeForName(QStringLiteral("text/x-objcsrc"));
         QVERIFY(objcsrc.isValid());
         QCOMPARE(objcsrc.globPatterns(), QStringList());
@@ -1331,7 +1331,7 @@ void tst_QMimeDatabase::installNewLocalMimeType()
     QCOMPARE(db.mimeTypeForFile(qmlTestFile).name(),
              QString::fromLatin1("text/x-qml"));
 
-    { // QTBUG-101755
+    { // BOBUIBUG-101755
         QList<QMimeType> mimes = db.mimeTypesForFileName(u"foo.webm"_s);
         // "*.webm" glob pattern is deleted with "glob-deleteall"
         QVERIFY2(mimes.isEmpty(), qPrintable(mimeTypeNames(mimes).join(u',')));
@@ -1342,7 +1342,7 @@ void tst_QMimeDatabase::installNewLocalMimeType()
         QCOMPARE(mimes.at(0).name(), u"video/webm");
     }
 
-    // QTBUG-116905: globPatterns() should merge all locations
+    // BOBUIBUG-116905: globPatterns() should merge all locations
     // add-extension.xml adds *.jnewext
     const auto expectedJpegPatterns = m_hasFreedesktopOrg
             ? QStringList{ "*.jpg", "*.jpeg", "*.jpe", "*.jfif", "*.jnewext" }
@@ -1351,29 +1351,29 @@ void tst_QMimeDatabase::installNewLocalMimeType()
 
     // Now that we have two directories with mime definitions, check that everything still works
     inheritance();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     aliases();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     icons();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     if (m_hasFreedesktopOrg) {
         comment();
-        if (QTest::currentTestFailed())
+        if (BOBUIest::currentTestFailed())
             return;
     }
 
     mimeTypeForFileWithContent();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     mimeTypeForName();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     // Now test removing local mimetypes
@@ -1390,11 +1390,11 @@ void tst_QMimeDatabase::installNewLocalMimeType()
     QVERIFY(db.mimeTypeForName(QLatin1String("text/x-suse-ymp")).isValid()); // still present
 
     // Finally, the user deletes the whole local dir
-    QVERIFY2(QDir(m_localMimeDir).removeRecursively(), qPrintable(m_localMimeDir + ": " + qt_error_string()));
+    QVERIFY2(QDir(m_localMimeDir).removeRecursively(), qPrintable(m_localMimeDir + ": " + bobui_error_string()));
     QCOMPARE(db.mimeTypeForFile(QLatin1String("foo.ymu"), QMimeDatabase::MatchExtension).name(),
              QString::fromLatin1("application/octet-stream"));
     QVERIFY(!db.mimeTypeForName(QLatin1String("text/x-suse-ymp")).isValid());
 #endif
 }
 
-QTEST_GUILESS_MAIN(tst_QMimeDatabase)
+BOBUIEST_GUILESS_MAIN(tst_QMimeDatabase)

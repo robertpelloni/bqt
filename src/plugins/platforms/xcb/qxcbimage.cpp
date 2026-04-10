@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbimage.h"
-#include <QtCore/QtEndian>
-#include <QtGui/QColor>
-#include <QtGui/private/qimage_p.h>
-#include <QtGui/private/qdrawhelper_p.h>
+#include <BobUICore/BobUIEndian>
+#include <BobUIGui/QColor>
+#include <BobUIGui/private/qimage_p.h>
+#include <BobUIGui/private/qdrawhelper_p.h>
 
 #include <xcb/render.h>
 #include <xcb/xcb_renderutil.h>
@@ -64,9 +64,9 @@ QImage::Format imageFormatForMasks(int depth, int bits_per_pixel, int red_mask, 
 
 } // namespace
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-bool qt_xcb_imageFormatForVisual(QXcbConnection *connection, uint8_t depth, const xcb_visualtype_t *visual,
+bool bobui_xcb_imageFormatForVisual(QXcbConnection *connection, uint8_t depth, const xcb_visualtype_t *visual,
                                  QImage::Format *imageFormat, bool *needsRgbSwap)
 {
     Q_ASSERT(connection && visual && imageFormat);
@@ -109,7 +109,7 @@ bool qt_xcb_imageFormatForVisual(QXcbConnection *connection, uint8_t depth, cons
     return false;
 }
 
-QPixmap qt_xcb_pixmapFromXPixmap(QXcbConnection *connection, xcb_pixmap_t pixmap,
+QPixmap bobui_xcb_pixmapFromXPixmap(QXcbConnection *connection, xcb_pixmap_t pixmap,
                                  int width, int height, int depth,
                                  const xcb_visualtype_t *visual)
 {
@@ -128,7 +128,7 @@ QPixmap qt_xcb_pixmapFromXPixmap(QXcbConnection *connection, xcb_pixmap_t pixmap
 
     QImage::Format format;
     bool needsRgbSwap;
-    if (qt_xcb_imageFormatForVisual(connection, depth, visual, &format, &needsRgbSwap)) {
+    if (bobui_xcb_imageFormatForVisual(connection, depth, visual, &format, &needsRgbSwap)) {
         uint32_t bytes_per_line = length / height;
         QImage image(const_cast<uint8_t *>(data), width, height, bytes_per_line, format);
 
@@ -158,12 +158,12 @@ QPixmap qt_xcb_pixmapFromXPixmap(QXcbConnection *connection, xcb_pixmap_t pixmap
     return result;
 }
 
-xcb_pixmap_t qt_xcb_XPixmapFromBitmap(QXcbScreen *screen, const QImage &image)
+xcb_pixmap_t bobui_xcb_XPixmapFromBitmap(QXcbScreen *screen, const QImage &image)
 {
     xcb_connection_t *conn = screen->xcb_connection();
     QImage bitmap = image.convertToFormat(QImage::Format_MonoLSB);
-    const QRgb c0 = QColor(Qt::black).rgb();
-    const QRgb c1 = QColor(Qt::white).rgb();
+    const QRgb c0 = QColor(BobUI::black).rgb();
+    const QRgb c1 = QColor(BobUI::white).rgb();
     if (bitmap.color(0) == c0 && bitmap.color(1) == c1) {
         bitmap.invertPixels();
         bitmap.setColor(0, c1);
@@ -185,7 +185,7 @@ xcb_pixmap_t qt_xcb_XPixmapFromBitmap(QXcbScreen *screen, const QImage &image)
     return pm;
 }
 
-xcb_cursor_t qt_xcb_createCursorXRender(QXcbScreen *screen, const QImage &image,
+xcb_cursor_t bobui_xcb_createCursorXRender(QXcbScreen *screen, const QImage &image,
                                         const QPoint &spot)
 {
     xcb_connection_t *conn = screen->xcb_connection();
@@ -193,13 +193,13 @@ xcb_cursor_t qt_xcb_createCursorXRender(QXcbScreen *screen, const QImage &image,
     const int h = image.height();
     auto formats = Q_XCB_REPLY(xcb_render_query_pict_formats, conn);
     if (!formats) {
-        qWarning("qt_xcb_createCursorXRender: query_pict_formats failed");
+        qWarning("bobui_xcb_createCursorXRender: query_pict_formats failed");
         return XCB_NONE;
     }
     xcb_render_pictforminfo_t *fmt = xcb_render_util_find_standard_format(formats.get(),
                                                                           XCB_PICT_STANDARD_ARGB_32);
     if (!fmt) {
-        qWarning("qt_xcb_createCursorXRender: Failed to find format PICT_STANDARD_ARGB_32");
+        qWarning("bobui_xcb_createCursorXRender: Failed to find format PICT_STANDARD_ARGB_32");
         return XCB_NONE;
     }
 
@@ -210,12 +210,12 @@ xcb_cursor_t qt_xcb_createCursorXRender(QXcbScreen *screen, const QImage &image,
                                        XCB_IMAGE_ORDER_MSB_FIRST,
                                        nullptr, 0, nullptr);
     if (!xi) {
-        qWarning("qt_xcb_createCursorXRender: xcb_image_create failed");
+        qWarning("bobui_xcb_createCursorXRender: xcb_image_create failed");
         return XCB_NONE;
     }
     xi->data = (uint8_t *) malloc(xi->stride * h);
     if (!xi->data) {
-        qWarning("qt_xcb_createCursorXRender: Failed to malloc() image data");
+        qWarning("bobui_xcb_createCursorXRender: Failed to malloc() image data");
         xcb_image_destroy(xi);
         return XCB_NONE;
     }
@@ -242,4 +242,4 @@ xcb_cursor_t qt_xcb_createCursorXRender(QXcbScreen *screen, const QImage &image,
     return cursor;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

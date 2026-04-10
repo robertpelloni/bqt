@@ -1,12 +1,12 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtPlugin>
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIPlugin>
 #include <QObject>
 
 class StaticPlugin : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "SomeIID" URI "qt.test.pluginloader.staticplugin")
+    Q_PLUGIN_METADATA(IID "SomeIID" URI "bobui.test.pluginloader.staticplugin")
 public:
     StaticPlugin() {}
 };

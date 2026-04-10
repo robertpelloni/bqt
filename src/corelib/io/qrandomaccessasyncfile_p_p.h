@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QRANDOMACCESSASYNCFILE_P_P_H
 #define QRANDOMACCESSASYNCFILE_P_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -18,37 +18,37 @@
 
 #include "qrandomaccessasyncfile_p.h"
 
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/private/qobject_p.h>
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
-#if QT_CONFIG(future) && QT_CONFIG(thread)
+#if BOBUI_CONFIG(future) && BOBUI_CONFIG(thread)
 
-#include <QtCore/private/qfsfileengine_p.h>
+#include <BobUICore/private/qfsfileengine_p.h>
 
-#include <QtCore/qfuturewatcher.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qqueue.h>
+#include <BobUICore/qfuturewatcher.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qqueue.h>
 
 #endif // future && thread
 
 #ifdef Q_OS_DARWIN
 
-#include <QtCore/qlist.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qset.h>
-#include <QtCore/qwaitcondition.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qwaitcondition.h>
 
 #include <dispatch/dispatch.h>
 
 #endif // Q_OS_DARWIN
 
-#ifdef QT_RANDOMACCESSASYNCFILE_QIORING
-#include <QtCore/private/qioring_p.h>
-#include <QtCore/qlist.h>
+#ifdef BOBUI_RANDOMACCESSASYNCFILE_QIORING
+#include <BobUICore/private/qioring_p.h>
+#include <BobUICore/qlist.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRandomAccessAsyncFileBackend
 {
@@ -181,7 +181,7 @@ private:
 };
 
 
-#if defined(QT_RANDOMACCESSASYNCFILE_QIORING) || defined(Q_OS_DARWIN)
+#if defined(BOBUI_RANDOMACCESSASYNCFILE_QIORING) || defined(Q_OS_DARWIN)
 class QRandomAccessAsyncFileNativeBackend final : public QRandomAccessAsyncFileBackend
 {
     Q_DISABLE_COPY_MOVE(QRandomAccessAsyncFileNativeBackend)
@@ -213,7 +213,7 @@ public:
     writeFrom(qint64 offset, QSpan<const QSpan<const std::byte>> buffers) override;
 
 private:
-#if defined(QT_RANDOMACCESSASYNCFILE_QIORING)
+#if defined(BOBUI_RANDOMACCESSASYNCFILE_QIORING)
     void queueCompletion(QIOOperationPrivate *priv, QIOOperation::Error error);
     void startReadIntoSingle(QIOOperation *op, const QSpan<std::byte> &to);
     void startWriteFromSingle(QIOOperation *op, const QSpan<const std::byte> &from);
@@ -306,7 +306,7 @@ private:
 };
 #endif // QIORing || macOS
 
-#if QT_CONFIG(future) && QT_CONFIG(thread)
+#if BOBUI_CONFIG(future) && BOBUI_CONFIG(thread)
 class QRandomAccessAsyncFileThreadPoolBackend : public QRandomAccessAsyncFileBackend
 {
     Q_DISABLE_COPY_MOVE(QRandomAccessAsyncFileThreadPoolBackend)
@@ -360,6 +360,6 @@ private:
 };
 #endif // future && thread
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRANDOMACCESSASYNCFILE_P_P_H

@@ -11,20 +11,20 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
-#include <QTimer>
+#include <BOBUIimer>
 
 OmniDeveloperOverlay::OmniDeveloperOverlay(QWidget *parent)
     : QWidget(parent)
 {
-    setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    setAttribute(Qt::WA_NoSystemBackground);
-    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(BobUI::WA_TransparentForMouseEvents, true);
+    setAttribute(BobUI::WA_NoSystemBackground);
+    setAttribute(BobUI::WA_TranslucentBackground);
     
     // Redraw whenever a cursor moves or a toast spawns
     connect(OmniInputManager::instance(), &OmniInputManager::cursorUpdated, this, [this]() { update(); });
     connect(OmniNotificationCenter::instance(), &OmniNotificationCenter::toastSpawned, this, [this](const OmniToast& toast) {
         update();
-        QTimer::singleShot(toast.durationMs, this, [this, toast]() {
+        BOBUIimer::singleShot(toast.durationMs, this, [this, toast]() {
             OmniNotificationCenter::instance()->removeToast(toast.id);
             update();
         });
@@ -70,11 +70,11 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
         painter.setPen(OmniThemeManager::instance()->textColor());
         QFont titleFont("Segoe UI", 12 * dpr, QFont::Bold);
         painter.setFont(titleFont);
-        painter.drawText(toastRect.adjusted(15 * dpr, 10 * dpr, -10 * dpr, -30 * dpr), Qt::AlignLeft | Qt::AlignVCenter, toast.title);
+        painter.drawText(toastRect.adjusted(15 * dpr, 10 * dpr, -10 * dpr, -30 * dpr), BobUI::AlignLeft | BobUI::AlignVCenter, toast.title);
         
         QFont msgFont("Segoe UI", 10 * dpr);
         painter.setFont(msgFont);
-        painter.drawText(toastRect.adjusted(15 * dpr, 30 * dpr, -10 * dpr, -10 * dpr), Qt::AlignLeft | Qt::AlignVCenter, toast.message);
+        painter.drawText(toastRect.adjusted(15 * dpr, 30 * dpr, -10 * dpr, -10 * dpr), BobUI::AlignLeft | BobUI::AlignVCenter, toast.message);
         
         toastYOffset += (70 * dpr);
     }
@@ -85,8 +85,8 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
     for (const auto& dev : devices) {
         if (dev.type == "mouse" || dev.type == "touch") {
             // A. Draw the Virtual Cursor scaled
-            painter.setBrush(Qt::red);
-            painter.setPen(Qt::white);
+            painter.setBrush(BobUI::red);
+            painter.setPen(BobUI::white);
             
             QPolygonF cursorPoly;
             cursorPoly << QPointF(dev.cursorPosition.x(), dev.cursorPosition.y())
@@ -131,7 +131,7 @@ void OmniDeveloperOverlay::paintEvent(QPaintEvent *event)
                 painter.setPen(QColor(0, 255, 0, 150)); 
                 painter.drawRoundedRect(tooltipRect, 4 * dpr, 4 * dpr);
                 
-                painter.setPen(Qt::white);
+                painter.setPen(BobUI::white);
                 QFont toolFont("Consolas", 9 * dpr);
                 painter.setFont(toolFont);
                 

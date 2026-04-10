@@ -1,21 +1,21 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QITERABLE_H
 #define QITERABLE_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qtypeinfo.h>
-#include <QtCore/qtaggedpointer.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/bobuiypeinfo.h>
+#include <BobUICore/bobuiaggedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     template<typename Type, typename Storage = Type>
     class QConstPreservingPointer
     {
         enum Tag : bool { Const, Mutable };
-        QTaggedPointer<Storage, Tag> m_pointer;
+        BOBUIaggedPointer<Storage, Tag> m_pointer;
 
     public:
         Q_NODISCARD_CTOR QConstPreservingPointer(std::nullptr_t) : m_pointer(nullptr, Const) {}
@@ -71,11 +71,11 @@ namespace QtPrivate {
 }
 
 template<class Iterator, typename IteratorCategory>
-class QTaggedIterator : public Iterator
+class BOBUIaggedIterator : public Iterator
 {
 public:
     using iterator_category = IteratorCategory;
-    QTaggedIterator(Iterator &&it) : Iterator(std::move(it))
+    BOBUIaggedIterator(Iterator &&it) : Iterator(std::move(it))
     {
         [[maybe_unused]] const auto metaContainer = this->metaContainer();
         if constexpr (std::is_base_of_v<std::random_access_iterator_tag, IteratorCategory>) {
@@ -107,24 +107,24 @@ public:
         }
     }
 
-    bool operator==(const QTaggedIterator &o) const { return Iterator::operator==(o); }
-    bool operator!=(const QTaggedIterator &o) const { return Iterator::operator!=(o); }
-    QTaggedIterator &operator++() { Iterator::operator++(); return *this; }
-    QTaggedIterator operator++(int x) { return QTaggedIterator(Iterator::operator++(x)); }
-    QTaggedIterator &operator--() { Iterator::operator--(); return *this; }
-    QTaggedIterator operator--(int x) { return QTaggedIterator(Iterator::operator--(x)); }
-    QTaggedIterator &operator+=(qsizetype j) { Iterator::operator+=(j); return *this; }
-    QTaggedIterator &operator-=(qsizetype j)  { Iterator::operator-=(j); return *this; }
-    QTaggedIterator operator+(qsizetype j) const { return QTaggedIterator(Iterator::operator+(j)); }
-    QTaggedIterator operator-(qsizetype j) const { return QTaggedIterator(Iterator::operator-(j)); }
-    qsizetype operator-(const QTaggedIterator &j) const { return Iterator::operator-(j); }
+    bool operator==(const BOBUIaggedIterator &o) const { return Iterator::operator==(o); }
+    bool operator!=(const BOBUIaggedIterator &o) const { return Iterator::operator!=(o); }
+    BOBUIaggedIterator &operator++() { Iterator::operator++(); return *this; }
+    BOBUIaggedIterator operator++(int x) { return BOBUIaggedIterator(Iterator::operator++(x)); }
+    BOBUIaggedIterator &operator--() { Iterator::operator--(); return *this; }
+    BOBUIaggedIterator operator--(int x) { return BOBUIaggedIterator(Iterator::operator--(x)); }
+    BOBUIaggedIterator &operator+=(qsizetype j) { Iterator::operator+=(j); return *this; }
+    BOBUIaggedIterator &operator-=(qsizetype j)  { Iterator::operator-=(j); return *this; }
+    BOBUIaggedIterator operator+(qsizetype j) const { return BOBUIaggedIterator(Iterator::operator+(j)); }
+    BOBUIaggedIterator operator-(qsizetype j) const { return BOBUIaggedIterator(Iterator::operator-(j)); }
+    qsizetype operator-(const BOBUIaggedIterator &j) const { return Iterator::operator-(j); }
 
-    bool operator<(const QTaggedIterator &j) { return operator-(j) < 0; }
-    bool operator>=(const QTaggedIterator &j) { return !operator<(j); }
-    bool operator>(const QTaggedIterator &j) { return operator-(j) > 0; }
-    bool operator<=(const QTaggedIterator &j) { return !operator>(j); }
+    bool operator<(const BOBUIaggedIterator &j) { return operator-(j) < 0; }
+    bool operator>=(const BOBUIaggedIterator &j) { return !operator<(j); }
+    bool operator>(const BOBUIaggedIterator &j) { return operator-(j) > 0; }
+    bool operator<=(const BOBUIaggedIterator &j) { return !operator>(j); }
 
-    friend inline QTaggedIterator operator+(qsizetype j, const QTaggedIterator &k) { return k + j; }
+    friend inline BOBUIaggedIterator operator+(qsizetype j, const BOBUIaggedIterator &k) { return k + j; }
 };
 
 template<class Container>
@@ -134,7 +134,7 @@ template<class Container>
 class QBaseIterator
 {
 private:
-    QtPrivate::QConstPreservingPointer<QIterable<Container>> m_iterable;
+    BobUIPrivate::QConstPreservingPointer<QIterable<Container>> m_iterable;
     void *m_iterator = nullptr;
 
 protected:
@@ -421,7 +421,7 @@ class QIterable
 
 protected:
     uint m_revision = 0;
-    QtPrivate::QConstPreservingPointer<void, quint16> m_iterable;
+    BobUIPrivate::QConstPreservingPointer<void, quint16> m_iterable;
     Container m_metaContainer;
 
 public:
@@ -502,12 +502,12 @@ public:
         if (m_metaContainer.hasSize())
             return m_metaContainer.size(container);
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
         // We shouldn't second-guess the underlying container, so we're not synthesizing a size.
         return -1;
 #else
-        QtPrivate::warnSynthesizedIterableAccess(
-                QtPrivate::SynthesizedAccessFunction::IterableSize);
+        BobUIPrivate::warnSynthesizedIterableAccess(
+                BobUIPrivate::SynthesizedAccessFunction::IterableSize);
 
         if (!m_metaContainer.hasConstIterator())
             return -1;
@@ -532,6 +532,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QITERABLE_H

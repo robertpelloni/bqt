@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicsanchorlayout_p.h"
 
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qapplication.h>
-#include <QtCore/qstack.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUICore/qstack.h>
 
-#ifdef QT_DEBUG
-#include <QtCore/qfile.h>
+#ifdef BOBUI_DEBUG
+#include <BobUICore/qfile.h>
 #endif
 
 #include <numeric>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // To ensure that all variables inside the simplex solver are non-negative,
 // we limit the size of anchors in the interval [-limit, limit]. Then before
@@ -162,14 +162,14 @@ void AnchorData::refreshSizeHints(const QLayoutStyleInfo *styleInfo)
         } else {
             if (!isVertical) {
                 policy = item->sizePolicy().horizontalPolicy();
-                minSizeHint = item->effectiveSizeHint(Qt::MinimumSize).width();
-                prefSizeHint = item->effectiveSizeHint(Qt::PreferredSize).width();
-                maxSizeHint = item->effectiveSizeHint(Qt::MaximumSize).width();
+                minSizeHint = item->effectiveSizeHint(BobUI::MinimumSize).width();
+                prefSizeHint = item->effectiveSizeHint(BobUI::PreferredSize).width();
+                maxSizeHint = item->effectiveSizeHint(BobUI::MaximumSize).width();
             } else {
                 policy = item->sizePolicy().verticalPolicy();
-                minSizeHint = item->effectiveSizeHint(Qt::MinimumSize).height();
-                prefSizeHint = item->effectiveSizeHint(Qt::PreferredSize).height();
-                maxSizeHint = item->effectiveSizeHint(Qt::MaximumSize).height();
+                minSizeHint = item->effectiveSizeHint(BobUI::MinimumSize).height();
+                prefSizeHint = item->effectiveSizeHint(BobUI::PreferredSize).height();
+                maxSizeHint = item->effectiveSizeHint(BobUI::MaximumSize).height();
             }
 
             if (isCenterAnchor) {
@@ -194,7 +194,7 @@ void AnchorData::refreshSizeHints(const QLayoutStyleInfo *styleInfo)
             prefSizeHint = anchorPrivate->preferredSize;
         } else if (styleInfo) {
             // Fetch size information from style
-            const Qt::Orientation orient = QGraphicsAnchorLayoutPrivate::edgeOrientation(from->m_edge);
+            const BobUI::Orientation orient = QGraphicsAnchorLayoutPrivate::edgeOrientation(from->m_edge);
             qreal s = styleInfo->defaultSpacing(orient);
             if (s < 0) {
                 QSizePolicy::ControlType controlTypeFrom = from->m_item->sizePolicy().controlType();
@@ -521,7 +521,7 @@ void SequentialAnchorData::calculateSizeHints()
     sizeAtMaximum = prefSize;
 }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
 void AnchorData::dump(int indent) {
     if (type == Parallel) {
         qDebug("%*s type: parallel:", indent, "");
@@ -567,7 +567,7 @@ QSimplexConstraint *GraphPath::constraint(const GraphPath &path) const
     return c;
 }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
 QString GraphPath::toString() const
 {
     QString string;
@@ -588,20 +588,20 @@ QGraphicsAnchorLayoutPrivate::QGraphicsAnchorLayoutPrivate()
 {
 }
 
-Qt::AnchorPoint QGraphicsAnchorLayoutPrivate::oppositeEdge(Qt::AnchorPoint edge)
+BobUI::AnchorPoint QGraphicsAnchorLayoutPrivate::oppositeEdge(BobUI::AnchorPoint edge)
 {
     switch (edge) {
-    case Qt::AnchorLeft:
-        edge = Qt::AnchorRight;
+    case BobUI::AnchorLeft:
+        edge = BobUI::AnchorRight;
         break;
-    case Qt::AnchorRight:
-        edge = Qt::AnchorLeft;
+    case BobUI::AnchorRight:
+        edge = BobUI::AnchorLeft;
         break;
-    case Qt::AnchorTop:
-        edge = Qt::AnchorBottom;
+    case BobUI::AnchorTop:
+        edge = BobUI::AnchorBottom;
         break;
-    case Qt::AnchorBottom:
-        edge = Qt::AnchorTop;
+    case BobUI::AnchorBottom:
+        edge = BobUI::AnchorTop;
         break;
     default:
         break;
@@ -625,7 +625,7 @@ Qt::AnchorPoint QGraphicsAnchorLayoutPrivate::oppositeEdge(Qt::AnchorPoint edge)
 */
 AnchorData *QGraphicsAnchorLayoutPrivate::addAnchorMaybeParallel(AnchorData *newAnchor, bool *feasible)
 {
-    const Qt::Orientation orientation = newAnchor->isVertical ? Qt::Vertical : Qt::Horizontal;
+    const BobUI::Orientation orientation = newAnchor->isVertical ? BobUI::Vertical : BobUI::Horizontal;
     Graph<AnchorVertex, AnchorData> &g = graph[orientation];
     *feasible = true;
 
@@ -696,7 +696,7 @@ AnchorData *QGraphicsAnchorLayoutPrivate::addAnchorMaybeParallel(AnchorData *new
 static AnchorData *createSequence(Graph<AnchorVertex, AnchorData> *graph, AnchorVertex *before,
                                   const QList<AnchorVertex *> &vertices, AnchorVertex *after)
 {
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
     QString strVertices;
     for (int i = 0; i < vertices.count(); ++i) {
         strVertices += QString::fromLatin1("%1 - ").arg(vertices.at(i)->toString());
@@ -772,12 +772,12 @@ static AnchorData *createSequence(Graph<AnchorVertex, AnchorData> *graph, Anchor
    When creating the parallel anchors, the algorithm might identify unfeasible situations. In this
    case the simplification process stops and returns \c false. Otherwise returns \c true.
 */
-bool QGraphicsAnchorLayoutPrivate::simplifyGraph(Qt::Orientation orientation)
+bool QGraphicsAnchorLayoutPrivate::simplifyGraph(BobUI::Orientation orientation)
 {
     if (items.isEmpty())
         return true;
 
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
     qDebug("Simplifying Graph for %s",
            orientation == Horizontal ? "Horizontal" : "Vertical");
 
@@ -808,7 +808,7 @@ bool QGraphicsAnchorLayoutPrivate::simplifyGraph(Qt::Orientation orientation)
         return false;
     }
 
-#if defined(QT_DEBUG) && 0
+#if defined(BOBUI_DEBUG) && 0
     dumpGraph(QString::fromLatin1("%1-simplified-%2").arg(count).arg(
                   QString::fromLatin1(orientation == Horizontal ? "Horizontal" : "Vertical")));
 #endif
@@ -829,7 +829,7 @@ static AnchorVertex *replaceVertex_helper(AnchorData *data, AnchorVertex *oldV, 
     return other;
 }
 
-bool QGraphicsAnchorLayoutPrivate::replaceVertex(Qt::Orientation orientation, AnchorVertex *oldV,
+bool QGraphicsAnchorLayoutPrivate::replaceVertex(BobUI::Orientation orientation, AnchorVertex *oldV,
                                                  AnchorVertex *newV, const QList<AnchorData *> &edges)
 {
     Graph<AnchorVertex, AnchorData> &g = graph[orientation];
@@ -839,7 +839,7 @@ bool QGraphicsAnchorLayoutPrivate::replaceVertex(Qt::Orientation orientation, An
         AnchorData *ad = edges[i];
         AnchorVertex *otherV = replaceVertex_helper(ad, oldV, newV);
 
-#if defined(QT_DEBUG)
+#if defined(BOBUI_DEBUG)
         ad->name = QString::fromLatin1("%1 --to--> %2").arg(ad->from->toString(), ad->to->toString());
 #endif
 
@@ -863,7 +863,7 @@ bool QGraphicsAnchorLayoutPrivate::replaceVertex(Qt::Orientation orientation, An
 /*!
     \internal
 */
-bool QGraphicsAnchorLayoutPrivate::simplifyVertices(Qt::Orientation orientation)
+bool QGraphicsAnchorLayoutPrivate::simplifyVertices(BobUI::Orientation orientation)
 {
     Q_Q(QGraphicsAnchorLayout);
     Graph<AnchorVertex, AnchorData> &g = graph[orientation];
@@ -976,7 +976,7 @@ bool QGraphicsAnchorLayoutPrivate::simplifyVertices(Qt::Orientation orientation)
     Note that there are some catches to this that are not covered by the above explanation, see
     the function comments for more details.
 */
-bool QGraphicsAnchorLayoutPrivate::simplifyGraphIteration(Qt::Orientation orientation,
+bool QGraphicsAnchorLayoutPrivate::simplifyGraphIteration(BobUI::Orientation orientation,
                                                           bool *feasible)
 {
     Q_Q(QGraphicsAnchorLayout);
@@ -1134,7 +1134,7 @@ bool QGraphicsAnchorLayoutPrivate::simplifyGraphIteration(Qt::Orientation orient
 
 void QGraphicsAnchorLayoutPrivate::restoreSimplifiedAnchor(AnchorData *edge)
 {
-    const Qt::Orientation orientation = edge->isVertical ? Qt::Vertical : Qt::Horizontal;
+    const BobUI::Orientation orientation = edge->isVertical ? BobUI::Vertical : BobUI::Horizontal;
 #if 0
     static const char *anchortypes[] = {"Normal",
                                         "Sequential",
@@ -1204,7 +1204,7 @@ void QGraphicsAnchorLayoutPrivate::restoreSimplifiedConstraints(ParallelAnchorDa
     }
 }
 
-void QGraphicsAnchorLayoutPrivate::restoreSimplifiedGraph(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::restoreSimplifiedGraph(BobUI::Orientation orientation)
 {
 #if 0
     qDebug("Restoring Simplified Graph for %s",
@@ -1233,7 +1233,7 @@ void QGraphicsAnchorLayoutPrivate::restoreSimplifiedGraph(Qt::Orientation orient
     restoreVertices(orientation);
 }
 
-void QGraphicsAnchorLayoutPrivate::restoreVertices(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::restoreVertices(BobUI::Orientation orientation)
 {
     Q_Q(QGraphicsAnchorLayout);
 
@@ -1304,10 +1304,10 @@ void QGraphicsAnchorLayoutPrivate::restoreVertices(Qt::Orientation orientation)
     toRestore.clear();
 }
 
-Qt::Orientation
-QGraphicsAnchorLayoutPrivate::edgeOrientation(Qt::AnchorPoint edge) noexcept
+BobUI::Orientation
+QGraphicsAnchorLayoutPrivate::edgeOrientation(BobUI::AnchorPoint edge) noexcept
 {
-    return edge > Qt::AnchorRight ? Qt::Vertical : Qt::Horizontal;
+    return edge > BobUI::AnchorRight ? BobUI::Vertical : BobUI::Horizontal;
 }
 
 /*!
@@ -1326,38 +1326,38 @@ void QGraphicsAnchorLayoutPrivate::createLayoutEdges()
 
     // Horizontal
     AnchorData *data = new AnchorData;
-    addAnchor_helper(layout, Qt::AnchorLeft, layout,
-                     Qt::AnchorRight, data);
+    addAnchor_helper(layout, BobUI::AnchorLeft, layout,
+                     BobUI::AnchorRight, data);
     data->maxSize = QWIDGETSIZE_MAX;
 
     // Save a reference to layout vertices
-    layoutFirstVertex[Qt::Horizontal] = internalVertex(layout, Qt::AnchorLeft);
-    layoutCentralVertex[Qt::Horizontal] = nullptr;
-    layoutLastVertex[Qt::Horizontal] = internalVertex(layout, Qt::AnchorRight);
+    layoutFirstVertex[BobUI::Horizontal] = internalVertex(layout, BobUI::AnchorLeft);
+    layoutCentralVertex[BobUI::Horizontal] = nullptr;
+    layoutLastVertex[BobUI::Horizontal] = internalVertex(layout, BobUI::AnchorRight);
 
     // Vertical
     data = new AnchorData;
-    addAnchor_helper(layout, Qt::AnchorTop, layout,
-                     Qt::AnchorBottom, data);
+    addAnchor_helper(layout, BobUI::AnchorTop, layout,
+                     BobUI::AnchorBottom, data);
     data->maxSize = QWIDGETSIZE_MAX;
 
     // Save a reference to layout vertices
-    layoutFirstVertex[Qt::Vertical] = internalVertex(layout, Qt::AnchorTop);
-    layoutCentralVertex[Qt::Vertical] = nullptr;
-    layoutLastVertex[Qt::Vertical] = internalVertex(layout, Qt::AnchorBottom);
+    layoutFirstVertex[BobUI::Vertical] = internalVertex(layout, BobUI::AnchorTop);
+    layoutCentralVertex[BobUI::Vertical] = nullptr;
+    layoutLastVertex[BobUI::Vertical] = internalVertex(layout, BobUI::AnchorBottom);
 }
 
 void QGraphicsAnchorLayoutPrivate::deleteLayoutEdges()
 {
     Q_Q(QGraphicsAnchorLayout);
 
-    Q_ASSERT(!internalVertex(q, Qt::AnchorHorizontalCenter));
-    Q_ASSERT(!internalVertex(q, Qt::AnchorVerticalCenter));
+    Q_ASSERT(!internalVertex(q, BobUI::AnchorHorizontalCenter));
+    Q_ASSERT(!internalVertex(q, BobUI::AnchorVerticalCenter));
 
-    removeAnchor_helper(internalVertex(q, Qt::AnchorLeft),
-                        internalVertex(q, Qt::AnchorRight));
-    removeAnchor_helper(internalVertex(q, Qt::AnchorTop),
-                        internalVertex(q, Qt::AnchorBottom));
+    removeAnchor_helper(internalVertex(q, BobUI::AnchorLeft),
+                        internalVertex(q, BobUI::AnchorRight));
+    removeAnchor_helper(internalVertex(q, BobUI::AnchorTop),
+                        internalVertex(q, BobUI::AnchorBottom));
 }
 
 void QGraphicsAnchorLayoutPrivate::createItemEdges(QGraphicsLayoutItem *item)
@@ -1367,11 +1367,11 @@ void QGraphicsAnchorLayoutPrivate::createItemEdges(QGraphicsLayoutItem *item)
     // Create horizontal and vertical internal anchors for the item and
     // refresh its size hint / policy values.
     AnchorData *data = new AnchorData;
-    addAnchor_helper(item, Qt::AnchorLeft, item, Qt::AnchorRight, data);
+    addAnchor_helper(item, BobUI::AnchorLeft, item, BobUI::AnchorRight, data);
     data->refreshSizeHints();
 
     data = new AnchorData;
-    addAnchor_helper(item, Qt::AnchorTop, item, Qt::AnchorBottom, data);
+    addAnchor_helper(item, BobUI::AnchorTop, item, BobUI::AnchorBottom, data);
     data->refreshSizeHints();
 }
 
@@ -1387,17 +1387,17 @@ void QGraphicsAnchorLayoutPrivate::createItemEdges(QGraphicsLayoutItem *item)
   these anchors must have the same time at all times.
 */
 void QGraphicsAnchorLayoutPrivate::createCenterAnchors(
-    QGraphicsLayoutItem *item, Qt::AnchorPoint centerEdge)
+    QGraphicsLayoutItem *item, BobUI::AnchorPoint centerEdge)
 {
     Q_Q(QGraphicsAnchorLayout);
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     switch (centerEdge) {
-    case Qt::AnchorHorizontalCenter:
-        orientation = Qt::Horizontal;
+    case BobUI::AnchorHorizontalCenter:
+        orientation = BobUI::Horizontal;
         break;
-    case Qt::AnchorVerticalCenter:
-        orientation = Qt::Vertical;
+    case BobUI::AnchorVerticalCenter:
+        orientation = BobUI::Vertical;
         break;
     default:
         // Don't create center edges unless needed
@@ -1409,15 +1409,15 @@ void QGraphicsAnchorLayoutPrivate::createCenterAnchors(
         return;
 
     // Orientation code
-    Qt::AnchorPoint firstEdge;
-    Qt::AnchorPoint lastEdge;
+    BobUI::AnchorPoint firstEdge;
+    BobUI::AnchorPoint lastEdge;
 
-    if (orientation == Qt::Horizontal) {
-        firstEdge = Qt::AnchorLeft;
-        lastEdge = Qt::AnchorRight;
+    if (orientation == BobUI::Horizontal) {
+        firstEdge = BobUI::AnchorLeft;
+        lastEdge = BobUI::AnchorRight;
     } else {
-        firstEdge = Qt::AnchorTop;
-        lastEdge = Qt::AnchorBottom;
+        firstEdge = BobUI::AnchorTop;
+        lastEdge = BobUI::AnchorBottom;
     }
 
     AnchorVertex *first = internalVertex(item, firstEdge);
@@ -1452,18 +1452,18 @@ void QGraphicsAnchorLayoutPrivate::createCenterAnchors(
 }
 
 void QGraphicsAnchorLayoutPrivate::removeCenterAnchors(
-    QGraphicsLayoutItem *item, Qt::AnchorPoint centerEdge,
+    QGraphicsLayoutItem *item, BobUI::AnchorPoint centerEdge,
     bool substitute)
 {
     Q_Q(QGraphicsAnchorLayout);
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     switch (centerEdge) {
-    case Qt::AnchorHorizontalCenter:
-        orientation = Qt::Horizontal;
+    case BobUI::AnchorHorizontalCenter:
+        orientation = BobUI::Horizontal;
         break;
-    case Qt::AnchorVerticalCenter:
-        orientation = Qt::Vertical;
+    case BobUI::AnchorVerticalCenter:
+        orientation = BobUI::Vertical;
         break;
     default:
         // Don't remove edges that not the center ones
@@ -1471,15 +1471,15 @@ void QGraphicsAnchorLayoutPrivate::removeCenterAnchors(
     }
 
     // Orientation code
-    Qt::AnchorPoint firstEdge;
-    Qt::AnchorPoint lastEdge;
+    BobUI::AnchorPoint firstEdge;
+    BobUI::AnchorPoint lastEdge;
 
-    if (orientation == Qt::Horizontal) {
-        firstEdge = Qt::AnchorLeft;
-        lastEdge = Qt::AnchorRight;
+    if (orientation == BobUI::Horizontal) {
+        firstEdge = BobUI::AnchorLeft;
+        lastEdge = BobUI::AnchorRight;
     } else {
-        firstEdge = Qt::AnchorTop;
-        lastEdge = Qt::AnchorBottom;
+        firstEdge = BobUI::AnchorTop;
+        lastEdge = BobUI::AnchorBottom;
     }
 
     AnchorVertex *center = internalVertex(item, centerEdge);
@@ -1535,19 +1535,19 @@ void QGraphicsAnchorLayoutPrivate::removeCenterAnchors(
 
 
 void QGraphicsAnchorLayoutPrivate::removeCenterConstraints(QGraphicsLayoutItem *item,
-                                                           Qt::Orientation orientation)
+                                                           BobUI::Orientation orientation)
 {
     // Remove the item center constraints associated to this item
     // ### This is a temporary solution. We should probably use a better
     // data structure to hold items and/or their associated constraints
     // so that we can remove those easily
 
-    AnchorVertex *first = internalVertex(item, orientation == Qt::Horizontal ?
-                                       Qt::AnchorLeft :
-                                       Qt::AnchorTop);
-    AnchorVertex *center = internalVertex(item, orientation == Qt::Horizontal ?
-                                        Qt::AnchorHorizontalCenter :
-                                        Qt::AnchorVerticalCenter);
+    AnchorVertex *first = internalVertex(item, orientation == BobUI::Horizontal ?
+                                       BobUI::AnchorLeft :
+                                       BobUI::AnchorTop);
+    AnchorVertex *center = internalVertex(item, orientation == BobUI::Horizontal ?
+                                        BobUI::AnchorHorizontalCenter :
+                                        BobUI::AnchorVerticalCenter);
 
     // Skip if no center constraints exist
     if (!center)
@@ -1578,9 +1578,9 @@ void QGraphicsAnchorLayoutPrivate::removeCenterConstraints(QGraphicsLayoutItem *
  * set either by the layout style or through the "setSpacing" layout API.
  */
 QGraphicsAnchor *QGraphicsAnchorLayoutPrivate::addAnchor(QGraphicsLayoutItem *firstItem,
-                                                         Qt::AnchorPoint firstEdge,
+                                                         BobUI::AnchorPoint firstEdge,
                                                          QGraphicsLayoutItem *secondItem,
-                                                         Qt::AnchorPoint secondEdge,
+                                                         BobUI::AnchorPoint secondEdge,
                                                          qreal *spacing)
 {
     Q_Q(QGraphicsAnchorLayout);
@@ -1651,7 +1651,7 @@ QGraphicsAnchor *QGraphicsAnchorLayoutPrivate::addAnchor(QGraphicsLayoutItem *fi
         //  Right   ?       0       0
         if (firstItem == q
             || secondItem == q
-            || pickEdge(firstEdge, Qt::Horizontal) == Qt::AnchorHorizontalCenter
+            || pickEdge(firstEdge, BobUI::Horizontal) == BobUI::AnchorHorizontalCenter
             || oppositeEdge(firstEdge) != secondEdge) {
             graphicsAnchor->setSpacing(0);
         } else {
@@ -1672,14 +1672,14 @@ QGraphicsAnchor *QGraphicsAnchorLayoutPrivate::addAnchor(QGraphicsLayoutItem *fi
   the new one is inserted.
 */
 void QGraphicsAnchorLayoutPrivate::addAnchor_helper(QGraphicsLayoutItem *firstItem,
-                                                    Qt::AnchorPoint firstEdge,
+                                                    BobUI::AnchorPoint firstEdge,
                                                     QGraphicsLayoutItem *secondItem,
-                                                    Qt::AnchorPoint secondEdge,
+                                                    BobUI::AnchorPoint secondEdge,
                                                     AnchorData *data)
 {
     Q_Q(QGraphicsAnchorLayout);
 
-    const Qt::Orientation orientation = edgeOrientation(firstEdge);
+    const BobUI::Orientation orientation = edgeOrientation(firstEdge);
 
     // Create or increase the reference count for the related vertices.
     AnchorVertex *v1 = addInternalVertex(firstItem, firstEdge);
@@ -1694,14 +1694,14 @@ void QGraphicsAnchorLayoutPrivate::addAnchor_helper(QGraphicsLayoutItem *firstIt
     if (firstItem == secondItem)
         data->item = firstItem;
 
-    data->isVertical = orientation == Qt::Vertical;
+    data->isVertical = orientation == BobUI::Vertical;
 
     // Create a bi-directional edge in the sense it can be transversed both
     // from v1 or v2. "data" however is shared between the two references
     // so we still know that the anchor direction is from 1 to 2.
     data->from = v1;
     data->to = v2;
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     data->name = QString::fromLatin1("%1 --to--> %2").arg(v1->toString(), v2->toString());
 #endif
     // ### bit to track internal anchors, since inside AnchorData methods
@@ -1712,15 +1712,15 @@ void QGraphicsAnchorLayoutPrivate::addAnchor_helper(QGraphicsLayoutItem *firstIt
 }
 
 QGraphicsAnchor *QGraphicsAnchorLayoutPrivate::getAnchor(QGraphicsLayoutItem *firstItem,
-                                                         Qt::AnchorPoint firstEdge,
+                                                         BobUI::AnchorPoint firstEdge,
                                                          QGraphicsLayoutItem *secondItem,
-                                                         Qt::AnchorPoint secondEdge)
+                                                         BobUI::AnchorPoint secondEdge)
 {
     // Do not expose internal anchors
     if (firstItem == secondItem)
         return nullptr;
 
-    const Qt::Orientation orientation = edgeOrientation(firstEdge);
+    const BobUI::Orientation orientation = edgeOrientation(firstEdge);
     AnchorVertex *v1 = internalVertex(firstItem, firstEdge);
     AnchorVertex *v2 = internalVertex(secondItem, secondEdge);
 
@@ -1769,10 +1769,10 @@ void QGraphicsAnchorLayoutPrivate::removeAnchor(AnchorVertex *firstVertex,
     int refcount = -1;
 
     if (firstItem != q) {
-        for (int i = Qt::AnchorLeft; i <= Qt::AnchorBottom; ++i) {
-            v = m_vertexList.value(std::pair(firstItem, static_cast<Qt::AnchorPoint>(i)));
+        for (int i = BobUI::AnchorLeft; i <= BobUI::AnchorBottom; ++i) {
+            v = m_vertexList.value(std::pair(firstItem, static_cast<BobUI::AnchorPoint>(i)));
             if (v.first) {
-                if (i == Qt::AnchorHorizontalCenter || i == Qt::AnchorVerticalCenter)
+                if (i == BobUI::AnchorHorizontalCenter || i == BobUI::AnchorVerticalCenter)
                     refcount = 2;
                 else
                     refcount = 1;
@@ -1787,10 +1787,10 @@ void QGraphicsAnchorLayoutPrivate::removeAnchor(AnchorVertex *firstVertex,
         keepFirstItem = true;
 
     if (secondItem != q) {
-        for (int i = Qt::AnchorLeft; i <= Qt::AnchorBottom; ++i) {
-            v = m_vertexList.value(std::pair(secondItem, static_cast<Qt::AnchorPoint>(i)));
+        for (int i = BobUI::AnchorLeft; i <= BobUI::AnchorBottom; ++i) {
+            v = m_vertexList.value(std::pair(secondItem, static_cast<BobUI::AnchorPoint>(i)));
             if (v.first) {
-                if (i == Qt::AnchorHorizontalCenter || i == Qt::AnchorVerticalCenter)
+                if (i == BobUI::AnchorHorizontalCenter || i == BobUI::AnchorVerticalCenter)
                     refcount = 2;
                 else
                     refcount = 1;
@@ -1825,7 +1825,7 @@ void QGraphicsAnchorLayoutPrivate::removeAnchor_helper(AnchorVertex *v1, AnchorV
     Q_ASSERT(v1 && v2);
 
     // Remove edge from graph
-    const Qt::Orientation o = edgeOrientation(v1->m_edge);
+    const BobUI::Orientation o = edgeOrientation(v1->m_edge);
     graph[o].removeEdge(v1, v2);
 
     // Decrease vertices reference count (may trigger a deletion)
@@ -1834,9 +1834,9 @@ void QGraphicsAnchorLayoutPrivate::removeAnchor_helper(AnchorVertex *v1, AnchorV
 }
 
 AnchorVertex *QGraphicsAnchorLayoutPrivate::addInternalVertex(QGraphicsLayoutItem *item,
-                                                              Qt::AnchorPoint edge)
+                                                              BobUI::AnchorPoint edge)
 {
-    std::pair<QGraphicsLayoutItem *, Qt::AnchorPoint> pair(item, edge);
+    std::pair<QGraphicsLayoutItem *, BobUI::AnchorPoint> pair(item, edge);
     std::pair<AnchorVertex *, int> v = m_vertexList.value(pair);
 
     if (!v.first) {
@@ -1855,9 +1855,9 @@ AnchorVertex *QGraphicsAnchorLayoutPrivate::addInternalVertex(QGraphicsLayoutIte
  * returns 0 if it did not exist.
  */
 void QGraphicsAnchorLayoutPrivate::removeInternalVertex(QGraphicsLayoutItem *item,
-                                                        Qt::AnchorPoint edge)
+                                                        BobUI::AnchorPoint edge)
 {
-    std::pair<QGraphicsLayoutItem *, Qt::AnchorPoint> pair(item, edge);
+    std::pair<QGraphicsLayoutItem *, BobUI::AnchorPoint> pair(item, edge);
     std::pair<AnchorVertex *, int> v = m_vertexList.value(pair);
 
     if (!v.first) {
@@ -1875,14 +1875,14 @@ void QGraphicsAnchorLayoutPrivate::removeInternalVertex(QGraphicsLayoutItem *ite
         m_vertexList.insert(pair, v);
 
         if ((v.second == 2) &&
-            ((edge == Qt::AnchorHorizontalCenter) ||
-             (edge == Qt::AnchorVerticalCenter))) {
+            ((edge == BobUI::AnchorHorizontalCenter) ||
+             (edge == BobUI::AnchorVerticalCenter))) {
             removeCenterAnchors(item, edge, true);
         }
     }
 }
 
-void QGraphicsAnchorLayoutPrivate::removeVertex(QGraphicsLayoutItem *item, Qt::AnchorPoint edge)
+void QGraphicsAnchorLayoutPrivate::removeVertex(QGraphicsLayoutItem *item, BobUI::AnchorPoint edge)
 {
     if (AnchorVertex *v = internalVertex(item, edge)) {
         Graph<AnchorVertex, AnchorData> &g = graph[edgeOrientation(edge)];
@@ -1898,13 +1898,13 @@ void QGraphicsAnchorLayoutPrivate::removeVertex(QGraphicsLayoutItem *item, Qt::A
 void QGraphicsAnchorLayoutPrivate::removeAnchors(QGraphicsLayoutItem *item)
 {
     // remove the center anchor first!!
-    removeCenterAnchors(item, Qt::AnchorHorizontalCenter, false);
-    removeVertex(item, Qt::AnchorLeft);
-    removeVertex(item, Qt::AnchorRight);
+    removeCenterAnchors(item, BobUI::AnchorHorizontalCenter, false);
+    removeVertex(item, BobUI::AnchorLeft);
+    removeVertex(item, BobUI::AnchorRight);
 
-    removeCenterAnchors(item, Qt::AnchorVerticalCenter, false);
-    removeVertex(item, Qt::AnchorTop);
-    removeVertex(item, Qt::AnchorBottom);
+    removeCenterAnchors(item, BobUI::AnchorVerticalCenter, false);
+    removeVertex(item, BobUI::AnchorTop);
+    removeVertex(item, BobUI::AnchorBottom);
 }
 
 /*!
@@ -1932,9 +1932,9 @@ void QGraphicsAnchorLayoutPrivate::removeAnchors(QGraphicsLayoutItem *item)
   and Layout Right as another item's Left.
 */
 void QGraphicsAnchorLayoutPrivate::correctEdgeDirection(QGraphicsLayoutItem *&firstItem,
-                                                        Qt::AnchorPoint &firstEdge,
+                                                        BobUI::AnchorPoint &firstEdge,
                                                         QGraphicsLayoutItem *&secondItem,
-                                                        Qt::AnchorPoint &secondEdge)
+                                                        BobUI::AnchorPoint &secondEdge)
 {
     Q_Q(QGraphicsAnchorLayout);
 
@@ -1948,11 +1948,11 @@ void QGraphicsAnchorLayoutPrivate::correctEdgeDirection(QGraphicsLayoutItem *&fi
     } else if (firstItem == q) {
         // If connection involves the right or bottom of a layout, ensure
         // the layout is the second item.
-        if ((firstEdge == Qt::AnchorRight) || (firstEdge == Qt::AnchorBottom)) {
+        if ((firstEdge == BobUI::AnchorRight) || (firstEdge == BobUI::AnchorBottom)) {
             qSwap(firstItem, secondItem);
             qSwap(firstEdge, secondEdge);
         }
-    } else if ((secondEdge != Qt::AnchorRight) && (secondEdge != Qt::AnchorBottom)) {
+    } else if ((secondEdge != BobUI::AnchorRight) && (secondEdge != BobUI::AnchorBottom)) {
         // If connection involves the left, center or top of layout, ensure
         // the layout is the first item.
         qSwap(firstItem, secondItem);
@@ -1980,8 +1980,8 @@ QLayoutStyleInfo &QGraphicsAnchorLayoutPrivate::styleInfo() const
 
         QStyle *style = w ? w->style() : QApplication::style();
         cachedStyleInfo = QLayoutStyleInfo(style, wid);
-        cachedStyleInfo.setDefaultSpacing(Qt::Horizontal, spacings[Qt::Horizontal]);
-        cachedStyleInfo.setDefaultSpacing(Qt::Vertical, spacings[Qt::Vertical]);
+        cachedStyleInfo.setDefaultSpacing(BobUI::Horizontal, spacings[BobUI::Horizontal]);
+        cachedStyleInfo.setDefaultSpacing(BobUI::Vertical, spacings[BobUI::Vertical]);
 
         styleInfoDirty = false;
     }
@@ -1999,8 +1999,8 @@ void QGraphicsAnchorLayoutPrivate::calculateGraphs()
 {
     if (!calculateGraphCacheDirty)
         return;
-    calculateGraphs(Qt::Horizontal);
-    calculateGraphs(Qt::Vertical);
+    calculateGraphs(BobUI::Horizontal);
+    calculateGraphs(BobUI::Vertical);
     calculateGraphCacheDirty = false;
 }
 
@@ -2040,13 +2040,13 @@ QList<AnchorData *> getVariables(const QList<QSimplexConstraint *> &constraints)
     4) Once the root anchors had its sizes calculated, propagate that to the
        anchors they represent.
 */
-void QGraphicsAnchorLayoutPrivate::calculateGraphs(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::calculateGraphs(BobUI::Orientation orientation)
 {
-#if defined(QT_DEBUG) || defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_DEBUG) || defined(BOBUI_BUILD_INTERNAL)
     lastCalculationUsedSimplex[orientation] = false;
 #endif
 
-    static bool simplificationEnabled = qEnvironmentVariableIsEmpty("QT_ANCHORLAYOUT_NO_SIMPLIFICATION");
+    static bool simplificationEnabled = qEnvironmentVariableIsEmpty("BOBUI_ANCHORLAYOUT_NO_SIMPLIFICATION");
 
     // Reset the nominal sizes of each anchor based on the current item sizes
     refreshAllSizeHints(orientation);
@@ -2137,7 +2137,7 @@ static void shiftConstraints(const QList<QSimplexConstraint *> &constraints, qre
     Calculate the sizes for all anchors which are part of the trunk. This works
     on top of a (possibly) simplified graph.
 */
-bool QGraphicsAnchorLayoutPrivate::calculateTrunk(Qt::Orientation orientation, const GraphPath &path,
+bool QGraphicsAnchorLayoutPrivate::calculateTrunk(BobUI::Orientation orientation, const GraphPath &path,
                                                   const QList<QSimplexConstraint *> &constraints,
                                                   const QList<AnchorData *> &variables)
 {
@@ -2146,7 +2146,7 @@ bool QGraphicsAnchorLayoutPrivate::calculateTrunk(Qt::Orientation orientation, c
 
 #if 0
     qDebug("Simplex %s for trunk of %s", needsSimplex ? "used" : "NOT used",
-           orientation == Qt::Horizontal ? "Horizontal" : "Vertical");
+           orientation == BobUI::Horizontal ? "Horizontal" : "Vertical");
 #endif
 
     if (needsSimplex) {
@@ -2171,9 +2171,9 @@ bool QGraphicsAnchorLayoutPrivate::calculateTrunk(Qt::Orientation orientation, c
             for (const AnchorData *ad : path.negatives)
                 pref -= ad->sizeAtPreferred;
 
-            sizeHints[orientation][Qt::MinimumSize] = min;
-            sizeHints[orientation][Qt::PreferredSize] = pref;
-            sizeHints[orientation][Qt::MaximumSize] = max;
+            sizeHints[orientation][BobUI::MinimumSize] = min;
+            sizeHints[orientation][BobUI::PreferredSize] = pref;
+            sizeHints[orientation][BobUI::MaximumSize] = max;
         }
 
         qDeleteAll(sizeHintConstraints);
@@ -2190,12 +2190,12 @@ bool QGraphicsAnchorLayoutPrivate::calculateTrunk(Qt::Orientation orientation, c
         ad->sizeAtPreferred = ad->prefSize;
         ad->sizeAtMaximum = ad->maxSize;
 
-        sizeHints[orientation][Qt::MinimumSize] = ad->sizeAtMinimum;
-        sizeHints[orientation][Qt::PreferredSize] = ad->sizeAtPreferred;
-        sizeHints[orientation][Qt::MaximumSize] = ad->sizeAtMaximum;
+        sizeHints[orientation][BobUI::MinimumSize] = ad->sizeAtMinimum;
+        sizeHints[orientation][BobUI::PreferredSize] = ad->sizeAtPreferred;
+        sizeHints[orientation][BobUI::MaximumSize] = ad->sizeAtMaximum;
     }
 
-#if defined(QT_DEBUG) || defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_DEBUG) || defined(BOBUI_BUILD_INTERNAL)
     lastCalculationUsedSimplex[orientation] = needsSimplex;
 #endif
 
@@ -2232,7 +2232,7 @@ bool QGraphicsAnchorLayoutPrivate::calculateNonTrunk(const QList<QSimplexConstra
     Traverse the graph refreshing the size hints. Edges will query their associated
     item or graphicsAnchor for their size hints.
 */
-void QGraphicsAnchorLayoutPrivate::refreshAllSizeHints(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::refreshAllSizeHints(BobUI::Orientation orientation)
 {
     Graph<AnchorVertex, AnchorData> &g = graph[orientation];
     QList<std::pair<AnchorVertex *, AnchorVertex *>> vertices = g.connections();
@@ -2254,7 +2254,7 @@ void QGraphicsAnchorLayoutPrivate::refreshAllSizeHints(Qt::Orientation orientati
 
   The list of paths is used later to generate a list of constraints.
  */
-void QGraphicsAnchorLayoutPrivate::findPaths(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::findPaths(BobUI::Orientation orientation)
 {
     QQueue<std::pair<AnchorVertex *, AnchorVertex *> > queue;
 
@@ -2306,7 +2306,7 @@ void QGraphicsAnchorLayoutPrivate::findPaths(Qt::Orientation orientation)
   the constraints and store them in a list so they can be used later
   by the Simplex solver.
 */
-void QGraphicsAnchorLayoutPrivate::constraintsFromPaths(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::constraintsFromPaths(BobUI::Orientation orientation)
 {
     const auto vertices = graphPaths[orientation].uniqueKeys();
     for (AnchorVertex *vertex : vertices) {
@@ -2325,7 +2325,7 @@ void QGraphicsAnchorLayoutPrivate::constraintsFromPaths(Qt::Orientation orientat
 /*!
   \internal
 */
-void QGraphicsAnchorLayoutPrivate::updateAnchorSizes(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::updateAnchorSizes(BobUI::Orientation orientation)
 {
     Graph<AnchorVertex, AnchorData> &g = graph[orientation];
     const QList<std::pair<AnchorVertex *, AnchorVertex *>> &vertices = g.connections();
@@ -2350,7 +2350,7 @@ QList<QSimplexConstraint *> QGraphicsAnchorLayoutPrivate::constraintsFromSizeHin
 
     // Look for the layout edge. That can be either the first half in case the
     // layout is split in two, or the whole layout anchor.
-    const Qt::Orientation orient = anchors.first()->isVertical ? Qt::Vertical : Qt::Horizontal;
+    const BobUI::Orientation orient = anchors.first()->isVertical ? BobUI::Vertical : BobUI::Horizontal;
     AnchorData *layoutEdge = nullptr;
     if (layoutCentralVertex[orient]) {
         layoutEdge = graph[orient].edgeData(layoutFirstVertex[orient], layoutCentralVertex[orient]);
@@ -2437,7 +2437,7 @@ QList<QSimplexConstraint *> QGraphicsAnchorLayoutPrivate::constraintsFromSizeHin
   \internal
 */
 QGraphicsAnchorLayoutPrivate::GraphParts
-QGraphicsAnchorLayoutPrivate::getGraphParts(Qt::Orientation orientation)
+QGraphicsAnchorLayoutPrivate::getGraphParts(BobUI::Orientation orientation)
 {
     GraphParts result;
 
@@ -2514,7 +2514,7 @@ QGraphicsAnchorLayoutPrivate::getGraphParts(Qt::Orientation orientation)
 
   Use all visited Anchors on findPaths() so we can identify non-float Items.
 */
-void QGraphicsAnchorLayoutPrivate::identifyFloatItems(const QSet<AnchorData *> &visited, Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::identifyFloatItems(const QSet<AnchorData *> &visited, BobUI::Orientation orientation)
 {
     QSet<QGraphicsLayoutItem *> nonFloating;
 
@@ -2573,8 +2573,8 @@ void QGraphicsAnchorLayoutPrivate::setItemsGeometries(const QRectF &geom)
     qreal right;
 
     q->getContentsMargins(&left, &top, &right, nullptr);
-    const Qt::LayoutDirection visualDir = visualDirection();
-    if (visualDir == Qt::RightToLeft)
+    const BobUI::LayoutDirection visualDir = visualDirection();
+    if (visualDir == BobUI::RightToLeft)
         qSwap(left, right);
 
     left += geom.left();
@@ -2583,15 +2583,15 @@ void QGraphicsAnchorLayoutPrivate::setItemsGeometries(const QRectF &geom)
 
     for (QGraphicsLayoutItem *item : std::as_const(items)) {
         QRectF newGeom;
-        QSizeF itemPreferredSize = item->effectiveSizeHint(Qt::PreferredSize);
-        if (m_floatItems[Qt::Horizontal].contains(item)) {
+        QSizeF itemPreferredSize = item->effectiveSizeHint(BobUI::PreferredSize);
+        if (m_floatItems[BobUI::Horizontal].contains(item)) {
             newGeom.setLeft(0);
             newGeom.setRight(itemPreferredSize.width());
         } else {
-            firstH = internalVertex(item, Qt::AnchorLeft);
-            secondH = internalVertex(item, Qt::AnchorRight);
+            firstH = internalVertex(item, BobUI::AnchorLeft);
+            secondH = internalVertex(item, BobUI::AnchorRight);
 
-            if (visualDir == Qt::LeftToRight) {
+            if (visualDir == BobUI::LeftToRight) {
                 newGeom.setLeft(left + firstH->distance);
                 newGeom.setRight(left + secondH->distance);
             } else {
@@ -2600,12 +2600,12 @@ void QGraphicsAnchorLayoutPrivate::setItemsGeometries(const QRectF &geom)
             }
         }
 
-        if (m_floatItems[Qt::Vertical].contains(item)) {
+        if (m_floatItems[BobUI::Vertical].contains(item)) {
             newGeom.setTop(0);
             newGeom.setBottom(itemPreferredSize.height());
         } else {
-            firstV = internalVertex(item, Qt::AnchorTop);
-            secondV = internalVertex(item, Qt::AnchorBottom);
+            firstV = internalVertex(item, BobUI::AnchorTop);
+            secondV = internalVertex(item, BobUI::AnchorBottom);
 
             newGeom.setTop(top + firstV->distance);
             newGeom.setBottom(top + secondV->distance);
@@ -2621,7 +2621,7 @@ void QGraphicsAnchorLayoutPrivate::setItemsGeometries(const QRectF &geom)
   Calculate the position of each vertex based on the paths to each of
   them as well as the current edges sizes.
 */
-void QGraphicsAnchorLayoutPrivate::calculateVertexPositions(Qt::Orientation orientation)
+void QGraphicsAnchorLayoutPrivate::calculateVertexPositions(BobUI::Orientation orientation)
 {
     QQueue<std::pair<AnchorVertex *, AnchorVertex *> > queue;
     QSet<AnchorVertex *> visited;
@@ -2667,20 +2667,20 @@ void QGraphicsAnchorLayoutPrivate::calculateVertexPositions(Qt::Orientation orie
   the edges.
 */
 void QGraphicsAnchorLayoutPrivate::setupEdgesInterpolation(
-    Qt::Orientation orientation)
+    BobUI::Orientation orientation)
 {
     Q_Q(QGraphicsAnchorLayout);
 
     qreal current;
-    current = (orientation == Qt::Horizontal) ? q->contentsRect().width() : q->contentsRect().height();
+    current = (orientation == BobUI::Horizontal) ? q->contentsRect().width() : q->contentsRect().height();
 
     std::pair<Interval, qreal> result;
     result = getFactor(current,
-                       sizeHints[orientation][Qt::MinimumSize],
-                       sizeHints[orientation][Qt::PreferredSize],
-                       sizeHints[orientation][Qt::PreferredSize],
-                       sizeHints[orientation][Qt::PreferredSize],
-                       sizeHints[orientation][Qt::MaximumSize]);
+                       sizeHints[orientation][BobUI::MinimumSize],
+                       sizeHints[orientation][BobUI::PreferredSize],
+                       sizeHints[orientation][BobUI::PreferredSize],
+                       sizeHints[orientation][BobUI::PreferredSize],
+                       sizeHints[orientation][BobUI::MaximumSize]);
 
     interpolationInterval[orientation] = result.first;
     interpolationProgress[orientation] = result.second;
@@ -2703,7 +2703,7 @@ void QGraphicsAnchorLayoutPrivate::setupEdgesInterpolation(
 */
 void QGraphicsAnchorLayoutPrivate::interpolateEdge(AnchorVertex *base, AnchorData *edge)
 {
-    const Qt::Orientation orientation = edge->isVertical ? Qt::Vertical : Qt::Horizontal;
+    const BobUI::Orientation orientation = edge->isVertical ? BobUI::Vertical : BobUI::Horizontal;
     const std::pair<Interval, qreal> factor(interpolationInterval[orientation],
                                             interpolationProgress[orientation]);
 
@@ -2902,12 +2902,12 @@ bool QGraphicsAnchorLayoutPrivate::hasConflicts() const
     QGraphicsAnchorLayoutPrivate *that = const_cast<QGraphicsAnchorLayoutPrivate*>(this);
     that->calculateGraphs();
 
-    bool floatConflict = !m_floatItems[Qt::Horizontal].isEmpty() || !m_floatItems[Qt::Vertical].isEmpty();
+    bool floatConflict = !m_floatItems[BobUI::Horizontal].isEmpty() || !m_floatItems[BobUI::Vertical].isEmpty();
 
-    return graphHasConflicts[Qt::Horizontal] || graphHasConflicts[Qt::Vertical] || floatConflict;
+    return graphHasConflicts[BobUI::Horizontal] || graphHasConflicts[BobUI::Vertical] || floatConflict;
 }
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
 void QGraphicsAnchorLayoutPrivate::dumpGraph(const QString &name)
 {
     QFile file(QString::fromLatin1("anchorlayout.%1.dot").arg(name));
@@ -2915,12 +2915,12 @@ void QGraphicsAnchorLayoutPrivate::dumpGraph(const QString &name)
         qWarning("Could not write to %ls", qUtf16Printable(file.fileName()));
 
     QString str = QString::fromLatin1("digraph anchorlayout {\nnode [shape=\"rect\"]\n%1}");
-    QString dotContents = graph[Qt::Horizontal].serializeToDot();
-    dotContents += graph[Qt::Vertical].serializeToDot();
+    QString dotContents = graph[BobUI::Horizontal].serializeToDot();
+    dotContents += graph[BobUI::Vertical].serializeToDot();
     file.write(str.arg(dotContents).toLocal8Bit());
 
     file.close();
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

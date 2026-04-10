@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qhttpsocketengine_p.h"
-#include "qtcpsocket.h"
+#include "bobuicpsocket.h"
 #include "qhostaddress.h"
 #include "qurl.h"
 #include "private/qhttpnetworkreply_p.h"
@@ -11,12 +11,12 @@
 #include "qdeadlinetimer.h"
 #include "qnetworkinterface.h"
 
-#if !defined(QT_NO_NETWORKPROXY)
+#if !defined(BOBUI_NO_NETWORKPROXY)
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #define DEBUG
 
@@ -37,7 +37,7 @@ bool QHttpSocketEngine::initialize(QAbstractSocket::SocketType type, QAbstractSo
 
     setProtocol(protocol);
     setSocketType(type);
-    d->socket = new QTcpSocket(this);
+    d->socket = new BOBUIcpSocket(this);
     d->reply = new QHttpNetworkReply(QUrl(), this);
 
     // Explicitly disable proxying on the proxy socket itself to avoid
@@ -47,22 +47,22 @@ bool QHttpSocketEngine::initialize(QAbstractSocket::SocketType type, QAbstractSo
     // Intercept all the signals.
     connect(d->socket, SIGNAL(connected()),
             this, SLOT(slotSocketConnected()),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
     connect(d->socket, SIGNAL(disconnected()),
             this, SLOT(slotSocketDisconnected()),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
     connect(d->socket, SIGNAL(readyRead()),
             this, SLOT(slotSocketReadNotification()),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
     connect(d->socket, SIGNAL(bytesWritten(qint64)),
             this, SLOT(slotSocketBytesWritten()),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
     connect(d->socket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),
             this, SLOT(slotSocketError(QAbstractSocket::SocketError)),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
     connect(d->socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SLOT(slotSocketStateChanged(QAbstractSocket::SocketState)),
-            Qt::DirectConnection);
+            BobUI::DirectConnection);
 
     return true;
 }
@@ -216,8 +216,8 @@ qint64 QHttpSocketEngine::write(const char *data, qint64 len)
     return d->socket->write(data, len);
 }
 
-#ifndef QT_NO_UDPSOCKET
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_UDPSOCKET
+#ifndef BOBUI_NO_NETWORKINTERFACE
 bool QHttpSocketEngine::joinMulticastGroup(const QHostAddress &,
                                            const QNetworkInterface &)
 {
@@ -245,7 +245,7 @@ bool QHttpSocketEngine::setMulticastInterface(const QNetworkInterface &)
     setError(QAbstractSocket::UnsupportedSocketOperationError, "Unsupported socket operation"_L1);
     return false;
 }
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 bool QHttpSocketEngine::hasPendingDatagrams() const
 {
@@ -258,7 +258,7 @@ qint64 QHttpSocketEngine::pendingDatagramSize() const
     qWarning("Operation is not supported");
     return -1;
 }
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
 qint64 QHttpSocketEngine::readDatagram(char *, qint64, QIpPacketHeader *, PacketHeaderOptions)
 {
@@ -437,7 +437,7 @@ void QHttpSocketEngine::setWriteNotificationEnabled(bool enable)
     Q_D(QHttpSocketEngine);
     d->writeNotificationEnabled = enable;
     if (enable && d->state == Connected && d->socket->state() == QAbstractSocket::ConnectedState)
-        QMetaObject::invokeMethod(this, "writeNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "writeNotification", BobUI::QueuedConnection);
 }
 
 bool QHttpSocketEngine::isExceptionNotificationEnabled() const
@@ -598,9 +598,9 @@ void QHttpSocketEngine::slotSocketReadNotification()
         // from http spec is also allowed.
         if (proxyConnectionHeader.isEmpty())
             proxyConnectionHeader = d->reply->headerField("Connection");
-        if (proxyConnectionHeader.compare("close", Qt::CaseInsensitive) == 0) {
+        if (proxyConnectionHeader.compare("close", BobUI::CaseInsensitive) == 0) {
             willClose = true;
-        } else if (proxyConnectionHeader.compare("keep-alive", Qt::CaseInsensitive) == 0) {
+        } else if (proxyConnectionHeader.compare("keep-alive", BobUI::CaseInsensitive) == 0) {
             willClose = false;
         } else {
             // no Proxy-Connection header, so use the default
@@ -766,7 +766,7 @@ void QHttpSocketEngine::emitReadNotification()
     // hurt in other cases.
     if ((d->readNotificationEnabled && !d->readNotificationPending) || d->connectionNotificationPending) {
         d->readNotificationPending = true;
-        QMetaObject::invokeMethod(this, "emitPendingReadNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "emitPendingReadNotification", BobUI::QueuedConnection);
     }
 }
 
@@ -775,7 +775,7 @@ void QHttpSocketEngine::emitWriteNotification()
     Q_D(QHttpSocketEngine);
     if (d->writeNotificationEnabled && !d->writeNotificationPending) {
         d->writeNotificationPending = true;
-        QMetaObject::invokeMethod(this, "emitPendingWriteNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "emitPendingWriteNotification", BobUI::QueuedConnection);
     }
 }
 
@@ -784,7 +784,7 @@ void QHttpSocketEngine::emitConnectionNotification()
     Q_D(QHttpSocketEngine);
     if (!d->connectionNotificationPending) {
         d->connectionNotificationPending = true;
-        QMetaObject::invokeMethod(this, "emitPendingConnectionNotification", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "emitPendingConnectionNotification", BobUI::QueuedConnection);
     }
 }
 
@@ -832,8 +832,8 @@ QAbstractSocketEngine *QHttpSocketEngineHandler::createSocketEngine(qintptr, QOb
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // !QT_NO_NETWORKPROXY
+#endif // !BOBUI_NO_NETWORKPROXY
 
 #include "moc_qhttpsocketengine_p.cpp"

@@ -29,9 +29,9 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTextEdit" name="textEdit">
+      <widget class="BOBUIextEdit" name="textEdit">
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::NoFocus</enum>
+        <enum>BobUI::FocusPolicy::NoFocus</enum>
        </property>
        <property name="readOnly">
         <bool>true</bool>
@@ -47,7 +47,7 @@
         </size>
        </property>
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::NoFocus</enum>
+        <enum>BobUI::FocusPolicy::NoFocus</enum>
        </property>
       </widget>
      </item>

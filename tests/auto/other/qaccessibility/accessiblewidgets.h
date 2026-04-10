@@ -1,27 +1,27 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #ifndef ACCESSIBLEWIDGETS_H
 #define ACCESSIBLEWIDGETS_H
 
-#include <QtWidgets/qaccessiblewidget.h>
-#include <QtWidgets/qpushbutton.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
+#include <BobUIWidgets/qpushbutton.h>
 
-class QtTestAccessibleWidget: public QWidget
+class BobUITestAccessibleWidget: public QWidget
 {
     Q_OBJECT
 public:
-    QtTestAccessibleWidget(QWidget *parent, const char *name): QWidget(parent)
+    BobUITestAccessibleWidget(QWidget *parent, const char *name): QWidget(parent)
     {
         setObjectName(name);
     }
 };
 
-class QtTestAccessibleWidgetIface: public QAccessibleWidgetV2
+class BobUITestAccessibleWidgetIface: public QAccessibleWidgetV2
 {
 public:
-    QtTestAccessibleWidgetIface(QtTestAccessibleWidget *w): QAccessibleWidgetV2(w) {}
+    BobUITestAccessibleWidgetIface(BobUITestAccessibleWidget *w): QAccessibleWidgetV2(w) {}
     QString text(QAccessible::Text t) const override
     {
         if (t == QAccessible::Help)
@@ -30,17 +30,17 @@ public:
     }
     static QAccessibleInterface *ifaceFactory(const QString &key, QObject *o)
     {
-        if (key == "QtTestAccessibleWidget")
-            return new QtTestAccessibleWidgetIface(static_cast<QtTestAccessibleWidget*>(o));
+        if (key == "BobUITestAccessibleWidget")
+            return new BobUITestAccessibleWidgetIface(static_cast<BobUITestAccessibleWidget*>(o));
         return 0;
     }
 };
 
-class QtTestAccessibleWidgetSubclass: public QtTestAccessibleWidget
+class BobUITestAccessibleWidgetSubclass: public BobUITestAccessibleWidget
 {
     Q_OBJECT
 public:
-    QtTestAccessibleWidgetSubclass(QWidget *parent, const char *name): QtTestAccessibleWidget(parent, name)
+    BobUITestAccessibleWidgetSubclass(QWidget *parent, const char *name): BobUITestAccessibleWidget(parent, name)
     {}
 };
 

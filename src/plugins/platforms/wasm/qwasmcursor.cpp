@@ -1,19 +1,19 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmcursor.h"
 #include "qwasmscreen.h"
 #include "qwasmwindow.h"
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qwindow.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qwindow.h>
 
 #include <emscripten/emscripten.h>
 #include <emscripten/bind.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 using namespace emscripten;
 
 namespace {
@@ -21,51 +21,51 @@ QByteArray cursorToCss(const QCursor *cursor)
 {
     auto shape = cursor->shape();
     switch (shape) {
-    case Qt::ArrowCursor:
+    case BobUI::ArrowCursor:
         return "default";
-    case Qt::UpArrowCursor:
+    case BobUI::UpArrowCursor:
         return "n-resize";
-    case Qt::CrossCursor:
+    case BobUI::CrossCursor:
         return "crosshair";
-    case Qt::WaitCursor:
+    case BobUI::WaitCursor:
         return "wait";
-    case Qt::IBeamCursor:
+    case BobUI::IBeamCursor:
         return "text";
-    case Qt::SizeVerCursor:
+    case BobUI::SizeVerCursor:
         return "ns-resize";
-    case Qt::SizeHorCursor:
+    case BobUI::SizeHorCursor:
         return "ew-resize";
-    case Qt::SizeBDiagCursor:
+    case BobUI::SizeBDiagCursor:
         return "nesw-resize";
-    case Qt::SizeFDiagCursor:
+    case BobUI::SizeFDiagCursor:
         return "nwse-resize";
-    case Qt::SizeAllCursor:
+    case BobUI::SizeAllCursor:
         return "move";
-    case Qt::BlankCursor:
+    case BobUI::BlankCursor:
         return "none";
-    case Qt::SplitVCursor:
+    case BobUI::SplitVCursor:
         return "row-resize";
-    case Qt::SplitHCursor:
+    case BobUI::SplitHCursor:
         return "col-resize";
-    case Qt::PointingHandCursor:
+    case BobUI::PointingHandCursor:
         return "pointer";
-    case Qt::ForbiddenCursor:
+    case BobUI::ForbiddenCursor:
         return "not-allowed";
-    case Qt::WhatsThisCursor:
+    case BobUI::WhatsThisCursor:
         return "help";
-    case Qt::BusyCursor:
+    case BobUI::BusyCursor:
         return "progress";
-    case Qt::OpenHandCursor:
+    case BobUI::OpenHandCursor:
         return "grab";
-    case Qt::ClosedHandCursor:
+    case BobUI::ClosedHandCursor:
         return "grabbing";
-    case Qt::DragCopyCursor:
+    case BobUI::DragCopyCursor:
         return "copy";
-    case Qt::DragMoveCursor:
+    case BobUI::DragMoveCursor:
         return "default";
-    case Qt::DragLinkCursor:
+    case BobUI::DragLinkCursor:
         return "alias";
-    case Qt::BitmapCursor: {
+    case BobUI::BitmapCursor: {
         auto pixmap = cursor->pixmap();
         QByteArray cursorAsPng;
         QBuffer buffer(&cursorAsPng);
@@ -82,7 +82,7 @@ QByteArray cursorToCss(const QCursor *cursor)
         return encodedCursor.toUtf8();
         }
     default:
-        static_assert(Qt::CustomCursor == 25,
+        static_assert(BobUI::CustomCursor == 25,
                       "New cursor type added, handle it");
         qWarning() << "QWasmCursor: " << shape << " unsupported";
         return "default";
@@ -98,4 +98,4 @@ void QWasmCursor::changeCursor(QCursor *windowCursor, QWindow *window)
         wasmWindow->setWindowCursor(windowCursor ? cursorToCss(windowCursor) : "default");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

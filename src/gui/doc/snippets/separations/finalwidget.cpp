@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
 finalwidget.cpp
@@ -40,7 +40,7 @@ FinalWidget::FinalWidget(QWidget *parent, const QString &name,
 
 void FinalWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (!(event->buttons() & Qt::LeftButton))
+    if (!(event->buttons() & BobUI::LeftButton))
         return;
     if ((event->pos() - dragStartPosition).manhattanLength()
          < QApplication::startDragDistance())
@@ -64,7 +64,7 @@ void FinalWidget::mouseMoveEvent(QMouseEvent *event)
 //! [1]
 */
     drag->setMimeData(mimeData);
-    drag->setPixmap(imageLabel->pixmap().scaled(64, 64, Qt::KeepAspectRatio));
+    drag->setPixmap(imageLabel->pixmap().scaled(64, 64, BobUI::KeepAspectRatio));
 //! [2]
     drag->setHotSpot(QPoint(drag->pixmap().width()/2,
                             drag->pixmap().height()));
@@ -77,7 +77,7 @@ void FinalWidget::mouseMoveEvent(QMouseEvent *event)
 
 void FinalWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (event->button() == BobUI::LeftButton)
         dragStartPosition = event->pos();
 }
 

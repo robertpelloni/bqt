@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLKEY_H
 #define QSSLKEY_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qshareddata.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUINetwork/qssl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 class QIODevice;
 
@@ -32,7 +32,7 @@ public:
             QSsl::EncodingFormat format = QSsl::Pem,
             QSsl::KeyType type = QSsl::PrivateKey,
             const QByteArray &passPhrase = QByteArray());
-    explicit QSslKey(Qt::HANDLE handle, QSsl::KeyType type = QSsl::PrivateKey);
+    explicit QSslKey(BobUI::HANDLE handle, QSsl::KeyType type = QSsl::PrivateKey);
     QSslKey(const QSslKey &other);
     QSslKey(QSslKey &&other) noexcept;
     QSslKey &operator=(QSslKey &&other) noexcept;
@@ -49,28 +49,28 @@ public:
     QSsl::KeyAlgorithm algorithm() const;
 
     QByteArray toPem(const QByteArray &passPhrase = QByteArray()) const;
-    // ### Qt 7: drop passPhrase
+    // ### BobUI 7: drop passPhrase
     QByteArray toDer(const QByteArray &passPhrase = QByteArray()) const;
 
-    Qt::HANDLE handle() const;
+    BobUI::HANDLE handle() const;
 
     bool operator==(const QSslKey &key) const;
     inline bool operator!=(const QSslKey &key) const { return !operator==(key); }
 
 private:
     QExplicitlySharedDataPointer<QSslKeyPrivate> d;
-    friend class QTlsBackend;
+    friend class BOBUIlsBackend;
 };
 
 Q_DECLARE_SHARED(QSslKey)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QSslKey &key);
 #endif
 
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

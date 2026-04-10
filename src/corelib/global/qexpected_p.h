@@ -23,7 +23,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -34,10 +34,10 @@
 #define Q23_TL_EXPECTED_VERSION_MINOR 1
 #define Q23_TL_EXPECTED_VERSION_PATCH 0
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/qassert.h>
-#include <QtCore/qtconfiginclude.h>
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/qassert.h>
+#include <BobUICore/bobuiconfiginclude.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #include <exception>
 #include <functional>
@@ -50,7 +50,7 @@
 #define Q23_TL_EXPECTED_EXCEPTIONS_ENABLED
 #endif
 
-#if defined(Q23_TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(QT_NO_EXCEPTIONS)
+#if defined(Q23_TL_EXPECTED_EXCEPTIONS_ENABLED) && defined(BOBUI_NO_EXCEPTIONS)
 #  undef Q23_TL_EXPECTED_EXCEPTIONS_ENABLED
 #endif
 
@@ -106,7 +106,7 @@
 #elif (defined(__GNUC__) && __GNUC__ < 8 && !defined(__clang__))
 #ifndef Q23_TL_GCC_LESS_8_TRIVIALLY_COPY_CONSTRUCTIBLE_MUTEX
 #define Q23_TL_GCC_LESS_8_TRIVIALLY_COPY_CONSTRUCTIBLE_MUTEX
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace q23 {
 namespace detail {
 template <class T>
@@ -118,7 +118,7 @@ struct is_trivially_copy_constructible<std::vector<T, A>> : std::false_type {};
 #endif
 } // namespace detail
 } // namespace q23
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
 #define Q23_TL_EXPECTED_IS_TRIVIALLY_COPY_CONSTRUCTIBLE(T)                         \
@@ -159,7 +159,7 @@ QT_END_NAMESPACE
 #define Q23_TL_EXPECTED_11_CONSTEXPR constexpr
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace q23 {
 template <class T, class E> class expected;
 
@@ -2503,6 +2503,6 @@ void swap(expected<T, E> &lhs,
   lhs.swap(rhs);
 }
 } // namespace q23
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

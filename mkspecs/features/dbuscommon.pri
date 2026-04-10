@@ -2,7 +2,7 @@
 #  W A R N I N G
 #  -------------
 #
-# This file is not part of the Qt API.  It exists purely as an
+# This file is not part of the BobUI API.  It exists purely as an
 # implementation detail.  It may change from version to version
 # without notice, or even be removed.
 #
@@ -10,7 +10,7 @@
 #
 
 load(moc)
-qtPrepareTool(QMAKE_QDBUSXML2CPP, qdbusxml2cpp)
+bobuiPrepareTool(QMAKE_QDBUSXML2CPP, qdbusxml2cpp)
 
 defineReplace(qdbusOutputBasename) {
     return($$lower($$section($$list($$basename(1)),.,-2,-2)))

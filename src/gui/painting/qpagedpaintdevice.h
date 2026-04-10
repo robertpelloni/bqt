@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAGEDPAINTDEVICE_H
 #define QPAGEDPAINTDEVICE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpagelayout.h>
-#include <QtGui/qpageranges.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpagelayout.h>
+#include <BobUIGui/qpageranges.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if defined(B0)
 #undef B0 // Terminal hang-up.  We assume that you do not want that.
@@ -48,6 +48,6 @@ protected:
     QPagedPaintDevicePrivate *d;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

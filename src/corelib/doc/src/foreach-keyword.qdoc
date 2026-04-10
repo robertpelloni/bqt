@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page foreach-keyword.html
-    \title Qt's foreach Keyword
+    \title BobUI's foreach Keyword
     \ingroup groups
-    \ingroup qt-basic-concepts
+    \ingroup bobui-basic-concepts
 
-    \brief Qt's foreach keyword.
+    \brief BobUI's foreach keyword.
 
     \target foreach-keyword
     \section1 The foreach Keyword
@@ -15,7 +15,7 @@
     \note The foreach keyword was introduced before the C++11 range-based loops
     existed. New code should prefer C++11 range-based loops.
 
-    The \c foreach keyword is a Qt-specific addition to the C++ language,
+    The \c foreach keyword is a BobUI-specific addition to the C++ language,
     and is implemented using the preprocessor.
 
     Its syntax is: \c foreach (\e variable, \e container) \e
@@ -54,7 +54,7 @@
 
     \snippet code/doc_src_containers.cpp 20
 
-    Qt automatically takes a copy of the container when it enters a
+    BobUI automatically takes a copy of the container when it enters a
     \c foreach loop. If you modify the container as you are
     iterating, that won't affect the loop. (If you do not modify the
     container, the copy still takes place, but thanks to \l{implicit
@@ -65,24 +65,24 @@
     container. It only affects the copy, which is probably not what you
     want.
 
-    An alternative to Qt's \c foreach loop is the range-based \c for that is
+    An alternative to BobUI's \c foreach loop is the range-based \c for that is
     part of C++11 and newer. However, keep in mind that the range-based
-    \c for might force a Qt container to \l{Implicit Sharing}{detach}, whereas
+    \c for might force a BobUI container to \l{Implicit Sharing}{detach}, whereas
     \c foreach would not. But using \c foreach always copies the container,
     which is usually not cheap for STL containers. If in doubt, prefer
-    \c foreach for Qt containers, and range based \c for for STL ones.
+    \c foreach for BobUI containers, and range based \c for for STL ones.
 
-    You can remove the availability of the Qt's \c foreach loop by
-    defining the \c{QT_NO_FOREACH} macro.
+    You can remove the availability of the BobUI's \c foreach loop by
+    defining the \c{BOBUI_NO_FOREACH} macro.
 */
 
 /*!
-    \macro QT_NO_FOREACH
+    \macro BOBUI_NO_FOREACH
     \since 6.0
-    \relates <QtGlobal>
+    \relates <BobUIGlobal>
 
-    Defining this macro removes the availability of Qt's \c foreach
+    Defining this macro removes the availability of BobUI's \c foreach
     loop.
 
-    \sa QT_NO_KEYWORDS
+    \sa BOBUI_NO_KEYWORDS
 */

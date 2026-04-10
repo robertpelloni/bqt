@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "chatdialog.h"
 
-#include <QTimer>
+#include <BOBUIimer>
 #include <QScrollBar>
 #include <QLineEdit>
-#include <QTextTable>
+#include <BOBUIextTable>
 #include <QMessageBox>
 
 ChatDialog::ChatDialog(QWidget *parent)
@@ -14,10 +14,10 @@ ChatDialog::ChatDialog(QWidget *parent)
 {
     setupUi(this);
 
-    lineEdit->setFocusPolicy(Qt::StrongFocus);
-    textEdit->setFocusPolicy(Qt::NoFocus);
+    lineEdit->setFocusPolicy(BobUI::StrongFocus);
+    textEdit->setFocusPolicy(BobUI::NoFocus);
     textEdit->setReadOnly(true);
-    listWidget->setFocusPolicy(Qt::NoFocus);
+    listWidget->setFocusPolicy(BobUI::NoFocus);
 
     connect(lineEdit, &QLineEdit::returnPressed,
             this, &ChatDialog::returnPressed);
@@ -31,7 +31,7 @@ ChatDialog::ChatDialog(QWidget *parent)
     myNickName = client.nickName();
     newParticipant(myNickName);
     tableFormat.setBorder(0);
-    QTimer::singleShot(10 * 1000, this, &ChatDialog::showInformation);
+    BOBUIimer::singleShot(10 * 1000, this, &ChatDialog::showInformation);
 }
 
 void ChatDialog::appendMessage(const QString &from, const QString &message)
@@ -39,9 +39,9 @@ void ChatDialog::appendMessage(const QString &from, const QString &message)
     if (from.isEmpty() || message.isEmpty())
         return;
 
-    QTextCursor cursor(textEdit->textCursor());
-    cursor.movePosition(QTextCursor::End);
-    QTextTable *table = cursor.insertTable(1, 2, tableFormat);
+    BOBUIextCursor cursor(textEdit->textCursor());
+    cursor.movePosition(BOBUIextCursor::End);
+    BOBUIextTable *table = cursor.insertTable(1, 2, tableFormat);
     table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
     table->cellAt(0, 1).firstCursorPosition().insertText(message);
     QScrollBar *bar = textEdit->verticalScrollBar();
@@ -56,7 +56,7 @@ void ChatDialog::returnPressed()
 
     if (text.startsWith(QChar('/'))) {
         QColor color = textEdit->textColor();
-        textEdit->setTextColor(Qt::red);
+        textEdit->setTextColor(BobUI::red);
         textEdit->append(tr("! Unknown command: %1")
                          .arg(text.left(text.indexOf(' '))));
         textEdit->setTextColor(color);
@@ -74,7 +74,7 @@ void ChatDialog::newParticipant(const QString &nick)
         return;
 
     QColor color = textEdit->textColor();
-    textEdit->setTextColor(Qt::gray);
+    textEdit->setTextColor(BobUI::gray);
     textEdit->append(tr("* %1 has joined").arg(nick));
     textEdit->setTextColor(color);
     listWidget->addItem(nick);
@@ -86,13 +86,13 @@ void ChatDialog::participantLeft(const QString &nick)
         return;
 
     QList<QListWidgetItem *> items = listWidget->findItems(nick,
-                                                           Qt::MatchExactly);
+                                                           BobUI::MatchExactly);
     if (items.isEmpty())
         return;
 
     delete items.at(0);
     QColor color = textEdit->textColor();
-    textEdit->setTextColor(Qt::gray);
+    textEdit->setTextColor(BobUI::gray);
     textEdit->append(tr("* %1 has left").arg(nick));
     textEdit->setTextColor(color);
 }

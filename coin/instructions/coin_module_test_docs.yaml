@@ -1,13 +1,13 @@
 type: Group
 instructions:
   - type: EnvironmentVariable
-    variableName: COIN_TEST_DOCS_CALL_QTBASE_CONFIGURE
+    variableName: COIN_TEST_DOCS_CALL_BOBUIBASE_CONFIGURE
     variableValue: "0"
   - type: EnvironmentVariable
     variableName: COIN_TEST_DOCS_CONFIGURE_EXTRA_CMAKE_ARGS
     variableValue: "{{.Env.COIN_DOC_CMAKE_ARGS}}"
 
-  - !include "{{qt/qtbase}}/coin_test_docs_common.yaml"
+  - !include "{{bobui/bobuibase}}/coin_test_docs_common.yaml"
 enable_if:
   condition: and
   conditions:

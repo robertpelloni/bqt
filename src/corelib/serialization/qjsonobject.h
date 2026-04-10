@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QJSONOBJECT_H
 #define QJSONOBJECT_H
 
-#include <QtCore/qjsonvalue.h>
-#include <QtCore/qiterator.h>
-#include <QtCore/qpair.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qjsonvalue.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qpair.h>
+#include <BobUICore/qshareddata.h>
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 
 class QCborContainerPrivate;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename T, typename Iterator>
 struct QJsonObjectKeyValues
@@ -28,7 +28,7 @@ struct QJsonObjectKeyValues
     static T value(Iterator &it) { return it.value(); }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class Q_CORE_EXPORT QJsonObject
 {
@@ -86,7 +86,7 @@ public:
     bool contains(QStringView key) const;
     bool contains(QLatin1StringView key) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QJsonObject &other) const;
     bool operator!=(const QJsonObject &other) const;
 #endif
@@ -122,7 +122,7 @@ public:
         inline const QJsonValueConstRef *operator->() const { return &item; }
         inline QJsonValueRef *operator->() { return &item; }
         inline QJsonValueRef operator[](qsizetype j) const { return *(*this + j); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const iterator &other) const
         { return item.d == other.item.d && item.index == other.item.index; }
         inline bool operator!=(const iterator &other) const { return !operator==(other); }
@@ -144,7 +144,7 @@ public:
         qsizetype operator-(iterator j) const { return qsizetype(item.index - j.item.index); }
 
     public:
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const const_iterator &other) const
         { return item.d == other.item.d && item.index == other.item.index; }
         inline bool operator!=(const const_iterator &other) const { return !operator==(other); }
@@ -166,17 +166,17 @@ public:
             return lhs.item.d == rhs.item.d && lhs.item.index == rhs.item.index;
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const iterator &lhs,
                                                           const iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
-        static Qt::strong_ordering compareThreeWay_helper(const iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const iterator &lhs,
                                                           const const_iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
 
         // Compare friends
@@ -184,7 +184,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                    const iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -195,7 +195,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                    const const_iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -235,7 +235,7 @@ public:
         inline const QJsonValueConstRef operator*() const { return item; }
         inline const QJsonValueConstRef *operator->() const { return &item; }
         inline QJsonValueConstRef operator[](qsizetype j) const { return *(*this + j); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const const_iterator &other) const
         { return item.d == other.item.d && item.index == other.item.index; }
         inline bool operator!=(const const_iterator &other) const { return !operator==(other); }
@@ -255,7 +255,7 @@ public:
         inline const_iterator &operator+=(qsizetype j) { item.index += quint64(j); return *this; }
         inline const_iterator &operator-=(qsizetype j) { item.index -= quint64(j); return *this; }
         qsizetype operator-(const_iterator j) const { return qsizetype(item.index - j.item.index); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const iterator &other) const
         { return item.d == other.item.d && item.index == other.item.index; }
         inline bool operator!=(const iterator &other) const { return !operator==(other); }
@@ -274,11 +274,11 @@ public:
         {
             return lhs.item.d == rhs.item.d && lhs.item.index == rhs.item.index;
         }
-        static Qt::strong_ordering compareThreeWay_helper(const const_iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const const_iterator &lhs,
                                                           const const_iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
 
         // Compare friends
@@ -286,7 +286,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const const_iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const const_iterator &lhs,
                                                    const const_iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -296,10 +296,10 @@ public:
     friend class const_iterator;
 
     typedef QKeyValueIterator<QAnyStringView, QJsonValueConstRef, const_iterator,
-                              QtPrivate::QJsonObjectKeyValues<QJsonValueConstRef, const_iterator>>
+                              BobUIPrivate::QJsonObjectKeyValues<QJsonValueConstRef, const_iterator>>
             const_key_value_iterator;
     typedef QKeyValueIterator<QAnyStringView, QJsonValueRef, iterator,
-                              QtPrivate::QJsonObjectKeyValues<QJsonValueRef, iterator>>
+                              BobUIPrivate::QJsonObjectKeyValues<QJsonValueRef, iterator>>
             key_value_iterator;
 
     // STL style
@@ -320,15 +320,15 @@ public:
     const_key_value_iterator constKeyValueEnd() const { return const_key_value_iterator(end()); }
     iterator erase(iterator it);
 
-    auto asKeyValueRange() & { return QtPrivate::QKeyValueRange<QJsonObject &>(*this); }
-    auto asKeyValueRange() const & { return QtPrivate::QKeyValueRange<const QJsonObject &>(*this); }
-    auto asKeyValueRange() && { return QtPrivate::QKeyValueRange<QJsonObject>(std::move(*this)); }
+    auto asKeyValueRange() & { return BobUIPrivate::QKeyValueRange<QJsonObject &>(*this); }
+    auto asKeyValueRange() const & { return BobUIPrivate::QKeyValueRange<const QJsonObject &>(*this); }
+    auto asKeyValueRange() && { return BobUIPrivate::QKeyValueRange<QJsonObject>(std::move(*this)); }
     auto asKeyValueRange() const &&
     {
-        return QtPrivate::QKeyValueRange<QJsonObject>(std::move(*this));
+        return BobUIPrivate::QKeyValueRange<QJsonObject>(std::move(*this));
     }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
     iterator find(const QString &key);
@@ -385,7 +385,7 @@ private:
     template <typename T> const_iterator constFindImpl(T key) const;
     template <typename T> iterator insertImpl(T key, const QJsonValue &value);
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     QString keyAt(qsizetype i) const;
     QJsonValue valueAt(qsizetype i) const;
     void setValueAt(qsizetype i, const QJsonValue &val);
@@ -398,7 +398,7 @@ private:
 
 Q_DECLARE_SHARED(QJsonObject)
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED)
 inline QJsonValueConstRef::QJsonValueConstRef(QJsonObject *o, qsizetype idx)
     : d(o ? o->o.data() : nullptr), is_object(true), index(idx)
 {}
@@ -406,15 +406,15 @@ inline QJsonValueConstRef::QJsonValueConstRef(QJsonObject *o, qsizetype idx)
 
 Q_CORE_EXPORT size_t qHash(const QJsonObject &object, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QJsonObject &);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QJsonObject &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QJsonObject &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJSONOBJECT_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -7,10 +7,10 @@
 #include <QMainWindow>
 
 class ImageModel;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
-class QTableView;
-QT_END_NAMESPACE
+class BOBUIableView;
+BOBUI_END_NAMESPACE
 
 class MainWindow : public QMainWindow
 {
@@ -31,7 +31,7 @@ private:
     ImageModel *model;
     QAction *printAction;
     QString currentPath;
-    QTableView *view;
+    BOBUIableView *view;
 };
 
 #endif // MAINWINDOW_H

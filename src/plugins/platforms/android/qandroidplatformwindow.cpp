@@ -1,6 +1,6 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformwindow.h"
 #include "androidbackendregister.h"
@@ -13,20 +13,20 @@
 #include <private/qhighdpiscaling_p.h>
 #include <private/qjnihelpers_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaWindow, "qt.qpa.window")
+Q_LOGGING_CATEGORY(lcQpaWindow, "bobui.qpa.window")
 
-Q_DECLARE_JNI_CLASS(QtWindowInterface, "org/qtproject/qt/android/QtWindowInterface")
-Q_DECLARE_JNI_CLASS(QtInputInterface, "org/qtproject/qt/android/QtInputInterface")
-Q_DECLARE_JNI_CLASS(QtInputConnectionListener,
-                    "org/qtproject/qt/android/QtInputConnection$QtInputConnectionListener")
-Q_DECLARE_JNI_CLASS(QtDisplayManager, "org/qtproject/qt/android/QtWindowInterface")
-Q_DECLARE_JNI_CLASS(QtWindowInsetsController, "org/qtproject/qt/android/QtWindowInsetsController")
+Q_DECLARE_JNI_CLASS(BobUIWindowInterface, "org/bobuiproject/bobui/android/BobUIWindowInterface")
+Q_DECLARE_JNI_CLASS(BobUIInputInterface, "org/bobuiproject/bobui/android/BobUIInputInterface")
+Q_DECLARE_JNI_CLASS(BobUIInputConnectionListener,
+                    "org/bobuiproject/bobui/android/BobUIInputConnection$BobUIInputConnectionListener")
+Q_DECLARE_JNI_CLASS(BobUIDisplayManager, "org/bobuiproject/bobui/android/BobUIWindowInterface")
+Q_DECLARE_JNI_CLASS(BobUIWindowInsetsController, "org/bobuiproject/bobui/android/BobUIWindowInsetsController")
 
 QAndroidPlatformWindow::QAndroidPlatformWindow(QWindow *window)
-    : QPlatformWindow(window), m_nativeQtWindow(nullptr),
-      m_surfaceContainerType(SurfaceContainer::TextureView), m_nativeParentQtWindow(nullptr),
+    : QPlatformWindow(window), m_nativeBobUIWindow(nullptr),
+      m_surfaceContainerType(SurfaceContainer::TextureView), m_nativeParentBobUIWindow(nullptr),
       m_androidSurfaceObject(nullptr)
 {
     if (window->surfaceType() == QSurface::RasterSurface)
@@ -43,25 +43,25 @@ void QAndroidPlatformWindow::initialize()
     if (parent()) {
         QAndroidPlatformWindow *androidParent = static_cast<QAndroidPlatformWindow*>(parent());
         if (!androidParent->isEmbeddingContainer())
-            m_nativeParentQtWindow = androidParent->nativeWindow();
+            m_nativeParentBobUIWindow = androidParent->nativeWindow();
     }
 
-    AndroidBackendRegister *reg = QtAndroid::backendRegister();
-    QtJniTypes::QtInputConnectionListener listener =
-            reg->callInterface<QtJniTypes::QtInputInterface, QtJniTypes::QtInputConnectionListener>(
+    AndroidBackendRegister *reg = BobUIAndroid::backendRegister();
+    BobUIJniTypes::BobUIInputConnectionListener listener =
+            reg->callInterface<BobUIJniTypes::BobUIInputInterface, BobUIJniTypes::BobUIInputConnectionListener>(
                     "getInputConnectionListener");
 
-    m_nativeQtWindow = QJniObject::construct<QtJniTypes::QtWindow>(
+    m_nativeBobUIWindow = QJniObject::construct<BobUIJniTypes::BobUIWindow>(
             QNativeInterface::QAndroidApplication::context(),
-            isForeignWindow(), m_nativeParentQtWindow, listener);
-    m_nativeViewId = m_nativeQtWindow.callMethod<jint>("getId");
+            isForeignWindow(), m_nativeParentBobUIWindow, listener);
+    m_nativeViewId = m_nativeBobUIWindow.callMethod<jint>("getId");
 
     // the surfaceType is overwritten in QAndroidPlatformOpenGLWindow ctor so let's save
     // the fact that it's a raster window for now
     m_isRaster = window->surfaceType() == QSurface::RasterSurface;
 
     // the following is in relation to the virtual geometry
-    const bool forceMaximize = window->windowStates() & (Qt::WindowMaximized | Qt::WindowFullScreen);
+    const bool forceMaximize = window->windowStates() & (BobUI::WindowMaximized | BobUI::WindowFullScreen);
     const QRect nativeScreenGeometry = platformScreen()->availableGeometry();
     if (forceMaximize) {
         setGeometry(nativeScreenGeometry);
@@ -81,7 +81,7 @@ void QAndroidPlatformWindow::initialize()
         platformScreen()->addWindow(this);
 
     static bool ok = false;
-    static const int value = qEnvironmentVariableIntValue("QT_ANDROID_SURFACE_CONTAINER_TYPE", &ok);
+    static const int value = qEnvironmentVariableIntValue("BOBUI_ANDROID_SURFACE_CONTAINER_TYPE", &ok);
     if (ok) {
         static const SurfaceContainer type = static_cast<SurfaceContainer>(value);
         if (type == SurfaceContainer::SurfaceView || type == SurfaceContainer::TextureView)
@@ -106,8 +106,8 @@ QAndroidPlatformWindow::~QAndroidPlatformWindow()
 
 void QAndroidPlatformWindow::lower()
 {
-    if (m_nativeParentQtWindow.isValid()) {
-        m_nativeParentQtWindow.callMethod<void>("bringChildToBack", nativeViewId());
+    if (m_nativeParentBobUIWindow.isValid()) {
+        m_nativeParentBobUIWindow.callMethod<void>("bringChildToBack", nativeViewId());
         return;
     }
     platformScreen()->lower(this);
@@ -115,9 +115,9 @@ void QAndroidPlatformWindow::lower()
 
 void QAndroidPlatformWindow::raise()
 {
-    if (m_nativeParentQtWindow.isValid()) {
-        m_nativeParentQtWindow.callMethod<void>("bringChildToFront", nativeViewId());
-        QWindowSystemInterface::handleFocusWindowChanged(window(), Qt::ActiveWindowFocusReason);
+    if (m_nativeParentBobUIWindow.isValid()) {
+        m_nativeParentBobUIWindow.callMethod<void>("bringChildToFront", nativeViewId());
+        QWindowSystemInterface::handleFocusWindowChanged(window(), BobUI::ActiveWindowFocusReason);
         return;
     }
     updateSystemUiVisibility(window()->windowStates(), window()->flags());
@@ -137,7 +137,7 @@ void QAndroidPlatformWindow::setSafeAreaMargins(const QMargins safeMargins)
 void QAndroidPlatformWindow::setGeometry(const QRect &rect)
 {
     if (!isEmbeddingContainer()) {
-        Q_ASSERT(m_nativeQtWindow.isValid());
+        Q_ASSERT(m_nativeBobUIWindow.isValid());
 
         jint x = 0;
         jint y = 0;
@@ -149,7 +149,7 @@ void QAndroidPlatformWindow::setGeometry(const QRect &rect)
             w = rect.width();
             h = rect.height();
         }
-        m_nativeQtWindow.callMethod<void>("setGeometry", x, y, w, h);
+        m_nativeBobUIWindow.callMethod<void>("setGeometry", x, y, w, h);
     }
 
     QWindowSystemInterface::handleGeometryChange(window(), rect);
@@ -164,18 +164,18 @@ void QAndroidPlatformWindow::setVisible(bool visible)
         if (!visible && window() == qGuiApp->focusWindow()) {
             platformScreen()->topVisibleWindowChanged();
         } else {
-            const Qt::WindowStates states = window()->windowStates();
-            const Qt::WindowFlags flags = window()->flags();
+            const BobUI::WindowStates states = window()->windowStates();
+            const BobUI::WindowFlags flags = window()->flags();
             updateSystemUiVisibility(states, flags);
-            if (states & Qt::WindowFullScreen || flags & Qt::ExpandedClientAreaHint)
+            if (states & BobUI::WindowFullScreen || flags & BobUI::ExpandedClientAreaHint)
                 setGeometry(platformScreen()->geometry());
-            else if (states & Qt::WindowMaximized)
+            else if (states & BobUI::WindowMaximized)
                 setGeometry(platformScreen()->availableGeometry());
             requestActivateWindow();
         }
     }
 
-    m_nativeQtWindow.callMethod<void>("setVisible", visible);
+    m_nativeBobUIWindow.callMethod<void>("setVisible", visible);
 
     if (geometry().isEmpty() || screen()->availableGeometry().isEmpty())
         return;
@@ -183,7 +183,7 @@ void QAndroidPlatformWindow::setVisible(bool visible)
     QPlatformWindow::setVisible(visible);
 }
 
-void QAndroidPlatformWindow::setWindowState(Qt::WindowStates state)
+void QAndroidPlatformWindow::setWindowState(BobUI::WindowStates state)
 {
     QPlatformWindow::setWindowState(state);
 
@@ -191,7 +191,7 @@ void QAndroidPlatformWindow::setWindowState(Qt::WindowStates state)
         updateSystemUiVisibility(state, window()->flags());
 }
 
-void QAndroidPlatformWindow::setWindowFlags(Qt::WindowFlags flags)
+void QAndroidPlatformWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
     QPlatformWindow::setWindowFlags(flags);
 
@@ -201,30 +201,30 @@ void QAndroidPlatformWindow::setWindowFlags(Qt::WindowFlags flags)
 
 void QAndroidPlatformWindow::setParent(const QPlatformWindow *window)
 {
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
 
     if (window) {
         auto androidWindow = static_cast<const QAndroidPlatformWindow*>(window);
         if (androidWindow->isEmbeddingContainer())
             return;
         // If we were a top level window, remove from screen
-        if (!m_nativeParentQtWindow.isValid())
+        if (!m_nativeParentBobUIWindow.isValid())
             platformScreen()->removeWindow(this);
 
-        const QtWindow parentWindow = androidWindow->nativeWindow();
+        const BobUIWindow parentWindow = androidWindow->nativeWindow();
         // If this was a child window of another window, the java method takes care of that
-        m_nativeQtWindow.callMethod<void, QtWindow>("setParent", parentWindow.object());
-        m_nativeParentQtWindow = parentWindow;
-    } else if (QtAndroid::isQtApplication()) {
-        m_nativeQtWindow.callMethod<void, QtWindow>("setParent", nullptr);
-        m_nativeParentQtWindow = QJniObject();
+        m_nativeBobUIWindow.callMethod<void, BobUIWindow>("setParent", parentWindow.object());
+        m_nativeParentBobUIWindow = parentWindow;
+    } else if (BobUIAndroid::isBobUIApplication()) {
+        m_nativeBobUIWindow.callMethod<void, BobUIWindow>("setParent", nullptr);
+        m_nativeParentBobUIWindow = QJniObject();
         platformScreen()->addWindow(this);
     }
 }
 
 WId QAndroidPlatformWindow::winId() const
 {
-    return m_nativeQtWindow.isValid() ? reinterpret_cast<WId>(m_nativeQtWindow.object()) : 0L;
+    return m_nativeBobUIWindow.isValid() ? reinterpret_cast<WId>(m_nativeBobUIWindow.object()) : 0L;
 }
 
 QAndroidPlatformScreen *QAndroidPlatformWindow::platformScreen() const
@@ -244,37 +244,37 @@ void QAndroidPlatformWindow::requestActivateWindow()
         raise();
 }
 
-void QAndroidPlatformWindow::updateSystemUiVisibility(Qt::WindowStates states, Qt::WindowFlags flags)
+void QAndroidPlatformWindow::updateSystemUiVisibility(BobUI::WindowStates states, BobUI::WindowFlags flags)
 {
-    const bool isNonRegularWindow = flags & (Qt::Popup | Qt::Dialog | Qt::Sheet) & ~Qt::Window;
+    const bool isNonRegularWindow = flags & (BobUI::Popup | BobUI::Dialog | BobUI::Sheet) & ~BobUI::Window;
     if (!isNonRegularWindow) {
         auto iface = qGuiApp->nativeInterface<QNativeInterface::QAndroidApplication>();
         iface->runOnAndroidMainThread([=]() {
-            using namespace QtJniTypes;
+            using namespace BobUIJniTypes;
             auto activity = iface->context().object<Activity>();
-            if (states & Qt::WindowFullScreen)
-                QtWindowInsetsController::callStaticMethod("showFullScreen", activity);
-            else if (flags & Qt::ExpandedClientAreaHint)
-                QtWindowInsetsController::callStaticMethod("showExpanded", activity);
+            if (states & BobUI::WindowFullScreen)
+                BobUIWindowInsetsController::callStaticMethod("showFullScreen", activity);
+            else if (flags & BobUI::ExpandedClientAreaHint)
+                BobUIWindowInsetsController::callStaticMethod("showExpanded", activity);
             else
-                QtWindowInsetsController::callStaticMethod("showNormal", activity);
+                BobUIWindowInsetsController::callStaticMethod("showNormal", activity);
         });
     }
 }
 
 void QAndroidPlatformWindow::updateFocusedEditText()
 {
-    m_nativeQtWindow.callMethod<void>("updateFocusedEditText");
+    m_nativeBobUIWindow.callMethod<void>("updateFocusedEditText");
 }
 
 bool QAndroidPlatformWindow::isExposed() const
 {
-    return qApp->applicationState() > Qt::ApplicationHidden
+    return qApp->applicationState() > BobUI::ApplicationHidden
             && window()->isVisible()
             && !window()->geometry().isEmpty();
 }
 
-void QAndroidPlatformWindow::applicationStateChanged(Qt::ApplicationState)
+void QAndroidPlatformWindow::applicationStateChanged(BobUI::ApplicationState)
 {
     QRegion region;
     if (isExposed())
@@ -286,10 +286,10 @@ void QAndroidPlatformWindow::applicationStateChanged(Qt::ApplicationState)
 
 void QAndroidPlatformWindow::createSurface()
 {
-    const bool windowStaysOnTop = bool(window()->flags() & Qt::WindowStaysOnTopHint);
+    const bool windowStaysOnTop = bool(window()->flags() & BobUI::WindowStaysOnTopHint);
     const bool isOpaque = !format().hasAlpha() && qFuzzyCompare(window()->opacity(), qreal(1.0));
 
-    m_nativeQtWindow.callMethod<void>("createSurface", windowStaysOnTop, 32, isOpaque,
+    m_nativeBobUIWindow.callMethod<void>("createSurface", windowStaysOnTop, 32, isOpaque,
                                       m_surfaceContainerType);
     m_androidSurfaceCreated = true;
 }
@@ -297,12 +297,12 @@ void QAndroidPlatformWindow::createSurface()
 void QAndroidPlatformWindow::destroySurface()
 {
     if (m_androidSurfaceCreated) {
-        m_nativeQtWindow.callMethod<void>("destroySurface");
+        m_nativeBobUIWindow.callMethod<void>("destroySurface");
         m_androidSurfaceCreated = false;
     }
 }
 
-void QAndroidPlatformWindow::onSurfaceChanged(QtJniTypes::Surface surface)
+void QAndroidPlatformWindow::onSurfaceChanged(BobUIJniTypes::Surface surface)
 {
     lockSurface();
     const bool surfaceIsValid = surface.isValid();
@@ -337,13 +337,13 @@ bool QAndroidPlatformWindow::blockedByModal() const
 
 bool QAndroidPlatformWindow::isEmbeddingContainer() const
 {
-    // Returns true if the window is a wrapper for a foreign window solely to allow embedding Qt
+    // Returns true if the window is a wrapper for a foreign window solely to allow embedding BobUI
     // into a native Android app, in which case we should not try to control it more than we "need" to
-    return !QtAndroid::isQtApplication() && window()->isTopLevel();
+    return !BobUIAndroid::isBobUIApplication() && window()->isTopLevel();
 }
 
 void QAndroidPlatformWindow::setSurface(JNIEnv *env, jobject object, jint windowId,
-                                        QtJniTypes::Surface surface)
+                                        BobUIJniTypes::Surface surface)
 {
     Q_UNUSED(env)
     Q_UNUSED(object)
@@ -370,7 +370,7 @@ void QAndroidPlatformWindow::windowFocusChanged(JNIEnv *env, jobject object,
 {
     Q_UNUSED(env)
     Q_UNUSED(object)
-    QWindow* window = QtAndroid::windowFromId(windowId);
+    QWindow* window = BobUIAndroid::windowFromId(windowId);
     if (!window) {
         qCWarning(lcQpaWindow,
             "windowFocusChanged event received for non-existing window %d", windowId);
@@ -386,7 +386,7 @@ void QAndroidPlatformWindow::windowFocusChanged(JNIEnv *env, jobject object,
 }
 
 void QAndroidPlatformWindow::safeAreaMarginsChanged(JNIEnv *env, jobject object,
-                                                    QtJniTypes::Insets insets, jint id)
+                                                    BobUIJniTypes::Insets insets, jint id)
 {
     Q_UNUSED(env)
     Q_UNUSED(object)
@@ -489,7 +489,7 @@ void QAndroidPlatformWindow::decrementSurfacesCount()
 
 bool QAndroidPlatformWindow::registerNatives(QJniEnvironment &env)
 {
-    if (!env.registerNativeMethods(QtJniTypes::Traits<QtJniTypes::QtWindow>::className(),
+    if (!env.registerNativeMethods(BobUIJniTypes::Traits<BobUIJniTypes::BobUIWindow>::className(),
             {
                 Q_JNI_NATIVE_METHOD(updateWindows),
                 Q_JNI_NATIVE_SCOPED_METHOD(setSurface, QAndroidPlatformWindow),
@@ -497,10 +497,10 @@ bool QAndroidPlatformWindow::registerNatives(QJniEnvironment &env)
                 Q_JNI_NATIVE_SCOPED_METHOD(safeAreaMarginsChanged, QAndroidPlatformWindow)
             })) {
         qCCritical(lcQpaWindow) << "RegisterNatives failed for"
-                                << QtJniTypes::Traits<QtJniTypes::QtWindow>::className();
+                                << BobUIJniTypes::Traits<BobUIJniTypes::BobUIWindow>::className();
         return false;
     }
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

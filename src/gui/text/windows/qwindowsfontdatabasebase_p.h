@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSFONTDATABASEBASE_P_H
 #define QWINDOWSFONTDATABASEBASE_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,20 +16,20 @@
 //
 
 #include <qpa/qplatformfontdatabase.h>
-#include <QtGui/private/qtgui-config_p.h>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qt_windows.h>
+#include <BobUIGui/private/bobuigui-config_p.h>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/bobui_windows.h>
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     struct IDWriteFactory;
     struct IDWriteGdiInterop;
     struct IDWriteFontFace;
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     class QCustomFontFileLoader;
 #endif
 
@@ -45,7 +45,7 @@ public:
     bool clearTypeEnabled = false;
     qreal fontSmoothingGamma;
     HDC hdc = 0;
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     IDWriteFactory *directWriteFactory = nullptr;
     IDWriteGdiInterop *directWriteGdiInterop = nullptr;
 #endif
@@ -65,7 +65,7 @@ public:
     static int defaultVerticalDPI();
 
     static QSharedPointer<QWindowsFontEngineData> data();
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     static void createDirectWriteFactory(IDWriteFactory **factory);
 #endif
     static QFont systemDefaultFont();
@@ -97,7 +97,7 @@ public:
 
 protected:
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     QList<IDWriteFontFace *> createDirectWriteFaces(const QByteArray &fontData,
                                                     const QString &filename,
                                                     bool queryVariations = true) const;
@@ -107,11 +107,11 @@ protected:
 private:
     static bool init(QSharedPointer<QWindowsFontEngineData> data);
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
     mutable std::unique_ptr<QCustomFontFileLoader> m_fontFileLoader;
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSFONTDATABASEBASE_P_H

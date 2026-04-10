@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file tests Q_FOREACH over containers (centralize in a tst_qforeach?)
+#undef BOBUI_NO_FOREACH // this file tests Q_FOREACH over containers (centralize in a tst_qforeach?)
 
 // test the container forwards
-#include <QtContainerFwd>
+#include <BobUIContainerFwd>
 
 static QCache<int, int> *cacheX;
 static QHash<int, int> *hashX;
@@ -37,10 +37,10 @@ void foo()
     vectorX = 0;
 }
 
-#include <QTest>
+#include <BOBUIest>
 #include <QVector>
 #include <QScopedPointer>
-#include <QThread>
+#include <BOBUIhread>
 #include <QSemaphore>
 
 #include <algorithm>
@@ -75,7 +75,7 @@ private slots:
     void map();
     void bitArray();
     void cache();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void regexp();
 #endif
     void pair();
@@ -94,11 +94,11 @@ private slots:
     void q_init();
     void pointersize();
     void containerInstantiation();
-    void qtimerList();
+    void bobuiimerList();
     void containerTypedefs();
     void forwardDeclared();
     void alignment();
-    void QTBUG13079_collectionInsideCollection();
+    void BOBUIBUG13079_collectionInsideCollection();
 
     void foreach_2();
     void insert_remove_loop();
@@ -139,9 +139,9 @@ struct Movable {
 };
 
 int Movable::count = 0;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_TYPEINFO(Movable, Q_RELOCATABLE_TYPE);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 
 struct Pod {
@@ -263,50 +263,50 @@ Q_DECLARE_METATYPE(NoCmpRecursiveHashK);
 Q_DECLARE_METATYPE(NoCmpRecursiveMultiHashV);
 Q_DECLARE_METATYPE(NoCmpRecursiveMultiHashK);
 
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveList>);
-static_assert(QTypeTraits::has_operator_less_than_v<RecursiveList>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveSet>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMapV>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMapK>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMultiMapV>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMultiMapK>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveHashV>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveHashK>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMultiHashV>);
-static_assert(QTypeTraits::has_operator_equal_v<RecursiveMultiHashK>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveList>);
+static_assert(BOBUIypeTraits::has_operator_less_than_v<RecursiveList>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveSet>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMapV>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMapK>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMultiMapV>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMultiMapK>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveHashV>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveHashK>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMultiHashV>);
+static_assert(BOBUIypeTraits::has_operator_equal_v<RecursiveMultiHashK>);
 
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMapV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMapK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiMapV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiMapK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveHashV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveHashK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiHashV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiHashK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMapV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMapK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiMapV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiMapK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveHashV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveHashK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiHashV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpParamRecursiveMultiHashK>);
 
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveList>);
-static_assert(!QTypeTraits::has_operator_less_than_v<NoCmpRecursiveList>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveSet>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMapV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMapK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMultiMapV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMultiMapK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveHashV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveHashK>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMultiHashV>);
-static_assert(!QTypeTraits::has_operator_equal_v<NoCmpRecursiveMultiHashK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveList>);
+static_assert(!BOBUIypeTraits::has_operator_less_than_v<NoCmpRecursiveList>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveSet>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMapV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMapK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMultiMapV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMultiMapK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveHashV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveHashK>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMultiHashV>);
+static_assert(!BOBUIypeTraits::has_operator_equal_v<NoCmpRecursiveMultiHashK>);
 
 template <typename T>
 constexpr inline bool has_prepend_v = true;
 template <typename T, qsizetype N>
-constexpr inline bool has_prepend_v<QVarLengthArray<T,N>> = false; // deprecated in Qt 6.3
+constexpr inline bool has_prepend_v<QVarLengthArray<T,N>> = false; // deprecated in BobUI 6.3
 
 void tst_Collections::typeinfo()
 {
     QVERIFY(std::is_pointer_v<int*>);
     QVERIFY(!std::is_pointer_v<int>);
-    QVERIFY(QTypeInfo<QString>::isComplex);
-    QVERIFY(!QTypeInfo<int>::isComplex);
+    QVERIFY(BOBUIypeInfo<QString>::isComplex);
+    QVERIFY(!BOBUIypeInfo<int>::isComplex);
 }
 
 void tst_Collections::list()
@@ -597,10 +597,10 @@ void tst_Collections::list()
         {
             QList<int> list;
             list.append(1);
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
             list = list;
-QT_WARNING_POP
+BOBUI_WARNING_POP
             QVERIFY(list.size() == 1);
         }
     }
@@ -832,8 +832,8 @@ QT_WARNING_POP
             QCOMPARE(list3.at(i), 50.0);
         }
 
-        QList<QTime> list4;
-        list4.append(QTime(12, 34, 56));
+        QList<BOBUIime> list4;
+        list4.append(BOBUIime(12, 34, 56));
 
         for (i = 1; i < 100; ++i) {
             list4.append(list4.at(i - 1));
@@ -847,7 +847,7 @@ QT_WARNING_POP
         }
         QCOMPARE(list4.size(), 496);
         for (i = 0; i < list4.size(); ++i) {
-            QVERIFY(list4.at(i) == QTime(12, 34, 56));
+            QVERIFY(list4.at(i) == BOBUIime(12, 34, 56));
         }
 
     }
@@ -1045,8 +1045,8 @@ void tst_Collections::vector()
             QCOMPARE(vect3.at(i), 50.0);
         }
 
-        QVector<QTime> vect4;
-        vect4.append(QTime(12, 34, 56));
+        QVector<BOBUIime> vect4;
+        vect4.append(BOBUIime(12, 34, 56));
 
         for (i = 1; i < 100; ++i) {
             vect4.append(vect4.at(i - 1));
@@ -1060,7 +1060,7 @@ void tst_Collections::vector()
         }
         QCOMPARE(vect4.size(), 496);
         for (i = 0; i < vect4.size(); ++i) {
-            QVERIFY(vect4.at(i) == QTime(12, 34, 56));
+            QVERIFY(vect4.at(i) == BOBUIime(12, 34, 56));
         }
     }
 
@@ -1311,8 +1311,8 @@ void tst_Collections::hash()
         QVERIFY(hash.size() == 2);
         QVERIFY(!hash.isEmpty());
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
         {
             Hash hash2 = hash;
             hash2 = hash;
@@ -1325,7 +1325,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
             QVERIFY(hash2.isEmpty());
         }
         QVERIFY(hash.size() == 2);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         {
             Hash hash2 = hash;
@@ -1537,8 +1537,8 @@ void tst_Collections::map()
         QVERIFY(map.size() == 2);
         QVERIFY(!map.isEmpty());
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
         {
             Map map2 = map;
             map2 = map;
@@ -1551,7 +1551,7 @@ QT_WARNING_DISABLE_CLANG("-Wself-assign-overloaded")
             QVERIFY(map2.isEmpty());
         }
         QVERIFY(map.size() == 2);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         {
             Map map2 = map;
@@ -2137,7 +2137,7 @@ void tst_Collections::qstring()
         QCOMPARE(str1, QString("Foo"));
 
         str1 = "Foo";
-        str1.replace("Foo", str1, Qt::CaseInsensitive);
+        str1.replace("Foo", str1, BobUI::CaseInsensitive);
         QCOMPARE(str1, QString("Foo"));
         str1.replace(str1, str1);
         QCOMPARE(str1, QString("Foo"));
@@ -2241,7 +2241,7 @@ void tst_Collections::cache()
 
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_Collections::regexp()
 {
     QRegularExpression rx("^\\d\\d?$");
@@ -2472,7 +2472,7 @@ void tst_Collections::conversions()
         QCOMPARE(list2.size(), 4);
         QVERIFY(list2 == (QList<QString>() << STUFF));
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
         QSet<QString> set1 = list1.toSet();
 #else
         QSet<QString> set1(list1.begin(), list1.end());
@@ -2492,7 +2492,7 @@ void tst_Collections::conversions()
 
         QVERIFY(QList<int>().toVector().isEmpty());
         QVERIFY(QVector<int>().toList().isEmpty());
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
         QVERIFY(QList<int>().toSet().isEmpty());
         QVERIFY(QSet<int>().toList().isEmpty());
 #endif
@@ -2510,7 +2510,7 @@ void tst_Collections::conversions()
         QCOMPARE(list2.size(), 4);
         QVERIFY(list2 == (QList<QString>() << STUFF));
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
         QSet<QString> set1 = QSet<QString>::fromList(list1);
 #else
         QSet<QString> set1(list1.begin(), list1.end());
@@ -2521,7 +2521,7 @@ void tst_Collections::conversions()
         QVERIFY(set1.contains("C"));
         QVERIFY(!set1.contains("D"));
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
         QList<QString> list3 = QList<QString>::fromSet(set1);
 #else
         QList<QString> list3 = set1.values();
@@ -2534,7 +2534,7 @@ void tst_Collections::conversions()
 
         QVERIFY(QVector<int>::fromList(QList<int>()).isEmpty());
         QVERIFY(QList<int>::fromVector(QVector<int>()).isEmpty());
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
         QVERIFY(QSet<int>::fromList(QList<int>()).isEmpty());
         QVERIFY(QList<int>::fromSet(QSet<int>()).isEmpty());
 #endif
@@ -2715,12 +2715,12 @@ void tst_Collections::constAndNonConstStlIterators()
 
 void tst_Collections::vector_stl_data()
 {
-    QTest::addColumn<QStringList>("elements");
+    BOBUIest::addColumn<QStringList>("elements");
 
-    QTest::newRow("empty") << QStringList();
-    QTest::newRow("one") << (QStringList() << "Hei");
-    QTest::newRow("two") << (QStringList() << "Hei" << "Hopp");
-    QTest::newRow("three") << (QStringList() << "Hei" << "Hopp" << "Sann");
+    BOBUIest::newRow("empty") << QStringList();
+    BOBUIest::newRow("one") << (QStringList() << "Hei");
+    BOBUIest::newRow("two") << (QStringList() << "Hei" << "Hopp");
+    BOBUIest::newRow("three") << (QStringList() << "Hei" << "Hopp" << "Sann");
 }
 
 void tst_Collections::vector_stl()
@@ -2731,7 +2731,7 @@ void tst_Collections::vector_stl()
     for (int i = 0; i < elements.size(); ++i)
         vector << elements.at(i);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
     std::vector<QString> stdVector = vector.toStdVector();
 #else
     std::vector<QString> stdVector(vector.begin(), vector.end());
@@ -2742,7 +2742,7 @@ void tst_Collections::vector_stl()
     for (uint j = 0; j < stdVector.size() && it != stdVector.end(); ++j, ++it)
         QCOMPARE(*it, vector[j]);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
     QCOMPARE(QList<QString>::fromStdVector(stdVector), vector);
 #endif
     QCOMPARE(QList<QString>(stdVector.begin(), stdVector.end()), vector);
@@ -2750,12 +2750,12 @@ void tst_Collections::vector_stl()
 
 void tst_Collections::list_stl_data()
 {
-    QTest::addColumn<QStringList>("elements");
+    BOBUIest::addColumn<QStringList>("elements");
 
-    QTest::newRow("empty") << QStringList();
-    QTest::newRow("one") << (QStringList() << "Hei");
-    QTest::newRow("two") << (QStringList() << "Hei" << "Hopp");
-    QTest::newRow("three") << (QStringList() << "Hei" << "Hopp" << "Sann");
+    BOBUIest::newRow("empty") << QStringList();
+    BOBUIest::newRow("one") << (QStringList() << "Hei");
+    BOBUIest::newRow("two") << (QStringList() << "Hei" << "Hopp");
+    BOBUIest::newRow("three") << (QStringList() << "Hei" << "Hopp" << "Sann");
 }
 
 void tst_Collections::list_stl()
@@ -2766,7 +2766,7 @@ void tst_Collections::list_stl()
     for (int i = 0; i < elements.size(); ++i)
         list << elements.at(i);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
     std::list<QString> stdList = list.toStdList();
 #else
     std::list<QString> stdList(list.begin(), list.end());
@@ -2778,33 +2778,33 @@ void tst_Collections::list_stl()
     for (uint j = 0; j < stdList.size() && it != stdList.end(); ++j, ++it)
         QCOMPARE(*it, list[j]);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(6,0,0)
     QCOMPARE(QList<QString>::fromStdList(stdList), list);
 #endif
     QCOMPARE(QList<QString>(stdList.begin(), stdList.end()), list);
 }
 
 template <typename T>
-T qtInit(T * = nullptr)
+T bobuiInit(T * = nullptr)
 {
     return T();
 }
 
 void tst_Collections::q_init()
 {
-    QCOMPARE(qtInit<int>(), 0);
-    QCOMPARE(qtInit<double>(), 0.0);
-    QCOMPARE(qtInit<QString>(), QString());
-    QCOMPARE(qtInit<int *>(), static_cast<int *>(nullptr));
-    QCOMPARE(qtInit<double *>(), static_cast<double *>(nullptr));
-    QCOMPARE(qtInit<QString *>(), static_cast<QString *>(nullptr));
-    QCOMPARE(qtInit<Pod>().i1, 0);
-    QCOMPARE(qtInit<Pod>().i2, 0);
+    QCOMPARE(bobuiInit<int>(), 0);
+    QCOMPARE(bobuiInit<double>(), 0.0);
+    QCOMPARE(bobuiInit<QString>(), QString());
+    QCOMPARE(bobuiInit<int *>(), static_cast<int *>(nullptr));
+    QCOMPARE(bobuiInit<double *>(), static_cast<double *>(nullptr));
+    QCOMPARE(bobuiInit<QString *>(), static_cast<QString *>(nullptr));
+    QCOMPARE(bobuiInit<Pod>().i1, 0);
+    QCOMPARE(bobuiInit<Pod>().i2, 0);
 }
 
 void tst_Collections::pointersize()
 {
-    QCOMPARE(int(sizeof(void *)), QT_POINTER_SIZE);
+    QCOMPARE(int(sizeof(void *)), BOBUI_POINTER_SIZE);
 }
 
 class LessThanComparable
@@ -2827,7 +2827,7 @@ size_t qHash(const EqualsComparable &)
 
 /*
     The following functions instatiates every member functions in the
-    Qt containers that requires either operator== or operator<.
+    BobUI containers that requires either operator== or operator<.
     They are ordered in a concept inheritance tree:
 
     Container
@@ -2966,7 +2966,7 @@ void instantiatePairAssociative()
 }
 
 /*
-    Instantiate all Qt containers using a datatype that
+    Instantiate all BobUI containers using a datatype that
     defines the minimum amount of operators.
 */
 void tst_Collections::containerInstantiation()
@@ -3006,7 +3006,7 @@ void tst_Collections::containerInstantiation()
     instantiateRandomAccess<Stack, EqualsComparable>();
 }
 
-void tst_Collections::qtimerList()
+void tst_Collections::bobuiimerList()
 {
     QList<double> foo;
     const int N = 10000;
@@ -3082,7 +3082,7 @@ void testSetContainerTypedefs(Container container)
 }
 
 /*
-    Compile-time test that verifies that the Qt containers
+    Compile-time test that verifies that the BobUI containers
     have STL-compatable typedefs.
 */
 void tst_Collections::containerTypedefs()
@@ -3256,23 +3256,23 @@ void tst_Collections::alignment()
     testAssociativeContainerAlignment<QHash<AlignedBiggest, AlignedBiggest> >();
 }
 
-#ifndef QT_NO_TEMPLATE_TEMPLATE_PARAMETERS
+#ifndef BOBUI_NO_TEMPLATE_TEMPLATE_PARAMETERS
 
 template<template<class> class C>
-struct QTBUG13079_Node {
-    C<QTBUG13079_Node> children;
+struct BOBUIBUG13079_Node {
+    C<BOBUIBUG13079_Node> children;
     QString s;
 
-    ~QTBUG13079_Node() {
+    ~BOBUIBUG13079_Node() {
         children.begin(); //play with memory
     }
 };
-template<template<class> class C> void QTBUG13079_collectionInsideCollectionImpl()
+template<template<class> class C> void BOBUIBUG13079_collectionInsideCollectionImpl()
 {
-    C<QTBUG13079_Node<C> > nodeList;
-    nodeList << QTBUG13079_Node<C>();
+    C<BOBUIBUG13079_Node<C> > nodeList;
+    nodeList << BOBUIBUG13079_Node<C>();
     nodeList.first().s = "parent";
-    nodeList.first().children << QTBUG13079_Node<C>();
+    nodeList.first().children << BOBUIBUG13079_Node<C>();
     nodeList.first().children.first().s = "child";
 
     nodeList = nodeList.first().children;
@@ -3280,24 +3280,24 @@ template<template<class> class C> void QTBUG13079_collectionInsideCollectionImpl
 
     nodeList = nodeList.first().children;
     QCOMPARE(nodeList.size(), 0);
-    nodeList << QTBUG13079_Node<C>();
+    nodeList << BOBUIBUG13079_Node<C>();
 }
 
 template<template<class, class> class C>
-struct QTBUG13079_NodeAssoc {
-    C<int, QTBUG13079_NodeAssoc> children;
+struct BOBUIBUG13079_NodeAssoc {
+    C<int, BOBUIBUG13079_NodeAssoc> children;
     QString s;
 
-    ~QTBUG13079_NodeAssoc() {
+    ~BOBUIBUG13079_NodeAssoc() {
         children.begin(); //play with memory
     }
 };
-template<template<class, class> class C> void QTBUG13079_collectionInsideCollectionAssocImpl()
+template<template<class, class> class C> void BOBUIBUG13079_collectionInsideCollectionAssocImpl()
 {
-    C<int, QTBUG13079_NodeAssoc<C> > nodeMap;
-    nodeMap[18] = QTBUG13079_NodeAssoc<C>();
+    C<int, BOBUIBUG13079_NodeAssoc<C> > nodeMap;
+    nodeMap[18] = BOBUIBUG13079_NodeAssoc<C>();
     nodeMap[18].s = "parent";
-    nodeMap[18].children[12] = QTBUG13079_NodeAssoc<C>();
+    nodeMap[18].children[12] = BOBUIBUG13079_NodeAssoc<C>();
     nodeMap[18].children[12].s = "child";
 
     nodeMap = nodeMap[18].children;
@@ -3305,39 +3305,39 @@ template<template<class, class> class C> void QTBUG13079_collectionInsideCollect
 
     nodeMap = nodeMap[12].children;
     QCOMPARE(nodeMap.size(), 0);
-    nodeMap[42] = QTBUG13079_NodeAssoc<C>();
+    nodeMap[42] = BOBUIBUG13079_NodeAssoc<C>();
 }
 
 
-size_t qHash(const QTBUG13079_Node<QSet> &)
+size_t qHash(const BOBUIBUG13079_Node<QSet> &)
 {
     return 0;
 }
 
-bool operator==(const QTBUG13079_Node<QSet> &a, const QTBUG13079_Node<QSet> &b)
+bool operator==(const BOBUIBUG13079_Node<QSet> &a, const BOBUIBUG13079_Node<QSet> &b)
 {
     return a.s == b.s && a.children == b.children;
 }
 
 template<template<class> class C>
-struct QTBUG13079_NodePtr : QSharedData {
-    C<QTBUG13079_NodePtr> child;
-    QTBUG13079_NodePtr *next;
+struct BOBUIBUG13079_NodePtr : QSharedData {
+    C<BOBUIBUG13079_NodePtr> child;
+    BOBUIBUG13079_NodePtr *next;
     QString s;
 
-    QTBUG13079_NodePtr() : next(0) {}
-    ~QTBUG13079_NodePtr() {
+    BOBUIBUG13079_NodePtr() : next(0) {}
+    ~BOBUIBUG13079_NodePtr() {
         next = child.data(); //play with memory
     }
 };
-template<template<class> class C> void QTBUG13079_collectionInsidePtrImpl()
+template<template<class> class C> void BOBUIBUG13079_collectionInsidePtrImpl()
 {
-    typedef C<QTBUG13079_NodePtr<C> > Ptr;
+    typedef C<BOBUIBUG13079_NodePtr<C> > Ptr;
     {
         Ptr nodePtr;
-        nodePtr = Ptr(new QTBUG13079_NodePtr<C>());
+        nodePtr = Ptr(new BOBUIBUG13079_NodePtr<C>());
         nodePtr->s = "parent";
-        nodePtr->child = Ptr(new QTBUG13079_NodePtr<C>());
+        nodePtr->child = Ptr(new BOBUIBUG13079_NodePtr<C>());
         nodePtr->child->s = "child";
         nodePtr = nodePtr->child;
         QCOMPARE(nodePtr->s, QString::fromLatin1("child"));
@@ -3346,9 +3346,9 @@ template<template<class> class C> void QTBUG13079_collectionInsidePtrImpl()
     }
     {
         Ptr nodePtr;
-        nodePtr = Ptr(new QTBUG13079_NodePtr<C>());
+        nodePtr = Ptr(new BOBUIBUG13079_NodePtr<C>());
         nodePtr->s = "parent";
-        nodePtr->next = new QTBUG13079_NodePtr<C>();
+        nodePtr->next = new BOBUIBUG13079_NodePtr<C>();
         nodePtr->next->s = "next";
         nodePtr = Ptr(nodePtr->next);
         QCOMPARE(nodePtr->s, QString::fromLatin1("next"));
@@ -3359,27 +3359,27 @@ template<template<class> class C> void QTBUG13079_collectionInsidePtrImpl()
 
 #endif
 
-void tst_Collections::QTBUG13079_collectionInsideCollection()
+void tst_Collections::BOBUIBUG13079_collectionInsideCollection()
 {
-#ifndef QT_NO_TEMPLATE_TEMPLATE_PARAMETERS
-    QTBUG13079_collectionInsideCollectionImpl<QVector>();
-    QTBUG13079_collectionInsideCollectionImpl<QStack>();
-    QTBUG13079_collectionInsideCollectionImpl<QList>();
-    QTBUG13079_collectionInsideCollectionImpl<QQueue>();
+#ifndef BOBUI_NO_TEMPLATE_TEMPLATE_PARAMETERS
+    BOBUIBUG13079_collectionInsideCollectionImpl<QVector>();
+    BOBUIBUG13079_collectionInsideCollectionImpl<QStack>();
+    BOBUIBUG13079_collectionInsideCollectionImpl<QList>();
+    BOBUIBUG13079_collectionInsideCollectionImpl<QQueue>();
 
     {
-        QSet<QTBUG13079_Node<QSet> > nodeSet;
-        nodeSet << QTBUG13079_Node<QSet>();
+        QSet<BOBUIBUG13079_Node<QSet> > nodeSet;
+        nodeSet << BOBUIBUG13079_Node<QSet>();
         nodeSet = nodeSet.begin()->children;
         QCOMPARE(nodeSet.size(), 0);
     }
 
-    QTBUG13079_collectionInsideCollectionAssocImpl<QMap>();
-    QTBUG13079_collectionInsideCollectionAssocImpl<QHash>();
+    BOBUIBUG13079_collectionInsideCollectionAssocImpl<QMap>();
+    BOBUIBUG13079_collectionInsideCollectionAssocImpl<QHash>();
 
-    QTBUG13079_collectionInsidePtrImpl<QSharedPointer>();
-    QTBUG13079_collectionInsidePtrImpl<QExplicitlySharedDataPointer>();
-    QTBUG13079_collectionInsidePtrImpl<QSharedDataPointer>();
+    BOBUIBUG13079_collectionInsidePtrImpl<QSharedPointer>();
+    BOBUIBUG13079_collectionInsidePtrImpl<QExplicitlySharedDataPointer>();
+    BOBUIBUG13079_collectionInsidePtrImpl<QSharedDataPointer>();
 #endif
 }
 
@@ -3599,7 +3599,7 @@ void tst_Collections::detachAssociativeContainerImpl()
             copy.clear(); // <==
         };
 
-        QScopedPointer thread(QThread::create(std::move(detachInAnotherThread)));
+        QScopedPointer thread(BOBUIhread::create(std::move(detachInAnotherThread)));
         thread->start();
 
         sem2.release();
@@ -3631,5 +3631,5 @@ void tst_Collections::detachAssociativeContainerImpl()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_Collections)
+BOBUIEST_APPLESS_MAIN(tst_Collections)
 #include "tst_collections.moc"

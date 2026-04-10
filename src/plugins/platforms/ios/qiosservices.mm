@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosservices.h"
 
-#include <QtCore/qurl.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <QtGui/qdesktopservices.h>
+#include <BobUIGui/qdesktopservices.h>
 
 #import <UIKit/UIApplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 bool QIOSServices::openUrl(const QUrl &url)
 {
-    if (qt_apple_isApplicationExtension()) {
+    if (bobui_apple_isApplicationExtension()) {
         qCWarning(lcQpaServices) << "openUrl not implement for application extensions yet";
         return false;
     }
@@ -30,7 +30,7 @@ bool QIOSServices::openUrl(const QUrl &url)
         return openDocument(url);
 
     NSURL *nsUrl = url.toNSURL();
-    UIApplication *application = qt_apple_sharedApplication();
+    UIApplication *application = bobui_apple_sharedApplication();
 
     if (![application canOpenURL:nsUrl])
         return false;
@@ -69,4 +69,4 @@ bool QIOSServices::handleUrl(const QUrl &url)
     return QDesktopServices::openUrl(url);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

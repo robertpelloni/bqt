@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'calculator.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,44 +9,44 @@
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_Calculator
 {
 public:
-    QToolButton *backspaceButton;
-    QToolButton *clearButton;
-    QToolButton *clearAllButton;
-    QToolButton *clearMemoryButton;
-    QToolButton *readMemoryButton;
-    QToolButton *setMemoryButton;
-    QToolButton *addToMemoryButton;
-    QToolButton *sevenButton;
-    QToolButton *eightButton;
-    QToolButton *nineButton;
-    QToolButton *fourButton;
-    QToolButton *fiveButton;
-    QToolButton *sixButton;
-    QToolButton *oneButton;
-    QToolButton *twoButton;
-    QToolButton *threeButton;
-    QToolButton *zeroButton;
-    QToolButton *pointButton;
-    QToolButton *changeSignButton;
-    QToolButton *plusButton;
-    QToolButton *divisionButton;
-    QToolButton *timesButton;
-    QToolButton *minusButton;
-    QToolButton *squareRootButton;
-    QToolButton *powerButton;
-    QToolButton *reciprocalButton;
-    QToolButton *equalButton;
+    BOBUIoolButton *backspaceButton;
+    BOBUIoolButton *clearButton;
+    BOBUIoolButton *clearAllButton;
+    BOBUIoolButton *clearMemoryButton;
+    BOBUIoolButton *readMemoryButton;
+    BOBUIoolButton *setMemoryButton;
+    BOBUIoolButton *addToMemoryButton;
+    BOBUIoolButton *sevenButton;
+    BOBUIoolButton *eightButton;
+    BOBUIoolButton *nineButton;
+    BOBUIoolButton *fourButton;
+    BOBUIoolButton *fiveButton;
+    BOBUIoolButton *sixButton;
+    BOBUIoolButton *oneButton;
+    BOBUIoolButton *twoButton;
+    BOBUIoolButton *threeButton;
+    BOBUIoolButton *zeroButton;
+    BOBUIoolButton *pointButton;
+    BOBUIoolButton *changeSignButton;
+    BOBUIoolButton *plusButton;
+    BOBUIoolButton *divisionButton;
+    BOBUIoolButton *timesButton;
+    BOBUIoolButton *minusButton;
+    BOBUIoolButton *squareRootButton;
+    BOBUIoolButton *powerButton;
+    BOBUIoolButton *reciprocalButton;
+    BOBUIoolButton *equalButton;
     QLineEdit *display;
 
     void setupUi(QWidget *Calculator)
@@ -61,92 +61,92 @@ public:
         Calculator->setSizePolicy(sizePolicy);
         Calculator->setMinimumSize(QSize(314, 301));
         Calculator->setMaximumSize(QSize(314, 301));
-        backspaceButton = new QToolButton(Calculator);
+        backspaceButton = new BOBUIoolButton(Calculator);
         backspaceButton->setObjectName("backspaceButton");
         backspaceButton->setGeometry(QRect(10, 50, 91, 41));
-        clearButton = new QToolButton(Calculator);
+        clearButton = new BOBUIoolButton(Calculator);
         clearButton->setObjectName("clearButton");
         clearButton->setGeometry(QRect(110, 50, 91, 41));
-        clearAllButton = new QToolButton(Calculator);
+        clearAllButton = new BOBUIoolButton(Calculator);
         clearAllButton->setObjectName("clearAllButton");
         clearAllButton->setGeometry(QRect(210, 50, 91, 41));
-        clearMemoryButton = new QToolButton(Calculator);
+        clearMemoryButton = new BOBUIoolButton(Calculator);
         clearMemoryButton->setObjectName("clearMemoryButton");
         clearMemoryButton->setGeometry(QRect(10, 100, 41, 41));
-        readMemoryButton = new QToolButton(Calculator);
+        readMemoryButton = new BOBUIoolButton(Calculator);
         readMemoryButton->setObjectName("readMemoryButton");
         readMemoryButton->setGeometry(QRect(10, 150, 41, 41));
-        setMemoryButton = new QToolButton(Calculator);
+        setMemoryButton = new BOBUIoolButton(Calculator);
         setMemoryButton->setObjectName("setMemoryButton");
         setMemoryButton->setGeometry(QRect(10, 200, 41, 41));
-        addToMemoryButton = new QToolButton(Calculator);
+        addToMemoryButton = new BOBUIoolButton(Calculator);
         addToMemoryButton->setObjectName("addToMemoryButton");
         addToMemoryButton->setGeometry(QRect(10, 250, 41, 41));
-        sevenButton = new QToolButton(Calculator);
+        sevenButton = new BOBUIoolButton(Calculator);
         sevenButton->setObjectName("sevenButton");
         sevenButton->setGeometry(QRect(60, 100, 41, 41));
-        eightButton = new QToolButton(Calculator);
+        eightButton = new BOBUIoolButton(Calculator);
         eightButton->setObjectName("eightButton");
         eightButton->setGeometry(QRect(110, 100, 41, 41));
-        nineButton = new QToolButton(Calculator);
+        nineButton = new BOBUIoolButton(Calculator);
         nineButton->setObjectName("nineButton");
         nineButton->setGeometry(QRect(160, 100, 41, 41));
-        fourButton = new QToolButton(Calculator);
+        fourButton = new BOBUIoolButton(Calculator);
         fourButton->setObjectName("fourButton");
         fourButton->setGeometry(QRect(60, 150, 41, 41));
-        fiveButton = new QToolButton(Calculator);
+        fiveButton = new BOBUIoolButton(Calculator);
         fiveButton->setObjectName("fiveButton");
         fiveButton->setGeometry(QRect(110, 150, 41, 41));
-        sixButton = new QToolButton(Calculator);
+        sixButton = new BOBUIoolButton(Calculator);
         sixButton->setObjectName("sixButton");
         sixButton->setGeometry(QRect(160, 150, 41, 41));
-        oneButton = new QToolButton(Calculator);
+        oneButton = new BOBUIoolButton(Calculator);
         oneButton->setObjectName("oneButton");
         oneButton->setGeometry(QRect(60, 200, 41, 41));
-        twoButton = new QToolButton(Calculator);
+        twoButton = new BOBUIoolButton(Calculator);
         twoButton->setObjectName("twoButton");
         twoButton->setGeometry(QRect(110, 200, 41, 41));
-        threeButton = new QToolButton(Calculator);
+        threeButton = new BOBUIoolButton(Calculator);
         threeButton->setObjectName("threeButton");
         threeButton->setGeometry(QRect(160, 200, 41, 41));
-        zeroButton = new QToolButton(Calculator);
+        zeroButton = new BOBUIoolButton(Calculator);
         zeroButton->setObjectName("zeroButton");
         zeroButton->setGeometry(QRect(60, 250, 41, 41));
-        pointButton = new QToolButton(Calculator);
+        pointButton = new BOBUIoolButton(Calculator);
         pointButton->setObjectName("pointButton");
         pointButton->setGeometry(QRect(110, 250, 41, 41));
-        changeSignButton = new QToolButton(Calculator);
+        changeSignButton = new BOBUIoolButton(Calculator);
         changeSignButton->setObjectName("changeSignButton");
         changeSignButton->setGeometry(QRect(160, 250, 41, 41));
-        plusButton = new QToolButton(Calculator);
+        plusButton = new BOBUIoolButton(Calculator);
         plusButton->setObjectName("plusButton");
         plusButton->setGeometry(QRect(210, 250, 41, 41));
-        divisionButton = new QToolButton(Calculator);
+        divisionButton = new BOBUIoolButton(Calculator);
         divisionButton->setObjectName("divisionButton");
         divisionButton->setGeometry(QRect(210, 100, 41, 41));
-        timesButton = new QToolButton(Calculator);
+        timesButton = new BOBUIoolButton(Calculator);
         timesButton->setObjectName("timesButton");
         timesButton->setGeometry(QRect(210, 150, 41, 41));
-        minusButton = new QToolButton(Calculator);
+        minusButton = new BOBUIoolButton(Calculator);
         minusButton->setObjectName("minusButton");
         minusButton->setGeometry(QRect(210, 200, 41, 41));
-        squareRootButton = new QToolButton(Calculator);
+        squareRootButton = new BOBUIoolButton(Calculator);
         squareRootButton->setObjectName("squareRootButton");
         squareRootButton->setGeometry(QRect(260, 100, 41, 41));
-        powerButton = new QToolButton(Calculator);
+        powerButton = new BOBUIoolButton(Calculator);
         powerButton->setObjectName("powerButton");
         powerButton->setGeometry(QRect(260, 150, 41, 41));
-        reciprocalButton = new QToolButton(Calculator);
+        reciprocalButton = new BOBUIoolButton(Calculator);
         reciprocalButton->setObjectName("reciprocalButton");
         reciprocalButton->setGeometry(QRect(260, 200, 41, 41));
-        equalButton = new QToolButton(Calculator);
+        equalButton = new BOBUIoolButton(Calculator);
         equalButton->setObjectName("equalButton");
         equalButton->setGeometry(QRect(260, 250, 41, 41));
         display = new QLineEdit(Calculator);
         display->setObjectName("display");
         display->setGeometry(QRect(10, 10, 291, 31));
         display->setMaxLength(15);
-        display->setAlignment(Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter);
+        display->setAlignment(BobUI::AlignmentFlag::AlignRight|BobUI::AlignmentFlag::AlignTrailing|BobUI::AlignmentFlag::AlignVCenter);
         display->setReadOnly(true);
 
         retranslateUi(Calculator);
@@ -192,6 +192,6 @@ namespace Ui {
     class Calculator: public Ui_Calculator {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // CALCULATOR_H

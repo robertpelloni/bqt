@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
@@ -10,10 +10,10 @@
 #include <QElapsedTimer>
 #include <QHostAddress>
 #include <QString>
-#include <QTcpSocket>
-#include <QTimer>
+#include <BOBUIcpSocket>
+#include <BOBUIimer>
 
-class Connection : public QTcpSocket
+class Connection : public BOBUIcpSocket
 {
     Q_OBJECT
 
@@ -47,7 +47,7 @@ signals:
     void newMessage(const QString &from, const QString &message);
 
 protected:
-    void timerEvent(QTimerEvent *timerEvent) override;
+    void timerEvent(BOBUIimerEvent *timerEvent) override;
 
 private slots:
     void processReadyRead();
@@ -63,7 +63,7 @@ private:
     QCborStreamWriter writer;
     QString greetingMessage = tr("undefined");
     QString username = tr("unknown");
-    QTimer pingTimer;
+    BOBUIimer pingTimer;
     QElapsedTimer pongTime;
     QString buffer;
     QByteArray localUniqueId;

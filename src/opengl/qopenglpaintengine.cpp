@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 /*
     When the active program changes, we need to update it's uniforms.
@@ -24,7 +24,7 @@
     and use the correct program when we really need it.
 */
 
-// #define QT_OPENGL_CACHE_AS_VBOS
+// #define BOBUI_OPENGL_CACHE_AS_VBOS
 
 #include <private/qopenglgradientcache_p.h>
 #include <private/qopengltexturecache_p.h>
@@ -43,7 +43,7 @@
 #include <private/qfontengine_p.h>
 #include <private/qdatabuffer_p.h>
 #include <private/qstatictext_p.h>
-#include <private/qtriangulator_p.h>
+#include <private/bobuiriangulator_p.h>
 
 #include <private/qopenglengineshadermanager_p.h>
 #include <private/qopengl2pexvertexarray_p.h>
@@ -51,7 +51,7 @@
 
 #include <QDebug>
 
-#include <qtopengl_tracepoints_p.h>
+#include <bobuiopengl_tracepoints_p.h>
 
 #ifndef GL_KHR_blend_equation_advanced
 #define GL_KHR_blend_equation_advanced 1
@@ -73,10 +73,10 @@
 #define GL_BLEND_ADVANCED_COHERENT_KHR    0x9285
 #endif /* GL_KHR_blend_equation_advanced_coherent */
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-Q_GUI_EXPORT QImage qt_imageForBrush(int brushStyle, bool invert);
+Q_GUI_EXPORT QImage bobui_imageForBrush(int brushStyle, bool invert);
 
 ////////////////////////////////// Private Methods //////////////////////////////////////////
 
@@ -96,7 +96,7 @@ QOpenGL2PaintEngineExPrivate::~QOpenGL2PaintEngineExPrivate()
     }
 }
 
-inline QColor qt_premultiplyColor(QColor c, GLfloat opacity)
+inline QColor bobui_premultiplyColor(QColor c, GLfloat opacity)
 {
     qreal alpha = c.alphaF() * opacity;
     c.setAlphaF(alpha);
@@ -112,18 +112,18 @@ void QOpenGL2PaintEngineExPrivate::setBrush(const QBrush& brush)
     if (qbrush_fast_equals(currentBrush, brush))
         return;
 
-    const Qt::BrushStyle newStyle = qbrush_style(brush);
-    Q_ASSERT(newStyle != Qt::NoBrush);
+    const BobUI::BrushStyle newStyle = qbrush_style(brush);
+    Q_ASSERT(newStyle != BobUI::NoBrush);
 
     currentBrush = brush;
     if (!currentBrushImage.isNull())
         currentBrushImage = QImage();
     brushUniformsDirty = true; // All brushes have at least one uniform
 
-    if (newStyle > Qt::SolidPattern)
+    if (newStyle > BobUI::SolidPattern)
         brushTextureDirty = true;
 
-    if (currentBrush.style() == Qt::TexturePattern
+    if (currentBrush.style() == BobUI::TexturePattern
         && qHasPixmapTexture(brush) && brush.texture().isQBitmap())
     {
         shaderManager->setSrcPixelType(QOpenGLEngineShaderManager::TextureSrcWithPattern);
@@ -149,7 +149,7 @@ void QOpenGL2PaintEngineExPrivate::useSimpleShader()
     texture in a central place, so that we can skip re-binding unless
     needed.
 
-    \note Any code or Qt API that internally activates or binds will
+    \note Any code or BobUI API that internally activates or binds will
     not affect the cache used by this function, which means they will
     lead to inconsistent state. QPainter::beginNativePainting() takes
     care of resetting the cache, so for user–code this is fine, but
@@ -266,18 +266,18 @@ void QOpenGL2PaintEngineExPrivate::updateBrushTexture()
 {
     Q_Q(QOpenGL2PaintEngineEx);
 //     qDebug("QOpenGL2PaintEngineExPrivate::updateBrushTexture()");
-    Qt::BrushStyle style = currentBrush.style();
+    BobUI::BrushStyle style = currentBrush.style();
 
     bool smoothPixmapTransform = q->state()->renderHints & QPainter::SmoothPixmapTransform;
     GLenum filterMode = smoothPixmapTransform ? GL_LINEAR : GL_NEAREST;
 
-    if ( (style >= Qt::Dense1Pattern) && (style <= Qt::DiagCrossPattern) ) {
+    if ( (style >= BobUI::Dense1Pattern) && (style <= BobUI::DiagCrossPattern) ) {
         // Get the image data for the pattern
-        QImage textureImage = qt_imageForBrush(style, false);
+        QImage textureImage = bobui_imageForBrush(style, false);
 
-        updateTexture(QT_BRUSH_TEXTURE_UNIT, textureImage, GL_REPEAT, filterMode, ForceUpdate);
+        updateTexture(BOBUI_BRUSH_TEXTURE_UNIT, textureImage, GL_REPEAT, filterMode, ForceUpdate);
     }
-    else if (style >= Qt::LinearGradientPattern && style <= Qt::ConicalGradientPattern) {
+    else if (style >= BobUI::LinearGradientPattern && style <= BobUI::ConicalGradientPattern) {
         // Gradiant brush: All the gradiants use the same texture
 
         const QGradient *gradient = currentBrush.gradient();
@@ -288,9 +288,9 @@ void QOpenGL2PaintEngineExPrivate::updateBrushTexture()
         else if (gradient->spread() == QGradient::ReflectSpread)
             wrapMode = GL_MIRRORED_REPEAT;
 
-        updateTexture(QT_BRUSH_TEXTURE_UNIT, *gradient, wrapMode, filterMode, ForceUpdate);
+        updateTexture(BOBUI_BRUSH_TEXTURE_UNIT, *gradient, wrapMode, filterMode, ForceUpdate);
     }
-    else if (style == Qt::TexturePattern) {
+    else if (style == BobUI::TexturePattern) {
         currentBrushImage = currentBrush.textureImage();
 
         int max_texture_size = ctx->d_func()->maxTextureSize();
@@ -303,11 +303,11 @@ void QOpenGL2PaintEngineExPrivate::updateBrushTexture()
             }
         }
         if (currentBrushImage.size() != newSize)
-            currentBrushImage = currentBrushImage.scaled(newSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            currentBrushImage = currentBrushImage.scaled(newSize, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
 
         GLuint wrapMode = GL_REPEAT;
 
-        updateTexture(QT_BRUSH_TEXTURE_UNIT, currentBrushImage, wrapMode, filterMode, ForceUpdate);
+        updateTexture(BOBUI_BRUSH_TEXTURE_UNIT, currentBrushImage, wrapMode, filterMode, ForceUpdate);
     }
     brushTextureDirty = false;
 }
@@ -316,24 +316,24 @@ void QOpenGL2PaintEngineExPrivate::updateBrushTexture()
 void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
 {
 //     qDebug("QOpenGL2PaintEngineExPrivate::updateBrushUniforms()");
-    Qt::BrushStyle style = currentBrush.style();
+    BobUI::BrushStyle style = currentBrush.style();
 
-    if (style == Qt::NoBrush)
+    if (style == BobUI::NoBrush)
         return;
 
-    QTransform brushQTransform = currentBrush.transform();
+    BOBUIransform brushBOBUIransform = currentBrush.transform();
     bool isCosmetic = false;
 
-    if (style == Qt::SolidPattern) {
-        QColor col = qt_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
+    if (style == BobUI::SolidPattern) {
+        QColor col = bobui_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
         shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::FragmentColor), col);
     }
     else {
         // All other brushes have a transform and thus need the translation point:
         QPointF translationPoint;
 
-        if (style <= Qt::DiagCrossPattern) {
-            QColor col = qt_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
+        if (style <= BobUI::DiagCrossPattern) {
+            QColor col = bobui_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
 
             shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::PatternColor), col);
 
@@ -342,7 +342,7 @@ void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
 
             isCosmetic = !q->painter()->testRenderHint(QPainter::NonCosmeticBrushPatterns);
         }
-        else if (style == Qt::LinearGradientPattern) {
+        else if (style == BobUI::LinearGradientPattern) {
             const QLinearGradient *g = static_cast<const QLinearGradient *>(currentBrush.gradient());
 
             QPointF realStart = g->start();
@@ -362,7 +362,7 @@ void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
             QVector2D halfViewportSize(width*0.5, height*0.5);
             shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::HalfViewportSize), halfViewportSize);
         }
-        else if (style == Qt::ConicalGradientPattern) {
+        else if (style == BobUI::ConicalGradientPattern) {
             const QConicalGradient *g = static_cast<const QConicalGradient *>(currentBrush.gradient());
             translationPoint   = g->center();
 
@@ -373,7 +373,7 @@ void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
             QVector2D halfViewportSize(width*0.5, height*0.5);
             shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::HalfViewportSize), halfViewportSize);
         }
-        else if (style == Qt::RadialGradientPattern) {
+        else if (style == BobUI::RadialGradientPattern) {
             const QRadialGradient *g = static_cast<const QRadialGradient *>(currentBrush.gradient());
             QPointF realCenter = g->center();
             QPointF realFocal  = g->focalPoint();
@@ -397,11 +397,11 @@ void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
             QVector2D halfViewportSize(width*0.5, height*0.5);
             shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::HalfViewportSize), halfViewportSize);
         }
-        else if (style == Qt::TexturePattern) {
+        else if (style == BobUI::TexturePattern) {
             const QPixmap& texPixmap = currentBrush.texture();
 
             if (qHasPixmapTexture(currentBrush) && currentBrush.texture().isQBitmap()) {
-                QColor col = qt_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
+                QColor col = bobui_premultiplyColor(currentBrush.color(), (GLfloat)q->state()->opacity);
                 shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::PatternColor), col);
             }
 
@@ -415,25 +415,25 @@ void QOpenGL2PaintEngineExPrivate::updateBrushUniforms()
             qWarning("QOpenGL2PaintEngineEx: Unimplemented fill style");
 
         const QPointF &brushOrigin = q->state()->brushOrigin;
-        QTransform matrix;
+        BOBUIransform matrix;
         if (!isCosmetic)
             matrix = q->state()->matrix;
         matrix.translate(brushOrigin.x(), brushOrigin.y());
         if (!isCosmetic)
-            matrix = brushQTransform * matrix;
+            matrix = brushBOBUIransform * matrix;
 
-        QTransform translate(1, 0, 0, 1, -translationPoint.x(), -translationPoint.y());
+        BOBUIransform translate(1, 0, 0, 1, -translationPoint.x(), -translationPoint.y());
         qreal m22 = -1;
         qreal dy = height;
         if (device->paintFlipped()) {
             m22 = 1;
             dy = 0;
         }
-        QTransform gl_to_qt(1, 0, 0, m22, 0, dy);
-        QTransform inv_matrix = gl_to_qt * matrix.inverted() * translate;
+        BOBUIransform gl_to_bobui(1, 0, 0, m22, 0, dy);
+        BOBUIransform inv_matrix = gl_to_bobui * matrix.inverted() * translate;
 
         shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::BrushTransform), inv_matrix);
-        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::BrushTexture), QT_BRUSH_TEXTURE_UNIT);
+        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::BrushTexture), BOBUI_BRUSH_TEXTURE_UNIT);
     }
     brushUniformsDirty = false;
 }
@@ -444,12 +444,12 @@ void QOpenGL2PaintEngineExPrivate::updateMatrix()
 {
 //     qDebug("QOpenGL2PaintEngineExPrivate::updateMatrix()");
 
-    const QTransform& transform = q->state()->matrix;
+    const BOBUIransform& transform = q->state()->matrix;
 
-    // The projection matrix converts from Qt's coordinate system to GL's coordinate system
-    //    * GL's viewport is 2x2, Qt's is width x height
-    //    * GL has +y -> -y going from bottom -> top, Qt is the other way round
-    //    * GL has [0,0] in the center, Qt has it in the top-left
+    // The projection matrix converts from BobUI's coordinate system to GL's coordinate system
+    //    * GL's viewport is 2x2, BobUI's is width x height
+    //    * GL has +y -> -y going from bottom -> top, BobUI is the other way round
+    //    * GL has [0,0] in the center, BobUI has it in the top-left
     //
     // This results in the Projection matrix below, which is multiplied by the painter's
     // transformation matrix, as shown below:
@@ -476,7 +476,7 @@ void QOpenGL2PaintEngineExPrivate::updateMatrix()
 
     // Non-integer translates can have strange effects for some rendering operations such as
     // anti-aliased text rendering. In such cases, we snap the translate to the pixel grid.
-    if (snapToPixelGrid && transform.type() == QTransform::TxTranslate) {
+    if (snapToPixelGrid && transform.type() == BOBUIransform::TxTranslate) {
         // 0.50 needs to rounded down to 0.0 for consistency with raster engine:
         dx = std::ceil(dx - 0.5f);
         dy = std::ceil(dy - 0.5f);
@@ -502,9 +502,9 @@ void QOpenGL2PaintEngineExPrivate::updateMatrix()
 
     // Set the PMV matrix attribute. As we use an attributes rather than uniforms, we only
     // need to do this once for every matrix change and persists across all shader programs.
-    funcs.glVertexAttrib3fv(QT_PMV_MATRIX_1_ATTR, pmvMatrix[0]);
-    funcs.glVertexAttrib3fv(QT_PMV_MATRIX_2_ATTR, pmvMatrix[1]);
-    funcs.glVertexAttrib3fv(QT_PMV_MATRIX_3_ATTR, pmvMatrix[2]);
+    funcs.glVertexAttrib3fv(BOBUI_PMV_MATRIX_1_ATTR, pmvMatrix[0]);
+    funcs.glVertexAttrib3fv(BOBUI_PMV_MATRIX_2_ATTR, pmvMatrix[1]);
+    funcs.glVertexAttrib3fv(BOBUI_PMV_MATRIX_3_ATTR, pmvMatrix[2]);
 
     dasher.setInvScale(inverseScale);
     stroker.setInvScale(inverseScale);
@@ -624,7 +624,7 @@ static inline void setCoords(GLfloat *coords, const QOpenGLRect &rect)
     coords[7] = rect.bottom;
 }
 
-void Q_TRACE_INSTRUMENT(qtopengl) QOpenGL2PaintEngineExPrivate::drawTexture(const QOpenGLRect& dest, const QOpenGLRect& src, const QSize &textureSize, bool opaque, bool pattern)
+void Q_TRACE_INSTRUMENT(bobuiopengl) QOpenGL2PaintEngineExPrivate::drawTexture(const QOpenGLRect& dest, const QOpenGLRect& src, const QSize &textureSize, bool opaque, bool pattern)
 {
     Q_TRACE_PARAM_REPLACE(QOpenGLRect, QRectF);
     Q_TRACE_SCOPE(QOpenGL2PaintEngineExPrivate_drawTexture, dest, src, textureSize, opaque, pattern);
@@ -638,10 +638,10 @@ void Q_TRACE_INSTRUMENT(qtopengl) QOpenGL2PaintEngineExPrivate::drawTexture(cons
     }
 
     if (prepareForDraw(opaque))
-        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), QT_IMAGE_TEXTURE_UNIT);
+        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), BOBUI_IMAGE_TEXTURE_UNIT);
 
     if (pattern) {
-        QColor col = qt_premultiplyColor(q->state()->pen.color(), (GLfloat)q->state()->opacity);
+        QColor col = bobui_premultiplyColor(q->state()->pen.color(), (GLfloat)q->state()->opacity);
         shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::PatternColor), col);
     }
 
@@ -653,11 +653,11 @@ void Q_TRACE_INSTRUMENT(qtopengl) QOpenGL2PaintEngineExPrivate::drawTexture(cons
     setCoords(staticVertexCoordinateArray, dest);
     setCoords(staticTextureCoordinateArray, srcTextureRect);
 
-    setVertexAttribArrayEnabled(QT_VERTEX_COORDS_ATTR, true);
-    setVertexAttribArrayEnabled(QT_TEXTURE_COORDS_ATTR, true);
+    setVertexAttribArrayEnabled(BOBUI_VERTEX_COORDS_ATTR, true);
+    setVertexAttribArrayEnabled(BOBUI_TEXTURE_COORDS_ATTR, true);
 
-    uploadData(QT_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
-    uploadData(QT_TEXTURE_COORDS_ATTR, staticTextureCoordinateArray, 8);
+    uploadData(BOBUI_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
+    uploadData(BOBUI_TEXTURE_COORDS_ATTR, staticTextureCoordinateArray, 8);
 
     funcs.glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
@@ -673,10 +673,10 @@ void QOpenGL2PaintEngineEx::beginNativePainting()
     d->funcs.glUseProgram(0);
 
     // Disable all the vertex attribute arrays:
-    for (int i = 0; i < QT_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i)
+    for (int i = 0; i < BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i)
         d->funcs.glDisableVertexAttribArray(i);
 
-#if !QT_CONFIG(opengles2) && !defined(QT_OPENGL_DYNAMIC)
+#if !BOBUI_CONFIG(opengles2) && !defined(BOBUI_OPENGL_DYNAMIC)
     Q_ASSERT(QOpenGLContext::currentContext());
     const QOpenGLContext *ctx = d->ctx;
     const QSurfaceFormat &fmt = d->device->context()->format();
@@ -687,7 +687,7 @@ void QOpenGL2PaintEngineEx::beginNativePainting()
         // be nice to people who mix OpenGL 1.x code with QPainter commands
         // by setting modelview and projection matrices to mirror the GL 1
         // paint engine
-        const QTransform& mtx = state()->matrix;
+        const BOBUIransform& mtx = state()->matrix;
 
         float mv_matrix[4][4] =
             {
@@ -706,14 +706,14 @@ void QOpenGL2PaintEngineEx::beginNativePainting()
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(&mv_matrix[0][0]);
     }
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
 
     d->resetGLState();
 
     // We don't know what texture units and textures the native painting
     // will activate and bind, so we can't assume anything when we return
     // from the native painting.
-    d->lastTextureUnitUsed = QT_UNKNOWN_TEXTURE_UNIT;
+    d->lastTextureUnitUsed = BOBUI_UNKNOWN_TEXTURE_UNIT;
     d->lastTextureUsed = GLuint(-1);
 
     d->dirtyStencilRegion = QRect(0, 0, d->width, d->height);
@@ -725,7 +725,7 @@ void QOpenGL2PaintEngineEx::beginNativePainting()
 
 void QOpenGL2PaintEngineExPrivate::resetGLState()
 {
-    activateTextureUnit(QT_DEFAULT_TEXTURE_UNIT);
+    activateTextureUnit(BOBUI_DEFAULT_TEXTURE_UNIT);
 
     funcs.glDisable(GL_BLEND);
     funcs.glDisable(GL_STENCIL_TEST);
@@ -737,9 +737,9 @@ void QOpenGL2PaintEngineExPrivate::resetGLState()
     funcs.glStencilMask(0xff);
     funcs.glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     funcs.glStencilFunc(GL_ALWAYS, 0, 0xff);
-    setVertexAttribArrayEnabled(QT_TEXTURE_COORDS_ATTR, false);
-    setVertexAttribArrayEnabled(QT_VERTEX_COORDS_ATTR, false);
-    setVertexAttribArrayEnabled(QT_OPACITY_ATTR, false);
+    setVertexAttribArrayEnabled(BOBUI_TEXTURE_COORDS_ATTR, false);
+    setVertexAttribArrayEnabled(BOBUI_VERTEX_COORDS_ATTR, false);
+    setVertexAttribArrayEnabled(BOBUI_OPACITY_ATTR, false);
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         // gl_Color, corresponding to vertex attribute 3, may have been changed
         float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -782,16 +782,16 @@ void QOpenGL2PaintEngineExPrivate::transferMode(EngineMode newMode)
     }
 
     if (newMode == ImageDrawingMode) {
-        uploadData(QT_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
-        uploadData(QT_TEXTURE_COORDS_ATTR, staticTextureCoordinateArray, 8);
+        uploadData(BOBUI_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
+        uploadData(BOBUI_TEXTURE_COORDS_ATTR, staticTextureCoordinateArray, 8);
     }
 
     if (newMode == ImageArrayDrawingMode || newMode == ImageOpacityArrayDrawingMode) {
-        uploadData(QT_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinateArray.data(), vertexCoordinateArray.vertexCount() * 2);
-        uploadData(QT_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinateArray.data(), textureCoordinateArray.vertexCount() * 2);
+        uploadData(BOBUI_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinateArray.data(), vertexCoordinateArray.vertexCount() * 2);
+        uploadData(BOBUI_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinateArray.data(), textureCoordinateArray.vertexCount() * 2);
 
         if (newMode == ImageOpacityArrayDrawingMode)
-            uploadData(QT_OPACITY_ATTR, (GLfloat*)opacityArray.data(), opacityArray.size());
+            uploadData(BOBUI_OPACITY_ATTR, (GLfloat*)opacityArray.data(), opacityArray.size());
     }
 
     // This needs to change when we implement high-quality anti-aliasing...
@@ -803,7 +803,7 @@ void QOpenGL2PaintEngineExPrivate::transferMode(EngineMode newMode)
 
 struct QOpenGL2PEVectorPathCache
 {
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
     GLuint vbo;
     GLuint ibo;
 #else
@@ -820,7 +820,7 @@ struct QOpenGL2PEVectorPathCache
 void QOpenGL2PaintEngineExPrivate::cleanupVectorPath(QPaintEngineEx *engine, void *data)
 {
     QOpenGL2PEVectorPathCache *c = (QOpenGL2PEVectorPathCache *) data;
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
     Q_ASSERT(engine->type() == QPaintEngine::OpenGL2);
     static_cast<QOpenGL2PaintEngineEx *>(engine)->d_func()->unusedVBOSToClean << c->vbo;
     if (c->ibo)
@@ -846,7 +846,7 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
     // Might need to call updateMatrix to re-calculate inverseScale
     if (matrixDirty) {
         updateMatrix();
-        if (currentBrush.style() > Qt::SolidPattern)
+        if (currentBrush.style() > BobUI::SolidPattern)
             brushUniformsDirty = true;
     }
 
@@ -872,7 +872,7 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
                 // Check if scale factor is exceeded and regenerate if so...
                 qreal scaleFactor = cache->iscale / inverseScale;
                 if (scaleFactor < 0.5 || scaleFactor > 2.0) {
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
                     glDeleteBuffers(1, &cache->vbo);
                     cache->vbo = 0;
                     Q_ASSERT(cache->ibo == 0);
@@ -898,7 +898,7 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
                 cache->indexCount = 0;
                 cache->primitiveType = GL_TRIANGLE_FAN;
                 cache->iscale = inverseScale;
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
                 funcs.glGenBuffers(1, &cache->vbo);
                 funcs.glBindBuffer(GL_ARRAY_BUFFER, cache->vbo);
                 funcs.glBufferData(GL_ARRAY_BUFFER, floatSizeInBytes, vertexCoordinateArray.data(), GL_STATIC_DRAW);
@@ -911,12 +911,12 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
             }
 
             prepareForDraw(currentBrush.isOpaque());
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
             funcs.glBindBuffer(GL_ARRAY_BUFFER, cache->vbo);
-            uploadData(QT_VERTEX_COORD_ATTR, 0, cache->vertexCount);
-            setVertexAttributePointer(QT_VERTEX_COORDS_ATTR, 0);
+            uploadData(BOBUI_VERTEX_COORD_ATTR, 0, cache->vertexCount);
+            setVertexAttributePointer(BOBUI_VERTEX_COORDS_ATTR, 0);
 #else
-            uploadData(QT_VERTEX_COORDS_ATTR, cache->vertices, cache->vertexCount * 2);
+            uploadData(BOBUI_VERTEX_COORDS_ATTR, cache->vertices, cache->vertexCount * 2);
 #endif
             funcs.glDrawArrays(cache->primitiveType, 0, cache->vertexCount);
 
@@ -952,7 +952,7 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
                 // Check if scale factor is exceeded and regenerate if so...
                 qreal scaleFactor = cache->iscale / inverseScale;
                 if (scaleFactor < 0.5 || scaleFactor > 2.0) {
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
                     glDeleteBuffers(1, &cache->vbo);
                     glDeleteBuffers(1, &cache->ibo);
 #else
@@ -969,13 +969,13 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
 
             // Flatten the path at the current scale factor and fill it into the cache struct.
             if (updateCache) {
-                QTriangleSet polys = qTriangulate(path, QTransform().scale(1 / inverseScale, 1 / inverseScale), 1, supportsElementIndexUint);
+                BOBUIriangleSet polys = qTriangulate(path, BOBUIransform().scale(1 / inverseScale, 1 / inverseScale), 1, supportsElementIndexUint);
                 cache->vertexCount = polys.vertices.size() / 2;
                 cache->indexCount = polys.indices.size();
                 cache->primitiveType = GL_TRIANGLES;
                 cache->iscale = inverseScale;
                 cache->indexType = polys.indices.type();
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
                 funcs.glGenBuffers(1, &cache->vbo);
                 funcs.glGenBuffers(1, &cache->ibo);
                 funcs.glBindBuffer(GL_ARRAY_BUFFER, cache->vbo);
@@ -1005,11 +1005,11 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
             }
 
             prepareForDraw(currentBrush.isOpaque());
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
             funcs.glBindBuffer(GL_ARRAY_BUFFER, cache->vbo);
             funcs.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cache->ibo);
-            uploadData(QT_VERTEX_COORDS_ATTR, 0, cache->vertexCount);
-            setVertexAttributePointer(QT_VERTEX_COORDS_ATTR, 0);
+            uploadData(BOBUI_VERTEX_COORDS_ATTR, 0, cache->vertexCount);
+            setVertexAttributePointer(BOBUI_VERTEX_COORDS_ATTR, 0);
             if (cache->indexType == QVertexIndexVector::UnsignedInt)
                 funcs.glDrawElements(cache->primitiveType, cache->indexCount, GL_UNSIGNED_INT, 0);
             else
@@ -1017,7 +1017,7 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
             funcs.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             funcs.glBindBuffer(GL_ARRAY_BUFFER, 0);
 #else
-            uploadData(QT_VERTEX_COORDS_ATTR, cache->vertices, cache->vertexCount * 2);
+            uploadData(BOBUI_VERTEX_COORDS_ATTR, cache->vertices, cache->vertexCount * 2);
             const GLenum indexValueType = cache->indexType == QVertexIndexVector::UnsignedInt ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
             const bool useIndexVbo = uploadIndexData(cache->indices, indexValueType, cache->indexCount);
             funcs.glDrawElements(cache->primitiveType, cache->indexCount, indexValueType, useIndexVbo ? nullptr : cache->indices);
@@ -1038,14 +1038,14 @@ void QOpenGL2PaintEngineExPrivate::fill(const QVectorPath& path)
                                   && (bbox.top() > -0x8000 * inverseScale)
                                   && (bbox.bottom() < 0x8000 * inverseScale);
                 if (withinLimits) {
-                    QTriangleSet polys = qTriangulate(path, QTransform().scale(1 / inverseScale, 1 / inverseScale), 1, supportsElementIndexUint);
+                    BOBUIriangleSet polys = qTriangulate(path, BOBUIransform().scale(1 / inverseScale, 1 / inverseScale), 1, supportsElementIndexUint);
 
                     QVarLengthArray<float> vertices(polys.vertices.size());
                     for (int i = 0; i < polys.vertices.size(); ++i)
                         vertices[i] = float(inverseScale * polys.vertices.at(i));
 
                     prepareForDraw(currentBrush.isOpaque());
-                    uploadData(QT_VERTEX_COORDS_ATTR, vertices.constData(), vertices.size());
+                    uploadData(BOBUI_VERTEX_COORDS_ATTR, vertices.constData(), vertices.size());
                     const GLenum indexValueType = funcs.hasOpenGLExtension(QOpenGLExtensions::ElementIndexUint) ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
                     const bool useIndexVbo = uploadIndexData(polys.indices.data(), indexValueType, polys.indices.size());
                     funcs.glDrawElements(GL_TRIANGLES, polys.indices.size(), indexValueType, useIndexVbo ? nullptr : polys.indices.data());
@@ -1102,7 +1102,7 @@ void QOpenGL2PaintEngineExPrivate::fillStencilWithVertexArray(const float *data,
         const QRegion clearRegion = dirtyStencilRegion.intersected(currentScissorBounds);
         funcs.glClearStencil(0); // Clear to zero
         for (const QRect &rect : clearRegion) {
-#ifndef QT_GL_NO_SCISSOR_TEST
+#ifndef BOBUI_GL_NO_SCISSOR_TEST
             setScissor(rect);
 #endif
             funcs.glClear(GL_STENCIL_BUFFER_BIT);
@@ -1110,14 +1110,14 @@ void QOpenGL2PaintEngineExPrivate::fillStencilWithVertexArray(const float *data,
 
         dirtyStencilRegion -= currentScissorBounds;
 
-#ifndef QT_GL_NO_SCISSOR_TEST
+#ifndef BOBUI_GL_NO_SCISSOR_TEST
         updateClipScissorTest();
 #endif
     }
 
     funcs.glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); // Disable color writes
     useSimpleShader();
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (ctx->format().stencilBufferSize() <= 0)
         qWarning("OpenGL paint engine: attempted to use stencil test without requesting a stencil buffer.");
 #endif
@@ -1163,7 +1163,7 @@ void QOpenGL2PaintEngineExPrivate::fillStencilWithVertexArray(const float *data,
         funcs.glStencilMask(GL_STENCIL_HIGH_BIT);
 #if 0
         funcs.glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT); // Simply invert the stencil bit
-        setVertexAttributePointer(QT_VERTEX_COORDS_ATTR, data);
+        setVertexAttributePointer(BOBUI_VERTEX_COORDS_ATTR, data);
         funcs.glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
 #else
 
@@ -1175,7 +1175,7 @@ void QOpenGL2PaintEngineExPrivate::fillStencilWithVertexArray(const float *data,
             funcs.glStencilFunc(GL_ALWAYS, GL_STENCIL_HIGH_BIT, 0xff);
         }
 
-        uploadData(QT_VERTEX_COORDS_ATTR, data, count * 2);
+        uploadData(BOBUI_VERTEX_COORDS_ATTR, data, count * 2);
         funcs.glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
 #endif
     }
@@ -1228,9 +1228,9 @@ bool QOpenGL2PaintEngineExPrivate::prepareForCachedGlyphDraw(const QFontEngineGl
 {
     Q_Q(QOpenGL2PaintEngineEx);
 
-    Q_ASSERT(cache.transform().type() <= QTransform::TxScale);
+    Q_ASSERT(cache.transform().type() <= BOBUIransform::TxScale);
 
-    QTransform &transform = q->state()->matrix;
+    BOBUIransform &transform = q->state()->matrix;
     transform.scale(1.0 / cache.transform().m11(), 1.0 / cache.transform().m22());
     bool ret = prepareForDraw(false);
     transform.scale(cache.transform().m11(), cache.transform().m22());
@@ -1267,10 +1267,10 @@ bool QOpenGL2PaintEngineExPrivate::prepareForDraw(bool srcPixelsAreOpaque)
                                       : QOpenGLEngineShaderManager::NoOpacity;
         if (stateHasOpacity && (mode != ImageDrawingMode && mode != ImageArrayDrawingMode)) {
             // Using a brush
-            bool brushIsPattern = (currentBrush.style() >= Qt::Dense1Pattern) &&
-                                  (currentBrush.style() <= Qt::DiagCrossPattern);
+            bool brushIsPattern = (currentBrush.style() >= BobUI::Dense1Pattern) &&
+                                  (currentBrush.style() <= BobUI::DiagCrossPattern);
 
-            if ((currentBrush.style() == Qt::SolidPattern) || brushIsPattern)
+            if ((currentBrush.style() == BobUI::SolidPattern) || brushIsPattern)
                 opacityMode = QOpenGLEngineShaderManager::NoOpacity; // Global opacity handled by srcPixel shader
         }
     }
@@ -1306,7 +1306,7 @@ void QOpenGL2PaintEngineExPrivate::composite(const QOpenGLRect& boundingRect)
 {
     setCoords(staticVertexCoordinateArray, boundingRect);
 
-    uploadData(QT_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
+    uploadData(BOBUI_VERTEX_COORDS_ATTR, staticVertexCoordinateArray, 8);
     funcs.glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 
@@ -1315,7 +1315,7 @@ void QOpenGL2PaintEngineExPrivate::drawVertexArrays(const float *data, int *stop
                                                 GLenum primitive)
 {
     // Now setup the pointer to the vertex array:
-    uploadData(QT_VERTEX_COORDS_ATTR, data, stops[stopCount-1] * 2);
+    uploadData(BOBUI_VERTEX_COORDS_ATTR, data, stops[stopCount-1] * 2);
 
     int previousStop = 0;
     for (int i=0; i<stopCount; ++i) {
@@ -1342,14 +1342,14 @@ void QOpenGL2PaintEngineEx::fill(const QVectorPath &path, const QBrush &brush)
 {
     Q_D(QOpenGL2PaintEngineEx);
 
-    if (qbrush_style(brush) == Qt::NoBrush)
+    if (qbrush_style(brush) == BobUI::NoBrush)
         return;
     ensureActive();
     d->setBrush(brush);
     d->fill(path);
 }
 
-Q_GUI_EXPORT extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
+Q_GUI_EXPORT extern bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale); // bobuiransform.cpp
 
 
 void QOpenGL2PaintEngineEx::stroke(const QVectorPath &path, const QPen &pen)
@@ -1357,12 +1357,12 @@ void QOpenGL2PaintEngineEx::stroke(const QVectorPath &path, const QPen &pen)
     Q_D(QOpenGL2PaintEngineEx);
 
     const QBrush &penBrush = qpen_brush(pen);
-    if (qpen_style(pen) == Qt::NoPen || qbrush_style(penBrush) == Qt::NoBrush)
+    if (qpen_style(pen) == BobUI::NoPen || qbrush_style(penBrush) == BobUI::NoBrush)
         return;
 
     QOpenGL2PaintEngineState *s = state();
-    if (pen.isCosmetic() && !qt_scaleForTransform(s->transform(), nullptr)) {
-        // QTriangulatingStroker class is not meant to support cosmetically sheared strokes.
+    if (pen.isCosmetic() && !bobui_scaleForTransform(s->transform(), nullptr)) {
+        // BOBUIriangulatingStroker class is not meant to support cosmetically sheared strokes.
         QPaintEngineEx::stroke(path, pen);
         return;
     }
@@ -1380,7 +1380,7 @@ void QOpenGL2PaintEngineExPrivate::stroke(const QVectorPath &path, const QPen &p
         matrixDirty = true;
     }
 
-    const Qt::PenStyle penStyle = qpen_style(pen);
+    const BobUI::PenStyle penStyle = qpen_style(pen);
     const QBrush &penBrush = qpen_brush(pen);
     const bool opaque = penBrush.isOpaque() && s->opacity > 0.99;
 
@@ -1395,7 +1395,7 @@ void QOpenGL2PaintEngineExPrivate::stroke(const QVectorPath &path, const QPen &p
                                                         ? q->state()->rectangleClip
                                                         : QRectF(0, 0, width, height));
 
-    if (penStyle == Qt::SolidLine) {
+    if (penStyle == BobUI::SolidLine) {
         stroker.process(path, pen, clip, s->renderHints);
 
     } else { // Some sort of dash
@@ -1413,13 +1413,13 @@ void QOpenGL2PaintEngineExPrivate::stroke(const QVectorPath &path, const QPen &p
     if (opaque) {
         prepareForDraw(opaque);
 
-        uploadData(QT_VERTEX_COORDS_ATTR, stroker.vertices(), stroker.vertexCount());
+        uploadData(BOBUI_VERTEX_COORDS_ATTR, stroker.vertices(), stroker.vertexCount());
         funcs.glDrawArrays(GL_TRIANGLE_STRIP, 0, stroker.vertexCount() / 2);
     } else {
         qreal width = qpen_widthf(pen) / 2;
         if (width == 0)
             width = 0.5;
-        qreal extra = pen.joinStyle() == Qt::MiterJoin
+        qreal extra = pen.joinStyle() == BobUI::MiterJoin
                       ? qMax(pen.miterLimit() * width, width)
                       : width;
 
@@ -1478,7 +1478,7 @@ void QOpenGL2PaintEngineEx::renderHintsChanged()
 {
     state()->renderHintsChanged = true;
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         Q_D(QOpenGL2PaintEngineEx);
         if (state()->renderHints & QPainter::Antialiasing)
@@ -1486,7 +1486,7 @@ void QOpenGL2PaintEngineEx::renderHintsChanged()
         else
             d->funcs.glDisable(GL_MULTISAMPLE);
     }
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
 
     Q_D(QOpenGL2PaintEngineEx);
 
@@ -1524,7 +1524,7 @@ void QOpenGL2PaintEngineEx::drawPixmap(const QRectF& dest, const QPixmap & pixma
 
     int max_texture_size = ctx->d_func()->maxTextureSize();
     if (pixmap.width() > max_texture_size || pixmap.height() > max_texture_size) {
-        QPixmap scaled = pixmap.scaled(max_texture_size, max_texture_size, Qt::KeepAspectRatio);
+        QPixmap scaled = pixmap.scaled(max_texture_size, max_texture_size, BobUI::KeepAspectRatio);
 
         const qreal sx = scaled.width() / qreal(pixmap.width());
         const qreal sy = scaled.height() / qreal(pixmap.height());
@@ -1537,7 +1537,7 @@ void QOpenGL2PaintEngineEx::drawPixmap(const QRectF& dest, const QPixmap & pixma
     d->transferMode(ImageDrawingMode);
 
     GLenum filterMode = state()->renderHints & QPainter::SmoothPixmapTransform ? GL_LINEAR : GL_NEAREST;
-    d->updateTexture(QT_IMAGE_TEXTURE_UNIT, pixmap, GL_CLAMP_TO_EDGE, filterMode);
+    d->updateTexture(BOBUI_IMAGE_TEXTURE_UNIT, pixmap, GL_CLAMP_TO_EDGE, filterMode);
 
     bool isBitmap = pixmap.isQBitmap();
     bool isOpaque = !isBitmap && !pixmap.hasAlpha();
@@ -1549,14 +1549,14 @@ void QOpenGL2PaintEngineEx::drawPixmap(const QRectF& dest, const QPixmap & pixma
 }
 
 void QOpenGL2PaintEngineEx::drawImage(const QRectF& dest, const QImage& image, const QRectF& src,
-                        Qt::ImageConversionFlags)
+                        BobUI::ImageConversionFlags)
 {
     Q_D(QOpenGL2PaintEngineEx);
     QOpenGLContext *ctx = d->ctx;
 
     int max_texture_size = ctx->d_func()->maxTextureSize();
     if (image.width() > max_texture_size || image.height() > max_texture_size) {
-        QImage scaled = image.scaled(max_texture_size, max_texture_size, Qt::KeepAspectRatio);
+        QImage scaled = image.scaled(max_texture_size, max_texture_size, BobUI::KeepAspectRatio);
 
         const qreal sx = scaled.width() / qreal(image.width());
         const qreal sy = scaled.height() / qreal(image.height());
@@ -1601,7 +1601,7 @@ void QOpenGL2PaintEngineEx::drawImage(const QRectF& dest, const QImage& image, c
 
     ImageWithBindOptions imageWithOptions = { image, bindOption };
     GLenum filterMode = state()->renderHints & QPainter::SmoothPixmapTransform ? GL_LINEAR : GL_NEAREST;
-    d->updateTexture(QT_IMAGE_TEXTURE_UNIT, imageWithOptions, GL_CLAMP_TO_EDGE, filterMode);
+    d->updateTexture(BOBUI_IMAGE_TEXTURE_UNIT, imageWithOptions, GL_CLAMP_TO_EDGE, filterMode);
 
     d->drawTexture(dest, src, image.size(), !image.hasAlphaChannel());
 }
@@ -1619,7 +1619,7 @@ void QOpenGL2PaintEngineEx::drawStaticTextItem(QStaticTextItem *textItem)
         QFontEngine::GlyphFormat glyphFormat = fontEngine->glyphFormat != QFontEngine::Format_None
                                                 ? fontEngine->glyphFormat : d->glyphCacheFormat;
         if (glyphFormat == QFontEngine::Format_A32) {
-            if (d->device->context()->format().alphaBufferSize() > 0 || s->matrix.type() > QTransform::TxTranslate
+            if (d->device->context()->format().alphaBufferSize() > 0 || s->matrix.type() > BOBUIransform::TxTranslate
                 || (s->composition_mode != QPainter::CompositionMode_Source
                 && s->composition_mode != QPainter::CompositionMode_SourceOver))
             {
@@ -1643,7 +1643,7 @@ bool QOpenGL2PaintEngineEx::drawTexture(const QRectF &dest, GLuint textureId, co
     d->transferMode(ImageDrawingMode);
 
     GLenum filterMode = state()->renderHints & QPainter::SmoothPixmapTransform ? GL_LINEAR : GL_NEAREST;
-    d->updateTexture(QT_IMAGE_TEXTURE_UNIT, textureId, GL_CLAMP_TO_EDGE, filterMode);
+    d->updateTexture(BOBUI_IMAGE_TEXTURE_UNIT, textureId, GL_CLAMP_TO_EDGE, filterMode);
 
     d->shaderManager->setSrcPixelType(QOpenGLEngineShaderManager::ImageSrc);
 
@@ -1653,22 +1653,22 @@ bool QOpenGL2PaintEngineEx::drawTexture(const QRectF &dest, GLuint textureId, co
     return true;
 }
 
-void QOpenGL2PaintEngineEx::drawTextItem(const QPointF &p, const QTextItem &textItem)
+void QOpenGL2PaintEngineEx::drawTextItem(const QPointF &p, const BOBUIextItem &textItem)
 {
     Q_D(QOpenGL2PaintEngineEx);
 
     ensureActive();
     QOpenGL2PaintEngineState *s = state();
 
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
+    const BOBUIextItemInt &ti = static_cast<const BOBUIextItemInt &>(textItem);
 
-    QTransform::TransformationType txtype = s->matrix.type();
+    BOBUIransform::TransformationType txtype = s->matrix.type();
 
     QFontEngine::GlyphFormat glyphFormat = ti.fontEngine->glyphFormat != QFontEngine::Format_None
                                                 ? ti.fontEngine->glyphFormat : d->glyphCacheFormat;
 
     if (glyphFormat == QFontEngine::Format_A32) {
-        if (d->device->context()->format().alphaBufferSize() > 0 || txtype > QTransform::TxTranslate
+        if (d->device->context()->format().alphaBufferSize() > 0 || txtype > BOBUIransform::TxTranslate
             || (state()->composition_mode != QPainter::CompositionMode_Source
             && state()->composition_mode != QPainter::CompositionMode_SourceOver))
         {
@@ -1679,7 +1679,7 @@ void QOpenGL2PaintEngineEx::drawTextItem(const QPointF &p, const QTextItem &text
     if (shouldDrawCachedGlyphs(ti.fontEngine, s->matrix)) {
         QVarLengthArray<QFixedPoint> positions;
         QVarLengthArray<glyph_t> glyphs;
-        QTransform matrix = QTransform::fromTranslate(p.x(), p.y());
+        BOBUIransform matrix = BOBUIransform::fromTranslate(p.x(), p.y());
         ti.fontEngine->getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
 
         {
@@ -1721,12 +1721,12 @@ namespace {
 }
 
 
-// #define QT_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO
+// #define BOBUI_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO
 
-bool QOpenGL2PaintEngineEx::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const QTransform &t) const
+bool QOpenGL2PaintEngineEx::shouldDrawCachedGlyphs(QFontEngine *fontEngine, const BOBUIransform &t) const
 {
     // The paint engine does not support projected cached glyph drawing
-    if (t.type() == QTransform::TxProject)
+    if (t.type() == BOBUIransform::TxProject)
         return false;
 
     // The font engine might not support filling the glyph cache
@@ -1754,8 +1754,8 @@ bool QOpenGL2PaintEngineEx::shouldDrawCachedGlyphs(QFontEngine *fontEngine, cons
 // that divides by QOpenGLTextureGlyphCache::height() in release builds.
 // Anyhow, the code path in this method is only executed
 // if height() != 0. Therefore disable the warning.
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4723)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4723)
 
 void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat glyphFormat,
                                                 QStaticTextItem *staticTextItem)
@@ -1767,15 +1767,15 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
     void *cacheKey = ctx; // use context, not the shareGroup() -> the GL glyph cache uses FBOs which may not be shareable
     bool recreateVertexArrays = false;
 
-    QTransform glyphCacheTransform;
+    BOBUIransform glyphCacheTransform;
     QFontEngine *fe = staticTextItem->fontEngine();
     if (fe->supportsTransformation(s->matrix)) {
         // The font-engine supports rendering glyphs with the current transform, so we
         // build a glyph-cache with the scale pre-applied, so that the cache contains
         // glyphs with the appropriate resolution in the case of retina displays.
-        glyphCacheTransform = s->matrix.type() < QTransform::TxRotate ?
-            QTransform::fromScale(qAbs(s->matrix.m11()), qAbs(s->matrix.m22())) :
-            QTransform::fromScale(
+        glyphCacheTransform = s->matrix.type() < BOBUIransform::TxRotate ?
+            BOBUIransform::fromScale(qAbs(s->matrix.m11()), qAbs(s->matrix.m22())) :
+            BOBUIransform::fromScale(
                 QVector2D(s->matrix.m11(), s->matrix.m12()).length(),
                 QVector2D(s->matrix.m21(), s->matrix.m22()).length());
     }
@@ -1824,7 +1824,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
             // is currently active. Note that the glyph cache internally
             // uses the image texture unit for blitting to the cache, while
             // we switch between image and mask units when drawing.
-            static const GLenum glypchCacheTextureUnit = QT_IMAGE_TEXTURE_UNIT;
+            static const GLenum glypchCacheTextureUnit = BOBUI_IMAGE_TEXTURE_UNIT;
             activateTextureUnit(glypchCacheTextureUnit);
 
             cache->fillInPendingGlyphs();
@@ -1834,7 +1834,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
 
             // But since the brush and image texture units are possibly shared
             // we may have to re-bind brush textures after filling in the cache.
-            brushTextureDirty = (QT_BRUSH_TEXTURE_UNIT == glypchCacheTextureUnit);
+            brushTextureDirty = (BOBUI_BRUSH_TEXTURE_UNIT == glypchCacheTextureUnit);
         }
         cache->setPaintEnginePrivate(nullptr);
     }
@@ -1898,9 +1898,9 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
                     subPixelPosition.y = 0;
             }
 
-            QTextureGlyphCache::GlyphAndSubPixelPosition glyph(staticTextItem->glyphs[i], subPixelPosition);
+            BOBUIextureGlyphCache::GlyphAndSubPixelPosition glyph(staticTextItem->glyphs[i], subPixelPosition);
 
-            const QTextureGlyphCache::Coord &c = cache->coords[glyph];
+            const BOBUIextureGlyphCache::Coord &c = cache->coords[glyph];
             if (c.isNull())
                 continue;
 
@@ -1935,7 +1935,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
             j += 4;
         }
 
-#if defined(QT_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
+#if defined(BOBUI_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
         if (elementIndicesVBOId == 0)
             funcs.glGenBuffers(1, &elementIndicesVBOId);
 
@@ -1944,14 +1944,14 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
                            elementIndices.constData(), GL_STATIC_DRAW);
 #endif
     } else {
-#if defined(QT_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
+#if defined(BOBUI_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
         funcs.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementIndicesVBOId);
 #endif
     }
 
     if (glyphFormat != QFontEngine::Format_ARGB || recreateVertexArrays) {
-        uploadData(QT_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinates->data(), vertexCoordinates->vertexCount() * 2);
-        uploadData(QT_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinates->data(), textureCoordinates->vertexCount() * 2);
+        uploadData(BOBUI_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinates->data(), vertexCoordinates->vertexCount() * 2);
+        uploadData(BOBUI_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinates->data(), textureCoordinates->vertexCount() * 2);
     }
 
     if (!snapToPixelGrid) {
@@ -1972,12 +1972,12 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
 
         shaderManager->setMaskType(QOpenGLEngineShaderManager::SubPixelMaskPass1);
 
-        if (pensBrush.style() == Qt::SolidPattern) {
+        if (pensBrush.style() == BobUI::SolidPattern) {
             // Solid patterns can get away with only one pass.
             QColor c = pensBrush.color();
             qreal oldOpacity = q->state()->opacity;
             if (compMode == QPainter::CompositionMode_Source) {
-                c = qt_premultiplyColor(c, q->state()->opacity);
+                c = bobui_premultiplyColor(c, q->state()->opacity);
                 q->state()->opacity = 1;
                 opacityUniformDirty = true;
             }
@@ -2001,7 +2001,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
             if (compMode == QPainter::CompositionMode_Source) {
                 q->state()->opacity = 1;
                 opacityUniformDirty = true;
-                pensBrush = Qt::white;
+                pensBrush = BobUI::white;
                 setBrush(pensBrush);
             }
 
@@ -2010,9 +2010,9 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
             funcs.glEnable(GL_BLEND);
             funcs.glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 
-            updateTexture(QT_MASK_TEXTURE_UNIT, cache->texture(), GL_REPEAT, GL_NEAREST, ForceUpdate);
+            updateTexture(BOBUI_MASK_TEXTURE_UNIT, cache->texture(), GL_REPEAT, GL_NEAREST, ForceUpdate);
 
-#if defined(QT_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
+#if defined(BOBUI_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
             funcs.glDrawElements(GL_TRIANGLE_STRIP, 6 * numGlyphs, GL_UNSIGNED_SHORT, 0);
 #else
             const bool useIndexVbo = uploadIndexData(elementIndices.data(), GL_UNSIGNED_SHORT, 6 * numGlyphs);
@@ -2038,7 +2038,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
         currentBrush = noBrush;
         shaderManager->setSrcPixelType(QOpenGLEngineShaderManager::ImageSrc);
         if (prepareForCachedGlyphDraw(*cache))
-            shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), QT_IMAGE_TEXTURE_UNIT);
+            shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), BOBUI_IMAGE_TEXTURE_UNIT);
     } else {
         // Grayscale/mono glyphs
 
@@ -2046,11 +2046,11 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
         prepareForCachedGlyphDraw(*cache);
     }
 
-    GLenum textureUnit = QT_MASK_TEXTURE_UNIT;
+    GLenum textureUnit = BOBUI_MASK_TEXTURE_UNIT;
     if (glyphFormat == QFontEngine::Format_ARGB)
-        textureUnit = QT_IMAGE_TEXTURE_UNIT;
+        textureUnit = BOBUI_IMAGE_TEXTURE_UNIT;
 
-    QOpenGLTextureGlyphCache::FilterMode filterMode = (s->matrix.type() > QTransform::TxTranslate) ?
+    QOpenGLTextureGlyphCache::FilterMode filterMode = (s->matrix.type() > BOBUIransform::TxTranslate) ?
         QOpenGLTextureGlyphCache::Linear : QOpenGLTextureGlyphCache::Nearest;
 
     GLenum glFilterMode = filterMode == QOpenGLTextureGlyphCache::Linear ? GL_LINEAR : GL_NEAREST;
@@ -2063,7 +2063,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
 
     updateTexture(textureUnit, cache->texture(), GL_REPEAT, glFilterMode, updateMode);
 
-#if defined(QT_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
+#if defined(BOBUI_OPENGL_DRAWCACHEDGLYPHS_INDEX_ARRAY_VBO)
     funcs.glDrawElements(GL_TRIANGLE_STRIP, 6 * numGlyphs, GL_UNSIGNED_SHORT, 0);
     funcs.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #else
@@ -2072,7 +2072,7 @@ void QOpenGL2PaintEngineExPrivate::drawCachedGlyphs(QFontEngine::GlyphFormat gly
 #endif
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 void QOpenGL2PaintEngineEx::drawPixmapFragments(const QPainter::PixmapFragment *fragments, int fragmentCount, const QPixmap &pixmap,
                                             QPainter::PixmapFragmentHints hints)
@@ -2087,7 +2087,7 @@ void QOpenGL2PaintEngineEx::drawPixmapFragments(const QPainter::PixmapFragment *
     ensureActive();
     int max_texture_size = d->ctx->d_func()->maxTextureSize();
     if (pixmap.width() > max_texture_size || pixmap.height() > max_texture_size) {
-        QPixmap scaled = pixmap.scaled(max_texture_size, max_texture_size, Qt::KeepAspectRatio);
+        QPixmap scaled = pixmap.scaled(max_texture_size, max_texture_size, BobUI::KeepAspectRatio);
         d->drawPixmapFragments(fragments, fragmentCount, scaled, hints);
     } else {
         d->drawPixmapFragments(fragments, fragmentCount, pixmap, hints);
@@ -2151,12 +2151,12 @@ void QOpenGL2PaintEngineExPrivate::drawPixmapFragments(const QPainter::PixmapFra
 
     transferMode(ImageOpacityArrayDrawingMode);
 
-    uploadData(QT_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinateArray.data(), vertexCoordinateArray.vertexCount() * 2);
-    uploadData(QT_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinateArray.data(), textureCoordinateArray.vertexCount() * 2);
-    uploadData(QT_OPACITY_ATTR, (GLfloat*)opacityArray.data(), opacityArray.size());
+    uploadData(BOBUI_VERTEX_COORDS_ATTR, (GLfloat*)vertexCoordinateArray.data(), vertexCoordinateArray.vertexCount() * 2);
+    uploadData(BOBUI_TEXTURE_COORDS_ATTR, (GLfloat*)textureCoordinateArray.data(), textureCoordinateArray.vertexCount() * 2);
+    uploadData(BOBUI_OPACITY_ATTR, (GLfloat*)opacityArray.data(), opacityArray.size());
 
     GLenum filterMode = q->state()->renderHints & QPainter::SmoothPixmapTransform ? GL_LINEAR : GL_NEAREST;
-    updateTexture(QT_IMAGE_TEXTURE_UNIT, pixmap, GL_CLAMP_TO_EDGE, filterMode);
+    updateTexture(BOBUI_IMAGE_TEXTURE_UNIT, pixmap, GL_CLAMP_TO_EDGE, filterMode);
 
     bool isBitmap = pixmap.isQBitmap();
     bool isOpaque = !isBitmap && (!pixmap.hasAlpha() || (hints & QPainter::OpaqueHint)) && allOpaque;
@@ -2166,10 +2166,10 @@ void QOpenGL2PaintEngineExPrivate::drawPixmapFragments(const QPainter::PixmapFra
     shaderManager->setSrcPixelType(isBitmap ? QOpenGLEngineShaderManager::PatternSrc
                                             : QOpenGLEngineShaderManager::ImageSrc);
     if (prepareForDraw(isOpaque))
-        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), QT_IMAGE_TEXTURE_UNIT);
+        shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::ImageTexture), BOBUI_IMAGE_TEXTURE_UNIT);
 
     if (isBitmap) {
-        QColor col = qt_premultiplyColor(q->state()->pen.color(), (GLfloat)q->state()->opacity);
+        QColor col = bobui_premultiplyColor(q->state()->pen.color(), (GLfloat)q->state()->opacity);
         shaderManager->currentProgram()->setUniformValue(location(QOpenGLEngineShaderManager::PatternColor), col);
     }
 
@@ -2212,7 +2212,7 @@ bool QOpenGL2PaintEngineEx::begin(QPaintDevice *pdev)
     // Generate a new Vertex Array Object if we don't have one already.  We can
     // only hit the VAO-based path when using a core profile context.  This is
     // because while non-core contexts can support VAOs via extensions, legacy
-    // components like the QtOpenGL module do not know about VAOs. There are
+    // components like the BobUIOpenGL module do not know about VAOs. There are
     // still tests for QGL-QOpenGL paint engine interoperability, so keep the
     // status quo for now, and avoid introducing a VAO in non-core contexts.
     const bool needsVAO = d->ctx->format().profile() == QSurfaceFormat::CoreProfile
@@ -2244,7 +2244,7 @@ bool QOpenGL2PaintEngineEx::begin(QPaintDevice *pdev)
         d->indexBuffer.setUsagePattern(QOpenGLBuffer::StreamDraw);
     }
 
-    for (int i = 0; i < QT_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i)
+    for (int i = 0; i < BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i)
         d->vertexAttributeArraysEnabledState[i] = false;
 
     const QSize sz = d->device->size();
@@ -2272,13 +2272,13 @@ bool QOpenGL2PaintEngineEx::begin(QPaintDevice *pdev)
 
     d->glyphCacheFormat = QFontEngine::Format_A8;
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     if (!QOpenGLContext::currentContext()->isOpenGLES()) {
         d->funcs.glDisable(GL_MULTISAMPLE);
         d->glyphCacheFormat = QFontEngine::Format_A32;
         d->multisamplingAlwaysEnabled = false;
     } else
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
     {
         // OpenGL ES can't switch MSAA off, so if the gl paint device is
         // multisampled, it's always multisampled.
@@ -2306,7 +2306,7 @@ bool QOpenGL2PaintEngineEx::end()
     d->shaderManager = nullptr;
     d->currentBrush = QBrush();
 
-#ifdef QT_OPENGL_CACHE_AS_VBOS
+#ifdef BOBUI_OPENGL_CACHE_AS_VBOS
     if (!d->unusedVBOSToClean.isEmpty()) {
         glDeleteBuffers(d->unusedVBOSToClean.size(), d->unusedVBOSToClean.constData());
         d->unusedVBOSToClean.clear();
@@ -2351,7 +2351,7 @@ void QOpenGL2PaintEngineExPrivate::updateClipScissorTest()
 {
     Q_Q(QOpenGL2PaintEngineEx);
     if (q->state()->clipTestEnabled) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         if (ctx->format().stencilBufferSize() <= 0)
             qWarning("OpenGL paint engine: attempted to use stencil test for clipping without requesting a stencil buffer.");
 #endif
@@ -2362,7 +2362,7 @@ void QOpenGL2PaintEngineExPrivate::updateClipScissorTest()
         funcs.glStencilFunc(GL_ALWAYS, 0, 0xff);
     }
 
-#ifdef QT_GL_NO_SCISSOR_TEST
+#ifdef BOBUI_GL_NO_SCISSOR_TEST
     currentScissorBounds = QRect(0, 0, width, height);
 #else
     QRect bounds = q->state()->rectangleClip;
@@ -2500,7 +2500,7 @@ void QOpenGL2PaintEngineExPrivate::writeClip(const QVectorPath &path, uint value
     funcs.glColorMask(true, true, true, true);
 }
 
-void QOpenGL2PaintEngineEx::clip(const QVectorPath &path, Qt::ClipOperation op)
+void QOpenGL2PaintEngineEx::clip(const QVectorPath &path, BobUI::ClipOperation op)
 {
 //     qDebug("QOpenGL2PaintEngineEx::clip()");
     Q_D(QOpenGL2PaintEngineEx);
@@ -2509,25 +2509,25 @@ void QOpenGL2PaintEngineEx::clip(const QVectorPath &path, Qt::ClipOperation op)
 
     ensureActive();
 
-    if (op == Qt::ReplaceClip) {
-        op = Qt::IntersectClip;
+    if (op == BobUI::ReplaceClip) {
+        op = BobUI::IntersectClip;
         if (d->hasClipOperations()) {
             d->systemStateChanged();
             state()->canRestoreClip = false;
         }
     }
 
-#ifndef QT_GL_NO_SCISSOR_TEST
-    if (!path.isEmpty() && op == Qt::IntersectClip && (path.shape() == QVectorPath::RectangleHint)) {
+#ifndef BOBUI_GL_NO_SCISSOR_TEST
+    if (!path.isEmpty() && op == BobUI::IntersectClip && (path.shape() == QVectorPath::RectangleHint)) {
         const QPointF* const points = reinterpret_cast<const QPointF*>(path.points());
         QRectF rect(points[0], points[2]);
 
-        if (state()->matrix.type() <= QTransform::TxScale
-            || (state()->matrix.type() == QTransform::TxRotate
+        if (state()->matrix.type() <= BOBUIransform::TxScale
+            || (state()->matrix.type() == BOBUIransform::TxRotate
                 && qFuzzyIsNull(state()->matrix.m11())
                 && qFuzzyIsNull(state()->matrix.m22())))
         {
-            state()->rectangleClip &= qt_mapFillRect(rect, state()->matrix);
+            state()->rectangleClip &= bobui_mapFillRect(rect, state()->matrix);
             d->updateClipScissorTest();
             return;
         }
@@ -2537,7 +2537,7 @@ void QOpenGL2PaintEngineEx::clip(const QVectorPath &path, Qt::ClipOperation op)
     const QRect pathRect = state()->matrix.mapRect(path.controlPointRect()).toAlignedRect();
 
     switch (op) {
-    case Qt::NoClip:
+    case BobUI::NoClip:
         if (d->useSystemClip) {
             state()->clipTestEnabled = true;
             state()->currentClip = 1;
@@ -2548,7 +2548,7 @@ void QOpenGL2PaintEngineEx::clip(const QVectorPath &path, Qt::ClipOperation op)
         state()->canRestoreClip = false;
         d->updateClipScissorTest();
         break;
-    case Qt::IntersectClip:
+    case BobUI::IntersectClip:
         state()->rectangleClip = state()->rectangleClip.intersected(pathRect);
         d->updateClipScissorTest();
         d->resetClipIfNeeded();
@@ -2578,7 +2578,7 @@ void QOpenGL2PaintEngineExPrivate::systemStateChanged()
         useSystemClip = false;
     } else {
         if (q->paintDevice()->devType() == QInternal::Widget && currentClipDevice) {
-            //QWidgetPrivate *widgetPrivate = qt_widget_private(static_cast<QWidget *>(currentClipDevice)->window());
+            //QWidgetPrivate *widgetPrivate = bobui_widget_private(static_cast<QWidget *>(currentClipDevice)->window());
             //useSystemClip = widgetPrivate->extra && widgetPrivate->extra->inRenderWithPainter;
             useSystemClip = true;
         } else {
@@ -2598,7 +2598,7 @@ void QOpenGL2PaintEngineExPrivate::systemStateChanged()
     if (systemClip.rectCount() == 1) {
         if (systemClip.boundingRect() == QRect(0, 0, width, height))
             useSystemClip = false;
-#ifndef QT_GL_NO_SCISSOR_TEST
+#ifndef BOBUI_GL_NO_SCISSOR_TEST
         // scissoring takes care of the system clip
         return;
 #endif
@@ -2611,7 +2611,7 @@ void QOpenGL2PaintEngineExPrivate::systemStateChanged()
         path.addRegion(systemClip);
 
         q->state()->currentClip = 0;
-        writeClip(qtVectorPathForPath(q->state()->matrix.inverted().map(path)), 1);
+        writeClip(bobuiVectorPathForPath(q->state()->matrix.inverted().map(path)), 1);
         q->state()->currentClip = 1;
         q->state()->clipTestEnabled = true;
     }
@@ -2705,7 +2705,7 @@ QOpenGL2PaintEngineState::~QOpenGL2PaintEngineState()
 
 void QOpenGL2PaintEngineExPrivate::setVertexAttribArrayEnabled(int arrayIndex, bool enabled)
 {
-    Q_ASSERT(arrayIndex < QT_GL_VERTEX_ARRAY_TRACKED_COUNT);
+    Q_ASSERT(arrayIndex < BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT);
 
     if (vertexAttributeArraysEnabledState[arrayIndex] && !enabled)
         funcs.glDisableVertexAttribArray(arrayIndex);
@@ -2718,7 +2718,7 @@ void QOpenGL2PaintEngineExPrivate::setVertexAttribArrayEnabled(int arrayIndex, b
 
 void QOpenGL2PaintEngineExPrivate::syncGlState()
 {
-    for (int i = 0; i < QT_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i) {
+    for (int i = 0; i < BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT; ++i) {
         if (vertexAttributeArraysEnabledState[i])
             funcs.glEnableVertexAttribArray(i);
         else
@@ -2727,4 +2727,4 @@ void QOpenGL2PaintEngineExPrivate::syncGlState()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qopenglcontext Binary:
 #####################################################################
 
-qt_internal_add_manual_test(qopenglcontext
+bobui_internal_add_manual_test(qopenglcontext
     GUI
     SOURCES
         main.cpp
         qopenglcontextwindow.cpp qopenglcontextwindow.h
     LIBRARIES
-        Qt::EglSupportPrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::OpenGL
+        BobUI::EglSupportPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::OpenGL
 )

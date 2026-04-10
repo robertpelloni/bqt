@@ -1,8 +1,8 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "view.h"
-#include <QTextLayout>
+#include <BOBUIextLayout>
 #include <QPainter>
 
 View::View(QWidget *parent)
@@ -18,21 +18,21 @@ View::~View()
 
 void View::updateLayout(const QString &sourceString,
                         float width,
-                        QTextOption::WrapMode mode,
+                        BOBUIextOption::WrapMode mode,
                         const QFont &font)
 {
     if (m_layout == nullptr)
-        m_layout = new QTextLayout;
+        m_layout = new BOBUIextLayout;
 
     m_layout->setText(sourceString);
-    QTextOption option;
+    BOBUIextOption option;
     option.setWrapMode(mode);
     m_layout->setTextOption(option);
     m_layout->setFont(font);
     m_layout->beginLayout();
     float y = 0.0f;
     forever {
-        QTextLine line = m_layout->createLine();
+        BOBUIextLine line = m_layout->createLine();
         if (!line.isValid())
             break;
 
@@ -60,8 +60,8 @@ void View::paintEvent(QPaintEvent *)
     if (m_layout != nullptr)
         m_layout->draw(&p, QPointF(0, 0));
     if (!m_bounds.isEmpty()) {
-        p.setPen(Qt::NoPen);
-        p.setBrush(Qt::yellow);
+        p.setPen(BobUI::NoPen);
+        p.setBrush(BobUI::yellow);
         p.setOpacity(0.25);
         for (const QRect &r : m_bounds) {
             p.drawRect(r);

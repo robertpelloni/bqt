@@ -1,5 +1,5 @@
-Qt 3.3.2 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.3.1 and Qt 3.3.0.
+BobUI 3.3.2 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.3.1 and BobUI 3.3.0.
 
 
 ****************************************************************************
@@ -11,7 +11,7 @@ Compilers
 
 MinGW: It is now possible to build the WinXP style on MinGW.
 
-FreeBSD: Enable DragonFly to build Qt with its native compiler.
+FreeBSD: Enable DragonFly to build BobUI with its native compiler.
 
 Mac: Assistant builds with Professional edition when Fink is installed.
 
@@ -23,18 +23,18 @@ HP-UX 64: Fixed link failure for Designer.
 
 Intel: Fixed compile failure on icc version 8.0 p42+.
 
-Qt/Embedded: Compiles with gcc 3.4.0 (prerelease).
+BobUI/Embedded: Compiles with gcc 3.4.0 (prerelease).
 
-Added macro QT_QLOCALE_USES_FCVT for systems with non-IEEE-compliant
+Added macro BOBUI_QLOCALE_USES_FCVT for systems with non-IEEE-compliant
 floating point implementations (notably some versions of ARM
 Linux). These systems are not autodetected; use
-"-DQT_QLOCALE_USES_FCVT" as a parameter to ./configure.
+"-DBOBUI_QLOCALE_USES_FCVT" as a parameter to ./configure.
 
-Qt Designer
+BobUI Designer
 -----------
 
 Allows saving of the column and label information for QDataTable, even
-when Qt is compiled without the SQL module.
+when BobUI is compiled without the SQL module.
 
 Fixed data corruption in .pro files with whitespace.
 
@@ -48,7 +48,7 @@ Fixed freeze when opening a modal Wizard Dialog from file.
 
 Fixed crash when adding a new separator using drag and drop.
 
-Qt Assistant
+BobUI Assistant
 ------------
 
 Fixed the Settings font combobox to not re-add font entries.
@@ -143,31 +143,31 @@ General Fixes
 	trailing whitespace.
 	Performance optimization for startsWith()/endsWith().
 
-- QTable
+- BOBUIable
 	Fixed crash caused by calling addLabel() on a horizontal header
 	when there are no columns in the table.
-	Fixed crash that occurs when deleting a QTable while editing
+	Fixed crash that occurs when deleting a BOBUIable while editing
 	a cell.
 	Made it possible to override the grid line color.
 	Fixed selectionChanged() to be emitted correctly when dealing
 	with selections of multiple items.
 
-- QTabWidget
+- BOBUIabWidget
 	Fixed setAutoMask().
 
-- QToolButton
+- BOBUIoolButton
 	Icon and label now move the same distance when pressed.
 
-- QTextEdit
+- BOBUIextEdit
 	Does not override Ctrl+Alt+key accelerators.
 	Performance optimization: do not call ensureCursorVisible() when
 	isUpdatesEnabled() is not true.
-	Fixed crash when using removeParagraph() to remove QTextTable
+	Fixed crash when using removeParagraph() to remove BOBUIextTable
 	items.
 	Fixed data corruption when saving documents with overline or
 	strikeout.
 
-- QTextBrowser
+- BOBUIextBrowser
 	Fixed Purify warning about array-bound reads.
 
 - QVariant
@@ -238,7 +238,7 @@ Windows:
 	If a new sound is started then stop the existing one, and play
 	the new one.
 
-- QTextEngine
+- BOBUIextEngine
 	Performs auto-detection of Asian scripts even if Uniscribe is
 	not installed.
 
@@ -302,7 +302,7 @@ Mac:
 	Fixed drawing of tickmarks when minimum value is non-zero.
 
 - QStyle
-	Does not change pixmap of QToolbutton if the button is not
+	Does not change pixmap of BOBUIoolbutton if the button is not
 	auto-raised.
 
 - QWidget
@@ -359,10 +359,10 @@ Fixed crash bug when using X Input Method Chinput.
 	Fixed setFromTo().
 	Fixed printing of Arabic text with XLFD fonts.
 
-- QTextEdit
+- BOBUIextEdit
 	Fixed bug with extremely long lines.
 
-- QThread
+- BOBUIhread
 	Fixed bug that made program require superuser privileges on
 	some Linux machines.
 
@@ -373,10 +373,10 @@ Fixed crash bug when using X Input Method Chinput.
 Embedded:
 
 - QFontInfo
-	Made QFontInfo work properly on Qt/Embedded.
+	Made QFontInfo work properly on BobUI/Embedded.
 
 - QGfxVNC
-	Fixed crash if VNC viewer is closed while Qt/E is painting.
+	Fixed crash if VNC viewer is closed while BobUI/E is painting.
 
 - QWidget
 	Uses correct focus handling if the focus widget is hidden or

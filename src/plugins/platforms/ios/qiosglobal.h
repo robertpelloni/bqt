@@ -1,38 +1,38 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSGLOBAL_H
 #define QIOSGLOBAL_H
 
 #import <UIKit/UIKit.h>
-#include <QtCore/QtCore>
+#include <BobUICore/BobUICore>
 
 @class QIOSViewController;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaApplication);
 Q_DECLARE_LOGGING_CATEGORY(lcQpaInputMethods);
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindow);
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindowScene);
 
-#if !defined(QT_NO_DEBUG)
+#if !defined(BOBUI_NO_DEBUG)
 #define qImDebug \
-    for (bool qt_category_enabled = lcQpaInputMethods().isDebugEnabled(); qt_category_enabled; qt_category_enabled = false) \
-        QMessageLogger(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE, QT_MESSAGELOG_FUNC, lcQpaInputMethods().categoryName()).debug
+    for (bool bobui_category_enabled = lcQpaInputMethods().isDebugEnabled(); bobui_category_enabled; bobui_category_enabled = false) \
+        QMessageLogger(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE, BOBUI_MESSAGELOG_FUNC, lcQpaInputMethods().categoryName()).debug
 #else
-#define qImDebug QT_NO_QDEBUG_MACRO
+#define qImDebug BOBUI_NO_QDEBUG_MACRO
 #endif
 
 class QPlatformScreen;
 
-bool isQtApplication();
+bool isBobUIApplication();
 bool isRunningOnVisionOS();
 
 #ifndef Q_OS_TVOS
-Qt::ScreenOrientation toQtScreenOrientation(UIDeviceOrientation uiDeviceOrientation);
-UIDeviceOrientation fromQtScreenOrientation(Qt::ScreenOrientation qtOrientation);
+BobUI::ScreenOrientation toBobUIScreenOrientation(UIDeviceOrientation uiDeviceOrientation);
+UIDeviceOrientation fromBobUIScreenOrientation(BobUI::ScreenOrientation bobuiOrientation);
 #endif
 
 int infoPlistValue(NSString* key, int defaultValue);
@@ -42,13 +42,13 @@ class QScreen;
 UIWindow *presentationWindow(QWindow *);
 UIView *rootViewForScreen(const QPlatformScreen *);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-@interface UIResponder (QtFirstResponder)
-+ (id)qt_currentFirstResponder;
+@interface UIResponder (BobUIFirstResponder)
++ (id)bobui_currentFirstResponder;
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class FirstResponderCandidate : public QScopedValueRollback<UIResponder *>
 {
@@ -60,6 +60,6 @@ private:
     static UIResponder *s_firstResponderCandidate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSGLOBAL_H

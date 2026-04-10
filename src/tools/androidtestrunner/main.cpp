@@ -1,20 +1,20 @@
 // Copyright (C) 2019 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDeadlineTimer>
-#include <QtCore/qdebug.h>
-#include <QtCore/QDir>
-#include <QtCore/QHash>
-#include <QtCore/QProcess>
-#include <QtCore/QProcessEnvironment>
-#include <QtCore/QRegularExpression>
-#include <QtCore/QSystemSemaphore>
-#include <QtCore/QThread>
-#include <QtCore/QXmlStreamReader>
-#include <QtCore/QFileInfo>
-#include <QtCore/QSysInfo>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDeadlineTimer>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/QDir>
+#include <BobUICore/QHash>
+#include <BobUICore/QProcess>
+#include <BobUICore/QProcessEnvironment>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/QSystemSemaphore>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QXmlStreamReader>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QSysInfo>
 
 #include <atomic>
 #include <csignal>
@@ -26,11 +26,11 @@
 #include <unistd.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 
-// QTest-based test processes may exit with up to 127 for normal test failures
-static constexpr int HIGHEST_QTEST_EXITCODE = 127;
+// BOBUIest-based test processes may exit with up to 127 for normal test failures
+static constexpr int HIGHEST_BOBUIEST_EXITCODE = 127;
 // Something went wrong in androidtestrunner, in general
 static constexpr int EXIT_ERROR = 254;
 // More specific exit codes for failures in androidtestrunner:
@@ -80,11 +80,11 @@ struct TestInfo
 
 static TestInfo g_testInfo;
 
-// QTest-based processes return 0 if all tests PASSed, or the number of FAILs up to 127.
+// BOBUIest-based processes return 0 if all tests PASSed, or the number of FAILs up to 127.
 // Other exitcodes signify abnormal termination and are system-dependent.
 static bool isTestExitCodeNormal(const int ec)
 {
-    return (ec >= 0  &&  ec <= HIGHEST_QTEST_EXITCODE);
+    return (ec >= 0  &&  ec <= HIGHEST_BOBUIEST_EXITCODE);
 }
 
 static bool execCommand(const QString &program, const QStringList &args,
@@ -164,71 +164,71 @@ static bool parseOptions()
     int i = 1;
     for (; i < arguments.size(); ++i) {
         const QString &argument = arguments.at(i);
-        if (argument.compare("--adb"_L1, Qt::CaseInsensitive) == 0) {
+        if (argument.compare("--adb"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.adbCommand = arguments.at(++i);
-        } else if (argument.compare("--bundletool"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--bundletool"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.bundletoolPath = arguments.at(++i);
-        } else if (argument.compare("--path"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--path"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.buildPath = arguments.at(++i);
-        } else if (argument.compare("--manifest"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--manifest"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.manifestPath = arguments.at(++i);
-        } else if (argument.compare("--make"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--make"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.makeCommand = arguments.at(++i);
-        } else if (argument.compare("--apk"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--apk"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 setPackagePath(arguments.at(++i));
-        } else if (argument.compare("--aab"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--aab"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 setPackagePath(arguments.at(++i));
-        } else if (argument.compare("--activity"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--activity"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.activity = arguments.at(++i);
-        } else if (argument.compare("--skip-install-root"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--skip-install-root"_L1, BobUI::CaseInsensitive) == 0) {
             g_options.skipAddInstallRoot = true;
-        } else if (argument.compare("--show-logcat"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--show-logcat"_L1, BobUI::CaseInsensitive) == 0) {
             g_options.showLogcatOutput = true;
-        } else if (argument.compare("--ndk-stack"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--ndk-stack"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.ndkStackPath = arguments.at(++i);
-        } else if (argument.compare("--timeout"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--timeout"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else
                 g_options.timeoutSecs = arguments.at(++i).toInt();
-        } else if (argument.compare("--help"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--help"_L1, BobUI::CaseInsensitive) == 0) {
             g_options.helpRequested = true;
-        } else if (argument.compare("--verbose"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--verbose"_L1, BobUI::CaseInsensitive) == 0) {
             g_options.verbose = true;
-        } else if (argument.compare("--pre-test-adb-command"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--pre-test-adb-command"_L1, BobUI::CaseInsensitive) == 0) {
             if (i + 1 == arguments.size())
                 g_options.helpRequested = true;
             else {
                 g_options.preTestRunAdbCommands += QProcess::splitCommand(arguments.at(++i));
             }
-        } else if (argument.compare("--"_L1, Qt::CaseInsensitive) == 0) {
+        } else if (argument.compare("--"_L1, BobUI::CaseInsensitive) == 0) {
             ++i;
             break;
         } else {
@@ -270,13 +270,13 @@ static void printHelp()
 {
     qWarning("Syntax: %s <options> -- [TESTARGS] \n"
              "\n"
-             "  Runs a Qt for Android test on an emulator or a device. Specify a device\n"
+             "  Runs a BobUI for Android test on an emulator or a device. Specify a device\n"
              "  using the environment variables ANDROID_SERIAL or ANDROID_DEVICE_SERIAL.\n"
              "  Returns the number of failed tests, -1 on test runner deployment related\n"
              "  failures or zero on success."
              "\n"
              "  Mandatory arguments:\n"
-             "    --path <path>: The path where androiddeployqt builds the android package.\n"
+             "    --path <path>: The path where androiddeploybobui builds the android package.\n"
              "\n"
              "    --make <make cmd>: make command to create an APK, for example:\n"
              "       \"cmake --build <build-dir> --target <target>_make_apk\".\n"
@@ -382,7 +382,7 @@ static QStringList queryDangerousPermissions()
             continue;
 
         QString protectionTypes = line.mid(protIndex + 5).trimmed();
-        if (protectionTypes.contains("dangerous"_L1, Qt::CaseInsensitive)) {
+        if (protectionTypes.contains("dangerous"_L1, BobUI::CaseInsensitive)) {
             dangerousPermissions.append(currentPerm);
             currentPerm.clear();
         }
@@ -460,11 +460,11 @@ static bool parseTestArgs()
     testAppArgs = "\"%1\""_L1.arg(testAppArgs.trimmed());
     const QString activityName = "%1/%2"_L1.arg(g_options.package).arg(g_options.activity);
 
-    // Pass over any qt or testlib env vars if set
+    // Pass over any bobui or testlib env vars if set
     QString testEnvVars;
     const QStringList envVarsList = QProcessEnvironment::systemEnvironment().toStringList();
     for (const QString &var : envVarsList) {
-        if (var.startsWith("QTEST_"_L1) || var.startsWith("QT_"_L1))
+        if (var.startsWith("BOBUIEST_"_L1) || var.startsWith("BOBUI_"_L1))
             testEnvVars += "%1 "_L1.arg(var);
     }
 
@@ -522,7 +522,7 @@ static bool isRunning() {
         psSuccess = execAdbCommand(psArgs, &output, false);
         if (psSuccess)
             break;
-        QThread::msleep(250);
+        BOBUIhread::msleep(250);
     }
 
     return psSuccess && output.trimmed() == g_options.package.toUtf8();
@@ -536,7 +536,7 @@ static void waitForStarted()
         g_testInfo.pid = getPid(g_options.package);
         if (g_testInfo.pid > 0)
             break;
-        QThread::msleep(100);
+        BOBUIhread::msleep(100);
     } while (!startDeadline.hasExpired() && !g_testInfo.isTestRunnerInterrupted.load());
 }
 
@@ -549,7 +549,7 @@ static void waitForLoggingStarted()
     do {
         if (execAdbCommand(adbLsCmd, nullptr, false))
             break;
-        QThread::msleep(100);
+        BOBUIhread::msleep(100);
     } while (!deadline.hasExpired() && !g_testInfo.isTestRunnerInterrupted.load());
 }
 
@@ -606,7 +606,7 @@ static void waitForFinished()
     do {
         if (!isRunning())
             break;
-        QThread::msleep(250);
+        BOBUIhread::msleep(250);
     } while (!finishedDeadline.hasExpired() && !g_testInfo.isTestRunnerInterrupted.load());
 
     if (finishedDeadline.hasExpired())
@@ -771,7 +771,7 @@ void analyseLogcat(const QString &timeStamp, int *exitCode)
     QStringList logcatArgs = { "shell"_L1, "logcat"_L1, "-t"_L1, "'%1'"_L1.arg(timeStamp),
                                "-v"_L1, "brief"_L1 };
 
-    const bool useColor = qEnvironmentVariable("QTEST_ENVIRONMENT") != "ci"_L1;
+    const bool useColor = qEnvironmentVariable("BOBUIEST_ENVIRONMENT") != "ci"_L1;
     if (useColor)
         logcatArgs << "-v"_L1 << "color"_L1;
 
@@ -870,9 +870,9 @@ static QString getCurrentTimeString()
 static int testExitCode()
 {
     QByteArray exitCodeOutput;
-    const QString exitCodeCmd = "cat files/qtest_last_exit_code 2> /dev/null"_L1;
+    const QString exitCodeCmd = "cat files/bobuiest_last_exit_code 2> /dev/null"_L1;
     if (!execAdbCommand({ "shell"_L1, runCommandAsUserArgs(exitCodeCmd) }, &exitCodeOutput, false)) {
-        qCritical() << "[androidtestrunner] ERROR in command: adb shell cat files/qtest_last_exit_code";
+        qCritical() << "[androidtestrunner] ERROR in command: adb shell cat files/bobuiest_last_exit_code";
         return EXIT_NOEXITCODE;
     }
     qDebug() << "[androidtestrunner] Test exitcode: " << exitCodeOutput;

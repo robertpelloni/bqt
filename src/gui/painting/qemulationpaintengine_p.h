@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEMULATIONPAINTENGINE_P_H
 #define QEMULATIONPAINTENGINE_P_H
@@ -8,17 +8,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <private/qpaintengineex_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QEmulationPaintEngine : public QPaintEngineEx
@@ -34,13 +34,13 @@ public:
 
     void fill(const QVectorPath &path, const QBrush &brush) override;
     void stroke(const QVectorPath &path, const QPen &pen) override;
-    void clip(const QVectorPath &path, Qt::ClipOperation op) override;
+    void clip(const QVectorPath &path, BobUI::ClipOperation op) override;
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
     void drawStaticTextItem(QStaticTextItem *item) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s) override;
-    void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, Qt::ImageConversionFlags flags) override;
+    void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr, BobUI::ImageConversionFlags flags) override;
 
     void clipEnabledChanged() override;
     void penChanged() override;
@@ -66,6 +66,6 @@ private:
     void fillBGRect(const QRectF &r);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

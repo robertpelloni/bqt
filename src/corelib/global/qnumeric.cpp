@@ -1,6 +1,6 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qnumeric.h"
 #include "qnumeric_p.h"
@@ -8,84 +8,84 @@
 
 #include <q20bit.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
-    \headerfile <QtNumeric>
-    \inmodule QtCore
-    \title Qt Numeric Functions
+    \headerfile <BobUINumeric>
+    \inmodule BobUICore
+    \title BobUI Numeric Functions
 
-    \brief The <QtNumeric> header file provides common numeric functions.
+    \brief The <BobUINumeric> header file provides common numeric functions.
 
-    The <QtNumeric> header file contains various numeric functions
+    The <BobUINumeric> header file contains various numeric functions
     for comparing and adjusting a numeric value.
 */
 
 /*!
     Returns \c true if the double \a {d} is equivalent to infinity.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \sa qInf()
 */
-Q_CORE_EXPORT bool qIsInf(double d) { return qt_is_inf(d); }
+Q_CORE_EXPORT bool qIsInf(double d) { return bobui_is_inf(d); }
 
 /*!
     Returns \c true if the double \a {d} is not a number (NaN).
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
-Q_CORE_EXPORT bool qIsNaN(double d) { return qt_is_nan(d); }
+Q_CORE_EXPORT bool qIsNaN(double d) { return bobui_is_nan(d); }
 
 /*!
     Returns \c true if the double \a {d} is a finite number.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
-Q_CORE_EXPORT bool qIsFinite(double d) { return qt_is_finite(d); }
+Q_CORE_EXPORT bool qIsFinite(double d) { return bobui_is_finite(d); }
 
 /*!
     Returns \c true if the float \a {f} is equivalent to infinity.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \sa qInf()
 */
-Q_CORE_EXPORT bool qIsInf(float f) { return qt_is_inf(f); }
+Q_CORE_EXPORT bool qIsInf(float f) { return bobui_is_inf(f); }
 
 /*!
     Returns \c true if the float \a {f} is not a number (NaN).
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
-Q_CORE_EXPORT bool qIsNaN(float f) { return qt_is_nan(f); }
+Q_CORE_EXPORT bool qIsNaN(float f) { return bobui_is_nan(f); }
 
 /*!
     Returns \c true if the float \a {f} is a finite number.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
-Q_CORE_EXPORT bool qIsFinite(float f) { return qt_is_finite(f); }
+Q_CORE_EXPORT bool qIsFinite(float f) { return bobui_is_finite(f); }
 
-#if QT_CONFIG(signaling_nan)
+#if BOBUI_CONFIG(signaling_nan)
 /*!
     Returns the bit pattern of a signalling NaN as a double.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
-Q_CORE_EXPORT double qSNaN() { return qt_snan(); }
+Q_CORE_EXPORT double qSNaN() { return bobui_snan(); }
 #endif
 
 /*!
     Returns the bit pattern of a quiet NaN as a double.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \sa qIsNaN()
 */
-Q_CORE_EXPORT double qQNaN() { return qt_qnan(); }
+Q_CORE_EXPORT double qQNaN() { return bobui_qnan(); }
 
 /*!
     Returns the bit pattern for an infinite number as a double.
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \sa qIsInf()
 */
-Q_CORE_EXPORT double qInf() { return qt_inf(); }
+Q_CORE_EXPORT double qInf() { return bobui_inf(); }
 
 /*!
     \fn int qFpClassify(double val)
     \fn int qFpClassify(float val)
 
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     Classifies a floating-point value.
 
     The return values are defined in \c{<cmath>}: returns one of the following,
@@ -98,8 +98,8 @@ Q_CORE_EXPORT double qInf() { return qt_inf(); }
     \li FP_SUBNORMAL finite with a reduced mantissa
     \endlist
 */
-Q_CORE_EXPORT int qFpClassify(double val) { return qt_fpclassify(val); }
-Q_CORE_EXPORT int qFpClassify(float val) { return qt_fpclassify(val); }
+Q_CORE_EXPORT int qFpClassify(double val) { return bobui_fpclassify(val); }
+Q_CORE_EXPORT int qFpClassify(float val) { return bobui_fpclassify(val); }
 
 
 /*!
@@ -137,7 +137,7 @@ static inline quint32 f2i(float f)
 
     \sa qFuzzyCompare()
     \since 5.2
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
 Q_CORE_EXPORT quint32 qFloatDistance(float a, float b)
 {
@@ -195,7 +195,7 @@ static inline quint64 d2i(double d)
 
     \sa qFuzzyCompare()
     \since 5.2
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 */
 Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 {
@@ -234,7 +234,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn template<typename T> bool qAddOverflow(T v1, T v2, T *result)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 6.1
 
     Adds two values \a v1 and \a v2, of a numeric type \c T and records the
@@ -266,7 +266,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn template<typename T> bool qSubOverflow(T v1, T v2, T *result)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 6.1
 
     Subtracts \a v2 from \a v1 and records the resulting value in \a result. If
@@ -298,7 +298,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn template<typename T> bool qMulOverflow(T v1, T v2, T *result)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 6.1
 
     Multiplies \a v1 and \a v2, and records the resulting value in \a result. If
@@ -331,7 +331,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 */
 
 /*! \fn template <typename T> T qAbs(const T &t)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 
     Compares \a t to the 0 of type T and returns the absolute
     value. Thus if T is \e {double}, then \a t is compared to
@@ -343,7 +343,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 */
 
 /*! \fn int qRound(double d)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 
     Rounds \a d to the nearest integer.
 
@@ -360,7 +360,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 */
 
 /*! \fn int qRound(float d)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 
     Rounds \a d to the nearest integer.
 
@@ -377,7 +377,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 */
 
 /*! \fn qint64 qRound64(double d)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 
     Rounds \a d to the nearest 64-bit integer.
 
@@ -394,7 +394,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 */
 
 /*! \fn qint64 qRound64(float d)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
 
     Rounds \a d to the nearest 64-bit integer.
 
@@ -412,7 +412,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn bool qFuzzyCompare(double p1, double p2)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 4.4
     \threadsafe
 
@@ -432,7 +432,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn bool qFuzzyCompare(float p1, float p2)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 4.4
     \threadsafe
 
@@ -445,7 +445,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn bool qFuzzyIsNull(double d)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 4.4
     \threadsafe
 
@@ -454,7 +454,7 @@ Q_CORE_EXPORT quint64 qFloatDistance(double a, double b)
 
 /*!
     \fn bool qFuzzyIsNull(float f)
-    \relates <QtNumeric>
+    \relates <BobUINumeric>
     \since 4.4
     \threadsafe
 
@@ -477,4 +477,4 @@ static_assert(rotr(0x8000'0000U, -1) == 1);
 static_assert(rotr(0x8000'0001U, -1) == 3);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

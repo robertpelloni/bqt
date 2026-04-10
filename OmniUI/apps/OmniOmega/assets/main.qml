@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import BobUIQuick 2.15
+import BobUIQuick.Controls 2.15
+import BobUIQuick.Layouts 1.15
 import Omni.Omega 1.0
 
 ApplicationWindow {
@@ -40,7 +40,7 @@ ApplicationWindow {
         ColumnLayout {
             anchors.centerIn: parent
             spacing: 20
-            BusyIndicator { Layout.alignment: Qt.AlignHCenter; running: true }
+            BusyIndicator { Layout.alignment: BobUI.AlignHCenter; running: true }
             Label { text: "PERFORMING SYSTEM-WIDE METAPHYSICAL REBOOT..."; color: "#f8fafc"; font.pixelSize: 24; font.bold: true; font.letterSpacing: 3 }
         }
     }
@@ -269,7 +269,7 @@ ApplicationWindow {
                                     bcastEvent.text = ""; bcastData.text = ""
                                 }
                             }
-                            ToolTip.visible: hovered; ToolTip.text: "Send a global Qt signal to all listening Omni modules"
+                            ToolTip.visible: hovered; ToolTip.text: "Send a global BobUI signal to all listening Omni modules"
                         }
                     }
 
@@ -277,7 +277,7 @@ ApplicationWindow {
 
                     Button {
                         text: "Emergency Metaphysical Reboot"
-                        Layout.alignment: Qt.AlignRight
+                        Layout.alignment: BobUI.AlignRight
                         onClicked: OmniUniversalContext.systemReboot()
                         ToolTip.visible: hovered; ToolTip.text: "Wipe volatile context memory and reinitialize the OmniOmega core"
                     }

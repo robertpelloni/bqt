@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Layouts 1.15
-import QtQuick.Controls 2.15
+import BobUIQuick 2.15
+import BobUIQuick.Layouts 1.15
+import BobUIQuick.Controls 2.15
 import OmniUI 1.0
 import OmniQuantum 1.0
 import Omni3D 1.0
@@ -73,7 +73,7 @@ ApplicationWindow {
                     text: "Bloch Sphere Visualization"
                     color: "white"
                     font.bold: true
-                    Layout.alignment: Qt.AlignHCenter
+                    Layout.alignment: BobUI.AlignHCenter
                     Layout.margins: 10
                 }
 
@@ -85,7 +85,7 @@ ApplicationWindow {
                     // Sphere mesh would go here
                     Mesh {
                         source: "sphere.obj"
-                        scale: Qt.vector3d(2, 2, 2)
+                        scale: BobUI.vector3d(2, 2, 2)
                     }
                 }
 
@@ -122,7 +122,7 @@ ApplicationWindow {
     function createGate(type) {
         // Factory helper
         // This logic would normally be handled by the composer UI
-        var component = Qt.createComponent("Gate.qml"); // Hypothetical
+        var component = BobUI.createComponent("Gate.qml"); // Hypothetical
         return null;
     }
 }

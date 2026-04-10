@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmclipboard.h"
 #include "qwasminputcontext.h"
@@ -16,7 +16,7 @@
 
 #include <emscripten/val.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 using namespace emscripten;
 
 static void commonCopyEvent(val event)
@@ -49,9 +49,9 @@ static void commonCopyEvent(val event)
 void QWasmClipboard::cut(val event)
 {
     if (!QWasmIntegration::get()->getWasmClipboard()->hasClipboardApi()) {
-        // Send synthetic Ctrl+X to make the app cut data to Qt's clipboard
+        // Send synthetic Ctrl+X to make the app cut data to BobUI's clipboard
          QWindowSystemInterface::handleKeyEvent(
-                     0, QEvent::KeyPress, Qt::Key_X, Qt::ControlModifier, "X");
+                     0, QEvent::KeyPress, BobUI::Key_X, BobUI::ControlModifier, "X");
    }
 
     commonCopyEvent(event);
@@ -60,9 +60,9 @@ void QWasmClipboard::cut(val event)
 void QWasmClipboard::copy(val event)
 {
     if (!QWasmIntegration::get()->getWasmClipboard()->hasClipboardApi()) {
-        // Send synthetic Ctrl+C to make the app copy data to Qt's clipboard
+        // Send synthetic Ctrl+C to make the app copy data to BobUI's clipboard
             QWindowSystemInterface::handleKeyEvent(
-                        0, QEvent::KeyPress, Qt::Key_C, Qt::ControlModifier, "C");
+                        0, QEvent::KeyPress, BobUI::Key_C, BobUI::ControlModifier, "C");
     }
     commonCopyEvent(event);
 }
@@ -116,13 +116,13 @@ void QWasmClipboard::setMimeData(QMimeData *mimeData, QClipboard::Mode mode)
 
 QWasmClipboard::ProcessKeyboardResult QWasmClipboard::processKeyboard(const KeyEvent &event)
 {
-    if (event.type != EventType::KeyDown || !event.modifiers.testFlag(Qt::ControlModifier))
+    if (event.type != EventType::KeyDown || !event.modifiers.testFlag(BobUI::ControlModifier))
         return ProcessKeyboardResult::Ignored;
 
-    if (event.key != Qt::Key_C && event.key != Qt::Key_V && event.key != Qt::Key_X)
+    if (event.key != BobUI::Key_C && event.key != BobUI::Key_V && event.key != BobUI::Key_X)
         return ProcessKeyboardResult::Ignored;
 
-    const bool isPaste = event.key == Qt::Key_V;
+    const bool isPaste = event.key == BobUI::Key_V;
 
     return m_hasClipboardApi && !isPaste
             ? ProcessKeyboardResult::NativeClipboardEventAndCopiedDataNeeded
@@ -186,7 +186,7 @@ void QWasmClipboard::writeToClipboardApi()
             emscripten::val html = mimeData->html().toEcmaString();
             clipboardData.set(mimetype.toEcmaString(), html);
         } else if (mimetype.contains(QLatin1String("image"))) {
-            // Serialize the Qt image data to browser supported png
+            // Serialize the BobUI image data to browser supported png
             QImage img = qvariant_cast<QImage>(mimeData->imageData());
             QByteArray ba;
             QBuffer buffer(&ba);
@@ -236,13 +236,13 @@ void QWasmClipboard::sendClipboardData(emscripten::val event)
 
         // Persist clipboard data so that the app can read it when handling the CTRL+V
         QWasmIntegration::get()->clipboard()->QPlatformClipboard::setMimeData(data, QClipboard::Clipboard);
-        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyPress, Qt::Key_V,
-                                               Qt::ControlModifier, "V");
-        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyRelease, Qt::Key_V,
-                                               Qt::ControlModifier, "V");
+        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyPress, BobUI::Key_V,
+                                               BobUI::ControlModifier, "V");
+        QWindowSystemInterface::handleKeyEvent(0, QEvent::KeyRelease, BobUI::Key_V,
+                                               BobUI::ControlModifier, "V");
         delete transfer;
     });
 
     transfer->toMimeDataWithFile(mimeCallback);
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/private/qlocalfileapi_p.h>
-#include <QTest>
+#include <BobUIGui/private/qlocalfileapi_p.h>
+#include <BOBUIest>
 #include <emscripten/val.h>
 
 class tst_LocalFileApi : public QObject
@@ -82,26 +82,26 @@ bool valDeepEquals(emscripten::val lhs, emscripten::val rhs)
 
 void tst_LocalFileApi::fileExtensionFilterTransformation_data()
 {
-    QTest::addColumn<QString>("qtFileFilter");
-    QTest::addColumn<std::optional<QString>>("expectedWebExtensionFilter");
+    BOBUIest::addColumn<QString>("bobuiFileFilter");
+    BOBUIest::addColumn<std::optional<QString>>("expectedWebExtensionFilter");
 
-    QTest::newRow("PNG extension with an asterisk")
+    BOBUIest::newRow("PNG extension with an asterisk")
             << QString("*.png") << std::make_optional<QString>(".png");
-    QTest::newRow("Long extension with an asterisk")
+    BOBUIest::newRow("Long extension with an asterisk")
             << QString("*.someotherfile") << std::make_optional<QString>(".someotherfile");
-    QTest::newRow(".dat with no asterisk")
+    BOBUIest::newRow(".dat with no asterisk")
             << QString(".dat") << std::make_optional<QString>(".dat");
-    QTest::newRow("Multiple asterisks") << QString("*ot*.abc") << std::optional<QString>();
-    QTest::newRow("Filename") << QString("abcd.abc") << std::optional<QString>();
-    QTest::newRow("match all") << QString("*.*") << std::optional<QString>();
+    BOBUIest::newRow("Multiple asterisks") << QString("*ot*.abc") << std::optional<QString>();
+    BOBUIest::newRow("Filename") << QString("abcd.abc") << std::optional<QString>();
+    BOBUIest::newRow("match all") << QString("*.*") << std::optional<QString>();
 }
 
 void tst_LocalFileApi::fileExtensionFilterTransformation()
 {
-    QFETCH(QString, qtFileFilter);
+    QFETCH(QString, bobuiFileFilter);
     QFETCH(std::optional<QString>, expectedWebExtensionFilter);
 
-    auto result = LocalFileApi::Type::Accept::MimeType::Extension::fromQt(qtFileFilter);
+    auto result = LocalFileApi::Type::Accept::MimeType::Extension::fromBobUI(bobuiFileFilter);
     if (expectedWebExtensionFilter) {
         QCOMPARE_EQ(expectedWebExtensionFilter, result->value());
     } else {
@@ -113,28 +113,28 @@ void tst_LocalFileApi::acceptTransformation_data()
 {
     using namespace emscripten;
 
-    QTest::addColumn<QString>("qtFilterList");
-    QTest::addColumn<QStringList>("expectedExtensionList");
+    BOBUIest::addColumn<QString>("bobuiFilterList");
+    BOBUIest::addColumn<QStringList>("expectedExtensionList");
 
-    QTest::newRow("Multiple types")
+    BOBUIest::newRow("Multiple types")
             << QString("*.png *.other *.txt") << QStringList{ ".png", ".other", ".txt" };
 
-    QTest::newRow("Single type") << QString("*.png") << QStringList{ ".png" };
+    BOBUIest::newRow("Single type") << QString("*.png") << QStringList{ ".png" };
 
-    QTest::newRow("No filter when accepts all") << QString("*.*") << QStringList();
+    BOBUIest::newRow("No filter when accepts all") << QString("*.*") << QStringList();
 
-    QTest::newRow("No filter when one filter accepts all") << QString("*.* *.jpg") << QStringList();
+    BOBUIest::newRow("No filter when one filter accepts all") << QString("*.* *.jpg") << QStringList();
 
-    QTest::newRow("Weird spaces") << QString("    *.jpg     *.png *.icon  ")
+    BOBUIest::newRow("Weird spaces") << QString("    *.jpg     *.png *.icon  ")
                                   << QStringList{ ".jpg", ".png", ".icon" };
 }
 
 void tst_LocalFileApi::acceptTransformation()
 {
-    QFETCH(QString, qtFilterList);
+    QFETCH(QString, bobuiFilterList);
     QFETCH(QStringList, expectedExtensionList);
 
-    auto result = LocalFileApi::Type::Accept::fromQt(qtFilterList);
+    auto result = LocalFileApi::Type::Accept::fromBobUI(bobuiFilterList);
     if (expectedExtensionList.isEmpty()) {
         QVERIFY(!result.has_value());
     } else {
@@ -152,23 +152,23 @@ void tst_LocalFileApi::typeTransformation_data()
 {
     using namespace emscripten;
 
-    QTest::addColumn<QString>("qtFilterList");
-    QTest::addColumn<QString>("expectedDescription");
-    QTest::addColumn<QStringList>("expectedExtensions");
+    BOBUIest::addColumn<QString>("bobuiFilterList");
+    BOBUIest::addColumn<QString>("expectedDescription");
+    BOBUIest::addColumn<QStringList>("expectedExtensions");
 
-    QTest::newRow("With description")
+    BOBUIest::newRow("With description")
             << QString("Text files (*.txt)") << QString("Text files") << QStringList{ ".txt" };
 
-    QTest::newRow("No description") << QString("*.jpg") << QString("") << QStringList{ ".jpg" };
+    BOBUIest::newRow("No description") << QString("*.jpg") << QString("") << QStringList{ ".jpg" };
 }
 
 void tst_LocalFileApi::typeTransformation()
 {
-    QFETCH(QString, qtFilterList);
+    QFETCH(QString, bobuiFilterList);
     QFETCH(QString, expectedDescription);
     QFETCH(QStringList, expectedExtensions);
 
-    auto result = LocalFileApi::Type::fromQt(qtFilterList);
+    auto result = LocalFileApi::Type::fromBobUI(bobuiFilterList);
     QCOMPARE_EQ(result->description(), expectedDescription);
 
     QStringList transformed;
@@ -184,25 +184,25 @@ void tst_LocalFileApi::openFileOptions_data()
 {
     using namespace emscripten;
 
-    QTest::addColumn<QStringList>("qtFilterList");
-    QTest::addColumn<bool>("multiple");
-    QTest::addColumn<emscripten::val>("expectedWebType");
+    BOBUIest::addColumn<QStringList>("bobuiFilterList");
+    BOBUIest::addColumn<bool>("multiple");
+    BOBUIest::addColumn<emscripten::val>("expectedWebType");
 
-    QTest::newRow("Multiple files") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
+    BOBUIest::newRow("Multiple files") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
         << true
         << makeOpenFileOptions(true, { makeType("Text files", { val(".txt")}), makeType("Images", { val(".jpg"), val(".png")}), makeType("", { val(".bat")})});
-    QTest::newRow("Single file") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
+    BOBUIest::newRow("Single file") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
         << false
         << makeOpenFileOptions(false, { makeType("Text files", { val(".txt")}), makeType("Images", { val(".jpg"), val(".png")}), makeType("", { val(".bat")})});
 }
 
 void tst_LocalFileApi::openFileOptions()
 {
-    QFETCH(QStringList, qtFilterList);
+    QFETCH(QStringList, bobuiFilterList);
     QFETCH(bool, multiple);
     QFETCH(emscripten::val, expectedWebType);
 
-    auto result = LocalFileApi::makeOpenFileOptions(qtFilterList, multiple);
+    auto result = LocalFileApi::makeOpenFileOptions(bobuiFilterList, multiple);
     QVERIFY(valDeepEquals(result, expectedWebType));
 }
 
@@ -210,25 +210,25 @@ void tst_LocalFileApi::saveFileOptions_data()
 {
     using namespace emscripten;
 
-    QTest::addColumn<QStringList>("qtFilterList");
-    QTest::addColumn<QString>("suggestedName");
-    QTest::addColumn<emscripten::val>("expectedWebType");
+    BOBUIest::addColumn<QStringList>("bobuiFilterList");
+    BOBUIest::addColumn<QString>("suggestedName");
+    BOBUIest::addColumn<emscripten::val>("expectedWebType");
 
-    QTest::newRow("Multiple files") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
+    BOBUIest::newRow("Multiple files") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
         << "someName1"
         << makeSaveFileOptions("someName1", { makeType("Text files", { val(".txt")}), makeType("Images", { val(".jpg"), val(".png")}), makeType("", { val(".bat")})});
-    QTest::newRow("Single file") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
+    BOBUIest::newRow("Single file") << QStringList({"Text files (*.txt)", "Images (*.jpg *.png)", "*.bat"})
         << "some name 2"
         << makeSaveFileOptions("some name 2", { makeType("Text files", { val(".txt")}), makeType("Images", { val(".jpg"), val(".png")}), makeType("", { val(".bat")})});
 }
 
 void tst_LocalFileApi::saveFileOptions()
 {
-    QFETCH(QStringList, qtFilterList);
+    QFETCH(QStringList, bobuiFilterList);
     QFETCH(QString, suggestedName);
     QFETCH(emscripten::val, expectedWebType);
 
-    auto result = LocalFileApi::makeSaveFileOptions(qtFilterList, suggestedName.toStdString());
+    auto result = LocalFileApi::makeSaveFileOptions(bobuiFilterList, suggestedName.toStdString());
     QVERIFY(valDeepEquals(result, expectedWebType));
 }
 
@@ -236,25 +236,25 @@ void tst_LocalFileApi::fileInputAccept_data()
 {
     using namespace emscripten;
 
-    QTest::addColumn<QStringList>("qtFilterList");
-    QTest::addColumn<QString>("expectedAccept");
+    BOBUIest::addColumn<QStringList>("bobuiFilterList");
+    BOBUIest::addColumn<QString>("expectedAccept");
 
-    QTest::newRow("Multiple files")
+    BOBUIest::newRow("Multiple files")
             << QStringList{ "Text files (*.txt)", "Images (*.jpg *.png)", "*.bat" }
             << ".txt,.jpg,.png,.bat";
-    QTest::newRow("Spaces") << QStringList{ "   Documents (*.doc)", "Everything (*.*)",
+    BOBUIest::newRow("Spaces") << QStringList{ "   Documents (*.doc)", "Everything (*.*)",
                                             "   Stuff (  *.stf   *.tng)", "    *.exe" }
                             << ".doc,.stf,.tng,.exe";
 }
 
 void tst_LocalFileApi::fileInputAccept()
 {
-    QFETCH(QStringList, qtFilterList);
+    QFETCH(QStringList, bobuiFilterList);
     QFETCH(QString, expectedAccept);
 
-    auto result = LocalFileApi::makeFileInputAccept(qtFilterList);
+    auto result = LocalFileApi::makeFileInputAccept(bobuiFilterList);
     QCOMPARE_EQ(expectedAccept, QString::fromStdString(result));
 }
 
-QTEST_APPLESS_MAIN(tst_LocalFileApi)
+BOBUIEST_APPLESS_MAIN(tst_LocalFileApi)
 #include "tst_localfileapi.moc"

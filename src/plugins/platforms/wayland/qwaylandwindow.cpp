@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandsessionmanager_p.h"
 #include "qwaylandwindow_p.h"
@@ -22,34 +22,34 @@
 #include "qwaylandviewport_p.h"
 #include "qwaylandcolormanagement_p.h"
 
-#include <QtCore/QFileInfo>
-#include <QtCore/QPointer>
-#include <QtCore/QRegularExpression>
-#include <QtGui/QWindow>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QPointer>
+#include <BobUICore/QRegularExpression>
+#include <BobUIGui/QWindow>
 
 #include <QGuiApplication>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qwindow_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qwindow_p.h>
 
-#include <QtCore/QDebug>
-#include <QtCore/QThread>
+#include <BobUICore/QDebug>
+#include <BobUICore/BOBUIhread>
 
-#include <QtWaylandClient/private/qwayland-fractional-scale-v1.h>
+#include <BobUIWaylandClient/private/qwayland-fractional-scale-v1.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-Q_LOGGING_CATEGORY(lcWaylandBackingstore, "qt.qpa.wayland.backingstore")
+Q_LOGGING_CATEGORY(lcWaylandBackingstore, "bobui.qpa.wayland.backingstore")
 
 QWaylandWindow *QWaylandWindow::mMouseGrab = nullptr;
 QWaylandWindow *QWaylandWindow::mTopPopup = nullptr;
 
 /*!
-    \class QtWaylandClient::QWaylandWindow
+    \class BobUIWaylandClient::QWaylandWindow
     \internal
 */
 QWaylandWindow::QWaylandWindow(QWindow *window, QWaylandDisplay *display)
@@ -61,7 +61,7 @@ QWaylandWindow::QWaylandWindow(QWindow *window, QWaylandDisplay *display)
 {
     {
         bool ok;
-        int frameCallbackTimeout = qEnvironmentVariableIntValue("QT_WAYLAND_FRAME_CALLBACK_TIMEOUT", &ok);
+        int frameCallbackTimeout = qEnvironmentVariableIntValue("BOBUI_WAYLAND_FRAME_CALLBACK_TIMEOUT", &ok);
         if (ok)
             mFrameCallbackTimeout = frameCallbackTimeout;
     }
@@ -122,7 +122,7 @@ void QWaylandWindow::initWindow()
         Q_ASSERT(mShellIntegration);
         mTransientParent = guessTransientParent();
         if (mTransientParent) {
-            if (window()->type() == Qt::Popup) {
+            if (window()->type() == BobUI::Popup) {
                 if (mTopPopup && mTopPopup != mTransientParent) {
                     qCWarning(lcQpaWayland) << "Creating a popup with a parent," << mTransientParent->window()
                                             << "which does not match the current topmost grabbing popup,"
@@ -140,7 +140,7 @@ void QWaylandWindow::initWindow()
         mShellSurface = mShellIntegration->createShellSurface(this);
         if (mShellSurface) {
             if (mTransientParent) {
-                if (window()->type() == Qt::ToolTip || window()->type() == Qt::Popup || window()->type() == Qt::Tool)
+                if (window()->type() == BobUI::ToolTip || window()->type() == BobUI::Popup || window()->type() == BobUI::Tool)
                     mTransientParent->addChildPopup(this);
             }
 
@@ -162,7 +162,7 @@ void QWaylandWindow::initWindow()
                 QFileInfo fi = QFileInfo(QCoreApplication::instance()->applicationFilePath());
                 QStringList domainName =
                         QCoreApplication::instance()->organizationDomain().split(QLatin1Char('.'),
-                                                                                 Qt::SkipEmptyParts);
+                                                                                 BobUI::SkipEmptyParts);
 
                 if (domainName.isEmpty()) {
                     mShellSurface->setAppId(fi.baseName());
@@ -235,7 +235,7 @@ void QWaylandWindow::initializeWlSurface(bool colorSpace)
     }
     emit wlSurfaceCreated();
 
-    if (mDisplay->fractionalScaleManager() && qApp->highDpiScaleFactorRoundingPolicy() == Qt::HighDpiScaleFactorRoundingPolicy::PassThrough) {
+    if (mDisplay->fractionalScaleManager() && qApp->highDpiScaleFactorRoundingPolicy() == BobUI::HighDpiScaleFactorRoundingPolicy::PassThrough) {
         mFractionalScale.reset(new QWaylandFractionalScale(mDisplay->fractionalScaleManager()->get_fractional_scale(mSurface->object())));
 
         connect(mFractionalScale.data(), &QWaylandFractionalScale::preferredScaleChanged,
@@ -261,7 +261,7 @@ void QWaylandWindow::initializeColorSpace()
         if (mPendingImageDescription) {
             if (!mColorManagementSurface)
                 mColorManagementSurface = std::make_unique<ColorManagementSurface>(mDisplay->colorManager()->get_surface(surface()));
-            connect(mPendingImageDescription.get(), &ImageDescription::ready, this, &QWaylandWindow::setPendingImageDescription, Qt::SingleShotConnection);
+            connect(mPendingImageDescription.get(), &ImageDescription::ready, this, &QWaylandWindow::setPendingImageDescription, BobUI::SingleShotConnection);
             mSurfaceFormat.setColorSpace(requestedColorSpace);
         } else {
             qCWarning(lcQpaWayland) << "couldn't create image description for requested color space" << requestedColorSpace;
@@ -297,8 +297,8 @@ bool QWaylandWindow::shouldCreateShellSurface() const
     if (window()->inherits("QShapedPixmapWindow"))
         return false;
 
-    if (qEnvironmentVariableIsSet("QT_WAYLAND_USE_BYPASSWINDOWMANAGERHINT"))
-        return !(window()->flags() & Qt::BypassWindowManagerHint);
+    if (qEnvironmentVariableIsSet("BOBUI_WAYLAND_USE_BYPASSWINDOWMANAGERHINT"))
+        return !(window()->flags() & BobUI::BypassWindowManagerHint);
 
     return true;
 }
@@ -354,7 +354,7 @@ void QWaylandWindow::resetSurfaceRole()
     closeChildPopups();
 
     if (mTopPopup == this)
-        mTopPopup = mTransientParent && (mTransientParent->window()->type() == Qt::Popup) ? mTransientParent : nullptr;
+        mTopPopup = mTransientParent && (mTransientParent->window()->type() == BobUI::Popup) ? mTransientParent : nullptr;
     if (mTransientParent)
         mTransientParent->removeChildPopup(this);
     mTransientParent = nullptr;
@@ -485,15 +485,15 @@ void QWaylandWindow::setGeometry_helper(const QRect &rect)
 void QWaylandWindow::setGeometry(const QRect &r)
 {
     auto rect = r;
-    if (fixedToplevelPositions && !QPlatformWindow::parent() && window()->type() != Qt::Popup
-        && window()->type() != Qt::ToolTip && window()->type() != Qt::Tool) {
+    if (fixedToplevelPositions && !QPlatformWindow::parent() && window()->type() != BobUI::Popup
+        && window()->type() != BobUI::ToolTip && window()->type() != BobUI::Tool) {
         rect.moveTo(screen()->geometry().topLeft());
     }
     setGeometry_helper(rect);
 
     if (mShellSurface && !mInResizeFromApplyConfigure) {
         const QRect frameGeometry = r.marginsAdded(clientSideMargins()).marginsRemoved(windowContentMargins());
-        if (qt_window_private(window())->positionAutomatic || m_popupInfo.parentControlGeometry.isValid())
+        if (bobui_window_private(window())->positionAutomatic || m_popupInfo.parentControlGeometry.isValid())
             mShellSurface->setWindowSize(frameGeometry.size());
 
         else
@@ -518,7 +518,7 @@ void QWaylandWindow::setGeometry(const QRect &r)
     // Wayland has no concept of areas being exposed or not, only the entire window, when our geometry changes, we need to flag the new area as exposed
     // On other platforms (X11) the expose event would be received deferred from the X server
     // we want our behaviour to match, and only run after control has returned to the event loop
-    QMetaObject::invokeMethod(this, &QWaylandWindow::synthesizeExposeOnGeometryChange, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &QWaylandWindow::synthesizeExposeOnGeometryChange, BobUI::QueuedConnection);
 }
 
 void QWaylandWindow::synthesizeExposeOnGeometryChange()
@@ -537,7 +537,7 @@ void QWaylandWindow::updateInputRegion()
     if (!mSurface)
         return;
 
-    const bool transparentInputRegion = mFlags.testFlag(Qt::WindowTransparentForInput);
+    const bool transparentInputRegion = mFlags.testFlag(BobUI::WindowTransparentForInput);
 
     QRegion inputRegion;
     if (!transparentInputRegion)
@@ -605,22 +605,22 @@ void QWaylandWindow::resizeFromApplyConfigure(const QSize &sizeWithMargins, cons
 
 void QWaylandWindow::sendExposeEvent(const QRect &rect)
 {
-    static bool sQtTestMode = qEnvironmentVariableIsSet("QT_QTESTLIB_RUNNING");
+    static bool sBobUITestMode = qEnvironmentVariableIsSet("BOBUI_BOBUIESTLIB_RUNNING");
     mLastExposeGeometry = rect;
 
-    if (sQtTestMode) {
+    if (sBobUITestMode) {
         mExposeEventNeedsAttachedBuffer = true;
     }
     QWindowSystemInterface::handleExposeEvent<QWindowSystemInterface::SynchronousDelivery>(window(), rect);
 
     /**
       *  If an expose is not handled by application code, explicitly attach a buffer
-      *  This primarily is a workaround for Qt unit tests using QWindow directly and
+      *  This primarily is a workaround for BobUI unit tests using QWindow directly and
       *  wanting focus.
     */
     if (mExposed && mExposeEventNeedsAttachedBuffer && !rect.isNull()) {
         auto buffer = new QWaylandShmBuffer(mDisplay, rect.size(), QImage::Format_ARGB32);
-        buffer->image()->fill(Qt::transparent);
+        buffer->image()->fill(BobUI::transparent);
         buffer->setDeleteOnRelease(true);
         commit(buffer, QRegion());
     }
@@ -712,7 +712,7 @@ void QWaylandWindow::applyConfigureWhenPossible()
 {
     if (!mWaitingToApplyConfigure) {
         mWaitingToApplyConfigure = true;
-        QMetaObject::invokeMethod(this, &QWaylandWindow::applyConfigure, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &QWaylandWindow::applyConfigure, BobUI::QueuedConnection);
     }
 }
 
@@ -721,7 +721,7 @@ void QWaylandWindow::applyConfigure()
     if (!mWaitingToApplyConfigure)
         return;
 
-    Q_ASSERT_X(QThread::isMainThread(),
+    Q_ASSERT_X(BOBUIhread::isMainThread(),
                "QWaylandWindow::applyConfigure", "not called from main thread");
 
     // If we're mid paint, use an exposeEvent to flush the current frame.
@@ -862,7 +862,7 @@ void QWaylandWindow::handleFrameCallback(wl_callback* callback)
     if (mWaitingForUpdateDelivery.testAndSetAcquire(false, true)) {
         // Queued connection, to make sure we don't call handleUpdate() from inside waitForFrameSync()
         // in the single-threaded case.
-        QMetaObject::invokeMethod(this, &QWaylandWindow::doHandleFrameCallback, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &QWaylandWindow::doHandleFrameCallback, BobUI::QueuedConnection);
     }
     mFrameSyncWait.notify_all();
 }
@@ -889,7 +889,7 @@ bool QWaylandWindow::waitForFrameSync(int timeout)
     if (mFrameCallback) {
         qCDebug(lcWaylandBackingstore) << "Didn't receive frame callback in time, window should now be inexposed";
         mFrameCallbackTimedOut = true;
-        QMetaObject::invokeMethod(this, &QWaylandWindow::updateExposure, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, &QWaylandWindow::updateExposure, BobUI::QueuedConnection);
     }
 
     return !mFrameCallback;
@@ -949,7 +949,7 @@ QRect QWaylandWindow::windowContentGeometry() const
 }
 
 /*!
- * Converts from wl_surface coordinates to Qt window coordinates. Qt window
+ * Converts from wl_surface coordinates to BobUI window coordinates. BobUI window
  * coordinates start inside (not including) the window decorations, while
  * wl_surface coordinates start at the first pixel of the buffer. Potentially,
  * this should be in the window shadow, although we don't have those. So for
@@ -995,7 +995,7 @@ QWaylandScreen *QWaylandWindow::waylandScreen() const
     return static_cast<QWaylandScreen *>(platformScreen);
 }
 
-void QWaylandWindow::handleContentOrientationChange(Qt::ScreenOrientation orientation)
+void QWaylandWindow::handleContentOrientationChange(BobUI::ScreenOrientation orientation)
 {
     mLastReportedContentOrientation = orientation;
     updateBufferTransform();
@@ -1008,33 +1008,33 @@ void QWaylandWindow::updateBufferTransform()
         return;
 
     wl_output_transform transform;
-    Qt::ScreenOrientation screenOrientation = Qt::PrimaryOrientation;
+    BobUI::ScreenOrientation screenOrientation = BobUI::PrimaryOrientation;
 
     if (mSurface->version() >= 6) {
         const auto transform = mSurface->preferredBufferTransform().value_or(WL_OUTPUT_TRANSFORM_NORMAL);
         if (auto screen = waylandScreen())
-            screenOrientation = screen->toScreenOrientation(transform, Qt::PrimaryOrientation);
+            screenOrientation = screen->toScreenOrientation(transform, BobUI::PrimaryOrientation);
     } else {
         if (auto screen = window()->screen())
             screenOrientation = screen->primaryOrientation();
     }
 
-    const bool isPortrait = (screenOrientation == Qt::PortraitOrientation);
+    const bool isPortrait = (screenOrientation == BobUI::PortraitOrientation);
 
     switch (mLastReportedContentOrientation) {
-    case Qt::PrimaryOrientation:
+    case BobUI::PrimaryOrientation:
         transform = WL_OUTPUT_TRANSFORM_NORMAL;
         break;
-    case Qt::LandscapeOrientation:
+    case BobUI::LandscapeOrientation:
         transform = isPortrait ? WL_OUTPUT_TRANSFORM_270 : WL_OUTPUT_TRANSFORM_NORMAL;
         break;
-    case Qt::PortraitOrientation:
+    case BobUI::PortraitOrientation:
         transform = isPortrait ? WL_OUTPUT_TRANSFORM_NORMAL : WL_OUTPUT_TRANSFORM_90;
         break;
-    case Qt::InvertedLandscapeOrientation:
+    case BobUI::InvertedLandscapeOrientation:
         transform = isPortrait ? WL_OUTPUT_TRANSFORM_90 : WL_OUTPUT_TRANSFORM_180;
         break;
-    case Qt::InvertedPortraitOrientation:
+    case BobUI::InvertedPortraitOrientation:
         transform = isPortrait ? WL_OUTPUT_TRANSFORM_180 : WL_OUTPUT_TRANSFORM_270;
         break;
     default:
@@ -1043,22 +1043,22 @@ void QWaylandWindow::updateBufferTransform()
     mSurface->set_buffer_transform(transform);
 }
 
-void QWaylandWindow::setOrientationMask(Qt::ScreenOrientations mask)
+void QWaylandWindow::setOrientationMask(BobUI::ScreenOrientations mask)
 {
     if (mShellSurface)
         mShellSurface->setContentOrientationMask(mask);
 }
 
-void QWaylandWindow::setWindowState(Qt::WindowStates states)
+void QWaylandWindow::setWindowState(BobUI::WindowStates states)
 {
     if (mShellSurface)
         mShellSurface->requestWindowStates(states);
 }
 
-void QWaylandWindow::setWindowFlags(Qt::WindowFlags flags)
+void QWaylandWindow::setWindowFlags(BobUI::WindowFlags flags)
 {
-    const bool wasPopup = mFlags.testFlag(Qt::Popup);
-    const bool isPopup = flags.testFlag(Qt::Popup);
+    const bool wasPopup = mFlags.testFlag(BobUI::Popup);
+    const bool isPopup = flags.testFlag(BobUI::Popup);
 
     mFlags = flags;
     // changing role is not allowed on XdgShell on the same wl_surface
@@ -1079,14 +1079,14 @@ void QWaylandWindow::setWindowFlags(Qt::WindowFlags flags)
     updateInputRegion();
 }
 
-Qt::WindowFlags QWaylandWindow::windowFlags() const
+BobUI::WindowFlags QWaylandWindow::windowFlags() const
 {
     return mFlags;
 }
 
 bool QWaylandWindow::createDecoration()
 {
-    Q_ASSERT_X(QThread::isMainThread(),
+    Q_ASSERT_X(BOBUIhread::isMainThread(),
                "QWaylandWindow::createDecoration", "not called from main thread");
     // TODO: client side decorations do not work with Vulkan backend.
     if (window()->surfaceType() == QSurface::VulkanSurface)
@@ -1097,19 +1097,19 @@ bool QWaylandWindow::createDecoration()
     static bool decorationPluginFailed = false;
     bool decoration = false;
     switch (window()->type()) {
-        case Qt::Window:
-        case Qt::Widget:
-        case Qt::Dialog:
-        case Qt::Tool:
-        case Qt::Drawer:
+        case BobUI::Window:
+        case BobUI::Widget:
+        case BobUI::Dialog:
+        case BobUI::Tool:
+        case BobUI::Drawer:
             decoration = true;
             break;
         default:
             break;
     }
-    if (mFlags & Qt::FramelessWindowHint)
+    if (mFlags & BobUI::FramelessWindowHint)
         decoration = false;
-    if (mFlags & Qt::BypassWindowManagerHint)
+    if (mFlags & BobUI::BypassWindowManagerHint)
         decoration = false;
     if (mSubSurfaceWindow)
         decoration = false;
@@ -1131,7 +1131,7 @@ bool QWaylandWindow::createDecoration()
             }
 
             QString targetKey;
-            QByteArray decorationPluginName = qgetenv("QT_WAYLAND_DECORATION");
+            QByteArray decorationPluginName = qgetenv("BOBUI_WAYLAND_DECORATION");
             if (!decorationPluginName.isEmpty()) {
                 targetKey = QString::fromLocal8Bit(decorationPluginName);
                 if (!decorations.contains(targetKey)) {
@@ -1223,12 +1223,12 @@ QWaylandWindow *QWaylandWindow::guessTransientParent() const
     if (auto transientParent = closestShellSurfaceWindow(window()->transientParent()))
         return transientParent;
 
-    if (window()->type() == Qt::Popup) {
+    if (window()->type() == BobUI::Popup) {
         if (mTopPopup)
             return mTopPopup;
     }
 
-    if (window()->type() == Qt::ToolTip || window()->type() == Qt::Popup) {
+    if (window()->type() == BobUI::ToolTip || window()->type() == BobUI::Popup) {
         if (auto lastInputWindow = display()->lastInputWindow())
             return closestShellSurfaceWindow(lastInputWindow->window());
     }
@@ -1248,13 +1248,13 @@ void QWaylandWindow::handleMouse(QWaylandInputDevice *inputDevice, const QWaylan
         } else {
             QWindowSystemInterface::handleLeaveEvent(window());
         }
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
         restoreMouseCursor(inputDevice);
 #endif
         return;
     }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (e.type == QEvent::Enter) {
         restoreMouseCursor(inputDevice);
     }
@@ -1266,7 +1266,7 @@ void QWaylandWindow::handleMouse(QWaylandInputDevice *inputDevice, const QWaylan
         switch (e.type) {
             case QEvent::Enter:
                 QWindowSystemInterface::handleEnterEvent(window(), e.local, e.global);
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
                 mDisplay->waylandCursor()->setPosFromEnterEvent(e.global.toPoint());
 #endif
                 break;
@@ -1286,12 +1286,12 @@ void QWaylandWindow::handleMouse(QWaylandInputDevice *inputDevice, const QWaylan
     }
 }
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 void QWaylandWindow::handleSwipeGesture(QWaylandInputDevice *inputDevice,
                                         const QWaylandPointerGestureSwipeEvent &e)
 {
     switch (e.state) {
-        case Qt::GestureStarted:
+        case BobUI::GestureStarted:
             if (mGestureState != GestureNotActive)
                 qCWarning(lcQpaWaylandInput) << "Unexpected GestureStarted while already active";
 
@@ -1304,37 +1304,37 @@ void QWaylandWindow::handleSwipeGesture(QWaylandInputDevice *inputDevice,
             mGestureState = GestureActiveInContentArea;
             QWindowSystemInterface::handleGestureEvent(window(), e.timestamp,
                                                        inputDevice->mTouchPadDevice,
-                                                       Qt::BeginNativeGesture,
+                                                       BobUI::BeginNativeGesture,
                                                        e.local, e.global, e.fingers);
             break;
-        case Qt::GestureUpdated:
+        case BobUI::GestureUpdated:
             if (mGestureState != GestureActiveInContentArea)
                 return;
 
             if (!e.delta.isNull()) {
                 QWindowSystemInterface::handleGestureEventWithValueAndDelta(
                             window(), e.timestamp, inputDevice->mTouchPadDevice,
-                            Qt::PanNativeGesture,
+                            BobUI::PanNativeGesture,
                             0, e.delta, e.local, e.global, e.fingers);
             }
             break;
-        case Qt::GestureFinished:
-        case Qt::GestureCanceled:
+        case BobUI::GestureFinished:
+        case BobUI::GestureCanceled:
             if (mGestureState == GestureActiveInDecoration) {
                 mGestureState = GestureNotActive;
                 return;
             }
 
             if (mGestureState != GestureActiveInContentArea)
-                qCWarning(lcQpaWaylandInput) << "Unexpected" << (e.state == Qt::GestureFinished ? "GestureFinished" : "GestureCanceled");
+                qCWarning(lcQpaWaylandInput) << "Unexpected" << (e.state == BobUI::GestureFinished ? "GestureFinished" : "GestureCanceled");
 
             mGestureState = GestureNotActive;
 
-            // There's currently no way to expose cancelled gestures to the rest of Qt, so
+            // There's currently no way to expose cancelled gestures to the rest of BobUI, so
             // this part of information is lost.
             QWindowSystemInterface::handleGestureEvent(window(), e.timestamp,
                                                        inputDevice->mTouchPadDevice,
-                                                       Qt::EndNativeGesture,
+                                                       BobUI::EndNativeGesture,
                                                        e.local, e.global, e.fingers);
             break;
         default:
@@ -1346,7 +1346,7 @@ void QWaylandWindow::handlePinchGesture(QWaylandInputDevice *inputDevice,
                                         const QWaylandPointerGesturePinchEvent &e)
 {
     switch (e.state) {
-        case Qt::GestureStarted:
+        case BobUI::GestureStarted:
             if (mGestureState != GestureNotActive)
                 qCWarning(lcQpaWaylandInput) << "Unexpected GestureStarted while already active";
 
@@ -1359,61 +1359,61 @@ void QWaylandWindow::handlePinchGesture(QWaylandInputDevice *inputDevice,
             mGestureState = GestureActiveInContentArea;
             QWindowSystemInterface::handleGestureEvent(window(), e.timestamp,
                                                        inputDevice->mTouchPadDevice,
-                                                       Qt::BeginNativeGesture,
+                                                       BobUI::BeginNativeGesture,
                                                        e.local, e.global, e.fingers);
             break;
-        case Qt::GestureUpdated:
+        case BobUI::GestureUpdated:
             if (mGestureState != GestureActiveInContentArea)
                 return;
 
             if (!e.delta.isNull()) {
                 QWindowSystemInterface::handleGestureEventWithValueAndDelta(
                             window(), e.timestamp, inputDevice->mTouchPadDevice,
-                            Qt::PanNativeGesture,
+                            BobUI::PanNativeGesture,
                             0, e.delta, e.local, e.global, e.fingers);
             }
             if (e.rotation_delta != 0) {
                 QWindowSystemInterface::handleGestureEventWithRealValue(window(), e.timestamp,
                                                                         inputDevice->mTouchPadDevice,
-                                                                        Qt::RotateNativeGesture,
+                                                                        BobUI::RotateNativeGesture,
                                                                         e.rotation_delta,
                                                                         e.local, e.global, e.fingers);
             }
             if (e.scale_delta != 0) {
                 QWindowSystemInterface::handleGestureEventWithRealValue(window(), e.timestamp,
                                                                         inputDevice->mTouchPadDevice,
-                                                                        Qt::ZoomNativeGesture,
+                                                                        BobUI::ZoomNativeGesture,
                                                                         e.scale_delta,
                                                                         e.local, e.global, e.fingers);
             }
             break;
-        case Qt::GestureFinished:
-        case Qt::GestureCanceled:
+        case BobUI::GestureFinished:
+        case BobUI::GestureCanceled:
             if (mGestureState == GestureActiveInDecoration) {
                 mGestureState = GestureNotActive;
                 return;
             }
 
             if (mGestureState != GestureActiveInContentArea)
-                qCWarning(lcQpaWaylandInput) << "Unexpected" << (e.state == Qt::GestureFinished ? "GestureFinished" : "GestureCanceled");
+                qCWarning(lcQpaWaylandInput) << "Unexpected" << (e.state == BobUI::GestureFinished ? "GestureFinished" : "GestureCanceled");
 
             mGestureState = GestureNotActive;
 
-            // There's currently no way to expose cancelled gestures to the rest of Qt, so
+            // There's currently no way to expose cancelled gestures to the rest of BobUI, so
             // this part of information is lost.
             QWindowSystemInterface::handleGestureEvent(window(), e.timestamp,
                                                        inputDevice->mTouchPadDevice,
-                                                       Qt::EndNativeGesture,
+                                                       BobUI::EndNativeGesture,
                                                        e.local, e.global, e.fingers);
             break;
         default:
             break;
     }
 }
-#endif // #ifndef QT_NO_GESTURES
+#endif // #ifndef BOBUI_NO_GESTURES
 
 
-bool QWaylandWindow::touchDragDecoration(QWaylandInputDevice *inputDevice, const QPointF &local, const QPointF &global, QEventPoint::State state, Qt::KeyboardModifiers mods)
+bool QWaylandWindow::touchDragDecoration(QWaylandInputDevice *inputDevice, const QPointF &local, const QPointF &global, QEventPoint::State state, BobUI::KeyboardModifiers mods)
 {
     if (!mWindowDecorationEnabled)
         return false;
@@ -1422,8 +1422,8 @@ bool QWaylandWindow::touchDragDecoration(QWaylandInputDevice *inputDevice, const
 
 bool QWaylandWindow::handleTabletEventDecoration(QWaylandInputDevice *inputDevice,
                                                  const QPointF &local, const QPointF &global,
-                                                 Qt::MouseButtons buttons,
-                                                 Qt::KeyboardModifiers modifiers)
+                                                 BobUI::MouseButtons buttons,
+                                                 BobUI::KeyboardModifiers modifiers)
 {
     if (!mWindowDecorationEnabled)
         return false;
@@ -1435,7 +1435,7 @@ void QWaylandWindow::handleMouseEventWithDecoration(QWaylandInputDevice *inputDe
     // There's currently no way to get info about the actual hardware device in use.
     // At least we get the correct seat.
     const QPointingDevice *device = QPointingDevice::primaryPointingDevice(inputDevice->seatname());
-    if (mMousePressedInContentArea == Qt::NoButton &&
+    if (mMousePressedInContentArea == BobUI::NoButton &&
         mWindowDecoration->handleMouse(inputDevice, e.local, e.global, e.buttons, e.modifiers)) {
         if (mMouseEventsInContentArea) {
             QWindowSystemInterface::handleLeaveEvent(window());
@@ -1449,13 +1449,13 @@ void QWaylandWindow::handleMouseEventWithDecoration(QWaylandInputDevice *inputDe
                      0 + marg.top(),
                      geometry().size().width(),
                      geometry().size().height());
-    if (windowRect.contains(e.local.toPoint()) || mMousePressedInContentArea != Qt::NoButton) {
+    if (windowRect.contains(e.local.toPoint()) || mMousePressedInContentArea != BobUI::NoButton) {
         const QPointF localTranslated = mapFromWlSurface(e.local);
         QPointF globalTranslated = e.global;
         globalTranslated.setX(globalTranslated.x() - marg.left());
         globalTranslated.setY(globalTranslated.y() - marg.top());
         if (!mMouseEventsInContentArea) {
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
             restoreMouseCursor(inputDevice);
 #endif
             QWindowSystemInterface::handleEnterEvent(window());
@@ -1464,7 +1464,7 @@ void QWaylandWindow::handleMouseEventWithDecoration(QWaylandInputDevice *inputDe
         switch (e.type) {
             case QEvent::Enter:
                 QWindowSystemInterface::handleEnterEvent(window(), localTranslated, globalTranslated);
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
                 mDisplay->waylandCursor()->setPosFromEnterEvent(e.global.toPoint());
 #endif
                 break;
@@ -1503,8 +1503,8 @@ void QWaylandWindow::handleScreensChanged()
 
     QWindowSystemInterface::handleWindowScreenChanged<QWindowSystemInterface::SynchronousDelivery>(window(), newScreen->QPlatformScreen::screen());
 
-    if (fixedToplevelPositions && !QPlatformWindow::parent() && window()->type() != Qt::Popup
-        && window()->type() != Qt::ToolTip && window()->type() != Qt::Tool
+    if (fixedToplevelPositions && !QPlatformWindow::parent() && window()->type() != BobUI::Popup
+        && window()->type() != BobUI::ToolTip && window()->type() != BobUI::Tool
         && geometry().topLeft() != newScreen->geometry().topLeft()) {
         auto geometry = this->geometry();
         geometry.moveTo(newScreen->geometry().topLeft());
@@ -1558,7 +1558,7 @@ void QWaylandWindow::setScale(qreal newScale)
     }
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 void QWaylandWindow::restoreMouseCursor(QWaylandInputDevice *device)
 {
     if (const QCursor *overrideCursor = QGuiApplication::overrideCursor()) {
@@ -1566,7 +1566,7 @@ void QWaylandWindow::restoreMouseCursor(QWaylandInputDevice *device)
     } else if (mHasStoredCursor) {
         applyCursor(device, mStoredCursor);
     } else {
-        applyCursor(device, QCursor(Qt::ArrowCursor));
+        applyCursor(device, QCursor(BobUI::ArrowCursor));
     }
 }
 
@@ -1654,7 +1654,7 @@ qreal QWaylandWindow::devicePixelRatio() const
 
 bool QWaylandWindow::setMouseGrabEnabled(bool grab)
 {
-    if (window()->type() != Qt::Popup) {
+    if (window()->type() != BobUI::Popup) {
         qWarning("This plugin supports grabbing the mouse only for popup windows");
         return false;
     }
@@ -1673,16 +1673,16 @@ void QWaylandWindow::handleToplevelWindowTilingStatesChanged(ToplevelWindowTilin
     mLastReportedToplevelWindowTilingStates = states;
 }
 
-Qt::WindowStates QWaylandWindow::windowStates() const
+BobUI::WindowStates QWaylandWindow::windowStates() const
 {
     return mLastReportedWindowStates;
 }
 
-void QWaylandWindow::handleWindowStatesChanged(Qt::WindowStates states)
+void QWaylandWindow::handleWindowStatesChanged(BobUI::WindowStates states)
 {
     createDecoration();
-    Qt::WindowStates statesWithoutActive = states & ~Qt::WindowActive;
-    Qt::WindowStates lastStatesWithoutActive = mLastReportedWindowStates & ~Qt::WindowActive;
+    BobUI::WindowStates statesWithoutActive = states & ~BobUI::WindowActive;
+    BobUI::WindowStates lastStatesWithoutActive = mLastReportedWindowStates & ~BobUI::WindowActive;
     QWindowSystemInterface::handleWindowStateChanged(window(), statesWithoutActive,
                                                      lastStatesWithoutActive);
     mLastReportedWindowStates = states;
@@ -1721,14 +1721,14 @@ QVariant QWaylandWindow::property(const QString &name, const QVariant &defaultVa
     return m_properties.value(name, defaultValue);
 }
 
-#ifdef QT_PLATFORM_WINDOW_HAS_VIRTUAL_SET_BACKING_STORE
+#ifdef BOBUI_PLATFORM_WINDOW_HAS_VIRTUAL_SET_BACKING_STORE
 void QWaylandWindow::setBackingStore(QPlatformBackingStore *store)
 {
     mBackingStore = dynamic_cast<QWaylandShmBackingStore *>(store);
 }
 #endif
 
-void QWaylandWindow::timerEvent(QTimerEvent *event)
+void QWaylandWindow::timerEvent(BOBUIimerEvent *event)
 {
     if (event->timerId() != mFrameCallbackCheckIntervalTimerId)
         return;
@@ -1765,7 +1765,7 @@ void QWaylandWindow::requestUpdate()
             return;
     }
 
-    // Some applications (such as Qt Quick) depend on updates being delivered asynchronously,
+    // Some applications (such as BobUI Quick) depend on updates being delivered asynchronously,
     // so use invokeMethod to delay the delivery a bit.
     QMetaObject::invokeMethod(this, [this] {
         // Things might have changed in the meantime
@@ -1776,7 +1776,7 @@ void QWaylandWindow::requestUpdate()
         }
         if (hasPendingUpdateRequest())
             deliverUpdateRequest();
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 }
 
 // Should be called whenever we commit a buffer (directly through wl_surface.commit or indirectly
@@ -1785,7 +1785,7 @@ void QWaylandWindow::requestUpdate()
 void QWaylandWindow::handleUpdate()
 {
     mExposeEventNeedsAttachedBuffer = false;
-    qCDebug(lcWaylandBackingstore) << "handleUpdate" << QThread::currentThread();
+    qCDebug(lcWaylandBackingstore) << "handleUpdate" << BOBUIhread::currentThread();
 
     // TODO: Should sync subsurfaces avoid requesting frame callbacks?
     QReadLocker lock(&mSurfaceLock);
@@ -1812,7 +1812,7 @@ void QWaylandWindow::handleUpdate()
                     mFrameCallbackCheckIntervalTimerId = startTimer(mFrameCallbackTimeout);
                 mFrameCallbackElapsedTimer.start();
             }
-        }, Qt::QueuedConnection);
+        }, BobUI::QueuedConnection);
     }
 }
 
@@ -1833,7 +1833,7 @@ void QWaylandWindow::propagateSizeHints()
         mShellSurface->propagateSizeHints();
 }
 
-bool QWaylandWindow::startSystemResize(Qt::Edges edges)
+bool QWaylandWindow::startSystemResize(BobUI::Edges edges)
 {
     if (auto *seat = display()->lastInputDevice()) {
         bool rc = mShellSurface && mShellSurface->resize(seat, edges);
@@ -1843,7 +1843,7 @@ bool QWaylandWindow::startSystemResize(Qt::Edges edges)
     return false;
 }
 
-bool QtWaylandClient::QWaylandWindow::startSystemMove()
+bool BobUIWaylandClient::QWaylandWindow::startSystemMove()
 {
     if (auto seat = display()->lastInputDevice()) {
         bool rc = mShellSurface && mShellSurface->move(seat);
@@ -1927,7 +1927,7 @@ bool QWaylandWindow::windowEvent(QEvent *event)
         if (mWindowDecorationEnabled && window()->isVisible())
             mWindowDecoration->update();
     } else if (event->type() == QEvent::WindowUnblocked) {
-        // QtGui sends leave event to window under cursor when modal window opens, so we have
+        // BobUIGui sends leave event to window under cursor when modal window opens, so we have
         // to send enter event when modal closes and window has cursor and gets unblocked.
         if (auto *inputDevice = mDisplay->lastInputDevice(); inputDevice && inputDevice->pointerFocus() == this) {
             const auto pos = mDisplay->waylandCursor()->pos();
@@ -1976,6 +1976,6 @@ QRect QWaylandWindow::parentControlGeometry() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandwindow_p.cpp"

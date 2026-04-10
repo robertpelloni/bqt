@@ -1,38 +1,38 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qguitimer Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qguitimer LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 function(addGuiTimerTest test)
-    qt_internal_add_test(${test}
+    bobui_internal_add_test(${test}
         SOURCES
-            ../../../corelib/kernel/qtimer/tst_qtimer.cpp
+            ../../../corelib/kernel/bobuiimer/tst_bobuiimer.cpp
         LIBRARIES
-            Qt::CorePrivate
-            Qt::Gui
-            Qt::TestPrivate
+            BobUI::CorePrivate
+            BobUI::Gui
+            BobUI::TestPrivate
     )
 endfunction()
 
 addGuiTimerTest(tst_qguitimer)
-qt_internal_extend_target(tst_qguitimer
+bobui_internal_extend_target(tst_qguitimer
     DEFINES
-        tst_QTimer=tst_QGuiTimer
+        tst_BOBUIimer=tst_QGuiTimer
 )
 
-if(QT_FEATURE_glib AND UNIX)
+if(BOBUI_FEATURE_glib AND UNIX)
     addGuiTimerTest(tst_qguitimer_no_glib)
-    qt_internal_extend_target(tst_qguitimer_no_glib
+    bobui_internal_extend_target(tst_qguitimer_no_glib
         DEFINES
             DISABLE_GLIB
-            tst_QTimer=tst_QGuiTimer_no_glib # Class name in the unittest
+            tst_BOBUIimer=tst_QGuiTimer_no_glib # Class name in the unittest
     )
 endif()

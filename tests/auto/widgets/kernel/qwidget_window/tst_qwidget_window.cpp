@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtGui/QtGui>
-#include <QtCore/QTextStream>
-#include <QtCore/QStringList>
-#include <QtCore/QMimeData>
-#include <QtCore/QPoint>
+#include <BOBUIest>
+#include <BobUIGui/BobUIGui>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/QStringList>
+#include <BobUICore/QMimeData>
+#include <BobUICore/QPoint>
 #include <qeventloop.h>
 #include <qlist.h>
 
 #include <qlistwidget.h>
 #include <qpushbutton.h>
 #include <qboxlayout.h>
-#include <qtabwidget.h>
+#include <bobuiabwidget.h>
 #include <qlabel.h>
 #include <qmainwindow.h>
-#include <qtoolbar.h>
+#include <bobuioolbar.h>
 #include <qsignalspy.h>
 #include <private/qwindow_p.h>
 #include <private/qguiapplication_p.h>
@@ -26,12 +26,12 @@
 #include <qpa/qplatformdrag.h>
 #include <private/qhighdpiscaling_p.h>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-using namespace QTestPrivate;
-using namespace Qt::StringLiterals;
+using namespace BOBUIestPrivate;
+using namespace BobUI::StringLiterals;
 
 // Compare a window position that may go through scaling in the platform plugin with fuzz.
 static inline bool qFuzzyCompareWindowPosition(const QPoint &p1, const QPoint p2, int fuzz)
@@ -79,19 +79,19 @@ private slots:
 
     void tst_showWithoutActivating();
     void tst_paintEventOnSecondShow();
-    void tst_exposeObscuredMapped_QTBUG39220();
-    void tst_paintEventOnResize_QTBUG50796();
+    void tst_exposeObscuredMapped_BOBUIBUG39220();
+    void tst_paintEventOnResize_BOBUIBUG50796();
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     void tst_dnd();
     void tst_dnd_events();
     void tst_dnd_propagation();
     void tst_dnd_destroyOnDrop();
 #endif
 
-    void tst_qtbug35600();
-    void tst_updateWinId_QTBUG40681();
-    void tst_recreateWindow_QTBUG40817();
+    void tst_bobuibug35600();
+    void tst_updateWinId_BOBUIBUG40681();
+    void tst_recreateWindow_BOBUIBUG40817();
 
     void tst_resize_count();
     void tst_move_count();
@@ -100,14 +100,14 @@ private slots:
 
     void tst_eventfilter_on_toplevel();
 
-    void QTBUG_50561_QCocoaBackingStore_paintDevice_crash();
+    void BOBUIBUG_50561_QCocoaBackingStore_paintDevice_crash();
 
     void setWindowState_data();
     void setWindowState();
 
     void nativeShow();
 
-    void QTBUG_56277_resize_on_showEvent();
+    void BOBUIBUG_56277_resize_on_showEvent();
 
     void mouseMoveWithPopup_data();
     void mouseMoveWithPopup();
@@ -138,7 +138,7 @@ void tst_QWidget_window::initTestCase()
 
 void tst_QWidget_window::init()
 {
-    QTest::failOnWarning(QRegularExpression(".*No such slot.*"));
+    BOBUIest::failOnWarning(QRegularExpression(".*No such slot.*"));
 }
 
 void tst_QWidget_window::cleanupTestCase()
@@ -153,13 +153,13 @@ void tst_QWidget_window::cleanup()
 /* Test if the maximum/minimum size constraints
  * are propagated from the widget to the QWidgetWindow
  * independently of whether they were set before or after
- * window creation (QTBUG-26745). */
+ * window creation (BOBUIBUG-26745). */
 
 void tst_QWidget_window::tst_min_max_size_data()
 {
-    QTest::addColumn<bool>("setMinMaxSizeBeforeShow");
-    QTest::newRow("Set min/max size after show") << false;
-    QTest::newRow("Set min/max size before show") << true;
+    BOBUIest::addColumn<bool>("setMinMaxSizeBeforeShow");
+    BOBUIest::newRow("Set min/max size after show") << false;
+    BOBUIest::newRow("Set min/max size before show") << true;
 }
 
 void tst_QWidget_window::tst_min_max_size()
@@ -179,7 +179,7 @@ void tst_QWidget_window::tst_min_max_size()
         w1.setMinimumSize(minSize);
         w1.setMaximumSize(maxSize);
     }
-    QVERIFY(QTest::qWaitForWindowExposed(&w1));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w1));
     QCOMPARE(w1.windowHandle()->minimumSize(),minSize);
     QCOMPARE(w1.windowHandle()->maximumSize(), maxSize);
 }
@@ -247,7 +247,7 @@ void tst_QWidget_window::close()
     // Verfy that closing a QWidgetWindow deletes its platform window,
     // as expected of a QWindow subclass. This must be done also
     // if QWidget API is used to close. The QCloseEvent must not be
-    // spontaneous if the close is triggered by a Qt API that the application
+    // spontaneous if the close is triggered by a BobUI API that the application
     // would call in response to an event, and spontaneous if it is directly
     // caused by user interaction, such as clicking the (x) in the titlebar.
     // We can simulate this only by generating a WindowSystemEvent.
@@ -325,31 +325,31 @@ public:
 
 void tst_QWidget_window::tst_windowFilePathAndwindowTitle_data()
 {
-    QTest::addColumn<bool>("setWindowTitleBefore");
-    QTest::addColumn<bool>("setWindowTitleAfter");
-    QTest::addColumn<QString>("filePath");
-    QTest::addColumn<QString>("applicationName");
-    QTest::addColumn<QString>("indyWindowTitle");
-    QTest::addColumn<QString>("finalTitleBefore");
-    QTest::addColumn<QString>("finalTitleAfter");
+    BOBUIest::addColumn<bool>("setWindowTitleBefore");
+    BOBUIest::addColumn<bool>("setWindowTitleAfter");
+    BOBUIest::addColumn<QString>("filePath");
+    BOBUIest::addColumn<QString>("applicationName");
+    BOBUIest::addColumn<QString>("indyWindowTitle");
+    BOBUIest::addColumn<QString>("finalTitleBefore");
+    BOBUIest::addColumn<QString>("finalTitleAfter");
 
     QString validPath = QApplication::applicationFilePath();
     QString fileNameOnly = QFileInfo(validPath).fileName() + QLatin1String("[*]");
     QString windowTitle = QLatin1String("Here is a Window Title");
     QString defaultPlatString = fileNameOnly;
 
-    QTest::newRow("never Set Title nor AppName") << false << false << validPath << QString() << windowTitle << defaultPlatString << defaultPlatString;
-    QTest::newRow("set title after only, but no AppName") << false << true << validPath << QString() << windowTitle << defaultPlatString << windowTitle;
-    QTest::newRow("set title before only, not AppName") << true << false << validPath << QString() << windowTitle << windowTitle << windowTitle;
-    QTest::newRow("always set title, not appName") << true << true << validPath << QString() << windowTitle << windowTitle << windowTitle;
+    BOBUIest::newRow("never Set Title nor AppName") << false << false << validPath << QString() << windowTitle << defaultPlatString << defaultPlatString;
+    BOBUIest::newRow("set title after only, but no AppName") << false << true << validPath << QString() << windowTitle << defaultPlatString << windowTitle;
+    BOBUIest::newRow("set title before only, not AppName") << true << false << validPath << QString() << windowTitle << windowTitle << windowTitle;
+    BOBUIest::newRow("always set title, not appName") << true << true << validPath << QString() << windowTitle << windowTitle << windowTitle;
 
-    QString appName = QLatin1String("Killer App"); // Qt4 used to make it part of windowTitle(), Qt5 doesn't anymore, the QPA plugin takes care of it.
+    QString appName = QLatin1String("Killer App"); // BobUI4 used to make it part of windowTitle(), BobUI5 doesn't anymore, the QPA plugin takes care of it.
     QString platString = fileNameOnly;
 
-    QTest::newRow("never Set Title, yes AppName") << false << false << validPath << appName << windowTitle << platString << platString;
-    QTest::newRow("set title after only, yes AppName") << false << true << validPath << appName << windowTitle << platString << windowTitle;
-    QTest::newRow("set title before only, yes AppName") << true << false << validPath << appName << windowTitle << windowTitle << windowTitle;
-    QTest::newRow("always set title, yes appName") << true << true << validPath << appName << windowTitle << windowTitle << windowTitle;
+    BOBUIest::newRow("never Set Title, yes AppName") << false << false << validPath << appName << windowTitle << platString << platString;
+    BOBUIest::newRow("set title after only, yes AppName") << false << true << validPath << appName << windowTitle << platString << windowTitle;
+    BOBUIest::newRow("set title before only, yes AppName") << true << false << validPath << appName << windowTitle << windowTitle << windowTitle;
+    BOBUIest::newRow("always set title, yes appName") << true << true << validPath << appName << windowTitle << windowTitle << windowTitle;
 }
 
 void tst_QWidget_window::tst_windowFilePathAndwindowTitle()
@@ -387,23 +387,23 @@ void tst_QWidget_window::tst_windowFilePathAndwindowTitle()
 
 void tst_QWidget_window::tst_windowFilePath_data()
 {
-    QTest::addColumn<QString>("filePath");
-    QTest::addColumn<QString>("result");
-    QTest::addColumn<bool>("again");
-    QTest::addColumn<QString>("filePath2");
-    QTest::addColumn<QString>("result2");
+    BOBUIest::addColumn<QString>("filePath");
+    BOBUIest::addColumn<QString>("result");
+    BOBUIest::addColumn<bool>("again");
+    BOBUIest::addColumn<QString>("filePath2");
+    BOBUIest::addColumn<QString>("result2");
 
     QString validPath = QApplication::applicationFilePath();
     QString invalidPath = QLatin1String("::**Never a Real Path**::");
 
-    QTest::newRow("never Set Path") << QString() << QString() << false << QString() << QString();
-    QTest::newRow("never EVER Set Path") << QString() << QString() << true << QString() << QString();
-    QTest::newRow("Valid Path") << validPath << validPath << false << QString() << QString();
-    QTest::newRow("invalid Path") << invalidPath << invalidPath << false << QString() << QString();
-    QTest::newRow("Valid Path then empty") << validPath << validPath << true << QString() << QString();
-    QTest::newRow("invalid Path then empty") << invalidPath << invalidPath << true << QString() << QString();
-    QTest::newRow("invalid Path then valid") << invalidPath << invalidPath << true << validPath << validPath;
-    QTest::newRow("valid Path then invalid") << validPath << validPath << true << invalidPath << invalidPath;
+    BOBUIest::newRow("never Set Path") << QString() << QString() << false << QString() << QString();
+    BOBUIest::newRow("never EVER Set Path") << QString() << QString() << true << QString() << QString();
+    BOBUIest::newRow("Valid Path") << validPath << validPath << false << QString() << QString();
+    BOBUIest::newRow("invalid Path") << invalidPath << invalidPath << false << QString() << QString();
+    BOBUIest::newRow("Valid Path then empty") << validPath << validPath << true << QString() << QString();
+    BOBUIest::newRow("invalid Path then empty") << invalidPath << invalidPath << true << QString() << QString();
+    BOBUIest::newRow("invalid Path then valid") << invalidPath << invalidPath << true << validPath << validPath;
+    BOBUIest::newRow("valid Path then invalid") << validPath << validPath << true << invalidPath << invalidPath;
 }
 
 void tst_QWidget_window::tst_windowFilePath()
@@ -433,44 +433,44 @@ void tst_QWidget_window::tst_showWithoutActivating()
         && platformName != QStringLiteral("ios")
         && platformName != QStringLiteral("tvos")
         && platformName != QStringLiteral("watchos"))
-        QSKIP("Qt::WA_ShowWithoutActivating is currently supported only on xcb, " \
+        QSKIP("BobUI::WA_ShowWithoutActivating is currently supported only on xcb, " \
               "windows, and macos/ios/tvos/watchos platforms.");
 
     QWidget w1;
-    w1.setAttribute(Qt::WA_ShowWithoutActivating);
+    w1.setAttribute(BobUI::WA_ShowWithoutActivating);
     w1.show();
-    QVERIFY(!QTest::qWaitForWindowActive(&w1));
+    QVERIFY(!BOBUIest::qWaitForWindowActive(&w1));
 
     QWidget w2;
     w2.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w2));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w2));
 
     QWidget w3;
-    w3.setAttribute(Qt::WA_ShowWithoutActivating);
+    w3.setAttribute(BobUI::WA_ShowWithoutActivating);
     w3.show();
-    QVERIFY(!QTest::qWaitForWindowActive(&w3));
+    QVERIFY(!BOBUIest::qWaitForWindowActive(&w3));
 
     w3.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&w3));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w3));
 }
 
 void tst_QWidget_window::tst_paintEventOnSecondShow()
 {
     PaintTestWidget w;
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     w.hide();
 
     w.paintEventCount = 0;
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QApplication::processEvents();
-    QTRY_VERIFY(w.paintEventCount > 0);
+    BOBUIRY_VERIFY(w.paintEventCount > 0);
 }
 
-void tst_QWidget_window::tst_exposeObscuredMapped_QTBUG39220()
+void tst_QWidget_window::tst_exposeObscuredMapped_BOBUIBUG39220()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     const auto integration = QGuiApplicationPrivate::platformIntegration();
@@ -478,9 +478,9 @@ void tst_QWidget_window::tst_exposeObscuredMapped_QTBUG39220()
         || !integration->hasCapability(QPlatformIntegration::NonFullScreenWindows)) {
         QSKIP("The platform does not have the required capabilities");
     }
-    // QTBUG-39220: Fully obscured parent widgets may not receive expose
+    // BOBUIBUG-39220: Fully obscured parent widgets may not receive expose
     // events (as is the case for frameless, obscured parents on Windows).
-    // Ensure Qt::WA_Mapped is set so updating works.
+    // Ensure BobUI::WA_Mapped is set so updating works.
     const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     const QSize size = availableGeometry.size() / 6;
     QWidget topLevel;
@@ -493,13 +493,13 @@ void tst_QWidget_window::tst_exposeObscuredMapped_QTBUG39220()
     child->move(0, 0);
     QVERIFY(child->winId());
     topLevel.show();
-    QTRY_VERIFY(child->testAttribute(Qt::WA_Mapped));
-    QVERIFY(topLevel.testAttribute(Qt::WA_Mapped));
+    BOBUIRY_VERIFY(child->testAttribute(BobUI::WA_Mapped));
+    QVERIFY(topLevel.testAttribute(BobUI::WA_Mapped));
 }
 
-void tst_QWidget_window::tst_paintEventOnResize_QTBUG50796()
+void tst_QWidget_window::tst_paintEventOnResize_BOBUIBUG50796()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     const QRect availableGeo = QGuiApplication::primaryScreen()->availableGeometry();
@@ -513,8 +513,8 @@ void tst_QWidget_window::tst_paintEventOnResize_QTBUG50796()
     native->setGeometry(10, 10, 50, 50);
 
     root.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&root));
-    QVERIFY(QTest::qWaitForWindowActive(&root));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&root));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&root));
     QVERIFY(native->isVisible());
 
     // The top level widget can receive new margins after show
@@ -526,16 +526,16 @@ void tst_QWidget_window::tst_paintEventOnResize_QTBUG50796()
 
     native->paintEventCount = 0;
     native->resize(native->width() + 10, native->height() + 10);
-    QTest::qWait(50); // Wait for paint events
-    QTRY_COMPARE(native->paintEventCount, 1 + safeMarginsResizeCount);
+    BOBUIest::qWait(50); // Wait for paint events
+    BOBUIRY_COMPARE(native->paintEventCount, 1 + safeMarginsResizeCount);
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /* DnD test for QWidgetWindow (handleDrag*Event() functions).
  * Simulates a drop onto a QWidgetWindow of a top level widget
  * that has 3 child widgets in a vertical layout with a frame. Only the lower 2
- * child widgets accepts drops (QTBUG-22987), the bottom child has another child
+ * child widgets accepts drops (BOBUIBUG-22987), the bottom child has another child
  * that does not accept drops.
  * Sends a series of DnD events to the QWidgetWindow,
  * entering the top level at the top frame and move
@@ -596,12 +596,12 @@ protected:
     void dropEvent(QDropEvent *) override;
 
 private:
-    void formatDropEvent(const char *function, const QDropEvent *e, QTextStream &str) const;
+    void formatDropEvent(const char *function, const QDropEvent *e, BOBUIextStream &str) const;
     QStringList *m_log;
     bool m_ignoreDragMove;
 };
 
-void DnDEventLoggerWidget::formatDropEvent(const char *function, const QDropEvent *e, QTextStream &str) const
+void DnDEventLoggerWidget::formatDropEvent(const char *function, const QDropEvent *e, BOBUIextStream &str) const
 {
     str << objectName() << "::" << function  << " at " << e->position().toPoint().x() << ',' << e->position().toPoint().y()
         << " action=" << e->dropAction()
@@ -612,7 +612,7 @@ void DnDEventLoggerWidget::dragEnterEvent(QDragEnterEvent *e)
 {
     e->accept();
     QString message;
-    QTextStream str(&message);
+    BOBUIextStream str(&message);
     formatDropEvent("dragEnterEvent", e, str);
     m_log->push_back(message);
 }
@@ -623,7 +623,7 @@ void DnDEventLoggerWidget::dragMoveEvent(QDragMoveEvent *e)
         return;
     e->accept();
     QString message;
-    QTextStream str(&message);
+    BOBUIextStream str(&message);
     formatDropEvent("dragMoveEvent", e, str);
     m_log->push_back(message);
 }
@@ -638,7 +638,7 @@ void DnDEventLoggerWidget::dropEvent(QDropEvent *e)
 {
     e->accept();
     QString message;
-    QTextStream str(&message);
+    BOBUIextStream str(&message);
     formatDropEvent("dropEvent", e, str);
     m_log->push_back(message);
 }
@@ -646,14 +646,14 @@ void DnDEventLoggerWidget::dropEvent(QDropEvent *e)
 static QString msgEventAccepted(const QDropEvent &e)
 {
     QString message;
-    QTextStream str(&message);
+    BOBUIextStream str(&message);
     str << "Event at " << e.position().toPoint().x() << ',' << e.position().toPoint().y() << ' ' << (e.isAccepted() ? "accepted" : "ignored");
     return message;
 }
 
 void tst_QWidget_window::tst_dnd()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStringList log;
@@ -674,7 +674,7 @@ void tst_QWidget_window::tst_dnd()
     dropsAcceptingWidget1->resize(180, 80);
     dropsAcceptingWidget1->move(10, 110);
 
-    // Create a native widget on top of dropsAcceptingWidget1 to check QTBUG-27336
+    // Create a native widget on top of dropsAcceptingWidget1 to check BOBUIBUG-27336
     QWidget *nativeWidget = new QWidget(dropsAcceptingWidget1);
     nativeWidget->resize(160, 60);
     nativeWidget->move(10, 10);
@@ -698,26 +698,26 @@ void tst_QWidget_window::tst_dnd()
     dropsAcceptingWidget3->move(10, 260);
 
     dndTestWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dndTestWidget));
-    QVERIFY(QTest::qWaitForWindowActive(&dndTestWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dndTestWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dndTestWidget));
 
     QMimeData mimeData;
     mimeData.setText(QLatin1String("testmimetext"));
 
     // Simulate DnD events on the QWidgetWindow.
     QPoint position = QPoint(11, 1);
-    QDragEnterEvent e(position, Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent e(position, BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
     QWindow *window = dndTestWidget.windowHandle();
     qApp->sendEvent(window, &e);
     log.push_back(msgEventAccepted(e));
     while (true) {
         position.ry() += 20;
         if (position.y() >= 250 && position.y() < 270) {
-            QDropEvent e(position, Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+            QDropEvent e(position, BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
             qApp->sendEvent(window, &e);
             log.push_back(msgEventAccepted(e));
         } else {
-            QDragMoveEvent e(position, Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+            QDragMoveEvent e(position, BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
             qApp->sendEvent(window, &e);
             log.push_back(msgEventAccepted(e));
         }
@@ -726,15 +726,15 @@ void tst_QWidget_window::tst_dnd()
     }
 
     window = nativeWidget->windowHandle();
-    QDragEnterEvent enterEvent(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDragEnterEvent enterEvent(QPoint(0, 0), BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
     qApp->sendEvent(window, &enterEvent);
     log.push_back(msgEventAccepted(enterEvent));
 
-    QDragMoveEvent moveEvent(QPoint(1, 1), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDragMoveEvent moveEvent(QPoint(1, 1), BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
     qApp->sendEvent(window, &moveEvent);
     log.push_back(msgEventAccepted(moveEvent));
 
-    QDropEvent dropEvent(QPoint(2, 2), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    QDropEvent dropEvent(QPoint(2, 2), BobUI::CopyAction, &mimeData, BobUI::LeftButton, BobUI::NoModifier);
     qApp->sendEvent(window, &dropEvent);
     log.push_back(msgEventAccepted(dropEvent));
 
@@ -803,10 +803,10 @@ signals:
 
 void tst_QWidget_window::tst_dnd_events()
 {
-    // Note: This test is somewhat a hack as testing DnD with qtestlib is not
+    // Note: This test is somewhat a hack as testing DnD with bobuiestlib is not
     // supported at the moment. The test verifies that we get an expected event
     // sequence on dnd operation that does not move a mouse. This logic is implemented
-    // in QGuiApplication, so we have to go via QWindowSystemInterface API (QTest::mouse*).
+    // in QGuiApplication, so we have to go via QWindowSystemInterface API (BOBUIest::mouse*).
     const auto platformName = QGuiApplication::platformName().toLower();
     // The test is known to work with XCB and platforms that use the default dnd
     // implementation QSimpleDrag (e.g. qnx). Running on XCB should be sufficient to
@@ -814,21 +814,21 @@ void tst_QWidget_window::tst_dnd_events()
     if (platformName != "xcb")
         return;
     if (qgetenv("XDG_CURRENT_DESKTOP").toLower().contains("ubuntu") && QSysInfo::productVersion() == "24.04"_L1)
-        QSKIP("This hangs on Ubuntu 24.04 X11, see also QTBUG-129567.");
+        QSKIP("This hangs on Ubuntu 24.04 X11, see also BOBUIBUG-129567.");
 
     const QString expectedDndEvents = "DragEnter DragMove DropEvent DragEnter DragMove "
                                       "DropEvent DragEnter DragMove DropEvent ";
     DnDEventRecorder dndWidget;
     dndWidget.setGeometry(100, 100, 200, 200);
     dndWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dndWidget));
-    QVERIFY(QTest::qWaitForWindowActive(&dndWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dndWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&dndWidget));
 
-    // ### FIXME - QTBUG-35117 ???
+    // ### FIXME - BOBUIBUG-35117 ???
     auto targetCenter = QPoint(dndWidget.width(), dndWidget.height()) / 2;
     auto targetCenterGlobal = dndWidget.mapToGlobal(targetCenter);
     QCursor::setPos(targetCenterGlobal);
-    QVERIFY(QTest::qWaitFor([&]() { return QCursor::pos() == targetCenterGlobal; }));
+    QVERIFY(BOBUIest::qWaitFor([&]() { return QCursor::pos() == targetCenterGlobal; }));
     QCoreApplication::processEvents(); // clear mouse events generated from cursor
 
     auto window = dndWidget.window()->windowHandle();
@@ -837,12 +837,12 @@ void tst_QWidget_window::tst_dnd_events()
     // the following queued signal hack to simulate mouse clicks in the widget.
     auto connection = QObject::connect(&dndWidget, &DnDEventRecorder::dragMoveReceived, this,
                                         [=]() {
-        QTest::mouseRelease(window, Qt::LeftButton);
-    }, Qt::QueuedConnection);
+        BOBUIest::mouseRelease(window, BobUI::LeftButton);
+    }, BobUI::QueuedConnection);
 
-    QTest::mousePress(window, Qt::LeftButton);
-    QTest::mousePress(window, Qt::LeftButton);
-    QTest::mousePress(window, Qt::LeftButton);
+    BOBUIest::mousePress(window, BobUI::LeftButton);
+    BOBUIest::mousePress(window, BobUI::LeftButton);
+    BOBUIest::mousePress(window, BobUI::LeftButton);
 
     QCOMPARE(dndWidget._dndEvents, expectedDndEvents);
 
@@ -852,18 +852,18 @@ void tst_QWidget_window::tst_dnd_events()
     QObject::connect(&dndWidget, &DnDEventRecorder::dragMoveReceived, this, [window, &step]() {
         switch (step++) {
         case 0:
-            QTest::keyPress(window, Qt::Key_Shift, Qt::ShiftModifier);
+            BOBUIest::keyPress(window, BobUI::Key_Shift, BobUI::ShiftModifier);
             break;
         case 1:
-            QTest::keyRelease(window, Qt::Key_Shift, Qt::NoModifier);
+            BOBUIest::keyRelease(window, BobUI::Key_Shift, BobUI::NoModifier);
             break;
         default:
-            QTest::mouseRelease(window, Qt::LeftButton);
+            BOBUIest::mouseRelease(window, BobUI::LeftButton);
             break;
         }
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 
-    QTest::mousePress(window, Qt::LeftButton);
+    BOBUIest::mousePress(window, BobUI::LeftButton);
     const QString expectedDndWithModsEvents = "DragEnter DragMove DragMove DragMove DropEvent ";
     QCOMPARE(dndWidget._dndEvents, expectedDndWithModsEvents);
 }
@@ -913,7 +913,7 @@ public:
 
 void tst_QWidget_window::tst_dnd_propagation()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMimeData mimeData;
@@ -921,9 +921,9 @@ void tst_QWidget_window::tst_dnd_propagation()
 
     DropTarget target;
     target.show();
-    QVERIFY(QTest::qWaitForWindowActive(&target));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&target));
 
-    Qt::DropActions supportedActions = Qt::DropAction::CopyAction;
+    BobUI::DropActions supportedActions = BobUI::DropAction::CopyAction;
     QWindow *window = target.windowHandle();
 
     auto posInsideDropTarget = QHighDpi::toNativePixels(QPoint(20, 20), window->screen());
@@ -985,7 +985,7 @@ private:
 
 void tst_QWidget_window::tst_dnd_destroyOnDrop()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMimeData mimeData;
@@ -994,13 +994,13 @@ void tst_QWidget_window::tst_dnd_destroyOnDrop()
     QWidget newParent;
     newParent.resize(400, 400);
     newParent.show();
-    QVERIFY(QTest::qWaitForWindowActive(&newParent));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&newParent));
 
     ReparentSelfOnDropWidget *target = new ReparentSelfOnDropWidget(&newParent);
     target->show();
-    QVERIFY(QTest::qWaitForWindowActive(target));
+    QVERIFY(BOBUIest::qWaitForWindowActive(target));
 
-    Qt::DropActions supportedActions = Qt::DropAction::CopyAction;
+    BobUI::DropActions supportedActions = BobUI::DropAction::CopyAction;
     QWindow *window = target->windowHandle();
 
     auto posInsideDropTarget = QHighDpi::toNativePixels(QPoint(20, 20), window->screen());
@@ -1015,7 +1015,7 @@ void tst_QWidget_window::tst_dnd_destroyOnDrop()
 
 #endif
 
-void tst_QWidget_window::tst_qtbug35600()
+void tst_QWidget_window::tst_bobuibug35600()
 {
     QWidget w;
     w.show();
@@ -1032,30 +1032,30 @@ void tst_QWidget_window::tst_qtbug35600()
     wA->setLayout(layoutA);
 
     QWidget *wD = new QWidget;
-    wD->setAttribute(Qt::WA_NativeWindow);
+    wD->setAttribute(BobUI::WA_NativeWindow);
     wD->setParent(wB);
 
-    QWidget *wE = new QWidget(wC, Qt::Tool | Qt::FramelessWindowHint | Qt::WindowTransparentForInput);
+    QWidget *wE = new QWidget(wC, BobUI::Tool | BobUI::FramelessWindowHint | BobUI::WindowTransparentForInput);
     wE->show();
 
     wA->setParent(&w);
 
-    // QTBUG-35600: program may crash here or on exit
+    // BOBUIBUG-35600: program may crash here or on exit
 }
 
-void tst_QWidget_window::tst_updateWinId_QTBUG40681()
+void tst_QWidget_window::tst_updateWinId_BOBUIBUG40681()
 {
     QWidget w;
     QVBoxLayout *vl = new QVBoxLayout(&w);
     QLabel *lbl = new QLabel("HELLO1");
-    lbl->setAttribute(Qt::WA_NativeWindow);
+    lbl->setAttribute(BobUI::WA_NativeWindow);
     lbl->setObjectName("label1");
     vl->addWidget(lbl);
     w.setMinimumWidth(m_testWidgetSize.width());
 
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QCOMPARE(lbl->winId(), lbl->windowHandle()->winId());
 
@@ -1065,15 +1065,15 @@ void tst_QWidget_window::tst_updateWinId_QTBUG40681()
     lbl->windowHandle()->destroy();
     w.windowHandle()->create();
     lbl->windowHandle()->create();
-    QWindowPrivate *p = qt_window_private(win);
+    QWindowPrivate *p = bobui_window_private(win);
     p->emitScreenChangedRecursion(win->screen());
 
     QCOMPARE(lbl->winId(), lbl->windowHandle()->winId());
 }
 
-void tst_QWidget_window::tst_recreateWindow_QTBUG40817()
+void tst_QWidget_window::tst_recreateWindow_BOBUIBUG40817()
 {
-    QTabWidget tab;
+    BOBUIabWidget tab;
     tab.setMinimumWidth(m_testWidgetSize.width());
 
     QWidget *w = new QWidget;
@@ -1086,17 +1086,17 @@ void tst_QWidget_window::tst_recreateWindow_QTBUG40817()
     tab.addTab(w, "Tab2");
     vl = new QVBoxLayout(w);
     lbl = new QLabel("HELLO2");
-    lbl->setAttribute(Qt::WA_NativeWindow);
+    lbl->setAttribute(BobUI::WA_NativeWindow);
     lbl->setObjectName("label2");
     vl->addWidget(lbl);
 
     tab.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&tab));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&tab));
 
     QWindow *win = tab.windowHandle();
     win->destroy();
-    QWindowPrivate *p = qt_window_private(win);
+    QWindowPrivate *p = bobui_window_private(win);
     p->create(true);
     win->show();
 
@@ -1125,16 +1125,16 @@ void tst_QWidget_window::tst_resize_count()
 {
     {
         ResizeWidget resize;
-        resize.setWindowFlags(Qt::X11BypassWindowManagerHint);
+        resize.setWindowFlags(BobUI::X11BypassWindowManagerHint);
         resize.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&resize));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&resize));
         QCOMPARE(resize.resizeCount, 1);
         resize.resizeCount = 0;
         QSize size = resize.size();
         size.rwidth() += 10;
         resize.resize(size);
         QGuiApplication::sync();
-        QTRY_COMPARE(resize.resizeCount, 1);
+        BOBUIRY_COMPARE(resize.resizeCount, 1);
 
         resize.resizeCount = 0;
 
@@ -1142,9 +1142,9 @@ void tst_QWidget_window::tst_resize_count()
         child.resize(m_testWidgetSize);
         child.winId();
         child.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&child));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&child));
         QGuiApplication::sync();
-        QTRY_COMPARE(child.resizeCount, 1);
+        BOBUIRY_COMPARE(child.resizeCount, 1);
         child.resizeCount = 0;
         size = child.size();
         size.rwidth() += 10;
@@ -1155,15 +1155,15 @@ void tst_QWidget_window::tst_resize_count()
     }
     {
         ResizeWidget parent;
-        parent.setWindowFlag(Qt::X11BypassWindowManagerHint);
+        parent.setWindowFlag(BobUI::X11BypassWindowManagerHint);
         ResizeWidget child(&parent);
         child.resize(m_testWidgetSize);
         child.winId();
         parent.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&parent));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&parent));
         parent.resizeCount = 0;
         QGuiApplication::sync();
-        QTRY_COMPARE(child.resizeCount, 1);
+        BOBUIRY_COMPARE(child.resizeCount, 1);
         child.resizeCount = 0;
         QSize size = child.size();
         size.rwidth() += 10;
@@ -1228,7 +1228,7 @@ void tst_QWidget_window::tst_showhide_count()
     QCOMPARE(spy.takeCount(&w1, QEvent::Close), 1);
 
     w1.show();
-    QWidget *popup = new QWidget(&w1, Qt::Popup);
+    QWidget *popup = new QWidget(&w1, BobUI::Popup);
     popup->setGeometry(120, 120, 30, 30);
     popup->show();
     popup->close();
@@ -1239,7 +1239,7 @@ void tst_QWidget_window::tst_showhide_count()
     popup->show();
 
     // clicking outside the popup should close the popup
-    QTest::mousePress(popup->window(), Qt::LeftButton, {}, QPoint(-10, -10));
+    BOBUIest::mousePress(popup->window(), BobUI::LeftButton, {}, QPoint(-10, -10));
 
     QCOMPARE(spy.takeCount(popup, QEvent::Show), 1);
     QCOMPARE(spy.takeCount(popup, QEvent::Hide), 1);
@@ -1269,12 +1269,12 @@ void tst_QWidget_window::tst_move_count()
     MoveWidget move;
     move.move(500,500);
     move.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&move));
-    QTRY_VERIFY(move.moveCount >= 1);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&move));
+    BOBUIRY_VERIFY(move.moveCount >= 1);
     move.moveCount = 0;
 
     move.move(220,250);
-    QTRY_VERIFY(move.moveCount >= 1);
+    BOBUIRY_VERIFY(move.moveCount >= 1);
 }
 
 class EventFilter : public QObject
@@ -1306,21 +1306,21 @@ protected:
 
 void tst_QWidget_window::tst_eventfilter_on_toplevel()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QWidget w;
     EventFilter filter;
     w.installEventFilter(&filter);
     w.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
     QVERIFY(w.isWindow());
     QCOMPARE(filter.eventCount, 0);
 
     // send an event not handled in a special way by QWidgetWindow::event,
     // and check that it's received by the event filter
     QCoreApplication::postEvent(w.windowHandle(), new QEvent(EventFilter::filterEventType()));
-    QTRY_COMPARE(filter.eventCount, 1);
+    BOBUIRY_COMPARE(filter.eventCount, 1);
 }
 
 class ApplicationStateSaver
@@ -1328,27 +1328,27 @@ class ApplicationStateSaver
 public:
     ApplicationStateSaver()
     {
-        QApplication::setAttribute(Qt::AA_NativeWindows, true);
+        QApplication::setAttribute(BobUI::AA_NativeWindows, true);
         QApplication::setQuitOnLastWindowClosed(false);
     }
 
     ~ApplicationStateSaver()
     {
-        QApplication::setAttribute(Qt::AA_NativeWindows, false);
+        QApplication::setAttribute(BobUI::AA_NativeWindows, false);
         QApplication::setQuitOnLastWindowClosed(true);
     }
 };
 
-void tst_QWidget_window::QTBUG_50561_QCocoaBackingStore_paintDevice_crash()
+void tst_QWidget_window::BOBUIBUG_50561_QCocoaBackingStore_paintDevice_crash()
 {
     // Keep application state clean if testcase fails
     ApplicationStateSaver as;
 
     QMainWindow w;
     w.setMinimumWidth(m_testWidgetSize.width());
-    w.addToolBar(new QToolBar(&w));
+    w.addToolBar(new BOBUIoolBar(&w));
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     // Simulate window system close
     QCloseEvent *e = new QCloseEvent;
@@ -1367,16 +1367,16 @@ void tst_QWidget_window::QTBUG_50561_QCocoaBackingStore_paintDevice_crash()
 
 void tst_QWidget_window::setWindowState_data()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QString platformName = QGuiApplication::platformName().toLower();
 
-    QTest::addColumn<Qt::WindowStates>("state");
-    QTest::newRow("nostate") << Qt::WindowStates();
-    QTest::newRow("maximized") << Qt::WindowStates(Qt::WindowMaximized);
-    QTest::newRow("minimized") << Qt::WindowStates(Qt::WindowMinimized);
-    QTest::newRow("fullscreen") << Qt::WindowStates(Qt::WindowFullScreen);
+    BOBUIest::addColumn<BobUI::WindowStates>("state");
+    BOBUIest::newRow("nostate") << BobUI::WindowStates();
+    BOBUIest::newRow("maximized") << BobUI::WindowStates(BobUI::WindowMaximized);
+    BOBUIest::newRow("minimized") << BobUI::WindowStates(BobUI::WindowMinimized);
+    BOBUIest::newRow("fullscreen") << BobUI::WindowStates(BobUI::WindowFullScreen);
 
     if (platformName != "xcb" && platformName != "windows" && !platformName.startsWith("wayland")
         && platformName != "offscreen")
@@ -1385,19 +1385,19 @@ void tst_QWidget_window::setWindowState_data()
         && qgetenv("XDG_CURRENT_DESKTOP") != "Unity")
         return; // Not all window managers support state combinations.
 
-    QTest::newRow("Qt::WindowMaximized|Qt::WindowMinimized")
-        << (Qt::WindowMaximized | Qt::WindowMinimized);
-    QTest::newRow("Qt::WindowFullScreen|Qt::WindowMinimized")
-        << (Qt::WindowFullScreen | Qt::WindowMinimized);
-    QTest::newRow("Qt::WindowMaximized|Qt::WindowFullScreen")
-        << (Qt::WindowMaximized | Qt::WindowFullScreen);
-    QTest::newRow("Qt::WindowMaximized|Qt::WindowFullScreen|Qt::WindowMinimized")
-        << (Qt::WindowMaximized | Qt::WindowFullScreen | Qt::WindowMinimized);
+    BOBUIest::newRow("BobUI::WindowMaximized|BobUI::WindowMinimized")
+        << (BobUI::WindowMaximized | BobUI::WindowMinimized);
+    BOBUIest::newRow("BobUI::WindowFullScreen|BobUI::WindowMinimized")
+        << (BobUI::WindowFullScreen | BobUI::WindowMinimized);
+    BOBUIest::newRow("BobUI::WindowMaximized|BobUI::WindowFullScreen")
+        << (BobUI::WindowMaximized | BobUI::WindowFullScreen);
+    BOBUIest::newRow("BobUI::WindowMaximized|BobUI::WindowFullScreen|BobUI::WindowMinimized")
+        << (BobUI::WindowMaximized | BobUI::WindowFullScreen | BobUI::WindowMinimized);
 }
 
 void tst_QWidget_window::setWindowState()
 {
-    QFETCH(Qt::WindowStates, state);
+    QFETCH(BobUI::WindowStates, state);
 
     // This tests make sure that the states are preserved when the window is shown.
 
@@ -1407,17 +1407,17 @@ void tst_QWidget_window::setWindowState()
     w.show();
     QCOMPARE(w.windowState(), state);
     QCOMPARE(w.windowHandle()->windowStates(), state);
-    if (!(state & Qt::WindowMinimized))
-        QVERIFY(QTest::qWaitForWindowExposed(&w));
-    QTRY_COMPARE(w.windowState(), state);
+    if (!(state & BobUI::WindowMinimized))
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
+    BOBUIRY_COMPARE(w.windowState(), state);
     QCOMPARE(w.windowHandle()->windowStates(), state);
 
     // Minimizing keeps other states
     w.showMinimized();
-    QCOMPARE(w.windowState(), state | Qt::WindowMinimized);
-    QTest::qWait(200);
-    QCOMPARE(w.windowState(), state | Qt::WindowMinimized);
-    QCOMPARE(w.windowHandle()->windowStates(), state | Qt::WindowMinimized);
+    QCOMPARE(w.windowState(), state | BobUI::WindowMinimized);
+    BOBUIest::qWait(200);
+    QCOMPARE(w.windowState(), state | BobUI::WindowMinimized);
+    QCOMPARE(w.windowHandle()->windowStates(), state | BobUI::WindowMinimized);
 }
 
 void tst_QWidget_window::nativeShow()
@@ -1426,12 +1426,12 @@ void tst_QWidget_window::nativeShow()
     QWidget w;
     w.winId();
     w.windowHandle()->setVisible(true);
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     QVERIFY(w.isVisible());
 
     // ... and that we can hide it
     w.windowHandle()->setVisible(false);
-    QTRY_VERIFY(!w.isVisible());
+    BOBUIRY_VERIFY(!w.isVisible());
 }
 
 class ResizedOnShowEventWidget : public QWidget
@@ -1447,7 +1447,7 @@ public:
     }
 };
 
-void tst_QWidget_window::QTBUG_56277_resize_on_showEvent()
+void tst_QWidget_window::BOBUIBUG_56277_resize_on_showEvent()
 {
     const auto platformName = QGuiApplication::platformName().toLower();
     if (platformName != "cocoa" && platformName != "windows")
@@ -1455,7 +1455,7 @@ void tst_QWidget_window::QTBUG_56277_resize_on_showEvent()
 
     ResizedOnShowEventWidget w;
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     const auto *screen = w.windowHandle()->screen();
     const auto geometry = w.geometry();
     const int frameHeight = geometry.top() - w.frameGeometry().top();
@@ -1465,24 +1465,24 @@ void tst_QWidget_window::QTBUG_56277_resize_on_showEvent()
 
 void tst_QWidget_window::mouseMoveWithPopup_data()
 {
-    QTest::addColumn<Qt::WindowType>("windowType");
+    BOBUIest::addColumn<BobUI::WindowType>("windowType");
 
-    QTest::addRow("Dialog") << Qt::Dialog;
-    QTest::addRow("Popup") << Qt::Popup;
+    BOBUIest::addRow("Dialog") << BobUI::Dialog;
+    BOBUIest::addRow("Popup") << BobUI::Popup;
 }
 
 void tst_QWidget_window::mouseMoveWithPopup()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
-        QSKIP("Wayland: Skip this test, see also QTBUG-107154");
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
+        QSKIP("Wayland: Skip this test, see also BOBUIBUG-107154");
 
-    QFETCH(Qt::WindowType, windowType);
+    QFETCH(BobUI::WindowType, windowType);
 
     class Window : public QWidget
     {
     public:
-        Window(QWidget *parent = nullptr, Qt::WindowFlags flags = {})
-        : QWidget(parent, flags|Qt::CustomizeWindowHint|Qt::FramelessWindowHint)
+        Window(QWidget *parent = nullptr, BobUI::WindowFlags flags = {})
+        : QWidget(parent, flags|BobUI::CustomizeWindowHint|BobUI::FramelessWindowHint)
         {}
 
         QSize sizeHint() const override
@@ -1493,7 +1493,7 @@ void tst_QWidget_window::mouseMoveWithPopup()
         }
 
         Window *popup = nullptr;
-        Qt::WindowType type = Qt::Popup;
+        BobUI::WindowType type = BobUI::Popup;
         int mousePressCount = 0;
         int mouseMoveCount = 0;
         int mouseReleaseCount = 0;
@@ -1508,12 +1508,12 @@ void tst_QWidget_window::mouseMoveWithPopup()
         {
             ++mousePressCount;
 
-            if (event->button() == Qt::RightButton) {
+            if (event->button() == BobUI::RightButton) {
                 if (!popup)
                     popup = new Window(this, type);
                 popup->move(event->globalPosition().toPoint());
                 popup->show();
-                if (!QTest::qWaitForWindowExposed(popup)) {
+                if (!BOBUIest::qWaitForWindowExposed(popup)) {
                     delete popup;
                     popup = nullptr;
                     QSKIP("Failed to expose popup window!");
@@ -1537,16 +1537,16 @@ void tst_QWidget_window::mouseMoveWithPopup()
     topLevel.setObjectName("topLevel");
     topLevel.type = windowType;
     topLevel.show();
-    if (!QTest::qWaitForWindowExposed(&topLevel))
+    if (!BOBUIest::qWaitForWindowExposed(&topLevel))
         QSKIP("Failed to expose window!");
 
     QCOMPARE(QApplication::activePopupWidget(), nullptr);
-    QTRY_COMPARE(QApplication::activeWindow(), &topLevel);
+    BOBUIRY_COMPARE(QApplication::activeWindow(), &topLevel);
 
     QPoint mousePos = topLevel.geometry().center();
     QWindow *window = nullptr;
-    Qt::MouseButtons buttons = {};
-    auto mouseAction = [&](Qt::MouseButton button, QPoint offset = {}) -> QEvent::Type
+    BobUI::MouseButtons buttons = {};
+    auto mouseAction = [&](BobUI::MouseButton button, QPoint offset = {}) -> QEvent::Type
     {
         QEvent::Type type;
         if (offset != QPoint()) {
@@ -1555,7 +1555,7 @@ void tst_QWidget_window::mouseMoveWithPopup()
             type = QEvent::MouseButtonRelease;
             buttons &= ~button;
         } else {
-            Q_ASSERT(button != Qt::NoButton);
+            Q_ASSERT(button != BobUI::NoButton);
             type = QEvent::MouseButtonPress;
             buttons |= button;
             window = QApplication::activeWindow()->windowHandle();
@@ -1569,7 +1569,7 @@ void tst_QWidget_window::mouseMoveWithPopup()
         bool result = QWindowSystemInterface::handleMouseEvent(window, window->mapFromGlobal(mousePos),
                                                                mousePos, buttons, button, type);
         QCoreApplication::processEvents();
-        if (type == QEvent::MouseButtonRelease && buttons == Qt::NoButton)
+        if (type == QEvent::MouseButtonRelease && buttons == BobUI::NoButton)
             window = nullptr;
 
         if (!result)
@@ -1577,30 +1577,30 @@ void tst_QWidget_window::mouseMoveWithPopup()
         return type;
     };
 
-    QCOMPARE(mouseAction(Qt::RightButton), QEvent::MouseButtonPress);
+    QCOMPARE(mouseAction(BobUI::RightButton), QEvent::MouseButtonPress);
     QCOMPARE(topLevel.mousePressCount, 1);
     QVERIFY(topLevel.popup);
     QCOMPARE(topLevel.popup->mousePressCount, 0);
-    topLevel.popup->setObjectName(windowType == Qt::Popup ? "Popup" : "Dialog");
-    QCOMPARE(QApplication::activePopupWidget(), windowType == Qt::Popup ? topLevel.popup : nullptr);
+    topLevel.popup->setObjectName(windowType == BobUI::Popup ? "Popup" : "Dialog");
+    QCOMPARE(QApplication::activePopupWidget(), windowType == BobUI::Popup ? topLevel.popup : nullptr);
     // if popup, then popup gets the mouse move even though it didn't get any press
-    QCOMPARE(mouseAction(Qt::NoButton, QPoint(10, 10)), QEvent::MouseMove);
-    QCOMPARE(topLevel.mouseMoveCount, windowType == Qt::Popup ? 0 : 1);
-    QCOMPARE(topLevel.popup->mouseMoveCount, windowType == Qt::Popup ? 1 : 0);
+    QCOMPARE(mouseAction(BobUI::NoButton, QPoint(10, 10)), QEvent::MouseMove);
+    QCOMPARE(topLevel.mouseMoveCount, windowType == BobUI::Popup ? 0 : 1);
+    QCOMPARE(topLevel.popup->mouseMoveCount, windowType == BobUI::Popup ? 1 : 0);
     // if popup, then popup gets the release even though it didn't get any press
-    QCOMPARE(mouseAction(Qt::RightButton), QEvent::MouseButtonRelease);
-    QCOMPARE(topLevel.mouseReleaseCount, windowType == Qt::Popup ? 0 : 1);
-    QCOMPARE(topLevel.popup->mouseReleaseCount, windowType == Qt::Popup ? 1 : 0);
+    QCOMPARE(mouseAction(BobUI::RightButton), QEvent::MouseButtonRelease);
+    QCOMPARE(topLevel.mouseReleaseCount, windowType == BobUI::Popup ? 0 : 1);
+    QCOMPARE(topLevel.popup->mouseReleaseCount, windowType == BobUI::Popup ? 1 : 0);
 
-    Q_ASSERT(buttons == Qt::NoButton);
+    Q_ASSERT(buttons == BobUI::NoButton);
     topLevel.resetCounters();
     topLevel.popup->resetCounters();
 
-    QTRY_VERIFY(QApplication::activeWindow() == topLevel.popup
+    BOBUIRY_VERIFY(QApplication::activeWindow() == topLevel.popup
                 || QApplication::activePopupWidget() == topLevel.popup);
 
     // nested popup, same procedure
-    QCOMPARE(mouseAction(Qt::RightButton), QEvent::MouseButtonPress);
+    QCOMPARE(mouseAction(BobUI::RightButton), QEvent::MouseButtonPress);
     QVERIFY(topLevel.popup);
     QCOMPARE(topLevel.popup->mousePressCount, 1);
     QVERIFY(topLevel.popup->popup);
@@ -1609,16 +1609,16 @@ void tst_QWidget_window::mouseMoveWithPopup()
     QCOMPARE(topLevel.popup->popup->mousePressCount, 0);
 
     // nested popup is always a popup and grabs the mouse, so first popup gets nothing
-    QCOMPARE(mouseAction(Qt::NoButton, QPoint(10, 10)), QEvent::MouseMove);
+    QCOMPARE(mouseAction(BobUI::NoButton, QPoint(10, 10)), QEvent::MouseMove);
     QCOMPARE(topLevel.popup->mouseMoveCount, 0);
     QCOMPARE(topLevel.popup->popup->mouseMoveCount, 1);
 
     // nested popup gets the release, as before
-    QCOMPARE(mouseAction(Qt::RightButton), QEvent::MouseButtonRelease);
+    QCOMPARE(mouseAction(BobUI::RightButton), QEvent::MouseButtonRelease);
     QCOMPARE(topLevel.popup->mouseReleaseCount, 0);
     QCOMPARE(topLevel.popup->popup->mouseReleaseCount, 1);
 
-    Q_ASSERT(buttons == Qt::NoButton);
+    Q_ASSERT(buttons == BobUI::NoButton);
 
     // move mouse back into first popup
     mouseAction({}, QPoint(-15, -15));
@@ -1629,22 +1629,22 @@ void tst_QWidget_window::mouseMoveWithPopup()
     topLevel.popup->popup->resetCounters();
 
     // closing the nested popup by clicking into the first popup/dialog; the nested popup gets the press
-    QCOMPARE(mouseAction(Qt::LeftButton), QEvent::MouseButtonPress);
+    QCOMPARE(mouseAction(BobUI::LeftButton), QEvent::MouseButtonPress);
     QCOMPARE(topLevel.popup->popup->mousePressCount, 1);
     QVERIFY(!topLevel.popup->popup->isVisible());
-    QCOMPARE(QApplication::activePopupWidget(), windowType == Qt::Popup ? topLevel.popup : nullptr);
-    QCOMPARE(QApplication::activeWindow(), windowType == Qt::Popup ? &topLevel : topLevel.popup);
+    QCOMPARE(QApplication::activePopupWidget(), windowType == BobUI::Popup ? topLevel.popup : nullptr);
+    QCOMPARE(QApplication::activeWindow(), windowType == BobUI::Popup ? &topLevel : topLevel.popup);
 
     // the move event following a press that closed the active popup should NOT be delivered to the first popup
     QCOMPARE(mouseAction({}, QPoint(-10, -10)), QEvent::MouseMove);
-    // dialogs might or might not get the event - platform specific behavior in Qt 5
+    // dialogs might or might not get the event - platform specific behavior in BobUI 5
     if (topLevel.popup->mouseMoveCount != 0)
         QEXPECT_FAIL("Dialog", "Platform specific behavior", Continue);
     QCOMPARE(topLevel.popup->mouseMoveCount, 0);
     QCOMPARE(topLevel.popup->popup->mouseMoveCount, 0);
 
     // but the release event will still be delivered to the first popup - dialogs might not get it
-    QCOMPARE(mouseAction(Qt::LeftButton), QEvent::MouseButtonRelease);
+    QCOMPARE(mouseAction(BobUI::LeftButton), QEvent::MouseButtonRelease);
     if (topLevel.popup->mouseReleaseCount != 1)
         QEXPECT_FAIL("Dialog", "Platform specific behavior", Continue);
     QCOMPARE(topLevel.popup->mouseReleaseCount, 1);
@@ -1652,41 +1652,41 @@ void tst_QWidget_window::mouseMoveWithPopup()
 
 struct ShowHideEntry {
     QEvent::Type action;
-    Qt::WindowType target;
+    BobUI::WindowType target;
     using List = QList<ShowHideEntry>;
 };
 
 void tst_QWidget_window::showHideWindowHandle_data()
 {
-    QTest::addColumn<ShowHideEntry::List>("entries");
+    BOBUIest::addColumn<ShowHideEntry::List>("entries");
 
-    QTest::addRow("show/hide widget") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Hide, Qt::Widget }
+    BOBUIest::addRow("show/hide widget") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Hide, BobUI::Widget }
     };
-    QTest::addRow("show/hide window") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Window }, { QEvent::Hide, Qt::Window }
+    BOBUIest::addRow("show/hide window") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Window }, { QEvent::Hide, BobUI::Window }
     };
-    QTest::addRow("show widget, hide window") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Hide, Qt::Window }
+    BOBUIest::addRow("show widget, hide window") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Hide, BobUI::Window }
     };
-    QTest::addRow("show window, hide widget") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Window }, { QEvent::Hide, Qt::Widget }
+    BOBUIest::addRow("show window, hide widget") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Window }, { QEvent::Hide, BobUI::Widget }
     };
-    QTest::addRow("show/hide widget, then show window, hide widget") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Hide, Qt::Widget },
-        { QEvent::Show, Qt::Window }, { QEvent::Hide, Qt::Widget }
+    BOBUIest::addRow("show/hide widget, then show window, hide widget") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Hide, BobUI::Widget },
+        { QEvent::Show, BobUI::Window }, { QEvent::Hide, BobUI::Widget }
     };
-    QTest::addRow("show widget, close widget, show widget") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Close, Qt::Widget }, { QEvent::Show, Qt::Widget }
+    BOBUIest::addRow("show widget, close widget, show widget") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Close, BobUI::Widget }, { QEvent::Show, BobUI::Widget }
     };
-    QTest::addRow("show widget, close widget, show window") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Close, Qt::Widget }, { QEvent::Show, Qt::Window }
+    BOBUIest::addRow("show widget, close widget, show window") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Close, BobUI::Widget }, { QEvent::Show, BobUI::Window }
     };
-    QTest::addRow("show widget, close window, show widget") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Close, Qt::Window }, { QEvent::Show, Qt::Widget }
+    BOBUIest::addRow("show widget, close window, show widget") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Close, BobUI::Window }, { QEvent::Show, BobUI::Widget }
     };
-    QTest::addRow("show widget, close window, show window") << ShowHideEntry::List{
-        { QEvent::Show, Qt::Widget }, { QEvent::Close, Qt::Window }, { QEvent::Show, Qt::Window }
+    BOBUIest::addRow("show widget, close window, show window") << ShowHideEntry::List{
+        { QEvent::Show, BobUI::Widget }, { QEvent::Close, BobUI::Window }, { QEvent::Show, BobUI::Window }
     };
 }
 
@@ -1695,65 +1695,65 @@ void tst_QWidget_window::showHideWindowHandle()
     QWidget parent;
     parent.setObjectName("Parent");
     QCOMPARE(parent.isVisible(), false);
-    QCOMPARE(parent.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-    QCOMPARE(parent.testAttribute(Qt::WA_WState_Visible), false);
-    QCOMPARE(parent.testAttribute(Qt::WA_WState_Hidden), true);
+    QCOMPARE(parent.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+    QCOMPARE(parent.testAttribute(BobUI::WA_WState_Visible), false);
+    QCOMPARE(parent.testAttribute(BobUI::WA_WState_Hidden), true);
 
     QWidget child;
     child.setObjectName("Child");
     QCOMPARE(child.isVisible(), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_Visible), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_Hidden), true);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_Visible), false);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_Hidden), true);
 
     child.setParent(&parent);
     QCOMPARE(child.isVisible(), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_Visible), false);
-    QCOMPARE(child.testAttribute(Qt::WA_WState_Hidden), false);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_Visible), false);
+    QCOMPARE(child.testAttribute(BobUI::WA_WState_Hidden), false);
 
     QFETCH(QList<ShowHideEntry>, entries);
     for (const auto entry : entries) {
 
         if (entry.action == QEvent::Show) {
-            if (entry.target == Qt::Window && !parent.windowHandle()) {
-                parent.setAttribute(Qt::WA_NativeWindow);
+            if (entry.target == BobUI::Window && !parent.windowHandle()) {
+                parent.setAttribute(BobUI::WA_NativeWindow);
                 QVERIFY(parent.windowHandle());
 
                 QCOMPARE(parent.isVisible(), false);
-                QCOMPARE(parent.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-                QCOMPARE(parent.testAttribute(Qt::WA_WState_Visible), false);
-                QCOMPARE(parent.testAttribute(Qt::WA_WState_Hidden), true);
+                QCOMPARE(parent.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+                QCOMPARE(parent.testAttribute(BobUI::WA_WState_Visible), false);
+                QCOMPARE(parent.testAttribute(BobUI::WA_WState_Hidden), true);
             }
 
-            bool wasExplicitShowHide = parent.testAttribute(Qt::WA_WState_ExplicitShowHide);
+            bool wasExplicitShowHide = parent.testAttribute(BobUI::WA_WState_ExplicitShowHide);
 
-            if (entry.target == Qt::Widget)
+            if (entry.target == BobUI::Widget)
                 parent.show();
             else
                 parent.windowHandle()->show();
 
-            QVERIFY(QTest::qWaitForWindowActive(&parent));
+            QVERIFY(BOBUIest::qWaitForWindowActive(&parent));
 
             QCOMPARE(parent.isVisible(), true);
             QVERIFY(parent.windowHandle());
             QCOMPARE(parent.windowHandle()->isVisible(), true);
 
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Visible), true);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Hidden), false);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_ExplicitShowHide),
-                entry.target == Qt::Widget || wasExplicitShowHide);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Visible), true);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Hidden), false);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_ExplicitShowHide),
+                entry.target == BobUI::Widget || wasExplicitShowHide);
 
             QCOMPARE(child.isVisible(), true);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Visible), true);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Hidden), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Visible), true);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Hidden), false);
 
         } else if (entry.action == QEvent::Hide) {
 
-            bool wasExplicitShowHide = parent.testAttribute(Qt::WA_WState_ExplicitShowHide);
+            bool wasExplicitShowHide = parent.testAttribute(BobUI::WA_WState_ExplicitShowHide);
 
-            if (entry.target == Qt::Widget)
+            if (entry.target == BobUI::Widget)
                 parent.hide();
             else
                 parent.windowHandle()->hide();
@@ -1762,21 +1762,21 @@ void tst_QWidget_window::showHideWindowHandle()
             QVERIFY(parent.windowHandle());
             QCOMPARE(parent.windowHandle()->isVisible(), false);
 
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Visible), false);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Hidden), true);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_ExplicitShowHide),
-                entry.target == Qt::Widget || wasExplicitShowHide);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Visible), false);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Hidden), true);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_ExplicitShowHide),
+                entry.target == BobUI::Widget || wasExplicitShowHide);
 
             QCOMPARE(child.isVisible(), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Visible), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Hidden), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Visible), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Hidden), false);
 
         } else if (entry.action == QEvent::Close) {
 
-            bool wasExplicitShowHide = parent.testAttribute(Qt::WA_WState_ExplicitShowHide);
+            bool wasExplicitShowHide = parent.testAttribute(BobUI::WA_WState_ExplicitShowHide);
 
-            if (entry.target == Qt::Widget)
+            if (entry.target == BobUI::Widget)
                 parent.close();
             else
                 parent.windowHandle()->close();
@@ -1785,15 +1785,15 @@ void tst_QWidget_window::showHideWindowHandle()
             QVERIFY(parent.windowHandle());
             QCOMPARE(parent.windowHandle()->isVisible(), false);
 
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Visible), false);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_Hidden), true);
-            QCOMPARE(parent.testAttribute(Qt::WA_WState_ExplicitShowHide),
-                entry.target == Qt::Widget || wasExplicitShowHide);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Visible), false);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_Hidden), true);
+            QCOMPARE(parent.testAttribute(BobUI::WA_WState_ExplicitShowHide),
+                entry.target == BobUI::Widget || wasExplicitShowHide);
 
             QCOMPARE(child.isVisible(), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_ExplicitShowHide), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Visible), false);
-            QCOMPARE(child.testAttribute(Qt::WA_WState_Hidden), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_ExplicitShowHide), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Visible), false);
+            QCOMPARE(child.testAttribute(BobUI::WA_WState_Hidden), false);
         }
     }
 }
@@ -1810,7 +1810,7 @@ void tst_QWidget_window::resetFocusObjectOnDestruction()
     widget->setObjectName("Widget 1");
     widget->setFocus();
     widget->show();
-    QVERIFY(QTest::qWaitForWindowActive(widget.get()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(widget.get()));
 
     int activeCount = focusObjectChangedSpy.size();
     widget.reset();
@@ -1825,7 +1825,7 @@ void tst_QWidget_window::resetFocusObjectOnDestruction()
     child->setObjectName("Child widget");
     child->setFocus();
     widget->show();
-    QVERIFY(QTest::qWaitForWindowActive(widget.get()));
+    QVERIFY(BOBUIest::qWaitForWindowActive(widget.get()));
 
     activeCount = focusObjectChangedSpy.size();
     widget.reset();
@@ -1850,7 +1850,7 @@ void tst_QWidget_window::cleanupOnDestruction()
     // Ensure there's not a 1:1 native window hierarhcy that we could
     // recurse during QWidget::destroy(), triggering the issue that
     // we were failing to clean up when not destroyed via QWidget.
-    grandChild.setAttribute(Qt::WA_DontCreateNativeAncestors);
+    grandChild.setAttribute(BobUI::WA_DontCreateNativeAncestors);
     grandChild.winId();
 
     widget.destroy();
@@ -1859,5 +1859,5 @@ void tst_QWidget_window::cleanupOnDestruction()
     widget.show();
 }
 
-QTEST_MAIN(tst_QWidget_window)
+BOBUIEST_MAIN(tst_QWidget_window)
 #include "tst_qwidget_window.moc"

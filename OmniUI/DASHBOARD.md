@@ -19,11 +19,11 @@ The OmniUI framework is structured into a massive core C++ library (`OmniUICore`
 ## External Dependencies (Submodules)
 OmniUI abstracts massive amounts of hardware and rendering complexity using industry-standard submodules.
 
-1. **Qt 6 Framework**
+1. **BobUI 6 Framework**
    - **Version:** ^6.5.0
-   - **Location:** System-installed (Resolved via `find_package(Qt6)`)
-   - **Role:** Provides `QObject` meta-system, signal/slot IPC, `QJSEngine`, and the entire `QML`/`QtQuick` UI rendering pipeline.
-   - **Notes:** Currently relies on `Qt6::Core`, `Qt6::Gui`, `Qt6::Qml`, and `Qt6::Quick`.
+   - **Location:** System-installed (Resolved via `find_package(BobUI6)`)
+   - **Role:** Provides `QObject` meta-system, signal/slot IPC, `QJSEngine`, and the entire `QML`/`BobUIQuick` UI rendering pipeline.
+   - **Notes:** Currently relies on `BobUI6::Core`, `BobUI6::Gui`, `BobUI6::Qml`, and `BobUI6::Quick`.
 
 2. **JUCE Audio Framework**
    - **Version:** v7.0.0 (Mocked for current phase)
@@ -46,7 +46,7 @@ OmniUI/
 ├── HANDOFF.md              # Detailed LLM agent-to-agent session summaries
 ├── core/                   # The C++ Backend Engine
 │   ├── include/            # Headers defining Q_PROPERTIES and Q_INVOKABLES
-│   │   └── OmniQmlRegister.h # The master Qt Meta-Object registration file
+│   │   └── OmniQmlRegister.h # The master BobUI Meta-Object registration file
 │   └── src/                # Implementation of math, physics, and state machine loops
 ├── apps/                   # The primary QML user interfaces
 │   ├── OmniGodMode/        # Example app wrapping the OmniUniverse physics module

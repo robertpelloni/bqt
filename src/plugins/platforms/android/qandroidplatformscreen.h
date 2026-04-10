@@ -1,19 +1,19 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMSCREEN_H
 #define QANDROIDPLATFORMSCREEN_H
 
 #include <QList>
 #include <QPainter>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QWaitCondition>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniObject>
 #include <qpa/qplatformscreen.h>
-#include <QtGui/qscreen_platform.h>
+#include <BobUIGui/qscreen_platform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformWindow;
 
@@ -56,7 +56,7 @@ public slots:
     void setAvailableGeometry(const QRect &rect);
     void setSize(const QSize &size);
     void setRefreshRate(qreal refreshRate);
-    void setOrientation(Qt::ScreenOrientation orientation);
+    void setOrientation(BobUI::ScreenOrientation orientation);
 
 protected:
     typedef QList<QAndroidPlatformWindow *> WindowStackType;
@@ -76,12 +76,12 @@ protected:
 private:
     QDpi logicalDpi() const override;
     QDpi logicalBaseDpi() const override;
-    Qt::ScreenOrientation orientation() const override;
-    Qt::ScreenOrientation nativeOrientation() const override;
-    void applicationStateChanged(Qt::ApplicationState);
+    BobUI::ScreenOrientation orientation() const override;
+    BobUI::ScreenOrientation nativeOrientation() const override;
+    void applicationStateChanged(BobUI::ApplicationState);
 private:
     QSize m_size;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif

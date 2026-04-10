@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 #include "qlineedit.h"
 #include "qapplication.h"
 #include "qstringlist.h"
@@ -20,7 +20,7 @@
 #include "qclipboard.h"
 #include <QSignalSpy>
 #include <QRandomGenerator>
-#include <QTimer>
+#include <BOBUIimer>
 
 #include <qlineedit.h>
 #include <private/qlineedit_p.h>
@@ -34,7 +34,7 @@
 #include <qsortfilterproxymodel.h>
 #include <qdebug.h>
 #include <qscreen.h>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <qshortcut.h>
 #endif
 
@@ -47,13 +47,13 @@
 #include "../../../shared/platforminputcontext.h"
 #include <private/qinputmethod_p.h>
 
-Q_LOGGING_CATEGORY(lcTests, "qt.widgets.tests")
+Q_LOGGING_CATEGORY(lcTests, "bobui.widgets.tests")
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPainter;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class StyleOptionTestStyle : public QCommonStyle
 {
@@ -113,7 +113,7 @@ private slots:
 
     void clearInputMask();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void keypress_inputMask_data();
     void keypress_inputMask();
     void keypress_inputMethod_inputMask();
@@ -137,8 +137,8 @@ private slots:
     void undo_keypressevents_data();
     void undo_keypressevents();
 
-#ifndef QT_NO_CLIPBOARD
-    void QTBUG5786_undoPaste();
+#ifndef BOBUI_NO_CLIPBOARD
+    void BOBUIBUG5786_undoPaste();
 #endif
 
     void clear();
@@ -193,13 +193,13 @@ private slots:
 
     void isModified();
     void edited();
-    void fixupDoesNotModify_QTBUG_49295();
+    void fixupDoesNotModify_BOBUIBUG_49295();
 
     void insert();
     void setSelection_data();
     void setSelection();
 
-#if QT_CONFIG(clipboard) && QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(shortcut)
     void cut();
     void cutWithoutSelection();
 #endif
@@ -221,7 +221,7 @@ private slots:
 
     void noTextEditedOnClear();
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void cursor();
 #endif
 
@@ -233,7 +233,7 @@ private slots:
     // task-specific tests:
     void task180999_focus();
     void task174640_editingFinished();
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     void task198789_currentCompletion();
     void task210502_caseInsensitiveInlineCompletion();
 #endif
@@ -242,18 +242,18 @@ private slots:
     void task233101_cursorPosAfterInputMethod();
     void task241436_passwordEchoOnEditRestoreEchoMode();
     void task248948_redoRemovedSelection();
-    void taskQTBUG_4401_enterKeyClearsPassword();
-    void taskQTBUG_4679_moveToStartEndOfBlock();
-    void taskQTBUG_4679_selectToStartEndOfBlock();
-#ifndef QT_NO_CONTEXTMENU
-    void taskQTBUG_7902_contextMenuCrash();
+    void taskBOBUIBUG_4401_enterKeyClearsPassword();
+    void taskBOBUIBUG_4679_moveToStartEndOfBlock();
+    void taskBOBUIBUG_4679_selectToStartEndOfBlock();
+#ifndef BOBUI_NO_CONTEXTMENU
+    void taskBOBUIBUG_7902_contextMenuCrash();
     void contextMenu();
 #endif
-    void taskQTBUG_7395_readOnlyShortcut();
-    void QTBUG697_paletteCurrentColorGroup();
-    void QTBUG13520_textNotVisible();
-    void QTBUG7174_inputMaskCursorBlink();
-    void QTBUG16850_setSelection();
+    void taskBOBUIBUG_7395_readOnlyShortcut();
+    void BOBUIBUG697_paletteCurrentColorGroup();
+    void BOBUIBUG13520_textNotVisible();
+    void BOBUIBUG7174_inputMaskCursorBlink();
+    void BOBUIBUG16850_setSelection();
 
     void bidiVisualMovement_data();
     void bidiVisualMovement();
@@ -276,26 +276,26 @@ private slots:
     void undoRedoAndEchoModes();
 
     void clearButton();
-    void clearButtonVisibleAfterSettingText_QTBUG_45518();
+    void clearButtonVisibleAfterSettingText_BOBUIBUG_45518();
     void sideWidgets();
     void sideWidgetsActionEvents();
     void sideWidgetsEffectiveMargins();
 
     void shouldShowPlaceholderText_data();
     void shouldShowPlaceholderText();
-    void QTBUG1266_setInputMaskEmittingTextEdited();
+    void BOBUIBUG1266_setInputMaskEmittingTextEdited();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void shortcutOverrideOnReadonlyLineEdit_data();
     void shortcutOverrideOnReadonlyLineEdit();
 #endif
-    void QTBUG59957_clearButtonLeftmostAction();
-    void QTBUG_60319_setInputMaskCheckImSurroundingText();
+    void BOBUIBUG59957_clearButtonLeftmostAction();
+    void BOBUIBUG_60319_setInputMaskCheckImSurroundingText();
     void testQuickSelectionWithMouse();
     void inputRejected();
     void keyReleasePropagates();
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     void deleteWordByKeySequence_data();
     void deleteWordByKeySequence();
 #endif
@@ -310,12 +310,12 @@ protected slots:
     void onCursorPositionChanged(int oldpos, int newpos);
 
 private:
-    // keyClicks(..) is moved to QtTestCase
-    void psKeyClick(QWidget *target, Qt::Key key, Qt::KeyboardModifiers pressState = {});
-    void psKeyClick(QTestEventList &keys, Qt::Key key, Qt::KeyboardModifiers pressState = {});
+    // keyClicks(..) is moved to BobUITestCase
+    void psKeyClick(QWidget *target, BobUI::Key key, BobUI::KeyboardModifiers pressState = {});
+    void psKeyClick(BOBUIestEventList &keys, BobUI::Key key, BobUI::KeyboardModifiers pressState = {});
     bool unselectingWithLeftOrRightChangesCursorPosition();
-#if QT_CONFIG(shortcut)
-    void addKeySequenceStandardKey(QTestEventList &keys, QKeySequence::StandardKey);
+#if BOBUI_CONFIG(shortcut)
+    void addKeySequenceStandardKey(BOBUIestEventList &keys, QKeySequence::StandardKey);
 #endif
     QLineEdit *ensureTestWidget();
 
@@ -434,18 +434,18 @@ void tst_QLineEdit::upperAndLowercase()
 {
     QLineEdit *testWidget = ensureTestWidget();
 
-    QTest::keyClicks(testWidget, "aAzZ`1234567890-=~!@#$%^&*()_+[]{}\\|;:'\",.<>/?");
+    BOBUIest::keyClicks(testWidget, "aAzZ`1234567890-=~!@#$%^&*()_+[]{}\\|;:'\",.<>/?");
     qApp->processEvents();
     QCOMPARE(testWidget->text(), QString("aAzZ`1234567890-=~!@#$%^&*()_+[]{}\\|;:'\",.<>/?"));
 }
 
 void tst_QLineEdit::setInputMask_data()
 {
-    QTest::addColumn<QString>("mask");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<QString>("expectedDisplay");
-    QTest::addColumn<bool>("insert_text");
+    BOBUIest::addColumn<QString>("mask");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<QString>("expectedDisplay");
+    BOBUIest::addColumn<bool>("insert_text");
 
     // both keyboard and insert()
     for (int i=0; i<2; i++) {
@@ -454,186 +454,186 @@ void tst_QLineEdit::setInputMask_data()
         if (insert_text)
             insert_mode = "insert ";
 
-        QTest::newRow(QString(insert_mode + "ip_localhost").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "ip_localhost").toLatin1())
             << QString("000.000.000.000")
             << QString("127.0.0.1")
             << QString("127.0.0.1")
             << QString("127.0  .0  .1  ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "mac").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "mac").toLatin1())
             << QString("HH:HH:HH:HH:HH:HH;#")
             << QString("00:E0:81:21:9E:8E")
             << QString("00:E0:81:21:9E:8E")
             << QString("00:E0:81:21:9E:8E")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "mac2").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "mac2").toLatin1())
             << QString("<HH:>HH:!HH:HH:HH:HH;#")
             << QString("AAe081219E8E")
             << QString("aa:E0:81:21:9E:8E")
             << QString("aa:E0:81:21:9E:8E")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "byte").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "byte").toLatin1())
             << QString("BBBBBBBB;0")
             << QString("11011001")
             << QString("11111")
             << QString("11011001")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "halfbytes").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "halfbytes").toLatin1())
             << QString("bbbb.bbbb;-")
             << QString("110. 0001")
             << QString("110.0001")
             << QString("110-.0001")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "blank char same type as content").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "blank char same type as content").toLatin1())
             << QString("000.000.000.000;0")
             << QString("127.0.0.1")
             << QString("127...1")
             << QString("127.000.000.100")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "parts of ip_localhost").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "parts of ip_localhost").toLatin1())
             << QString("000.000.000.000")
             << QString(".0.0.1")
             << QString(".0.0.1")
             << QString("   .0  .0  .1  ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "ip_null").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "ip_null").toLatin1())
             << QString("000.000.000.000")
             << QString()
             << QString("...")
             << QString("   .   .   .   ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "ip_null_hash").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "ip_null_hash").toLatin1())
             << QString("000.000.000.000;#")
             << QString()
             << QString("...")
             << QString("###.###.###.###")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "ip_overflow").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "ip_overflow").toLatin1())
             << QString("000.000.000.000")
             << QString("1234123412341234")
             << QString("123.412.341.234")
             << QString("123.412.341.234")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "uppercase").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "uppercase").toLatin1())
             << QString(">AAAA")
             << QString("AbCd")
             << QString("ABCD")
             << QString("ABCD")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "lowercase").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "lowercase").toLatin1())
             << QString("<AAAA")
             << QString("AbCd")
             << QString("abcd")
             << QString("abcd")
             << bool(insert_text);
 
-        QTest::newRow(QString(insert_mode + "nocase").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "nocase").toLatin1())
             << QString("!AAAA")
             << QString("AbCd")
             << QString("AbCd")
             << QString("AbCd")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "nocase1").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "nocase1").toLatin1())
             << QString("!A!A!A!A")
             << QString("AbCd")
             << QString("AbCd")
             << QString("AbCd")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "nocase2").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "nocase2").toLatin1())
             << QString("AAAA")
             << QString("AbCd")
             << QString("AbCd")
             << QString("AbCd")
             << bool(insert_text);
 
-        QTest::newRow(QString(insert_mode + "reserved").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "reserved").toLatin1())
             << QString("{n}[0]")
             << QString("A9")
             << QString("A9")
             << QString("A9")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "escape01").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "escape01").toLatin1())
             << QString("\\N\\n00")
             << QString("9")
             << QString("Nn9")
             << QString("Nn9 ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "escape02").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "escape02").toLatin1())
             << QString("\\\\00")
             << QString("0")
             << QString("\\0")
             << QString("\\0 ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "escape03").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "escape03").toLatin1())
             << QString("\\(00\\)")
             << QString("0")
             << QString("(0)")
             << QString("(0 )")
             << bool(insert_text);
 
-        QTest::newRow(QString(insert_mode + "upper_lower_nocase1").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "upper_lower_nocase1").toLatin1())
             << QString(">AAAA<AAAA!AAAA")
             << QString("AbCdEfGhIjKl")
             << QString("ABCDefghIjKl")
             << QString("ABCDefghIjKl")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "upper_lower_nocase2").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "upper_lower_nocase2").toLatin1())
             << QString(">aaaa<aaaa!aaaa")
             << QString("AbCdEfGhIjKl")
             << QString("ABCDefghIjKl")
             << QString("ABCDefghIjKl")
             << bool(insert_text);
 
-        QTest::newRow(QString(insert_mode + "exact_case1").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case1").toLatin1())
             << QString(">A<A<A>A>A<A!A!A")
             << QString("AbCdEFGH")
             << QString("AbcDEfGH")
             << QString("AbcDEfGH")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "exact_case2").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case2").toLatin1())
             << QString(">A<A<A>A>A<A!A!A")
             << QString("aBcDefgh")
             << QString("AbcDEfgh")
             << QString("AbcDEfgh")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "exact_case3").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case3").toLatin1())
             << QString(">a<a<a>a>a<a!a!a")
             << QString("AbCdEFGH")
             << QString("AbcDEfGH")
             << QString("AbcDEfGH")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "exact_case4").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case4").toLatin1())
             << QString(">a<a<a>a>a<a!a!a")
             << QString("aBcDefgh")
             << QString("AbcDEfgh")
             << QString("AbcDEfgh")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "exact_case5").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case5").toLatin1())
             << QString(">H<H<H>H>H<H!H!H")
             << QString("aBcDef01")
             << QString("AbcDEf01")
             << QString("AbcDEf01")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "exact_case6").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "exact_case6").toLatin1())
             << QString(">h<h<h>h>h<h!h!h")
             << QString("aBcDef92")
             << QString("AbcDEf92")
             << QString("AbcDEf92")
             << bool(insert_text);
 
-        QTest::newRow(QString(insert_mode + "illegal_keys1").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "illegal_keys1").toLatin1())
             << QString("AAAAAAAA")
             << QString("A2#a;.0!")
             << QString("Aa")
             << QString("Aa      ")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "illegal_keys2").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "illegal_keys2").toLatin1())
             << QString("AAAA")
             << QString("f4f4f4f4")
             << QString("ffff")
             << QString("ffff")
             << bool(insert_text);
-        QTest::newRow(QString(insert_mode + "blank=input").toLatin1())
+        BOBUIest::newRow(QString(insert_mode + "blank=input").toLatin1())
             << QString("9999;0")
             << QString("2004")
             << QString("2004")
@@ -661,9 +661,9 @@ void tst_QLineEdit::setInputMask()
     if (insert_text) {
         testWidget->insert(input);
     } else {
-        psKeyClick(testWidget, Qt::Key_Home);
+        psKeyClick(testWidget, BobUI::Key_Home);
         for (int i=0; i<input.size(); i++)
-            QTest::keyClick(testWidget, input.at(i).toLatin1());
+            BOBUIest::keyClick(testWidget, input.at(i).toLatin1());
     }
 
     QCOMPARE(testWidget->text(), expectedText);
@@ -672,25 +672,25 @@ void tst_QLineEdit::setInputMask()
 
 void tst_QLineEdit::inputMask_data()
 {
-    QTest::addColumn<QString>("mask");
-    QTest::addColumn<QString>("expectedMask");
+    BOBUIest::addColumn<QString>("mask");
+    BOBUIest::addColumn<QString>("expectedMask");
 
     // if no mask is set a nul string should be returned
-    QTest::newRow("nul 1") << QString("") << QString();
-    QTest::newRow("nul 2") << QString() << QString();
+    BOBUIest::newRow("nul 1") << QString("") << QString();
+    BOBUIest::newRow("nul 2") << QString() << QString();
 
     // try different masks
-    QTest::newRow("mask 1") << QString("000.000.000.000") << QString("000.000.000.000");
-    QTest::newRow("mask 2") << QString("000.000.000.000;#") << QString("000.000.000.000;#");
-    QTest::newRow("mask 3") << QString("AAA.aa.999.###;") << QString("AAA.aa.999.###");
-    QTest::newRow("mask 4") << QString(">abcdef<GHIJK") << QString(">abcdef<GHIJK");
+    BOBUIest::newRow("mask 1") << QString("000.000.000.000") << QString("000.000.000.000");
+    BOBUIest::newRow("mask 2") << QString("000.000.000.000;#") << QString("000.000.000.000;#");
+    BOBUIest::newRow("mask 3") << QString("AAA.aa.999.###;") << QString("AAA.aa.999.###");
+    BOBUIest::newRow("mask 4") << QString(">abcdef<GHIJK") << QString(">abcdef<GHIJK");
 
     // set an invalid input mask...
     // the current behaviour is that this exact (faulty) string is returned.
-    QTest::newRow("invalid") << QString("ABCDEFGHIKLMNOP;") << QString("ABCDEFGHIKLMNOP");
+    BOBUIest::newRow("invalid") << QString("ABCDEFGHIKLMNOP;") << QString("ABCDEFGHIKLMNOP");
 
     // verify that we can unset the mask again
-    QTest::newRow("unset") << QString("") << QString();
+    BOBUIest::newRow("unset") << QString("") << QString();
 }
 
 void tst_QLineEdit::inputMask()
@@ -712,90 +712,90 @@ void tst_QLineEdit::clearInputMask()
     QCOMPARE(testWidget->inputMask(), QString());
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QLineEdit::keypress_inputMask_data()
 {
-    QTest::addColumn<QString>("mask");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<QString>("expectedDisplayText");
+    BOBUIest::addColumn<QString>("mask");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<QString>("expectedDisplayText");
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // inserting 'A1.2B'
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
-        keys.addKeyClick(Qt::Key_A);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_Period);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_B);
-        QTest::newRow("jumping on period(separator)") << QString("000.000;_") << keys << QString("1.2") << QString("1__.2__");
+        keys.addKeyClick(BobUI::Key_A);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_Period);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_B);
+        BOBUIest::newRow("jumping on period(separator)") << QString("000.000;_") << keys << QString("1.2") << QString("1__.2__");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // inserting 'A1.2B'
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
-        keys.addKeyClick(Qt::Key_0);
-        keys.addKeyClick(Qt::Key_Exclam);
+        keys.addKeyClick(BobUI::Key_0);
+        keys.addKeyClick(BobUI::Key_Exclam);
         keys.addKeyClick('P');
-        keys.addKeyClick(Qt::Key_3);
-        QTest::newRow("jumping on input") << QString("D0.AA.XX.AA.00;_") << keys << QString("0..!P..3") << QString("_0.__.!P.__.3_");
+        keys.addKeyClick(BobUI::Key_3);
+        BOBUIest::newRow("jumping on input") << QString("D0.AA.XX.AA.00;_") << keys << QString("0..!P..3") << QString("_0.__.!P.__.3_");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // pressing delete
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
-        keys.addKeyClick(Qt::Key_Delete);
-        QTest::newRow("delete") << QString("000.000;_") << keys << QString(".") << QString("___.___");
+        keys.addKeyClick(BobUI::Key_Delete);
+        BOBUIest::newRow("delete") << QString("000.000;_") << keys << QString(".") << QString("___.___");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // selecting all and delete
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
         addKeySequenceStandardKey(keys, QKeySequence::SelectEndOfLine);
-        keys.addKeyClick(Qt::Key_Delete);
-        QTest::newRow("deleting all") << QString("000.000;_") << keys << QString(".") << QString("___.___");
+        keys.addKeyClick(BobUI::Key_Delete);
+        BOBUIest::newRow("deleting all") << QString("000.000;_") << keys << QString(".") << QString("___.___");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // inserting at end
         addKeySequenceStandardKey(keys, QKeySequence::MoveToEndOfLine);
-        keys.addKeyClick(Qt::Key_Left);
-        keys.addKeyClick(Qt::Key_0);
-        QTest::newRow("insert at end") << QString("9-9-9") << keys << QString("--0") << QString(" - -0");
+        keys.addKeyClick(BobUI::Key_Left);
+        keys.addKeyClick(BobUI::Key_0);
+        BOBUIest::newRow("insert at end") << QString("9-9-9") << keys << QString("--0") << QString(" - -0");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // inserting '12.12' then two backspaces
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_Period);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_Backspace);
-        keys.addKeyClick(Qt::Key_Backspace);
-        QTest::newRow("backspace") << QString("000.000;_") << keys << QString("12.") << QString("12_.___");
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_Period);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_Backspace);
+        keys.addKeyClick(BobUI::Key_Backspace);
+        BOBUIest::newRow("backspace") << QString("000.000;_") << keys << QString("12.") << QString("12_.___");
     }
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         // inserting '12ab'
         addKeySequenceStandardKey(keys, QKeySequence::MoveToStartOfLine);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_A);
-        keys.addKeyClick(Qt::Key_B);
-        QTest::newRow("uppercase") << QString("9999 >AA;_") << keys << QString("12 AB") << QString("12__ AB");
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_A);
+        keys.addKeyClick(BobUI::Key_B);
+        BOBUIest::newRow("uppercase") << QString("9999 >AA;_") << keys << QString("12 AB") << QString("12__ AB");
     }
 }
 
 void tst_QLineEdit::keypress_inputMask()
 {
     QFETCH(QString, mask);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(QString, expectedText);
     QFETCH(QString, expectedDisplayText);
 
@@ -839,24 +839,24 @@ void tst_QLineEdit::keypress_inputMethod_inputMask()
     QCOMPARE(testWidget->text(), QStringLiteral("EE.EE.EE"));
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QLineEdit::hasAcceptableInputMask_data()
 {
-    QTest::addColumn<QString>("optionalMask");
-    QTest::addColumn<QString>("requiredMask");
-    QTest::addColumn<QString>("invalid");
-    QTest::addColumn<QString>("valid");
+    BOBUIest::addColumn<QString>("optionalMask");
+    BOBUIest::addColumn<QString>("requiredMask");
+    BOBUIest::addColumn<QString>("invalid");
+    BOBUIest::addColumn<QString>("valid");
 
-    QTest::newRow("Alphabetic optional and required")
+    BOBUIest::newRow("Alphabetic optional and required")
         << QString("aaaa") << QString("AAAA") << QString("ab") << QString("abcd");
-    QTest::newRow("Alphanumeric optional and require")
+    BOBUIest::newRow("Alphanumeric optional and require")
         << QString("nnnn") << QString("NNNN") << QString("R2") << QString("R2D2");
-    QTest::newRow("Any optional and required")
+    BOBUIest::newRow("Any optional and required")
         << QString("xxxx") << QString("XXXX") << QString("+-") << QString("+-*/");
-    QTest::newRow("Numeric (0-9) required")
+    BOBUIest::newRow("Numeric (0-9) required")
         << QString("0000") << QString("9999") << QString("11") << QString("1138");
-    QTest::newRow("Numeric (1-9) optional and required")
+    BOBUIest::newRow("Numeric (1-9) optional and required")
         << QString("dddd") << QString("DDDD") << QString("12") << QString("1234");
 }
 
@@ -937,28 +937,28 @@ void tst_QLineEdit::hasAcceptableInputValidator()
 
 void tst_QLineEdit::maskCharacter_data()
 {
-    QTest::addColumn<QString>("mask");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<bool>("expectedValid");
+    BOBUIest::addColumn<QString>("mask");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<bool>("expectedValid");
 
-    QTest::newRow("Hex") << QString("H")
+    BOBUIest::newRow("Hex") << QString("H")
                          << QString("0123456789abcdefABCDEF") << true;
-    QTest::newRow("hex") << QString("h")
+    BOBUIest::newRow("hex") << QString("h")
                          << QString("0123456789abcdefABCDEF") << true;
-    QTest::newRow("HexInvalid") << QString("H")
+    BOBUIest::newRow("HexInvalid") << QString("H")
                                 << QString("ghijklmnopqrstuvwxyzGHIJKLMNOPQRSTUVWXYZ")
                                 << false;
-    QTest::newRow("hexInvalid") << QString("h")
+    BOBUIest::newRow("hexInvalid") << QString("h")
                                 << QString("ghijklmnopqrstuvwxyzGHIJKLMNOPQRSTUVWXYZ")
                                 << false;
-    QTest::newRow("Bin") << QString("B")
+    BOBUIest::newRow("Bin") << QString("B")
                          << QString("01") << true;
-    QTest::newRow("bin") << QString("b")
+    BOBUIest::newRow("bin") << QString("b")
                          << QString("01") << true;
-    QTest::newRow("BinInvalid") << QString("B")
+    BOBUIest::newRow("BinInvalid") << QString("B")
                                 << QString("23456789qwertyuiopasdfghjklzxcvbnm")
                                 << false;
-    QTest::newRow("binInvalid") << QString("b")
+    BOBUIest::newRow("binInvalid") << QString("b")
                                 << QString("23456789qwertyuiopasdfghjklzxcvbnm")
                                 << false;
 }
@@ -987,11 +987,11 @@ void tst_QLineEdit::maskCharacter()
 
 void tst_QLineEdit::undo_data()
 {
-    QTest::addColumn<QStringList>("insertString");
-    QTest::addColumn<IntList>("insertIndex");
-    QTest::addColumn<IntList>("insertMode");
-    QTest::addColumn<QStringList>("expectedString");
-    QTest::addColumn<bool>("use_keys");
+    BOBUIest::addColumn<QStringList>("insertString");
+    BOBUIest::addColumn<IntList>("insertIndex");
+    BOBUIest::addColumn<IntList>("insertMode");
+    BOBUIest::addColumn<QStringList>("expectedString");
+    BOBUIest::addColumn<bool>("use_keys");
 
     for (int i=0; i<2; i++) {
         QString keys_str = "keyboard";
@@ -1033,7 +1033,7 @@ void tst_QLineEdit::undo_data()
             expectedString << "15";
             expectedString << "";
 
-            QTest::newRow(QString(keys_str + "_numbers").toLatin1()) <<
+            BOBUIest::newRow(QString(keys_str + "_numbers").toLatin1()) <<
                 insertString <<
                 insertIndex <<
                 insertMode <<
@@ -1068,7 +1068,7 @@ void tst_QLineEdit::undo_data()
             expectedString << "World";
             expectedString << "";
 
-            QTest::newRow(QString(keys_str + "_helloworld").toLatin1()) <<
+            BOBUIest::newRow(QString(keys_str + "_helloworld").toLatin1()) <<
                 insertString <<
                 insertIndex <<
                 insertMode <<
@@ -1102,7 +1102,7 @@ void tst_QLineEdit::undo_data()
             expectedString << "Ensuring instan";
             expectedString << "";
 
-            QTest::newRow(QString(keys_str + "_patterns").toLatin1()) <<
+            BOBUIest::newRow(QString(keys_str + "_patterns").toLatin1()) <<
                 insertString <<
                 insertIndex <<
                 insertMode <<
@@ -1135,11 +1135,11 @@ void tst_QLineEdit::undo()
             testWidget->setSelection(insertIndex[i], 8);
 
             // This is what I actually want...
-            // QTest::keyClick(testWidget, Qt::Key_End, Qt::ShiftModifier);
+            // BOBUIest::keyClick(testWidget, BobUI::Key_End, BobUI::ShiftModifier);
         }
 
         if (use_keys)
-            QTest::keyClicks(testWidget, insertString[i]);
+            BOBUIest::keyClicks(testWidget, insertString[i]);
         else
             testWidget->insert(insertString[i]);
     }
@@ -1164,14 +1164,14 @@ void tst_QLineEdit::undo()
             if (insertMode[i] == REPLACE_UNTIL_END)
                 testWidget->setSelection(insertIndex[i], 8);
             if (use_keys)
-                QTest::keyClicks(testWidget, insertString[i]);
+                BOBUIest::keyClicks(testWidget, insertString[i]);
             else
                 testWidget->insert(insertString[i]);
         }
         for (i=0; i<expectedString.size()-1; ++i) {
             QCOMPARE(testWidget->text(), expectedString[i]);
             QVERIFY(testWidget->isUndoAvailable());
-            QTest::keyClick(testWidget, Qt::Key_Backspace, Qt::AltModifier);
+            BOBUIest::keyClick(testWidget, BobUI::Key_Backspace, BobUI::AltModifier);
         }
     }
 
@@ -1179,9 +1179,9 @@ void tst_QLineEdit::undo()
 
 void tst_QLineEdit::redo_data()
 {
-    QTest::addColumn<QStringList>("insertString");
-    QTest::addColumn<IntList>("insertIndex");
-    QTest::addColumn<QStringList>("expectedString");
+    BOBUIest::addColumn<QStringList>("insertString");
+    BOBUIest::addColumn<IntList>("insertIndex");
+    BOBUIest::addColumn<QStringList>("expectedString");
 
     {
         IntList insertIndex;
@@ -1202,7 +1202,7 @@ void tst_QLineEdit::redo_data()
         expectedString << "WellHelloWorld";
         expectedString << "WellHelloThereWorld";
 
-        QTest::newRow("Inserts and setting cursor") << insertString << insertIndex << expectedString;
+        BOBUIest::newRow("Inserts and setting cursor") << insertString << insertIndex << expectedString;
     }
 }
 
@@ -1243,12 +1243,12 @@ void tst_QLineEdit::redo()
         // repeat test, this time using shortcuts instead of undo()/redo()
 
         while (!testWidget->text().isEmpty())
-            QTest::keyClick(testWidget, Qt::Key_Backspace, Qt::AltModifier);
+            BOBUIest::keyClick(testWidget, BobUI::Key_Backspace, BobUI::AltModifier);
 
         for (i = 0; i < expectedString.size(); ++i) {
             QVERIFY(testWidget->isRedoAvailable());
-            QTest::keyClick(testWidget, Qt::Key_Backspace,
-                            Qt::ShiftModifier | Qt::AltModifier);
+            BOBUIest::keyClick(testWidget, BobUI::Key_Backspace,
+                            BobUI::ShiftModifier | BobUI::AltModifier);
             QCOMPARE(testWidget->text() , expectedString[i]);
         }
 
@@ -1258,11 +1258,11 @@ void tst_QLineEdit::redo()
 
 void tst_QLineEdit::undo_keypressevents_data()
 {
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QStringList>("expectedString");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<QStringList>("expectedString");
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         keys.addKeyClick('A');
@@ -1271,148 +1271,148 @@ void tst_QLineEdit::undo_keypressevents_data()
         keys.addKeyClick('A');
         keys.addKeyClick('I');
         keys.addKeyClick('D');
-        psKeyClick(keys, Qt::Key_Home);
+        psKeyClick(keys, BobUI::Key_Home);
 
         keys.addKeyClick('V');
         keys.addKeyClick('E');
         keys.addKeyClick('R');
         keys.addKeyClick('Y');
 
-        keys.addKeyClick(Qt::Key_Left);
-        keys.addKeyClick(Qt::Key_Left);
-        keys.addKeyClick(Qt::Key_Left);
-        keys.addKeyClick(Qt::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
 
         keys.addKeyClick('B');
         keys.addKeyClick('E');
-        psKeyClick(keys, Qt::Key_End);
+        psKeyClick(keys, BobUI::Key_End);
 
-        keys.addKeyClick(Qt::Key_Exclam);
+        keys.addKeyClick(BobUI::Key_Exclam);
 
         expectedString << "BEVERYAFRAID!";
         expectedString << "BEVERYAFRAID";
         expectedString << "VERYAFRAID";
         expectedString << "AFRAID";
 
-        QTest::newRow("Inserts and moving cursor") << keys << expectedString;
+        BOBUIest::newRow("Inserts and moving cursor") << keys << expectedString;
     }
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting '1234'
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        keys.addKeyClick(Qt::Key_4);
-        psKeyClick(keys, Qt::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        keys.addKeyClick(BobUI::Key_4);
+        psKeyClick(keys, BobUI::Key_Home);
 
         // skipping '12'
-        keys.addKeyClick(Qt::Key_Right);
-        keys.addKeyClick(Qt::Key_Right);
+        keys.addKeyClick(BobUI::Key_Right);
+        keys.addKeyClick(BobUI::Key_Right);
 
         // selecting '34'
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
 
         // deleting '34'
-        keys.addKeyClick(Qt::Key_Delete);
+        keys.addKeyClick(BobUI::Key_Delete);
 
         expectedString << "12";
         expectedString << "1234";
 
-        QTest::newRow("Inserts,moving,selection and delete") << keys << expectedString;
+        BOBUIest::newRow("Inserts,moving,selection and delete") << keys << expectedString;
     }
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting 'AB12'
         keys.addKeyClick('A');
         keys.addKeyClick('B');
 
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
 
-        psKeyClick(keys, Qt::Key_Home);
+        psKeyClick(keys, BobUI::Key_Home);
 
         // selecting 'AB'
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
 
         // deleting 'AB'
-        keys.addKeyClick(Qt::Key_Delete);
+        keys.addKeyClick(BobUI::Key_Delete);
 
         // undoing deletion of 'AB'
-        keys.addKeyClick(Qt::Key_Z, Qt::ControlModifier);
+        keys.addKeyClick(BobUI::Key_Z, BobUI::ControlModifier);
 
         // unselect any current selection
-        keys.addKeyClick(Qt::Key_Right);
+        keys.addKeyClick(BobUI::Key_Right);
 
         // If previous right changed cursor position, go back left
         if (unselectingWithLeftOrRightChangesCursorPosition())
-            keys.addKeyClick(Qt::Key_Left);
+            keys.addKeyClick(BobUI::Key_Left);
 
         // selecting '12'
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Right, Qt::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Right, BobUI::ShiftModifier);
 
         // deleting '12'
-        keys.addKeyClick(Qt::Key_Delete);
+        keys.addKeyClick(BobUI::Key_Delete);
 
         expectedString << "AB";
         expectedString << "AB12";
 
-        QTest::newRow("Inserts,moving,selection, delete and undo") << keys << expectedString;
+        BOBUIest::newRow("Inserts,moving,selection, delete and undo") << keys << expectedString;
     }
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting 'ABCD'
-        keys.addKeyClick(Qt::Key_A);
-        keys.addKeyClick(Qt::Key_B);
-        keys.addKeyClick(Qt::Key_C);
-        keys.addKeyClick(Qt::Key_D);
+        keys.addKeyClick(BobUI::Key_A);
+        keys.addKeyClick(BobUI::Key_B);
+        keys.addKeyClick(BobUI::Key_C);
+        keys.addKeyClick(BobUI::Key_D);
 
         //move left two
-        keys.addKeyClick(Qt::Key_Left);
-        keys.addKeyClick(Qt::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
+        keys.addKeyClick(BobUI::Key_Left);
 
         // inserting '1234'
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        keys.addKeyClick(Qt::Key_4);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        keys.addKeyClick(BobUI::Key_4);
 
         // selecting '1234'
-        keys.addKeyClick(Qt::Key_Left, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Left, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Left, Qt::ShiftModifier);
-        keys.addKeyClick(Qt::Key_Left, Qt::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Left, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Left, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Left, BobUI::ShiftModifier);
+        keys.addKeyClick(BobUI::Key_Left, BobUI::ShiftModifier);
 
         // overwriting '1234' with '5'
-        keys.addKeyClick(Qt::Key_5);
+        keys.addKeyClick(BobUI::Key_5);
 
         // undoing deletion of 'AB'
-        keys.addKeyClick(Qt::Key_Z, Qt::ControlModifier);
+        keys.addKeyClick(BobUI::Key_Z, BobUI::ControlModifier);
 
         // overwriting '1234' with '6'
-        keys.addKeyClick(Qt::Key_6);
+        keys.addKeyClick(BobUI::Key_6);
 
         expectedString << "ab6cd";
         // for versions previous to 3.2 we overwrite needed two undo operations
         expectedString << "ab1234cd";
         expectedString << "abcd";
 
-        QTest::newRow("Inserts,moving,selection and undo, removing selection") << keys << expectedString;
+        BOBUIest::newRow("Inserts,moving,selection and undo, removing selection") << keys << expectedString;
     }
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting 'ABC'
@@ -1421,16 +1421,16 @@ void tst_QLineEdit::undo_keypressevents_data()
         keys.addKeyClick('C');
 
         // removes 'C'
-        keys.addKeyClick(Qt::Key_Backspace);
+        keys.addKeyClick(BobUI::Key_Backspace);
 
         expectedString << "AB";
         expectedString << "ABC";
 
-        QTest::newRow("Inserts,backspace") << keys << expectedString;
+        BOBUIest::newRow("Inserts,backspace") << keys << expectedString;
     }
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting 'ABC'
@@ -1439,7 +1439,7 @@ void tst_QLineEdit::undo_keypressevents_data()
         keys.addKeyClick('C');
 
         // removes 'C'
-        keys.addKeyClick(Qt::Key_Backspace);
+        keys.addKeyClick(BobUI::Key_Backspace);
 
         // inserting 'Z'
         keys.addKeyClick('Z');
@@ -1448,22 +1448,22 @@ void tst_QLineEdit::undo_keypressevents_data()
         expectedString << "AB";
         expectedString << "ABC";
 
-        QTest::newRow("Inserts,backspace,inserts") << keys << expectedString;
+        BOBUIest::newRow("Inserts,backspace,inserts") << keys << expectedString;
     }
 
 
     {
-        QTestEventList keys;
+        BOBUIestEventList keys;
         QStringList expectedString;
 
         // inserting '123'
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        psKeyClick(keys, Qt::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        psKeyClick(keys, BobUI::Key_Home);
 
         // selecting '123'
-        psKeyClick(keys, Qt::Key_End, Qt::ShiftModifier);
+        psKeyClick(keys, BobUI::Key_End, BobUI::ShiftModifier);
 
         // overwriting '123' with 'ABC'
         keys.addKeyClick('A');
@@ -1474,13 +1474,13 @@ void tst_QLineEdit::undo_keypressevents_data()
         // for versions previous to 3.2 we overwrite needed two undo operations
         expectedString << "123";
 
-        QTest::newRow("Inserts,moving,selection and overwriting") << keys << expectedString;
+        BOBUIest::newRow("Inserts,moving,selection and overwriting") << keys << expectedString;
     }
 }
 
 void tst_QLineEdit::undo_keypressevents()
 {
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(QStringList, expectedString);
 
     QLineEdit *testWidget = ensureTestWidget();
@@ -1493,10 +1493,10 @@ void tst_QLineEdit::undo_keypressevents()
     QVERIFY(testWidget->text().isEmpty());
 }
 
-#ifndef QT_NO_CLIPBOARD
-void tst_QLineEdit::QTBUG5786_undoPaste()
+#ifndef BOBUI_NO_CLIPBOARD
+void tst_QLineEdit::BOBUIBUG5786_undoPaste()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     if (!PlatformClipboard::isAvailable())
@@ -1561,15 +1561,15 @@ void tst_QLineEdit::editingFinished()
 
 void tst_QLineEdit::text_data()
 {
-    QTest::addColumn<QString>("insertString");
+    BOBUIest::addColumn<QString>("insertString");
 
-    QTest::newRow("Plain text0") << QString("Hello World");
-    QTest::newRow("Plain text1") << QString("");
-    QTest::newRow("Plain text2") << QString("A");
-    QTest::newRow("Plain text3") << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry");
-    QTest::newRow("Plain text4") << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"");
-    QTest::newRow("Newlines") << QString("A\nB\nC\n");
-    QTest::newRow("Text with nbsp") << QString("Hello") + QChar(0xa0) + "World";
+    BOBUIest::newRow("Plain text0") << QString("Hello World");
+    BOBUIest::newRow("Plain text1") << QString("");
+    BOBUIest::newRow("Plain text2") << QString("A");
+    BOBUIest::newRow("Plain text3") << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry");
+    BOBUIest::newRow("Plain text4") << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"");
+    BOBUIest::newRow("Newlines") << QString("A\nB\nC\n");
+    BOBUIest::newRow("Text with nbsp") << QString("Hello") + QChar(0xa0) + "World";
 }
 
 void tst_QLineEdit::text()
@@ -1582,9 +1582,9 @@ void tst_QLineEdit::text()
 
 void tst_QLineEdit::textMask_data()
 {
-    QTest::addColumn<QString>("insertString");
+    BOBUIest::addColumn<QString>("insertString");
 
-    QTest::newRow( "Plain text1" ) << QString( "" );
+    BOBUIest::newRow( "Plain text1" ) << QString( "" );
 }
 
 void tst_QLineEdit::textMask()
@@ -1608,10 +1608,10 @@ void tst_QLineEdit::setText()
 
 void tst_QLineEdit::displayText_data()
 {
-    QTest::addColumn<QString>("insertString");
-    QTest::addColumn<QString>("expectedString");
-    QTest::addColumn<QLineEdit::EchoMode>("mode");
-    QTest::addColumn<bool>("use_setText");
+    BOBUIest::addColumn<QString>("insertString");
+    BOBUIest::addColumn<QString>("expectedString");
+    BOBUIest::addColumn<QLineEdit::EchoMode>("mode");
+    BOBUIest::addColumn<bool>("use_setText");
 
     QString s;
     QLineEdit::EchoMode m;
@@ -1628,42 +1628,42 @@ void tst_QLineEdit::displayText_data()
         }
         s = key_mode_str + "Normal";
         m = QLineEdit::Normal;
-        QTest::newRow(QString(s + " text0").toLatin1()) << QString("Hello World") <<
+        BOBUIest::newRow(QString(s + " text0").toLatin1()) << QString("Hello World") <<
                       QString("Hello World") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
+        BOBUIest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text2").toLatin1()) << QString("A") <<
+        BOBUIest::newRow(QString(s + " text2").toLatin1()) << QString("A") <<
                       QString("A") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text3").toLatin1()) << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry") <<
+        BOBUIest::newRow(QString(s + " text3").toLatin1()) << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry") <<
                       QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text4").toLatin1()) << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"") <<
+        BOBUIest::newRow(QString(s + " text4").toLatin1()) << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"") <<
                       QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text with nbsp").toLatin1()) << QString("Hello") + QChar(0xa0) + "World" <<
+        BOBUIest::newRow(QString(s + " text with nbsp").toLatin1()) << QString("Hello") + QChar(0xa0) + "World" <<
                       QString("Hello") + QChar(0xa0) + "World" <<
                       m << bool(use_setText);
         s = key_mode_str + "NoEcho";
         m = QLineEdit::NoEcho;
-        QTest::newRow(QString(s + " text0").toLatin1()) << QString("Hello World") <<
+        BOBUIest::newRow(QString(s + " text0").toLatin1()) << QString("Hello World") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
+        BOBUIest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text2").toLatin1()) << QString("A") <<
+        BOBUIest::newRow(QString(s + " text2").toLatin1()) << QString("A") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text3").toLatin1()) << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry") <<
+        BOBUIest::newRow(QString(s + " text3").toLatin1()) << QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text4").toLatin1()) << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"") <<
+        BOBUIest::newRow(QString(s + " text4").toLatin1()) << QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text with nbsp").toLatin1()) << QString("Hello") + QChar(0xa0) + "World" <<
+        BOBUIest::newRow(QString(s + " text with nbsp").toLatin1()) << QString("Hello") + QChar(0xa0) + "World" <<
                       QString("") <<
                       m << bool(use_setText);
         s = key_mode_str + "Password";
@@ -1676,22 +1676,22 @@ void tst_QLineEdit::displayText_data()
         input = "Hello World";
         pass.resize(input.size());
         pass.fill(passChar);
-        QTest::newRow(QString(s + " text0").toLatin1()) << input << pass << m << bool(use_setText);
-        QTest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
+        BOBUIest::newRow(QString(s + " text0").toLatin1()) << input << pass << m << bool(use_setText);
+        BOBUIest::newRow(QString(s + " text1").toLatin1()) << QString("") <<
                       QString("") <<
                       m << bool(use_setText);
-        QTest::newRow(QString(s + " text2").toLatin1()) << QString("A") << QString(passChar) << m << bool(use_setText);
+        BOBUIest::newRow(QString(s + " text2").toLatin1()) << QString("A") << QString(passChar) << m << bool(use_setText);
         input = QString("ryyryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryryrryryryryryryryryryryryryry");
         pass.resize(input.size());
         pass.fill(passChar);
-        QTest::newRow(QString(s + " text3").toLatin1()) << input << pass << m << bool(use_setText);
+        BOBUIest::newRow(QString(s + " text3").toLatin1()) << input << pass << m << bool(use_setText);
         input = QString("abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890`~!@#$%^&*()_-+={[}]|\\:;'?/>.<,\"");
         pass.fill(passChar, input.size());
-        QTest::newRow(QString(s + " text4").toLatin1()) << input << pass << m << bool(use_setText);
+        BOBUIest::newRow(QString(s + " text4").toLatin1()) << input << pass << m << bool(use_setText);
         input = QString("Hello") + QChar(0xa0) + "World";
         pass.resize(input.size());
         pass.fill(passChar);
-        QTest::newRow(QString(s + " text with nbsp").toLatin1()) << input << pass << m << bool(use_setText);
+        BOBUIest::newRow(QString(s + " text with nbsp").toLatin1()) << input << pass << m << bool(use_setText);
     }
 }
 
@@ -1711,7 +1711,7 @@ void tst_QLineEdit::displayText()
 
 void tst_QLineEdit::passwordEchoOnEdit()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStyleOptionFrame opt;
@@ -1725,23 +1725,23 @@ void tst_QLineEdit::passwordEchoOnEdit()
     centerOnScreen(testWidget);
     testWidget->show();
     testWidget->raise();
-    QVERIFY(QTest::qWaitForWindowExposed(testWidget));
-    QTRY_VERIFY(testWidget->hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
+    BOBUIRY_VERIFY(testWidget->hasFocus());
 
-    QTest::keyPress(testWidget, '0');
-    QTest::keyPress(testWidget, '1');
-    QTest::keyPress(testWidget, '2');
-    QTest::keyPress(testWidget, '3');
-    QTest::keyPress(testWidget, '4');
+    BOBUIest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '1');
+    BOBUIest::keyPress(testWidget, '2');
+    BOBUIest::keyPress(testWidget, '3');
+    BOBUIest::keyPress(testWidget, '4');
     QCOMPARE(testWidget->displayText(), QString("01234"));
     testWidget->clearFocus();
     QVERIFY(!testWidget->hasFocus());
     QCOMPARE(testWidget->displayText(), QString(5, fillChar));
     testWidget->setFocus();
-    QTRY_VERIFY(testWidget->hasFocus());
+    BOBUIRY_VERIFY(testWidget->hasFocus());
 
     QCOMPARE(testWidget->displayText(), QString(5, fillChar));
-    QTest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '0');
     QCOMPARE(testWidget->displayText(), QString("0"));
 
     // restore clean state
@@ -1750,12 +1750,12 @@ void tst_QLineEdit::passwordEchoOnEdit()
 
 void tst_QLineEdit::passwordEchoDelay()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit *testWidget = ensureTestWidget();
     int delay = qGuiApp->styleHints()->passwordMaskDelay();
-#if defined QT_BUILD_INTERNAL
+#if defined BOBUI_BUILD_INTERNAL
     QLineEditPrivate *priv = QLineEditPrivate::get(testWidget);
     QWidgetLineControl *control = priv->control;
     control->m_passwordMaskDelayOverride = 200;
@@ -1774,31 +1774,31 @@ void tst_QLineEdit::passwordEchoDelay()
     centerOnScreen(testWidget);
     testWidget->show();
     testWidget->raise();
-    QVERIFY(QTest::qWaitForWindowExposed(testWidget));
-    QTRY_VERIFY(testWidget->hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
+    BOBUIRY_VERIFY(testWidget->hasFocus());
 
-    QTest::keyPress(testWidget, '0');
-    QTest::keyPress(testWidget, '1');
-    QTest::keyPress(testWidget, '2');
+    BOBUIest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '1');
+    BOBUIest::keyPress(testWidget, '2');
     QCOMPARE(testWidget->displayText(), QString(2, fillChar) + QLatin1Char('2'));
-    QTest::keyPress(testWidget, '3');
-    QTest::keyPress(testWidget, '4');
+    BOBUIest::keyPress(testWidget, '3');
+    BOBUIest::keyPress(testWidget, '4');
     QCOMPARE(testWidget->displayText(), QString(4, fillChar) + QLatin1Char('4'));
-    QTest::keyPress(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->displayText(), QString(4, fillChar));
-    QTest::keyPress(testWidget, '4');
+    BOBUIest::keyPress(testWidget, '4');
     QCOMPARE(testWidget->displayText(), QString(4, fillChar) + QLatin1Char('4'));
-    QTest::qWait(delay);
-    QTRY_COMPARE(testWidget->displayText(), QString(5, fillChar));
-    QTest::keyPress(testWidget, '5');
+    BOBUIest::qWait(delay);
+    BOBUIRY_COMPARE(testWidget->displayText(), QString(5, fillChar));
+    BOBUIest::keyPress(testWidget, '5');
     QCOMPARE(testWidget->displayText(), QString(5, fillChar) + QLatin1Char('5'));
     testWidget->clearFocus();
     QVERIFY(!testWidget->hasFocus());
     QCOMPARE(testWidget->displayText(), QString(6, fillChar));
     testWidget->setFocus();
-    QTRY_VERIFY(testWidget->hasFocus());
+    BOBUIRY_VERIFY(testWidget->hasFocus());
     QCOMPARE(testWidget->displayText(), QString(6, fillChar));
-    QTest::keyPress(testWidget, '6');
+    BOBUIest::keyPress(testWidget, '6');
     QCOMPARE(testWidget->displayText(), QString(6, fillChar) + QLatin1Char('6'));
 
     QInputMethodEvent ev;
@@ -1808,9 +1808,9 @@ void tst_QLineEdit::passwordEchoDelay()
 
     testWidget->setCursorPosition(3);
     QCOMPARE(testWidget->displayText(), QString(7, fillChar) + QLatin1Char('7'));
-    QTest::keyPress(testWidget, 'a');
+    BOBUIest::keyPress(testWidget, 'a');
     QCOMPARE(testWidget->displayText(), QString(3, fillChar) + QLatin1Char('a') + QString(5, fillChar));
-    QTest::keyPress(testWidget, Qt::Key_Backspace);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Backspace);
     QCOMPARE(testWidget->displayText(), QString(8, fillChar));
 
     // restore clean state
@@ -1819,13 +1819,13 @@ void tst_QLineEdit::passwordEchoDelay()
 
 void tst_QLineEdit::maxLength_mask_data()
 {
-    QTest::addColumn<QString>("mask");
-    QTest::addColumn<int>("expectedLength");
+    BOBUIest::addColumn<QString>("mask");
+    BOBUIest::addColumn<int>("expectedLength");
 
-    QTest::newRow("mask_case") << QString(">000<>00<000") << 8;
-    QTest::newRow("mask_nocase") << QString("00000000") << 8;
-    QTest::newRow("mask_null") << QString() << 32767;
-    QTest::newRow("mask_escape") << QString("\\A\\aAA") << 4;
+    BOBUIest::newRow("mask_case") << QString(">000<>00<000") << 8;
+    BOBUIest::newRow("mask_nocase") << QString("00000000") << 8;
+    BOBUIest::newRow("mask_null") << QString() << 32767;
+    BOBUIest::newRow("mask_escape") << QString("\\A\\aAA") << 4;
 }
 
 void tst_QLineEdit::maxLength_mask()
@@ -1841,20 +1841,20 @@ void tst_QLineEdit::maxLength_mask()
 
 void tst_QLineEdit::maxLength_data()
 {
-    QTest::addColumn<QString>("insertString");
-    QTest::addColumn<QString>("expectedString");
-    QTest::addColumn<int>("length");
-    QTest::addColumn<bool>("insertBeforeSettingMaxLength");
-    QTest::addColumn<bool>("use_setText");
+    BOBUIest::addColumn<QString>("insertString");
+    BOBUIest::addColumn<QString>("expectedString");
+    BOBUIest::addColumn<int>("length");
+    BOBUIest::addColumn<bool>("insertBeforeSettingMaxLength");
+    BOBUIest::addColumn<bool>("use_setText");
 
-    QTest::newRow("keyclick before0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(true) << bool(false);
-    QTest::newRow("keyclick before1") << QString("this is a test.") << QString("this is a ") << 10 << bool(true) << bool(false);
-    QTest::newRow("keyclick after0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(false) << bool(false);
-    QTest::newRow("keyclick after1") << QString("this is a test.") << QString("this is a ") << 10 << bool(false) << bool(false);
-    QTest::newRow("settext before0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(true) << bool(true);
-    QTest::newRow("settext before1") << QString("this is a test.") << QString("this is a ") << 10 << bool(true) << bool(true);
-    QTest::newRow("settext after0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(false) << bool(true);
-    QTest::newRow("settext after1") << QString("this is a test.") << QString("this is a ") << 10 << bool(false) << bool(true);
+    BOBUIest::newRow("keyclick before0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(true) << bool(false);
+    BOBUIest::newRow("keyclick before1") << QString("this is a test.") << QString("this is a ") << 10 << bool(true) << bool(false);
+    BOBUIest::newRow("keyclick after0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(false) << bool(false);
+    BOBUIest::newRow("keyclick after1") << QString("this is a test.") << QString("this is a ") << 10 << bool(false) << bool(false);
+    BOBUIest::newRow("settext before0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(true) << bool(true);
+    BOBUIest::newRow("settext before1") << QString("this is a test.") << QString("this is a ") << 10 << bool(true) << bool(true);
+    BOBUIest::newRow("settext after0") << QString("this is a test.") << QString("this is a test.") << 20 << bool(false) << bool(true);
+    BOBUIest::newRow("settext after1") << QString("this is a test.") << QString("this is a ") << 10 << bool(false) << bool(true);
 }
 
 void tst_QLineEdit::maxLength()
@@ -1876,7 +1876,7 @@ void tst_QLineEdit::maxLength()
         testWidget->setText(insertString);
     } else {
         // Enter insertString as a sequence of keyClicks
-        QTest::keyClicks(testWidget, insertString);
+        BOBUIest::keyClicks(testWidget, insertString);
     }
 
     // in all other cases we set the maxLength _after_ entering the text.
@@ -1902,13 +1902,13 @@ void tst_QLineEdit::isReadOnly()
     QVERIFY(!testWidget->isReadOnly());
 
     // start with a basic text
-    QTest::keyClicks(testWidget, "the quick brown fox");
+    BOBUIest::keyClicks(testWidget, "the quick brown fox");
     QCOMPARE(testWidget->text(), QString("the quick brown fox"));
 
     // do a quick check to verify that we can indeed edit the text
     testWidget->home(false);
     testWidget->cursorForward(false, 10);
-    QTest::keyClicks(testWidget, "dark ");
+    BOBUIest::keyClicks(testWidget, "dark ");
     QCOMPARE(testWidget->text(), QString("the quick dark brown fox"));
 
     testWidget->setReadOnly(true);
@@ -1917,10 +1917,10 @@ void tst_QLineEdit::isReadOnly()
     // verify that we cannot edit the text anymore
     testWidget->home(false);
     testWidget->cursorForward(false, 10);
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->text(), QString("the quick dark brown fox"));
     testWidget->cursorForward(false, 10);
-    QTest::keyClicks(testWidget, "this should not have any effect!! ");
+    BOBUIest::keyClicks(testWidget, "this should not have any effect!! ");
     QCOMPARE(testWidget->text(), QString("the quick dark brown fox"));
 }
 
@@ -1945,35 +1945,35 @@ void tst_QLineEdit::noCursorBlinkWhenReadOnly()
     centerOnScreen(&le);
     le.show();
     le.setFocus();
-    QVERIFY(QTest::qWaitForWindowFocused(&le));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&le));
     QVERIFY(le.hasFocus());
     le.updates = 0;
-    QTest::qWait(cursorFlashTime);
+    BOBUIest::qWait(cursorFlashTime);
     QVERIFY(le.updates > 0);
     le.setReadOnly(true);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     le.updates = 0;
-    QTest::qWait(cursorFlashTime);
+    BOBUIest::qWait(cursorFlashTime);
     QCOMPARE(le.updates, 0);
     le.setReadOnly(false);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
     le.updates = 0;
-    QTest::qWait(cursorFlashTime);
+    BOBUIest::qWait(cursorFlashTime);
     QVERIFY(le.updates > 0);
 }
 
-static void figureOutProperKey(Qt::Key &key, Qt::KeyboardModifiers &pressState)
+static void figureOutProperKey(BobUI::Key &key, BobUI::KeyboardModifiers &pressState)
 {
 #ifdef Q_OS_MAC
     long roll = QRandomGenerator::global()->bounded(3);
     switch (roll) {
     case 0:
-        key = key == Qt::Key_Home ? Qt::Key_Up : Qt::Key_Down;
+        key = key == BobUI::Key_Home ? BobUI::Key_Up : BobUI::Key_Down;
         break;
     case 1:
     case 2:
-        key = key == Qt::Key_Home ? Qt::Key_Left : Qt::Key_Right;
-        pressState |= (roll == 1) ? Qt::ControlModifier : Qt::MetaModifier;
+        key = key == BobUI::Key_Home ? BobUI::Key_Left : BobUI::Key_Right;
+        pressState |= (roll == 1) ? BobUI::ControlModifier : BobUI::MetaModifier;
         break;
     }
 #else
@@ -1984,29 +1984,29 @@ static void figureOutProperKey(Qt::Key &key, Qt::KeyboardModifiers &pressState)
 
 // Platform specific move. Home and End do nothing on the Mac,
 // so do something a bit smarter than tons of #ifdefs
-void tst_QLineEdit::psKeyClick(QWidget *target, Qt::Key key, Qt::KeyboardModifiers pressState)
+void tst_QLineEdit::psKeyClick(QWidget *target, BobUI::Key key, BobUI::KeyboardModifiers pressState)
 {
     figureOutProperKey(key, pressState);
-    QTest::keyClick(target, key, pressState);
+    BOBUIest::keyClick(target, key, pressState);
 }
 
-void tst_QLineEdit::psKeyClick(QTestEventList &keys, Qt::Key key, Qt::KeyboardModifiers pressState)
+void tst_QLineEdit::psKeyClick(BOBUIestEventList &keys, BobUI::Key key, BobUI::KeyboardModifiers pressState)
 {
     figureOutProperKey(key, pressState);
     keys.addKeyClick(key, pressState);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
-void tst_QLineEdit::addKeySequenceStandardKey(QTestEventList &keys, QKeySequence::StandardKey key)
+void tst_QLineEdit::addKeySequenceStandardKey(BOBUIestEventList &keys, QKeySequence::StandardKey key)
 {
     QKeySequence keyseq = QKeySequence(key);
     for (int i = 0; i < keyseq.count(); ++i)
-        keys.addKeyClick( Qt::Key( keyseq[i].toCombined() & ~Qt::KeyboardModifierMask),
-                          Qt::KeyboardModifier(keyseq[i].toCombined() & Qt::KeyboardModifierMask) );
+        keys.addKeyClick( BobUI::Key( keyseq[i].toCombined() & ~BobUI::KeyboardModifierMask),
+                          BobUI::KeyboardModifier(keyseq[i].toCombined() & BobUI::KeyboardModifierMask) );
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 void tst_QLineEdit::cursorPosition()
 {
@@ -2014,11 +2014,11 @@ void tst_QLineEdit::cursorPosition()
     QCOMPARE(testWidget->cursorPosition(), 0);
 
     // start with a basic text
-    QTest::keyClicks(testWidget, "The");
+    BOBUIest::keyClicks(testWidget, "The");
     QCOMPARE(testWidget->cursorPosition(), 3);
-    QTest::keyClicks(testWidget, " quick");
+    BOBUIest::keyClicks(testWidget, " quick");
     QCOMPARE(testWidget->cursorPosition(), 9);
-    QTest::keyClicks(testWidget, " brown fox jumps over the lazy dog");
+    BOBUIest::keyClicks(testWidget, " brown fox jumps over the lazy dog");
     QCOMPARE(testWidget->cursorPosition(), 43);
 
     // The text we have now is:
@@ -2055,15 +2055,15 @@ void tst_QLineEdit::cursorPosition()
     // Cursor position should be 0 here!
     int i;
     for (i=0; i<5; i++)
-        QTest::keyClick(testWidget, Qt::Key_Right);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QCOMPARE(testWidget->cursorPosition(), 5);
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     QCOMPARE(testWidget->cursorPosition(), 43);
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QCOMPARE(testWidget->cursorPosition(), 42);
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QCOMPARE(testWidget->cursorPosition(), 41);
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     QCOMPARE(testWidget->cursorPosition(), 0);
 
     // cursorposition when maxlength is set
@@ -2071,11 +2071,11 @@ void tst_QLineEdit::cursorPosition()
     testWidget->clear();
     testWidget->setMaxLength(maxLength);
     QCOMPARE(testWidget->cursorPosition() , 0);
-    QTest::keyClicks(testWidget, "123ABC123");
+    BOBUIest::keyClicks(testWidget, "123ABC123");
     QCOMPARE(testWidget->cursorPosition() , maxLength);
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     QCOMPARE(testWidget->cursorPosition() , 0);
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     QCOMPARE(testWidget->cursorPosition() , maxLength);
 }
 
@@ -2092,84 +2092,84 @@ void tst_QLineEdit::end()
 
 void tst_QLineEdit::cursorPositionChanged_data()
 {
-    QTest::addColumn<QTestEventList>("input");
-    QTest::addColumn<int>("lastPos");
-    QTest::addColumn<int>("newPos");
+    BOBUIest::addColumn<BOBUIestEventList>("input");
+    BOBUIest::addColumn<int>("lastPos");
+    BOBUIest::addColumn<int>("newPos");
 
-    QTestEventList keys;
-    keys.addKeyClick(Qt::Key_A);
-    QTest::newRow("a") << keys << -1 << 1;
+    BOBUIestEventList keys;
+    keys.addKeyClick(BobUI::Key_A);
+    BOBUIest::newRow("a") << keys << -1 << 1;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    psKeyClick(keys, Qt::Key_Home);
-    QTest::newRow("abc<home>") << keys << 3 << 0;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    psKeyClick(keys, BobUI::Key_Home);
+    BOBUIest::newRow("abc<home>") << keys << 3 << 0;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Left);
-    QTest::newRow("abc<left>") << keys << 3 << 2;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Left);
+    BOBUIest::newRow("abc<left>") << keys << 3 << 2;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Right);
-    QTest::newRow("abc<right>") << keys << 2 << 3;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Right);
+    BOBUIest::newRow("abc<right>") << keys << 2 << 3;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    psKeyClick(keys, Qt::Key_Home);
-    keys.addKeyClick(Qt::Key_Right);
-    QTest::newRow("abc<home><right>") << keys << 0 << 1;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    psKeyClick(keys, BobUI::Key_Home);
+    keys.addKeyClick(BobUI::Key_Right);
+    BOBUIest::newRow("abc<home><right>") << keys << 0 << 1;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Backspace);
-    QTest::newRow("abc<backspace>") << keys << 3 << 2;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Backspace);
+    BOBUIest::newRow("abc<backspace>") << keys << 3 << 2;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Delete);
-    QTest::newRow("abc<delete>") << keys << 2 << 3;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Delete);
+    BOBUIest::newRow("abc<delete>") << keys << 2 << 3;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Left);
-    keys.addKeyClick(Qt::Key_Delete);
-    QTest::newRow("abc<left><delete>") << keys << 3 << 2;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Left);
+    keys.addKeyClick(BobUI::Key_Delete);
+    BOBUIest::newRow("abc<left><delete>") << keys << 3 << 2;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    psKeyClick(keys, Qt::Key_Home);
-    psKeyClick(keys, Qt::Key_End);
-    QTest::newRow("abc<home><end>") << keys << 0 << 3;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    psKeyClick(keys, BobUI::Key_Home);
+    psKeyClick(keys, BobUI::Key_End);
+    BOBUIest::newRow("abc<home><end>") << keys << 0 << 3;
     keys.clear();
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Space);
-    keys.addKeyClick(Qt::Key_D);
-    keys.addKeyClick(Qt::Key_E);
-    keys.addKeyClick(Qt::Key_F);
-    keys.addKeyClick(Qt::Key_Home);
-    keys.addKeyClick(Qt::Key_Right, Qt::ControlModifier);
-    QTest::newRow("abc efg<home><ctrl-right>") << keys
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Space);
+    keys.addKeyClick(BobUI::Key_D);
+    keys.addKeyClick(BobUI::Key_E);
+    keys.addKeyClick(BobUI::Key_F);
+    keys.addKeyClick(BobUI::Key_Home);
+    keys.addKeyClick(BobUI::Key_Right, BobUI::ControlModifier);
+    BOBUIest::newRow("abc efg<home><ctrl-right>") << keys
 #ifndef Q_OS_MAC
         << 0 << 4;
 #else
@@ -2178,28 +2178,28 @@ void tst_QLineEdit::cursorPositionChanged_data()
     keys.clear();
 
 #ifdef Q_OS_MAC
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Space);
-    keys.addKeyClick(Qt::Key_D);
-    keys.addKeyClick(Qt::Key_E);
-    keys.addKeyClick(Qt::Key_F);
-    keys.addKeyClick(Qt::Key_Up);
-    keys.addKeyClick(Qt::Key_Right, Qt::AltModifier);
-    QTest::newRow("mac equivalent abc efg<up><option-right>") << keys << 0 << 4;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Space);
+    keys.addKeyClick(BobUI::Key_D);
+    keys.addKeyClick(BobUI::Key_E);
+    keys.addKeyClick(BobUI::Key_F);
+    keys.addKeyClick(BobUI::Key_Up);
+    keys.addKeyClick(BobUI::Key_Right, BobUI::AltModifier);
+    BOBUIest::newRow("mac equivalent abc efg<up><option-right>") << keys << 0 << 4;
     keys.clear();
 #endif
 
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Space);
-    keys.addKeyClick(Qt::Key_D);
-    keys.addKeyClick(Qt::Key_E);
-    keys.addKeyClick(Qt::Key_F);
-    keys.addKeyClick(Qt::Key_Left, Qt::ControlModifier);
-    QTest::newRow("abc efg<ctrl-left>") << keys << 7
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Space);
+    keys.addKeyClick(BobUI::Key_D);
+    keys.addKeyClick(BobUI::Key_E);
+    keys.addKeyClick(BobUI::Key_F);
+    keys.addKeyClick(BobUI::Key_Left, BobUI::ControlModifier);
+    BOBUIest::newRow("abc efg<ctrl-left>") << keys << 7
 #ifndef Q_OS_MAC
         << 4;
 #else
@@ -2207,15 +2207,15 @@ void tst_QLineEdit::cursorPositionChanged_data()
 #endif
     keys.clear();
 #ifdef Q_OS_MAC
-    keys.addKeyClick(Qt::Key_A);
-    keys.addKeyClick(Qt::Key_B);
-    keys.addKeyClick(Qt::Key_C);
-    keys.addKeyClick(Qt::Key_Space);
-    keys.addKeyClick(Qt::Key_D);
-    keys.addKeyClick(Qt::Key_E);
-    keys.addKeyClick(Qt::Key_F);
-    keys.addKeyClick(Qt::Key_Left, Qt::AltModifier);
-    QTest::newRow("mac equivalent abc efg<option-left>") << keys << 7 << 4;
+    keys.addKeyClick(BobUI::Key_A);
+    keys.addKeyClick(BobUI::Key_B);
+    keys.addKeyClick(BobUI::Key_C);
+    keys.addKeyClick(BobUI::Key_Space);
+    keys.addKeyClick(BobUI::Key_D);
+    keys.addKeyClick(BobUI::Key_E);
+    keys.addKeyClick(BobUI::Key_F);
+    keys.addKeyClick(BobUI::Key_Left, BobUI::AltModifier);
+    BOBUIest::newRow("mac equivalent abc efg<option-left>") << keys << 7 << 4;
     keys.clear();
 #endif
 }
@@ -2223,7 +2223,7 @@ void tst_QLineEdit::cursorPositionChanged_data()
 
 void tst_QLineEdit::cursorPositionChanged()
 {
-    QFETCH(QTestEventList, input);
+    QFETCH(BOBUIestEventList, input);
     QFETCH(int, lastPos);
     QFETCH(int, newPos);
 
@@ -2234,10 +2234,10 @@ void tst_QLineEdit::cursorPositionChanged()
     QCOMPARE(lastCursorPos, lastPos);
     QCOMPARE(newCursorPos, newPos);
 
-    QInputMethodQueryEvent queryEvent(Qt::ImCursorPosition | Qt::ImAbsolutePosition);
+    QInputMethodQueryEvent queryEvent(BobUI::ImCursorPosition | BobUI::ImAbsolutePosition);
     QApplication::sendEvent(testWidget, &queryEvent);
-    QCOMPARE(queryEvent.value(Qt::ImCursorPosition).toInt(), newPos);
-    QCOMPARE(queryEvent.value(Qt::ImAbsolutePosition).toInt(), newPos);
+    QCOMPARE(queryEvent.value(BobUI::ImCursorPosition).toInt(), newPos);
+    QCOMPARE(queryEvent.value(BobUI::ImAbsolutePosition).toInt(), newPos);
 }
 
 void tst_QLineEdit::selectedText()
@@ -2292,13 +2292,13 @@ void tst_QLineEdit::deleteSelectedText()
 
     edit.selectAll();
 
-    QTest::keyClick(&edit, Qt::Key_Delete, {});
+    BOBUIest::keyClick(&edit, BobUI::Key_Delete, {});
     QVERIFY(edit.text().isEmpty());
 
     edit.setText(text);
     edit.selectAll();
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QMenu *menu = edit.createStandardContextMenu();
     for (int i = 0; i < menu->actions().size(); ++i) {
         QAction *current = menu->actions().at(i);
@@ -2307,7 +2307,7 @@ void tst_QLineEdit::deleteSelectedText()
             QVERIFY(edit.text().isEmpty());
         }
     }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 }
 
@@ -2328,19 +2328,19 @@ void tst_QLineEdit::textChangedAndTextEdited()
     edited_count = 0;
 
     QLineEdit *testWidget = ensureTestWidget();
-    QTest::keyClick(testWidget, Qt::Key_A);
+    BOBUIest::keyClick(testWidget, BobUI::Key_A);
     QCOMPARE(changed_count, 1);
     QCOMPARE(edited_count, changed_count);
-    QTest::keyClick(testWidget, 'b');
+    BOBUIest::keyClick(testWidget, 'b');
     QCOMPARE(changed_count, 2);
     QCOMPARE(edited_count, changed_count);
-    QTest::keyClick(testWidget, 'c');
+    BOBUIest::keyClick(testWidget, 'c');
     QCOMPARE(changed_count, 3);
     QCOMPARE(edited_count, changed_count);
-    QTest::keyClick(testWidget, ' ');
+    BOBUIest::keyClick(testWidget, ' ');
     QCOMPARE(changed_count, 4);
     QCOMPARE(edited_count, changed_count);
-    QTest::keyClick(testWidget, 'd');
+    BOBUIest::keyClick(testWidget, 'd');
     QCOMPARE(changed_count, 5);
     QCOMPARE(edited_count, changed_count);
 
@@ -2374,7 +2374,7 @@ void tst_QLineEdit::textChangedAndTextEdited()
     QCOMPARE(edited_count, 0);
     QCOMPARE(changed_string, QLatin1String("FOO"));
     testWidget->setCursorPosition(sizeof("foo"));
-    QTest::keyClick(testWidget, 'b');
+    BOBUIest::keyClick(testWidget, 'b');
     QCOMPARE(changed_count, 2);
     QCOMPARE(edited_count, 1);
     QCOMPARE(changed_string, QLatin1String("FOOB"));
@@ -2404,27 +2404,27 @@ void tst_QLineEdit::returnPressed()
     return_count = 0;
 
     QLineEdit *testWidget = ensureTestWidget();
-    QTest::keyClick(testWidget, Qt::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
     QCOMPARE(return_count, 1);
     return_count = 0;
 
-    QTest::keyClick(testWidget, 'A');
+    BOBUIest::keyClick(testWidget, 'A');
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, 'b');
+    BOBUIest::keyClick(testWidget, 'b');
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, 'c');
+    BOBUIest::keyClick(testWidget, 'c');
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, ' ');
+    BOBUIest::keyClick(testWidget, ' ');
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, 'd');
+    BOBUIest::keyClick(testWidget, 'd');
     QCOMPARE(return_count, 0);
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     QCOMPARE(return_count, 0);
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, Qt::Key_Escape);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Escape);
     QCOMPARE(return_count, 0);
-    QTest::keyClick(testWidget, Qt::Key_Return);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Return);
     QCOMPARE(return_count, 1);
 }
 
@@ -2441,20 +2441,20 @@ public:
 };
 
 void tst_QLineEdit::returnPressed_maskvalidator_data() {
-    QTest::addColumn<QString>("inputMask");
-    QTest::addColumn<bool>("hasValidator");
-    QTest::addColumn<QTestEventList>("input");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<bool>("returnPressed");
+    BOBUIest::addColumn<QString>("inputMask");
+    BOBUIest::addColumn<bool>("hasValidator");
+    BOBUIest::addColumn<BOBUIestEventList>("input");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<bool>("returnPressed");
 
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("no mask, no validator, input '123<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("no mask, no validator, input '123<cr>'")
             << QString()
             << false
             << keys
@@ -2462,12 +2462,12 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << true;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("mask '999', no validator, input '12<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("mask '999', no validator, input '12<cr>'")
             << QString("999")
             << false
             << keys
@@ -2475,13 +2475,13 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << false;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("mask '999', no validator, input '123<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("mask '999', no validator, input '123<cr>'")
             << QString("999")
             << false
             << keys
@@ -2489,13 +2489,13 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << true;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_3);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("no mask, intfix validator(0,999), input '123<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_3);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("no mask, intfix validator(0,999), input '123<cr>'")
             << QString()
             << true
             << keys
@@ -2503,14 +2503,14 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << true;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_7);
-        keys.addKeyClick(Qt::Key_7);
-        keys.addKeyClick(Qt::Key_7);
-        keys.addKeyClick(Qt::Key_7);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("no mask, intfix validator(0,999), input '7777<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_7);
+        keys.addKeyClick(BobUI::Key_7);
+        keys.addKeyClick(BobUI::Key_7);
+        keys.addKeyClick(BobUI::Key_7);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("no mask, intfix validator(0,999), input '7777<cr>'")
             << QString()
             << true
             << keys
@@ -2518,12 +2518,12 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << true;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_1);
-        keys.addKeyClick(Qt::Key_2);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("mask '999', intfix validator(0,999), input '12<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_1);
+        keys.addKeyClick(BobUI::Key_2);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("mask '999', intfix validator(0,999), input '12<cr>'")
             << QString("999")
             << true
             << keys
@@ -2531,10 +2531,10 @@ void tst_QLineEdit::returnPressed_maskvalidator_data() {
             << false;
     }
     {
-        QTestEventList keys;
-        keys.addKeyClick(Qt::Key_Home);
-        keys.addKeyClick(Qt::Key_Return);
-        QTest::newRow("mask '999', intfix validator(0,999), input '<cr>'")
+        BOBUIestEventList keys;
+        keys.addKeyClick(BobUI::Key_Home);
+        keys.addKeyClick(BobUI::Key_Return);
+        BOBUIest::newRow("mask '999', intfix validator(0,999), input '<cr>'")
             << QString("999")
             << true
             << keys
@@ -2547,7 +2547,7 @@ void tst_QLineEdit::returnPressed_maskvalidator()
 {
     QFETCH(QString, inputMask);
     QFETCH(bool, hasValidator);
-    QFETCH(QTestEventList, input);
+    QFETCH(BOBUIestEventList, input);
     QFETCH(QString, expectedText);
     QFETCH(bool, returnPressed);
 
@@ -2593,13 +2593,13 @@ void tst_QLineEdit::setValidator()
 
 void tst_QLineEdit::setValidator_QIntValidator_data()
 {
-    QTest::addColumn<int>("mini");
-    QTest::addColumn<int>("maxi");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<bool>("useKeys");
-    QTest::addColumn<bool>("is_valid");
-    QTest::addColumn<uint>("echoMode");
+    BOBUIest::addColumn<int>("mini");
+    BOBUIest::addColumn<int>("maxi");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<bool>("useKeys");
+    BOBUIest::addColumn<bool>("is_valid");
+    BOBUIest::addColumn<uint>("echoMode");
 
     for (int i=0; i<2; i++) {
         bool useKeys = false;
@@ -2610,7 +2610,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
         }
 
         // valid data
-        QTest::newRow(QString(inputMode + "range [0,9] valid '1'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,9] valid '1'").toLatin1())
             << 0
             << 9
             << QString("1")
@@ -2619,7 +2619,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(true)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [3,7] valid '3'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [3,7] valid '3'").toLatin1())
             << 3
             << 7
             << QString("3")
@@ -2628,7 +2628,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(true)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [3,7] valid '7'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [3,7] valid '7'").toLatin1())
             << 3
             << 7
             << QString("7")
@@ -2637,7 +2637,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(true)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [0,100] valid '9'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,100] valid '9'").toLatin1())
             << 0
             << 100
             << QString("9")
@@ -2646,7 +2646,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(true)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [0,100] valid '12'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,100] valid '12'").toLatin1())
             << 0
             << 100
             << QString("12")
@@ -2655,7 +2655,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(true)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [-100,100] valid '-12'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [-100,100] valid '-12'").toLatin1())
             << -100
             << 100
             << QString("-12")
@@ -2666,7 +2666,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
 
         // invalid data
         // characters not allowed in QIntValidator
-        QTest::newRow(QString(inputMode + "range [0,9] inv 'a-a'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,9] inv 'a-a'").toLatin1())
             << 0
             << 9
             << QString("a")
@@ -2675,7 +2675,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(false)
             << uint(QLineEdit::Normal);
 
-        QTest::newRow(QString(inputMode + "range [0,9] inv 'A'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,9] inv 'A'").toLatin1())
             << 0
             << 9
             << QString("A")
@@ -2684,7 +2684,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(false)
             << uint(QLineEdit::Normal);
         // minus sign only allowed with a range on the negative side
-        QTest::newRow(QString(inputMode + "range [0,100] inv '-'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,100] inv '-'").toLatin1())
             << 0
             << 100
             << QString("-")
@@ -2692,7 +2692,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(useKeys)
             << bool(false)
             << uint(QLineEdit::Normal);
-        QTest::newRow(QString(inputMode + "range [0,100] int '153'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,100] int '153'").toLatin1())
             << 0
             << 100
             << QString("153")
@@ -2700,7 +2700,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(useKeys)
             << bool(false)
             << uint(QLineEdit::Normal);
-        QTest::newRow(QString(inputMode + "range [-100,100] int '-153'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [-100,100] int '-153'").toLatin1())
             << -100
             << 100
             << QString("-153")
@@ -2708,7 +2708,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(useKeys)
             << bool(useKeys ? true : false)
             << uint(QLineEdit::Normal);
-        QTest::newRow(QString(inputMode + "range [3,7] int '2'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [3,7] int '2'").toLatin1())
             << 3
             << 7
             << QString("2")
@@ -2716,7 +2716,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(useKeys)
             << bool(false)
             << uint(QLineEdit::Normal);
-        QTest::newRow(QString(inputMode + "range [3,7] int '8'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [3,7] int '8'").toLatin1())
             << 3
             << 7
             << QString("")
@@ -2724,7 +2724,7 @@ void tst_QLineEdit::setValidator_QIntValidator_data()
             << bool(useKeys)
             << bool(false)
             << uint(QLineEdit::Normal);
-        QTest::newRow(QString(inputMode + "range [0,99] inv 'a-a'").toLatin1())
+        BOBUIest::newRow(QString(inputMode + "range [0,99] inv 'a-a'").toLatin1())
             << 0
             << 99
             << QString("19a")
@@ -2756,9 +2756,9 @@ void tst_QLineEdit::setValidator_QIntValidator()
     if (!useKeys) {
         testWidget->insert(input);
     } else {
-        QTest::keyClicks(testWidget, input);
+        BOBUIest::keyClicks(testWidget, input);
         return_count = 0;
-        QTest::keyClick(testWidget, Qt::Key_Return);
+        BOBUIest::keyClick(testWidget, BobUI::Key_Return);
         QCOMPARE(return_count, int(is_valid)); // assuming that is_valid = true equals 1
     }
 //qDebug("2 input: '" + input + "' Exp: '" + expectedText + "'");
@@ -2772,12 +2772,12 @@ void tst_QLineEdit::frame_data()
 {
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTest::addColumn<QPixmap>("noFrame");
-    QTest::addColumn<QPixmap>("useFrame");
+    BOBUIest::addColumn<QPixmap>("noFrame");
+    BOBUIest::addColumn<QPixmap>("useFrame");
 
-    QTest::newRow("win");
+    BOBUIest::newRow("win");
 //#else
-//    QTest::newRow("x11");
+//    BOBUIest::newRow("x11");
 #endif
 #endif
 }
@@ -2789,7 +2789,7 @@ void tst_QLineEdit::frame()
     // verify that the editor is shown without a frame
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTEST(testWidget, "noFrame");
+    BOBUIEST(testWidget, "noFrame");
 #endif
 #endif
     QVERIFY(!testWidget->hasFrame());
@@ -2798,7 +2798,7 @@ void tst_QLineEdit::frame()
     // verify that the editor is shown with a frame
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTEST(testWidget, "useFrame");
+    BOBUIEST(testWidget, "useFrame");
 #endif
 #endif
     QVERIFY(testWidget->hasFrame());
@@ -2808,14 +2808,14 @@ void tst_QLineEdit::setAlignment_data()
 {
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTest::addColumn<QPixmap>("left");
-    QTest::addColumn<QPixmap>("right");
-    QTest::addColumn<QPixmap>("hcenter");
-    QTest::addColumn<QPixmap>("auto");
+    BOBUIest::addColumn<QPixmap>("left");
+    BOBUIest::addColumn<QPixmap>("right");
+    BOBUIest::addColumn<QPixmap>("hcenter");
+    BOBUIest::addColumn<QPixmap>("auto");
 
-    QTest::newRow("win");
+    BOBUIest::newRow("win");
 //#else
-//    QTest::newRow("x11");
+//    BOBUIest::newRow("x11");
 #endif
 #endif
 }
@@ -2824,40 +2824,40 @@ void tst_QLineEdit::setAlignment()
 {
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->setText("left");
-    testWidget->setAlignment(Qt::AlignLeft);
+    testWidget->setAlignment(BobUI::AlignLeft);
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTEST(testWidget, "left");
+    BOBUIEST(testWidget, "left");
 #endif
 #endif
-    QCOMPARE(testWidget->alignment(), Qt::AlignLeft);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignLeft);
 
     testWidget->setText("hcenter");
-    testWidget->setAlignment(Qt::AlignHCenter);
+    testWidget->setAlignment(BobUI::AlignHCenter);
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTEST(testWidget, "hcenter");
+    BOBUIEST(testWidget, "hcenter");
 #endif
 #endif
-    QCOMPARE(testWidget->alignment(), Qt::AlignHCenter);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignHCenter);
 
     testWidget->setText("right");
-    testWidget->setAlignment(Qt::AlignRight);
+    testWidget->setAlignment(BobUI::AlignRight);
 #ifndef NO_PIXMAP_TESTS
 #if defined Q_OS_WIN
-    QTEST(testWidget, "right");
+    BOBUIEST(testWidget, "right");
 #endif
 #endif
-    QCOMPARE(testWidget->alignment(), Qt::AlignRight);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignRight);
 
-    testWidget->setAlignment(Qt::AlignTop);
-    QCOMPARE(testWidget->alignment(), Qt::AlignTop);
+    testWidget->setAlignment(BobUI::AlignTop);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignTop);
 
-    testWidget->setAlignment(Qt::AlignBottom);
-    QCOMPARE(testWidget->alignment(), Qt::AlignBottom);
+    testWidget->setAlignment(BobUI::AlignBottom);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignBottom);
 
-    testWidget->setAlignment(Qt::AlignCenter);
-    QCOMPARE(testWidget->alignment(), Qt::AlignCenter);
+    testWidget->setAlignment(BobUI::AlignCenter);
+    QCOMPARE(testWidget->alignment(), BobUI::AlignCenter);
 }
 
 void tst_QLineEdit::isModified()
@@ -2867,22 +2867,22 @@ void tst_QLineEdit::isModified()
     testWidget->setText("bla");
     QVERIFY(!testWidget->isModified());
 
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QVERIFY(!testWidget->isModified());
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     QVERIFY(!testWidget->isModified());
 
-    QTest::keyClicks(testWidget, "T");
+    BOBUIest::keyClicks(testWidget, "T");
     QVERIFY(testWidget->isModified());
-    QTest::keyClicks(testWidget, "his is a string");
+    BOBUIest::keyClicks(testWidget, "his is a string");
     QVERIFY(testWidget->isModified());
 
     testWidget->setText("");
@@ -2902,22 +2902,22 @@ void tst_QLineEdit::edited()
     testWidget->setText("bla");
     QVERIFY(!testWidget->isModified());
 
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Right);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Right);
     QVERIFY(!testWidget->isModified());
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
     QVERIFY(!testWidget->isModified());
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     QVERIFY(!testWidget->isModified());
 
-    QTest::keyClicks(testWidget, "T");
+    BOBUIest::keyClicks(testWidget, "T");
     QVERIFY(testWidget->isModified());
-    QTest::keyClicks(testWidget, "his is a string");
+    BOBUIest::keyClicks(testWidget, "his is a string");
     QVERIFY(testWidget->isModified());
 
     testWidget->setModified(false);
@@ -2927,7 +2927,7 @@ void tst_QLineEdit::edited()
     QVERIFY(testWidget->isModified());
 }
 
-void tst_QLineEdit::fixupDoesNotModify_QTBUG_49295()
+void tst_QLineEdit::fixupDoesNotModify_BOBUIBUG_49295()
 {
     QLineEdit *testWidget = ensureTestWidget();
 
@@ -2937,7 +2937,7 @@ void tst_QLineEdit::fixupDoesNotModify_QTBUG_49295()
     QVERIFY(!testWidget->isModified());
     QVERIFY(!testWidget->hasAcceptableInput());
 
-    QTest::keyClicks(testWidget, QStringLiteral("bar"));
+    BOBUIest::keyClicks(testWidget, QStringLiteral("bar"));
     QVERIFY(testWidget->isModified());
     QVERIFY(!testWidget->hasAcceptableInput());
 
@@ -2946,7 +2946,7 @@ void tst_QLineEdit::fixupDoesNotModify_QTBUG_49295()
     qApp->sendEvent(testWidget, &lostFocus);
 
     QVERIFY(testWidget->hasAcceptableInput());
-    QEXPECT_FAIL("", "QTBUG-49295: a fixup of a line edit should keep it modified", Continue);
+    QEXPECT_FAIL("", "BOBUIBUG-49295: a fixup of a line edit should keep it modified", Continue);
     QVERIFY(testWidget->isModified());
 }
 
@@ -2977,50 +2977,50 @@ static inline QByteArray selectionTestName(int start, int length)
 
 void tst_QLineEdit::setSelection_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<int>("start");
-    QTest::addColumn<int>("length");
-    QTest::addColumn<int>("expectedCursor");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<bool>("expectedHasSelectedText");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("start");
+    BOBUIest::addColumn<int>("length");
+    BOBUIest::addColumn<int>("expectedCursor");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<bool>("expectedHasSelectedText");
 
     QString text = "Abc defg hijklmno, p 'qrst' uvw xyz";
     int start, length, pos;
 
     start = 0; length = 1; pos = 1;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("A") << true;
 
     start = 0; length = 2; pos = 2;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("Ab") << true;
 
     start = 0; length = 4; pos = 4;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("Abc ") << true;
 
     start = -1; length = 0; pos = text.size();
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString() << false;
 
     start = 34; length = 1; pos = 35;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("z") << true;
 
     start = 34; length = 2; pos = 35;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("z") << true;
 
     start = 34; length = -1; pos = 33;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("y") << true;
 
     start = 1; length = -2; pos = 0;
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString("A") << true;
 
     start = -1; length = -1; pos = text.size();
-    QTest::newRow(selectionTestName(start, length).constData())
+    BOBUIest::newRow(selectionTestName(start, length).constData())
         << text << start << length << pos << QString() << false;
 }
 
@@ -3043,10 +3043,10 @@ void tst_QLineEdit::setSelection()
         QCOMPARE(testWidget->cursorPosition(), expectedCursor);
 }
 
-#if QT_CONFIG(clipboard) && QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(shortcut)
 void tst_QLineEdit::cut()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     if (!PlatformClipboard::isAvailable())
@@ -3057,7 +3057,7 @@ void tst_QLineEdit::cut()
     testWidget->setText("A\nB\nC\n");
     testWidget->setSelection(0, 6);
     testWidget->cut();
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     testWidget->paste();
     QCOMPARE(testWidget->text(), QString("A\nB\nC\n"));
     //                              1         2         3         4
@@ -3068,28 +3068,28 @@ void tst_QLineEdit::cut()
     testWidget->cut();
     QCOMPARE(testWidget->text(), QString(" defg hijklmno"));
 
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     testWidget->paste();
     QCOMPARE(testWidget->text(), QString(" defg hijklmnoAbc"));
 
-    psKeyClick(testWidget, Qt::Key_Home);
+    psKeyClick(testWidget, BobUI::Key_Home);
     testWidget->del();
     QCOMPARE(testWidget->text(), QString("defg hijklmnoAbc"));
 
     testWidget->setSelection(0, 4);
     testWidget->copy();
-    psKeyClick(testWidget, Qt::Key_End);
+    psKeyClick(testWidget, BobUI::Key_End);
     testWidget->paste();
     QCOMPARE(testWidget->text(), QString("defg hijklmnoAbcdefg"));
 
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, Qt::Key_Left);
-    QTest::keyClick(testWidget, ' ');
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(testWidget, ' ');
     QCOMPARE(testWidget->text(), QString("defg hijklmno Abcdefg"));
 
     testWidget->setSelection(0, 5);
@@ -3097,7 +3097,7 @@ void tst_QLineEdit::cut()
     QCOMPARE(testWidget->text(), QString("hijklmno Abcdefg"));
 
     testWidget->end(false);
-    QTest::keyClick(testWidget, ' ');
+    BOBUIest::keyClick(testWidget, ' ');
     testWidget->paste();
     QCOMPARE(testWidget->text(), QString("hijklmno Abcdefg defg"));
 
@@ -3105,7 +3105,7 @@ void tst_QLineEdit::cut()
     testWidget->cursorWordForward(true);
     testWidget->cut();
     testWidget->end(false);
-    QTest::keyClick(testWidget, ' ');
+    BOBUIest::keyClick(testWidget, ' ');
     testWidget->paste();
     testWidget->cursorBackward(true, 1);
     testWidget->cut();
@@ -3114,7 +3114,7 @@ void tst_QLineEdit::cut()
 
 void tst_QLineEdit::cutWithoutSelection()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     enum { selectionLength = 1 };
@@ -3123,7 +3123,7 @@ void tst_QLineEdit::cutWithoutSelection()
         QSKIP("Platform with non-standard keybindings");
     QClipboard *clipboard = QGuiApplication::clipboard();
     if (!PlatformClipboard::isAvailable()
-        || !QGuiApplication::platformName().compare("xcb", Qt::CaseInsensitive)) { // Avoid unstable X11 clipboard
+        || !QGuiApplication::platformName().compare("xcb", BobUI::CaseInsensitive)) { // Avoid unstable X11 clipboard
         clipboard = nullptr;
     }
 
@@ -3133,18 +3133,18 @@ void tst_QLineEdit::cutWithoutSelection()
     QLineEdit lineEdit(origText);
     lineEdit.setCursorPosition(0);
     QVERIFY(!lineEdit.hasSelectedText());
-    QTest::keyClick(&lineEdit, Qt::Key_X, Qt::ControlModifier);
+    BOBUIest::keyClick(&lineEdit, BobUI::Key_X, BobUI::ControlModifier);
     QCOMPARE(lineEdit.text(), origText); // No selection, unmodified.
     if (clipboard)
         QVERIFY(clipboard->text().isEmpty());
     lineEdit.setSelection(0, selectionLength);
-    QTest::keyClick(&lineEdit, Qt::Key_X, Qt::ControlModifier);
+    BOBUIest::keyClick(&lineEdit, BobUI::Key_X, BobUI::ControlModifier);
     QCOMPARE(lineEdit.text(), origText.right(origText.size() - selectionLength));
     if (clipboard)
         QCOMPARE(clipboard->text(), origText.left(selectionLength));
 }
 
-#endif // QT_CONFIG(clipboard) && QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(clipboard) && BOBUI_CONFIG(shortcut)
 
 class InputMaskValidator : public QValidator
 {
@@ -3163,22 +3163,22 @@ public:
 
 void tst_QLineEdit::inputMaskAndValidator_data()
 {
-    QTest::addColumn<QString>("inputMask");
-    QTest::addColumn<QTestEventList>("keys");
-    QTest::addColumn<QString>("validateText");
-    QTest::addColumn<int>("validatePos");
+    BOBUIest::addColumn<QString>("inputMask");
+    BOBUIest::addColumn<BOBUIestEventList>("keys");
+    BOBUIest::addColumn<QString>("validateText");
+    BOBUIest::addColumn<int>("validatePos");
 
-    QTestEventList inputKeys;
-    inputKeys.addKeyClick(Qt::Key_1);
-    inputKeys.addKeyClick(Qt::Key_2);
+    BOBUIestEventList inputKeys;
+    inputKeys.addKeyClick(BobUI::Key_1);
+    inputKeys.addKeyClick(BobUI::Key_2);
 
-    QTest::newRow("task28291") << "000;_" << inputKeys << "12_" << 2;
+    BOBUIest::newRow("task28291") << "000;_" << inputKeys << "12_" << 2;
 }
 
 void tst_QLineEdit::inputMaskAndValidator()
 {
     QFETCH(QString, inputMask);
-    QFETCH(QTestEventList, keys);
+    QFETCH(BOBUIestEventList, keys);
     QFETCH(QString, validateText);
     QFETCH(int, validatePos);
 
@@ -3223,7 +3223,7 @@ public:
     void keyPressEvent(QKeyEvent *e) override
     {
         QLineEdit::keyPressEvent(e);
-        if (e->key() == Qt::Key_Enter) {
+        if (e->key() == BobUI::Key_Enter) {
             state = e->isAccepted() ? Accepted : Ignored;
         } else {
             state = Other;
@@ -3248,15 +3248,15 @@ void tst_QLineEdit::returnPressedKeyEvent()
     centerOnScreen(&lineedit);
     lineedit.show();
     QCOMPARE((int)lineedit.state, (int)LineEdit::Other);
-    QTest::keyClick(&lineedit, Qt::Key_Enter);
+    BOBUIest::keyClick(&lineedit, BobUI::Key_Enter);
     QCOMPARE((int)lineedit.state, (int)LineEdit::Ignored);
     connect(&lineedit, SIGNAL(returnPressed()), this, SLOT(onReturnPressed()));
-    QTest::keyClick(&lineedit, Qt::Key_Enter);
+    BOBUIest::keyClick(&lineedit, BobUI::Key_Enter);
     QCOMPARE((int)lineedit.state, (int)LineEdit::Ignored);
     disconnect(&lineedit, SIGNAL(returnPressed()), this, SLOT(onReturnPressed()));
-    QTest::keyClick(&lineedit, Qt::Key_Enter);
+    BOBUIest::keyClick(&lineedit, BobUI::Key_Enter);
     QCOMPARE((int)lineedit.state, (int)LineEdit::Ignored);
-    QTest::keyClick(&lineedit, Qt::Key_1);
+    BOBUIest::keyClick(&lineedit, BobUI::Key_1);
     QCOMPARE((int)lineedit.state, (int)LineEdit::Other);
 }
 
@@ -3265,14 +3265,14 @@ void tst_QLineEdit::keepSelectionOnTabFocusIn()
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->setText("hello world");
     {
-        QFocusEvent e(QEvent::FocusIn, Qt::TabFocusReason);
+        QFocusEvent e(QEvent::FocusIn, BobUI::TabFocusReason);
         QApplication::sendEvent(testWidget, &e);
     }
     QCOMPARE(testWidget->selectedText(), QString("hello world"));
     testWidget->setSelection(0, 5);
     QCOMPARE(testWidget->selectedText(), QString("hello"));
     {
-        QFocusEvent e(QEvent::FocusIn, Qt::TabFocusReason);
+        QFocusEvent e(QEvent::FocusIn, BobUI::TabFocusReason);
         QApplication::sendEvent(testWidget, &e);
     }
     QCOMPARE(testWidget->selectedText(), QString("hello"));
@@ -3284,7 +3284,7 @@ void tst_QLineEdit::readOnlyStyleOption()
     bool wasReadOnly = testWidget->isReadOnly();
     QStyle *oldStyle = testWidget->style();
     testWidget->show();
-    QTRY_VERIFY(QTest::qWaitForWindowExposed(testWidget));
+    BOBUIRY_VERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
 
     StyleOptionTestStyle myStyle;
     testWidget->setStyle(&myStyle);
@@ -3292,13 +3292,13 @@ void tst_QLineEdit::readOnlyStyleOption()
     myStyle.setReadOnly(true);
     testWidget->setReadOnly(true);
     testWidget->update();
-    QTRY_VERIFY(myStyle.wasDrawn);
+    BOBUIRY_VERIFY(myStyle.wasDrawn);
     myStyle.wasDrawn = false;
 
     testWidget->setReadOnly(false);
     myStyle.setReadOnly(false);
     testWidget->update();
-    QTRY_VERIFY(myStyle.wasDrawn);
+    BOBUIRY_VERIFY(myStyle.wasDrawn);
 
     testWidget->setReadOnly(wasReadOnly);
     testWidget->setStyle(oldStyle);
@@ -3309,8 +3309,8 @@ void tst_QLineEdit::validateOnFocusOut()
     QLineEdit *testWidget = ensureTestWidget();
     QSignalSpy editingFinishedSpy(testWidget, SIGNAL(editingFinished()));
     testWidget->setValidator(new QIntValidator(100, 999, testWidget));
-    QTest::keyPress(testWidget, '1');
-    QTest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '1');
+    BOBUIest::keyPress(testWidget, '0');
     QCOMPARE(testWidget->text(), QString("10"));
     testWidget->clearFocus();
     QCOMPARE(editingFinishedSpy.size(), 0);
@@ -3319,11 +3319,11 @@ void tst_QLineEdit::validateOnFocusOut()
     centerOnScreen(testWidget);
     testWidget->show();
     testWidget->activateWindow();
-    QVERIFY(QTest::qWaitForWindowFocused(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(testWidget));
     QVERIFY(testWidget->hasFocus());
 
-    QTest::keyPress(testWidget, '0');
-    QTRY_COMPARE(testWidget->text(), QString("100"));
+    BOBUIest::keyPress(testWidget, '0');
+    BOBUIRY_COMPARE(testWidget->text(), QString("100"));
 
     testWidget->clearFocus();
     QCOMPARE(editingFinishedSpy.size(), 1);
@@ -3337,53 +3337,53 @@ void tst_QLineEdit::editInvalidText()
     testWidget->setText("1234");
 
     QVERIFY(!testWidget->hasAcceptableInput());
-    QTest::keyPress(testWidget, Qt::Key_Backspace);
-    QTest::keyPress(testWidget, Qt::Key_Backspace);
-    QTest::keyPress(testWidget, Qt::Key_A);
-    QTest::keyPress(testWidget, Qt::Key_B);
-    QTest::keyPress(testWidget, Qt::Key_C);
-    QTest::keyPress(testWidget, Qt::Key_1);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Backspace);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Backspace);
+    BOBUIest::keyPress(testWidget, BobUI::Key_A);
+    BOBUIest::keyPress(testWidget, BobUI::Key_B);
+    BOBUIest::keyPress(testWidget, BobUI::Key_C);
+    BOBUIest::keyPress(testWidget, BobUI::Key_1);
     QVERIFY(testWidget->hasAcceptableInput());
     QCOMPARE(testWidget->text(), QString("12"));
     testWidget->cursorBackward(false);
     testWidget->cursorBackward(true, 2);
-    QTest::keyPress(testWidget, Qt::Key_Delete);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Delete);
     QVERIFY(testWidget->hasAcceptableInput());
     QCOMPARE(testWidget->text(), QString("2"));
-    QTest::keyPress(testWidget, Qt::Key_1);
+    BOBUIest::keyPress(testWidget, BobUI::Key_1);
     QVERIFY(testWidget->hasAcceptableInput());
     QCOMPARE(testWidget->text(), QString("12"));
 
     testWidget->setValidator(0);
 }
 
-Q_DECLARE_METATYPE(Qt::KeyboardModifiers)
+Q_DECLARE_METATYPE(BobUI::KeyboardModifiers)
 
 void tst_QLineEdit::charWithAltOrCtrlModifier_data()
 {
-    QTest::addColumn<Qt::KeyboardModifiers>("modifiers");
-    QTest::addColumn<bool>("textExpected");
-    QTest::newRow("no-modifiers") << Qt::KeyboardModifiers() << true;
-    // Ctrl, Ctrl+Shift: No text (QTBUG-35734)
-    QTest::newRow("ctrl") << Qt::KeyboardModifiers(Qt::ControlModifier)
+    BOBUIest::addColumn<BobUI::KeyboardModifiers>("modifiers");
+    BOBUIest::addColumn<bool>("textExpected");
+    BOBUIest::newRow("no-modifiers") << BobUI::KeyboardModifiers() << true;
+    // Ctrl, Ctrl+Shift: No text (BOBUIBUG-35734)
+    BOBUIest::newRow("ctrl") << BobUI::KeyboardModifiers(BobUI::ControlModifier)
         << false;
-    QTest::newRow("ctrl-shift") << Qt::KeyboardModifiers(Qt::ShiftModifier | Qt::ControlModifier)
+    BOBUIest::newRow("ctrl-shift") << BobUI::KeyboardModifiers(BobUI::ShiftModifier | BobUI::ControlModifier)
         << false;
-    QTest::newRow("alt") << Qt::KeyboardModifiers(Qt::AltModifier) << true;
+    BOBUIest::newRow("alt") << BobUI::KeyboardModifiers(BobUI::AltModifier) << true;
     // Alt-Ctrl (Alt-Gr on German keyboards, Task 129098): Expect text
-    QTest::newRow("alt-ctrl") << (Qt::AltModifier | Qt::ControlModifier) << true;
+    BOBUIest::newRow("alt-ctrl") << (BobUI::AltModifier | BobUI::ControlModifier) << true;
 }
 
 void tst_QLineEdit::charWithAltOrCtrlModifier()
 {
-    QFETCH(Qt::KeyboardModifiers, modifiers);
+    QFETCH(BobUI::KeyboardModifiers, modifiers);
     QFETCH(bool, textExpected);
 
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->clear();
     QVERIFY(testWidget->text().isEmpty());
 
-    QTest::keyPress(testWidget, Qt::Key_Plus, modifiers);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Plus, modifiers);
     const QString expectedText = textExpected ?  QLatin1String("+") : QString();
     QCOMPARE(testWidget->text(), expectedText);
 }
@@ -3394,13 +3394,13 @@ void tst_QLineEdit::leftKeyOnSelectedText()
     testWidget->clear();
     testWidget->setText("0123");
     testWidget->setCursorPosition(4);
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->cursorPosition(), 3);
     QCOMPARE(testWidget->selectedText(), QString("3"));
-    QTest::keyClick(testWidget, Qt::Key_Left, Qt::ShiftModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left, BobUI::ShiftModifier);
     QCOMPARE(testWidget->cursorPosition(), 2);
     QCOMPARE(testWidget->selectedText(), QString("23"));
-    QTest::keyClick(testWidget, Qt::Key_Left);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Left);
 
     if (unselectingWithLeftOrRightChangesCursorPosition())
         QCOMPARE(testWidget->cursorPosition(), 1);
@@ -3411,9 +3411,9 @@ void tst_QLineEdit::leftKeyOnSelectedText()
 void tst_QLineEdit::inlineCompletion()
 {
 #ifdef Q_OS_ANDROID
-    QSKIP("QCompleter does not work on Android, see QTBUG-77174");
+    QSKIP("QCompleter does not work on Android, see BOBUIBUG-77174");
 #endif
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit *testWidget = ensureTestWidget();
@@ -3424,74 +3424,74 @@ void tst_QLineEdit::inlineCompletion()
     for (int i = 0; i < 5; i++) {
         items[i] = new QStandardItem(QLatin1String("item") + QString::number(i));
         if ((i+2)%2 == 0) { // disable 0,2,4
-            items[i]->setFlags(items[i]->flags() & ~Qt::ItemIsEnabled);
+            items[i]->setFlags(items[i]->flags() & ~BobUI::ItemIsEnabled);
         }
         root->appendRow(items[i]);
     }
     QCompleter *completer = new QCompleter(model);
     completer->setCompletionMode(QCompleter::InlineCompletion);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCaseSensitivity(BobUI::CaseInsensitive);
     centerOnScreen(testWidget);
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
     testWidget->setFocus();
-    QTRY_COMPARE(qApp->activeWindow(), (QWidget*)testWidget);
+    BOBUIRY_COMPARE(qApp->activeWindow(), (QWidget*)testWidget);
     testWidget->setCompleter(completer);
 
     // sanity
-    QTest::keyClick(testWidget, Qt::Key_X);
+    BOBUIest::keyClick(testWidget, BobUI::Key_X);
     QCOMPARE(testWidget->selectedText(), QString());
     QCOMPARE(testWidget->text(), QString("x"));
-    QTest::keyClick(testWidget, Qt::Key_Down, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, BobUI::ControlModifier);
     QCOMPARE(testWidget->selectedText(), QString());
     QCOMPARE(testWidget->text(), QString("x"));
-    QTest::keyClick(testWidget, Qt::Key_Up, Qt::ControlModifier);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up, BobUI::ControlModifier);
     QCOMPARE(testWidget->selectedText(), QString());
     QCOMPARE(testWidget->text(), QString("x"));
 
     testWidget->clear();
-    QTest::keyClick(testWidget, Qt::Key_I);
+    BOBUIest::keyClick(testWidget, BobUI::Key_I);
     QCOMPARE(testWidget->selectedText(), QString("tem1"));
 
-    Qt::KeyboardModifiers keyboardModifiers = Qt::ControlModifier;
+    BobUI::KeyboardModifiers keyboardModifiers = BobUI::ControlModifier;
 #ifdef Q_OS_MAC
-    keyboardModifiers |= Qt::AltModifier;
+    keyboardModifiers |= BobUI::AltModifier;
 #endif
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers);
     QCOMPARE(testWidget->selectedText(), QString("tem3"));
 
     // wraps around (Default)
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers);
     QCOMPARE(testWidget->selectedText(), QString("tem1"));
 
-    QTest::keyClick(testWidget, Qt::Key_Up, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up, keyboardModifiers);
     QCOMPARE(testWidget->selectedText(), QString("tem3"));
 
     // should not wrap
     completer->setWrapAround(false);
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers);
     QCOMPARE(testWidget->selectedText(), QString("tem3"));
-    QTest::keyClick(testWidget, Qt::Key_Up, keyboardModifiers); // item1
-    QTest::keyClick(testWidget, Qt::Key_Up, keyboardModifiers); // item1
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up, keyboardModifiers); // item1
+    BOBUIest::keyClick(testWidget, BobUI::Key_Up, keyboardModifiers); // item1
     QCOMPARE(testWidget->selectedText(), QString("tem1"));
 
     // trivia :)
     root->appendRow(new QStandardItem("item11"));
     root->appendRow(new QStandardItem("item12"));
     testWidget->clear();
-    QTest::keyClick(testWidget, Qt::Key_I);
+    BOBUIest::keyClick(testWidget, BobUI::Key_I);
     QCOMPARE(testWidget->selectedText(), QString("tem1"));
-    QTest::keyClick(testWidget, Qt::Key_Delete);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Delete);
     QCOMPARE(testWidget->selectedText(), QString());
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers);
     QCOMPARE(testWidget->selectedText(), QString("tem1")); // neato
     testWidget->setText("item1");
     testWidget->setSelection(1, 2);
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers);
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers);
     testWidget->end(false);
     QCOMPARE(testWidget->text(), QString("item1")); // no effect for selection in "middle"
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers); // item1
-    QTest::keyClick(testWidget, Qt::Key_Down, keyboardModifiers); // item11
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers); // item1
+    BOBUIest::keyClick(testWidget, BobUI::Key_Down, keyboardModifiers); // item11
     QCOMPARE(testWidget->text(), QString("item11"));
 
     delete model;
@@ -3509,13 +3509,13 @@ void tst_QLineEdit::noTextEditedOnClear()
 
 void tst_QLineEdit::textMargin_data()
 {
-    QTest::addColumn<int>("left");
-    QTest::addColumn<int>("top");
-    QTest::addColumn<int>("right");
-    QTest::addColumn<int>("bottom");
+    BOBUIest::addColumn<int>("left");
+    BOBUIest::addColumn<int>("top");
+    BOBUIest::addColumn<int>("right");
+    BOBUIest::addColumn<int>("bottom");
 
-    QTest::addColumn<QPoint>("mousePressPos");
-    QTest::addColumn<int>("cursorPosition");
+    BOBUIest::addColumn<QPoint>("mousePressPos");
+    BOBUIest::addColumn<int>("cursorPosition");
 
     QLineEdit testWidget;
     QFontMetrics metrics(testWidget.font());
@@ -3527,18 +3527,18 @@ void tst_QLineEdit::textMargin_data()
     const int pixelWidthOfM = windows11StyleHorizontalOffset + metrics.horizontalAdvance(s, 1);
     const int pixelWidthOfMMM_MM = windows11StyleHorizontalOffset + metrics.horizontalAdvance(s, 6);
 
-    QTest::newRow("default-0") << 0 << 0 << 0 << 0 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
-    QTest::newRow("default-1") << 0 << 0 << 0 << 0 << QPoint(1, 1) << 0;
-    QTest::newRow("default-2") << -1 << 0 << -1 << 0 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
-    QTest::newRow("default-3") << 0 << 0 << 0 << 0 << QPoint(pixelWidthOfM, 1) << 1;
+    BOBUIest::newRow("default-0") << 0 << 0 << 0 << 0 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
+    BOBUIest::newRow("default-1") << 0 << 0 << 0 << 0 << QPoint(1, 1) << 0;
+    BOBUIest::newRow("default-2") << -1 << 0 << -1 << 0 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
+    BOBUIest::newRow("default-3") << 0 << 0 << 0 << 0 << QPoint(pixelWidthOfM, 1) << 1;
 
-    QTest::newRow("hor-0") << 10 << 0 << 10 << 0 << QPoint(1, 1) << 0;
-    QTest::newRow("hor-1") << 10 << 0 << 10 << 0 << QPoint(10, 1) << 0;
-    QTest::newRow("hor-2") << 20 << 0 << 10 << 0 << QPoint(20, 1) << 0;
+    BOBUIest::newRow("hor-0") << 10 << 0 << 10 << 0 << QPoint(1, 1) << 0;
+    BOBUIest::newRow("hor-1") << 10 << 0 << 10 << 0 << QPoint(10, 1) << 0;
+    BOBUIest::newRow("hor-2") << 20 << 0 << 10 << 0 << QPoint(20, 1) << 0;
 
     if (!qApp->style()->inherits("QMacStyle")) { //MacStyle doesn't support verticals margins.
-        QTest::newRow("default-2-ver") << -1 << -1 << -1 << -1 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
-        QTest::newRow("ver") << 0 << 10 << 0 << 10 << QPoint(1, 1) << 0;
+        BOBUIest::newRow("default-2-ver") << -1 << -1 << -1 << -1 << QPoint(pixelWidthOfMMM_MM, 0) << 6;
+        BOBUIest::newRow("ver") << 0 << 10 << 0 << 10 << QPoint(1, 1) << 0;
     }
 }
 
@@ -3586,8 +3586,8 @@ void tst_QLineEdit::textMargin()
     QCOMPARE(right, margins.right());
     QCOMPARE(bottom, margins.bottom());
 
-    QTest::mouseClick(&testWidget, Qt::LeftButton, {}, mousePressPos);
-    QTRY_COMPARE(testWidget.cursorPosition(), cursorPosition);
+    BOBUIest::mouseClick(&testWidget, BobUI::LeftButton, {}, mousePressPos);
+    BOBUIRY_COMPARE(testWidget.cursorPosition(), cursorPosition);
 }
 
 void tst_QLineEdit::returnKeyClearsEditedFlag()
@@ -3605,8 +3605,8 @@ void tst_QLineEdit::returnKeyClearsEditedFlag()
     centerOnScreen(&testWidget);
     testWidget.show();
     testWidget.raise();
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
-    QTRY_VERIFY(testWidget.hasFocus());
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
+    BOBUIRY_VERIFY(testWidget.hasFocus());
 
     // Focus drop with no edits shouldn't emit signal, edited flag == false
     testWidget.clearFocus(); // Signal not emitted
@@ -3615,31 +3615,31 @@ void tst_QLineEdit::returnKeyClearsEditedFlag()
 
     // Focus drop after edits should emit signal, edited flag == true
     testWidget.setFocus();
-    QTRY_VERIFY(testWidget.hasFocus());
-    QTest::keyClicks(&testWidget, "edit1 "); // edited flag set
+    BOBUIRY_VERIFY(testWidget.hasFocus());
+    BOBUIest::keyClicks(&testWidget, "edit1 "); // edited flag set
     testWidget.clearFocus(); // edited flag cleared, signal emitted
     QVERIFY(!testWidget.hasFocus());
     QCOMPARE(leSpy.size(), 1);
 
     // Only text related keys should set edited flag
     testWidget.setFocus();
-    QTRY_VERIFY(testWidget.hasFocus());
-    QTest::keyClick(&testWidget, Qt::Key_Left);
-    QTest::keyClick(&testWidget, Qt::Key_Alt);
-    QTest::keyClick(&testWidget, Qt::Key_PageUp);
+    BOBUIRY_VERIFY(testWidget.hasFocus());
+    BOBUIest::keyClick(&testWidget, BobUI::Key_Left);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_Alt);
+    BOBUIest::keyClick(&testWidget, BobUI::Key_PageUp);
     testWidget.clearFocus(); // Signal not emitted
     QVERIFY(!testWidget.hasFocus());
     QCOMPARE(leSpy.size(), 1); // No change
 
     // Return should always emit signal
     testWidget.setFocus();
-    QTRY_VERIFY(testWidget.hasFocus());
-    QTest::keyClick(&testWidget, Qt::Key_Return); /* Without edits,
+    BOBUIRY_VERIFY(testWidget.hasFocus());
+    BOBUIest::keyClick(&testWidget, BobUI::Key_Return); /* Without edits,
                                                      signal emitted,
                                                      edited flag cleared */
     QCOMPARE(leSpy.size(), 2);
-    QTest::keyClicks(&testWidget, "edit2 "); // edited flag set
-    QTest::keyClick(&testWidget, Qt::Key_Return); /* With edits,
+    BOBUIest::keyClicks(&testWidget, "edit2 "); // edited flag set
+    BOBUIest::keyClick(&testWidget, BobUI::Key_Return); /* With edits,
                                                      signal emitted,
                                                      edited flag cleared */
     QCOMPARE(leSpy.size(), 3);
@@ -3647,8 +3647,8 @@ void tst_QLineEdit::returnKeyClearsEditedFlag()
     /* After editing the line edit following a Return key press with a
        focus drop should not emit signal a second time since Return now
        clears the edited flag */
-    QTest::keyClicks(&testWidget, "edit3 "); // edited flag set
-    QTest::keyClick(&testWidget, Qt::Key_Return); /* signal emitted,
+    BOBUIest::keyClicks(&testWidget, "edit3 "); // edited flag set
+    BOBUIest::keyClick(&testWidget, BobUI::Key_Return); /* signal emitted,
                                                      edited flag cleared */
     QCOMPARE(leSpy.size(), 4);
     testWidget.clearFocus(); // Signal not emitted since edited == false
@@ -3656,16 +3656,16 @@ void tst_QLineEdit::returnKeyClearsEditedFlag()
     QCOMPARE(leSpy.size(), 4); // No change
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QLineEdit::cursor()
 {
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->setReadOnly(false);
-    QCOMPARE(testWidget->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(testWidget->cursor().shape(), BobUI::IBeamCursor);
     testWidget->setReadOnly(true);
-    QCOMPARE(testWidget->cursor().shape(), Qt::ArrowCursor);
+    QCOMPARE(testWidget->cursor().shape(), BobUI::ArrowCursor);
     testWidget->setReadOnly(false);
-    QCOMPARE(testWidget->cursor().shape(), Qt::IBeamCursor);
+    QCOMPARE(testWidget->cursor().shape(), BobUI::IBeamCursor);
 }
 #endif
 
@@ -3687,7 +3687,7 @@ public:
 
 void tst_QLineEdit::task180999_focus()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     task180999_Widget widget;
@@ -3701,10 +3701,10 @@ void tst_QLineEdit::task180999_focus()
 
     widget.lineEdit1.setFocus();
     widget.show();
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
     widget.activateWindow();
 
-    QTRY_VERIFY(!widget.lineEdit2.hasSelectedText());
+    BOBUIRY_VERIFY(!widget.lineEdit2.hasSelectedText());
 }
 
 void tst_QLineEdit::task174640_editingFinished()
@@ -3718,56 +3718,56 @@ void tst_QLineEdit::task174640_editingFinished()
 
     mw.show();
     mw.activateWindow();
-    QVERIFY(QTest::qWaitForWindowFocused(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&mw));
 
     QSignalSpy editingFinishedSpy(le1, SIGNAL(editingFinished()));
 
     le1->setFocus();
-    QTRY_VERIFY(le1->hasFocus());
+    BOBUIRY_VERIFY(le1->hasFocus());
     QCOMPARE(editingFinishedSpy.size(), 0);
 
     le2->setFocus();
-    QTRY_VERIFY(le2->hasFocus());
+    BOBUIRY_VERIFY(le2->hasFocus());
     // editingFinished will not be emitted anew because no editing happened
     QCOMPARE(editingFinishedSpy.size(), 0);
 
     le1->setFocus();
-    QTRY_VERIFY(le1->hasFocus());
-    QTest::keyPress(le1, Qt::Key_Plus);
+    BOBUIRY_VERIFY(le1->hasFocus());
+    BOBUIest::keyPress(le1, BobUI::Key_Plus);
     le2->setFocus();
-    QTRY_VERIFY(le2->hasFocus());
+    BOBUIRY_VERIFY(le2->hasFocus());
     QCOMPARE(editingFinishedSpy.size(), 1);
     editingFinishedSpy.clear();
 
     le1->setFocus();
-    QTRY_VERIFY(le1->hasFocus());
+    BOBUIRY_VERIFY(le1->hasFocus());
 
     QMenu *testMenu1 = new QMenu(le1);
     testMenu1->addAction("foo");
     testMenu1->addAction("bar");
     testMenu1->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testMenu1));
-    QTest::qWait(20);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testMenu1));
+    BOBUIest::qWait(20);
     mw.activateWindow();
 
     delete testMenu1;
     QCOMPARE(editingFinishedSpy.size(), 0);
-    QTRY_VERIFY(le1->hasFocus());
+    BOBUIRY_VERIFY(le1->hasFocus());
     // Ensure le1 has been edited
-    QTest::keyPress(le1, Qt::Key_Plus);
+    BOBUIest::keyPress(le1, BobUI::Key_Plus);
 
     QMenu *testMenu2 = new QMenu(le2);
     testMenu2->addAction("foo2");
     testMenu2->addAction("bar2");
     testMenu2->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testMenu2));
-    QTest::qWait(20);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testMenu2));
+    BOBUIest::qWait(20);
     mw.activateWindow();
     delete testMenu2;
     QCOMPARE(editingFinishedSpy.size(), 1);
 }
 
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
 class task198789_Widget : public QWidget
 {
     Q_OBJECT
@@ -3800,16 +3800,16 @@ void tst_QLineEdit::task198789_currentCompletion()
     task198789_Widget widget;
     widget.show();
     qApp->processEvents();
-    QTest::keyPress(widget.lineEdit, 'o');
-    QTest::keyPress(widget.lineEdit, 'm');
-    QTest::keyPress(widget.lineEdit, 'i');
+    BOBUIest::keyPress(widget.lineEdit, 'o');
+    BOBUIest::keyPress(widget.lineEdit, 'm');
+    BOBUIest::keyPress(widget.lineEdit, 'i');
     QCOMPARE(widget.currentCompletion, QLatin1String("omicron"));
 }
 
 void tst_QLineEdit::task210502_caseInsensitiveInlineCompletion()
 {
 #ifdef Q_OS_ANDROID
-    QSKIP("QCompleter does not work on Android, see QTBUG-77174");
+    QSKIP("QCompleter does not work on Android, see BOBUIBUG-77174");
 #endif
 
     QString completion("ABCD");
@@ -3817,19 +3817,19 @@ void tst_QLineEdit::task210502_caseInsensitiveInlineCompletion()
     completions << completion;
     QLineEdit lineEdit;
     QCompleter completer(completions);
-    completer.setCaseSensitivity(Qt::CaseInsensitive);
+    completer.setCaseSensitivity(BobUI::CaseInsensitive);
     completer.setCompletionMode(QCompleter::InlineCompletion);
     lineEdit.setCompleter(&completer);
     lineEdit.show();
     lineEdit.setFocus();
-    QVERIFY(QTest::qWaitForWindowFocused(&lineEdit));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&lineEdit));
     QVERIFY(lineEdit.hasFocus());
-    QTest::keyPress(&lineEdit, 'a');
-    QTest::keyPress(&lineEdit, Qt::Key_Return);
+    BOBUIest::keyPress(&lineEdit, 'a');
+    BOBUIest::keyPress(&lineEdit, BobUI::Key_Return);
     QCOMPARE(lineEdit.text(), completion);
 }
 
-#endif // QT_CONFIG(completer)
+#endif // BOBUI_CONFIG(completer)
 
 
 void tst_QLineEdit::task229938_dontEmitChangedWhenTextIsNotChanged()
@@ -3837,52 +3837,52 @@ void tst_QLineEdit::task229938_dontEmitChangedWhenTextIsNotChanged()
     QLineEdit lineEdit;
     lineEdit.setMaxLength(5);
     lineEdit.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&lineEdit)); // to be safe and avoid failing setFocus with window managers
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&lineEdit)); // to be safe and avoid failing setFocus with window managers
     lineEdit.setFocus();
     QSignalSpy changedSpy(&lineEdit, SIGNAL(textChanged(QString)));
-    QTest::keyPress(&lineEdit, 'a');
-    QTest::keyPress(&lineEdit, 'b');
-    QTest::keyPress(&lineEdit, 'c');
-    QTest::keyPress(&lineEdit, 'd');
-    QTest::keyPress(&lineEdit, 'e');
-    QTest::keyPress(&lineEdit, 'f');
+    BOBUIest::keyPress(&lineEdit, 'a');
+    BOBUIest::keyPress(&lineEdit, 'b');
+    BOBUIest::keyPress(&lineEdit, 'c');
+    BOBUIest::keyPress(&lineEdit, 'd');
+    BOBUIest::keyPress(&lineEdit, 'e');
+    BOBUIest::keyPress(&lineEdit, 'f');
     QCOMPARE(changedSpy.size(), 5);
 }
 
 void tst_QLineEdit::task233101_cursorPosAfterInputMethod_data()
 {
-    QTest::addColumn<int>("maxLength");
-    QTest::addColumn<int>("cursorPos");
-    QTest::addColumn<int>("replacementStart");
-    QTest::addColumn<int>("replacementLength");
-    QTest::addColumn<QString>("commitString");
+    BOBUIest::addColumn<int>("maxLength");
+    BOBUIest::addColumn<int>("cursorPos");
+    BOBUIest::addColumn<int>("replacementStart");
+    BOBUIest::addColumn<int>("replacementLength");
+    BOBUIest::addColumn<QString>("commitString");
 
-    QTest::newRow("data1")  << 4 << 4 << 0 << 0 << QString("");
-    QTest::newRow("data2")  << 4 << 4 << 0 << 0 << QString("x");
-    QTest::newRow("data3")  << 4 << 4 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
-    QTest::newRow("data4")  << 4 << 3 << 0 << 0 << QString("");
-    QTest::newRow("data5")  << 4 << 3 << 0 << 0 << QString("x");
-    QTest::newRow("data6")  << 4 << 3 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
-    QTest::newRow("data7")  << 4 << 0 << 0 << 0 << QString("");
-    QTest::newRow("data8")  << 4 << 0 << 0 << 0 << QString("x");
-    QTest::newRow("data9")  << 4 << 0 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data1")  << 4 << 4 << 0 << 0 << QString("");
+    BOBUIest::newRow("data2")  << 4 << 4 << 0 << 0 << QString("x");
+    BOBUIest::newRow("data3")  << 4 << 4 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data4")  << 4 << 3 << 0 << 0 << QString("");
+    BOBUIest::newRow("data5")  << 4 << 3 << 0 << 0 << QString("x");
+    BOBUIest::newRow("data6")  << 4 << 3 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data7")  << 4 << 0 << 0 << 0 << QString("");
+    BOBUIest::newRow("data8")  << 4 << 0 << 0 << 0 << QString("x");
+    BOBUIest::newRow("data9")  << 4 << 0 << 0 << 0 << QString("xxxxxxxxxxxxxxxx");
 
-    QTest::newRow("data10") << 4 << 4 << -4 << 4 << QString("");
-    QTest::newRow("data11") << 4 << 4 << -4 << 4 << QString("x");
-    QTest::newRow("data12") << 4 << 4 << -4 << 4 << QString("xxxxxxxxxxxxxxxx");
-    QTest::newRow("data13") << 4 << 3 << -3 << 4 << QString("");
-    QTest::newRow("data14") << 4 << 3 << -3 << 4 << QString("x");
-    QTest::newRow("data15") << 4 << 3 << -3 << 4 << QString("xxxxxxxxxxxxxxxx");
-    QTest::newRow("data16") << 4 << 0 << 0 << 4 << QString("");
-    QTest::newRow("data17") << 4 << 0 << 0 << 4 << QString("x");
-    QTest::newRow("data18") << 4 << 0 << 0 << 4 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data10") << 4 << 4 << -4 << 4 << QString("");
+    BOBUIest::newRow("data11") << 4 << 4 << -4 << 4 << QString("x");
+    BOBUIest::newRow("data12") << 4 << 4 << -4 << 4 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data13") << 4 << 3 << -3 << 4 << QString("");
+    BOBUIest::newRow("data14") << 4 << 3 << -3 << 4 << QString("x");
+    BOBUIest::newRow("data15") << 4 << 3 << -3 << 4 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data16") << 4 << 0 << 0 << 4 << QString("");
+    BOBUIest::newRow("data17") << 4 << 0 << 0 << 4 << QString("x");
+    BOBUIest::newRow("data18") << 4 << 0 << 0 << 4 << QString("xxxxxxxxxxxxxxxx");
 
-    QTest::newRow("data19") << 4 << 4 << -4 << 0 << QString("");
-    QTest::newRow("data20") << 4 << 4 << -4 << 0 << QString("x");
-    QTest::newRow("data21") << 4 << 4 << -4 << 0 << QString("xxxxxxxxxxxxxxxx");
-    QTest::newRow("data22") << 4 << 3 << -3 << 0 << QString("");
-    QTest::newRow("data23") << 4 << 3 << -3 << 0 << QString("x");
-    QTest::newRow("data24") << 4 << 3 << -3 << 0 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data19") << 4 << 4 << -4 << 0 << QString("");
+    BOBUIest::newRow("data20") << 4 << 4 << -4 << 0 << QString("x");
+    BOBUIest::newRow("data21") << 4 << 4 << -4 << 0 << QString("xxxxxxxxxxxxxxxx");
+    BOBUIest::newRow("data22") << 4 << 3 << -3 << 0 << QString("");
+    BOBUIest::newRow("data23") << 4 << 3 << -3 << 0 << QString("x");
+    BOBUIest::newRow("data24") << 4 << 3 << -3 << 0 << QString("xxxxxxxxxxxxxxxx");
 }
 
 void tst_QLineEdit::task233101_cursorPosAfterInputMethod()
@@ -3918,10 +3918,10 @@ void tst_QLineEdit::task241436_passwordEchoOnEditRestoreEchoMode()
     testWidget->setFocus();
     centerOnScreen(testWidget);
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowFocused(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(testWidget));
     QVERIFY(testWidget->hasFocus());
 
-    QTest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '0');
     QCOMPARE(testWidget->displayText(), QString("0"));
     testWidget->setEchoMode(QLineEdit::Normal);
     testWidget->clearFocus();
@@ -3930,7 +3930,7 @@ void tst_QLineEdit::task241436_passwordEchoOnEditRestoreEchoMode()
     testWidget->activateWindow();
     testWidget->setFocus();
     testWidget->setEchoMode(QLineEdit::PasswordEchoOnEdit);
-    QTest::keyPress(testWidget, '0');
+    BOBUIest::keyPress(testWidget, '0');
     QCOMPARE(testWidget->displayText(), QString("0"));
     testWidget->setEchoMode(QLineEdit::PasswordEchoOnEdit);
     QCOMPARE(testWidget->displayText(), QString("0"));
@@ -3946,15 +3946,15 @@ void tst_QLineEdit::task248948_redoRemovedSelection()
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->setText("a");
     testWidget->selectAll();
-    QTest::keyPress(testWidget, Qt::Key_Delete);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Delete);
     testWidget->undo();
     testWidget->redo();
-    QTest::keyPress(testWidget, 'a');
-    QTest::keyPress(testWidget, 'b');
+    BOBUIest::keyPress(testWidget, 'a');
+    BOBUIest::keyPress(testWidget, 'b');
     QCOMPARE(testWidget->text(), QLatin1String("ab"));
 }
 
-void tst_QLineEdit::taskQTBUG_4401_enterKeyClearsPassword()
+void tst_QLineEdit::taskBOBUIBUG_4401_enterKeyClearsPassword()
 {
     QString password("Wanna guess?");
 
@@ -3965,14 +3965,14 @@ void tst_QLineEdit::taskQTBUG_4401_enterKeyClearsPassword()
     testWidget->selectAll();
     centerOnScreen(testWidget);
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowFocused(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(testWidget));
     QVERIFY(testWidget->hasFocus());
 
-    QTest::keyPress(testWidget, Qt::Key_Enter);
-    QTRY_COMPARE(testWidget->text(), password);
+    BOBUIest::keyPress(testWidget, BobUI::Key_Enter);
+    BOBUIRY_COMPARE(testWidget->text(), password);
 }
 
-void tst_QLineEdit::taskQTBUG_4679_moveToStartEndOfBlock()
+void tst_QLineEdit::taskBOBUIBUG_4679_moveToStartEndOfBlock()
 {
 #ifdef Q_OS_MAC
     const QString text("there are no blocks for lineEdit");
@@ -3981,14 +3981,14 @@ void tst_QLineEdit::taskQTBUG_4679_moveToStartEndOfBlock()
     testWidget->setCursorPosition(5);
     QCOMPARE(testWidget->cursorPosition(), 5);
     testWidget->setFocus();
-    QTest::keyPress(testWidget, Qt::Key_A, Qt::MetaModifier);
+    BOBUIest::keyPress(testWidget, BobUI::Key_A, BobUI::MetaModifier);
     QCOMPARE(testWidget->cursorPosition(), 0);
-    QTest::keyPress(testWidget, Qt::Key_E, Qt::MetaModifier);
+    BOBUIest::keyPress(testWidget, BobUI::Key_E, BobUI::MetaModifier);
     QCOMPARE(testWidget->cursorPosition(), text.size());
 #endif // Q_OS_MAC
 }
 
-void tst_QLineEdit::taskQTBUG_4679_selectToStartEndOfBlock()
+void tst_QLineEdit::taskBOBUIBUG_4679_selectToStartEndOfBlock()
 {
 #ifdef Q_OS_MAC
     const QString text("there are no blocks for lineEdit, select all");
@@ -3997,27 +3997,27 @@ void tst_QLineEdit::taskQTBUG_4679_selectToStartEndOfBlock()
     testWidget->setCursorPosition(5);
     QCOMPARE(testWidget->cursorPosition(), 5);
     testWidget->setFocus();
-    QTest::keyPress(testWidget, Qt::Key_A, Qt::MetaModifier | Qt::ShiftModifier);
+    BOBUIest::keyPress(testWidget, BobUI::Key_A, BobUI::MetaModifier | BobUI::ShiftModifier);
     QCOMPARE(testWidget->cursorPosition(), 0);
     QVERIFY(testWidget->hasSelectedText());
     QCOMPARE(testWidget->selectedText(), text.mid(0, 5));
 
-    QTest::keyPress(testWidget, Qt::Key_E, Qt::MetaModifier | Qt::ShiftModifier);
+    BOBUIest::keyPress(testWidget, BobUI::Key_E, BobUI::MetaModifier | BobUI::ShiftModifier);
     QCOMPARE(testWidget->cursorPosition(), text.size());
     QVERIFY(testWidget->hasSelectedText());
     QCOMPARE(testWidget->selectedText(), text.mid(5));
 #endif // Q_OS_MAC
 }
 
-#ifndef QT_NO_CONTEXTMENU
-void tst_QLineEdit::taskQTBUG_7902_contextMenuCrash()
+#ifndef BOBUI_NO_CONTEXTMENU
+void tst_QLineEdit::taskBOBUIBUG_7902_contextMenuCrash()
 {
     // Would pass before the associated commit, but left as a guard.
     QLineEdit *w = new QLineEdit;
     w->show();
-    QVERIFY(QTest::qWaitForWindowExposed(w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(w));
 
-    QTimer ti;
+    BOBUIimer ti;
     w->connect(&ti, SIGNAL(timeout()), w, SLOT(deleteLater()));
     ti.start(200);
 
@@ -4025,28 +4025,28 @@ void tst_QLineEdit::taskQTBUG_7902_contextMenuCrash()
                                                    w->mapToGlobal(w->rect().center()));
     qApp->postEvent(w, cme);
 
-    QTest::qWait(300);
+    BOBUIest::qWait(300);
     // No crash, it's allright.
 }
 
-void tst_QLineEdit::contextMenu() // QTBUG-132066
+void tst_QLineEdit::contextMenu() // BOBUIBUG-132066
 {
     QLineEdit le;
     le.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&le));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&le));
 
     // right-click: QLineEdit::mousePressEvent() should ignore the mouse press;
     // QLineEdit::contextMenuEvent() should then be called to create and open a context menu
-    QTest::mouseClick(le.windowHandle(), Qt::RightButton, {}, le.rect().center());
-    QTRY_VERIFY(le.findChild<QMenu *>());
+    BOBUIest::mouseClick(le.windowHandle(), BobUI::RightButton, {}, le.rect().center());
+    BOBUIRY_VERIFY(le.findChild<QMenu *>());
 
     // This test could be extended to check and activate menu items.
 }
 #endif
 
-void tst_QLineEdit::taskQTBUG_7395_readOnlyShortcut()
+void tst_QLineEdit::taskBOBUIBUG_7395_readOnlyShortcut()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     //ReadOnly QLineEdit should not intercept shortcut.
@@ -4054,7 +4054,7 @@ void tst_QLineEdit::taskQTBUG_7395_readOnlyShortcut()
     le.setReadOnly(true);
 
     QAction action(QString::fromLatin1("hello"), &le);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     action.setShortcut(QString::fromLatin1("p"));
 #endif
     QSignalSpy spy(&action, SIGNAL(triggered()));
@@ -4062,54 +4062,54 @@ void tst_QLineEdit::taskQTBUG_7395_readOnlyShortcut()
 
     le.show();
     le.setFocus();
-    QVERIFY(QTest::qWaitForWindowFocused(&le));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&le));
     QVERIFY(le.hasFocus());
 
-    QTest::keyClick(static_cast<QWidget *>(0), Qt::Key_P);
+    BOBUIest::keyClick(static_cast<QWidget *>(0), BobUI::Key_P);
     QCOMPARE(spy.size(), 1);
 }
 
-void tst_QLineEdit::QTBUG697_paletteCurrentColorGroup()
+void tst_QLineEdit::BOBUIBUG697_paletteCurrentColorGroup()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit le;
     le.setText("               ");
     QPalette p = le.palette();
-    p.setBrush(QPalette::Active, QPalette::Highlight, Qt::green);
-    p.setBrush(QPalette::Inactive, QPalette::Highlight, Qt::red);
+    p.setBrush(QPalette::Active, QPalette::Highlight, BobUI::green);
+    p.setBrush(QPalette::Inactive, QPalette::Highlight, BobUI::red);
     le.setPalette(p);
 
     le.show();
     le.setFocus();
-    QVERIFY(QTest::qWaitForWindowFocused(&le));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&le));
     QVERIFY(le.hasFocus());
     le.selectAll();
 
     QImage img(le.size(),QImage::Format_ARGB32 );
     le.render(&img);
-    QCOMPARE(img.pixel(10, le.height()/2), QColor(Qt::green).rgb());
+    QCOMPARE(img.pixel(10, le.height()/2), QColor(BobUI::green).rgb());
 
     QWindow window;
     window.resize(100, 50);
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
-    QVERIFY(QTest::qWaitForWindowFocused(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&window));
     le.render(&img);
-    QCOMPARE(img.pixel(10, le.height()/2), QColor(Qt::red).rgb());
+    QCOMPARE(img.pixel(10, le.height()/2), QColor(BobUI::red).rgb());
 }
 
-void tst_QLineEdit::QTBUG13520_textNotVisible()
+void tst_QLineEdit::BOBUIBUG13520_textNotVisible()
 {
     LineEdit le;
-    le.setAlignment( Qt::AlignRight | Qt::AlignVCenter);
+    le.setAlignment( BobUI::AlignRight | BobUI::AlignVCenter);
     le.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&le));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&le));
     QString sometext("01-ST16-01SIL-MPL001wfgsdfgsdgsdfgsdfgsdfgsdfgsdfg");
     le.setText(sometext);
     le.setCursorPosition(0);
-    QTest::qWait(100); //just make sure we get he lineedit correctly painted
+    BOBUIest::qWait(100); //just make sure we get he lineedit correctly painted
 
     auto expectedCursorCoordinate = le.width() - le.fontMetrics().horizontalAdvance(sometext);
     // cursor does not leave widget to the left:
@@ -4131,9 +4131,9 @@ protected:
     }
 };
 
-void tst_QLineEdit::QTBUG7174_inputMaskCursorBlink()
+void tst_QLineEdit::BOBUIBUG7174_inputMaskCursorBlink()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     UpdateRegionLineEdit edit;
@@ -4141,14 +4141,14 @@ void tst_QLineEdit::QTBUG7174_inputMaskCursorBlink()
     edit.setFocus();
     edit.setText(QLatin1String("AAAA"));
     edit.show();
-    QRect cursorRect = edit.inputMethodQuery(Qt::ImCursorRectangle).toRect();
-    QVERIFY(QTest::qWaitForWindowExposed(&edit));
+    QRect cursorRect = edit.inputMethodQuery(BobUI::ImCursorRectangle).toRect();
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&edit));
     edit.updateRegion = QRegion();
-    QTest::qWait(QApplication::cursorFlashTime());
+    BOBUIest::qWait(QApplication::cursorFlashTime());
     QVERIFY(edit.updateRegion.contains(cursorRect));
 }
 
-void tst_QLineEdit::QTBUG16850_setSelection()
+void tst_QLineEdit::BOBUIBUG16850_setSelection()
 {
     QLineEdit le;
     le.setInputMask("00:0");
@@ -4162,39 +4162,39 @@ void tst_QLineEdit::QTBUG16850_setSelection()
 
 void tst_QLineEdit::bidiVisualMovement_data()
 {
-    QTest::addColumn<QString>("logical");
-    QTest::addColumn<int>("basicDir");
-    QTest::addColumn<IntList>("positionList");
+    BOBUIest::addColumn<QString>("logical");
+    BOBUIest::addColumn<int>("basicDir");
+    BOBUIest::addColumn<IntList>("positionList");
 
-    QTest::newRow("Latin text")
+    BOBUIest::newRow("Latin text")
         << QString::fromUtf8("abc")
         << (int) QChar::DirL
         << (IntList() << 0 << 1 << 2 << 3);
-    QTest::newRow("Hebrew text, one item")
+    BOBUIest::newRow("Hebrew text, one item")
         << QString::fromUtf8("\327\220\327\221\327\222")
         << (int) QChar::DirR
         << (QList<int>() << 0 << 1 << 2 << 3);
-    QTest::newRow("Hebrew text after Latin text")
+    BOBUIest::newRow("Hebrew text after Latin text")
         << QString::fromUtf8("abc\327\220\327\221\327\222")
         << (int) QChar::DirL
         << (QList<int>() << 0 << 1 << 2 << 6 << 5 << 4 << 3);
-    QTest::newRow("Latin text after Hebrew text")
+    BOBUIest::newRow("Latin text after Hebrew text")
         << QString::fromUtf8("\327\220\327\221\327\222abc")
         << (int) QChar::DirR
         << (QList<int>() << 0 << 1 << 2 << 6 << 5 << 4 << 3);
-    QTest::newRow("LTR, 3 items")
+    BOBUIest::newRow("LTR, 3 items")
         << QString::fromUtf8("abc\327\220\327\221\327\222abc")
         << (int) QChar::DirL
         << (QList<int>() << 0 << 1 << 2 << 5 << 4 << 3 << 6 << 7 << 8 << 9);
-    QTest::newRow("RTL, 3 items")
+    BOBUIest::newRow("RTL, 3 items")
         << QString::fromUtf8("\327\220\327\221\327\222abc\327\220\327\221\327\222")
         << (int) QChar::DirR
         << (QList<int>() << 0 << 1 << 2 << 5 << 4 << 3 << 6 << 7 << 8 << 9);
-    QTest::newRow("LTR, 4 items")
+    BOBUIest::newRow("LTR, 4 items")
         << QString::fromUtf8("abc\327\220\327\221\327\222abc\327\220\327\221\327\222")
         << (int) QChar::DirL
         << (QList<int>() << 0 << 1 << 2 << 5 << 4 << 3 << 6 << 7 << 8 << 12 << 11 << 10 << 9);
-    QTest::newRow("RTL, 4 items")
+    BOBUIest::newRow("RTL, 4 items")
         << QString::fromUtf8("\327\220\327\221\327\222abc\327\220\327\221\327\222abc")
         << (int) QChar::DirR
         << (QList<int>() << 0 << 1 << 2 << 5 << 4 << 3 << 6 << 7 << 8 << 12 << 11 << 10 << 9);
@@ -4209,7 +4209,7 @@ void tst_QLineEdit::bidiVisualMovement()
     QLineEdit le;
     le.setText(logical);
 
-    le.setCursorMoveStyle(Qt::VisualMoveStyle);
+    le.setCursorMoveStyle(BobUI::VisualMoveStyle);
     le.setCursorPosition(0);
 
     bool moved;
@@ -4219,9 +4219,9 @@ void tst_QLineEdit::bidiVisualMovement()
         oldPos = newPos;
         QCOMPARE(oldPos, positionList[i]);
         if (basicDir == QChar::DirL) {
-            QTest::keyClick(&le, Qt::Key_Right);
+            BOBUIest::keyClick(&le, BobUI::Key_Right);
         } else
-            QTest::keyClick(&le, Qt::Key_Left);
+            BOBUIest::keyClick(&le, BobUI::Key_Left);
         newPos = le.cursorPosition();
         moved = (oldPos != newPos);
         i++;
@@ -4234,10 +4234,10 @@ void tst_QLineEdit::bidiVisualMovement()
         oldPos = newPos;
         QCOMPARE(oldPos, positionList[i]);
         if (basicDir == QChar::DirL) {
-            QTest::keyClick(&le, Qt::Key_Left);
+            BOBUIest::keyClick(&le, BobUI::Key_Left);
         } else
         {
-            QTest::keyClick(&le, Qt::Key_Right);
+            BOBUIest::keyClick(&le, BobUI::Key_Right);
         }
         newPos = le.cursorPosition();
         moved = (oldPos != newPos);
@@ -4258,7 +4258,7 @@ void tst_QLineEdit::bidiLogicalMovement()
     QLineEdit le;
     le.setText(logical);
 
-    le.setCursorMoveStyle(Qt::LogicalMoveStyle);
+    le.setCursorMoveStyle(BobUI::LogicalMoveStyle);
     le.setCursorPosition(0);
 
     bool moved;
@@ -4268,9 +4268,9 @@ void tst_QLineEdit::bidiLogicalMovement()
         oldPos = newPos;
         QCOMPARE(oldPos, i);
         if (basicDir == QChar::DirL) {
-            QTest::keyClick(&le, Qt::Key_Right);
+            BOBUIest::keyClick(&le, BobUI::Key_Right);
         } else
-            QTest::keyClick(&le, Qt::Key_Left);
+            BOBUIest::keyClick(&le, BobUI::Key_Left);
         newPos = le.cursorPosition();
         moved = (oldPos != newPos);
         i++;
@@ -4283,10 +4283,10 @@ void tst_QLineEdit::bidiLogicalMovement()
         oldPos = newPos;
         QCOMPARE(oldPos, i);
         if (basicDir == QChar::DirL) {
-            QTest::keyClick(&le, Qt::Key_Left);
+            BOBUIest::keyClick(&le, BobUI::Key_Left);
         } else
         {
-            QTest::keyClick(&le, Qt::Key_Right);
+            BOBUIest::keyClick(&le, BobUI::Key_Right);
         }
         newPos = le.cursorPosition();
         moved = (oldPos != newPos);
@@ -4306,21 +4306,21 @@ void tst_QLineEdit::selectAndCursorPosition()
 
 void tst_QLineEdit::inputMethod()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit *testWidget = ensureTestWidget();
     centerOnScreen(testWidget);
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
     // widget accepts input
-    QInputMethodQueryEvent queryEvent(Qt::ImEnabled);
+    QInputMethodQueryEvent queryEvent(BobUI::ImEnabled);
     QApplication::sendEvent(testWidget, &queryEvent);
-    QCOMPARE(queryEvent.value(Qt::ImEnabled).toBool(), true);
+    QCOMPARE(queryEvent.value(BobUI::ImEnabled).toBool(), true);
 
     testWidget->setEnabled(false);
     QApplication::sendEvent(testWidget, &queryEvent);
-    QCOMPARE(queryEvent.value(Qt::ImEnabled).toBool(), false);
+    QCOMPARE(queryEvent.value(BobUI::ImEnabled).toBool(), false);
     testWidget->setEnabled(true);
 
     // removing focus allows input method to commit preedit
@@ -4331,8 +4331,8 @@ void tst_QLineEdit::inputMethod()
     // on Windows if we don't do this. If each test had a unique QLineEdit
     // instance, maybe such problems would go away.
     testWidget->setFocus();
-    QTRY_VERIFY(testWidget->hasFocus());
-    QTRY_COMPARE(qApp->focusObject(), testWidget);
+    BOBUIRY_VERIFY(testWidget->hasFocus());
+    BOBUIRY_COMPARE(qApp->focusObject(), testWidget);
 
     m_platformInputContext.setCommitString("text");
     m_platformInputContext.m_commitCallCount = 0;
@@ -4393,24 +4393,24 @@ void tst_QLineEdit::inputMethodSelection()
 
 }
 
-Q_DECLARE_METATYPE(Qt::InputMethodHints)
+Q_DECLARE_METATYPE(BobUI::InputMethodHints)
 void tst_QLineEdit::inputMethodQueryImHints_data()
 {
-    QTest::addColumn<Qt::InputMethodHints>("hints");
+    BOBUIest::addColumn<BobUI::InputMethodHints>("hints");
 
-    QTest::newRow("None") << static_cast<Qt::InputMethodHints>(Qt::ImhNone);
-    QTest::newRow("Password") << static_cast<Qt::InputMethodHints>(Qt::ImhHiddenText);
-    QTest::newRow("Normal") << static_cast<Qt::InputMethodHints>(Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText | Qt::ImhSensitiveData);
+    BOBUIest::newRow("None") << static_cast<BobUI::InputMethodHints>(BobUI::ImhNone);
+    BOBUIest::newRow("Password") << static_cast<BobUI::InputMethodHints>(BobUI::ImhHiddenText);
+    BOBUIest::newRow("Normal") << static_cast<BobUI::InputMethodHints>(BobUI::ImhNoAutoUppercase | BobUI::ImhNoPredictiveText | BobUI::ImhSensitiveData);
 }
 
 void tst_QLineEdit::inputMethodQueryImHints()
 {
-    QFETCH(Qt::InputMethodHints, hints);
+    QFETCH(BobUI::InputMethodHints, hints);
     QLineEdit *testWidget = ensureTestWidget();
     testWidget->setInputMethodHints(hints);
 
-    QVariant value = testWidget->inputMethodQuery(Qt::ImHints);
-    QCOMPARE(static_cast<Qt::InputMethodHints>(value.toInt()), hints);
+    QVariant value = testWidget->inputMethodQuery(BobUI::ImHints);
+    QCOMPARE(static_cast<BobUI::InputMethodHints>(value.toInt()), hints);
 }
 
 void tst_QLineEdit::inputMethodQueryEnterKeyType()
@@ -4420,42 +4420,42 @@ void tst_QLineEdit::inputMethodQueryEnterKeyType()
     QLineEdit le1(&mw);
     layout.addWidget(&le1);
     mw.show();
-    QVariant enterType = le1.inputMethodQuery(Qt::ImEnterKeyType);
-    QCOMPARE(enterType.value<Qt::EnterKeyType>(), Qt::EnterKeyDefault);
+    QVariant enterType = le1.inputMethodQuery(BobUI::ImEnterKeyType);
+    QCOMPARE(enterType.value<BobUI::EnterKeyType>(), BobUI::EnterKeyDefault);
 
     mw.hide();
     QLineEdit le2(&mw);
     layout.addWidget(&le2);
     mw.show();
 
-    enterType = le1.inputMethodQuery(Qt::ImEnterKeyType);
+    enterType = le1.inputMethodQuery(BobUI::ImEnterKeyType);
 #ifdef Q_OS_ANDROID
-    // QTBUG-61652
+    // BOBUIBUG-61652
     // EnterKey is changed to EnterKeyNext if the focus can be moved to widget below
-    QCOMPARE(enterType.value<Qt::EnterKeyType>(), Qt::EnterKeyNext);
+    QCOMPARE(enterType.value<BobUI::EnterKeyType>(), BobUI::EnterKeyNext);
 #else
-    QCOMPARE(enterType.value<Qt::EnterKeyType>(), Qt::EnterKeyDefault);
+    QCOMPARE(enterType.value<BobUI::EnterKeyType>(), BobUI::EnterKeyDefault);
 #endif
-    enterType = le2.inputMethodQuery(Qt::ImEnterKeyType);
-    QCOMPARE(enterType.value<Qt::EnterKeyType>(), Qt::EnterKeyDefault);
+    enterType = le2.inputMethodQuery(BobUI::ImEnterKeyType);
+    QCOMPARE(enterType.value<BobUI::EnterKeyType>(), BobUI::EnterKeyDefault);
 }
 
 void tst_QLineEdit::inputMethodUpdate()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit *testWidget = ensureTestWidget();
 
     centerOnScreen(testWidget);
     testWidget->show();
-    QVERIFY(QTest::qWaitForWindowExposed(testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(testWidget));
 
     testWidget->setText("");
     testWidget->activateWindow();
     testWidget->setFocus();
-    QTRY_VERIFY(testWidget->hasFocus());
-    QTRY_COMPARE(qApp->focusObject(), testWidget);
+    BOBUIRY_VERIFY(testWidget->hasFocus());
+    BOBUIRY_COMPARE(qApp->focusObject(), testWidget);
 
     m_platformInputContext.m_updateCallCount = 0;
     {
@@ -4496,28 +4496,28 @@ void tst_QLineEdit::inputMethodUpdate()
 
 void tst_QLineEdit::undoRedoAndEchoModes_data()
 {
-    QTest::addColumn<int>("echoMode");
-    QTest::addColumn<QStringList>("input");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<int>("echoMode");
+    BOBUIest::addColumn<QStringList>("input");
+    BOBUIest::addColumn<QStringList>("expected");
 
     QStringList input(QList<QString>() << "aaa" << "bbb" << "ccc");
 
-    QTest::newRow("Normal")
+    BOBUIest::newRow("Normal")
         << (int) QLineEdit::Normal
         << input
         << QStringList(QList<QString>() << "aaa" << "ccc" << "");
 
-    QTest::newRow("NoEcho")
+    BOBUIest::newRow("NoEcho")
         << (int) QLineEdit::NoEcho
         << input
         << QStringList(QList<QString>() << "" << "" << "");
 
-    QTest::newRow("Password")
+    BOBUIest::newRow("Password")
         << (int) QLineEdit::Password
         << input
         << QStringList(QList<QString>() << "" << "" << "");
 
-    QTest::newRow("PasswordEchoOnEdit")
+    BOBUIest::newRow("PasswordEchoOnEdit")
         << (int) QLineEdit::PasswordEchoOnEdit
         << input
         << QStringList(QList<QString>() << "" << "" << "");
@@ -4559,7 +4559,7 @@ void tst_QLineEdit::undoRedoAndEchoModes()
 
 void tst_QLineEdit::clearButton()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     // Construct a listview with a stringlist model and filter model.
@@ -4576,7 +4576,7 @@ void tst_QLineEdit::clearButton()
     l->addWidget(listView);
     testWidget.move(300, 300);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowActive(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testWidget));
     // Flip the clear button on,off, trying to detect crashes.
     filterLineEdit->setClearButtonEnabled(true);
     QVERIFY(filterLineEdit->isClearButtonEnabled());
@@ -4589,33 +4589,33 @@ void tst_QLineEdit::clearButton()
     filterLineEdit->setClearButtonEnabled(true);
     QVERIFY(filterLineEdit->isClearButtonEnabled());
     // Emulate filtering
-    QToolButton *clearButton = filterLineEdit->findChild<QToolButton *>();
+    BOBUIoolButton *clearButton = filterLineEdit->findChild<BOBUIoolButton *>();
     QVERIFY(clearButton);
     QCOMPARE(filterModel->rowCount(), 3);
-    QTest::keyClick(filterLineEdit, 'a');
-    QTRY_COMPARE(clearButton->cursor().shape(), Qt::ArrowCursor);
-    QTRY_COMPARE(filterModel->rowCount(), 2); // matches 'aa', 'ab'
-    QTest::keyClick(filterLineEdit, 'b');
-    QTRY_COMPARE(filterModel->rowCount(), 1); // matches 'ab'
+    BOBUIest::keyClick(filterLineEdit, 'a');
+    BOBUIRY_COMPARE(clearButton->cursor().shape(), BobUI::ArrowCursor);
+    BOBUIRY_COMPARE(filterModel->rowCount(), 2); // matches 'aa', 'ab'
+    BOBUIest::keyClick(filterLineEdit, 'b');
+    BOBUIRY_COMPARE(filterModel->rowCount(), 1); // matches 'ab'
     QSignalSpy spyEdited(filterLineEdit, &QLineEdit::textEdited);
     const QPoint clearButtonCenterPos = QRect(QPoint(0, 0), clearButton->size()).center();
-    QTest::mouseClick(clearButton, Qt::LeftButton, {}, clearButtonCenterPos);
+    BOBUIest::mouseClick(clearButton, BobUI::LeftButton, {}, clearButtonCenterPos);
     QCOMPARE(spyEdited.size(), 1);
-    QTRY_COMPARE(clearButton->cursor().shape(), filterLineEdit->cursor().shape());
-    QTRY_COMPARE(filterModel->rowCount(), 3);
+    BOBUIRY_COMPARE(clearButton->cursor().shape(), filterLineEdit->cursor().shape());
+    BOBUIRY_COMPARE(filterModel->rowCount(), 3);
     QCoreApplication::processEvents();
     QCOMPARE(spyEdited.size(), 1);
 
-    filterLineEdit->setReadOnly(true); // QTBUG-34315
+    filterLineEdit->setReadOnly(true); // BOBUIBUG-34315
     QVERIFY(!clearButton->isEnabled());
 }
 
-void tst_QLineEdit::clearButtonVisibleAfterSettingText_QTBUG_45518()
+void tst_QLineEdit::clearButtonVisibleAfterSettingText_BOBUIBUG_45518()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build");
 #else
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit edit;
@@ -4627,7 +4627,7 @@ void tst_QLineEdit::clearButtonVisibleAfterSettingText_QTBUG_45518()
 
     edit.setText(QStringLiteral("some text"));
     edit.show();
-    QVERIFY(QTest::qWaitForWindowActive(&edit));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&edit));
 
     QVERIFY(!edit.isClearButtonEnabled());
 
@@ -4641,24 +4641,24 @@ void tst_QLineEdit::clearButtonVisibleAfterSettingText_QTBUG_45518()
     QVERIFY(clearButton);
     QVERIFY(clearButton->isVisible());
 
-    QTRY_VERIFY(clearButton->opacity() > 0);
-    QTRY_COMPARE(clearButton->cursor().shape(), Qt::ArrowCursor);
+    BOBUIRY_VERIFY(clearButton->opacity() > 0);
+    BOBUIRY_COMPARE(clearButton->cursor().shape(), BobUI::ArrowCursor);
 
-    QTest::mouseClick(clearButton, Qt::LeftButton, {}, clearButton->rect().center());
-    QTRY_COMPARE(edit.text(), QString());
+    BOBUIest::mouseClick(clearButton, BobUI::LeftButton, {}, clearButton->rect().center());
+    BOBUIRY_COMPARE(edit.text(), QString());
 
-    QTRY_COMPARE(clearButton->opacity(), qreal(0));
+    BOBUIRY_COMPARE(clearButton->opacity(), qreal(0));
     QVERIFY(clearButton->isHidden());
-    QTRY_COMPARE(clearButton->cursor().shape(), clearButton->parentWidget()->cursor().shape());
+    BOBUIRY_COMPARE(clearButton->cursor().shape(), clearButton->parentWidget()->cursor().shape());
 
     edit.setClearButtonEnabled(false);
     QVERIFY(!edit.isClearButtonEnabled());
     clearButton = edit.findChild<QLineEditIconButton *>();
     QVERIFY(!clearButton);
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 }
 
-static inline QIcon sideWidgetTestIcon(Qt::GlobalColor color = Qt::yellow)
+static inline QIcon sideWidgetTestIcon(BobUI::GlobalColor color = BobUI::yellow)
 {
     QImage image(QSize(20, 20), QImage::Format_ARGB32);
     image.fill(color);
@@ -4685,11 +4685,11 @@ void tst_QLineEdit::sideWidgets()
     lineEdit->addAction(label3Action, QLineEdit::TrailingPosition);
     testWidget.move(300, 300);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
-    const auto buttons = lineEdit->findChildren<QToolButton *>();
-    for (QToolButton *button : buttons)
-        QCOMPARE(button->cursor().shape(), Qt::ArrowCursor);
-    // Arbitrarily add/remove actions, trying to detect crashes. Add QTRY_VERIFY(false) to view the result.
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
+    const auto buttons = lineEdit->findChildren<BOBUIoolButton *>();
+    for (BOBUIoolButton *button : buttons)
+        QCOMPARE(button->cursor().shape(), BobUI::ArrowCursor);
+    // Arbitrarily add/remove actions, trying to detect crashes. Add BOBUIRY_VERIFY(false) to view the result.
     delete label3Action;
     lineEdit->removeAction(label2Action);
     lineEdit->removeAction(iconAction);
@@ -4712,30 +4712,30 @@ template <class T> T *findAssociatedWidget(const QAction *a)
 
 void tst_QLineEdit::sideWidgetsActionEvents()
 {
-    // QTBUG-39660, verify whether action events are handled by the widget.
+    // BOBUIBUG-39660, verify whether action events are handled by the widget.
     QWidget testWidget;
     QVBoxLayout *l = new QVBoxLayout(&testWidget);
     QLineEdit *lineEdit = new QLineEdit(&testWidget);
     l->addWidget(lineEdit);
     l->addSpacerItem(new QSpacerItem(0, 50, QSizePolicy::Ignored, QSizePolicy::Fixed));
-    QAction *iconAction1 = lineEdit->addAction(sideWidgetTestIcon(Qt::red), QLineEdit::LeadingPosition);
-    QAction *iconAction2 = lineEdit->addAction(sideWidgetTestIcon(Qt::blue), QLineEdit::LeadingPosition);
-    QAction *iconAction3 = lineEdit->addAction(sideWidgetTestIcon(Qt::yellow), QLineEdit::LeadingPosition);
+    QAction *iconAction1 = lineEdit->addAction(sideWidgetTestIcon(BobUI::red), QLineEdit::LeadingPosition);
+    QAction *iconAction2 = lineEdit->addAction(sideWidgetTestIcon(BobUI::blue), QLineEdit::LeadingPosition);
+    QAction *iconAction3 = lineEdit->addAction(sideWidgetTestIcon(BobUI::yellow), QLineEdit::LeadingPosition);
     iconAction3->setVisible(false);
 
     testWidget.move(300, 300);
     testWidget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
 
-    QWidget *toolButton1 = findAssociatedWidget<QToolButton>(iconAction1);
-    QWidget *toolButton2 = findAssociatedWidget<QToolButton>(iconAction2);
-    QWidget *toolButton3 = findAssociatedWidget<QToolButton>(iconAction3);
+    QWidget *toolButton1 = findAssociatedWidget<BOBUIoolButton>(iconAction1);
+    QWidget *toolButton2 = findAssociatedWidget<BOBUIoolButton>(iconAction2);
+    QWidget *toolButton3 = findAssociatedWidget<BOBUIoolButton>(iconAction3);
 
     QVERIFY(toolButton1);
     QVERIFY(toolButton2);
     QVERIFY(toolButton3);
 
-    QVERIFY(!toolButton3->isVisible()); // QTBUG-48899 , action hidden before show().
+    QVERIFY(!toolButton3->isVisible()); // BOBUIBUG-48899 , action hidden before show().
 
     QVERIFY(toolButton1->isVisible());
     QVERIFY(toolButton1->isEnabled());
@@ -4745,7 +4745,7 @@ void tst_QLineEdit::sideWidgetsActionEvents()
 
     const int toolButton1X = toolButton1->x();
     const int toolButton2X = toolButton2->x();
-    QVERIFY(toolButton1X < toolButton2X); // QTBUG-48806, positioned beside each other.
+    QVERIFY(toolButton1X < toolButton2X); // BOBUIBUG-48806, positioned beside each other.
 
     iconAction1->setEnabled(false);
     QVERIFY(!toolButton1->isEnabled());
@@ -4753,7 +4753,7 @@ void tst_QLineEdit::sideWidgetsActionEvents()
     iconAction1->setVisible(false);
     QVERIFY(!toolButton1->isVisible());
 
-    // QTBUG-39660, button 2 takes position of invisible button 1.
+    // BOBUIBUG-39660, button 2 takes position of invisible button 1.
     QCOMPARE(toolButton2->x(), toolButton1X);
 }
 
@@ -4763,7 +4763,7 @@ void tst_QLineEdit::sideWidgetsActionEvents()
 */
 void tst_QLineEdit::sideWidgetsEffectiveMargins()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build.");
 #else
     QLineEdit edit;
@@ -4773,7 +4773,7 @@ void tst_QLineEdit::sideWidgetsEffectiveMargins()
     QLineEditPrivate *priv = QLineEditPrivate::get(&edit);
     const auto sideWidgetParameters = priv->sideWidgetParameters();
     const int sideWidgetWidth = sideWidgetParameters.widgetWidth + sideWidgetParameters.margin;
-    QVERIFY(QTest::qWaitForWindowExposed(&edit));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&edit));
 
     QCOMPARE(priv->effectiveTextMargins().left(), 0);
     QCOMPARE(priv->effectiveTextMargins().right(), 0);
@@ -4785,7 +4785,7 @@ void tst_QLineEdit::sideWidgetsEffectiveMargins()
     QCOMPARE(priv->effectiveTextMargins().left(), 0);
     QCOMPARE(priv->effectiveTextMargins().right(), 0);
 
-    edit.setLayoutDirection(Qt::RightToLeft);
+    edit.setLayoutDirection(BobUI::RightToLeft);
     edit.setText("ئۇيغۇر تىلى"); // clear button fades in on the left
     QCOMPARE(priv->effectiveTextMargins().left(), sideWidgetWidth);
     QCOMPARE(priv->effectiveTextMargins().right(), 0);
@@ -4793,7 +4793,7 @@ void tst_QLineEdit::sideWidgetsEffectiveMargins()
     QCOMPARE(priv->effectiveTextMargins().left(), 0);
     QCOMPARE(priv->effectiveTextMargins().right(), 0);
 
-    edit.setLayoutDirection(Qt::LeftToRight);
+    edit.setLayoutDirection(BobUI::LeftToRight);
 
     const QIcon leftIcon = edit.style()->standardIcon(QStyle::SP_FileIcon);
     const QIcon rightIcon = edit.style()->standardIcon(QStyle::SP_DirIcon);
@@ -4812,7 +4812,7 @@ void tst_QLineEdit::sideWidgetsEffectiveMargins()
     QCOMPARE(priv->effectiveTextMargins().left(), sideWidgetWidth);
     QCOMPARE(priv->effectiveTextMargins().right(), sideWidgetWidth);
 
-    edit.setLayoutDirection(Qt::RightToLeft);
+    edit.setLayoutDirection(BobUI::RightToLeft);
     edit.setText("ئۇيغۇر تىلى"); // clear button fades in on the left
     QCOMPARE(priv->effectiveTextMargins().left(), 2 * sideWidgetWidth);
     QCOMPARE(priv->effectiveTextMargins().right(), sideWidgetWidth);
@@ -4822,48 +4822,48 @@ void tst_QLineEdit::sideWidgetsEffectiveMargins()
 #endif
 }
 
-Q_DECLARE_METATYPE(Qt::AlignmentFlag)
+Q_DECLARE_METATYPE(BobUI::AlignmentFlag)
 void tst_QLineEdit::shouldShowPlaceholderText_data()
 {
-    QTest::addColumn<QString>("text");
-    QTest::addColumn<bool>("hasFocus");
-    QTest::addColumn<Qt::AlignmentFlag>("alignment");
-    QTest::addColumn<bool>("shouldShowPlaceholderText");
+    BOBUIest::addColumn<QString>("text");
+    BOBUIest::addColumn<bool>("hasFocus");
+    BOBUIest::addColumn<BobUI::AlignmentFlag>("alignment");
+    BOBUIest::addColumn<bool>("shouldShowPlaceholderText");
 
-    QTest::newRow("empty, non-focused, left") << QString() << false << Qt::AlignLeft << true;
-    QTest::newRow("empty, focused, left") << QString() << true << Qt::AlignLeft << true;
-    QTest::newRow("non-empty, non-focused, left") << QStringLiteral("Qt") << false << Qt::AlignLeft << false;
-    QTest::newRow("non-empty, focused, left") << QStringLiteral("Qt") << true << Qt::AlignLeft << false;
+    BOBUIest::newRow("empty, non-focused, left") << QString() << false << BobUI::AlignLeft << true;
+    BOBUIest::newRow("empty, focused, left") << QString() << true << BobUI::AlignLeft << true;
+    BOBUIest::newRow("non-empty, non-focused, left") << QStringLiteral("BobUI") << false << BobUI::AlignLeft << false;
+    BOBUIest::newRow("non-empty, focused, left") << QStringLiteral("BobUI") << true << BobUI::AlignLeft << false;
 
-    QTest::newRow("empty, non-focused, center") << QString() << false << Qt::AlignHCenter << true;
-    QTest::newRow("empty, focused, center") << QString() << true << Qt::AlignHCenter << false;
-    QTest::newRow("non-empty, non-focused, center") << QStringLiteral("Qt") << false << Qt::AlignHCenter << false;
-    QTest::newRow("non-empty, focused, center") << QStringLiteral("Qt") << true << Qt::AlignHCenter << false;
+    BOBUIest::newRow("empty, non-focused, center") << QString() << false << BobUI::AlignHCenter << true;
+    BOBUIest::newRow("empty, focused, center") << QString() << true << BobUI::AlignHCenter << false;
+    BOBUIest::newRow("non-empty, non-focused, center") << QStringLiteral("BobUI") << false << BobUI::AlignHCenter << false;
+    BOBUIest::newRow("non-empty, focused, center") << QStringLiteral("BobUI") << true << BobUI::AlignHCenter << false;
 
-    QTest::newRow("empty, non-focused, right") << QString() << false << Qt::AlignRight << true;
-    QTest::newRow("empty, focused, right") << QString() << true << Qt::AlignRight << true;
-    QTest::newRow("non-empty, non-focused, right") << QStringLiteral("Qt") << false << Qt::AlignRight << false;
-    QTest::newRow("non-empty, focused, right") << QStringLiteral("Qt") << true << Qt::AlignRight << false;
+    BOBUIest::newRow("empty, non-focused, right") << QString() << false << BobUI::AlignRight << true;
+    BOBUIest::newRow("empty, focused, right") << QString() << true << BobUI::AlignRight << true;
+    BOBUIest::newRow("non-empty, non-focused, right") << QStringLiteral("BobUI") << false << BobUI::AlignRight << false;
+    BOBUIest::newRow("non-empty, focused, right") << QStringLiteral("BobUI") << true << BobUI::AlignRight << false;
 }
 
 void tst_QLineEdit::shouldShowPlaceholderText()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build.");
 #else
     QFETCH(QString, text);
     QFETCH(bool, hasFocus);
-    QFETCH(Qt::AlignmentFlag, alignment);
+    QFETCH(BobUI::AlignmentFlag, alignment);
     QFETCH(bool, shouldShowPlaceholderText);
 
     QLineEdit lineEdit;
 
     // avoid "Test input context to commit without focused object" warnings
-    lineEdit.setAttribute(Qt::WA_InputMethodEnabled, false);
+    lineEdit.setAttribute(BobUI::WA_InputMethodEnabled, false);
 
     if (hasFocus) {
         lineEdit.show();
-        QApplicationPrivate::setFocusWidget(&lineEdit, Qt::NoFocusReason);
+        QApplicationPrivate::setFocusWidget(&lineEdit, BobUI::NoFocusReason);
     }
     QCOMPARE(lineEdit.hasFocus(), hasFocus);
 
@@ -4876,7 +4876,7 @@ void tst_QLineEdit::shouldShowPlaceholderText()
 
 }
 
-void tst_QLineEdit::QTBUG1266_setInputMaskEmittingTextEdited()
+void tst_QLineEdit::BOBUIBUG1266_setInputMaskEmittingTextEdited()
 {
     QLineEdit lineEdit;
     lineEdit.setText("test");
@@ -4886,31 +4886,31 @@ void tst_QLineEdit::QTBUG1266_setInputMaskEmittingTextEdited()
     QCOMPARE(spy.size(), 0);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QLineEdit::shortcutOverrideOnReadonlyLineEdit_data()
 {
-    QTest::addColumn<QKeySequence>("keySequence");
-    QTest::addColumn<bool>("shouldBeHandledByQLineEdit");
+    BOBUIest::addColumn<QKeySequence>("keySequence");
+    BOBUIest::addColumn<bool>("shouldBeHandledByQLineEdit");
 
-    QTest::newRow("Copy") << QKeySequence(QKeySequence::Copy) << true;
-    QTest::newRow("MoveToNextChar") << QKeySequence(QKeySequence::MoveToNextChar) << true;
-    QTest::newRow("SelectAll") << QKeySequence(QKeySequence::SelectAll) << true;
-    QTest::newRow("Right press") << QKeySequence(Qt::Key_Right) << true;
-    QTest::newRow("Left press") << QKeySequence(Qt::Key_Left) << true;
+    BOBUIest::newRow("Copy") << QKeySequence(QKeySequence::Copy) << true;
+    BOBUIest::newRow("MoveToNextChar") << QKeySequence(QKeySequence::MoveToNextChar) << true;
+    BOBUIest::newRow("SelectAll") << QKeySequence(QKeySequence::SelectAll) << true;
+    BOBUIest::newRow("Right press") << QKeySequence(BobUI::Key_Right) << true;
+    BOBUIest::newRow("Left press") << QKeySequence(BobUI::Key_Left) << true;
 
-    QTest::newRow("Paste") << QKeySequence(QKeySequence::Paste) << false;
-    QTest::newRow("Cut") << QKeySequence(QKeySequence::Cut) << false;
-    QTest::newRow("Undo") << QKeySequence(QKeySequence::Undo) << false;
-    QTest::newRow("Redo") << QKeySequence(QKeySequence::Redo) << false;
+    BOBUIest::newRow("Paste") << QKeySequence(QKeySequence::Paste) << false;
+    BOBUIest::newRow("Cut") << QKeySequence(QKeySequence::Cut) << false;
+    BOBUIest::newRow("Undo") << QKeySequence(QKeySequence::Undo) << false;
+    BOBUIest::newRow("Redo") << QKeySequence(QKeySequence::Redo) << false;
 
-    QTest::newRow("a") << QKeySequence(Qt::Key_A) << false;
-    QTest::newRow("b") << QKeySequence(Qt::Key_B) << false;
-    QTest::newRow("c") << QKeySequence(Qt::Key_C) << false;
-    QTest::newRow("x") << QKeySequence(Qt::Key_X) << false;
-    QTest::newRow("X") << QKeySequence(Qt::ShiftModifier | Qt::Key_X) << false;
+    BOBUIest::newRow("a") << QKeySequence(BobUI::Key_A) << false;
+    BOBUIest::newRow("b") << QKeySequence(BobUI::Key_B) << false;
+    BOBUIest::newRow("c") << QKeySequence(BobUI::Key_C) << false;
+    BOBUIest::newRow("x") << QKeySequence(BobUI::Key_X) << false;
+    BOBUIest::newRow("X") << QKeySequence(BobUI::ShiftModifier | BobUI::Key_X) << false;
 
-    QTest::newRow("Alt+Home") << QKeySequence(Qt::AltModifier | Qt::Key_Home) << false;
+    BOBUIest::newRow("Alt+Home") << QKeySequence(BobUI::AltModifier | BobUI::Key_Home) << false;
 }
 
 void tst_QLineEdit::shortcutOverrideOnReadonlyLineEdit()
@@ -4928,26 +4928,26 @@ void tst_QLineEdit::shortcutOverrideOnReadonlyLineEdit()
     lineEdit->setReadOnly(true);
     lineEdit->setFocus();
     widget.show();
-    QVERIFY(QTest::qWaitForWindowFocused(lineEdit));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(lineEdit));
     QVERIFY(lineEdit->hasFocus());
 
     const int keySequenceCount = keySequence.count();
     for (int i = 0; i < keySequenceCount; ++i) {
         const uint key = keySequence[i].toCombined();
-        QTest::keyClick(lineEdit,
-                        Qt::Key(key & ~Qt::KeyboardModifierMask),
-                        Qt::KeyboardModifier(key & Qt::KeyboardModifierMask));
+        BOBUIest::keyClick(lineEdit,
+                        BobUI::Key(key & ~BobUI::KeyboardModifierMask),
+                        BobUI::KeyboardModifier(key & BobUI::KeyboardModifierMask));
     }
 
     const int activationCount = shouldBeHandledByQLineEdit ? 0 : 1;
     QCOMPARE(spy.size(), activationCount);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-void tst_QLineEdit::QTBUG59957_clearButtonLeftmostAction()
+void tst_QLineEdit::BOBUIBUG59957_clearButtonLeftmostAction()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires a developer build");
 #else
     QLineEdit lineEdit;
@@ -4968,7 +4968,7 @@ void tst_QLineEdit::QTBUG59957_clearButtonLeftmostAction()
             continue;
         QVERIFY(clearButton->x() < button->x());
     }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 }
 
 bool tst_QLineEdit::unselectingWithLeftOrRightChangesCursorPosition()
@@ -4977,8 +4977,8 @@ bool tst_QLineEdit::unselectingWithLeftOrRightChangesCursorPosition()
     return true;
 #endif
     // Platforms minimal/offscreen also need left after unselecting with right
-    if (!QGuiApplication::platformName().compare("minimal", Qt::CaseInsensitive)
-        || !QGuiApplication::platformName().compare("offscreen", Qt::CaseInsensitive)) {
+    if (!QGuiApplication::platformName().compare("minimal", BobUI::CaseInsensitive)
+        || !QGuiApplication::platformName().compare("offscreen", BobUI::CaseInsensitive)) {
         return true;
     }
 
@@ -4988,14 +4988,14 @@ bool tst_QLineEdit::unselectingWithLeftOrRightChangesCursorPosition()
     return false;
 }
 
-void tst_QLineEdit::QTBUG_60319_setInputMaskCheckImSurroundingText()
+void tst_QLineEdit::BOBUIBUG_60319_setInputMaskCheckImSurroundingText()
 {
     QLineEdit *testWidget = ensureTestWidget();
     QString mask("+000(000)-000-00-00");
     testWidget->setInputMask(mask);
     testWidget->setCursorPosition(mask.size());
-    QString surroundingText = testWidget->inputMethodQuery(Qt::ImSurroundingText).toString();
-    int cursorPosition = testWidget->inputMethodQuery(Qt::ImCursorPosition).toInt();
+    QString surroundingText = testWidget->inputMethodQuery(BobUI::ImSurroundingText).toString();
+    int cursorPosition = testWidget->inputMethodQuery(BobUI::ImCursorPosition).toInt();
     QCOMPARE(surroundingText.size(), cursorPosition);
 }
 
@@ -5012,14 +5012,14 @@ void tst_QLineEdit::testQuickSelectionWithMouse()
 #ifdef Q_OS_ANDROID
     // Mouse selection does not work well with Android, especially when predictive text is enabled.
     // That is why Mouse selection works when ImhNoPredictiveText is set
-    lineEdit.setInputMethodHints(Qt::ImhNoPredictiveText);
+    lineEdit.setInputMethodHints(BobUI::ImhNoPredictiveText);
 #endif
 
    auto mouseReleaseIfNeeded = [&lineEdit](QPoint p) {
 #ifdef Q_OS_ANDROID
         // Android expects that mouse click will be released before next click.
         // If it will not happen, the next selection will not work correctly
-        QTest::mouseRelease(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, p);
+        BOBUIest::mouseRelease(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, p);
 #else
         Q_UNUSED(lineEdit);
         Q_UNUSED(p);
@@ -5038,32 +5038,32 @@ void tst_QLineEdit::testQuickSelectionWithMouse()
     const QPoint center = lineEdit.contentsRect().center();
 
     // Normal mouse selection from left to right, y doesn't change.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(!lineEdit.selectedText().isEmpty());
     QVERIFY(!lineEdit.selectedText().endsWith(suffix));
     mouseReleaseIfNeeded(center + QPoint(20, 0));
 
     // Normal mouse selection from left to right, y change is below threshold.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 5));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 5));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(!lineEdit.selectedText().isEmpty());
     QVERIFY(!lineEdit.selectedText().endsWith(suffix));
     mouseReleaseIfNeeded(center + QPoint(20, 5));
 
     // Normal mouse selection from right to left, y doesn't change.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(-20, 0));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(-20, 0));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(!lineEdit.selectedText().isEmpty());
     QVERIFY(!lineEdit.selectedText().startsWith(prefix));
     mouseReleaseIfNeeded(center + QPoint(-20, 0));
 
     // Normal mouse selection from right to left, y change is below threshold.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(-20, -5));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(-20, -5));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(!lineEdit.selectedText().isEmpty());
     QVERIFY(!lineEdit.selectedText().startsWith(prefix));
@@ -5072,57 +5072,57 @@ void tst_QLineEdit::testQuickSelectionWithMouse()
     const int offset = QGuiApplication::styleHints()->mouseQuickSelectionThreshold() + 1;
 
     // Select the whole right half.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, offset));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, offset));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(lineEdit.selectedText().endsWith(suffix));
     mouseReleaseIfNeeded(center + QPoint(1, offset));
 
     // Select the whole left half.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, -offset));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, -offset));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(lineEdit.selectedText().startsWith(prefix));
     mouseReleaseIfNeeded(center + QPoint(1, -offset));
 
     // Normal selection -> quick selection -> back to normal selection.
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
     const auto partialSelection = lineEdit.selectedText();
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(!partialSelection.endsWith(suffix));
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, offset));
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, offset));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QVERIFY(lineEdit.selectedText().endsWith(suffix));
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(20, 0));
     qCDebug(lcTests) << "Selected text:" << lineEdit.selectedText();
     QCOMPARE(lineEdit.selectedText(), partialSelection);
     mouseReleaseIfNeeded(center + QPoint(20, 0));
 
-    lineEdit.setLayoutDirection(Qt::RightToLeft);
+    lineEdit.setLayoutDirection(BobUI::RightToLeft);
 
     // Select the whole left half (RTL layout).
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, offset));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, offset));
     QVERIFY(lineEdit.selectedText().startsWith(prefix));
     mouseReleaseIfNeeded(center + QPoint(1, offset));
 
     // Select the whole right half (RTL layout).
-    QTest::mousePress(lineEdit.windowHandle(), Qt::LeftButton, Qt::NoModifier, center);
-    QTest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, -offset));
+    BOBUIest::mousePress(lineEdit.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, center);
+    BOBUIest::mouseMove(lineEdit.windowHandle(), center + QPoint(1, -offset));
     QVERIFY(lineEdit.selectedText().endsWith(suffix));
     mouseReleaseIfNeeded(center + QPoint(1, -offset));
 }
 
 void tst_QLineEdit::inputRejected()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QLineEdit *testWidget = ensureTestWidget();
     QSignalSpy spyInputRejected(testWidget, SIGNAL(inputRejected()));
 
-    QTest::keyClicks(testWidget, "abcde");
+    BOBUIest::keyClicks(testWidget, "abcde");
     QCOMPARE(spyInputRejected.size(), 0);
     testWidget->setText("fghij");
     QCOMPARE(spyInputRejected.size(), 0);
@@ -5131,11 +5131,11 @@ void tst_QLineEdit::inputRejected()
 
     testWidget->clear();
     testWidget->setMaxLength(5);
-    QTest::keyClicks(testWidget, "abcde");
+    BOBUIest::keyClicks(testWidget, "abcde");
     QCOMPARE(spyInputRejected.size(), 0);
-    QTest::keyClicks(testWidget, "fgh");
+    BOBUIest::keyClicks(testWidget, "fgh");
     QCOMPARE(spyInputRejected.size(), 3);
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     testWidget->clear();
     spyInputRejected.clear();
     QApplication::clipboard()->setText("ijklmno");
@@ -5150,11 +5150,11 @@ void tst_QLineEdit::inputRejected()
     spyInputRejected.clear();
     QIntValidator intValidator(1, 100);
     testWidget->setValidator(&intValidator);
-    QTest::keyClicks(testWidget, "11");
+    BOBUIest::keyClicks(testWidget, "11");
     QCOMPARE(spyInputRejected.size(), 0);
-    QTest::keyClicks(testWidget, "a#");
+    BOBUIest::keyClicks(testWidget, "a#");
     QCOMPARE(spyInputRejected.size(), 2);
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     testWidget->clear();
     spyInputRejected.clear();
     QApplication::clipboard()->setText("a#");
@@ -5166,9 +5166,9 @@ void tst_QLineEdit::inputRejected()
     testWidget->setValidator(0);
     spyInputRejected.clear();
     testWidget->setInputMask("999.999.999.999;_");
-    QTest::keyClicks(testWidget, "11");
+    BOBUIest::keyClicks(testWidget, "11");
     QCOMPARE(spyInputRejected.size(), 0);
-    QTest::keyClicks(testWidget, "a#");
+    BOBUIest::keyClicks(testWidget, "a#");
     QCOMPARE(spyInputRejected.size(), 2);
 }
 
@@ -5196,88 +5196,88 @@ void tst_QLineEdit::keyReleasePropagates()
     } dialog;
 
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
 
-    QTest::keyPress(dialog.lineEdit, Qt::Key_A);
-    QTest::keyRelease(dialog.lineEdit, Qt::Key_A);
+    BOBUIest::keyPress(dialog.lineEdit, BobUI::Key_A);
+    BOBUIest::keyRelease(dialog.lineEdit, BobUI::Key_A);
 
-    QCOMPARE(dialog.releasedKey, Qt::Key_A);
+    QCOMPARE(dialog.releasedKey, BobUI::Key_A);
 
-    QTest::keyPress(dialog.lineEdit, Qt::Key_Alt);
-    QTest::keyRelease(dialog.lineEdit, Qt::Key_Alt);
+    BOBUIest::keyPress(dialog.lineEdit, BobUI::Key_Alt);
+    BOBUIest::keyRelease(dialog.lineEdit, BobUI::Key_Alt);
 
-    QCOMPARE(dialog.releasedKey, Qt::Key_Alt);
+    QCOMPARE(dialog.releasedKey, BobUI::Key_Alt);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 
 void tst_QLineEdit::deleteWordByKeySequence_data()
 {
-    QTest::addColumn<QString>("startText");
-    QTest::addColumn<int>("selectionStart");
-    QTest::addColumn<int>("selectionEnd");
-    QTest::addColumn<int>("cursorPosition");
-    QTest::addColumn<QKeySequence::StandardKey>("key");
-    QTest::addColumn<QString>("expectedText");
-    QTest::addColumn<int>("expectedCursorPosition");
+    BOBUIest::addColumn<QString>("startText");
+    BOBUIest::addColumn<int>("selectionStart");
+    BOBUIest::addColumn<int>("selectionEnd");
+    BOBUIest::addColumn<int>("cursorPosition");
+    BOBUIest::addColumn<QKeySequence::StandardKey>("key");
+    BOBUIest::addColumn<QString>("expectedText");
+    BOBUIest::addColumn<int>("expectedCursorPosition");
 
-    QTest::newRow("Delete start, no selection")
+    BOBUIest::newRow("Delete start, no selection")
             << QStringLiteral("Some Text") << 0 << 0 << 9 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Some ") << 5;
-    QTest::newRow("Delete end, no selection")
+    BOBUIest::newRow("Delete end, no selection")
             << QStringLiteral("Some Text") << 0 << 0 << 5 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Some ") << 5;
-    QTest::newRow("Delete start from middle, no selection")
+    BOBUIest::newRow("Delete start from middle, no selection")
             << QStringLiteral("Some Text") << 0 << 0 << 7 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Some xt") << 5;
-    QTest::newRow("Delete end from middle, no selection")
+    BOBUIest::newRow("Delete end from middle, no selection")
             << QStringLiteral("Some Text") << 0 << 0 << 7 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Some Te") << 7;
-    QTest::newRow("Delete end from first, no selection")
+    BOBUIest::newRow("Delete end from first, no selection")
             << QStringLiteral("Some Text") << 0 << 0 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Text") << 0;
 
-    QTest::newRow("Delete start, full selection")
+    BOBUIest::newRow("Delete start, full selection")
             << QStringLiteral("Some Text") << 0 << 9 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("") << 0;
-    QTest::newRow("Delete end, full selection")
+    BOBUIest::newRow("Delete end, full selection")
             << QStringLiteral("Some Text") << 0 << 9 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("") << 0;
-    QTest::newRow("Delete start, full selection, single word")
+    BOBUIest::newRow("Delete start, full selection, single word")
             << QStringLiteral("Some") << 0 << 4 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("") << 0;
-    QTest::newRow("Delete end, full selection, single word")
+    BOBUIest::newRow("Delete end, full selection, single word")
             << QStringLiteral("Some") << 0 << 4 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("") << 0;
 
-    QTest::newRow("Delete start, word selection")
+    BOBUIest::newRow("Delete start, word selection")
             << QStringLiteral("Some Text") << 5 << 9 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Some ") << 5;
-    QTest::newRow("Delete end, word selection")
+    BOBUIest::newRow("Delete end, word selection")
             << QStringLiteral("Some Text") << 5 << 9 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Some ") << 5;
-    QTest::newRow("Delete start, partial word selection")
+    BOBUIest::newRow("Delete start, partial word selection")
             << QStringLiteral("Some Text") << 5 << 7 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Some xt") << 5;
-    QTest::newRow("Delete end, partial word selection")
+    BOBUIest::newRow("Delete end, partial word selection")
             << QStringLiteral("Some Text") << 5 << 7 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Some xt") << 5;
-    QTest::newRow("Delete start, partial inner word selection")
+    BOBUIest::newRow("Delete start, partial inner word selection")
             << QStringLiteral("Some Text") << 6 << 8 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Some Tt") << 6;
-    QTest::newRow("Delete end, partial inner word selection")
+    BOBUIest::newRow("Delete end, partial inner word selection")
             << QStringLiteral("Some Text") << 6 << 8 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Some Tt") << 6;
-    QTest::newRow("Delete start, selection with space")
+    BOBUIest::newRow("Delete start, selection with space")
             << QStringLiteral("Some Text") << 3 << 9 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Som") << 3;
-    QTest::newRow("Delete end, selection with space")
+    BOBUIest::newRow("Delete end, selection with space")
             << QStringLiteral("Some Text") << 3 << 9 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Som") << 3;
-    QTest::newRow("Delete start, partial word selection with space")
+    BOBUIest::newRow("Delete start, partial word selection with space")
             << QStringLiteral("Some Text") << 3 << 7 << 0 << QKeySequence::DeleteStartOfWord
             << QStringLiteral("Somxt") << 3;
-    QTest::newRow("Delete end, partial selection with space")
+    BOBUIest::newRow("Delete end, partial selection with space")
             << QStringLiteral("Some Text") << 3 << 7 << 0 << QKeySequence::DeleteEndOfWord
             << QStringLiteral("Somxt") << 3;
 }
@@ -5301,10 +5301,10 @@ void tst_QLineEdit::deleteWordByKeySequence()
         lineEdit->setSelection(selectionStart, selectionEnd - selectionStart);
 
     widget.show();
-    QVERIFY(QTest::qWaitForWindowFocused(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowFocused(&widget));
     QVERIFY(lineEdit->hasFocus());
 
-    QTestEventList keys;
+    BOBUIestEventList keys;
     addKeySequenceStandardKey(keys, key);
     keys.simulate(lineEdit);
 
@@ -5314,7 +5314,7 @@ void tst_QLineEdit::deleteWordByKeySequence()
     QCOMPARE(lineEdit->cursorPosition(), expectedCursorPosition);
 }
 
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-QTEST_MAIN(tst_QLineEdit)
+BOBUIEST_MAIN(tst_QLineEdit)
 #include "tst_qlineedit.moc"

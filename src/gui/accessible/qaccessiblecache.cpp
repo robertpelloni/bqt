@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblecache_p.h"
-#include <QtCore/qdebug.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qloggingcategory.h>
 #include <private/qguiapplication_p.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCache, "qt.accessibility.cache");
+Q_STATIC_LOGGING_CATEGORY(lcAccessibilityCache, "bobui.accessibility.cache");
 
 /*!
     \class QAccessibleCache
@@ -213,7 +213,7 @@ void QAccessibleCache::deleteInterface(QAccessible::Id id, QObject *obj)
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qaccessiblecache_p.cpp"
 

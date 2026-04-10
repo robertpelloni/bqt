@@ -1,7 +1,7 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QMimeType>
 
 #include <qpa/qplatformprintplugin.h>
@@ -19,7 +19,7 @@ private slots:
 
 void tst_QPrintDevice::basics()
 {
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
     QPlatformPrinterSupport *ps = QPlatformPrinterSupportPlugin::get();
     if (!ps)
         QSKIP("Could not load platform plugin");
@@ -68,9 +68,9 @@ void tst_QPrintDevice::basics()
         printDevice.supportedColorModes();
         printDevice.supportedMimeTypes();
     }
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 }
 
-QTEST_MAIN(tst_QPrintDevice)
+BOBUIEST_MAIN(tst_QPrintDevice)
 
 #include "tst_qprintdevice.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -8,13 +8,13 @@
 #include <QMainWindow>
 #include <QModelIndex>
 
-QT_FORWARD_DECLARE_CLASS(QComboBox)
-QT_FORWARD_DECLARE_CLASS(QFile)
-QT_FORWARD_DECLARE_CLASS(QGroupBox)
-QT_FORWARD_DECLARE_CLASS(QLabel)
-QT_FORWARD_DECLARE_CLASS(QListWidget)
-QT_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
-QT_FORWARD_DECLARE_CLASS(QTableView)
+BOBUI_FORWARD_DECLARE_CLASS(QComboBox)
+BOBUI_FORWARD_DECLARE_CLASS(QFile)
+BOBUI_FORWARD_DECLARE_CLASS(QGroupBox)
+BOBUI_FORWARD_DECLARE_CLASS(QLabel)
+BOBUI_FORWARD_DECLARE_CLASS(QListWidget)
+BOBUI_FORWARD_DECLARE_CLASS(QSqlRelationalTableModel)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIableView)
 
 class MainWindow : public QMainWindow
 {
@@ -46,7 +46,7 @@ private:
     void removeAlbumFromFile(int id);
     void showImageLabel();
 
-    QTableView *albumView;
+    BOBUIableView *albumView;
     QComboBox *artistView;
     QListWidget *trackList;
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //![file]
 #include <QCoreApplication>
@@ -9,7 +9,7 @@
 #include <QNetworkReply>
 #include <QFile>
 #include <QDebug>
-#include <QTimer>
+#include <BOBUIimer>
 
 //! [0]
 void uploadLogFile()
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     QNetworkInformation *netInfo = QNetworkInformation::instance();
 
-    QTimer::singleShot(0, [&]() {
+    BOBUIimer::singleShot(0, [&]() {
 //! [2]
         if (netInfo->isMetered()) {
             qWarning() << "Log upload skipped: Current network is metered.";

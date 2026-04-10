@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QTEST_THROW_ON_FAIL    // code expects old behavior
-#undef QTEST_THROW_ON_SKIP    // code expects old behavior
+#undef BOBUIEST_THROW_ON_FAIL    // code expects old behavior
+#undef BOBUIEST_THROW_ON_SKIP    // code expects old behavior
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
+#include <BOBUIest>
 
 class tst_Subtest: public QObject
 {
@@ -35,8 +35,8 @@ private:
 void tst_Subtest::logNames(const char *caller)
 {
     auto orNull = [](const char *s) { return s ? s : "(null)"; };
-    qDebug("%s %s %s", caller, orNull(QTest::currentTestFunction()),
-           orNull(QTest::currentDataTag()));
+    qDebug("%s %s %s", caller, orNull(BOBUIest::currentTestFunction()),
+           orNull(BOBUIest::currentDataTag()));
 }
 
 void tst_Subtest::initTestCase()
@@ -66,11 +66,11 @@ void tst_Subtest::test1()
 
 void tst_Subtest::table_data()
 {
-    QTest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("str");
 
-    QTest::newRow("data0") << QString("hello0");
-    QTest::newRow("data1") << QString("hello1");
-    QTest::newRow("data2") << QString("hello2");
+    BOBUIest::newRow("data0") << QString("hello0");
+    BOBUIest::newRow("data1") << QString("hello1");
+    BOBUIest::newRow("data2") << QString("hello2");
 }
 
 void tst_Subtest::test2_data()
@@ -113,7 +113,7 @@ void tst_Subtest::test3()
 
 void tst_Subtest::multiFail()
 {
-    const QTest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
+    const BOBUIest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
     // Simulates tests which call a shared function that does common checks, or
     // that do checks in code run asynchronously from a message loop.
     for (int i = 0; i < 10; ++i)
@@ -123,13 +123,13 @@ void tst_Subtest::multiFail()
 
 void tst_Subtest::multiSkip()
 {
-    const QTest::ThrowOnSkipDisabler nothrow; // tests repeated QSKIPs
+    const BOBUIest::ThrowOnSkipDisabler nothrow; // tests repeated QSKIPs
     // Similar to multiFail()
     for (int i = 0; i < 10; ++i)
         []() { QSKIP("This skip should be repeated ten times"); }();
     QSKIP("But this test should only contribute one to the skip count");
 }
 
-QTEST_MAIN(tst_Subtest)
+BOBUIEST_MAIN(tst_Subtest)
 
 #include "tst_subtest.moc"

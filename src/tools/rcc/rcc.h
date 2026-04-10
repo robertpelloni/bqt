@@ -1,8 +1,8 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
-// Note: A copy of this file is used in Qt Widgets Designer (qttools/src/designer/src/lib/shared/rcc_p.h)
+// Note: A copy of this file is used in BobUI Widgets Designer (bobuitools/src/designer/src/lib/shared/rcc_p.h)
 
 #ifndef RCC_H
 #define RCC_H
@@ -11,11 +11,11 @@
 #include <qhash.h>
 #include <qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class RCCFileInfo;
 class QIODevice;
-class QTextStream;
+class BOBUIextStream;
 
 
 class RCCResourceLibrary
@@ -148,6 +148,6 @@ private:
     bool m_noZstd;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // RCC_H

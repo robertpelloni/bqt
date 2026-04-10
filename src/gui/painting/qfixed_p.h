@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFIXED_P_H
 #define QFIXED_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtCore/qdebug.h"
-#include "QtCore/qpoint.h"
-#include "QtCore/qnumeric.h"
-#include "QtCore/qsize.h"
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUICore/qdebug.h"
+#include "BobUICore/qpoint.h"
+#include "BobUICore/qnumeric.h"
+#include "BobUICore/qsize.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QFixed {
 private:
@@ -153,7 +153,7 @@ inline bool qMulOverflow(QFixed v1, QFixed v2, QFixed *r)
     return result;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 inline QDebug &operator<<(QDebug &dbg, QFixed f)
 { return dbg << f.toReal(); }
 #endif
@@ -191,6 +191,6 @@ struct QFixedSize {
 };
 Q_DECLARE_TYPEINFO(QFixedSize, Q_PRIMITIVE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QTEXTENGINE_P_H
+#endif // BOBUIEXTENGINE_P_H

@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## mylib Generic Library:
 #####################################################################
 
-qt_internal_add_cmake_library(mylib
+bobui_internal_add_cmake_library(mylib
     SHARED
     INSTALL_DIRECTORY "${INSTALL_TESTSDIR}/tst_qlibrary"
     SOURCES
         mylib.c
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
 set_target_properties(mylib PROPERTIES
@@ -69,7 +69,7 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(mylib CONDITION MSVC
+bobui_internal_extend_target(mylib CONDITION MSVC
     DEFINES
         WIN32_MSVC
 )

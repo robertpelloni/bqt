@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = button.h \
                 calculator.h
@@ -7,5 +7,5 @@ SOURCES       = button.cpp \
                 main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/calculator
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/calculator
 INSTALLS += target

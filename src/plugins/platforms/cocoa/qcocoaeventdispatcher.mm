@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -9,24 +9,24 @@
 #include "qcocoawindow.h"
 #include "qcocoahelpers.h"
 
-#include <QtGui/qevent.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#include <QtCore/qmutex.h>
-#include <QtCore/qscopeguard.h>
-#include <QtCore/qsocketnotifier.h>
-#include <QtCore/private/qthread_p.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qscopeguard.h>
+#include <BobUICore/qsocketnotifier.h>
+#include <BobUICore/private/bobuihread_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <qpa/qplatformwindow.h>
 #include <qpa/qplatformnativeinterface.h>
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcEventDispatcher, "qt.eventdispatcher");
+Q_LOGGING_CATEGORY(lcEventDispatcher, "bobui.eventdispatcher");
 
 static inline CFRunLoopRef mainRunLoop()
 {
@@ -103,7 +103,7 @@ void QCocoaEventDispatcherPrivate::maybeStartCFRunLoopTimer()
         ttf += interval;
         CFRunLoopTimerContext info = { 0, this, nullptr, nullptr, nullptr };
         // create the timer with a large interval, as recommended by the CFRunLoopTimerSetNextFireDate()
-        // documentation, since we will adjust the timer's time-to-fire as needed to keep Qt timers working
+        // documentation, since we will adjust the timer's time-to-fire as needed to keep BobUI timers working
         runLoopTimerRef = CFRunLoopTimerCreate(nullptr, ttf, oneyear, 0, 0, QCocoaEventDispatcherPrivate::runLoopTimerCallback, &info);
         Q_ASSERT(runLoopTimerRef);
 
@@ -139,14 +139,14 @@ void QCocoaEventDispatcherPrivate::maybeStopCFRunLoopTimer()
     runLoopTimerRef = nullptr;
 }
 
-void QCocoaEventDispatcher::registerTimer(Qt::TimerId timerId, Duration interval,
-                                          Qt::TimerType timerType, QObject *obj)
+void QCocoaEventDispatcher::registerTimer(BobUI::TimerId timerId, Duration interval,
+                                          BobUI::TimerType timerType, QObject *obj)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1 || interval.count() < 0 || !obj) {
         qWarning("QCocoaEventDispatcher::registerTimer: invalid arguments");
         return;
-    } else if (obj->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (obj->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QObject::startTimer: timers cannot be started from another thread");
         return;
     }
@@ -157,13 +157,13 @@ void QCocoaEventDispatcher::registerTimer(Qt::TimerId timerId, Duration interval
     d->maybeStartCFRunLoopTimer();
 }
 
-bool QCocoaEventDispatcher::unregisterTimer(Qt::TimerId timerId)
+bool QCocoaEventDispatcher::unregisterTimer(BobUI::TimerId timerId)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QCocoaEventDispatcher::unregisterTimer: invalid argument");
         return false;
-    } else if (thread() != QThread::currentThread()) {
+    } else if (thread() != BOBUIhread::currentThread()) {
         qWarning("QObject::killTimer: timers cannot be stopped from another thread");
         return false;
     }
@@ -180,11 +180,11 @@ bool QCocoaEventDispatcher::unregisterTimer(Qt::TimerId timerId)
 
 bool QCocoaEventDispatcher::unregisterTimers(QObject *obj)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!obj) {
         qWarning("QCocoaEventDispatcher::unregisterTimers: invalid argument");
         return false;
-    } else if (obj->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (obj->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QObject::killTimers: timers cannot be stopped from another thread");
         return false;
     }
@@ -202,7 +202,7 @@ bool QCocoaEventDispatcher::unregisterTimers(QObject *obj)
 QList<QCocoaEventDispatcher::TimerInfoV2>
 QCocoaEventDispatcher::timersForObject(QObject *object) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QCocoaEventDispatcher:registeredTimers: invalid argument");
         return {};
@@ -217,7 +217,7 @@ QCocoaEventDispatcher::timersForObject(QObject *object) const
     Register a QSocketNotifier with the mac event system by creating a CFSocket with
     with a read/write callback.
 
-    Qt has separate socket notifiers for reading and writing, but on the mac there is
+    BobUI has separate socket notifiers for reading and writing, but on the mac there is
     a limitation of one CFSocket object for each native socket.
 */
 void QCocoaEventDispatcher::registerSocketNotifier(QSocketNotifier *notifier)
@@ -254,14 +254,14 @@ static bool isUserInputEvent(NSEvent* event)
     case NSEventTypeOtherMouseDown:
     case NSEventTypeOtherMouseUp:
     case NSEventTypeOtherMouseDragged:
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case NSEventTypeGesture: // touch events
     case NSEventTypeMagnify:
     case NSEventTypeSwipe:
     case NSEventTypeRotate:
     case NSEventTypeBeginGesture:
     case NSEventTypeEndGesture:
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
         return true;
         break;
     default:
@@ -270,11 +270,11 @@ static bool isUserInputEvent(NSEvent* event)
     return false;
 }
 
-static inline void qt_mac_waitForMoreEvents(NSString *runLoopMode = NSDefaultRunLoopMode)
+static inline void bobui_mac_waitForMoreEvents(NSString *runLoopMode = NSDefaultRunLoopMode)
 {
     // If no event exist in the cocoa event que, wait (and free up cpu time) until
     // at least one event occur. Setting 'dequeuing' to 'no' in the following call
-    // causes it to hang under certain circumstances (QTBUG-28283), so we tell it
+    // causes it to hang under certain circumstances (BOBUIBUG-28283), so we tell it
     // to dequeue instead, just to repost the event again:
     NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
         untilDate:[NSDate distantFuture]
@@ -300,7 +300,7 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
     QScopedValueRollback interruptBlocker(d->interrupt, false);
 
     bool interruptLater = false;
-    QtCocoaInterruptDispatcher::cancelInterruptLater();
+    BobUICocoaInterruptDispatcher::cancelInterruptLater();
 
     emit awake();
 
@@ -326,19 +326,19 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
             retVal = true;
 
 
-        // If Qt is used as a plugin, or as an extension in a native cocoa
+        // If BobUI is used as a plugin, or as an extension in a native cocoa
         // application, we should not run or stop NSApplication; This will be
         // done from the application itself. And if processEvents is called
         // manually (rather than from a QEventLoop), we cannot enter a tight
         // loop and block this call, but instead we need to return after one flush.
         // Finally, if we are to exclude user input events, we cannot call [NSApp run]
         // as we then loose control over which events gets dispatched:
-        const bool canExec_3rdParty = d->nsAppRunCalledByQt || ![NSApp isRunning];
-        const bool canExec_Qt = (!excludeUserEvents
+        const bool canExec_3rdParty = d->nsAppRunCalledByBobUI || ![NSApp isRunning];
+        const bool canExec_BobUI = (!excludeUserEvents
                                  && ((d->processEventsFlags & QEventLoop::DialogExec)
                                      || (d->processEventsFlags & QEventLoop::EventLoopExec)));
 
-        if (canExec_Qt && canExec_3rdParty) {
+        if (canExec_BobUI && canExec_3rdParty) {
             // We can use exec-mode, meaning that we can stay in a tight loop until
             // interrupted. This is mostly an optimization, but it allow us to use
             // [NSApp run], which is the normal code path for cocoa applications.
@@ -346,7 +346,7 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
                 QScopedValueRollback execGuard(d->currentExecIsNSAppRun, false);
                 qCDebug(lcEventDispatcher) << "Running modal session" << session;
                 while ([NSApp runModalSession:session] == NSModalResponseContinue && !d->interrupt) {
-                    qt_mac_waitForMoreEvents(NSModalPanelRunLoopMode);
+                    bobui_mac_waitForMoreEvents(NSModalPanelRunLoopMode);
                     if (session != d->currentModalSessionCached) {
                         // It's possible to release the current modal session
                         // while we are in this loop, for example, by closing all
@@ -370,7 +370,7 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
                     d->cleanupModalSessions();
 
             } else {
-                d->nsAppRunCalledByQt = true;
+                d->nsAppRunCalledByBobUI = true;
                 QScopedValueRollback execGuard(d->currentExecIsNSAppRun, true);
                 [NSApp run];
             }
@@ -387,7 +387,7 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
                     // Since we can dispatch all kinds of events, we choose
                     // to use cocoa's native way of running modal sessions:
                     if (flags & QEventLoop::WaitForMoreEvents)
-                        qt_mac_waitForMoreEvents(NSModalPanelRunLoopMode);
+                        bobui_mac_waitForMoreEvents(NSModalPanelRunLoopMode);
                     qCDebug(lcEventDispatcher) << "Running modal session" << session;
                     NSInteger status = [NSApp runModalSession:session];
                     if (status != NSModalResponseContinue && session == d->currentModalSessionCached) {
@@ -483,7 +483,7 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
         if (canWait) {
             // INVARIANT: We haven't processed any events yet. And we're told
             // to stay inside this function until at least one event is processed.
-            qt_mac_waitForMoreEvents();
+            bobui_mac_waitForMoreEvents();
             d->processEventsFlags &= ~QEventLoop::WaitForMoreEvents;
         } else {
             // Done with event processing for now.
@@ -504,14 +504,14 @@ bool QCocoaEventDispatcher::processEvents(QEventLoop::ProcessEventsFlags flags)
         interrupt();
 
     if (interruptLater)
-        QtCocoaInterruptDispatcher::interruptLater();
+        BobUICocoaInterruptDispatcher::interruptLater();
 
     return retVal;
 }
 
-auto QCocoaEventDispatcher::remainingTime(Qt::TimerId timerId) const -> Duration
+auto QCocoaEventDispatcher::remainingTime(BobUI::TimerId timerId) const -> Duration
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QCocoaEventDispatcher::remainingTime: invalid argument");
         return Duration::min();
@@ -554,11 +554,11 @@ void QCocoaEventDispatcherPrivate::ensureNSAppInitialized()
 
     // We only apply this trick at most once for any application, and we avoid
     // doing it for the common case where main just starts QGuiApplication::exec.
-    if (nsAppRunCalledByQt || [NSApp isRunning])
+    if (nsAppRunCalledByBobUI || [NSApp isRunning])
         return;
 
     qCDebug(lcEventDispatcher) << "Ensuring NSApplication is initialized";
-    nsAppRunCalledByQt = true;
+    nsAppRunCalledByBobUI = true;
 
     // Stopping the application will still process runloop sources before
     // actually stopping, so we need to explicitly guard our sources from
@@ -703,7 +703,7 @@ void QCocoaEventDispatcherPrivate::beginModalSession(QWindow *window)
     }
 
     // We need to start spinning the modal session. Usually this is done with
-    // QDialog::exec() for Qt Widgets based applications, but for others that
+    // QDialog::exec() for BobUI Widgets based applications, but for others that
     // just call show(), we need to interrupt().
     Q_Q(QCocoaEventDispatcher);
     q->interrupt();
@@ -755,7 +755,7 @@ QCocoaEventDispatcherPrivate::QCocoaEventDispatcherPrivate()
       runLoopTimerRef(nullptr),
       blockSendPostedEvents(false),
       currentExecIsNSAppRun(false),
-      nsAppRunCalledByQt(false),
+      nsAppRunCalledByBobUI(false),
       cleanupModalSessionsNeeded(false),
       processEventsCalled(0),
       currentModalSessionCached(nullptr),
@@ -767,7 +767,7 @@ QCocoaEventDispatcherPrivate::QCocoaEventDispatcherPrivate()
 QCocoaEventDispatcherPrivate::~QCocoaEventDispatcherPrivate()
     = default;
 
-void qt_mac_maybeCancelWaitForMoreEventsForwarder(QAbstractEventDispatcher *eventDispatcher)
+void bobui_mac_maybeCancelWaitForMoreEventsForwarder(QAbstractEventDispatcher *eventDispatcher)
 {
     static_cast<QCocoaEventDispatcher *>(eventDispatcher)->d_func()->maybeCancelWaitForMoreEvents();
 }
@@ -778,7 +778,7 @@ QCocoaEventDispatcher::QCocoaEventDispatcher(QObject *parent)
     Q_D(QCocoaEventDispatcher);
 
     d->cfSocketNotifier.setHostEventDispatcher(this);
-    d->cfSocketNotifier.setMaybeCancelWaitForMoreEventsCallback(qt_mac_maybeCancelWaitForMoreEventsForwarder);
+    d->cfSocketNotifier.setMaybeCancelWaitForMoreEventsCallback(bobui_mac_maybeCancelWaitForMoreEventsForwarder);
 
     // keep our sources running when modal loops are running
     CFRunLoopAddCommonMode(mainRunLoop(), (CFStringRef) NSModalPanelRunLoopMode);
@@ -902,15 +902,15 @@ void QCocoaEventDispatcherPrivate::cancelWaitForMoreEvents()
     QMacAutoReleasePool pool;
     [NSApp postEvent:[NSEvent otherEventWithType:NSEventTypeApplicationDefined location:NSZeroPoint
         modifierFlags:0 timestamp:0. windowNumber:0 context:nil
-        subtype:QtCocoaEventSubTypeWakeup data1:0 data2:0] atStart:NO];
+        subtype:BobUICocoaEventSubTypeWakeup data1:0 data2:0] atStart:NO];
 }
 
 void QCocoaEventDispatcherPrivate::maybeCancelWaitForMoreEvents()
 {
     if ((processEventsFlags & (QEventLoop::EventLoopExec | QEventLoop::WaitForMoreEvents)) == QEventLoop::WaitForMoreEvents) {
-        // RunLoop sources are not NSEvents, but they do generate Qt events. If
+        // RunLoop sources are not NSEvents, but they do generate BobUI events. If
         // WaitForMoreEvents was set, but EventLoopExec is not, processEvents()
-        // should return after a source has sent some Qt events.
+        // should return after a source has sent some BobUI events.
         cancelWaitForMoreEvents();
     }
 }
@@ -931,12 +931,12 @@ void QCocoaEventDispatcher::interrupt()
     d->cancelWaitForMoreEvents();
 }
 
-// QTBUG-56746: The behavior of processEvents() has been changed to not clear
+// BOBUIBUG-56746: The behavior of processEvents() has been changed to not clear
 // the interrupt flag. Use this function to clear it.
  void QCocoaEventDispatcher::clearCurrentThreadCocoaEventDispatcherInterruptFlag()
 {
     QCocoaEventDispatcher *cocoaEventDispatcher =
-            qobject_cast<QCocoaEventDispatcher *>(QThread::currentThread()->eventDispatcher());
+            qobject_cast<QCocoaEventDispatcher *>(BOBUIhread::currentThread()->eventDispatcher());
     if (!cocoaEventDispatcher)
         return;
     QCocoaEventDispatcherPrivate *cocoaEventDispatcherPrivate =
@@ -979,9 +979,9 @@ QCocoaEventDispatcher::~QCocoaEventDispatcher()
     CFRelease(d->waitingObserver);
 }
 
-QtCocoaInterruptDispatcher* QtCocoaInterruptDispatcher::instance = nullptr;
+BobUICocoaInterruptDispatcher* BobUICocoaInterruptDispatcher::instance = nullptr;
 
-QtCocoaInterruptDispatcher::QtCocoaInterruptDispatcher() : cancelled(false)
+BobUICocoaInterruptDispatcher::BobUICocoaInterruptDispatcher() : cancelled(false)
 {
     // The whole point of this class is that we enable a way to interrupt
     // the event dispatcher when returning back to a lower recursion level
@@ -992,7 +992,7 @@ QtCocoaInterruptDispatcher::QtCocoaInterruptDispatcher() : cancelled(false)
     deleteLater();
 }
 
-QtCocoaInterruptDispatcher::~QtCocoaInterruptDispatcher()
+BobUICocoaInterruptDispatcher::~BobUICocoaInterruptDispatcher()
 {
     if (cancelled)
         return;
@@ -1000,7 +1000,7 @@ QtCocoaInterruptDispatcher::~QtCocoaInterruptDispatcher()
     QCocoaEventDispatcher::instance()->interrupt();
 }
 
-void QtCocoaInterruptDispatcher::cancelInterruptLater()
+void BobUICocoaInterruptDispatcher::cancelInterruptLater()
 {
     if (!instance)
         return;
@@ -1009,11 +1009,11 @@ void QtCocoaInterruptDispatcher::cancelInterruptLater()
     instance = nullptr;
 }
 
-void QtCocoaInterruptDispatcher::interruptLater()
+void BobUICocoaInterruptDispatcher::interruptLater()
 {
     cancelInterruptLater();
-    instance = new QtCocoaInterruptDispatcher;
+    instance = new BobUICocoaInterruptDispatcher;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

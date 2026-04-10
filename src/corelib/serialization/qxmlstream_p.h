@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include <qstringconverter.h>
 #include <qxmlstream.h>
 #include "qxmlstreamgrammar_p.h"
-#include <QtCore/qhash.h>
+#include <BobUICore/qhash.h>
 #include <QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 
 
@@ -27,9 +27,9 @@
 #ifndef QXMLSTREAM_P_H
 #define QXMLSTREAM_P_H
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class XmlStringRef
 {
@@ -115,7 +115,7 @@ public:
 
 }
 
-using namespace QtPrivate;
+using namespace BobUIPrivate;
 
 template <typename T> class QXmlStreamSimpleStack
 {
@@ -226,7 +226,7 @@ public:
     }
 };
 
-#if QT_CONFIG(xmlstreamreader)
+#if BOBUI_CONFIG(xmlstreamreader)
 class QXmlStreamEntityResolver;
 class QXmlStreamReaderPrivate : public QXmlStreamGrammar, public QXmlStreamPrivateTagStack
 {
@@ -555,7 +555,7 @@ private:
 };
 #endif // feature xmlstreamreader
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QXMLSTREAM_P_H
 

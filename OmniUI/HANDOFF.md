@@ -7,7 +7,7 @@
 - **Documentation**: Extensive. `Manual.md`, `ROADMAP.md`, `TODO.md`, `IDEAS.md` are completely updated.
 
 ## Recent Changes (v41.1)
-- The agent implemented deep logic for Modules 1-30 in chunks of 5. This involved creating complex `QTimer`-based loops, AABB collision detection, hardware simulation (GPIO/PWM), LLM chunking streams, and multiversal state trackers. All UIs were deeply refactored into high-tech dashboards.
+- The agent implemented deep logic for Modules 1-30 in chunks of 5. This involved creating complex `BOBUIimer`-based loops, AABB collision detection, hardware simulation (GPIO/PWM), LLM chunking streams, and multiversal state trackers. All UIs were deeply refactored into high-tech dashboards.
 
 ## Current Phase: v42.0.0 (The Unified Integration / "Nexus" Phase)
 The massive refactoring phase is finished. However, all these modules run as **isolated binary applications**. The ultimate goal of OmniUI is to act as a **Unified Desktop Environment**.

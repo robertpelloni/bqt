@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #if defined(ENABLE_PIXMAN_DRAWHELPERS)
 
@@ -155,15 +155,15 @@ blend_8_pixels_rgb16_on_rgb16_neon:
 
     .endfunc
 
-/* void qt_rotate90_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count) */
-    .func qt_rotate90_16_neon
-    .global qt_rotate90_16_neon
+/* void bobui_rotate90_16_neon(quint16 *dst, const quint16 *src, int sstride, int dstride, int count) */
+    .func bobui_rotate90_16_neon
+    .global bobui_rotate90_16_neon
     /* For ELF format also set function visibility to hidden */
 #ifdef __ELF__
-    .hidden qt_rotate90_16_neon
-    .type qt_rotate90_16_neon, %function
+    .hidden bobui_rotate90_16_neon
+    .type bobui_rotate90_16_neon, %function
 #endif
-qt_rotate90_16_neon:
+bobui_rotate90_16_neon:
     push { r4-r11, lr }
     ldr r5, [sp, #(9*4)]
 

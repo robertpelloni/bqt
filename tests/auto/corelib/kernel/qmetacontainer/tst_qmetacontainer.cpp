@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
-#include <QtTest/private/qcomparisontesthelper_p.h>
-#include <QtCore/qcontainerinfo.h>
-#include <QtCore/qmetacontainer.h>
-#include <QtCore/QMap>
-#include <QtCore/QHash>
+#include <BobUITest/bobuiest.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
+#include <BobUICore/qcontainerinfo.h>
+#include <BobUICore/qmetacontainer.h>
+#include <BobUICore/QMap>
+#include <BobUICore/QHash>
 
-#include <QtCore/qvector.h>
-#include <QtCore/qset.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qvector.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qbytearray.h>
 
 #include <vector>
 #include <set>
@@ -207,8 +207,8 @@ void tst_QMetaContainer::init()
 
 void tst_QMetaContainer::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMetaSequence>();
-    QTestPrivate::testEqualityOperatorsCompile<QMetaAssociation>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMetaSequence>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMetaAssociation>();
 }
 
 void tst_QMetaContainer::cleanup()
@@ -226,39 +226,39 @@ void tst_QMetaContainer::cleanup()
 
 void tst_QMetaContainer::testSequence_data()
 {
-    QTest::addColumn<void *>("container");
-    QTest::addColumn<QMetaSequence>("metaSequence");
-    QTest::addColumn<QMetaType>("metaType");
-    QTest::addColumn<bool>("hasSize");
-    QTest::addColumn<bool>("isIndexed");
-    QTest::addColumn<bool>("canRemove");
-    QTest::addColumn<bool>("hasBidirectionalIterator");
-    QTest::addColumn<bool>("hasRandomAccessIterator");
-    QTest::addColumn<bool>("canInsertAtIterator");
-    QTest::addColumn<bool>("canEraseAtIterator");
-    QTest::addColumn<bool>("isSortable");
+    BOBUIest::addColumn<void *>("container");
+    BOBUIest::addColumn<QMetaSequence>("metaSequence");
+    BOBUIest::addColumn<QMetaType>("metaType");
+    BOBUIest::addColumn<bool>("hasSize");
+    BOBUIest::addColumn<bool>("isIndexed");
+    BOBUIest::addColumn<bool>("canRemove");
+    BOBUIest::addColumn<bool>("hasBidirectionalIterator");
+    BOBUIest::addColumn<bool>("hasRandomAccessIterator");
+    BOBUIest::addColumn<bool>("canInsertAtIterator");
+    BOBUIest::addColumn<bool>("canEraseAtIterator");
+    BOBUIest::addColumn<bool>("isSortable");
 
-    QTest::addRow("QVector")
+    BOBUIest::addRow("QVector")
             << static_cast<void *>(&qvector)
             << QMetaSequence::fromContainer<QVector<QMetaType>>()
             << QMetaType::fromType<QMetaType>()
             << true << true << true << true << true << true << true << true;
-    QTest::addRow("std::vector")
+    BOBUIest::addRow("std::vector")
             << static_cast<void *>(&stdvector)
             << QMetaSequence::fromContainer<std::vector<QString>>()
             << QMetaType::fromType<QString>()
             << true << true << true << true << true << true << true << true;
-    QTest::addRow("QSet")
+    BOBUIest::addRow("QSet")
             << static_cast<void *>(&qset)
             << QMetaSequence::fromContainer<QSet<QByteArray>>()
             << QMetaType::fromType<QByteArray>()
             << true << false << false << false << false << true << true << false;
-    QTest::addRow("std::set")
+    BOBUIest::addRow("std::set")
             << static_cast<void *>(&stdset)
             << QMetaSequence::fromContainer<std::set<int>>()
             << QMetaType::fromType<int>()
             << true << false << false << true << false << true << true << false;
-    QTest::addRow("std::forward_list")
+    BOBUIest::addRow("std::forward_list")
             << static_cast<void *>(&forwardList)
             << QMetaSequence::fromContainer<std::forward_list<QMetaSequence>>()
             << QMetaType::fromType<QMetaSequence>()
@@ -509,54 +509,54 @@ void tst_QMetaContainer::testSequence()
     QVERIFY(metaSequence.iface() != nullptr);
     QMetaSequence defaultConstructed;
     QVERIFY(defaultConstructed.iface() == nullptr);
-    QT_TEST_EQUALITY_OPS(QMetaSequence(), defaultConstructed, true);
-    QT_TEST_EQUALITY_OPS(QMetaSequence(), QMetaSequence(), true);
-    QT_TEST_EQUALITY_OPS(defaultConstructed, metaSequence, false);
+    BOBUI_TEST_EQUALITY_OPS(QMetaSequence(), defaultConstructed, true);
+    BOBUI_TEST_EQUALITY_OPS(QMetaSequence(), QMetaSequence(), true);
+    BOBUI_TEST_EQUALITY_OPS(defaultConstructed, metaSequence, false);
 }
 
 void tst_QMetaContainer::testAssociation_data()
 {
-    QTest::addColumn<void *>("container");
-    QTest::addColumn<QMetaAssociation>("metaAssociation");
-    QTest::addColumn<QMetaType>("keyType");
-    QTest::addColumn<QMetaType>("mappedType");
-    QTest::addColumn<bool>("hasSize");
-    QTest::addColumn<bool>("canRemove");
-    QTest::addColumn<bool>("canSetMapped");
-    QTest::addColumn<bool>("hasBidirectionalIterator");
-    QTest::addColumn<bool>("hasRandomAccessIterator");
+    BOBUIest::addColumn<void *>("container");
+    BOBUIest::addColumn<QMetaAssociation>("metaAssociation");
+    BOBUIest::addColumn<QMetaType>("keyType");
+    BOBUIest::addColumn<QMetaType>("mappedType");
+    BOBUIest::addColumn<bool>("hasSize");
+    BOBUIest::addColumn<bool>("canRemove");
+    BOBUIest::addColumn<bool>("canSetMapped");
+    BOBUIest::addColumn<bool>("hasBidirectionalIterator");
+    BOBUIest::addColumn<bool>("hasRandomAccessIterator");
 
-    QTest::addRow("QHash")
+    BOBUIest::addRow("QHash")
             << static_cast<void *>(&qhash)
             << QMetaAssociation::fromContainer<QHash<int, QMetaType>>()
             << QMetaType::fromType<int>()
             << QMetaType::fromType<QMetaType>()
             << true << true << true << false << false;
-    QTest::addRow("QMap")
+    BOBUIest::addRow("QMap")
             << static_cast<void *>(&qmap)
             << QMetaAssociation::fromContainer<QMap<QByteArray, bool>>()
             << QMetaType::fromType<QByteArray>()
             << QMetaType::fromType<bool>()
             << true << true << true << true << false;
-    QTest::addRow("std::map")
+    BOBUIest::addRow("std::map")
             << static_cast<void *>(&stdmap)
             << QMetaAssociation::fromContainer<std::map<QString, int>>()
             << QMetaType::fromType<QString>()
             << QMetaType::fromType<int>()
             << true << true << true << true << false;
-    QTest::addRow("std::unorderedmap")
+    BOBUIest::addRow("std::unorderedmap")
             << static_cast<void *>(&stdunorderedmap)
             << QMetaAssociation::fromContainer<std::unordered_map<int, QMetaAssociation>>()
             << QMetaType::fromType<int>()
             << QMetaType::fromType<QMetaAssociation>()
             << true << true << true << false << false;
-    QTest::addRow("QSet")
+    BOBUIest::addRow("QSet")
             << static_cast<void *>(&qset)
             << QMetaAssociation::fromContainer<QSet<QByteArray>>()
             << QMetaType::fromType<QByteArray>()
             << QMetaType()
             << true << true << false << false << false;
-    QTest::addRow("std::set")
+    BOBUIest::addRow("std::set")
             << static_cast<void *>(&stdset)
             << QMetaAssociation::fromContainer<std::set<int>>()
             << QMetaType::fromType<int>()
@@ -741,9 +741,9 @@ void tst_QMetaContainer::testAssociation()
     QVERIFY(metaAssociation.iface() != nullptr);
     QMetaAssociation defaultConstructed;
     QVERIFY(defaultConstructed.iface() == nullptr);
-    QT_TEST_EQUALITY_OPS(QMetaAssociation(), QMetaAssociation(), true);
-    QT_TEST_EQUALITY_OPS(QMetaAssociation(), metaAssociation, false);
+    BOBUI_TEST_EQUALITY_OPS(QMetaAssociation(), QMetaAssociation(), true);
+    BOBUI_TEST_EQUALITY_OPS(QMetaAssociation(), metaAssociation, false);
 }
 
-QTEST_MAIN(tst_QMetaContainer)
+BOBUIEST_MAIN(tst_QMetaContainer)
 #include "tst_qmetacontainer.moc"

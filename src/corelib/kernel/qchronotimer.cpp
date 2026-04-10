@@ -1,9 +1,9 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qchronotimer.h"
-#include "qtimer_p.h"
+#include "bobuiimer_p.h"
 #include "qsingleshottimer_p.h"
 
 #include "qabstracteventdispatcher.h"
@@ -13,15 +13,15 @@
 #include "qmetaobject_p.h"
 #include "qobject_p.h"
 #include "qproperty_p.h"
-#include "qthread.h"
+#include "bobuihread.h"
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QChronoTimer
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.8
     \ingroup events
 
@@ -39,11 +39,11 @@ QT_BEGIN_NAMESPACE
     You can set a timer to time out only once by calling setSingleShot(true).
 
     \note QChronoTimer has no singleShot() static methods, as the ones on
-    QTimer already work with chrono types and nanoseconds resolution.
+    BOBUIimer already work with chrono types and nanoseconds resolution.
 
     In multithreaded applications, you can use QChronoTimer in any thread
     that has an event loop. To start an event loop from a non-GUI
-    thread, use QThread::exec(). Qt uses the timer's
+    thread, use BOBUIhread::exec(). BobUI uses the timer's
     \l{QObject::thread()}{thread affinity} to determine which thread
     will emit the \l{QChronoTimer::}{timeout()} signal. Because of this, you
     must start and stop the timer in its thread; it is not possible to
@@ -58,12 +58,12 @@ QT_BEGIN_NAMESPACE
 
     From then on, \c processOneThing() will be called repeatedly. It should
     be written in such a way that it always returns quickly (for example,
-    after processing one data item) so that Qt can deliver events to the user
+    after processing one data item) so that BobUI can deliver events to the user
     interface and stop the timer as soon as it has done all its work. This
     is the traditional way of implementing heavy work in GUI applications,
     but as multithreading is becoming available on more platforms, a modern
     alternative is doing the heavy work in a thread other than the GUI (main)
-    thread. Qt has the QThread class, which can be used to achieve that.
+    thread. BobUI has the BOBUIhread class, which can be used to achieve that.
 
     \section1 Accuracy and Timer Resolution
 
@@ -72,22 +72,22 @@ QT_BEGIN_NAMESPACE
     timers (for example, libc's \c nanosleep), though the accuracy of the
     timer will not equal this resolution in many real-world situations.
 
-    You can set the \l{Qt::TimerType}{timer type} to tell QChronoTimer which
+    You can set the \l{BobUI::TimerType}{timer type} to tell QChronoTimer which
     precision to request from the system.
 
-    For Qt::PreciseTimer, QChronoTimer will try to keep the precision at
+    For BobUI::PreciseTimer, QChronoTimer will try to keep the precision at
     \c 1ns. Precise timers will never time out earlier than expected.
 
-    For Qt::CoarseTimer and Qt::VeryCoarseTimer types, QChronoTimer may wake
+    For BobUI::CoarseTimer and BobUI::VeryCoarseTimer types, QChronoTimer may wake
     up earlier than expected, within the margins for those types:
     \list
-        \li 5% of the interval for Qt::CoarseTimer
-        \li \c 500ms for Qt::VeryCoarseTimer
+        \li 5% of the interval for BobUI::CoarseTimer
+        \li \c 500ms for BobUI::VeryCoarseTimer
     \endlist
 
     All timer types may time out later than expected if the system is busy or
     unable to provide the requested accuracy. In such a case of timeout
-    overrun, Qt will emit timeout() only once, even if multiple timeouts have
+    overrun, BobUI will emit timeout() only once, even if multiple timeouts have
     expired, and then will resume the original interval.
 
     \section1 Alternatives to QChronoTimer
@@ -95,14 +95,14 @@ QT_BEGIN_NAMESPACE
     QChronoTimer provides nanosecond resolution and a ±292 years range
     (less chances of integer overflow if the interval is longer than \c
     std::numeric_limits<int>::max()). If you only need millisecond resolution
-    and ±24 days range, you can continue to use the classical QTimer class
+    and ±24 days range, you can continue to use the classical BOBUIimer class
 
     \include timers-common.qdocinc q-chrono-timer-alternatives
 
     Some operating systems limit the number of timers that may be used;
-    Qt does its best to work around these limitations.
+    BobUI does its best to work around these limitations.
 
-    \sa QBasicTimer, QTimerEvent, QObject::timerEvent(), Timers,
+    \sa QBasicTimer, BOBUIimerEvent, QObject::timerEvent(), Timers,
         {Analog Clock}
 */
 
@@ -119,9 +119,9 @@ QChronoTimer::QChronoTimer(QObject *parent)
     Constructs a timer with the given \a parent, using an interval of \a nsec.
 */
 QChronoTimer::QChronoTimer(std::chrono::nanoseconds nsec, QObject *parent)
-    : QObject(*new QTimerPrivate(nsec, this), parent)
+    : QObject(*new BOBUIimerPrivate(nsec, this), parent)
 {
-    Q_ASSERT(!d_func()->isQTimer);
+    Q_ASSERT(!d_func()->isBOBUIimer);
 }
 
 /*!
@@ -162,12 +162,12 @@ QBindable<bool> QChronoTimer::bindableActive()
 }
 
 /*!
-    Returns a Qt::TimerId representing the timer ID if the timer is running;
-    otherwise returns \c Qt::TimerId::Invalid.
+    Returns a BobUI::TimerId representing the timer ID if the timer is running;
+    otherwise returns \c BobUI::TimerId::Invalid.
 
-    \sa Qt::TimerId
+    \sa BobUI::TimerId
 */
-Qt::TimerId QChronoTimer::id() const
+BobUI::TimerId QChronoTimer::id() const
 {
     return d_func()->id;
 }
@@ -189,8 +189,8 @@ void QChronoTimer::start()
     auto *d = d_func();
     if (d->isActive()) // stop running timer
         stop();
-    const auto id = Qt::TimerId{QObject::startTimer(d->intervalDuration, d->type)};
-    if (id != Qt::TimerId::Invalid) {
+    const auto id = BobUI::TimerId{QObject::startTimer(d->intervalDuration, d->type)};
+    if (id != BobUI::TimerId::Invalid) {
         d->id = id;
         d->isActiveData.notify();
     }
@@ -206,7 +206,7 @@ void QChronoTimer::stop()
     auto *d = d_func();
     if (d->isActive()) {
         QObject::killTimer(d->id);
-        d->id = Qt::TimerId::Invalid;
+        d->id = BobUI::TimerId::Invalid;
         d->isActiveData.notify();
     }
 }
@@ -214,7 +214,7 @@ void QChronoTimer::stop()
 /*!
   \reimp
 */
-void QChronoTimer::timerEvent(QTimerEvent *e)
+void QChronoTimer::timerEvent(BOBUIimerEvent *e)
 {
     auto *d = d_func();
     if (e->id() == d->id) {
@@ -225,7 +225,7 @@ void QChronoTimer::timerEvent(QTimerEvent *e)
 }
 
 /*!
-    \fn template <typename Functor> QMetaObject::Connection QChronoTimer::callOnTimeout(const QObject *context, Functor &&slot, Qt::ConnectionType connectionType = Qt::AutoConnection)
+    \fn template <typename Functor> QMetaObject::Connection QChronoTimer::callOnTimeout(const QObject *context, Functor &&slot, BobUI::ConnectionType connectionType = BobUI::AutoConnection)
     \overload callOnTimeout()
 
     Creates a connection from the timeout() signal to \a slot to be placed in a
@@ -297,14 +297,14 @@ void QChronoTimer::setInterval(std::chrono::nanoseconds nsec)
     d->intervalDuration.setValueBypassingBindings(nsec);
     if (d->isActive()) { // Create new timer
         QObject::killTimer(d->id); // Restart timer
-        const auto newId = Qt::TimerId{QObject::startTimer(nsec, d->type)};
-        if (newId != Qt::TimerId::Invalid) {
+        const auto newId = BobUI::TimerId{QObject::startTimer(nsec, d->type)};
+        if (newId != BobUI::TimerId::Invalid) {
             // Restarted successfully. No need to update the active state.
             d->id = newId;
         } else {
             // Failed to start the timer.
             // Need to notify about active state change.
-            d->id = Qt::TimerId::Invalid;
+            d->id = BobUI::TimerId::Invalid;
             d->isActiveData.notify();
         }
     }
@@ -345,25 +345,25 @@ std::chrono::nanoseconds QChronoTimer::remainingTime() const
     \property QChronoTimer::timerType
     \brief Controls the accuracy of the timer
 
-    The default value for this property is \c Qt::CoarseTimer.
+    The default value for this property is \c BobUI::CoarseTimer.
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
 */
-void QChronoTimer::setTimerType(Qt::TimerType atype)
+void QChronoTimer::setTimerType(BobUI::TimerType atype)
 {
     d_func()->type = atype;
 }
 
-Qt::TimerType QChronoTimer::timerType() const
+BobUI::TimerType QChronoTimer::timerType() const
 {
     return d_func()->type;
 }
 
-QBindable<Qt::TimerType> QChronoTimer::bindableTimerType()
+QBindable<BobUI::TimerType> QChronoTimer::bindableTimerType()
 {
     return {&d_func()->type};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qchronotimer.cpp"

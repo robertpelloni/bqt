@@ -1,6 +1,6 @@
 <!doctype html>
 
-<script src="qtloader.js"></script>
+<script src="bobuiloader.js"></script>
 <script src="fontloading.js"></script>
 
 <style>
@@ -80,19 +80,19 @@
             else if (allfonts.checked)
                 localFontFamilyLoadCollection = "AllFontFamilies"
 
-            let qtcontainer = document.getElementById("qtcontainer");
-            qtcontainer.innerHTML = ""; // clear children
-            qtcontainer.style.visibility = "hidden";
+            let bobuicontainer = document.getElementById("bobuicontainer");
+            bobuicontainer.innerHTML = ""; // clear children
+            bobuicontainer.style.visibility = "hidden";
 
             let extraFonts = document.getElementById("extrafonts").value.split(",");
 
             let config = {
-                qt: {
+                bobui: {
                     module: module,
-                    containerElements: [qtcontainer],
+                    containerElements: [bobuicontainer],
                     onLoaded: () => {
                         console.log("JS: onLoaded")
-                        qtcontainer.style.visibility = "visible";
+                        bobuicontainer.style.visibility = "visible";
                     },
                     entryFunction: window.fontloading_entry,
                     localFonts: {
@@ -102,7 +102,7 @@
                     }
                 }
             }
-            instance = await qtLoad(config);
+            instance = await bobuiLoad(config);
 
             updatePermissionStatus();
         }
@@ -111,7 +111,7 @@
             loadStartTime = null; // disable timer
             let fontsFamilies = document.getElementById("extraRuntimeFontFamilies").value.split(",");
             console.log("extraRuntimeFontFamilies: " + fontsFamilies);
-            instance.qtLoadLocalFontFamilies(fontsFamilies);
+            instance.bobuiLoadLocalFontFamilies(fontsFamilies);
         }
     };
 
@@ -130,7 +130,7 @@
 </script>
 
 <h2>Local Font Loading Test</h2>
-<p>Click "Load" button below to load the Qt test app with the specified settings. This test provides additional logs on the JavaScript console.</p>
+<p>Click "Load" button below to load the BobUI test app with the specified settings. This test provides additional logs on the JavaScript console.</p>
 
 <div class="container">
     <div class="column">
@@ -160,7 +160,7 @@
     </div>
 
     <div class="column">
-        <div id="qtcontainer" style="width: 100%; height: 300px; visibility: hidden;"></div>
+        <div id="bobuicontainer" style="width: 100%; height: 300px; visibility: hidden;"></div>
     </div>
 </div>
 

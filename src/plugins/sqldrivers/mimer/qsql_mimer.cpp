@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2022 Mimer Information Technology
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qcoreapplication.h>
 #include <qvariant.h>
@@ -17,10 +17,10 @@
 #include <qstringlist.h>
 #include <qlocale.h>
 #if defined(Q_OS_WIN32)
-#    include <QtCore/qt_windows.h>
+#    include <BobUICore/bobui_windows.h>
 #endif
-#include <QtSql/private/qsqlresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlresult_p.h>
+#include <BobUISql/private/qsqldriver_p.h>
 #include "qsql_mimer.h"
 
 #define MIMER_DEFAULT_DATATYPE 1000
@@ -31,9 +31,9 @@ Q_DECLARE_METATYPE(MimerSession)
 Q_DECLARE_OPAQUE_POINTER(MimerStatement)
 Q_DECLARE_METATYPE(MimerStatement)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcMimer, "qt.sql.mimer")
+Q_STATIC_LOGGING_CATEGORY(lcMimer, "bobui.sql.mimer")
 
 enum class MimerColumnTypes {
     Binary,
@@ -53,7 +53,7 @@ enum class MimerColumnTypes {
     Unknown
 };
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QMimerSQLResultPrivate;
 
@@ -342,7 +342,7 @@ static QMetaType::Type qDecodeMSQLType(int32_t t)
     case MIMER_DATE:
         return QMetaType::QDate;
     case MIMER_TIME:
-        return QMetaType::QTime;
+        return QMetaType::BOBUIime;
         break;
     case MIMER_TIMESTAMP:
         return QMetaType::QDateTime;
@@ -656,7 +656,7 @@ QVariant QMimerSQLResult::data(int i)
                 timeFormatString.append(".zzz"_L1);
                 timeString = timeString.left(12);
             }
-            return QTime::fromString(timeString, timeFormatString);
+            return BOBUIime::fromString(timeString, timeFormatString);
         }
         case MimerColumnTypes::Timestamp: {
             wchar_t dateTimeString_w[maxTimestampStringSize + 1];
@@ -1124,7 +1124,7 @@ bool QMimerSQLResult::exec()
         }
         case MimerColumnTypes::Time: {
             QString timeFormatString = "hh:mm:ss"_L1;
-            const QTime timeVal = val.toTime();
+            const BOBUIime timeVal = val.toTime();
             if (timeVal.msec() > 0)
                 timeFormatString.append(".zzz"_L1);
             err = MimerSetString8(d->statementhandle, i + 1,
@@ -1339,7 +1339,7 @@ QVariant QMimerSQLResult::lastInsertId() const
 bool QMimerSQLDriver::hasFeature(DriverFeature f) const
 {
     switch (f) {
-    case NamedPlaceholders: // Is true in reality but Qt parses Sql statement...
+    case NamedPlaceholders: // Is true in reality but BobUI parses Sql statement...
     case EventNotifications:
     case LowPrecisionNumbers:
     case MultipleResultSets:
@@ -1606,6 +1606,6 @@ void QMimerSQLDriverPrivate::splitTableQualifier(const QString &qualifiedName, Q
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_mimer.cpp"

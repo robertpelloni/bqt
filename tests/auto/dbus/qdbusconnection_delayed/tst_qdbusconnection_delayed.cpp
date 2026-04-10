@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
@@ -24,7 +24,7 @@ private slots:
 class Foo : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.tst_qdbusconnection_delayed.Foo")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.tst_qdbusconnection_delayed.Foo")
 public slots:
     int bar() { return 42; }
 };
@@ -53,7 +53,7 @@ void tst_QDBusConnection_Delayed::delayedMessages()
     QVERIFY(session.interface()->isServiceRegistered(other.baseService()));
 
     // acquire a name in the main session bus connection: the effect is immediate
-    QString name = "org.qtproject.tst_qdbusconnection_delayed-" +
+    QString name = "org.bobuiproject.tst_qdbusconnection_delayed-" +
                    QString::number(getpid());
     QVERIFY(session.registerService(name));
     QVERIFY(other.interface()->isServiceRegistered(name));
@@ -63,7 +63,7 @@ void tst_QDBusConnection_Delayed::delayedMessages()
 
     // sleep the main thread without running the event loop;
     // the call must not be delivered
-    QTest::qSleep(1000);
+    BOBUIest::qSleep(1000);
     QVERIFY(!pending.isFinished());
 
     // now register the object
@@ -71,15 +71,15 @@ void tst_QDBusConnection_Delayed::delayedMessages()
     session.registerObject("/foo", &foo, QDBusConnection::ExportAllSlots);
 
     connect(&pending, &QDBusPendingCallWatcher::finished,
-            &QTestEventLoop::instance(), &QTestEventLoop::exitLoop);
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+            &BOBUIestEventLoop::instance(), &BOBUIestEventLoop::exitLoop);
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(pending.isFinished());
     QVERIFY2(!pending.isError(), pending.error().name().toLatin1());
     QVERIFY(!pending.reply().arguments().isEmpty());
     QCOMPARE(pending.reply().arguments().at(0), QVariant(42));
 }
 
-QTEST_APPLESS_MAIN(tst_QDBusConnection_Delayed)
+BOBUIEST_APPLESS_MAIN(tst_QDBusConnection_Delayed)
 
 #include "tst_qdbusconnection_delayed.moc"

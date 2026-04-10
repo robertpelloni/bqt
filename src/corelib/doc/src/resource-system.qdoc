@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page resources.html
-    \title The Qt Resource System
+    \title The BobUI Resource System
     \brief A platform-independent mechanism for shipping resource files in an
     application.
 
     \keyword resource system
 
-    The Qt resource system is a platform-independent mechanism for shipping
+    The BobUI resource system is a platform-independent mechanism for shipping
     resource files in an application. Use it if your application always needs a
     certain set of files (like icons, translation files, images), and you don't
     want to use system-specific means to package and locate these resources.
@@ -19,20 +19,20 @@
     executable. Alternatively, the resource files can also be stored in an
     \l{External Resource Files}{external resource file}.
 
-    The resource system is based on tight cooperation between Qt's \l rcc
-    resource compiler, the build system, and the Qt runtime API.
+    The resource system is based on tight cooperation between BobUI's \l rcc
+    resource compiler, the build system, and the BobUI runtime API.
 
-    \note Currently, the Qt resource system does not make use of any
+    \note Currently, the BobUI resource system does not make use of any
     system-specific capabilities for handling resources, such as the ones on
-    Windows, \macos, and iOS. This might change in a future Qt release.
+    Windows, \macos, and iOS. This might change in a future BobUI release.
 
-    \section1 The Qt Resource Compiler (rcc)
+    \section1 The BobUI Resource Compiler (rcc)
 
     The \l{Resource Compiler (rcc)} command line tool reads resource files and
     generates either a C++ or Python source file, or an \c .rcc file.
 
     The list of files and related metadata is passed to \c rcc in the form of a
-    \l{Qt Resource Collection File}.
+    \l{BobUI Resource Collection File}.
 
     By default, rcc will generate C++ source code that is then compiled as part
     of an executable or library. The \c{-g python} option generates Python
@@ -43,8 +43,8 @@
     typically best left to a build system. See also the sections about
     \l{qmake} and \l{CMake} below.
 
-    \section1 Qt Resource Collection File (.qrc)
-    \target {Qt Resource Collection File}
+    \section1 BobUI Resource Collection File (.qrc)
+    \target {BobUI Resource Collection File}
     \target {Resource Collection Files}
 
     A \c .qrc file is an XML document that enumerates local files to be
@@ -63,10 +63,10 @@
     \c{:/images/copy.png} or \c{qrc:/images/copy.png}.
     To override this default run-time name, see \l{Prefixes} and \l{Aliases}.
 
-    \e{Qt Creator}, \e{Qt Design Studio}, \QD, and \e{Qt Visual Studio Tools}
+    \e{BobUI Creator}, \e{BobUI Design Studio}, \QD, and \e{BobUI Visual Studio Tools}
     allow you to create, inspect and edit \c .qrc files through a convenient
     user interface. Except for \QD, they also provide wizards for projects
-    using the Qt resource system.
+    using the BobUI resource system.
 
     \section1 Build System Integration
 
@@ -85,16 +85,16 @@
     See \l {https://cmake.org/cmake/help/latest/prop_tgt/AUTORCC.html}
     {CMake's AUTORCC documentation} for more details about AUTORCC.
 
-    An alternative to AUTORCC is using Qt6Core's CMake function
-    \l qt_add_resources, which gives more control over the creation of
+    An alternative to AUTORCC is using BobUI6Core's CMake function
+    \l bobui_add_resources, which gives more control over the creation of
     resources. For example, it allows you to specify the content of the
     resource directly in the project file without writing a \c .qrc file first:
 
-    \snippet resource-system/CMakeLists.txt qt_add_resources
+    \snippet resource-system/CMakeLists.txt bobui_add_resources
 
-    Finally, \l qt_add_qml_module allows you to embed Qt Quick resources into
+    Finally, \l bobui_add_qml_module allows you to embed BobUI Quick resources into
     the resource system of your application. The function is defined in the
-    \c Qml component of the \c Qt6 CMake package.
+    \c Qml component of the \c BobUI6 CMake package.
 
     \section2 qmake
 
@@ -121,17 +121,17 @@
 
     \section1 Runtime API
 
-    Qt API that deals with iterating and reading files has built-in support for
-    the Qt Resource System. You can pass a resource path instead of a local
+    BobUI API that deals with iterating and reading files has built-in support for
+    the BobUI Resource System. You can pass a resource path instead of a local
     file path to QFile and QDir, but also for instance to the QIcon, QImage, and
     QPixmap constructors:
 
     \snippet resource-system/mainwindow.cpp 1
 
     The \c : prefix makes it explicit that "/images/cut.png" should be loaded
-    from the Qt Resource System.
+    from the BobUI Resource System.
 
-    You can also reference the Qt resource system through a QUrl. Use the
+    You can also reference the BobUI resource system through a QUrl. Use the
     \c qrc scheme in this case:
 
     \snippet resource-system/main.cpp url
@@ -148,9 +148,9 @@
     resource files added through different \c .qrc files in different libraries
     or plugins.
 
-    \note The \c /qt and \c /qt-project.org prefixes are reserved for documented
-    use cases in Qt. The \l{Using qt.conf}{qt.conf} file is for instance looked
-    up in \c{:/qt/etc/qt.conf} or \c{qrc:/qt/etc/qt.conf}.
+    \note The \c /bobui and \c /bobui-project.org prefixes are reserved for documented
+    use cases in BobUI. The \l{Using bobui.conf}{bobui.conf} file is for instance looked
+    up in \c{:/bobui/etc/bobui.conf} or \c{qrc:/bobui/etc/bobui.conf}.
 
     \section2 Aliases
 
@@ -178,8 +178,8 @@
 
     \note If you omit the QML source code from the binary, the QML engine has to
     rely on the compilation units created by \l{qmlcachegen} or \l{qmlsc}.
-    Those are tied to the specific version of Qt they were built with. If you
-    change the version of Qt your application uses, they can't be loaded
+    Those are tied to the specific version of BobUI they were built with. If you
+    change the version of BobUI your application uses, they can't be loaded
     anymore.
 
     \section2 Language Selectors
@@ -218,7 +218,7 @@
 
     \snippet resource-system/application.pro 2
 
-    For CMake, you need to use the \l{qt_add_big_resources} function.
+    For CMake, you need to use the \l{bobui_add_big_resources} function.
 
     \section2 External Resource Files
 
@@ -235,12 +235,12 @@
 
     \snippet code/doc_src_resources.cpp 4
 
-    If you use CMake, you can use the \l{qt_add_binary_resources} function
+    If you use CMake, you can use the \l{bobui_add_binary_resources} function
     to schedule the \c rcc call above:
 
-    \snippet resource-system/CMakeLists.txt qt_add_binary_resources
+    \snippet resource-system/CMakeLists.txt bobui_add_binary_resources
 
-    \section2 Resources in a Qt for Python application
+    \section2 Resources in a BobUI for Python application
 
     The resource collection file is converted to a Python module by using the
     resource compiler \l rcc:
@@ -335,7 +335,7 @@
     \section2 Explicit Loading and Unloading of Embedded Resources
 
     Resources embedded in C++ executable or library code are automatically
-    registered to the Qt resource system in a constructor of an internal
+    registered to the BobUI resource system in a constructor of an internal
     global variable. Since the global variables are initialized before
     main() runs, the resources are available when the program starts to
     run.

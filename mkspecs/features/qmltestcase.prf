@@ -1,5 +1,5 @@
 !isEmpty(SOURCES) {
-    QT += qml qmltest
+    BOBUI += qml qmltest
     load(testcase)
     !android {
         contains(TEMPLATE, vc.*): DEFINES += QUICK_TEST_SOURCE_DIR=\"$$_PRO_FILE_PWD_\"
@@ -17,7 +17,7 @@
     # Allow a project to run tests without a CPP stub
     TEMPLATE = aux
     QMAKE_EXTRA_TARGETS += check
-    qtPrepareTool(QMAKE_QMLTESTRUNNER, qmltestrunner)
+    bobuiPrepareTool(QMAKE_QMLTESTRUNNER, qmltestrunner)
     check.commands = $$QMAKE_QMLTESTRUNNER
 }
 

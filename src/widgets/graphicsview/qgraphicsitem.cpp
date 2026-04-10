@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsItem
@@ -9,7 +9,7 @@
     \since 4.2
 
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     It provides a light-weight foundation for writing your own custom items.
     This includes defining the item's geometry, collision detection, its
@@ -18,7 +18,7 @@
 
     \image graphicsview-items.png {Various shapes and graphics on a grid}
 
-    For convenience, Qt provides a set of standard graphics items for the most
+    For convenience, BobUI provides a set of standard graphics items for the most
     common shapes. These are:
 
     \list
@@ -214,7 +214,7 @@
     \endlist
 
     You can filter events for any other item by installing event filters. This
-    functionality is separate from Qt's regular event filters (see
+    functionality is separate from BobUI's regular event filters (see
     QObject::installEventFilter()), which only work on subclasses of QObject. After
     installing your item as an event filter for another item by calling
     installSceneEventFilter(), the filtered events will be received by the virtual
@@ -227,7 +227,7 @@
     item, or a standard item. You can call setData() on any item to store data
     in it using a key-value pair (the key being an integer, and the value is a
     QVariant). To get custom data from an item, call data(). This
-    functionality is completely untouched by Qt itself; it is provided for the
+    functionality is completely untouched by BobUI itself; it is provided for the
     user's convenience.
 
     \sa QGraphicsScene, QGraphicsView, {Graphics View Framework}
@@ -237,8 +237,8 @@
   \enum QGraphicsItem::anonymous
 
   The value returned by the virtual type() function in standard
-  graphics item classes in Qt. All such standard graphics item classes
-  in Qt are associated with a unique value for Type, e.g. the value
+  graphics item classes in BobUI. All such standard graphics item classes
+  in BobUI are associated with a unique value for Type, e.g. the value
   returned by QGraphicsPathItem::type() is 2.
 
   \value Type
@@ -354,14 +354,14 @@
     draw or receive mouse, tablet, drag and drop or hover events outside its
     shape. It is disabled by default. This behavior is enforced by
     QGraphicsView::drawItems() or QGraphicsScene::drawItems(). This flag was
-    introduced in Qt 4.3.
+    introduced in BobUI 4.3.
 
     \value ItemClipsChildrenToShape The item clips the painting of all its
     descendants to its own shape. Items that are either direct or indirect
     children of this item cannot draw outside this item's shape. By default,
     this flag is disabled; children can draw anywhere. This behavior is
     enforced by QGraphicsView::drawItems() or
-    QGraphicsScene::drawItems(). This flag was introduced in Qt 4.3.
+    QGraphicsScene::drawItems(). This flag was introduced in BobUI 4.3.
     \note This flag is similar to ItemContainsChildrenInShape but in addition
     enforces the containment by clipping the children.
 
@@ -373,26 +373,26 @@
     item's view geometry and scene geometry will be maintained separately. You
     must call deviceTransform() to map coordinates and detect collisions in
     the view. By default, this flag is disabled. This flag was introduced in
-    Qt 4.3. \note With this flag set you can still scale the item itself, and
+    BobUI 4.3. \note With this flag set you can still scale the item itself, and
     that scale transformation will influence the item's children.
 
     \value ItemIgnoresParentOpacity The item ignores its parent's opacity. The
     item's effective opacity is the same as its own; it does not combine with
     the parent's opacity. This flags allows your item to keep its absolute
     opacity even if the parent is semitransparent. This flag was introduced in
-    Qt 4.5.
+    BobUI 4.5.
 
     \value ItemDoesntPropagateOpacityToChildren The item doesn't propagate its
     opacity to its children. This flag allows you to create a semitransparent
     item that does not affect the opacity of its children. This flag was
-    introduced in Qt 4.5.
+    introduced in BobUI 4.5.
 
     \value ItemStacksBehindParent The item is stacked behind its parent. By
     default, child items are stacked on top of the parent item. But setting
     this flag, the child will be stacked behind it. This flag is useful for
     drop shadow effects and for decoration objects that follow the parent
     item's geometry without drawing on top of it. This flag was introduced
-    in Qt 4.5.
+    in BobUI 4.5.
 
     \value ItemUsesExtendedStyleOption The item makes use of either
     \l{QStyleOptionGraphicsItem::} {exposedRect} in
@@ -402,12 +402,12 @@
     enable this flag for the style options to be set up with more
     fine-grained values. Use
     QStyleOptionGraphicsItem::levelOfDetailFromTransform() if you need
-    a higher value. This flag was introduced in Qt 4.6.
+    a higher value. This flag was introduced in BobUI 4.6.
 
     \value ItemHasNoContents The item does not paint anything (i.e., calling
     paint() on the item has no effect). You should set this flag on items that
     do not need to be painted to ensure that Graphics View avoids unnecessary
-    painting preparations. This flag was introduced in Qt 4.6.
+    painting preparations. This flag was introduced in BobUI 4.6.
 
     \value ItemSendsGeometryChanges The item enables itemChange()
     notifications for ItemPositionChange, ItemPositionHasChanged,
@@ -416,23 +416,23 @@
     ItemTransformOriginPointChange, and ItemTransformOriginPointHasChanged. For
     performance reasons, these notifications are disabled by default. You must
     enable this flag to receive notifications for position and transform
-    changes. This flag was introduced in Qt 4.6.
+    changes. This flag was introduced in BobUI 4.6.
 
     \value ItemAcceptsInputMethod The item supports input methods typically
     used for Asian languages.
-    This flag was introduced in Qt 4.6.
+    This flag was introduced in BobUI 4.6.
 
     \value ItemNegativeZStacksBehindParent The item automatically
     stacks behind it's parent if it's z-value is negative. This flag
     enables setZValue() to toggle ItemStacksBehindParent. This flag
-    was introduced in Qt 4.6.
+    was introduced in BobUI 4.6.
 
     \value ItemIsPanel The item is a panel. A panel provides activation and
     contained focus handling. Only one panel can be active at a time (see
     QGraphicsItem::isActive()). When no panel is active, QGraphicsScene
     activates all non-panel items. Window items (i.e.,
     QGraphicsItem::isWindow() returns \c true) are panels. This flag was
-    introduced in Qt 4.6.
+    introduced in BobUI 4.6.
 
     \omitvalue ItemIsFocusScope \omit Internal only (for now). \endomit
 
@@ -440,7 +440,7 @@
     notifications for ItemScenePositionHasChanged. For performance reasons,
     these notifications are disabled by default. You must enable this flag
     to receive notifications for scene position changes. This flag was
-    introduced in Qt 4.6.
+    introduced in BobUI 4.6.
 
     \omitvalue ItemStopsClickFocusPropagation \omit The item stops propagating
     click focus to items underneath when being clicked on. This flag
@@ -450,7 +450,7 @@
     \omitvalue ItemStopsFocusHandling \omit Same as
     ItemStopsClickFocusPropagation, but also suppresses focus-out. This flag
     allows you to completely take over focus handling.
-    This flag was introduced in Qt 4.7. \endomit
+    This flag was introduced in BobUI 4.7. \endomit
 
     \value ItemContainsChildrenInShape This flag indicates that all of the
     item's direct or indirect children only draw within the item's shape.
@@ -463,7 +463,7 @@
     will be enforced. This is equivalent to just setting
     ItemClipsChildrenToShape.
 
-    This flag was introduced in Qt 5.4.
+    This flag was introduced in BobUI 5.4.
 */
 
 /*!
@@ -513,7 +513,7 @@
     notification is sent if the ItemSendsGeometryChanges flag is enabled, and
     when the item's local transformation matrix changes (i.e., as a result of
     calling setTransform(). The value argument is the new matrix (i.e., a
-    QTransform); to get the old matrix, call transform(). Do not call
+    BOBUIransform); to get the old matrix, call transform(). Do not call
     setTransform() or set any of the transformation properties in itemChange()
     as this notification is delivered; instead, you can return the new matrix
     from itemChange().  This notification is not sent if you change the
@@ -644,12 +644,12 @@
     this notification is delivered. The return value is ignored.
 
     \value ItemToolTipChange The item's tooltip changes. The value argument is
-    the new tooltip (i.e., a QToolTip). Do not call setToolTip() in
+    the new tooltip (i.e., a BOBUIoolTip). Do not call setToolTip() in
     itemChange() as this notification is delivered. Instead, you can return a
     new tooltip from itemChange().
 
     \value ItemToolTipHasChanged The item's tooltip has changed. The value
-    argument is the new tooltip (i.e., a QToolTip). Do not call setToolTip()
+    argument is the new tooltip (i.e., a BOBUIoolTip). Do not call setToolTip()
     as this notification is delivered. The return value is ignored.
 
     \value ItemFlagsChange The item's flags change. The value argument is the
@@ -764,37 +764,37 @@
 #include "qgraphicswidget.h"
 #include "qgraphicsproxywidget.h"
 #include "qgraphicsscenebsptreeindex_p.h"
-#include <QtCore/qbitarray.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qstack.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qnumeric.h>
-#include <QtWidgets/qapplication.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpainterpath.h>
-#include <QtGui/qpixmapcache.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qinputmethod.h>
-#if QT_CONFIG(graphicseffect)
-#include <QtWidgets/qgraphicseffect.h>
+#include <BobUICore/qbitarray.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qstack.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIGui/qbitmap.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUIGui/qpixmapcache.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qinputmethod.h>
+#if BOBUI_CONFIG(graphicseffect)
+#include <BobUIWidgets/qgraphicseffect.h>
 #endif
 
 #include <private/qgraphicsitem_p.h>
 #include <private/qgraphicswidget_p.h>
 #include <private/qwidgettextcontrol_p.h>
-#include <private/qtextdocumentlayout_p.h>
-#include <private/qtextengine_p.h>
+#include <private/bobuiextdocumentlayout_p.h>
+#include <private/bobuiextengine_p.h>
 #include <private/qwidget_p.h>
 #include <private/qapplication_p.h>
 #include <private/qgesturemanager_p.h>
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QGraphicsItem*, QGraphicsItem_ptr)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QGraphicsItem*, QGraphicsItem_ptr)
 
 static inline void _q_adjustRect(QRect *rect)
 {
@@ -813,7 +813,7 @@ class QGraphicsItemCustomDataStore
 public:
     QHash<const QGraphicsItem *, QMap<int, QVariant> > data;
 };
-Q_GLOBAL_STATIC(QGraphicsItemCustomDataStore, qt_dataStore)
+Q_GLOBAL_STATIC(QGraphicsItemCustomDataStore, bobui_dataStore)
 
 /*!
     \internal
@@ -821,13 +821,13 @@ Q_GLOBAL_STATIC(QGraphicsItemCustomDataStore, qt_dataStore)
     Returns a QPainterPath of \a path when stroked with the \a pen.
     Ignoring dash pattern.
 */
-static QPainterPath qt_graphicsItem_shapeFromPath(const QPainterPath &path, const QPen &pen)
+static QPainterPath bobui_graphicsItem_shapeFromPath(const QPainterPath &path, const QPen &pen)
 {
     // We unfortunately need this hack as QPainterPathStroker will set a width of 1.0
     // if we pass a value of 0.0 to QPainterPathStroker::setWidth()
     const qreal penWidthZero = qreal(0.00000001);
 
-    if (path == QPainterPath() || pen == Qt::NoPen)
+    if (path == QPainterPath() || pen == BobUI::NoPen)
         return path;
     QPainterPathStroker ps;
     ps.setCapStyle(pen.capStyle());
@@ -858,7 +858,7 @@ QGraphicsItemPrivate::QGraphicsItemPrivate()
       focusProxy(nullptr),
       subFocusItem(nullptr),
       focusScopeItem(nullptr),
-      imHints(Qt::ImhNone),
+      imHints(BobUI::ImhNone),
       panelModality(QGraphicsItem::NonModal),
       acceptedMouseButtons(0x1f),
       visible(true),
@@ -1060,7 +1060,7 @@ void QGraphicsItemPrivate::remapItemPos(QEvent *event, QGraphicsItem *item)
         mouseEvent->setLastPos(item->mapFromItem(q, mouseEvent->pos()));
         for (int i = 0x1; i <= 0x10; i <<= 1) {
             if (mouseEvent->buttons() & i) {
-                Qt::MouseButton button = Qt::MouseButton(i);
+                BobUI::MouseButton button = BobUI::MouseButton(i);
                 mouseEvent->setButtonDownPos(button, item->mapFromItem(q, mouseEvent->buttonDownPos(button)));
             }
         }
@@ -1094,7 +1094,7 @@ void QGraphicsItemPrivate::remapItemPos(QEvent *event, QGraphicsItem *item)
     view's transformation.
 */
 
-QTransform QGraphicsItemPrivate::genericMapFromSceneTransform(const QWidget *viewport) const
+BOBUIransform QGraphicsItemPrivate::genericMapFromSceneTransform(const QWidget *viewport) const
 {
     Q_Q(const QGraphicsItem);
     if (!itemIsUntransformable())
@@ -1105,7 +1105,7 @@ QTransform QGraphicsItemPrivate::genericMapFromSceneTransform(const QWidget *vie
     if (view == nullptr)
         return sceneTransform.inverted();
     // ### More ping pong than needed.
-    const QTransform viewportTransform = view->viewportTransform();
+    const BOBUIransform viewportTransform = view->viewportTransform();
     return viewportTransform * q->deviceTransform(viewportTransform).inverted();
 }
 
@@ -1123,7 +1123,7 @@ QPointF QGraphicsItemPrivate::genericMapFromScene(const QPointF &pos,
     If you need to change this function (e.g., adding more transformation
     modes / options), make sure to change all places marked with COMBINE.
 */
-void QGraphicsItemPrivate::combineTransformToParent(QTransform *x, const QTransform *viewTransform) const
+void QGraphicsItemPrivate::combineTransformToParent(BOBUIransform *x, const BOBUIransform *viewTransform) const
 {
     // COMBINE
     if (viewTransform && itemIsUntransformable()) {
@@ -1132,7 +1132,7 @@ void QGraphicsItemPrivate::combineTransformToParent(QTransform *x, const QTransf
         if (transformData)
             *x *= transformData->computedFullTransform();
         if (!pos.isNull())
-            *x *= QTransform::fromTranslate(pos.x(), pos.y());
+            *x *= BOBUIransform::fromTranslate(pos.x(), pos.y());
     }
 }
 
@@ -1145,7 +1145,7 @@ void QGraphicsItemPrivate::combineTransformToParent(QTransform *x, const QTransf
     modes / options), make sure to change QGraphicsItem::deviceTransform() as
     well.
 */
-void QGraphicsItemPrivate::combineTransformFromParent(QTransform *x, const QTransform *viewTransform) const
+void QGraphicsItemPrivate::combineTransformFromParent(BOBUIransform *x, const BOBUIransform *viewTransform) const
 {
     // COMBINE
     if (viewTransform && itemIsUntransformable()) {
@@ -1162,7 +1162,7 @@ void QGraphicsItemPrivate::updateSceneTransformFromParent()
     if (parent) {
         Q_ASSERT(!parent->d_ptr->dirtySceneTransform);
         if (parent->d_ptr->sceneTransformTranslateOnly) {
-            sceneTransform = QTransform::fromTranslate(parent->d_ptr->sceneTransform.dx() + pos.x(),
+            sceneTransform = BOBUIransform::fromTranslate(parent->d_ptr->sceneTransform.dx() + pos.x(),
                                                        parent->d_ptr->sceneTransform.dy() + pos.y());
         } else {
             sceneTransform = parent->d_ptr->sceneTransform;
@@ -1170,25 +1170,25 @@ void QGraphicsItemPrivate::updateSceneTransformFromParent()
         }
         if (transformData) {
             sceneTransform = transformData->computedFullTransform(&sceneTransform);
-            sceneTransformTranslateOnly = (sceneTransform.type() <= QTransform::TxTranslate);
+            sceneTransformTranslateOnly = (sceneTransform.type() <= BOBUIransform::TxTranslate);
         } else {
             sceneTransformTranslateOnly = parent->d_ptr->sceneTransformTranslateOnly;
         }
     } else if (!transformData) {
-        sceneTransform = QTransform::fromTranslate(pos.x(), pos.y());
+        sceneTransform = BOBUIransform::fromTranslate(pos.x(), pos.y());
         sceneTransformTranslateOnly = 1;
     } else if (transformData->onlyTransform) {
         sceneTransform = transformData->transform;
         if (!pos.isNull())
-            sceneTransform *= QTransform::fromTranslate(pos.x(), pos.y());
-        sceneTransformTranslateOnly = (sceneTransform.type() <= QTransform::TxTranslate);
+            sceneTransform *= BOBUIransform::fromTranslate(pos.x(), pos.y());
+        sceneTransformTranslateOnly = (sceneTransform.type() <= BOBUIransform::TxTranslate);
     } else if (pos.isNull()) {
         sceneTransform = transformData->computedFullTransform();
-        sceneTransformTranslateOnly = (sceneTransform.type() <= QTransform::TxTranslate);
+        sceneTransformTranslateOnly = (sceneTransform.type() <= BOBUIransform::TxTranslate);
     } else {
-        sceneTransform = QTransform::fromTranslate(pos.x(), pos.y());
+        sceneTransform = BOBUIransform::fromTranslate(pos.x(), pos.y());
         sceneTransform = transformData->computedFullTransform(&sceneTransform);
-        sceneTransformTranslateOnly = (sceneTransform.type() <= QTransform::TxTranslate);
+        sceneTransformTranslateOnly = (sceneTransform.type() <= BOBUIransform::TxTranslate);
     }
     dirtySceneTransform = 0;
 }
@@ -1385,7 +1385,7 @@ void QGraphicsItemPrivate::setParentItemHelper(QGraphicsItem *newParent, const Q
 
     Returns the bounding rect of this item's children (excluding itself).
 */
-void QGraphicsItemPrivate::childrenBoundingRectHelper(QTransform *x, QRectF *rect, QGraphicsItem *topMostEffectItem)
+void QGraphicsItemPrivate::childrenBoundingRectHelper(BOBUIransform *x, QRectF *rect, QGraphicsItem *topMostEffectItem)
 {
     Q_Q(QGraphicsItem);
 
@@ -1402,7 +1402,7 @@ void QGraphicsItemPrivate::childrenBoundingRectHelper(QTransform *x, QRectF *rec
         bool hasPos = !childd->pos.isNull();
         if (hasPos || childd->transformData) {
             // COMBINE
-            QTransform matrix = childd->transformToParent();
+            BOBUIransform matrix = childd->transformToParent();
             if (x)
                 matrix *= *x;
             *rect |= matrix.mapRect(child->d_ptr->effectiveBoundingRect(topMostEffectItem));
@@ -1428,7 +1428,7 @@ void QGraphicsItemPrivate::childrenBoundingRectHelper(QTransform *x, QRectF *rec
     *result |= *rect;
 }
 
-void QGraphicsItemPrivate::initStyleOption(QStyleOptionGraphicsItem *option, const QTransform &worldTransform,
+void QGraphicsItemPrivate::initStyleOption(QStyleOptionGraphicsItem *option, const BOBUIransform &worldTransform,
                                            const QRegion &exposedRegion, bool allItems) const
 {
     Q_ASSERT(option);
@@ -1466,7 +1466,7 @@ void QGraphicsItemPrivate::initStyleOption(QStyleOptionGraphicsItem *option, con
     if (!allItems) {
         // Determine the item's exposed area
         option->exposedRect = QRectF();
-        const QTransform reverseMap = worldTransform.inverted();
+        const BOBUIransform reverseMap = worldTransform.inverted();
         for (const QRect &exposedRect : exposedRegion) {
             option->exposedRect |= reverseMap.mapRect(QRectF(exposedRect));
             if (option->exposedRect.contains(brect))
@@ -1545,7 +1545,7 @@ QGraphicsItem::~QGraphicsItem()
     d_ptr->inDestructor = 1;
     d_ptr->removeExtraItemCache();
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     if (d_ptr->isObject && !d_ptr->gestureContext.isEmpty()) {
         QGraphicsObject *o = static_cast<QGraphicsObject *>(this);
         if (QGestureManager *manager = QGestureManager::instance(QGestureManager::DontForceCreation)) {
@@ -1582,9 +1582,9 @@ QGraphicsItem::~QGraphicsItem()
         setParentItem(nullptr);
     }
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     delete d_ptr->graphicsEffect;
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
     if (d_ptr->transformData) {
         for(int i = 0; i < d_ptr->transformData->graphicsTransforms.size(); ++i) {
             QGraphicsTransform *t = d_ptr->transformData->graphicsTransforms.at(i);
@@ -1594,7 +1594,7 @@ QGraphicsItem::~QGraphicsItem()
     }
     delete d_ptr->transformData;
 
-    if (QGraphicsItemCustomDataStore *dataStore = qt_dataStore())
+    if (QGraphicsItemCustomDataStore *dataStore = bobui_dataStore())
         dataStore->data.remove(this);
 }
 
@@ -1842,7 +1842,7 @@ bool QGraphicsItem::isWidget() const
 */
 bool QGraphicsItem::isWindow() const
 {
-    return d_ptr->isWidget && (static_cast<const QGraphicsWidget *>(this)->windowType() & Qt::Window);
+    return d_ptr->isWidget && (static_cast<const QGraphicsWidget *>(this)->windowType() & BobUI::Window);
 }
 
 /*!
@@ -2084,7 +2084,7 @@ QGraphicsItem::CacheMode QGraphicsItem::cacheMode() const
 
     \note Enabling caching does not imply that the item's paint() function will be
     called only in response to an explicit update() call. For instance, under
-    memory pressure, Qt may decide to drop some of the cache information;
+    memory pressure, BobUI may decide to drop some of the cache information;
     in such cases an item's paint() function will be called even if there
     was no update() call (that is, exactly as if there were no caching enabled).
 
@@ -2197,12 +2197,12 @@ bool QGraphicsItem::isBlockedByModalPanel(QGraphicsItem **blockingPanel) const
     return false;
 }
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
 /*!
     Returns the item's tool tip, or an empty QString if no tool tip has been
     set.
 
-    \sa setToolTip(), QToolTip
+    \sa setToolTip(), BOBUIoolTip
 */
 QString QGraphicsItem::toolTip() const
 {
@@ -2213,7 +2213,7 @@ QString QGraphicsItem::toolTip() const
     Sets the item's tool tip to \a toolTip. If \a toolTip is empty, the item's
     tool tip is cleared.
 
-    \sa toolTip(), QToolTip
+    \sa toolTip(), BOBUIoolTip
 */
 void QGraphicsItem::setToolTip(const QString &toolTip)
 {
@@ -2221,13 +2221,13 @@ void QGraphicsItem::setToolTip(const QString &toolTip)
     d_ptr->setExtra(QGraphicsItemPrivate::ExtraToolTip, toolTipVariant.toString());
     itemChange(ItemToolTipHasChanged, toolTipVariant);
 }
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 /*!
     Returns the current cursor shape for the item. The mouse cursor
     will assume this shape when it's over this item.
-    See the \l{Qt::CursorShape}{list of predefined cursor objects} for a
+    See the \l{BobUI::CursorShape}{list of predefined cursor objects} for a
     range of useful shapes.
 
     An editor item might want to use an I-beam cursor:
@@ -2247,7 +2247,7 @@ QCursor QGraphicsItem::cursor() const
 /*!
     Sets the current cursor shape for the item to \a cursor. The mouse cursor
     will assume this shape when it's over this item.
-    See the \l{Qt::CursorShape}{list of predefined cursor objects} for a
+    See the \l{BobUI::CursorShape}{list of predefined cursor objects} for a
     range of useful shapes.
 
     An editor item might want to use an I-beam cursor:
@@ -2326,7 +2326,7 @@ void QGraphicsItem::unsetCursor()
     }
 }
 
-#endif // QT_NO_CURSOR
+#endif // BOBUI_NO_CURSOR
 
 /*!
    Returns \c true if the item is visible; otherwise, false is returned.
@@ -2405,9 +2405,9 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly,
         if (c)
             c->purge();
         if (scene) {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
             invalidateParentGraphicsEffectsRecursively();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
             scene->d_func()->markDirty(q_ptr, QRectF(), /*invalidateChildren=*/false, /*force=*/true);
         }
     }
@@ -2446,7 +2446,7 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly,
         if (scene) {
             if (isWidget) {
                 QGraphicsWidget *widget = static_cast<QGraphicsWidget *>(q_ptr);
-                if (widget->windowType() == Qt::Popup)
+                if (widget->windowType() == BobUI::Popup)
                     scene->d_func()->addPopup(widget);
             }
             if (q->isPanel() && panelModality != QGraphicsItem::NonModal) {
@@ -2488,7 +2488,7 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly,
                         done = true;
                         while (fsi->d_ptr->focusScopeItem && fsi->d_ptr->focusScopeItem->isVisible())
                             fsi = fsi->d_ptr->focusScopeItem;
-                        fsi->d_ptr->setFocusHelper(Qt::OtherFocusReason, /* climb = */ true,
+                        fsi->d_ptr->setFocusHelper(BobUI::OtherFocusReason, /* climb = */ true,
                                                    /* focusFromHide = */ false);
                     }
                     break;
@@ -2512,7 +2512,7 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly,
                 while (p) {
                     if (p->flags() & QGraphicsItem::ItemIsFocusScope) {
                         if (p->d_ptr->visible) {
-                            p->d_ptr->setFocusHelper(Qt::OtherFocusReason, /* climb = */ true,
+                            p->d_ptr->setFocusHelper(BobUI::OtherFocusReason, /* climb = */ true,
                                                      /* focusFromHide = */ true);
                         }
                         break;
@@ -2856,11 +2856,11 @@ void QGraphicsItem::setOpacity(qreal opacity)
 
     // Update.
     if (d_ptr->scene) {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         d_ptr->invalidateParentGraphicsEffectsRecursively();
         if (!(d_ptr->flags & ItemDoesntPropagateOpacityToChildren))
             d_ptr->invalidateChildGraphicsEffectsRecursively(QGraphicsItemPrivate::OpacityChanged);
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
         d_ptr->scene->d_func()->markDirty(this, QRectF(),
                                           /*invalidateChildren=*/true,
                                           /*force=*/false,
@@ -2878,7 +2878,7 @@ void QGraphicsItem::setOpacity(qreal opacity)
 
     \since 4.6
 */
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 QGraphicsEffect *QGraphicsItem::graphicsEffect() const
 {
     return d_ptr->graphicsEffect;
@@ -2920,11 +2920,11 @@ void QGraphicsItem::setGraphicsEffect(QGraphicsEffect *effect)
         prepareGeometryChange();
     }
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 void QGraphicsItemPrivate::updateChildWithGraphicsEffectFlagRecursively()
 {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     QGraphicsItemPrivate *itemPrivate = this;
     do {
         // parent chain already notified?
@@ -2947,7 +2947,7 @@ void QGraphicsItemPrivate::updateChildWithGraphicsEffectFlagRecursively()
 */
 QRectF QGraphicsItemPrivate::effectiveBoundingRect(const QRectF &rect) const
 {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     Q_Q(const QGraphicsItem);
     QGraphicsEffect *effect = graphicsEffect;
     if (scene && effect && effect->isEnabled()) {
@@ -2963,7 +2963,7 @@ QRectF QGraphicsItemPrivate::effectiveBoundingRect(const QRectF &rect) const
         }
         return q->mapRectFromScene(sceneEffectRect);
     }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
     return rect;
 }
 
@@ -2979,7 +2979,7 @@ QRectF QGraphicsItemPrivate::effectiveBoundingRect(const QRectF &rect) const
 */
 QRectF QGraphicsItemPrivate::effectiveBoundingRect(QGraphicsItem *topMostEffectItem) const
 {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     Q_Q(const QGraphicsItem);
     QRectF brect = effectiveBoundingRect(q_ptr->boundingRect());
     if (ancestorFlags & QGraphicsItemPrivate::AncestorClipsChildren
@@ -3004,10 +3004,10 @@ QRectF QGraphicsItemPrivate::effectiveBoundingRect(QGraphicsItem *topMostEffectI
     }
 
     return brect;
-#else //QT_CONFIG(graphicseffect)
+#else //BOBUI_CONFIG(graphicseffect)
     Q_UNUSED(topMostEffectItem);
     return q_ptr->boundingRect();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 }
 
@@ -3077,9 +3077,9 @@ void QGraphicsItem::setAcceptDrops(bool on)
 
     \sa setAcceptedMouseButtons(), mousePressEvent()
 */
-Qt::MouseButtons QGraphicsItem::acceptedMouseButtons() const
+BobUI::MouseButtons QGraphicsItem::acceptedMouseButtons() const
 {
-    return Qt::MouseButtons(d_ptr->acceptedMouseButtons);
+    return BobUI::MouseButtons(d_ptr->acceptedMouseButtons);
 }
 
 /*!
@@ -3092,13 +3092,13 @@ Qt::MouseButtons QGraphicsItem::acceptedMouseButtons() const
     mouse events to the first item beneath it that does.
 
     To disable mouse events for an item (i.e., make it transparent for mouse
-    events), call setAcceptedMouseButtons(Qt::NoButton).
+    events), call setAcceptedMouseButtons(BobUI::NoButton).
 
     \sa acceptedMouseButtons(), mousePressEvent()
 */
-void QGraphicsItem::setAcceptedMouseButtons(Qt::MouseButtons buttons)
+void QGraphicsItem::setAcceptedMouseButtons(BobUI::MouseButtons buttons)
 {
-    if (Qt::MouseButtons(d_ptr->acceptedMouseButtons) != buttons) {
+    if (BobUI::MouseButtons(d_ptr->acceptedMouseButtons) != buttons) {
         if (buttons == 0 && d_ptr->scene && d_ptr->scene->mouseGrabberItem() == this
             && d_ptr->scene->d_func()->lastMouseGrabberItemHasImplicitMouseGrab) {
             ungrabMouse();
@@ -3166,7 +3166,7 @@ void QGraphicsItem::setAcceptHoverEvents(bool enabled)
 
 /*! \since 4.6
 
-    Returns \c true if an item accepts \l{QTouchEvent}{touch events};
+    Returns \c true if an item accepts \l{BOBUIouchEvent}{touch events};
     otherwise, returns \c false. By default, items do not accept touch events.
 
     \sa setAcceptTouchEvents()
@@ -3179,7 +3179,7 @@ bool QGraphicsItem::acceptTouchEvents() const
 /*!
     \since 4.6
 
-    If \a enabled is true, this item will accept \l{QTouchEvent}{touch events};
+    If \a enabled is true, this item will accept \l{BOBUIouchEvent}{touch events};
     otherwise, it will ignore them. By default, items do not accept
     touch events.
 */
@@ -3383,7 +3383,7 @@ bool QGraphicsItem::hasFocus() const
 
     \sa clearFocus(), hasFocus(), focusItem(), focusProxy()
 */
-void QGraphicsItem::setFocus(Qt::FocusReason focusReason)
+void QGraphicsItem::setFocus(BobUI::FocusReason focusReason)
 {
     d_ptr->setFocusHelper(focusReason, /* climb = */ true, /* focusFromHide = */ false);
 }
@@ -3391,7 +3391,7 @@ void QGraphicsItem::setFocus(Qt::FocusReason focusReason)
 /*!
     \internal
 */
-void QGraphicsItemPrivate::setFocusHelper(Qt::FocusReason focusReason, bool climb, bool focusFromHide)
+void QGraphicsItemPrivate::setFocusHelper(BobUI::FocusReason focusReason, bool climb, bool focusFromHide)
 {
     // Disabled / unfocusable items cannot accept focus.
     if (!q_ptr->isEnabled() || !(flags & QGraphicsItem::ItemIsFocusable))
@@ -3491,7 +3491,7 @@ void QGraphicsItemPrivate::clearFocusHelper(bool giveFocusToParent, bool hiddenB
                             focusScopeItemChange(false);
                     }
                     if (subFocusItem->hasFocus())
-                        p->d_ptr->setFocusHelper(Qt::OtherFocusReason, /* climb = */ false,
+                        p->d_ptr->setFocusHelper(BobUI::OtherFocusReason, /* climb = */ false,
                                                  /* focusFromHide = */ false);
                     return;
                 }
@@ -3616,10 +3616,10 @@ QGraphicsItem *QGraphicsItem::focusScopeItem() const
     event. These events can be used to detect when your item gains or loses
     the mouse grab through other means than receiving mouse button events.
 
-    It is almost never necessary to explicitly grab the mouse in Qt, as Qt
-    grabs and releases it sensibly. In particular, Qt grabs the mouse when you
+    It is almost never necessary to explicitly grab the mouse in BobUI, as BobUI
+    grabs and releases it sensibly. In particular, BobUI grabs the mouse when you
     press a mouse button, and keeps the mouse grabbed until you release the
-    last mouse button. Also, Qt::Popup widgets implicitly call grabMouse()
+    last mouse button. Also, BobUI::Popup widgets implicitly call grabMouse()
     when shown, and ungrabMouse() when hidden.
 
     Note that only visible items can grab mouse input. Calling grabMouse() on
@@ -3679,8 +3679,8 @@ void QGraphicsItem::ungrabMouse()
     item gains or loses the keyboard grab through other means than gaining
     input focus.
 
-    It is almost never necessary to explicitly grab the keyboard in Qt, as Qt
-    grabs and releases it sensibly. In particular, Qt grabs the keyboard when
+    It is almost never necessary to explicitly grab the keyboard in BobUI, as BobUI
+    grabs and releases it sensibly. In particular, BobUI grabs the keyboard when
     your item gains input focus, and releases it when your item loses input
     focus, or when the item is hidden.
 
@@ -3830,7 +3830,7 @@ void QGraphicsItemPrivate::setPosHelper(const QPointF &pos)
 
     Sets the transform \a transform.
 */
-void QGraphicsItemPrivate::setTransformHelper(const QTransform &transform)
+void QGraphicsItemPrivate::setTransformHelper(const BOBUIransform &transform)
 {
     q_ptr->prepareGeometryChange();
     transformData->transform = transform;
@@ -3943,10 +3943,10 @@ void QGraphicsItem::ensureVisible(const QRectF &rect, int xmargin, int ymargin)
 
     \sa setTransform(), sceneTransform()
 */
-QTransform QGraphicsItem::transform() const
+BOBUIransform QGraphicsItem::transform() const
 {
     if (!d_ptr->transformData)
-        return QTransform();
+        return BOBUIransform();
     return d_ptr->transformData->transform;
 }
 
@@ -4257,7 +4257,7 @@ void QGraphicsItem::setTransformOriginPoint(const QPointF &origin)
 
     \sa transform(), setTransform(), scenePos(), {The Graphics View Coordinate System}, {Transformations}
 */
-QTransform QGraphicsItem::sceneTransform() const
+BOBUIransform QGraphicsItem::sceneTransform() const
 {
     d_ptr->ensureSceneTransform();
     return d_ptr->sceneTransform;
@@ -4286,7 +4286,7 @@ QTransform QGraphicsItem::sceneTransform() const
     \sa transform(), setTransform(), scenePos(), {The Graphics View Coordinate
     System}, itemTransform()
 */
-QTransform QGraphicsItem::deviceTransform(const QTransform &viewportTransform) const
+BOBUIransform QGraphicsItem::deviceTransform(const BOBUIransform &viewportTransform) const
 {
     // Ensure we return the standard transform if we're not untransformable.
     if (!d_ptr->itemIsUntransformable()) {
@@ -4307,20 +4307,20 @@ QTransform QGraphicsItem::deviceTransform(const QTransform &viewportTransform) c
         // Assert in debug mode, continue in release.
         Q_ASSERT_X(untransformedAncestor, "QGraphicsItem::deviceTransform",
                    "Invalid object structure!");
-        return QTransform();
+        return BOBUIransform();
     }
 
     // Determine the inherited origin. Find the parent of the topmost untransformable.
     // Use its scene transform to map the position of the untransformable. Then use
     // that viewport position as the anchoring point for the untransformable subtree.
     QGraphicsItem *parentOfUntransformedAncestor = untransformedAncestor->parentItem();
-    QTransform inheritedMatrix;
+    BOBUIransform inheritedMatrix;
     if (parentOfUntransformedAncestor)
         inheritedMatrix = parentOfUntransformedAncestor->sceneTransform();
     QPointF mappedPoint = (inheritedMatrix * viewportTransform).map(untransformedAncestor->pos());
 
     // COMBINE
-    QTransform matrix = QTransform::fromTranslate(mappedPoint.x(), mappedPoint.y());
+    BOBUIransform matrix = BOBUIransform::fromTranslate(mappedPoint.x(), mappedPoint.y());
     if (untransformedAncestor->d_ptr->transformData)
         matrix = untransformedAncestor->d_ptr->transformData->computedFullTransform(&matrix);
 
@@ -4336,7 +4336,7 @@ QTransform QGraphicsItem::deviceTransform(const QTransform &viewportTransform) c
 /*!
     \since 4.5
 
-    Returns a QTransform that maps coordinates from this item to \a other. If
+    Returns a BOBUIransform that maps coordinates from this item to \a other. If
     \a ok is not null, and if there is no such transform, the boolean pointed
     to by \a ok will be set to false; otherwise it will be set to true.
 
@@ -4350,17 +4350,17 @@ QTransform QGraphicsItem::deviceTransform(const QTransform &viewportTransform) c
 
     \sa mapToItem(), mapFromItem(), deviceTransform()
 */
-QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) const
+BOBUIransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) const
 {
     // Catch simple cases first.
     if (other == nullptr) {
         qWarning("QGraphicsItem::itemTransform: null pointer passed");
-        return QTransform();
+        return BOBUIransform();
     }
     if (other == this) {
         if (ok)
             *ok = true;
-        return QTransform();
+        return BOBUIransform();
     }
 
     QGraphicsItem *parent = d_ptr->parent;
@@ -4370,7 +4370,7 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
     if (parent == other) {
         if (ok)
             *ok = true;
-        QTransform x;
+        BOBUIransform x;
         d_ptr->combineTransformFromParent(&x);
         return x;
     }
@@ -4379,13 +4379,13 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
     if (otherParent == this) {
         const QPointF &otherPos = other->d_ptr->pos;
         if (other->d_ptr->transformData) {
-            QTransform otherToParent;
+            BOBUIransform otherToParent;
             other->d_ptr->combineTransformFromParent(&otherToParent);
             return otherToParent.inverted(ok);
         }
         if (ok)
             *ok = true;
-        return QTransform::fromTranslate(-otherPos.x(), -otherPos.y());
+        return BOBUIransform::fromTranslate(-otherPos.x(), -otherPos.y());
     }
 
     // Siblings
@@ -4397,12 +4397,12 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
             QPointF delta = itemPos - otherPos;
             if (ok)
                 *ok = true;
-            return QTransform::fromTranslate(delta.x(), delta.y());
+            return BOBUIransform::fromTranslate(delta.x(), delta.y());
         }
 
-        QTransform itemToParent;
+        BOBUIransform itemToParent;
         d_ptr->combineTransformFromParent(&itemToParent);
-        QTransform otherToParent;
+        BOBUIransform otherToParent;
         other->d_ptr->combineTransformFromParent(&otherToParent);
         return itemToParent * otherToParent.inverted(ok);
     }
@@ -4421,14 +4421,14 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
     bool cousins = other != commonAncestor && this != commonAncestor;
     if (cousins) {
         bool good = false;
-        QTransform thisToScene = itemTransform(commonAncestor, &good);
-        QTransform otherToScene(Qt::Uninitialized);
+        BOBUIransform thisToScene = itemTransform(commonAncestor, &good);
+        BOBUIransform otherToScene(BobUI::Uninitialized);
         if (good)
             otherToScene = other->itemTransform(commonAncestor, &good);
         if (!good) {
             if (ok)
                 *ok = false;
-            return QTransform();
+            return BOBUIransform();
         }
         return thisToScene * otherToScene.inverted(ok);
     }
@@ -4438,7 +4438,7 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
     const QGraphicsItem *child = parentOfOther ? other : this;
     const QGraphicsItem *root = parentOfOther ? this : other;
 
-    QTransform x;
+    BOBUIransform x;
     const QGraphicsItem *p = child;
     do {
         p->d_ptr.data()->combineTransformToParent(&x);
@@ -4471,12 +4471,12 @@ QTransform QGraphicsItem::itemTransform(const QGraphicsItem *other, bool *ok) co
 
     \sa transform(), setRotation(), setScale(), setTransformOriginPoint(), {The Graphics View Coordinate System}, {Transformations}
 */
-void QGraphicsItem::setTransform(const QTransform &matrix, bool combine)
+void QGraphicsItem::setTransform(const BOBUIransform &matrix, bool combine)
 {
     if (!d_ptr->transformData)
         d_ptr->transformData = new QGraphicsItemPrivate::TransformData;
 
-    QTransform newTransform(combine ? matrix * d_ptr->transformData->transform : matrix);
+    BOBUIransform newTransform(combine ? matrix * d_ptr->transformData->transform : matrix);
     if (d_ptr->transformData->transform == newTransform)
         return;
 
@@ -4490,8 +4490,8 @@ void QGraphicsItem::setTransform(const QTransform &matrix, bool combine)
 
     // Notify the item that the transformation matrix is changing.
     const QVariant newTransformVariant(itemChange(ItemTransformChange,
-                                                  QVariant::fromValue<QTransform>(newTransform)));
-    newTransform = qvariant_cast<QTransform>(newTransformVariant);
+                                                  QVariant::fromValue<BOBUIransform>(newTransform)));
+    newTransform = qvariant_cast<BOBUIransform>(newTransformVariant);
     if (d_ptr->transformData->transform == newTransform)
         return;
 
@@ -4508,13 +4508,13 @@ void QGraphicsItem::setTransform(const QTransform &matrix, bool combine)
 
     Resets this item's transformation matrix to the identity matrix or
     all the transformation properties to their default values.
-    This is equivalent to calling \c setTransform(QTransform()).
+    This is equivalent to calling \c setTransform(BOBUIransform()).
 
     \sa setTransform(), transform()
 */
 void QGraphicsItem::resetTransform()
 {
-    setTransform(QTransform(), false);
+    setTransform(BOBUIransform(), false);
 }
 
 /*!
@@ -4531,7 +4531,7 @@ void QGraphicsItem::resetTransform()
     multiple-inherit from QObject and QGraphicsItem and use the \l{The Animation
     Framework}{Animation Framework}.
 
-    \sa QGraphicsScene::advance(), QTimeLine
+    \sa QGraphicsScene::advance(), BOBUIimeLine
 */
 void QGraphicsItem::advance(int phase)
 {
@@ -4928,9 +4928,9 @@ bool QGraphicsItem::contains(const QPointF &point) const
 
     The \a mode is applied to \a other, and the resulting shape or
     bounding rectangle is then compared to this item's shape. The
-    default value for \a mode is Qt::IntersectsItemShape; \a other
+    default value for \a mode is BobUI::IntersectsItemShape; \a other
     collides with this item if it either intersects, contains, or is
-    contained by this item's shape (see Qt::ItemSelectionMode for
+    contained by this item's shape (see BobUI::ItemSelectionMode for
     details).
 
     The default implementation is based on shape intersection, and it calls
@@ -4950,7 +4950,7 @@ bool QGraphicsItem::contains(const QPointF &point) const
 
     \sa contains(), shape()
 */
-bool QGraphicsItem::collidesWithItem(const QGraphicsItem *other, Qt::ItemSelectionMode mode) const
+bool QGraphicsItem::collidesWithItem(const QGraphicsItem *other, BobUI::ItemSelectionMode mode) const
 {
     if (other == this)
         return true;
@@ -4983,7 +4983,7 @@ bool QGraphicsItem::collidesWithItem(const QGraphicsItem *other, Qt::ItemSelecti
     Returns \c true if this item collides with \a path.
 
     The collision is determined by \a mode. The default value for \a mode is
-    Qt::IntersectsItemShape; \a path collides with this item if it either
+    BobUI::IntersectsItemShape; \a path collides with this item if it either
     intersects, contains, or is contained by this item's shape.
 
     Note that this function checks whether the item's shape or
@@ -4993,7 +4993,7 @@ bool QGraphicsItem::collidesWithItem(const QGraphicsItem *other, Qt::ItemSelecti
 
     \sa collidesWithItem(), contains(), shape()
 */
-bool QGraphicsItem::collidesWithPath(const QPainterPath &path, Qt::ItemSelectionMode mode) const
+bool QGraphicsItem::collidesWithPath(const QPainterPath &path, BobUI::ItemSelectionMode mode) const
 {
     if (path.isEmpty()) {
         // No collision with empty paths.
@@ -5012,7 +5012,7 @@ bool QGraphicsItem::collidesWithPath(const QPainterPath &path, Qt::ItemSelection
 
     // For further testing, we need this item's shape or bounding rect.
     QPainterPath thisShape;
-    if (mode == Qt::IntersectsItemShape || mode == Qt::ContainsItemShape)
+    if (mode == BobUI::IntersectsItemShape || mode == BobUI::ContainsItemShape)
         thisShape = (isClipped() && !d_ptr->localCollisionHack) ? clipPath() : shape();
     else
         thisShape.addRect(rectA);
@@ -5023,7 +5023,7 @@ bool QGraphicsItem::collidesWithPath(const QPainterPath &path, Qt::ItemSelection
     }
 
     // Use QPainterPath boolean operations to determine the collision, O(N*logN).
-    if (mode == Qt::IntersectsItemShape || mode == Qt::IntersectsItemBoundingRect)
+    if (mode == BobUI::IntersectsItemShape || mode == BobUI::IntersectsItemBoundingRect)
         return path.intersects(thisShape);
     return path.contains(thisShape);
 }
@@ -5034,11 +5034,11 @@ bool QGraphicsItem::collidesWithPath(const QPainterPath &path, Qt::ItemSelection
     The way collisions are detected is determined by applying \a mode
     to items that are compared to this item, i.e., each item's shape
     or bounding rectangle is checked against this item's shape. The
-    default value for \a mode is Qt::IntersectsItemShape.
+    default value for \a mode is BobUI::IntersectsItemShape.
 
     \sa collidesWithItem()
 */
-QList<QGraphicsItem *> QGraphicsItem::collidingItems(Qt::ItemSelectionMode mode) const
+QList<QGraphicsItem *> QGraphicsItem::collidingItems(BobUI::ItemSelectionMode mode) const
 {
     if (d_ptr->scene)
         return d_ptr->scene->collidingItems(this, mode);
@@ -5055,7 +5055,7 @@ QList<QGraphicsItem *> QGraphicsItem::collidingItems(Qt::ItemSelectionMode mode)
     completely. \a other is assumed to already be "on top of" \a item
     wrt. stacking order.
 */
-static bool qt_QGraphicsItem_isObscured(const QGraphicsItem *item,
+static bool bobui_QGraphicsItem_isObscured(const QGraphicsItem *item,
                                         const QGraphicsItem *other,
                                         const QRectF &rect)
 {
@@ -5080,11 +5080,11 @@ bool QGraphicsItem::isObscured(const QRectF &rect) const
     QRectF br = boundingRect();
     QRectF testRect = rect.isNull() ? br : rect;
 
-    const auto items = d->scene->items(mapToScene(br), Qt::IntersectsItemBoundingRect);
+    const auto items = d->scene->items(mapToScene(br), BobUI::IntersectsItemBoundingRect);
     for (QGraphicsItem *item : items) {
         if (item == this)
             break;
-        if (qt_QGraphicsItem_isObscured(this, item, testRect))
+        if (bobui_QGraphicsItem_isObscured(this, item, testRect))
             return true;
     }
     return false;
@@ -5115,8 +5115,8 @@ bool QGraphicsItem::isObscuredBy(const QGraphicsItem *item) const
 {
     if (!item)
         return false;
-    return qt_closestItemFirst(item, this)
-        && qt_QGraphicsItem_isObscured(this, item, boundingRect());
+    return bobui_closestItemFirst(item, this)
+        && bobui_QGraphicsItem_isObscured(this, item, boundingRect());
 }
 
 /*!
@@ -5142,7 +5142,7 @@ QPainterPath QGraphicsItem::opaqueArea() const
 
     Returns the bounding region for this item. The coordinate space of the
     returned region depends on \a itemToDeviceTransform. If you pass an
-    identity QTransform as a parameter, this function will return a local
+    identity BOBUIransform as a parameter, this function will return a local
     coordinate region.
 
     The bounding region describes a coarse outline of the item's visual
@@ -5160,10 +5160,10 @@ QPainterPath QGraphicsItem::opaqueArea() const
 
     \sa boundingRegionGranularity()
 */
-QRegion QGraphicsItem::boundingRegion(const QTransform &itemToDeviceTransform) const
+QRegion QGraphicsItem::boundingRegion(const BOBUIransform &itemToDeviceTransform) const
 {
     // ### Ideally we would have a better way to generate this region,
-    // preferably something in the lines of QPainterPath::toRegion(QTransform)
+    // preferably something in the lines of QPainterPath::toRegion(BOBUIransform)
     // coupled with a way to generate a painter path from a set of painter
     // operations (e.g., QPicture::toPainterPath() or so). The current
     // approach generates a bitmap with the size of the item's bounding rect
@@ -5200,7 +5200,7 @@ QRegion QGraphicsItem::boundingRegion(const QTransform &itemToDeviceTransform) c
     p.end();
 
     // Transform QRegion back to device space
-    QTransform unscale = QTransform::fromScale(1 / granularity, 1 / granularity);
+    BOBUIransform unscale = BOBUIransform::fromScale(1 / granularity, 1 / granularity);
     QRegion r;
     QBitmap colorMask = QBitmap::fromImage(mask.createMaskFromColor(0));
     for (const QRect &rect : QRegion(colorMask)) {
@@ -5338,7 +5338,7 @@ int QGraphicsItemPrivate::depth() const
 /*!
     \internal
 */
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 void QGraphicsItemPrivate::invalidateParentGraphicsEffectsRecursively()
 {
     QGraphicsItemPrivate *itemPrivate = this;
@@ -5369,7 +5369,7 @@ void QGraphicsItemPrivate::invalidateChildGraphicsEffectsRecursively(QGraphicsIt
         childPrivate->invalidateChildGraphicsEffectsRecursively(reason);
     }
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 /*!
     \internal
@@ -5651,9 +5651,9 @@ void QGraphicsItem::update(const QRectF &rect)
         return;
 
     // Make sure we notify effects about invalidated source.
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     d_ptr->invalidateParentGraphicsEffectsRecursively();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
     if (CacheMode(d_ptr->cacheMode) != NoCache) {
         // Invalidate cache.
@@ -6479,14 +6479,14 @@ bool QGraphicsItem::isUnderMouse() const
 
     \snippet code/src_gui_graphicsview_qgraphicsitem.cpp 11
 
-    Qt does not use this feature for storing data; it is provided solely
+    BobUI does not use this feature for storing data; it is provided solely
     for the convenience of the user.
 
     \sa setData()
 */
 QVariant QGraphicsItem::data(int key) const
 {
-    QGraphicsItemCustomDataStore *store = qt_dataStore();
+    QGraphicsItemCustomDataStore *store = bobui_dataStore();
     if (!store->data.contains(this))
         return QVariant();
     return store->data.value(this).value(key);
@@ -6496,14 +6496,14 @@ QVariant QGraphicsItem::data(int key) const
     Sets this item's custom data for the key \a key to \a value.
 
     Custom item data is useful for storing arbitrary properties for any
-    item. Qt does not use this feature for storing data; it is provided solely
+    item. BobUI does not use this feature for storing data; it is provided solely
     for the convenience of the user.
 
     \sa data()
 */
 void QGraphicsItem::setData(int key, const QVariant &value)
 {
-    qt_dataStore()->data[this][key] = value;
+    bobui_dataStore()->data[this][key] = value;
 }
 
 /*!
@@ -6704,17 +6704,17 @@ bool QGraphicsItem::sceneEvent(QEvent *event)
         break;
     case QEvent::KeyPress: {
         QKeyEvent *k = static_cast<QKeyEvent *>(event);
-        if (k->key() == Qt::Key_Tab || k->key() == Qt::Key_Backtab) {
-            if (!(k->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {  //### Add MetaModifier?
+        if (k->key() == BobUI::Key_Tab || k->key() == BobUI::Key_Backtab) {
+            if (!(k->modifiers() & (BobUI::ControlModifier | BobUI::AltModifier))) {  //### Add MetaModifier?
                 bool res = false;
-                if (k->key() == Qt::Key_Backtab
-                    || (k->key() == Qt::Key_Tab && (k->modifiers() & Qt::ShiftModifier))) {
+                if (k->key() == BobUI::Key_Backtab
+                    || (k->key() == BobUI::Key_Tab && (k->modifiers() & BobUI::ShiftModifier))) {
                     if (d_ptr->isWidget) {
                         res = static_cast<QGraphicsWidget *>(this)->focusNextPrevChild(false);
                     } else if (d_ptr->scene) {
                         res = d_ptr->scene->focusNextPrevChild(false);
                     }
-                } else if (k->key() == Qt::Key_Tab) {
+                } else if (k->key() == BobUI::Key_Tab) {
                     if (d_ptr->isWidget) {
                         res = static_cast<QGraphicsWidget *>(this)->focusNextPrevChild(true);
                     } else if (d_ptr->scene) {
@@ -7019,8 +7019,8 @@ void QGraphicsItem::keyReleaseEvent(QKeyEvent *event)
 */
 void QGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable)) {
-        bool multiSelect = (event->modifiers() & Qt::ControlModifier) != 0;
+    if (event->button() == BobUI::LeftButton && (flags() & ItemIsSelectable)) {
+        bool multiSelect = (event->modifiers() & BobUI::ControlModifier) != 0;
         if (!multiSelect) {
             if (!d_ptr->selected) {
                 if (QGraphicsScene *scene = d_ptr->scene) {
@@ -7035,9 +7035,9 @@ void QGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->ignore();
     }
     if (d_ptr->isWidget) {
-        // Qt::Popup closes when you click outside.
+        // BobUI::Popup closes when you click outside.
         QGraphicsWidget *w = static_cast<QGraphicsWidget *>(this);
-        if ((w->windowFlags() & Qt::Popup) == Qt::Popup) {
+        if ((w->windowFlags() & BobUI::Popup) == BobUI::Popup) {
             event->accept();
             if (!w->rect().contains(event->pos()))
                 w->close();
@@ -7045,16 +7045,16 @@ void QGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-bool _qt_movableAncestorIsSelected(const QGraphicsItem *item)
+bool _bobui_movableAncestorIsSelected(const QGraphicsItem *item)
 {
     const QGraphicsItem *parent = item->parentItem();
-    return parent && (((parent->flags() & QGraphicsItem::ItemIsMovable) && parent->isSelected()) || _qt_movableAncestorIsSelected(parent));
+    return parent && (((parent->flags() & QGraphicsItem::ItemIsMovable) && parent->isSelected()) || _bobui_movableAncestorIsSelected(parent));
 }
 
 bool QGraphicsItemPrivate::movableAncestorIsSelected(const QGraphicsItem *item)
 {
     const QGraphicsItem *parent = item->d_ptr->parent;
-    return parent && (((parent->flags() & QGraphicsItem::ItemIsMovable) && parent->isSelected()) || _qt_movableAncestorIsSelected(parent));
+    return parent && (((parent->flags() & QGraphicsItem::ItemIsMovable) && parent->isSelected()) || _bobui_movableAncestorIsSelected(parent));
 }
 
 /*!
@@ -7080,7 +7080,7 @@ bool QGraphicsItemPrivate::movableAncestorIsSelected(const QGraphicsItem *item)
 */
 void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
+    if ((event->buttons() & BobUI::LeftButton) && (flags() & ItemIsMovable)) {
         // Determine the list of items that need to be moved.
         QList<QGraphicsItem *> selectedItems;
         QHash<QGraphicsItem *, QPointF> initialPositions;
@@ -7126,26 +7126,26 @@ void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                     // Items whose ancestors ignore transformations need to
                     // map screen coordinates to local coordinates, then map
                     // those to the parent.
-                    QTransform viewToItemTransform = (item->deviceTransform(view->viewportTransform())).inverted();
+                    BOBUIransform viewToItemTransform = (item->deviceTransform(view->viewportTransform())).inverted();
                     currentParentPos = mapToParent(viewToItemTransform.map(QPointF(view->mapFromGlobal(event->screenPos()))));
-                    buttonDownParentPos = mapToParent(viewToItemTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(Qt::LeftButton)))));
+                    buttonDownParentPos = mapToParent(viewToItemTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(BobUI::LeftButton)))));
                 } else if (view && (item->flags() & ItemIgnoresTransformations)) {
                     // Root items that ignore transformations need to
                     // calculate their diff by mapping viewport coordinates
                     // directly to parent coordinates.
                     // COMBINE
-                    QTransform itemTransform;
+                    BOBUIransform itemTransform;
                     if (item->d_ptr->transformData)
                         itemTransform = item->d_ptr->transformData->computedFullTransform();
                     itemTransform.translate(item->d_ptr->pos.x(), item->d_ptr->pos.y());
-                    QTransform viewToParentTransform = itemTransform
+                    BOBUIransform viewToParentTransform = itemTransform
                                                        * (item->sceneTransform() * view->viewportTransform()).inverted();
                     currentParentPos = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())));
-                    buttonDownParentPos = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(Qt::LeftButton))));
+                    buttonDownParentPos = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(BobUI::LeftButton))));
                 } else {
                     // All other items simply map from the scene.
                     currentParentPos = item->mapToParent(item->mapFromScene(event->scenePos()));
-                    buttonDownParentPos = item->mapToParent(item->mapFromScene(event->buttonDownScenePos(Qt::LeftButton)));
+                    buttonDownParentPos = item->mapToParent(item->mapFromScene(event->buttonDownScenePos(BobUI::LeftButton)));
                 }
 
                 item->setPos(initialPositions.value(item) + currentParentPos - buttonDownParentPos);
@@ -7182,9 +7182,9 @@ void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 */
 void QGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && (flags() & ItemIsSelectable)) {
-        bool multiSelect = (event->modifiers() & Qt::ControlModifier) != 0;
-        if (event->scenePos() == event->buttonDownScenePos(Qt::LeftButton)) {
+    if (event->button() == BobUI::LeftButton && (flags() & ItemIsSelectable)) {
+        bool multiSelect = (event->modifiers() & BobUI::ControlModifier) != 0;
+        if (event->scenePos() == event->buttonDownScenePos(BobUI::LeftButton)) {
             // The item didn't move
             if (multiSelect) {
                 setSelected(!isSelected());
@@ -7288,7 +7288,7 @@ void QGraphicsItem::inputMethodEvent(QInputMethodEvent *event)
 
     \sa inputMethodEvent(), QInputMethodEvent
 */
-QVariant QGraphicsItem::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QGraphicsItem::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     Q_UNUSED(query);
     return QVariant();
@@ -7299,7 +7299,7 @@ QVariant QGraphicsItem::inputMethodQuery(Qt::InputMethodQuery query) const
 
     Input method hints are only relevant for input items.
     The hints are used by the input method to indicate how it should operate.
-    For example, if the Qt::ImhNumbersOnly flag is set, the input method may change
+    For example, if the BobUI::ImhNumbersOnly flag is set, the input method may change
     its visual components to reflect that only numbers can be entered.
 
     The effect may vary between input method implementations.
@@ -7308,7 +7308,7 @@ QVariant QGraphicsItem::inputMethodQuery(Qt::InputMethodQuery query) const
 
     \sa setInputMethodHints(), inputMethodQuery()
 */
-Qt::InputMethodHints QGraphicsItem::inputMethodHints() const
+BobUI::InputMethodHints QGraphicsItem::inputMethodHints() const
 {
     Q_D(const QGraphicsItem);
     return d->imHints;
@@ -7321,7 +7321,7 @@ Qt::InputMethodHints QGraphicsItem::inputMethodHints() const
 
     \sa inputMethodHints(), inputMethodQuery()
 */
-void QGraphicsItem::setInputMethodHints(Qt::InputMethodHints hints)
+void QGraphicsItem::setInputMethodHints(BobUI::InputMethodHints hints)
 {
     Q_D(QGraphicsItem);
     d->imHints = hints;
@@ -7331,7 +7331,7 @@ void QGraphicsItem::setInputMethodHints(Qt::InputMethodHints hints)
     QWidget *fw = QApplication::focusWidget();
     if (!fw)
         return;
-    QGuiApplication::inputMethod()->update(Qt::ImHints);
+    QGuiApplication::inputMethod()->update(BobUI::ImHints);
 }
 
 /*!
@@ -7496,7 +7496,7 @@ void QGraphicsItem::prepareGeometryChange()
 
     Highlights \a item as selected.
 */
-void Q_WIDGETS_EXPORT qt_graphicsItem_highlightSelected(
+void Q_WIDGETS_EXPORT bobui_graphicsItem_highlightSelected(
     QGraphicsItem *item, QPainter *painter, const QStyleOptionGraphicsItem *option)
 {
     const QRectF murect = painter->transform().mapRect(QRectF(0, 0, 1, 1));
@@ -7540,12 +7540,12 @@ void Q_WIDGETS_EXPORT qt_graphicsItem_highlightSelected(
         fgcolor.green() > 127 ? 0 : 255,
         fgcolor.blue()  > 127 ? 0 : 255);
 
-    painter->setPen(QPen(bgcolor, penWidth, Qt::SolidLine));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(bgcolor, penWidth, BobUI::SolidLine));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(item->boundingRect().adjusted(pad, pad, -pad, -pad));
 
-    painter->setPen(QPen(option->palette.windowText(), 0, Qt::DashLine));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(option->palette.windowText(), 0, BobUI::DashLine));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(item->boundingRect().adjusted(pad, pad, -pad, -pad));
 }
 
@@ -7555,7 +7555,7 @@ void Q_WIDGETS_EXPORT qt_graphicsItem_highlightSelected(
     require signals, slots and properties.
     \since 4.6
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The class extends a QGraphicsItem with QObject's signal/slot and property mechanisms.
     It maps many of QGraphicsItem's basic setters and getters to properties and adds notification
@@ -7617,13 +7617,13 @@ bool QGraphicsObject::event(QEvent *ev)
     return QObject::event(ev);
 }
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
 /*!
     Subscribes the graphics object to the given \a gesture with specific \a flags.
 
     \sa ungrabGesture(), QGestureEvent
 */
-void QGraphicsObject::grabGesture(Qt::GestureType gesture, Qt::GestureFlags flags)
+void QGraphicsObject::grabGesture(BobUI::GestureType gesture, BobUI::GestureFlags flags)
 {
     bool contains = QGraphicsItem::d_ptr->gestureContext.contains(gesture);
     QGraphicsItem::d_ptr->gestureContext.insert(gesture, flags);
@@ -7636,12 +7636,12 @@ void QGraphicsObject::grabGesture(Qt::GestureType gesture, Qt::GestureFlags flag
 
     \sa grabGesture(), QGestureEvent
 */
-void QGraphicsObject::ungrabGesture(Qt::GestureType gesture)
+void QGraphicsObject::ungrabGesture(BobUI::GestureType gesture)
 {
     if (QGraphicsItem::d_ptr->gestureContext.remove(gesture) && QGraphicsItem::d_ptr->scene)
         QGraphicsItem::d_ptr->scene->d_func()->ungrabGesture(this, gesture);
 }
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 /*!
     Updates the item's micro focus. This is slot for convenience.
@@ -7938,7 +7938,7 @@ void QGraphicsItemPrivate::resetHeight()
     all path items.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     This class does not fully implement an item by itself; in particular, it
     does not implement boundingRect() and paint(), which are inherited by
@@ -8071,7 +8071,7 @@ QPainterPath QAbstractGraphicsShapeItem::opaqueArea() const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's path, pass a QPainterPath to QGraphicsPathItem's
     constructor, or call the setPath() function. The path() function
@@ -8166,7 +8166,7 @@ QRectF QGraphicsPathItem::boundingRect() const
 {
     Q_D(const QGraphicsPathItem);
     if (d->boundingRect.isNull()) {
-        qreal pw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF();
+        qreal pw = pen().style() == BobUI::NoPen ? qreal(0) : pen().widthF();
         if (pw == 0.0)
             d->boundingRect = d->path.controlPointRect();
         else {
@@ -8182,7 +8182,7 @@ QRectF QGraphicsPathItem::boundingRect() const
 QPainterPath QGraphicsPathItem::shape() const
 {
     Q_D(const QGraphicsPathItem);
-    return qt_graphicsItem_shapeFromPath(d->path, d->pen);
+    return bobui_graphicsItem_shapeFromPath(d->path, d->pen);
 }
 
 /*!
@@ -8206,7 +8206,7 @@ void QGraphicsPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->drawPath(d->path);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -8266,7 +8266,7 @@ QVariant QGraphicsPathItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's rectangle, pass a QRectF to QGraphicsRectItem's
     constructor, or call the setRect() function. The rect() function
@@ -8397,7 +8397,7 @@ QRectF QGraphicsRectItem::boundingRect() const
 {
     Q_D(const QGraphicsRectItem);
     if (d->boundingRect.isNull()) {
-        qreal halfpw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF() / 2;
+        qreal halfpw = pen().style() == BobUI::NoPen ? qreal(0) : pen().widthF() / 2;
         d->boundingRect = d->rect;
         if (halfpw > 0.0)
             d->boundingRect.adjust(-halfpw, -halfpw, halfpw, halfpw);
@@ -8413,7 +8413,7 @@ QPainterPath QGraphicsRectItem::shape() const
     Q_D(const QGraphicsRectItem);
     QPainterPath path;
     path.addRect(d->rect);
-    return qt_graphicsItem_shapeFromPath(path, d->pen);
+    return bobui_graphicsItem_shapeFromPath(path, d->pen);
 }
 
 /*!
@@ -8437,7 +8437,7 @@ void QGraphicsRectItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->drawRect(d->rect);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -8497,7 +8497,7 @@ QVariant QGraphicsRectItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsEllipseItem respresents an ellipse with a fill and an outline,
     and you can also use it for ellipse segments (see startAngle(),
@@ -8688,7 +8688,7 @@ QRectF QGraphicsEllipseItem::boundingRect() const
 {
     Q_D(const QGraphicsEllipseItem);
     if (d->boundingRect.isNull()) {
-        qreal pw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF();
+        qreal pw = pen().style() == BobUI::NoPen ? qreal(0) : pen().widthF();
         if (pw == 0.0 && d->spanAngle == 360 * 16)
             d->boundingRect = d->rect;
         else
@@ -8713,7 +8713,7 @@ QPainterPath QGraphicsEllipseItem::shape() const
         path.addEllipse(d->rect);
     }
 
-    return qt_graphicsItem_shapeFromPath(path, d->pen);
+    return bobui_graphicsItem_shapeFromPath(path, d->pen);
 }
 
 /*!
@@ -8740,7 +8740,7 @@ void QGraphicsEllipseItem::paint(QPainter *painter, const QStyleOptionGraphicsIt
         painter->drawPie(d->rect, d->startAngle, d->spanAngle);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -8801,7 +8801,7 @@ QVariant QGraphicsEllipseItem::extension(const QVariant &variant) const
     can add to a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's polygon, pass a QPolygonF to
     QGraphicsPolygonItem's constructor, or call the setPolygon()
@@ -8826,11 +8826,11 @@ class QGraphicsPolygonItemPrivate : public QAbstractGraphicsShapeItemPrivate
     Q_DECLARE_PUBLIC(QGraphicsPolygonItem)
 public:
     inline QGraphicsPolygonItemPrivate()
-        : fillRule(Qt::OddEvenFill)
+        : fillRule(BobUI::OddEvenFill)
     { }
 
     QPolygonF polygon;
-    Qt::FillRule fillRule;
+    BobUI::FillRule fillRule;
 };
 
 /*!
@@ -8893,11 +8893,11 @@ void QGraphicsPolygonItem::setPolygon(const QPolygonF &polygon)
 
 /*!
      Returns the fill rule of the polygon. The default fill rule is
-     Qt::OddEvenFill.
+     BobUI::OddEvenFill.
 
      \sa setFillRule(), QPainterPath::fillRule(), QPainter::drawPolygon()
 */
-Qt::FillRule QGraphicsPolygonItem::fillRule() const
+BobUI::FillRule QGraphicsPolygonItem::fillRule() const
 {
      Q_D(const QGraphicsPolygonItem);
      return d->fillRule;
@@ -8905,11 +8905,11 @@ Qt::FillRule QGraphicsPolygonItem::fillRule() const
 
 /*!
      Sets the fill rule of the polygon to \a rule. The default fill rule is
-     Qt::OddEvenFill.
+     BobUI::OddEvenFill.
 
      \sa fillRule(), QPainterPath::fillRule(), QPainter::drawPolygon()
 */
-void QGraphicsPolygonItem::setFillRule(Qt::FillRule rule)
+void QGraphicsPolygonItem::setFillRule(BobUI::FillRule rule)
 {
      Q_D(QGraphicsPolygonItem);
      if (rule != d->fillRule) {
@@ -8925,7 +8925,7 @@ QRectF QGraphicsPolygonItem::boundingRect() const
 {
     Q_D(const QGraphicsPolygonItem);
     if (d->boundingRect.isNull()) {
-        qreal pw = pen().style() == Qt::NoPen ? qreal(0) : pen().widthF();
+        qreal pw = pen().style() == BobUI::NoPen ? qreal(0) : pen().widthF();
         if (pw == 0.0)
             d->boundingRect = d->polygon.boundingRect();
         else
@@ -8942,7 +8942,7 @@ QPainterPath QGraphicsPolygonItem::shape() const
     Q_D(const QGraphicsPolygonItem);
     QPainterPath path;
     path.addPolygon(d->polygon);
-    return qt_graphicsItem_shapeFromPath(path, d->pen);
+    return bobui_graphicsItem_shapeFromPath(path, d->pen);
 }
 
 /*!
@@ -8965,7 +8965,7 @@ void QGraphicsPolygonItem::paint(QPainter *painter, const QStyleOptionGraphicsIt
     painter->drawPolygon(d->polygon, d->fillRule);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -9025,7 +9025,7 @@ QVariant QGraphicsPolygonItem::extension(const QVariant &variant) const
     QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's line, pass a QLineF to QGraphicsLineItem's
     constructor, or call the setLine() function. The line() function
@@ -9193,7 +9193,7 @@ QPainterPath QGraphicsLineItem::shape() const
 
     path.moveTo(d->line.p1());
     path.lineTo(d->line.p2());
-    return qt_graphicsItem_shapeFromPath(path, d->pen);
+    return bobui_graphicsItem_shapeFromPath(path, d->pen);
 }
 
 /*!
@@ -9215,7 +9215,7 @@ void QGraphicsLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     painter->drawLine(d->line);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -9275,7 +9275,7 @@ QVariant QGraphicsLineItem::extension(const QVariant &variant) const
     a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's pixmap, pass a QPixmap to QGraphicsPixmapItem's
     constructor, or call the setPixmap() function. The pixmap()
@@ -9285,14 +9285,14 @@ QVariant QGraphicsLineItem::extension(const QVariant &variant) const
     reasonable implementation of boundingRect(), shape(), and contains().
 
     \image graphicsview-pixmapitem.png
-           {Pixmap of the Qt logo drawn near the origin}
+           {Pixmap of the BobUI logo drawn near the origin}
 
     The pixmap is drawn at the item's (0, 0) coordinate, as returned by
     offset(). You can change the drawing offset by calling setOffset().
 
     You can set the pixmap's transformation mode by calling
-    setTransformationMode(). By default, Qt::FastTransformation is used, which
-    provides fast, non-smooth scaling. Qt::SmoothTransformation enables
+    setTransformationMode(). By default, BobUI::FastTransformation is used, which
+    provides fast, non-smooth scaling. BobUI::SmoothTransformation enables
     QPainter::SmoothPixmapTransform on the painter, and the quality depends on
     the platform and viewport. The result is usually not as good as calling
     QPixmap::scale() directly. Call transformationMode() to get the current
@@ -9324,20 +9324,20 @@ QVariant QGraphicsLineItem::extension(const QVariant &variant) const
     QPixmap::createHeuristicMask().  The performance and memory consumption
     is similar to MaskShape.
 */
-Q_GUI_EXPORT extern QPainterPath qt_regionToPath(const QRegion &region);
+Q_GUI_EXPORT extern QPainterPath bobui_regionToPath(const QRegion &region);
 
 class QGraphicsPixmapItemPrivate : public QGraphicsItemPrivate
 {
     Q_DECLARE_PUBLIC(QGraphicsPixmapItem)
 public:
     QGraphicsPixmapItemPrivate()
-        : transformationMode(Qt::FastTransformation),
+        : transformationMode(BobUI::FastTransformation),
         shapeMode(QGraphicsPixmapItem::MaskShape),
         hasShape(false)
     {}
 
     QPixmap pixmap;
-    Qt::TransformationMode transformationMode;
+    BobUI::TransformationMode transformationMode;
     QPointF offset;
     QGraphicsPixmapItem::ShapeMode shapeMode;
     QPainterPath shape;
@@ -9350,7 +9350,7 @@ public:
         case QGraphicsPixmapItem::MaskShape: {
             QBitmap mask = pixmap.mask();
             if (!mask.isNull()) {
-                shape = qt_regionToPath(QRegion(mask).translated(offset.toPoint()));
+                shape = bobui_regionToPath(QRegion(mask).translated(offset.toPoint()));
                 break;
             }
             Q_FALLTHROUGH();
@@ -9359,8 +9359,8 @@ public:
             shape.addRect(QRectF(offset.x(), offset.y(), pixmap.width(), pixmap.height()));
             break;
         case QGraphicsPixmapItem::HeuristicMaskShape:
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
-            shape = qt_regionToPath(QRegion(pixmap.createHeuristicMask()).translated(offset.toPoint()));
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
+            shape = bobui_regionToPath(QRegion(pixmap.createHeuristicMask()).translated(offset.toPoint()));
 #else
             shape.addRect(QRectF(offset.x(), offset.y(), pixmap.width(), pixmap.height()));
 #endif
@@ -9427,12 +9427,12 @@ QPixmap QGraphicsPixmapItem::pixmap() const
 
 /*!
     Returns the transformation mode of the pixmap. The default mode is
-    Qt::FastTransformation, which provides quick transformation with no
+    BobUI::FastTransformation, which provides quick transformation with no
     smoothing.
 
     \sa setTransformationMode()
 */
-Qt::TransformationMode QGraphicsPixmapItem::transformationMode() const
+BobUI::TransformationMode QGraphicsPixmapItem::transformationMode() const
 {
     Q_D(const QGraphicsPixmapItem);
     return d->transformationMode;
@@ -9440,16 +9440,16 @@ Qt::TransformationMode QGraphicsPixmapItem::transformationMode() const
 
 /*!
     Sets the pixmap item's transformation mode to \a mode, and toggles an
-    update of the item. The default mode is Qt::FastTransformation, which
+    update of the item. The default mode is BobUI::FastTransformation, which
     provides quick transformation with no smoothing.
 
-    Qt::SmoothTransformation enables QPainter::SmoothPixmapTransform on the
+    BobUI::SmoothTransformation enables QPainter::SmoothPixmapTransform on the
     painter, and the quality depends on the platform and viewport. The result
     is usually not as good as calling QPixmap::scale() directly.
 
     \sa transformationMode()
 */
-void QGraphicsPixmapItem::setTransformationMode(Qt::TransformationMode mode)
+void QGraphicsPixmapItem::setTransformationMode(BobUI::TransformationMode mode)
 {
     Q_D(QGraphicsPixmapItem);
     if (mode != d->transformationMode) {
@@ -9542,12 +9542,12 @@ void QGraphicsPixmapItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     Q_UNUSED(widget);
 
     painter->setRenderHint(QPainter::SmoothPixmapTransform,
-                           (d->transformationMode == Qt::SmoothTransformation));
+                           (d->transformationMode == BobUI::SmoothTransformation));
 
     painter->drawPixmap(d->offset, d->pixmap);
 
     if (option->state & QStyle::State_Selected)
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -9633,7 +9633,7 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
     a QGraphicsScene to display formatted text.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     If you only need to show plain text in an item, consider using QGraphicsSimpleTextItem
     instead.
@@ -9645,7 +9645,7 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
     to provide a reasonable implementation of boundingRect(), shape(),
     and contains(). You can set the font by calling setFont().
 
-    It is possible to make the item editable by setting the Qt::TextEditorInteraction flag
+    It is possible to make the item editable by setting the BobUI::TextEditorInteraction flag
     using setTextInteractionFlags().
 
     The item's preferred text width can be set using setTextWidth() and obtained
@@ -9745,7 +9745,7 @@ QGraphicsTextItem::~QGraphicsTextItem()
 */
 QString QGraphicsTextItem::toHtml() const
 {
-#ifndef QT_NO_TEXTHTMLPARSER
+#ifndef BOBUI_NO_TEXTHTMLPARSER
     if (dd->control)
         return dd->control->toHtml();
 #endif
@@ -9873,8 +9873,8 @@ void QGraphicsTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         painter->translate(-dd->controlOffset());
         r.translate(dd->controlOffset());
 
-        QTextDocument *doc = dd->control->document();
-        QTextDocumentLayout *layout = qobject_cast<QTextDocumentLayout *>(doc->documentLayout());
+        BOBUIextDocument *doc = dd->control->document();
+        BOBUIextDocumentLayout *layout = qobject_cast<BOBUIextDocumentLayout *>(doc->documentLayout());
 
         // the layout might need to expand the root frame to
         // the viewport if NoWrap is set
@@ -9890,7 +9890,7 @@ void QGraphicsTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem 
     }
 
     if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus))
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -9928,10 +9928,10 @@ int QGraphicsTextItem::type() const
 
     The default value is -1.
 
-    Note that QGraphicsTextItem keeps a QTextDocument internally,
+    Note that QGraphicsTextItem keeps a BOBUIextDocument internally,
     which is used to calculate the text width.
 
-    \sa textWidth(), QTextDocument::setTextWidth()
+    \sa textWidth(), BOBUIextDocument::setTextWidth()
 */
 void QGraphicsTextItem::setTextWidth(qreal width)
 {
@@ -9941,10 +9941,10 @@ void QGraphicsTextItem::setTextWidth(qreal width)
 /*!
     Returns the text width.
 
-    The width is calculated with the QTextDocument that
+    The width is calculated with the BOBUIextDocument that
     QGraphicsTextItem keeps internally.
 
-    \sa setTextWidth(), QTextDocument::textWidth()
+    \sa setTextWidth(), BOBUIextDocument::textWidth()
 */
 qreal QGraphicsTextItem::textWidth() const
 {
@@ -9965,7 +9965,7 @@ void QGraphicsTextItem::adjustSize()
 /*!
     Sets the text document \a document on the item.
 */
-void QGraphicsTextItem::setDocument(QTextDocument *document)
+void QGraphicsTextItem::setDocument(BOBUIextDocument *document)
 {
     dd->textControl()->setDocument(document);
     dd->_q_updateBoundingRect(dd->control->size());
@@ -9974,7 +9974,7 @@ void QGraphicsTextItem::setDocument(QTextDocument *document)
 /*!
     Returns the item's text document.
 */
-QTextDocument *QGraphicsTextItem::document() const
+BOBUIextDocument *QGraphicsTextItem::document() const
 {
     return dd->textControl()->document();
 }
@@ -9987,7 +9987,7 @@ bool QGraphicsTextItem::sceneEvent(QEvent *event)
     QEvent::Type t = event->type();
     if (!dd->tabChangesFocus && (t == QEvent::KeyPress || t == QEvent::KeyRelease)) {
         int k = ((QKeyEvent *)event)->key();
-        if (k == Qt::Key_Tab || k == Qt::Key_Backtab) {
+        if (k == BobUI::Key_Tab || k == BobUI::Key_Backtab) {
             dd->sendControlEvent(event);
             return true;
         }
@@ -10018,7 +10018,7 @@ bool QGraphicsTextItem::sceneEvent(QEvent *event)
         if (event->type() == QEvent::FocusIn || event->type() == QEvent::FocusOut) {
             QGuiApplication::inputMethod()->reset();
         } else {
-            QGuiApplication::inputMethod()->update(Qt::ImQueryInput);
+            QGuiApplication::inputMethod()->update(BobUI::ImQueryInput);
         }
         break;
     case QEvent::ShortcutOverride:
@@ -10037,12 +10037,12 @@ bool QGraphicsTextItem::sceneEvent(QEvent *event)
 void QGraphicsTextItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((QGraphicsItem::d_ptr->flags & (ItemIsSelectable | ItemIsMovable))
-        && (event->buttons() & Qt::LeftButton) && dd->_q_mouseOnEdge(event)) {
+        && (event->buttons() & BobUI::LeftButton) && dd->_q_mouseOnEdge(event)) {
         // User left-pressed on edge of selectable/movable item, use
         // base impl.
         dd->useDefaultImpl = true;
     } else if (event->buttons() == event->button()
-               && dd->control->textInteractionFlags() == Qt::NoTextInteraction) {
+               && dd->control->textInteractionFlags() == BobUI::NoTextInteraction) {
         // User pressed first button on non-interactive item.
         dd->useDefaultImpl = true;
     }
@@ -10076,11 +10076,11 @@ void QGraphicsTextItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (dd->useDefaultImpl) {
         QGraphicsItem::mouseReleaseEvent(event);
-        if (dd->control->textInteractionFlags() == Qt::NoTextInteraction
+        if (dd->control->textInteractionFlags() == BobUI::NoTextInteraction
             && !event->buttons()) {
             // User released last button on non-interactive item.
             dd->useDefaultImpl = false;
-        } else  if ((event->buttons() & Qt::LeftButton) == 0) {
+        } else  if ((event->buttons() & BobUI::LeftButton) == 0) {
             // User released the left button on an interactive item.
             dd->useDefaultImpl = false;
         }
@@ -10088,8 +10088,8 @@ void QGraphicsTextItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QWidget *widget = event->widget();
-    if (widget && (dd->control->textInteractionFlags() & Qt::TextEditable) && boundingRect().contains(event->pos())) {
-        qt_widget_private(widget)->handleSoftwareInputPanel(event->button(), dd->clickCausedFocus);
+    if (widget && (dd->control->textInteractionFlags() & BobUI::TextEditable) && boundingRect().contains(event->pos())) {
+        bobui_widget_private(widget)->handleSoftwareInputPanel(event->button(), dd->clickCausedFocus);
     }
     dd->clickCausedFocus = 0;
     dd->sendControlEvent(event);
@@ -10143,7 +10143,7 @@ void QGraphicsTextItem::keyReleaseEvent(QKeyEvent *event)
 void QGraphicsTextItem::focusInEvent(QFocusEvent *event)
 {
     dd->sendControlEvent(event);
-    if (event->reason() == Qt::MouseFocusReason) {
+    if (event->reason() == BobUI::MouseFocusReason) {
         dd->clickCausedFocus = 1;
     }
     update();
@@ -10225,12 +10225,12 @@ void QGraphicsTextItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 /*!
     \reimp
 */
-QVariant QGraphicsTextItem::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QGraphicsTextItem::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     QVariant v;
-    if (query == Qt::ImEnabled)
+    if (query == BobUI::ImEnabled)
         return isEnabled();
-    else if (query == Qt::ImHints)
+    else if (query == BobUI::ImHints)
         v = int(inputMethodHints());
     else if (dd->control)
         v = dd->control->inputMethodQuery(query, QVariant());
@@ -10316,7 +10316,7 @@ QWidgetTextControl *QGraphicsTextItemPrivate::textControl() const
     if (!control) {
         QGraphicsTextItem *that = const_cast<QGraphicsTextItem *>(qq);
         control = new QWidgetTextControl(that);
-        control->setTextInteractionFlags(Qt::NoTextInteraction);
+        control->setTextInteractionFlags(BobUI::NoTextInteraction);
 
         QObject::connect(control, &QWidgetTextControl::updateRequest, qq,
                          [dd = that->dd](const QRectF &rect) { dd->_q_update(rect); });
@@ -10350,7 +10350,7 @@ bool QGraphicsTextItemPrivate::_q_mouseOnEdge(QGraphicsSceneMouseEvent *event)
     path.addRect(qq->boundingRect());
 
     QPainterPath docPath;
-    const QTextFrameFormat format = control->document()->rootFrame()->frameFormat();
+    const BOBUIextFrameFormat format = control->document()->rootFrame()->frameFormat();
     docPath.addRect(
         qq->boundingRect().adjusted(
             format.leftMargin(),
@@ -10365,7 +10365,7 @@ bool QGraphicsTextItemPrivate::_q_mouseOnEdge(QGraphicsSceneMouseEvent *event)
     \fn void QGraphicsTextItem::linkActivated(const QString &link)
 
     This signal is emitted when the user clicks on a link on a text item
-    that enables Qt::LinksAccessibleByMouse or Qt::LinksAccessibleByKeyboard.
+    that enables BobUI::LinksAccessibleByMouse or BobUI::LinksAccessibleByKeyboard.
     \a link is the link that was clicked.
 
     \sa setTextInteractionFlags()
@@ -10375,7 +10375,7 @@ bool QGraphicsTextItemPrivate::_q_mouseOnEdge(QGraphicsSceneMouseEvent *event)
     \fn void QGraphicsTextItem::linkHovered(const QString &link)
 
     This signal is emitted when the user hovers over a link on a text item
-    that enables Qt::LinksAccessibleByMouse. \a link is
+    that enables BobUI::LinksAccessibleByMouse. \a link is
     the link that was hovered over.
 
     \sa setTextInteractionFlags()
@@ -10385,16 +10385,16 @@ bool QGraphicsTextItemPrivate::_q_mouseOnEdge(QGraphicsSceneMouseEvent *event)
     Sets the flags \a flags to specify how the text item should react to user
     input.
 
-    The default for a QGraphicsTextItem is Qt::NoTextInteraction. This function
+    The default for a QGraphicsTextItem is BobUI::NoTextInteraction. This function
     also affects the ItemIsFocusable QGraphicsItem flag by setting it if \a flags
-    is different from Qt::NoTextInteraction and clearing it otherwise.
+    is different from BobUI::NoTextInteraction and clearing it otherwise.
 
     By default, the text is read-only. To transform the item into an editor,
-    set the Qt::TextEditable flag.
+    set the BobUI::TextEditable flag.
 */
-void QGraphicsTextItem::setTextInteractionFlags(Qt::TextInteractionFlags flags)
+void QGraphicsTextItem::setTextInteractionFlags(BobUI::TextInteractionFlags flags)
 {
-    if (flags == Qt::NoTextInteraction)
+    if (flags == BobUI::NoTextInteraction)
         setFlags(this->flags() & ~(QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemAcceptsInputMethod));
     else
         setFlags(this->flags() | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemAcceptsInputMethod);
@@ -10407,10 +10407,10 @@ void QGraphicsTextItem::setTextInteractionFlags(Qt::TextInteractionFlags flags)
 
     \sa setTextInteractionFlags()
 */
-Qt::TextInteractionFlags QGraphicsTextItem::textInteractionFlags() const
+BobUI::TextInteractionFlags QGraphicsTextItem::textInteractionFlags() const
 {
     if (!dd->control)
-        return Qt::NoTextInteraction;
+        return BobUI::NoTextInteraction;
     return dd->control->textInteractionFlags();
 }
 
@@ -10477,15 +10477,15 @@ bool QGraphicsTextItem::openExternalLinks() const
     contains a null text cursor; otherwise it contains a text cursor
     placed at the start of the item's document.
 */
-void QGraphicsTextItem::setTextCursor(const QTextCursor &cursor)
+void QGraphicsTextItem::setTextCursor(const BOBUIextCursor &cursor)
 {
     dd->textControl()->setTextCursor(cursor);
 }
 
-QTextCursor QGraphicsTextItem::textCursor() const
+BOBUIextCursor QGraphicsTextItem::textCursor() const
 {
     if (!dd->control)
-        return QTextCursor();
+        return BOBUIextCursor();
     return dd->control->textCursor();
 }
 
@@ -10494,8 +10494,8 @@ class QGraphicsSimpleTextItemPrivate : public QAbstractGraphicsShapeItemPrivate
     Q_DECLARE_PUBLIC(QGraphicsSimpleTextItem)
 public:
     inline QGraphicsSimpleTextItemPrivate() {
-        pen.setStyle(Qt::NoPen);
-        brush.setStyle(Qt::SolidPattern);
+        pen.setStyle(BobUI::NoPen);
+        brush.setStyle(BobUI::SolidPattern);
     }
     QString text;
     QFont font;
@@ -10504,7 +10504,7 @@ public:
     void updateBoundingRect();
 };
 
-static QRectF setupTextLayout(QTextLayout *layout)
+static QRectF setupTextLayout(BOBUIextLayout *layout)
 {
     layout->setCacheEnabled(true);
     layout->beginLayout();
@@ -10514,7 +10514,7 @@ static QRectF setupTextLayout(QTextLayout *layout)
     qreal maxWidth = 0;
     qreal y = 0;
     for (int i = 0; i < layout->lineCount(); ++i) {
-        QTextLine line = layout->lineAt(i);
+        BOBUIextLine line = layout->lineAt(i);
         maxWidth = qMax(maxWidth, line.naturalTextWidth());
         line.setPosition(QPointF(0, y));
         y += line.height();
@@ -10532,7 +10532,7 @@ void QGraphicsSimpleTextItemPrivate::updateBoundingRect()
         QString tmp = text;
         tmp.replace(u'\n', QChar::LineSeparator);
         Q_DECL_UNINITIALIZED QStackTextEngine engine(tmp, font);
-        QTextLayout layout(&engine);
+        BOBUIextLayout layout(&engine);
         br = setupTextLayout(&layout);
     }
     if (br != boundingRect) {
@@ -10548,7 +10548,7 @@ void QGraphicsSimpleTextItemPrivate::updateBoundingRect()
     that you can add to a QGraphicsScene.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     To set the item's text, you can either pass a QString to
     QGraphicsSimpleTextItem's constructor, or call setText() to change the
@@ -10559,7 +10559,7 @@ void QGraphicsSimpleTextItemPrivate::updateBoundingRect()
     be used to draw the text outline. (The latter can be slow, especially for
     complex pens, and items with long text content.) If all you want is to
     draw a simple line of text, you should call setBrush() only, and leave the
-    pen unset; QGraphicsSimpleTextItem's pen is by default Qt::NoPen.
+    pen unset; QGraphicsSimpleTextItem's pen is by default BobUI::NoPen.
 
     QGraphicsSimpleTextItem uses the text's formatted size and the associated
     font to provide a reasonable implementation of boundingRect(), shape(),
@@ -10569,7 +10569,7 @@ void QGraphicsSimpleTextItemPrivate::updateBoundingRect()
     QGraphicsTextItem, which provides full text control capabilities.
 
     \image graphicsview-simpletextitem.png
-           {"Qt" text with custom fill and outline drawn near the origin}
+           {"BobUI" text with custom fill and outline drawn near the origin}
 
     \sa QGraphicsTextItem, QGraphicsPathItem, QGraphicsRectItem,
     QGraphicsEllipseItem, QGraphicsPixmapItem, QGraphicsPolygonItem,
@@ -10694,26 +10694,26 @@ void QGraphicsSimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphic
     QString tmp = d->text;
     tmp.replace(u'\n', QChar::LineSeparator);
     Q_DECL_UNINITIALIZED QStackTextEngine engine(tmp, d->font);
-    QTextLayout layout(&engine);
+    BOBUIextLayout layout(&engine);
 
     QPen p;
     p.setBrush(d->brush);
     painter->setPen(p);
-    if (d->pen.style() == Qt::NoPen && d->brush.style() == Qt::SolidPattern) {
-        painter->setBrush(Qt::NoBrush);
+    if (d->pen.style() == BobUI::NoPen && d->brush.style() == BobUI::SolidPattern) {
+        painter->setBrush(BobUI::NoBrush);
     } else {
-        QTextLayout::FormatRange range;
+        BOBUIextLayout::FormatRange range;
         range.start = 0;
         range.length = layout.text().size();
         range.format.setTextOutline(d->pen);
-        layout.setFormats(QList<QTextLayout::FormatRange>(1, range));
+        layout.setFormats(QList<BOBUIextLayout::FormatRange>(1, range));
     }
 
     setupTextLayout(&layout);
     layout.draw(painter, QPointF(0, 0));
 
     if (option->state & (QStyle::State_Selected | QStyle::State_HasFocus))
-        qt_graphicsItem_highlightSelected(this, painter, option);
+        bobui_graphicsItem_highlightSelected(this, painter, option);
 }
 
 /*!
@@ -10773,7 +10773,7 @@ QVariant QGraphicsSimpleTextItem::extension(const QVariant &variant) const
     a group of items as a single item.
     \since 4.2
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A QGraphicsItemGroup is a special type of compound item that
     treats itself and all its children as one item (i.e., all events
@@ -10872,20 +10872,20 @@ void QGraphicsItemGroup::addToGroup(QGraphicsItem *item)
 
     // COMBINE
     bool ok;
-    QTransform itemTransform = item->itemTransform(this, &ok);
+    BOBUIransform itemTransform = item->itemTransform(this, &ok);
 
     if (!ok) {
         qWarning("QGraphicsItemGroup::addToGroup: could not find a valid transformation from item to group coordinates");
         return;
     }
 
-    QTransform newItemTransform(itemTransform);
+    BOBUIransform newItemTransform(itemTransform);
     item->setPos(mapFromItem(item, 0, 0));
     item->setParentItem(this);
 
     // removing position from translation component of the new transform
     if (!item->pos().isNull())
-        newItemTransform *= QTransform::fromTranslate(-item->x(), -item->y());
+        newItemTransform *= BOBUIransform::fromTranslate(-item->x(), -item->y());
 
     // removing additional transformations properties applied with itemTransform()
     QPointF origin = item->transformOriginPoint();
@@ -10928,7 +10928,7 @@ void QGraphicsItemGroup::removeFromGroup(QGraphicsItem *item)
 
     // COMBINE
     bool ok;
-    QTransform itemTransform;
+    BOBUIransform itemTransform;
     if (newParent)
         itemTransform = item->itemTransform(newParent, &ok);
     else
@@ -10940,7 +10940,7 @@ void QGraphicsItemGroup::removeFromGroup(QGraphicsItem *item)
 
     // removing position from translation component of the new transform
     if (!item->pos().isNull())
-        itemTransform *= QTransform::fromTranslate(-item->x(), -item->y());
+        itemTransform *= BOBUIransform::fromTranslate(-item->x(), -item->y());
 
     // removing additional transformations properties applied
     // with itemTransform() or sceneTransform()
@@ -10985,7 +10985,7 @@ void QGraphicsItemGroup::paint(QPainter *painter, const QStyleOptionGraphicsItem
     Q_UNUSED(widget);
     if (option->state & QStyle::State_Selected) {
         Q_D(QGraphicsItemGroup);
-        painter->setBrush(Qt::NoBrush);
+        painter->setBrush(BobUI::NoBrush);
         painter->drawRect(d->itemsBoundingRect);
     }
 }
@@ -11014,10 +11014,10 @@ int QGraphicsItemGroup::type() const
     return Type;
 }
 
-#if QT_CONFIG(graphicseffect)
-QRectF QGraphicsItemEffectSourcePrivate::boundingRect(Qt::CoordinateSystem system) const
+#if BOBUI_CONFIG(graphicseffect)
+QRectF QGraphicsItemEffectSourcePrivate::boundingRect(BobUI::CoordinateSystem system) const
 {
-    const bool deviceCoordinates = (system == Qt::DeviceCoordinates);
+    const bool deviceCoordinates = (system == BobUI::DeviceCoordinates);
     if (!info && deviceCoordinates) {
         // Device coordinates without info not yet supported.
         qWarning("QGraphicsEffectSource::boundingRect: Not yet implemented, lacking device context");
@@ -11050,7 +11050,7 @@ void QGraphicsItemEffectSourcePrivate::draw(QPainter *painter)
                      info->widget, info->opacity, info->effectTransform, info->wasDirtySceneTransform,
                      info->drawItem);
     } else {
-        QTransform effectTransform = info->painter->worldTransform().inverted();
+        BOBUIransform effectTransform = info->painter->worldTransform().inverted();
         effectTransform *= painter->worldTransform();
         scened->draw(item, painter, info->viewTransform, info->transformPtr, info->exposedRegion,
                      info->widget, info->opacity, &effectTransform, info->wasDirtySceneTransform,
@@ -11059,7 +11059,7 @@ void QGraphicsItemEffectSourcePrivate::draw(QPainter *painter)
 }
 
 // sourceRect must be in the given coordinate system
-QRectF QGraphicsItemEffectSourcePrivate::paddedEffectRect(Qt::CoordinateSystem system, QGraphicsEffect::PixmapPadMode mode, const QRectF &sourceRect, bool *unpadded) const
+QRectF QGraphicsItemEffectSourcePrivate::paddedEffectRect(BobUI::CoordinateSystem system, QGraphicsEffect::PixmapPadMode mode, const QRectF &sourceRect, bool *unpadded) const
 {
     QRectF effectRectF;
 
@@ -11068,11 +11068,11 @@ QRectF QGraphicsItemEffectSourcePrivate::paddedEffectRect(Qt::CoordinateSystem s
 
     if (mode == QGraphicsEffect::PadToEffectiveBoundingRect) {
         if (info) {
-            QRectF deviceRect = system == Qt::DeviceCoordinates ? sourceRect : info->painter->worldTransform().mapRect(sourceRect);
+            QRectF deviceRect = system == BobUI::DeviceCoordinates ? sourceRect : info->painter->worldTransform().mapRect(sourceRect);
             effectRectF = item->graphicsEffect()->boundingRectFor(deviceRect);
             if (unpadded)
                 *unpadded = (effectRectF.size() == sourceRect.size());
-            if (info && system == Qt::LogicalCoordinates)
+            if (info && system == BobUI::LogicalCoordinates)
                 effectRectF = info->painter->worldTransform().inverted().mapRect(effectRectF);
         } else {
             // no choice but to send a logical coordinate bounding rect to boundingRectFor
@@ -11090,10 +11090,10 @@ QRectF QGraphicsItemEffectSourcePrivate::paddedEffectRect(Qt::CoordinateSystem s
     return effectRectF;
 }
 
-QPixmap QGraphicsItemEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QPoint *offset,
+QPixmap QGraphicsItemEffectSourcePrivate::pixmap(BobUI::CoordinateSystem system, QPoint *offset,
                                                  QGraphicsEffect::PixmapPadMode mode) const
 {
-    const bool deviceCoordinates = (system == Qt::DeviceCoordinates);
+    const bool deviceCoordinates = (system == BobUI::DeviceCoordinates);
     if (!info && deviceCoordinates) {
         // Device coordinates without info not yet supported.
         qWarning("QGraphicsEffectSource::pixmap: Not yet implemented, lacking device context");
@@ -11112,7 +11112,7 @@ QPixmap QGraphicsItemEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QP
         *offset = effectRect.topLeft();
 
     bool untransformed = !deviceCoordinates
-            || info->painter->worldTransform().type() <= QTransform::TxTranslate;
+            || info->painter->worldTransform().type() <= BOBUIransform::TxTranslate;
     if (untransformed && unpadded && isPixmap()) {
         if (offset)
             *offset = boundingRect(system).topLeft().toPoint();
@@ -11125,18 +11125,18 @@ QPixmap QGraphicsItemEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QP
     const auto dpr = info ? info->painter->device()->devicePixelRatio() : 1.0;
     QPixmap pixmap(QRectF(effectRectF.topLeft(), effectRectF.size() * dpr).toAlignedRect().size());
     pixmap.setDevicePixelRatio(dpr);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     QPainter pixmapPainter(&pixmap);
     pixmapPainter.setRenderHints(info ? info->painter->renderHints() : QPainter::TextAntialiasing);
 
-    QTransform effectTransform = QTransform::fromTranslate(-effectRect.x(), -effectRect.y());
+    BOBUIransform effectTransform = BOBUIransform::fromTranslate(-effectRect.x(), -effectRect.y());
     if (deviceCoordinates && info->effectTransform)
         effectTransform *= *info->effectTransform;
 
     if (!info) {
         // Logical coordinates without info.
-        QTransform sceneTransform = item->sceneTransform();
-        QTransform newEffectTransform = sceneTransform.inverted();
+        BOBUIransform sceneTransform = item->sceneTransform();
+        BOBUIransform newEffectTransform = sceneTransform.inverted();
         newEffectTransform *= effectTransform;
         scened->draw(item, &pixmapPainter, nullptr, &sceneTransform, nullptr, nullptr, qreal(1.0),
                      &newEffectTransform, false, true);
@@ -11147,7 +11147,7 @@ QPixmap QGraphicsItemEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QP
                      info->drawItem);
     } else {
         // Item coordinates with info.
-        QTransform newEffectTransform = info->transformPtr->inverted();
+        BOBUIransform newEffectTransform = info->transformPtr->inverted();
         newEffectTransform *= effectTransform;
         scened->draw(item, &pixmapPainter, info->viewTransform, info->transformPtr, nullptr,
                      info->widget, info->opacity, &newEffectTransform, info->wasDirtySceneTransform,
@@ -11158,15 +11158,15 @@ QPixmap QGraphicsItemEffectSourcePrivate::pixmap(Qt::CoordinateSystem system, QP
 
     return pixmap;
 }
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static void formatGraphicsItemHelper(QDebug debug, const QGraphicsItem *item)
 {
     if (const QGraphicsItem *parent = item->parentItem())
           debug << ", parent=" << static_cast<const void *>(parent);
     debug << ", pos=";
-    QtDebugUtils::formatQPoint(debug, item->pos());
+    BobUIDebugUtils::formatQPoint(debug, item->pos());
     if (const qreal z = item->zValue())
         debug << ", z=" << z;
     if (item->flags())
@@ -11413,6 +11413,6 @@ QDebug operator<<(QDebug debug, QGraphicsItem::GraphicsItemFlags flags)
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsitem.cpp"

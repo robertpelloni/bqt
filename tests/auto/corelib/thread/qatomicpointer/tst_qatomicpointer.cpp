@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qatomic.h>
 #include <limits.h>
@@ -452,37 +452,37 @@ void tst_QAtomicPointer::isFetchAndAddWaitFree()
 
 void tst_QAtomicPointer::fetchAndAdd_data()
 {
-    QTest::addColumn<int>("valueToAdd");
+    BOBUIest::addColumn<int>("valueToAdd");
 
-    QTest::newRow("0") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("10") << 10;
-    QTest::newRow("31") << 31;
-    QTest::newRow("51") << 51;
-    QTest::newRow("72") << 72;
-    QTest::newRow("810") << 810;
-    QTest::newRow("631") << 631;
-    QTest::newRow("451") << 451;
-    QTest::newRow("272") << 272;
-    QTest::newRow("1810") << 1810;
-    QTest::newRow("3631") << 3631;
-    QTest::newRow("5451") << 5451;
-    QTest::newRow("7272") << 7272;
-    QTest::newRow("-1") << -1;
-    QTest::newRow("-2") << -2;
-    QTest::newRow("-10") << -10;
-    QTest::newRow("-31") << -31;
-    QTest::newRow("-51") << -51;
-    QTest::newRow("-72") << -72;
-    QTest::newRow("-810") << -810;
-    QTest::newRow("-631") << -631;
-    QTest::newRow("-451") << -451;
-    QTest::newRow("-272") << -272;
-    QTest::newRow("-1810") << -1810;
-    QTest::newRow("-3631") << -3631;
-    QTest::newRow("-5451") << -5451;
-    QTest::newRow("-7272") << -7272;
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("10") << 10;
+    BOBUIest::newRow("31") << 31;
+    BOBUIest::newRow("51") << 51;
+    BOBUIest::newRow("72") << 72;
+    BOBUIest::newRow("810") << 810;
+    BOBUIest::newRow("631") << 631;
+    BOBUIest::newRow("451") << 451;
+    BOBUIest::newRow("272") << 272;
+    BOBUIest::newRow("1810") << 1810;
+    BOBUIest::newRow("3631") << 3631;
+    BOBUIest::newRow("5451") << 5451;
+    BOBUIest::newRow("7272") << 7272;
+    BOBUIest::newRow("-1") << -1;
+    BOBUIest::newRow("-2") << -2;
+    BOBUIest::newRow("-10") << -10;
+    BOBUIest::newRow("-31") << -31;
+    BOBUIest::newRow("-51") << -51;
+    BOBUIest::newRow("-72") << -72;
+    BOBUIest::newRow("-810") << -810;
+    BOBUIest::newRow("-631") << -631;
+    BOBUIest::newRow("-451") << -451;
+    BOBUIest::newRow("-272") << -272;
+    BOBUIest::newRow("-1810") << -1810;
+    BOBUIest::newRow("-3631") << -3631;
+    BOBUIest::newRow("-5451") << -5451;
+    BOBUIest::newRow("-7272") << -7272;
 }
 
 void tst_QAtomicPointer::fetchAndAdd()
@@ -676,5 +676,5 @@ void tst_QAtomicPointer::operators()
     operators_helper<Big>();
 }
 
-QTEST_APPLESS_MAIN(tst_QAtomicPointer)
+BOBUIEST_APPLESS_MAIN(tst_QAtomicPointer)
 #include "tst_qatomicpointer.moc"

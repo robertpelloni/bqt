@@ -13,7 +13,7 @@ OmniTerminal::OmniTerminal(QQuickItem *parent)
       m_maxLines(1000)
 {
     setObjectName("OmniTerminal");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemAcceptsInputMethod, true);
     setFlag(ItemHasContents, true);
     setFocusOnTouch(true);
@@ -142,9 +142,9 @@ void OmniTerminal::wheelEvent(QWheelEvent *event) {
 }
 
 void OmniTerminal::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    if (event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) {
         writeCommand(m_currentInput);
-    } else if (event->key() == Qt::Key_Backspace) {
+    } else if (event->key() == BobUI::Key_Backspace) {
         if (!m_currentInput.isEmpty()) {
             m_currentInput.chop(1);
             update();

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSCLIPBOARD_H
 #define QIOSCLIPBOARD_H
 
-#include <QtCore/qmap.h>
+#include <BobUICore/qmap.h>
 #include <qpa/qplatformclipboard.h>
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
 #import <UIKit/UIKit.h>
 
@@ -16,7 +16,7 @@
 
 @class QUIClipboard;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSClipboard : public QPlatformClipboard
 {
@@ -34,8 +34,8 @@ private:
     QMap<QClipboard::Mode, QMimeData *> m_mimeData;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD
 
 #endif // QIOSCLIPBOARD_H

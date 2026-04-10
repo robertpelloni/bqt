@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlocale_p.h"
 
@@ -15,18 +15,18 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qcoreapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /******************************************************************************
 ** Wrappers for Mac locale system functions
 */
 
-Q_STATIC_LOGGING_CATEGORY(lcLocale, "qt.core.locale")
+Q_STATIC_LOGGING_CATEGORY(lcLocale, "bobui.core.locale")
 
 static void printLocalizationInformation()
 {
@@ -56,7 +56,7 @@ static void printLocalizationInformation()
         << singleLineDescription(NSBundle.mainBundle.preferredLocalizations)
         << " and Foundation preferred localizations "
         << singleLineDescription(foundation.preferredLocalizations);
-    qCDebug(lcLocale) << "Reflected by Qt as system locale"
+    qCDebug(lcLocale) << "Reflected by BobUI as system locale"
         << QLocale::system() << "with UI languges " << QLocale::system().uiLanguages();
 }
 Q_COREAPP_STARTUP_FUNCTION(printLocalizationInformation);
@@ -240,10 +240,10 @@ static QString fourDigitYear(int year, const QString &zero)
 static QString macDateToStringImpl(QDate date, CFDateFormatterStyle style)
 {
     // Use noon on the given date, to avoid complications that can arise for
-    // dates before 1900 (see QTBUG-54955) using different UTC offset than
+    // dates before 1900 (see BOBUIBUG-54955) using different UTC offset than
     // QDateTime extrapolates backwards from time_t functions that only work
     // back to 1900. (Alaska and Phillipines may still be borked, though.)
-    QCFType<CFDateRef> myDate = QDateTime(date, QTime(12, 0)).toCFDate();
+    QCFType<CFDateRef> myDate = QDateTime(date, BOBUIime(12, 0)).toCFDate();
     QCFType<CFLocaleRef> mylocale = CFLocaleCopyCurrent();
     QCFType<CFDateFormatterRef> myFormatter
         = CFDateFormatterCreate(kCFAllocatorDefault, mylocale, style,
@@ -260,7 +260,7 @@ static QVariant macDateToString(QDate date, bool short_format)
         // System API (in macOS 11.0, at least) discards sign :-(
         // Simply negating the year won't do as the resulting year typically has
         // a different pattern of week-days.
-        // Furthermore (see QTBUG-54955), Darwin uses the Julian calendar for
+        // Furthermore (see BOBUIBUG-54955), Darwin uses the Julian calendar for
         // dates before 1582-10-15, leading to discrepancies.
         int matcher = QGregorianCalendar::yearSharingWeekDays(date);
         Q_ASSERT(matcher >= 1583);
@@ -290,7 +290,7 @@ static QVariant macDateToString(QDate date, bool short_format)
     return text;
 }
 
-static QVariant macTimeToString(QTime time, bool short_format)
+static QVariant macTimeToString(BOBUIime time, bool short_format)
 {
     QCFType<CFDateRef> myDate = QDateTime(QDate::currentDate(), time).toCFDate();
     QCFType<CFLocaleRef> mylocale = CFLocaleCopyCurrent();
@@ -305,17 +305,17 @@ static QVariant macTimeToString(QTime time, bool short_format)
 
 // Mac uses the Unicode CLDR format codes
 // http://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table
-// See also qtbase/util/locale_database/dateconverter.py
+// See also bobuibase/util/locale_database/dateconverter.py
 // Makes the assumption that input formats are always well formed and consecutive letters
 // never exceed the maximum for the format code.
-static QVariant macToQtFormat(QStringView sys_fmt)
+static QVariant macToBobUIFormat(QStringView sys_fmt)
 {
     QString result;
     qsizetype i = 0;
 
     while (i < sys_fmt.size()) {
         if (sys_fmt.at(i).unicode() == '\'') {
-            QString text = qt_readEscapedFormatString(sys_fmt, &i);
+            QString text = bobui_readEscapedFormatString(sys_fmt, &i);
             if (text == "'"_L1)
                 result += "''"_L1;
             else
@@ -324,10 +324,10 @@ static QVariant macToQtFormat(QStringView sys_fmt)
         }
 
         QChar c = sys_fmt.at(i);
-        qsizetype repeat = qt_repeatCount(sys_fmt.sliced(i));
+        qsizetype repeat = bobui_repeatCount(sys_fmt.sliced(i));
 
         switch (c.unicode()) {
-            // Qt does not support the following options
+            // BobUI does not support the following options
         case 'A': // Milliseconds in Day (1..n): 1..n = padded number
         case 'C': // Input skeleton symbol.
         case 'D': // Day of Year (1..3): 1..3 = padded number
@@ -350,7 +350,7 @@ static QVariant macToQtFormat(QStringView sys_fmt)
             result += "yyyy"_L1;
             break;
         case 'y': // Year (1..n): 2 = short year, 1 & 3..n = padded number
-            // Qt only supports long (4) or short (2) year, use long for all others
+            // BobUI only supports long (4) or short (2) year, use long for all others
             if (repeat == 2)
                 result += "yy"_L1;
             else
@@ -358,7 +358,7 @@ static QVariant macToQtFormat(QStringView sys_fmt)
             break;
         case 'L': // Standalone Month (1..5): 4 = long, 3 = short, 1,2 = number, 5 = narrow
         case 'M': // Month (1..5): 4 = long, 3 = short, 1,2 = number, 5 = narrow
-            // Qt only supports long, short and number, use short for narrow
+            // BobUI only supports long, short and number, use short for narrow
             if (repeat == 5)
                 result += "MMM"_L1;
             else
@@ -371,16 +371,16 @@ static QVariant macToQtFormat(QStringView sys_fmt)
         case 'e': // Local Day of Week (1..6): 4 = long, 3 = short, 5,6 = narrow, 1,2 padded number
             // "Local" only affects numeric form: depends on locale's start-day of the week.
         case 'E': // Day of Week (1..6): 4 = long, 1..3 = short, 5,6 = narrow
-            // Qt only supports long, short: use short for narrow and padded number.
+            // BobUI only supports long, short: use short for narrow and padded number.
             if (repeat == 4)
                 result += "dddd"_L1;
             else
                 result += "ddd"_L1;
             break;
-        case 'a': // AM/PM (1..n): Qt supports no distinctions
+        case 'a': // AM/PM (1..n): BobUI supports no distinctions
         case 'b': // Like a, but also distinguishing noon, midnight (ignore difference).
         case 'B': // Flexible day period (at night, &c.)
-            // Translate to Qt AM/PM, using locale-appropriate case:
+            // Translate to BobUI AM/PM, using locale-appropriate case:
             result += "Ap"_L1;
             break;
         case 'h': // Hour [1..12] (1,2): 1,2 = padded number
@@ -389,7 +389,7 @@ static QVariant macToQtFormat(QStringView sys_fmt)
             break;
         case 'H': // Hour [0..23] (1,2): 1,2 = padded number
         case 'k': // Hour [1..24] (1,2): 1,2 = padded number
-            // Qt H is 0..23 hour
+            // BobUI H is 0..23 hour
             result += QString(repeat, 'H'_L1);
             break;
         case 'm': // Minutes (1,2): 1,2 = padded number
@@ -397,7 +397,7 @@ static QVariant macToQtFormat(QStringView sys_fmt)
             result += QString(repeat, c);
             break;
         case 'S': // Fractional second (1..n): 1..n = truncates to decimal places
-            // Qt uses msecs either unpadded or padded to 3 places
+            // BobUI uses msecs either unpadded or padded to 3 places
             if (repeat < 3)
                 result += u'z';
             else
@@ -460,7 +460,7 @@ static QVariant getMacDateFormat(CFDateFormatterStyle style)
     QCFType<CFLocaleRef> l = CFLocaleCopyCurrent();
     QCFType<CFDateFormatterRef> formatter = CFDateFormatterCreate(kCFAllocatorDefault,
                                                                   l, style, kCFDateFormatterNoStyle);
-    return macToQtFormat(QString::fromCFString(CFDateFormatterGetFormat(formatter)));
+    return macToBobUIFormat(QString::fromCFString(CFDateFormatterGetFormat(formatter)));
 }
 
 static QVariant getMacTimeFormat(CFDateFormatterStyle style)
@@ -468,7 +468,7 @@ static QVariant getMacTimeFormat(CFDateFormatterStyle style)
     QCFType<CFLocaleRef> l = CFLocaleCopyCurrent();
     QCFType<CFDateFormatterRef> formatter = CFDateFormatterCreate(kCFAllocatorDefault,
                                                                   l, kCFDateFormatterNoStyle, style);
-    return macToQtFormat(QString::fromCFString(CFDateFormatterGetFormat(formatter)));
+    return macToBobUIFormat(QString::fromCFString(CFDateFormatterGetFormat(formatter)));
 }
 
 static QVariant getCFLocaleValue(CFStringRef key)
@@ -520,7 +520,7 @@ static QVariant macCurrencySymbol(QLocale::CurrencySymbolFormat format)
     return {};
 }
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 static QVariant macFormatCurrency(const QSystemLocale::CurrencyToStringArgument &arg)
 {
     QCFType<CFNumberRef> value;
@@ -575,9 +575,9 @@ static QVariant macQuoteString(QSystemLocale::QueryType type, QStringView str)
     }
     return QVariant();
 }
-#endif //QT_NO_SYSTEMLOCALE
+#endif //BOBUI_NO_SYSTEMLOCALE
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 
 QLocale QSystemLocale::fallbackLocale() const
 {
@@ -696,9 +696,9 @@ QVariant QSystemLocale::query(QueryType type, QVariant &&in) const
     return QVariant();
 }
 
-#endif // QT_NO_SYSTEMLOCALE
+#endif // BOBUI_NO_SYSTEMLOCALE
 
-#if !QT_CONFIG(icu)
+#if !BOBUI_CONFIG(icu)
 
 static QString localeConvertString(const QByteArray &localeID, const QString &str, bool *ok,
                                    bool toLowerCase)
@@ -734,4 +734,4 @@ QString QLocalePrivate::toUpper(const QString &str, bool *ok) const
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

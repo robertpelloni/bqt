@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCSSPARSER_P_H
 #define QCSSPARSER_P_H
@@ -8,28 +8,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtCore/QStringList>
-#include <QtCore/QList>
-#include <QtCore/QVariant>
-#include <QtCore/QSize>
-#include <QtCore/QMultiHash>
-#include <QtGui/QFont>
-#include <QtGui/QPalette>
-#include <QtCore/QSharedData>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUICore/QStringList>
+#include <BobUICore/QList>
+#include <BobUICore/QVariant>
+#include <BobUICore/QSize>
+#include <BobUICore/QMultiHash>
+#include <BobUIGui/QFont>
+#include <BobUIGui/QPalette>
+#include <BobUICore/QSharedData>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QIcon;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_CSSPARSER
+#ifndef BOBUI_NO_CSSPARSER
 
 // VxWorks defines NONE as (-1) "for times when NULL won't do"
 #if defined(Q_OS_VXWORKS) && defined(NONE)
@@ -43,12 +43,12 @@ QT_END_NAMESPACE
 #  undef TILDE
 #endif
 
-#define QT_CSS_DECLARE_TYPEINFO(Class, Type) \
+#define BOBUI_CSS_DECLARE_TYPEINFO(Class, Type) \
     } /* namespace QCss */ \
     Q_DECLARE_TYPEINFO(QCss:: Class, Type); \
     namespace QCss {
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QCss
 {
@@ -68,18 +68,18 @@ enum Property {
     MarginLeft,
     MarginRight,
     MarginTop,
-    QtBlockIndent,
-    QtListIndent,
-    QtParagraphType,
-    QtTableType,
-    QtUserState,
+    BobUIBlockIndent,
+    BobUIListIndent,
+    BobUIParagraphType,
+    BobUITableType,
+    BobUIUserState,
     TextDecoration,
     TextIndent,
     TextUnderlineStyle,
     VerticalAlignment,
     Whitespace,
-    QtSelectionForeground,
-    QtSelectionBackground,
+    BobUISelectionForeground,
+    BobUISelectionBackground,
     Border,
     BorderLeft,
     BorderRight,
@@ -93,7 +93,7 @@ enum Property {
     PaddingBottom,
     PageBreakBefore,
     PageBreakAfter,
-    QtAlternateBackground,
+    BobUIAlternateBackground,
     BorderLeftStyle,
     BorderRightStyle,
     BorderTopStyle,
@@ -122,26 +122,26 @@ enum Property {
     BackgroundAttachment,
     BackgroundImage,
     BorderImage,
-    QtSpacing,
+    BobUISpacing,
     Width,
     Height,
     MinimumWidth,
     MinimumHeight,
     MaximumWidth,
     MaximumHeight,
-    QtImage,
+    BobUIImage,
     Left,
     Right,
     Top,
     Bottom,
-    QtOrigin,
-    QtPosition,
+    BobUIOrigin,
+    BobUIPosition,
     Position,
-    QtStyleFeatures,
-    QtBackgroundRole,
+    BobUIStyleFeatures,
+    BobUIBackgroundRole,
     ListStyleType,
     ListStyle,
-    QtImageAlignment,
+    BobUIImageAlignment,
     TextAlignment,
     Outline,
     OutlineOffset,
@@ -155,26 +155,26 @@ enum Property {
     OutlineBottomRightRadius,
     FontVariant,
     TextTransform,
-    QtListNumberPrefix,
-    QtListNumberSuffix,
+    BobUIListNumberPrefix,
+    BobUIListNumberSuffix,
     LineHeight,
-    QtLineHeightType,
+    BobUILineHeightType,
     FontKerning,
-    QtForegroundTextureCacheKey,
-    QtIcon,
+    BobUIForegroundTextureCacheKey,
+    BobUIIcon,
     LetterSpacing,
     WordSpacing,
     TextDecorationColor,
-    QtPlaceHolderTextColor,
-    QtAccent,
-    QtStrokeWidth,
-    QtStrokeColor,
-    QtStrokeLineCap,
-    QtStrokeLineJoin,
-    QtStrokeMiterLimit,
-    QtStrokeDashArray,
-    QtStrokeDashOffset,
-    QtForeground,
+    BobUIPlaceHolderTextColor,
+    BobUIAccent,
+    BobUIStrokeWidth,
+    BobUIStrokeColor,
+    BobUIStrokeLineCap,
+    BobUIStrokeLineJoin,
+    BobUIStrokeMiterLimit,
+    BobUIStrokeDashArray,
+    BobUIStrokeDashOffset,
+    BobUIForeground,
     NumProperties
 };
 
@@ -377,7 +377,7 @@ struct Value
 
     Q_GUI_EXPORT QString toString() const;
 };
-QT_CSS_DECLARE_TYPEINFO(Value, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(Value, Q_RELOCATABLE_TYPE)
 
 struct ColorData {
     ColorData() : role(QPalette::NoRole), type(Invalid) {}
@@ -387,7 +387,7 @@ struct ColorData {
     QPalette::ColorRole role;
     enum { Invalid, Color, Role} type;
 };
-QT_CSS_DECLARE_TYPEINFO(ColorData, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(ColorData, Q_RELOCATABLE_TYPE)
 
 struct BrushData {
     BrushData() : role(QPalette::NoRole), type(Invalid) {}
@@ -397,28 +397,28 @@ struct BrushData {
     QPalette::ColorRole role;
     enum { Invalid, Brush, Role, DependsOnThePalette } type;
 };
-QT_CSS_DECLARE_TYPEINFO(BrushData, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(BrushData, Q_RELOCATABLE_TYPE)
 
 struct BackgroundData {
     BrushData brush;
     QString image;
     Repeat repeat;
-    Qt::Alignment alignment;
+    BobUI::Alignment alignment;
 };
-QT_CSS_DECLARE_TYPEINFO(BackgroundData, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(BackgroundData, Q_RELOCATABLE_TYPE)
 
 struct LengthData {
     qreal number;
     enum { None, Px, Ex, Em, Percent } unit;
 };
-QT_CSS_DECLARE_TYPEINFO(LengthData, Q_PRIMITIVE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(LengthData, Q_PRIMITIVE_TYPE)
 
 struct BorderData {
     LengthData width;
     BorderStyle style;
     BrushData color;
 };
-QT_CSS_DECLARE_TYPEINFO(BorderData, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(BorderData, Q_RELOCATABLE_TYPE)
 
 // 1. StyleRule - x:hover, y:clicked > z:checked { prop1: value1; prop2: value2; }
 // 2. QList<Selector> - x:hover, y:clicked z:checked
@@ -453,7 +453,7 @@ struct Q_GUI_EXPORT Declaration
 
     Origin originValue() const;
     Repeat repeatValue() const;
-    Qt::Alignment alignmentValue() const;
+    BobUI::Alignment alignmentValue() const;
     PositionMode positionValue() const;
     Attachment attachmentValue() const;
     int  styleFeaturesValue() const;
@@ -471,7 +471,7 @@ struct Q_GUI_EXPORT Declaration
 
     QList<qreal> dashArray() const;
 };
-QT_CSS_DECLARE_TYPEINFO(Declaration, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(Declaration, Q_RELOCATABLE_TYPE)
 
 const quint64 PseudoClass_Unknown          = Q_UINT64_C(0x0000000000000000);
 const quint64 PseudoClass_Enabled          = Q_UINT64_C(0x0000000000000001);
@@ -531,7 +531,7 @@ struct Pseudo
     QString function;
     bool negated;
 };
-QT_CSS_DECLARE_TYPEINFO(Pseudo, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(Pseudo, Q_RELOCATABLE_TYPE)
 
 struct AttributeSelector
 {
@@ -549,7 +549,7 @@ struct AttributeSelector
     QString value;
     ValueMatchType valueMatchCriterium = NoMatch;
 };
-QT_CSS_DECLARE_TYPEINFO(AttributeSelector, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(AttributeSelector, Q_RELOCATABLE_TYPE)
 
 struct BasicSelector
 {
@@ -571,7 +571,7 @@ struct BasicSelector
 
     Relation relationToNext;
 };
-QT_CSS_DECLARE_TYPEINFO(BasicSelector, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(BasicSelector, Q_RELOCATABLE_TYPE)
 
 struct Q_GUI_EXPORT Selector
 {
@@ -580,7 +580,7 @@ struct Q_GUI_EXPORT Selector
     quint64 pseudoClass(quint64 *negated = nullptr) const;
     QString pseudoElement() const;
 };
-QT_CSS_DECLARE_TYPEINFO(Selector, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(Selector, Q_RELOCATABLE_TYPE)
 
 struct StyleRule
 {
@@ -589,21 +589,21 @@ struct StyleRule
     QList<Declaration> declarations;
     int order;
 };
-QT_CSS_DECLARE_TYPEINFO(StyleRule, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(StyleRule, Q_RELOCATABLE_TYPE)
 
 struct MediaRule
 {
     QStringList media;
     QList<StyleRule> styleRules;
 };
-QT_CSS_DECLARE_TYPEINFO(MediaRule, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(MediaRule, Q_RELOCATABLE_TYPE)
 
 struct PageRule
 {
     QString selector;
     QList<Declaration> declarations;
 };
-QT_CSS_DECLARE_TYPEINFO(PageRule, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(PageRule, Q_RELOCATABLE_TYPE)
 
 struct AnimationRule
 {
@@ -616,14 +616,14 @@ struct AnimationRule
     QString animName;
     QList<AnimationRuleSet> ruleSets;
 };
-QT_CSS_DECLARE_TYPEINFO(AnimationRule, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(AnimationRule, Q_RELOCATABLE_TYPE)
 
 struct ImportRule
 {
     QString href;
     QStringList media;
 };
-QT_CSS_DECLARE_TYPEINFO(ImportRule, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(ImportRule, Q_RELOCATABLE_TYPE)
 
 enum StyleSheetOrigin {
     StyleSheetOrigin_Unspecified,
@@ -646,15 +646,15 @@ struct StyleSheet
     QMultiHash<QString, StyleRule> nameIndex;
     QMultiHash<QString, StyleRule> idIndex;
 
-    Q_GUI_EXPORT void buildIndexes(Qt::CaseSensitivity nameCaseSensitivity = Qt::CaseSensitive);
+    Q_GUI_EXPORT void buildIndexes(BobUI::CaseSensitivity nameCaseSensitivity = BobUI::CaseSensitive);
 };
-QT_CSS_DECLARE_TYPEINFO(StyleSheet, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(StyleSheet, Q_RELOCATABLE_TYPE)
 
 
 class Q_GUI_EXPORT StyleSelector
 {
 public:
-    StyleSelector() : nameCaseSensitivity(Qt::CaseSensitive)  {}
+    StyleSelector() : nameCaseSensitivity(BobUI::CaseSensitive)  {}
     virtual ~StyleSelector();
 
     union NodePtr {
@@ -678,7 +678,7 @@ public:
 
     QList<StyleSheet> styleSheets;
     QString medium;
-    Qt::CaseSensitivity nameCaseSensitivity;
+    BobUI::CaseSensitivity nameCaseSensitivity;
 private:
     void matchRule(NodePtr node, const StyleRule &rules, StyleSheetOrigin origin,
                     int depth, QMultiMap<uint, StyleRule> *weightedRules);
@@ -746,7 +746,7 @@ struct Symbol
     int start, len;
     Q_GUI_EXPORT QString lexem() const;
 };
-QT_CSS_DECLARE_TYPEINFO(Symbol, Q_RELOCATABLE_TYPE)
+BOBUI_CSS_DECLARE_TYPEINFO(Symbol, Q_RELOCATABLE_TYPE)
 
 class Q_GUI_EXPORT Scanner
 {
@@ -762,7 +762,7 @@ public:
     explicit Parser(const QString &css, bool file = false);
 
     void init(const QString &css, bool file = false);
-    bool parse(StyleSheet *styleSheet, Qt::CaseSensitivity nameCaseSensitivity = Qt::CaseSensitive);
+    bool parse(StyleSheet *styleSheet, BobUI::CaseSensitivity nameCaseSensitivity = BobUI::CaseSensitive);
     Symbol errorSymbol();
 
     bool parseImport(ImportRule *importRule);
@@ -854,11 +854,11 @@ struct Q_GUI_EXPORT ValueExtractor
     ValueExtractor(const QList<Declaration> &declarations, const QPalette & = QPalette());
 
     bool extractFont(QFont *font, int *fontSizeAdjustment);
-    bool extractBackground(QBrush *, QString *, Repeat *, Qt::Alignment *, QCss::Origin *, QCss::Attachment *,
+    bool extractBackground(QBrush *, QString *, Repeat *, BobUI::Alignment *, QCss::Origin *, QCss::Attachment *,
                            QCss::Origin *);
     bool extractGeometry(int *w, int *h, int *minw, int *minh, int *maxw, int *maxh);
-    bool extractPosition(int *l, int *t, int *r, int *b, QCss::Origin *, Qt::Alignment *,
-                         QCss::PositionMode *, Qt::Alignment *);
+    bool extractPosition(int *l, int *t, int *r, int *b, QCss::Origin *, BobUI::Alignment *,
+                         QCss::PositionMode *, BobUI::Alignment *);
     bool extractBox(int *margins, int *paddings, int *spacing = nullptr);
     bool extractBorder(int *borders, QBrush *colors, BorderStyle *Styles, QSize *radii);
     bool extractOutline(int *borders, QBrush *colors, BorderStyle *Styles, QSize *radii, int *offsets);
@@ -866,11 +866,11 @@ struct Q_GUI_EXPORT ValueExtractor
                         QBrush *alternateBackground, QBrush *placeHolderTextForeground,
                         QBrush *accent);
     int  extractStyleFeatures();
-    bool extractImage(QIcon *icon, Qt::Alignment *a, QSize *size);
+    bool extractImage(QIcon *icon, BobUI::Alignment *a, QSize *size);
     bool extractIcon(QIcon *icon, QSize *size);
 
     void lengthValues(const Declaration &decl, int *m);
-    QTextLength textLength(const Declaration &decl);
+    BOBUIextLength textLength(const Declaration &decl);
 
 private:
     void extractFont();
@@ -889,14 +889,14 @@ private:
 
 } // namespace QCss
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QCss::BackgroundData, QCss__BackgroundData, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCss::LengthData, QCss__LengthData, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QCss::BorderData, QCss__BorderData, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCss::BackgroundData, QCss__BackgroundData, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCss::LengthData, QCss__LengthData, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QCss::BorderData, QCss__BorderData, Q_GUI_EXPORT)
 
-#undef QT_CSS_DECLARE_TYPEINFO
+#undef BOBUI_CSS_DECLARE_TYPEINFO
 
-#endif // QT_NO_CSSPARSER
+#endif // BOBUI_NO_CSSPARSER
 
 #endif

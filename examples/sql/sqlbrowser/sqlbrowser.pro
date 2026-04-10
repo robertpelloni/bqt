@@ -1,8 +1,8 @@
 TEMPLATE        = app
 TARGET          = sqlbrowser
 
-QT              += sql widgets
-requires(qtConfig(tableview))
+BOBUI              += sql widgets
+requires(bobuiConfig(tableview))
 
 HEADERS         = browser.h connectionwidget.h qsqlconnectiondialog.h
 SOURCES         = main.cpp browser.cpp connectionwidget.cpp qsqlconnectiondialog.cpp
@@ -14,5 +14,5 @@ build_all:!build_pass {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/sql/sqlbrowser
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/sql/sqlbrowser
 INSTALLS += target

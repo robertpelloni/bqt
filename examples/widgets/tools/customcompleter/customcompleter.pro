@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(completer))
+BOBUI += widgets
+requires(bobuiConfig(completer))
 
 HEADERS   = mainwindow.h \
             textedit.h
@@ -9,5 +9,5 @@ SOURCES   = main.cpp \
 RESOURCES = customcompleter.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/customcompleter
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/customcompleter
 INSTALLS += target

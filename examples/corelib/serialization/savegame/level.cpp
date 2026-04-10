@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "level.h"
 
 #include <QJsonArray>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 Level::Level(const QString &name) : mName(name) { }
 
@@ -55,7 +55,7 @@ QJsonObject Level::toJson() const
 }
 //! [toJson]
 
-void Level::print(QTextStream &s, int indentation) const
+void Level::print(BOBUIextStream &s, int indentation) const
 {
     const QString indent(indentation * 2, ' ');
 

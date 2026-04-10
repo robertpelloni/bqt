@@ -1,22 +1,22 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qnetworkdatagram.h"
 #include "qnetworkdatagram_p.h"
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QNetworkDatagram)
+BOBUI_IMPL_METATYPE_EXTERN(QNetworkDatagram)
 
 /*!
     \class QNetworkDatagram
     \brief The QNetworkDatagram class provides the data and metadata of a UDP datagram.
     \since 5.8
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \reentrant
 
     QNetworkDatagram can be used with the \l QUdpSocket class to represent the full
@@ -433,7 +433,7 @@ void QNetworkDatagram::setData(const QByteArray &data)
       \li the hop count limit on the new datagram is reset to the default (-1);
     \endlist
 
-    If QNetworkDatagram is modified in a future version of Qt to carry further
+    If QNetworkDatagram is modified in a future version of BobUI to carry further
     metadata, this function will copy that metadata as appropriate.
 
     This datagram's destination address is not copied if it is an IPv4 address
@@ -491,6 +491,6 @@ void QNetworkDatagram::destroy(QNetworkDatagramPrivate *d)
 */
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET

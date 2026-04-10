@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef RENDERTHREAD_H
 #define RENDERTHREAD_H
 
 #include <QImage>
-#include <QThread>
+#include <BOBUIhread>
 
 class Block;
 
 //! [RenderThread class definition]
-class RenderThread : public QThread
+class RenderThread : public BOBUIhread
 {
     Q_OBJECT
 

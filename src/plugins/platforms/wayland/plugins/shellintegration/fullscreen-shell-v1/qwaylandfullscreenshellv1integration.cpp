@@ -1,12 +1,12 @@
 // Copyright (C) 2018 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandfullscreenshellv1integration.h"
 #include "qwaylandfullscreenshellv1surface.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandFullScreenShellV1Integration::QWaylandFullScreenShellV1Integration()
     : QWaylandShellIntegrationTemplate(1)
@@ -24,6 +24,6 @@ QWaylandShellSurface *QWaylandFullScreenShellV1Integration::createShellSurface(Q
     return new QWaylandFullScreenShellV1Surface(this, window);
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

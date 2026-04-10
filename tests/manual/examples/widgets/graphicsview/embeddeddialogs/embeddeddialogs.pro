@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(fontcombobox))
+BOBUI += widgets
+requires(bobuiConfig(fontcombobox))
 
 SOURCES += main.cpp
 SOURCES += customproxy.cpp embeddeddialog.cpp
@@ -14,5 +14,5 @@ build_all:!build_pass {
 }
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/graphicsview/embeddeddialogs
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/graphicsview/embeddeddialogs
 INSTALLS += target

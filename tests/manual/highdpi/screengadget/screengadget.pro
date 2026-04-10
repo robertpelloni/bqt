@@ -1,2 +1,2 @@
-QT += widgets gui_private
+BOBUI += widgets gui_private
 SOURCES += main.cpp

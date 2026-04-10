@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#define QT_NO_CAST_FROM_ASCII
+#define BOBUI_NO_CAST_FROM_ASCII
 
 #include "qmimemagicrule_p.h"
 
 #include "qmimetypeparser_p.h"
-#include <QtCore/QList>
-#include <QtCore/QDebug>
+#include <BobUICore/QList>
+#include <BobUICore/QDebug>
 #include <qendian.h>
 
 #include <private/qoffsetstringarray_p.h>
-#include <private/qtools_p.h>
+#include <private/bobuiools_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
 // in the same order as Type!
 static constexpr auto magicRuleTypes = qOffsetStringArray(
@@ -136,7 +136,7 @@ bool QMimeMagicRule::matchNumber(const QByteArray &data) const
 
 static inline QByteArray makePattern(const QByteArray &value)
 {
-    QByteArray pattern(value.size(), Qt::Uninitialized);
+    QByteArray pattern(value.size(), BobUI::Uninitialized);
     char *data = pattern.data();
 
     const char *p = value.constData();
@@ -326,4 +326,4 @@ bool QMimeMagicRule::matches(const QByteArray &data) const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

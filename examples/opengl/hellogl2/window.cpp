@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "window.h"
 #include "glwidget.h"
@@ -61,7 +61,7 @@ Window::Window()
 
 QSlider *Window::createSlider()
 {
-    QSlider *slider = new QSlider(Qt::Vertical);
+    QSlider *slider = new QSlider(BobUI::Vertical);
     slider->setRange(0, 360 * 16);
     slider->setSingleStep(16);
     slider->setPageStep(15 * 16);
@@ -72,7 +72,7 @@ QSlider *Window::createSlider()
 
 void Window::keyPressEvent(QKeyEvent *e)
 {
-    if (isWindow() && e->key() == Qt::Key_Escape)
+    if (isWindow() && e->key() == BobUI::Key_Escape)
         close();
     else
         QWidget::keyPressEvent(e);
@@ -99,7 +99,7 @@ void Window::dock()
                                  tr("Main window already occupied"));
         return;
     }
-    setAttribute(Qt::WA_DeleteOnClose, false);
+    setAttribute(BobUI::WA_DeleteOnClose, false);
     dockBtn->setText(tr("Undock"));
     mainWindow->setCentralWidget(this);
 }
@@ -107,7 +107,7 @@ void Window::dock()
 void Window::undock()
 {
     setParent(nullptr);
-    setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(BobUI::WA_DeleteOnClose);
     const auto geometry = screen()->availableGeometry();
     move(geometry.x() + (geometry.width() - width()) / 2,
          geometry.y() + (geometry.height() - height()) / 2);

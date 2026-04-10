@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 
 #ifndef QSSLCIPHER_H
 #define QSSLCIPHER_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtNetwork/qssl.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUINetwork/qssl.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 class QSslCipherPrivate;
 class Q_NETWORK_EXPORT QSslCipher
@@ -48,21 +48,21 @@ public:
     QSsl::SslProtocol protocol() const;
 
 private:
-    // ### Qt 7: make implicitly shared
+    // ### BobUI 7: make implicitly shared
     std::unique_ptr<QSslCipherPrivate> d;
-    friend class QTlsBackend;
+    friend class BOBUIlsBackend;
 };
 
 Q_DECLARE_SHARED(QSslCipher)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 Q_NETWORK_EXPORT QDebug operator<<(QDebug debug, const QSslCipher &cipher);
 #endif
 
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

@@ -1,7 +1,7 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qqnxglobal.h"
 
@@ -12,23 +12,23 @@
 
 #include <QUuid>
 
-#include <QtGui/QWindow>
+#include <BobUIGui/QWindow>
 #include <qpa/qwindowsysteminterface.h>
 
 #include "private/qguiapplication_p.h"
 #include "private/qhighdpiscaling_p.h"
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaWindow, "qt.qpa.window");
+Q_LOGGING_CATEGORY(lcQpaWindow, "bobui.qpa.window");
 
 #define DECLARE_DEBUG_VAR(variable) \
     static bool debug_ ## variable() \
-    { static bool value = qgetenv("QNX_SCREEN_DEBUG").contains(QT_STRINGIFY(variable)); return value; }
+    { static bool value = qgetenv("QNX_SCREEN_DEBUG").contains(BOBUI_STRINGIFY(variable)); return value; }
 DECLARE_DEBUG_VAR(fps)
 DECLARE_DEBUG_VAR(posts)
 DECLARE_DEBUG_VAR(blits)
@@ -43,7 +43,7 @@ DECLARE_DEBUG_VAR(statistics)
     \brief The QQnxWindow is the base class of the various classes used as instances of
     QPlatformWindow in the QNX QPA plugin.
 
-    The standard properties and methods available in Qt are not a perfect match for the
+    The standard properties and methods available in BobUI are not a perfect match for the
     features provided by the QNX screen service. While for the majority of applications
     the default behavior suffices, some circumstances require greater control over the
     interaction with screen.
@@ -59,7 +59,7 @@ DECLARE_DEBUG_VAR(statistics)
     is in the treatment of parentless windows. In no-rootwindow mode, these windows are
     created as application windows while in rootwindow mode, the first window on a screen
     is created as an application window while subsequent windows are created as child
-    windows. The only exception to this is any window of type Qt::CoverWindow;
+    windows. The only exception to this is any window of type BobUI::CoverWindow;
     these are created as application windows, but will never become the root window,
     even if they are the first window created.
 
@@ -119,7 +119,7 @@ QQnxWindow::QQnxWindow(QWindow *window, screen_context_t context, bool needRootW
       m_visible(false),
       m_exposed(true),
       m_foreign(false),
-      m_windowState(Qt::WindowNoState),
+      m_windowState(BobUI::WindowNoState),
       m_firstActivateHandled(false),
       m_desktopNotify(0)
 {
@@ -133,7 +133,7 @@ QQnxWindow::QQnxWindow(QWindow *window, screen_context_t context, bool needRootW
     if (!windowGroup.isValid())
         windowGroup = window->property("_q_platform_qnxParentGroup");
 
-    if (window->type() == Qt::CoverWindow) {
+    if (window->type() == BobUI::CoverWindow) {
         // Cover windows have to be top level to be accessible to window delegate (i.e. navigator)
         // Desktop windows also need to be toplevel because they are not
         // supposed to be part of the window hierarchy tree
@@ -156,7 +156,7 @@ QQnxWindow::QQnxWindow(QWindow *window, screen_context_t context, bool needRootW
     } else if (m_isTopLevel) {
         Q_SCREEN_CRITICALERROR(screen_create_window(&m_window, m_screenContext),
                             "Could not create top level window"); // Creates an application window
-        if (window->type() != Qt::CoverWindow) {
+        if (window->type() != BobUI::CoverWindow) {
             if (needRootWindow)
                 platformScreen->setRootWindow(this);
         }
@@ -204,8 +204,8 @@ QQnxWindow::QQnxWindow(QWindow *window, screen_context_t context, bool needRootW
     if (QQnxIntegration::instance()->options() & QQnxIntegration::Desktop) {
         // Determine if the window needs a frame.
         switch (window->type()) {
-        case Qt::Popup:
-        case Qt::ToolTip:
+        case BobUI::Popup:
+        case BobUI::ToolTip:
             m_desktopNotify = DesktopNotifyPosition | DesktopNotifyVisible;
             break;
 
@@ -259,7 +259,7 @@ QQnxWindow::QQnxWindow(QWindow *window, screen_context_t context, screen_window_
     , m_visible(false)
     , m_exposed(true)
     , m_foreign(true)
-    , m_windowState(Qt::WindowNoState)
+    , m_windowState(BobUI::WindowNoState)
     , m_parentGroupName(256, 0)
     , m_isTopLevel(false)
 {
@@ -286,7 +286,7 @@ QQnxWindow::~QQnxWindow()
 {
     qCDebug(lcQpaWindow) << "window =" << window();
 
-    // Qt should have already deleted the children before deleting the parent.
+    // BobUI should have already deleted the children before deleting the parent.
     Q_ASSERT(m_childWindows.size() == 0);
 
     // Remove from plugin's window mapper
@@ -539,7 +539,7 @@ void QQnxWindow::setScreen(QQnxScreen *platformScreen)
     } else {
         Q_FOREACH (QQnxWindow *childWindow, m_childWindows) {
             // Only subwindows and tooltips need necessarily be moved to another display with the window.
-            if (window()->type() == Qt::SubWindow || window()->type() == Qt::ToolTip)
+            if (window()->type() == BobUI::SubWindow || window()->type() == BobUI::ToolTip)
                 childWindow->setScreen(platformScreen);
         }
     }
@@ -721,11 +721,11 @@ void QQnxWindow::setFocus(screen_window_t newFocusWindow)
     screen_destroy_window(temporaryFocusWindow);
 }
 
-void QQnxWindow::setWindowState(Qt::WindowStates state)
+void QQnxWindow::setWindowState(BobUI::WindowStates state)
 {
     qCDebug(lcQpaWindow) << Q_FUNC_INFO << "state =" << state;
 
-    // Prevent two calls with Qt::WindowFullScreen from changing m_unmaximizedGeometry
+    // Prevent two calls with BobUI::WindowFullScreen from changing m_unmaximizedGeometry
     if (m_windowState == state)
         return;
 
@@ -762,7 +762,7 @@ QQnxWindow *QQnxWindow::findWindow(screen_window_t windowHandle)
 
 void QQnxWindow::minimize()
 {
-    qWarning("Qt::WindowMinimized is not supported by this OS version");
+    qWarning("BobUI::WindowMinimized is not supported by this OS version");
 }
 
 void QQnxWindow::setRotation(int rotation)
@@ -800,13 +800,13 @@ void QQnxWindow::initWindow()
     QQnxScreen *platformScreen = static_cast<QQnxScreen *>(window()->screen()->handle());
     setScreen(platformScreen);
 
-    if (window()->type() == Qt::CoverWindow)
+    if (window()->type() == BobUI::CoverWindow)
         m_exposed = false;
 
     // Add window to plugin's window mapper
     QQnxIntegration::instance()->addWindow(m_window, window());
 
-    // Qt never calls these setters after creating the window, so we need to do that ourselves here
+    // BobUI never calls these setters after creating the window, so we need to do that ourselves here
     setWindowState(window()->windowState());
     setOpacity(window()->opacity());
 
@@ -848,7 +848,7 @@ void QQnxWindow::joinWindowGroup(const QByteArray &groupName)
     // the parent group moves a foreign window to another group that it also owns.  The
     // CLOSE/CREATE changes the identity of the foreign window.  Usually, this is undesirable.
     // To prevent this CLOSE/CREATE when changing the parent group, we temporarily add a
-    // context permission for the Qt context.  screen won't send a CLOSE/CREATE when the
+    // context permission for the BobUI context.  screen won't send a CLOSE/CREATE when the
     // context has some permission other than the PARENT permission.  If there isn't a new
     // group (the window has no parent), this context permission is left in place.
 
@@ -897,16 +897,16 @@ void QQnxWindow::updateZorder(screen_window_t window, int &topZorder)
 
 void QQnxWindow::applyWindowState()
 {
-    if (m_windowState & Qt::WindowMinimized) {
+    if (m_windowState & BobUI::WindowMinimized) {
         minimize();
 
         if (m_unmaximizedGeometry.isValid())
             setGeometry(m_unmaximizedGeometry);
         else
             setGeometry(m_screen->geometry());
-    } else if (m_windowState & (Qt::WindowMaximized | Qt::WindowFullScreen)) {
+    } else if (m_windowState & (BobUI::WindowMaximized | BobUI::WindowFullScreen)) {
         m_unmaximizedGeometry = geometry();
-        setGeometry(m_windowState & Qt::WindowFullScreen ? m_screen->geometry()
+        setGeometry(m_windowState & BobUI::WindowFullScreen ? m_screen->geometry()
                                                          : m_screen->availableGeometry());
     } else if (m_unmaximizedGeometry.isValid()) {
         setGeometry(m_unmaximizedGeometry);
@@ -938,13 +938,13 @@ void QQnxWindow::handleActivationEvent()
 
 bool QQnxWindow::showWithoutActivating() const
 {
-    return (window()->flags() & Qt::Popup) == Qt::Popup
+    return (window()->flags() & BobUI::Popup) == BobUI::Popup
         || window()->property("_q_showWithoutActivating").toBool();
 }
 
 bool QQnxWindow::focusable() const
 {
-    return (window()->flags() & Qt::WindowDoesNotAcceptFocus) != Qt::WindowDoesNotAcceptFocus;
+    return (window()->flags() & BobUI::WindowDoesNotAcceptFocus) != BobUI::WindowDoesNotAcceptFocus;
 }
 
 void QQnxWindow::addContextPermission()
@@ -996,4 +996,4 @@ void QQnxWindow::removeContextPermission()
             revokeString.data());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

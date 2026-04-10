@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author James Turner <james.turner@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -15,29 +15,29 @@
 #include "qcocoahelpers.h"
 #include "qcocoaapplication.h" // for custom application category
 #include "qcocoamenuloader.h"
-#include <QtGui/private/qcoregraphics_p.h>
-#include <QtCore/qregularexpression.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qapplekeymapper_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
+#include <BobUICore/qregularexpression.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qapplekeymapper_p.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char *application_menu_strings[] =
 {
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","About %1"),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Preferences..."),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Services"),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Hide %1"),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Hide Others"),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Show All"),
-    QT_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Quit %1")
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","About %1"),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Preferences..."),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Services"),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Hide %1"),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Hide Others"),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Show All"),
+    BOBUI_TRANSLATE_NOOP("MAC_APPLICATION_MENU","Quit %1")
 };
 
-QString qt_mac_applicationmenu_string(int type)
+QString bobui_mac_applicationmenu_string(int type)
 {
     QString menuString = QString::fromLatin1(application_menu_strings[type]);
     const QString translated = QCoreApplication::translate("QMenuBar", application_menu_strings[type]);
@@ -147,7 +147,7 @@ void QCocoaMenuItem::setRole(MenuRole role)
     m_role = role;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 void QCocoaMenuItem::setShortcut(const QKeySequence& shortcut)
 {
     m_shortcut = shortcut;
@@ -186,41 +186,41 @@ static QPlatformMenuItem::MenuRole detectMenuRole(const QString &captionWithPoss
     QString itemCaption(captionWithPossibleMnemonic);
     itemCaption.remove(u'&');
 
-    static const std::tuple<QPlatformMenuItem::MenuRole, std::vector<std::tuple<Qt::MatchFlags, const char *>>> roleMap[] = {
+    static const std::tuple<QPlatformMenuItem::MenuRole, std::vector<std::tuple<BobUI::MatchFlags, const char *>>> roleMap[] = {
         { QPlatformMenuItem::AboutRole, {
-            { Qt::MatchStartsWith | Qt::MatchEndsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "About") }
+            { BobUI::MatchStartsWith | BobUI::MatchEndsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "About") }
         }},
         { QPlatformMenuItem::PreferencesRole, {
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Config") },
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Preference") },
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Options") },
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Setting") },
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Setup") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Config") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Preference") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Options") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Setting") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Setup") },
         }},
         { QPlatformMenuItem::QuitRole, {
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Quit") },
-            { Qt::MatchStartsWith, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Exit") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Quit") },
+            { BobUI::MatchStartsWith, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Exit") },
         }},
         { QPlatformMenuItem::CutRole, {
-            { Qt::MatchExactly, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Cut") }
+            { BobUI::MatchExactly, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Cut") }
         }},
         { QPlatformMenuItem::CopyRole, {
-            { Qt::MatchExactly, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Copy") }
+            { BobUI::MatchExactly, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Copy") }
         }},
         { QPlatformMenuItem::PasteRole, {
-            { Qt::MatchExactly, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Paste") }
+            { BobUI::MatchExactly, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Paste") }
         }},
         { QPlatformMenuItem::SelectAllRole, {
-            { Qt::MatchExactly, QT_TRANSLATE_NOOP("QCocoaMenuItem", "Select All") }
+            { BobUI::MatchExactly, BOBUI_TRANSLATE_NOOP("QCocoaMenuItem", "Select All") }
         }},
     };
 
-    auto match = [](const QString &caption, const QString &itemCaption, Qt::MatchFlags matchFlags) {
-        if (matchFlags.testFlag(Qt::MatchExactly))
-            return !itemCaption.compare(caption, Qt::CaseInsensitive);
-        if (matchFlags.testFlag(Qt::MatchStartsWith) && itemCaption.startsWith(caption, Qt::CaseInsensitive))
+    auto match = [](const QString &caption, const QString &itemCaption, BobUI::MatchFlags matchFlags) {
+        if (matchFlags.testFlag(BobUI::MatchExactly))
+            return !itemCaption.compare(caption, BobUI::CaseInsensitive);
+        if (matchFlags.testFlag(BobUI::MatchStartsWith) && itemCaption.startsWith(caption, BobUI::CaseInsensitive))
             return true;
-        if (matchFlags.testFlag(Qt::MatchEndsWith) && itemCaption.endsWith(caption, Qt::CaseInsensitive))
+        if (matchFlags.testFlag(BobUI::MatchEndsWith) && itemCaption.endsWith(caption, BobUI::CaseInsensitive))
             return true;
         return false;
     };
@@ -231,7 +231,7 @@ static QPlatformMenuItem::MenuRole detectMenuRole(const QString &captionWithPoss
                 // Check for untranslated match
                 if (match(caption, itemCaption, matchFlags))
                     return role;
-                // Then translated with the current Qt translation
+                // Then translated with the current BobUI translation
                 if (match(QCoreApplication::translate("QCocoaMenuItem", caption), itemCaption, matchFlags))
                     return role;
             }
@@ -240,9 +240,9 @@ static QPlatformMenuItem::MenuRole detectMenuRole(const QString &captionWithPoss
     }();
 
     if (detectedRole == QPlatformMenuItem::AboutRole) {
-        static const QRegularExpression qtRegExp("qt$"_L1, QRegularExpression::CaseInsensitiveOption);
-        if (itemCaption.contains(qtRegExp))
-            detectedRole = QPlatformMenuItem::AboutQtRole;
+        static const QRegularExpression bobuiRegExp("bobui$"_L1, QRegularExpression::CaseInsensitiveOption);
+        if (itemCaption.contains(bobuiRegExp))
+            detectedRole = QPlatformMenuItem::AboutBobUIRole;
     }
 
     return detectedRole;
@@ -283,8 +283,8 @@ NSMenuItem *QCocoaMenuItem::sync()
         case AboutRole:
             mergeItem = [loader aboutMenuItem];
             break;
-        case AboutQtRole:
-            mergeItem = [loader aboutQtMenuItem];
+        case AboutBobUIRole:
+            mergeItem = [loader aboutBobUIMenuItem];
             break;
         case PreferencesRole:
             mergeItem = [loader preferencesMenuItem];
@@ -318,7 +318,7 @@ NSMenuItem *QCocoaMenuItem::sync()
             [mergeItem retain];
             [m_native release];
             m_native = mergeItem;
-            if (auto *nativeItem = qt_objc_cast<QCocoaNSMenuItem *>(m_native))
+            if (auto *nativeItem = bobui_objc_cast<QCocoaNSMenuItem *>(m_native))
                 nativeItem.platformMenuItem = this;
         } else if (m_merged) {
             // was previously merged, but no longer
@@ -341,7 +341,7 @@ NSMenuItem *QCocoaMenuItem::sync()
     m_native.view = m_itemView;
 
     QString text = mergeText();
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     QKeySequence accel = mergeAccel();
 
     // Show multiple key sequences as part of the menu text.
@@ -351,7 +351,7 @@ NSMenuItem *QCocoaMenuItem::sync()
 
     m_native.title = QPlatformTheme::removeMnemonics(text).toNSString();
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (accel.count() == 1) {
         auto key = accel[0].key();
         auto modifiers = accel[0].keyboardModifiers();
@@ -359,7 +359,7 @@ NSMenuItem *QCocoaMenuItem::sync()
         QChar cocoaKey = QAppleKeyMapper::toCocoaKey(key);
         if (cocoaKey.isNull())
             cocoaKey = char16_t(QChar::toLower(key));
-        // Similar to qt_mac_removePrivateUnicode change the delete key,
+        // Similar to bobui_mac_removePrivateUnicode change the delete key,
         // so the symbol is correctly seen in native menu bar.
         if (cocoaKey.unicode() == NSDeleteFunctionKey)
             cocoaKey = char16_t(NSDeleteCharacter);
@@ -397,23 +397,23 @@ QString QCocoaMenuItem::mergeText()
 {
     QCocoaMenuLoader *loader = [QCocoaMenuLoader sharedMenuLoader];
     if (m_native == [loader aboutMenuItem]) {
-        return qt_mac_applicationmenu_string(AboutAppMenuItem).arg(qt_mac_applicationName());
-    } else if (m_native== [loader aboutQtMenuItem]) {
-        if (m_text == QString("About Qt"))
-            return QCoreApplication::translate("QCocoaMenuItem", "About Qt");
+        return bobui_mac_applicationmenu_string(AboutAppMenuItem).arg(bobui_mac_applicationName());
+    } else if (m_native== [loader aboutBobUIMenuItem]) {
+        if (m_text == QString("About BobUI"))
+            return QCoreApplication::translate("QCocoaMenuItem", "About BobUI");
         else
             return m_text;
     } else if (m_native == [loader preferencesMenuItem]) {
-        return qt_mac_applicationmenu_string(PreferencesAppMenuItem);
+        return bobui_mac_applicationmenu_string(PreferencesAppMenuItem);
     } else if (m_native == [loader quitMenuItem]) {
-        return qt_mac_applicationmenu_string(QuitAppMenuItem).arg(qt_mac_applicationName());
+        return bobui_mac_applicationmenu_string(QuitAppMenuItem).arg(bobui_mac_applicationName());
     } else if (m_text.contains('\t')) {
         return m_text.left(m_text.indexOf('\t'));
     }
     return m_text;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 QKeySequence QCocoaMenuItem::mergeAccel()
 {
     QCocoaMenuLoader *loader = [QCocoaMenuLoader sharedMenuLoader];
@@ -500,7 +500,7 @@ void QCocoaMenuItem::resolveTargetAction()
             // enable the menu item in QCocoaMenu::setAttachedItem() once we have a submenu.
             roleAction = @selector(submenuAction:);
         } else {
-            roleAction = @selector(qt_itemFired:);
+            roleAction = @selector(bobui_itemFired:);
         }
     }
 
@@ -508,4 +508,4 @@ void QCocoaMenuItem::resolveTargetAction()
     m_native.target = nil;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

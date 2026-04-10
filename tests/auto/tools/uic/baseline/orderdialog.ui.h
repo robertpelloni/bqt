@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'orderdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,19 +16,19 @@
 #ifndef ORDERDIALOG_H
 #define ORDERDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -40,8 +40,8 @@ public:
     QHBoxLayout *hboxLayout;
     QListWidget *pageList;
     QVBoxLayout *vboxLayout1;
-    QToolButton *upButton;
-    QToolButton *downButton;
+    BOBUIoolButton *upButton;
+    BOBUIoolButton *downButton;
     QSpacerItem *spacerItem;
     QDialogButtonBox *buttonBox;
 
@@ -71,12 +71,12 @@ public:
         vboxLayout1->setSpacing(6);
         vboxLayout1->setObjectName("vboxLayout1");
         vboxLayout1->setContentsMargins(0, 0, 0, 0);
-        upButton = new QToolButton(groupBox);
+        upButton = new BOBUIoolButton(groupBox);
         upButton->setObjectName("upButton");
 
         vboxLayout1->addWidget(upButton);
 
-        downButton = new QToolButton(groupBox);
+        downButton = new BOBUIoolButton(groupBox);
         downButton->setObjectName("downButton");
 
         vboxLayout1->addWidget(downButton);
@@ -93,7 +93,7 @@ public:
 
         buttonBox = new QDialogButtonBox(qdesigner_internal__OrderDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Reset);
 
         vboxLayout->addWidget(buttonBox);
@@ -110,12 +110,12 @@ public:
     {
         qdesigner_internal__OrderDialog->setWindowTitle(QCoreApplication::translate("qdesigner_internal::OrderDialog", "Change Page Order", nullptr));
         groupBox->setTitle(QCoreApplication::translate("qdesigner_internal::OrderDialog", "Page Order", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         upButton->setToolTip(QCoreApplication::translate("qdesigner_internal::OrderDialog", "Move page up", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         downButton->setToolTip(QCoreApplication::translate("qdesigner_internal::OrderDialog", "Move page down", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
     } // retranslateUi
 
 };
@@ -128,6 +128,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ORDERDIALOG_H

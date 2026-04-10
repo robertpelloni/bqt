@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include <AppKit/AppKit.h>
@@ -9,20 +9,20 @@
 #include "qpagesetupdialog_p.h"
 
 #include <qpa/qplatformnativeinterface.h>
-#include <QtPrintSupport/qprintengine.h>
+#include <BobUIPrintSupport/qprintengine.h>
 
-#include <QtPrintSupport/private/qprintengine_mac_p.h>
+#include <BobUIPrintSupport/private/qprintengine_mac_p.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-@class QT_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate);
+@class BOBUI_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate);
 
-@interface QT_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) : NSObject
+@interface BOBUI_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) : NSObject
 @end
 
-@implementation QT_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) {
+@implementation BOBUI_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) {
     NSPrintInfo *printInfo;
 }
 
@@ -57,7 +57,7 @@ QT_USE_NAMESPACE
 }
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMacPageSetupDialogPrivate : public QPageSetupDialogPrivate
 {
@@ -71,14 +71,14 @@ public:
     ~QMacPageSetupDialogPrivate() {
     }
 
-    void openCocoaPageLayout(Qt::WindowModality modality);
+    void openCocoaPageLayout(BobUI::WindowModality modality);
     void closeCocoaPageLayout();
 
     NSPrintInfo *printInfo;
     NSPageLayout *pageLayout;
 };
 
-void QMacPageSetupDialogPrivate::openCocoaPageLayout(Qt::WindowModality modality)
+void QMacPageSetupDialogPrivate::openCocoaPageLayout(BobUI::WindowModality modality)
 {
     Q_Q(QPageSetupDialog);
 
@@ -88,9 +88,9 @@ void QMacPageSetupDialogPrivate::openCocoaPageLayout(Qt::WindowModality modality
     pageLayout = [NSPageLayout pageLayout];
     // Keep a copy to this since we plan on using it for a bit.
     [pageLayout retain];
-    QT_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) *delegate = [[QT_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) alloc] initWithNSPrintInfo:printInfo];
+    BOBUI_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) *delegate = [[BOBUI_MANGLE_NAMESPACE(QCocoaPageLayoutDelegate) alloc] initWithNSPrintInfo:printInfo];
 
-    if (modality == Qt::ApplicationModal) {
+    if (modality == BobUI::ApplicationModal) {
 
         // Make sure we don't interrupt the runModalWithPrintInfo call.
         (void) QMetaObject::invokeMethod(qApp->platformNativeInterface(),
@@ -122,14 +122,14 @@ QPageSetupDialog::QPageSetupDialog(QPrinter *printer, QWidget *parent)
     : QDialog(*(new QMacPageSetupDialogPrivate(printer)), parent)
 {
     setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 QPageSetupDialog::QPageSetupDialog(QWidget *parent)
     : QDialog(*(new QMacPageSetupDialogPrivate(0)), parent)
 {
     setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
-    setAttribute(Qt::WA_DontShowOnScreen);
+    setAttribute(BobUI::WA_DontShowOnScreen);
 }
 
 void QPageSetupDialog::setVisible(bool visible)
@@ -146,10 +146,10 @@ void QPageSetupDialog::setVisible(bool visible)
     QDialog::setVisible(visible);
 
     if (visible) {
-        Qt::WindowModality modality = windowModality();
-        if (modality == Qt::NonModal) {
+        BobUI::WindowModality modality = windowModality();
+        if (modality == BobUI::NonModal) {
             // NSPrintPanels can only be modal, so we must pick a type
-            modality = parentWidget() ? Qt::WindowModal : Qt::ApplicationModal;
+            modality = parentWidget() ? BobUI::WindowModal : BobUI::ApplicationModal;
         }
         static_cast <QMacPageSetupDialogPrivate*>(d)->openCocoaPageLayout(modality);
         return;
@@ -171,7 +171,7 @@ int QPageSetupDialog::exec()
     QDialog::setVisible(true);
 
     QMacAutoReleasePool pool;
-    static_cast <QMacPageSetupDialogPrivate*>(d)->openCocoaPageLayout(Qt::ApplicationModal);
+    static_cast <QMacPageSetupDialogPrivate*>(d)->openCocoaPageLayout(BobUI::ApplicationModal);
     static_cast <QMacPageSetupDialogPrivate*>(d)->closeCocoaPageLayout();
 
     QDialog::setVisible(false);
@@ -179,4 +179,4 @@ int QPageSetupDialog::exec()
     return result();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

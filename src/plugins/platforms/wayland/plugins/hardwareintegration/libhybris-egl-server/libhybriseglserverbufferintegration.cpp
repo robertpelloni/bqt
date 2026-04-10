@@ -1,18 +1,18 @@
 // Copyright (C) 2016 Jolla Ltd, author: <giulio.camuffo@jollamobile.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "libhybriseglserverbufferintegration.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 #include <QDebug>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLTexture>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLTexture>
 #include <hybris/eglplatformcommon/hybris_nativebufferext.h>
 
 #include <EGL/egl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 LibHybrisServerBuffer::LibHybrisServerBuffer(LibHybrisEglServerBufferIntegration *integration
                                             , int32_t numFds
@@ -72,7 +72,7 @@ void LibHybrisServerBuffer::libhybris_buffer_add_fd(int32_t fd)
     if (m_fds.size() == m_numFds) {
         EGLint egl_format;
         switch (m_hybrisFormat) {
-            case QtWayland::qt_libhybris_egl_server_buffer::format_RGBA32:
+            case BobUIWayland::bobui_libhybris_egl_server_buffer::format_RGBA32:
                 m_format = QWaylandServerBuffer::RGBA32;
                 egl_format = HYBRIS_PIXEL_FORMAT_RGBA_8888;
                 break;
@@ -133,22 +133,22 @@ void LibHybrisEglServerBufferIntegration::initialize(QWaylandDisplay *display)
     display->addRegistryListener(&wlDisplayHandleGlobal, this);
 }
 
-QWaylandServerBuffer *LibHybrisEglServerBufferIntegration::serverBuffer(struct qt_server_buffer *buffer)
+QWaylandServerBuffer *LibHybrisEglServerBufferIntegration::serverBuffer(struct bobui_server_buffer *buffer)
 {
-    return static_cast<QWaylandServerBuffer *>(qt_server_buffer_get_user_data(buffer));
+    return static_cast<QWaylandServerBuffer *>(bobui_server_buffer_get_user_data(buffer));
 }
 
 void LibHybrisEglServerBufferIntegration::wlDisplayHandleGlobal(void *data, ::wl_registry *registry, uint32_t id, const QString &interface, uint32_t version)
 {
     Q_UNUSED(version);
-    if (interface == QStringLiteral("qt_libhybris_egl_server_buffer")) {
+    if (interface == QStringLiteral("bobui_libhybris_egl_server_buffer")) {
         auto *integration = static_cast<LibHybrisEglServerBufferIntegration *>(data);
-        integration->QtWayland::qt_libhybris_egl_server_buffer::init(registry, id, 1);
+        integration->BobUIWayland::bobui_libhybris_egl_server_buffer::init(registry, id, 1);
     }
 }
 
-void LibHybrisEglServerBufferIntegration::libhybris_egl_server_buffer_server_buffer_created(struct ::qt_libhybris_buffer *id
-                                                                                            , struct ::qt_server_buffer *qid
+void LibHybrisEglServerBufferIntegration::libhybris_egl_server_buffer_server_buffer_created(struct ::bobui_libhybris_buffer *id
+                                                                                            , struct ::bobui_server_buffer *qid
                                                                                             , int32_t numFds
                                                                                             , wl_array *ints
                                                                                             , int32_t name
@@ -158,10 +158,10 @@ void LibHybrisEglServerBufferIntegration::libhybris_egl_server_buffer_server_buf
                                                                                             , int32_t format)
 {
     LibHybrisServerBuffer *server_buffer = new LibHybrisServerBuffer(this, numFds, ints, name, width, height, stride, format);
-    server_buffer->QtWayland::qt_libhybris_buffer::init(id);
-    qt_server_buffer_set_user_data(qid, server_buffer);
+    server_buffer->BobUIWayland::bobui_libhybris_buffer::init(id);
+    bobui_server_buffer_set_user_data(qid, server_buffer);
 }
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

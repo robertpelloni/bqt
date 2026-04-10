@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qibusplatforminputcontext.h"
 
 #include <QDebug>
-#include <QTextCharFormat>
+#include <BOBUIextCharFormat>
 #include <QGuiApplication>
 #include <QWindow>
 #include <QEvent>
@@ -43,11 +43,11 @@
 #define IBUS_META_MASK    (1 << 28)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods");
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods");
 
 class QIBusPlatformInputContextPrivate
 {
@@ -100,8 +100,8 @@ QIBusPlatformInputContext::QIBusPlatformInputContext ()
         QString socketPath = QIBusPlatformInputContextPrivate::getSocketPath();
         QFile file(socketPath);
         if (file.open(QFile::ReadOnly)) {
-#if QT_CONFIG(filesystemwatcher)
-            qCDebug(qtQpaInputMethods) << "socketWatcher.addPath" << socketPath;
+#if BOBUI_CONFIG(filesystemwatcher)
+            qCDebug(bobuiQpaInputMethods) << "socketWatcher.addPath" << socketPath;
             // If KDE session save is used or restart ibus-daemon,
             // the applications could run before ibus-daemon runs.
             // We watch the getSocketPath() to get the launching ibus-daemon.
@@ -143,7 +143,7 @@ bool QIBusPlatformInputContext::hasCapability(Capability capability) const
 {
     switch (capability) {
     case QPlatformInputContext::HiddenTextCapability:
-        return false; // QTBUG-40691, do not show IME on desktop for password entry fields.
+        return false; // BOBUIBUG-40691, do not show IME on desktop for password entry fields.
     default:
         break;
     }
@@ -201,22 +201,22 @@ void QIBusPlatformInputContext::commit()
 }
 
 
-void QIBusPlatformInputContext::update(Qt::InputMethodQueries q)
+void QIBusPlatformInputContext::update(BobUI::InputMethodQueries q)
 {
     QObject *input = qApp->focusObject();
 
     if (d->needsSurroundingText && input
-            && (q.testFlag(Qt::ImSurroundingText)
-                || q.testFlag(Qt::ImCursorPosition)
-                || q.testFlag(Qt::ImAnchorPosition))) {
+            && (q.testFlag(BobUI::ImSurroundingText)
+                || q.testFlag(BobUI::ImCursorPosition)
+                || q.testFlag(BobUI::ImAnchorPosition))) {
 
-        QInputMethodQueryEvent query(Qt::ImSurroundingText | Qt::ImCursorPosition | Qt::ImAnchorPosition);
+        QInputMethodQueryEvent query(BobUI::ImSurroundingText | BobUI::ImCursorPosition | BobUI::ImAnchorPosition);
 
         QCoreApplication::sendEvent(input, &query);
 
-        QString surroundingText = query.value(Qt::ImSurroundingText).toString();
-        uint cursorPosition = query.value(Qt::ImCursorPosition).toUInt();
-        uint anchorPosition = query.value(Qt::ImAnchorPosition).toUInt();
+        QString surroundingText = query.value(BobUI::ImSurroundingText).toString();
+        uint cursorPosition = query.value(BobUI::ImCursorPosition).toUInt();
+        uint anchorPosition = query.value(BobUI::ImAnchorPosition).toUInt();
 
         QIBusText text;
         text.text = surroundingText;
@@ -273,7 +273,7 @@ void QIBusPlatformInputContext::setFocusObject(QObject *object)
 
     // It would seem natural here to call FocusOut() on the input method if we
     // transition from an IME accepted focus object to one that does not accept it.
-    // Mysteriously however that is not sufficient to fix bug QTBUG-63066.
+    // Mysteriously however that is not sufficient to fix bug BOBUIBUG-63066.
     if (object && !inputMethodAccepted())
         return;
 
@@ -355,22 +355,22 @@ void QIBusPlatformInputContext::forwardKeyEvent(uint keyval, uint keycode, uint 
     state &= ~IBUS_RELEASE_MASK;
     keycode += 8;
 
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    BobUI::KeyboardModifiers modifiers = BobUI::NoModifier;
     if (state & IBUS_SHIFT_MASK)
-        modifiers |= Qt::ShiftModifier;
+        modifiers |= BobUI::ShiftModifier;
     if (state & IBUS_CONTROL_MASK)
-        modifiers |= Qt::ControlModifier;
+        modifiers |= BobUI::ControlModifier;
     if (state & IBUS_MOD1_MASK)
-        modifiers |= Qt::AltModifier;
+        modifiers |= BobUI::AltModifier;
     if (state & IBUS_META_MASK)
-        modifiers |= Qt::MetaModifier;
+        modifiers |= BobUI::MetaModifier;
 
-    int qtcode = QXkbCommon::keysymToQtKey(keyval, modifiers);
+    int bobuicode = QXkbCommon::keysymToBobUIKey(keyval, modifiers);
     QString text = QXkbCommon::lookupStringNoKeysymTransformations(keyval);
 
-    qCDebug(lcQpaInputMethods) << "forwardKeyEvent" << keyval << keycode << state << modifiers << qtcode << text;
+    qCDebug(lcQpaInputMethods) << "forwardKeyEvent" << keyval << keycode << state << modifiers << bobuicode << text;
 
-    QKeyEvent event(type, qtcode, modifiers, keycode, keyval, state, text);
+    QKeyEvent event(type, bobuicode, modifiers, keycode, keyval, state, text);
     QCoreApplication::sendEvent(input, &event);
 }
 
@@ -378,7 +378,7 @@ void QIBusPlatformInputContext::surroundingTextRequired()
 {
     qCDebug(lcQpaInputMethods) << "surroundingTextRequired";
     d->needsSurroundingText = true;
-    update(Qt::ImSurroundingText);
+    update(BobUI::ImSurroundingText);
 }
 
 void QIBusPlatformInputContext::deleteSurroundingText(int offset, uint n_chars)
@@ -436,36 +436,36 @@ bool QIBusPlatformInputContext::filterEvent(const QEvent *event)
 
     if (m_eventFilterUseSynchronousMode || reply.isFinished()) {
         bool filtered = reply.value();
-        qCDebug(qtQpaInputMethods) << "filterEvent return" << code << sym << state << filtered;
+        qCDebug(bobuiQpaInputMethods) << "filterEvent return" << code << sym << state << filtered;
         return filtered;
     }
 
-    Qt::KeyboardModifiers modifiers = keyEvent->modifiers();
-    const int qtcode = keyEvent->key();
+    BobUI::KeyboardModifiers modifiers = keyEvent->modifiers();
+    const int bobuicode = keyEvent->key();
 
     // From QKeyEvent::modifiers()
-    switch (qtcode) {
-    case Qt::Key_Shift:
-        modifiers ^= Qt::ShiftModifier;
+    switch (bobuicode) {
+    case BobUI::Key_Shift:
+        modifiers ^= BobUI::ShiftModifier;
         break;
-    case Qt::Key_Control:
-        modifiers ^= Qt::ControlModifier;
+    case BobUI::Key_Control:
+        modifiers ^= BobUI::ControlModifier;
         break;
-    case Qt::Key_Alt:
-        modifiers ^= Qt::AltModifier;
+    case BobUI::Key_Alt:
+        modifiers ^= BobUI::AltModifier;
         break;
-    case Qt::Key_Meta:
-        modifiers ^= Qt::MetaModifier;
+    case BobUI::Key_Meta:
+        modifiers ^= BobUI::MetaModifier;
         break;
-    case Qt::Key_AltGr:
-        modifiers ^= Qt::GroupSwitchModifier;
+    case BobUI::Key_AltGr:
+        modifiers ^= BobUI::GroupSwitchModifier;
         break;
     }
 
     QVariantList args;
     args << QVariant::fromValue(keyEvent->timestamp());
     args << QVariant::fromValue(static_cast<uint>(keyEvent->type()));
-    args << QVariant::fromValue(qtcode);
+    args << QVariant::fromValue(bobuicode);
     args << QVariant::fromValue(code) << QVariant::fromValue(sym) << QVariant::fromValue(state);
     args << QVariant::fromValue(keyEvent->text());
     args << QVariant::fromValue(keyEvent->isAutoRepeat());
@@ -495,11 +495,11 @@ void QIBusPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *cal
         return;
     }
 
-    Qt::KeyboardModifiers modifiers = watcher->modifiers();
+    BobUI::KeyboardModifiers modifiers = watcher->modifiers();
     QVariantList args = watcher->arguments();
     const ulong time = static_cast<ulong>(args.at(0).toUInt());
     const QEvent::Type type = static_cast<QEvent::Type>(args.at(1).toUInt());
-    const int qtcode = args.at(2).toInt();
+    const int bobuicode = args.at(2).toInt();
     const quint32 code = args.at(3).toUInt();
     const quint32 sym = args.at(4).toUInt();
     const quint32 state = args.at(5).toUInt();
@@ -508,10 +508,10 @@ void QIBusPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *cal
 
     // copied from QXcbKeyboard::handleKeyEvent()
     bool filtered = reply.value();
-    qCDebug(qtQpaInputMethods) << "filterEventFinished return" << code << sym << state << filtered;
+    qCDebug(bobuiQpaInputMethods) << "filterEventFinished return" << code << sym << state << filtered;
     if (!filtered) {
-#ifndef QT_NO_CONTEXTMENU
-        if (type == QEvent::KeyPress && qtcode == Qt::Key_Menu
+#ifndef BOBUI_NO_CONTEXTMENU
+        if (type == QEvent::KeyPress && bobuicode == BobUI::Key_Menu
             && window != nullptr) {
             const QPoint globalPos = window->screen()->handle()->cursor()->pos();
             const QPoint pos = window->mapFromGlobal(globalPos);
@@ -520,7 +520,7 @@ void QIBusPlatformInputContext::filterEventFinished(QDBusPendingCallWatcher *cal
             QGuiApplicationPrivate::processWindowSystemEvent(&contextMenuEvent);
         }
 #endif
-        QWindowSystemInterfacePrivate::KeyEvent keyEvent(window, time, type, qtcode, modifiers,
+        QWindowSystemInterfacePrivate::KeyEvent keyEvent(window, time, type, bobuicode, modifiers,
                                                          code, sym, state, string, isAutoRepeat);
         QGuiApplicationPrivate::processWindowSystemEvent(&keyEvent);
     }
@@ -537,7 +537,7 @@ QLocale QIBusPlatformInputContext::locale() const
 
 void QIBusPlatformInputContext::socketChanged(const QString &str)
 {
-    qCDebug(qtQpaInputMethods) << "socketChanged";
+    qCDebug(bobuiQpaInputMethods) << "socketChanged";
     Q_UNUSED (str);
 
     m_timer.stop();
@@ -554,7 +554,7 @@ void QIBusPlatformInputContext::socketChanged(const QString &str)
 
 void QIBusPlatformInputContext::busRegistered(const QString &str)
 {
-    qCDebug(qtQpaInputMethods) << "busRegistered";
+    qCDebug(bobuiQpaInputMethods) << "busRegistered";
     Q_UNUSED (str);
     if (d->usePortal) {
         connectToBus();
@@ -563,7 +563,7 @@ void QIBusPlatformInputContext::busRegistered(const QString &str)
 
 void QIBusPlatformInputContext::busUnregistered(const QString &str)
 {
-    qCDebug(qtQpaInputMethods) << "busUnregistered";
+    qCDebug(bobuiQpaInputMethods) << "busUnregistered";
     Q_UNUSED (str);
     d->busConnected = false;
 }
@@ -572,11 +572,11 @@ void QIBusPlatformInputContext::busUnregistered(const QString &str)
 // so use m_timer.
 void QIBusPlatformInputContext::connectToBus()
 {
-    qCDebug(qtQpaInputMethods) << "QIBusPlatformInputContext::connectToBus";
+    qCDebug(bobuiQpaInputMethods) << "QIBusPlatformInputContext::connectToBus";
     d->initBus();
     connectToContextSignals();
 
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     if (!d->usePortal && m_socketWatcher.files().size() == 0)
         m_socketWatcher.addPath(QIBusPlatformInputContextPrivate::getSocketPath());
 #endif
@@ -786,6 +786,6 @@ void QIBusPlatformInputContextPrivate::createConnection()
     QDBusConnection::connectToBus(QString::fromLatin1(address), "QIBusProxy"_L1);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qibusplatforminputcontext.cpp"

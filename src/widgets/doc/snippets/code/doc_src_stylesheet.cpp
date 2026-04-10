@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include <QCoreApplication>
 
 void examples()
@@ -143,7 +143,7 @@ void CustomWidget::wrap()
 
     {
         //! [96]
-        QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, true);
+        QCoreApplication::setAttribute(BobUI::AA_UseStyleSheetPropagationInWidgetStyles, true);
         //! [96]
     }
 }

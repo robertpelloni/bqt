@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 
 #include <qapplication.h>
 #include <qfontdatabase.h>
 #include <qfontinfo.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qmainwindow.h>
 #include <qlistview.h>
 #include "qfontdialog.h"
 #include <private/qfontdialog_p.h>
 
-QT_FORWARD_DECLARE_CLASS(QtTestEventThread)
+BOBUI_FORWARD_DECLARE_CLASS(BobUITestEventThread)
 
 class tst_QFontDialog : public QObject
 {
@@ -41,8 +41,8 @@ private slots:
     void setFont();
     void task256466_wrongStyle();
     void setNonStandardFontSize();
-#ifndef QT_NO_STYLE_STYLESHEET
-    void qtbug_41513_stylesheetStyle();
+#ifndef BOBUI_NO_STYLE_STYLESHEET
+    void bobuibug_41513_stylesheetStyle();
 #endif
     void noCrashWhenParentIsDeleted();
 
@@ -81,7 +81,7 @@ void tst_QFontDialog::postKeyReturn() {
     for (int i=0; i<list.size(); ++i) {
         QFontDialog *dialog = qobject_cast<QFontDialog*>(list[i]);
         if (dialog) {
-            QTest::keyClick( list[i], Qt::Key_Return, Qt::NoModifier );
+            BOBUIest::keyClick( list[i], BobUI::Key_Return, BobUI::NoModifier );
             return;
         }
     }
@@ -90,10 +90,10 @@ void tst_QFontDialog::postKeyReturn() {
 void tst_QFontDialog::testGetFont()
 {
 #ifdef Q_OS_MAC
-    QEXPECT_FAIL("", "Sending QTest::keyClick to OSX font dialog helper fails, see QTBUG-24321", Continue);
+    QEXPECT_FAIL("", "Sending BOBUIest::keyClick to OSX font dialog helper fails, see BOBUIBUG-24321", Continue);
 #endif
     bool ok = false;
-    QTimer::singleShot(2000, this, SLOT(postKeyReturn()));
+    BOBUIimer::singleShot(2000, this, SLOT(postKeyReturn()));
     QFontDialog::getFont(&ok);
     QVERIFY(ok);
 }
@@ -101,13 +101,13 @@ void tst_QFontDialog::testGetFont()
 void tst_QFontDialog::runSlotWithFailsafeTimer(const char *member)
 {
     // FailSafeTimer quits the nested event loop if the dialog closing doesn't do it.
-    QTimer failSafeTimer;
+    BOBUIimer failSafeTimer;
     failSafeTimer.setInterval(4000);
     failSafeTimer.setSingleShot(true);
     connect(&failSafeTimer, SIGNAL(timeout()), qApp, SLOT(quit()));
     failSafeTimer.start();
 
-    QTimer::singleShot(0, this, member);
+    BOBUIimer::singleShot(0, this, member);
     qApp->exec();
 
     // FailSafeTimer stops once it goes out of scope.
@@ -133,7 +133,7 @@ void tst_QFontDialog::testSetFont()
 #endif
     QFont f1(fontName, fontSize);
     f1.setPixelSize(QFontInfo(f1).pixelSize());
-    QTimer::singleShot(2000, this, SLOT(postKeyReturn()));
+    BOBUIimer::singleShot(2000, this, SLOT(postKeyReturn()));
     QFont f2 = QFontDialog::getFont(&ok, f1);
     QCOMPARE(QFontInfo(f2).pointSize(), QFontInfo(f1).pointSize());
 }
@@ -156,7 +156,7 @@ class FriendlyFontDialog : public QFontDialog
 
 void tst_QFontDialog::task256466_wrongStyle()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This freezes. Figure out why.");
 
     FriendlyFontDialog dialog;
@@ -174,7 +174,7 @@ void tst_QFontDialog::task256466_wrongStyle()
         QCOMPARE(current.family(), expected.family());
         QCOMPARE(current.style(), expected.style());
         if (expectedSize == 0 && !QFontDatabase::isScalable(current.family(), current.styleName()))
-            QEXPECT_FAIL("", "QTBUG-53299: Smooth sizes for unscalable font contains unsupported size", Continue);
+            QEXPECT_FAIL("", "BOBUIBUG-53299: Smooth sizes for unscalable font contains unsupported size", Continue);
         QCOMPARE(current.pointSizeF(), expected.pointSizeF());
     }
 }
@@ -183,19 +183,19 @@ void tst_QFontDialog::setNonStandardFontSize()
 {
     runSlotWithFailsafeTimer(SLOT(testNonStandardFontSize()));
 }
-#ifndef QT_NO_STYLE_STYLESHEET
-static const QString offendingStyleSheet = QStringLiteral("* { font-family: \"QtBidiTestFont\"; }");
+#ifndef BOBUI_NO_STYLE_STYLESHEET
+static const QString offendingStyleSheet = QStringLiteral("* { font-family: \"BobUIBidiTestFont\"; }");
 
-void tst_QFontDialog::qtbug_41513_stylesheetStyle()
+void tst_QFontDialog::bobuibug_41513_stylesheetStyle()
 {
     if (QFontDatabase::addApplicationFont(QFINDTESTDATA("test.ttf")) < 0)
         QSKIP("Test fonts not found.");
     if (QFontDatabase::addApplicationFont(QFINDTESTDATA("testfont.ttf")) < 0)
         QSKIP("Test fonts not found.");
-    QFont testFont = QFont(QStringLiteral("QtsSpecialTestFont"));
+    QFont testFont = QFont(QStringLiteral("BobUIsSpecialTestFont"));
     qApp->setStyleSheet(offendingStyleSheet);
     bool accepted = false;
-    QTimer::singleShot(2000, this, SLOT(postKeyReturn()));
+    BOBUIimer::singleShot(2000, this, SLOT(postKeyReturn()));
     QFont resultFont = QFontDialog::getFont(&accepted, testFont,
         QApplication::activeWindow(),
         QLatin1String("QFontDialog - Stylesheet Test"),
@@ -210,16 +210,16 @@ void tst_QFontDialog::qtbug_41513_stylesheetStyle()
     // reset stylesheet
     qApp->setStyleSheet(QString());
 }
-#endif // QT_NO_STYLE_STYLESHEET
+#endif // BOBUI_NO_STYLE_STYLESHEET
 
 void tst_QFontDialog::noCrashWhenParentIsDeleted()
 {
     {
         QPointer<QWidget> mainWindow = new QWidget();
-        QTimer::singleShot(1000, mainWindow, [mainWindow]
+        BOBUIimer::singleShot(1000, mainWindow, [mainWindow]
                            { if (mainWindow.get()) mainWindow->deleteLater(); });
         bool accepted = false;
-        const QFont testFont = QFont(QStringLiteral("QtsSpecialTestFont1"));
+        const QFont testFont = QFont(QStringLiteral("BobUIsSpecialTestFont1"));
         QFontDialog::getFont(&accepted, testFont,
                              mainWindow.get(),
                              QLatin1String("QFontDialog - crash parent test"),
@@ -230,10 +230,10 @@ void tst_QFontDialog::noCrashWhenParentIsDeleted()
 
     {
         QPointer<QWidget> mainWindow = new QWidget();
-        QTimer::singleShot(1000, mainWindow, [mainWindow]
+        BOBUIimer::singleShot(1000, mainWindow, [mainWindow]
                            { if (mainWindow.get()) mainWindow->deleteLater(); });
         bool accepted = false;
-        const QFont testFont = QFont(QStringLiteral("QtsSpecialTestFont2"));
+        const QFont testFont = QFont(QStringLiteral("BobUIsSpecialTestFont2"));
         QFontDialog::getFont(&accepted, testFont,
                              mainWindow.get(),
                              QLatin1String("QFontDialog - crash parent test"),
@@ -258,7 +258,7 @@ void tst_QFontDialog::testNonStandardFontSize()
     testFont.setPointSize(nonStandardFontSize);
 
     bool accepted = false;
-    QTimer::singleShot(2000, this, SLOT(postKeyReturn()));
+    BOBUIimer::singleShot(2000, this, SLOT(postKeyReturn()));
     QFont resultFont = QFontDialog::getFont(&accepted, testFont,
         QApplication::activeWindow(),
         QLatin1String("QFontDialog - NonStandardFontSize Test"),
@@ -277,26 +277,26 @@ void tst_QFontDialog::hideNativeByDestruction()
     QWidget *child = new QWidget(&window);
     QPointer<QFontDialog> dialog = new QFontDialog(child);
     // Make it application modal so that we don't end up with a sheet on macOS
-    dialog->setWindowModality(Qt::ApplicationModal);
+    dialog->setWindowModality(BobUI::ApplicationModal);
     window.show();
-    QVERIFY(QTest::qWaitForWindowActive(&window));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&window));
     dialog->open();
 
     // We test that the dialog opens and closes by watching the activation of the
     // transient parent window. If it doesn't deactivate, then we have to skip.
     const auto windowActive = [&window]{ return window.isActiveWindow(); };
     const auto windowInactive = [&window]{ return !window.isActiveWindow(); };
-    if (!QTest::qWaitFor(windowInactive, 2000))
+    if (!BOBUIest::qWaitFor(windowInactive, 2000))
         QSKIP("Dialog didn't activate");
 
     // This should destroy the dialog and close the native window
     child->deleteLater();
-    QTRY_VERIFY(!dialog);
+    BOBUIRY_VERIFY(!dialog);
     // If the native window is still open, then the transient parent can't become
     // active
     window.activateWindow();
-    QVERIFY(QTest::qWaitFor(windowActive));
+    QVERIFY(BOBUIest::qWaitFor(windowActive));
 }
 
-QTEST_MAIN(tst_QFontDialog)
+BOBUIEST_MAIN(tst_QFontDialog)
 #include "tst_qfontdialog.moc"

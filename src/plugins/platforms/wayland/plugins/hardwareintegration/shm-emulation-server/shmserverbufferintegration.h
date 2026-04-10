@@ -1,18 +1,18 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
-#include <QtWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
 #include "qwayland-shm-emulation-server-buffer.h"
-#include <QtWaylandClient/private/qwaylandserverbufferintegration_p.h>
+#include <BobUIWaylandClient/private/qwaylandserverbufferintegration_p.h>
 
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtCore/QTextStream>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUICore/BOBUIextStream>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class ShmServerBufferIntegration;
 
@@ -30,15 +30,15 @@ private:
 
 class ShmServerBufferIntegration
     : public QWaylandServerBufferIntegration
-    , public QtWayland::qt_shm_emulation_server_buffer
+    , public BobUIWayland::bobui_shm_emulation_server_buffer
 {
 public:
     void initialize(QWaylandDisplay *display) override;
 
-    QWaylandServerBuffer *serverBuffer(struct qt_server_buffer *buffer) override;
+    QWaylandServerBuffer *serverBuffer(struct bobui_server_buffer *buffer) override;
 
 protected:
-    void shm_emulation_server_buffer_server_buffer_created(qt_server_buffer *id, const QString &key, int32_t width, int32_t height, int32_t bytes_per_line, int32_t format) override;
+    void shm_emulation_server_buffer_server_buffer_created(bobui_server_buffer *id, const QString &key, int32_t width, int32_t height, int32_t bytes_per_line, int32_t format) override;
 
 private:
     static void wlDisplayHandleGlobal(void *data, struct ::wl_registry *registry, uint32_t id,
@@ -48,4 +48,4 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

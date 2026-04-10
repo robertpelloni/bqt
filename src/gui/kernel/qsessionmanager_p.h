@@ -1,6 +1,6 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSESSIONMANAGER_P_H
 #define QSESSIONMANAGER_P_H
@@ -9,21 +9,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <private/qobject_p.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringlist.h>
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformSessionManager;
 
@@ -38,8 +38,8 @@ public:
     QPlatformSessionManager *platformSessionManager;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SESSIONMANAGER
+#endif // BOBUI_NO_SESSIONMANAGER
 
 #endif // QSESSIONMANAGER_P_H

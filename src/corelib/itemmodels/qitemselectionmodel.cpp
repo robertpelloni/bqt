@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qitemselectionmodel.h"
 #include "qitemselectionmodel_p.h"
@@ -14,10 +14,10 @@
 #include <algorithm>
 #include <functional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QItemSelectionRange)
-QT_IMPL_METATYPE_EXTERN(QItemSelection)
+BOBUI_IMPL_METATYPE_EXTERN(QItemSelectionRange)
+BOBUI_IMPL_METATYPE_EXTERN(QItemSelection)
 
 // a small helper to cache calls to QPMI functions as they are expensive
 struct QItemSelectionRangeRefCache
@@ -63,7 +63,7 @@ private:
 
 /*!
     \class QItemSelectionRange
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QItemSelectionRange class manages information about a
     range of selected items in a model.
@@ -80,7 +80,7 @@ private:
     top(), left() a bottom(), right() and a parent().
 
     The QItemSelectionRange class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     The model items contained in the selection range can be obtained
     using the indexes() function. Use QItemSelectionModel::selectedIndexes()
@@ -302,9 +302,9 @@ static void rowLengthsFromRange(const QItemSelectionRange &range, QList<std::pai
     }
 }
 
-static inline bool isSelectableAndEnabled(Qt::ItemFlags flags)
+static inline bool isSelectableAndEnabled(BobUI::ItemFlags flags)
 {
-    return flags.testFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    return flags.testFlags(BobUI::ItemIsSelectable | BobUI::ItemIsEnabled);
 }
 
 template<typename ModelIndexContainer>
@@ -369,7 +369,7 @@ QModelIndexList QItemSelectionRange::indexes() const
 
 /*!
     \class QItemSelection
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QItemSelection class manages information about selected items in a model.
 
@@ -382,7 +382,7 @@ QModelIndexList QItemSelectionRange::indexes() const
     from a model.
 
     The QItemSelection class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     An item selection can be constructed and initialized to contain a
     range of items from an existing model. The following example constructs
@@ -1032,7 +1032,7 @@ static QItemSelection mergeIndexes(const QList<QPersistentModelIndex> &indexes)
     of different parents next to each other, which may happen when a selection
     spans sub-trees.
 */
-static bool qt_PersistentModelIndexLessThan(const QPersistentModelIndex &i1, const QPersistentModelIndex &i2)
+static bool bobui_PersistentModelIndexLessThan(const QPersistentModelIndex &i1, const QPersistentModelIndex &i2)
 {
     const QModelIndex parent1 = i1.parent();
     const QModelIndex parent2 = i2.parent();
@@ -1075,9 +1075,9 @@ void QItemSelectionModelPrivate::layoutChanged(const QList<QPersistentModelIndex
     if (hint != QAbstractItemModel::VerticalSortHint) {
         // sort the "new" selection, as preparation for merging
         std::stable_sort(savedPersistentIndexes.begin(), savedPersistentIndexes.end(),
-                         qt_PersistentModelIndexLessThan);
+                         bobui_PersistentModelIndexLessThan);
         std::stable_sort(savedPersistentCurrentIndexes.begin(), savedPersistentCurrentIndexes.end(),
-                         qt_PersistentModelIndexLessThan);
+                         bobui_PersistentModelIndexLessThan);
 
         // update the selection by merging the individual indexes
         ranges = mergeIndexes(savedPersistentIndexes);
@@ -1137,7 +1137,7 @@ void QItemSelectionModelPrivate::modelDestroyed()
 
 /*!
     \class QItemSelectionModel
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QItemSelectionModel class keeps track of a view's selected items.
 
@@ -1148,7 +1148,7 @@ void QItemSelectionModelPrivate::modelDestroyed()
     currently selected item in a view.
 
     The QItemSelectionModel class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     The selected items are stored using ranges. Whenever you want to
     modify the selected items use select() and provide either a
@@ -1165,7 +1165,7 @@ void QItemSelectionModelPrivate::modelDestroyed()
     If you omit the QItemSelectionModel::Current command, a new current
     selection will be created, and the previous one added to the whole
     selection. All functions operate on both layers; for example,
-    \l {QTableWidget::selectedItems()}{selecteditems()} will return items from both layers.
+    \l {BOBUIableWidget::selectedItems()}{selecteditems()} will return items from both layers.
 
     \note Since 5.5, \l{QItemSelectionModel::model()}{model},
     \l{QItemSelectionModel::hasSelection()}{hasSelection}, and
@@ -1312,7 +1312,7 @@ void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::
 */
 
 namespace {
-namespace QtFunctionObjects {
+namespace BobUIFunctionObjects {
 struct IsNotValid {
     typedef bool result_type;
     struct is_transparent : std::true_type {};
@@ -1349,7 +1349,7 @@ void QItemSelectionModel::select(const QItemSelection &selection, QItemSelection
     // be too late if another model observer is connected to the same modelReset slot and is invoked first
     // it might call select() on this selection model before any such QItemSelectionModelPrivate::modelReset() slot
     // is invoked, so it would not be cleared yet. We clear it invalid ranges in it here.
-    d->ranges.removeIf(QtFunctionObjects::IsNotValid());
+    d->ranges.removeIf(BobUIFunctionObjects::IsNotValid());
 
     QItemSelection old = d->ranges;
     old.merge(d->currentSelection, d->currentCommand);
@@ -1510,7 +1510,7 @@ bool QItemSelectionModel::isSelected(const QModelIndex &index) const
     on all items in the same row and that unselectable items are
     ignored.
 
-    \note Since Qt 5.15, the default argument for \a parent is an empty
+    \note Since BobUI 5.15, the default argument for \a parent is an empty
           model index.
 */
 bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) const
@@ -1596,7 +1596,7 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
     on all items in the same column and that unselectable items are
     ignored.
 
-    \note Since Qt 5.15, the default argument for \a parent is an empty
+    \note Since BobUI 5.15, the default argument for \a parent is an empty
           model index.
 */
 bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent) const
@@ -1678,7 +1678,7 @@ bool QItemSelectionModel::isColumnSelected(int column, const QModelIndex &parent
     Returns \c true if there are any items selected in the \a row with the given
     \a parent.
 
-    \note Since Qt 5.15, the default argument for \a parent is an empty
+    \note Since BobUI 5.15, the default argument for \a parent is an empty
           model index.
 */
 bool QItemSelectionModel::rowIntersectsSelection(int row, const QModelIndex &parent) const
@@ -1714,7 +1714,7 @@ bool QItemSelectionModel::rowIntersectsSelection(int row, const QModelIndex &par
     Returns \c true if there are any items selected in the \a column with the given
     \a parent.
 
-    \note Since Qt 5.15, the default argument for \a parent is an empty
+    \note Since BobUI 5.15, the default argument for \a parent is an empty
           model index.
 */
 bool QItemSelectionModel::columnIntersectsSelection(int column, const QModelIndex &parent) const
@@ -1769,13 +1769,13 @@ bool QItemSelectionModel::hasSelection() const
 {
     Q_D(const QItemSelectionModel);
 
-    // QTreeModel unfortunately sorts itself lazily.
+    // BOBUIreeModel unfortunately sorts itself lazily.
     // When it sorts itself, it emits are layoutChanged signal.
     // This layoutChanged signal invalidates d->ranges here.
-    // So QTreeModel must not sort itself while we are iterating over
+    // So BOBUIreeModel must not sort itself while we are iterating over
     // d->ranges here. It sorts itself in executePendingOperations,
     // thus preventing the sort to happen inside of selectionIsEmpty below.
-    // Sad story, read more in QTBUG-94546
+    // Sad story, read more in BOBUIBUG-94546
     const QAbstractItemModel *model = QItemSelectionModel::model();
     if (model != nullptr) {
         auto model_p = static_cast<const QAbstractItemModelPrivate *>(QObjectPrivate::get(model));
@@ -1817,7 +1817,7 @@ size_t qHash(const RowOrColumnDefinition &key, size_t seed = 0) noexcept
     return qHashMulti(seed, key.parent, key.rowOrColumn);
 }
 
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(RowOrColumnDefinition)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(RowOrColumnDefinition)
 
 /*!
     \since 4.2
@@ -1887,7 +1887,7 @@ const QItemSelection QItemSelectionModel::selection() const
     selected.merge(d->currentSelection, d->currentCommand);
     // make sure we have no invalid ranges
     // ###  should probably be handled more generic somewhere else
-    selected.removeIf(QtFunctionObjects::IsNotValid());
+    selected.removeIf(BobUIFunctionObjects::IsNotValid());
     return selected;
 }
 
@@ -2034,7 +2034,7 @@ void QItemSelectionModel::emitSelectionChanged(const QItemSelection &newSelectio
         emit selectionChanged(selected, deselected);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QItemSelectionRange &range)
 {
     QDebugStateSaver saver(dbg);
@@ -2044,6 +2044,6 @@ QDebug operator<<(QDebug dbg, const QItemSelectionRange &range)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qitemselectionmodel.cpp"

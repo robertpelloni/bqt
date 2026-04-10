@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 #include "tabswidget.h"
 
 class BasicA11yWidget: public QWidget
@@ -11,10 +11,10 @@ private:
     QMenu* m_helpMenu = nullptr;
     QMenu* m_TodayMenu = nullptr;
     QMenuBar* m_menuBar = nullptr;
-    QToolBar* m_toolBar = nullptr;
+    BOBUIoolBar* m_toolBar = nullptr;
     QLabel* m_lblDateTime = nullptr;
     QVBoxLayout* m_layout = nullptr ;
-    QTabWidget* m_tabWidget = nullptr;
+    BOBUIabWidget* m_tabWidget = nullptr;
     EditViewTab *m_editView = nullptr;
 
     QAction* m_DateAct = nullptr;
@@ -35,7 +35,7 @@ public:
     void todaysDate();
     void currentTime();
     void about();
-    QToolBar* getToolbar(){return m_toolBar;}
+    BOBUIoolBar* getToolbar(){return m_toolBar;}
     void handleButton();
 
 };

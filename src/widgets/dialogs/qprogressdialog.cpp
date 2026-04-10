@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qprogressdialog.h"
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include "qshortcut.h"
 #endif
 #include "qpainter.h"
@@ -14,18 +14,18 @@
 #include "qapplication.h"
 #include "qstyle.h"
 #include "qpushbutton.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qelapsedtimer.h"
 #include "qscopedvaluerollback.h"
 #include <private/qdialog_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <limits.h>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // If the operation is expected to take this long (as predicted by
 // progress time), show the progress dialog.
@@ -51,8 +51,8 @@ public:
     QLabel *label = nullptr;
     QPushButton *cancel = nullptr;
     QProgressBar *bar = nullptr;
-    QTimer *forceTimer = nullptr;
-#ifndef QT_NO_SHORTCUT
+    BOBUIimer *forceTimer = nullptr;
+#ifndef BOBUI_NO_SHORTCUT
     QShortcut *escapeShortcut = nullptr;
 #endif
     QPointer<QObject> receiverToDisconnectOnClose;
@@ -77,9 +77,9 @@ void QProgressDialogPrivate::init(const QString &labelText, const QString &cance
     bar = new QProgressBar(q);
     bar->setRange(min, max);
     int align = q->style()->styleHint(QStyle::SH_ProgressDialog_TextLabelAlignment, nullptr, q);
-    label->setAlignment(Qt::Alignment(align));
+    label->setAlignment(BobUI::Alignment(align));
     QObject::connect(q, SIGNAL(canceled()), q, SLOT(cancel()));
-    forceTimer = new QTimer(q);
+    forceTimer = new BOBUIimer(q);
     QObject::connect(forceTimer, SIGNAL(timeout()), q, SLOT(forceShow()));
     if (useDefaultCancelText) {
         retranslateStrings();
@@ -158,7 +158,7 @@ void QProgressDialogPrivate::_q_disconnectOnClose()
   \class QProgressDialog
   \brief The QProgressDialog class provides feedback on the progress of a slow operation.
   \ingroup standard-dialogs
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
 
   A progress dialog is used to give the user an indication of how long
@@ -244,7 +244,7 @@ void QProgressDialogPrivate::_q_disconnectOnClose()
   setMinimum(), setMaximum()
 */
 
-QProgressDialog::QProgressDialog(QWidget *parent, Qt::WindowFlags f)
+QProgressDialog::QProgressDialog(QWidget *parent, BobUI::WindowFlags f)
     : QDialog(*(new QProgressDialogPrivate), parent, f)
 {
     Q_D(QProgressDialog);
@@ -277,7 +277,7 @@ QProgressDialog::QProgressDialog(QWidget *parent, Qt::WindowFlags f)
 QProgressDialog::QProgressDialog(const QString &labelText,
                                  const QString &cancelButtonText,
                                  int minimum, int maximum,
-                                 QWidget *parent, Qt::WindowFlags f)
+                                 QWidget *parent, BobUI::WindowFlags f)
     : QDialog(*(new QProgressDialogPrivate), parent, f)
 {
     Q_D(QProgressDialog);
@@ -372,11 +372,11 @@ void QProgressDialog::setCancelButton(QPushButton *cancelButton)
     d->cancel = cancelButton;
     if (cancelButton) {
         connect(d->cancel, SIGNAL(clicked()), this, SIGNAL(canceled()));
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         d->escapeShortcut = new QShortcut(QKeySequence::Cancel, this, SIGNAL(canceled()));
 #endif
     } else {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         delete d->escapeShortcut;
         d->escapeShortcut = nullptr;
 #endif
@@ -430,7 +430,7 @@ void QProgressDialog::setBar(QProgressBar *bar)
         qWarning("QProgressDialog::setBar: Cannot set a null progress bar");
         return;
     }
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (Q_UNLIKELY(value() > 0))
         qWarning("QProgressDialog::setBar: Cannot set a new progress bar "
                   "while the old one is active");
@@ -569,7 +569,7 @@ void QProgressDialog::reset()
         (reset() is itself invoked when canceled() is emitted.)
     */
     if (d->receiverToDisconnectOnClose)
-        QMetaObject::invokeMethod(this, "_q_disconnectOnClose", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "_q_disconnectOnClose", BobUI::QueuedConnection);
 }
 
 /*!
@@ -625,7 +625,7 @@ void QProgressDialog::setValue(int progress)
             QCoreApplication::processEvents();
         }
     } else {
-        if ((!d->setValueCalled && progress == 0 /* for compat with Qt < 5.4 */) || progress == minimum()) {
+        if ((!d->setValueCalled && progress == 0 /* for compat with BobUI < 5.4 */) || progress == minimum()) {
             d->starttime.start();
             d->forceTimer->start(d->showTime);
             d->setValueCalled = true;
@@ -835,6 +835,6 @@ void QProgressDialog::open(QObject *receiver, const char *member)
     QDialog::open();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qprogressdialog.cpp"

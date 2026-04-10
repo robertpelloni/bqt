@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "edge.h"
 #include "node.h"
@@ -122,23 +122,23 @@ QPainterPath Node::shape() const
 //! [10]
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::darkGray);
+    painter->setPen(BobUI::NoPen);
+    painter->setBrush(BobUI::darkGray);
     painter->drawEllipse(-7, -7, 20, 20);
 
     QRadialGradient gradient(-3, -3, 10);
     if (option->state & QStyle::State_Sunken) {
         gradient.setCenter(3, 3);
         gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(Qt::yellow).lighter(120));
-        gradient.setColorAt(0, QColor(Qt::darkYellow).lighter(120));
+        gradient.setColorAt(1, QColor(BobUI::yellow).lighter(120));
+        gradient.setColorAt(0, QColor(BobUI::darkYellow).lighter(120));
     } else {
-        gradient.setColorAt(0, Qt::yellow);
-        gradient.setColorAt(1, Qt::darkYellow);
+        gradient.setColorAt(0, BobUI::yellow);
+        gradient.setColorAt(1, BobUI::darkYellow);
     }
     painter->setBrush(gradient);
 
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(BobUI::black, 0));
     painter->drawEllipse(-10, -10, 20, 20);
 }
 //! [10]

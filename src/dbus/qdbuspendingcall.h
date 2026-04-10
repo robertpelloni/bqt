@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSPENDINGCALL_H
 #define QDBUSPENDINGCALL_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbusmessage.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qshareddata.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbusmessage.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qshareddata.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
 class tst_QDBusPendingReply;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusConnection;
@@ -23,7 +23,7 @@ class QDBusPendingCallWatcher;
 
 class QDBusPendingCallPrivate;
 
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QDBusPendingCallPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QDBusPendingCallPrivate)
 
 class Q_DBUS_EXPORT QDBusPendingCall
 {
@@ -83,7 +83,7 @@ Q_SIGNALS:
     void finished(QDBusPendingCallWatcher *self = nullptr);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

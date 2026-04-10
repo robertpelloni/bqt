@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtWidgets/qgraphicsanchorlayout.h>
-#include <QtWidgets/qgraphicslinearlayout.h>
-#include <QtWidgets/qgraphicswidget.h>
-#include <QtWidgets/qgraphicsview.h>
+#include <BOBUIest>
+#include <BobUIWidgets/qgraphicsanchorlayout.h>
+#include <BobUIWidgets/qgraphicslinearlayout.h>
+#include <BobUIWidgets/qgraphicswidget.h>
+#include <BobUIWidgets/qgraphicsview.h>
 
 class tst_QGraphicsAnchorLayout : public QObject
 {
@@ -35,7 +35,7 @@ public:
     {
         Q_UNUSED(option);
         Q_UNUSED(widget);
-        painter->drawRoundedRect(rect(), 25, 25, Qt::RelativeSize);
+        painter->drawRoundedRect(rect(), 25, 25, BobUI::RelativeSize);
         painter->drawLine(rect().topLeft(), rect().bottomRight());
         painter->drawLine(rect().bottomLeft(), rect().topRight());
     }
@@ -56,9 +56,9 @@ static QGraphicsWidget *createItem(const QSizeF &minimum = QSizeF(100.0, 100.0),
 
 static void setAnchor(QGraphicsAnchorLayout *l,
                       QGraphicsLayoutItem *firstItem,
-                      Qt::AnchorPoint firstEdge,
+                      BobUI::AnchorPoint firstEdge,
                       QGraphicsLayoutItem *secondItem,
-                      Qt::AnchorPoint secondEdge,
+                      BobUI::AnchorPoint secondEdge,
                       qreal spacing)
 {
     QGraphicsAnchor *anchor = l->addAnchor(firstItem, firstEdge, secondItem, secondEdge);
@@ -67,15 +67,15 @@ static void setAnchor(QGraphicsAnchorLayout *l,
 
 void tst_QGraphicsAnchorLayout::hard_complex_data()
 {
-    QTest::addColumn<int>("whichSizeHint");
-    QTest::newRow("minimumSizeHint")
-        << int(Qt::MinimumSize);
-    QTest::newRow("preferredSizeHint")
-        << int(Qt::PreferredSize);
-    QTest::newRow("maximumSizeHint")
-        << int(Qt::MaximumSize);
+    BOBUIest::addColumn<int>("whichSizeHint");
+    BOBUIest::newRow("minimumSizeHint")
+        << int(BobUI::MinimumSize);
+    BOBUIest::newRow("preferredSizeHint")
+        << int(BobUI::PreferredSize);
+    BOBUIest::newRow("maximumSizeHint")
+        << int(BobUI::MaximumSize);
     // Add it as a reference to see how much overhead the body of effectiveSizeHint takes.
-    QTest::newRow("noSizeHint")
+    BOBUIest::newRow("noSizeHint")
         << -1;
 }
 
@@ -84,7 +84,7 @@ void tst_QGraphicsAnchorLayout::hard_complex()
     QFETCH(int, whichSizeHint);
 
     // Test for "hard" complex case, taken from wiki
-    // https://cwiki.nokia.com/S60QTUI/AnchorLayoutComplexCases
+    // https://cwiki.nokia.com/S60BOBUIUI/AnchorLayoutComplexCases
     QSizeF min(0, 10);
     QSizeF pref(50, 10);
     QSizeF max(100, 10);
@@ -101,34 +101,34 @@ void tst_QGraphicsAnchorLayout::hard_complex()
     l->setContentsMargins(0, 0, 0, 0);
 
     //<!-- Trunk -->
-    setAnchor(l, l, Qt::AnchorLeft, a, Qt::AnchorLeft, 10);
-    setAnchor(l, a, Qt::AnchorRight, b, Qt::AnchorLeft, 10);
-    setAnchor(l, b, Qt::AnchorRight, c, Qt::AnchorLeft, 10);
-    setAnchor(l, c, Qt::AnchorRight, d, Qt::AnchorLeft, 10);
-    setAnchor(l, d, Qt::AnchorRight, l, Qt::AnchorRight, 10);
+    setAnchor(l, l, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 10);
+    setAnchor(l, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 10);
+    setAnchor(l, b, BobUI::AnchorRight, c, BobUI::AnchorLeft, 10);
+    setAnchor(l, c, BobUI::AnchorRight, d, BobUI::AnchorLeft, 10);
+    setAnchor(l, d, BobUI::AnchorRight, l, BobUI::AnchorRight, 10);
 
     //<!-- Above trunk -->
-    setAnchor(l, b, Qt::AnchorLeft, e, Qt::AnchorLeft, 10);
-    setAnchor(l, e, Qt::AnchorRight, d, Qt::AnchorLeft, 10);
+    setAnchor(l, b, BobUI::AnchorLeft, e, BobUI::AnchorLeft, 10);
+    setAnchor(l, e, BobUI::AnchorRight, d, BobUI::AnchorLeft, 10);
 
     //<!-- Below trunk -->
-    setAnchor(l, a, Qt::AnchorHorizontalCenter, g, Qt::AnchorLeft, 10);
-    setAnchor(l, g, Qt::AnchorRight, f, Qt::AnchorHorizontalCenter, 10);
-    setAnchor(l, c, Qt::AnchorLeft, f, Qt::AnchorLeft, 10);
-    setAnchor(l, f, Qt::AnchorRight, d, Qt::AnchorRight, 10);
+    setAnchor(l, a, BobUI::AnchorHorizontalCenter, g, BobUI::AnchorLeft, 10);
+    setAnchor(l, g, BobUI::AnchorRight, f, BobUI::AnchorHorizontalCenter, 10);
+    setAnchor(l, c, BobUI::AnchorLeft, f, BobUI::AnchorLeft, 10);
+    setAnchor(l, f, BobUI::AnchorRight, d, BobUI::AnchorRight, 10);
 
     //<!-- vertical is simpler -->
-    setAnchor(l, l, Qt::AnchorTop, e, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, a, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, b, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, c, Qt::AnchorTop, 0);
-    setAnchor(l, e, Qt::AnchorBottom, d, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, f, Qt::AnchorTop, 0);
-    setAnchor(l, a, Qt::AnchorBottom, b, Qt::AnchorBottom, 0);
-    setAnchor(l, a, Qt::AnchorBottom, c, Qt::AnchorBottom, 0);
-    setAnchor(l, a, Qt::AnchorBottom, d, Qt::AnchorBottom, 0);
-    setAnchor(l, f, Qt::AnchorBottom, g, Qt::AnchorTop, 0);
-    setAnchor(l, g, Qt::AnchorBottom, l, Qt::AnchorBottom, 0);
+    setAnchor(l, l, BobUI::AnchorTop, e, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, a, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, b, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, c, BobUI::AnchorTop, 0);
+    setAnchor(l, e, BobUI::AnchorBottom, d, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, f, BobUI::AnchorTop, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, b, BobUI::AnchorBottom, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, c, BobUI::AnchorBottom, 0);
+    setAnchor(l, a, BobUI::AnchorBottom, d, BobUI::AnchorBottom, 0);
+    setAnchor(l, f, BobUI::AnchorBottom, g, BobUI::AnchorTop, 0);
+    setAnchor(l, g, BobUI::AnchorBottom, l, BobUI::AnchorBottom, 0);
 
     // It won't query the size hint if it already has a size set.
     // If only one of the sizes is unset it will query sizeHint only of for that hint type.
@@ -137,13 +137,13 @@ void tst_QGraphicsAnchorLayout::hard_complex()
     l->setMaximumSize(240,40);
 
     switch (whichSizeHint) {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         l->setMinimumSize(-1, -1);
         break;
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         l->setPreferredSize(-1, -1);
         break;
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         l->setMaximumSize(-1, -1);
         break;
     default:
@@ -153,11 +153,11 @@ void tst_QGraphicsAnchorLayout::hard_complex()
     QSizeF sizeHint;
     // warm up instruction cache
     l->invalidate();
-    sizeHint = l->effectiveSizeHint((Qt::SizeHint)whichSizeHint);
+    sizeHint = l->effectiveSizeHint((BobUI::SizeHint)whichSizeHint);
     // ...then measure...
     QBENCHMARK {
         l->invalidate();
-        sizeHint = l->effectiveSizeHint((Qt::SizeHint)whichSizeHint);
+        sizeHint = l->effectiveSizeHint((BobUI::SizeHint)whichSizeHint);
     }
 }
 
@@ -188,17 +188,17 @@ static QGraphicsLayout* createLayouts(int whichLayout)
         anchor->setContentsMargins(0, 0, 0, 0);
 
         // Horizontal
-        setAnchor(anchor, anchor, Qt::AnchorLeft, a, Qt::AnchorLeft, 0);
-        setAnchor(anchor, a, Qt::AnchorRight, b, Qt::AnchorLeft, 0);
-        setAnchor(anchor, b, Qt::AnchorRight, c, Qt::AnchorLeft, 0);
-        setAnchor(anchor, c, Qt::AnchorRight, d, Qt::AnchorLeft, 0);
-        setAnchor(anchor, d, Qt::AnchorRight, anchor, Qt::AnchorRight, 0);
+        setAnchor(anchor, anchor, BobUI::AnchorLeft, a, BobUI::AnchorLeft, 0);
+        setAnchor(anchor, a, BobUI::AnchorRight, b, BobUI::AnchorLeft, 0);
+        setAnchor(anchor, b, BobUI::AnchorRight, c, BobUI::AnchorLeft, 0);
+        setAnchor(anchor, c, BobUI::AnchorRight, d, BobUI::AnchorLeft, 0);
+        setAnchor(anchor, d, BobUI::AnchorRight, anchor, BobUI::AnchorRight, 0);
 
         // Vertical
-        anchor->addAnchors(anchor, a, Qt::Vertical);
-        anchor->addAnchors(anchor, b, Qt::Vertical);
-        anchor->addAnchors(anchor, c, Qt::Vertical);
-        anchor->addAnchors(anchor, d, Qt::Vertical);
+        anchor->addAnchors(anchor, a, BobUI::Vertical);
+        anchor->addAnchors(anchor, b, BobUI::Vertical);
+        anchor->addAnchors(anchor, c, BobUI::Vertical);
+        anchor->addAnchors(anchor, d, BobUI::Vertical);
     }
 
     return l;
@@ -206,25 +206,25 @@ static QGraphicsLayout* createLayouts(int whichLayout)
 
 void tst_QGraphicsAnchorLayout::linearVsAnchorSizeHints_data()
 {
-    QTest::addColumn<int>("whichLayout");
-    QTest::addColumn<int>("whichSizeHint");
+    BOBUIest::addColumn<int>("whichLayout");
+    BOBUIest::addColumn<int>("whichSizeHint");
 
-    QTest::newRow("QGraphicsLinearLayout::minimum")
-        << 0 << int(Qt::MinimumSize);
-    QTest::newRow("QGraphicsLinearLayout::preferred")
-        << 0 << int(Qt::PreferredSize);
-    QTest::newRow("QGraphicsLinearLayout::maximum")
-        << 0 << int(Qt::MaximumSize);
-    QTest::newRow("QGraphicsLinearLayout::noSizeHint")
+    BOBUIest::newRow("QGraphicsLinearLayout::minimum")
+        << 0 << int(BobUI::MinimumSize);
+    BOBUIest::newRow("QGraphicsLinearLayout::preferred")
+        << 0 << int(BobUI::PreferredSize);
+    BOBUIest::newRow("QGraphicsLinearLayout::maximum")
+        << 0 << int(BobUI::MaximumSize);
+    BOBUIest::newRow("QGraphicsLinearLayout::noSizeHint")
         << 0 << -1;
 
-    QTest::newRow("QGraphicsAnchorLayout::minimum")
-        << 1 << int(Qt::MinimumSize);
-    QTest::newRow("QGraphicsAnchorLayout::preferred")
-        << 1 << int(Qt::PreferredSize);
-    QTest::newRow("QGraphicsAnchorLayout::maximum")
-        << 1 << int(Qt::MaximumSize);
-    QTest::newRow("QGraphicsAnchorLayout::noSizeHint")
+    BOBUIest::newRow("QGraphicsAnchorLayout::minimum")
+        << 1 << int(BobUI::MinimumSize);
+    BOBUIest::newRow("QGraphicsAnchorLayout::preferred")
+        << 1 << int(BobUI::PreferredSize);
+    BOBUIest::newRow("QGraphicsAnchorLayout::maximum")
+        << 1 << int(BobUI::MaximumSize);
+    BOBUIest::newRow("QGraphicsAnchorLayout::noSizeHint")
         << 1 << -1;
 }
 
@@ -238,22 +238,22 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorSizeHints()
     QSizeF sizeHint;
     // warm up instruction cache
     l->invalidate();
-    sizeHint = l->effectiveSizeHint((Qt::SizeHint)whichSizeHint);
+    sizeHint = l->effectiveSizeHint((BobUI::SizeHint)whichSizeHint);
     // ...then measure...
 
     QBENCHMARK {
         l->invalidate();
-        sizeHint = l->effectiveSizeHint((Qt::SizeHint)whichSizeHint);
+        sizeHint = l->effectiveSizeHint((BobUI::SizeHint)whichSizeHint);
     }
 }
 
 void tst_QGraphicsAnchorLayout::linearVsAnchorSetGeometry_data()
 {
-    QTest::addColumn<int>("whichLayout");
+    BOBUIest::addColumn<int>("whichLayout");
 
-    QTest::newRow("QGraphicsLinearLayout")
+    BOBUIest::newRow("QGraphicsLinearLayout")
         << 0;
-    QTest::newRow("QGraphicsAnchorLayout")
+    BOBUIest::newRow("QGraphicsAnchorLayout")
         << 1;
 }
 
@@ -268,8 +268,8 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorSetGeometry()
     qreal increment;
     // warm up instruction cache
     l->invalidate();
-    sizeHint.setSize(l->effectiveSizeHint(Qt::MinimumSize));
-    maxWidth = l->effectiveSizeHint(Qt::MaximumSize).width();
+    sizeHint.setSize(l->effectiveSizeHint(BobUI::MinimumSize));
+    maxWidth = l->effectiveSizeHint(BobUI::MaximumSize).width();
     increment = (maxWidth - sizeHint.width()) / 100;
     l->setGeometry(sizeHint);
     // ...then measure...
@@ -285,12 +285,12 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorSetGeometry()
 
 void tst_QGraphicsAnchorLayout::linearVsAnchorNested_data()
 {
-    QTest::addColumn<int>("whichLayout");
-    QTest::newRow("LinearLayout")
+    BOBUIest::addColumn<int>("whichLayout");
+    BOBUIest::newRow("LinearLayout")
         << 0;
-    QTest::newRow("AnchorLayout setup with null-anchors knot")
+    BOBUIest::newRow("AnchorLayout setup with null-anchors knot")
         << 1;
-    QTest::newRow("AnchorLayout setup easy to simplificate")
+    BOBUIest::newRow("AnchorLayout setup easy to simplificate")
         << 2;
 }
 
@@ -311,7 +311,7 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorNested()
 
     if (whichLayout == 0) {
         QGraphicsLinearLayout *linear1 = new QGraphicsLinearLayout;
-        QGraphicsLinearLayout *linear2 = new QGraphicsLinearLayout(Qt::Vertical);
+        QGraphicsLinearLayout *linear2 = new QGraphicsLinearLayout(BobUI::Vertical);
         QGraphicsLinearLayout *linear3 = new QGraphicsLinearLayout;
 
         linear1->addItem(a);
@@ -326,46 +326,46 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorNested()
         QGraphicsAnchorLayout *anchor = new QGraphicsAnchorLayout;
 
         // A
-        anchor->addCornerAnchors(a, Qt::TopLeftCorner, anchor, Qt::TopLeftCorner);
-        anchor->addCornerAnchors(a, Qt::TopRightCorner, b, Qt::TopLeftCorner);
-        anchor->addCornerAnchors(a, Qt::BottomLeftCorner, anchor, Qt::BottomLeftCorner);
-        anchor->addCornerAnchors(a, Qt::BottomRightCorner, c, Qt::BottomLeftCorner);
+        anchor->addCornerAnchors(a, BobUI::TopLeftCorner, anchor, BobUI::TopLeftCorner);
+        anchor->addCornerAnchors(a, BobUI::TopRightCorner, b, BobUI::TopLeftCorner);
+        anchor->addCornerAnchors(a, BobUI::BottomLeftCorner, anchor, BobUI::BottomLeftCorner);
+        anchor->addCornerAnchors(a, BobUI::BottomRightCorner, c, BobUI::BottomLeftCorner);
 
         // B
-        anchor->addCornerAnchors(b, Qt::TopRightCorner, anchor, Qt::TopRightCorner);
-        anchor->addCornerAnchors(b, Qt::BottomLeftCorner, c, Qt::TopLeftCorner);
-        anchor->addCornerAnchors(b, Qt::BottomRightCorner, d, Qt::TopRightCorner);
+        anchor->addCornerAnchors(b, BobUI::TopRightCorner, anchor, BobUI::TopRightCorner);
+        anchor->addCornerAnchors(b, BobUI::BottomLeftCorner, c, BobUI::TopLeftCorner);
+        anchor->addCornerAnchors(b, BobUI::BottomRightCorner, d, BobUI::TopRightCorner);
 
         // C
-        anchor->addCornerAnchors(c, Qt::TopRightCorner, d, Qt::TopLeftCorner);
-        anchor->addCornerAnchors(c, Qt::BottomRightCorner, d, Qt::BottomLeftCorner);
+        anchor->addCornerAnchors(c, BobUI::TopRightCorner, d, BobUI::TopLeftCorner);
+        anchor->addCornerAnchors(c, BobUI::BottomRightCorner, d, BobUI::BottomLeftCorner);
 
         // D
-        anchor->addCornerAnchors(d, Qt::BottomRightCorner, anchor, Qt::BottomRightCorner);
+        anchor->addCornerAnchors(d, BobUI::BottomRightCorner, anchor, BobUI::BottomRightCorner);
 
         layout = anchor;
     } else {
         QGraphicsAnchorLayout *anchor = new QGraphicsAnchorLayout;
 
         // A
-        anchor->addAnchor(a, Qt::AnchorLeft, anchor, Qt::AnchorLeft);
-        anchor->addAnchors(a, anchor, Qt::Vertical);
-        anchor->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
-        anchor->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
+        anchor->addAnchor(a, BobUI::AnchorLeft, anchor, BobUI::AnchorLeft);
+        anchor->addAnchors(a, anchor, BobUI::Vertical);
+        anchor->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
+        anchor->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
 
         // B
-        anchor->addAnchor(b, Qt::AnchorTop, anchor, Qt::AnchorTop);
-        anchor->addAnchor(b, Qt::AnchorRight, anchor, Qt::AnchorRight);
-        anchor->addAnchor(b, Qt::AnchorBottom, c, Qt::AnchorTop);
-        anchor->addAnchor(b, Qt::AnchorBottom, d, Qt::AnchorTop);
+        anchor->addAnchor(b, BobUI::AnchorTop, anchor, BobUI::AnchorTop);
+        anchor->addAnchor(b, BobUI::AnchorRight, anchor, BobUI::AnchorRight);
+        anchor->addAnchor(b, BobUI::AnchorBottom, c, BobUI::AnchorTop);
+        anchor->addAnchor(b, BobUI::AnchorBottom, d, BobUI::AnchorTop);
 
         // C
-        anchor->addAnchor(c, Qt::AnchorRight, d, Qt::AnchorLeft);
-        anchor->addAnchor(c, Qt::AnchorBottom, anchor, Qt::AnchorBottom);
+        anchor->addAnchor(c, BobUI::AnchorRight, d, BobUI::AnchorLeft);
+        anchor->addAnchor(c, BobUI::AnchorBottom, anchor, BobUI::AnchorBottom);
 
         // D
-        anchor->addAnchor(d, Qt::AnchorRight, anchor, Qt::AnchorRight);
-        anchor->addAnchor(d, Qt::AnchorBottom, anchor, Qt::AnchorBottom);
+        anchor->addAnchor(d, BobUI::AnchorRight, anchor, BobUI::AnchorRight);
+        anchor->addAnchor(d, BobUI::AnchorBottom, anchor, BobUI::AnchorBottom);
 
         layout = anchor;
     }
@@ -373,7 +373,7 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorNested()
     QSizeF sizeHint;
     // warm up instruction cache
     layout->invalidate();
-    sizeHint = layout->effectiveSizeHint(Qt::PreferredSize);
+    sizeHint = layout->effectiveSizeHint(BobUI::PreferredSize);
 
     // ...then measure...
     QBENCHMARK {
@@ -386,10 +386,10 @@ void tst_QGraphicsAnchorLayout::linearVsAnchorNested()
         static_cast<QGraphicsLayoutItem *>(c)->updateGeometry();
         static_cast<QGraphicsLayoutItem *>(d)->updateGeometry();
         layout->invalidate();
-        sizeHint = layout->effectiveSizeHint(Qt::PreferredSize);
+        sizeHint = layout->effectiveSizeHint(BobUI::PreferredSize);
     }
 }
 
-QTEST_MAIN(tst_QGraphicsAnchorLayout)
+BOBUIEST_MAIN(tst_QGraphicsAnchorLayout)
 
 #include "tst_qgraphicsanchorlayout.moc"

@@ -1,11 +1,11 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/quniquehandle_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 
-QT_USE_NAMESPACE;
+BOBUI_USE_NAMESPACE;
 
 // clang-format off
 namespace GlobalResource {
@@ -150,11 +150,11 @@ private slots:
     {
         Handle resource{ GlobalResource::open() };
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wself-move")
-QT_WARNING_DISABLE_CLANG("-Wself-move")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wself-move")
+BOBUI_WARNING_DISABLE_CLANG("-Wself-move")
         resource = std::move(resource);
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
         QVERIFY(resource.isValid());
         QVERIFY(GlobalResource::isOpen(resource.get()));
@@ -313,12 +313,12 @@ QT_WARNING_POP
 
     void comparison_behavesAsInt_whenHandleTypeIsInt_data() const
     {
-        QTest::addColumn<int>("lhs");
-        QTest::addColumn<int>("rhs");
+        BOBUIest::addColumn<int>("lhs");
+        BOBUIest::addColumn<int>("rhs");
 
-        QTest::addRow("lhs == rhs") << 1 << 1;
-        QTest::addRow("lhs < rhs") << 0 << 1;
-        QTest::addRow("lhs > rhs") << 1 << 0;
+        BOBUIest::addRow("lhs == rhs") << 1 << 1;
+        BOBUIest::addRow("lhs < rhs") << 0 << 1;
+        BOBUIest::addRow("lhs > rhs") << 1 << 0;
     }
 
     void comparison_behavesAsInt_whenHandleTypeIsInt() const
@@ -355,12 +355,12 @@ QT_WARNING_POP
 
     void comparison_behavesAsPointer_whenHandleTypeIsPointer_data() const
     {
-        QTest::addColumn<int*>("lhs");
-        QTest::addColumn<int*>("rhs");
+        BOBUIest::addColumn<int*>("lhs");
+        BOBUIest::addColumn<int*>("rhs");
 
-        QTest::addRow("lhs == rhs") << reinterpret_cast<int*>(2) << reinterpret_cast<int*>(2);
-        QTest::addRow("lhs < rhs") << reinterpret_cast<int*>(1) << reinterpret_cast<int*>(2);
-        QTest::addRow("lhs > rhs") << reinterpret_cast<int*>(2) << reinterpret_cast<int*>(1);
+        BOBUIest::addRow("lhs == rhs") << reinterpret_cast<int*>(2) << reinterpret_cast<int*>(2);
+        BOBUIest::addRow("lhs < rhs") << reinterpret_cast<int*>(1) << reinterpret_cast<int*>(2);
+        BOBUIest::addRow("lhs > rhs") << reinterpret_cast<int*>(2) << reinterpret_cast<int*>(1);
     }
 
     void comparison_behavesAsPointer_whenHandleTypeIsPointer() const
@@ -425,5 +425,5 @@ QT_WARNING_POP
 };
 
 // clang-format on
-QTEST_MAIN(tst_QUniqueHandle)
+BOBUIEST_MAIN(tst_QUniqueHandle)
 #include "tst_quniquehandle.moc"

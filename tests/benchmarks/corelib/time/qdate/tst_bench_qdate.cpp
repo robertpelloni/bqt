@@ -1,10 +1,10 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDate>
-#include <QTest>
+#include <BOBUIest>
 #include <QList>
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QDate : public QObject
 {
@@ -190,13 +190,13 @@ void tst_QDate::addYears()
 
 void tst_QDate::fromString_data()
 {
-    QTest::addColumn<QString>("string");
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<int>("baseYear");
+    BOBUIest::addColumn<QString>("string");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<int>("baseYear");
 
-    QTest::newRow("yyyyMMdd") << u"20240412"_s << u"yyyyMMdd"_s << 2000;
-    QTest::newRow("yyyy-MM-dd") << u"2024-04-12"_s << u"yyyy-MM-dd"_s << 2000;
-    QTest::newRow("YYYYMMDD") << u"20240412"_s << u"YYYYMMDD"_s << 2000; // Invalid, QTBUG-124465.
+    BOBUIest::newRow("yyyyMMdd") << u"20240412"_s << u"yyyyMMdd"_s << 2000;
+    BOBUIest::newRow("yyyy-MM-dd") << u"2024-04-12"_s << u"yyyy-MM-dd"_s << 2000;
+    BOBUIest::newRow("YYYYMMDD") << u"20240412"_s << u"YYYYMMDD"_s << 2000; // Invalid, BOBUIBUG-124465.
 }
 
 void tst_QDate::fromString()
@@ -211,5 +211,5 @@ void tst_QDate::fromString()
     Q_UNUSED(date);
 }
 
-QTEST_MAIN(tst_QDate)
+BOBUIEST_MAIN(tst_QDate)
 #include "tst_bench_qdate.moc"

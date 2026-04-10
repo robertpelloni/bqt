@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
 viewer.cpp
@@ -11,7 +11,7 @@ A main menu provides entries for selecting files, and adjusting the
 brightness of the separations.
 */
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "finalwidget.h"
 #include "screenwidget.h"
@@ -105,21 +105,21 @@ QFrame* Viewer::createCentralWidget()
 
     finalWidget = new FinalWidget(frame, tr("Final image"), labelSize);
 
-    cyanWidget = new ScreenWidget(frame, Qt::cyan, tr("Cyan"),
+    cyanWidget = new ScreenWidget(frame, BobUI::cyan, tr("Cyan"),
                                   ScreenWidget::Cyan, labelSize);
-    magentaWidget = new ScreenWidget(frame, Qt::magenta, tr("Magenta"),
+    magentaWidget = new ScreenWidget(frame, BobUI::magenta, tr("Magenta"),
                                      ScreenWidget::Magenta, labelSize);
-    yellowWidget = new ScreenWidget(frame, Qt::yellow, tr("Yellow"),
+    yellowWidget = new ScreenWidget(frame, BobUI::yellow, tr("Yellow"),
                                     ScreenWidget::Yellow, labelSize);
 
     connect(cyanWidget, &ScreenWidget::imageChanged, this, &Viewer::createImage);
     connect(magentaWidget, &ScreenWidget::imageChanged, this, &Viewer::createImage);
     connect(yellowWidget, &ScreenWidget::imageChanged, this, &Viewer::createImage);
 
-    grid->addWidget(finalWidget, 0, 0, Qt::AlignTop | Qt::AlignHCenter);
-    grid->addWidget(cyanWidget, 0, 1, Qt::AlignTop | Qt::AlignHCenter);
-    grid->addWidget(magentaWidget, 1, 0, Qt::AlignTop | Qt::AlignHCenter);
-    grid->addWidget(yellowWidget, 1, 1, Qt::AlignTop | Qt::AlignHCenter);
+    grid->addWidget(finalWidget, 0, 0, BobUI::AlignTop | BobUI::AlignHCenter);
+    grid->addWidget(cyanWidget, 0, 1, BobUI::AlignTop | BobUI::AlignHCenter);
+    grid->addWidget(magentaWidget, 1, 0, BobUI::AlignTop | BobUI::AlignHCenter);
+    grid->addWidget(yellowWidget, 1, 1, BobUI::AlignTop | BobUI::AlignHCenter);
 
     return frame;
 }
@@ -195,8 +195,8 @@ void Viewer::openImageFile(QString &imageFile)
         saveAction->setEnabled(true);
         brightnessMenu->setEnabled(true);
 
-        /* Note: the ScaleMin value may be different for Qt 4. */
-        scaledImage = originalImage.scaled(256, 256, Qt::KeepAspectRatio);
+        /* Note: the ScaleMin value may be different for BobUI 4. */
+        scaledImage = originalImage.scaled(256, 256, BobUI::KeepAspectRatio);
 
         cyanWidget->setImage(scaledImage);
         magentaWidget->setImage(scaledImage);

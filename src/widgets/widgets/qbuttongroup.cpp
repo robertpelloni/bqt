@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qbuttongroup_p.h"
 
 #include "private/qabstractbutton_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // detect a checked button other than the current one
 void QButtonGroupPrivate::detectCheckedButton()
@@ -30,7 +30,7 @@ void QButtonGroupPrivate::detectCheckedButton()
 
     \ingroup organizers
     \ingroup geomanagement
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QButtonGroup provides an abstract container into which button widgets can
     be placed. It does not provide a visual representation of this container
@@ -321,6 +321,6 @@ int QButtonGroup::checkedId() const
     return d->mapping.value(d->checkedButton, -1);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qbuttongroup.cpp"

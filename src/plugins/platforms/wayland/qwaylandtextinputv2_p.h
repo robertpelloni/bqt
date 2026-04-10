@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #ifndef QWAYLANDINPUTV2_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,19 +17,19 @@
 //
 
 #include "qwaylandtextinputinterface_p.h"
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v2.h>
+#include <BobUIWaylandClient/private/qwayland-text-input-unstable-v2.h>
 #include <qwaylandinputmethodeventbuilder_p.h>
 
 struct wl_callback;
 struct wl_callback_listener;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandDisplay;
 
-class QWaylandTextInputv2 : public QtWayland::zwp_text_input_v2, public QWaylandTextInputInterface
+class QWaylandTextInputv2 : public BobUIWayland::zwp_text_input_v2, public QWaylandTextInputInterface
 {
 public:
     QWaylandTextInputv2(QWaylandDisplay *display, struct ::zwp_text_input_v2 *text_input);
@@ -37,7 +37,7 @@ public:
 
     void reset() override;
     void commit() override;
-    void updateState(Qt::InputMethodQueries queries, uint32_t flags) override;
+    void updateState(BobUI::InputMethodQueries queries, uint32_t flags) override;
 
     void setCursorInsidePreedit(int cursor) override;
 
@@ -45,7 +45,7 @@ public:
     QRectF keyboardRect() const override;
 
     QLocale locale() const override;
-    Qt::LayoutDirection inputDirection() const override;
+    BobUI::LayoutDirection inputDirection() const override;
 
     void showInputPanel() override;
     void hideInputPanel() override;
@@ -69,12 +69,12 @@ protected:
     void zwp_text_input_v2_input_method_changed(uint32_t serial, uint32_t flags) override;
 
 private:
-    Qt::KeyboardModifiers modifiersToQtModifiers(uint32_t modifiers);
+    BobUI::KeyboardModifiers modifiersToBobUIModifiers(uint32_t modifiers);
 
     QWaylandDisplay *m_display = nullptr;
     QWaylandInputMethodEventBuilder m_builder;
 
-    QList<Qt::KeyboardModifier> m_modifiersMap;
+    QList<BobUI::KeyboardModifier> m_modifiersMap;
 
     uint32_t m_serial = 0;
     struct ::wl_surface *m_surface = nullptr;
@@ -84,7 +84,7 @@ private:
     bool m_inputPanelVisible = false;
     QRectF m_keyboardRectangle;
     QLocale m_locale;
-    Qt::LayoutDirection m_inputDirection = Qt::LayoutDirectionAuto;
+    BobUI::LayoutDirection m_inputDirection = BobUI::LayoutDirectionAuto;
 
     struct ::wl_callback *m_resetCallback = nullptr;
     static const wl_callback_listener callbackListener;
@@ -93,6 +93,6 @@ private:
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDTEXTINPUTV2_P_H

@@ -1,16 +1,16 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #define UMDF_USING_NTSTATUS // Avoid ntstatus redefinitions
 
 #include "qwinregistry_p.h"
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qendian.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qwineventnotifier.h>
-#include <QtCore/private/qsystemerror_p.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qwineventnotifier.h>
+#include <BobUICore/private/qsystemerror_p.h>
 
 #include <ntstatus.h>
 
@@ -19,9 +19,9 @@
 extern "C" NTSTATUS NTSYSCALLAPI NTAPI NtQueryKey(HANDLE KeyHandle, int KeyInformationClass,
     PVOID KeyInformation, ULONG Length, PULONG ResultLength);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const wchar_t *nullTerminate(const QString &s)
 {
@@ -240,7 +240,7 @@ void QWinRegistryKey::connectNotify(const QMetaMethod &signal)
     return QObject::connectNotify(signal);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QWinRegistryKey &key)
 {
     QDebugStateSaver saver(debug);
@@ -253,4 +253,4 @@ QDebug operator<<(QDebug debug, const QWinRegistryKey &key)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QPRINTENGINE_WIN_P_H
 #define QPRINTENGINE_WIN_P_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists for the convenience
-// of other Qt classes. This header file may change from version to
+// This file is not part of the BobUI API. It exists for the convenience
+// of other BobUI classes. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
-#include <QtGui/qpaintengine.h>
-#include <QtGui/qpagelayout.h>
-#include <QtPrintSupport/QPrintEngine>
-#include <QtPrintSupport/QPrinter>
+#include <BobUIGui/qpaintengine.h>
+#include <BobUIGui/qpagelayout.h>
+#include <BobUIPrintSupport/QPrintEngine>
+#include <BobUIPrintSupport/QPrinter>
 #include <private/qpaintengine_alpha_p.h>
 #include <private/qprintdevice_p.h>
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWin32PrintEnginePrivate;
 class QPrinterPrivate;
@@ -46,12 +46,12 @@ public:
 
     void updateState(const QPaintEngineState &state) override;
 
-    void updateMatrix(const QTransform &matrix);
-    void updateClipPath(const QPainterPath &clip, Qt::ClipOperation op);
+    void updateMatrix(const BOBUIransform &matrix);
+    void updateClipPath(const QPainterPath &clip, BobUI::ClipOperation op);
 
     void drawPath(const QPainterPath &path) override;
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode) override;
-    void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+    void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr) override;
     void drawTiledPixmap(const QRectF &r, const QPixmap &pm, const QPointF &p) override;
@@ -181,19 +181,19 @@ public:
     uint has_custom_paper_size : 1;
     uint embed_fonts : 1;
 
-    uint txop = 0; // QTransform::TxNone
+    uint txop = 0; // BOBUIransform::TxNone
 
     QColor brush_color;
     QPen pen;
     QColor pen_color;
     QSizeF paper_size;  // In points
 
-    QTransform painterMatrix;
-    QTransform matrix;
+    BOBUIransform painterMatrix;
+    BOBUIransform matrix;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PRINTER
+#endif // BOBUI_NO_PRINTER
 
 #endif // QPRINTENGINE_WIN_P_H

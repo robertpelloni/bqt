@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
-#include <QtTest/private/qpropertytesthelper_p.h>
-#if QT_CONFIG(process)
+#include <BobUITest/private/qpropertytesthelper_p.h>
+#if BOBUI_CONFIG(process)
 #include <QProcess>
 #endif
 #include <QWaitCondition>
@@ -14,12 +14,12 @@
 #include <QMutex>
 #include <QList>
 
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qdatastream.h>
 #include <qelapsedtimer.h>
 #include <qproperty.h>
-#include <QtNetwork/qlocalsocket.h>
-#include <QtNetwork/qlocalserver.h>
+#include <BobUINetwork/qlocalsocket.h>
+#include <BobUINetwork/qlocalserver.h>
 
 #ifdef Q_OS_UNIX
 #include <sys/types.h>
@@ -29,7 +29,7 @@
 #endif
 
 #ifdef Q_OS_WIN
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #endif
 
 Q_DECLARE_METATYPE(QLocalSocket::LocalSocketError)
@@ -285,7 +285,7 @@ void tst_QLocalSocket::socket_basic()
     //QCOMPARE(socket.socketDescriptor(), (qintptr)-1);
     QCOMPARE(socket.state(), QLocalSocket::UnconnectedState);
     QCOMPARE(socket.waitForConnected(0), false);
-    QTest::ignoreMessage(QtWarningMsg, "QLocalSocket::waitForDisconnected() is not allowed in UnconnectedState");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLocalSocket::waitForDisconnected() is not allowed in UnconnectedState");
     QCOMPARE(socket.waitForDisconnected(0), false);
     QCOMPARE(socket.waitForReadyRead(0), false);
 
@@ -298,12 +298,12 @@ void tst_QLocalSocket::socket_basic()
 
 void tst_QLocalSocket::listen_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("canListen");
-    QTest::addColumn<bool>("close");
-    QTest::newRow("null") << QString() << false << false;
-    QTest::newRow("tst_localsocket,close") << "tst_localsocket" << true << true;
-    QTest::newRow("tst_localsocket,no-close") << "tst_localsocket" << true << false;
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<bool>("canListen");
+    BOBUIest::addColumn<bool>("close");
+    BOBUIest::newRow("null") << QString() << false << false;
+    BOBUIest::newRow("tst_localsocket,close") << "tst_localsocket" << true << true;
+    BOBUIest::newRow("tst_localsocket,no-close") << "tst_localsocket" << true << false;
 }
 
 // start a server that listens, but don't connect a socket, make sure everything is in order
@@ -329,7 +329,7 @@ void tst_QLocalSocket::listen()
         QVERIFY(server.errorString().isEmpty());
         QCOMPARE(server.serverError(), QAbstractSocket::UnknownSocketError);
         // already isListening
-        QTest::ignoreMessage(QtWarningMsg, "QLocalServer::listen() called when already listening");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QLocalServer::listen() called when already listening");
         QVERIFY(!server.listen(name));
         QVERIFY(server.socketDescriptor() != -1);
     } else {
@@ -347,16 +347,16 @@ void tst_QLocalSocket::listen()
 
 void tst_QLocalSocket::listenAndConnect_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("canListen");
-    QTest::addColumn<int>("connections");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<bool>("canListen");
+    BOBUIest::addColumn<int>("connections");
     for (int i = 0; i < 3; ++i) {
         int connections = i;
         if (i == 2)
             connections = 5;
         const QByteArray iB = QByteArray::number(i);
-        QTest::newRow(("null " + iB).constData()) << QString() << false << connections;
-        QTest::newRow(("tst_localsocket " + iB).constData()) << "tst_localsocket" << true << connections;
+        BOBUIest::newRow(("null " + iB).constData()) << QString() << false << connections;
+        BOBUIest::newRow(("tst_localsocket " + iB).constData()) << "tst_localsocket" << true << connections;
     }
 }
 
@@ -368,7 +368,7 @@ void tst_QLocalSocket::listenAndConnect()
     QFETCH(QString, name);
     QFETCH(bool, canListen);
     QCOMPARE(server.listen(name), canListen);
-    QTRY_COMPARE(server.serverError(),
+    BOBUIRY_COMPARE(server.serverError(),
                  canListen ? QAbstractSocket::UnknownSocketError : QAbstractSocket::HostNotFoundError);
 
     // test creating connection(s)
@@ -384,8 +384,8 @@ void tst_QLocalSocket::listenAndConnect()
         QSignalSpy spyReadyRead(socket, SIGNAL(readyRead()));
 
         socket->connectToServer(name);
-#if defined(QT_LOCALSOCKET_TCP)
-        QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+        BOBUIest::qWait(250);
 #endif
 
         QCOMPARE(socket->serverName(), name);
@@ -417,7 +417,7 @@ void tst_QLocalSocket::listenAndConnect()
         QCOMPARE(socket->waitForConnected(0), canListen);
         QCOMPARE(socket->waitForReadyRead(0), false);
 
-        QTRY_COMPARE(spyConnected.size(), canListen ? 1 : 0);
+        BOBUIRY_COMPARE(spyConnected.size(), canListen ? 1 : 0);
         QCOMPARE(spyDisconnected.size(), 0);
 
         // error signals
@@ -453,7 +453,7 @@ void tst_QLocalSocket::listenAndConnect()
             QCOMPARE(server.serverName(), name);
             QVERIFY(server.fullServerName().contains(name));
             QVERIFY(server.nextPendingConnection() != (QLocalSocket*)0);
-            QTRY_COMPARE(server.hits.size(), i + 1);
+            BOBUIRY_COMPARE(server.hits.size(), i + 1);
             QCOMPARE(spyNewConnection.size(), i + 1);
             QVERIFY(server.errorString().isEmpty());
             QCOMPARE(server.serverError(), QAbstractSocket::UnknownSocketError);
@@ -488,8 +488,8 @@ void tst_QLocalSocket::connectWithOpen()
     bool timedOut = true;
     QVERIFY(server.waitForNewConnection(3000, &timedOut));
 
-#if defined(QT_LOCALSOCKET_TCP)
-    QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+    BOBUIest::qWait(250);
 #endif
     QVERIFY(!timedOut);
 
@@ -502,13 +502,13 @@ void tst_QLocalSocket::connectWithOpen()
 void tst_QLocalSocket::listenAndConnectAbstractNamespaceTrailingZeros_data()
 {
 #ifdef Q_OS_LINUX
-    QTest::addColumn<bool>("server_0");
-    QTest::addColumn<bool>("client_0");
-    QTest::addColumn<bool>("success");
-    QTest::newRow("srv0_cli0") << true << true << true;
-    QTest::newRow("srv_cli0") << false << true << false;
-    QTest::newRow("srv0_cli") << true << false << false;
-    QTest::newRow("srv_cli") << false << false << true;
+    BOBUIest::addColumn<bool>("server_0");
+    BOBUIest::addColumn<bool>("client_0");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::newRow("srv0_cli0") << true << true << true;
+    BOBUIest::newRow("srv_cli0") << false << true << false;
+    BOBUIest::newRow("srv0_cli") << true << false << false;
+    BOBUIest::newRow("srv_cli") << false << false << true;
 #else
     return;
 #endif
@@ -545,8 +545,8 @@ void tst_QLocalSocket::listenAndConnectAbstractNamespaceTrailingZeros()
     bool timedOut = true;
     QCOMPARE(server.waitForNewConnection(3000, &timedOut), success);
 
-#if defined(QT_LOCALSOCKET_TCP)
-    QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+    BOBUIest::qWait(250);
 #endif
     QCOMPARE(timedOut, expectedTimeOut);
 
@@ -559,14 +559,14 @@ void tst_QLocalSocket::listenAndConnectAbstractNamespaceTrailingZeros()
 
 void tst_QLocalSocket::listenAndConnectAbstractNamespace_data()
 {
-    QTest::addColumn<QLocalServer::SocketOption>("serverOption");
-    QTest::addColumn<QLocalSocket::SocketOption>("socketOption");
-    QTest::addColumn<bool>("success");
-    QTest::newRow("abs_abs") << QLocalServer::AbstractNamespaceOption << QLocalSocket::AbstractNamespaceOption << true;
-    QTest::newRow("reg_reg") << QLocalServer::NoOptions << QLocalSocket::NoOptions << true;
+    BOBUIest::addColumn<QLocalServer::SocketOption>("serverOption");
+    BOBUIest::addColumn<QLocalSocket::SocketOption>("socketOption");
+    BOBUIest::addColumn<bool>("success");
+    BOBUIest::newRow("abs_abs") << QLocalServer::AbstractNamespaceOption << QLocalSocket::AbstractNamespaceOption << true;
+    BOBUIest::newRow("reg_reg") << QLocalServer::NoOptions << QLocalSocket::NoOptions << true;
 #ifdef Q_OS_LINUX
-    QTest::newRow("reg_abs") << QLocalServer::UserAccessOption << QLocalSocket::AbstractNamespaceOption << false;
-    QTest::newRow("abs_reg") << QLocalServer::AbstractNamespaceOption << QLocalSocket::NoOptions << false;
+    BOBUIest::newRow("reg_abs") << QLocalServer::UserAccessOption << QLocalSocket::AbstractNamespaceOption << false;
+    BOBUIest::newRow("abs_reg") << QLocalServer::AbstractNamespaceOption << QLocalSocket::NoOptions << false;
 #endif
 }
 
@@ -589,8 +589,8 @@ void tst_QLocalSocket::listenAndConnectAbstractNamespace()
     bool timedOut = true;
     QCOMPARE(server.waitForNewConnection(3000, &timedOut), success);
 
-#if defined(QT_LOCALSOCKET_TCP)
-    QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+    BOBUIest::qWait(250);
 #endif
     QCOMPARE(timedOut, expectedTimeOut);
 
@@ -616,8 +616,8 @@ void tst_QLocalSocket::connectWithOldOpen()
     bool timedOut = true;
     QVERIFY(server.waitForNewConnection(3000, &timedOut));
 
-#if defined(QT_LOCALSOCKET_TCP)
-    QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+    BOBUIest::qWait(250);
 #endif
     QVERIFY(!timedOut);
 
@@ -627,11 +627,11 @@ void tst_QLocalSocket::connectWithOldOpen()
 
 void tst_QLocalSocket::sendData_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("canListen");
+    BOBUIest::addColumn<QString>("name");
+    BOBUIest::addColumn<bool>("canListen");
 
-    QTest::newRow("null") << QString() << false;
-    QTest::newRow("tst_localsocket") << "tst_localsocket" << true;
+    BOBUIest::newRow("null") << QString() << false;
+    BOBUIest::newRow("tst_localsocket") << "tst_localsocket" << true;
 }
 
 void tst_QLocalSocket::sendData()
@@ -658,8 +658,8 @@ void tst_QLocalSocket::sendData()
 
     QCOMPARE(server.waitForNewConnection(3000, &timedOut), canListen);
 
-#if defined(QT_LOCALSOCKET_TCP)
-    QTest::qWait(250);
+#if defined(BOBUI_LOCALSOCKET_TCP)
+    BOBUIest::qWait(250);
 #endif
     QVERIFY(!timedOut);
     QCOMPARE(spyConnected.size(), canListen ? 1 : 0);
@@ -673,9 +673,9 @@ void tst_QLocalSocket::sendData()
         QLocalSocket *serverSocket = server.nextPendingConnection();
         QVERIFY(serverSocket);
         QCOMPARE(serverSocket->state(), QLocalSocket::ConnectedState);
-        QTextStream out(serverSocket);
-        QTextStream in(&socket);
-        out << testLine << Qt::endl;
+        BOBUIextStream out(serverSocket);
+        BOBUIextStream in(&socket);
+        out << testLine << BobUI::endl;
         bool wrote = serverSocket->waitForBytesWritten(3000);
 
         if (!socket.canReadLine()) {
@@ -713,40 +713,40 @@ void tst_QLocalSocket::sendData()
 
 void tst_QLocalSocket::readLine_data()
 {
-    QTest::addColumn<ByteArrayList>("input");
-    QTest::addColumn<ByteArrayList>("output");
-    QTest::addColumn<int>("maxSize");
-    QTest::addColumn<bool>("wholeLinesOnly");
+    BOBUIest::addColumn<ByteArrayList>("input");
+    BOBUIest::addColumn<ByteArrayList>("output");
+    BOBUIest::addColumn<int>("maxSize");
+    BOBUIest::addColumn<bool>("wholeLinesOnly");
 
-    QTest::newRow("0") << ByteArrayList{ "\n", "A", "\n", "B", "B", "A", "\n" }
+    BOBUIest::newRow("0") << ByteArrayList{ "\n", "A", "\n", "B", "B", "A", "\n" }
                        << ByteArrayList{ "\n", "", "", "A\n", "", "", "", "",
                                          "BBA\n", "", "" }
                        << 80 << true;
-    QTest::newRow("1") << ByteArrayList{ "A", "\n", "\n", "B", "B", "\n", "A", "A" }
+    BOBUIest::newRow("1") << ByteArrayList{ "A", "\n", "\n", "B", "B", "\n", "A", "A" }
                        << ByteArrayList{ "", "A\n", "", "\n", "", "", "", "BB\n",
                                          "", "", "", "AA", "" }
                        << 80 << true;
 
-    QTest::newRow("2") << ByteArrayList{ "\nA\nA\n" }
+    BOBUIest::newRow("2") << ByteArrayList{ "\nA\nA\n" }
                        << ByteArrayList{ "\n", "A", "\n", "A", "\n", "", "" }
                        << 1 << false;
-    QTest::newRow("3") << ByteArrayList{ "A\n\n\nA", "A" }
+    BOBUIest::newRow("3") << ByteArrayList{ "A\n\n\nA", "A" }
                        << ByteArrayList{ "A\n", "\n", "\n", "A", "", "A", "", "" }
                        << 2 << false;
 
-    QTest::newRow("4") << ByteArrayList{ "He", "ll", "o\n", " \n", "wo", "rl", "d", "!\n" }
+    BOBUIest::newRow("4") << ByteArrayList{ "He", "ll", "o\n", " \n", "wo", "rl", "d", "!\n" }
                        << ByteArrayList{ "", "Hel", "", "lo\n", "", " \n", "", "", "wor",
                                          "", "", "ld!", "\n", "", "" }
                        << 3 << true;
-    QTest::newRow("5") << ByteArrayList{ "Hello\n world!" }
+    BOBUIest::newRow("5") << ByteArrayList{ "Hello\n world!" }
                        << ByteArrayList{ "Hello\n", "", " world!", "" }
                        << 80 << true;
 
-    QTest::newRow("6") << ByteArrayList{ "\nHello", " \n", " wor", "ld!\n" }
+    BOBUIest::newRow("6") << ByteArrayList{ "\nHello", " \n", " wor", "ld!\n" }
                        << ByteArrayList{ "\n", "Hell", "o", "", " \n", "", " wor", "",
                                          "ld!\n", "", "" }
                        << 4 << false;
-    QTest::newRow("7") << ByteArrayList{ "Hello\n world", "!" }
+    BOBUIest::newRow("7") << ByteArrayList{ "Hello\n world", "!" }
                        << ByteArrayList{ "Hello\n", " world", "", "!", "", "" }
                        << 80 << false;
 }
@@ -788,7 +788,7 @@ void tst_QLocalSocket::readLine()
         while (!wholeLinesOnly || (client.bytesAvailable() >= qint64(maxSize))
                || client.canReadLine() || (pos == input.size())) {
             const bool chunkEmptied = (client.bytesAvailable() == 0);
-            QByteArray line(maxSize, Qt::Uninitialized);
+            QByteArray line(maxSize, BobUI::Uninitialized);
 
             const qint64 readResult = client.readLine(line.data(), maxSize + 1);
             if (chunkEmptied) {
@@ -810,19 +810,19 @@ void tst_QLocalSocket::readLine()
 
 void tst_QLocalSocket::skip_data()
 {
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("read");
-    QTest::addColumn<int>("skip");
-    QTest::addColumn<int>("skipped");
-    QTest::addColumn<char>("expect");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("read");
+    BOBUIest::addColumn<int>("skip");
+    BOBUIest::addColumn<int>("skipped");
+    BOBUIest::addColumn<char>("expect");
 
     QByteArray bigData;
     bigData.fill('a', 20000);
     bigData[10001] = 'x';
 
-    QTest::newRow("small_data") << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
-    QTest::newRow("big_data") << bigData << 1 << 10000 << 10000 << 'x';
-    QTest::newRow("beyond_the_end") << bigData << 1 << 20000 << 19999 << '\0';
+    BOBUIest::newRow("small_data") << QByteArray("abcdefghij") << 3 << 6 << 6 << 'j';
+    BOBUIest::newRow("big_data") << bigData << 1 << 10000 << 10000 << 'x';
+    BOBUIest::newRow("beyond_the_end") << bigData << 1 << 20000 << 19999 << '\0';
 }
 
 void tst_QLocalSocket::skip()
@@ -1003,7 +1003,7 @@ void tst_QLocalSocket::simpleCommandProtocol2()
         const QVariant command(QRect(readCounter, i, 10, 10));
         writtenBlockSize = writeCommand(command, &localSocketWrite, i) - sizeof(qint64);
         if (i % 10 == 0)
-            QTest::qWait(1);
+            BOBUIest::qWait(1);
     }
 
     localSocketWrite.abort();
@@ -1020,7 +1020,7 @@ void tst_QLocalSocket::fullPath()
 {
     CrashSafeLocalServer server;
     QString name = "qlocalsocket_pathtest";
-#if defined(QT_LOCALSOCKET_TCP)
+#if defined(BOBUI_LOCALSOCKET_TCP)
     QString path = "QLocalServer";
 #elif defined(Q_OS_WIN)
     QString path = "\\\\.\\pipe\\";
@@ -1038,8 +1038,8 @@ void tst_QLocalSocket::fullPath()
     QCOMPARE(socket.serverName(), serverName);
     QCOMPARE(socket.fullServerName(), serverName);
     socket.disconnectFromServer();
-#ifdef QT_LOCALSOCKET_TCP
-    QTest::qWait(250);
+#ifdef BOBUI_LOCALSOCKET_TCP
+    BOBUIest::qWait(250);
 #endif
     QCOMPARE(socket.serverName(), QString());
     QCOMPARE(socket.fullServerName(), QString());
@@ -1047,10 +1047,10 @@ void tst_QLocalSocket::fullPath()
 
 void tst_QLocalSocket::hitMaximumConnections_data()
 {
-    QTest::addColumn<int>("max");
-    QTest::newRow("none") << 0;
-    QTest::newRow("1") << 1;
-    QTest::newRow("3") << 3;
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::newRow("none") << 0;
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("3") << 3;
 }
 
 void tst_QLocalSocket::hitMaximumConnections()
@@ -1085,7 +1085,7 @@ void tst_QLocalSocket::setSocketDescriptor()
     QVERIFY((socket.openMode() & QIODevice::Append) != 0);
 }
 
-class Client : public QThread
+class Client : public BOBUIhread
 {
 
 public:
@@ -1101,13 +1101,13 @@ public:
         QCOMPARE(spyReadyRead.size(), 0);
         socket.waitForReadyRead();
         QCOMPARE(spyReadyRead.size(), 1);
-        QTextStream in(&socket);
+        BOBUIextStream in(&socket);
         QCOMPARE(in.readLine(), testLine);
         socket.close();
     }
 };
 
-class Server : public QThread
+class Server : public BOBUIhread
 {
 
 public:
@@ -1134,8 +1134,8 @@ public:
             QVERIFY(!timedOut);
             QLocalSocket *serverSocket = server.nextPendingConnection();
             QVERIFY(serverSocket);
-            QTextStream out(serverSocket);
-            out << testLine << Qt::endl;
+            BOBUIextStream out(serverSocket);
+            out << testLine << BobUI::endl;
             QCOMPARE(serverSocket->state(), QLocalSocket::ConnectedState);
             QVERIFY2(serverSocket->waitForBytesWritten(), serverSocket->errorString().toLatin1().constData());
             QCOMPARE(serverSocket->errorString(), QString("Unknown error"));
@@ -1148,12 +1148,12 @@ public:
 
 void tst_QLocalSocket::threadedConnection_data()
 {
-    QTest::addColumn<int>("threads");
-    QTest::newRow("1 client") << 1;
-    QTest::newRow("2 clients") << 2;
-    QTest::newRow("5 clients") << 5;
-    QTest::newRow("10 clients") << 10;
-    QTest::newRow("20 clients") << 20;
+    BOBUIest::addColumn<int>("threads");
+    BOBUIest::newRow("1 client") << 1;
+    BOBUIest::newRow("2 clients") << 2;
+    BOBUIest::newRow("5 clients") << 5;
+    BOBUIest::newRow("10 clients") << 10;
+    BOBUIest::newRow("20 clients") << 20;
 }
 
 void tst_QLocalSocket::threadedConnection()
@@ -1181,14 +1181,14 @@ void tst_QLocalSocket::threadedConnection()
 
 void tst_QLocalSocket::processConnection_data()
 {
-    QTest::addColumn<int>("processes");
-    QTest::newRow("1 client") << 1;
-    QTest::newRow("2 clients") << 2;
-    QTest::newRow("5 clients") << 5;
-    QTest::newRow("30 clients") << 30;
+    BOBUIest::addColumn<int>("processes");
+    BOBUIest::newRow("1 client") << 1;
+    BOBUIest::newRow("2 clients") << 2;
+    BOBUIest::newRow("5 clients") << 5;
+    BOBUIest::newRow("30 clients") << 30;
 }
 
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 class ProcessOutputDumper
 {
 public:
@@ -1217,7 +1217,7 @@ private:
  */
 void tst_QLocalSocket::processConnection()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
 
@@ -1339,7 +1339,7 @@ void tst_QLocalSocket::waitForReadyReadOnDisconnected()
 #ifdef Q_OS_WIN
     // Ensure that the asynchronously delivered close notification is
     // already queued up before we consume the data.
-    QTest::qSleep(250);
+    BOBUIest::qSleep(250);
 #endif
 
     QElapsedTimer timer;
@@ -1495,9 +1495,9 @@ void tst_QLocalSocket::writeOnlySocket()
 
 void tst_QLocalSocket::writeToClientAndDisconnect_data()
 {
-    QTest::addColumn<int>("chunks");
-    QTest::newRow("one chunk") << 1;
-    QTest::newRow("several chunks") << 20;
+    BOBUIest::addColumn<int>("chunks");
+    BOBUIest::newRow("one chunk") << 1;
+    BOBUIest::newRow("several chunks") << 20;
 }
 
 void tst_QLocalSocket::writeToClientAndDisconnect()
@@ -1548,7 +1548,7 @@ void tst_QLocalSocket::writeToDisconnected()
 
 #ifdef Q_OS_WIN
     // Ensure the asynchronous write operation is finished.
-    QTest::qSleep(250);
+    BOBUIest::qSleep(250);
 #endif
 
     QCOMPARE(client.bytesToWrite(), qint64(1));
@@ -1561,11 +1561,11 @@ void tst_QLocalSocket::debug()
 {
     // Make sure this compiles
     if (QLoggingCategory::defaultCategory()->isDebugEnabled())
-        QTest::ignoreMessage(QtDebugMsg, "QLocalSocket::ConnectionRefusedError QLocalSocket::UnconnectedState");
+        BOBUIest::ignoreMessage(BobUIDebugMsg, "QLocalSocket::ConnectionRefusedError QLocalSocket::UnconnectedState");
     qDebug() << QLocalSocket::ConnectionRefusedError << QLocalSocket::UnconnectedState;
 }
 
-class WriteThread : public QThread
+class WriteThread : public BOBUIhread
 {
 Q_OBJECT
 public:
@@ -1577,7 +1577,7 @@ public:
         if (!socket.waitForConnected(3000))
             exec();
         connect(&socket, SIGNAL(bytesWritten(qint64)),
-        this, SLOT(bytesWritten(qint64)), Qt::QueuedConnection);
+        this, SLOT(bytesWritten(qint64)), BobUI::QueuedConnection);
         socket.write("testing\n");
         exec();
     }
@@ -1657,7 +1657,7 @@ void tst_QLocalSocket::asyncDisconnectNotify()
     QLocalSocket* serverSocket = server.nextPendingConnection();
     QVERIFY(serverSocket);
     delete serverSocket;
-    QTRY_VERIFY(!disconnectedSpy.isEmpty());
+    BOBUIRY_VERIFY(!disconnectedSpy.isEmpty());
     QCOMPARE(readChannelFinishedSpy.size(), 1);
 }
 
@@ -1667,25 +1667,25 @@ void tst_QLocalSocket::verifySocketOptions_data()
     if (::geteuid() == 0)
         QSKIP("Running this test as root doesn't make sense");
 
-    QTest::addColumn<QString>("service");
-    QTest::addColumn<QLocalServer::SocketOption>("opts");
-    QTest::addColumn<QFile::Permissions>("perms");
+    BOBUIest::addColumn<QString>("service");
+    BOBUIest::addColumn<QLocalServer::SocketOption>("opts");
+    BOBUIest::addColumn<QFile::Permissions>("perms");
 
     QFile::Permissions p = QFile::ExeOwner|QFile::WriteOwner|QFile::ReadOwner |
                            QFile::ExeUser|QFile::WriteUser|QFile::ReadUser;
-    QTest::newRow("user")  << "userPerms"  << QLocalServer::UserAccessOption << p;
+    BOBUIest::newRow("user")  << "userPerms"  << QLocalServer::UserAccessOption << p;
 
     p = QFile::ExeGroup|QFile::WriteGroup|QFile::ReadGroup;
-    QTest::newRow("group") << "groupPerms" << QLocalServer::GroupAccessOption << p;
+    BOBUIest::newRow("group") << "groupPerms" << QLocalServer::GroupAccessOption << p;
 
     p = QFile::ExeOther|QFile::WriteOther|QFile::ReadOther;
-    QTest::newRow("other") << "otherPerms" << QLocalServer::OtherAccessOption << p;
+    BOBUIest::newRow("other") << "otherPerms" << QLocalServer::OtherAccessOption << p;
 
     p = QFile::ExeOwner|QFile::WriteOwner|QFile::ReadOwner|
         QFile::ExeUser|QFile::WriteUser|QFile::ReadUser |
         QFile::ExeGroup|QFile::WriteGroup|QFile::ReadGroup|
         QFile::ExeOther|QFile::WriteOther|QFile::ReadOther;
-    QTest::newRow("all")   << "worldPerms" << QLocalServer::WorldAccessOption << p;
+    BOBUIest::newRow("all")   << "worldPerms" << QLocalServer::WorldAccessOption << p;
 #endif
 }
 
@@ -1793,16 +1793,16 @@ void tst_QLocalSocket::verifyListenWithDescriptor()
 void tst_QLocalSocket::verifyListenWithDescriptor_data()
 {
 #ifdef Q_OS_UNIX
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<bool>("abstract");
-    QTest::addColumn<bool>("bound");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<bool>("abstract");
+    BOBUIest::addColumn<bool>("bound");
 
-    QTest::newRow("normal") << QDir::tempPath() + QLatin1String("/testsocket") << false << true;
+    BOBUIest::newRow("normal") << QDir::tempPath() + QLatin1String("/testsocket") << false << true;
 #if defined(Q_OS_LINUX) || defined(Q_OS_QNX)
-    QTest::newRow("abstract") << QString::fromLatin1("abstractsocketname") << true << true;
-    QTest::newRow("abstractwithslash") << QString::fromLatin1("abstractsocketwitha/inthename") << true << true;
+    BOBUIest::newRow("abstract") << QString::fromLatin1("abstractsocketname") << true << true;
+    BOBUIest::newRow("abstractwithslash") << QString::fromLatin1("abstractsocketwitha/inthename") << true << true;
 #endif
-    QTest::newRow("no path") << QString::fromLatin1("/invalid/no path name specified") << true << false;
+    BOBUIest::newRow("no path") << QString::fromLatin1("/invalid/no path name specified") << true << false;
 
 #endif
 
@@ -1812,7 +1812,7 @@ void tst_QLocalSocket::serverBindingsAndProperties()
 {
     CrashSafeLocalServer server;
 
-    QTestPrivate::testReadWritePropertyBasics(
+    BOBUIestPrivate::testReadWritePropertyBasics(
             server, QLocalServer::SocketOptions{QLocalServer::GroupAccessOption},
             QLocalServer::SocketOptions{QLocalServer::OtherAccessOption}, "socketOptions");
 }
@@ -1821,11 +1821,11 @@ void tst_QLocalSocket::socketBindings()
 {
     QLocalSocket socket;
 
-    QTestPrivate::testReadWritePropertyBasics(
+    BOBUIestPrivate::testReadWritePropertyBasics(
             socket, QLocalSocket::SocketOptions{QLocalSocket::AbstractNamespaceOption},
             QLocalSocket::SocketOptions{QLocalSocket::NoOptions}, "socketOptions");
 }
 
-QTEST_MAIN(tst_QLocalSocket)
+BOBUIEST_MAIN(tst_QLocalSocket)
 #include "tst_qlocalsocket.moc"
 

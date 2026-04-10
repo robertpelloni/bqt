@@ -1,20 +1,20 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef CLIENT_H
 #define CLIENT_H
 
 #include <QDataStream>
 #include <QDialog>
-#include <QTcpSocket>
+#include <BOBUIcpSocket>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QComboBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-class QTcpSocket;
-QT_END_NAMESPACE
+class BOBUIcpSocket;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Client : public QDialog
@@ -36,7 +36,7 @@ private:
     QLabel *statusLabel = nullptr;
     QPushButton *getFortuneButton = nullptr;
 
-    QTcpSocket *tcpSocket = nullptr;
+    BOBUIcpSocket *tcpSocket = nullptr;
     QDataStream in;
     QString currentFortune;
 };

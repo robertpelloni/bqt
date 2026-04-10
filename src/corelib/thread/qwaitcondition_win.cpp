@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwaitcondition.h"
 #include "qdeadlinetimer.h"
@@ -13,9 +13,9 @@
 #define Q_MUTEX_T void *
 #include <private/qmutex_p.h>
 #include <private/qreadwritelock_p.h>
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //***********************************************************************
 // QWaitConditionPrivate
@@ -210,4 +210,4 @@ void QWaitCondition::wakeAll()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

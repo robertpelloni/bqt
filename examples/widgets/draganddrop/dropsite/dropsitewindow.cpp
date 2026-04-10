@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QHeaderView>
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <BOBUIableWidget>
+#include <BOBUIableWidgetItem>
 #include <QVBoxLayout>
 
 #include <QClipboard>
@@ -16,7 +16,7 @@
 #include "droparea.h"
 #include "dropsitewindow.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [constructor part1]
 DropSiteWindow::DropSiteWindow()
@@ -35,7 +35,7 @@ DropSiteWindow::DropSiteWindow()
 //! [constructor part2]
 
 //! [constructor part3]
-    formatsTable = new QTableWidget;
+    formatsTable = new BOBUIableWidget;
     formatsTable->setColumnCount(2);
     formatsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     formatsTable->setHorizontalHeaderLabels({tr("Format"),  tr("Content")});
@@ -50,7 +50,7 @@ DropSiteWindow::DropSiteWindow()
     buttonBox = new QDialogButtonBox;
     buttonBox->addButton(clearButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(copyButton, QDialogButtonBox::ActionRole);
-#if !QT_CONFIG(clipboard)
+#if !BOBUI_CONFIG(clipboard)
     copyButton->setVisible(false);
 #endif
 
@@ -85,9 +85,9 @@ void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
 //! [updateFormatsTable() part2]
     const QStringList formats = mimeData->formats();
     for (const QString &format : formats) {
-        QTableWidgetItem *formatItem = new QTableWidgetItem(format);
-        formatItem->setFlags(Qt::ItemIsEnabled);
-        formatItem->setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
+        BOBUIableWidgetItem *formatItem = new BOBUIableWidgetItem(format);
+        formatItem->setFlags(BobUI::ItemIsEnabled);
+        formatItem->setTextAlignment(BobUI::AlignTop | BobUI::AlignLeft);
 //! [updateFormatsTable() part2]
 
 //! [updateFormatsTable() part3]
@@ -113,12 +113,12 @@ void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
 //! [updateFormatsTable() part4]
         int row = formatsTable->rowCount();
         formatsTable->insertRow(row);
-        formatsTable->setItem(row, 0, new QTableWidgetItem(format));
-        formatsTable->setItem(row, 1, new QTableWidgetItem(text));
+        formatsTable->setItem(row, 0, new BOBUIableWidgetItem(format));
+        formatsTable->setItem(row, 1, new BOBUIableWidgetItem(text));
     }
 
     formatsTable->resizeColumnToContents(0);
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     copyButton->setEnabled(formatsTable->rowCount() > 0);
 #endif
 }
@@ -126,7 +126,7 @@ void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
 
 void DropSiteWindow::copy()
 {
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     QString text;
     for (int row = 0, rowCount = formatsTable->rowCount(); row < rowCount; ++row)
         text += formatsTable->item(row, 0)->text() + ": " + formatsTable->item(row, 1)->text() + '\n';

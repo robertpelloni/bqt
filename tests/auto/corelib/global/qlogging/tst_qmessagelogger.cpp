@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qlogging.h>
 #include <qloggingcategory.h>
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
-Q_LOGGING_CATEGORY(debugTestCategory, "debug", QtDebugMsg)
-Q_LOGGING_CATEGORY(infoTestCategory, "info", QtInfoMsg)
-Q_LOGGING_CATEGORY(warningTestCategory, "warning", QtWarningMsg)
-Q_LOGGING_CATEGORY(criticalTestCategory, "critical", QtCriticalMsg)
+Q_LOGGING_CATEGORY(debugTestCategory, "debug", BobUIDebugMsg)
+Q_LOGGING_CATEGORY(infoTestCategory, "info", BobUIInfoMsg)
+Q_LOGGING_CATEGORY(warningTestCategory, "warning", BobUIWarningMsg)
+Q_LOGGING_CATEGORY(criticalTestCategory, "critical", BobUICriticalMsg)
 
 struct LoggerMessageInfo
 {
-    QtMsgType messageType { QtFatalMsg };
+    BobUIMsgType messageType { BobUIFatalMsg };
     QString message;
     const char *file { nullptr };
     int line { 0 };
@@ -22,7 +22,7 @@ struct LoggerMessageInfo
 
 LoggerMessageInfo messageInfo;
 
-static void customMessageHandler(QtMsgType type, const QMessageLogContext &context,
+static void customMessageHandler(BobUIMsgType type, const QMessageLogContext &context,
                                  const QString &message)
 {
     messageInfo.messageType = type;
@@ -54,29 +54,29 @@ private:
 
 void tst_QMessageLogger::initTestCase_data()
 {
-    QTest::addColumn<QtMsgType>("messageType");
-    QTest::addColumn<QByteArray>("categoryName");
-    QTest::addColumn<QByteArray>("messageText");
-    QTest::addColumn<bool>("useDebugStream");
+    BOBUIest::addColumn<BobUIMsgType>("messageType");
+    BOBUIest::addColumn<QByteArray>("categoryName");
+    BOBUIest::addColumn<QByteArray>("messageText");
+    BOBUIest::addColumn<bool>("useDebugStream");
 
-    // not testing QtFatalMsg, as it terminates the application
-    QTest::newRow("debug") << QtDebugMsg << QByteArray("categoryDebug")
+    // not testing BobUIFatalMsg, as it terminates the application
+    BOBUIest::newRow("debug") << BobUIDebugMsg << QByteArray("categoryDebug")
                            << QByteArray("debug message") << false;
-    QTest::newRow("info") << QtInfoMsg << QByteArray("categoryInfo") << QByteArray("info message")
+    BOBUIest::newRow("info") << BobUIInfoMsg << QByteArray("categoryInfo") << QByteArray("info message")
                           << false;
-    QTest::newRow("warning") << QtWarningMsg << QByteArray("categoryWarning")
+    BOBUIest::newRow("warning") << BobUIWarningMsg << QByteArray("categoryWarning")
                              << QByteArray("warning message") << false;
-    QTest::newRow("critical") << QtCriticalMsg << QByteArray("categoryCritical")
+    BOBUIest::newRow("critical") << BobUICriticalMsg << QByteArray("categoryCritical")
                               << QByteArray("critical message") << false;
 
-#ifndef QT_NO_DEBUG_STREAM
-    QTest::newRow("stream debug") << QtDebugMsg << QByteArray("categoryDebug")
+#ifndef BOBUI_NO_DEBUG_STREAM
+    BOBUIest::newRow("stream debug") << BobUIDebugMsg << QByteArray("categoryDebug")
                                   << QByteArray("debug message") << true;
-    QTest::newRow("stream info") << QtInfoMsg << QByteArray("categoryInfo")
+    BOBUIest::newRow("stream info") << BobUIInfoMsg << QByteArray("categoryInfo")
                                  << QByteArray("info message") << true;
-    QTest::newRow("stream warning") << QtWarningMsg << QByteArray("categoryWarning")
+    BOBUIest::newRow("stream warning") << BobUIWarningMsg << QByteArray("categoryWarning")
                                     << QByteArray("warning message") << true;
-    QTest::newRow("stream critical") << QtCriticalMsg << QByteArray("categoryCritical")
+    BOBUIest::newRow("stream critical") << BobUICriticalMsg << QByteArray("categoryCritical")
                                      << QByteArray("critical message") << true;
 #endif
 }
@@ -88,8 +88,8 @@ void tst_QMessageLogger::init()
 
 void tst_QMessageLogger::cleanup()
 {
-    qInstallMessageHandler((QtMessageHandler)0);
-    messageInfo.messageType = QtFatalMsg;
+    qInstallMessageHandler((BobUIMessageHandler)0);
+    messageInfo.messageType = BobUIFatalMsg;
     messageInfo.message.clear();
     messageInfo.file = nullptr;
     messageInfo.line = 0;
@@ -99,25 +99,25 @@ void tst_QMessageLogger::cleanup()
 
 void tst_QMessageLogger::logMessage()
 {
-    const int line = QT_MESSAGELOG_LINE;
-    QMessageLogger logger(QT_MESSAGELOG_FILE, line, QT_MESSAGELOG_FUNC);
+    const int line = BOBUI_MESSAGELOG_LINE;
+    QMessageLogger logger(BOBUI_MESSAGELOG_FILE, line, BOBUI_MESSAGELOG_FUNC);
 
-    QFETCH_GLOBAL(QtMsgType, messageType);
+    QFETCH_GLOBAL(BobUIMsgType, messageType);
     QFETCH_GLOBAL(QByteArray, messageText);
     QFETCH_GLOBAL(bool, useDebugStream);
     if (useDebugStream) {
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug().noquote() << messageText;
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info().noquote() << messageText;
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning().noquote() << messageText;
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical().noquote() << messageText;
             break;
         default:
@@ -125,20 +125,20 @@ void tst_QMessageLogger::logMessage()
             break;
         }
 #else
-        QSKIP("Qt debug stream disabled");
+        QSKIP("BobUI debug stream disabled");
 #endif
     } else {
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug("%s", messageText.constData());
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info("%s", messageText.constData());
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning("%s", messageText.constData());
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical("%s", messageText.constData());
             break;
         default:
@@ -166,29 +166,29 @@ void tst_QMessageLogger::logMessageWithLoggingCategoryDisabled()
 
 void tst_QMessageLogger::logMessageWithCategoryFunction()
 {
-    const int line = QT_MESSAGELOG_LINE;
-    QMessageLogger logger(QT_MESSAGELOG_FILE, line, QT_MESSAGELOG_FUNC);
+    const int line = BOBUI_MESSAGELOG_LINE;
+    QMessageLogger logger(BOBUI_MESSAGELOG_FILE, line, BOBUI_MESSAGELOG_FUNC);
 
     const QLoggingCategory *category = nullptr;
-    QFETCH_GLOBAL(QtMsgType, messageType);
+    QFETCH_GLOBAL(BobUIMsgType, messageType);
     QFETCH_GLOBAL(QByteArray, messageText);
     QFETCH_GLOBAL(bool, useDebugStream);
     if (useDebugStream) {
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug(debugTestCategory()).noquote() << messageText;
             category = &debugTestCategory();
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info(infoTestCategory()).noquote() << messageText;
             category = &infoTestCategory();
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning(warningTestCategory()).noquote() << messageText;
             category = &warningTestCategory();
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical(criticalTestCategory()).noquote() << messageText;
             category = &criticalTestCategory();
             break;
@@ -197,23 +197,23 @@ void tst_QMessageLogger::logMessageWithCategoryFunction()
             break;
         }
 #else
-        QSKIP("Qt debug stream disabled");
+        QSKIP("BobUI debug stream disabled");
 #endif
     } else {
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug(debugTestCategory(), "%s", messageText.constData());
             category = &debugTestCategory();
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info(infoTestCategory(), "%s", messageText.constData());
             category = &infoTestCategory();
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning(warningTestCategory(), "%s", messageText.constData());
             category = &warningTestCategory();
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical(criticalTestCategory(), "%s", messageText.constData());
             category = &criticalTestCategory();
             break;
@@ -233,23 +233,23 @@ void tst_QMessageLogger::logMessageWithCategoryFunction()
 
 void tst_QMessageLogger::logMessageWithNoDebug()
 {
-    const int line = QT_MESSAGELOG_LINE;
-    QMessageLogger logger(QT_MESSAGELOG_FILE, line, QT_MESSAGELOG_FUNC);
+    const int line = BOBUI_MESSAGELOG_LINE;
+    QMessageLogger logger(BOBUI_MESSAGELOG_FILE, line, BOBUI_MESSAGELOG_FUNC);
 
     QFETCH_GLOBAL(QByteArray, messageText);
     QFETCH_GLOBAL(bool, useDebugStream);
     if (useDebugStream) {
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         logger.noDebug().noquote() << messageText;
 #else
-        QSKIP("Qt debug stream disabled");
+        QSKIP("BobUI debug stream disabled");
 #endif
     } else {
         logger.noDebug("%s", messageText.constData());
     }
 
     // the callback was not called
-    QVERIFY(messageInfo.messageType == QtFatalMsg);
+    QVERIFY(messageInfo.messageType == BobUIFatalMsg);
     QVERIFY(messageInfo.message.isEmpty());
     QVERIFY(messageInfo.file == nullptr);
     QVERIFY(messageInfo.line == 0);
@@ -259,30 +259,30 @@ void tst_QMessageLogger::logMessageWithNoDebug()
 
 void tst_QMessageLogger::logWithLoggingCategoryHelper(bool messageTypeEnabled)
 {
-    QFETCH_GLOBAL(QtMsgType, messageType);
+    QFETCH_GLOBAL(BobUIMsgType, messageType);
     QFETCH_GLOBAL(QByteArray, categoryName);
     QLoggingCategory category(categoryName.constData(), messageType);
     if (!messageTypeEnabled)
         category.setEnabled(messageType, false);
 
-    const int line = QT_MESSAGELOG_LINE;
-    QMessageLogger logger(QT_MESSAGELOG_FILE, line, QT_MESSAGELOG_FUNC);
+    const int line = BOBUI_MESSAGELOG_LINE;
+    QMessageLogger logger(BOBUI_MESSAGELOG_FILE, line, BOBUI_MESSAGELOG_FUNC);
 
     QFETCH_GLOBAL(QByteArray, messageText);
     QFETCH_GLOBAL(bool, useDebugStream);
     if (useDebugStream) {
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug(category).noquote() << messageText;
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info(category).noquote() << messageText;
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning(category).noquote() << messageText;
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical(category).noquote() << messageText;
             break;
         default:
@@ -290,20 +290,20 @@ void tst_QMessageLogger::logWithLoggingCategoryHelper(bool messageTypeEnabled)
             break;
         }
 #else
-        QSKIP("Qt debug stream disabled");
+        QSKIP("BobUI debug stream disabled");
 #endif
     } else {
         switch (messageType) {
-        case QtDebugMsg:
+        case BobUIDebugMsg:
             logger.debug(category, "%s", messageText.constData());
             break;
-        case QtInfoMsg:
+        case BobUIInfoMsg:
             logger.info(category, "%s", messageText.constData());
             break;
-        case QtWarningMsg:
+        case BobUIWarningMsg:
             logger.warning(category, "%s", messageText.constData());
             break;
-        case QtCriticalMsg:
+        case BobUICriticalMsg:
             logger.critical(category, "%s", messageText.constData());
             break;
         default:
@@ -321,7 +321,7 @@ void tst_QMessageLogger::logWithLoggingCategoryHelper(bool messageTypeEnabled)
         QCOMPARE(messageInfo.category, categoryName);
     } else {
         // the callback was not called
-        QVERIFY(messageInfo.messageType == QtFatalMsg);
+        QVERIFY(messageInfo.messageType == BobUIFatalMsg);
         QVERIFY(messageInfo.message.isEmpty());
         QVERIFY(messageInfo.file == nullptr);
         QVERIFY(messageInfo.line == 0);
@@ -330,5 +330,5 @@ void tst_QMessageLogger::logWithLoggingCategoryHelper(bool messageTypeEnabled)
     }
 }
 
-QTEST_MAIN(tst_QMessageLogger)
+BOBUIEST_MAIN(tst_QMessageLogger)
 #include "tst_qmessagelogger.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QPAGESETUPDIALOG_UNIX_P_H
 #define QPAGESETUPDIALOG_UNIX_P_H
 
@@ -7,7 +7,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // to version without notice, or even be removed.
 //
@@ -15,18 +15,18 @@
 //
 //
 
-#include <QtPrintSupport/private/qtprintsupportglobal_p.h>
+#include <BobUIPrintSupport/private/bobuiprintsupportglobal_p.h>
 
 #include "qprinter.h"
 #include "kernel/qprint_p.h"
 
-#include <QtGui/qpagelayout.h>
+#include <BobUIGui/qpagelayout.h>
 
 #include <ui_qpagesetupwidget.h>
 
-QT_REQUIRE_CONFIG(printdialog);
+BOBUI_REQUIRE_CONFIG(printdialog);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPrinter;
 class QPrintDevice;
@@ -43,7 +43,7 @@ public:
     void updateSavedValues();
     void revertToSavedValues();
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     bool hasPpdConflict() const;
 
 signals:
@@ -72,7 +72,7 @@ private:
     QPagePreview *m_pagePreview;
     QPrinter *m_printer;
     QPrintDevice *m_printDevice;
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     ppd_option_t *m_pageSizePpdOption;
 #endif
     QPrinter::OutputFormat m_outputFormat;
@@ -87,6 +87,6 @@ private:
     int m_realCustomPageSizeIndex;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

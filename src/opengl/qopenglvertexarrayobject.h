@@ -1,17 +1,17 @@
 // Copyright (C) 2014 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sean Harmer <sean.harmer@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLVERTEXARRAYOBJECT_H
 #define QOPENGLVERTEXARRAYOBJECT_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtCore/QObject>
-#include <QtGui/qopengl.h>
+#include <BobUICore/QObject>
+#include <BobUIGui/qopengl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLVertexArrayObjectPrivate;
 
@@ -68,7 +68,7 @@ private:
     QOpenGLVertexArrayObject(QOpenGLVertexArrayObjectPrivate &dd);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

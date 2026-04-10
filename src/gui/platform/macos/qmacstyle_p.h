@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMACSTYLE_P_H
 #define QMACSTYLE_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if defined(QT_WIDGETS_LIB) && defined(QT_QUICK_LIB)
-#  error "Cannot use QtGui Mac style with both Widgets and Quick"
+#if defined(BOBUI_WIDGETS_LIB) && defined(BOBUI_QUICK_LIB)
+#  error "Cannot use BobUIGui Mac style with both Widgets and Quick"
 #endif
 
-#if defined(QT_WIDGETS_LIB)
+#if defined(BOBUI_WIDGETS_LIB)
 #  define OPTIONAL_WIDGET_ARGUMENT , const QWidget *w = nullptr
 #  define FORWARD_OPTIONAL_WIDGET_ARGUMENT , w
 # else
@@ -31,7 +31,7 @@
 
 #include <AppKit/NSApplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     Helper class to ensure that the Mac style in Widgets and Quick
@@ -76,6 +76,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMACSTYLE_P_H

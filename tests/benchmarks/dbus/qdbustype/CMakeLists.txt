@@ -1,30 +1,30 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_qdbustype Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qdbustype
+bobui_internal_add_benchmark(tst_bench_qdbustype
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::DBusPrivate
-        Qt::Test
+        BobUI::CorePrivate
+        BobUI::DBusPrivate
+        BobUI::Test
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_bench_qdbustype CONDITION QT_FEATURE_dbus_linked
+bobui_internal_extend_target(tst_bench_qdbustype CONDITION BOBUI_FEATURE_dbus_linked
     DEFINES
-        QT_LINKED_LIBDBUS
+        BOBUI_LINKED_LIBDBUS
     LIBRARIES
         dbus-1
 )
 
-qt_internal_extend_target(tst_bench_qdbustype CONDITION NOT QT_FEATURE_dbus_linked
+bobui_internal_extend_target(tst_bench_qdbustype CONDITION NOT BOBUI_FEATURE_dbus_linked
     SOURCES
         ../../../../src/dbus/qdbus_symbols.cpp
 )

@@ -1,7 +1,7 @@
   <Environment>
-    <QtVersion>@INSERT_QT_VERSION_HERE@</QtVersion>
-    <QtBuild/>
-    <QTestVersion>@INSERT_QT_VERSION_HERE@</QTestVersion>
+    <BobUIVersion>@INSERT_BOBUI_VERSION_HERE@</BobUIVersion>
+    <BobUIBuild/>
+    <BOBUIestVersion>@INSERT_BOBUI_VERSION_HERE@</BOBUIestVersion>
   </Environment>
   <TestFunction name="initTestCase">
     <Incident type="pass" file="" line="0" />
@@ -38,17 +38,17 @@
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="stateHandlingPart2">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
       <Description><![CDATA[Not implemented beyond this point!]]></Description>
     </Incident>
     <Duration msecs="0"/>
   </TestFunction>
   <TestFunction name="deterministicEvents">
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
       <DataTag><![CDATA[first-run-true]]></DataTag>
       <Description><![CDATA[Not implemented!]]></Description>
     </Incident>
-    <Incident type="skip" file="qtbase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
+    <Incident type="skip" file="bobuibase/tests/auto/testlib/selftests/mouse/tst_mouse.cpp" line="0">
       <DataTag><![CDATA[first-run-false]]></DataTag>
       <Description><![CDATA[Not implemented!]]></Description>
     </Incident>

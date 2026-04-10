@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#if QT_CONFIG(dockwidget)
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#if BOBUI_CONFIG(dockwidget)
 #include <qdockwidget.h>
 #endif
 #include <qlayout.h>
@@ -14,49 +14,49 @@
 #include <qmenubar.h>
 #include <qstatusbar.h>
 #include <qstyle.h>
-#include <qtoolbar.h>
+#include <bobuioolbar.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
-#include <qtextedit.h>
+#include <bobuiextedit.h>
 #include <qstylehints.h>
 #include <qscreen.h>
 #include <private/qmainwindowlayout_p.h>
 #include <private/qdockarealayout_p.h>
-#include <private/qtoolbarlayout_p.h>
-#include <private/qtoolbarextension_p.h>
+#include <private/bobuioolbarlayout_p.h>
+#include <private/bobuioolbarextension_p.h>
 
-#if QT_CONFIG(tabbar)
-#include <qtabbar.h>
+#if BOBUI_CONFIG(tabbar)
+#include <bobuiabbar.h>
 #endif
 
 static uchar restoreData41[] = { 0x0, 0x0, 0x0, 0xff, 0x0, 0x0, 0x0, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0xfd, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x64, 0x0, 0x0, 0x1, 0x19, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x30, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x45, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x34, 0x1, 0x0, 0x0, 0x0, 0x49, 0x0, 0x0, 0x0, 0x40, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x38, 0x1, 0x0, 0x0, 0x0, 0x8d, 0x0, 0x0, 0x0, 0x43, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x32, 0x1, 0x0, 0x0, 0x0, 0xd4, 0x0, 0x0, 0x0, 0x45, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x64, 0x0, 0x0, 0x1, 0x19, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x45, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x35, 0x1, 0x0, 0x0, 0x0, 0x49, 0x0, 0x0, 0x0, 0x40, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x39, 0x1, 0x0, 0x0, 0x0, 0x8d, 0x0, 0x0, 0x0, 0x43, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x33, 0x1, 0x0, 0x0, 0x0, 0xd4, 0x0, 0x0, 0x0, 0x45, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2, 0x0, 0x0, 0x1, 0x89, 0x0, 0x0, 0x0, 0xe, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x32, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x5f, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x36, 0x1, 0x0, 0x0, 0x0, 0x63, 0x0, 0x0, 0x0, 0x61, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x30, 0x1, 0x0, 0x0, 0x0, 0xc8, 0x0, 0x0, 0x0, 0x5e, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x34, 0x1, 0x0, 0x0, 0x1, 0x2a, 0x0, 0x0, 0x0, 0x5f, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x1, 0x89, 0x0, 0x0, 0x0, 0xe, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x33, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x5f, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x37, 0x1, 0x0, 0x0, 0x0, 0x63, 0x0, 0x0, 0x0, 0x61, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x31, 0x1, 0x0, 0x0, 0x0, 0xc8, 0x0, 0x0, 0x0, 0x5e, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x35, 0x1, 0x0, 0x0, 0x1, 0x2a, 0x0, 0x0, 0x0, 0x5f, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0xc1, 0x0, 0x0, 0x1, 0x19};
 static uchar restoreData42[] = { 0x0, 0x0, 0x0, 0xff, 0x0, 0x0, 0x0, 0x0, 0xfc, 0x0, 0x0, 0x0, 0x0, 0xfd, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x24, 0x0, 0x0, 0x2, 0x2b, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x30, 0x1, 0x0, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x34, 0x1, 0x0, 0x0, 0x0, 0xb6, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x38, 0x1, 0x0, 0x0, 0x1, 0x42, 0x0, 0x0, 0x0, 0x87, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x32, 0x1, 0x0, 0x0, 0x1, 0xcd, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x98, 0x0, 0x0, 0x2, 0x2b, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x1, 0x0, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x35, 0x1, 0x0, 0x0, 0x0, 0xb6, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x39, 0x1, 0x0, 0x0, 0x1, 0x42, 0x0, 0x0, 0x0, 0x87, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x33, 0x1, 0x0, 0x0, 0x1, 0xcd, 0x0, 0x0, 0x0, 0x88, 0x0, 0x0, 0x0, 0x21, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2, 0x0, 0x0, 0x4, 0x4e, 0x0, 0x0, 0x0, 0x26, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x32, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x12, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x36, 0x1, 0x0, 0x0, 0x1, 0x16, 0x0, 0x0, 0x1, 0xe, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x30, 0x1, 0x0, 0x0, 0x2, 0x28, 0x0, 0x0, 0x1, 0x14, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x34, 0x1, 0x0, 0x0, 0x3, 0x40, 0x0, 0x0, 0x1, 0xe, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x4, 0x4e, 0x0, 0x0, 0x0, 0x26, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x33, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x12, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x37, 0x1, 0x0, 0x0, 0x1, 0x16, 0x0, 0x0, 0x1, 0xe, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x31, 0x1, 0x0, 0x0, 0x2, 0x28, 0x0, 0x0, 0x1, 0x14, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x35, 0x1, 0x0, 0x0, 0x3, 0x40, 0x0, 0x0, 0x1, 0xe, 0x0, 0x0, 0x0, 0xa, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x3, 0x8a, 0x0, 0x0, 0x2, 0x2b, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0, 0x8};
 static uchar restoreData43[] = { 0x0, 0x0, 0x0, 0xff, 0x0, 0x0, 0x0, 0x0, 0xfd, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x50, 0x0, 0x0, 0x0, 0xa0, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x30, 0x1, 0x0, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x34, 0x1, 0x0, 0x0, 0x0, 0x53, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x38, 0x1, 0x0, 0x0, 0x0, 0x7c, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x32, 0x1, 0x0, 0x0, 0x0, 0xa5, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0, 0x98, 0x0, 0x0, 0x0, 0xa0, 0xfc, 0x2, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x1, 0x0, 0x0, 0x0, 0x2a, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x35, 0x1, 0x0, 0x0, 0x0, 0x53, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x39, 0x1, 0x0, 0x0, 0x0, 0x7c, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x33, 0x1, 0x0, 0x0, 0x0, 0xa5, 0x0, 0x0, 0x0, 0x25, 0x0, 0x0, 0x0, 0x16, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2, 0x0, 0x0, 0x1, 0xa8, 0x0, 0x0, 0x0, 0x26, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x32, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x68, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x36, 0x1, 0x0, 0x0, 0x0, 0x6c, 0x0, 0x0, 0x0, 0x66, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x30, 0x1, 0x0, 0x0, 0x0, 0xd6, 0x0, 0x0, 0x0, 0x68, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x34, 0x1, 0x0, 0x0, 0x1, 0x42, 0x0, 0x0, 0x0, 0x66, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x3, 0x0, 0x0, 0x1, 0xa8, 0x0, 0x0, 0x0, 0x26, 0xfc, 0x1, 0x0, 0x0, 0x0, 0x4, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x33, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x68, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xc, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x37, 0x1, 0x0, 0x0, 0x0, 0x6c, 0x0, 0x0, 0x0, 0x66, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x31, 0x1, 0x0, 0x0, 0x0, 0xd6, 0x0, 0x0, 0x0, 0x68, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0xfb, 0x0, 0x0, 0x0, 0xe, 0x0, 0x64, 0x0, 0x6f, 0x0, 0x63, 0x0, 0x6b, 0x0, 0x20, 0x0, 0x31, 0x0, 0x35, 0x1, 0x0, 0x0, 0x1, 0x42, 0x0, 0x0, 0x0, 0x66, 0x0, 0x0, 0x0, 0x50, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0xb8, 0x0, 0x0, 0x0, 0xa0, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x4, 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0, 0x8, 0xfc, 0x0, 0x0, 0x0, 0x0};
 // Local scope class to simulate toolbar move.
-// For testcase  void QTBUG21378_animationFinished();
+// For testcase  void BOBUIBUG21378_animationFinished();
 class CToolBarTimer : public QObject
 {
     int m_timerId;
-    QToolBar *m_tb;
+    BOBUIoolBar *m_tb;
 public:
-    CToolBarTimer(QToolBar *tb) : m_tb(tb)
+    CToolBarTimer(BOBUIoolBar *tb) : m_tb(tb)
     {
         m_timerId = startTimer(200);
     }
-    void timerEvent(QTimerEvent*) override
+    void timerEvent(BOBUIimerEvent*) override
     {
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseButtonPress, QPoint(6, 7), m_tb->mapToGlobal(QPoint(6, 7)), Qt::LeftButton, {}, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(7, 8), m_tb->mapToGlobal(QPoint(7, 8)), Qt::LeftButton, Qt::LeftButton, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(27, 23), m_tb->mapToGlobal(QPoint(27, 23)), Qt::LeftButton, Qt::LeftButton, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(30, 27), m_tb->mapToGlobal(QPoint(30, 27)), Qt::LeftButton, Qt::LeftButton, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(162, 109), m_tb->mapToGlobal(QPoint(162, 109)), Qt::LeftButton, Qt::LeftButton, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(10, 4), m_tb->mapToGlobal(QPoint(10, 4)), Qt::LeftButton, Qt::LeftButton, {}));
-        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseButtonRelease, QPoint(9, 4), m_tb->mapToGlobal(QPoint(6, 7)), Qt::LeftButton, {}, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseButtonPress, QPoint(6, 7), m_tb->mapToGlobal(QPoint(6, 7)), BobUI::LeftButton, {}, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(7, 8), m_tb->mapToGlobal(QPoint(7, 8)), BobUI::LeftButton, BobUI::LeftButton, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(27, 23), m_tb->mapToGlobal(QPoint(27, 23)), BobUI::LeftButton, BobUI::LeftButton, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(30, 27), m_tb->mapToGlobal(QPoint(30, 27)), BobUI::LeftButton, BobUI::LeftButton, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(162, 109), m_tb->mapToGlobal(QPoint(162, 109)), BobUI::LeftButton, BobUI::LeftButton, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseMove, QPoint(10, 4), m_tb->mapToGlobal(QPoint(10, 4)), BobUI::LeftButton, BobUI::LeftButton, {}));
+        QCoreApplication::postEvent(m_tb, new QMouseEvent(QEvent::MouseButtonRelease, QPoint(9, 4), m_tb->mapToGlobal(QPoint(6, 7)), BobUI::LeftButton, {}, {}));
     }
 };
 
 // Local class to simulate mousepress on main window.
-// For testcase void QTBUG21378_animationFinished();
+// For testcase void BOBUIBUG21378_animationFinished();
 class CMainWindowTimer : public QObject
 {
     int m_timerId;
@@ -67,10 +67,10 @@ public:
         m_timerId = startTimer(100);
     }
 
-    void timerEvent(QTimerEvent*) override
+    void timerEvent(BOBUIimerEvent*) override
     {
-        QCoreApplication::postEvent(m_w, new QMouseEvent(QEvent::MouseButtonPress, QPoint(230, 370), m_w->mapToGlobal(QPoint(230, 370)), Qt::LeftButton, {}, {}));
-        QCoreApplication::postEvent(m_w, new QMouseEvent(QEvent::MouseButtonRelease, QPoint(230, 370), m_w->mapToGlobal(QPoint(230, 370)), Qt::LeftButton, {}, {}));
+        QCoreApplication::postEvent(m_w, new QMouseEvent(QEvent::MouseButtonPress, QPoint(230, 370), m_w->mapToGlobal(QPoint(230, 370)), BobUI::LeftButton, {}, {}));
+        QCoreApplication::postEvent(m_w, new QMouseEvent(QEvent::MouseButtonRelease, QPoint(230, 370), m_w->mapToGlobal(QPoint(230, 370)), BobUI::LeftButton, {}, {}));
     }
 };
 
@@ -109,7 +109,7 @@ private slots:
     void restoreAndModify();
     void createPopupMenu();
     void hideBeforeLayout();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void saveRestore();
     void saveRestore_data();
     void statusBar();
@@ -117,25 +117,25 @@ private slots:
     void contentsMargins_data();
     void contentsMargins();
     void isSeparator();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void setCursor();
 #endif
     void addToolbarAfterShow();
     void centralWidgetSize();
     void fixedSizeCentralWidget();
     void dockWidgetSize();
-    void QTBUG2774_stylechange();
-    void QTBUG15080_restoreState();
+    void BOBUIBUG2774_stylechange();
+    void BOBUIBUG15080_restoreState();
 #ifdef Q_OS_MAC
     void toggleUnifiedTitleAndToolBarOnMac();
 #endif
-    void QTBUG21378_animationFinished();
+    void BOBUIBUG21378_animationFinished();
     void resizeDocks();
     void resizeDocks_data();
-#if QT_CONFIG(dockwidget) && QT_CONFIG(tabbar)
-    void QTBUG52175_tabifiedDockWidgetActivated();
+#if BOBUI_CONFIG(dockwidget) && BOBUI_CONFIG(tabbar)
+    void BOBUIBUG52175_tabifiedDockWidgetActivated();
 #endif
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void expandedToolBarHitTesting();
 #endif
 };
@@ -194,7 +194,7 @@ void tst_QMainWindow::getSetCheck()
 
 tst_QMainWindow::tst_QMainWindow()
 {
-    qRegisterMetaType<Qt::ToolButtonStyle>("Qt::ToolButtonStyle");
+    qRegisterMetaType<BobUI::ToolButtonStyle>("BobUI::ToolButtonStyle");
 }
 
 void tst_QMainWindow::constructor()
@@ -207,7 +207,7 @@ void tst_QMainWindow::constructor()
     QCOMPARE(mw2.parentWidget(), &mw);
     QVERIFY(mw2.isWindow());
 
-    QMainWindow mw3(&mw, Qt::FramelessWindowHint);
+    QMainWindow mw3(&mw, BobUI::FramelessWindowHint);
     QCOMPARE(mw3.parentWidget(), &mw);
     QVERIFY(mw3.isWindow());
 }
@@ -266,7 +266,7 @@ void tst_QMainWindow::iconSize()
     {
         // toolbars should follow the mainwindow's icon size
         QMainWindow mw;
-        QToolBar tb;
+        BOBUIoolBar tb;
         mw.addToolBar(&tb);
 
         QSignalSpy mwSpy(&mw, SIGNAL(iconSizeChanged(QSize)));
@@ -350,7 +350,7 @@ void tst_QMainWindow::iconSize()
         QCOMPARE(mwSpy.first().first().toSize(), smallIconSize);
         mwSpy.clear();
 
-        QToolBar tb;
+        BOBUIoolBar tb;
         QSignalSpy tbSpy(&tb, SIGNAL(iconSizeChanged(QSize)));
 
         mw.addToolBar(&tb);
@@ -381,192 +381,192 @@ void tst_QMainWindow::toolButtonStyle()
     {
         QMainWindow mw;
 
-        QSignalSpy spy(&mw, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)));
+        QSignalSpy spy(&mw, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)));
 
         // no-op
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(spy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextOnly);
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(spy.first().first().constData()),
-                Qt::ToolButtonTextOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(spy.first().first().constData()),
+                BobUI::ToolButtonTextOnly);
         spy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextOnly);
         QCOMPARE(spy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(spy.first().first().constData()),
-                Qt::ToolButtonTextBesideIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(spy.first().first().constData()),
+                BobUI::ToolButtonTextBesideIcon);
         spy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(spy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(spy.first().first().constData()),
-                Qt::ToolButtonTextUnderIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(spy.first().first().constData()),
+                BobUI::ToolButtonTextUnderIcon);
         spy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
         QCOMPARE(spy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(spy.first().first().constData()),
-                Qt::ToolButtonIconOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(spy.first().first().constData()),
+                BobUI::ToolButtonIconOnly);
         spy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(spy.size(), 0);
     }
 
     {
         // toolbars should follow the mainwindow's tool button style
         QMainWindow mw;
-        QToolBar tb;
+        BOBUIoolBar tb;
         mw.addToolBar(&tb);
 
-        QSignalSpy mwSpy(&mw, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)));
-        QSignalSpy tbSpy(&tb, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)));
+        QSignalSpy mwSpy(&mw, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)));
+        QSignalSpy tbSpy(&tb, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)));
 
         // no-op
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(mwSpy.size(), 0);
         QCOMPARE(tbSpy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextOnly);
         QCOMPARE(mwSpy.size(), 1);
         QCOMPARE(tbSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonTextOnly);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(tbSpy.first().first().constData()),
-                Qt::ToolButtonTextOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonTextOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(tbSpy.first().first().constData()),
+                BobUI::ToolButtonTextOnly);
         mwSpy.clear();
         tbSpy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextOnly);
         QCOMPARE(mwSpy.size(), 0);
         QCOMPARE(tbSpy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(mwSpy.size(), 1);
         QCOMPARE(tbSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(tbSpy.first().first().constData()),
-                Qt::ToolButtonTextBesideIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(tbSpy.first().first().constData()),
+                BobUI::ToolButtonTextBesideIcon);
         mwSpy.clear();
         tbSpy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(mwSpy.size(), 0);
         QCOMPARE(tbSpy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
         QCOMPARE(mwSpy.size(), 1);
         QCOMPARE(tbSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(tbSpy.first().first().constData()),
-                Qt::ToolButtonTextUnderIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(tbSpy.first().first().constData()),
+                BobUI::ToolButtonTextUnderIcon);
         mwSpy.clear();
         tbSpy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
         QCOMPARE(mwSpy.size(), 0);
         QCOMPARE(tbSpy.size(), 0);
 
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(mwSpy.size(), 1);
         QCOMPARE(tbSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonIconOnly);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(tbSpy.first().first().constData()),
-                Qt::ToolButtonIconOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonIconOnly);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(tbSpy.first().first().constData()),
+                BobUI::ToolButtonIconOnly);
         mwSpy.clear();
         tbSpy.clear();
 
         // no-op
-        mw.setToolButtonStyle(Qt::ToolButtonIconOnly);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonIconOnly);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonIconOnly);
+        mw.setToolButtonStyle(BobUI::ToolButtonIconOnly);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonIconOnly);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonIconOnly);
         QCOMPARE(mwSpy.size(), 0);
         QCOMPARE(tbSpy.size(), 0);
     }
 
     {
         QMainWindow mw;
-        QSignalSpy mwSpy(&mw, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)));
+        QSignalSpy mwSpy(&mw, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)));
 
-        mw.setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextBesideIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(mwSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonTextBesideIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonTextBesideIcon);
         mwSpy.clear();
 
-        QToolBar tb;
-        QSignalSpy tbSpy(&tb, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)));
+        BOBUIoolBar tb;
+        QSignalSpy tbSpy(&tb, SIGNAL(toolButtonStyleChanged(BobUI::ToolButtonStyle)));
 
         mw.addToolBar(&tb);
 
         // newly added toolbars should also automatically pick up any
         // size set on the main window
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(tbSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(tbSpy.first().first().constData()),
-                Qt::ToolButtonTextBesideIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(tbSpy.first().first().constData()),
+                BobUI::ToolButtonTextBesideIcon);
         tbSpy.clear();
 
         mw.removeToolBar(&tb);
 
         // removed toolbars should keep their existing size and ignore
         // mainwindow icon size changes
-        mw.setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(mw.toolButtonStyle(), Qt::ToolButtonTextUnderIcon);
-        QCOMPARE(tb.toolButtonStyle(), Qt::ToolButtonTextBesideIcon);
+        mw.setToolButtonStyle(BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(mw.toolButtonStyle(), BobUI::ToolButtonTextUnderIcon);
+        QCOMPARE(tb.toolButtonStyle(), BobUI::ToolButtonTextBesideIcon);
         QCOMPARE(mwSpy.size(), 1);
-        QCOMPARE(*static_cast<const Qt::ToolButtonStyle *>(mwSpy.first().first().constData()),
-                Qt::ToolButtonTextUnderIcon);
+        QCOMPARE(*static_cast<const BobUI::ToolButtonStyle *>(mwSpy.first().first().constData()),
+                BobUI::ToolButtonTextUnderIcon);
         QCOMPARE(tbSpy.size(), 0);
         mwSpy.clear();
     }
@@ -628,9 +628,9 @@ void tst_QMainWindow::menuBar()
         QVERIFY(mb2.isNull());
 
         QPointer<QWidget> topLeftCornerWidget = new QWidget;
-        mb1->setCornerWidget(topLeftCornerWidget, Qt::TopLeftCorner);
+        mb1->setCornerWidget(topLeftCornerWidget, BobUI::TopLeftCorner);
         QPointer<QWidget> topRightCornerWidget = new QWidget;
-        mb1->setCornerWidget(topRightCornerWidget, Qt::TopRightCorner);
+        mb1->setCornerWidget(topRightCornerWidget, BobUI::TopRightCorner);
 
         mb2 = new QMenuBar;
         mw.setMenuBar(mb2);
@@ -641,9 +641,9 @@ void tst_QMainWindow::menuBar()
         QVERIFY(mb1.isNull());
 
         QVERIFY(topLeftCornerWidget);
-        QCOMPARE(mb2->cornerWidget(Qt::TopLeftCorner), static_cast<QWidget *>(topLeftCornerWidget));
+        QCOMPARE(mb2->cornerWidget(BobUI::TopLeftCorner), static_cast<QWidget *>(topLeftCornerWidget));
         QVERIFY(topRightCornerWidget);
-        QCOMPARE(mb2->cornerWidget(Qt::TopRightCorner), static_cast<QWidget *>(topRightCornerWidget));
+        QCOMPARE(mb2->cornerWidget(BobUI::TopRightCorner), static_cast<QWidget *>(topRightCornerWidget));
 
         mw.setMenuBar(0);
         QVERIFY(mw.menuBar() != 0);
@@ -656,7 +656,7 @@ void tst_QMainWindow::menuBar()
     }
 }
 
-// QTBUG-98247
+// BOBUIBUG-98247
 void tst_QMainWindow::customMenuBar()
 {
     QMainWindow w;
@@ -668,7 +668,7 @@ void tst_QMainWindow::customMenuBar()
     menuWidget.reset();
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QMainWindow::statusBar()
 {
     {
@@ -755,9 +755,9 @@ void tst_QMainWindow::statusBar()
 
 void tst_QMainWindow::contentsMargins_data()
 {
-    QTest::addColumn<int>("contentsMargin");
-    QTest::newRow("0") << 0;
-    QTest::newRow("10") << 10;
+    BOBUIest::addColumn<int>("contentsMargin");
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("10") << 10;
 }
 
 void tst_QMainWindow::contentsMargins()
@@ -767,8 +767,8 @@ void tst_QMainWindow::contentsMargins()
     QMainWindow mw;
     const QRect availGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     mw.menuBar()->addMenu("File");
-    mw.setWindowTitle(QLatin1String(QTest::currentTestFunction())
-                      + QLatin1Char(' ') + QLatin1String(QTest::currentDataTag()));
+    mw.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction())
+                      + QLatin1Char(' ') + QLatin1String(BOBUIest::currentDataTag()));
     mw.resize(availGeometry.size() / 4);
     mw.move((availGeometry.width() - mw.width()) / 2,
             (availGeometry.height() - mw.height()) / 2);
@@ -776,7 +776,7 @@ void tst_QMainWindow::contentsMargins()
     mw.statusBar()->showMessage("Hello");
 
     mw.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mw));
 
     QCOMPARE(mw.menuBar()->geometry().left(), contentsMargin);
     QCOMPARE(mw.menuBar()->geometry().top(), contentsMargin);
@@ -907,34 +907,34 @@ void tst_QMainWindow::corner()
     {
         QMainWindow mw;
 
-        QCOMPARE(mw.corner(Qt::TopLeftCorner), Qt::TopDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::TopRightCorner), Qt::TopDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomLeftCorner), Qt::BottomDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomRightCorner), Qt::BottomDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopLeftCorner), BobUI::TopDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopRightCorner), BobUI::TopDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomLeftCorner), BobUI::BottomDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomRightCorner), BobUI::BottomDockWidgetArea);
     }
 
     {
         QMainWindow mw;
 
-        mw.setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::TopLeftCorner), Qt::LeftDockWidgetArea);
-        mw.setCorner(Qt::TopLeftCorner, Qt::TopDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::TopLeftCorner), Qt::TopDockWidgetArea);
+        mw.setCorner(BobUI::TopLeftCorner, BobUI::LeftDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopLeftCorner), BobUI::LeftDockWidgetArea);
+        mw.setCorner(BobUI::TopLeftCorner, BobUI::TopDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopLeftCorner), BobUI::TopDockWidgetArea);
 
-        mw.setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::TopRightCorner), Qt::RightDockWidgetArea);
-        mw.setCorner(Qt::TopRightCorner, Qt::TopDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::TopRightCorner), Qt::TopDockWidgetArea);
+        mw.setCorner(BobUI::TopRightCorner, BobUI::RightDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopRightCorner), BobUI::RightDockWidgetArea);
+        mw.setCorner(BobUI::TopRightCorner, BobUI::TopDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::TopRightCorner), BobUI::TopDockWidgetArea);
 
-        mw.setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomLeftCorner), Qt::LeftDockWidgetArea);
-        mw.setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomLeftCorner), Qt::BottomDockWidgetArea);
+        mw.setCorner(BobUI::BottomLeftCorner, BobUI::LeftDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomLeftCorner), BobUI::LeftDockWidgetArea);
+        mw.setCorner(BobUI::BottomLeftCorner, BobUI::BottomDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomLeftCorner), BobUI::BottomDockWidgetArea);
 
-        mw.setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomRightCorner), Qt::RightDockWidgetArea);
-        mw.setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
-        QCOMPARE(mw.corner(Qt::BottomRightCorner), Qt::BottomDockWidgetArea);
+        mw.setCorner(BobUI::BottomRightCorner, BobUI::RightDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomRightCorner), BobUI::RightDockWidgetArea);
+        mw.setCorner(BobUI::BottomRightCorner, BobUI::BottomDockWidgetArea);
+        QCOMPARE(mw.corner(BobUI::BottomRightCorner), BobUI::BottomDockWidgetArea);
     }
 }
 
@@ -942,17 +942,17 @@ void tst_QMainWindow::addToolBarBreak()
 {
     {
         QMainWindow mw;
-        QToolBar tb1(&mw);
-        mw.addToolBar(Qt::TopToolBarArea, &tb1);
-        mw.addToolBarBreak(Qt::TopToolBarArea);
-        QToolBar tb2(&mw);
-        mw.addToolBar(Qt::TopToolBarArea, &tb2);
-        mw.addToolBarBreak(Qt::TopToolBarArea);
-        QToolBar tb3(&mw);
-        mw.addToolBar(Qt::TopToolBarArea, &tb3);
-        mw.addToolBarBreak(Qt::TopToolBarArea);
-        QToolBar tb4(&mw);
-        mw.addToolBar(Qt::TopToolBarArea, &tb4);
+        BOBUIoolBar tb1(&mw);
+        mw.addToolBar(BobUI::TopToolBarArea, &tb1);
+        mw.addToolBarBreak(BobUI::TopToolBarArea);
+        BOBUIoolBar tb2(&mw);
+        mw.addToolBar(BobUI::TopToolBarArea, &tb2);
+        mw.addToolBarBreak(BobUI::TopToolBarArea);
+        BOBUIoolBar tb3(&mw);
+        mw.addToolBar(BobUI::TopToolBarArea, &tb3);
+        mw.addToolBarBreak(BobUI::TopToolBarArea);
+        BOBUIoolBar tb4(&mw);
+        mw.addToolBar(BobUI::TopToolBarArea, &tb4);
 
         mw.layout()->invalidate();
         mw.layout()->activate();
@@ -970,22 +970,22 @@ void tst_QMainWindow::addToolBarBreak()
     {
         QMainWindow mw;
         // should not crash, should get a warning instead
-        QTest::ignoreMessage(QtWarningMsg, "QMainWindow::addToolBarBreak: invalid 'area' argument");
-        mw.addToolBarBreak(Qt::NoToolBarArea);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMainWindow::addToolBarBreak: invalid 'area' argument");
+        mw.addToolBarBreak(BobUI::NoToolBarArea);
     }
 }
 
 void tst_QMainWindow::insertToolBarBreak()
 {
     QMainWindow mw;
-    QToolBar tb1(&mw);
-    mw.addToolBar(Qt::TopToolBarArea, &tb1);
-    QToolBar tb2(&mw);
-    mw.addToolBar(Qt::TopToolBarArea, &tb2);
-    QToolBar tb3(&mw);
-    mw.addToolBar(Qt::TopToolBarArea, &tb3);
-    QToolBar tb4(&mw);
-    mw.addToolBar(Qt::TopToolBarArea, &tb4);
+    BOBUIoolBar tb1(&mw);
+    mw.addToolBar(BobUI::TopToolBarArea, &tb1);
+    BOBUIoolBar tb2(&mw);
+    mw.addToolBar(BobUI::TopToolBarArea, &tb2);
+    BOBUIoolBar tb3(&mw);
+    mw.addToolBar(BobUI::TopToolBarArea, &tb3);
+    BOBUIoolBar tb4(&mw);
+    mw.addToolBar(BobUI::TopToolBarArea, &tb4);
 
     mw.insertToolBarBreak(&tb2);
     mw.insertToolBarBreak(&tb3);
@@ -1031,19 +1031,19 @@ static bool findWidgetRecursively(QLayoutItem *li, QWidget *w)
 
 void tst_QMainWindow::addToolBar()
 {
-    Qt::ToolBarArea areas[] = {
-        Qt::LeftToolBarArea,
-        Qt::RightToolBarArea,
-        Qt::TopToolBarArea,
-        Qt::BottomToolBarArea
+    BobUI::ToolBarArea areas[] = {
+        BobUI::LeftToolBarArea,
+        BobUI::RightToolBarArea,
+        BobUI::TopToolBarArea,
+        BobUI::BottomToolBarArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::ToolBarArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::ToolBarArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::ToolBarArea area = areas[i];
+        BobUI::ToolBarArea area = areas[i];
 
         QMainWindow mw;
-        QToolBar tb(&mw);
+        BOBUIoolBar tb(&mw);
         QVERIFY(!findWidgetRecursively(mw.layout(), &tb));
         mw.addToolBar(area, &tb);
         QVERIFY(findWidgetRecursively(mw.layout(), &tb));
@@ -1052,7 +1052,7 @@ void tst_QMainWindow::addToolBar()
     {
         // addToolBar() with no area, equivalent to top
         QMainWindow mw;
-        QToolBar tb(&mw);
+        BOBUIoolBar tb(&mw);
         QVERIFY(!findWidgetRecursively(mw.layout(), &tb));
         mw.addToolBar(&tb);
         QVERIFY(findWidgetRecursively(mw.layout(), &tb));
@@ -1060,30 +1060,30 @@ void tst_QMainWindow::addToolBar()
 
     {
         QMainWindow mw;
-        QToolBar tb(&mw);
+        BOBUIoolBar tb(&mw);
         // should not crash, should get a warning instead
-        QTest::ignoreMessage(QtWarningMsg, "QMainWindow::addToolBar: invalid 'area' argument");
-        mw.addToolBar(Qt::NoToolBarArea, &tb);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMainWindow::addToolBar: invalid 'area' argument");
+        mw.addToolBar(BobUI::NoToolBarArea, &tb);
     }
 }
 
 void tst_QMainWindow::insertToolBar()
 {
-    Qt::ToolBarArea areas[] = {
-        Qt::LeftToolBarArea,
-        Qt::RightToolBarArea,
-        Qt::TopToolBarArea,
-        Qt::BottomToolBarArea
+    BobUI::ToolBarArea areas[] = {
+        BobUI::LeftToolBarArea,
+        BobUI::RightToolBarArea,
+        BobUI::TopToolBarArea,
+        BobUI::BottomToolBarArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::ToolBarArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::ToolBarArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::ToolBarArea area = areas[i];
+        BobUI::ToolBarArea area = areas[i];
 
         QMainWindow mw;
-        QToolBar tb1(&mw);
+        BOBUIoolBar tb1(&mw);
         mw.addToolBar(area, &tb1);
-        QToolBar tb2(&mw);
+        BOBUIoolBar tb2(&mw);
         mw.insertToolBar(&tb1, &tb2);
         QVERIFY(findWidgetRecursively(mw.layout(), &tb1));
         QVERIFY(findWidgetRecursively(mw.layout(), &tb2));
@@ -1091,11 +1091,11 @@ void tst_QMainWindow::insertToolBar()
 
     {
         QMainWindow window;
-        QToolBar *bar1 = new QToolBar(QObject::tr("bar1"), &window);
+        BOBUIoolBar *bar1 = new BOBUIoolBar(QObject::tr("bar1"), &window);
         bar1->addWidget(new QPushButton(QObject::tr("bar1")));
-        QToolBar *bar2 = new QToolBar(QLatin1String("bar2"));
+        BOBUIoolBar *bar2 = new BOBUIoolBar(QLatin1String("bar2"));
         bar2->addWidget(new QPushButton(QLatin1String("bar2")));
-        QToolBar *bar3 = new QToolBar(QLatin1String("bar3"));
+        BOBUIoolBar *bar3 = new BOBUIoolBar(QLatin1String("bar3"));
         bar3->addWidget(new QPushButton(QLatin1String("bar3")));
 
         window.addToolBar(bar1);
@@ -1119,21 +1119,21 @@ void tst_QMainWindow::insertToolBar()
 
 void tst_QMainWindow::removeToolBar()
 {
-    Qt::ToolBarArea areas[] = {
-        Qt::LeftToolBarArea,
-        Qt::RightToolBarArea,
-        Qt::TopToolBarArea,
-        Qt::BottomToolBarArea
+    BobUI::ToolBarArea areas[] = {
+        BobUI::LeftToolBarArea,
+        BobUI::RightToolBarArea,
+        BobUI::TopToolBarArea,
+        BobUI::BottomToolBarArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::ToolBarArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::ToolBarArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::ToolBarArea area = areas[i];
+        BobUI::ToolBarArea area = areas[i];
 
         QMainWindow mw;
-        QToolBar tb1(&mw);
+        BOBUIoolBar tb1(&mw);
         mw.addToolBar(area, &tb1);
-        QToolBar tb2(&mw);
+        BOBUIoolBar tb2(&mw);
         mw.insertToolBar(&tb1, &tb2);
         QVERIFY(findWidgetRecursively(mw.layout(), &tb1));
         QVERIFY(findWidgetRecursively(mw.layout(), &tb2));
@@ -1150,22 +1150,22 @@ void tst_QMainWindow::removeToolBar()
 
 void tst_QMainWindow::toolBarArea()
 {
-    Qt::ToolBarArea areas[] = {
-        Qt::LeftToolBarArea,
-        Qt::RightToolBarArea,
-        Qt::TopToolBarArea,
-        Qt::BottomToolBarArea
+    BobUI::ToolBarArea areas[] = {
+        BobUI::LeftToolBarArea,
+        BobUI::RightToolBarArea,
+        BobUI::TopToolBarArea,
+        BobUI::BottomToolBarArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::ToolBarArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::ToolBarArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::ToolBarArea area = areas[i];
+        BobUI::ToolBarArea area = areas[i];
 
         QMainWindow mw;
-        QToolBar tb(&mw);
+        BOBUIoolBar tb(&mw);
 
         for (int j = 0; j < areaCount; ++j) {
-            Qt::ToolBarArea otherArea = areas[j];
+            BobUI::ToolBarArea otherArea = areas[j];
 
             mw.addToolBar(area, &tb);
             QCOMPARE(mw.toolBarArea(&tb), area);
@@ -1177,13 +1177,13 @@ void tst_QMainWindow::toolBarArea()
     {
         // addToolBar() with no area, equivalent to top
         QMainWindow mw;
-        QToolBar tb(&mw);
+        BOBUIoolBar tb(&mw);
 
         for (int j = 0; j < areaCount; ++j) {
-            Qt::ToolBarArea otherArea = areas[j];
+            BobUI::ToolBarArea otherArea = areas[j];
 
             mw.addToolBar(&tb);
-            QCOMPARE(mw.toolBarArea(&tb), Qt::TopToolBarArea);
+            QCOMPARE(mw.toolBarArea(&tb), BobUI::TopToolBarArea);
             mw.addToolBar(otherArea, &tb);
             QCOMPARE(mw.toolBarArea(&tb), otherArea);
         }
@@ -1192,16 +1192,16 @@ void tst_QMainWindow::toolBarArea()
 
 void tst_QMainWindow::addDockWidget()
 {
-    Qt::DockWidgetArea areas[] = {
-        Qt::LeftDockWidgetArea,
-        Qt::RightDockWidgetArea,
-        Qt::TopDockWidgetArea,
-        Qt::BottomDockWidgetArea
+    BobUI::DockWidgetArea areas[] = {
+        BobUI::LeftDockWidgetArea,
+        BobUI::RightDockWidgetArea,
+        BobUI::TopDockWidgetArea,
+        BobUI::BottomDockWidgetArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::DockWidgetArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::DockWidgetArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::DockWidgetArea area = areas[i];
+        BobUI::DockWidgetArea area = areas[i];
 
         QMainWindow mw;
         QDockWidget dw(&mw);
@@ -1211,13 +1211,13 @@ void tst_QMainWindow::addDockWidget()
     }
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::DockWidgetArea area = areas[i];
+        BobUI::DockWidgetArea area = areas[i];
 
         {
             QMainWindow mw;
             QDockWidget dw(&mw);
             QVERIFY(!findWidgetRecursively(mw.layout(), &dw));
-            mw.addDockWidget(area, &dw, Qt::Horizontal);
+            mw.addDockWidget(area, &dw, BobUI::Horizontal);
             QVERIFY(findWidgetRecursively(mw.layout(), &dw));
         }
 
@@ -1225,7 +1225,7 @@ void tst_QMainWindow::addDockWidget()
             QMainWindow mw;
             QDockWidget dw(&mw);
             QVERIFY(!findWidgetRecursively(mw.layout(), &dw));
-            mw.addDockWidget(area, &dw, Qt::Vertical);
+            mw.addDockWidget(area, &dw, BobUI::Vertical);
             QVERIFY(findWidgetRecursively(mw.layout(), &dw));
         }
     }
@@ -1234,23 +1234,23 @@ void tst_QMainWindow::addDockWidget()
         QMainWindow mw;
         QDockWidget dw(&mw);
         // should not crash, should get a warning instead
-        QTest::ignoreMessage(QtWarningMsg, "QMainWindow::addDockWidget: invalid 'area' argument");
-        mw.addDockWidget(Qt::NoDockWidgetArea, &dw);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QMainWindow::addDockWidget: invalid 'area' argument");
+        mw.addDockWidget(BobUI::NoDockWidgetArea, &dw);
     }
 }
 
 void tst_QMainWindow::splitDockWidget()
 {
-    Qt::DockWidgetArea areas[] = {
-        Qt::LeftDockWidgetArea,
-        Qt::RightDockWidgetArea,
-        Qt::TopDockWidgetArea,
-        Qt::BottomDockWidgetArea
+    BobUI::DockWidgetArea areas[] = {
+        BobUI::LeftDockWidgetArea,
+        BobUI::RightDockWidgetArea,
+        BobUI::TopDockWidgetArea,
+        BobUI::BottomDockWidgetArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::DockWidgetArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::DockWidgetArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::DockWidgetArea area = areas[i];
+        BobUI::DockWidgetArea area = areas[i];
 
         {
             QMainWindow mw;
@@ -1260,7 +1260,7 @@ void tst_QMainWindow::splitDockWidget()
             QVERIFY(findWidgetRecursively(mw.layout(), &dw1));
             QDockWidget dw2(&mw);
             QVERIFY(!findWidgetRecursively(mw.layout(), &dw2));
-            mw.splitDockWidget(&dw1, &dw2, Qt::Horizontal);
+            mw.splitDockWidget(&dw1, &dw2, BobUI::Horizontal);
             QVERIFY(findWidgetRecursively(mw.layout(), &dw2));
         }
 
@@ -1272,7 +1272,7 @@ void tst_QMainWindow::splitDockWidget()
             QVERIFY(findWidgetRecursively(mw.layout(), &dw1));
             QDockWidget dw2(&mw);
             QVERIFY(!findWidgetRecursively(mw.layout(), &dw2));
-            mw.splitDockWidget(&dw1, &dw2, Qt::Horizontal);
+            mw.splitDockWidget(&dw1, &dw2, BobUI::Horizontal);
             QVERIFY(findWidgetRecursively(mw.layout(), &dw2));
         }
     }
@@ -1280,16 +1280,16 @@ void tst_QMainWindow::splitDockWidget()
 
 void tst_QMainWindow::removeDockWidget()
 {
-    Qt::DockWidgetArea areas[] = {
-        Qt::LeftDockWidgetArea,
-        Qt::RightDockWidgetArea,
-        Qt::TopDockWidgetArea,
-        Qt::BottomDockWidgetArea
+    BobUI::DockWidgetArea areas[] = {
+        BobUI::LeftDockWidgetArea,
+        BobUI::RightDockWidgetArea,
+        BobUI::TopDockWidgetArea,
+        BobUI::BottomDockWidgetArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::DockWidgetArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::DockWidgetArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::DockWidgetArea area = areas[i];
+        BobUI::DockWidgetArea area = areas[i];
 
         QMainWindow mw;
         QDockWidget dw1(&mw);
@@ -1311,22 +1311,22 @@ void tst_QMainWindow::removeDockWidget()
 
 void tst_QMainWindow::dockWidgetArea()
 {
-    Qt::DockWidgetArea areas[] = {
-        Qt::LeftDockWidgetArea,
-        Qt::RightDockWidgetArea,
-        Qt::TopDockWidgetArea,
-        Qt::BottomDockWidgetArea
+    BobUI::DockWidgetArea areas[] = {
+        BobUI::LeftDockWidgetArea,
+        BobUI::RightDockWidgetArea,
+        BobUI::TopDockWidgetArea,
+        BobUI::BottomDockWidgetArea
     };
-    const int areaCount = sizeof(areas) / sizeof(Qt::DockWidgetArea);
+    const int areaCount = sizeof(areas) / sizeof(BobUI::DockWidgetArea);
 
     for (int i = 0; i < areaCount; ++i) {
-        Qt::DockWidgetArea area = areas[i];
+        BobUI::DockWidgetArea area = areas[i];
 
         QMainWindow mw;
         QDockWidget dw(&mw);
 
         for (int j = 0; j < areaCount; ++j) {
-            Qt::DockWidgetArea otherArea = areas[i];
+            BobUI::DockWidgetArea otherArea = areas[i];
 
             mw.addDockWidget(area, &dw);
             QCOMPARE(mw.dockWidgetArea(&dw), area);
@@ -1339,12 +1339,12 @@ void tst_QMainWindow::dockWidgetArea()
 void tst_QMainWindow::restoreState()
 {
     QMainWindow mw;
-    QToolBar tb(&mw);
+    BOBUIoolBar tb(&mw);
     tb.setObjectName(QLatin1String("toolBar"));
-    mw.addToolBar(Qt::TopToolBarArea, &tb);
+    mw.addToolBar(BobUI::TopToolBarArea, &tb);
     QDockWidget dw(&mw);
     dw.setObjectName(QLatin1String("dock"));
-    mw.addDockWidget(Qt::LeftDockWidgetArea, &dw);
+    mw.addDockWidget(BobUI::LeftDockWidgetArea, &dw);
 
     QWidgetPrivate *tbp = QWidgetPrivate::get(&tb);
     QVERIFY(tbp->widgetItem);
@@ -1373,7 +1373,7 @@ void tst_QMainWindow::restoreStateFromPreviousVersion()
     for (const QByteArray &ba : restoreData) {
 
         QMainWindow win;
-        win.setCentralWidget(new QTextEdit);
+        win.setCentralWidget(new BOBUIextEdit);
         QList<QDockWidget *> docks;
 
         for(int i = 0; i < 16; ++i) {
@@ -1381,13 +1381,13 @@ void tst_QMainWindow::restoreStateFromPreviousVersion()
             QDockWidget *dock = new QDockWidget(name);
             docks += dock;
             dock->setObjectName(name);
-            win.addDockWidget(Qt::TopDockWidgetArea, dock);
+            win.addDockWidget(BobUI::TopDockWidgetArea, dock);
         }
         win.show();
         QCOMPARE(win.restoreState(ba), true);
 
         for( int i = 0; i < docks.size(); ++i) {
-            QCOMPARE( win.dockWidgetArea(docks[i]), Qt::DockWidgetArea(1 << i%4));
+            QCOMPARE( win.dockWidgetArea(docks[i]), BobUI::DockWidgetArea(1 << i%4));
         }
     }
 
@@ -1395,22 +1395,22 @@ void tst_QMainWindow::restoreStateFromPreviousVersion()
 
 void tst_QMainWindow::restoreStateSizeChanged_data()
 {
-    QTest::addColumn<Qt::WindowState>("saveState");
-    QTest::addColumn<Qt::WindowState>("showState");
-    QTest::addColumn<bool>("sameSize");
+    BOBUIest::addColumn<BobUI::WindowState>("saveState");
+    BOBUIest::addColumn<BobUI::WindowState>("showState");
+    BOBUIest::addColumn<bool>("sameSize");
 
-    QTest::addRow("fullscreen") << Qt::WindowFullScreen << Qt::WindowFullScreen << true;
-    QTest::addRow("maximized") << Qt::WindowMaximized << Qt::WindowMaximized << true;
-    QTest::addRow("maximized->normal") << Qt::WindowMaximized << Qt::WindowNoState << false;
-    QTest::addRow("fullscreen->normal") << Qt::WindowFullScreen << Qt::WindowNoState << false;
-    QTest::addRow("fullscreen->maximized") << Qt::WindowFullScreen << Qt::WindowMaximized << false;
-    QTest::addRow("maximized->fullscreen") << Qt::WindowMaximized << Qt::WindowFullScreen << true;
+    BOBUIest::addRow("fullscreen") << BobUI::WindowFullScreen << BobUI::WindowFullScreen << true;
+    BOBUIest::addRow("maximized") << BobUI::WindowMaximized << BobUI::WindowMaximized << true;
+    BOBUIest::addRow("maximized->normal") << BobUI::WindowMaximized << BobUI::WindowNoState << false;
+    BOBUIest::addRow("fullscreen->normal") << BobUI::WindowFullScreen << BobUI::WindowNoState << false;
+    BOBUIest::addRow("fullscreen->maximized") << BobUI::WindowFullScreen << BobUI::WindowMaximized << false;
+    BOBUIest::addRow("maximized->fullscreen") << BobUI::WindowMaximized << BobUI::WindowFullScreen << true;
 }
 
 void tst_QMainWindow::restoreStateSizeChanged()
 {
-    QFETCH(Qt::WindowState, saveState);
-    QFETCH(Qt::WindowState, showState);
+    QFETCH(BobUI::WindowState, saveState);
+    QFETCH(BobUI::WindowState, showState);
     QFETCH(bool, sameSize);
 
     auto createMainWindow = []{
@@ -1419,7 +1419,7 @@ void tst_QMainWindow::restoreStateSizeChanged()
         mainWindow->setCentralWidget(new QLabel("X"));
         QDockWidget *dockWidget = new QDockWidget;
         dockWidget->setObjectName("Dock Widget");
-        mainWindow->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+        mainWindow->addDockWidget(BobUI::LeftDockWidgetArea, dockWidget);
         return mainWindow;
     };
 
@@ -1432,10 +1432,10 @@ void tst_QMainWindow::restoreStateSizeChanged()
         auto mainWindow = QScopedPointer<QMainWindow>(createMainWindow());
         mainWindow->setWindowState(saveState);
         mainWindow->show();
-        QVERIFY(QTest::qWaitForWindowExposed(mainWindow.data()));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(mainWindow.data()));
         dockWidgetWidth = mainWindow->width() - 100;
         QDockWidget *dockWidget = mainWindow->findChild<QDockWidget*>("Dock Widget");
-        mainWindow->resizeDocks({dockWidget}, {dockWidgetWidth}, Qt::Horizontal);
+        mainWindow->resizeDocks({dockWidget}, {dockWidgetWidth}, BobUI::Horizontal);
         geometryData = mainWindow->saveGeometry();
         stateData = mainWindow->saveState();
         normalGeometry = mainWindow->normalGeometry();
@@ -1448,7 +1448,7 @@ void tst_QMainWindow::restoreStateSizeChanged()
     mainWindow->restoreState(stateData);
     mainWindow->setWindowState(showState);
     mainWindow->show();
-    QVERIFY(QTest::qWaitForWindowExposed(mainWindow.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(mainWindow.data()));
 
     QDockWidget *dockWidget = mainWindow->findChild<QDockWidget*>("Dock Widget");
     QVERIFY(dockWidget);
@@ -1473,7 +1473,7 @@ void tst_QMainWindow::restoreStateSizeChanged()
             }
             return false;
         };
-        QTRY_VERIFY_WITH_TIMEOUT(waitForLastResize(), 500);
+        BOBUIRY_VERIFY_WITH_TIMEOUT(waitForLastResize(), 500);
         if (expectFail) {
             QEXPECT_FAIL("fullscreen", "Restored state probably discarded too early", Continue);
             QEXPECT_FAIL("maximized->fullscreen", "Restored state probably discarded too early", Continue);
@@ -1485,7 +1485,7 @@ void tst_QMainWindow::restoreStateSizeChanged()
 /*!
     If a main window's state is restored but also modified, then we
     might have to forget the restored state to avoid dangling pointers.
-    See comment in QMainWindowLayout::applyRestoredState() and QTBUG-120025.
+    See comment in QMainWindowLayout::applyRestoredState() and BOBUIBUG-120025.
 */
 void tst_QMainWindow::restoreAndModify()
 {
@@ -1494,26 +1494,26 @@ void tst_QMainWindow::restoreAndModify()
     public:
         MainWindow()
         {
-            setCentralWidget(new QTextEdit);
+            setCentralWidget(new BOBUIextEdit);
 
             customers = new QDockWidget(tr("Customers"), this);
             customers->setObjectName("Customers");
-            customers->setAllowedAreas(Qt::LeftDockWidgetArea |
-                                                  Qt::RightDockWidgetArea);
-            customers->setWidget(new QTextEdit);
-            addDockWidget(Qt::RightDockWidgetArea, customers);
+            customers->setAllowedAreas(BobUI::LeftDockWidgetArea |
+                                                  BobUI::RightDockWidgetArea);
+            customers->setWidget(new BOBUIextEdit);
+            addDockWidget(BobUI::RightDockWidgetArea, customers);
 
             paragraphs = new QDockWidget(tr("Paragraphs"), this);
             paragraphs->setObjectName("Paragraphs");
-            paragraphs->setWidget(new QTextEdit);
-            addDockWidget(Qt::RightDockWidgetArea, paragraphs);
+            paragraphs->setWidget(new BOBUIextEdit);
+            addDockWidget(BobUI::RightDockWidgetArea, paragraphs);
         }
 
         void restore()
         {
             if (!savedGeometry.isEmpty())
                 restoreGeometry(savedGeometry);
-            setWindowState(Qt::WindowMaximized);
+            setWindowState(BobUI::WindowMaximized);
             if (!savedState.isEmpty())
                 restoreState(savedState);
 
@@ -1538,12 +1538,12 @@ void tst_QMainWindow::restoreAndModify()
 
     mainWindow.restore();
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
     mainWindow.close();
 
     mainWindow.restore();
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
 }
 
 void tst_QMainWindow::createPopupMenu()
@@ -1552,9 +1552,9 @@ void tst_QMainWindow::createPopupMenu()
         QMainWindow mainwindow;
         QVERIFY(!mainwindow.createPopupMenu());
 
-        QToolBar toolbar1(&mainwindow);
+        BOBUIoolBar toolbar1(&mainwindow);
         toolbar1.setWindowTitle("toolbar1");
-        QToolBar toolbar2(&mainwindow);
+        BOBUIoolBar toolbar2(&mainwindow);
         toolbar2.setWindowTitle("toolbar2");
 
         mainwindow.addToolBar(&toolbar1);
@@ -1569,10 +1569,10 @@ void tst_QMainWindow::createPopupMenu()
         QDockWidget dockwidget4(&mainwindow);
         dockwidget4.setWindowTitle("dockwidget4");
 
-        mainwindow.addDockWidget(Qt::LeftDockWidgetArea, &dockwidget1);
-        mainwindow.addDockWidget(Qt::LeftDockWidgetArea, &dockwidget2);
-        mainwindow.addDockWidget(Qt::LeftDockWidgetArea, &dockwidget3);
-        mainwindow.addDockWidget(Qt::LeftDockWidgetArea, &dockwidget4);
+        mainwindow.addDockWidget(BobUI::LeftDockWidgetArea, &dockwidget1);
+        mainwindow.addDockWidget(BobUI::LeftDockWidgetArea, &dockwidget2);
+        mainwindow.addDockWidget(BobUI::LeftDockWidgetArea, &dockwidget3);
+        mainwindow.addDockWidget(BobUI::LeftDockWidgetArea, &dockwidget4);
 
 
         QMenu *menu = mainwindow.createPopupMenu();
@@ -1634,7 +1634,7 @@ void tst_QMainWindow::hideBeforeLayout()
     QMainWindow win;
     QDockWidget *dock = new MyDockWidget(&win);
     dock->setWidget(new QLabel("hello"));
-    win.addDockWidget(Qt::LeftDockWidgetArea, dock);
+    win.addDockWidget(BobUI::LeftDockWidgetArea, dock);
     dock->hide();
     win.resize(300, 300);
     win.show();
@@ -1647,9 +1647,9 @@ struct AddDockWidget
     enum Mode { AddMode, SplitMode, TabMode };
 
     AddDockWidget() {}
-    AddDockWidget(const QString &_name, Qt::DockWidgetArea _a)
+    AddDockWidget(const QString &_name, BobUI::DockWidgetArea _a)
         : name(_name), mode(AddMode), a(_a) {}
-    AddDockWidget(const QString &_name, const QString &_other, Qt::Orientation _o)
+    AddDockWidget(const QString &_name, const QString &_other, BobUI::Orientation _o)
         : name(_name), mode(SplitMode), o(_o), other(_other) {}
     AddDockWidget(const QString &_name, const QString &_other)
         : name(_name), mode(TabMode), other(_other) {}
@@ -1657,8 +1657,8 @@ struct AddDockWidget
     QString name;
     Mode mode;
 
-    Qt::Orientation o = {};
-    Qt::DockWidgetArea a = {};
+    BobUI::Orientation o = {};
+    BobUI::DockWidgetArea a = {};
     QString other;
 
     void apply(QMainWindow *mw) const;
@@ -1696,7 +1696,7 @@ void AddDockWidget::apply(QMainWindow *mw) const
     }
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 struct MoveSeparator
 {
     MoveSeparator() {}
@@ -1730,7 +1730,7 @@ void MoveSeparator::apply(QMainWindow *mw) const
     }
     QVERIFY(!path.isEmpty());
 
-    // For QTBUG-15689:
+    // For BOBUIBUG-15689:
     // Following commands is used to simulate user move action. A better way should
     // use QMainWindowLayout::startSeparatorMove/separatorMove/endSeparatorMove,
     // but then we will need real start/end position coordinates.
@@ -1763,36 +1763,36 @@ QMap<QString, QRect> dockWidgetGeometries(QMainWindow *mw)
     QCOMPARE(_v_newGeos, _v_oldGeos); \
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QMainWindow::saveRestore_data()
 {
-    QTest::addColumn<AddList >("addList");
-    QTest::addColumn<MoveList >("moveList");
+    BOBUIest::addColumn<AddList >("addList");
+    BOBUIest::addColumn<MoveList >("moveList");
 
-    QTest::newRow("1") << (AddList()
-                            << AddDockWidget("left", Qt::LeftDockWidgetArea))
+    BOBUIest::newRow("1") << (AddList()
+                            << AddDockWidget("left", BobUI::LeftDockWidgetArea))
                        << (MoveList()
                             << MoveSeparator(100, QInternal::LeftDock));
 
-    QTest::newRow("2") << (AddList()
-                            << AddDockWidget("left", Qt::LeftDockWidgetArea)
-                            << AddDockWidget("right", Qt::RightDockWidgetArea))
+    BOBUIest::newRow("2") << (AddList()
+                            << AddDockWidget("left", BobUI::LeftDockWidgetArea)
+                            << AddDockWidget("right", BobUI::RightDockWidgetArea))
                        << (MoveList()
                             << MoveSeparator(70, QInternal::LeftDock)
                             << MoveSeparator(-40, QInternal::RightDock));
-    QTest::newRow("3") << (AddList()
-                            << AddDockWidget("left", Qt::LeftDockWidgetArea)
-                            << AddDockWidget("right1", Qt::RightDockWidgetArea)
-                            << AddDockWidget("right2", Qt::RightDockWidgetArea))
+    BOBUIest::newRow("3") << (AddList()
+                            << AddDockWidget("left", BobUI::LeftDockWidgetArea)
+                            << AddDockWidget("right1", BobUI::RightDockWidgetArea)
+                            << AddDockWidget("right2", BobUI::RightDockWidgetArea))
                        << (MoveList()
                             << MoveSeparator(70, QInternal::LeftDock)
                             << MoveSeparator(-40, QInternal::RightDock));
 
-    QTest::newRow("4") << (AddList()
-                            << AddDockWidget("left", Qt::LeftDockWidgetArea)
-                            << AddDockWidget("right1", Qt::RightDockWidgetArea)
-                            << AddDockWidget("right2a", Qt::RightDockWidgetArea)
-                            << AddDockWidget("right2b", "right2a", Qt::Horizontal)
+    BOBUIest::newRow("4") << (AddList()
+                            << AddDockWidget("left", BobUI::LeftDockWidgetArea)
+                            << AddDockWidget("right1", BobUI::RightDockWidgetArea)
+                            << AddDockWidget("right2a", BobUI::RightDockWidgetArea)
+                            << AddDockWidget("right2b", "right2a", BobUI::Horizontal)
                           )
                        << (MoveList()
                           << MoveSeparator(70, QInternal::LeftDock)
@@ -1803,7 +1803,7 @@ void tst_QMainWindow::saveRestore_data()
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QMainWindow::saveRestore()
 {
     QFETCH(const AddList, addList);
@@ -1816,7 +1816,7 @@ void tst_QMainWindow::saveRestore()
     {
         QMainWindow mainWindow;
         mainWindow.setDockNestingEnabled(true);
-        QTextEdit centralWidget("The rain in Spain falls mainly on the plains");
+        BOBUIextEdit centralWidget("The rain in Spain falls mainly on the plains");
         mainWindow.setCentralWidget(&centralWidget);
 
         for (const AddDockWidget &adw : addList)
@@ -1839,7 +1839,7 @@ void tst_QMainWindow::saveRestore()
     {
         QMainWindow mainWindow;
         mainWindow.setDockNestingEnabled(true);
-        QTextEdit centralWidget("The rain in Spain falls mainly on the plains");
+        BOBUIextEdit centralWidget("The rain in Spain falls mainly on the plains");
         mainWindow.setCentralWidget(&centralWidget);
 
         for (const AddDockWidget &adw : addList)
@@ -1856,7 +1856,7 @@ void tst_QMainWindow::saveRestore()
     {
         QMainWindow mainWindow;
         mainWindow.setDockNestingEnabled(true);
-        QTextEdit centralWidget("The rain in Spain falls mainly on the plains");
+        BOBUIextEdit centralWidget("The rain in Spain falls mainly on the plains");
         mainWindow.setCentralWidget(&centralWidget);
 
         for (const AddDockWidget &adw : addList)
@@ -1865,7 +1865,7 @@ void tst_QMainWindow::saveRestore()
         mainWindow.restoreState(stateData);
 
         mainWindow.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
         COMPARE_DOCK_WIDGET_GEOS(dockWidgetGeos, dockWidgetGeometries(&mainWindow));
     }
 }
@@ -1875,8 +1875,8 @@ void tst_QMainWindow::isSeparator()
 {
     QMainWindow mw;
     QDockWidget *dockw = new QDockWidget();
-    mw.addDockWidget(Qt::LeftDockWidgetArea, dockw);
-    mw.addDockWidget(Qt::LeftDockWidgetArea, new QDockWidget());
+    mw.addDockWidget(BobUI::LeftDockWidgetArea, dockw);
+    mw.addDockWidget(BobUI::LeftDockWidgetArea, new QDockWidget());
     dockw->resize(10,10);
     mw.show();
 
@@ -1895,19 +1895,19 @@ class MainWindow : public QMainWindow {
         using QMainWindow::event;
 };
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void tst_QMainWindow::setCursor()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     MainWindow mw;
-    QCursor cur = Qt::WaitCursor;
+    QCursor cur = BobUI::WaitCursor;
     mw.setCursor(cur);
     QCOMPARE(cur.shape(), mw.cursor().shape());
     mw.resize(200,200);
     mw.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mw));
     QCOMPARE(cur.shape(), mw.cursor().shape());
 
     QHoverEvent enterE(QEvent::HoverEnter, QPoint(10,10), QPoint(), QPoint());
@@ -1926,10 +1926,10 @@ void tst_QMainWindow::addToolbarAfterShow()
     QMainWindow mainWindow;
     mainWindow.show();
 
-    QToolBar toolBar;
+    BOBUIoolBar toolBar;
     mainWindow.addToolBar(&toolBar);
 
-    QTRY_VERIFY(!toolBar.isHidden());
+    BOBUIRY_VERIFY(!toolBar.isHidden());
 }
 
 void tst_QMainWindow::centralWidgetSize()
@@ -1944,15 +1944,15 @@ void tst_QMainWindow::centralWidgetSize()
     mainWindow.setCentralWidget(&widget);
 
     mainWindow.show();
-    QTRY_COMPARE(widget.size(), widget.sizeHint());
+    BOBUIRY_COMPARE(widget.size(), widget.sizeHint());
 }
 
 void tst_QMainWindow::fixedSizeCentralWidget()
 {
-    // QTBUG-40410: dock widgets does not get all the available space when
+    // BOBUIBUG-40410: dock widgets does not get all the available space when
     // central widget is fixed size
     QMainWindow mainWindow;
-    mainWindow.setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+    mainWindow.setCorner(BobUI::TopLeftCorner, BobUI::LeftDockWidgetArea);
 
     MyWidget widget;
     widget.setFixedSize(100,100);
@@ -1961,22 +1961,22 @@ void tst_QMainWindow::fixedSizeCentralWidget()
     QDockWidget dock("D1");
     QWidget *child = new MyWidget;
     dock.setWidget(child);
-    mainWindow.addDockWidget(Qt::TopDockWidgetArea, &dock);
+    mainWindow.addDockWidget(BobUI::TopDockWidgetArea, &dock);
 
     QDockWidget dock2("D2");
     dock2.setWidget(new MyWidget);
-    mainWindow.addDockWidget(Qt::LeftDockWidgetArea, &dock2);
+    mainWindow.addDockWidget(BobUI::LeftDockWidgetArea, &dock2);
 
     QSize sizeH = mainWindow.sizeHint();
     QSize mwSize = QSize(sizeH.width(), sizeH.height() * 2);
     mainWindow.resize(mwSize);
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mainWindow));
     if (mainWindow.height() < mwSize.height())
         QSKIP("The screen is too small for this test");
 
     // first, check that we get more than the size hint when we have more space
-    QTRY_VERIFY(child->height() > child->sizeHint().height());
+    BOBUIRY_VERIFY(child->height() > child->sizeHint().height());
     int childHeight = child->height();
 
     if (qGuiApp->styleHints()->showIsFullScreen())
@@ -1984,16 +1984,16 @@ void tst_QMainWindow::fixedSizeCentralWidget()
 
     // then, check that we get nothing when there is no space
     mainWindow.resize(100,100);
-    QTRY_COMPARE(child->height(), 0);
+    BOBUIRY_COMPARE(child->height(), 0);
 
     // finally verify that we get the space back when we resize to the old size
     mainWindow.resize(mwSize);
-    QTRY_COMPARE(child->height(), childHeight);
+    BOBUIRY_COMPARE(child->height(), childHeight);
 }
 
 void tst_QMainWindow::dockWidgetSize()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMainWindow mainWindow;
@@ -2004,10 +2004,10 @@ void tst_QMainWindow::dockWidgetSize()
 
     QDockWidget dock;
     dock.setWidget(new MyWidget);
-    mainWindow.addDockWidget(Qt::TopDockWidgetArea, &dock);
+    mainWindow.addDockWidget(BobUI::TopDockWidgetArea, &dock);
 
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mainWindow));
     if (mainWindow.size() == mainWindow.sizeHint()) {
         QCOMPARE(widget.size(), widget.sizeHint());
         QCOMPARE(dock.widget()->size(), dock.widget()->sizeHint());
@@ -2016,18 +2016,18 @@ void tst_QMainWindow::dockWidgetSize()
     }
 }
 
-void tst_QMainWindow::QTBUG2774_stylechange()
+void tst_QMainWindow::BOBUIBUG2774_stylechange()
 {
 
     QMainWindow mw;
     QDockWidget *dockw = new QDockWidget();
-    mw.addDockWidget(Qt::LeftDockWidgetArea, dockw);
-    mw.addDockWidget(Qt::LeftDockWidgetArea, new QDockWidget());
-    QTextEdit *central = new QTextEdit(&mw);
+    mw.addDockWidget(BobUI::LeftDockWidgetArea, dockw);
+    mw.addDockWidget(BobUI::LeftDockWidgetArea, new QDockWidget());
+    BOBUIextEdit *central = new BOBUIextEdit(&mw);
     mw.setCentralWidget(central);
     dockw->resize(10,10);
     mw.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mw));
     int centralOriginalWidth = central->width();
 
     QVERIFY(!mw.isSeparator(QPoint(4, dockw->pos().y() + dockw->size().height() - 3)));
@@ -2037,20 +2037,20 @@ void tst_QMainWindow::QTBUG2774_stylechange()
 
     {
         mw.setStyleSheet("QMainWindow::separator {  width: 50px; height:50px; }");
-        QTRY_VERIFY(central->width() < centralOriginalWidth);
+        BOBUIRY_VERIFY(central->width() < centralOriginalWidth);
         QVERIFY( mw.isSeparator(QPoint(4, dockw->pos().y() + dockw->size().height())));
         QVERIFY( mw.isSeparator(QPoint(4, dockw->pos().y() + dockw->size().height() + 49)));
     }
 
     {
         mw.setStyleSheet("QMainWindow::separator {  width: 0px; height: 0px; }");
-        QTRY_VERIFY(central->width() > centralOriginalWidth);
+        BOBUIRY_VERIFY(central->width() > centralOriginalWidth);
         QVERIFY(!mw.isSeparator(QPoint(4, dockw->pos().y() + dockw->size().height())));
         QVERIFY(!mw.isSeparator(QPoint(4, dockw->pos().y() + dockw->size().height() + 1)));
     }
 }
 
-void tst_QMainWindow::QTBUG15080_restoreState()
+void tst_QMainWindow::BOBUIBUG15080_restoreState()
 {
     QByteArray state;
 
@@ -2059,8 +2059,8 @@ void tst_QMainWindow::QTBUG15080_restoreState()
         QMainWindow mw1;
         QDockWidget * dw1 = new  QDockWidget();
         dw1->setObjectName("Left DockWidget");
-        mw1.addDockWidget(Qt::LeftDockWidgetArea, dw1);
-        mw1.setCentralWidget(new QTextEdit());
+        mw1.addDockWidget(BobUI::LeftDockWidgetArea, dw1);
+        mw1.setCentralWidget(new BOBUIextEdit());
         mw1.show();
         QApplication::processEvents();
         dw1->setFixedWidth(101);
@@ -2074,10 +2074,10 @@ void tst_QMainWindow::QTBUG15080_restoreState()
     QMainWindow mw2;
     QDockWidget * dw2 = new  QDockWidget();
     dw2->setObjectName("Left DockWidget");
-    mw2.addDockWidget(Qt::LeftDockWidgetArea, dw2);
-    mw2.setCentralWidget(new QTextEdit());
+    mw2.addDockWidget(BobUI::LeftDockWidgetArea, dw2);
+    mw2.setCentralWidget(new BOBUIextEdit());
     mw2.restoreState(state);
-    //QTBUG15080 caused by setStyleSheet
+    //BOBUIBUG15080 caused by setStyleSheet
     mw2.setStyleSheet("color:red");
     mw2.show();
     QApplication::processEvents();
@@ -2089,7 +2089,7 @@ void tst_QMainWindow::QTBUG15080_restoreState()
 void tst_QMainWindow::toggleUnifiedTitleAndToolBarOnMac()
 {
     QMainWindow mw;
-    QToolBar *tb = new QToolBar;
+    BOBUIoolBar *tb = new BOBUIoolBar;
     tb->addAction("Test");
     mw.addToolBar(tb);
     mw.setUnifiedTitleAndToolBarOnMac(true);
@@ -2102,10 +2102,10 @@ void tst_QMainWindow::toggleUnifiedTitleAndToolBarOnMac()
 }
 #endif
 
-void tst_QMainWindow::QTBUG21378_animationFinished()
+void tst_QMainWindow::BOBUIBUG21378_animationFinished()
 {
     QMainWindow w;
-    QToolBar *pToolBar = new QToolBar;
+    BOBUIoolBar *pToolBar = new BOBUIoolBar;
     pToolBar->setFloatable(false);
     w.addToolBar(pToolBar);
     w.resize(800, 600);
@@ -2113,30 +2113,30 @@ void tst_QMainWindow::QTBUG21378_animationFinished()
     CToolBarTimer *tbMoveTimer = new CToolBarTimer(pToolBar);
     CMainWindowTimer *mwClickTimer = new CMainWindowTimer(&w);
 
-    QTest::qWait(5000);
+    BOBUIest::qWait(5000);
     delete tbMoveTimer;
     delete mwClickTimer;
     QVERIFY(true);
 }
 
-Q_DECLARE_METATYPE(Qt::Orientation)
+Q_DECLARE_METATYPE(BobUI::Orientation)
 
 void tst_QMainWindow::resizeDocks_data()
 {
-    QTest::addColumn<Qt::Orientation>("orientation");
-    QTest::addColumn<QStringList>("docks");
-    QTest::addColumn<QList<int> >("sizes");
+    BOBUIest::addColumn<BobUI::Orientation>("orientation");
+    BOBUIest::addColumn<QStringList>("docks");
+    BOBUIest::addColumn<QList<int> >("sizes");
 
-    QTest::newRow("1") << Qt::Horizontal
+    BOBUIest::newRow("1") << BobUI::Horizontal
         << (QStringList() << "blue" << "orange" << "green" << "gray")
         << (QList<int>() << 190 << 190 << 320 << 160);
 
-    QTest::newRow("2") << Qt::Vertical
+    BOBUIest::newRow("2") << BobUI::Vertical
         << (QStringList() << "yellow"  << "orange")
         << (QList<int>() << 147   <<  133 );
 
 
-    QTest::newRow("3") << Qt::Horizontal
+    BOBUIest::newRow("3") << BobUI::Horizontal
         << (QStringList() << "blue" << "yellow")
         << (QList<int>() << 190 <<  600);
 }
@@ -2145,13 +2145,13 @@ void tst_QMainWindow::resizeDocks()
 {
     AddList addList;
     addList
-        << AddDockWidget("blue", Qt::LeftDockWidgetArea)
-        << AddDockWidget("red", Qt::TopDockWidgetArea)
+        << AddDockWidget("blue", BobUI::LeftDockWidgetArea)
+        << AddDockWidget("red", BobUI::TopDockWidgetArea)
         << AddDockWidget("pink", "red")
-        << AddDockWidget("yellow", Qt::RightDockWidgetArea)
-        << AddDockWidget("orange", Qt::RightDockWidgetArea)
-        << AddDockWidget("green", "orange", Qt::Horizontal)
-        << AddDockWidget("gray", "orange", Qt::Horizontal);
+        << AddDockWidget("yellow", BobUI::RightDockWidgetArea)
+        << AddDockWidget("orange", BobUI::RightDockWidgetArea)
+        << AddDockWidget("green", "orange", BobUI::Horizontal)
+        << AddDockWidget("gray", "orange", BobUI::Horizontal);
     /*
         +--------------------------------+
         |          red/pink              |
@@ -2163,7 +2163,7 @@ void tst_QMainWindow::resizeDocks()
 
     */
 
-    QMainWindow mw(0, Qt::BypassWindowManagerHint);
+    QMainWindow mw(0, BobUI::BypassWindowManagerHint);
     mw.setDockNestingEnabled(true);
     mw.resize(1800, 600);
 
@@ -2174,12 +2174,12 @@ void tst_QMainWindow::resizeDocks()
     for (QDockWidget *dw : dockWidgets)
         dw->setStyleSheet( "* { background-color: " + dw->objectName() +" }");
 
-    mw.setCentralWidget(new QTextEdit);
+    mw.setCentralWidget(new BOBUIextEdit);
 
     mw.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&mw));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&mw));
 
-    QFETCH(Qt::Orientation, orientation);
+    QFETCH(BobUI::Orientation, orientation);
     QFETCH(const QStringList, docks);
     QFETCH(QList<int>, sizes);
 
@@ -2199,38 +2199,38 @@ void tst_QMainWindow::resizeDocks()
     for (int i = 0; i < docks.size(); ++i) {
         totalFromList += sizes[i];
         QSize s = list[i]->size();
-        actualTotal += (orientation == Qt::Horizontal) ? s.width() : s.height();
+        actualTotal += (orientation == BobUI::Horizontal) ? s.width() : s.height();
 //        qDebug() << list[i] << list[i]->size() << sizes[i];
     }
 
     for (int i = 0; i < docks.size(); ++i) {
         QSize s = list[i]->size();
-        int value = (orientation == Qt::Horizontal) ? s.width() : s.height();
+        int value = (orientation == BobUI::Horizontal) ? s.width() : s.height();
         QCOMPARE(value,  qRound(sizes[i]*actualTotal/double(totalFromList)));
     }
 }
 
-#if QT_CONFIG(dockwidget) && QT_CONFIG(tabbar)
-void tst_QMainWindow::QTBUG52175_tabifiedDockWidgetActivated()
+#if BOBUI_CONFIG(dockwidget) && BOBUI_CONFIG(tabbar)
+void tst_QMainWindow::BOBUIBUG52175_tabifiedDockWidgetActivated()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QMainWindow w;
 
     QDockWidget *dwFirst = new QDockWidget(&w);
     dwFirst->setWidget(new QWidget(dwFirst));
-    w.addDockWidget(Qt::LeftDockWidgetArea, dwFirst);
+    w.addDockWidget(BobUI::LeftDockWidgetArea, dwFirst);
 
     QDockWidget *dwSecond = new QDockWidget(&w);
     dwSecond->setWidget(new QWidget(dwSecond));
-    w.addDockWidget(Qt::LeftDockWidgetArea, dwSecond);
+    w.addDockWidget(BobUI::LeftDockWidgetArea, dwSecond);
 
     w.tabifyDockWidget(dwFirst, dwSecond);
     w.show();
-    QVERIFY(QTest::qWaitForWindowActive(&w));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&w));
 
-    QTabBar *tabBar = w.findChild<QTabBar *>();
+    BOBUIabBar *tabBar = w.findChild<BOBUIabBar *>();
     QVERIFY(tabBar);
 
     QDockWidget *activated = nullptr;
@@ -2252,30 +2252,30 @@ void tst_QMainWindow::QTBUG52175_tabifiedDockWidgetActivated()
     QCOMPARE(activated, nullptr);
 
     tabBar->setCurrentIndex(0);
-    QTRY_COMPARE(activated, dwFirst);
+    BOBUIRY_COMPARE(activated, dwFirst);
     activated = nullptr;
 
     tabBar->setCurrentIndex(1);
-    QTRY_COMPARE(activated, dwSecond);
+    BOBUIRY_COMPARE(activated, dwSecond);
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QMainWindow::expandedToolBarHitTesting()
 {
     QMainWindow mainWindow;
     if (mainWindow.style()->pixelMetric(
         QStyle::PM_DockWidgetSeparatorExtent, nullptr, &mainWindow) != 1) {
-        QSKIP("Style does not trigger the use of qt_qmainwindow_extended_splitter");
+        QSKIP("Style does not trigger the use of bobui_qmainwindow_extended_splitter");
     }
 
     mainWindow.setAnimated(false);
 
     auto *dockWidget = new QDockWidget(&mainWindow);
     dockWidget->setWidget(new QWidget(dockWidget));
-    mainWindow.addDockWidget(Qt::RightDockWidgetArea, dockWidget);
+    mainWindow.addDockWidget(BobUI::RightDockWidgetArea, dockWidget);
 
-    auto *toolBar = new QToolBar(&mainWindow);
+    auto *toolBar = new BOBUIoolBar(&mainWindow);
     for (int i = 0; i < 10; ++i)
         toolBar->addWidget(new QLabel(QString("Label %1").arg(i)));
     mainWindow.addToolBar(toolBar);
@@ -2286,32 +2286,32 @@ void tst_QMainWindow::expandedToolBarHitTesting()
 
     mainWindow.resize(centralWidget->minimumSize());
     mainWindow.show();
-    QVERIFY(QTest::qWaitForWindowActive(&mainWindow));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&mainWindow));
 
-    auto *toolBarExtension = toolBar->findChild<QToolBarExtension*>();
+    auto *toolBarExtension = toolBar->findChild<BOBUIoolBarExtension*>();
     QVERIFY(toolBarExtension);
     QPoint buttonCenter = toolBarExtension->parentWidget()->mapTo(&mainWindow, toolBarExtension->geometry().center());
-    QTest::mouseMove(mainWindow.windowHandle(), buttonCenter);
-    QTest::mouseClick(mainWindow.windowHandle(), Qt::LeftButton, Qt::NoModifier, buttonCenter);
+    BOBUIest::mouseMove(mainWindow.windowHandle(), buttonCenter);
+    BOBUIest::mouseClick(mainWindow.windowHandle(), BobUI::LeftButton, BobUI::NoModifier, buttonCenter);
 
-    auto *toolBarLayout = static_cast<QToolBarLayout*>(toolBar->layout());
+    auto *toolBarLayout = static_cast<BOBUIoolBarLayout*>(toolBar->layout());
     QVERIFY(toolBarLayout);
-    QTRY_COMPARE(toolBarLayout->expanded, true);
+    BOBUIRY_COMPARE(toolBarLayout->expanded, true);
 
-    auto *splitter = mainWindow.findChild<QWidget*>("qt_qmainwindow_extended_splitter");
+    auto *splitter = mainWindow.findChild<QWidget*>("bobui_qmainwindow_extended_splitter");
     QVERIFY(splitter);
     QCOMPARE(splitter->parentWidget(), &mainWindow);
 
     // Moving the mouse over the splitter when it's covered by the toolbar
     // extension area should not trigger a closing of the extension area.
-    QTest::mouseMove(mainWindow.windowHandle(), splitter->geometry().center());
+    BOBUIest::mouseMove(mainWindow.windowHandle(), splitter->geometry().center());
     QCOMPARE(toolBarLayout->expanded, true);
 
     // Nor should it result in a split cursor shape, indicating we can move
     // the splitter.
-    QCOMPARE(mainWindow.cursor().shape(), Qt::ArrowCursor);
+    QCOMPARE(mainWindow.cursor().shape(), BobUI::ArrowCursor);
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
-QTEST_MAIN(tst_QMainWindow)
+BOBUIEST_MAIN(tst_QMainWindow)
 #include "tst_qmainwindow.moc"

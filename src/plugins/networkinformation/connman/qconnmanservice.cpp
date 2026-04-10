@@ -1,19 +1,19 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qconnmanservice.h"
 #include "qconnmannetworkinformationbackend.h"
 
 #include <QObject>
 #include <QList>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusError>
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusMessage>
-#include <QtDBus/QDBusMetaType>
-#include <QtDBus/QDBusReply>
-#include <QtDBus/QDBusObjectPath>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/QDBusError>
+#include <BobUIDBus/QDBusInterface>
+#include <BobUIDBus/QDBusMessage>
+#include <BobUIDBus/QDBusMetaType>
+#include <BobUIDBus/QDBusReply>
+#include <BobUIDBus/QDBusObjectPath>
 
 #include <utility> // for std::pair
 
@@ -22,9 +22,9 @@
 #define CONNMAN_DBUS_INTERFACE_L1 CONNMAN_DBUS_INTERFACE ""_L1
 #define CONNMAN_DBUS_PATH "/"_L1
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 using ConnmanService = QMap<QString, QVariant>;
 using ConnmanServiceEntry = std::pair<QDBusObjectPath, ConnmanService>;
@@ -129,6 +129,6 @@ QString QConnManInterface::findServiceType()
     return QString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qconnmanservice.cpp"

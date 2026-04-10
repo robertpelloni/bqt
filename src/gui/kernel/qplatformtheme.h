@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMTHEME_H
 #define QPLATFORMTHEME_H
@@ -10,17 +10,17 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/QKeySequence>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/QObject>
+#include <BobUICore/QScopedPointer>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/QKeySequence>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIcon;
 class QIconEngine;
@@ -294,11 +294,11 @@ public:
     virtual bool usePlatformNativeDialog(DialogType type) const;
     virtual QPlatformDialogHelper *createPlatformDialogHelper(DialogType type) const;
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
     virtual QPlatformSystemTrayIcon *createPlatformSystemTrayIcon() const;
 #endif
 
-    virtual Qt::ColorScheme colorScheme() const;
+    virtual BobUI::ColorScheme colorScheme() const;
 
     virtual const QPalette *palette(Palette type = SystemPalette) const;
 
@@ -311,16 +311,16 @@ public:
                            QPlatformTheme::IconOptions iconOptions = { }) const;
     virtual QIconEngine *createIconEngine(const QString &iconName) const;
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     virtual QList<QKeySequence> keyBindings(QKeySequence::StandardKey key) const;
 #endif
 
     virtual QString standardButtonText(int button) const;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     virtual QKeySequence standardButtonShortcut(int button) const;
 #endif
-    virtual void requestColorScheme(Qt::ColorScheme scheme);
-    virtual Qt::ContrastPreference contrastPreference() const;
+    virtual void requestColorScheme(BobUI::ColorScheme scheme);
+    virtual BobUI::ContrastPreference contrastPreference() const;
 
     static QVariant defaultThemeHint(ThemeHint hint);
     static QString defaultStandardButtonText(int button);
@@ -335,6 +335,6 @@ private:
     friend class QPlatformThemeFactory;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMTHEME_H

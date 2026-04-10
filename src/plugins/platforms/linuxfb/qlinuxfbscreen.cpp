@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlinuxfbscreen.h"
-#include <QtFbSupport/private/qfbcursor_p.h>
-#include <QtFbSupport/private/qfbwindow_p.h>
-#include <QtCore/QFile>
-#include <QtCore/QRegularExpression>
-#include <QtCore/q20utility.h>
-#include <QtGui/QPainter>
+#include <BobUIFbSupport/private/qfbcursor_p.h>
+#include <BobUIFbSupport/private/qfbwindow_p.h>
+#include <BobUICore/QFile>
+#include <BobUICore/QRegularExpression>
+#include <BobUICore/q20utility.h>
+#include <BobUIGui/QPainter>
 
-#include <private/qcore_unix_p.h> // overrides QT_OPEN
+#include <private/qcore_unix_p.h> // overrides BOBUI_OPEN
 #include <qimage.h>
 #include <qdebug.h>
 
@@ -28,20 +28,20 @@
 
 #include <linux/fb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static int openFramebufferDevice(const QString &dev)
 {
     int fd = -1;
 
     if (access(dev.toLatin1().constData(), R_OK|W_OK) == 0)
-        fd = QT_OPEN(dev.toLatin1().constData(), O_RDWR);
+        fd = BOBUI_OPEN(dev.toLatin1().constData(), O_RDWR);
 
     if (fd == -1) {
         if (access(dev.toLatin1().constData(), R_OK) == 0)
-            fd = QT_OPEN(dev.toLatin1().constData(), O_RDONLY);
+            fd = BOBUI_OPEN(dev.toLatin1().constData(), O_RDONLY);
     }
 
     return fd;
@@ -219,12 +219,12 @@ static int openTtyDevice(const QString &device)
     int fd = -1;
     if (device.isEmpty()) {
         for (const char * const *dev = devs; *dev; ++dev) {
-            fd = QT_OPEN(*dev, O_RDWR);
+            fd = BOBUI_OPEN(*dev, O_RDWR);
             if (fd != -1)
                 break;
         }
     } else {
-        fd = QT_OPEN(QFile::encodeName(device).constData(), O_RDWR);
+        fd = BOBUI_OPEN(QFile::encodeName(device).constData(), O_RDWR);
     }
 
     return fd;
@@ -245,7 +245,7 @@ static void resetTty(int ttyfd, int oldMode)
 {
     ioctl(ttyfd, KDSETMODE, oldMode);
 
-    QT_CLOSE(ttyfd);
+    BOBUI_CLOSE(ttyfd);
 }
 
 static void blankScreen(int fd, bool on)
@@ -413,7 +413,7 @@ QPixmap QLinuxFbScreen::grabWindow(WId wid, int x, int y, int width, int height)
     return QPixmap();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlinuxfbscreen.cpp"
 

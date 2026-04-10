@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 class tst_SingleSkip: public QObject
 {
@@ -18,6 +18,6 @@ void tst_SingleSkip::myTest() const
     QSKIP("skipping test");
 }
 
-QTEST_MAIN(tst_SingleSkip)
+BOBUIEST_MAIN(tst_SingleSkip)
 
 #include "tst_singleskip.moc"

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Make sure we get a real Q_ASSERT even in release builds
-#ifdef QT_NO_DEBUG
-# undef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
+# undef BOBUI_NO_DEBUG
 #endif
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QPair>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QPair>
+#include <BOBUIest>
 
 class tst_PairDiagnostics: public QObject
 {
@@ -33,6 +33,6 @@ void tst_PairDiagnostics::testStdPair() const
     QCOMPARE(pair1, pair2);
 }
 
-QTEST_MAIN(tst_PairDiagnostics)
+BOBUIEST_MAIN(tst_PairDiagnostics)
 
 #include "tst_pairdiagnostics.moc"

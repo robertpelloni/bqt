@@ -13,7 +13,7 @@ OmniCalendar::OmniCalendar(QQuickItem *parent)
       m_cellHeight(40)
 {
     setObjectName("OmniCalendar");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
 
     setWidth(m_cellWidth * 7);
     setHeight(m_cellHeight * 7 + 40); // 7 rows + header
@@ -82,21 +82,21 @@ void OmniCalendar::paint(QPainter *painter) {
     painter->fillRect(rect, QColor("#1E1E1E"));
 
     // Header
-    painter->setPen(Qt::white);
+    painter->setPen(BobUI::white);
     QFont font = painter->font();
     font.setBold(true);
     font.setPointSize(12);
     painter->setFont(font);
 
     QString monthStr = QLocale().monthName(m_currentMonth.month()) + " " + QString::number(m_currentMonth.year());
-    painter->drawText(QRectF(0, 0, rect.width(), 40), Qt::AlignCenter, monthStr);
+    painter->drawText(QRectF(0, 0, rect.width(), 40), BobUI::AlignCenter, monthStr);
 
     // Prev/Next Buttons
     m_prevButtonRect = QRectF(10, 10, 20, 20);
     m_nextButtonRect = QRectF(rect.width() - 30, 10, 20, 20);
     
-    painter->drawText(m_prevButtonRect, Qt::AlignCenter, "<");
-    painter->drawText(m_nextButtonRect, Qt::AlignCenter, ">");
+    painter->drawText(m_prevButtonRect, BobUI::AlignCenter, "<");
+    painter->drawText(m_nextButtonRect, BobUI::AlignCenter, ">");
 
     // Days of week header
     font.setBold(false);
@@ -106,7 +106,7 @@ void OmniCalendar::paint(QPainter *painter) {
     QStringList days = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
     for (int i = 0; i < 7; ++i) {
         painter->setPen(QColor("#888888"));
-        painter->drawText(QRectF(i * m_cellWidth, 40, m_cellWidth, m_cellHeight), Qt::AlignCenter, days[i]);
+        painter->drawText(QRectF(i * m_cellWidth, 40, m_cellWidth, m_cellHeight), BobUI::AlignCenter, days[i]);
     }
 
     // Grid Dates
@@ -128,12 +128,12 @@ void OmniCalendar::paint(QPainter *painter) {
             QPainterPath bgPath;
             bgPath.addRoundedRect(cellRect.adjusted(2, 2, -2, -2), 4, 4);
             painter->fillPath(bgPath, m_accentColor);
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
         } else {
-            painter->setPen(Qt::white);
+            painter->setPen(BobUI::white);
         }
 
-        painter->drawText(cellRect, Qt::AlignCenter, QString::number(day));
+        painter->drawText(cellRect, BobUI::AlignCenter, QString::number(day));
 
         col++;
         if (col > 6) {

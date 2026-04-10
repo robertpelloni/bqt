@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandhardwareintegration_p.h"
 
 #include "qwaylanddisplay_p.h"
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandHardwareIntegration::QWaylandHardwareIntegration(struct ::wl_registry *registry, int id)
-    : qt_hardware_integration(registry, id, 1)
+    : bobui_hardware_integration(registry, id, 1)
 {
 }
 
@@ -35,4 +35,4 @@ void QWaylandHardwareIntegration::hardware_integration_server_backend(const QStr
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsegldeviceintegration.h"
 #include "qeglfskmsegldevice.h"
 #include "qeglfskmsegldevicescreen.h"
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 #include "private/qeglfswindow_p.h"
 #include "private/qeglfscursor_p.h"
 #include <QLoggingCategory>
 #include <private/qmath_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsEglDeviceIntegration::QEglFSKmsEglDeviceIntegration()
     : m_egl_device(EGL_NO_DEVICE_EXT)
@@ -106,7 +106,7 @@ void QEglFSKmsEglDeviceWindow::resetSurface()
     EGLDisplay display = screen()->display();
     EGLint streamAttribs[3];
     int streamAttribCount = 0;
-    int fifoLength = qEnvironmentVariableIntValue("QT_QPA_EGLFS_STREAM_FIFO_LENGTH");
+    int fifoLength = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_STREAM_FIFO_LENGTH");
     if (fifoLength > 0) {
         streamAttribs[streamAttribCount++] = EGL_STREAM_FIFO_LENGTH_KHR;
         streamAttribs[streamAttribCount++] = fifoLength;
@@ -168,7 +168,7 @@ void QEglFSKmsEglDeviceWindow::resetSurface()
         }
     }
 
-    QByteArray reqLayerIndex = qgetenv("QT_QPA_EGLFS_LAYER_INDEX");
+    QByteArray reqLayerIndex = qgetenv("BOBUI_QPA_EGLFS_LAYER_INDEX");
     if (!reqLayerIndex.isEmpty()) {
         int idx = reqLayerIndex.toInt();
         if (idx >= 0 && idx < layers.size()) {
@@ -267,7 +267,7 @@ bool QEglFSKmsEglDeviceIntegration::query_egl_device()
 
 QPlatformCursor *QEglFSKmsEglDeviceIntegration::createCursor(QPlatformScreen *screen) const
 {
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (screenConfig()->separateScreens())
         return new QEglFSCursor(screen);
 #else
@@ -276,4 +276,4 @@ QPlatformCursor *QEglFSKmsEglDeviceIntegration::createCursor(QPlatformScreen *sc
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

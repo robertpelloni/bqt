@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'preferencesdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,25 +9,25 @@
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
 #include <gridpanel_p.h>
 #include <previewconfigurationwidget_p.h>
 #include "fontpanel.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_PreferencesDialog
 {
@@ -44,8 +44,8 @@ public:
     QGroupBox *m_templatePathGroupBox;
     QGridLayout *gridLayout;
     QListWidget *m_templatePathListWidget;
-    QToolButton *m_addTemplatePathButton;
-    QToolButton *m_removeTemplatePathButton;
+    BOBUIoolButton *m_addTemplatePathButton;
+    BOBUIoolButton *m_removeTemplatePathButton;
     QSpacerItem *spacerItem;
     qdesigner_internal::GridPanel *m_gridPanel;
     QFrame *line;
@@ -99,12 +99,12 @@ public:
 
         gridLayout->addWidget(m_templatePathListWidget, 0, 0, 1, 3);
 
-        m_addTemplatePathButton = new QToolButton(m_templatePathGroupBox);
+        m_addTemplatePathButton = new BOBUIoolButton(m_templatePathGroupBox);
         m_addTemplatePathButton->setObjectName("m_addTemplatePathButton");
 
         gridLayout->addWidget(m_addTemplatePathButton, 1, 0, 1, 1);
 
-        m_removeTemplatePathButton = new QToolButton(m_templatePathGroupBox);
+        m_removeTemplatePathButton = new BOBUIoolButton(m_templatePathGroupBox);
         m_removeTemplatePathButton->setObjectName("m_removeTemplatePathButton");
 
         gridLayout->addWidget(m_removeTemplatePathButton, 1, 1, 1, 1);
@@ -136,7 +136,7 @@ public:
 
         m_dialogButtonBox = new QDialogButtonBox(PreferencesDialog);
         m_dialogButtonBox->setObjectName("m_dialogButtonBox");
-        m_dialogButtonBox->setOrientation(Qt::Orientation::Horizontal);
+        m_dialogButtonBox->setOrientation(BobUI::Orientation::Horizontal);
         m_dialogButtonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         vboxLayout->addWidget(m_dialogButtonBox);
@@ -164,6 +164,6 @@ namespace Ui {
     class PreferencesDialog: public Ui_PreferencesDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PREFERENCESDIALOG_H

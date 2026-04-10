@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author James Turner <james.turner@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -12,13 +12,13 @@
 #include "qcocoaapplicationdelegate.h"
 #include "qcocoahelpers.h"
 
-#include <QtGui/QGuiApplication>
-#include <QtCore/QDebug>
+#include <BobUIGui/QGuiApplication>
+#include <BobUICore/QDebug>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QList<QCocoaMenuBar*> static_menubars;
 
@@ -183,7 +183,7 @@ void QCocoaMenuBar::syncMenu_helper(QPlatformMenu *menu, bool menubarUpdate)
         // MenuCommands table, which in turn depends on the preferredLocalizations
         // of the AppKit bundle. We don't do any automatic translation of menu
         // titles visible to the user, so this relies on the application developer
-        // having chosen translated titles that match AppKit's, and that the Qt
+        // having chosen translated titles that match AppKit's, and that the BobUI
         // preferred UI languages match AppKit's preferredLocalizations.
 
         // In the case of the Edit menu, AppKit uses the NSMenuItem's title
@@ -193,14 +193,14 @@ void QCocoaMenuBar::syncMenu_helper(QPlatformMenu *menu, bool menubarUpdate)
         // to ensure the title matches AppKit's localization.
 
         // Unfortunately, the title we have at this point may have gone through
-        // Qt's i18n machinery already, via e.g. tr("Edit") in the application,
+        // BobUI's i18n machinery already, via e.g. tr("Edit") in the application,
         // in which case we don't know the context of the translation, and can't
         // do a reverse lookup to go back to the untranslated title to pass to
         // AppKit. As a workaround we translate the title via a our context,
         // and document that the user needs to ensure their application matches
         // this translation.
         if ([menuTitle isEqual:@"Edit"] || [menuTitle isEqual:tr("Edit").toNSString()]) {
-            menuItem.title = qt_mac_AppKitString(@"InputManager", @"Edit");
+            menuItem.title = bobui_mac_AppKitString(@"InputManager", @"Edit");
         } else {
             // The Edit menu is the only case we know of so far, but to be on
             // the safe side we always sync the menu title.
@@ -268,11 +268,11 @@ void QCocoaMenuBar::updateMenuBarImmediately()
     QCocoaWindow *cw = findWindowForMenubar();
 
     QWindow *win = cw ? cw->window() : nullptr;
-    if (win && (win->flags() & Qt::Popup) == Qt::Popup) {
+    if (win && (win->flags() & BobUI::Popup) == BobUI::Popup) {
         // context menus, comboboxes, etc. don't need to update the menubar,
-        // but if an application has only Qt::Tool window(s) on start,
+        // but if an application has only BobUI::Tool window(s) on start,
         // we still have to update the menubar.
-        if ((win->flags() & Qt::WindowType_Mask) != Qt::Tool)
+        if ((win->flags() & BobUI::WindowType_Mask) != BobUI::Tool)
             return;
         NSApplication *app = [NSApplication sharedApplication];
         if (![app.delegate isKindOfClass:[QCocoaApplicationDelegate class]])
@@ -338,7 +338,7 @@ void QCocoaMenuBar::updateMenuBarImmediately()
     NSApp.mainMenu = newMainMenu;
 
     insertWindowMenu();
-    [loader qtTranslateApplicationMenu];
+    [loader bobuiTranslateApplicationMenu];
 }
 
 void QCocoaMenuBar::insertWindowMenu()
@@ -351,12 +351,12 @@ void QCocoaMenuBar::insertWindowMenu()
         return;
 
     NSMenu *mainMenu = app.mainMenu;
-    NSMenuItem *winMenuItem = [[[NSMenuItem alloc] initWithTitle:@"QtWindowMenu"
+    NSMenuItem *winMenuItem = [[[NSMenuItem alloc] initWithTitle:@"BobUIWindowMenu"
                                                    action:nil keyEquivalent:@""] autorelease];
     // We don't want to show this menu, nobody asked us to do so:
     winMenuItem.hidden = YES;
 
-    winMenuItem.submenu = [[[NSMenu alloc] initWithTitle:@"QtWindowMenu"] autorelease];
+    winMenuItem.submenu = [[[NSMenu alloc] initWithTitle:@"BobUIWindowMenu"] autorelease];
 
     // AppKit has a bug in [NSApplication setWindowsMenu:] where it will resolve
     // the last item of the window menu's itemArray, but not account for the array
@@ -396,7 +396,7 @@ QList<QCocoaMenuItem*> QCocoaMenuBar::merged() const
 
 bool QCocoaMenuBar::shouldDisable(QCocoaWindow *active) const
 {
-    if (active && (active->window()->modality() == Qt::NonModal))
+    if (active && (active->window()->modality() == BobUI::NonModal))
         return false;
 
     if (m_window == active) {
@@ -406,10 +406,10 @@ bool QCocoaMenuBar::shouldDisable(QCocoaWindow *active) const
 
     QWindowList topWindows(qApp->topLevelWindows());
     // When there is an application modal window on screen, the entries of
-    // the menubar should be disabled. The exception in Qt is that if the
+    // the menubar should be disabled. The exception in BobUI is that if the
     // modal window is the only window on screen, then we enable the menu bar.
     for (auto *window : std::as_const(topWindows)) {
-        if (window->isVisible() && window->modality() == Qt::ApplicationModal) {
+        if (window->isVisible() && window->modality() == BobUI::ApplicationModal) {
             // check for other visible windows
             for (auto *other : std::as_const(topWindows)) {
                 if ((window != other) && (other->isVisible())) {
@@ -457,6 +457,6 @@ QCocoaWindow *QCocoaMenuBar::cocoaWindow() const
     return m_window.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcocoamenubar.cpp"

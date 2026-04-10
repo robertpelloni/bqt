@@ -1,20 +1,20 @@
 // Copyright (C) 2024 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpdfoutputintent.h"
 
-#ifndef QT_NO_PDF
+#ifndef BOBUI_NO_PDF
 
-#include <QtCore/qfile.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qurl.h>
 
-#include <QtGui/qcolorspace.h>
+#include <BobUIGui/qcolorspace.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QPdfOutputIntentPrivate : public QSharedData
 {
@@ -35,7 +35,7 @@ public:
 
 /*!
     \class QPdfOutputIntent
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
     \since 6.8
 
@@ -194,8 +194,8 @@ void QPdfOutputIntent::setOutputProfile(const QColorSpace &profile)
     d->outputProfile = profile;
 }
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QPdfOutputIntentPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QPdfOutputIntentPrivate)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_PDF
+#endif // BOBUI_NO_PDF

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "chip.h"
 #include "mainwindow.h"
@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     populateScene();
 
     QSplitter *vSplitter = new QSplitter;
-    vSplitter->setOrientation(Qt::Vertical);
+    vSplitter->setOrientation(BobUI::Vertical);
     vSplitter->addWidget(h1Splitter);
     vSplitter->addWidget(h2Splitter);
 
@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::populateScene()
 {
-    QImage image(":/qt4logo.png");
+    QImage image(":/bobui4logo.png");
 
     // Populate scene
     int xx = 0;

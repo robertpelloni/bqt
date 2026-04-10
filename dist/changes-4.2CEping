@@ -1,10 +1,10 @@
-Changes for Qt/CE 4.2.x "Ping" release.
+Changes for BobUI/CE 4.2.x "Ping" release.
 
 ****************************************************************************
 *                           Features                                       *
 ****************************************************************************
 
-- Added QtNetwork
+- Added BobUINetwork
 
 - Added QFEATURES system
 
@@ -55,7 +55,7 @@ Changes for Qt/CE 4.2.x "Ping" release.
 - QSessionManager
     * fix id creation
 
-- QTabWidget
+- BOBUIabWidget
     * fix positioning bug
 
 - QWidget

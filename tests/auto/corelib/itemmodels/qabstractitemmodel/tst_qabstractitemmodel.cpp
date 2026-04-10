@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
-#include <QtCore/QCoreApplication>
-#if QT_CONFIG(sortfilterproxymodel)
-#include <QtCore/QSortFilterProxyModel>
+#include <BobUICore/QCoreApplication>
+#if BOBUI_CONFIG(sortfilterproxymodel)
+#include <BobUICore/QSortFilterProxyModel>
 #endif
-#include <QtCore/QStringListModel>
-#include <QtGui/QStandardItemModel>
+#include <BobUICore/QStringListModel>
+#include <BobUIGui/QStandardItemModel>
 
 #include "dynamictreemodel.h"
 
@@ -84,7 +84,7 @@ private slots:
     void testMoveWithinOwnRange_data();
     void testMoveWithinOwnRange();
 
-#if QT_CONFIG(sortfilterproxymodel)
+#if BOBUI_CONFIG(sortfilterproxymodel)
     void testMoveThroughProxy();
 
     void testReset();
@@ -116,11 +116,11 @@ private:
 
     It is a table implemented as a vector of vectors of strings.
  */
-class QtTestModel: public QAbstractItemModel
+class BobUITestModel: public QAbstractItemModel
 {
 public:
-    QtTestModel(int rows, int columns, QObject *parent = nullptr);
-    QtTestModel(const QList<QList<QString> > tbl, QObject *parent = nullptr);
+    BobUITestModel(int rows, int columns, QObject *parent = nullptr);
+    BobUITestModel(const QList<QList<QString> > tbl, QObject *parent = nullptr);
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &) const override;
     int rowCount(const QModelIndex &parent) const override;
@@ -139,7 +139,7 @@ public:
                      const QModelIndex &destinationParent, int destinationChild) override;
     void reset();
 
-    bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                  int row, int column, const QModelIndex &parent) const override;
 
     int cCount, rCount;
@@ -149,7 +149,7 @@ public:
 
 Q_DECLARE_METATYPE(QAbstractItemModel::LayoutChangeHint);
 
-QtTestModel::QtTestModel(int rows, int columns, QObject *parent)
+BobUITestModel::BobUITestModel(int rows, int columns, QObject *parent)
     : QAbstractItemModel(parent), cCount(columns), rCount(rows), wrongIndex(false)
 {
     table.resize(rows);
@@ -161,7 +161,7 @@ QtTestModel::QtTestModel(int rows, int columns, QObject *parent)
     }
 }
 
-QtTestModel::QtTestModel(const QList<QList<QString> > tbl, QObject *parent)
+BobUITestModel::BobUITestModel(const QList<QList<QString> > tbl, QObject *parent)
     : QAbstractItemModel(parent), wrongIndex(false)
 {
     table = tbl;
@@ -169,17 +169,17 @@ QtTestModel::QtTestModel(const QList<QList<QString> > tbl, QObject *parent)
     cCount = tbl.at(0).size();
 }
 
-QModelIndex QtTestModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex BobUITestModel::index(int row, int column, const QModelIndex &parent) const
 {
     return hasIndex(row, column, parent) ? createIndex(row, column) : QModelIndex();
 }
 
-QModelIndex QtTestModel::parent(const QModelIndex &) const { return QModelIndex(); }
-int QtTestModel::rowCount(const QModelIndex &parent) const { return parent.isValid() ? 0 : rCount; }
-int QtTestModel::columnCount(const QModelIndex &parent) const { return parent.isValid() ? 0 : cCount; }
-bool QtTestModel::hasChildren(const QModelIndex &) const { return false; }
+QModelIndex BobUITestModel::parent(const QModelIndex &) const { return QModelIndex(); }
+int BobUITestModel::rowCount(const QModelIndex &parent) const { return parent.isValid() ? 0 : rCount; }
+int BobUITestModel::columnCount(const QModelIndex &parent) const { return parent.isValid() ? 0 : cCount; }
+bool BobUITestModel::hasChildren(const QModelIndex &) const { return false; }
 
-QVariant QtTestModel::data(const QModelIndex &idx, int) const
+QVariant BobUITestModel::data(const QModelIndex &idx, int) const
 {
     if (idx.row() < 0 || idx.column() < 0 || idx.column() > cCount || idx.row() > rCount) {
         wrongIndex = true;
@@ -189,13 +189,13 @@ QVariant QtTestModel::data(const QModelIndex &idx, int) const
     return table.at(idx.row()).at(idx.column());
 }
 
-bool QtTestModel::setData(const QModelIndex &idx, const QVariant &value, int)
+bool BobUITestModel::setData(const QModelIndex &idx, const QVariant &value, int)
 {
     table[idx.row()][idx.column()] = value.toString();
     return true;
 }
 
-bool QtTestModel::insertRows(int row, int count, const QModelIndex &parent)
+bool BobUITestModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     QAbstractItemModel::beginInsertRows(parent, row, row + count - 1);
     int cc = columnCount(parent);
@@ -205,7 +205,7 @@ bool QtTestModel::insertRows(int row, int count, const QModelIndex &parent)
     return true;
 }
 
-bool QtTestModel::insertColumns(int column, int count, const QModelIndex &parent)
+bool BobUITestModel::insertColumns(int column, int count, const QModelIndex &parent)
 {
     QAbstractItemModel::beginInsertColumns(parent, column, column + count - 1);
     int rc = rowCount(parent);
@@ -216,12 +216,12 @@ bool QtTestModel::insertColumns(int column, int count, const QModelIndex &parent
     return true;
 }
 
-void QtTestModel::setPersistent(const QModelIndex &from, const QModelIndex &to)
+void BobUITestModel::setPersistent(const QModelIndex &from, const QModelIndex &to)
 {
     changePersistentIndex(from, to);
 }
 
-bool QtTestModel::removeRows( int row, int count, const QModelIndex & parent)
+bool BobUITestModel::removeRows( int row, int count, const QModelIndex & parent)
 {
     QAbstractItemModel::beginRemoveRows(parent, row, row + count - 1);
 
@@ -233,7 +233,7 @@ bool QtTestModel::removeRows( int row, int count, const QModelIndex & parent)
     return true;
 }
 
-bool QtTestModel::removeColumns(int column, int count, const QModelIndex & parent)
+bool BobUITestModel::removeColumns(int column, int count, const QModelIndex & parent)
 {
     QAbstractItemModel::beginRemoveColumns(parent, column, column + count - 1);
 
@@ -247,7 +247,7 @@ bool QtTestModel::removeColumns(int column, int count, const QModelIndex & paren
     return true;
 }
 
-bool QtTestModel::moveRows(const QModelIndex &sourceParent, int src, int cnt,
+bool BobUITestModel::moveRows(const QModelIndex &sourceParent, int src, int cnt,
                            const QModelIndex &destinationParent, int dst)
 {
     if (!QAbstractItemModel::beginMoveRows(sourceParent, src, src + cnt - 1,
@@ -275,7 +275,7 @@ bool QtTestModel::moveRows(const QModelIndex &sourceParent, int src, int cnt,
     return true;
 }
 
-bool QtTestModel::moveColumns(const QModelIndex &sourceParent, int src, int cnt,
+bool BobUITestModel::moveColumns(const QModelIndex &sourceParent, int src, int cnt,
                               const QModelIndex &destinationParent, int dst)
 {
     if (!QAbstractItemModel::beginMoveColumns(sourceParent, src, src + cnt - 1,
@@ -305,13 +305,13 @@ bool QtTestModel::moveColumns(const QModelIndex &sourceParent, int src, int cnt,
     return true;
 }
 
-void QtTestModel::reset()
+void BobUITestModel::reset()
 {
     QAbstractItemModel::beginResetModel();
     QAbstractItemModel::endResetModel();
 }
 
-bool QtTestModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+bool BobUITestModel::canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                  int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(data);
@@ -361,14 +361,14 @@ void tst_QAbstractItemModel::cleanup()
 
 void tst_QAbstractItemModel::index()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QVERIFY(idx.isValid());
 }
 
 void tst_QAbstractItemModel::parent()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QModelIndex par = model.parent(idx);
     QVERIFY(!par.isValid());
@@ -376,141 +376,141 @@ void tst_QAbstractItemModel::parent()
 
 void tst_QAbstractItemModel::hasChildren()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QVERIFY(!model.hasChildren(idx));
 }
 
 void tst_QAbstractItemModel::data()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QVERIFY(idx.isValid());
-    QCOMPARE(model.data(idx, Qt::DisplayRole).toString(), QString("0/0"));
+    QCOMPARE(model.data(idx, BobUI::DisplayRole).toString(), QString("0/0"));
 
     // Default does nothing
-    QCOMPARE(model.setHeaderData(0, Qt::Horizontal, QVariant(0), 0), false);
+    QCOMPARE(model.setHeaderData(0, BobUI::Horizontal, QVariant(0), 0), false);
 }
 
 void tst_QAbstractItemModel::invalidModelIndexDataReturnsInvalidQVariant()
 {
     const QModelIndex invalid;
     QVERIFY(!invalid.isValid());
-    QVERIFY(!invalid.data(Qt::ItemDataRole::DisplayRole).isValid());
+    QVERIFY(!invalid.data(BobUI::ItemDataRole::DisplayRole).isValid());
 
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     const QModelIndex mi = model.index(0, 1);
     QVERIFY(!mi.isValid());
-    QVERIFY(!mi.data(Qt::ItemDataRole::DisplayRole).isValid());
+    QVERIFY(!mi.data(BobUI::ItemDataRole::DisplayRole).isValid());
 }
 
 void tst_QAbstractItemModel::invalidPersistentModelIndexDataReturnsInvalidQVariant()
 {
     const QPersistentModelIndex invalid;
     QVERIFY(!invalid.isValid());
-    QVERIFY(!invalid.data(Qt::ItemDataRole::DisplayRole).isValid());
+    QVERIFY(!invalid.data(BobUI::ItemDataRole::DisplayRole).isValid());
 
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     const QPersistentModelIndex pmi = model.index(0, 0);
     QVERIFY(pmi.isValid());
-    QVERIFY(pmi.data(Qt::ItemDataRole::DisplayRole).isValid());
+    QVERIFY(pmi.data(BobUI::ItemDataRole::DisplayRole).isValid());
     model.removeRows(0, 1);
     QVERIFY(!pmi.isValid());
-    QVERIFY(!pmi.data(Qt::ItemDataRole::DisplayRole).isValid());
+    QVERIFY(!pmi.data(BobUI::ItemDataRole::DisplayRole).isValid());
 }
 
 void tst_QAbstractItemModel::headerData()
 {
-    QtTestModel model(1, 1);
-    QCOMPARE(model.headerData(0, Qt::Horizontal, Qt::DisplayRole).toString(),
+    BobUITestModel model(1, 1);
+    QCOMPARE(model.headerData(0, BobUI::Horizontal, BobUI::DisplayRole).toString(),
             QString("1"));
 
     // Default text alignment for header must be invalid
-    QVERIFY( !model.headerData(0, Qt::Horizontal, Qt::TextAlignmentRole).isValid() );
+    QVERIFY( !model.headerData(0, BobUI::Horizontal, BobUI::TextAlignmentRole).isValid() );
 }
 
 void tst_QAbstractItemModel::itemData()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QVERIFY(idx.isValid());
     QMap<int, QVariant> dat = model.itemData(idx);
-    QCOMPARE(dat.count(Qt::DisplayRole), 1);
-    QCOMPARE(dat.value(Qt::DisplayRole).toString(), QString("0/0"));
+    QCOMPARE(dat.count(BobUI::DisplayRole), 1);
+    QCOMPARE(dat.value(BobUI::DisplayRole).toString(), QString("0/0"));
 }
 
 void tst_QAbstractItemModel::itemFlags()
 {
-    QtTestModel model(1, 1);
+    BobUITestModel model(1, 1);
     QModelIndex idx = model.index(0, 0, QModelIndex());
     QVERIFY(idx.isValid());
-    Qt::ItemFlags flags = model.flags(idx);
-    QCOMPARE(Qt::ItemIsSelectable|Qt::ItemIsEnabled, flags);
+    BobUI::ItemFlags flags = model.flags(idx);
+    QCOMPARE(BobUI::ItemIsSelectable|BobUI::ItemIsEnabled, flags);
 }
 
 void tst_QAbstractItemModel::match()
 {
-    QtTestModel model(5, 1);
+    BobUITestModel model(5, 1);
     QModelIndex start = model.index(0, 0, QModelIndex());
     QVERIFY(start.isValid());
-    QModelIndexList res = model.match(start, Qt::DisplayRole, QVariant("1"), 3);
+    QModelIndexList res = model.match(start, BobUI::DisplayRole, QVariant("1"), 3);
     QCOMPARE(res.size(), 1);
     QModelIndex idx = model.index(1, 0, QModelIndex());
     bool areEqual = (idx == res.first());
     QVERIFY(areEqual);
 
-    model.setData(model.index(0, 0, QModelIndex()), "bat", Qt::DisplayRole);
-    model.setData(model.index(1, 0, QModelIndex()), "cat", Qt::DisplayRole);
-    model.setData(model.index(2, 0, QModelIndex()), "dog", Qt::DisplayRole);
-    model.setData(model.index(3, 0, QModelIndex()), "boar", Qt::DisplayRole);
-    model.setData(model.index(4, 0, QModelIndex()), "bo/a/r", Qt::DisplayRole); // QTBUG-104585
+    model.setData(model.index(0, 0, QModelIndex()), "bat", BobUI::DisplayRole);
+    model.setData(model.index(1, 0, QModelIndex()), "cat", BobUI::DisplayRole);
+    model.setData(model.index(2, 0, QModelIndex()), "dog", BobUI::DisplayRole);
+    model.setData(model.index(3, 0, QModelIndex()), "boar", BobUI::DisplayRole);
+    model.setData(model.index(4, 0, QModelIndex()), "bo/a/r", BobUI::DisplayRole); // BOBUIBUG-104585
 
-    res = model.match(start, Qt::DisplayRole, QVariant("dog"), -1, Qt::MatchExactly);
+    res = model.match(start, BobUI::DisplayRole, QVariant("dog"), -1, BobUI::MatchExactly);
     QCOMPARE(res.size(), 1);
-    res = model.match(start, Qt::DisplayRole, QVariant("a"), -1, Qt::MatchContains);
+    res = model.match(start, BobUI::DisplayRole, QVariant("a"), -1, BobUI::MatchContains);
     QCOMPARE(res.size(), 4);
-    res = model.match(start, Qt::DisplayRole, QVariant("b"), -1, Qt::MatchStartsWith);
+    res = model.match(start, BobUI::DisplayRole, QVariant("b"), -1, BobUI::MatchStartsWith);
     QCOMPARE(res.size(), 3);
-    res = model.match(start, Qt::DisplayRole, QVariant("t"), -1, Qt::MatchEndsWith);
+    res = model.match(start, BobUI::DisplayRole, QVariant("t"), -1, BobUI::MatchEndsWith);
     QCOMPARE(res.size(), 2);
-    res = model.match(start, Qt::DisplayRole, QVariant("*a*"), -1, Qt::MatchWildcard);
+    res = model.match(start, BobUI::DisplayRole, QVariant("*a*"), -1, BobUI::MatchWildcard);
     QCOMPARE(res.size(), 4);
-    res = model.match(start, Qt::DisplayRole, QVariant(".*O.*"), -1, Qt::MatchRegularExpression);
+    res = model.match(start, BobUI::DisplayRole, QVariant(".*O.*"), -1, BobUI::MatchRegularExpression);
     QCOMPARE(res.size(), 3);
-    res = model.match(start, Qt::DisplayRole, QVariant(".*O.*"), -1, Qt::MatchRegularExpression | Qt::MatchCaseSensitive);
+    res = model.match(start, BobUI::DisplayRole, QVariant(".*O.*"), -1, BobUI::MatchRegularExpression | BobUI::MatchCaseSensitive);
     QCOMPARE(res.size(), 0);
-    res = model.match(start, Qt::DisplayRole, QVariant("BOAR"), -1, Qt::MatchFixedString);
+    res = model.match(start, BobUI::DisplayRole, QVariant("BOAR"), -1, BobUI::MatchFixedString);
     QCOMPARE(res.size(), 1);
-    res = model.match(start, Qt::DisplayRole, QVariant("bat"), -1,
-                      Qt::MatchFixedString | Qt::MatchCaseSensitive);
+    res = model.match(start, BobUI::DisplayRole, QVariant("bat"), -1,
+                      BobUI::MatchFixedString | BobUI::MatchCaseSensitive);
     QCOMPARE(res.size(), 1);
 
-    res = model.match(start, Qt::DisplayRole, QVariant(".*O.*"), -1,
-                      Qt::MatchRegularExpression);
+    res = model.match(start, BobUI::DisplayRole, QVariant(".*O.*"), -1,
+                      BobUI::MatchRegularExpression);
     QCOMPARE(res.size(), 3);
-    res = model.match(start, Qt::DisplayRole, QVariant(".*O.*"), -1,
-                      Qt::MatchRegularExpression | Qt::MatchCaseSensitive);
+    res = model.match(start, BobUI::DisplayRole, QVariant(".*O.*"), -1,
+                      BobUI::MatchRegularExpression | BobUI::MatchCaseSensitive);
     QCOMPARE(res.size(), 0);
 
-    res = model.match(start, Qt::DisplayRole, QVariant(QRegularExpression(".*O.*")),
-                      -1, Qt::MatchRegularExpression);
+    res = model.match(start, BobUI::DisplayRole, QVariant(QRegularExpression(".*O.*")),
+                      -1, BobUI::MatchRegularExpression);
     QCOMPARE(res.size(), 0);
     res = model.match(start,
-                      Qt::DisplayRole,
+                      BobUI::DisplayRole,
                       QVariant(QRegularExpression(".*O.*",
                                                   QRegularExpression::CaseInsensitiveOption)),
                       -1,
-                      Qt::MatchRegularExpression);
+                      BobUI::MatchRegularExpression);
     QCOMPARE(res.size(), 3);
 
     // Ensure that the case sensitivity is properly ignored when passing a
     // QRegularExpression object.
     res = model.match(start,
-                      Qt::DisplayRole,
+                      BobUI::DisplayRole,
                       QVariant(QRegularExpression(".*O.*",
                                                   QRegularExpression::CaseInsensitiveOption)),
                       -1,
-                      Qt::MatchRegularExpression | Qt::MatchCaseSensitive);
+                      BobUI::MatchRegularExpression | BobUI::MatchCaseSensitive);
     QCOMPARE(res.size(), 3);
 }
 
@@ -534,14 +534,14 @@ static StringTableRow qStringTableRow(const QString &s1, const QString &s2, cons
 
 void tst_QAbstractItemModel::dropMimeData_data()
 {
-    QTest::addColumn<StringTable>("src_table"); // drag source
-    QTest::addColumn<StringTable>("dst_table"); // drop target
-    QTest::addColumn<Selection>("selection"); // dragged items
-    QTest::addColumn<Position>("dst_position"); // drop position
-    QTest::addColumn<StringTable>("res_table"); // expected result
+    BOBUIest::addColumn<StringTable>("src_table"); // drag source
+    BOBUIest::addColumn<StringTable>("dst_table"); // drop target
+    BOBUIest::addColumn<Selection>("selection"); // dragged items
+    BOBUIest::addColumn<Position>("dst_position"); // drop position
+    BOBUIest::addColumn<StringTable>("res_table"); // expected result
 
     {
-        QTest::newRow("2x2 dropped at [0, 0]")
+        BOBUIest::newRow("2x2 dropped at [0, 0]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -560,7 +560,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x2 dropped at [1, 0]")
+        BOBUIest::newRow("2x2 dropped at [1, 0]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -579,7 +579,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x2 dropped at [3, 0]")
+        BOBUIest::newRow("2x2 dropped at [3, 0]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -598,7 +598,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x2 dropped at [0, 1]")
+        BOBUIest::newRow("2x2 dropped at [0, 1]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -617,7 +617,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x2 dropped at [0, 2] (line break)")
+        BOBUIest::newRow("2x2 dropped at [0, 2] (line break)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -638,7 +638,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x2 dropped at [3, 2] (line break)")
+        BOBUIest::newRow("2x2 dropped at [3, 2] (line break)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -659,7 +659,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("non-square dropped at [0, 0]")
+        BOBUIest::newRow("non-square dropped at [0, 0]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -678,7 +678,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("non-square dropped at [0, 2]")
+        BOBUIest::newRow("non-square dropped at [0, 2]")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -698,7 +698,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x 1x2 dropped at [0, 0] (duplicates)")
+        BOBUIest::newRow("2x 1x2 dropped at [0, 0] (duplicates)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -718,7 +718,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x 1x2 dropped at [3, 2] (duplicates)")
+        BOBUIest::newRow("2x 1x2 dropped at [3, 2] (duplicates)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F")))
@@ -738,7 +738,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
                 << (qStringTableRow("" , "" , "B")));
     }
     {
-        QTest::newRow("2x 1x2 dropped at [3, 2] (different rows)")
+        BOBUIest::newRow("2x 1x2 dropped at [3, 2] (different rows)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F"))
@@ -758,7 +758,7 @@ void tst_QAbstractItemModel::dropMimeData_data()
     }
 
     {
-        QTest::newRow("2x 1x2 dropped at [3, 2] (different rows, over the edge)")
+        BOBUIest::newRow("2x 1x2 dropped at [3, 2] (different rows, over the edge)")
             << (STRINGTABLE // source table
                 << (qStringTableRow("A", "B", "C"))
                 << (qStringTableRow("D", "E", "F"))
@@ -788,9 +788,9 @@ void tst_QAbstractItemModel::dropMimeData()
     QFETCH(Position, dst_position);
     QFETCH(StringTable, res_table);
 
-    QtTestModel src(src_table);
-    QtTestModel dst(dst_table);
-    QtTestModel res(res_table);
+    BobUITestModel src(src_table);
+    BobUITestModel dst(dst_table);
+    BobUITestModel res(res_table);
 
     // get the mimeData from the "selected" indexes
     QModelIndexList selectedIndexes;
@@ -798,7 +798,7 @@ void tst_QAbstractItemModel::dropMimeData()
         selectedIndexes << src.index(selection.at(i).first, selection.at(i).second, QModelIndex());
     QMimeData *md = src.mimeData(selectedIndexes);
     // do the drop
-    dst.dropMimeData(md, Qt::CopyAction, dst_position.first, dst_position.second, QModelIndex());
+    dst.dropMimeData(md, BobUI::CopyAction, dst_position.first, dst_position.second, QModelIndex());
     delete md;
 
     // compare to the expected results
@@ -817,16 +817,16 @@ void tst_QAbstractItemModel::dropMimeData()
 
 void tst_QAbstractItemModel::canDropMimeData()
 {
-    QtTestModel model(3, 3);
+    BobUITestModel model(3, 3);
 
-    QVERIFY(model.canDropMimeData(0, Qt::CopyAction, -1, -1, QModelIndex()));
-    QVERIFY(model.canDropMimeData(0, Qt::CopyAction, 0, 0, QModelIndex()));
-    QVERIFY(!model.canDropMimeData(0, Qt::CopyAction, 1, 0, QModelIndex()));
+    QVERIFY(model.canDropMimeData(0, BobUI::CopyAction, -1, -1, QModelIndex()));
+    QVERIFY(model.canDropMimeData(0, BobUI::CopyAction, 0, 0, QModelIndex()));
+    QVERIFY(!model.canDropMimeData(0, BobUI::CopyAction, 1, 0, QModelIndex()));
 }
 
 void tst_QAbstractItemModel::changePersistentIndex()
 {
-    QtTestModel model(3, 3);
+    BobUITestModel model(3, 3);
     QModelIndex a = model.index(1, 2, QModelIndex());
     QModelIndex b = model.index(2, 1, QModelIndex());
     QPersistentModelIndex p(a);
@@ -837,7 +837,7 @@ void tst_QAbstractItemModel::changePersistentIndex()
 
 void tst_QAbstractItemModel::movePersistentIndex()
 {
-    QtTestModel model(3, 3);
+    BobUITestModel model(3, 3);
 
     QPersistentModelIndex a = model.index(1, 1);
     QVERIFY(a.isValid());
@@ -856,10 +856,10 @@ void tst_QAbstractItemModel::movePersistentIndex()
 
 void tst_QAbstractItemModel::removeRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy rowsAboutToBeRemovedSpy(&model, &QtTestModel::rowsAboutToBeRemoved);
-    QSignalSpy rowsRemovedSpy(&model, &QtTestModel::rowsRemoved);
+    QSignalSpy rowsAboutToBeRemovedSpy(&model, &BobUITestModel::rowsAboutToBeRemoved);
+    QSignalSpy rowsRemovedSpy(&model, &BobUITestModel::rowsRemoved);
 
     QVERIFY(rowsAboutToBeRemovedSpy.isValid());
     QVERIFY(rowsRemovedSpy.isValid());
@@ -871,10 +871,10 @@ void tst_QAbstractItemModel::removeRows()
 
 void tst_QAbstractItemModel::removeColumns()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy columnsAboutToBeRemovedSpy(&model, &QtTestModel::columnsAboutToBeRemoved);
-    QSignalSpy columnsRemovedSpy(&model, &QtTestModel::columnsRemoved);
+    QSignalSpy columnsAboutToBeRemovedSpy(&model, &BobUITestModel::columnsAboutToBeRemoved);
+    QSignalSpy columnsRemovedSpy(&model, &BobUITestModel::columnsRemoved);
 
     QVERIFY(columnsAboutToBeRemovedSpy.isValid());
     QVERIFY(columnsRemovedSpy.isValid());
@@ -886,10 +886,10 @@ void tst_QAbstractItemModel::removeColumns()
 
 void tst_QAbstractItemModel::insertRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy rowsAboutToBeInsertedSpy(&model, &QtTestModel::rowsAboutToBeInserted);
-    QSignalSpy rowsInsertedSpy(&model, &QtTestModel::rowsInserted);
+    QSignalSpy rowsAboutToBeInsertedSpy(&model, &BobUITestModel::rowsAboutToBeInserted);
+    QSignalSpy rowsInsertedSpy(&model, &BobUITestModel::rowsInserted);
 
     QVERIFY(rowsAboutToBeInsertedSpy.isValid());
     QVERIFY(rowsInsertedSpy.isValid());
@@ -901,10 +901,10 @@ void tst_QAbstractItemModel::insertRows()
 
 void tst_QAbstractItemModel::insertColumns()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy columnsAboutToBeInsertedSpy(&model, &QtTestModel::columnsAboutToBeInserted);
-    QSignalSpy columnsInsertedSpy(&model, &QtTestModel::columnsInserted);
+    QSignalSpy columnsAboutToBeInsertedSpy(&model, &BobUITestModel::columnsAboutToBeInserted);
+    QSignalSpy columnsInsertedSpy(&model, &BobUITestModel::columnsInserted);
 
     QVERIFY(columnsAboutToBeInsertedSpy.isValid());
     QVERIFY(columnsInsertedSpy.isValid());
@@ -916,10 +916,10 @@ void tst_QAbstractItemModel::insertColumns()
 
 void tst_QAbstractItemModel::moveRows()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy rowsAboutToBeMovedSpy(&model, &QtTestModel::rowsAboutToBeMoved);
-    QSignalSpy rowsMovedSpy(&model, &QtTestModel::rowsMoved);
+    QSignalSpy rowsAboutToBeMovedSpy(&model, &BobUITestModel::rowsAboutToBeMoved);
+    QSignalSpy rowsMovedSpy(&model, &BobUITestModel::rowsMoved);
 
     QVERIFY(rowsAboutToBeMovedSpy.isValid());
     QVERIFY(rowsMovedSpy.isValid());
@@ -931,10 +931,10 @@ void tst_QAbstractItemModel::moveRows()
 
 void tst_QAbstractItemModel::moveColumns()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy columnsAboutToBeMovedSpy(&model, &QtTestModel::columnsAboutToBeMoved);
-    QSignalSpy columnsMovedSpy(&model, &QtTestModel::columnsMoved);
+    QSignalSpy columnsAboutToBeMovedSpy(&model, &BobUITestModel::columnsAboutToBeMoved);
+    QSignalSpy columnsMovedSpy(&model, &BobUITestModel::columnsMoved);
 
     QVERIFY(columnsAboutToBeMovedSpy.isValid());
     QVERIFY(columnsMovedSpy.isValid());
@@ -950,9 +950,9 @@ void tst_QAbstractItemModel::moveColumns()
 
 void tst_QAbstractItemModel::reset()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
 
-    QSignalSpy resetSpy(&model, &QtTestModel::modelReset);
+    QSignalSpy resetSpy(&model, &BobUITestModel::modelReset);
     QVERIFY(resetSpy.isValid());
     model.reset();
     QCOMPARE(resetSpy.size(), 1);
@@ -960,7 +960,7 @@ void tst_QAbstractItemModel::reset()
 
 void tst_QAbstractItemModel::complexChangesWithPersistent()
 {
-    QtTestModel model(10, 10);
+    BobUITestModel model(10, 10);
     QPersistentModelIndex a = model.index(1, 1, QModelIndex());
     QPersistentModelIndex b = model.index(9, 7, QModelIndex());
     QPersistentModelIndex c = model.index(5, 6, QModelIndex());
@@ -1022,11 +1022,11 @@ void tst_QAbstractItemModel::complexChangesWithPersistent()
 
 void tst_QAbstractItemModel::modelIndexComparisons()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<QModelIndex>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QPersistentModelIndex>();
-    QTestPrivate::testAllComparisonOperatorsCompile<QPersistentModelIndex, QModelIndex>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QModelIndex>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QPersistentModelIndex>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<QPersistentModelIndex, QModelIndex>();
 
-    QtTestModel model(3, 3);
+    BobUITestModel model(3, 3);
 
     QModelIndex mi11 = model.index(1, 1);
     QModelIndex mi22 = model.index(2, 2);
@@ -1034,49 +1034,49 @@ void tst_QAbstractItemModel::modelIndexComparisons()
     QPersistentModelIndex pmi22 = mi22;
     QPersistentModelIndex pmiU;
 
-    QT_TEST_EQUALITY_OPS(mi11, mi11, true);
-    QT_TEST_EQUALITY_OPS(mi11, mi22, false);
-    QT_TEST_ALL_COMPARISON_OPS(mi11, mi11, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(mi11, mi22, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(mi22, mi11, Qt::strong_ordering::greater);
-    QT_TEST_EQUALITY_OPS(pmi11, pmi11, true);
-    QT_TEST_EQUALITY_OPS(pmi11, pmi22, false);
-    QT_TEST_EQUALITY_OPS(pmi11, mi11, true);
-    QT_TEST_EQUALITY_OPS(pmi11, mi22, false);
+    BOBUI_TEST_EQUALITY_OPS(mi11, mi11, true);
+    BOBUI_TEST_EQUALITY_OPS(mi11, mi22, false);
+    BOBUI_TEST_ALL_COMPARISON_OPS(mi11, mi11, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(mi11, mi22, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(mi22, mi11, BobUI::strong_ordering::greater);
+    BOBUI_TEST_EQUALITY_OPS(pmi11, pmi11, true);
+    BOBUI_TEST_EQUALITY_OPS(pmi11, pmi22, false);
+    BOBUI_TEST_EQUALITY_OPS(pmi11, mi11, true);
+    BOBUI_TEST_EQUALITY_OPS(pmi11, mi22, false);
 
-    QT_TEST_ALL_COMPARISON_OPS(pmi11, pmi11, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(pmi11, pmi22, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmi11, pmi11, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmi11, pmi22, BobUI::strong_ordering::less);
     // Disengaged QPMIs are sorted randomly (based on address of their Private)
     // So all we can check here is QPMIs with d == nullptr, which should reliably
     // come before any others.
-    QT_TEST_ALL_COMPARISON_OPS(pmiU, pmiU, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(pmi11, pmiU, Qt::strong_ordering::greater);
-    QT_TEST_ALL_COMPARISON_OPS(pmi11, mi11, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(pmi11, mi22, Qt::strong_ordering::less);
-    QT_TEST_ALL_COMPARISON_OPS(pmiU, mi11, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmiU, pmiU, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmi11, pmiU, BobUI::strong_ordering::greater);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmi11, mi11, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmi11, mi22, BobUI::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(pmiU, mi11, BobUI::strong_ordering::less);
 }
 
 void tst_QAbstractItemModel::testMoveSameParentDown_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
     // We can't put the actual parent index for the move in here because m_model is not defined until init() is run.
-    QTest::addColumn<bool>("topLevel");
+    BOBUIest::addColumn<bool>("topLevel");
 
     // Move from the start to the middle
-    QTest::newRow("move01") << 0 << 2 << 8 << true;
+    BOBUIest::newRow("move01") << 0 << 2 << 8 << true;
     // Move from the start to the end
-    QTest::newRow("move02") << 0 << 2 << 10 << true;
+    BOBUIest::newRow("move02") << 0 << 2 << 10 << true;
     // Move from the middle to the middle
-    QTest::newRow("move03") << 3 << 5 << 8 << true;
+    BOBUIest::newRow("move03") << 3 << 5 << 8 << true;
     // Move from the middle to the end
-    QTest::newRow("move04") << 3 << 5 << 10 << true;
+    BOBUIest::newRow("move04") << 3 << 5 << 10 << true;
 
-    QTest::newRow("move05") << 0 << 2 << 8 << false;
-    QTest::newRow("move06") << 0 << 2 << 10 << false;
-    QTest::newRow("move07") << 3 << 5 << 8 << false;
-    QTest::newRow("move08") << 3 << 5 << 10 << false;
+    BOBUIest::newRow("move05") << 0 << 2 << 8 << false;
+    BOBUIest::newRow("move06") << 0 << 2 << 10 << false;
+    BOBUIest::newRow("move07") << 3 << 5 << 8 << false;
+    BOBUIest::newRow("move08") << 3 << 5 << 10 << false;
 }
 
 void tst_QAbstractItemModel::testMoveSameParentDown()
@@ -1174,24 +1174,24 @@ void tst_QAbstractItemModel::testMoveSameParentDown()
 
 void tst_QAbstractItemModel::testMoveSameParentUp_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
-    QTest::addColumn<bool>("topLevel");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
+    BOBUIest::addColumn<bool>("topLevel");
 
     // Move from the middle to the start
-    QTest::newRow("move01") << 5 << 7 << 0 << true;
+    BOBUIest::newRow("move01") << 5 << 7 << 0 << true;
     // Move from the end to the start
-    QTest::newRow("move02") << 8 << 9 << 0 << true;
+    BOBUIest::newRow("move02") << 8 << 9 << 0 << true;
     // Move from the middle to the middle
-    QTest::newRow("move03") << 5 << 7 << 2 << true;
+    BOBUIest::newRow("move03") << 5 << 7 << 2 << true;
     // Move from the end to the middle
-    QTest::newRow("move04") << 8 << 9 << 5 << true;
+    BOBUIest::newRow("move04") << 8 << 9 << 5 << true;
 
-    QTest::newRow("move05") << 5 << 7 << 0 << false;
-    QTest::newRow("move06") << 8 << 9 << 0 << false;
-    QTest::newRow("move07") << 5 << 7 << 2 << false;
-    QTest::newRow("move08") << 8 << 9 << 5 << false;
+    BOBUIest::newRow("move05") << 5 << 7 << 0 << false;
+    BOBUIest::newRow("move06") << 8 << 9 << 0 << false;
+    BOBUIest::newRow("move07") << 5 << 7 << 2 << false;
+    BOBUIest::newRow("move08") << 8 << 9 << 5 << false;
 }
 
 void tst_QAbstractItemModel::testMoveSameParentUp()
@@ -1287,7 +1287,7 @@ void tst_QAbstractItemModel::testMoveSameParentUp()
     }
 }
 
-#if QT_CONFIG(sortfilterproxymodel)
+#if BOBUI_CONFIG(sortfilterproxymodel)
 void tst_QAbstractItemModel::testMoveThroughProxy()
 {
     QSortFilterProxyModel *proxy = new QSortFilterProxyModel(this);
@@ -1310,39 +1310,39 @@ void tst_QAbstractItemModel::testMoveThroughProxy()
 
 void tst_QAbstractItemModel::testMoveToGrandParent_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
 
     // Move from the start to the middle
-    QTest::newRow("move01") << 0 << 2 << 8;
+    BOBUIest::newRow("move01") << 0 << 2 << 8;
     // Move from the start to the end
-    QTest::newRow("move02") << 0 << 2 << 10;
+    BOBUIest::newRow("move02") << 0 << 2 << 10;
     // Move from the middle to the middle
-    QTest::newRow("move03") << 3 << 5 << 8;
+    BOBUIest::newRow("move03") << 3 << 5 << 8;
     // Move from the middle to the end
-    QTest::newRow("move04") << 3 << 5 << 10;
+    BOBUIest::newRow("move04") << 3 << 5 << 10;
 
     // Move from the middle to the start
-    QTest::newRow("move05") << 5 << 7 << 0;
+    BOBUIest::newRow("move05") << 5 << 7 << 0;
     // Move from the end to the start
-    QTest::newRow("move06") << 8 << 9 << 0;
+    BOBUIest::newRow("move06") << 8 << 9 << 0;
     // Move from the middle to the middle
-    QTest::newRow("move07") << 5 << 7 << 2;
+    BOBUIest::newRow("move07") << 5 << 7 << 2;
     // Move from the end to the middle
-    QTest::newRow("move08") << 8 << 9 << 5;
+    BOBUIest::newRow("move08") << 8 << 9 << 5;
 
     // Moving to the same row in a different parent doesn't confuse things.
-    QTest::newRow("move09") << 8 << 8 << 8;
+    BOBUIest::newRow("move09") << 8 << 8 << 8;
 
     // Moving to the row of my parent and its neighbours doesn't confuse things
-    QTest::newRow("move10") << 8 << 8 << 4;
-    QTest::newRow("move11") << 8 << 8 << 5;
-    QTest::newRow("move12") << 8 << 8 << 6;
+    BOBUIest::newRow("move10") << 8 << 8 << 4;
+    BOBUIest::newRow("move11") << 8 << 8 << 5;
+    BOBUIest::newRow("move12") << 8 << 8 << 6;
 
     // Moving everything from one parent to another
-    QTest::newRow("move13") << 0 << 9 << 10;
-    QTest::newRow("move14") << 0 << 9 << 0;
+    BOBUIest::newRow("move13") << 0 << 9 << 10;
+    BOBUIest::newRow("move14") << 0 << 9 << 0;
 }
 
 void tst_QAbstractItemModel::testMoveToGrandParent()
@@ -1450,40 +1450,40 @@ void tst_QAbstractItemModel::testMoveToGrandParent()
 
 void tst_QAbstractItemModel::testMoveToSibling_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
 
     // Move from the start to the middle
-    QTest::newRow("move01") << 0 << 2 << 8;
+    BOBUIest::newRow("move01") << 0 << 2 << 8;
     // Move from the start to the end
-    QTest::newRow("move02") << 0 << 2 << 10;
+    BOBUIest::newRow("move02") << 0 << 2 << 10;
     // Move from the middle to the middle
-    QTest::newRow("move03") << 2 << 4 << 8;
+    BOBUIest::newRow("move03") << 2 << 4 << 8;
     // Move from the middle to the end
-    QTest::newRow("move04") << 2 << 4 << 10;
+    BOBUIest::newRow("move04") << 2 << 4 << 10;
 
     // Move from the middle to the start
-    QTest::newRow("move05") << 8 << 8 << 0;
+    BOBUIest::newRow("move05") << 8 << 8 << 0;
     // Move from the end to the start
-    QTest::newRow("move06") << 8 << 9 << 0;
+    BOBUIest::newRow("move06") << 8 << 9 << 0;
     // Move from the middle to the middle
-    QTest::newRow("move07") << 6 << 8 << 2;
+    BOBUIest::newRow("move07") << 6 << 8 << 2;
     // Move from the end to the middle
-    QTest::newRow("move08") << 8 << 9 << 5;
+    BOBUIest::newRow("move08") << 8 << 9 << 5;
 
     // Moving to the same row in a different parent doesn't confuse things.
-    QTest::newRow("move09") << 8 << 8 << 8;
+    BOBUIest::newRow("move09") << 8 << 8 << 8;
 
     // Moving to the row of my target and its neighbours doesn't confuse things
-    QTest::newRow("move10") << 8 << 8 << 4;
-    QTest::newRow("move11") << 8 << 8 << 5;
-    QTest::newRow("move12") << 8 << 8 << 6;
+    BOBUIest::newRow("move10") << 8 << 8 << 4;
+    BOBUIest::newRow("move11") << 8 << 8 << 5;
+    BOBUIest::newRow("move12") << 8 << 8 << 6;
 
     // Move such that the destination parent no longer valid after the move.
     // The destination parent is always QMI(5, 0), but after this move the
     // row count is 5, so (5, 0) (used internally in QAIM) no longer refers to a valid index.
-    QTest::newRow("move13") << 0 << 4 << 0;
+    BOBUIest::newRow("move13") << 0 << 4 << 0;
 }
 
 void tst_QAbstractItemModel::testMoveToSibling()
@@ -1594,38 +1594,38 @@ void tst_QAbstractItemModel::testMoveToSibling()
 
 void tst_QAbstractItemModel::testMoveToUncle_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
 
     // Move from the start to the middle
-    QTest::newRow("move01") << 0 << 2 << 8;
+    BOBUIest::newRow("move01") << 0 << 2 << 8;
     // Move from the start to the end
-    QTest::newRow("move02") << 0 << 2 << 10;
+    BOBUIest::newRow("move02") << 0 << 2 << 10;
     // Move from the middle to the middle
-    QTest::newRow("move03") << 3 << 5 << 8;
+    BOBUIest::newRow("move03") << 3 << 5 << 8;
     // Move from the middle to the end
-    QTest::newRow("move04") << 3 << 5 << 10;
+    BOBUIest::newRow("move04") << 3 << 5 << 10;
 
     // Move from the middle to the start
-    QTest::newRow("move05") << 5 << 7 << 0;
+    BOBUIest::newRow("move05") << 5 << 7 << 0;
     // Move from the end to the start
-    QTest::newRow("move06") << 8 << 9 << 0;
+    BOBUIest::newRow("move06") << 8 << 9 << 0;
     // Move from the middle to the middle
-    QTest::newRow("move07") << 5 << 7 << 2;
+    BOBUIest::newRow("move07") << 5 << 7 << 2;
     // Move from the end to the middle
-    QTest::newRow("move08") << 8 << 9 << 5;
+    BOBUIest::newRow("move08") << 8 << 9 << 5;
 
     // Moving to the same row in a different parent doesn't confuse things.
-    QTest::newRow("move09") << 8 << 8 << 8;
+    BOBUIest::newRow("move09") << 8 << 8 << 8;
 
     // Moving to the row of my parent and its neighbours doesn't confuse things
-    QTest::newRow("move10") << 8 << 8 << 4;
-    QTest::newRow("move11") << 8 << 8 << 5;
-    QTest::newRow("move12") << 8 << 8 << 6;
+    BOBUIest::newRow("move10") << 8 << 8 << 4;
+    BOBUIest::newRow("move11") << 8 << 8 << 5;
+    BOBUIest::newRow("move12") << 8 << 8 << 6;
 
     // Moving everything from one parent to another
-    QTest::newRow("move13") << 0 << 9 << 10;
+    BOBUIest::newRow("move13") << 0 << 9 << 10;
 }
 
 void tst_QAbstractItemModel::testMoveToUncle()
@@ -1800,35 +1800,35 @@ void tst_QAbstractItemModel::testMoveToDescendants()
 
 void tst_QAbstractItemModel::testMoveWithinOwnRange_data()
 {
-    QTest::addColumn<int>("startRow");
-    QTest::addColumn<int>("endRow");
-    QTest::addColumn<int>("destRow");
+    BOBUIest::addColumn<int>("startRow");
+    BOBUIest::addColumn<int>("endRow");
+    BOBUIest::addColumn<int>("destRow");
 
-    QTest::newRow("move01") << 0 << 0 << 0;
-    QTest::newRow("move02") << 0 << 0 << 1;
-    QTest::newRow("move03") << 0 << 5 << 0;
-    QTest::newRow("move04") << 0 << 5 << 1;
-    QTest::newRow("move05") << 0 << 5 << 2;
-    QTest::newRow("move06") << 0 << 5 << 3;
-    QTest::newRow("move07") << 0 << 5 << 4;
-    QTest::newRow("move08") << 0 << 5 << 5;
-    QTest::newRow("move09") << 0 << 5 << 6;
-    QTest::newRow("move10") << 3 << 5 << 5;
-    QTest::newRow("move11") << 3 << 5 << 6;
-    QTest::newRow("move12") << 4 << 5 << 5;
-    QTest::newRow("move13") << 4 << 5 << 6;
-    QTest::newRow("move14") << 5 << 5 << 5;
-    QTest::newRow("move15") << 5 << 5 << 6;
-    QTest::newRow("move16") << 5 << 9 << 9;
-    QTest::newRow("move17") << 5 << 9 << 10;
-    QTest::newRow("move18") << 6 << 9 << 9;
-    QTest::newRow("move19") << 6 << 9 << 10;
-    QTest::newRow("move20") << 7 << 9 << 9;
-    QTest::newRow("move21") << 7 << 9 << 10;
-    QTest::newRow("move22") << 8 << 9 << 9;
-    QTest::newRow("move23") << 8 << 9 << 10;
-    QTest::newRow("move24") << 9 << 9 << 9;
-    QTest::newRow("move25") << 0 << 9 << 10;
+    BOBUIest::newRow("move01") << 0 << 0 << 0;
+    BOBUIest::newRow("move02") << 0 << 0 << 1;
+    BOBUIest::newRow("move03") << 0 << 5 << 0;
+    BOBUIest::newRow("move04") << 0 << 5 << 1;
+    BOBUIest::newRow("move05") << 0 << 5 << 2;
+    BOBUIest::newRow("move06") << 0 << 5 << 3;
+    BOBUIest::newRow("move07") << 0 << 5 << 4;
+    BOBUIest::newRow("move08") << 0 << 5 << 5;
+    BOBUIest::newRow("move09") << 0 << 5 << 6;
+    BOBUIest::newRow("move10") << 3 << 5 << 5;
+    BOBUIest::newRow("move11") << 3 << 5 << 6;
+    BOBUIest::newRow("move12") << 4 << 5 << 5;
+    BOBUIest::newRow("move13") << 4 << 5 << 6;
+    BOBUIest::newRow("move14") << 5 << 5 << 5;
+    BOBUIest::newRow("move15") << 5 << 5 << 6;
+    BOBUIest::newRow("move16") << 5 << 9 << 9;
+    BOBUIest::newRow("move17") << 5 << 9 << 10;
+    BOBUIest::newRow("move18") << 6 << 9 << 9;
+    BOBUIest::newRow("move19") << 6 << 9 << 10;
+    BOBUIest::newRow("move20") << 7 << 9 << 9;
+    BOBUIest::newRow("move21") << 7 << 9 << 10;
+    BOBUIest::newRow("move22") << 8 << 9 << 9;
+    BOBUIest::newRow("move23") << 8 << 9 << 10;
+    BOBUIest::newRow("move24") << 9 << 9 << 9;
+    BOBUIest::newRow("move25") << 0 << 9 << 10;
 }
 
 void tst_QAbstractItemModel::testMoveWithinOwnRange()
@@ -1854,7 +1854,7 @@ void tst_QAbstractItemModel::testMoveWithinOwnRange()
     QCOMPARE(afterSpy.size(), 0);
 }
 
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
 class ListenerObject : public QObject
 {
     Q_OBJECT
@@ -1883,11 +1883,11 @@ public:
 
     QHash<int, QByteArray> roleNames() const override
     {
-        return {{Qt::UserRole + 1, QByteArrayLiteral("custom")}};
+        return {{BobUI::UserRole + 1, QByteArrayLiteral("custom")}};
     }
 };
 
-#if QT_CONFIG(proxymodel)
+#if BOBUI_CONFIG(proxymodel)
 ListenerObject::ListenerObject(QAbstractProxyModel *parent)
     : QObject(parent), m_model(parent)
 {
@@ -1930,7 +1930,7 @@ void ListenerObject::slotReset()
 }
 #endif
 
-#if QT_CONFIG(sortfilterproxymodel)
+#if BOBUI_CONFIG(sortfilterproxymodel)
 void tst_QAbstractItemModel::testReset()
 {
     QSignalSpy beforeResetSpy(m_model, &DynamicTreeModel::modelAboutToBeReset);
@@ -1970,20 +1970,20 @@ void tst_QAbstractItemModel::testReset()
     QSignalSpy proxyAfterResetSpy(nullProxy, &QSortFilterProxyModel::modelReset);
 
     // Before setting it, it does not have custom roles.
-    QCOMPARE(nullProxy->roleNames().value(Qt::UserRole + 1), QByteArray());
+    QCOMPARE(nullProxy->roleNames().value(BobUI::UserRole + 1), QByteArray());
 
     nullProxy->setSourceModel(new ModelWithCustomRole(this));
     QCOMPARE(proxyBeforeResetSpy.size(), 1);
     QCOMPARE(proxyAfterResetSpy.size(), 1);
 
-    QCOMPARE(nullProxy->roleNames().value(Qt::UserRole + 1), QByteArray("custom"));
+    QCOMPARE(nullProxy->roleNames().value(BobUI::UserRole + 1), QByteArray("custom"));
 
     nullProxy->setSourceModel(m_model);
     QCOMPARE(proxyBeforeResetSpy.size(), 2);
     QCOMPARE(proxyAfterResetSpy.size(), 2);
 
     // After being reset the proxy must be queried again.
-    QCOMPARE(nullProxy->roleNames().value(Qt::UserRole + 1), QByteArray());
+    QCOMPARE(nullProxy->roleNames().value(BobUI::UserRole + 1), QByteArray());
 }
 #endif
 
@@ -1992,7 +1992,7 @@ class CustomRoleModel : public QStringListModel
     Q_OBJECT
 public:
     enum Roles {
-        Custom1 = Qt::UserRole + 1,
+        Custom1 = BobUI::UserRole + 1,
         Custom2,
         UserRole
     };
@@ -2009,8 +2009,8 @@ public:
         const QModelIndex bottom = index(2, 0);
 
         emit dataChanged(top, bottom);
-        emit dataChanged(top, bottom, QList<int>() << Qt::ToolTipRole);
-        emit dataChanged(top, bottom, QList<int>() << Qt::ToolTipRole << Custom1);
+        emit dataChanged(top, bottom, QList<int>() << BobUI::ToolTipRole);
+        emit dataChanged(top, bottom, QList<int>() << BobUI::ToolTipRole << Custom1);
     }
 };
 
@@ -2036,10 +2036,10 @@ void tst_QAbstractItemModel::testDataChanged()
     const QList<int> thirdRoles = thirdEmission.at(2).value<QList<int> >();
 
     QCOMPARE(secondRoles.size(), 1);
-    QVERIFY(secondRoles.contains(Qt::ToolTipRole));
+    QVERIFY(secondRoles.contains(BobUI::ToolTipRole));
 
     QCOMPARE(thirdRoles.size(), 2);
-    QVERIFY(thirdRoles.contains(Qt::ToolTipRole));
+    QVERIFY(thirdRoles.contains(BobUI::ToolTipRole));
     QVERIFY(thirdRoles.contains(CustomRoleModel::Custom1));
 }
 
@@ -2232,13 +2232,13 @@ public:
     QHash<int, QByteArray> roleNames() const override
     {
         QHash<int, QByteArray> roles = QStringListModel::roleNames();
-        roles.insert(Qt::UserRole + 2, "custom");
+        roles.insert(BobUI::UserRole + 2, "custom");
         return roles;
     }
 
-    Qt::DropActions supportedDragActions() const override
+    BobUI::DropActions supportedDragActions() const override
     {
-        return QStringListModel::supportedDragActions() | Qt::MoveAction;
+        return QStringListModel::supportedDragActions() | BobUI::MoveAction;
     }
 };
 
@@ -2246,16 +2246,16 @@ void tst_QAbstractItemModel::testRoleNames()
 {
     QAbstractItemModel *model = new OverrideRoleNamesAndDragActions(this);
     QHash<int, QByteArray> roles = model->roleNames();
-    QVERIFY(roles.contains(Qt::UserRole + 2));
-    QVERIFY(roles.value(Qt::UserRole + 2) == "custom");
+    QVERIFY(roles.contains(BobUI::UserRole + 2));
+    QVERIFY(roles.value(BobUI::UserRole + 2) == "custom");
 }
 
 void tst_QAbstractItemModel::testDragActions()
 {
     QAbstractItemModel *model = new OverrideRoleNamesAndDragActions(this);
-    const Qt::DropActions actions = model->supportedDragActions();
-    QVERIFY(actions & Qt::CopyAction); // Present by default
-    QVERIFY(actions & Qt::MoveAction);
+    const BobUI::DropActions actions = model->supportedDragActions();
+    QVERIFY(actions & BobUI::CopyAction); // Present by default
+    QVERIFY(actions & BobUI::MoveAction);
 }
 
 class OverrideDropActions : public QStringListModel
@@ -2266,17 +2266,17 @@ public:
       : QStringListModel(parent)
     {
     }
-    Qt::DropActions supportedDropActions() const override
+    BobUI::DropActions supportedDropActions() const override
     {
-        return Qt::MoveAction;
+        return BobUI::MoveAction;
     }
 };
 
 void tst_QAbstractItemModel::dragActionsFallsBackToDropActions()
 {
     QAbstractItemModel *model = new OverrideDropActions(this);
-    QCOMPARE(model->supportedDragActions(), Qt::MoveAction);
-    QCOMPARE(model->supportedDropActions(), Qt::MoveAction);
+    QCOMPARE(model->supportedDragActions(), BobUI::MoveAction);
+    QCOMPARE(model->supportedDropActions(), BobUI::MoveAction);
 }
 
 class SignalConnectionTester : public QObject
@@ -2399,7 +2399,7 @@ void tst_QAbstractItemModel::checkIndex()
     QVERIFY(model.checkIndex(QModelIndex()));
     QVERIFY(model.checkIndex(QModelIndex(), QAbstractItemModel::CheckIndexOption::DoNotUseParent));
     QVERIFY(model.checkIndex(QModelIndex(), QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(QModelIndex(), QAbstractItemModel::CheckIndexOption::IndexIsValid));
 
     QModelIndex topLevelIndex = model.index(0, 0);
@@ -2413,7 +2413,7 @@ void tst_QAbstractItemModel::checkIndex()
     QVERIFY(childIndex.isValid());
     QVERIFY(model.checkIndex(childIndex));
     QVERIFY(model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::DoNotUseParent));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
     QVERIFY(model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::IndexIsValid));
 
@@ -2421,17 +2421,17 @@ void tst_QAbstractItemModel::checkIndex()
     QVERIFY(childIndex.isValid());
     QVERIFY(model.checkIndex(childIndex));
     QVERIFY(model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::DoNotUseParent));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
     QVERIFY(model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::IndexIsValid));
 
     topLevel->removeRow(1);
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(childIndex));
     QVERIFY(model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::DoNotUseParent));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(childIndex, QAbstractItemModel::CheckIndexOption::IndexIsValid));
 
     QStandardItemModel model2;
@@ -2443,13 +2443,13 @@ void tst_QAbstractItemModel::checkIndex()
     QVERIFY(model2.checkIndex(topLevelIndex, QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
     QVERIFY(model2.checkIndex(topLevelIndex, QAbstractItemModel::CheckIndexOption::IndexIsValid));
 
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(topLevelIndex));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(topLevelIndex, QAbstractItemModel::CheckIndexOption::DoNotUseParent));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(topLevelIndex, QAbstractItemModel::CheckIndexOption::ParentIsInvalid));
-    QTest::ignoreMessage(QtWarningMsg, ignorePattern);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, ignorePattern);
     QVERIFY(!model.checkIndex(topLevelIndex, QAbstractItemModel::CheckIndexOption::IndexIsValid));
 }
 
@@ -2479,9 +2479,9 @@ void tst_QAbstractItemModel::modelRoleDataSpanConstruction()
 void tst_QAbstractItemModel::modelRoleDataSpan()
 {
     QModelRoleData data[3] = {
-        QModelRoleData(Qt::DisplayRole),
-        QModelRoleData(Qt::DecorationRole),
-        QModelRoleData(Qt::EditRole)
+        QModelRoleData(BobUI::DisplayRole),
+        QModelRoleData(BobUI::DecorationRole),
+        QModelRoleData(BobUI::EditRole)
     };
     QModelRoleData *dataPtr = data;
 
@@ -2499,9 +2499,9 @@ void tst_QAbstractItemModel::modelRoleDataSpan()
     data[1].setData(QStringLiteral("a string"));
     data[2].setData(123.5);
 
-    QCOMPARE(span.dataForRole(Qt::DisplayRole)->toInt(), 42);
-    QCOMPARE(span.dataForRole(Qt::DecorationRole)->toString(), "a string");
-    QCOMPARE(span.dataForRole(Qt::EditRole)->toDouble(), 123.5);
+    QCOMPARE(span.dataForRole(BobUI::DisplayRole)->toInt(), 42);
+    QCOMPARE(span.dataForRole(BobUI::DecorationRole)->toString(), "a string");
+    QCOMPARE(span.dataForRole(BobUI::EditRole)->toDouble(), 123.5);
 }
 
 // model implementing data(), but not multiData(); check that the
@@ -2583,5 +2583,5 @@ void tst_QAbstractItemModel::multiData()
     check();
 }
 
-QTEST_MAIN(tst_QAbstractItemModel)
+BOBUIEST_MAIN(tst_QAbstractItemModel)
 #include "tst_qabstractitemmodel.moc"

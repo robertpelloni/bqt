@@ -1,40 +1,40 @@
-Qt 5.9.4 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.9.0 through 5.9.3.
+BobUI 5.9.4 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.9.0 through 5.9.3.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-http://doc.qt.io/qt-5/index.html
+http://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.9 series is binary compatible with the 5.8.x series.
+The BobUI version 5.9 series is binary compatible with the 5.8.x series.
 Applications compiled for 5.8 will continue to run with 5.9.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
 
 ****************************************************************************
-*                               Qt 5.9.4 Changes                           *
+*                               BobUI 5.9.4 Changes                           *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
- - [QTBUG-64529] Fixed a compilation issue with qfloat16 if AVX2 support is
+ - [BOBUIBUG-64529] Fixed a compilation issue with qfloat16 if AVX2 support is
    enabled in the compiler. Since all processors that support AVX2 also
    support F16C, for GCC and Clang it is recommended to either add -mf16c
    to your build or to use the corresponding -march= switch.
 
  - QCoreApplication:
-   * [QTBUG-58919] Fixed a crash if QCoreApplication is recreated on Windows
+   * [BOBUIBUG-58919] Fixed a crash if QCoreApplication is recreated on Windows
      and the passed argv parameter is different.
 
  - QFileInfo:
-   * [QTBUG-30148] Fixed isWritable() on Windows to return whether the given
+   * [BOBUIBUG-30148] Fixed isWritable() on Windows to return whether the given
      file is writable only under current privilege levels. Previously, the
      result would take into account privilege elevation.
 
@@ -56,117 +56,117 @@ QtCore
      container, if the container had more than one copy of the that element.
 
  - QXmlStreamWriter:
-   * [QTBUG-63538] Empty namespace URIs are now possible.
+   * [BOBUIBUG-63538] Empty namespace URIs are now possible.
 
  - State Machine:
-   * [QTBUG-61463] Fixed a failed assertion that could happen when emitting a
+   * [BOBUIBUG-61463] Fixed a failed assertion that could happen when emitting a
      signal from another thread.
 
-QtNetwork
+BobUINetwork
 ---------
 
  - Bearer Management:
-   * [QTBUG-40332] The nativewifi (Windows) bearer plugin was determined
+   * [BOBUIBUG-40332] The nativewifi (Windows) bearer plugin was determined
      to be causing network interference in the form of system-wide higher
      latency and has been disabled. The CoreWlan (macOS) plugin has also
      been disabled.
 
  - QUdpSocket:
-   * [QTBUG-64718] Fixed a regression from Qt 5.9.3 caused by an apparent
+   * [BOBUIBUG-64718] Fixed a regression from BobUI 5.9.3 caused by an apparent
      Win32 API quirk we triggered when using readDatagram(), resulting in
      an invalid QHostAddress sender address. receiveDatagram() was not
      affected.
 
-QtPrintSupport
+BobUIPrintSupport
 --------------
 
  - QPrintDialog:
-   * [QTBUG-63933] Properly pre-select explicitly requested printer on
+   * [BOBUIBUG-63933] Properly pre-select explicitly requested printer on
      Unix.
 
-QtWidgets
+BobUIWidgets
 ---------
 
  - QFileSystemModel:
-   * [QTBUG-46684] It is now possible to enable per-file watching by
-     setting the environment variable QT_FILESYSTEMMODEL_WATCH_FILES,
+   * [BOBUIBUG-46684] It is now possible to enable per-file watching by
+     setting the environment variable BOBUI_FILESYSTEMMODEL_WATCH_FILES,
      allowing to track for example changes in file size.
-   * [QTBUG-64098] Fixed column alignment issues.
-   * [QTBUG-62841] Fixed assert when monitoring directories.
+   * [BOBUIBUG-64098] Fixed column alignment issues.
+   * [BOBUIBUG-62841] Fixed assert when monitoring directories.
 
 - QPixmapCache:
-   * [QTBUG-65475] Changing application palette runtime will now affect
+   * [BOBUIBUG-65475] Changing application palette runtime will now affect
      (and invalidate) cached widget pixmaps used by the current style.
 
-- QTreeView:
-   * [QTBUG-57538] Fixed issue with drag and drop sometimes being inaccurate.
-   * [QTBUG-63396] Fixed issue with child indicator not drawn correctly in RTL mode.
-   * [QTBUG-63869] Fixed key navigation issue when using hidden items.
-   * [QTBUG-8376]  Fixed row heights being wrong because of hidden columns.
+- BOBUIreeView:
+   * [BOBUIBUG-57538] Fixed issue with drag and drop sometimes being inaccurate.
+   * [BOBUIBUG-63396] Fixed issue with child indicator not drawn correctly in RTL mode.
+   * [BOBUIBUG-63869] Fixed key navigation issue when using hidden items.
+   * [BOBUIBUG-8376]  Fixed row heights being wrong because of hidden columns.
 
-- QTableView:
-   * [QTBUG-60219] Fixed grid lines being drawn outside header.
+- BOBUIableView:
+   * [BOBUIBUG-60219] Fixed grid lines being drawn outside header.
 
 - QHeaderView:
-   * [QTBUG-53221] Fixed assert in QHeaderView because of layout changes.
-   * [QTBUG-65017] Fixed a font issue when using drag and drop.
-   * [QTBUG-56520] Fixed drawing issues in RTL mode.
-   * [QTBUG-41124] [QTBUG-54610] Fixed update issues.
+   * [BOBUIBUG-53221] Fixed assert in QHeaderView because of layout changes.
+   * [BOBUIBUG-65017] Fixed a font issue when using drag and drop.
+   * [BOBUIBUG-56520] Fixed drawing issues in RTL mode.
+   * [BOBUIBUG-41124] [BOBUIBUG-54610] Fixed update issues.
 
 - QWidget:
-   * [QTBUG-61213] Fixed crash related to the usage of Qt::WA_WindowPropagation.
+   * [BOBUIBUG-61213] Fixed crash related to the usage of BobUI::WA_WindowPropagation.
 
 - QPlainTextEdit:
-   * [QTBUG-62818] Fixed QPlainTextedit hanging because of scrollbar usage.
+   * [BOBUIBUG-62818] Fixed QPlainTextedit hanging because of scrollbar usage.
 
 - QMenu:
-   * [QTBUG-63576] Fixed HiDPI issue in QFusionStyle for QCheckBoxes in QMenus.
-   * [QTBUG-59794] Fixed HiDPI issue in QMenu when using several screens.
+   * [BOBUIBUG-63576] Fixed HiDPI issue in QFusionStyle for QCheckBoxes in QMenus.
+   * [BOBUIBUG-59794] Fixed HiDPI issue in QMenu when using several screens.
 
 - QMenuItem:
-   * [QTBUG-64055] Fixed drawing issue when setting a font style.
+   * [BOBUIBUG-64055] Fixed drawing issue when setting a font style.
 
 - QAbstractButton:
-   * [QTBUG-53244] Fixed issue with released signal not being emmited when using
+   * [BOBUIBUG-53244] Fixed issue with released signal not being emmited when using
      several mouse buttons at the same time.
 
 - QGraphicsEffect:
-   * [QTBUG-60231] Fixed crash when using child widgets with graphic effects.
+   * [BOBUIBUG-60231] Fixed crash when using child widgets with graphic effects.
 
 Third-Party Code
 ----------------
 
- - [QTBUG-65138] Fixed glitch in attribution documentation for Freetype
-   licenses / Qt Gui.
+ - [BOBUIBUG-65138] Fixed glitch in attribution documentation for Freetype
+   licenses / BobUI Gui.
 
 Platform Specific Changes
 -------------------------
 
  - eglfs:
-   * [QTBUG-65119] Fixed crash when using cursors and multiple GL contexts.
+   * [BOBUIBUG-65119] Fixed crash when using cursors and multiple GL contexts.
 
  - iOS/tvOS:
-   * Qt will now take the safe area margins of the device into account when
-     computing layouts for QtWidgets.
+   * BobUI will now take the safe area margins of the device into account when
+     computing layouts for BobUIWidgets.
 
  - macOS:
-   * [QTBUG-57487][QTBUG-54160] If you have changed the button mapping of
-     your Wacom tablet in System Preferences, it will be respected by Qt
+   * [BOBUIBUG-57487][BOBUIBUG-54160] If you have changed the button mapping of
+     your Wacom tablet in System Preferences, it will be respected by BobUI
      applications now. To revert to the old behavior, set the environment
-     variable QT_MAC_TABLET_IGNORE_BUTTON_MAPPING.
+     variable BOBUI_MAC_TABLET_IGNORE_BUTTON_MAPPING.
 
  - macOS/iOS:
-   * [QTBUG-63476] Fixed an issue where text using one of the system theme
+   * [BOBUIBUG-63476] Fixed an issue where text using one of the system theme
      fonts would under certain circumstances display random glyphs.
 
  - INTEGRITY:
    * Added mkspec for INTEGRITY Qualcomm s820 MSM8996AU
 
  - QNX:
-   * [QTBUG-64033] Fixed a build issue when using slog2 in QNX7.
+   * [BOBUIBUG-64033] Fixed a build issue when using slog2 in QNX7.
 
  - X11 / XCB:
-   * [QTBUG-62224] Minimal libXi version requirement has been updated from
+   * [BOBUIBUG-62224] Minimal libXi version requirement has been updated from
      1.7.4 to 1.7.5. This is because XIAllowTouchEvents is known to
      deadlock with libXi 1.7.4 and earlier. When touch events are never
      received, this is not an issue. Plain mouse / keyboard systems are not
@@ -175,15 +175,15 @@ Platform Specific Changes
 configure & build system
 ------------------------
 
- - [QTBUG-61431][QTBUG-62521] Fixed processing of *_LIBS_{DEBUG|RELEASE}=
+ - [BOBUIBUG-61431][BOBUIBUG-62521] Fixed processing of *_LIBS_{DEBUG|RELEASE}=
    configure command line arguments.
- - [QTBUG-63452] Fixed bogus complaints about DUMMY platform when
+ - [BOBUIBUG-63452] Fixed bogus complaints about DUMMY platform when
    re-configuring a build on a different day than initially configuring it.
- - Fixed logic errors in the conditions of various Qt features.
+ - Fixed logic errors in the conditions of various BobUI features.
 
 qmake
 -----
 
- - [QTBUG-41246][QTBUG-50896][Xcode] It is now possible to enable generation
+ - [BOBUIBUG-41246][BOBUIBUG-50896][Xcode] It is now possible to enable generation
    of dSYM debug symbols for release builds.
  - [iOS] Fixed compilation of asset catalogs for a generic simulator.

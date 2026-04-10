@@ -1,16 +1,16 @@
-Qt 5.14 introduces many new features and improvements as well as bugfixes
+BobUI 5.14 introduces many new features and improvements as well as bugfixes
 over the 5.13.x series. For more details, refer to the online documentation
 included in this distribution. The documentation is also available online:
 
-https://doc.qt.io/qt-5/index.html
+https://doc.bobui.io/bobui-5/index.html
 
-The Qt version 5.14 series is binary compatible with the 5.13.x series.
+The BobUI version 5.14 series is binary compatible with the 5.13.x series.
 Applications compiled for 5.13 will continue to run with 5.14.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-https://bugreports.qt.io/
+https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -19,7 +19,7 @@ information about a particular change.
 *                       Important Behavioral Change                        *
 ****************************************************************************
 
- - [QTBUG-47644] WrapWord now correctly prefers line breaks between words
+ - [BOBUIBUG-47644] WrapWord now correctly prefers line breaks between words
    in Korean text. WrapAnywhere can still be used to get breaks between
    syllables instead.
 
@@ -32,16 +32,16 @@ information about a particular change.
    new Q_NAMESPACE_EXPORT macro for that use case.
 
 ****************************************************************************
-*                                  QtCore                                  *
+*                                  BobUICore                                  *
 ****************************************************************************
 
  - Added support of deduction guides for QPair
- - Added new Qt::SplitBehavior, for use as eventual replacement for
+ - Added new BobUI::SplitBehavior, for use as eventual replacement for
    QString::SplitBehavior.
  - Added the new Q_NAMESPACE_EXPORT macro. It can be used just like
    Q_NAMESPACE to add meta-object information to a namespace; however it
    also supports exporting of such information from shared libraries.
- - [QTBUG-15234] Qt installations on the host system can now be relocated,
+ - [BOBUIBUG-15234] BobUI installations on the host system can now be relocated,
    i.e. moved to other directories.
 
  - JSON:
@@ -58,7 +58,7 @@ information about a particular change.
 
  - QBasicTimer:
    * QBasicTimer is now a move-only class. Copying is now deprecated and
-     will be removed in Qt 6.
+     will be removed in BobUI 6.
    * Added swap() member and free function.
 
  - QByteArray::operator[]:
@@ -66,7 +66,7 @@ information about a particular change.
      the returned QByteRef.
    * Deprecate reliance on its implicit resizing behavior. Support for
      writing past the end of QByteArray shall be removed in a future
-     version of Qt.
+     version of BobUI.
 
  - QCalendar:
    * Added QCalendar to support diverse calendars, supported by
@@ -92,7 +92,7 @@ information about a particular change.
      need of manually defining streaming operators.
 
  - QDate:
-   * [QTBUG-64485] Added startOfDay() and endOfDay() methods to provide a
+   * [BOBUIBUG-64485] Added startOfDay() and endOfDay() methods to provide a
      QDateTime at the start and end of a given date, taking account of any
      time skipped by transitions, e.g. a DST spring-forward, which can lead
      to a day starting at 01:00 or ending just before 23:00.
@@ -111,7 +111,7 @@ information about a particular change.
    * QEasingCurve now properly streams all the data needed to QDataStream.
 
  - QFileInfo:
-   * [QTBUG-75869] Introduced QFileInfo::isJunction() to detect NTFS Junctions
+   * [BOBUIBUG-75869] Introduced QFileInfo::isJunction() to detect NTFS Junctions
      on Windows.
 
  - QHash:
@@ -121,7 +121,7 @@ information about a particular change.
    * Added insert(), remove(), and take() overloads taking QLatin1String.
 
  - QLatin1Char:
-   * Comparison against char now works even in QT_NO_CAST_FROM_ASCII
+   * Comparison against char now works even in BOBUI_NO_CAST_FROM_ASCII
      builds.
 
  - QLatin1Literal:
@@ -154,7 +154,7 @@ information about a particular change.
      better chance of finding a suitable file.
 
  - QMetaObject:
-   * [QTBUG-38876] Some internal members of the QMetaObject class have
+   * [BOBUIBUG-38876] Some internal members of the QMetaObject class have
      changed types. Those members are not public API and thus should not
      cause source incompatibilities.
 
@@ -177,14 +177,14 @@ information about a particular change.
    * Overloads of qSharedPointerObjectCast have been added to work on
      std::shared_ptr.
    * The swap overload for QSharedPointer in the std namespace has been
-     removed; a new overload has been added in the Qt namespace.
+     removed; a new overload has been added in the BobUI namespace.
 
  - QSize/QSizeF:
    * Added grownBy(QMargin(F))/shrunkBy(QMargin(F)).
 
  - QString:
    * The behavior of operator[] to allow implicit resizing of the string
-     has been deprecated, and will be removed in a future version of Qt.
+     has been deprecated, and will be removed in a future version of BobUI.
    * QString::operator[] detaches immediately. Previously, the detach was
      delayed until a modification was made to the string through the
      returned QCharRef.
@@ -192,7 +192,7 @@ information about a particular change.
      nine arguments, as well as with QStringViews.
 
  - QString/QStringRef:
-   * The split functions now optionally take Qt::SplitBehavior.
+   * The split functions now optionally take BobUI::SplitBehavior.
 
  - QStringList:
    * Added range constructor.
@@ -209,12 +209,12 @@ information about a particular change.
  - QStringView/QLatin1String:
    * Added arg(), taking arbitrarily many strings.
 
- - QTextStream:
+ - BOBUIextStream:
    * The NaN obtained when reading "nan" as a floating-point value is now
      quiet rather than signaling.
 
- - QTimeZone:
-   * [QTBUG-75565] The TZDB back-end now recognizes the contents of /etc/TZ
+ - BOBUIimeZone:
+   * [BOBUIBUG-75565] The TZDB back-end now recognizes the contents of /etc/TZ
      as a fall-back for $TZ (as used by uClibc).
 
  - QVarLengthArray:
@@ -232,8 +232,8 @@ information about a particular change.
    * The data() function has been deprecated.
    * A swap overload has been added.
 
- - QtGlobal:
-   * Add new macros QT_DEPRECATED_VERSION and QT_DEPRECATED_VERSION_X to
+ - BobUIGlobal:
+   * Add new macros BOBUI_DEPRECATED_VERSION and BOBUI_DEPRECATED_VERSION_X to
      conditionally display deprecation warnings
    * Added qExchange(), a drop-in for C++14's std::exchange()
 
@@ -243,7 +243,7 @@ information about a particular change.
      resembling the version string displayed by the winver tool.
 
 ****************************************************************************
-*                                  QtDBus                                  *
+*                                  BobUIDBus                                  *
 ****************************************************************************
 
  - QDBusAbstractInterface:
@@ -254,7 +254,7 @@ information about a particular change.
    * Added explicit cast operator to QVariant.
 
 ****************************************************************************
-*                                  QtGui                                   *
+*                                  BobUIGui                                   *
 ****************************************************************************
 
  - QColor:
@@ -268,20 +268,20 @@ information about a particular change.
    This is especially useful for processing or suppressing messages from
    the validation layers.
  - Obsolete constructors and accessors in QWheelEvent now have proper
-   deprecation macros, and are no longer in use in any Qt modules.
-   What is left is intended to be compatible with planned changes in Qt 6.
+   deprecation macros, and are no longer in use in any BobUI modules.
+   What is left is intended to be compatible with planned changes in BobUI 6.
 
  - QFont:
-   * [QTBUG-77908] Fixed kerning error with certain fonts.
-   * [QTBUG-76239] Fixed an issue where application fonts would be parsed
+   * [BOBUIBUG-77908] Fixed kerning error with certain fonts.
+   * [BOBUIBUG-76239] Fixed an issue where application fonts would be parsed
      multiple times, causing some unnecessary overhead when during
      application startup.
-   * [QTBUG-46322] Resolving a font that just has a family set with
+   * [BOBUIBUG-46322] Resolving a font that just has a family set with
      families set will prepend the family to the families so that it is
      still the first preference for the font.
 
  - QImage:
-   * [QTBUG-42540], [QTBUG-68787] Loading of image files having a file
+   * [BOBUIBUG-42540], [BOBUIBUG-68787] Loading of image files having a file
      name suffix for a different image file type has been
      fixed. QImageReader will now ask the suffix format handler to
      confirm the file contents (canRead()), and fall back to normal
@@ -295,41 +295,41 @@ information about a particular change.
    * HighQualityAntialiasing and NonCosmeticDefaultPen are marked as
      deprecated and don't have an effect anymore
 
- - QTextDocument:
-   * [QTBUG-36152] CSS styling of table cell borders (styling <td> and <th>
+ - BOBUIextDocument:
+   * [BOBUIBUG-36152] CSS styling of table cell borders (styling <td> and <th>
      elements) is now supported during HTML import and export, including
      border-color, border-width and border-style. Setting the table's
      border-width to a value >= 1 and enabling border-collapse will now draw
      a simple, clean table grid (1px) with an outer border of the specified
      width and color.  A manual test was added, which allows editing HTML
      with live preview.
-   * [QTBUG-43589] Fixed incorrect rounding of widths of variable-width
+   * [BOBUIBUG-43589] Fixed incorrect rounding of widths of variable-width
      columns in tables, to avoid border drawing artifacts.
-   * [QTBUG-78318] QTextFrameFormat margins, padding and borders are now
+   * [BOBUIBUG-78318] BOBUIextFrameFormat margins, padding and borders are now
      scaled to device coordinates, and thus correctly sized on high-dpi
      displays and printers.
    * Markdown (CommonMark or GitHub dialect) is now a supported format for
-     reading into and writing from QTextDocument, via the setMarkdown() and
+     reading into and writing from BOBUIextDocument, via the setMarkdown() and
      toMarkdown() functions.  We do not guarantee that every markdown
      document can be re-written exactly as it was read; but that does work
      in many cases, and it's OK to report bugs about cases that don't work.
 
  - Touch:
-   * [QTBUG-77142] When a stationary touchpoint contains some "interesting"
+   * [BOBUIBUG-77142] When a stationary touchpoint contains some "interesting"
      property change (pressure or velocity, so far), it is delivered normally.
 
 ****************************************************************************
-*                                QtNetwork                                 *
+*                                BobUINetwork                                 *
 ****************************************************************************
 
  - QAuthenticator:
-   * [QTBUG-4117] Add support for SPNEGO/Negotiate
+   * [BOBUIBUG-4117] Add support for SPNEGO/Negotiate
 
  - QHostInfo:
    * Added move contructor.
 
  - QNetworkAccessManager:
-   * [QTBUG-69477] Don't fail when FTP does not implement the HELP command.
+   * [BOBUIBUG-69477] Don't fail when FTP does not implement the HELP command.
    * Added setAutoDeleteReplies to QNetworkAccessManager to enable the
      AutoDeleteReplyOnFinishAttribute attribute for all QNetworkRequests
      that are passed to QNetworkAccessManager.
@@ -344,25 +344,25 @@ information about a particular change.
    * Key data is cleared as soon as possible when move-assigning.
 
  - QSslSocket:
-   * [QTBUG-72016] Added runtime validation of the SSL private key when it
+   * [BOBUIBUG-72016] Added runtime validation of the SSL private key when it
      is loaded through a file path.
 
 ****************************************************************************
-*                                  QtSql                                   *
+*                                  BobUISql                                   *
 ****************************************************************************
 
  - QPSQL:
-   * [QTBUG-79033][QTBUG-79064] added support for PostgreSQL 12
+   * [BOBUIBUG-79033][BOBUIBUG-79064] added support for PostgreSQL 12
 
  - QSqlite:
    * Updated to v3.30.1
 
  - QSqlite2:
-   * Marked QSQLITE2 plugin as obsolete - it will be removed with Qt6
-     together with the QTDS plugin
+   * Marked QSQLITE2 plugin as obsolete - it will be removed with BobUI6
+     together with the BOBUIDS plugin
 
 ****************************************************************************
-*                                QtTestLib                                 *
+*                                BobUITestLib                                 *
 ****************************************************************************
 
  - Comparison of QImage, QPixmap now checks for the device pixel ratio.
@@ -370,7 +370,7 @@ information about a particular change.
    instantiation by implementing a initMain() function in the test class.
 
 ****************************************************************************
-*                                QtWidgets                                 *
+*                                BobUIWidgets                                 *
 ****************************************************************************
 
  - QActionGroup:
@@ -399,7 +399,7 @@ information about a particular change.
      setWindowFrameMargins().
 
  - QGroupBox:
-   * [QTBUG-259389 Always disable children of a checkable, unchecked group
+   * [BOBUIBUG-259389 Always disable children of a checkable, unchecked group
       box before showing.
 
  - QLabel:
@@ -420,18 +420,18 @@ information about a particular change.
      knows about. The remaining will be resolved/inherited from the
      context.
 
- - QTextBrowser:
-   * Markdown is now a supported format.  QTextBrowser::setSource() detects
+ - BOBUIextBrowser:
+   * Markdown is now a supported format.  BOBUIextBrowser::setSource() detects
      the common file extensions (.md, .mkd and .markdown).  In case it
      cannot be detected that way, setSource() now takes an optional
      ResourceType enum argument so that the type can be overridden.
-     QTextBrowser inherits all the QTextEdit features: if readOnly is set
-     to false, the user can perform the editing operations that QTextEdit
+     BOBUIextBrowser inherits all the BOBUIextEdit features: if readOnly is set
+     to false, the user can perform the editing operations that BOBUIextEdit
      allows.  If readOnly is set to true (the default), the user can click
      Markdown hyperlinks to emit the anchorClicked() signal, as with HTML.
 
- - QTextEdit:
-   * [QTBUG-75931] Added support for copy-pasting foreground brushes with
+ - BOBUIextEdit:
+   * [BOBUIBUG-75931] Added support for copy-pasting foreground brushes with
      textures within same document.
    * Markdown (CommonMark or GitHub dialect) is now a supported format,
      via the markdown property.  GitHub dialect is the default, and supports
@@ -440,7 +440,7 @@ information about a particular change.
      the user can click on them to toggle the states.  The cursor changes to
      PointingHandCursor when the mouse is hovering over a checkbox.
 
- - QTreeView:
+ - BOBUIreeView:
    * Don't emit clicked signal after a doubleClicked signal.
 
  - QWidget:
@@ -455,17 +455,17 @@ information about a particular change.
    * Fixed an issue where an application installation would be irrecoverably
      broken if power loss or a crash occurred during its first initialization
      run.
-   * Make it easy to run Qt tests on Android. "$ make check" is all that's
+   * Make it easy to run BobUI tests on Android. "$ make check" is all that's
      needed to run a test on an Android device.
-   * Remove ant support from androiddeployqt
+   * Remove ant support from androiddeploybobui
    * Introduce "make apk" target, an easy way to create an apk.
    * Android depends on NDK r20+
    * Android multi arch build in one go, needed to support the new .aab
      packaging format.
-   * -android-abis configure script parameter useful to compile Qt only for a
+   * -android-abis configure script parameter useful to compile BobUI only for a
      selected Android ABIs.
    * Instead of bundling QML resources in assets and extracting them on first
-     start, Qt now creates an .rcc file and register it before invoking the
+     start, BobUI now creates an .rcc file and register it before invoking the
      main function.
    * Fixed regression that made it impossible for an application to use the
      tap-and-hold gesture.
@@ -475,7 +475,7 @@ information about a particular change.
    * Added a device spec for 64-bit i.MX8 systems (Vivante graphics stack)
 
  - MinGW:
-   * [QTBUG-4155] Added a suffix to debug mode pkgconfig files.
+   * [BOBUIBUG-4155] Added a suffix to debug mode pkgconfig files.
    * MinGW does not built with -debug-and-release mode anymore.
      Instead, the binaries are built with -release -force-debug-info
      -separate-debug-info.
@@ -492,7 +492,7 @@ information about a particular change.
  - Windows:
    * It is now possible to enable RTL mode by passing the option -platform
      windows:reverse.
-   * [QTBUG-74748] Fixed a bug where it would be impossible to
+   * [BOBUIBUG-74748] Fixed a bug where it would be impossible to
      request different faces of a font family after a specific type face
      has been in use.
 
@@ -501,10 +501,10 @@ information about a particular change.
 ****************************************************************************
  - Upgraded bundled Freetype version to 2.10.1.
  - Build sqlite without SQLITE_OMIT_LOAD_EXTENSION
- - Qt Gui: Added md4c markdown parser to src/3rdparty/md4c (MIT licensed).
- - [QTBUG-79418] Updated double-conversion code to upstream version 3.1.5.
- - [QTBUG-79420] libjpeg-turbo was updated to version 2.0.3
- - [QTBUG-79418] Updated DNS public suffix list
+ - BobUI Gui: Added md4c markdown parser to src/3rdparty/md4c (MIT licensed).
+ - [BOBUIBUG-79418] Updated double-conversion code to upstream version 3.1.5.
+ - [BOBUIBUG-79420] libjpeg-turbo was updated to version 2.0.3
+ - [BOBUIBUG-79418] Updated DNS public suffix list
 
 ****************************************************************************
 *                                  Tools                                   *
@@ -518,14 +518,14 @@ information about a particular change.
 *                                configure                                 *
 ****************************************************************************
 
- - Added the configure option -qtlibinfix-plugins to rename plugins
-   according to QT_LIBINFIX. This option is off by default.
+ - Added the configure option -bobuilibinfix-plugins to rename plugins
+   according to BOBUI_LIBINFIX. This option is off by default.
 
 ****************************************************************************
 *                                  CMake                                   *
 ****************************************************************************
 
- - [QTBUG-38913][QTBUG-76562] Added ability to auto-import non-qml plugins
+ - [BOBUIBUG-38913][BOBUIBUG-76562] Added ability to auto-import non-qml plugins
    on CMake builds
 
 ****************************************************************************

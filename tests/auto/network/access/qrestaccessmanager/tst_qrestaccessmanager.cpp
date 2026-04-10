@@ -1,28 +1,28 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "httptestserver_p.h"
 
-#if QT_CONFIG(http)
-#include <QtNetwork/qhttpmultipart.h>
+#if BOBUI_CONFIG(http)
+#include <BobUINetwork/qhttpmultipart.h>
 #endif
-#include <QtNetwork/qrestaccessmanager.h>
-#include <QtNetwork/qauthenticator.h>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkrequestfactory.h>
-#include <QtNetwork/qrestreply.h>
+#include <BobUINetwork/qrestaccessmanager.h>
+#include <BobUINetwork/qauthenticator.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequestfactory.h>
+#include <BobUINetwork/qrestreply.h>
 
-#include <QTest>
-#include <QtTest/qsignalspy.h>
+#include <BOBUIest>
+#include <BobUITest/qsignalspy.h>
 
-#include <QtCore/private/qglobal_p.h> // for access to Qt's feature system
-#include <QtCore/qbuffer.h>
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qjsondocument.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qstringconverter.h>
+#include <BobUICore/private/qglobal_p.h> // for access to BobUI's feature system
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qjsonobject.h>
+#include <BobUICore/qjsondocument.h>
+#include <BobUICore/qjsonarray.h>
+#include <BobUICore/qstringconverter.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 using Header = QHttpHeaders::WellKnownHeader;
@@ -35,7 +35,7 @@ private slots:
     void initialization();
     void destruction();
     void callbacks();
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
     void requests();
 #endif
     void reply();
@@ -55,7 +55,7 @@ private:
 
 void tst_QRestAccessManager::initialization()
 {
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QRestAccessManager: QNetworkAccesManager is nullptr");
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QRestAccessManager: QNetworkAccesManager is nullptr");
     QRestAccessManager manager1(nullptr);
     QVERIFY(!manager1.networkAccessManager());
 
@@ -77,7 +77,7 @@ void tst_QRestAccessManager::reply()
     QCOMPARE(rr2.networkReply(), nr);
 
     // Move-assign
-    QTest::ignoreMessage(QtMsgType::QtWarningMsg, "QRestReply: QNetworkReply is nullptr");
+    BOBUIest::ignoreMessage(BobUIMsgType::BobUIWarningMsg, "QRestReply: QNetworkReply is nullptr");
     QRestReply rr3(nullptr);
     rr3 = std::move(rr2);
     QCOMPARE(rr3.networkReply(), nr);
@@ -85,7 +85,7 @@ void tst_QRestAccessManager::reply()
 
 #define VERIFY_REPLY_OK(METHOD) \
 { \
-    QTRY_VERIFY(networkReply);                  \
+    BOBUIRY_VERIFY(networkReply);                  \
     QRestReply restReply(networkReply);         \
     QCOMPARE(serverSideRequest.method, METHOD); \
     QVERIFY(restReply.isSuccess());             \
@@ -94,14 +94,14 @@ void tst_QRestAccessManager::reply()
     networkReply = nullptr;                     \
 }
 
-#if QT_CONFIG(http)
+#if BOBUI_CONFIG(http)
 void tst_QRestAccessManager::requests()
 {
     // A basic test for each HTTP method against the local testserver.
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
     request.setRawHeader("Content-Type"_ba, "text/plain"); // To silence missing content-type warn
     QNetworkReply *networkReply = nullptr;
@@ -298,11 +298,11 @@ private:
 };
 
 template <typename Functor, std::enable_if_t<
-          QtPrivate::AreFunctionsCompatible<void(*)(QRestReply&), Functor>::value, bool> = true>
+          BobUIPrivate::AreFunctionsCompatible<void(*)(QRestReply&), Functor>::value, bool> = true>
 inline constexpr bool isCompatibleCallback(Functor &&) { return true; }
 
 template <typename Functor, std::enable_if_t<
-          !QtPrivate::AreFunctionsCompatible<void(*)(QRestReply&), Functor>::value, bool> = true,
+          !BobUIPrivate::AreFunctionsCompatible<void(*)(QRestReply&), Functor>::value, bool> = true,
           typename = void>
 inline constexpr bool isCompatibleCallback(Functor &&) { return false; }
 
@@ -351,7 +351,7 @@ void tst_QRestAccessManager::callbacks()
     delete transient;
 
     // Let requests finish
-    QTRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
+    BOBUIRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
     for (auto reply: m_actualReplies) {
         QRestReply restReply(reply);
         QVERIFY(!restReply.isSuccess());
@@ -381,7 +381,7 @@ void tst_QRestAccessManager::callbacks()
     delete transient;
 
     // Let requests finish
-    QTRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
+    BOBUIRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
     for (auto reply: m_actualReplies) {
         QRestReply restReply(reply);
         QVERIFY(!restReply.isSuccess());
@@ -412,7 +412,7 @@ void tst_QRestAccessManager::callbacks()
     delete transient;
 
     // Let requests finish
-    QTRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
+    BOBUIRY_COMPARE(m_actualReplies.size(), m_expectedReplies.size());
     for (auto reply: m_actualReplies) {
         QRestReply restReply(reply);
         QVERIFY(!restReply.isSuccess());
@@ -437,16 +437,16 @@ void tst_QRestAccessManager::destruction()
     // Delete reply immediately, make sure nothing bad happens and that there is no callback
     QNetworkReply *networkReply = manager->get(request, this, handler);
     delete networkReply;
-    QTest::qWait(20); // allow some time for the callback to arrive (it shouldn't)
+    BOBUIest::qWait(20); // allow some time for the callback to arrive (it shouldn't)
     QCOMPARE(m_actualReplies.size(), m_expectedReplies.size()); // Both should be 0
 
     // Delete access manager immediately after request, make sure nothing bad happens
     manager->get(request, this, handler);
     manager->post(request, "data"_ba, this, handler);
-    QTest::ignoreMessage(QtWarningMsg, "Access manager destroyed while 2 requests were still"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Access manager destroyed while 2 requests were still"
                                        " in progress");
     manager.reset();
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
     QCOMPARE(m_actualReplies.size(), m_expectedReplies.size()); // Both should be 0
 
     // Destroy the underlying QNAM while requests in progress
@@ -454,7 +454,7 @@ void tst_QRestAccessManager::destruction()
     manager->get(request, this, handler);
     manager->post(request, "data"_ba, this, handler);
     qnam.reset();
-    QTest::qWait(20);
+    BOBUIest::qWait(20);
     QCOMPARE(m_actualReplies.size(), m_expectedReplies.size()); // Both should be 0
 }
 
@@ -462,7 +462,7 @@ void tst_QRestAccessManager::destruction()
 { \
     serverSideResponse.status = STATUS; \
     QRestReply restReply(manager.get(request)); \
-    QTRY_VERIFY(restReply.networkReply()->isFinished()); \
+    BOBUIRY_VERIFY(restReply.networkReply()->isFinished()); \
     QVERIFY(!restReply.hasError()); \
     QCOMPARE(restReply.httpStatus(), serverSideResponse.status); \
     QCOMPARE(restReply.error(), QNetworkReply::NetworkError::NoError); \
@@ -476,7 +476,7 @@ void tst_QRestAccessManager::errors()
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
 
     HttpData serverSideResponse; // The response data the server responds with
@@ -508,7 +508,7 @@ void tst_QRestAccessManager::errors()
     {
         // Test that actual network/protocol errors come through
         QRestReply restReply(manager.get({})); // Empty url
-        QTRY_VERIFY(restReply.networkReply()->isFinished());
+        BOBUIRY_VERIFY(restReply.networkReply()->isFinished());
         QVERIFY(restReply.hasError());
         QVERIFY(!restReply.isSuccess());
         QCOMPARE(restReply.error(), QNetworkReply::ProtocolUnknownError);
@@ -517,7 +517,7 @@ void tst_QRestAccessManager::errors()
 
     {
         QRestReply restReply(manager.get(QNetworkRequest{{"http://non-existent.foo.bar.test"}}));
-        QTRY_VERIFY(restReply.networkReply()->isFinished());
+        BOBUIRY_VERIFY(restReply.networkReply()->isFinished());
         QVERIFY(restReply.hasError());
         QVERIFY(!restReply.isSuccess());
         QCOMPARE(restReply.error(), QNetworkReply::HostNotFoundError);
@@ -527,7 +527,7 @@ void tst_QRestAccessManager::errors()
     {
         QRestReply restReply(manager.get(request));
         restReply.networkReply()->abort();
-        QTRY_VERIFY(restReply.networkReply()->isFinished());
+        BOBUIRY_VERIFY(restReply.networkReply()->isFinished());
         QVERIFY(restReply.hasError());
         QVERIFY(!restReply.isSuccess());
         QCOMPARE(restReply.error(), QNetworkReply::OperationCanceledError);
@@ -541,7 +541,7 @@ void tst_QRestAccessManager::body()
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
     QNetworkReply *networkReply = nullptr;
 
@@ -556,7 +556,7 @@ void tst_QRestAccessManager::body()
         serverSideResponse.status = 200;
         serverSideResponse.body = "some_data"_ba;
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         QCOMPARE(restReply.readBody(), serverSideResponse.body);
         QCOMPARE(restReply.httpStatus(), serverSideResponse.status);
@@ -570,7 +570,7 @@ void tst_QRestAccessManager::body()
         serverSideResponse.status = 200;
         serverSideResponse.body = ""_ba; // Empty
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         QCOMPARE(restReply.readBody(), serverSideResponse.body);
         networkReply->deleteLater();
@@ -581,7 +581,7 @@ void tst_QRestAccessManager::body()
         serverSideResponse.status = 500;
         serverSideResponse.body = "some_other_data"_ba;
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         QCOMPARE(restReply.readBody(), serverSideResponse.body);
         QCOMPARE(restReply.httpStatus(), serverSideResponse.status);
@@ -598,7 +598,7 @@ void tst_QRestAccessManager::json()
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
     QNetworkReply *networkReply = nullptr;
     QJsonDocument responseJsonDocument;
@@ -619,13 +619,13 @@ void tst_QRestAccessManager::json()
         networkReply = manager.get(request);
         // Read unfinished reply
         QVERIFY(!networkReply->isFinished());
-        QTest::ignoreMessage(QtWarningMsg, "readJson() called on an unfinished reply, ignoring");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "readJson() called on an unfinished reply, ignoring");
         parseError.error = QJsonParseError::ParseError::DocumentTooLarge; // Reset to impossible value
         QRestReply restReply(networkReply);
         QVERIFY(!restReply.readJson(&parseError));
         QCOMPARE(parseError.error, QJsonParseError::ParseError::NoError);
         // Read finished reply
-        QTRY_VERIFY(networkReply->isFinished());
+        BOBUIRY_VERIFY(networkReply->isFinished());
         parseError.error = QJsonParseError::ParseError::DocumentTooLarge;
         json = restReply.readJson(&parseError);
         QVERIFY(json);
@@ -642,7 +642,7 @@ void tst_QRestAccessManager::json()
         // Test receiving an invalid json object
         serverSideResponse.body = "foobar"_ba;
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         parseError.error = QJsonParseError::ParseError::DocumentTooLarge;
         const auto json = restReply.readJson(&parseError);
@@ -658,7 +658,7 @@ void tst_QRestAccessManager::json()
         // Test receiving valid json array
         serverSideResponse.body = "[\"foo\", \"bar\"]\n"_ba;
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         parseError.error = QJsonParseError::ParseError::DocumentTooLarge;
         json = restReply.readJson(&parseError);
@@ -677,7 +677,7 @@ void tst_QRestAccessManager::json()
 #define VERIFY_TEXT_REPLY_OK \
 { \
     manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); }); \
-    QTRY_VERIFY(networkReply); \
+    BOBUIRY_VERIFY(networkReply); \
     QRestReply restReply(networkReply); \
     responseString = restReply.readText(); \
     networkReply->deleteLater(); \
@@ -688,8 +688,8 @@ void tst_QRestAccessManager::json()
 #define VERIFY_TEXT_REPLY_ERROR(WARNING_MESSAGE) \
 { \
     manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); }); \
-    QTRY_VERIFY(networkReply); \
-    QTest::ignoreMessage(QtWarningMsg, WARNING_MESSAGE); \
+    BOBUIRY_VERIFY(networkReply); \
+    BOBUIest::ignoreMessage(BobUIWarningMsg, WARNING_MESSAGE); \
     QRestReply restReply(networkReply); \
     responseString = restReply.readText(); \
     networkReply->deleteLater(); \
@@ -703,7 +703,7 @@ void tst_QRestAccessManager::text()
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
     QNetworkReply *networkReply = nullptr;
     QJsonObject responseJsonObject;
@@ -791,7 +791,7 @@ void tst_QRestAccessManager::text()
         serverSideResponse.headers.append(Header::ContentType, "text/plain; charset=UTF-32"_ba);
         serverSideResponse.body = encUTF8(sourceString);
         manager.get(request, this, [&](QRestReply &reply) { networkReply = reply.networkReply(); });
-        QTRY_VERIFY(networkReply);
+        BOBUIRY_VERIFY(networkReply);
         QRestReply restReply(networkReply);
         responseString = restReply.readText();
         QCOMPARE_NE(responseString, sourceString);
@@ -818,7 +818,7 @@ void tst_QRestAccessManager::textStreaming()
     QNetworkAccessManager qnam;
     QRestAccessManager manager(&qnam);
     HttpTestServer server;
-    QTRY_VERIFY(server.isListening());
+    BOBUIRY_VERIFY(server.isListening());
     QNetworkRequest request(server.url());
 
     // Create long text data
@@ -846,7 +846,7 @@ void tst_QRestAccessManager::textStreaming()
             // Tell testserver that test is ready for next chunk
             responseControl->readyForNextChunk = true;
         });
-        QTRY_VERIFY(restReply.networkReply()->isFinished());
+        BOBUIRY_VERIFY(restReply.networkReply()->isFinished());
         QCOMPARE(cumulativeReceivedText, expectedData);
         restReply.networkReply()->deleteLater();
     }
@@ -860,17 +860,17 @@ void tst_QRestAccessManager::textStreaming()
         QObject::connect(restReply.networkReply(), &QNetworkReply::readyRead, this, [&]() {
             static bool firstTime = true;
             if (!firstTime) // First text part is without warnings
-                QTest::ignoreMessage(QtWarningMsg, "readText(): Decoding error occurred");
+                BOBUIest::ignoreMessage(BobUIWarningMsg, "readText(): Decoding error occurred");
             firstTime = false;
             cumulativeReceivedText += restReply.readText();
             // Tell testserver that test is ready for next chunk
             responseControl->readyForNextChunk = true;
         });
-        QTRY_VERIFY(restReply.networkReply()->isFinished());
+        BOBUIRY_VERIFY(restReply.networkReply()->isFinished());
         QCOMPARE(cumulativeReceivedText, "12345"_ba);
         restReply.networkReply()->deleteLater();
     }
 }
 
-QTEST_MAIN(tst_QRestAccessManager)
+BOBUIEST_MAIN(tst_QRestAccessManager)
 #include "tst_qrestaccessmanager.moc"

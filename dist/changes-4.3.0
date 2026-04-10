@@ -1,19 +1,19 @@
-Qt 4.3 introduces many new features as well as many improvements and
+BobUI 4.3 introduces many new features as well as many improvements and
 bugfixes over the 4.2.x series. For more details, see the online
 documentation which is included in this distribution. The
-documentation is also available at http://qt.nokia.com/doc/4.3
+documentation is also available at http://bobui.nokia.com/doc/4.3
 
-The Qt version 4.3 series is binary compatible with the 4.2.x series.
+The BobUI version 4.3 series is binary compatible with the 4.2.x series.
 Applications compiled for 4.2 will continue to run with 4.3.
 
-The Qtopia Core version 4.3 series is binary compatible with the 4.2.x
+The BobUIopia Core version 4.3 series is binary compatible with the 4.2.x
 series except for some parts of the device handling API, as detailed
 in Platform Specific Changes below.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain
 more information about a particular change.
@@ -39,16 +39,16 @@ General Improvements
     * Added new example to show usage of QCompleter with custom tree models.
 
 - Translations
-    * Added a Slovak translation of Qt courtesy of Richard Fric.
-    * Added a Ukrainian translation of Qt courtesy of Andriy Rysin.
-    * Added a Polish translation of the Qt libraries and tools courtesy of
-      Marcin Giedz, who also provided a Polish phrasebook for Qt Linguist.
-    * [155464] Added a German translation for Qt Designer.
+    * Added a Slovak translation of BobUI courtesy of Richard Fric.
+    * Added a Ukrainian translation of BobUI courtesy of Andriy Rysin.
+    * Added a Polish translation of the BobUI libraries and tools courtesy of
+      Marcin Giedz, who also provided a Polish phrasebook for BobUI Linguist.
+    * [155464] Added a German translation for BobUI Designer.
 
 - Added support for the CP949 Korean Codec.
 
-- [138140] The whole Qt source compiles with the QT_NO_CAST_FROM_ASCII
-  and QT_NO_CAST_TO_ASCII defines and therefore is more robust when
+- [138140] The whole BobUI source compiles with the BOBUI_NO_CAST_FROM_ASCII
+  and BOBUI_NO_CAST_TO_ASCII defines and therefore is more robust when
   using codecs.
 
 - Added support for HP-UX 11i (Itanium) with the aCC compiler
@@ -57,7 +57,7 @@ General Improvements
   (i.e. run time translation now works much better.)
 
 - Signals and slots
-    * [61295] Added Qt::BlockingQueuedConnection connection type, which
+    * [61295] Added BobUI::BlockingQueuedConnection connection type, which
       waits for all slots to be called before continuing.
     * [128646] Ignore optional keywords specified in SIGNAL() and SLOT()
       signatures (struct, class, and enum).
@@ -67,16 +67,16 @@ General Improvements
 
 - [102293] Added search path functionality (QDir::addSearchPath)
 
-- Almost all widgets are now styleable using Qt Style Sheets.
+- Almost all widgets are now styleable using BobUI Style Sheets.
 
 Third party components
 ----------------------
 
-- Updated Qt's SQLite version to 3.3.17.
+- Updated BobUI's SQLite version to 3.3.17.
 
-- Updated Qt's FreeType version to 2.3.4.
+- Updated BobUI's FreeType version to 2.3.4.
 
-- Updated Qt's libpng version to 1.2.16.
+- Updated BobUI's libpng version to 1.2.16.
 
 - Added libtiff version 3.8.2 for the TIFF plugin.
 
@@ -151,19 +151,19 @@ Third party components
     * [86725] Allow the -style command line argument to override a
       style set with QApplication::setStyle() before QApplication
       construction.
-    * [111892] Fixed a bug that caused Qt to steal all input when
+    * [111892] Fixed a bug that caused BobUI to steal all input when
       connecting the QAction::hovered() signal to a slot that called
       QMainWindow::setEnabled(false).
     * [148512] Fixed QApplication::keyboardModifiers() to update
-      correctly when minimizing the window when Qt::MetaModifier is held
+      correctly when minimizing the window when BobUI::MetaModifier is held
       down.
-    * [148796] Fixed a bug that prevented Qt from detecting system font
+    * [148796] Fixed a bug that prevented BobUI from detecting system font
       changes.
     * [154727] Prevent a crash when a widget deletes itself in an key
       event handler without accepting the event.
     * [156484] Fixed a bug where lastWindowClosed() was emitted for each
       top-level window when calling QApplication::closeAllWindows().
-    * [157667] Ensured that widgets with the Qt::WA_DeleteOnClose property
+    * [157667] Ensured that widgets with the BobUI::WA_DeleteOnClose property
       set are properly deleted when they are closed in the dropEvent()
       handler following a drag that was started in the same application.
     * [156410] Implemented QEvent::ApplicationActivate and
@@ -213,7 +213,7 @@ Third party components
       text.
     * Slider appearance is now based on Clearlooks Cairo and the performance
       on X11 has been improved.
-    * The appearance of tab bars when used with Qt::RightToLeft layout
+    * The appearance of tab bars when used with BobUI::RightToLeft layout
       direction has been improved.
     * Dock widget titles are now elided if they are too long to fit in the
       available space.
@@ -412,8 +412,8 @@ Third party components
     * Added a sidebar to show commonly used folders.
     * [134557] Added the ability to use a proxy model.
     * Added dirEntered() and filterSelected() signals, previously found in
-      Qt 3's file dialog.
-    * [130353] Fixed Qt/Mac native file dialog pattern splitting
+      BobUI 3's file dialog.
+    * [130353] Fixed BobUI/Mac native file dialog pattern splitting
     * [140332] Made the dialog respond much better to the LanguageChange
       event.
     * [154173] Fixed a memory deallocation error.
@@ -508,7 +508,7 @@ Third party components
     * [144734] Fixed bugs in unsetCursor().
     * [144895] Improved bounding rectangle calculations for all standard
       items.
-    * Added support for QTransform.
+    * Added support for BOBUIransform.
     * [137055] Added QGraphicsItem::ItemPositionHasChanged and
       ItemTransformHasChanged.
     * Added several convenience functions.
@@ -563,7 +563,7 @@ Third party components
     * [139752] ScrollHandDrag is now allowed also in non-interactive mode.
     * [128226] Fixed rubber band rendering bugs (flicker and transparency).
     * [144276] The selection is no longer reset by scroll-dragging.
-    * Added support for QTransform.
+    * Added support for BOBUIransform.
     * [137027] Added new viewportUpdateMode() property for better control
       over how QGraphicsView schedules updates.
     * Several convenience functions have been added.
@@ -587,7 +587,7 @@ Third party components
       a QDialogButtonBox to be cropped.
 
 - QHeaderView
-    * This widget now uses Qt::NoFocus as its default focus policy.
+    * This widget now uses BobUI::NoFocus as its default focus policy.
     * [99569] Improved performance, providing up to a 2x speed increase for
       some cases.
     * [146292] Fixed bug that made it impossible to resize the last section
@@ -596,7 +596,7 @@ Third party components
       effect.
     * [156453] Fixed column resizing bug that could cause branches in one
       column to be drawn in the next.
-    * [142640] Ensured that the Qt::SizeHintRole is used when available.
+    * [142640] Ensured that the BobUI::SizeHintRole is used when available.
     * [142994] Hidden items are now restored to their original size when
       shown.
     * [127430] Added saveState() and restoreState().
@@ -671,7 +671,7 @@ Third party components
       pointing hand cursor, but would not be correctly cleared afterwards.
 
 - QLayout
-    * Added new features to Qt's layout system to enable:
+    * Added new features to BobUI's layout system to enable:
       - independent values for all of the four margins,
       - independent horizontal spacing and vertical spacing in QGridLayout,
       - non-uniform spacing between layout items,
@@ -738,14 +738,14 @@ Third party components
 
 - QMacStyle
     * [159270] Fixed drawing of icons on buttons with no text.
-    * [146364] Fixed drawing of multi-line text for items in a QToolBar.
+    * [146364] Fixed drawing of multi-line text for items in a BOBUIoolBar.
     * [145346] Removed unwanted wrapping of text in a QPushButton.
     * Fixed drawing of "Flat" group boxes.
     * [113472] Fixed drawing of text on vertical headers when resizing.
     * [148509] Ensured that the correct font is used for buttons and labels
       when the application is not configured to use the desktop settings.
     * [106100] Improved the look of push buttons with menus.
-    * Made fixes to Qt's layout system that enable more native-looking
+    * Made fixes to BobUI's layout system that enable more native-looking
       forms.
     * [151739] Buttons with an icon are now centered correctly.
     * [142672] Fixed font size bug on the drop down box for QComboBox.
@@ -771,9 +771,9 @@ Third party components
       metrics.
     * [142274] Made QSlider tickmark drawing more like Cocoa.
     * focusRectPolicy() is now obsolete. This is now controlled by the
-      Qt::WA_MacShowFocusRect attribute.
+      BobUI::WA_MacShowFocusRect attribute.
     * widgetSizePolicy() is now obsolete. This is now controlled by the
-      Qt::WA_Mac*Size attribute.
+      BobUI::WA_Mac*Size attribute.
     * [129503] Ensured that a group box without a title no longer allocates
       space for it.
     * Ensured that a more appropriate width is used for push buttons.
@@ -789,7 +789,7 @@ Third party components
     * [137013, 158094] Fixed bugs relating to the handling of size hints,
       minimum/maximum sizes and size policies of QDockWidgets in main
       windows.
-    * [147964] Animated tool bar areas adjust dynamically when a QToolBar is
+    * [147964] Animated tool bar areas adjust dynamically when a BOBUIoolBar is
       dragged over them.
     * Added the dockOptions property. This makes it possible to:
         - specify that tabbed dock areas should have vertical tab bars,
@@ -969,7 +969,7 @@ Third party components
     * [133727] Fixed text alignment handling when drawing right-to-left
       formatted text into a QPicture.
     * [154088] Fixed bugs that could occur when reading QPicture files
-      generated with Qt 3.
+      generated with BobUI 3.
 
 - QPixmap
     * Added cacheKey() as a replacement for serialNumber().
@@ -1069,7 +1069,7 @@ Third party components
     * [143550] Added the QRectF(topRight,bottomLeft) constructor.
 
 - QRegion
-    * Added several optimizations for common operations on X11 and Qtopia
+    * Added several optimizations for common operations on X11 and BobUIopia
       Core.
 
 - QResource
@@ -1162,7 +1162,7 @@ Third party components
 - QSslError
 - QSslKey
 - QSslSocket
-    * New classes. Added support for SSL to QtNetwork.
+    * New classes. Added support for SSL to BobUINetwork.
 
 - QStandardItemModel
     * Reduced the construction time when rows and columns are given.
@@ -1178,9 +1178,9 @@ Third party components
 
 - QString
     * fromUtf8() now discards UTF-8 encoded byte order marks just like the
-      UTF-8 QTextCodec.
+      UTF-8 BOBUIextCodec.
     * [154454] Fixed several UTF-8 decoder compliance problems (also affects
-      the UTF-8 QTextCodec).
+      the UTF-8 BOBUIextCodec).
     * Removed old compatibility hack in fromUtf8()/toUtf8() to allow round
       trip conversions of invalid UTF-8 text.
     * Added support for full Unicode case mappings to toUpper() and
@@ -1205,7 +1205,7 @@ Third party components
     * The default password character is now a Unicode circle, the asterisk
       is still used for QMotifStyle and its subclasses.
     * [127454] CE_ToolBoxTab now draws two parts, CE_ToolBoxTabShape and
-      CE_ToolBoxTabLabel. This should make QToolBox more styleable.
+      CE_ToolBoxTabLabel. This should make BOBUIoolBox more styleable.
     * [242107] Added a QStyleOptionToolBoxV2 with tab position and selected
       position enums.
 
@@ -1228,7 +1228,7 @@ Third party components
     * Addded the geometry() function to allow the global position of the
       tray icon to be obtained.
 	
-- QTabBar
+- BOBUIabBar
     * [126438] Added the tabAt(const QPoint &pos) function.
     * [143760] Fixed a bug where scroll buttons were shown even when
       disabled.
@@ -1238,12 +1238,12 @@ Third party components
       tab is removed
     * Ensured that corner widgets are taken into account when calculating
       tab position in the case where the tab bar is centered.
-    * [132091] Re-introduced the Qt 3 behavior for backwards scrolling of
+    * [132091] Re-introduced the BobUI 3 behavior for backwards scrolling of
       tabs.
     * [132074] Ensured that currentChanged() is always emitted when the
       current tab is deleted.
 
-- QTableView
+- BOBUIableView
     * No longer allow invalid spans to be created.
     * [145446] Fixed bug where setting minimum height on horizontal header
       caused the the table to be rendered incorrectly.
@@ -1256,14 +1256,14 @@ Third party components
     * [158096] resizeColumnToContents(int i) now has the same behavior that
       resizeColumnsToContents() uses for individual columns.
 
-- QTableWidget
+- BOBUIableWidget
     * [125285] Ensured that dataChanged() is only emitted once when
       setItemData() is used to set data for more than one role.
     * [151211] Added removeCellWidget() and removeItemWidget().
     * [140186] Fixed bug where calling setAutoScroll(false) would have no
       effect.
 
-- QTabWidget
+- BOBUIabWidget
     * Tab widgets now take ownership of their corner widgets and allow
       corner widgets to be unset.
     * [142464] Fixed incorrect navigation behavior that previously made it
@@ -1271,25 +1271,25 @@ Third party components
     * [124987] Ensured that a re-layout occurs when a corner widget is set.
     * [111672] Added the clear() function.
 
-- QtAlgorithms
+- BobUIAlgorithms
    * [140027] Improved the performance of qStableSort() on large data sets.
 
-- QTcpSocket
+- BOBUIcpSocket
     * Added several fixes to improve connection reliability on Windows.
     * Made a number of optimizations.
     * Improved detection of ConnectionRefusedError on Windows and older
       Unixes.
     * Added support for proxy authentication.
 
-- QTemporaryFile
+- BOBUIemporaryFile
     * [150770] Fixed large file support on Unix.
 
-- QTextBrowser
+- BOBUIextBrowser
     * [126914] Fixed drawing of the focus indicator when activating links.
-    * [82277] Added the openLinks property to prevent QTextBrowser from
+    * [82277] Added the openLinks property to prevent BOBUIextBrowser from
       automatically opening any links that are activated.
 
-- QTextCodec
+- BOBUIextCodec
     * Improved the UTF-8 codec's handling of large, rare codepoints.
     * [154932] The UTF-8 codec now keeps correct state for sequence
       f0 90 80 80 f4 8f bf bd.
@@ -1298,23 +1298,23 @@ Third party components
     * Fixed the UTF-8 codec's handling of incomplete trailing UTF sequences
       to be the same as QString::fromUtf8().
 
-- QTextCursor
+- BOBUIextCursor
     * The definition of the block character format (obtained using the
-      blockCharFormat() and QTextBlock::charFormat() functions) has been
+      blockCharFormat() and BOBUIextBlock::charFormat() functions) has been
       changed to be the format used only when inserting text into an empty
       block.
-      If a QTextCursor is positioned at the beginning of a block and the
+      If a BOBUIextCursor is positioned at the beginning of a block and the
       text block is not empty then the character format to the right of the
       cursor (the first character in the block) is returned.
       If the block is empty, the block character format is returned.
       List markers are now also drawn with the character format of the first
       character in a block instead of the invisible block character format.
 
-- QTextDecoder
+- BOBUIextDecoder
     * Added the hasFailure() function to indicate whether input was
       correctly encoded.
 
-- QTextDocument
+- BOBUIextDocument
     * [152692] Ensured that the print() function uses the document's default
       font size.
     * Added the defaultTextOption property.
@@ -1323,7 +1323,7 @@ Third party components
     * Made numerous fixes and speed-ups to the HTML import.
     * [143296] Fixed HTML import bug where adding a <br> tag after a table
       would cause two empty lines to be inserted instead of one.
-    * [144637, 144653] Ensured that the user state property of QTextBlock is
+    * [144637, 144653] Ensured that the user state property of BOBUIextBlock is
       now preserved.
     * [140147] Fixed layout bug where the document size would not be updated
       properly.
@@ -1332,14 +1332,14 @@ Third party components
     * [136013] The "id" tag can now be used to specify anchors.
     * [144129] Root frame properties are now properly exported/imported.
 
-- QTextDocumentFragment
-    * QTextDocumentFragment no longer stores the root frame properties,
+- BOBUIextDocumentFragment
+    * BOBUIextDocumentFragment no longer stores the root frame properties,
       the document title or the document default font when it is created
-      from a document or from HTML. Use QTextDocument's toHtml() and
+      from a document or from HTML. Use BOBUIextDocument's toHtml() and
       setHtml() function if you want to propagate these properties to and
       from HTML.
 
-- QTextEdit
+- BOBUIextEdit
     * [152208] Ensured that the undo/redo enabled state is preserved across
       setPlainText() and setHtml() calls.
     * [125177] Added a print() convenience function that makes it possible
@@ -1357,11 +1357,11 @@ Third party components
     * [137706] Made the semantics of the selectionChanged() signal more like
       QLineEdit::selectionChanged().
 
-- QTextFormat
-    * [156343] Fixed crash that could occur when streaming QTextFormat
+- BOBUIextFormat
+    * [156343] Fixed crash that could occur when streaming BOBUIextFormat
       instances.
 
-- QTextLayout
+- BOBUIextLayout
     * Fixed support for justified Arabic text.
     * [152248] Fixed assert in sub/superscript handling of fonts specified
       in pixel sizes.
@@ -1376,7 +1376,7 @@ Third party components
       corner in every case.
     * Fixed various problems with text kerning.
 
-- QTextStream
+- BOBUIextStream
     * [141391] Fixed bug that could occur when reusing a text stream with
       the setString() method.
     * [133063] atEnd() now works properly with stdin.
@@ -1384,8 +1384,8 @@ Third party components
     * [125496] Ensured that uppercasebase and uppercasedigits work as
       expected.
 
-- QTextTable
-    * [138905] Fixed bug where merging cells in a QTextTable would cause
+- BOBUIextTable
+    * [138905] Fixed bug where merging cells in a BOBUIextTable would cause
       text to end up in the wrong cells.
     * [139074] Fixed incorrect export of cell widths to HTML when exporting
       tables containing column spans.
@@ -1400,7 +1400,7 @@ Third party components
     * [139052] Made sure that empty text table cells get a visible
       selection.
 
-- QtGlobal
+- BobUIGlobal
     * Added Q_FUNC_INFO, a macro that expands to a string describing the
       function it is used in.
     * [132145] Fixed Q_FOREACH to protect against for-scoping compiler bugs.
@@ -1408,47 +1408,47 @@ Third party components
     * [123910] Fixed crashes on some systems when passing 0 as the
       message to qDebug(), qWarning(), and qFatal().
 
-- QThread
+- BOBUIhread
     * [140734] Fixed a bug that prevented exec() from being called more than
       once per thread.
     * Optimized the currentThread() function on Unix.
     * Added the idealThreadCount() function, which returns the ideal number
       of threads that can be run on the system.
 
-- QThreadStorage
+- BOBUIhreadStorage
     * [131944] Refactored to allow an arbitrary number of instances to be
       created (not just 256 as in previous versions).
-    * Updated documentation, as many caveats have been removed in Qt 4.2 and
-      Qt 4.3.
+    * Updated documentation, as many caveats have been removed in BobUI 4.2 and
+      BobUI 4.3.
 
-- QTimeEdit
+- BOBUIimeEdit
     * [136043] Fixed the USER properties.
 
-- QTimeLine
+- BOBUIimeLine
     * [145592] Fixed the time line state after finished() has been emitted.
     * [125135] Added the resume() function to allow time lines to be resumed
       as well as restarted.
     * [153425] Fixed support for cases where loopCount >= 2.
 
-- QTimer
+- BOBUIimer
     * Added the active property to determine if the timer is active.
 
-- QToolBar
+- BOBUIoolBar
     * [128156, 138908] Added an animation for the case where a tool bar is
       expanded to display all its actions when its extension button is
       pressed.
 
-- QToolBox
+- BOBUIoolBox
     * [107787] Fixed rendering bugs in reversed mode.
 
-- QToolButton
+- BOBUIoolButton
     * [127814] Ensured that the popup delay respects style changes.
     * [130358] Ensured that Hover events are sent to the associated QAction
       when the cursor enters a button.
     * [106760] Fixed bug where the button was drawn as pressed when using
       MenuButtonPopup as its popup mode.
 
-- QToolTip
+- BOBUIoolTip
     * [135988] Allow tool tips to be shown immediately below the cursor
     * [148546] The usage of tool tip fading now adheres to the user settings
       on Mac OS X.
@@ -1461,11 +1461,11 @@ Third party components
     * [158794] Fixed bug on Mac OS X where isVisible() returned true even
       if the tool tip was hidden.
 
-- QTreeView
+- BOBUIreeView
     * [158096] Added checks to prevent items from being dropped on their own
       children.
     * [113800] When dragging an item over an item that has child items,
-      QTreeView will now automatically expand after a set time.
+      BOBUIreeView will now automatically expand after a set time.
     * [107766] Added a style option (enabled in the Windows style) to
       select the first child when the right arrow key is pressed.
     * [157790] It was possible to get in a state where clicking on a branch
@@ -1500,10 +1500,10 @@ Third party components
     * Added the setRowSpanning(int row, const QModelIndex &parent) and
       isRowSpanning(int row, const QModelIndex &parent) functions.
 
-- QTreeWidget
+- BOBUIreeWidget
     * [159078] Fixed drag and drop bug on Mac OS X that could occur when
       dragging inside the widget.
-    * [159726] Fixed crash that could occur when dragging a QTreeWidgetItem
+    * [159726] Fixed crash that could occur when dragging a BOBUIreeWidgetItem
       object with an empty last column.
     * [154092] Fixed case where the drag pixmap could get the wrong position
       when dragging many items quickly.
@@ -1514,14 +1514,14 @@ Third party components
     * [151149] Made the header text left-aligned instead of center-aligned
       by default.
     * [131234] Made it possible to do lazy population by introducing the
-      QTreeWidgetItem::ChildIndicatorPolicy enum.
+      BOBUIreeWidgetItem::ChildIndicatorPolicy enum.
     * [134194] Added the itemAbove() and itemBelow() functions.
     * [128935] The disabled state of an item is now propagated to its
       children.
-    * [103421] Added the QTreeWidgetItem::setExpandable() function.
-    * [134138] Added the QTreeWidgetItem::removeChild() function.
+    * [103421] Added the BOBUIreeWidgetItem::setExpandable() function.
+    * [134138] Added the BOBUIreeWidgetItem::removeChild() function.
     * [153361] Ensured that items exist before emitting itemChanged().
-    * [155700] Fixed a crash in QTreeWidget where deleted items could still
+    * [155700] Fixed a crash in BOBUIreeWidget where deleted items could still
       be referenced by a selection model.
 
 - QUdpSocket
@@ -1542,7 +1542,7 @@ Third party components
 
 - QVariant
     * [127225] Unloading a GUI plugin will no longer cause a crash in
-      QVariant in a pure QtCore application.
+      QVariant in a pure BobUICore application.
 
 - QWaitCondition
     * [126007] Made the behavior of wakeOne() consistent between Windows and
@@ -1552,7 +1552,7 @@ Third party components
 - QWidget
     * [139359] Added the locale property to make it easy to customize how
       individual widgets display dates and numbers.
-    * [155100] Fixed a regression that could cause Qt::FramelessWindowHint
+    * [155100] Fixed a regression that could cause BobUI::FramelessWindowHint
       to be ignored for frameless windows.
     * [137190] Ensured that windows with masks are now rendered correctly
       with respect to window shadows on Mac OS X.
@@ -1561,13 +1561,13 @@ Third party components
     * [131917] Fixed bug where minimum and maximum sizes were not respected
       when using X11BypassWindowManagerHint.
     * [117896] Fixed setGeometry() to be more consistent across Mac OS X,
-      Windows, X11 and Qtopia Core.
+      Windows, X11 and BobUIopia Core.
     * [132827] Allow the focus to be given to a hidden widget; it will
       receive the focus when shown.
     * Reduced the overhead of repainting a widget with lots of children.
-    * Clarified the documentation for the Qt::WA_AlwaysShowToolTips widget
+    * Clarified the documentation for the BobUI::WA_AlwaysShowToolTips widget
       attribute.
-    * [154634] Ensured that the Qt::WA_AlwaysShowToolTips widget attribute
+    * [154634] Ensured that the BobUI::WA_AlwaysShowToolTips widget attribute
       is respected for all widgets.
     * [151858] Improved the approximation returned by visibleRegion().
     * [129486] Ensured that calling setLayout() on a visible widget causes
@@ -1592,8 +1592,8 @@ Third party components
 
 - QWizard
 - QWizardPage
-    * New classes. Based on QtWizard and QtWizardPage in Qt 4 Solutions.
-      Redesign of QWizard from Qt 3.
+    * New classes. Based on BobUIWizard and BobUIWizardPage in BobUI 4 Solutions.
+      Redesign of QWizard from BobUI 3.
 
 - QXmlParseException
     * [137998] Fixed incorrect behavior where systemId/publicId was never
@@ -1614,7 +1614,7 @@ Third party components
     * Added FrameShape, FrameShadow, lineWidth, and midLineWidth properties.
 
 - Q3ListView
-    * [150781] Fixed a crash in setOpen() (previously fixed in Qt 3).
+    * [150781] Fixed a crash in setOpen() (previously fixed in BobUI 3).
 
 - Q3ScrollView
     * [125149] Mouse events should not be delivered if the Q3ScrollView is
@@ -1693,7 +1693,7 @@ Third party components
       strings being stored.
 
 ****************************************************************************
-*                             QTestLib                                     *
+*                             BOBUIestLib                                     *
 ****************************************************************************
 
   * [138388] Floating point numbers are now printed in printf's "%g" format.
@@ -1713,7 +1713,7 @@ Third party components
     * Added support for QList<QDBusObjectPath> and QList<QDBusSignature>
       to allow them to be used without first having to register the types.
 
-    * Added support for using QtDBus from multiple threads.
+    * Added support for using BobUIDBus from multiple threads.
 
     * Made it possible to marshal custom types into QDBusArgument.
 
@@ -1751,7 +1751,7 @@ X11
     * [139455] Fixed QX11EmbedContainer race causing sudden unembedding of
       clients.
     * [96507] Added support for using _POSIX_MONOTONIC_CLOCK as the
-      timer source (also affects Qtopia Core).
+      timer source (also affects BobUIopia Core).
     * [128118] Fixed garbage output when calling QPixmap::grabWindow()
       on a window on a non-default screen.
     * [133119] Ensured that X11 color names are detected in the
@@ -1762,23 +1762,23 @@ X11
       only maximized in a single direction.
     * [67263] Fixed a bug that could cause applications to freeze while
       querying the clipboard for data.
-    * [89224] Fixed the behavior of minimized Qt applications to show the
+    * [89224] Fixed the behavior of minimized BobUI applications to show the
       correct icon (instead of the standard OpenWindows icon) on Solaris.
     * [116080] Ensured that the TIMESTAMP clipboard property is set using
       XA_INTEGER (as defined in the ICCCM).
     * [127556] Refactored timer accounting code to be more efficient and
       less cumbersome to maintain.
-    * [132241] Add support for DirectColor visuals. Qt will now create and
+    * [132241] Add support for DirectColor visuals. BobUI will now create and
       initialize a colormap when using such visuals.
     * [140737] Fixed QEventDispatcherGlib::versionSupported() to be much
       simpler.
     * Fixed a bug where QWidget::windowFlags() would not include
-      Qt::X11BypassWindowManagerHint for Qt::ToolTip and Qt::Popup windows.
+      BobUI::X11BypassWindowManagerHint for BobUI::ToolTip and BobUI::Popup windows.
     * [146472] Fixed a bug where QWidget::setWindowFlags() would disable
-      drag and drop operations from outside Qt applications.
+      drag and drop operations from outside BobUI applications.
     * [150352] Fixed painting errors after show(), hide(), then show()
       under GNOME.
-    * [150348] Fixed a bug that would incorrectly set the Qt::WA_SetCursor
+    * [150348] Fixed a bug that would incorrectly set the BobUI::WA_SetCursor
       attribute on top-level windows.
     * [135054] Fixed system palette detection code to use contrast that is
       more similar to the desktop settings.
@@ -1787,8 +1787,8 @@ X11
       returns is correctly updated after the mouse button is released.
     * [151742] Improved robustness when executing in an X11-SECURITY
       reduced ssh-forwarded session.
-    * [142009] Fixed a bug that caused an application using the Qt Motif
-      Extension to freeze when trying to copy text into a QTextEdit.
+    * [142009] Fixed a bug that caused an application using the BobUI Motif
+      Extension to freeze when trying to copy text into a BOBUIextEdit.
     * [124723] Fixed PseudoColor detection to correctly handle cases where
       the colormap is not sequential.
     * [140484] Don't use the GLib event dispatcher if GLib version is too
@@ -1800,8 +1800,8 @@ X11
     * [154369] Fixed drag and drop to work properly after re-creating a
       window ID.
     * [151778] Fixed mouse enter/leave event platform inconsistencies.
-    * [153155] Added the QT_NO_THREADED_GLIB environment variable, which
-      tells Qt to use Glib only for the GUI thread.
+    * [153155] Added the BOBUI_NO_THREADED_GLIB environment variable, which
+      tells BobUI to use Glib only for the GUI thread.
     * Fixed restoreGeometry() to ensure that full-screen windows are moved
       to the correct position.
     * [155083] Don't use legacy xlfd fonts if we have fontconfig available
@@ -1879,17 +1879,17 @@ Windows
     * [133823, 160131] Fixed bug in the QWidget::scroll() overload that
       accepts a rectangle argument.
 
-- ActiveQt
+- ActiveBobUI
     * Ensured that, when loading a typelib file to obtain information about
       a control, the typelib is processed correctly.
     * [158990] Ambient property change events are now emitted regardless of
       the container's state.
-    * [150327] ActiveQt based controls will now return the correct Extents
+    * [150327] ActiveBobUI based controls will now return the correct Extents
       depending on the size restrictions set on the widget.
-    * [141296] Ensured that the ActiveQt DLL is unloaded from the same
+    * [141296] Ensured that the ActiveBobUI DLL is unloaded from the same
       thread which loaded it.
 
-- Qt Style Sheets
+- BobUI Style Sheets
     * Added support for background clipping using the border-radius
       property.
     * Almost all widgets are now styleable using style sheets.
@@ -1901,7 +1901,7 @@ Windows
 Mac OS X
 --------
 
-    * qtconfig is no longer available on Mac OS X. All settings are read
+    * bobuiconfig is no longer available on Mac OS X. All settings are read
       from the system's configuration.
     * [156965] Always offers a 'TEXT' type flavor for non-Pasteboard-aware
       Mac Application pastes.
@@ -1910,9 +1910,9 @@ Mac OS X
       time infrastructure.
     * [156431] Introduced WA_MacAlwaysShowToolWindow to allow windows to
       behave as utility windows as opposed to floating windows.
-    * [155651] Qt will now follow the HIView focus chain to allow wrapped
+    * [155651] BobUI will now follow the HIView focus chain to allow wrapped
       HIViewRef's to take focus when appropriate.
-    * [149753] Qt will not deliver mouse release events to widgets that do
+    * [149753] BobUI will not deliver mouse release events to widgets that do
       not process mouse press events (including widgets with the
       WA_MacNoClickThrough attribute set).
     * Introduced support for 64-bit Mac OS X builds. Only available on
@@ -1943,7 +1943,7 @@ Mac OS X
     * [155312] Fixed bug that could occur when dragging several URLs to
       Finder and certain other applications.
     * [155244] Fixed bug that could occur when dragging a URL to Finder.
-    * [153413] Fixed bug that could occur when dragging URLs between Qt applications.
+    * [153413] Fixed bug that could occur when dragging URLs between BobUI applications.
     * [152450] Fixed bug that could occur when dragging URLs to applications
       such as the trash can.
     * [151158] Fixed an issue that prevented widgets from receiving drag
@@ -1981,7 +1981,7 @@ Mac OS X
     * [141387] Fixed bug that caused two near-simultaneous mouse presses on
       different widgets to be interpreted as a single click.
     * [139087] Fixed activation for some types of shortcuts, such as
-      QKeySequence(Qt::CTRL | Qt::Key_Plus).
+      QKeySequence(BobUI::CTRL | BobUI::Key_Plus).
     * Only use Roman for determining with System Fonts since Mac OS X will
       perform the necessary translation.
     * When using OpenGL, ensured that the 32-bit accumulation buffer is used
@@ -1999,21 +1999,21 @@ Mac OS X
       monitors.
     * [160228] The Quartz 2D-based paint engine now respects the font style
       strategy.
-    * Made miscellaneous changes to make wrapping non-Qt HIViews easier.
-    * Qt is now built with MACOSX_DEPLOYMENT_TARGET set to 10.3 (since Qt
+    * Made miscellaneous changes to make wrapping non-BobUI HIViews easier.
+    * BobUI is now built with MACOSX_DEPLOYMENT_TARGET set to 10.3 (since BobUI
       can only be run on Mac OS X 10.3 and above).
     * QSound now uses NSSound for its implementation instead of the
-      deprecated C QuickTime API. This means that the QtGui library is no
+      deprecated C QuickTime API. This means that the BobUIGui library is no
       longer dependant on the QuickTime framework.
     * Added a -dwarf-2 configure option to allow people to turn on DWARF2
       debugging symbols when that is not the default.
       The ability to use DWARF2 debugging symbols was added in later version
       of the Xcode 2.x series.
     * Fixed many assertions when running against Carbon_debug.
-    * Renamed the Qt::WA_MacMetalStyle attribute to WA_MacBrushedMetal.
-    * Changing the Qt::WA_MacBrushedMetal attribute will now cause a
+    * Renamed the BobUI::WA_MacMetalStyle attribute to WA_MacBrushedMetal.
+    * Changing the BobUI::WA_MacBrushedMetal attribute will now cause a
       StyleChange event to be sent.
-    * The Qt translations and Qt Linguist phrase books have been added to
+    * The BobUI translations and BobUI Linguist phrase books have been added to
       the binary package.
     * [134630] Fixed loading of plugins in the case where universal plugins
       are used but the wrong architecture is accidentally read first,
@@ -2023,7 +2023,7 @@ Mac OS X
     * Corrected the encoding and decoding functions for QFile to handle
       different Unicode normalization forms.
 
-Qtopia Core
+BobUIopia Core
 -----------
 
  - New font system
@@ -2037,8 +2037,8 @@ Qtopia Core
 
 - OpenGL ES
     * [126421, 126424] Added QGLWindowSurface and QGLScreen framework for
-      OpenGLES (and others) on Qtopia Core. A sample implementation can be
-      found in the examples/qtopiacore directory.
+      OpenGLES (and others) on BobUIopia Core. A sample implementation can be
+      found in the examples/bobuiopiacore directory.
 
  - Accelerated graphics API
     * [150564] API changes in QWSWindowSurface. New functions include
@@ -2054,14 +2054,14 @@ Qtopia Core
 
  - General fixes
     * Improved support for compiling a LSB (Linux Standard Base) compliant
-      Qtopia Core library.
+      BobUIopia Core library.
     * [133365] Added the QWSServer::setScreenSaverBlockLevel() function to
       make it possible to block the key/mouse event that stops the screen
       saver at a particular level.
-    * Fixed QFontDatabase::addApplicationFont() for Qtopia Core.
+    * Fixed QFontDatabase::addApplicationFont() for BobUIopia Core.
     * [131714] Fixed performance problems with drag and drop operations.
     * [96507] Added support for using _POSIX_MONOTONIC_CLOCK as the timer
-      source (also effects Qt/X11).
+      source (also effects BobUI/X11).
     * [132346] Fixed a performance bug causing unnecessary screen copies
       when using a hardware cursor.
     * [121496] Made lots of performance improvements in the VNC driver.
@@ -2116,7 +2116,7 @@ Qtopia Core
 - Build System
     * Auto-detect Xoreax IncrediBuild with XGE technology, and enable
       distribution of moc and uic.
-    * Shadow builds are now supported by nmake/mingw-make of the Qt build
+    * Shadow builds are now supported by nmake/mingw-make of the BobUI build
       system.
     * [151184] Separated the -make options for demos and examples
     * [150610] Fixed the build system to take into account that fvisibility
@@ -2130,10 +2130,10 @@ Qtopia Core
     * [145659] Added ability to disable SSE.
     * Added DWARF2 detection and support into the build system to reduce
       the debug library size.
-    * Added macx-g++-64 meta-spec for Qt configuration purposes.
+    * Added macx-g++-64 meta-spec for BobUI configuration purposes.
     * [127840] The pkgconfig files (.pc) are now placed into lib/pkgconfig.
     * [135547] Allow Windows line endings on UNIX and vice versa in
-      .qt-license files.
+      .bobui-license files.
     * [133068] GIF support is now enabled by default.
     * [137728] Fixed failed build on Mac OS X and Solaris when using the
       -separate-debug-info command line option for the configure script.
@@ -2243,7 +2243,7 @@ Qtopia Core
     * [146629] Fixed never ending loop on Linux triggered by scrolling
       quickly through the pages of a QStackedWidget.
     * [145806] Enabled KDialog to be used as a template.
-    * [142723] Enabled the pages of QStackedWidget, QTabWidget and QToolBox
+    * [142723] Enabled the pages of QStackedWidget, BOBUIabWidget and BOBUIoolBox
       to be promoted.
     * [105916] Enabled QMenuBar to be promoted.
     * [147317] Improved the New Form dialog.
@@ -2330,13 +2330,13 @@ Qtopia Core
     * [138949] Ensured that font and size policy instances are reused in
       generated code.
     * [141350] Ensured that color brushes are reused in generated code.
-    * [141217] Improved handling of include files of Qt 3 classes.
+    * [141217] Improved handling of include files of BobUI 3 classes.
     * [144371] Ensure that each form's objectName property is not set in
       setupUi() to avoid problems in cases where the name was already set.
     * Added support for the QWidget::locale property.
     * [141820] Fixed generation of connections in the form.
     * [137520] Ensured that code to set toolTip, statusTip and whatsThis
-      properties is not generated when the corresponding QT_NO_*
+      properties is not generated when the corresponding BOBUI_NO_*
       preprocessor macros are defined.
     * [128958] Ensured that static casts are not used in generated code.
     * [116280] Added support for qulonglong and uint types.
@@ -2345,7 +2345,7 @@ Qtopia Core
     * [137915] Added functionality to extract images via the -extract
       command line option.
     * [129950] Added the -wrap command line option which specifies that a
-      wrapper class which is Qt 3 source compatible should be generated.
+      wrapper class which is BobUI 3 source compatible should be generated.
 
 - qmake
     * [121965] Implemented DSW (Workspace files) generation for MSVC 6.0
@@ -2441,5 +2441,5 @@ Qtopia Core
 *                          Plugins                                         *
 ****************************************************************************
 
-- QTiffPlugin
+- BOBUIiffPlugin
     * [93364] Added support for the TIFF image format.

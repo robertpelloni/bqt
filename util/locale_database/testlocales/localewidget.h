@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 #ifndef LOCALEWIDGET_H
 #define LOCALEWIDGET_H
 
 #include <QWidget>
 
 class LocaleModel;
-class QTableView;
+class BOBUIableView;
 
 class LocaleWidget : public QWidget
 {
@@ -15,7 +15,7 @@ public:
     LocaleWidget(QWidget *parent = nullptr);
 private:
     LocaleModel *m_model;
-    QTableView *m_view;
+    BOBUIableView *m_view;
 };
 
 #endif // LOCALEWIDGET_H

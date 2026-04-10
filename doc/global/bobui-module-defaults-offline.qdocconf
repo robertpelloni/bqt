@@ -1,0 +1,17 @@
+#The default configuration for a BobUI module, including Add-Ons and Tools.
+#Include this file for a standard BobUI module; builds with the offline style.
+
+#include standard set of macros and C++ defines and ignores
+include(macros.qdocconf)
+include(bobui-cpp-defines.qdocconf)
+include(compat.qdocconf)
+include(manifest-meta.qdocconf)
+include(fileextensions.qdocconf)
+
+include(bobui-html-templates-offline.qdocconf)
+
+#extra configuration data such as file extensions
+include(config.qdocconf)
+
+# Show BobUI version as part of the navigation bar
+buildversion = "BobUI $BOBUI_VERSION Reference Documentation"

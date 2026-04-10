@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 
 #include "plugindialog.h"
@@ -12,14 +12,14 @@
 #include <QPluginLoader>
 #include <QPushButton>
 #include <QStringList>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
+#include <BOBUIreeWidget>
+#include <BOBUIreeWidgetItem>
 
 PluginDialog::PluginDialog(const QString &path, const QStringList &fileNames,
                            QWidget *parent) :
     QDialog(parent),
     label(new QLabel),
-    treeWidget(new QTreeWidget),
+    treeWidget(new BOBUIreeWidget),
     okButton(new QPushButton(tr("OK")))
 {
     treeWidget->setAlternatingRowColors(false);
@@ -76,7 +76,7 @@ void PluginDialog::findPlugins(const QString &path,
 //! [1]
 void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
 {
-    auto pluginItem = new QTreeWidgetItem(treeWidget);
+    auto pluginItem = new BOBUIreeWidgetItem(treeWidget);
     pluginItem->setText(0, text);
     pluginItem->setExpanded(true);
 
@@ -100,18 +100,18 @@ void PluginDialog::populateTreeWidget(QObject *plugin, const QString &text)
 }
 //! [1]
 
-void PluginDialog::addItems(QTreeWidgetItem *pluginItem,
+void PluginDialog::addItems(BOBUIreeWidgetItem *pluginItem,
                             const char *interfaceName,
                             const QStringList &features)
 {
-    auto interfaceItem = new QTreeWidgetItem(pluginItem);
+    auto interfaceItem = new BOBUIreeWidgetItem(pluginItem);
     interfaceItem->setText(0, interfaceName);
     interfaceItem->setIcon(0, interfaceIcon);
 
     for (QString feature : features) {
         if (feature.endsWith("..."))
             feature.chop(3);
-        auto featureItem = new QTreeWidgetItem(interfaceItem);
+        auto featureItem = new BOBUIreeWidgetItem(interfaceItem);
         featureItem->setText(0, feature);
         featureItem->setIcon(0, featureIcon);
     }

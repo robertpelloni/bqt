@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -9,8 +9,8 @@
 MainWindow::MainWindow()
     : mdiArea(new QMdiArea)
 {
-    mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    mdiArea->setHorizontalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
+    mdiArea->setVerticalScrollBarPolicy(BobUI::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
     connect(mdiArea, &QMdiArea::subWindowActivated,
             this, &MainWindow::updateMenus);
@@ -172,7 +172,7 @@ void MainWindow::saveAs()
     }
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 void MainWindow::cut()
 {
     if (activeMdiChild())
@@ -196,7 +196,7 @@ void MainWindow::about()
 {
    QMessageBox::about(this, tr("About MDI"),
             tr("The <b>MDI</b> example demonstrates how to write multiple "
-               "document interface applications using Qt."));
+               "document interface applications using BobUI."));
 }
 
 void MainWindow::updateMenus()
@@ -204,7 +204,7 @@ void MainWindow::updateMenus()
     bool hasMdiChild = (activeMdiChild() != nullptr);
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     pasteAct->setEnabled(hasMdiChild);
 #endif
     newWindowAct->setEnabled(hasMdiChild);
@@ -216,7 +216,7 @@ void MainWindow::updateMenus()
     previousAct->setEnabled(hasMdiChild);
     windowMenuSeparatorAct->setVisible(hasMdiChild);
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     bool hasSelection = (activeMdiChild() &&
                          activeMdiChild()->textCursor().hasSelection());
     cutAct->setEnabled(hasSelection);
@@ -266,9 +266,9 @@ MdiChild *MainWindow::createMdiChild(MdiChild *other)
     MdiChild *child = new MdiChild(other);
     mdiArea->addSubWindow(child);
 
-#ifndef QT_NO_CLIPBOARD
-    connect(child, &QTextEdit::copyAvailable, cutAct, &QAction::setEnabled);
-    connect(child, &QTextEdit::copyAvailable, copyAct, &QAction::setEnabled);
+#ifndef BOBUI_NO_CLIPBOARD
+    connect(child, &BOBUIextEdit::copyAvailable, cutAct, &QAction::setEnabled);
+    connect(child, &BOBUIextEdit::copyAvailable, copyAct, &QAction::setEnabled);
 #endif
 
     return child;
@@ -277,7 +277,7 @@ MdiChild *MainWindow::createMdiChild(MdiChild *other)
 void MainWindow::createActions()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QToolBar *fileToolBar = addToolBar(tr("File"));
+    BOBUIoolBar *fileToolBar = addToolBar(tr("File"));
 
     const QIcon newIcon = QIcon::fromTheme("document-new", QIcon(":/images/new.png"));
     newAct = new QAction(newIcon, tr("&New"), this);
@@ -338,9 +338,9 @@ void MainWindow::createActions()
     fileMenu->addAction(exitAct);
 //! [0]
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
-    QToolBar *editToolBar = addToolBar(tr("Edit"));
+    BOBUIoolBar *editToolBar = addToolBar(tr("Edit"));
 
     const QIcon cutIcon = QIcon::fromTheme("edit-cut", QIcon(":/images/cut.png"));
     cutAct = new QAction(cutIcon, tr("Cu&t"), this);
@@ -418,8 +418,8 @@ void MainWindow::createActions()
     QAction *aboutAct = helpMenu->addAction(tr("&About"), this, &MainWindow::about);
     aboutAct->setStatusTip(tr("Show the application's About box"));
 
-    QAction *aboutQtAct = helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
-    aboutQtAct->setStatusTip(tr("Show the Qt library's About box"));
+    QAction *aboutBobUIAct = helpMenu->addAction(tr("About &BobUI"), qApp, &QApplication::aboutBobUI);
+    aboutBobUIAct->setStatusTip(tr("Show the BobUI library's About box"));
 }
 
 void MainWindow::createStatusBar()
@@ -469,8 +469,8 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName) const
 
 void MainWindow::switchLayoutDirection()
 {
-    if (layoutDirection() == Qt::LeftToRight)
-        QGuiApplication::setLayoutDirection(Qt::RightToLeft);
+    if (layoutDirection() == BobUI::LeftToRight)
+        QGuiApplication::setLayoutDirection(BobUI::RightToLeft);
     else
-        QGuiApplication::setLayoutDirection(Qt::LeftToRight);
+        QGuiApplication::setLayoutDirection(BobUI::LeftToRight);
 }

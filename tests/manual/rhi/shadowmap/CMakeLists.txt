@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## shadowmap Binary:
 #####################################################################
 
-qt_internal_add_manual_test(shadowmap
+bobui_internal_add_manual_test(shadowmap
     GUI
     SOURCES
         shadowmap.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # Resources:
@@ -22,7 +22,7 @@ set(shadowmap_resource_files
     "shadowmap.vert.qsb"
 )
 
-qt_internal_add_resource(shadowmap "shadowmap"
+bobui_internal_add_resource(shadowmap "shadowmap"
     PREFIX
         "/"
     FILES

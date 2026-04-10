@@ -1,0 +1,4 @@
+@__bobui_cmake_standalone_test_os_prelude@
+
+@__bobui_cmake_standalone_test_script_relpath@
+@__bobui_cmake_private_relpath@ @__bobui_cmake_standalone_test_relpath@ -DBOBUI_BUILD_STANDALONE_TESTS=ON -DBOBUI_STANDALONE_TEST_PATH=@__bobui_cmake_standalone_passed_args@

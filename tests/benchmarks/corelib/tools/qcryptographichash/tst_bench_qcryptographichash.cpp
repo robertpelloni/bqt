@@ -1,6 +1,6 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2017 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QByteArray>
 #include <QCryptographicHash>
@@ -9,7 +9,7 @@
 #include <QMessageAuthenticationCode>
 #include <QRandomGenerator>
 #include <QString>
-#include <QTest>
+#include <BOBUIest>
 
 #include <qxpfunctional.h>
 #include <numeric>
@@ -54,7 +54,7 @@ static void for_each_algorithm(qxp::function_ref<void(QCryptographicHash::Algori
 }
 
 tst_QCryptographicHash::tst_QCryptographicHash()
-    : blockOfData(MaxBlockSize, Qt::Uninitialized)
+    : blockOfData(MaxBlockSize, BobUI::Uninitialized)
 {
 #ifdef Q_OS_UNIX
     QFile urandom("/dev/urandom");
@@ -70,8 +70,8 @@ tst_QCryptographicHash::tst_QCryptographicHash()
 
 void tst_QCryptographicHash::hash_data()
 {
-    QTest::addColumn<Algorithm>("algo");
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<Algorithm>("algo");
+    BOBUIest::addColumn<QByteArray>("data");
 
     static const int datasizes[] = { 0, 1, 64, 65, 512, 4095, 4096, 4097, 65536 };
     for (uint i = 0; i < sizeof(datasizes)/sizeof(datasizes[0]); ++i) {
@@ -81,7 +81,7 @@ void tst_QCryptographicHash::hash_data()
         for_each_algorithm([&] (Algorithm algo, const char *name) {
             if (algo == Algorithm::NumAlgorithms)
                 return;
-            QTest::addRow("%s-%d", name, datasizes[i]) << algo << data;
+            BOBUIest::addRow("%s-%d", name, datasizes[i]) << algo << data;
         });
     }
 }
@@ -144,7 +144,7 @@ void tst_QCryptographicHash::addDataChunked()
 
 static QByteArray hmacKey() {
     static QByteArray key = [] {
-            QByteArray result(277, Qt::Uninitialized);
+            QByteArray result(277, BobUI::Uninitialized);
             std::iota(result.begin(), result.end(), uchar(0)); // uchar so wraps after UCHAR_MAX
             return result;
         }();
@@ -184,11 +184,11 @@ void tst_QCryptographicHash::hmac_addData()
 
 void tst_QCryptographicHash::hmac_setKey_data()
 {
-    QTest::addColumn<Algorithm>("algo");
+    BOBUIest::addColumn<Algorithm>("algo");
     for_each_algorithm([] (Algorithm algo, const char *name) {
         if (algo == Algorithm::NumAlgorithms)
             return;
-        QTest::addRow("%s", name) << algo;
+        BOBUIest::addRow("%s", name) << algo;
     });
 }
 
@@ -218,6 +218,6 @@ void tst_QCryptographicHash::hmac_setKey()
 
 #undef SKIP_IF_NOT_SUPPORTED
 
-QTEST_APPLESS_MAIN(tst_QCryptographicHash)
+BOBUIEST_APPLESS_MAIN(tst_QCryptographicHash)
 
 #include "tst_bench_qcryptographichash.moc"

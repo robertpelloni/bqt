@@ -1,6 +1,6 @@
-# Copyright (C) 2023 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2023 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-if(ANDROID AND QT_FEATURE_widgets)
-    qt_internal_add_example(androidnotifier)
+if(ANDROID AND BOBUI_FEATURE_widgets)
+    bobui_internal_add_example(androidnotifier)
 endif()

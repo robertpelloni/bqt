@@ -1,18 +1,18 @@
-Qt 3.0.2 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.0.1
+BobUI 3.0.2 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.0.1
 
 
 ****************************************************************************
 *			    General					   *
 ****************************************************************************
 
-- Improved building of Qt on SCO OpenServer 5.0.5, Sun WorkShop 4.2, MIPSpro
+- Improved building of BobUI on SCO OpenServer 5.0.5, Sun WorkShop 4.2, MIPSpro
 7.2 and VC++.NET
 
 - Added support for NIS to the build system
 
 - BiDi on X11: direction key events for right-to-left are configurable
-in QSettings via qt/useRtlExtensions. In 3.0.1 they were always turned
+in QSettings via bobui/useRtlExtensions. In 3.0.1 they were always turned
 on.
 
 - basic table support with XFree86
@@ -46,7 +46,7 @@ on throw() specifications.
 	for safeness.
 
 - QColorDialog
-	Save and restore the custom colors via QSettings between Qt
+	Save and restore the custom colors via QSettings between BobUI
 	applications.
 
 - QComboBox
@@ -57,7 +57,7 @@ on throw() specifications.
 	are always sent now.
 
 - QClipboard
-	Mac only: Fixed pasting text from non-Qt applications to Qt
+	Mac only: Fixed pasting text from non-BobUI applications to BobUI
 	applications.
 
 - QDataTable	
@@ -237,9 +237,9 @@ on throw() specifications.
 	selected.
 
 - QStyleFactory
-	Windows only: Don't load style plugins for static Qt builds.
+	Windows only: Don't load style plugins for static BobUI builds.
 
-- QTable
+- BOBUIable
 	Use correct style flags for QCheckTableItem drawing. The
 	internal event filter no longer consumes FocusIn/FocusOut,
 	meaning those events are accessible for subclasses now. Fixed
@@ -248,10 +248,10 @@ on throw() specifications.
 	emitting valueChanged(). Fixed a redraw problem with multispan
 	cells.
 
-- QTextCode
+- BOBUIextCode
 	Support for @euro locales.
 
-- QTextEdit
+- BOBUIextEdit
 	The internal event filter no longer consumes FocusIn/FocusOut,
 	meaning these events accessible for subclasses now. Override
 	accelerators for keypad keys. Reduced memory consumption for
@@ -268,14 +268,14 @@ on throw() specifications.
 	Mac only: Always draw selections extended to the full width of the
 	view.
 
-- QTextStream
-	Speed optimization for QTextStream::write().
+- BOBUIextStream
+	Speed optimization for BOBUIextStream::write().
 
-- QToolBar:
+- BOBUIoolBar:
 	Hint about explicit show() call for child widgets to ensure
 	future operability.
 
-- QToolTip
+- BOBUIoolTip
 	Fixed wordbreaking when using both rich text and plain text
 	tooltips. Fixed placement of tooltips for multi-head and Xinerama
 	systems.
@@ -314,11 +314,11 @@ on throw() specifications.
 
 
 ****************************************************************************
-*		    Qt/Embedded-specific changes		           *
+*		    BobUI/Embedded-specific changes		           *
 ****************************************************************************
 
 ****************************************************************************
-*		    Qt/Mac-specific changes		           	   *
+*		    BobUI/Mac-specific changes		           	   *
 ****************************************************************************
 
 Optimizations and fixes in QPainter and QFont fixed creation and

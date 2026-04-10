@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QApplication>
 #include <QWidget>
@@ -9,7 +9,7 @@
 #include <QCheckBox>
 #include <QVBoxLayout>
 
-#include <QThread>
+#include <BOBUIhread>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QQueue>
@@ -22,7 +22,7 @@
 #include <rhi/qrhi.h>
 
 #ifdef Q_OS_DARWIN
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 #include "window.h"
@@ -59,13 +59,13 @@ static QString graphicsApiName()
     return QString();
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 QVulkanInstance *instance = nullptr;
 #endif
 
 // Window (main thread) emit signals -> Renderer::send* (main thread) -> event queue (add on main, process on render thread) -> Renderer::renderEvent (render thread)
 
-// event queue is taken from the Qt Quick scenegraph as-is
+// event queue is taken from the BobUI Quick scenegraph as-is
 // all this below is conceptually the same as the QSG threaded render loop
 class RenderThreadEventQueue : public QQueue<QEvent *>
 {
@@ -110,7 +110,7 @@ private:
 
 struct Renderer;
 
-struct Thread : public QThread
+struct Thread : public BOBUIhread
 {
     Thread(Renderer *renderer_)
         : renderer(renderer_)
@@ -194,7 +194,7 @@ struct Renderer
     QWindow *window;
     Thread *thread;
     QRhi *r = nullptr;
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     QOffscreenSurface *fallbackSurface = nullptr;
 #endif
 
@@ -266,7 +266,7 @@ Renderer::Renderer(QWindow *w, const QColor &bgColor, int rotationAxis)
 { // main thread
     thread = new Thread(this);
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (graphicsApi == OpenGL)
         fallbackSurface = QRhiGles2InitParams::newFallbackSurface();
 #endif
@@ -278,7 +278,7 @@ Renderer::~Renderer()
     thread->wait();
     delete thread;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     delete fallbackSurface;
 #endif
 }
@@ -291,7 +291,7 @@ void Renderer::createRhi()
     qDebug() << "renderer" << this << "creating rhi";
     QRhi::Flags rhiFlags;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     if (graphicsApi == OpenGL) {
         QRhiGles2InitParams params;
         params.fallbackSurface = fallbackSurface;
@@ -300,7 +300,7 @@ void Renderer::createRhi()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (graphicsApi == Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = instance;
@@ -321,7 +321,7 @@ void Renderer::createRhi()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (graphicsApi == Metal) {
         QRhiMetalInitParams params;
         r = QRhi::create(QRhi::Metal, &params, rhiFlags);
@@ -341,7 +341,7 @@ void Renderer::destroyRhi()
 
 void Renderer::renderEvent(QEvent *e)
 {
-    Q_ASSERT(QThread::currentThread() == thread);
+    Q_ASSERT(BOBUIhread::currentThread() == thread);
 
     if (thread->sleeping)
         thread->stopEventProcessing = true;
@@ -404,7 +404,7 @@ void Renderer::init()
     m_releasePool << m_ubuf;
     m_ubuf->create();
 
-    QImage image = QImage(QLatin1String(":/qt256.png")).convertToFormat(QImage::Format_RGBA8888);
+    QImage image = QImage(QLatin1String(":/bobui256.png")).convertToFormat(QImage::Format_RGBA8888);
     m_tex = r->newTexture(QRhiTexture::RGBA8, image.size());
     m_releasePool << m_tex;
     m_tex->create();
@@ -620,7 +620,7 @@ QList<WindowAndRenderer> windows;
 
 void createWindow()
 {
-    static QColor colors[] = { Qt::red, Qt::green, Qt::blue, Qt::yellow, Qt::cyan, Qt::gray };
+    static QColor colors[] = { BobUI::red, BobUI::green, BobUI::blue, BobUI::yellow, BobUI::cyan, BobUI::gray };
     const int n = windows.count();
     Window *w = new Window(QString::asprintf("Window+Thread #%d (%s)", n, qPrintable(graphicsApiName())), graphicsApi);
     Renderer *renderer = new Renderer(w, colors[n % 6], n % 3);
@@ -654,9 +654,9 @@ int main(int argc, char **argv)
 
 #if defined(Q_OS_WIN)
     graphicsApi = D3D11;
-#elif QT_CONFIG(metal)
+#elif BOBUI_CONFIG(metal)
     graphicsApi = Metal;
-#elif QT_CONFIG(vulkan)
+#elif BOBUI_CONFIG(vulkan)
     graphicsApi = Vulkan;
 #else
     graphicsApi = OpenGL;
@@ -693,7 +693,7 @@ int main(int argc, char **argv)
     fmt.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(fmt);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     instance = new QVulkanInstance;
     if (graphicsApi == Vulkan) {
         instance->setLayers({ "VK_LAYER_KHRONOS_validation" });
@@ -712,7 +712,7 @@ int main(int argc, char **argv)
 
     QPlainTextEdit *info = new QPlainTextEdit(
                 QLatin1String("This application tests rendering on a separate thread per window, with dedicated QRhi instances and resources. "
-                              "\n\nThis is the same concept as the Qt Quick Scenegraph's threaded render loop. This should allow rendering to the different windows "
+                              "\n\nThis is the same concept as the BobUI Quick Scenegraph's threaded render loop. This should allow rendering to the different windows "
                               "without unintentionally throttling each other's threads."
                               "\n\nUsing API: ") + graphicsApiName());
     info->setReadOnly(true);
@@ -744,7 +744,7 @@ int main(int argc, char **argv)
         delete wr.window;
     }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     delete instance;
 #endif
 

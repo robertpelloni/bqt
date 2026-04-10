@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtNetwork/QtNetwork>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUINetwork/BobUINetwork>
+#include <BOBUIest>
 
 #include "../../../network-settings.h"
 
@@ -15,7 +15,7 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void getSetCheck();
-    void constructing_QTcpSocket();
+    void constructing_BOBUIcpSocket();
     void constructing_QFile();
     void read_QByteArray();
     void unget();
@@ -45,7 +45,7 @@ private slots:
     void transaction();
 
 private:
-    QSharedPointer<QTemporaryDir> m_tempDir;
+    QSharedPointer<BOBUIemporaryDir> m_tempDir;
     QString m_previousCurrent;
 };
 
@@ -56,7 +56,7 @@ void tst_QIODevice::initTestCase()
             || QFile::copy(QStringLiteral(":/tst_qiodevice.cpp"), QStringLiteral("./tst_qiodevice.cpp")));
 #endif
     m_previousCurrent = QDir::currentPath();
-    m_tempDir = QSharedPointer<QTemporaryDir>::create();
+    m_tempDir = QSharedPointer<BOBUIemporaryDir>::create();
     QVERIFY2(!m_tempDir.isNull(), qPrintable("Could not create temporary directory."));
     QVERIFY2(QDir::setCurrent(m_tempDir->path()), qPrintable("Could not switch current directory"));
 }
@@ -71,9 +71,9 @@ void tst_QIODevice::getSetCheck()
 {
     // OpenMode QIODevice::openMode()
     // void QIODevice::setOpenMode(OpenMode)
-    class MyIODevice : public QTcpSocket {
+    class MyIODevice : public BOBUIcpSocket {
     public:
-        using QTcpSocket::setOpenMode;
+        using BOBUIcpSocket::setOpenMode;
     };
     MyIODevice var1;
     var1.setOpenMode(QIODevice::OpenMode(QIODevice::NotOpen));
@@ -83,22 +83,22 @@ void tst_QIODevice::getSetCheck()
 }
 
 //----------------------------------------------------------------------------------
-void tst_QIODevice::constructing_QTcpSocket()
+void tst_QIODevice::constructing_BOBUIcpSocket()
 {
-#ifdef QT_TEST_SERVER
-    if (!QtNetworkSettings::verifyConnection(QtNetworkSettings::imapServerName(), 143))
+#ifdef BOBUI_TEST_SERVER
+    if (!BobUINetworkSettings::verifyConnection(BobUINetworkSettings::imapServerName(), 143))
         QSKIP("No network test server available");
 #else
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 #endif
 
-    QTcpSocket socket;
+    BOBUIcpSocket socket;
     QIODevice *device = &socket;
 
     QVERIFY(!device->isOpen());
 
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 143);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 143);
     QVERIFY(socket.waitForConnected(30000));
     QVERIFY(device->isOpen());
     QCOMPARE(device->readChannelCount(), 1);
@@ -116,7 +116,7 @@ void tst_QIODevice::constructing_QTcpSocket()
     socket.close();
     QCOMPARE(socket.readChannelCount(), 0);
     QCOMPARE(socket.writeChannelCount(), 0);
-    socket.connectToHost(QtNetworkSettings::imapServerName(), 143);
+    socket.connectToHost(BobUINetworkSettings::imapServerName(), 143);
     QVERIFY(socket.waitForConnected(30000));
     QVERIFY(device->isOpen());
 
@@ -221,7 +221,7 @@ void tst_QIODevice::unget()
     for (int i = 0; i < 5; ++i) {
         buf[0] = '@';
         buf[1] = '@';
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                               "QIODevice::readLine (QBuffer): Called with maxSize < 2");
         QCOMPARE(buffer.readLine(buf, 1), qint64(-1));
         QCOMPARE(buffer.readLine(buf, 2), qint64(i < 4 ? 1 : -1));
@@ -247,7 +247,7 @@ void tst_QIODevice::unget()
     QCOMPARE(buffer.readLine(buf, 3), qint64(1));
 
     for (int i = 0; i < 2; ++i) {
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         QIODevice *dev;
         QByteArray result;
         const char *lineResult;
@@ -256,17 +256,17 @@ void tst_QIODevice::unget()
             result = QByteArray("ZXCV");
             lineResult = "ZXCV";
         } else {
-#ifdef QT_TEST_SERVER
+#ifdef BOBUI_TEST_SERVER
             const bool hasNetworkServer =
-                    QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80);
+                    BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80);
 #else
-            const bool hasNetworkServer = QtNetworkSettings::verifyTestNetworkSettings();
+            const bool hasNetworkServer = BobUINetworkSettings::verifyTestNetworkSettings();
 #endif
             if (!hasNetworkServer) {
-                qInfo("No network test server: skipping QTcpSocket part of test.");
+                qInfo("No network test server: skipping BOBUIcpSocket part of test.");
                 continue;
             }
-            socket.connectToHost(QtNetworkSettings::httpServerName(), 80);
+            socket.connectToHost(BobUINetworkSettings::httpServerName(), 80);
             socket.write("GET / HTTP/1.0\r\n\r\n");
             QVERIFY(socket.waitForReadyRead());
             dev = &socket;
@@ -365,33 +365,33 @@ void tst_QIODevice::peekAndRead()
 
 void tst_QIODevice::readLine_data()
 {
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<QByteArray>("data");
 
-    QTest::newRow("0") << QByteArray("\nAA");
-    QTest::newRow("1") << QByteArray("A\nAA");
+    BOBUIest::newRow("0") << QByteArray("\nAA");
+    BOBUIest::newRow("1") << QByteArray("A\nAA");
 
     QByteArray data(9000, 'A');
     data[8193] = '\n';
-    QTest::newRow("8194") << data;
+    BOBUIest::newRow("8194") << data;
     data[8193] = 'A';
     data[8192] = '\n';
-    QTest::newRow("8193") << data;
+    BOBUIest::newRow("8193") << data;
     data[8192] = 'A';
     data[8191] = '\n';
-    QTest::newRow("8192") << data;
+    BOBUIest::newRow("8192") << data;
     data[8191] = 'A';
     data[8190] = '\n';
-    QTest::newRow("8191") << data;
+    BOBUIest::newRow("8191") << data;
 
     data[5999] = '\n';
-    QTest::newRow("6000") << data;
+    BOBUIest::newRow("6000") << data;
 
     data[4095] = '\n';
-    QTest::newRow("4096") << data;
+    BOBUIest::newRow("4096") << data;
 
     data[4094] = '\n';
     data[4095] = 'A';
-    QTest::newRow("4095") << data;
+    BOBUIest::newRow("4095") << data;
 }
 
 void tst_QIODevice::readLine()
@@ -401,7 +401,7 @@ void tst_QIODevice::readLine()
     QVERIFY(buffer.open(QIODevice::ReadWrite));
     QVERIFY(buffer.canReadLine());
 
-    QTest::ignoreMessage(QtWarningMsg, "QIODevice::readLine (QBuffer): Called with maxSize < 2");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QIODevice::readLine (QBuffer): Called with maxSize < 2");
     QCOMPARE(buffer.readLine(nullptr, 0), qint64(-1));
 
     int linelen = data.indexOf('\n') + 1;
@@ -429,51 +429,51 @@ void tst_QIODevice::readLine()
 
 void tst_QIODevice::readLine2_data()
 {
-    QTest::addColumn<QByteArray>("line");
+    BOBUIest::addColumn<QByteArray>("line");
 
-    QTest::newRow("1024 - 4") << QByteArray(1024 - 4, 'x');
-    QTest::newRow("1024 - 3") << QByteArray(1024 - 3, 'x');
-    QTest::newRow("1024 - 2") << QByteArray(1024 - 2, 'x');
-    QTest::newRow("1024 - 1") << QByteArray(1024 - 1, 'x');
-    QTest::newRow("1024"    ) << QByteArray(1024    , 'x');
-    QTest::newRow("1024 + 1") << QByteArray(1024 + 1, 'x');
-    QTest::newRow("1024 + 2") << QByteArray(1024 + 2, 'x');
+    BOBUIest::newRow("1024 - 4") << QByteArray(1024 - 4, 'x');
+    BOBUIest::newRow("1024 - 3") << QByteArray(1024 - 3, 'x');
+    BOBUIest::newRow("1024 - 2") << QByteArray(1024 - 2, 'x');
+    BOBUIest::newRow("1024 - 1") << QByteArray(1024 - 1, 'x');
+    BOBUIest::newRow("1024"    ) << QByteArray(1024    , 'x');
+    BOBUIest::newRow("1024 + 1") << QByteArray(1024 + 1, 'x');
+    BOBUIest::newRow("1024 + 2") << QByteArray(1024 + 2, 'x');
 
-    QTest::newRow("4096 - 4") << QByteArray(4096 - 4, 'x');
-    QTest::newRow("4096 - 3") << QByteArray(4096 - 3, 'x');
-    QTest::newRow("4096 - 2") << QByteArray(4096 - 2, 'x');
-    QTest::newRow("4096 - 1") << QByteArray(4096 - 1, 'x');
-    QTest::newRow("4096"    ) << QByteArray(4096    , 'x');
-    QTest::newRow("4096 + 1") << QByteArray(4096 + 1, 'x');
-    QTest::newRow("4096 + 2") << QByteArray(4096 + 2, 'x');
+    BOBUIest::newRow("4096 - 4") << QByteArray(4096 - 4, 'x');
+    BOBUIest::newRow("4096 - 3") << QByteArray(4096 - 3, 'x');
+    BOBUIest::newRow("4096 - 2") << QByteArray(4096 - 2, 'x');
+    BOBUIest::newRow("4096 - 1") << QByteArray(4096 - 1, 'x');
+    BOBUIest::newRow("4096"    ) << QByteArray(4096    , 'x');
+    BOBUIest::newRow("4096 + 1") << QByteArray(4096 + 1, 'x');
+    BOBUIest::newRow("4096 + 2") << QByteArray(4096 + 2, 'x');
 
-    QTest::newRow("8192 - 4") << QByteArray(8192 - 4, 'x');
-    QTest::newRow("8192 - 3") << QByteArray(8192 - 3, 'x');
-    QTest::newRow("8192 - 2") << QByteArray(8192 - 2, 'x');
-    QTest::newRow("8192 - 1") << QByteArray(8192 - 1, 'x');
-    QTest::newRow("8192"    ) << QByteArray(8192    , 'x');
-    QTest::newRow("8192 + 1") << QByteArray(8192 + 1, 'x');
-    QTest::newRow("8192 + 2") << QByteArray(8192 + 2, 'x');
+    BOBUIest::newRow("8192 - 4") << QByteArray(8192 - 4, 'x');
+    BOBUIest::newRow("8192 - 3") << QByteArray(8192 - 3, 'x');
+    BOBUIest::newRow("8192 - 2") << QByteArray(8192 - 2, 'x');
+    BOBUIest::newRow("8192 - 1") << QByteArray(8192 - 1, 'x');
+    BOBUIest::newRow("8192"    ) << QByteArray(8192    , 'x');
+    BOBUIest::newRow("8192 + 1") << QByteArray(8192 + 1, 'x');
+    BOBUIest::newRow("8192 + 2") << QByteArray(8192 + 2, 'x');
 
-    QTest::newRow("16384 - 4") << QByteArray(16384 - 4, 'x');
-    QTest::newRow("16384 - 3") << QByteArray(16384 - 3, 'x');
-    QTest::newRow("16384 - 2") << QByteArray(16384 - 2, 'x');
-    QTest::newRow("16384 - 1") << QByteArray(16384 - 1, 'x');
-    QTest::newRow("16384"    ) << QByteArray(16384    , 'x');
-    QTest::newRow("16384 + 1") << QByteArray(16384 + 1, 'x');
-    QTest::newRow("16384 + 2") << QByteArray(16384 + 2, 'x');
+    BOBUIest::newRow("16384 - 4") << QByteArray(16384 - 4, 'x');
+    BOBUIest::newRow("16384 - 3") << QByteArray(16384 - 3, 'x');
+    BOBUIest::newRow("16384 - 2") << QByteArray(16384 - 2, 'x');
+    BOBUIest::newRow("16384 - 1") << QByteArray(16384 - 1, 'x');
+    BOBUIest::newRow("16384"    ) << QByteArray(16384    , 'x');
+    BOBUIest::newRow("16384 + 1") << QByteArray(16384 + 1, 'x');
+    BOBUIest::newRow("16384 + 2") << QByteArray(16384 + 2, 'x');
 
-    QTest::newRow("20000") << QByteArray(20000, 'x');
+    BOBUIest::newRow("20000") << QByteArray(20000, 'x');
 
-    QTest::newRow("32768 - 4") << QByteArray(32768 - 4, 'x');
-    QTest::newRow("32768 - 3") << QByteArray(32768 - 3, 'x');
-    QTest::newRow("32768 - 2") << QByteArray(32768 - 2, 'x');
-    QTest::newRow("32768 - 1") << QByteArray(32768 - 1, 'x');
-    QTest::newRow("32768"    ) << QByteArray(32768    , 'x');
-    QTest::newRow("32768 + 1") << QByteArray(32768 + 1, 'x');
-    QTest::newRow("32768 + 2") << QByteArray(32768 + 2, 'x');
+    BOBUIest::newRow("32768 - 4") << QByteArray(32768 - 4, 'x');
+    BOBUIest::newRow("32768 - 3") << QByteArray(32768 - 3, 'x');
+    BOBUIest::newRow("32768 - 2") << QByteArray(32768 - 2, 'x');
+    BOBUIest::newRow("32768 - 1") << QByteArray(32768 - 1, 'x');
+    BOBUIest::newRow("32768"    ) << QByteArray(32768    , 'x');
+    BOBUIest::newRow("32768 + 1") << QByteArray(32768 + 1, 'x');
+    BOBUIest::newRow("32768 + 2") << QByteArray(32768 + 2, 'x');
 
-    QTest::newRow("40000") << QByteArray(40000, 'x');
+    BOBUIest::newRow("40000") << QByteArray(40000, 'x');
 }
 
 void tst_QIODevice::readLine2()
@@ -538,15 +538,15 @@ void tst_QIODevice::readLine2()
 
 void tst_QIODevice::readLineInto_Checks_data()
 {
-    QTest::addColumn<bool>("open");
-    QTest::addColumn<QIODevice::OpenModeFlag>("openModeFlag");
-    QTest::addColumn<QString>("warningMessage");
+    BOBUIest::addColumn<bool>("open");
+    BOBUIest::addColumn<QIODevice::OpenModeFlag>("openModeFlag");
+    BOBUIest::addColumn<QString>("warningMessage");
 
-    QTest::newRow("Device not open") << false << QIODevice::ReadOnly
+    BOBUIest::newRow("Device not open") << false << QIODevice::ReadOnly
                                      << "QIODevice::readLineInto (QBuffer): device not open";
-    QTest::newRow("Write only") << true << QIODevice::WriteOnly
+    BOBUIest::newRow("Write only") << true << QIODevice::WriteOnly
                                 << "QIODevice::readLineInto (QBuffer): WriteOnly device";
-    QTest::newRow("Incorrect maxSize") << true << QIODevice::ReadOnly
+    BOBUIest::newRow("Incorrect maxSize") << true << QIODevice::ReadOnly
                                        << "QIODevice::readLineInto (QBuffer): Called with maxSize "
                                           "< 2";
 }
@@ -570,7 +570,7 @@ void tst_QIODevice::readLineInto_Checks()
     }
     qint64 pos_before = buffer.pos();
 
-    QTest::ignoreMessage(QtWarningMsg, warningMessage.toLatin1());
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warningMessage.toLatin1());
     QCOMPARE(buffer.readLineInto(&l1, 1), false);
     QVERIFY(l1.isEmpty()); // Make sure readLineInto() makes l1 empty in case an error occurred.
 
@@ -640,7 +640,7 @@ void tst_QIODevice::readLineInto_qspan()
         buffer.seek(0);
 
         QSpan<char> span; // zero-sized span
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QIODevice::readLineInto (QBuffer): Called with maxSize < 1");
         QCOMPARE(buffer.readLineInto(span), "");
 
@@ -664,7 +664,7 @@ void tst_QIODevice::readLineInto_qspan()
         buffer.seek(0);
 
         QSpan<char> span; // zero-sized span
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QIODevice::readLineInto (QBuffer): Called with maxSize < 1");
         QCOMPARE(buffer.readLineInto(span), "");
 
@@ -793,12 +793,12 @@ void tst_QIODevice::writeInTextMode()
 
 void tst_QIODevice::skip_data()
 {
-    QTest::addColumn<bool>("sequential");
-    QTest::addColumn<QByteArray>("data");
-    QTest::addColumn<int>("read");
-    QTest::addColumn<int>("skip");
-    QTest::addColumn<int>("skipped");
-    QTest::addColumn<char>("expect");
+    BOBUIest::addColumn<bool>("sequential");
+    BOBUIest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<int>("read");
+    BOBUIest::addColumn<int>("skip");
+    BOBUIest::addColumn<int>("skipped");
+    BOBUIest::addColumn<char>("expect");
 
     QByteArray bigData;
     bigData.fill('a', 20000);
@@ -808,12 +808,12 @@ void tst_QIODevice::skip_data()
     do {
         QByteArray devName(sequential ? "sequential" : "random-access");
 
-        QTest::newRow(qPrintable(devName + "-small_data")) << sequential
+        BOBUIest::newRow(qPrintable(devName + "-small_data")) << sequential
                                                            << QByteArray("abcdefghij")
                                                            << 3 << 6 << 6 << 'j';
-        QTest::newRow(qPrintable(devName + "-big_data")) << sequential << bigData
+        BOBUIest::newRow(qPrintable(devName + "-big_data")) << sequential << bigData
                                                          << 1 << 10000 << 10000 << 'x';
-        QTest::newRow(qPrintable(devName + "-beyond_the_end")) << sequential << bigData
+        BOBUIest::newRow(qPrintable(devName + "-beyond_the_end")) << sequential << bigData
                                                                << 1 << 20000 << 19999 << '\0';
 
         sequential = !sequential;
@@ -844,15 +844,15 @@ void tst_QIODevice::skip()
 
 void tst_QIODevice::skipAfterPeek_data()
 {
-    QTest::addColumn<bool>("sequential");
-    QTest::addColumn<QByteArray>("data");
+    BOBUIest::addColumn<bool>("sequential");
+    BOBUIest::addColumn<QByteArray>("data");
 
     QByteArray bigData;
     for (int i = 0; i < 1000; ++i)
         bigData += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    QTest::newRow("sequential") << true  << bigData;
-    QTest::newRow("random-access") << false << bigData;
+    BOBUIest::newRow("sequential") << true  << bigData;
+    BOBUIest::newRow("random-access") << false << bigData;
 }
 
 void tst_QIODevice::skipAfterPeek()
@@ -881,32 +881,32 @@ void tst_QIODevice::skipAfterPeek()
 
 void tst_QIODevice::transaction_data()
 {
-    QTest::addColumn<bool>("sequential");
-    QTest::addColumn<qint8>("i8Data");
-    QTest::addColumn<qint16>("i16Data");
-    QTest::addColumn<qint32>("i32Data");
-    QTest::addColumn<qint64>("i64Data");
-    QTest::addColumn<bool>("bData");
-    QTest::addColumn<float>("fData");
-    QTest::addColumn<double>("dData");
-    QTest::addColumn<QByteArray>("strData");
+    BOBUIest::addColumn<bool>("sequential");
+    BOBUIest::addColumn<qint8>("i8Data");
+    BOBUIest::addColumn<qint16>("i16Data");
+    BOBUIest::addColumn<qint32>("i32Data");
+    BOBUIest::addColumn<qint64>("i64Data");
+    BOBUIest::addColumn<bool>("bData");
+    BOBUIest::addColumn<float>("fData");
+    BOBUIest::addColumn<double>("dData");
+    BOBUIest::addColumn<QByteArray>("strData");
 
     bool sequential = true;
     do {
         QByteArray devName(sequential ? "sequential" : "random-access");
 
-        QTest::newRow(qPrintable(devName + '1')) << sequential << qint8(1) << qint16(2)
+        BOBUIest::newRow(qPrintable(devName + '1')) << sequential << qint8(1) << qint16(2)
                                                  << qint32(3) << qint64(4) << true
                                                  << 5.0f << double(6.0)
                                                  << QByteArray("Hello world!");
-        QTest::newRow(qPrintable(devName + '2')) << sequential << qint8(1 << 6) << qint16(1 << 14)
+        BOBUIest::newRow(qPrintable(devName + '2')) << sequential << qint8(1 << 6) << qint16(1 << 14)
                                                  << qint32(1 << 30) << (qint64(1) << 62) << false
                                                  << 123.0f << double(234.0)
                                                  << QByteArray("abcdefghijklmnopqrstuvwxyz");
-        QTest::newRow(qPrintable(devName + '3')) << sequential << qint8(-1) << qint16(-2)
+        BOBUIest::newRow(qPrintable(devName + '3')) << sequential << qint8(-1) << qint16(-2)
                                                  << qint32(-3) << qint64(-4) << true
                                                  << -123.0f << double(-234.0)
-                                                 << QByteArray("Qt rocks!");
+                                                 << QByteArray("BobUI rocks!");
         sequential = !sequential;
     } while (!sequential);
 }
@@ -991,5 +991,5 @@ void tst_QIODevice::transaction()
     }
 }
 
-QTEST_MAIN(tst_QIODevice)
+BOBUIEST_MAIN(tst_QIODevice)
 #include "tst_qiodevice.moc"

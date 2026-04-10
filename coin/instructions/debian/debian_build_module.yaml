@@ -4,7 +4,7 @@ enable_if:
   property: features
   contains_value: DebianPackaging
 instructions:
-  - !include "{{qt/qtbase}}/debian/prepare_debian_env.yaml"
+  - !include "{{bobui/bobuibase}}/debian/prepare_debian_env.yaml"
   - type: EnvironmentVariable
     variableName: GIT_SSH_COMMAND
     variableValue: "ssh -o StrictHostKeyChecking=no"
@@ -15,7 +15,7 @@ instructions:
   - type: MakeDirectory
     directory: debian_packages
   - type: ExecuteCommand
-    command: "git clone git@git.qt.io:tqtc-debian/package_generator.git"
+    command: "git clone git@git.bobui.io:tbobuic-debian/package_generator.git"
     maxTimeInSeconds: 900
     maxTimeBetweenOutput: 900
     userMessageOnFailure: "Failed to clone package generator repo"
@@ -24,7 +24,7 @@ instructions:
       env_var:  COIN_SKIP_DEBIAN
       contains_value: "MISSING_DEBIAN_INST"
   - type: ExecuteCommand
-    command: "git clone -b 6.6 git@git.qt.io:tqtc-debian/qt6-{{.Env.TESTED_MODULE_PLAIN_COIN}}.git"
+    command: "git clone -b 6.6 git@git.bobui.io:tbobuic-debian/bobui6-{{.Env.TESTED_MODULE_PLAIN_COIN}}.git"
     maxTimeInSeconds: 900
     maxTimeBetweenOutput: 900
     userMessageOnFailure: "Failed to clone debian packaging repo"
@@ -33,7 +33,7 @@ instructions:
       env_var:  COIN_SKIP_DEBIAN
       contains_value: "MISSING_DEBIAN_INST"
   - type: ChangeDirectory
-    directory: "qt6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
+    directory: "bobui6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
     disable_if:
       condition: runtime
       env_var:  COIN_SKIP_DEBIAN
@@ -64,7 +64,7 @@ instructions:
       env_var:  COIN_SKIP_DEBIAN
       contains_value: "MISSING_DEBIAN_INST"
   - type: ExecuteCommand
-    command: "mv sources_unix.tar.gz qt-{{.Env.QT_REPO_MODULE_VERSION}}-{{.Env.TESTED_MODULE_PLAIN_COIN}}-src_{{.Env.QT_REPO_MODULE_VERSION}}.orig.tar.gz"
+    command: "mv sources_unix.tar.gz bobui-{{.Env.BOBUI_REPO_MODULE_VERSION}}-{{.Env.TESTED_MODULE_PLAIN_COIN}}-src_{{.Env.BOBUI_REPO_MODULE_VERSION}}.orig.tar.gz"
     maxTimeInSeconds: 900
     maxTimeBetweenOutput: 900
     userMessageOnFailure: "Failed rename src pkg"
@@ -73,7 +73,7 @@ instructions:
       env_var:  COIN_SKIP_DEBIAN
       contains_value: "MISSING_DEBIAN_INST"
   - type: ChangeDirectory
-    directory: "{{.AgentWorkingDir}}/qt6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
+    directory: "{{.AgentWorkingDir}}/bobui6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
     disable_if:
       condition: runtime
       env_var:  COIN_SKIP_DEBIAN
@@ -82,7 +82,7 @@ instructions:
 
   # rc is required currently by the script
   - type: ExecuteCommand
-    command: "../package_generator/generate_packaging.sh --qt-version {{.Env.QT_REPO_MODULE_VERSION}} --deb-rev 1 --release tqtc-focal"
+    command: "../package_generator/generate_packaging.sh --bobui-version {{.Env.BOBUI_REPO_MODULE_VERSION}} --deb-rev 1 --release tbobuic-focal"
     maxTimeInSeconds: 900
     maxTimeBetweenOutput: 900
     userMessageOnFailure: "Failed to generate pkg"
@@ -93,7 +93,7 @@ instructions:
   - type: ChangeDirectory
     directory: "{{.AgentWorkingDir}}"
   - type: ExecuteCommand
-    command: "dpkg-source -b qt6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
+    command: "dpkg-source -b bobui6-{{.Env.TESTED_MODULE_PLAIN_COIN}}"
     maxTimeInSeconds: 900
     maxTimeBetweenOutput: 900
     userMessageOnFailure: "Failed dpkg-source"
@@ -110,7 +110,7 @@ instructions:
       "--extra-repository={{.Env.COIN_EXTRA_DEBIAN_REPO}}",
       "--extra-package={{.Env.COIN_EXTRA_DEBIAN_PACKAGES}}",
       "--extra-package={{.AgentWorkingDir}}/debian_packages/",
-      "qt-{{.Env.QT_REPO_MODULE_VERSION}}-{{.Env.TESTED_MODULE_PLAIN_COIN}}-src_{{.Env.QT_REPO_MODULE_VERSION}}-1.dsc"]
+      "bobui-{{.Env.BOBUI_REPO_MODULE_VERSION}}-{{.Env.TESTED_MODULE_PLAIN_COIN}}-src_{{.Env.BOBUI_REPO_MODULE_VERSION}}-1.dsc"]
     maxTimeInSeconds: 18000
     maxTimeBetweenOutput: 18000
     userMessageOnFailure: "Failed build debian packages"

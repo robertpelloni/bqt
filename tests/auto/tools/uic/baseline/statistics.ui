@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <comment>
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 </comment>
  <class>linguist_stats</class>
  <widget class="QDialog" name="linguist_stats">
@@ -23,7 +23,7 @@
      <item>
       <spacer name="spacer4_2">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Policy::Expanding</enum>
@@ -46,7 +46,7 @@
      <item>
       <spacer name="spacer4">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="sizeType">
         <enum>QSizePolicy::Policy::Expanding</enum>

@@ -1,11 +1,11 @@
 # Resource object code (Python 3)
 # Created by: object code
-# Created by: The Resource Compiler for Qt version 6.3.0
+# Created by: The Resource Compiler for BobUI version 6.3.0
 # WARNING! All changes made in this file will be lost!
 
-from PySide6 import QtCore
+from PySide6 import BobUICore
 
-qt_resource_data = b"\
+bobui_resource_data = b"\
 \x00\x00\x00\x01\
 @\
 \
@@ -21,7 +21,7 @@ qt_resource_data = b"\
 \
 "
 
-qt_resource_name = b"\
+bobui_resource_name = b"\
 \x00\x04\
 \x00\x06\xa8\xa1\
 \x00d\
@@ -44,7 +44,7 @@ qt_resource_name = b"\
 \x00a\x00t\x00a\x00-\x000\x00.\x00t\x00x\x00t\
 "
 
-qt_resource_struct = b"\
+bobui_resource_struct = b"\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x01\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x02\
@@ -60,9 +60,9 @@ IGNORE: (time stamp)
 "
 
 def qInitResources():
-    QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    BobUICore.qRegisterResourceData(0x03, bobui_resource_struct, bobui_resource_name, bobui_resource_data)
 
 def qCleanupResources():
-    QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    BobUICore.qUnregisterResourceData(0x03, bobui_resource_struct, bobui_resource_name, bobui_resource_data)
 
 qInitResources()

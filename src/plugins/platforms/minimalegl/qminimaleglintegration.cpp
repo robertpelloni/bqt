@@ -1,30 +1,30 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qminimaleglintegration.h"
 
 #include "qminimaleglwindow.h"
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 # include "qminimaleglbackingstore.h"
 #endif
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
 
 #if defined(Q_OS_UNIX)
-#  include <QtGui/private/qgenericunixeventdispatcher_p.h>
+#  include <BobUIGui/private/qgenericunixeventdispatcher_p.h>
 #elif defined(Q_OS_WIN)
-#  include <QtGui/private/qwindowsguieventdispatcher_p.h>
+#  include <BobUIGui/private/qwindowsguieventdispatcher_p.h>
 #endif
 
 #include <qpa/qplatformwindow.h>
-#include <QtGui/QSurfaceFormat>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QScreen>
+#include <BobUIGui/QSurfaceFormat>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QScreen>
 #include <qpa/qwindowsysteminterface.h>
 
 // this is where EGL headers are pulled in, make sure it is last
 #include "qminimaleglscreen.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QMinimalEglIntegration::QMinimalEglIntegration()
     : mFontDb(new QGenericUnixFontDatabase()), mScreen(new QMinimalEglScreen(EGL_DEFAULT_DISPLAY))
@@ -68,14 +68,14 @@ QPlatformBackingStore *QMinimalEglIntegration::createPlatformBackingStore(QWindo
 #ifdef QEGL_EXTRA_DEBUG
     qWarning("QMinimalEglIntegration::createWindowSurface %p\n", window);
 #endif
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     return new QMinimalEglBackingStore(window);
 #else
     Q_UNUSED(window);
     return nullptr;
 #endif
 }
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QMinimalEglIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     return static_cast<QMinimalEglScreen *>(context->screen()->handle())->platformContext();
@@ -106,4 +106,4 @@ QVariant QMinimalEglIntegration::styleHint(QPlatformIntegration::StyleHint hint)
     return QPlatformIntegration::styleHint(hint);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

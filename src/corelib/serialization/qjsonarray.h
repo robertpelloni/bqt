@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QJSONARRAY_H
 #define QJSONARRAY_H
 
-#include <QtCore/qjsonvalue.h>
-#include <QtCore/qiterator.h>
-#include <QtCore/qshareddata.h>
+#include <BobUICore/qjsonvalue.h>
+#include <BobUICore/qiterator.h>
+#include <BobUICore/qshareddata.h>
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 typedef QList<QVariant> QVariantList;
@@ -61,7 +61,7 @@ public:
     QJsonValueRef operator[](qsizetype i);
     QJsonValue operator[](qsizetype i) const;
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QJsonArray &other) const;
     bool operator!=(const QJsonArray &other) const;
 #endif
@@ -95,7 +95,7 @@ public:
         inline QJsonValueRef *operator->() { return &item; }
         inline QJsonValueRef operator[](qsizetype j) const { return *(*this + j); }
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const iterator &o) const
         { return item.d == o.item.d && item.index == o.item.index; }
         inline bool operator!=(const iterator &o) const { return !operator==(o); }
@@ -137,18 +137,18 @@ public:
             return lhs.item.d == rhs.item.d && lhs.item.index == rhs.item.index;
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const iterator &lhs,
                                                           const iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
 
-        static Qt::strong_ordering compareThreeWay_helper(const iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const iterator &lhs,
                                                           const const_iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
 
         // Compare friends
@@ -156,7 +156,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                    const iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -166,7 +166,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const iterator &lhs,
                                                    const const_iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -202,7 +202,7 @@ public:
         inline const QJsonValueConstRef *operator->() const { return &item; }
 
         inline QJsonValueConstRef operator[](qsizetype j) const { return *(*this + j); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
         inline bool operator==(const const_iterator &o) const
         { return item.d == o.item.d && item.index == o.item.index; }
         inline bool operator!=(const const_iterator &o) const { return !operator==(o); }
@@ -230,11 +230,11 @@ public:
         {
             return lhs.item.d == rhs.item.d && lhs.item.index == rhs.item.index;
         }
-        static Qt::strong_ordering compareThreeWay_helper(const const_iterator &lhs,
+        static BobUI::strong_ordering compareThreeWay_helper(const const_iterator &lhs,
                                                           const const_iterator &rhs)
         {
             Q_ASSERT(lhs.item.d == rhs.item.d);
-            return Qt::compareThreeWay(lhs.item.index, rhs.item.index);
+            return BobUI::compareThreeWay(lhs.item.index, rhs.item.index);
         }
 
         // Compare friends
@@ -242,7 +242,7 @@ public:
         {
             return comparesEqual_helper(lhs, rhs);
         }
-        friend Qt::strong_ordering compareThreeWay(const const_iterator &lhs,
+        friend BobUI::strong_ordering compareThreeWay(const const_iterator &lhs,
                                                    const const_iterator &rhs)
         {
             return compareThreeWay_helper(lhs, rhs);
@@ -267,7 +267,7 @@ public:
     iterator erase(iterator it)
     { removeAt(it.item.index); return it; }
 
-    // more Qt
+    // more BobUI
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
 
@@ -318,7 +318,7 @@ private:
 
 Q_DECLARE_SHARED(QJsonArray)
 
-#if QT_VERSION >= QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED)
 inline QJsonValueConstRef::QJsonValueConstRef(QJsonArray *a, qsizetype idx)
     : d(a ? a->a.data() : nullptr), is_object(false), index(idx)
 {}
@@ -326,15 +326,15 @@ inline QJsonValueConstRef::QJsonValueConstRef(QJsonArray *a, qsizetype idx)
 
 Q_CORE_EXPORT size_t qHash(const QJsonArray &array, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QJsonArray &);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QJsonArray &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QJsonArray &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QJSONARRAY_H

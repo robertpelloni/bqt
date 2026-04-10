@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtCore>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUICore>
 
-#include <qtest.h>
-#include <qtesteventloop.h>
+#include <bobuiest.h>
+#include <bobuiesteventloop.h>
 
 class PingPong : public QObject
 {
@@ -32,7 +32,7 @@ bool PingPong::event(QEvent *)
         QEvent *e = new QEvent(QEvent::User);
         QCoreApplication::postEvent(m_peer, e);
     } else {
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
     return true;
 }
@@ -93,9 +93,9 @@ void EventsBench::noEvent()
 
 void EventsBench::sendEvent_data()
 {
-    QTest::addColumn<bool>("filterEvents");
-    QTest::newRow("no eventfilter") << false;
-    QTest::newRow("eventfilter") << true;
+    BOBUIest::addColumn<bool>("filterEvents");
+    BOBUIest::newRow("no eventfilter") << false;
+    BOBUIest::newRow("eventfilter") << true;
 }
 
 void EventsBench::sendEvent()
@@ -112,13 +112,13 @@ void EventsBench::sendEvent()
 
 void EventsBench::postEvent_data()
 {
-    QTest::addColumn<bool>("filterEvents");
+    BOBUIest::addColumn<bool>("filterEvents");
     // The first time an eventloop is executed, the case runs radically slower at least
     // on some platforms, so test the "no eventfilter" case to get a comparable results
     // with the "eventfilter" case.
-    QTest::newRow("first time, no eventfilter") << false;
-    QTest::newRow("no eventfilter") << false;
-    QTest::newRow("eventfilter") << true;
+    BOBUIest::newRow("first time, no eventfilter") << false;
+    BOBUIest::newRow("no eventfilter") << false;
+    BOBUIest::newRow("eventfilter") << true;
 }
 
 void EventsBench::postEvent()
@@ -141,10 +141,10 @@ void EventsBench::postEvent()
         ping.resetCounter();
         pong.resetCounter();
         QCoreApplication::postEvent(&ping, e);
-        QTestEventLoop::instance().enterLoop( 61 );
+        BOBUIestEventLoop::instance().enterLoop( 61 );
     }
 }
 
-QTEST_MAIN(EventsBench)
+BOBUIEST_MAIN(EventsBench)
 
 #include "tst_bench_events.moc"

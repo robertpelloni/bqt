@@ -1,18 +1,18 @@
-Qt 5.6.1 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 5.6.0.
+BobUI 5.6.1 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 5.6.0.
 
 For more details, refer to the online documentation included in this
 distribution. The documentation is also available online:
 
-  https://doc.qt.io/qt-5/
+  https://doc.bobui.io/bobui-5/
 
-The Qt version 5.6 series is binary compatible with the 5.5.x series.
+The BobUI version 5.6 series is binary compatible with the 5.5.x series.
 Applications compiled for 5.5 will continue to run with 5.6.
 
 Some of the changes listed in this file include issue tracking numbers
-corresponding to tasks in the Qt Bug Tracker:
+corresponding to tasks in the BobUI Bug Tracker:
 
-  https://bugreports.qt.io/
+  https://bugreports.bobui.io/
 
 Each of these identifiers can be entered in the bug tracker to obtain more
 information about a particular change.
@@ -24,13 +24,13 @@ information about a particular change.
  - Support for DirectFB is disabled by default, due to lack of
    development in upstream. To enable the platform plugin, pass the
    -directfb option to configure.
- - [QTBUG-44964] The new X event compression feature that was added in 5.6.0
+ - [BOBUIBUG-44964] The new X event compression feature that was added in 5.6.0
    no longer applies to motion events from drawing tablets.
 
 configure & build system
 ------------------------
 
- - The configure -D/-I/-L/-l/-R options do not affect the build of Qt's
+ - The configure -D/-I/-L/-l/-R options do not affect the build of BobUI's
    host tools any more when cross-building. While this usually improves
    the chances of a build succeeding, it may also require adjustments.
 
@@ -39,7 +39,7 @@ qmake
 
  - [Unix] Paths passed to configure -R are not automatically used by 3rd
    party projects any more. Use QMAKE_RPATHDIR if your project explicitly
-   depends on external libraries. Note that this is not needed for Qt or
+   depends on external libraries. Note that this is not needed for BobUI or
    its transitive dependencies.
  - Expansions of ${QMAKE_FILE_IN_BASE} and ${QMAKE_FILE_OUT_BASE} in extra
    compilers are now automatically quoted.
@@ -48,11 +48,11 @@ qmake
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
  - QObject:
-   * [QTBUG-52542] If the compiler supports variadic templates, functors
+   * [BOBUIBUG-52542] If the compiler supports variadic templates, functors
      connected to signals will no longer be copied each time the signal is
      emitted.
 
@@ -66,30 +66,30 @@ QtCore
    * Fixed relational operators against (const char*) to return the correct
      result.
 
-QtGui
+BobUIGui
 -----
 
- - [QTBUG-50199] QWheelEvent::phase() now returns zero rather than
-   Qt::ScrollUpdate when the wheel event comes from an actual non-emulated
-   mouse wheel, and the QT_ENABLE_MOUSE_WHEEL_TRACKING environment variable
+ - [BOBUIBUG-50199] QWheelEvent::phase() now returns zero rather than
+   BobUI::ScrollUpdate when the wheel event comes from an actual non-emulated
+   mouse wheel, and the BOBUI_ENABLE_MOUSE_WHEEL_TRACKING environment variable
    is set.
 
 - Image:
-   * [QTBUG-50745] Fixed possible crash in QImage::pixel() for mono or indexed
+   * [BOBUIBUG-50745] Fixed possible crash in QImage::pixel() for mono or indexed
      images.
 
-QtWidgets
+BobUIWidgets
 ---------
 
  - Dialogs:
-   * [QTBUG-51148] Fixed font dialog support for fonts with a non-existent
+   * [BOBUIBUG-51148] Fixed font dialog support for fonts with a non-existent
      family name and/or pixel size.
 
  - QHeaderView:
-   * [QTBUG-50171] Fixed a repainting issue when items had been reordered.
+   * [BOBUIBUG-50171] Fixed a repainting issue when items had been reordered.
 
  - QListWidget:
-   * [QTBUG-15741] Fixed a bug that caused the default drop action to be
+   * [BOBUIBUG-15741] Fixed a bug that caused the default drop action to be
      ignored when using icon mode.
 
 
@@ -104,10 +104,10 @@ Android
 
 OS X
 ----
- - [QTBUG-50262] QStandardPaths now returns the correct display name for the
+ - [BOBUIBUG-50262] QStandardPaths now returns the correct display name for the
    download folder.
- - [QTBUG-7000] QMacPrintEngine now really sets the printer resolution.
- - [QTBUG-48138] QPinchGesture on OS X now behaves like on other platforms:
+ - [BOBUIBUG-7000] QMacPrintEngine now really sets the printer resolution.
+ - [BOBUIBUG-48138] QPinchGesture on OS X now behaves like on other platforms:
    totalScaleFactor is the magnitude of the pinch and scaleFactor is the delta
    for the current event.
 
@@ -115,15 +115,15 @@ Windows
 -------
 
  - Text:
-   * [QTBUG-18711] Fixed disabling hints for application fonts.
+   * [BOBUIBUG-18711] Fixed disabling hints for application fonts.
      For example, when automatic scaling by device pixel ratio is in effect.
-   * [QTBUG-47141] Made it possible to disable antialiasing for text when
+   * [BOBUIBUG-47141] Made it possible to disable antialiasing for text when
      drawing into images.
 
 X11/XCB
 -------
 
- - [QTBUG-49071] Fixed failure to deliver focusIn events on hide/show.
+ - [BOBUIBUG-49071] Fixed failure to deliver focusIn events on hide/show.
 
 ****************************************************************************
 *                                Tools                                     *
@@ -132,14 +132,14 @@ X11/XCB
 configure & build system
 ------------------------
 
- - [QTBUG-11545][Windows] Added missing -pch/-no-pch options to configure.exe.
- - [QTBUG-37952][Apple] configure -separate-debug-info is now supported.
- - [QTBUG-47313][QTBUG-47639] Fixed builds with "debug" and/or "release" in
+ - [BOBUIBUG-11545][Windows] Added missing -pch/-no-pch options to configure.exe.
+ - [BOBUIBUG-37952][Apple] configure -separate-debug-info is now supported.
+ - [BOBUIBUG-47313][BOBUIBUG-47639] Fixed builds with "debug" and/or "release" in
    the build path's name.
- - [QTBUG-51621][Unix] Fixed transitive dependencies on non-Qt libraries.
- - [QTBUG-51644][QTBUG-53017] Fixed cross-builds which use a host compiler
+ - [BOBUIBUG-51621][Unix] Fixed transitive dependencies on non-BobUI libraries.
+ - [BOBUIBUG-51644][BOBUIBUG-53017] Fixed cross-builds which use a host compiler
    which is significantly different from the target compiler.
- - [QTBUG-52578][QNX] Unified some defaults between the Unix and Windows
+ - [BOBUIBUG-52578][QNX] Unified some defaults between the Unix and Windows
    configures.
  - [Unix] configure -R now supports paths relative to -libdir.
  - [Android@Windows] Added missing -android-ndk-host option to configure.exe.
@@ -150,16 +150,16 @@ configure & build system
 qmake
 -----
 
- - [QTBUG-34182] Fixed UTF-8 BOM breaking dependency calculation.
- - [QTBUG-38802][WinRT] Capabilities needed by Qt are now automatically
+ - [BOBUIBUG-34182] Fixed UTF-8 BOM breaking dependency calculation.
+ - [BOBUIBUG-38802][WinRT] Capabilities needed by BobUI are now automatically
    added to the manifest.
- - [QTBUG-50924][WEC7][VS] Fixed deployment of Qt.
- - [QTBUG-51775][Unix@Windows] Fixed installation of target.targets when
+ - [BOBUIBUG-50924][WEC7][VS] Fixed deployment of BobUI.
+ - [BOBUIBUG-51775][Unix@Windows] Fixed installation of target.targets when
    cross-building.
- - [QTBUG-51782] Fixed simultaneous use of the separate_debug_info and
+ - [BOBUIBUG-51782] Fixed simultaneous use of the separate_debug_info and
    no_plugin_name_prefix CONFIG flags.
- - [QTBUG-52008] qmake-generated Visual Studio projects now automatically
-   invoke windeployqt by default.
- - [QTBUG-52998] Restored use of -P option when invoking lex.
+ - [BOBUIBUG-52008] qmake-generated Visual Studio projects now automatically
+   invoke windeploybobui by default.
+ - [BOBUIBUG-52998] Restored use of -P option when invoking lex.
  - The expansions ${QMAKE_FILE_IN_EXT}, ${QMAKE_FILE_IN_NAME}, and
    ${QMAKE_FILE_OUT_PATH} are now understood in extra compilers.

@@ -1,8 +1,8 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 set_directory_properties(PROPERTIES
-    _qt_good_targets ""
-    _qt_stub_targets ""
+    _bobui_good_targets ""
+    _bobui_stub_targets ""
 )
 
 function(add_plugin_binary)
@@ -16,7 +16,7 @@ function(add_plugin_binary)
     set(output_name ${arg_NAME}.${arg_ARCH})
     set(target tst_qpluginloader.${output_name})
     set(${arg_OUT_TARGET} ${target} PARENT_SCOPE)
-    set_property(DIRECTORY APPEND PROPERTY _qt_${arg_NAME}_targets ${target})
+    set_property(DIRECTORY APPEND PROPERTY _bobui_${arg_NAME}_targets ${target})
     add_library(${target} MODULE ${arg_SOURCES})
     add_dependencies(tst_qpluginloader ${target})
     set_target_properties(${target} PROPERTIES
@@ -43,16 +43,16 @@ function(add_good_binary)
         OUT_TARGET target
     )
 
-    # We cannot link against Qt6::Core, because the architecture might not match.
-    # Extract the include directories from Qt6::Core.
-    get_target_property(incdirs Qt6::Core INTERFACE_INCLUDE_DIRECTORIES)
+    # We cannot link against BobUI6::Core, because the architecture might not match.
+    # Extract the include directories from BobUI6::Core.
+    get_target_property(incdirs BobUI6::Core INTERFACE_INCLUDE_DIRECTORIES)
     target_include_directories(${target} PRIVATE ${incdirs})
 
-    # Extract the compile definitions from Qt6::Core and disable version tagging.
-    get_target_property(compdefs Qt6::Core INTERFACE_COMPILE_DEFINITIONS)
+    # Extract the compile definitions from BobUI6::Core and disable version tagging.
+    get_target_property(compdefs BobUI6::Core INTERFACE_COMPILE_DEFINITIONS)
     target_compile_definitions(${target} PRIVATE
         ${compdefs}
-        QT_NO_VERSION_TAGGING
+        BOBUI_NO_VERSION_TAGGING
     )
 endfunction()
 
@@ -106,7 +106,7 @@ foreach(arch IN LISTS archs_to_test)
     add_stub_binary(ARCH ${arch})
 endforeach()
 
-get_directory_property(good_targets _qt_good_targets)
+get_directory_property(good_targets _bobui_good_targets)
 add_fat_binary(NAME all TARGETS ${good_targets})
 
 set(targets ${good_targets})
@@ -117,7 +117,7 @@ set(targets ${good_targets})
 list(FILTER targets EXCLUDE REGEX "\\.x86_64$")
 add_fat_binary(NAME no-x86_64 TARGETS ${targets})
 
-get_directory_property(stub_targets _qt_stub_targets)
+get_directory_property(stub_targets _bobui_stub_targets)
 set(targets ${stub_targets})
 list(FILTER targets INCLUDE REGEX "\\.arm64$")
 add_fat_binary(NAME stub-arm64 TARGETS ${targets})

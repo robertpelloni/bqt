@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEVDEVKEYBOARDHANDLER_DEFAULTMAP_P_H
 #define QEVDEVKEYBOARDHANDLER_DEFAULTMAP_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,7 +16,7 @@
 //
 
 #include "qnamespace.h"
-#include <QtInputSupport/private/qkeyboardmap_p.h>
+#include <BobUIInputSupport/private/qkeyboardmap_p.h>
 
 #include "private/qglobal_p.h"
 #ifdef Q_OS_FREEBSD
@@ -25,7 +25,7 @@
 #include "linux/input.h"
 #endif
 
-// no QT_BEGIN_NAMESPACE, since we include it internally...
+// no BOBUI_BEGIN_NAMESPACE, since we include it internally...
 
 const QKeyboardMap::Mapping QEvdevKeyboardHandler::s_keymap_default[] = {
     {   1, 0xffff, 0x01000000, 0x00, 0x00, 0x0000 },
@@ -616,33 +616,33 @@ const QKeyboardMap::Mapping QEvdevKeyboardHandler::s_keymap_default[] = {
     { 111, 0xffff, 0x01000000, 0x0c, 0x08, 0x0200 },
 
     // 113 -> 248
-    { KEY_MUTE,         0xffff, Qt::Key_VolumeMute,     0x00, 0x00, 0x0000 },
-    { KEY_VOLUMEDOWN,   0xffff, Qt::Key_VolumeDown,     0x00, 0x00, 0x0000 },
-    { KEY_VOLUMEUP,     0xffff, Qt::Key_VolumeUp,       0x00, 0x00, 0x0000 },
-    { KEY_POWER,        0xffff, Qt::Key_PowerOff,       0x00, 0x00, 0x0000 },
-    { KEY_PAUSE,        0xffff, Qt::Key_Pause,          0x00, 0x00, 0x0000 },
-    { KEY_STOP,         0xffff, Qt::Key_Stop,           0x00, 0x00, 0x0000 },
-    { KEY_SETUP,        0xffff, Qt::Key_Settings,       0x00, 0x00, 0x0000 },
-    { KEY_RECORD,       0xffff, Qt::Key_MediaRecord,    0x00, 0x00, 0x0000 },
-    { KEY_REWIND,       0xffff, Qt::Key_AudioRewind,    0x00, 0x00, 0x0000 },
-    { KEY_PLAYPAUSE,    0xffff, Qt::Key_MediaTogglePlayPause,  0x00, 0x00, 0x0000 },
-    { KEY_PLAY,         0xffff, Qt::Key_MediaPlay,      0x00, 0x00, 0x0000 },
-    { KEY_FASTFORWARD,  0xffff, Qt::Key_AudioForward,   0x00, 0x00, 0x0000 },
-    { KEY_CANCEL,       0xffff, Qt::Key_Cancel,         0x00, 0x00, 0x0000 },
-    { 248,              0xffff, Qt::Key_MicMute,        0x00, 0x00, 0x0000 },
+    { KEY_MUTE,         0xffff, BobUI::Key_VolumeMute,     0x00, 0x00, 0x0000 },
+    { KEY_VOLUMEDOWN,   0xffff, BobUI::Key_VolumeDown,     0x00, 0x00, 0x0000 },
+    { KEY_VOLUMEUP,     0xffff, BobUI::Key_VolumeUp,       0x00, 0x00, 0x0000 },
+    { KEY_POWER,        0xffff, BobUI::Key_PowerOff,       0x00, 0x00, 0x0000 },
+    { KEY_PAUSE,        0xffff, BobUI::Key_Pause,          0x00, 0x00, 0x0000 },
+    { KEY_STOP,         0xffff, BobUI::Key_Stop,           0x00, 0x00, 0x0000 },
+    { KEY_SETUP,        0xffff, BobUI::Key_Settings,       0x00, 0x00, 0x0000 },
+    { KEY_RECORD,       0xffff, BobUI::Key_MediaRecord,    0x00, 0x00, 0x0000 },
+    { KEY_REWIND,       0xffff, BobUI::Key_AudioRewind,    0x00, 0x00, 0x0000 },
+    { KEY_PLAYPAUSE,    0xffff, BobUI::Key_MediaTogglePlayPause,  0x00, 0x00, 0x0000 },
+    { KEY_PLAY,         0xffff, BobUI::Key_MediaPlay,      0x00, 0x00, 0x0000 },
+    { KEY_FASTFORWARD,  0xffff, BobUI::Key_AudioForward,   0x00, 0x00, 0x0000 },
+    { KEY_CANCEL,       0xffff, BobUI::Key_Cancel,         0x00, 0x00, 0x0000 },
+    { 248,              0xffff, BobUI::Key_MicMute,        0x00, 0x00, 0x0000 },
     // 0x160 ->
-    { KEY_SELECT,       0xffff, Qt::Key_Select,         0x00, 0x00, 0x0000 },
-    { KEY_CLEAR,        0xffff, Qt::Key_Clear,          0x00, 0x00, 0x0000 },
-    { KEY_EXIT,         0xffff, Qt::Key_Exit,           0x00, 0x00, 0x0000 },
-    { KEY_INFO,         0xffff, Qt::Key_Info,           0x00, 0x00, 0x0000 },
-    { KEY_PROGRAM,      0xffff, Qt::Key_Guide,          0x00, 0x00, 0x0000 },
-    { KEY_CALENDAR,     0xffff, Qt::Key_Calendar,       0x00, 0x00, 0x0000 },
-    { KEY_RED,          0xffff, Qt::Key_Red,            0x00, 0x00, 0x0000 },
-    { KEY_GREEN,        0xffff, Qt::Key_Green,          0x00, 0x00, 0x0000 },
-    { KEY_YELLOW,       0xffff, Qt::Key_Yellow,         0x00, 0x00, 0x0000 },
-    { KEY_BLUE,         0xffff, Qt::Key_Blue,           0x00, 0x00, 0x0000 },
-    { KEY_CHANNELUP,    0xffff, Qt::Key_ChannelUp,      0x00, 0x00, 0x0000 },
-    { KEY_CHANNELDOWN,  0xffff, Qt::Key_ChannelDown,    0x00, 0x00, 0x0000 },
+    { KEY_SELECT,       0xffff, BobUI::Key_Select,         0x00, 0x00, 0x0000 },
+    { KEY_CLEAR,        0xffff, BobUI::Key_Clear,          0x00, 0x00, 0x0000 },
+    { KEY_EXIT,         0xffff, BobUI::Key_Exit,           0x00, 0x00, 0x0000 },
+    { KEY_INFO,         0xffff, BobUI::Key_Info,           0x00, 0x00, 0x0000 },
+    { KEY_PROGRAM,      0xffff, BobUI::Key_Guide,          0x00, 0x00, 0x0000 },
+    { KEY_CALENDAR,     0xffff, BobUI::Key_Calendar,       0x00, 0x00, 0x0000 },
+    { KEY_RED,          0xffff, BobUI::Key_Red,            0x00, 0x00, 0x0000 },
+    { KEY_GREEN,        0xffff, BobUI::Key_Green,          0x00, 0x00, 0x0000 },
+    { KEY_YELLOW,       0xffff, BobUI::Key_Yellow,         0x00, 0x00, 0x0000 },
+    { KEY_BLUE,         0xffff, BobUI::Key_Blue,           0x00, 0x00, 0x0000 },
+    { KEY_CHANNELUP,    0xffff, BobUI::Key_ChannelUp,      0x00, 0x00, 0x0000 },
+    { KEY_CHANNELDOWN,  0xffff, BobUI::Key_ChannelDown,    0x00, 0x00, 0x0000 },
 };
 
 const QKeyboardMap::Composing QEvdevKeyboardHandler::s_keycompose_default[] = {

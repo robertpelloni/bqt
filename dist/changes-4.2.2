@@ -1,7 +1,7 @@
-Qt 4.2.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.2.0.
+BobUI 4.2.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.2.0.
 
-The Qt version 4.2 series is binary compatible with the 4.1.x and 4.0.x
+The BobUI version 4.2 series is binary compatible with the 4.1.x and 4.0.x
 series. Applications compiled for 4.0 or 4.1 will continue to run with 4.2.
 
 ****************************************************************************
@@ -19,23 +19,23 @@ General Improvements
   * Fixed compilation when an unsupported version of MySQL is auto-detected
     by the configure script.
 
-  * Fixed QtDBus linking errors when compiling with the Intel C++ Compiler
+  * Fixed BobUIDBus linking errors when compiling with the Intel C++ Compiler
     for Linux.
 
   * Fixed compilation when using Q_ARG and Q_RETURN_ARG macros with template
     types.
 
-  * Make Qt compile with QT_NO_TOOLTIP and QT_NO_STATUSBAR
+  * Make BobUI compile with BOBUI_NO_TOOLTIP and BOBUI_NO_STATUSBAR
 
 - Documentation
 
-  * Added new overviews and substantially improved Qtopia Core-specific
+  * Added new overviews and substantially improved BobUIopia Core-specific
     documentation.
 
 - Demos / Examples
 
   * Fixed crash in the Settings Editor example resulting from entering
-    certain input to a QTreeWidget using QLineEdit as an inline editor.
+    certain input to a BOBUIreeWidget using QLineEdit as an inline editor.
 
   * Fixed crash in the Ported Canvas example that occurred when creating a
     new canvas from one that was shrunk to its minimum size.
@@ -44,15 +44,15 @@ General Improvements
 
   * Fixed divide by zero when loading malformed BMP files.
 
-- Qt Assistant
+- BobUI Assistant
 
   * Fixed a bug that prevented the view from scrolling to anchors within
     pages.
 
-- Qt Designer
+- BobUI Designer
 
   * Fixed crash that could occur when pasting a QGridLayout into a
-    QTabWidget.
+    BOBUIabWidget.
 
   * Fixed the signals & slots connection editor to automatically scroll to 
     the correct items.
@@ -67,7 +67,7 @@ General Improvements
   * Fixed bug in Form Settings dialog - it wasn't possible to reset the
     "Pixmap Function" field.
 
-- Qt Linguist
+- BobUI Linguist
 
   * Fixed bug where lupdate would leave out the namespace part of the context.
   
@@ -99,7 +99,7 @@ General Improvements
     directory is located on one of the paths held by the variable.
 
   * Improved generation of Xcode projects to avoid problems with qmake
-    project files that contain certain Qt-dependent declarations.
+    project files that contain certain BobUI-dependent declarations.
 
   * Improved support for Objective C sources in the Xcode project generator
     to ensure that they are added to the project's target.
@@ -146,7 +146,7 @@ General improvements
 
 - Item views
 
-  * Fixed QHeaderView and QTableView overflow issues when the length
+  * Fixed QHeaderView and BOBUIableView overflow issues when the length
     of all the rows or columns went over the maximum allowed integer value.
 
   * When reset is emitted by a QAbstractItemModel, QHeaderView will now
@@ -172,12 +172,12 @@ General improvements
     resulting in an incorrect proxy model.
 
   * Fixed bug in QSortFilterProxyModel that caused items to not appear
-    in a QTreeView when adding children to a formerly childless source item.
+    in a BOBUIreeView when adding children to a formerly childless source item.
 
-  * Fixed painting bug for spanning cells in QTableView when the item
+  * Fixed painting bug for spanning cells in BOBUIableView when the item
     background is transparent.
 
-  * Fixed regression in QListWidget and QTreeWidget that caused persistent
+  * Fixed regression in QListWidget and BOBUIreeWidget that caused persistent
     indexes to not be updated when sorting items.
 
   * Enter key can now be used to start item editing when the edit trigger
@@ -192,7 +192,7 @@ General improvements
   * Date and time editors are now initialized correctly with the current
     date and time.
 
-  * QTableView tab focus handling has been improved. Although tab key
+  * BOBUIableView tab focus handling has been improved. Although tab key
     navigation is enabled by default, you can tab out of a view if the
     model is either missing or unable to handle the key (e.g., an empty
     model).
@@ -202,19 +202,19 @@ General improvements
   * Fixed buge that would not let the column delegate create the editor
     for an edited item.
 
-  * Fixed bug where the QTableCornerButton would ignore the view
+  * Fixed bug where the BOBUIableCornerButton would ignore the view
     selectionMode.
 
-  * Fixed compatibility issue with QTreeWidgetItem serialization
-    between Qt 4.2.x and Qt 4.(0/1).x.
+  * Fixed compatibility issue with BOBUIreeWidgetItem serialization
+    between BobUI 4.2.x and BobUI 4.(0/1).x.
 
-  * Made sure the QTableWidget::cellEntered() signal is emitted
+  * Made sure the BOBUIableWidget::cellEntered() signal is emitted
     correctly.
 
   * Made sure that commitData() uses the row/column delegate
     when these are set.
 
-  * Fixed incorrect QTableView scrollbar ranges when rows were hidden.
+  * Fixed incorrect BOBUIableView scrollbar ranges when rows were hidden.
 
   * Fixed QItemDelegate to let text be bottom aligned.
 
@@ -269,7 +269,7 @@ General improvements
     expensive calculations of the color lookup table.
 
   * Fixed a crash on Windows and with QImage caused by specifying
-    Qt::CustomDashLine without an actual pattern.
+    BobUI::CustomDashLine without an actual pattern.
 
   * Fixed a bug in the raster paint engine which would occasionally cause
     pixel errors when drawing polygons.
@@ -303,7 +303,7 @@ General improvements
   * Fixed bug in QImage::createHeuristicMask where the color table was not 
     initialized properly.
 
-- Qt Resource Compiler (rcc)
+- BobUI Resource Compiler (rcc)
 
   * Improved handling of relative paths in .qrc files.
 
@@ -329,7 +329,7 @@ General improvements
   
   * Made sure PQfreemem is called to free allocated buffers in PostgreSQL.
 
-  * Fixed regression from Qt 4.1.4 behavior that prevented tables in schemas
+  * Fixed regression from BobUI 4.1.4 behavior that prevented tables in schemas
     from working correctly in the SQL data models.
 
   * Prevented possible trailing garbage for TEXT fields in the MySQL plugin.
@@ -448,7 +448,7 @@ General improvements
   * Fixed handling of dock widgets that are non-closable to the user so that
     they can be programmatically closed.
 
-  * Fixed regression from Qt 4.1.4 behavior to ensure that palette changes
+  * Fixed regression from BobUI 4.1.4 behavior to ensure that palette changes
     to main windows are also propagated to their children.
 
 - QMenuBar
@@ -490,31 +490,31 @@ General improvements
 
   * Improved parser robustness and parsing speed.
 
-- QTextCodec
+- BOBUIextCodec
 
-  * Fixed race-condition in QTextCodec::codecForLocale().
+  * Fixed race-condition in BOBUIextCodec::codecForLocale().
 
   * Fixed potential off-by-one string handling bug.
 
-- QTextDocument
+- BOBUIextDocument
 
   * Fixed support for pixel font sizes in imported HTML.
 
-- QTextOption
+- BOBUIextOption
 
   * Ensured that the textDirection property is respected.
 
-- QTextStream
+- BOBUIextStream
 
   * Ensured that readLine() no longer treats "\r\n" as being two lines if
-    called after QTextStream::pos().
+    called after BOBUIextStream::pos().
 
-- QToolButton
+- BOBUIoolButton
 
   * Fixed an issue where tool button popup menus were positioned incorrectly
     on multi-screen setups.
 
-- QTreeView/QTreeWidget
+- BOBUIreeView/BOBUIreeWidget
 
   * Fixed possible assert when painting if there were layouts pending.
 
@@ -539,7 +539,7 @@ General improvements
 - QWidget
 
   * Made setWindowTitle() work on hidden widgets that are never shown.
-    (Fixing a bug in QtSingleApplication on Windows.)
+    (Fixing a bug in BobUISingleApplication on Windows.)
 
   * Made QWidget::restoreGeometry() restore windows to the correct screen
     on multi-screen systems.
@@ -567,7 +567,7 @@ General improvements
   * Ensured that QXmlInputSource does not read in the whole document at once,
     enabling arbitrarily large files to be parsed with QXmlSimpleReader.
 
-- Qt3 support
+- BobUI3 support
 
   * Fixed QPainter::xForm() and QPainter::xFormDev().
 
@@ -579,7 +579,7 @@ General improvements
 
   * Ensured that Q3IconView is included in the Desktop Light package.
 
-  * Fixed regression of a feature in Qt 4.1.4 by reintroducing support for
+  * Fixed regression of a feature in BobUI 4.1.4 by reintroducing support for
     Q3Accel.
 
 - QDBus
@@ -587,12 +587,12 @@ General improvements
   * Fixed getting and setting of invalid properties
     so the don't cause errors in in libdbus-1.
 
-  * Fixed bug where QtDBus could generate invalid XML in some cases.
+  * Fixed bug where BobUIDBus could generate invalid XML in some cases.
 
-  * Fixed bug where QtDBus can sometimes generate names that break
+  * Fixed bug where BobUIDBus can sometimes generate names that break
     the standard.
 
-  * Fixed crash in QtDBus when connecting a signal to a slot with
+  * Fixed crash in BobUIDBus when connecting a signal to a slot with
     less parameters.
 
 
@@ -639,7 +639,7 @@ X11
   * Fixed loading plugins built in debug mode and linked against the
     default (release) build.
 
-  * Fixed input of non-ascii chars in Qt widgets when application was
+  * Fixed input of non-ascii chars in BobUI widgets when application was
     run with empty LANG environment variable.
 
   * Fixed QApplication::hasPendingEvents() returning true even if no
@@ -665,7 +665,7 @@ Windows
 
   * Fixed "print to file" dialog only showing once after it has been canceled.
 
-  * Fixed name clashes in enum values when running dumpcpp (ActiveQt).
+  * Fixed name clashes in enum values when running dumpcpp (ActiveBobUI).
 
   * Fixed a lock-up in QNetworkInterface for machines with multiple network
     interfaces.
@@ -673,13 +673,13 @@ Windows
   * Fixed a lock-up in QAbstractSocket::waitForReadyRead() when 0 was passed
     as a timeout value.
 
-  * Fixed "Invalid HANDLE" exception when a non-Qt thread that owns Qt
+  * Fixed "Invalid HANDLE" exception when a non-BobUI thread that owns BobUI
     objects terminates.
 
   * Fixed potential crash when calling QCoreApplication::applicationFilePath().
 
-  * Fixed compilation problem with precompiled headers in qt3support. PCH is
-    now disabled for qt3support.
+  * Fixed compilation problem with precompiled headers in bobui3support. PCH is
+    now disabled for bobui3support.
 
   * Fixed issues with low-level keyboard handling for certain (international)
     keyboard layouts where input of accented characters would only work
@@ -699,7 +699,7 @@ Windows
   * Ensured that characters that some IStorage implementations don't support
     are removed from stream names.
 
-  * Fixed regression that prevented ActiveQt controls from being activated
+  * Fixed regression that prevented ActiveBobUI controls from being activated
     once they had been closed.
 
 - QSettings
@@ -710,18 +710,18 @@ Windows
 Mac OS X
 --------
 
-  * Fixed a regression that made it impossible to drag images from non-Qt
-    application to Qt applications.
+  * Fixed a regression that made it impossible to drag images from non-BobUI
+    application to BobUI applications.
 
   * Fixed an issue with flickering/disappearing widgets when the
-    Qt::WA_MacMetalStyle attribute is set.
+    BobUI::WA_MacMetalStyle attribute is set.
 
   * Updated the documentation to clarify QActionWidget behavior with regard
     to adding a QActionWidget to a menu in the menu bar and using the same
     menu as a popup.
 
   * Ensured that the correct QList<QUrl> is returned when dragging Finder
-    items to Qt applications.
+    items to BobUI applications.
 
   * Documented how to debug with debug frameworks.
 
@@ -734,7 +734,7 @@ Mac OS X
     they do not have title bars and cannot be moved.
 
   * Fixed a crash that could occur when enabling "Accessibility for assistive
-    devices" in System Preferences while a Qt application was running.
+    devices" in System Preferences while a BobUI application was running.
 
   * Fixed a painting error where a one-pixel border at the bottom-right
     corner of widgets wasn't being (re)painted correctly.
@@ -768,7 +768,7 @@ Mac OS X
     aboutToShow() is emitted when appropriate.
 
 
-- Qtopia Core
+- BobUIopia Core
 
   * Fixed delivery of mouse events to overlapping popups.
 
@@ -821,7 +821,7 @@ Mac OS X
 
 
 ****************************************************************************
-*                             QTestLib                                     *
+*                             BOBUIestLib                                     *
 ****************************************************************************
 
    * Added missing documentation for the QVERIFY2 macro.

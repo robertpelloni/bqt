@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qglobal.h"
 
-#if !defined(QT_NO_RAWFONT)
+#if !defined(BOBUI_NO_RAWFONT)
 
 #include "qrawfont.h"
 #include "qrawfont_p.h"
@@ -13,17 +13,17 @@
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformfontdatabase.h>
 
-#include <QtCore/qendian.h>
-#include <QtCore/qfile.h>
-#include <QtGui/qpainterpath.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/qfile.h>
+#include <BobUIGui/qpainterpath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
    \class QRawFont
    \brief The QRawFont class provides access to a single physical instance of a font.
    \since 4.8
-   \inmodule QtGui
+   \inmodule BobUIGui
 
    \ingroup text
    \ingroup shared
@@ -36,8 +36,8 @@ QT_BEGIN_NAMESPACE
    unexpected to the developers, or the text could contain user selected styles, sizes or
    writing systems that are not supported by font chosen in the code.
 
-   Therefore, Qt's QFont class really represents a query for fonts. When text is interpreted,
-   Qt will do its best to match the text to the query, but depending on the support, different
+   Therefore, BobUI's QFont class really represents a query for fonts. When text is interpreted,
+   BobUI will do its best to match the text to the query, but depending on the support, different
    fonts can be used behind the scenes.
 
    For most use cases, this is both expected and necessary, as it minimizes the possibility of
@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
    QRawFont can be constructed in a number of ways:
    \list
-   \li It can be constructed by calling QTextLayout::glyphs() or QTextFragment::glyphs(). The
+   \li It can be constructed by calling BOBUIextLayout::glyphs() or BOBUIextFragment::glyphs(). The
       returned QGlyphs objects will contain QRawFont objects which represent the actual fonts
       used to render each portion of the text.
    \li It can be constructed by passing a QFont object to QRawFont::fromFont(). The function
@@ -260,7 +260,7 @@ QString QRawFont::glyphName(quint32 glyphIndex) const
    \sa pathForGlyph(), QPainter::drawGlyphRun()
 */
 QImage QRawFont::alphaMapForGlyph(quint32 glyphIndex, AntialiasingType antialiasingType,
-                                  const QTransform &transform) const
+                                  const BOBUIransform &transform) const
 {
     if (!d->isValid())
         return QImage();
@@ -500,10 +500,10 @@ int QRawFont::weight() const
    Note that, in cases where there are other tables in the font that affect the
    shaping of the text, the returned glyph indexes will not correctly represent
    the rendering of the text. To get the correctly shaped text, you can use
-   QTextLayout to lay out and shape the text, then call QTextLayout::glyphs()
+   BOBUIextLayout to lay out and shape the text, then call BOBUIextLayout::glyphs()
    to get the set of glyph index list and QRawFont pairs.
 
-   \sa advancesForGlyphIndexes(), glyphIndexesForChars(), QGlyphRun, QTextLayout::glyphRuns(), QTextFragment::glyphRuns()
+   \sa advancesForGlyphIndexes(), glyphIndexesForChars(), QGlyphRun, BOBUIextLayout::glyphRuns(), BOBUIextFragment::glyphRuns()
 */
 QList<quint32> QRawFont::glyphIndexesForString(const QString &text) const
 {
@@ -532,7 +532,7 @@ QList<quint32> QRawFont::glyphIndexesForString(const QString &text) const
    must be at least \a numChars, if that's still not enough, this function will return
    false, then you can resize \a glyphIndexes from the size returned in \a numGlyphs.
 
-   \sa glyphIndexesForString(), advancesForGlyphIndexes(), QGlyphRun, QTextLayout::glyphRuns(), QTextFragment::glyphRuns()
+   \sa glyphIndexesForString(), advancesForGlyphIndexes(), QGlyphRun, BOBUIextLayout::glyphRuns(), BOBUIextFragment::glyphRuns()
 */
 bool QRawFont::glyphIndexesForChars(const QChar *chars, int numChars, quint32 *glyphIndexes, int *numGlyphs) const
 {
@@ -564,9 +564,9 @@ bool QRawFont::glyphIndexesForChars(const QChar *chars, int numChars, quint32 *g
    \note When \c KernedAdvances is requested, this function will apply kerning rules from the
    TrueType table \c{KERN}, if this is available in the font. In many modern fonts, kerning is
    handled through OpenType rules or AAT rules, which requires a full shaping step to be applied.
-   To get the results of fully shaping the text, use \l{QTextLayout}.
+   To get the results of fully shaping the text, use \l{BOBUIextLayout}.
 
-   \sa QTextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance(), QTextLayout::glyphRuns()
+   \sa BOBUIextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance(), BOBUIextLayout::glyphRuns()
 */
 
 QList<QPointF> QRawFont::advancesForGlyphIndexes(const QList<quint32> &glyphIndexes, QRawFont::LayoutFlags layoutFlags) const
@@ -587,7 +587,7 @@ QList<QPointF> QRawFont::advancesForGlyphIndexes(const QList<quint32> &glyphInde
    to make it appear as if the two glyphs are unspaced. The advance of each glyph is calculated
    separately.
 
-   \sa QTextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance()
+   \sa BOBUIextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance()
 */
 
 /*!
@@ -602,9 +602,9 @@ QList<QPointF> QRawFont::advancesForGlyphIndexes(const QList<quint32> &glyphInde
    \note When \c KernedAdvances is requested, this function will apply kerning rules from the
    TrueType table \c{KERN}, if this is available in the font. In many modern fonts, kerning is
    handled through OpenType rules or AAT rules, which requires a full shaping step to be applied.
-   To get the results of fully shaping the text, use \l{QTextLayout}.
+   To get the results of fully shaping the text, use \l{BOBUIextLayout}.
 
-   \sa QTextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance(), QTextLayout::glyphRuns()
+   \sa BOBUIextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance(), BOBUIextLayout::glyphRuns()
 */
 bool QRawFont::advancesForGlyphIndexes(const quint32 *glyphIndexes, QPointF *advances, int numGlyphs, LayoutFlags layoutFlags) const
 {
@@ -640,7 +640,7 @@ bool QRawFont::advancesForGlyphIndexes(const quint32 *glyphIndexes, QPointF *adv
    array \a glyphIndexes while the results are returned through \a advances, both of them must
    have \a numGlyphs elements. The advance of each glyph is calculated separately
 
-   \sa QTextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance()
+   \sa BOBUIextLine::horizontalAdvance(), QFontMetricsF::horizontalAdvance()
 */
 bool QRawFont::advancesForGlyphIndexes(const quint32 *glyphIndexes, QPointF *advances, int numGlyphs) const
 {
@@ -751,11 +751,11 @@ bool QRawFont::supportsCharacter(uint ucs4) const
 }
 
 // qfontdatabase.cpp
-extern int qt_script_for_writing_system(QFontDatabase::WritingSystem writingSystem);
+extern int bobui_script_for_writing_system(QFontDatabase::WritingSystem writingSystem);
 
 /*!
    Fetches the physical representation based on a \a font query. The physical font returned is
-   the font that will be preferred by Qt in order to display text in the selected \a writingSystem.
+   the font that will be preferred by BobUI in order to display text in the selected \a writingSystem.
 
    \warning This function is potentially expensive and should not be called in performance
    sensitive code.
@@ -764,7 +764,7 @@ QRawFont QRawFont::fromFont(const QFont &font, QFontDatabase::WritingSystem writ
 {
     QRawFont rawFont;
     const QFontPrivate *font_d = QFontPrivate::get(font);
-    int script = qt_script_for_writing_system(writingSystem);
+    int script = bobui_script_for_writing_system(writingSystem);
     QFontEngine *fe = font_d->engineForScript(script);
 
     if (fe != nullptr && fe->type() == QFontEngine::Multi) {
@@ -832,6 +832,6 @@ QRectF QRawFont::boundingRect(quint32 glyphIndex) const
     return QRectF(gm.x.toReal(), gm.y.toReal(), gm.width.toReal(), gm.height.toReal());
 }
 
-#endif // QT_NO_RAWFONT
+#endif // BOBUI_NO_RAWFONT
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

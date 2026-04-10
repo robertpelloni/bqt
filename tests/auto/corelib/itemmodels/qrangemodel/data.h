@@ -1,10 +1,10 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qobject.h>
-#include <QtCore/qrangemodel.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qcolor.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qrangemodel.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qcolor.h>
 
 #include <list>
 #include <memory>
@@ -12,7 +12,7 @@
 #include <tuple>
 #include <vector>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if defined(__cpp_lib_ranges)
 #include <ranges>
@@ -108,8 +108,8 @@ struct QRangeModel::ItemAccess<ItemAccessType>
     static QVariant readRole(const ItemAccessType &item, int role)
     {
         switch (role) {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
+        case BobUI::DisplayRole:
+        case BobUI::EditRole:
             return item.display;
         }
         return {};
@@ -119,8 +119,8 @@ struct QRangeModel::ItemAccess<ItemAccessType>
     {
         bool ok = false;
         switch (role) {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
+        case BobUI::DisplayRole:
+        case BobUI::EditRole:
             item.display = data.toInt(&ok);
             break;
         }
@@ -439,9 +439,9 @@ struct Data {
     std::array<int, 5> fixedArrayOfNumbers = {1, 2, 3, 4, 5};
     int cArrayOfNumbers[5] = {1, 2, 3, 4, 5};
     Row cArrayFixedColumns[3] = {
-        {{"red", Qt::red, "0xff0000"}, 0xff0000, "The color red"},
-        {{"green", Qt::green, "0x00ff00"}, 0x00ff00, "The color green"},
-        {{"blue", Qt::blue, "0x0000ff"}, 0x0000ff, "The color blue"}
+        {{"red", BobUI::red, "0xff0000"}, 0xff0000, "The color red"},
+        {{"green", BobUI::green, "0x00ff00"}, 0x00ff00, "The color green"},
+        {{"blue", BobUI::blue, "0x0000ff"}, 0x0000ff, "The color blue"}
     };
 
     // dynamic number of rows, fixed number of columns
@@ -470,30 +470,30 @@ struct Data {
         {41, 42, 43, 44, 45, 46, 47, 48, 49, 50},
     };
     std::vector<Item> vectorOfGadgets = {
-        {"red", Qt::red, "0xff0000"},
-        {"green", Qt::green, "0x00ff00"},
-        {"blue", Qt::blue, "0x0000ff"},
+        {"red", BobUI::red, "0xff0000"},
+        {"green", BobUI::green, "0x00ff00"},
+        {"blue", BobUI::blue, "0x0000ff"},
     };
     std::vector<std::tuple<Item>> listOfGadgets = {
-        {{"red", Qt::red, "0xff0000"}},
-        {{"green", Qt::green, "0x00ff00"}},
-        {{"blue", Qt::blue, "0x0000ff"}},
+        {{"red", BobUI::red, "0xff0000"}},
+        {{"green", BobUI::green, "0x00ff00"}},
+        {{"blue", BobUI::blue, "0x0000ff"}},
     };
     std::vector<MultiRoleGadget> listOfMultiRoleGadgets = {
-        {"red", Qt::red, {}},
-        {"green", Qt::green, {}},
-        {"blue", Qt::blue, {}},
+        {"red", BobUI::red, {}},
+        {"green", BobUI::green, {}},
+        {"blue", BobUI::blue, {}},
     };
     std::vector<std::shared_ptr<MultiRoleGadget>> listOfSharedMultiRoleGadgets = {
-        asSPtr(MultiRoleGadget{u"red"_s, Qt::red, {}}),
-        asSPtr(MultiRoleGadget{u"green"_s, Qt::green, {}}),
-        asSPtr(MultiRoleGadget{u"blue"_s, Qt::blue, {}}),
+        asSPtr(MultiRoleGadget{u"red"_s, BobUI::red, {}}),
+        asSPtr(MultiRoleGadget{u"green"_s, BobUI::green, {}}),
+        asSPtr(MultiRoleGadget{u"blue"_s, BobUI::blue, {}}),
     };
 
     std::array<std::unique_ptr<MultiRoleGadget>, 3> arrayOfUniqueMultiRoleGadgets = {
-        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"red"_s, Qt::red, {}}),
-        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"green"_s, Qt::green, {}}),
-        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"blue"_s, Qt::blue, {}}),
+        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"red"_s, BobUI::red, {}}),
+        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"green"_s, BobUI::green, {}}),
+        std::make_unique<MultiRoleGadget>(MultiRoleGadget{u"blue"_s, BobUI::blue, {}}),
     };
 
     std::vector<ItemAccessType> vectorOfItemAccess = {
@@ -501,9 +501,9 @@ struct Data {
     };
 
     std::vector<Row> vectorOfStructs = {
-        {{"red", Qt::red, "0xff0000"}, 1, "one"},
-        {{"green", Qt::green, "0x00ff00"}, 2, "two"},
-        {{"blue", Qt::blue, "0x0000ff"}, 3, "three"},
+        {{"red", BobUI::red, "0xff0000"}, 1, "one"},
+        {{"green", BobUI::green, "0x00ff00"}, 2, "two"},
+        {{"blue", BobUI::blue, "0x0000ff"}, 3, "three"},
     };
 
     std::list<Object *> listOfObjects = {
@@ -547,7 +547,7 @@ struct Data {
     };
 
     // item is pointer
-    Item itemAsPointer = {"red", Qt::red, "0xff0000"};
+    Item itemAsPointer = {"red", BobUI::red, "0xff0000"};
     std::vector<std::vector<Item *>> tableOfPointers = {
         {&itemAsPointer, &itemAsPointer},
         {&itemAsPointer, &itemAsPointer},
@@ -555,7 +555,7 @@ struct Data {
     };
 
     // rows are pointers
-    Row rowAsPointer = {{"blue", Qt::blue, "0x0000ff"}, 0x0000ff, "Blau"};
+    Row rowAsPointer = {{"blue", BobUI::blue, "0x0000ff"}, 0x0000ff, "Blau"};
     std::vector<Row *> tableOfRowPointers = {
         &rowAsPointer,
         &rowAsPointer,
@@ -563,7 +563,7 @@ struct Data {
     };
 
     // rows are refs
-    Row rowAsRef = {{"blue", Qt::blue, "0x0000ff"}, 0x0000ff, "Blau"};
+    Row rowAsRef = {{"blue", BobUI::blue, "0x0000ff"}, 0x0000ff, "Blau"};
     std::vector<std::reference_wrapper<Row>> tableOfRowRefs = {
         std::ref(rowAsRef),
         std::ref(rowAsRef),
@@ -591,31 +591,31 @@ struct Data {
         {{"display", "DISPLAY2"}, {"decoration", "DECORATION2"}},
         {{"display", "DISPLAY3"}, {"decoration", "DECORATION3"}},
     };
-    std::vector<std::vector<std::map<Qt::ItemDataRole, QVariant>>> tableOfEnumRoles = {
-        {{{Qt::DisplayRole, "DISPLAY0"}, {Qt::DecorationRole, "DECORATION0"}}},
-        {{{Qt::DisplayRole, "DISPLAY1"}, {Qt::DecorationRole, "DECORATION1"}}},
-        {{{Qt::DisplayRole, "DISPLAY2"}, {Qt::DecorationRole, "DECORATION2"}}},
-        {{{Qt::DisplayRole, "DISPLAY3"}, {Qt::DecorationRole, "DECORATION3"}}},
+    std::vector<std::vector<std::map<BobUI::ItemDataRole, QVariant>>> tableOfEnumRoles = {
+        {{{BobUI::DisplayRole, "DISPLAY0"}, {BobUI::DecorationRole, "DECORATION0"}}},
+        {{{BobUI::DisplayRole, "DISPLAY1"}, {BobUI::DecorationRole, "DECORATION1"}}},
+        {{{BobUI::DisplayRole, "DISPLAY2"}, {BobUI::DecorationRole, "DECORATION2"}}},
+        {{{BobUI::DisplayRole, "DISPLAY3"}, {BobUI::DecorationRole, "DECORATION3"}}},
     };
     std::vector<std::vector<QMap<int, QVariant>>> tableOfIntRoles = {
-        {{{Qt::DisplayRole, "DISPLAY0"}, {Qt::DecorationRole, "DECORATION0"}}},
-        {{{Qt::DisplayRole, "DISPLAY1"}, {Qt::DecorationRole, "DECORATION1"}}},
-        {{{Qt::DisplayRole, "DISPLAY2"}, {Qt::DecorationRole, "DECORATION2"}}},
-        {{{Qt::DisplayRole, "DISPLAY3"}, {Qt::DecorationRole, "DECORATION3"}}},
+        {{{BobUI::DisplayRole, "DISPLAY0"}, {BobUI::DecorationRole, "DECORATION0"}}},
+        {{{BobUI::DisplayRole, "DISPLAY1"}, {BobUI::DecorationRole, "DECORATION1"}}},
+        {{{BobUI::DisplayRole, "DISPLAY2"}, {BobUI::DecorationRole, "DECORATION2"}}},
+        {{{BobUI::DisplayRole, "DISPLAY3"}, {BobUI::DecorationRole, "DECORATION3"}}},
     };
 
     using VectorOfIntRoleMaps = std::vector<std::map<int, QVariant>>;
     std::vector<VectorOfIntRoleMaps> stdTableOfIntRoles = {
-        {{{Qt::DisplayRole, "DISPLAY0"}, {Qt::DecorationRole, "DECORATION0"}}},
-        {{{Qt::DisplayRole, "DISPLAY1"}, {Qt::DecorationRole, "DECORATION1"}}},
-        {{{Qt::DisplayRole, "DISPLAY2"}, {Qt::DecorationRole, "DECORATION2"}}},
-        {{{Qt::DisplayRole, "DISPLAY3"}, {Qt::DecorationRole, "DECORATION3"}}},
+        {{{BobUI::DisplayRole, "DISPLAY0"}, {BobUI::DecorationRole, "DECORATION0"}}},
+        {{{BobUI::DisplayRole, "DISPLAY1"}, {BobUI::DecorationRole, "DECORATION1"}}},
+        {{{BobUI::DisplayRole, "DISPLAY2"}, {BobUI::DecorationRole, "DECORATION2"}}},
+        {{{BobUI::DisplayRole, "DISPLAY3"}, {BobUI::DecorationRole, "DECORATION3"}}},
     };
     std::vector<std::shared_ptr<VectorOfIntRoleMaps>> stdTableOfIntRolesWithSharedRows = {
-        asSPtr(VectorOfIntRoleMaps{{{Qt::DisplayRole, "DISPLAY0"}, {Qt::DecorationRole, "DECORATION0"}}}),
-        asSPtr(VectorOfIntRoleMaps{{{Qt::DisplayRole, "DISPLAY1"}, {Qt::DecorationRole, "DECORATION1"}}}),
-        asSPtr(VectorOfIntRoleMaps{{{Qt::DisplayRole, "DISPLAY2"}, {Qt::DecorationRole, "DECORATION2"}}}),
-        asSPtr(VectorOfIntRoleMaps{{{Qt::DisplayRole, "DISPLAY3"}, {Qt::DecorationRole, "DECORATION3"}}}),
+        asSPtr(VectorOfIntRoleMaps{{{BobUI::DisplayRole, "DISPLAY0"}, {BobUI::DecorationRole, "DECORATION0"}}}),
+        asSPtr(VectorOfIntRoleMaps{{{BobUI::DisplayRole, "DISPLAY1"}, {BobUI::DecorationRole, "DECORATION1"}}}),
+        asSPtr(VectorOfIntRoleMaps{{{BobUI::DisplayRole, "DISPLAY2"}, {BobUI::DecorationRole, "DECORATION2"}}}),
+        asSPtr(VectorOfIntRoleMaps{{{BobUI::DisplayRole, "DISPLAY3"}, {BobUI::DecorationRole, "DECORATION3"}}}),
     };
 
     std::unique_ptr<value_tree> m_tree;
@@ -637,7 +637,7 @@ struct Data {
             createBackup(result.get(), m_data->Model); \
             return result; \
         }; \
-        QTest::addRow(#Model #Tag) << std::move(factory) << int(std::size(m_data->Model)) \
+        BOBUIest::addRow(#Model #Tag) << std::move(factory) << int(std::size(m_data->Model)) \
                                    << int(ColumnCount) << ChangeActions(Actions) \
                                    << QVariant::fromValue(HeaderData); \
     }

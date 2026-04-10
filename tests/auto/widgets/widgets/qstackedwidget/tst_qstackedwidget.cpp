@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -12,7 +12,7 @@
 #include <qlineedit.h>
 #include <QSignalSpy>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QStackedWidget : public QObject
 {
@@ -85,7 +85,7 @@ void tst_QStackedWidget::getSetCheck()
     delete var2;
 }
 
-// QTBUG-18242, a widget that deletes its children in hideEvent().
+// BOBUIBUG-18242, a widget that deletes its children in hideEvent().
 // This caused a crash in QStackedLayout::setCurrentIndex() since
 // the focus widget was destroyed while hiding the previous page.
 class TestPage : public QWidget
@@ -142,7 +142,7 @@ private:
 
 void tst_QStackedWidget::dynamicPages()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     QStackedWidget stackedWidget;
@@ -161,16 +161,16 @@ void tst_QStackedWidget::dynamicPages()
     le11->setFocus();   // set focus to second widget in the page
     sw->resize(200, 200);
     sw->show();
-    QVERIFY(QTest::qWaitForWindowActive(sw));
-    QTRY_COMPARE(QApplication::focusWidget(), le11);
+    QVERIFY(BOBUIest::qWaitForWindowActive(sw));
+    BOBUIRY_COMPARE(QApplication::focusWidget(), le11);
 
     sw->setCurrentIndex(1);
     QLineEdit *le22 = w2->findChild<QLineEdit*>(QLatin1String("lineEdit2"));
     le22->setFocus();
-    QTRY_COMPARE(QApplication::focusWidget(), le22);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), le22);
     // Going back should move focus back to le11
     sw->setCurrentIndex(0);
-    QTRY_COMPARE(QApplication::focusWidget(), le11);
+    BOBUIRY_COMPARE(QApplication::focusWidget(), le11);
 
 }
 
@@ -193,5 +193,5 @@ void tst_QStackedWidget::widgetAdded()
     QCOMPARE(addSpy.at(2).at(0).toInt(), 2);
 }
 
-QTEST_MAIN(tst_QStackedWidget)
+BOBUIEST_MAIN(tst_QStackedWidget)
 #include "tst_qstackedwidget.moc"

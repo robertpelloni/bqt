@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qsqldatabase.h>
 #include <qstandardpaths.h>
 
 #include "../qsqldatabase/tst_databases.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QVfsSql : public QObject
 {
@@ -26,10 +26,10 @@ void tst_QVfsSql::testRoDb()
     QVERIFY_SQL(db, isValid());
     db.setDatabaseName(":/ro/sample.db"_L1);
 
-    db.setConnectOptions("QSQLITE_USE_QT_VFS"_L1);
+    db.setConnectOptions("QSQLITE_USE_BOBUI_VFS"_L1);
     QVERIFY(!db.open()); // can not open as the QSQLITE_OPEN_READONLY attribute is missing
 
-    db.setConnectOptions("QSQLITE_USE_QT_VFS;QSQLITE_OPEN_READONLY"_L1);
+    db.setConnectOptions("QSQLITE_USE_BOBUI_VFS;QSQLITE_OPEN_READONLY"_L1);
     QVERIFY_SQL(db, open());
 
     QStringList tables = db.tables();
@@ -52,14 +52,14 @@ void tst_QVfsSql::testRwDb()
     QSqlDatabase::addDatabase("QSQLITE"_L1, "rw_db"_L1);
     QSqlDatabase db = QSqlDatabase::database("rw_db"_L1, false);
     QVERIFY_SQL(db, isValid());
-    const auto dbPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/test_qt_vfs.db"_L1;
+    const auto dbPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/test_bobui_vfs.db"_L1;
     db.setDatabaseName(dbPath);
     QFile::remove(dbPath);
 
-    db.setConnectOptions("QSQLITE_USE_QT_VFS;QSQLITE_OPEN_READONLY"_L1);
+    db.setConnectOptions("QSQLITE_USE_BOBUI_VFS;QSQLITE_OPEN_READONLY"_L1);
     QVERIFY(!db.open()); // can not open as the QSQLITE_OPEN_READONLY attribute is set and the file is missing
 
-    db.setConnectOptions("QSQLITE_USE_QT_VFS"_L1);
+    db.setConnectOptions("QSQLITE_USE_BOBUI_VFS"_L1);
     QVERIFY_SQL(db, open());
 
     QVERIFY(db.tables().isEmpty());
@@ -90,5 +90,5 @@ void tst_QVfsSql::testRwDb()
     QFile::remove(dbPath);
 }
 
-QTEST_MAIN(tst_QVfsSql)
+BOBUIEST_MAIN(tst_QVfsSql)
 #include "tst_qvfssql.moc"

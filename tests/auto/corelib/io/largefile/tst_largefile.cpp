@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QFile>
 #include <QFileInfo>
@@ -15,7 +15,7 @@
 #include <cstdio>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #  include <io.h>
 #  ifndef FSCTL_SET_SPARSE
 // MinGW doesn't define this.
@@ -23,7 +23,7 @@
 #  endif
 #endif // Q_OS_WIN
 
-#include <QtTest/private/qemulationdetector_p.h>
+#include <BobUITest/private/qemulationdetector_p.h>
 
 class tst_LargeFile
     : public QObject
@@ -46,7 +46,7 @@ class tst_LargeFile
     static constexpr int maxAllowedSizeBits = 28; // 256 MiB
 #elif defined (Q_OS_WASM)
     static constexpr int maxAllowedSizeBits = 28; // 256 MiB
-#elif defined(QT_LARGEFILE_SUPPORT)
+#elif defined(BOBUI_LARGEFILE_SUPPORT)
     static constexpr int maxAllowedSizeBits = 36; // 64 GiB
 #  define MUST_SET_MAX_SIZE_BITS
 #else
@@ -57,7 +57,7 @@ public:
     tst_LargeFile()
 #ifdef MUST_SET_MAX_SIZE_BITS
         // QEMU only supports < 4GiB files (and maxSizeBits must be a multiple of 4)
-        : maxSizeBits(QTestPrivate::isRunningArmOnX86() ? 28 : maxAllowedSizeBits)
+        : maxSizeBits(BOBUIestPrivate::isRunningArmOnX86() ? 28 : maxAllowedSizeBits)
 #endif
     {
     }
@@ -118,7 +118,7 @@ private:
     int fd_ = -1;
     FILE *stream_ = nullptr;
 
-    QSharedPointer<QTemporaryDir> m_tempDir;
+    QSharedPointer<BOBUIemporaryDir> m_tempDir;
     QString m_previousCurrent;
 };
 
@@ -203,7 +203,7 @@ QByteArray const &tst_LargeFile::getDataBlock(int index, qint64 position)
                 .arg(blockSize)
                 .arg(index)
                 .arg(position)
-                .arg("qt_largefile.tmp");
+                .arg("bobui_largefile.tmp");
 
         generatedBlocks[index] = generateDataBlock(blockSize, text, (qint64)1 << index);
     }
@@ -214,11 +214,11 @@ QByteArray const &tst_LargeFile::getDataBlock(int index, qint64 position)
 void tst_LargeFile::initTestCase()
 {
     m_previousCurrent = QDir::currentPath();
-    m_tempDir = QSharedPointer<QTemporaryDir>::create();
+    m_tempDir = QSharedPointer<BOBUIemporaryDir>::create();
     QVERIFY2(!m_tempDir.isNull(), qPrintable("Could not create temporary directory."));
     QVERIFY2(QDir::setCurrent(m_tempDir->path()), qPrintable("Could not switch current directory"));
 
-    QFile file("qt_largefile.tmp");
+    QFile file("bobui_largefile.tmp");
     QVERIFY( !file.exists() || file.remove() );
 }
 
@@ -227,7 +227,7 @@ void tst_LargeFile::cleanupTestCase()
     if (largeFile.isOpen())
         largeFile.close();
 
-    QFile file("qt_largefile.tmp");
+    QFile file("bobui_largefile.tmp");
     QVERIFY( !file.exists() || file.remove() );
 
     QDir::setCurrent(m_previousCurrent);
@@ -242,18 +242,18 @@ void tst_LargeFile::init()
 void tst_LargeFile::cleanup()
 {
     if (-1 != fd_)
-        QT_CLOSE(fd_);
+        BOBUI_CLOSE(fd_);
     if (stream_)
         ::fclose(stream_);
 }
 
 void tst_LargeFile::sparseFileData()
 {
-    QTest::addColumn<int>("index");
-    QTest::addColumn<qint64>("position");
-    QTest::addColumn<QByteArray>("block");
+    BOBUIest::addColumn<int>("index");
+    BOBUIest::addColumn<qint64>("position");
+    BOBUIest::addColumn<QByteArray>("block");
 
-    QTest::newRow(QString("block[%1] @%2)")
+    BOBUIest::newRow(QString("block[%1] @%2)")
             .arg(0).arg(0)
             .toLocal8Bit().constData())
         << 0 << (qint64)0 << getDataBlock(0, 0);
@@ -265,7 +265,7 @@ void tst_LargeFile::sparseFileData()
         qint64 position = (qint64)1 << index;
         QByteArray block = getDataBlock(index, position);
 
-        QTest::newRow(
+        BOBUIest::newRow(
             QString("block[%1] @%2)")
                 .arg(index).arg(position)
                 .toLocal8Bit().constData())
@@ -278,7 +278,7 @@ void tst_LargeFile::createSparseFile()
 #if defined(Q_OS_WIN32)
     // On Windows platforms, we must explicitly set the file to be sparse,
     // so disk space is not allocated for the full file when writing to it.
-    HANDLE handle = ::CreateFileA("qt_largefile.tmp",
+    HANDLE handle = ::CreateFileA("bobui_largefile.tmp",
         GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
     QVERIFY( INVALID_HANDLE_VALUE != handle );
 
@@ -294,7 +294,7 @@ void tst_LargeFile::createSparseFile()
     QVERIFY( -1 != fd );
     QVERIFY( largeFile.open(fd, QIODevice::WriteOnly | QIODevice::Unbuffered) );
 #else // !Q_OS_WIN32
-    largeFile.setFileName("qt_largefile.tmp");
+    largeFile.setFileName("bobui_largefile.tmp");
     QVERIFY( largeFile.open(QIODevice::WriteOnly | QIODevice::Unbuffered) );
 #endif
 }
@@ -363,7 +363,7 @@ void tst_LargeFile::fillFileSparsely()
 
 void tst_LargeFile::fileCreated()
 {
-    QFileInfo info("qt_largefile.tmp");
+    QFileInfo info("bobui_largefile.tmp");
 
     QVERIFY( info.exists() );
     QVERIFY( info.isFile() );
@@ -374,7 +374,7 @@ void tst_LargeFile::filePositioning()
 {
     QFETCH( qint64, position );
 
-    QFile file("qt_largefile.tmp");
+    QFile file("bobui_largefile.tmp");
     QVERIFY( file.open(QIODevice::ReadOnly) );
 
     QVERIFY( file.seek(position) );
@@ -385,8 +385,8 @@ void tst_LargeFile::fdPositioning()
 {
     QFETCH( qint64, position );
 
-    fd_ = QT_OPEN("qt_largefile.tmp",
-            QT_OPEN_RDONLY | QT_OPEN_LARGEFILE);
+    fd_ = BOBUI_OPEN("bobui_largefile.tmp",
+            BOBUI_OPEN_RDONLY | BOBUI_OPEN_LARGEFILE);
     QVERIFY( -1 != fd_ );
 
     QFile file;
@@ -397,18 +397,18 @@ void tst_LargeFile::fdPositioning()
 
     file.close();
 
-    QCOMPARE( QT_OFF_T(QT_LSEEK(fd_, QT_OFF_T(0), SEEK_SET)), QT_OFF_T(0) );
-    QCOMPARE( QT_OFF_T(QT_LSEEK(fd_, QT_OFF_T(position), SEEK_SET)), QT_OFF_T(position) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_LSEEK(fd_, BOBUI_OFF_T(0), SEEK_SET)), BOBUI_OFF_T(0) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_LSEEK(fd_, BOBUI_OFF_T(position), SEEK_SET)), BOBUI_OFF_T(position) );
 
     QVERIFY( file.open(fd_, QIODevice::ReadOnly) );
-    QCOMPARE( QT_OFF_T(QT_LSEEK(fd_, QT_OFF_T(0), SEEK_CUR)), QT_OFF_T(position) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_LSEEK(fd_, BOBUI_OFF_T(0), SEEK_CUR)), BOBUI_OFF_T(position) );
     QCOMPARE( file.pos(), position );
     QVERIFY( file.seek(0) );
     QCOMPARE( file.pos(), (qint64)0 );
 
     file.close();
 
-    QVERIFY( !QT_CLOSE(fd_) );
+    QVERIFY( !BOBUI_CLOSE(fd_) );
     fd_ = -1;
 }
 
@@ -416,7 +416,7 @@ void tst_LargeFile::streamPositioning()
 {
     QFETCH( qint64, position );
 
-    stream_ = QT_FOPEN("qt_largefile.tmp", "rb");
+    stream_ = BOBUI_FOPEN("bobui_largefile.tmp", "rb");
     QVERIFY( 0 != stream_ );
 
     QFile file;
@@ -427,13 +427,13 @@ void tst_LargeFile::streamPositioning()
 
     file.close();
 
-    QVERIFY( !QT_FSEEK(stream_, QT_OFF_T(0), SEEK_SET) );
-    QCOMPARE( QT_OFF_T(QT_FTELL(stream_)), QT_OFF_T(0) );
-    QVERIFY( !QT_FSEEK(stream_, QT_OFF_T(position), SEEK_SET) );
-    QCOMPARE( QT_OFF_T(QT_FTELL(stream_)), QT_OFF_T(position) );
+    QVERIFY( !BOBUI_FSEEK(stream_, BOBUI_OFF_T(0), SEEK_SET) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_FTELL(stream_)), BOBUI_OFF_T(0) );
+    QVERIFY( !BOBUI_FSEEK(stream_, BOBUI_OFF_T(position), SEEK_SET) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_FTELL(stream_)), BOBUI_OFF_T(position) );
 
     QVERIFY( file.open(stream_, QIODevice::ReadOnly) );
-    QCOMPARE( QT_OFF_T(QT_FTELL(stream_)), QT_OFF_T(position) );
+    QCOMPARE( BOBUI_OFF_T(BOBUI_FTELL(stream_)), BOBUI_OFF_T(position) );
     QCOMPARE( file.pos(), position );
     QVERIFY( file.seek(0) );
     QCOMPARE( file.pos(), (qint64)0 );
@@ -446,7 +446,7 @@ void tst_LargeFile::streamPositioning()
 
 void tst_LargeFile::openFileForReading()
 {
-    largeFile.setFileName("qt_largefile.tmp");
+    largeFile.setFileName("bobui_largefile.tmp");
     QVERIFY( largeFile.open(QIODevice::ReadOnly) );
 }
 
@@ -471,7 +471,7 @@ void tst_LargeFile::mapFile()
     QFETCH( QByteArray, block );
     QCOMPARE( block.size(), blockSize );
 
-    // Keep full block mapped to facilitate OS and/or internal reuse by Qt.
+    // Keep full block mapped to facilitate OS and/or internal reuse by BobUI.
     uchar *baseAddress = largeFile.map(position, blockSize);
     QVERIFY( baseAddress );
     QVERIFY( std::equal(block.begin(), block.end(), reinterpret_cast<char*>(baseAddress)) );
@@ -511,16 +511,16 @@ void tst_LargeFile::mapOffsetOverflow()
     constexpr int MaxOffset = 63;
 #elif defined(Q_OS_WASM)
     constexpr bool Succeeds = true;
-    constexpr int MaxOffset = sizeof(QT_OFF_T) > 4 ? 43 : 30;
+    constexpr int MaxOffset = sizeof(BOBUI_OFF_T) > 4 ? 43 : 30;
 #elif (defined(Q_OS_LINUX) || defined(Q_OS_ANDROID)) && (Q_PROCESSOR_WORDSIZE == 4)
     constexpr bool Succeeds = true;
-    constexpr int MaxOffset = sizeof(QT_OFF_T) > 4 ? 43 : 30;
+    constexpr int MaxOffset = sizeof(BOBUI_OFF_T) > 4 ? 43 : 30;
 #elif defined(Q_OS_VXWORKS)
     constexpr bool Succeeds = false;
-    constexpr int MaxOffset = 8 * sizeof(QT_OFF_T) - 1;
+    constexpr int MaxOffset = 8 * sizeof(BOBUI_OFF_T) - 1;
 #else
     constexpr bool Succeeds = true;
-    constexpr int MaxOffset = 8 * sizeof(QT_OFF_T) - 1;
+    constexpr int MaxOffset = 8 * sizeof(BOBUI_OFF_T) - 1;
 #endif
 
     QByteArray zeroPage(blockSize, '\0');
@@ -530,14 +530,14 @@ void tst_LargeFile::mapOffsetOverflow()
         qint64 offset = Q_INT64_C(1) << i;
 
         if (succeeds) {
-            QTest::ignoreMessage(QtWarningMsg, "QFSFileEngine::map: "
+            BOBUIest::ignoreMessage(BobUIWarningMsg, "QFSFileEngine::map: "
                                  "Mapping a file beyond its size is not portable");
         }
         address = largeFile.map(offset, blockSize);
         QCOMPARE(!!address, succeeds);
 
         if (succeeds) {
-            QTest::ignoreMessage(QtWarningMsg, "QFSFileEngine::map: "
+            BOBUIest::ignoreMessage(BobUIWarningMsg, "QFSFileEngine::map: "
                                  "Mapping a file beyond its size is not portable");
         }
         address = largeFile.map(offset + blockSize, blockSize);
@@ -545,5 +545,5 @@ void tst_LargeFile::mapOffsetOverflow()
     }
 }
 
-QTEST_APPLESS_MAIN(tst_LargeFile)
+BOBUIEST_APPLESS_MAIN(tst_LargeFile)
 #include "tst_largefile.moc"

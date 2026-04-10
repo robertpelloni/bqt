@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qchar.h"
 
@@ -9,13 +9,13 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define FLAG(x) (1 << (x))
 
 /*!
     \class QLatin1Char
-    \inmodule QtCore
+    \inmodule BobUICore
     \reentrant
     \brief The QLatin1Char class provides an 8-bit ASCII/Latin-1 character.
 
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QChar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QChar class provides a 16-bit Unicode character.
 
     \ingroup string-processing
@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     The contents of the byte array is interpreted as UTF-8.
     \endcompareswith
 
-    In Qt, Unicode characters are 16-bit entities without any markup
+    In BobUI, Unicode characters are 16-bit entities without any markup
     or structure. This class represents such an entity. It is
     lightweight, so it can be used everywhere. Most compilers treat
     it like an \c{unsigned short}.
@@ -114,13 +114,13 @@ QT_BEGIN_NAMESPACE
 
     QChar provides constructors and cast operators that make it easy
     to convert to and from traditional 8-bit \c{char}s. If you
-    defined \c QT_NO_CAST_FROM_ASCII and \c QT_NO_CAST_TO_ASCII, as
+    defined \c BOBUI_NO_CAST_FROM_ASCII and \c BOBUI_NO_CAST_TO_ASCII, as
     explained in the QString documentation, you will need to
     explicitly call fromLatin1(), or use QLatin1Char,
     to construct a QChar from an 8-bit \c char, and you will need to
     call toLatin1() to get the 8-bit value back.
 
-    Starting with Qt 6.0, most QChar constructors are \c explicit. This
+    Starting with BobUI 6.0, most QChar constructors are \c explicit. This
     is done to avoid dangerous mistakes when accidentally mixing
     integral types and strings.
 
@@ -599,7 +599,7 @@ QT_BEGIN_NAMESPACE
     Constructs a QChar corresponding to ASCII/Latin-1 character \a ch.
 
 //![qchar-implicit-conversions]
-    \note Since Qt 6.9, implicit conversions are disabled for this constructor.
+    \note Since BobUI 6.9, implicit conversions are disabled for this constructor.
     That means it accepts only the constructor argument type and not everything
     that implicitly converts to it. A backwards-compatible fix is to explicitly
     cast to one of the supported argument types of QChar constructors.
@@ -639,12 +639,12 @@ QT_BEGIN_NAMESPACE
 
     Constructs a QChar corresponding to ASCII/Latin-1 character \a ch.
 
-    \note This constructor is not available when \c QT_NO_CAST_FROM_ASCII
+    \note This constructor is not available when \c BOBUI_NO_CAST_FROM_ASCII
     is defined.
 
     \include qchar.cpp qchar-implicit-conversions
 
-    \sa QT_NO_CAST_FROM_ASCII
+    \sa BOBUI_NO_CAST_FROM_ASCII
 */
 
 /*!
@@ -652,12 +652,12 @@ QT_BEGIN_NAMESPACE
 
     Constructs a QChar corresponding to ASCII/Latin-1 character \a ch.
 
-    \note This constructor is not available when \c QT_NO_CAST_FROM_ASCII
-    or \c QT_RESTRICTED_CAST_FROM_ASCII is defined.
+    \note This constructor is not available when \c BOBUI_NO_CAST_FROM_ASCII
+    or \c BOBUI_RESTRICTED_CAST_FROM_ASCII is defined.
 
     \include qchar.cpp qchar-implicit-conversions
 
-    \sa QT_NO_CAST_FROM_ASCII, QT_RESTRICTED_CAST_FROM_ASCII
+    \sa BOBUI_NO_CAST_FROM_ASCII, BOBUI_RESTRICTED_CAST_FROM_ASCII
 */
 
 /*!
@@ -792,7 +792,7 @@ QT_BEGIN_NAMESPACE
     Note that this gives no indication of whether the character is
     available in a particular font.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 bool QChar::isPrint(char32_t ucs4) noexcept
 {
@@ -823,13 +823,13 @@ bool QChar::isPrint(char32_t ucs4) noexcept
     a separator character (Separator_* categories or certain code points
     from Other_Control category); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
     \internal
 */
-bool QT_FASTCALL QChar::isSpace_helper(char32_t ucs4) noexcept
+bool BOBUI_FASTCALL QChar::isSpace_helper(char32_t ucs4) noexcept
 {
     if (ucs4 > MaxSeparatorCodepoint)
         return false;
@@ -856,7 +856,7 @@ bool QT_FASTCALL QChar::isSpace_helper(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a mark (Mark_* categories); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 bool QChar::isMark(char32_t ucs4) noexcept
 {
@@ -882,7 +882,7 @@ bool QChar::isMark(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a punctuation mark (Punctuation_* categories); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 bool QChar::isPunct(char32_t ucs4) noexcept
 {
@@ -912,7 +912,7 @@ bool QChar::isPunct(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a symbol (Symbol_* categories); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 bool QChar::isSymbol(char32_t ucs4) noexcept
 {
@@ -940,13 +940,13 @@ bool QChar::isSymbol(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a letter (Letter_* categories); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
     \internal
 */
-bool QT_FASTCALL QChar::isLetter_helper(char32_t ucs4) noexcept
+bool BOBUI_FASTCALL QChar::isLetter_helper(char32_t ucs4) noexcept
 {
     if (ucs4 > LastValidCodePoint)
         return false;
@@ -975,7 +975,7 @@ bool QT_FASTCALL QChar::isLetter_helper(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a number (Number_* categories, not just 0-9); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa isDigit()
 */
@@ -983,7 +983,7 @@ bool QT_FASTCALL QChar::isLetter_helper(char32_t ucs4) noexcept
 /*!
     \internal
 */
-bool QT_FASTCALL QChar::isNumber_helper(char32_t ucs4) noexcept
+bool BOBUI_FASTCALL QChar::isNumber_helper(char32_t ucs4) noexcept
 {
     if (ucs4 > LastValidCodePoint)
         return false;
@@ -1008,13 +1008,13 @@ bool QT_FASTCALL QChar::isNumber_helper(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a letter or number (Letter_* or Number_* categories); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
     \internal
 */
-bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
+bool BOBUI_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
 {
     if (ucs4 > LastValidCodePoint)
         return false;
@@ -1046,7 +1046,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4 is
     a decimal digit (Number_DecimalDigit); otherwise returns \c false.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa isNumber()
 */
@@ -1101,7 +1101,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Those are the last two entries each Unicode Plane ([0xfffe..0xffff],
     [0x1fffe..0x1ffff], etc.) as well as the entries in range [0xfdd0..0xfdef].
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
@@ -1112,7 +1112,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     is the high part of a UTF16 surrogate
     (for example if its code point is in range [0xd800..0xdbff]); false otherwise.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
@@ -1123,7 +1123,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     is the low part of a UTF16 surrogate
     (for example if its code point is in range [0xdc00..0xdfff]); false otherwise.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
@@ -1136,7 +1136,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     UTF-16 surrogate range (for example if its code point is in range [0xd800..0xdfff]);
     false otherwise.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
@@ -1147,7 +1147,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     (for example if its code point is greater than or equals to 0x10000);
     false otherwise.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 
 /*!
@@ -1156,7 +1156,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Converts a UTF16 surrogate pair with the given \a high and \a low values
     to it's UCS-4-encoded code point.
 
-    \note Before Qt 6, this function took \c ushort arguments and returned \c uint.
+    \note Before BobUI 6, this function took \c ushort arguments and returned \c uint.
 */
 
 /*!
@@ -1165,7 +1165,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
 
     Converts a UTF16 surrogate pair (\a high, \a low) to it's UCS-4-encoded code point.
 
-    \note Before Qt 6, this function returned \c uint.
+    \note Before BobUI 6, this function returned \c uint.
 */
 
 /*!
@@ -1174,7 +1174,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Returns the high surrogate part of a UCS-4-encoded code point.
     The returned result is undefined if \a ucs4 is smaller than 0x10000.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c ushort.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c ushort.
 */
 
 /*!
@@ -1183,7 +1183,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Returns the low surrogate part of a UCS-4-encoded code point.
     The returned result is undefined if \a ucs4 is smaller than 0x10000.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c ushort.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c ushort.
 */
 
 /*!
@@ -1197,7 +1197,7 @@ bool QT_FASTCALL QChar::isLetterOrNumber_helper(char32_t ucs4) noexcept
     Returns the numeric value of the digit specified by the UCS-4-encoded
     character, \a ucs4, or -1 if the character is not a digit.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 int QChar::digitValue(char32_t ucs4) noexcept
 {
@@ -1216,7 +1216,7 @@ int QChar::digitValue(char32_t ucs4) noexcept
     \overload
     Returns the category of the UCS-4-encoded character specified by \a ucs4.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::Category QChar::category(char32_t ucs4) noexcept
 {
@@ -1235,7 +1235,7 @@ QChar::Category QChar::category(char32_t ucs4) noexcept
     \overload
     Returns the direction of the UCS-4-encoded character specified by \a ucs4.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::Direction QChar::direction(char32_t ucs4) noexcept
 {
@@ -1260,7 +1260,7 @@ QChar::Direction QChar::direction(char32_t ucs4) noexcept
     character specified by \a ucs4
     (needed for certain languages such as Arabic or Syriac).
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::JoiningType QChar::joiningType(char32_t ucs4) noexcept
 {
@@ -1289,7 +1289,7 @@ QChar::JoiningType QChar::joiningType(char32_t ucs4) noexcept
 
     A bit faster equivalent of (QChar::mirroredChar(ucs4) != ucs4).
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa mirroredChar()
 */
@@ -1317,7 +1317,7 @@ bool QChar::hasMirrored(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4
     is a lowercase letter, for example category() is Letter_Lowercase.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa isUpper(), toLower(), toUpper()
 */
@@ -1339,7 +1339,7 @@ bool QChar::hasMirrored(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4
     is an uppercase letter, for example category() is Letter_Uppercase.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa isLower(), toUpper(), toLower()
 */
@@ -1361,7 +1361,7 @@ bool QChar::hasMirrored(char32_t ucs4) noexcept
     Returns \c true if the UCS-4-encoded character specified by \a ucs4
     is a titlecase letter, for example category() is Letter_Titlecase.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 
     \sa isLower(), toUpper(), toLower(), toTitleCase()
 */
@@ -1379,7 +1379,7 @@ bool QChar::hasMirrored(char32_t ucs4) noexcept
     Returns the mirrored character if the UCS-4-encoded character specified
     by \a ucs4 is a mirrored character; otherwise returns the character itself.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c uint.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c uint.
 
     \sa hasMirrored()
 */
@@ -1402,7 +1402,7 @@ static constexpr quint32 Hangul_NCount = Hangul_VCount * Hangul_TCount;
 static constexpr quint32 Hangul_SCount = Hangul_LCount * Hangul_NCount;
 
 // buffer has to have a length of 3. It's needed for Hangul decomposition
-static const QChar * QT_FASTCALL decompositionHelper(
+static const QChar * BOBUI_FASTCALL decompositionHelper(
     char32_t ucs4, qsizetype *length, QChar::Decomposition  *tag, QChar *buffer)
 {
     if (ucs4 >= Hangul_SBase && ucs4 < Hangul_SBase + Hangul_SCount) {
@@ -1443,7 +1443,7 @@ QString QChar::decomposition() const
     Decomposes the UCS-4-encoded character specified by \a ucs4 into it's
     constituent parts. Returns an empty string if no decomposition exists.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QString QChar::decomposition(char32_t ucs4)
 {
@@ -1466,7 +1466,7 @@ QString QChar::decomposition(char32_t ucs4)
     Returns the tag defining the composition of the UCS-4-encoded character
     specified by \a ucs4. Returns QChar::NoDecomposition if no decomposition exists.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::Decomposition QChar::decompositionTag(char32_t ucs4) noexcept
 {
@@ -1485,7 +1485,7 @@ QChar::Decomposition QChar::decompositionTag(char32_t ucs4) noexcept
     Unicode standard. This is mainly useful as a positioning hint for
     marks attached to a base character.
 
-    The Qt text rendering engine uses this information to correctly
+    The BobUI text rendering engine uses this information to correctly
     position non-spacing marks around a base character.
 */
 
@@ -1494,7 +1494,7 @@ QChar::Decomposition QChar::decompositionTag(char32_t ucs4) noexcept
     Returns the combining class for the UCS-4-encoded character specified by
     \a ucs4, as defined in the Unicode standard.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 unsigned char QChar::combiningClass(char32_t ucs4) noexcept
 {
@@ -1517,7 +1517,7 @@ unsigned char QChar::combiningClass(char32_t ucs4) noexcept
     Returns the Unicode script property value for the character specified in
     its UCS-4-encoded form as \a ucs4.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::Script QChar::script(char32_t ucs4) noexcept
 {
@@ -1537,7 +1537,7 @@ QChar::Script QChar::script(char32_t ucs4) noexcept
     Returns the Unicode version that introduced the character specified in
     its UCS-4-encoded form as \a ucs4.
 
-    \note Before Qt 6, this function took a \c uint argument.
+    \note Before BobUI 6, this function took a \c uint argument.
 */
 QChar::UnicodeVersion QChar::unicodeVersion(char32_t ucs4) noexcept
 {
@@ -1615,7 +1615,7 @@ Q_DECL_CONST_FUNCTION static inline T convertCase_helper(T uc, QUnicodeTables::C
     by \a ucs4 if the character is uppercase or titlecase; otherwise returns
     the character itself.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c uint.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c uint.
 */
 char32_t QChar::toLower(char32_t ucs4) noexcept
 {
@@ -1645,7 +1645,7 @@ char32_t QChar::toLower(char32_t ucs4) noexcept
     \note This function also returns the original character in the rare case of
     the uppercase form of the character requiring two or more characters.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c uint.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c uint.
 
     \sa QString::toUpper()
 */
@@ -1669,7 +1669,7 @@ char32_t QChar::toUpper(char32_t ucs4) noexcept
     by \a ucs4 if the character is lowercase or uppercase; otherwise returns
     the character itself.
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c uint.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c uint.
 */
 char32_t QChar::toTitleCase(char32_t ucs4) noexcept
 {
@@ -1710,7 +1710,7 @@ static inline QChar foldCase(QChar ch) noexcept
     Returns the case folded equivalent of the UCS-4-encoded character specified
     by \a ucs4. For most Unicode characters this is the same as toLower().
 
-    \note Before Qt 6, this function took a \c uint argument and returned \c uint.
+    \note Before BobUI 6, this function took a \c uint argument and returned \c uint.
 */
 char32_t QChar::toCaseFolded(char32_t ucs4) noexcept
 {
@@ -1801,7 +1801,7 @@ char32_t QChar::toCaseFolded(char32_t ucs4) noexcept
 */
 
 /*!
-    \fn Qt::Literals::StringLiterals::operator""_L1(char ch)
+    \fn BobUI::Literals::StringLiterals::operator""_L1(char ch)
 
     \relates QLatin1Char
     \since 6.4
@@ -1810,12 +1810,12 @@ char32_t QChar::toCaseFolded(char32_t ucs4) noexcept
 
     The following code creates a QLatin1Char:
     \code
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
 
     auto ch = 'a'_L1;
     \endcode
 
-    \sa Qt::Literals::StringLiterals
+    \sa BobUI::Literals::StringLiterals
 */
 
 // ---------------------------------------------------------------------------
@@ -2140,4 +2140,4 @@ static bool normalizationQuickCheckHelper(QString *str, QString::NormalizationFo
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

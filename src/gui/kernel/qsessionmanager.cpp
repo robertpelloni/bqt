@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qsessionmanager.h>
 #include <qguiapplication.h>
@@ -10,17 +10,17 @@
 #include <private/qguiapplication_p.h>
 #include <private/qsessionmanager_p.h>
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QSessionManager
     \brief The QSessionManager class provides access to the session manager.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
 
-    A session manager in a desktop environment (in which Qt GUI applications
+    A session manager in a desktop environment (in which BobUI GUI applications
     live) keeps track of a session, which is a group of running applications,
     each of which has a particular state. The state of an application contains
     (most notably) the documents the application has open and the position and
@@ -34,7 +34,7 @@ QT_BEGIN_NAMESPACE
     settings.
 
     QSessionManager provides an interface between the application and the
-    platform's session manager. In Qt, session management requests for action
+    platform's session manager. In BobUI, session management requests for action
     are handled by the two signals QGuiApplication::commitDataRequest() and
     QGuiApplication::saveStateRequest(). Both provide a reference to a
     QSessionManager object as argument. The session manager can only be
@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
     No user interaction is possible \e unless the application gets explicit
     permission from the session manager. You ask for permission by calling
     allowsInteraction() or, if it is really urgent, allowsErrorInteraction().
-    Qt does not enforce this, but the session manager may.
+    BobUI does not enforce this, but the session manager may.
 
     You can try to abort the shutdown process by calling cancel().
 
@@ -84,7 +84,7 @@ QSessionManagerPrivate::QSessionManagerPrivate(const QString &id,
                                                const QString &key)
     : QObjectPrivate()
 {
-    if (qApp->testAttribute(Qt::AA_DisableSessionManager)) {
+    if (qApp->testAttribute(BobUI::AA_DisableSessionManager)) {
         platformSessionManager = new QPlatformSessionManager(id, key);
     } else {
         platformSessionManager = QGuiApplicationPrivate::platformIntegration()->createPlatformSessionManager(id, key);
@@ -374,8 +374,8 @@ void QSessionManager::requestPhase2()
     d->platformSessionManager->requestPhase2();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsessionmanager.cpp"
 
-#endif // QT_NO_SESSIONMANAGER
+#endif // BOBUI_NO_SESSIONMANAGER

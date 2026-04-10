@@ -1,41 +1,41 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QSTRINGALGORITHMS_H
 #define QSTRINGALGORITHMS_H
 
-#include <QtCore/qbytearrayalgorithms.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstringfwd.h>
+#include <BobUICore/qbytearrayalgorithms.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qstringfwd.h>
 #if 0
-#pragma qt_class(QStringAlgorithms)
+#pragma bobui_class(QStringAlgorithms)
 #endif
 
 #include <algorithm>        // std::find
 #include <iterator>         // std::size
 
-#include <QtCore/q20type_traits.h>      // q20::is_constant_evaluated
+#include <BobUICore/q20type_traits.h>      // q20::is_constant_evaluated
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype qustrlen(const char16_t *str) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype qustrnlen(const char16_t *str, qsizetype maxlen) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION const char16_t *qustrchr(QStringView str, char16_t ch) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION const char16_t *qustrcasechr(QStringView str, char16_t ch) noexcept;
 
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QStringView   rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QLatin1StringView rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QBasicUtf8StringView<false> rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QStringView   rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QLatin1StringView rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QBasicUtf8StringView<false> rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QStringView   rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QLatin1StringView rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QBasicUtf8StringView<false> rhs, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QStringView   rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QLatin1StringView rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QStringView   lhs, QBasicUtf8StringView<false> rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QStringView   rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QLatin1StringView rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QLatin1StringView lhs, QBasicUtf8StringView<false> rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QStringView   rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QLatin1StringView rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION int compareStrings(QBasicUtf8StringView<false> lhs, QBasicUtf8StringView<false> rhs, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool equalStrings(QStringView   lhs, QStringView   rhs) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool equalStrings(QStringView   lhs, QLatin1StringView rhs) noexcept;
@@ -47,27 +47,27 @@ namespace QtPrivate {
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool equalStrings(QBasicUtf8StringView<false> lhs, QLatin1StringView rhs) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool equalStrings(QBasicUtf8StringView<false> lhs, QBasicUtf8StringView<false> rhs) noexcept;
 
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QStringView   haystack, QStringView   needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QStringView   haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QLatin1StringView haystack, QStringView   needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QLatin1StringView haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QStringView   haystack, QStringView   needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QStringView   haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QLatin1StringView haystack, QStringView   needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool startsWith(QLatin1StringView haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QStringView   haystack, QStringView   needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QStringView   haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QLatin1StringView haystack, QStringView   needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QLatin1StringView haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QStringView   haystack, QStringView   needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QStringView   haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QLatin1StringView haystack, QStringView   needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool endsWith(QLatin1StringView haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
-[[nodiscard]]                             inline qsizetype findString(QStringView str, qsizetype from, QChar needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QStringView haystack, qsizetype from, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QStringView haystack, qsizetype from, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QLatin1StringView haystack, qsizetype from, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QLatin1StringView haystack, qsizetype from, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]]                             inline qsizetype findString(QStringView str, qsizetype from, QChar needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QStringView haystack, qsizetype from, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QStringView haystack, qsizetype from, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QLatin1StringView haystack, qsizetype from, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype findString(QLatin1StringView haystack, qsizetype from, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, char16_t needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QLatin1StringView haystack, qsizetype from, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QLatin1StringView haystack, qsizetype from, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, char16_t needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QStringView haystack, qsizetype from, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QLatin1StringView haystack, qsizetype from, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype lastIndexOf(QLatin1StringView haystack, qsizetype from, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION QStringView   trimmed(QStringView   s) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION QLatin1StringView trimmed(QLatin1StringView s) noexcept;
@@ -75,15 +75,15 @@ namespace QtPrivate {
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool isLower(QStringView s) noexcept;
 [[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool isUpper(QStringView s) noexcept;
 
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QChar needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QLatin1StringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QStringView needle, Qt::CaseSensitivity cs = Qt::CaseSensitive);
-[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QChar needle, Qt::CaseSensitivity cs = Qt::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QChar needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QStringView haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QLatin1StringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QStringView needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive);
+[[nodiscard]] Q_CORE_EXPORT Q_DECL_PURE_FUNCTION qsizetype count(QLatin1StringView haystack, QChar needle, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) noexcept;
 
-#if QT_CONFIG(regularexpression)
-// ### Qt 7: unify these overloads;
+#if BOBUI_CONFIG(regularexpression)
+// ### BobUI 7: unify these overloads;
 // remove the ones taking only a QStringView, export the others, adjust callers
 [[nodiscard]] qsizetype indexOf(QStringView viewHaystack,
                                 const QString *stringHaystack,
@@ -118,7 +118,7 @@ namespace QtPrivate {
 [[nodiscard]] Q_CORE_EXPORT QByteArray convertToLatin1(QStringView str);
 [[nodiscard]] Q_CORE_EXPORT QByteArray convertToUtf8(QStringView str);
 [[nodiscard]] Q_CORE_EXPORT QByteArray convertToLocal8Bit(QStringView str);
-[[nodiscard]] Q_CORE_EXPORT QList<uint> convertToUcs4(QStringView str); // ### Qt 7 char32_t
+[[nodiscard]] Q_CORE_EXPORT QList<uint> convertToUcs4(QStringView str); // ### BobUI 7 char32_t
 
 [[nodiscard]] Q_CORE_EXPORT QByteArray convertToUtf8(QLatin1StringView str);
 
@@ -171,9 +171,9 @@ lengthHelperContainer(const Char (&str)[N])
     if constexpr (N == 1) {
         return str[0] == Char(0) ? 0 : 1;
     } else if constexpr (N > RuntimeThreshold) {
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
         if (!q20::is_constant_evaluated())
-            return QtPrivate::qustrnlen(reinterpret_cast<const char16_t *>(str), N);
+            return BobUIPrivate::qustrnlen(reinterpret_cast<const char16_t *>(str), N);
 #endif
     }
 
@@ -192,7 +192,7 @@ inline qsizetype qstrnlen_helper(const char *str, size_t maxlen)
 template <typename Char, size_t N> [[nodiscard]] constexpr inline
 std::enable_if_t<sizeof(Char) == 1, qsizetype> lengthHelperContainer(const Char (&str)[N])
 {
-#ifdef QT_SUPPORTS_IS_CONSTANT_EVALUATED
+#ifdef BOBUI_SUPPORTS_IS_CONSTANT_EVALUATED
     if (!q20::is_constant_evaluated())
         return qstrnlen_helper(reinterpret_cast<const char *>(str), N);
 #endif
@@ -205,8 +205,8 @@ constexpr qsizetype lengthHelperContainer(const Container &c) noexcept
 {
     return qsizetype(std::size(c));
 }
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTRINGALGORTIHMS_H

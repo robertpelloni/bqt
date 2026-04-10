@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qkdetheme_p.h"
 #include <qpa/qplatformtheme_p.h>
@@ -9,7 +9,7 @@
 #include <QPalette>
 #include <qpa/qwindowsysteminterface.h>
 #include "qdbuslistener_p.h"
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 #include <private/qdbustrayicon_p.h>
 #endif
 #include <private/qdbusplatformmenu_p.h>
@@ -17,11 +17,11 @@
 #include <QSettings>
 #include <QStandardPaths>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcQpaThemeKde, "qt.qpa.theme.kde")
+Q_STATIC_LOGGING_CATEGORY(lcQpaThemeKde, "bobui.qpa.theme.kde")
 
 class QKdeThemePrivate : public QGenericUnixThemePrivate
 {
@@ -93,7 +93,7 @@ public:
     QString iconThemeName;
     QString iconFallbackThemeName;
     QStringList styleNames;
-    int toolButtonStyle = Qt::ToolButtonTextBesideIcon;
+    int toolButtonStyle = BobUI::ToolButtonTextBesideIcon;
     int toolBarIconSize = 0;
     bool singleClick = true;
     bool showIconsOnPushButtons = true;
@@ -102,28 +102,28 @@ public:
     int startDragDist = 10;
     int startDragTime = 500;
     int cursorBlinkRate = 1000;
-    Qt::ColorScheme m_colorScheme = Qt::ColorScheme::Unknown;
-    Qt::ColorScheme m_requestedColorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme m_colorScheme = BobUI::ColorScheme::Unknown;
+    BobUI::ColorScheme m_requestedColorScheme = BobUI::ColorScheme::Unknown;
     std::unique_ptr<QPalette> systemPalette;
     QFont *fonts[QPlatformTheme::NFonts];
     void updateColorScheme(const QString &themeName);
-    bool hasRequestedColorScheme() const { return m_requestedColorScheme != Qt::ColorScheme::Unknown
+    bool hasRequestedColorScheme() const { return m_requestedColorScheme != BobUI::ColorScheme::Unknown
                                            && m_requestedColorScheme != m_colorScheme; }
 
 private:
     mutable QHash<QString, QSettings *> kdeSettings;
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     std::unique_ptr<QDBusListener> dbus;
     bool initDbus();
     void settingChangedHandler(QDBusListener::Provider provider,
                                QDBusListener::Setting setting,
                                const QVariant &value);
-    Qt::ColorScheme colorSchemeFromPalette() const;
-#endif // QT_CONFIG(dbus)
+    BobUI::ColorScheme colorSchemeFromPalette() const;
+#endif // BOBUI_CONFIG(dbus)
     void clearResources();
 };
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 void QKdeThemePrivate::settingChangedHandler(QDBusListener::Provider provider,
                                              QDBusListener::Setting setting,
                                              const QVariant &value)
@@ -133,7 +133,7 @@ void QKdeThemePrivate::settingChangedHandler(QDBusListener::Provider provider,
 
     switch (setting) {
     case QDBusListener::Setting::ColorScheme:
-        qCDebug(lcQpaThemeKde) << "KDE color theme changed to:" << value.value<Qt::ColorScheme>();
+        qCDebug(lcQpaThemeKde) << "KDE color theme changed to:" << value.value<BobUI::ColorScheme>();
         break;
     case QDBusListener::Setting::Theme:
         qCDebug(lcQpaThemeKde) << "KDE global theme changed to:" << value.toString();
@@ -143,7 +143,7 @@ void QKdeThemePrivate::settingChangedHandler(QDBusListener::Provider provider,
         break;
     case QDBusListener::Setting::Contrast:
         qCDebug(lcQpaThemeKde) << "KDE contrast setting changed to: "
-                               << value.value<Qt::ContrastPreference>();
+                               << value.value<BobUI::ContrastPreference>();
         break;
     }
 
@@ -171,15 +171,15 @@ bool QKdeThemePrivate::initDbus()
 
     return QObject::connect(dbus.get(), &QDBusListener::settingChanged, dbus.get(), wrapper);
 }
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 
 QKdeThemePrivate::QKdeThemePrivate(const QStringList &kdeDirs, int kdeVersion)
     : kdeDirs(kdeDirs), kdeVersion(kdeVersion)
 {
     std::fill(fonts, fonts + QPlatformTheme::NFonts, static_cast<QFont *>(nullptr));
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     initDbus();
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 }
 
 static constexpr QLatin1StringView settingsPrefix(QKdeThemePrivate::KdeSettingType type)
@@ -202,7 +202,7 @@ static constexpr QLatin1StringView settingsPrefix(QKdeThemePrivate::KdeSettingTy
     }
     // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #  if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-    // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+    // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
     Q_UNREACHABLE();
 #  endif
     return {};
@@ -246,7 +246,7 @@ static constexpr QKdeThemePrivate::KdeSettingType settingsType(QKdeThemePrivate:
     };
     // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #  if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-    // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+    // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
     Q_UNREACHABLE();
 #  endif
     return QKdeThemePrivate::KdeSettingType::Root;
@@ -317,7 +317,7 @@ static constexpr QLatin1StringView settingsKey(QKdeThemePrivate::KdeSetting sett
     };
     // GCC 8.x does not treat __builtin_unreachable() as constexpr
 #  if !defined(Q_CC_GNU_ONLY) || (Q_CC_GNU >= 900)
-    // NOLINTNEXTLINE(qt-use-unreachable-return): Triggers on Clang, breaking GCC 8
+    // NOLINTNEXTLINE(bobui-use-unreachable-return): Triggers on Clang, breaking GCC 8
     Q_UNREACHABLE();
 #  endif
     return {};
@@ -328,7 +328,7 @@ void QKdeThemePrivate::refresh()
     clearResources();
     clearKdeSettings();
 
-    toolButtonStyle = Qt::ToolButtonTextBesideIcon;
+    toolButtonStyle = BobUI::ToolButtonTextBesideIcon;
     toolBarIconSize = 0;
     styleNames.clear();
     if (kdeVersion >= 5)
@@ -377,11 +377,11 @@ void QKdeThemePrivate::refresh()
     if (toolbarStyleValue.isValid()) {
         const QString toolBarStyle = toolbarStyleValue.toString();
         if (toolBarStyle == "TextBesideIcon"_L1)
-            toolButtonStyle =  Qt::ToolButtonTextBesideIcon;
+            toolButtonStyle =  BobUI::ToolButtonTextBesideIcon;
         else if (toolBarStyle == "TextOnly"_L1)
-            toolButtonStyle = Qt::ToolButtonTextOnly;
+            toolButtonStyle = BobUI::ToolButtonTextOnly;
         else if (toolBarStyle == "TextUnderIcon"_L1)
-            toolButtonStyle = Qt::ToolButtonTextUnderIcon;
+            toolButtonStyle = BobUI::ToolButtonTextUnderIcon;
     }
 
     const QVariant wheelScrollLinesValue = readKdeSetting(KdeSetting::WheelScrollLines);
@@ -506,12 +506,12 @@ void QKdeThemePrivate::readKdeSystemPalette(const QStringList &kdeDirs, int kdeV
 
     // The above code sets _all_ color roles to "normal" colors. In KDE, the disabled
     // color roles are calculated by applying various effects described in kdeglobals.
-    // We use a bit simpler approach here, similar logic than in qt_palette_from_color().
+    // We use a bit simpler approach here, similar logic than in bobui_palette_from_color().
     const QColor button = pal->color(QPalette::Button);
     int h, s, v;
     button.getHsv(&h, &s, &v);
 
-    const QBrush whiteBrush = QBrush(Qt::white);
+    const QBrush whiteBrush = QBrush(BobUI::white);
     const QBrush buttonBrush = QBrush(button);
     const QBrush buttonBrushDark = QBrush(button.darker(v > 128 ? 200 : 50));
     const QBrush buttonBrushDark150 = QBrush(button.darker(v > 128 ? 150 : 75));
@@ -648,7 +648,7 @@ QVariant QKdeTheme::themeHint(QPlatformTheme::ThemeHint hint) const
 
 QIcon QKdeTheme::fileIcon(const QFileInfo &fileInfo, QPlatformTheme::IconOptions) const
 {
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     return xdgFileIcon(fileInfo);
 #else
     Q_UNUSED(fileInfo);
@@ -683,7 +683,7 @@ QIcon QKdeTheme::fileIcon(const QFileInfo &fileInfo, QPlatformTheme::IconOptions
     \sa QKdeTheme:requestColorScheme
 */
 
-void QKdeTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QKdeTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     Q_D(QKdeTheme);
     if (d->m_requestedColorScheme == scheme)
@@ -694,10 +694,10 @@ void QKdeTheme::requestColorScheme(Qt::ColorScheme scheme)
     d->refresh();
 }
 
-Qt::ColorScheme QKdeTheme::colorScheme() const
+BobUI::ColorScheme QKdeTheme::colorScheme() const
 {
     Q_D(const QKdeTheme);
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (d->hasRequestedColorScheme()) {
         qCDebug(lcQpaThemeKde) << "Reuqested color scheme" << d->m_requestedColorScheme
                                << "differs from theme color scheme" << d->m_colorScheme;
@@ -720,27 +720,27 @@ Qt::ColorScheme QKdeTheme::colorScheme() const
  */
 void QKdeThemePrivate::updateColorScheme(const QString &themeName)
 {
-    if (themeName.contains(QLatin1StringView("light"), Qt::CaseInsensitive)) {
-        m_colorScheme = Qt::ColorScheme::Light;
+    if (themeName.contains(QLatin1StringView("light"), BobUI::CaseInsensitive)) {
+        m_colorScheme = BobUI::ColorScheme::Light;
         return;
     }
-    if (themeName.contains(QLatin1StringView("dark"), Qt::CaseInsensitive)) {
-        m_colorScheme = Qt::ColorScheme::Dark;
+    if (themeName.contains(QLatin1StringView("dark"), BobUI::CaseInsensitive)) {
+        m_colorScheme = BobUI::ColorScheme::Dark;
         return;
     }
 
     m_colorScheme = colorSchemeFromPalette();
 }
 
-Qt::ColorScheme QKdeThemePrivate::colorSchemeFromPalette() const
+BobUI::ColorScheme QKdeThemePrivate::colorSchemeFromPalette() const
 {
     if (!systemPalette)
-        return Qt::ColorScheme::Unknown;
+        return BobUI::ColorScheme::Unknown;
     if (systemPalette->text().color().lightness() < systemPalette->base().color().lightness())
-        return Qt::ColorScheme::Light;
+        return BobUI::ColorScheme::Light;
     if (systemPalette->text().color().lightness() > systemPalette->base().color().lightness())
-        return Qt::ColorScheme::Dark;
-    return Qt::ColorScheme::Unknown;
+        return BobUI::ColorScheme::Dark;
+    return BobUI::ColorScheme::Unknown;
 }
 
 const QPalette *QKdeTheme::palette(Palette type) const
@@ -787,7 +787,7 @@ QPlatformTheme *QKdeTheme::createKdeTheme()
 
     const QString kdeDirsVar = qEnvironmentVariable("KDEDIRS");
     if (!kdeDirsVar.isEmpty())
-        kdeDirs += kdeDirsVar.split(u':', Qt::SkipEmptyParts);
+        kdeDirs += kdeDirsVar.split(u':', BobUI::SkipEmptyParts);
 
     const QString kdeVersionHomePath = QDir::homePath() + "/.kde"_L1 + QLatin1StringView(kdeVersionBA);
     if (QFileInfo(kdeVersionHomePath).isDir())
@@ -817,7 +817,7 @@ QPlatformTheme *QKdeTheme::createKdeTheme()
     return new QKdeTheme(kdeDirs, kdeVersion);
 }
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 QPlatformMenuBar *QKdeTheme::createPlatformMenuBar() const
 {
     if (isDBusGlobalMenuAvailable())
@@ -826,7 +826,7 @@ QPlatformMenuBar *QKdeTheme::createPlatformMenuBar() const
 }
 #endif
 
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 QPlatformSystemTrayIcon *QKdeTheme::createPlatformSystemTrayIcon() const
 {
     if (shouldUseDBusTray())
@@ -835,4 +835,4 @@ QPlatformSystemTrayIcon *QKdeTheme::createPlatformSystemTrayIcon() const
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

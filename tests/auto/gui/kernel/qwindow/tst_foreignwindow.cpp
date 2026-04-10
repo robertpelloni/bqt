@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qloggingcategory.h>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 
@@ -38,7 +38,7 @@ void tst_ForeignWindow::fromWinId()
 
     std::unique_ptr<QWindow> foreignWindow(QWindow::fromWinId(nativeWindow));
     QVERIFY(foreignWindow);
-    QVERIFY(foreignWindow->flags().testFlag(Qt::ForeignWindow));
+    QVERIFY(foreignWindow->flags().testFlag(BobUI::ForeignWindow));
     QVERIFY(foreignWindow->handle());
 
     // fromWinId does not take (exclusive) ownership of the native window,
@@ -51,11 +51,11 @@ void tst_ForeignWindow::initialState()
     NativeWindow nativeWindow;
     QVERIFY(nativeWindow);
 
-    // A foreign window can be used to embed a Qt UI in a foreign window hierarchy,
+    // A foreign window can be used to embed a BobUI UI in a foreign window hierarchy,
     // in which case the foreign window merely acts as a parent and should not be
-    // modified, or to embed a foreign window in a Qt UI, in which case the foreign
+    // modified, or to embed a foreign window in a BobUI UI, in which case the foreign
     // window must to be able to re-parent, move, resize, show, etc, so that the
-    // containing Qt UI can treat it as any other window.
+    // containing BobUI UI can treat it as any other window.
 
     // At the point of creation though, we don't know what the foreign window
     // will be used for, so the platform should not assume it can modify the
@@ -64,7 +64,7 @@ void tst_ForeignWindow::initialState()
 
     const QRect initialGeometry(123, 456, 321, 654);
     nativeWindow.setGeometry(initialGeometry);
-    QTRY_COMPARE(nativeWindow.geometry(), initialGeometry);
+    BOBUIRY_COMPARE(nativeWindow.geometry(), initialGeometry);
 
     std::unique_ptr<QWindow> foreignWindow(QWindow::fromWinId(nativeWindow));
     QCOMPARE(nativeWindow.geometry(), initialGeometry);
@@ -76,7 +76,7 @@ void tst_ForeignWindow::initialState()
 
 void tst_ForeignWindow::embedForeignWindow()
 {
-    // A foreign window embedded into a Qt UI requires that the rest of Qt
+    // A foreign window embedded into a BobUI UI requires that the rest of BobUI
     // is to be able to treat the foreign child window as any other window
     // that it can show, hide, stack, and move around.
 
@@ -88,18 +88,18 @@ void tst_ForeignWindow::embedForeignWindow()
     // As a prerequisite to that, we must be able to reparent the foreign window
     std::unique_ptr<QWindow> foreignWindow(QWindow::fromWinId(nativeWindow));
     foreignWindow->setParent(&parentWindow);
-    QTRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
+    BOBUIRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
 
     // FIXME: This test is flakey on Linux. Figure out why
 #if !defined(Q_OS_LINUX)
     foreignWindow->setParent(nullptr);
-    QTRY_VERIFY(nativeWindow.parentWinId() != parentWindow.winId());
+    BOBUIRY_VERIFY(nativeWindow.parentWinId() != parentWindow.winId());
 #endif
 }
 
 void tst_ForeignWindow::embedInForeignWindow()
 {
-    // When a foreign window is used as a container to embed a Qt UI
+    // When a foreign window is used as a container to embed a BobUI UI
     // in a foreign window hierarchy, the foreign window merely acts
     // as a parent, and should not be modified.
 
@@ -112,7 +112,7 @@ void tst_ForeignWindow::embedInForeignWindow()
 
         QWindow embeddedWindow;
         embeddedWindow.setParent(foreignWindow.get());
-        QTRY_VERIFY(nativeWindow.isParentOf(embeddedWindow.winId()));
+        BOBUIRY_VERIFY(nativeWindow.isParentOf(embeddedWindow.winId()));
     }
 
     {
@@ -130,7 +130,7 @@ void tst_ForeignWindow::embedInForeignWindow()
 
         QWindow embeddedWindow;
         embeddedWindow.setParent(foreignWindow.get());
-        QTRY_VERIFY(childNativeWindow.isParentOf(embeddedWindow.winId()));
+        BOBUIRY_VERIFY(childNativeWindow.isParentOf(embeddedWindow.winId()));
         QVERIFY(topLevelNativeWindow.isParentOf(childNativeWindow));
 
         embeddedWindow.setParent(nullptr);
@@ -167,13 +167,13 @@ void tst_ForeignWindow::destroyWhenParentIsDestroyed()
 
     std::unique_ptr<QWindow> foreignWindow(QWindow::fromWinId(nativeWindow));
     foreignWindow->setParent(&parentWindow);
-    QTRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
+    BOBUIRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
 
     // Reparenting into a window will result in creating it
     QVERIFY(parentWindow.handle());
 
     parentWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&parentWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&parentWindow));
 
     // Destroying the parent window of the foreign window results
     // in destroying the foreign window as well, as the foreign
@@ -186,11 +186,11 @@ void tst_ForeignWindow::destroyWhenParentIsDestroyed()
     // continue to be a native child of the parent window.
     foreignWindow->create();
     QVERIFY(foreignWindow->handle());
-    QTRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
+    BOBUIRY_COMPARE(nativeWindow.parentWinId(), parentWindow.winId());
 
     parentWindow.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&parentWindow));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&parentWindow));
 }
 
 #include <tst_foreignwindow.moc>
-QTEST_MAIN(tst_ForeignWindow)
+BOBUIEST_MAIN(tst_ForeignWindow)

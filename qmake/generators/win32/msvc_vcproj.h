@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef MSVC_VCPROJ_H
 #define MSVC_VCPROJ_H
@@ -7,7 +7,7 @@
 #include "winmakefile.h"
 #include "msvc_objectmodel.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum Target {
     Application,
@@ -20,9 +20,9 @@ struct VcsolutionDepend;
 class VcprojGenerator : public Win32MakefileGenerator
 {
     bool is64Bit;
-    bool writeVcprojParts(QTextStream &);
+    bool writeVcprojParts(BOBUIextStream &);
 
-    bool writeMakefile(QTextStream &) override;
+    bool writeMakefile(BOBUIextStream &) override;
     bool writeProjectMakefile() override;
 
     void init() override;
@@ -71,7 +71,7 @@ protected:
     void initPreBuildEventTools();
     void initPostBuildEventTools();
     void initDeploymentTool();
-    void initWinDeployQtTool();
+    void initWinDeployBobUITool();
     void initPreLinkEventTools();
     void initRootFiles();
     void initSourceFiles();
@@ -85,7 +85,7 @@ protected:
     void initLexYaccFiles();
     void initExtraCompilerOutputs();
 
-    void writeSubDirs(QTextStream &t); // Called from VCXProj backend
+    void writeSubDirs(BOBUIextStream &t); // Called from VCXProj backend
     QUuid getProjectUUID(const QString &filename=QString()); // Called from VCXProj backend
 
     Target projectTarget;
@@ -102,7 +102,7 @@ private:
                                       QHash<VcsolutionDepend *, QStringList> &extraSubdirs,
                                       QHash<QString, VcsolutionDepend*> &solution_depends,
                                       QList<VcsolutionDepend*> &solution_cleanup,
-                                      QTextStream &t,
+                                      BOBUIextStream &t,
                                       QHash<QString, ProStringList> &subdirProjectLookup,
                                       const ProStringList &allDependencies = ProStringList());
     QUuid increaseUUID(const QUuid &id);
@@ -120,6 +120,6 @@ inline QString VcprojGenerator::defaultMakefile() const
     return project->first("TARGET") + project->first("VCPROJ_EXTENSION");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // MSVC_VCPROJ_H

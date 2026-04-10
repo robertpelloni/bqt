@@ -1,16 +1,16 @@
-Qt 2.1 introduces new features as well as many improvements over the
+BobUI 2.1 introduces new features as well as many improvements over the
 2.0.x series. This file will only give an overview of the main changes
 since version 2.0.2.  A complete list would simply be too large to be
 useful.  For more detail see the online documentation which is included
 in this distribution, and also available on
-http://qt.nokia.com/doc/
+http://bobui.nokia.com/doc/
 
-The Qt version 2.1 series is binary compatible with the 2.0.x
+The BobUI version 2.1 series is binary compatible with the 2.0.x
 series - applications compiled for 2.0 will continue to run with 2.1.
 
-As with previous Qt releases, the API and functionality of Qt is
+As with previous BobUI releases, the API and functionality of BobUI is
 completely portable between Microsoft Windows and X11.  It is also portable
-between Windows 95, 98 and NT; unlike most toolkits, Qt lets a single
+between Windows 95, 98 and NT; unlike most toolkits, BobUI lets a single
 executable work on all three.
 
 ****************************************************************************
@@ -29,7 +29,7 @@ management system that was introduced with the 2.x series. Some
 classes, such as QBoxLayout, have been rewritten and many size hints
 and size policies were optimized. As usual with newly introduced
 systems, the occasional bug has been fixed as well. As a result,
-layout in Qt-2.1 is not only nicer but also faster.
+layout in BobUI-2.1 is not only nicer but also faster.
 
 Big parts of the file dialog have been rewritten. It is now
 synchronized in terms of features with the common Windows dialog,
@@ -38,31 +38,31 @@ both parts of the dialog, the front-end with info and preview widgets,
 the back-end with different network protocols (see the QFileDialog and
 QNetworkProtocol documentation for details).
 
-Especially interesting for dynamic Qt applications is the newly
+Especially interesting for dynamic BobUI applications is the newly
 introduced property system. Many interesting things, from scripting up
 to graphical user interface builders, become easier. The technology
-requires a new macro Q_PROPERTY and a new revision of Qt's meta object
-compiler (moc). See the Qt documentation for details.
+requires a new macro Q_PROPERTY and a new revision of BobUI's meta object
+compiler (moc). See the BobUI documentation for details.
 
 Due to strong customer demand, we added a cross-platform way to easily
 implement multi-document interfaces (known as 'MDI'). The widget is
 called QWorkspace and makes this task trivial.
 
 On X11, text dropping from Motif drag'n'drop applications has been
-added, to make your Qt applications inter-operable with those Motif
+added, to make your BobUI applications inter-operable with those Motif
 applications that survived Y2K.
 
-The rich text system, first introduced in Qt-2.0, has been
+The rich text system, first introduced in BobUI-2.0, has been
 revised. Apart from great speed improvements, it now supports HTML
 tables as well as floating images.
 
-QMultiLineEdit, the text input field in Qt, got the missing word wrap
+QMultiLineEdit, the text input field in BobUI, got the missing word wrap
 functionality. It's probably the last big extension we will add to
-that widget. In Qt 3.0, it will be replaced by a fancier, faster and
-more powerful QTextEdit widget that also deals with different colors
-and fonts in a way similar to the existing QTextView.
+that widget. In BobUI 3.0, it will be replaced by a fancier, faster and
+more powerful BOBUIextEdit widget that also deals with different colors
+and fonts in a way similar to the existing BOBUIextView.
 
-Qt follows the respective GUI style guides even more closely. This
+BobUI follows the respective GUI style guides even more closely. This
 includes honoring desktop settings, and keyboard shortcuts such as
 Ctrl-Z/Y for undo/redo in line edit and multi-line edit
 controls. Dialog handling for both modal and non-modal dialogs has
@@ -77,7 +77,7 @@ memory consumption while improving execution speed and features.
 
 Below is a list of the major new features in existing classes as well
 as short descriptions of all new classes and the changes in some of
-the extensions shipped with Qt.
+the extensions shipped with BobUI.
 
 
 ****************************************************************************
@@ -85,7 +85,7 @@ the extensions shipped with Qt.
 ****************************************************************************
 
 QApplication	- new function wakeUpGuiThread() to simplify using threads
-		  with Qt.
+		  with BobUI.
 
 QArray		- added sorting and binary search.
 
@@ -177,13 +177,13 @@ QStyleSheet	- a couple of tags added to the default sheet, such as
 		  U, NOBR, HEAD, DL, DT, DD and table support (TABLE, TR,
 		  TD, TH). Many attributes added to existing tags.
 
-QTextView	- basic table support. Contents is selectable, selections
+BOBUIextView	- basic table support. Contents is selectable, selections
 		  can be pasted/dragged into other widgets.
 
-QToolBar	- stretchable depending on the orientation (setHorizontalStretchable()
+BOBUIoolBar	- stretchable depending on the orientation (setHorizontalStretchable()
 		  and setVerticalStretchable(). Added orientationChanged() signal.
 
-QToolButton	- added optional delayed menu with setPopup() and
+BOBUIoolButton	- added optional delayed menu with setPopup() and
 		  setPopupDelay(). Auto-raise behaviour adjustable.
 
 QWidget		- new widget flag WStyle_ContextHelp that adds a
@@ -239,7 +239,7 @@ QNetworkProtocol- base class for network protocols, provides
 QUrl/
 QUrlOperator	- provides an easy way to work with URLs.
 
-QVariant	- a tagged union for the most common Qt data types.
+QVariant	- a tagged union for the most common BobUI data types.
 
 QValueStack	- a value-based stack container.
 
@@ -257,12 +257,12 @@ QBig5Codec	- provides support for the Big5 Chinese encoding.
 
 QDataStream / QPicture
  To accomodate for improved functionality, the stream serialization format
- of QString and QPen has changed in Qt 2.1. The format version
+ of QString and QPen has changed in BobUI 2.1. The format version
  number has been increased to 3. Compatibility has been kept, so
- applications built with this version of Qt are automatically able to read
- QDataStream and QPicture data generated by earlier Qt 2.x versions. But if
+ applications built with this version of BobUI are automatically able to read
+ QDataStream and QPicture data generated by earlier BobUI 2.x versions. But if
  your application needs to generate data that must be readable by
- applications that are compiled with earlier versions of Qt, you must use
+ applications that are compiled with earlier versions of BobUI, you must use
  QDataStream::setVersion() (if the data contains QString or QPen objects).
  See the documentation of this function for further discussion.
 
@@ -300,7 +300,7 @@ QPalette
  attempt at Tcl/Tk L&F compatibility, and added support for Windows
  2000 and Macintosh L&F compatibility instead.  The Macintosh and
  Windows 2000 looks differentiate between the window with focus and
- other windows.  Qt calls the color groups QPalette::active() and
+ other windows.  BobUI calls the color groups QPalette::active() and
  QPalette::inactive() respectively.
 
 QGridLayout/QBoxLayout 
@@ -308,7 +308,7 @@ QGridLayout/QBoxLayout
  change, the geometry() of a layout now includes margin(). This may
  effect programs that use QLayout::geometry().
 
-QToolButton
+BOBUIoolButton
  The now adjustable auto-raise behaviour defaults to TRUE only when
- a button is used inside a QToolBar. That's usually what you want. If not,
+ a button is used inside a BOBUIoolBar. That's usually what you want. If not,
  call setAutoRaise(FALSE).

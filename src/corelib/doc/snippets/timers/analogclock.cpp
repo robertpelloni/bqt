@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "analogclock.h"
 
-//! [analogclock-qtimer]
+//! [analogclock-bobuiimer]
 
 //! [0]
 AnalogClock::AnalogClock(QWidget *parent)
@@ -14,9 +14,9 @@ AnalogClock::AnalogClock(QWidget *parent)
 //! [2] //! [3]
 {
 //! [3] //! [4]
-    QTimer *timer = new QTimer(this);
+    BOBUIimer *timer = new BOBUIimer(this);
 //! [4] //! [5]
-    connect(timer, &QTimer::timeout, this, QOverload<>::of(&AnalogClock::update));
+    connect(timer, &BOBUIimer::timeout, this, QOverload<>::of(&AnalogClock::update));
 //! [5] //! [6]
     timer->start(1000);
 //! [6]
@@ -27,7 +27,7 @@ AnalogClock::AnalogClock(QWidget *parent)
 }
 //! [7]
 
-//! [analogclock-qtimer]
+//! [analogclock-bobuiimer]
 
 void AnalogClock::paintEvent(QPaintEvent *)
 {
@@ -46,14 +46,14 @@ void AnalogClock::paintEvent(QPaintEvent *)
     QColor minuteColor(0, 127, 127, 191);
 
     int side = qMin(width(), height());
-    QTime time = QTime::currentTime();
+    BOBUIime time = BOBUIime::currentTime();
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.translate(width() / 2, height() / 2);
     painter.scale(side / 200.0, side / 200.0);
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.setBrush(hourColor);
 
     painter.save();
@@ -68,7 +68,7 @@ void AnalogClock::paintEvent(QPaintEvent *)
         painter.rotate(30.0);
     }
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.setBrush(minuteColor);
 
     painter.save();

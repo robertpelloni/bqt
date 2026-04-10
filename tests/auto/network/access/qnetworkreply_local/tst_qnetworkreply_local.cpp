@@ -1,20 +1,20 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#define QTEST_THROW_ON_FAIL
+#define BOBUIEST_THROW_ON_FAIL
 
-#include <QtNetwork/qtnetworkglobal.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
 
-#include <QtCore/qbuffer.h>
+#include <BobUICore/qbuffer.h>
 
 #include "minihttpserver.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*
     The tests here are meant to be self-contained, using servers in the same
@@ -31,7 +31,7 @@ private slots:
     void emptyDeviceUpload_data();
     void emptyDeviceUpload();
 
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     void fullServerName_data();
     void fullServerName();
 #endif
@@ -39,12 +39,12 @@ private slots:
 
 void tst_QNetworkReply_local::initTestCase_data()
 {
-    QTest::addColumn<QString>("scheme");
+    BOBUIest::addColumn<QString>("scheme");
 
-    QTest::newRow("http") << "http";
-#if QT_CONFIG(localserver)
-    QTest::newRow("unix") << "unix+http";
-    QTest::newRow("local") << "local+http"; // equivalent to unix, but test that it works
+    BOBUIest::newRow("http") << "http";
+#if BOBUI_CONFIG(localserver)
+    BOBUIest::newRow("unix") << "unix+http";
+    BOBUIest::newRow("local") << "local+http"; // equivalent to unix, but test that it works
 #endif
 }
 
@@ -53,11 +53,11 @@ static std::unique_ptr<MiniHttpServerV2> getServerForCurrentScheme()
     auto server = std::make_unique<MiniHttpServerV2>();
     QFETCH_GLOBAL(QString, scheme);
     if (scheme.startsWith("unix"_L1) || scheme.startsWith("local"_L1)) {
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
         QLocalServer *localServer = new QLocalServer(server.get());
-        const size_t hash = qHashMulti(0, QByteArrayView(QTest::currentTestFunction()),
+        const size_t hash = qHashMulti(0, QByteArrayView(BOBUIest::currentTestFunction()),
                                        QCoreApplication::applicationPid());
-        bool listening = localServer->listen(u"qt_networkreply_test_"_s
+        bool listening = localServer->listen(u"bobui_networkreply_test_"_s
                                              % QString::number(hash, 16));
         if (!listening) {
             QFAIL(qPrintable(
@@ -66,7 +66,7 @@ static std::unique_ptr<MiniHttpServerV2> getServerForCurrentScheme()
         server->bind(localServer);
 #endif
     } else if (scheme == "http") {
-        QTcpServer *tcpServer = new QTcpServer(server.get());
+        BOBUIcpServer *tcpServer = new BOBUIcpServer(server.get());
         if (!tcpServer->listen(QHostAddress::LocalHost, 0))
             QFAIL(qPrintable(u"Failed to listen on TCP port: %1"_s.arg(tcpServer->errorString())));
         server->bind(tcpServer);
@@ -90,7 +90,7 @@ void tst_QNetworkReply_local::get()
     QNetworkAccessManager manager;
     std::unique_ptr<QNetworkReply> reply(manager.get(QNetworkRequest(url)));
 
-    const bool res = QTest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
+    const bool res = BOBUIest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
     QVERIFY(res);
 
     QCOMPARE(reply->readAll(), QByteArray("Hello World!"));
@@ -108,7 +108,7 @@ void tst_QNetworkReply_local::post()
     req.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
     std::unique_ptr<QNetworkReply> reply(manager.post(req, payload));
 
-    const bool res = QTest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
+    const bool res = BOBUIest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
     QVERIFY(res);
 
     QCOMPARE(reply->readAll(), QByteArray("Hello World!"));
@@ -133,18 +133,18 @@ enum Method {
 };
 void tst_QNetworkReply_local::emptyDeviceUpload_data()
 {
-    QTest::addColumn<Method>("method");
-    QTest::addColumn<QString>("customVerb");
-    QTest::addColumn<bool>("contentLengthExpected");
-    QTest::addColumn<bool>("sequential");
+    BOBUIest::addColumn<Method>("method");
+    BOBUIest::addColumn<QString>("customVerb");
+    BOBUIest::addColumn<bool>("contentLengthExpected");
+    BOBUIest::addColumn<bool>("sequential");
     for (auto sequential : { false, true }) {
         const char *suffix = sequential ? "sequential" : "non-sequential";
-        QTest::addRow("get-%s", suffix) << Get << "" << false << sequential;
-        QTest::addRow("put-%s", suffix) << Put << "" << true << sequential;
-        QTest::addRow("post-%s", suffix) << Post << "" << true << sequential;
-        QTest::addRow("custom-get-%s", suffix) << Custom << "get" << false << sequential;
-        QTest::addRow("custom-post-%s", suffix) << Custom << "post" << true << sequential;
-        QTest::addRow("custom-connect-%s", suffix) << Custom << "cOnNeCt" << false << sequential;
+        BOBUIest::addRow("get-%s", suffix) << Get << "" << false << sequential;
+        BOBUIest::addRow("put-%s", suffix) << Put << "" << true << sequential;
+        BOBUIest::addRow("post-%s", suffix) << Post << "" << true << sequential;
+        BOBUIest::addRow("custom-get-%s", suffix) << Custom << "get" << false << sequential;
+        BOBUIest::addRow("custom-post-%s", suffix) << Custom << "post" << true << sequential;
+        BOBUIest::addRow("custom-connect-%s", suffix) << Custom << "cOnNeCt" << false << sequential;
     }
 }
 
@@ -203,7 +203,7 @@ void tst_QNetworkReply_local::emptyDeviceUpload()
         Q_UNREACHABLE_RETURN({});
     }();
 
-    QTRY_VERIFY(reply->isFinished());
+    BOBUIRY_VERIFY(reply->isFinished());
 
     auto printErrorOnFail = qScopeGuard([reply = reply.get()]() {
         qWarning() << "Error in the reply:" << reply->errorString();
@@ -216,17 +216,17 @@ void tst_QNetworkReply_local::emptyDeviceUpload()
     printErrorOnFail.dismiss();
 }
 
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
 void tst_QNetworkReply_local::fullServerName_data()
 {
-#if defined(Q_OS_ANDROID) || defined(QT_PLATFORM_UIKIT)
+#if defined(Q_OS_ANDROID) || defined(BOBUI_PLATFORM_UIKIT)
     QSKIP("While partially supported, the test as-is doesn't make sense on this platform.");
 #else
 
-    QTest::addColumn<QString>("hostAndPath");
+    BOBUIest::addColumn<QString>("hostAndPath");
 
-    QTest::newRow("dummy-host") << u"://irrelevant/test"_s;
-    QTest::newRow("no-host") << u":///test"_s;
+    BOBUIest::newRow("dummy-host") << u"://irrelevant/test"_s;
+    BOBUIest::newRow("no-host") << u":///test"_s;
 #endif
 }
 
@@ -241,10 +241,10 @@ void tst_QNetworkReply_local::fullServerName()
 
     QString path;
 #ifdef Q_OS_WIN
-    path = uR"(\\.\pipe\qt_networkreply_test_fullServerName)"_s
+    path = uR"(\\.\pipe\bobui_networkreply_test_fullServerName)"_s
             % QString::number(QCoreApplication::applicationPid());
 #else
-    path = u"/tmp/qt_networkreply_test_fullServerName"_s
+    path = u"/tmp/bobui_networkreply_test_fullServerName"_s
             % QString::number(QCoreApplication::applicationPid()) % u".sock"_s;
 #endif
 
@@ -259,7 +259,7 @@ void tst_QNetworkReply_local::fullServerName()
     QNetworkAccessManager manager;
     std::unique_ptr<QNetworkReply> reply(manager.get(req));
 
-    const bool res = QTest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
+    const bool res = BOBUIest::qWaitFor([reply = reply.get()] { return reply->isFinished(); });
     QVERIFY(res);
 
     QCOMPARE(reply->readAll(), QByteArray("Hello World!"));
@@ -274,7 +274,7 @@ void tst_QNetworkReply_local::fullServerName()
 }
 #endif
 
-QTEST_MAIN(tst_QNetworkReply_local)
+BOBUIEST_MAIN(tst_QNetworkReply_local)
 
 #include "tst_qnetworkreply_local.moc"
 #include "moc_minihttpserver.cpp"

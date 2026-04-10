@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qendian.h"
 
 #include "qalgorithms.h"
 #include <private/qsimd_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
-    \headerfile <QtEndian>
-    \inmodule QtCore
+    \headerfile <BobUIEndian>
+    \inmodule BobUICore
     \title Endian Conversion Functions
     \ingroup funclists
-    \brief The <QtEndian> header provides functions to convert between
+    \brief The <BobUIEndian> header provides functions to convert between
     little and big endian representations of numbers.
 */
 
@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qFromBigEndian(const void *src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads a big-endian number from memory location \a src and returns the number in the
     host byte order representation.
@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
     quint64, or qint64. Other types of integers, e.g., qlong, are not
     applicable.
 
-    \note Since Qt 5.7, the type of the \a src parameter is a void pointer.
+    \note Since BobUI 5.7, the type of the \a src parameter is a void pointer.
 
     There are no data alignment constraints for \a src.
 
@@ -66,7 +66,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qFromBigEndian(T src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \overload
 
     Converts \a src from big-endian byte order and returns the number in host byte order
@@ -78,7 +78,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qFromBigEndian(const void *src, qsizetype count, void *dest)
     \since 5.12
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads \a count big-endian numbers from memory location \a src and stores
     them in the host byte order representation at \a dest. On CPU architectures
@@ -104,7 +104,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> inline T qFromLittleEndian(const void *src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads a little-endian number from memory location \a src and returns the number in
     the host byte order representation.
@@ -115,7 +115,7 @@ QT_BEGIN_NAMESPACE
     quint64, or qint64. Other types of integers, e.g., qlong, are not
     applicable.
 
-    \note Since Qt 5.7, the type of the \a src parameter is a void pointer.
+    \note Since BobUI 5.7, the type of the \a src parameter is a void pointer.
 
     There are no data alignment constraints for \a src.
 
@@ -126,7 +126,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> inline T qFromLittleEndian(T src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \overload
 
     Converts \a src from little-endian byte order and returns the number in host byte
@@ -138,7 +138,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> inline T qFromLittleEndian(const void *src, qsizetype count, void *dest)
     \since 5.12
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads \a count little-endian numbers from memory location \a src and stores
     them in the host byte order representation at \a dest. On CPU architectures
@@ -163,7 +163,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> void qToBigEndian(T src, void *dest)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Writes the number \a src with template type \c{T} to the memory location at \a dest
     in big-endian byte order.
@@ -174,7 +174,7 @@ QT_BEGIN_NAMESPACE
 
     There are no data alignment constraints for \a dest.
 
-    \note Since Qt 5.7, the type of the \a dest parameter is a void pointer.
+    \note Since BobUI 5.7, the type of the \a dest parameter is a void pointer.
 
     \sa qFromBigEndian()
     \sa qFromLittleEndian()
@@ -183,7 +183,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qToBigEndian(T src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \overload
 
     Converts \a src from host byte order and returns the number in big-endian byte order
@@ -195,7 +195,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qToBigEndian(const void *src, qsizetype count, void *dest)
     \since 5.12
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads \a count numbers from memory location \a src in the host byte order
     and stores them in big-endian representation at \a dest. On CPU
@@ -221,7 +221,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> void qToLittleEndian(T src, void *dest)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Writes the number \a src with template type \c{T} to the memory location at \a dest
     in little-endian byte order.
@@ -232,7 +232,7 @@ QT_BEGIN_NAMESPACE
 
     There are no data alignment constraints for \a dest.
 
-    \note Since Qt 5.7, the type of the \a dest parameter is a void pointer.
+    \note Since BobUI 5.7, the type of the \a dest parameter is a void pointer.
 
     \sa qFromBigEndian()
     \sa qFromLittleEndian()
@@ -241,7 +241,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qToLittleEndian(T src)
     \since 4.3
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \overload
 
     Converts \a src from host byte order and returns the number in little-endian byte
@@ -253,7 +253,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \fn template <typename T> T qToLittleEndian(const void *src, qsizetype count, void *dest)
     \since 5.12
-    \relates <QtEndian>
+    \relates <BobUIEndian>
 
     Reads \a count numbers from memory location \a src in the host byte order
     and stores them in little-endian representation at \a dest. On CPU
@@ -279,7 +279,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QLEInteger
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QLEInteger class provides platform-independent little-endian integers.
     \since 5.10
 
@@ -440,7 +440,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QBEInteger
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QBEInteger class provides platform-independent big-endian integers.
     \since 5.10
 
@@ -601,132 +601,132 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \typedef quint16_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<quint16>. This type is guaranteed to be stored in memory as
-    a 16-bit little-endian unsigned integer on all platforms supported by Qt.
+    a 16-bit little-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint16
 */
 
 /*!
     \typedef quint32_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<quint32>. This type is guaranteed to be stored in memory as
-    a 32-bit little-endian unsigned integer on all platforms supported by Qt.
+    a 32-bit little-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint32
 */
 
 /*!
     \typedef quint64_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<quint64>. This type is guaranteed to be stored in memory as
-    a 64-bit little-endian unsigned integer on all platforms supported by Qt.
+    a 64-bit little-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint64
 */
 
 /*!
     \typedef quint16_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<quint16>. This type is guaranteed to be stored in memory as
-    a 16-bit big-endian unsigned integer on all platforms supported by Qt.
+    a 16-bit big-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint16
 */
 
 /*!
     \typedef quint32_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<quint32>. This type is guaranteed to be stored in memory as
-    a 32-bit big-endian unsigned integer on all platforms supported by Qt.
+    a 32-bit big-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint32
 */
 
 /*!
     \typedef quint64_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<quint64>. This type is guaranteed to be stored in memory as
-    a 64-bit big-endian unsigned integer on all platforms supported by Qt.
+    a 64-bit big-endian unsigned integer on all platforms supported by BobUI.
 
     \sa quint64
 */
 
 /*!
     \typedef qint16_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<qint16>. This type is guaranteed to be stored in memory as
-    a 16-bit little-endian signed integer on all platforms supported by Qt.
+    a 16-bit little-endian signed integer on all platforms supported by BobUI.
 
     \sa qint16
 */
 
 /*!
     \typedef qint32_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<qint32>. This type is guaranteed to be stored in memory as
-    a 32-bit little-endian signed integer on all platforms supported by Qt.
+    a 32-bit little-endian signed integer on all platforms supported by BobUI.
 
     \sa qint32
 */
 
 /*!
     \typedef qint64_le
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QLEInteger<qint64>. This type is guaranteed to be stored in memory as
-    a 64-bit little-endian signed integer on all platforms supported by Qt.
+    a 64-bit little-endian signed integer on all platforms supported by BobUI.
 
     \sa qint64
 */
 
 /*!
     \typedef qint16_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<qint16>. This type is guaranteed to be stored in memory as
-    a 16-bit big-endian signed integer on all platforms supported by Qt.
+    a 16-bit big-endian signed integer on all platforms supported by BobUI.
 
     \sa qint16
 */
 
 /*!
     \typedef qint32_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<qint32>. This type is guaranteed to be stored in memory as
-    a 32-bit big-endian signed integer on all platforms supported by Qt.
+    a 32-bit big-endian signed integer on all platforms supported by BobUI.
 
     \sa qint32
 */
 
 /*!
     \typedef qint64_be
-    \relates <QtEndian>
+    \relates <BobUIEndian>
     \since 5.10
 
     Typedef for QBEInteger<qint64>. This type is guaranteed to be stored in memory as
-    a 64-bit big-endian signed integer on all platforms supported by Qt.
+    a 64-bit big-endian signed integer on all platforms supported by BobUI.
 
     \sa qint64
 */
@@ -887,4 +887,4 @@ void *qbswap<8>(const void *source, qsizetype n, void *dest) noexcept
     return bswapLoop<quint64>(src, n << 3, dst);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

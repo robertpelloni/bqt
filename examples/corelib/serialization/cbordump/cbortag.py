@@ -1,6 +1,6 @@
 #!/bin/env python3
-# Copyright (C) 2023 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2023 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 """Digest cbor-tags.xml file into code for insertion into main.cpp
 
 See main.cpp's comment on how to regenerate its GENERATED CODE.

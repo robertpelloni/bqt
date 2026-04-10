@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,12 +16,12 @@
 
 #include "qgtk3interface_p.h"
 #include "qgtk3storage_p.h"
-#include <QtCore/QMetaEnum>
-#include <QtCore/QFileInfo>
-#include <QtGui/QFontDatabase>
+#include <BobUICore/QMetaEnum>
+#include <BobUICore/QFileInfo>
+#include <BobUIGui/QFontDatabase>
 
-QT_BEGIN_NAMESPACE
-Q_LOGGING_CATEGORY(lcQGtk3Interface, "qt.qpa.gtk");
+BOBUI_BEGIN_NAMESPACE
+Q_LOGGING_CATEGORY(lcQGtk3Interface, "bobui.qpa.gtk");
 
 
 // Callback for gnome event loop has to be static
@@ -161,31 +161,31 @@ QImage QGtk3Interface::standardPixmap(QPlatformTheme::StandardPixmap standardPix
 {
     switch (standardPixmap) {
     case QPlatformTheme::DialogDiscardButton:
-        return qt_gtk_get_icon(GTK_STOCK_DELETE);
+        return bobui_gtk_get_icon(GTK_STOCK_DELETE);
     case QPlatformTheme::DialogOkButton:
-        return qt_gtk_get_icon(GTK_STOCK_OK);
+        return bobui_gtk_get_icon(GTK_STOCK_OK);
     case QPlatformTheme::DialogCancelButton:
-        return qt_gtk_get_icon(GTK_STOCK_CANCEL);
+        return bobui_gtk_get_icon(GTK_STOCK_CANCEL);
     case QPlatformTheme::DialogYesButton:
-        return qt_gtk_get_icon(GTK_STOCK_YES);
+        return bobui_gtk_get_icon(GTK_STOCK_YES);
     case QPlatformTheme::DialogNoButton:
-        return qt_gtk_get_icon(GTK_STOCK_NO);
+        return bobui_gtk_get_icon(GTK_STOCK_NO);
     case QPlatformTheme::DialogOpenButton:
-        return qt_gtk_get_icon(GTK_STOCK_OPEN);
+        return bobui_gtk_get_icon(GTK_STOCK_OPEN);
     case QPlatformTheme::DialogCloseButton:
-        return qt_gtk_get_icon(GTK_STOCK_CLOSE);
+        return bobui_gtk_get_icon(GTK_STOCK_CLOSE);
     case QPlatformTheme::DialogApplyButton:
-        return qt_gtk_get_icon(GTK_STOCK_APPLY);
+        return bobui_gtk_get_icon(GTK_STOCK_APPLY);
     case QPlatformTheme::DialogSaveButton:
-        return qt_gtk_get_icon(GTK_STOCK_SAVE);
+        return bobui_gtk_get_icon(GTK_STOCK_SAVE);
     case QPlatformTheme::MessageBoxWarning:
-        return qt_gtk_get_icon(GTK_STOCK_DIALOG_WARNING);
+        return bobui_gtk_get_icon(GTK_STOCK_DIALOG_WARNING);
     case QPlatformTheme::MessageBoxQuestion:
-        return qt_gtk_get_icon(GTK_STOCK_DIALOG_QUESTION);
+        return bobui_gtk_get_icon(GTK_STOCK_DIALOG_QUESTION);
     case QPlatformTheme::MessageBoxInformation:
-        return qt_gtk_get_icon(GTK_STOCK_DIALOG_INFO);
+        return bobui_gtk_get_icon(GTK_STOCK_DIALOG_INFO);
     case QPlatformTheme::MessageBoxCritical:
-        return qt_gtk_get_icon(GTK_STOCK_DIALOG_ERROR);
+        return bobui_gtk_get_icon(GTK_STOCK_DIALOG_ERROR);
     case QPlatformTheme::CustomBase:
     case QPlatformTheme::TitleBarMenuButton:
     case QPlatformTheme::TitleBarMinButton:
@@ -263,11 +263,11 @@ QImage QGtk3Interface::standardPixmap(QPlatformTheme::StandardPixmap standardPix
     \internal
     \brief Returns a QImage for a given GTK \param iconName.
  */
-QImage QGtk3Interface::qt_gtk_get_icon(const char* iconName) const
+QImage QGtk3Interface::bobui_gtk_get_icon(const char* iconName) const
 {
     GtkIconSet* iconSet  = gtk_icon_factory_lookup_default (iconName);
     GdkPixbuf* icon = gtk_icon_set_render_icon_pixbuf(iconSet, context(), GTK_ICON_SIZE_DIALOG);
-    return qt_convert_gdk_pixbuf(icon);
+    return bobui_convert_gdk_pixbuf(icon);
 }
 
 /*!
@@ -282,7 +282,7 @@ QImage QGtk3Interface::qt_gtk_get_icon(const char* iconName) const
     \li GDK pixel buffer has 4 channels (assumed at runtime)
     \endlist
  */
-QImage QGtk3Interface::qt_convert_gdk_pixbuf(GdkPixbuf *buf) const
+QImage QGtk3Interface::bobui_convert_gdk_pixbuf(GdkPixbuf *buf) const
 {
     if (!buf)
         return QImage();
@@ -310,7 +310,7 @@ QImage QGtk3Interface::qt_convert_gdk_pixbuf(GdkPixbuf *buf) const
     Returns a pointer to a new GTK widget of \param type, allocated on the heap.
     Returns nullptr of gtk_Default has is passed.
  */
-GtkWidget *QGtk3Interface::qt_new_gtkWidget(QGtkWidget type) const
+GtkWidget *QGtk3Interface::bobui_new_gtkWidget(QGtkWidget type) const
 {
 #define CASE(Type)\
     case QGtkWidget::Type: return Type ##_new();
@@ -435,7 +435,7 @@ GtkWidget *QGtk3Interface::widget(QGtkWidget type) const
         return w;
 
     // Create new item and cache it
-    GtkWidget *w = qt_new_gtkWidget(type);
+    GtkWidget *w = bobui_new_gtkWidget(type);
     cache.insert(type, w);
     return w;
 }
@@ -501,7 +501,7 @@ QString QGtk3Interface::themeName() const
 
     \note Returns Unknown in the unlikely case that both colors have the same lightness.
  */
-Qt::ColorScheme QGtk3Interface::colorSchemeByColors() const
+BobUI::ColorScheme QGtk3Interface::colorSchemeByColors() const
 {
     const QColor background = color(widget(QGtkWidget::gtk_Default),
                                     QGtkColorSource::Background,
@@ -511,10 +511,10 @@ Qt::ColorScheme QGtk3Interface::colorSchemeByColors() const
                                     GTK_STATE_FLAG_ACTIVE);
 
     if (foreground.lightness() > background.lightness())
-        return Qt::ColorScheme::Dark;
+        return BobUI::ColorScheme::Dark;
     if (foreground.lightness() < background.lightness())
-        return Qt::ColorScheme::Light;
-    return Qt::ColorScheme::Unknown;
+        return BobUI::ColorScheme::Light;
+    return BobUI::ColorScheme::Unknown;
 }
 
 /*!
@@ -575,10 +575,10 @@ inline constexpr QFont::Style QGtk3Interface::toFontStyle(PangoStyle style)
 
 /*!
     \internal
-    \brief Convert pango font \param weight to an int, representing font weight in Qt.
+    \brief Convert pango font \param weight to an int, representing font weight in BobUI.
 
     Compatibility of PangoWeight is statically asserted.
-    The minimum (1) and maximum (1000) weight in Qt is respeced.
+    The minimum (1) and maximum (1000) weight in BobUI is respeced.
  */
 inline constexpr int QGtk3Interface::toFontWeight(PangoWeight weight)
 {
@@ -693,11 +693,11 @@ QIcon QGtk3Interface::fileIcon(const QFileInfo &fileInfo) const
     }
 
     GdkPixbuf *buf = gtk_icon_info_load_icon(iconInfo, nullptr);
-    QImage image = qt_convert_gdk_pixbuf(buf);
+    QImage image = bobui_convert_gdk_pixbuf(buf);
     g_object_unref(file);
     g_object_unref(info);
     g_object_unref(buf);
     return QIcon(QPixmap::fromImage(image));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

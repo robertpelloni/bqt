@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWINDOWSDRAG_H
 #define QWINDOWSDRAG_H
@@ -8,11 +8,11 @@
 #include <private/qsimpledrag_p.h>
 
 #include <qpa/qplatformdrag.h>
-#include <QtGui/qdrag.h>
+#include <BobUIGui/qdrag.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct DragEvent;
 
@@ -36,7 +36,7 @@ public:
     void onNativeDragLeave(DragEvent *event);
 
     // QPlatformDrag:
-    Qt::DropAction drag(QDrag *drag) final;
+    BobUI::DropAction drag(QDrag *drag) final;
 
 private:
     struct DragState;
@@ -44,6 +44,6 @@ private:
     std::shared_ptr<DragState> m_dragState;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDRAG_H

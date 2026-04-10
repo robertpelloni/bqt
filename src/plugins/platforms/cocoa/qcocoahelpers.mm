@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -12,28 +12,28 @@
 #include <qpa/qplatformscreen.h>
 #include <private/qguiapplication_p.h>
 #include <private/qwindow_p.h>
-#include <QtGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaWindow, "qt.qpa.window");
-Q_LOGGING_CATEGORY(lcQpaDrawing, "qt.qpa.drawing");
-Q_LOGGING_CATEGORY(lcQpaMouse, "qt.qpa.input.mouse", QtCriticalMsg);
-Q_LOGGING_CATEGORY(lcQpaKeys, "qt.qpa.input.keys", QtCriticalMsg);
-Q_LOGGING_CATEGORY(lcQpaInputMethods, "qt.qpa.input.methods")
-Q_LOGGING_CATEGORY(lcQpaScreen, "qt.qpa.screen", QtCriticalMsg);
-Q_LOGGING_CATEGORY(lcQpaApplication, "qt.qpa.application");
-Q_LOGGING_CATEGORY(lcQpaClipboard, "qt.qpa.clipboard")
-Q_LOGGING_CATEGORY(lcQpaDialogs, "qt.qpa.dialogs")
-Q_LOGGING_CATEGORY(lcQpaMenus, "qt.qpa.menus")
+Q_LOGGING_CATEGORY(lcQpaWindow, "bobui.qpa.window");
+Q_LOGGING_CATEGORY(lcQpaDrawing, "bobui.qpa.drawing");
+Q_LOGGING_CATEGORY(lcQpaMouse, "bobui.qpa.input.mouse", BobUICriticalMsg);
+Q_LOGGING_CATEGORY(lcQpaKeys, "bobui.qpa.input.keys", BobUICriticalMsg);
+Q_LOGGING_CATEGORY(lcQpaInputMethods, "bobui.qpa.input.methods")
+Q_LOGGING_CATEGORY(lcQpaScreen, "bobui.qpa.screen", BobUICriticalMsg);
+Q_LOGGING_CATEGORY(lcQpaApplication, "bobui.qpa.application");
+Q_LOGGING_CATEGORY(lcQpaClipboard, "bobui.qpa.clipboard")
+Q_LOGGING_CATEGORY(lcQpaDialogs, "bobui.qpa.dialogs")
+Q_LOGGING_CATEGORY(lcQpaMenus, "bobui.qpa.menus")
 
 //
 // Conversion Functions
 //
 
-QStringList qt_mac_NSArrayToQStringList(NSArray<NSString *> *array)
+QStringList bobui_mac_NSArrayToQStringList(NSArray<NSString *> *array)
 {
     QStringList result;
     for (NSString *string in array)
@@ -41,7 +41,7 @@ QStringList qt_mac_NSArrayToQStringList(NSArray<NSString *> *array)
     return result;
 }
 
-NSMutableArray<NSString *> *qt_mac_QStringListToNSMutableArray(const QStringList &list)
+NSMutableArray<NSString *> *bobui_mac_QStringListToNSMutableArray(const QStringList &list)
 {
     NSMutableArray<NSString *> *result = [NSMutableArray<NSString *> arrayWithCapacity:list.size()];
     for (const QString &string : list)
@@ -52,60 +52,60 @@ NSMutableArray<NSString *> *qt_mac_QStringListToNSMutableArray(const QStringList
 struct dndenum_mapper
 {
     NSDragOperation mac_code;
-    Qt::DropAction qt_code;
-    bool Qt2Mac;
+    BobUI::DropAction bobui_code;
+    bool BobUI2Mac;
 };
 
 static dndenum_mapper dnd_enums[] = {
-    { NSDragOperationLink,  Qt::LinkAction, true },
-    { NSDragOperationMove,  Qt::MoveAction, true },
-    { NSDragOperationDelete,  Qt::MoveAction, true },
-    { NSDragOperationCopy,  Qt::CopyAction, true },
-    { NSDragOperationGeneric,  Qt::CopyAction, false },
-    { NSDragOperationEvery, Qt::ActionMask, false },
-    { NSDragOperationNone, Qt::IgnoreAction, false }
+    { NSDragOperationLink,  BobUI::LinkAction, true },
+    { NSDragOperationMove,  BobUI::MoveAction, true },
+    { NSDragOperationDelete,  BobUI::MoveAction, true },
+    { NSDragOperationCopy,  BobUI::CopyAction, true },
+    { NSDragOperationGeneric,  BobUI::CopyAction, false },
+    { NSDragOperationEvery, BobUI::ActionMask, false },
+    { NSDragOperationNone, BobUI::IgnoreAction, false }
 };
 
-NSDragOperation qt_mac_mapDropAction(Qt::DropAction action)
+NSDragOperation bobui_mac_mapDropAction(BobUI::DropAction action)
 {
-    for (int i=0; dnd_enums[i].qt_code; i++) {
-        if (dnd_enums[i].Qt2Mac && (action & dnd_enums[i].qt_code)) {
+    for (int i=0; dnd_enums[i].bobui_code; i++) {
+        if (dnd_enums[i].BobUI2Mac && (action & dnd_enums[i].bobui_code)) {
             return dnd_enums[i].mac_code;
         }
     }
     return NSDragOperationNone;
 }
 
-NSDragOperation qt_mac_mapDropActions(Qt::DropActions actions)
+NSDragOperation bobui_mac_mapDropActions(BobUI::DropActions actions)
 {
     NSDragOperation nsActions = NSDragOperationNone;
-    for (int i=0; dnd_enums[i].qt_code; i++) {
-        if (dnd_enums[i].Qt2Mac && (actions & dnd_enums[i].qt_code))
+    for (int i=0; dnd_enums[i].bobui_code; i++) {
+        if (dnd_enums[i].BobUI2Mac && (actions & dnd_enums[i].bobui_code))
             nsActions |= dnd_enums[i].mac_code;
     }
     return nsActions;
 }
 
-Qt::DropAction qt_mac_mapNSDragOperation(NSDragOperation nsActions)
+BobUI::DropAction bobui_mac_mapNSDragOperation(NSDragOperation nsActions)
 {
-    Qt::DropAction action = Qt::IgnoreAction;
+    BobUI::DropAction action = BobUI::IgnoreAction;
     for (int i=0; dnd_enums[i].mac_code; i++) {
         if (nsActions & dnd_enums[i].mac_code)
-            return dnd_enums[i].qt_code;
+            return dnd_enums[i].bobui_code;
     }
     return action;
 }
 
-Qt::DropActions qt_mac_mapNSDragOperations(NSDragOperation nsActions)
+BobUI::DropActions bobui_mac_mapNSDragOperations(NSDragOperation nsActions)
 {
-    Qt::DropActions actions = Qt::IgnoreAction;
+    BobUI::DropActions actions = BobUI::IgnoreAction;
 
     for (int i=0; dnd_enums[i].mac_code; i++) {
         if (dnd_enums[i].mac_code == NSDragOperationEvery)
             continue;
 
         if (nsActions & dnd_enums[i].mac_code)
-            actions |= dnd_enums[i].qt_code;
+            actions |= dnd_enums[i].bobui_code;
     }
     return actions;
 }
@@ -128,7 +128,7 @@ Qt::DropActions qt_mac_mapNSDragOperations(NSDragOperation nsActions)
 */
 QNSView *qnsview_cast(NSView *view)
 {
-    return qt_objc_cast<QNSView *>(view);
+    return bobui_objc_cast<QNSView *>(view);
 }
 
 //
@@ -137,7 +137,7 @@ QNSView *qnsview_cast(NSView *view)
 
 // Sets the activation policy for this process to NSApplicationActivationPolicyRegular,
 // unless either LSUIElement or LSBackgroundOnly is set in the Info.plist.
-void qt_mac_transformProccessToForegroundApplication()
+void bobui_mac_transformProccessToForegroundApplication()
 {
     bool forceTransform = true;
     CFTypeRef value = CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(),
@@ -179,7 +179,7 @@ void qt_mac_transformProccessToForegroundApplication()
     }
 }
 
-QString qt_mac_applicationName()
+QString bobui_mac_applicationName()
 {
     QString appName;
     CFTypeRef string = CFBundleGetValueForInfoDictionaryKey(CFBundleGetMainBundle(), CFSTR("CFBundleName"));
@@ -201,13 +201,13 @@ QString qt_mac_applicationName()
 // -------------------------------------------------------------------------
 
 /*!
-    \fn QPointF qt_mac_flip(const QPointF &pos, const QRectF &reference)
-    \fn QRectF qt_mac_flip(const QRectF &rect, const QRectF &reference)
+    \fn QPointF bobui_mac_flip(const QPointF &pos, const QRectF &reference)
+    \fn QRectF bobui_mac_flip(const QRectF &rect, const QRectF &reference)
 
     Flips the Y coordinate of the point/rect between quadrant I and IV.
 
     The native coordinate system on macOS uses quadrant I, with origin
-    in bottom left, and Qt uses quadrant IV, with origin in top left.
+    in bottom left, and BobUI uses quadrant IV, with origin in top left.
 
     By flipping the Y coordinate, we can map the point/rect between
     the two coordinate systems.
@@ -217,39 +217,39 @@ QString qt_mac_applicationName()
     latter case the specialized QCocoaScreen::mapFrom/To functions
     should be used instead.
 */
-QPointF qt_mac_flip(const QPointF &pos, const QRectF &reference)
+QPointF bobui_mac_flip(const QPointF &pos, const QRectF &reference)
 {
     return QPointF(pos.x(), reference.height() - pos.y());
 }
 
-QRectF qt_mac_flip(const QRectF &rect, const QRectF &reference)
+QRectF bobui_mac_flip(const QRectF &rect, const QRectF &reference)
 {
-    return QRectF(qt_mac_flip(rect.bottomLeft(), reference), rect.size());
+    return QRectF(bobui_mac_flip(rect.bottomLeft(), reference), rect.size());
 }
 
 // -------------------------------------------------------------------------
 
 /*!
-  \fn Qt::MouseButton cocoaButton2QtButton(NSInteger buttonNum)
+  \fn BobUI::MouseButton cocoaButton2BobUIButton(NSInteger buttonNum)
 
-  Returns the Qt::Button that corresponds to an NSEvent.buttonNumber.
+  Returns the BobUI::Button that corresponds to an NSEvent.buttonNumber.
 
   \note AppKit will use buttonNumber 0 to indicate both "left button"
   and "no button". Only NSEvents that describes mouse press/release
   events (e.g NSEventTypeOtherMouseDown) will contain a valid
   button number.
 */
-Qt::MouseButton cocoaButton2QtButton(NSInteger buttonNum)
+BobUI::MouseButton cocoaButton2BobUIButton(NSInteger buttonNum)
 {
     if (buttonNum >= 0 && buttonNum <= 31)
-        return Qt::MouseButton(1 << buttonNum);
-    return Qt::NoButton;
+        return BobUI::MouseButton(1 << buttonNum);
+    return BobUI::NoButton;
 }
 
 /*!
-  \fn Qt::MouseButton cocoaButton2QtButton(NSEvent *event)
+  \fn BobUI::MouseButton cocoaButton2BobUIButton(NSEvent *event)
 
-  Returns the Qt::Button that corresponds to an NSEvent.buttonNumber.
+  Returns the BobUI::Button that corresponds to an NSEvent.buttonNumber.
 
   \note AppKit will use buttonNumber 0 to indicate both "left button"
   and "no button". Only NSEvents that describes mouse press/release/dragging
@@ -259,29 +259,29 @@ Qt::MouseButton cocoaButton2QtButton(NSInteger buttonNum)
   \note Wacom tablet might not return the correct button number for NSEvent buttonNumber
   on right clicks. Decide here that the button is the "right" button.
 */
-Qt::MouseButton cocoaButton2QtButton(NSEvent *event)
+BobUI::MouseButton cocoaButton2BobUIButton(NSEvent *event)
 {
-    if (cocoaEvent2QtMouseEvent(event) == QEvent::MouseMove)
-        return Qt::NoButton;
+    if (cocoaEvent2BobUIMouseEvent(event) == QEvent::MouseMove)
+        return BobUI::NoButton;
 
     switch (event.type) {
     case NSEventTypeRightMouseUp:
     case NSEventTypeRightMouseDown:
-        return Qt::RightButton;
+        return BobUI::RightButton;
 
     default:
         break;
     }
 
-    return cocoaButton2QtButton(event.buttonNumber);
+    return cocoaButton2BobUIButton(event.buttonNumber);
 }
 
 /*!
-  \fn QEvent::Type cocoaEvent2QtMouseEvent(NSEvent *event)
+  \fn QEvent::Type cocoaEvent2BobUIMouseEvent(NSEvent *event)
 
   Returns the QEvent::Type that corresponds to an NSEvent.type.
 */
-QEvent::Type cocoaEvent2QtMouseEvent(NSEvent *event)
+QEvent::Type cocoaEvent2BobUIMouseEvent(NSEvent *event)
 {
     switch (event.type) {
     case NSEventTypeLeftMouseDown:
@@ -310,31 +310,31 @@ QEvent::Type cocoaEvent2QtMouseEvent(NSEvent *event)
 }
 
 /*!
-  \fn Qt::MouseButtons cocoaMouseButtons2QtMouseButtons(NSInteger pressedMouseButtons)
+  \fn BobUI::MouseButtons cocoaMouseButtons2BobUIMouseButtons(NSInteger pressedMouseButtons)
 
-  Returns the Qt::MouseButtons that corresponds to an NSEvent.pressedMouseButtons.
+  Returns the BobUI::MouseButtons that corresponds to an NSEvent.pressedMouseButtons.
 */
-Qt::MouseButtons cocoaMouseButtons2QtMouseButtons(NSInteger pressedMouseButtons)
+BobUI::MouseButtons cocoaMouseButtons2BobUIMouseButtons(NSInteger pressedMouseButtons)
 {
-  return static_cast<Qt::MouseButton>(pressedMouseButtons & Qt::MouseButtonMask);
+  return static_cast<BobUI::MouseButton>(pressedMouseButtons & BobUI::MouseButtonMask);
 }
 
 /*!
-  \fn Qt::MouseButtons currentlyPressedMouseButtons()
+  \fn BobUI::MouseButtons currentlyPressedMouseButtons()
 
-  Returns the Qt::MouseButtons that corresponds to an NSEvent.pressedMouseButtons.
+  Returns the BobUI::MouseButtons that corresponds to an NSEvent.pressedMouseButtons.
 */
-Qt::MouseButtons currentlyPressedMouseButtons()
+BobUI::MouseButtons currentlyPressedMouseButtons()
 {
-  return cocoaMouseButtons2QtMouseButtons(NSEvent.pressedMouseButtons);
+  return cocoaMouseButtons2BobUIMouseButtons(NSEvent.pressedMouseButtons);
 }
 
-QString qt_mac_removeAmpersandEscapes(QString s)
+QString bobui_mac_removeAmpersandEscapes(QString s)
 {
     return QPlatformTheme::removeMnemonics(s).trimmed();
 }
 
-NSString *qt_mac_AppKitString(NSString *table, NSString *key)
+NSString *bobui_mac_AppKitString(NSString *table, NSString *key)
 {
     static const NSBundle *appKit = [NSBundle bundleForClass:NSApplication.class];
     if (!appKit)
@@ -343,7 +343,7 @@ NSString *qt_mac_AppKitString(NSString *table, NSString *key)
     return [appKit localizedStringForKey:key value:nil table:table];
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 /*! \internal
 
@@ -470,20 +470,20 @@ QT_END_NAMESPACE
 
 @end // QNSPanelContentsWrapper
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // -------------------------------------------------------------------------
 
-InputMethodQueryResult queryInputMethod(QObject *object, Qt::InputMethodQueries queries)
+InputMethodQueryResult queryInputMethod(QObject *object, BobUI::InputMethodQueries queries)
 {
     if (object) {
-        QInputMethodQueryEvent queryEvent(queries | Qt::ImEnabled);
+        QInputMethodQueryEvent queryEvent(queries | BobUI::ImEnabled);
         if (QCoreApplication::sendEvent(object, &queryEvent)) {
-            if (queryEvent.value(Qt::ImEnabled).toBool()) {
+            if (queryEvent.value(BobUI::ImEnabled).toBool()) {
                 InputMethodQueryResult result;
-                static QMetaEnum queryEnum = QMetaEnum::fromType<Qt::InputMethodQuery>();
+                static QMetaEnum queryEnum = QMetaEnum::fromType<BobUI::InputMethodQuery>();
                 for (int i = 0; i < queryEnum.keyCount(); ++i) {
-                    auto query = Qt::InputMethodQuery(queryEnum.value(i));
+                    auto query = BobUI::InputMethodQuery(queryEnum.value(i));
                     if (queries & query)
                         result.insert(query, queryEvent.value(query));
                 }
@@ -513,4 +513,4 @@ QDebug operator<<(QDebug debug, SEL selector)
     return debug;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

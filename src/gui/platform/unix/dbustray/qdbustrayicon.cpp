@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbustrayicon_p.h"
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
 #include <QString>
 #include <QDebug>
@@ -35,11 +35,11 @@
 // Defined in Windows headers which get included by qlockfile_p.h
 #undef interface
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcTray, "qt.qpa.tray")
+Q_LOGGING_CATEGORY(qLcTray, "bobui.qpa.tray")
 
 static QString iconTempPath()
 {
@@ -77,7 +77,7 @@ static int instanceCount = 0;
 
 static inline QString tempFileTemplate()
 {
-    static const QString TempFileTemplate = iconTempPath() + "/qt-trayicon-XXXXXX.png"_L1;
+    static const QString TempFileTemplate = iconTempPath() + "/bobui-trayicon-XXXXXX.png"_L1;
     return TempFileTemplate;
 }
 
@@ -169,7 +169,7 @@ void QDBusTrayIcon::setStatus(const QString &status)
     emit statusChanged(m_status);
 }
 
-QTemporaryFile *QDBusTrayIcon::tempIcon(const QIcon &icon)
+BOBUIemporaryFile *QDBusTrayIcon::tempIcon(const QIcon &icon)
 {
     // Hack for indicator-application, which doesn't handle icons sent across D-Bus:
     // save the icon to a temp file and set the icon name to that filename.
@@ -199,7 +199,7 @@ QTemporaryFile *QDBusTrayIcon::tempIcon(const QIcon &icon)
     }
     if (!necessary)
         return nullptr;
-    QTemporaryFile *ret = new QTemporaryFile(tempFileTemplate(), this);
+    BOBUIemporaryFile *ret = new BOBUIemporaryFile(tempFileTemplate(), this);
     if (!ret->open()) {
         delete ret;
         return nullptr;
@@ -343,7 +343,7 @@ bool QDBusTrayIcon::isSystemTrayAvailable() const
     return conn->isWatcherRegistered();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbustrayicon_p.cpp"
-#endif //QT_NO_SYSTEMTRAYICON
+#endif //BOBUI_NO_SYSTEMTRAYICON

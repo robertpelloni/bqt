@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qpolygon.h>
 #include <qpainterpath.h>
@@ -69,17 +69,17 @@ void tst_QPolygon::toPolygonF()
 
 void tst_QPolygon::boundingRect_data()
 {
-    QTest::addColumn<QPolygon>("poly");
-    QTest::addColumn<QRect>("brect");
+    BOBUIest::addColumn<QPolygon>("poly");
+    BOBUIest::addColumn<QRect>("brect");
 
 #define ROW(args, rect) \
     do { \
         QPolygon poly; \
         poly.setPoints args; \
-        QTest::newRow(#args) << poly << QRect rect; \
+        BOBUIest::newRow(#args) << poly << QRect rect; \
     } while (0)
 
-    QTest::newRow("empty") << QPolygon() << QRect(0, 0, 0, 0);
+    BOBUIest::newRow("empty") << QPolygon() << QRect(0, 0, 0, 0);
     ROW((1,  0,1),             ( 0, 1, 1, 1));
     ROW((2,  0,1,  1,0),       ( 0, 0, 2, 2));
     ROW((3, -1,1, -1,-1, 1,0), (-1,-1, 3, 3));
@@ -115,17 +115,17 @@ struct MyPolygonF : QPolygonF
 
 void tst_QPolygon::boundingRectF_data()
 {
-    QTest::addColumn<QPolygonF>("poly");
-    QTest::addColumn<QRectF>("brect");
+    BOBUIest::addColumn<QPolygonF>("poly");
+    BOBUIest::addColumn<QRectF>("brect");
 
 #define ROW(args, rect) \
     do { \
         MyPolygonF poly; \
         poly.setPoints args; \
-        QTest::newRow(#args) << QPolygonF(poly) << QRectF rect; \
+        BOBUIest::newRow(#args) << QPolygonF(poly) << QRectF rect; \
     } while (0)
 
-    QTest::newRow("empty") << QPolygonF() << QRectF(0, 0, 0, 0);
+    BOBUIest::newRow("empty") << QPolygonF() << QRectF(0, 0, 0, 0);
     ROW((1,  0,1),             ( 0, 1, 0, 0));
     ROW((2,  0,1,  1,0),       ( 0, 0, 1, 1));
     ROW((3, -1,1, -1,-1, 1,0), (-1,-1, 2, 2));
@@ -174,29 +174,29 @@ void tst_QPolygon::swap()
 
 void tst_QPolygon::intersections_data()
 {
-    QTest::addColumn<QPolygon>("poly1");
-    QTest::addColumn<QPolygon>("poly2");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QPolygon>("poly1");
+    BOBUIest::addColumn<QPolygon>("poly2");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("empty intersects nothing")
+    BOBUIest::newRow("empty intersects nothing")
             << QPolygon()
             << QPolygon(QList<QPoint>() << QPoint(0, 0) << QPoint(10, 10) << QPoint(-10, 10))
             << false;
-    QTest::newRow("identical triangles")
+    BOBUIest::newRow("identical triangles")
             << QPolygon(QList<QPoint>() << QPoint(0, 0) << QPoint(10, 10) << QPoint(-10, 10))
             << QPolygon(QList<QPoint>() << QPoint(0, 0) << QPoint(10, 10) << QPoint(-10, 10))
             << true;
-    QTest::newRow("not intersecting")
+    BOBUIest::newRow("not intersecting")
             << QPolygon(QList<QPoint>() << QPoint(0, 0) << QPoint(10, 10) << QPoint(-10, 10))
             << QPolygon(QList<QPoint>() << QPoint(0, 20) << QPoint(10, 12) << QPoint(-10, 12))
             << false;
-    QTest::newRow("clean intersection of squares")
+    BOBUIest::newRow("clean intersection of squares")
             << QPolygon(QList<QPoint>()
                         << QPoint(0, 0) << QPoint(0, 10) << QPoint(10, 10) << QPoint(10, 0))
             << QPolygon(QList<QPoint>()
                         << QPoint(5, 5) << QPoint(5, 15) << QPoint(15, 15) << QPoint(15, 5))
             << true;
-    QTest::newRow("clean contains of squares")
+    BOBUIest::newRow("clean contains of squares")
             << QPolygon(QList<QPoint>()
                         << QPoint(0, 0) << QPoint(0, 10) << QPoint(10, 10) << QPoint(10, 0))
             << QPolygon(QList<QPoint>()
@@ -216,5 +216,5 @@ void tst_QPolygon::intersections()
     QCOMPARE(poly1.intersects(poly2), result);
 }
 
-QTEST_APPLESS_MAIN(tst_QPolygon)
+BOBUIEST_APPLESS_MAIN(tst_QPolygon)
 #include "tst_qpolygon.moc"

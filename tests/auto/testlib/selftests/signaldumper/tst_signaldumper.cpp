@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
-#include <private/qtestlog_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
+#include <private/bobuiestlog_p.h>
 
 class tst_Signaldumper : public QObject
 {
@@ -37,9 +37,9 @@ private slots:
 
 void tst_Signaldumper::addConnectionTypeData()
 {
-    QTest::addColumn<Qt::ConnectionType>("connectionType");
-    QTest::newRow("direct") << Qt::ConnectionType::DirectConnection;
-    QTest::newRow("queued") << Qt::ConnectionType::QueuedConnection;
+    BOBUIest::addColumn<BobUI::ConnectionType>("connectionType");
+    BOBUIest::newRow("direct") << BobUI::ConnectionType::DirectConnection;
+    BOBUIest::newRow("queued") << BobUI::ConnectionType::QueuedConnection;
 }
 
 /*
@@ -100,7 +100,7 @@ void tst_Signaldumper::oneSlot_data()
 
 void tst_Signaldumper::oneSlot()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
     // parameterless to parameterless
@@ -135,7 +135,7 @@ void tst_Signaldumper::oneSlotOldSyntax_data()
 
 void tst_Signaldumper::oneSlotOldSyntax()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
     // parameterless to parameterless
@@ -170,7 +170,7 @@ void tst_Signaldumper::twoSlots_data()
 
 void tst_Signaldumper::twoSlots()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     // Now, instead of creating two slots or two objects, we will just do the same connection twice.
     // The same slot will then be invoked twice.
@@ -217,7 +217,7 @@ void tst_Signaldumper::twoSlotsOldSyntax_data()
 
 void tst_Signaldumper::twoSlotsOldSyntax()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     // Now, instead of creating two slots or two objects, we will just do the same connection twice.
     // The same slot will then be invoked twice.
@@ -264,7 +264,7 @@ void tst_Signaldumper::signalForwarding_data()
 
 void tst_Signaldumper::signalForwarding()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
 
@@ -300,7 +300,7 @@ void tst_Signaldumper::signalForwardingOldSyntax_data()
 
 void tst_Signaldumper::signalForwardingOldSyntax()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
 
@@ -336,7 +336,7 @@ void tst_Signaldumper::slotEmittingSignal_data()
 
 void tst_Signaldumper::slotEmittingSignal()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
 
@@ -354,7 +354,7 @@ void tst_Signaldumper::slotEmittingSignalOldSyntax_data()
 
 void tst_Signaldumper::slotEmittingSignalOldSyntax()
 {
-    QFETCH(Qt::ConnectionType, connectionType);
+    QFETCH(BobUI::ConnectionType, connectionType);
 
     SignalSlotClass signalSlotOwner;
 
@@ -399,11 +399,11 @@ void tst_Signaldumper::deletingSender()
     emit signalSlotOwner->signalWithoutParameters();
 }
 
-QTEST_MAIN_WRAPPER(tst_Signaldumper,
+BOBUIEST_MAIN_WRAPPER(tst_Signaldumper,
     std::vector<const char*> args(argv, argv + argc);
     args.push_back("-vs");
     argc = int(args.size());
     argv = const_cast<char**>(&args[0]);
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_signaldumper.moc"

@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'helpdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,34 +16,34 @@
 #ifndef HELPDIALOG_H
 #define HELPDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QProgressBar>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QListView>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QProgressBar>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIabWidget>
+#include <BobUIWidgets/BOBUIreeWidget>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_HelpDialog
 {
 public:
     QVBoxLayout *vboxLayout;
-    QTabWidget *tabWidget;
+    BOBUIabWidget *tabWidget;
     QWidget *contentPage;
     QVBoxLayout *vboxLayout1;
-    QTreeWidget *listContents;
+    BOBUIreeWidget *listContents;
     QWidget *indexPage;
     QVBoxLayout *vboxLayout2;
     QLabel *TextLabel1;
@@ -51,7 +51,7 @@ public:
     QListView *listIndex;
     QWidget *bookmarkPage;
     QVBoxLayout *vboxLayout3;
-    QTreeWidget *listBookmarks;
+    BOBUIreeWidget *listBookmarks;
     QHBoxLayout *hboxLayout;
     QSpacerItem *spacerItem;
     QPushButton *buttonAdd;
@@ -83,7 +83,7 @@ public:
 #endif
         vboxLayout->setContentsMargins(0, 0, 0, 0);
         vboxLayout->setObjectName("vboxLayout");
-        tabWidget = new QTabWidget(HelpDialog);
+        tabWidget = new BOBUIabWidget(HelpDialog);
         tabWidget->setObjectName("tabWidget");
         contentPage = new QWidget();
         contentPage->setObjectName("contentPage");
@@ -93,9 +93,9 @@ public:
 #endif
         vboxLayout1->setContentsMargins(5, 5, 5, 5);
         vboxLayout1->setObjectName("vboxLayout1");
-        listContents = new QTreeWidget(contentPage);
+        listContents = new BOBUIreeWidget(contentPage);
         listContents->setObjectName("listContents");
-        listContents->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+        listContents->setContextMenuPolicy(BobUI::ContextMenuPolicy::CustomContextMenu);
         listContents->setRootIsDecorated(true);
         listContents->setUniformRowHeights(true);
 
@@ -123,7 +123,7 @@ public:
 
         listIndex = new QListView(indexPage);
         listIndex->setObjectName("listIndex");
-        listIndex->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+        listIndex->setContextMenuPolicy(BobUI::ContextMenuPolicy::CustomContextMenu);
 
         vboxLayout2->addWidget(listIndex);
 
@@ -136,9 +136,9 @@ public:
 #endif
         vboxLayout3->setContentsMargins(5, 5, 5, 5);
         vboxLayout3->setObjectName("vboxLayout3");
-        listBookmarks = new QTreeWidget(bookmarkPage);
+        listBookmarks = new BOBUIreeWidget(bookmarkPage);
         listBookmarks->setObjectName("listBookmarks");
-        listBookmarks->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+        listBookmarks->setContextMenuPolicy(BobUI::ContextMenuPolicy::CustomContextMenu);
         listBookmarks->setUniformRowHeights(true);
 
         vboxLayout3->addWidget(listBookmarks);
@@ -191,7 +191,7 @@ public:
 
         resultBox = new QListWidget(searchPage);
         resultBox->setObjectName("resultBox");
-        resultBox->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+        resultBox->setContextMenuPolicy(BobUI::ContextMenuPolicy::CustomContextMenu);
 
         gridLayout->addWidget(resultBox, 5, 0, 1, 1);
 
@@ -251,11 +251,11 @@ public:
 
         vboxLayout->addWidget(framePrepare);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         TextLabel1->setBuddy(editIndex);
         TextLabel1_2->setBuddy(termsEdit);
         TextLabel2->setBuddy(resultBox);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
         QWidget::setTabOrder(tabWidget, listContents);
         QWidget::setTabOrder(listContents, editIndex);
         QWidget::setTabOrder(editIndex, listIndex);
@@ -275,73 +275,73 @@ public:
     void retranslateUi(QWidget *HelpDialog)
     {
         HelpDialog->setWindowTitle(QCoreApplication::translate("HelpDialog", "Help", nullptr));
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         HelpDialog->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>Help</b><p>Choose the topic you want help on from the contents list, or search the index for keywords.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         tabWidget->setWhatsThis(QCoreApplication::translate("HelpDialog", "Displays help topics organized by category, index or bookmarks. Another tab inherits the full text search.", nullptr));
-#endif // QT_CONFIG(whatsthis)
-        QTreeWidgetItem *___qtreewidgetitem = listContents->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("HelpDialog", "column 1", nullptr));
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
+        BOBUIreeWidgetItem *___bobuireewidgetitem = listContents->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("HelpDialog", "column 1", nullptr));
+#if BOBUI_CONFIG(whatsthis)
         listContents->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>Help topics organized by category.</b><p>Double-click an item to see the topics in that category. To view a topic, just double-click it.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         tabWidget->setTabText(tabWidget->indexOf(contentPage), QCoreApplication::translate("HelpDialog", "Con&tents", nullptr));
         TextLabel1->setText(QCoreApplication::translate("HelpDialog", "&Look For:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         editIndex->setToolTip(QCoreApplication::translate("HelpDialog", "Enter keyword", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         editIndex->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>Enter a keyword.</b><p>The list will select an item that matches the entered string best.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         listIndex->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>List of available help topics.</b><p>Double-click on an item to open its help page. If more than one is found, you must specify which page you want.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         tabWidget->setTabText(tabWidget->indexOf(indexPage), QCoreApplication::translate("HelpDialog", "&Index", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem1 = listBookmarks->headerItem();
-        ___qtreewidgetitem1->setText(0, QCoreApplication::translate("HelpDialog", "column 1", nullptr));
-#if QT_CONFIG(whatsthis)
+        BOBUIreeWidgetItem *___bobuireewidgetitem1 = listBookmarks->headerItem();
+        ___bobuireewidgetitem1->setText(0, QCoreApplication::translate("HelpDialog", "column 1", nullptr));
+#if BOBUI_CONFIG(whatsthis)
         listBookmarks->setWhatsThis(QCoreApplication::translate("HelpDialog", "Displays the list of bookmarks.", nullptr));
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(whatsthis)
+#if BOBUI_CONFIG(tooltip)
         buttonAdd->setToolTip(QCoreApplication::translate("HelpDialog", "Add new bookmark", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         buttonAdd->setWhatsThis(QCoreApplication::translate("HelpDialog", "Add the currently displayed page as a new bookmark.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         buttonAdd->setText(QCoreApplication::translate("HelpDialog", "&New", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         buttonRemove->setToolTip(QCoreApplication::translate("HelpDialog", "Delete bookmark", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         buttonRemove->setWhatsThis(QCoreApplication::translate("HelpDialog", "Delete the selected bookmark.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         buttonRemove->setText(QCoreApplication::translate("HelpDialog", "&Delete", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(bookmarkPage), QCoreApplication::translate("HelpDialog", "&Bookmarks", nullptr));
         TextLabel1_2->setText(QCoreApplication::translate("HelpDialog", "Searching f&or:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         termsEdit->setToolTip(QCoreApplication::translate("HelpDialog", "Enter searchword(s).", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         termsEdit->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>Enter search word(s).</b><p>Enter here the word(s) you are looking for. The words may contain wildcards (*). For a sequence of words quote them.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
         resultBox->setWhatsThis(QCoreApplication::translate("HelpDialog", "<b>Found documents</b><p>This list contains all found documents from the last search. The documents are ordered, i.e. the first document has the most matches.</p>", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         TextLabel2->setText(QCoreApplication::translate("HelpDialog", "Found &Documents:", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         helpButton->setToolTip(QCoreApplication::translate("HelpDialog", "Display the help page.", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         helpButton->setWhatsThis(QCoreApplication::translate("HelpDialog", "Display the help page for the full text search.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         helpButton->setText(QCoreApplication::translate("HelpDialog", "He&lp", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         searchButton->setToolTip(QCoreApplication::translate("HelpDialog", "Start searching.", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(whatsthis)
         searchButton->setWhatsThis(QCoreApplication::translate("HelpDialog", "Pressing this button starts the search.", nullptr));
-#endif // QT_CONFIG(whatsthis)
+#endif // BOBUI_CONFIG(whatsthis)
         searchButton->setText(QCoreApplication::translate("HelpDialog", "&Search", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(searchPage), QCoreApplication::translate("HelpDialog", "&Search", nullptr));
         labelPrepare->setText(QCoreApplication::translate("HelpDialog", "Preparing...", nullptr));
@@ -353,6 +353,6 @@ namespace Ui {
     class HelpDialog: public Ui_HelpDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // HELPDIALOG_H

@@ -1,17 +1,17 @@
 // Copyright (C) 2020 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandxdgactivationv1_p.h"
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
-#include <QtWaylandClient/private/qwaylandinputdevice_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandinputdevice_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandXdgActivationV1::QWaylandXdgActivationV1(wl_registry *registry, uint32_t id,
                                                  uint32_t availableVersion)
-    : QtWayland::xdg_activation_v1(registry, id, qMin(availableVersion, 1u))
+    : BobUIWayland::xdg_activation_v1(registry, id, qMin(availableVersion, 1u))
 {
 }
 
@@ -49,6 +49,6 @@ QWaylandXdgActivationTokenV1::~QWaylandXdgActivationTokenV1()
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwaylandxdgactivationv1_p.cpp"

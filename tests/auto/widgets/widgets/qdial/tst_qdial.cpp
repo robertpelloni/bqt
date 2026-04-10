@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QDial>
 
@@ -77,7 +77,7 @@ void tst_QDial::sliderMoved()
     QPoint init(dial.width()/4, dial.height()/2);
 
     QMouseEvent pressevent(QEvent::MouseButtonPress, init, dial.mapToGlobal(init),
-                           Qt::LeftButton, Qt::LeftButton, {});
+                           BobUI::LeftButton, BobUI::LeftButton, {});
     qApp->sendEvent(&dial, &pressevent);
 
     QSignalSpy sliderspy(&dial, SIGNAL(sliderMoved(int)));
@@ -87,7 +87,7 @@ void tst_QDial::sliderMoved()
     { //move on top of the slider
         init = QPoint(dial.width()/2, dial.height()/4);
         QMouseEvent moveevent(QEvent::MouseMove, init, dial.mapToGlobal(init),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
         qApp->sendEvent(&dial, &moveevent);
         QCOMPARE( sliderspy.size(), 1);
         QCOMPARE( valuespy.size(), 0);
@@ -97,14 +97,14 @@ void tst_QDial::sliderMoved()
     { //move on the right of the slider
         init = QPoint(dial.width()*3/4, dial.height()/2);
         QMouseEvent moveevent(QEvent::MouseMove, init, dial.mapToGlobal(init),
-                              Qt::LeftButton, Qt::LeftButton, {});
+                              BobUI::LeftButton, BobUI::LeftButton, {});
         qApp->sendEvent(&dial, &moveevent);
         QCOMPARE( sliderspy.size(), 2);
         QCOMPARE( valuespy.size(), 0);
     }
 
     QMouseEvent releaseevent(QEvent::MouseButtonRelease, init, dial.mapToGlobal(init),
-                             Qt::LeftButton, Qt::LeftButton, {});
+                             BobUI::LeftButton, BobUI::LeftButton, {});
     qApp->sendEvent(&dial, &releaseevent);
     QCOMPARE( valuespy.size(), 1); // valuechanged signal should be called at this point
 
@@ -123,20 +123,20 @@ void tst_QDial::wrappingCheck()
     dial.show();
 
     { //set value to maximum but do not wrap
-        QTest::keyPress(&dial, Qt::Key_Up);
+        BOBUIest::keyPress(&dial, BobUI::Key_Up);
         QCOMPARE( dial.value(), 100);
     }
 
     { //step up once more and wrap clockwise to minimum + 1
-        QTest::keyPress(&dial, Qt::Key_Up);
+        BOBUIest::keyPress(&dial, BobUI::Key_Up);
         QCOMPARE( dial.value(), 1);
     }
 
     { //step down once, and wrap anti-clockwise to minimum, then again to maximum - 1
-        QTest::keyPress(&dial, Qt::Key_Down);
+        BOBUIest::keyPress(&dial, BobUI::Key_Down);
         QCOMPARE( dial.value(), 0);
 
-        QTest::keyPress(&dial, Qt::Key_Down);
+        BOBUIest::keyPress(&dial, BobUI::Key_Down);
         QCOMPARE( dial.value(), 99);
     }
 
@@ -144,11 +144,11 @@ void tst_QDial::wrappingCheck()
         dial.setWrapping(false);
         dial.setValue(100);
 
-        QTest::keyPress(&dial, Qt::Key_Up);
+        BOBUIest::keyPress(&dial, BobUI::Key_Up);
         QCOMPARE( dial.value(), 100);
 
         dial.setValue(0);
-        QTest::keyPress(&dial, Qt::Key_Down);
+        BOBUIest::keyPress(&dial, BobUI::Key_Down);
         QCOMPARE( dial.value(), 0);
     }
 
@@ -157,23 +157,23 @@ void tst_QDial::wrappingCheck()
         dial.setValue(dial.minimum());
         dial.setSingleStep(305);
 
-        QTest::keyPress(&dial, Qt::Key_Up);
+        BOBUIest::keyPress(&dial, BobUI::Key_Up);
         QCOMPARE( dial.value(), 5);
 
         dial.setValue(dial.minimum());
-        QTest::keyPress(&dial, Qt::Key_Down);
+        BOBUIest::keyPress(&dial, BobUI::Key_Down);
         QCOMPARE( dial.value(), 95);
 
         dial.setMinimum(-30);
         dial.setMaximum(-4);
         dial.setSingleStep(200);
         dial.setValue(dial.minimum());
-        QTest::keyPress(&dial, Qt::Key_Down);
+        BOBUIest::keyPress(&dial, BobUI::Key_Down);
         QCOMPARE( dial.value(), -22);
     }
 }
 
-// QTBUG-104641
+// BOBUIBUG-104641
 void tst_QDial::minEqualMaxValueOutsideRange()
 {
     QDial dial;
@@ -184,21 +184,21 @@ void tst_QDial::minEqualMaxValueOutsideRange()
 
 /*
     Verify that the notchSizes calculated don't change compared
-    to Qt 5.15 results for dial sizes at the edge values of the
+    to BobUI 5.15 results for dial sizes at the edge values of the
     algorithm.
 */
 void tst_QDial::notchSize_data()
 {
-    QTest::addColumn<int>("diameter");
-    QTest::addColumn<int>("notchSize");
+    BOBUIest::addColumn<int>("diameter");
+    BOBUIest::addColumn<int>("notchSize");
 
-    QTest::newRow("data0") << 50 << 4;
-    QTest::newRow("data1") << 80 << 4;
-    QTest::newRow("data2") << 95 << 4;
-    QTest::newRow("data3") << 110 << 4;
-    QTest::newRow("data4") << 152 << 2;
-    QTest::newRow("data5") << 210 << 2;
-    QTest::newRow("data6") << 228 << 1;
+    BOBUIest::newRow("data0") << 50 << 4;
+    BOBUIest::newRow("data1") << 80 << 4;
+    BOBUIest::newRow("data2") << 95 << 4;
+    BOBUIest::newRow("data3") << 110 << 4;
+    BOBUIest::newRow("data4") << 152 << 2;
+    BOBUIest::newRow("data5") << 210 << 2;
+    BOBUIest::newRow("data6") << 228 << 1;
 }
 
 void tst_QDial::notchSize()
@@ -210,5 +210,5 @@ void tst_QDial::notchSize()
     QCOMPARE(dial.notchSize(), notchSize);
 }
 
-QTEST_MAIN(tst_QDial)
+BOBUIEST_MAIN(tst_QDial)
 #include "tst_qdial.moc"

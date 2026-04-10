@@ -1,6 +1,6 @@
 #!/bin/bash
-# Copyright (C) 2016 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2016 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 
 if [ "$1" == "--help" ]; then
@@ -41,12 +41,12 @@ for spec in $SPECS; do
         sed -n '/Dumping all variables/,$p' |
         grep -Ev "(QMAKE_INTERNAL_INCLUDED_FILES|DISTFILES) ===" > ../specs/$output_file
 
-    if [ -n $QTDIR ]; then
-        $SEDI "s|$QTDIR|\$QTDIR|g" ../specs/$output_file
+    if [ -n $BOBUIDIR ]; then
+        $SEDI "s|$BOBUIDIR|\$BOBUIDIR|g" ../specs/$output_file
     fi
 
-    if [ -n $QTSRCDIR ]; then
-        $SEDI "s|$QTSRCDIR|\$QTDIR|g" ../specs/$output_file
+    if [ -n $BOBUISRCDIR ]; then
+        $SEDI "s|$BOBUISRCDIR|\$BOBUIDIR|g" ../specs/$output_file
     fi
 done
 cd ..

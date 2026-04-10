@@ -1,11 +1,11 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #if 0
-#pragma qt_class(QtSystemDetection)
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_class(BobUISystemDetection)
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QSYSTEMDETECTION_H
@@ -57,7 +57,7 @@
 #    define Q_OS_DARWIN
 #    define Q_OS_BSD4
 #    if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
-#      define QT_PLATFORM_UIKIT
+#      define BOBUI_PLATFORM_UIKIT
 #      if defined(TARGET_OS_WATCH) && TARGET_OS_WATCH
 #        define Q_OS_WATCHOS
 #      elif defined(TARGET_OS_TV) && TARGET_OS_TV
@@ -75,7 +75,7 @@
 #      define Q_OS_MACOS
 #    endif
 #  else
-#    error "Qt has not been ported to this Apple platform - see http://www.qt.io/developers"
+#    error "BobUI has not been ported to this Apple platform - see http://www.bobui.io/developers"
 #  endif
 #elif defined(__WEBOS__)
 #  define Q_OS_WEBOS
@@ -131,7 +131,7 @@
 #  define Q_OS_HAIKU
 #elif defined(__MAKEDEPEND__)
 #else
-#  error "Qt has not been ported to this OS - see http://www.qt-project.org/"
+#  error "BobUI has not been ported to this OS - see http://www.bobui-project.org/"
 #endif
 
 #if defined(Q_OS_WIN32) || defined(Q_OS_WIN64)
@@ -140,7 +140,7 @@
 // On Windows, pointers to dllimport'ed variables are not constant expressions,
 // so to keep to certain initializations (like QMetaObject) constexpr, we need
 // to use functions instead.
-#  define QT_NO_DATA_RELOCATION
+#  define BOBUI_NO_DATA_RELOCATION
 #endif
 
 #if defined(Q_OS_WIN)
@@ -156,14 +156,14 @@
 #  define Q_OS_MAC // FIXME: Deprecate
 #  ifdef __LP64__
 #    define Q_OS_DARWIN64
-#    pragma clang deprecated(Q_OS_DARWIN64, "use Q_OS_DARWIN and QT_POINTER_SIZE/Q_PROCESSOR_* instead")
+#    pragma clang deprecated(Q_OS_DARWIN64, "use Q_OS_DARWIN and BOBUI_POINTER_SIZE/Q_PROCESSOR_* instead")
 #    define Q_OS_MAC64
-#    pragma clang deprecated(Q_OS_MAC64, "use Q_OS_DARWIN and QT_POINTER_SIZE/Q_PROCESSOR_* instead")
+#    pragma clang deprecated(Q_OS_MAC64, "use Q_OS_DARWIN and BOBUI_POINTER_SIZE/Q_PROCESSOR_* instead")
 #  else
 #    define Q_OS_DARWIN32
-#    pragma clang deprecated(Q_OS_DARWIN32, "use Q_OS_DARWIN and QT_POINTER_SIZE/Q_PROCESSOR_* instead")
+#    pragma clang deprecated(Q_OS_DARWIN32, "use Q_OS_DARWIN and BOBUI_POINTER_SIZE/Q_PROCESSOR_* instead")
 #    define Q_OS_MAC32
-#    pragma clang deprecated(Q_OS_MAC32, "use Q_OS_DARWIN and QT_POINTER_SIZE/Q_PROCESSOR_* instead")
+#    pragma clang deprecated(Q_OS_MAC32, "use Q_OS_DARWIN and BOBUI_POINTER_SIZE/Q_PROCESSOR_* instead")
 #  endif
 #  ifdef Q_OS_MACOS
 #    define Q_OS_MACX
@@ -178,48 +178,48 @@
 #  include <Availability.h>
 #  include <AvailabilityMacros.h>
 
-#  define QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, tvos, watchos) \
+#  define BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, tvos, watchos) \
     ((defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && macos != __MAC_NA && __MAC_OS_X_VERSION_MAX_ALLOWED >= macos) || \
      (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && ios != __IPHONE_NA && __IPHONE_OS_VERSION_MAX_ALLOWED >= ios) || \
      (defined(__TV_OS_VERSION_MAX_ALLOWED) && tvos != __TVOS_NA && __TV_OS_VERSION_MAX_ALLOWED >= tvos) || \
      (defined(__WATCH_OS_VERSION_MAX_ALLOWED) && watchos != __WATCHOS_NA && __WATCH_OS_VERSION_MAX_ALLOWED >= watchos))
 
-#  define QT_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, ios, tvos, watchos) \
+#  define BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, ios, tvos, watchos) \
     ((defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && macos != __MAC_NA && __MAC_OS_X_VERSION_MIN_REQUIRED < macos) || \
      (defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && ios != __IPHONE_NA && __IPHONE_OS_VERSION_MIN_REQUIRED < ios) || \
      (defined(__TV_OS_VERSION_MIN_REQUIRED) && tvos != __TVOS_NA && __TV_OS_VERSION_MIN_REQUIRED < tvos) || \
      (defined(__WATCH_OS_VERSION_MIN_REQUIRED) && watchos != __WATCHOS_NA && __WATCH_OS_VERSION_MIN_REQUIRED < watchos))
 
-#  define QT_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios) \
-      QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, __TVOS_NA, __WATCHOS_NA)
-#  define QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos) \
-      QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, __IPHONE_NA, __TVOS_NA, __WATCHOS_NA)
-#  define QT_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(ios) \
-      QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, ios, __TVOS_NA, __WATCHOS_NA)
-#  define QT_TVOS_PLATFORM_SDK_EQUAL_OR_ABOVE(tvos) \
-      QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, __IPHONE_NA, tvos, __WATCHOS_NA)
-#  define QT_WATCHOS_PLATFORM_SDK_EQUAL_OR_ABOVE(watchos) \
-      QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, __IPHONE_NA, __TVOS_NA, watchos)
+#  define BOBUI_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios) \
+      BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos) \
+      BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, __IPHONE_NA, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(ios) \
+      BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, ios, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_TVOS_PLATFORM_SDK_EQUAL_OR_ABOVE(tvos) \
+      BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, __IPHONE_NA, tvos, __WATCHOS_NA)
+#  define BOBUI_WATCHOS_PLATFORM_SDK_EQUAL_OR_ABOVE(watchos) \
+      BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(__MAC_NA, __IPHONE_NA, __TVOS_NA, watchos)
 
-#  define QT_MACOS_IOS_DEPLOYMENT_TARGET_BELOW(macos, ios) \
-      QT_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, ios, __TVOS_NA, __WATCHOS_NA)
-#  define QT_MACOS_DEPLOYMENT_TARGET_BELOW(macos) \
-      QT_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, __IPHONE_NA, __TVOS_NA, __WATCHOS_NA)
-#  define QT_IOS_DEPLOYMENT_TARGET_BELOW(ios) \
-      QT_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, ios, __TVOS_NA, __WATCHOS_NA)
-#  define QT_TVOS_DEPLOYMENT_TARGET_BELOW(tvos) \
-      QT_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, __IPHONE_NA, tvos, __WATCHOS_NA)
-#  define QT_WATCHOS_DEPLOYMENT_TARGET_BELOW(watchos) \
-      QT_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, __IPHONE_NA, __TVOS_NA, watchos)
+#  define BOBUI_MACOS_IOS_DEPLOYMENT_TARGET_BELOW(macos, ios) \
+      BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, ios, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_MACOS_DEPLOYMENT_TARGET_BELOW(macos) \
+      BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(macos, __IPHONE_NA, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_IOS_DEPLOYMENT_TARGET_BELOW(ios) \
+      BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, ios, __TVOS_NA, __WATCHOS_NA)
+#  define BOBUI_TVOS_DEPLOYMENT_TARGET_BELOW(tvos) \
+      BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, __IPHONE_NA, tvos, __WATCHOS_NA)
+#  define BOBUI_WATCHOS_DEPLOYMENT_TARGET_BELOW(watchos) \
+      BOBUI_DARWIN_DEPLOYMENT_TARGET_BELOW(__MAC_NA, __IPHONE_NA, __TVOS_NA, watchos)
 
 #else // !Q_OS_DARWIN
 
-#define QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, tvos, watchos) (0)
-#define QT_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios) (0)
-#define QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos) (0)
-#define QT_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(ios) (0)
-#define QT_TVOS_PLATFORM_SDK_EQUAL_OR_ABOVE(tvos) (0)
-#define QT_WATCHOS_PLATFORM_SDK_EQUAL_OR_ABOVE(watchos) (0)
+#define BOBUI_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, tvos, watchos) (0)
+#define BOBUI_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios) (0)
+#define BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos) (0)
+#define BOBUI_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(ios) (0)
+#define BOBUI_TVOS_PLATFORM_SDK_EQUAL_OR_ABOVE(tvos) (0)
+#define BOBUI_WATCHOS_PLATFORM_SDK_EQUAL_OR_ABOVE(watchos) (0)
 
 #endif // Q_OS_DARWIN
 
@@ -227,8 +227,8 @@
 #  if __LSB_VERSION__ < 40
 #    error "This version of the Linux Standard Base is unsupported"
 #  endif
-#ifndef QT_LINUXBASE
-#  define QT_LINUXBASE
+#ifndef BOBUI_LINUXBASE
+#  define BOBUI_LINUXBASE
 #endif
 #endif
 
@@ -244,7 +244,7 @@
 // so we can't rely solely on compiler here.
 // MSVC STL used by MSVC and clang-cl does not support int128
 #if !defined(Q_OS_VXWORKS) && !defined(_MSC_VER)
-#  define QT_COMPILER_SUPPORTS_INT128 __SIZEOF_INT128__
+#  define BOBUI_COMPILER_SUPPORTS_INT128 __SIZEOF_INT128__
 #endif
 #endif // defined(__SIZEOF_INT128__)
 

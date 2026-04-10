@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "robot.h"
 
@@ -11,7 +11,7 @@
 
 //! [0]
 RobotPart::RobotPart(QGraphicsItem *parent)
-    : QGraphicsObject(parent), color(Qt::lightGray) 
+    : QGraphicsObject(parent), color(BobUI::lightGray) 
 {
     setAcceptDrops(true);
 }
@@ -71,15 +71,15 @@ void RobotHead::paint(QPainter *painter,
     Q_UNUSED(widget);
     if (pixmap.isNull()) {
         painter->setBrush(dragOver ? color.lighter(130) : color);
-        painter->drawRoundedRect(-10, -30, 20, 30, 25, 25, Qt::RelativeSize);
-        painter->setBrush(Qt::white);
+        painter->drawRoundedRect(-10, -30, 20, 30, 25, 25, BobUI::RelativeSize);
+        painter->setBrush(BobUI::white);
         painter->drawEllipse(-7, -3 - 20, 7, 7);
         painter->drawEllipse(0, -3 - 20, 7, 7);
-        painter->setBrush(Qt::black);
+        painter->setBrush(BobUI::black);
         painter->drawEllipse(-5, -1 - 20, 2, 2);
         painter->drawEllipse(2, -1 - 20, 2, 2);
-        painter->setPen(QPen(Qt::black, 2));
-        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(BobUI::black, 2));
+        painter->setBrush(BobUI::NoBrush);
         painter->drawArc(-6, -2 - 20, 12, 15, 190 * 16, 160 * 16);
     } else {
         painter->scale(.2272, .2824);
@@ -126,7 +126,7 @@ void RobotTorso::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     painter->setBrush(dragOver ? color.lighter(130) : color);
-    painter->drawRoundedRect(-20, -20, 40, 60, 25, 25, Qt::RelativeSize);
+    painter->drawRoundedRect(-20, -20, 40, 60, 25, 25, BobUI::RelativeSize);
     painter->drawEllipse(-25, -20, 20, 20);
     painter->drawEllipse(5, -20, 20, 20);
     painter->drawEllipse(-20, 22, 20, 20);
@@ -150,7 +150,7 @@ void RobotLimb::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     painter->setBrush(dragOver ? color.lighter(130) : color);
-    painter->drawRoundedRect(boundingRect(), 50, 50, Qt::RelativeSize);
+    painter->drawRoundedRect(boundingRect(), 50, 50, BobUI::RelativeSize);
     painter->drawEllipse(-5, -5, 10, 10);
 }
 

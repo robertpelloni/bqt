@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QGraphicsWidget>
 #include <QPainter>
@@ -14,7 +14,7 @@ class ScrollBarPrivate {
 
 public:
 
-    ScrollBarPrivate(Qt::Orientation orientation, ScrollBar *scrollBar)
+    ScrollBarPrivate(BobUI::Orientation orientation, ScrollBar *scrollBar)
         : orientation(orientation)
         , sliderPosition(0.0)
         , sliderSize(0.0)
@@ -35,9 +35,9 @@ public:
         scrollerPixmap = Theme::p()->pixmap("scroll.svg");
         scrollBarPixmap = Theme::p()->pixmap("scrollbar.svg");
 
-        if (orientation == Qt::Horizontal) {
-            scrollerPixmap = scrollerPixmap.transformed(QTransform().rotate(90));
-            scrollBarPixmap = scrollBarPixmap.transformed(QTransform().rotate(90));
+        if (orientation == BobUI::Horizontal) {
+            scrollerPixmap = scrollerPixmap.transformed(BOBUIransform().rotate(90));
+            scrollBarPixmap = scrollBarPixmap.transformed(BOBUIransform().rotate(90));
         }
     }
 
@@ -67,7 +67,7 @@ public:
 
         //Adjust the scrollBar in relation to the scroller
 
-        if (orientation == Qt::Horizontal) {
+        if (orientation == BobUI::Horizontal) {
             qreal scrollBarHeight = scrollBarPixmap.height();
 
             if  (h > scrollBarHeight) {
@@ -88,7 +88,7 @@ public:
         }
         cursor = QRectF(x, y, w, h);
 
-        if (orientation == Qt::Horizontal) {
+        if (orientation == BobUI::Horizontal) {
             qreal dx = qreal(int(sliderPosition)) * (slider.width() - cursor.width()) / sliderSize;
             cursor.translate(dx, 0.0);
         } else {
@@ -97,7 +97,7 @@ public:
         }
     }
 
-    Qt::Orientation orientation;
+    BobUI::Orientation orientation;
     qreal sliderPosition;
     qreal sliderSize;
 
@@ -112,7 +112,7 @@ public:
     ScrollBar *q_ptr;
 };
 
-ScrollBar::ScrollBar(Qt::Orientation orientation, QGraphicsWidget *parent)
+ScrollBar::ScrollBar(BobUI::Orientation orientation, QGraphicsWidget *parent)
     : QGraphicsWidget(parent)
     , d_ptr(new ScrollBarPrivate(orientation, this))
 {
@@ -177,24 +177,24 @@ void ScrollBar::paint(QPainter *painter,
     painter->drawPixmap(cursorRect.topLeft(), d->scrollerPixmap);
 }
 
-QSizeF ScrollBar::sizeHint(Qt::SizeHint which,
+QSizeF ScrollBar::sizeHint(BobUI::SizeHint which,
         const QSizeF &constraint) const
 {
     Q_D(const ScrollBar);
 
     QSizeF s;
 
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         s = QSizeF(-1, qMax(d->scrollBarPixmap.height(), d->scrollerPixmap.height()));
     else
         s = QSizeF(qMax(d->scrollBarPixmap.width(), d->scrollerPixmap.width()), -1);
 
     switch (which)
     {
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         return s;
 
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         return s;
 
     default:
@@ -230,7 +230,7 @@ void ScrollBar::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (!d->sliderDown)
         return;
 
-    if (d->orientation == Qt::Horizontal) {
+    if (d->orientation == BobUI::Horizontal) {
         qreal f = (event->pos().x() - d->pressPos.x())/(d->slider.width() - d->cursor.width());
         qreal dx = f * d->sliderSize;
 

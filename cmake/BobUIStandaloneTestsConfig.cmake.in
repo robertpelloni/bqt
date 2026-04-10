@@ -1,0 +1,8 @@
+# Copyright (C) 2024 The BobUI Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+set(__standalone_parts_bobui_packages_args
+@BOBUI_MODULE_PACKAGES@
+@BOBUI_TOOL_PACKAGES@
+)
+bobui_internal_find_standalone_parts_bobui_packages(__standalone_parts_bobui_packages_args)

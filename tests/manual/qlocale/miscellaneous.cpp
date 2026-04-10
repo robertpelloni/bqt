@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "miscellaneous.h"
 
@@ -54,7 +54,7 @@ void MiscWidget::localeChanged(QLocale locale)
     setLocale(locale);
     updateQuotedText(textToQuote->text());
     updateListToSeparatedStringText();
-    textDirection->setText(locale.textDirection() == Qt::LeftToRight ? "Left To Right" : "Right To Left");
+    textDirection->setText(locale.textDirection() == BobUI::LeftToRight ? "Left To Right" : "Right To Left");
 }
 
 void MiscWidget::createLineEdit(const QString &label, QLabel **labelWidget, QLineEdit **lineEditWidget)

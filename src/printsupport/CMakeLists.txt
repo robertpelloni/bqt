@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## PrintSupport Module:
 #####################################################################
 
-qt_internal_add_module(PrintSupport
+bobui_internal_add_module(PrintSupport
     PLUGIN_TYPES printsupport
     SOURCES
         kernel/qpaintengine_alpha.cpp kernel/qpaintengine_alpha_p.h
@@ -18,28 +18,28 @@ qt_internal_add_module(PrintSupport
         kernel/qprintengine_pdf.cpp kernel/qprintengine_pdf_p.h
         kernel/qprinter.cpp kernel/qprinter.h kernel/qprinter_p.h
         kernel/qprinterinfo.cpp kernel/qprinterinfo.h kernel/qprinterinfo_p.h
-        kernel/qtprintsupportglobal.h kernel/qtprintsupportglobal_p.h
+        kernel/bobuiprintsupportglobal.h kernel/bobuiprintsupportglobal_p.h
     DEFINES
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_NO_USING_NAMESPACE
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_USING_NAMESPACE
+        BOBUI_USE_NODISCARD_FILE_OPEN
     INCLUDE_DIRECTORIES
         dialogs
         widgets
     LIBRARIES
-        Qt::CorePrivate
-        Qt::GuiPrivate
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
+        BobUI::WidgetsPrivate
     PUBLIC_LIBRARIES
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
+        BobUI::Core
+        BobUI::Gui
+        BobUI::Widgets
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
-        Qt::GuiPrivate
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::GuiPrivate
+        BobUI::WidgetsPrivate
     QPA_HEADER_FILTERS
         "(^|/)qplatform.+\\.h$"
 )
@@ -51,7 +51,7 @@ endif()
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(PrintSupport CONDITION MACOS
+bobui_internal_extend_target(PrintSupport CONDITION MACOS
     SOURCES
         platform/macos/qcocoaprintdevice.mm platform/macos/qcocoaprintdevice_p.h
         platform/macos/qcocoaprintersupport.mm platform/macos/qcocoaprintersupport_p.h
@@ -64,7 +64,7 @@ qt_internal_extend_target(PrintSupport CONDITION MACOS
         platform/macos/qcocoaprintersupport.mm
 )
 
-qt_internal_extend_target(PrintSupport CONDITION WIN32
+bobui_internal_extend_target(PrintSupport CONDITION WIN32
     SOURCES
         platform/windows/qprintengine_win.cpp platform/windows/qprintengine_win_p.h
         platform/windows/qwindowsprintdevice.cpp platform/windows/qwindowsprintdevice_p.h
@@ -79,38 +79,38 @@ qt_internal_extend_target(PrintSupport CONDITION WIN32
         platform/windows/qwindowsprintersupport.cpp
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printpreviewwidget
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_printpreviewwidget
     SOURCES
         kernel/qpaintengine_preview.cpp kernel/qpaintengine_preview_p.h
         widgets/qprintpreviewwidget.cpp widgets/qprintpreviewwidget.h
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_cups AND UNIX AND NOT APPLE
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_cups AND UNIX AND NOT APPLE
     SOURCES
         kernel/qcups.cpp kernel/qcups_p.h
 )
 
 # qprint_p.h includes cups/ppd.h, so PrintSupportPrivate should add the related
 # interface include path.
-qt_internal_extend_target(PrintSupportPrivate CONDITION QT_FEATURE_cups AND UNIX AND NOT APPLE
+bobui_internal_extend_target(PrintSupportPrivate CONDITION BOBUI_FEATURE_cups AND UNIX AND NOT APPLE
     PUBLIC_INCLUDE_DIRECTORIES
         $<TARGET_PROPERTY:Cups::Cups,INTERFACE_INCLUDE_DIRECTORIES>
 )
 # Ensure that PrintSupport requires Cups if the 'cups' feature enabled and
 # Cups is never linked.
-if(QT_FEATURE_cups AND UNIX AND NOT APPLE)
-    qt_internal_add_target_include_dirs(PrintSupport Cups::Cups)
-    qt_record_extra_third_party_dependency(PrintSupport Cups::Cups)
+if(BOBUI_FEATURE_cups AND UNIX AND NOT APPLE)
+    bobui_internal_add_target_include_dirs(PrintSupport Cups::Cups)
+    bobui_record_extra_third_party_dependency(PrintSupport Cups::Cups)
 endif()
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_cupsjobwidget AND UNIX AND NOT APPLE
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_cupsjobwidget AND UNIX AND NOT APPLE
     SOURCES
         widgets/qcupsjobwidget.cpp widgets/qcupsjobwidget.ui widgets/qcupsjobwidget_p.h
     ENABLE_AUTOGEN_TOOLS
         uic
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printdialog
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_printdialog
     SOURCES
         dialogs/qabstractprintdialog.cpp dialogs/qabstractprintdialog.h dialogs/qabstractprintdialog_p.h
         dialogs/qpagesetupdialog.cpp dialogs/qpagesetupdialog.h dialogs/qpagesetupdialog_p.h
@@ -120,7 +120,7 @@ qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printdialog
         uic
 )
 
-if(QT_FEATURE_printdialog)
+if(BOBUI_FEATURE_printdialog)
     # Resources:
     set(qprintdialog_resource_files
         "dialogs/images/zoom-fit-page-24.png"
@@ -155,9 +155,9 @@ if(QT_FEATURE_printdialog)
         "dialogs/images/zoom-out-32.png"
     )
 
-    qt_internal_add_resource(PrintSupport "qprintdialog"
+    bobui_internal_add_resource(PrintSupport "qprintdialog"
         PREFIX
-            "/qt-project.org/dialogs/qprintpreviewdialog"
+            "/bobui-project.org/dialogs/qprintpreviewdialog"
         BASE
             "dialogs"
         FILES
@@ -168,9 +168,9 @@ if(QT_FEATURE_printdialog)
         "dialogs/images/status-gray-scale.png"
     )
 
-    qt_internal_add_resource(PrintSupport "qprintdialog1"
+    bobui_internal_add_resource(PrintSupport "qprintdialog1"
         PREFIX
-            "/qt-project.org/dialogs/qprintdialog"
+            "/bobui-project.org/dialogs/qprintdialog"
         BASE
             "dialogs"
         FILES
@@ -178,7 +178,7 @@ if(QT_FEATURE_printdialog)
     )
 endif()
 
-qt_internal_extend_target(PrintSupport CONDITION MACOS AND QT_FEATURE_printdialog
+bobui_internal_extend_target(PrintSupport CONDITION MACOS AND BOBUI_FEATURE_printdialog
     SOURCES
         dialogs/qpagesetupdialog_mac.mm
         dialogs/qprintdialog_mac.mm
@@ -186,13 +186,13 @@ qt_internal_extend_target(PrintSupport CONDITION MACOS AND QT_FEATURE_printdialo
         ${FWAppKit}
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printdialog AND WIN32
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_printdialog AND WIN32
     SOURCES
         dialogs/qpagesetupdialog_win.cpp
         dialogs/qprintdialog_win.cpp
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printdialog AND UNIX AND NOT MACOS
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_printdialog AND UNIX AND NOT MACOS
     SOURCES
         dialogs/qpagesetupdialog_unix.cpp dialogs/qpagesetupdialog_unix_p.h
         dialogs/qprintdialog_unix.cpp
@@ -202,15 +202,15 @@ qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printdialog AND UNIX
     NO_UNITY_BUILD_SOURCES
         dialogs/qprintdialog_unix.cpp   # Clashes with CUPS headers
     INCLUDE_DIRECTORIES
-        ${QtBase_SOURCE_DIR}/src/plugins/printsupport/cups
+        ${BobUIBase_SOURCE_DIR}/src/plugins/printsupport/cups
     ENABLE_AUTOGEN_TOOLS
         uic
 )
 
-qt_internal_extend_target(PrintSupport CONDITION QT_FEATURE_printpreviewdialog
+bobui_internal_extend_target(PrintSupport CONDITION BOBUI_FEATURE_printpreviewdialog
     SOURCES
         dialogs/qprintpreviewdialog.cpp dialogs/qprintpreviewdialog.h
 )
-qt_internal_add_docs(PrintSupport
-    doc/qtprintsupport.qdocconf
+bobui_internal_add_docs(PrintSupport
+    doc/bobuiprintsupport.qdocconf
 )

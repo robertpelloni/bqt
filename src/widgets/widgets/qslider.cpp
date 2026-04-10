@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qslider.h"
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 #include "qapplication.h"
@@ -16,7 +16,7 @@
 #include "private/qabstractslider_p.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSliderPrivate : public QAbstractSliderPrivate
 {
@@ -44,12 +44,12 @@ void QSliderPrivate::init()
     tickInterval = 0;
     tickPosition = QSlider::NoTicks;
     hoverControl = QStyle::SC_None;
-    q->setFocusPolicy(Qt::FocusPolicy(q->style()->styleHint(QStyle::SH_Button_FocusPolicy, nullptr, q)));
+    q->setFocusPolicy(BobUI::FocusPolicy(q->style()->styleHint(QStyle::SH_Button_FocusPolicy, nullptr, q)));
     QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Fixed, QSizePolicy::Slider);
-    if (orientation == Qt::Vertical)
+    if (orientation == BobUI::Vertical)
         sp.transpose();
     q->setSizePolicy(sp);
-    q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(BobUI::WA_WState_OwnSizePolicy, false);
     resetLayoutItemMargins();
 }
 
@@ -72,7 +72,7 @@ int QSliderPrivate::pixelPosToRangeValue(int pos) const
     QRect sr = q->style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderHandle, q);
     int sliderMin, sliderMax, sliderLength;
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         sliderLength = sr.width();
         sliderMin = gr.x();
         sliderMax = gr.right() - sliderLength + 1;
@@ -87,7 +87,7 @@ int QSliderPrivate::pixelPosToRangeValue(int pos) const
 
 inline int QSliderPrivate::pick(const QPoint &pt) const
 {
-    return orientation == Qt::Horizontal ? pt.x() : pt.y();
+    return orientation == BobUI::Horizontal ? pt.x() : pt.y();
 }
 
 /*!
@@ -111,15 +111,15 @@ void QSlider::initStyleOption(QStyleOptionSlider *option) const
     option->minimum = d->minimum;
     option->tickPosition = (QSlider::TickPosition)d->tickPosition;
     option->tickInterval = d->tickInterval;
-    option->upsideDown = (d->orientation == Qt::Horizontal) ?
-                     (d->invertedAppearance != (option->direction == Qt::RightToLeft))
+    option->upsideDown = (d->orientation == BobUI::Horizontal) ?
+                     (d->invertedAppearance != (option->direction == BobUI::RightToLeft))
                      : (!d->invertedAppearance);
-    option->direction = Qt::LeftToRight; // we use the upsideDown option instead
+    option->direction = BobUI::LeftToRight; // we use the upsideDown option instead
     option->sliderPosition = d->position;
     option->sliderValue = d->value;
     option->singleStep = d->singleStep;
     option->pageStep = d->pageStep;
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         option->state |= QStyle::State_Horizontal;
 
     if (d->pressedControl) {
@@ -135,7 +135,7 @@ bool QSliderPrivate::updateHoverControl(const QPoint &pos)
     Q_Q(QSlider);
     QRect lastHoverRect = hoverRect;
     QStyle::SubControl lastHoverControl = hoverControl;
-    bool doesHover = q->testAttribute(Qt::WA_Hover);
+    bool doesHover = q->testAttribute(BobUI::WA_Hover);
     if (lastHoverControl != newHoverControl(pos) && doesHover) {
         q->update(lastHoverRect);
         q->update(hoverRect);
@@ -176,7 +176,7 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
     \brief The QSlider widget provides a vertical or horizontal slider.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-slider.png {Horizontal slider with tick marks}
 
@@ -252,17 +252,17 @@ QStyle::SubControl QSliderPrivate::newHoverControl(const QPoint &pos)
     Constructs a vertical slider with the given \a parent.
 */
 QSlider::QSlider(QWidget *parent)
-    : QSlider(Qt::Vertical, parent)
+    : QSlider(BobUI::Vertical, parent)
 {
 }
 
 /*!
     Constructs a slider with the given \a parent. The \a orientation
     parameter determines whether the slider is horizontal or vertical;
-    the valid values are Qt::Vertical and Qt::Horizontal.
+    the valid values are BobUI::Vertical and BobUI::Horizontal.
 */
 
-QSlider::QSlider(Qt::Orientation orientation, QWidget *parent)
+QSlider::QSlider(BobUI::Orientation orientation, QWidget *parent)
     : QAbstractSlider(*new QSliderPrivate, parent)
 {
     d_func()->orientation = orientation;
@@ -329,7 +329,7 @@ void QSlider::mousePressEvent(QMouseEvent *ev)
         ev->ignore();
         return;
     }
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (QApplicationPrivate::keypadNavigationEnabled())
         setEditFocus(true);
 #endif
@@ -435,7 +435,7 @@ QSize QSlider::sizeHint() const
     if (d->tickPosition & TicksBelow)
         thick += TickSpace;
     int w = thick, h = SliderLength;
-    if (d->orientation == Qt::Horizontal) {
+    if (d->orientation == BobUI::Horizontal) {
         w = SliderLength;
         h = thick;
     }
@@ -452,7 +452,7 @@ QSize QSlider::minimumSizeHint() const
     QStyleOptionSlider opt;
     initStyleOption(&opt);
     int length = style()->pixelMetric(QStyle::PM_SliderLength, &opt, this);
-    if (d->orientation == Qt::Horizontal)
+    if (d->orientation == BobUI::Horizontal)
         s.setWidth(length);
     else
         s.setHeight(length);
@@ -507,13 +507,13 @@ int QSlider::tickInterval() const
     return d_func()->tickInterval;
 }
 
-Q_WIDGETS_EXPORT QStyleOptionSlider qt_qsliderStyleOption(QSlider *slider)
+Q_WIDGETS_EXPORT QStyleOptionSlider bobui_qsliderStyleOption(QSlider *slider)
 {
     QStyleOptionSlider sliderOption;
     slider->initStyleOption(&sliderOption);
     return sliderOption;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qslider.cpp"

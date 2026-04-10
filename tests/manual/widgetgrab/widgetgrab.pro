@@ -1,4 +1,4 @@
-QT       += core gui widgets
+BOBUI       += core gui widgets
 TARGET = widgetgrab
 TEMPLATE = app
 

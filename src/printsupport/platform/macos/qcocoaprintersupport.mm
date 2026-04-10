@@ -1,28 +1,28 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
 #include "qcocoaprintersupport_p.h"
 
-#ifndef QT_NO_PRINTER
+#ifndef BOBUI_NO_PRINTER
 
 #include <AppKit/AppKit.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qcocoaprintdevice_p.h"
 #include "qprintengine_mac_p.h"
 
 #include <private/qprinterinfo_p.h>
 
-#define QT_STATICPLUGIN
+#define BOBUI_STATICPLUGIN
 #include <qpa/qplatformprintplugin.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QCocoaPrinterSupport::QCocoaPrinterSupport()
 { }
@@ -89,14 +89,14 @@ public:
 
 QPlatformPrinterSupport *QCocoaPrinterSupportPlugin::create(const QString &key)
 {
-    if (key.compare(key, "cocoaprintersupport"_L1, Qt::CaseInsensitive) != 0)
+    if (key.compare(key, "cocoaprintersupport"_L1, BobUI::CaseInsensitive) != 0)
         return 0;
 
     return new QCocoaPrinterSupport();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcocoaprintersupport.moc"
 
-#endif  //QT_NO_PRINTER
+#endif  //BOBUI_NO_PRINTER

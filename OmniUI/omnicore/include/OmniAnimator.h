@@ -5,7 +5,7 @@
 #include <QString>
 #include <QList>
 #include <QPointer>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QElapsedTimer>
 
 struct OmniAnimation {
@@ -39,7 +39,7 @@ private:
     ~OmniAnimator() override;
 
     QList<OmniAnimation> m_animations;
-    QTimer m_frameTimer;
+    BOBUIimer m_frameTimer;
     QElapsedTimer m_clock;
 };
 

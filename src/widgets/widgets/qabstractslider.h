@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTSLIDER_H
 #define QABSTRACTSLIDER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(abstractslider);
+BOBUI_REQUIRE_CONFIG(abstractslider);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QAbstractSliderPrivate;
@@ -26,7 +26,7 @@ class Q_WIDGETS_EXPORT QAbstractSlider : public QWidget
     Q_PROPERTY(int value READ value WRITE setValue NOTIFY valueChanged USER true)
     Q_PROPERTY(int sliderPosition READ sliderPosition WRITE setSliderPosition NOTIFY sliderMoved)
     Q_PROPERTY(bool tracking READ hasTracking WRITE setTracking)
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(BobUI::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(bool invertedAppearance READ invertedAppearance WRITE setInvertedAppearance)
     Q_PROPERTY(bool invertedControls READ invertedControls WRITE setInvertedControls)
     Q_PROPERTY(bool sliderDown READ isSliderDown WRITE setSliderDown DESIGNABLE false)
@@ -35,7 +35,7 @@ public:
     explicit QAbstractSlider(QWidget *parent = nullptr);
     ~QAbstractSlider();
 
-    Qt::Orientation orientation() const;
+    BobUI::Orientation orientation() const;
 
     void setMinimum(int);
     int minimum() const;
@@ -81,7 +81,7 @@ public:
 
 public Q_SLOTS:
     void setValue(int);
-    void setOrientation(Qt::Orientation);
+    void setOrientation(BobUI::Orientation);
     void setRange(int min, int max);
 
 Q_SIGNALS:
@@ -110,8 +110,8 @@ protected:
     virtual void sliderChange(SliderChange change);
 
     void keyPressEvent(QKeyEvent *ev) override;
-    void timerEvent(QTimerEvent *) override;
-#if QT_CONFIG(wheelevent)
+    void timerEvent(BOBUIimerEvent *) override;
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *e) override;
 #endif
     void changeEvent(QEvent *e) override;
@@ -125,6 +125,6 @@ private:
     Q_DECLARE_PRIVATE(QAbstractSlider)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTSLIDER_H

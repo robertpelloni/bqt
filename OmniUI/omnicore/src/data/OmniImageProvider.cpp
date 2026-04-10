@@ -31,7 +31,7 @@ QImage OmniImageProvider::requestImage(const QString &id, QSize *size, const QSi
     }
 
     if (requestedSize.width() > 0 && requestedSize.height() > 0) {
-        image = image.scaled(requestedSize.width(), requestedSize.height(), Qt::KeepAspectRatio);
+        image = image.scaled(requestedSize.width(), requestedSize.height(), BobUI::KeepAspectRatio);
     }
 
     return image;

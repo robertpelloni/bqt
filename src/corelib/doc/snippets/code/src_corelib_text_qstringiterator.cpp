@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QString>
 #include <QStringIterator>
@@ -23,9 +23,9 @@ while (i.hasNext())
 {
 //! [2]
 QStringIterator i(u"𝄞 is the G clef");
-qDebug() << Qt::hex << i.next(); // will print '𝄞' (U+1D11E, MUSICAL SYMBOL G CLEF)
-qDebug() << Qt::hex << i.next(); // will print ' ' (U+0020, SPACE)
-qDebug() << Qt::hex << i.next(); // will print 'i' (U+0069, LATIN SMALL LETTER I)
+qDebug() << BobUI::hex << i.next(); // will print '𝄞' (U+1D11E, MUSICAL SYMBOL G CLEF)
+qDebug() << BobUI::hex << i.next(); // will print ' ' (U+0020, SPACE)
+qDebug() << BobUI::hex << i.next(); // will print 'i' (U+0069, LATIN SMALL LETTER I)
 //! [2]
 }
 

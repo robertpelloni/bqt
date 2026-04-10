@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example cachedtable
@@ -32,7 +32,7 @@
 
     Note the QSqlTableModel variable declaration: As we will see in
     this example, the QSqlTableModel class can be used to provide data
-    to view classes such as QTableView. The QSqlTableModel class
+    to view classes such as BOBUIableView. The QSqlTableModel class
     provides an editable data model making it possible to read and
     write database records from a single table. It is build on top of
     the lower-level QSqlQuery class which provides means of executing
@@ -96,7 +96,7 @@
 
     \snippet cachedtable/tableeditor.cpp 1
 
-    Then we create a table view. The QTableView class provides a
+    Then we create a table view. The BOBUIableView class provides a
     default model/view implementation of a table view, i.e. it
     implements a table view that displays items from a model. It also
     allows the user to edit the items, storing the changes in the
@@ -168,7 +168,7 @@
     \li
     \b {See also:}
 
-    A complete list of Qt's SQL \l {Database Classes}, and the \l
+    A complete list of BobUI's SQL \l {Database Classes}, and the \l
     {Model/View Programming} documentation.
 
     \endtable

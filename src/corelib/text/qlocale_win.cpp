@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlocale_p.h"
 #include "qlocale_tools_p.h"
@@ -11,25 +11,25 @@
 #include "qdatetime.h"
 #include "qdebug.h"
 
-#include "QtCore/private/qgregoriancalendar_p.h" // for yearSharingWeekDays()
+#include "BobUICore/private/qgregoriancalendar_p.h" // for yearSharingWeekDays()
 
 #include <q20algorithm.h>
 
-// TODO QTBUG-121193: port away from the use of LCID to always use names.
-#include <qt_windows.h>
+// TODO BOBUIBUG-121193: port away from the use of LCID to always use names.
+#include <bobui_windows.h>
 #include <time.h>
 
-#if QT_CONFIG(cpp_winrt)
-#   include <QtCore/private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#   include <BobUICore/private/bobui_winrtbase_p.h>
 
 #   include <winrt/Windows.Foundation.h>
 #   include <winrt/Windows.Foundation.Collections.h>
 #   include <winrt/Windows.System.UserProfile.h>
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Shared interpretation of %LANG%
 static auto scanLangEnv()
@@ -40,7 +40,7 @@ static auto scanLangEnv()
         LCID id = 0; // 0 means unknown; lookup from name may work
     };
     const QByteArray lang = qgetenv("LANG");
-    if (lang.size() && (lang == "C" || qt_splitLocaleName(QString::fromLocal8Bit(lang)))) {
+    if (lang.size() && (lang == "C" || bobui_splitLocaleName(QString::fromLocal8Bit(lang)))) {
         // See if we have a Windows locale code instead of a locale name:
         const auto [id, used] = qstrntoll(lang.data(), lang.size(), 0);
         if (used > 0 && id && INT_MIN <= id && id <= INT_MAX)
@@ -68,7 +68,7 @@ static auto getDefaultWinId()
 
 static QByteArray getWinLocaleName(LCID id = LOCALE_USER_DEFAULT);
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 
 #ifndef MUI_LANGUAGE_NAME
 #define MUI_LANGUAGE_NAME 0x8
@@ -120,7 +120,7 @@ struct QSystemLocalePrivate
     QVariant standaloneMonthName(int, QLocale::FormatType);
     QVariant monthName(int, QLocale::FormatType);
     QVariant toString(QDate, QLocale::FormatType);
-    QVariant toString(QTime, QLocale::FormatType);
+    QVariant toString(BOBUIime, QLocale::FormatType);
     QVariant toString(const QDateTime &, QLocale::FormatType);
     QVariant measurementSystem();
     QVariant collation();
@@ -162,7 +162,7 @@ private:
     QString correctDigits(QString &&string);
     QString yearFix(int year, int fakeYear, QString &&formatted);
 
-    static QString winToQtFormat(QStringView sys_fmt);
+    static QString winToBobUIFormat(QStringView sys_fmt);
 
 };
 Q_GLOBAL_STATIC(QSystemLocalePrivate, systemLocalePrivate)
@@ -310,7 +310,7 @@ QVariant QSystemLocalePrivate::zeroDigit()
         wchar_t digits[11];
         if (getLocaleInfo(LOCALE_SNATIVEDIGITS, digits, 11)) {
             // assert all(digits[i] == i + digits[0] for i in range(1, 10)),
-            // assumed above (unless digits[0] is 0x3007; see QTBUG-85409).
+            // assumed above (unless digits[0] is 0x3007; see BOBUIBUG-85409).
             zero = QString::fromWCharArray(digits, 1);
         }
     }
@@ -348,7 +348,7 @@ QVariant QSystemLocalePrivate::groupingSizes()
                     break;
                 width[index++] = value;
             }
-            // The MS docs allow patterns Qt doesn't support, so we treat "X;Y" as "X;Y;0"
+            // The MS docs allow patterns BobUI doesn't support, so we treat "X;Y" as "X;Y;0"
             // and "X" as "X;0" and ignore all but the first two widths. The MS API does
             // not support an equivalent of sizes.first.
             if (index > 1) {
@@ -381,9 +381,9 @@ QVariant QSystemLocalePrivate::dateFormat(QLocale::FormatType type)
 {
     switch (type) {
     case QLocale::ShortFormat:
-        return nullIfEmpty(winToQtFormat(getLocaleInfo(LOCALE_SSHORTDATE).toString()));
+        return nullIfEmpty(winToBobUIFormat(getLocaleInfo(LOCALE_SSHORTDATE).toString()));
     case QLocale::LongFormat:
-        return nullIfEmpty(winToQtFormat(getLocaleInfo(LOCALE_SLONGDATE).toString()));
+        return nullIfEmpty(winToBobUIFormat(getLocaleInfo(LOCALE_SLONGDATE).toString()));
     case QLocale::NarrowFormat:
         break;
     }
@@ -394,9 +394,9 @@ QVariant QSystemLocalePrivate::timeFormat(QLocale::FormatType type)
 {
     switch (type) {
     case QLocale::ShortFormat:
-        return nullIfEmpty(winToQtFormat(getLocaleInfo(LOCALE_SSHORTTIME).toString()));
+        return nullIfEmpty(winToBobUIFormat(getLocaleInfo(LOCALE_SSHORTTIME).toString()));
     case QLocale::LongFormat:
-        return nullIfEmpty(winToQtFormat(getLocaleInfo(LOCALE_STIMEFORMAT).toString()));
+        return nullIfEmpty(winToBobUIFormat(getLocaleInfo(LOCALE_STIMEFORMAT).toString()));
     case QLocale::NarrowFormat:
         break;
     }
@@ -558,7 +558,7 @@ QVariant QSystemLocalePrivate::toString(QDate date, QLocale::FormatType type)
     return {};
 }
 
-QVariant QSystemLocalePrivate::toString(QTime time, QLocale::FormatType type)
+QVariant QSystemLocalePrivate::toString(BOBUIime time, QLocale::FormatType type)
 {
     SYSTEMTIME st = {};
     st.wHour = time.hour();
@@ -741,22 +741,22 @@ QVariant QSystemLocalePrivate::toCurrencyString(const QSystemLocale::CurrencyToS
 QVariant QSystemLocalePrivate::uiLanguages()
 {
     QStringList result;
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
     using namespace winrt::Windows::System::UserProfile;
-    QT_TRY {
+    BOBUI_TRY {
         auto languages = GlobalizationPreferences::Languages();
         for (const auto &lang : languages)
             result << QString::fromStdString(winrt::to_string(lang));
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         // pass, just fall back to WIN32 API implementation
     }
     if (!result.isEmpty())
         return result; // else just fall back to WIN32 API implementation
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
     // mingw and clang still have to use Win32 API
     unsigned long cnt = 0;
     QVarLengthArray<wchar_t, 64> buf(64);
-#    if !defined(QT_BOOTSTRAPPED) // Not present in MinGW 4.9/bootstrap builds.
+#    if !defined(BOBUI_BOOTSTRAPPED) // Not present in MinGW 4.9/bootstrap builds.
     unsigned long size = buf.size();
     if (!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &cnt, buf.data(), &size)) {
         size = 0;
@@ -767,7 +767,7 @@ QVariant QSystemLocalePrivate::uiLanguages()
                 return {};
         }
     }
-#    endif // !QT_BOOTSTRAPPED
+#    endif // !BOBUI_BOOTSTRAPPED
     result.reserve(cnt);
     const wchar_t *str = buf.constData();
     for (; cnt > 0; --cnt) {
@@ -798,14 +798,14 @@ void QSystemLocalePrivate::update()
     zero.resize(0);
 }
 
-QString QSystemLocalePrivate::winToQtFormat(QStringView sys_fmt)
+QString QSystemLocalePrivate::winToBobUIFormat(QStringView sys_fmt)
 {
     QString result;
     qsizetype i = 0;
 
     while (i < sys_fmt.size()) {
         if (sys_fmt.at(i).unicode() == u'\'') {
-            QString text = qt_readEscapedFormatString(sys_fmt, &i);
+            QString text = bobui_readEscapedFormatString(sys_fmt, &i);
             if (text == "'"_L1)
                 result += "''"_L1;
             else
@@ -814,7 +814,7 @@ QString QSystemLocalePrivate::winToQtFormat(QStringView sys_fmt)
         }
 
         QChar c = sys_fmt.at(i);
-        qsizetype repeat = qt_repeatCount(sys_fmt.mid(i));
+        qsizetype repeat = bobui_repeatCount(sys_fmt.mid(i));
 
         switch (c.unicode()) {
             // Date
@@ -825,7 +825,7 @@ QString QSystemLocalePrivate::winToQtFormat(QStringView sys_fmt)
                     repeat = 2;
                 switch (repeat) {
                     case 1:
-                        result += "yy"_L1; // "y" unsupported by Qt, use "yy"
+                        result += "yy"_L1; // "y" unsupported by BobUI, use "yy"
                         break;
                     case 5:
                         result += "yyyy"_L1; // "yyyyy" same as "yyyy" on Windows
@@ -840,7 +840,7 @@ QString QSystemLocalePrivate::winToQtFormat(QStringView sys_fmt)
                     repeat = 2;
                 switch (repeat) {
                     case 2:
-                        break; // no equivalent of "gg" in Qt
+                        break; // no equivalent of "gg" in BobUI
                     default:
                         result += u'g';
                         break;
@@ -970,7 +970,7 @@ QVariant QSystemLocale::query(QueryType type, QVariant &&in) const
     }
     return QVariant();
 }
-#endif // QT_NO_SYSTEMLOCALE
+#endif // BOBUI_NO_SYSTEMLOCALE
 
 struct WindowsToISOListElt {
     ushort windows_code;
@@ -1124,7 +1124,7 @@ static const char *winLangCodeToIsoName(int code)
 
 }
 
-LCID qt_inIsoNametoLCID(const char *name)
+LCID bobui_inIsoNametoLCID(const char *name)
 {
     if (!name)
         return LOCALE_USER_DEFAULT;
@@ -1217,12 +1217,12 @@ static QByteArray getWinLocaleName(LCID id)
 }
 
 // Helper for plugins/platforms/windows/
-Q_CORE_EXPORT QLocale qt_localeFromLCID(LCID id)
+Q_CORE_EXPORT QLocale bobui_localeFromLCID(LCID id)
 {
     return QLocale(QString::fromLatin1(getWinLocaleName(id)));
 }
 
-#if !QT_CONFIG(icu)
+#if !BOBUI_CONFIG(icu)
 
 static QString localeConvertString(const QString &localeID, const QString &str, bool *ok,
                                    DWORD flags)
@@ -1232,7 +1232,7 @@ static QString localeConvertString(const QString &localeID, const QString &str, 
     // First compute the size of the output string
     const int size = LCMapStringW(lcid, flags, reinterpret_cast<const wchar_t *>(str.constData()),
                                   str.size(), 0, 0);
-    QString buf(size, Qt::Uninitialized);
+    QString buf(size, BobUI::Uninitialized);
     if (lcid == 0 || size == 0
         || LCMapStringW(lcid, flags, reinterpret_cast<const wchar_t *>(str.constData()), str.size(),
                         reinterpret_cast<wchar_t *>(buf.data()), buf.size()) == 0) {
@@ -1259,4 +1259,4 @@ QString QLocalePrivate::toUpper(const QString &str, bool *ok) const
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

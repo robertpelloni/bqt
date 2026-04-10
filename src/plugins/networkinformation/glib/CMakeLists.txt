@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_plugin(QGlibNetworkInformationPlugin
+bobui_internal_add_plugin(QGlibNetworkInformationPlugin
     OUTPUT_NAME qglib
     CLASS_NAME QGlibNetworkInformationBackendFactory
     PLUGIN_TYPE networkinformation
@@ -9,11 +9,11 @@ qt_internal_add_plugin(QGlibNetworkInformationPlugin
     SOURCES
         qglibnetworkinformationbackend.cpp
     LIBRARIES
-        Qt::NetworkPrivate
+        BobUI::NetworkPrivate
         GLIB2::GOBJECT
         GLIB2::GIO
     DEFINES
-        "QT_ENABLE_STRICT_MODE_UP_TO=QT_VERSION_CHECK(6,11,0)"
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_SIGNALS_SLOTS_KEYWORDS
+        "BOBUI_ENABLE_STRICT_MODE_UP_TO=BOBUI_VERSION_CHECK(6,11,0)"
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_SIGNALS_SLOTS_KEYWORDS
 )

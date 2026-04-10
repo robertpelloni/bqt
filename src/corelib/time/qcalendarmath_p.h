@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCALENDARMATH_P_H
 #define QCALENDARMATH_P_H
@@ -8,17 +8,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of q*calendar.cpp.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
-#include <QtCore/QtAlgorithms>
+#include <BobUICore/private/qglobal_p.h>
+#include <BobUICore/BobUIAlgorithms>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QRoundingDown {
 // Note: qgregoriancalendar.cpp contains some static asserts to verify this all works.
@@ -140,6 +140,6 @@ constexpr auto dayInYearToYmd(int dayInYear)
 }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCALENDARMATH_P_H

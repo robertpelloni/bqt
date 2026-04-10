@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -11,7 +11,7 @@
 #include <QSet>
 #include <QString>
 
-#include <QtCore/private/qfsfileengine_p.h>
+#include <BobUICore/private/qfsfileengine_p.h>
 
 #if defined(Q_OS_VXWORKS)
 #define Q_NO_SYMLINKS
@@ -23,7 +23,7 @@
 #include <QStandardPaths>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_DECLARE_METATYPE(QDirIterator::IteratorFlags)
 Q_DECLARE_METATYPE(QDir::Filters)
@@ -70,7 +70,7 @@ private slots:
     void iterateResource_data();
     void iterateResource();
     void stopLinkLoop();
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void engineWithNoIterator();
     void testQFsFileEngineIterator_data() { iterateRelativeDirectory_data(); }
     void testQFsFileEngineIterator();
@@ -93,7 +93,7 @@ private slots:
     void hasNextFalseNoCrash();
 
 private:
-    QSharedPointer<QTemporaryDir> m_dataDir;
+    QSharedPointer<BOBUIemporaryDir> m_dataDir;
 };
 
 void tst_QDirIterator::initTestCase()
@@ -125,7 +125,7 @@ void tst_QDirIterator::initTestCase()
     QVERIFY2(!m_dataDir.isNull(), qPrintable("Could not extract test data"));
     testdata_dir = m_dataDir->path();
 #else
-    m_dataDir.reset(new QTemporaryDir);
+    m_dataDir.reset(new BOBUIemporaryDir);
     testdata_dir = m_dataDir->path();
 #endif
 
@@ -167,7 +167,7 @@ void tst_QDirIterator::initTestCase()
 
 #ifdef Q_OS_WIN
     // "When used with directories, _access determines only whether the specified directory exists"
-    if (_waccess(qUtf16Printable("//" + QTest::uncServerName() + "/testshare"), 0) == 0)
+    if (_waccess(qUtf16Printable("//" + BOBUIest::uncServerName() + "/testshare"), 0) == 0)
         uncServerAvailable = true;
 #else
     createDirectory("hiddenDirs_hiddenFiles");
@@ -188,13 +188,13 @@ void tst_QDirIterator::initTestCase()
 
 void tst_QDirIterator::iterateRelativeDirectory_data()
 {
-    QTest::addColumn<QString>("dirName"); // relative from current path or abs
-    QTest::addColumn<QDirIterator::IteratorFlags>("flags");
-    QTest::addColumn<QDir::Filters>("filters");
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<QStringList>("entries");
+    BOBUIest::addColumn<QString>("dirName"); // relative from current path or abs
+    BOBUIest::addColumn<QDirIterator::IteratorFlags>("flags");
+    BOBUIest::addColumn<QDir::Filters>("filters");
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<QStringList>("entries");
 
-    QTest::newRow("no flags")
+    BOBUIest::newRow("no flags")
         << QString("entrylist") << QDirIterator::IteratorFlags{}
         << QDir::Filters(QDir::NoFilter) << QStringList("*")
         << QString(
@@ -210,7 +210,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("NoDot")
+    BOBUIest::newRow("NoDot")
         << QString("entrylist") << QDirIterator::IteratorFlags{}
         << QDir::Filters(QDir::AllEntries | QDir::NoDot) << QStringList("*")
         << QString(
@@ -225,7 +225,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("NoDotDot")
+    BOBUIest::newRow("NoDotDot")
         << QString("entrylist") << QDirIterator::IteratorFlags{}
         << QDir::Filters(QDir::AllEntries | QDir::NoDotDot) << QStringList("*")
         << QString(
@@ -240,7 +240,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("NoDotAndDotDot")
+    BOBUIest::newRow("NoDotAndDotDot")
         << QString("entrylist") << QDirIterator::IteratorFlags{}
         << QDir::Filters(QDir::AllEntries | QDir::NoDotAndDotDot) << QStringList("*")
         << QString(
@@ -254,7 +254,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("QDir::Subdirectories | QDir::FollowSymlinks")
+    BOBUIest::newRow("QDir::Subdirectories | QDir::FollowSymlinks")
         << QString("entrylist") << QDirIterator::IteratorFlags(QDirIterator::Subdirectories | QDirIterator::FollowSymlinks)
         << QDir::Filters(QDir::NoFilter) << QStringList("*")
         << QString(
@@ -273,7 +273,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("QDir::Subdirectories / QDir::Files")
+    BOBUIest::newRow("QDir::Subdirectories / QDir::Files")
         << QString("entrylist") << QDirIterator::IteratorFlags(QDirIterator::Subdirectories)
         << QDir::Filters(QDir::Files) << QStringList("*")
         << QString("entrylist/directory/dummy,"
@@ -283,7 +283,7 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
 #endif
                    "entrylist/writable").split(',');
 
-    QTest::newRow("QDir::Subdirectories | QDir::FollowSymlinks / QDir::Files")
+    BOBUIest::newRow("QDir::Subdirectories | QDir::FollowSymlinks / QDir::Files")
         << QString("entrylist") << QDirIterator::IteratorFlags(QDirIterator::Subdirectories | QDirIterator::FollowSymlinks)
         << QDir::Filters(QDir::Files) << QStringList("*")
         << QString("entrylist/file,"
@@ -293,12 +293,12 @@ void tst_QDirIterator::iterateRelativeDirectory_data()
                    "entrylist/directory/dummy,"
                    "entrylist/writable").split(',');
 
-    QTest::newRow("empty, default")
+    BOBUIest::newRow("empty, default")
         << QString("empty") << QDirIterator::IteratorFlags{}
         << QDir::Filters(QDir::NoFilter) << QStringList("*")
         << QString("empty/.,empty/..").split(',');
 
-        QTest::newRow("empty, QDir::NoDotAndDotDot")
+        BOBUIest::newRow("empty, QDir::NoDotAndDotDot")
             << QString("empty") << QDirIterator::IteratorFlags{}
             << QDir::Filters(QDir::NoDotAndDotDot) << QStringList("*")
             << QStringList();
@@ -352,22 +352,22 @@ void tst_QDirIterator::iterateRelativeDirectory()
 
 void tst_QDirIterator::iterateResource_data()
 {
-    QTest::addColumn<QString>("dirName"); // relative from current path or abs
-    QTest::addColumn<QDirIterator::IteratorFlags>("flags");
-    QTest::addColumn<QDir::Filters>("filters");
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<QStringList>("entries");
+    BOBUIest::addColumn<QString>("dirName"); // relative from current path or abs
+    BOBUIest::addColumn<QDirIterator::IteratorFlags>("flags");
+    BOBUIest::addColumn<QDir::Filters>("filters");
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<QStringList>("entries");
 
-    QTest::newRow("invalid") << QString::fromLatin1(":/testdata/burpaburpa") << QDirIterator::IteratorFlags{}
+    BOBUIest::newRow("invalid") << QString::fromLatin1(":/testdata/burpaburpa") << QDirIterator::IteratorFlags{}
                              << QDir::Filters(QDir::NoFilter) << QStringList(QLatin1String("*"))
                              << QStringList();
-    QTest::newRow("qrc:/testdata") << u":/testdata/"_s << QDirIterator::IteratorFlags{}
+    BOBUIest::newRow("qrc:/testdata") << u":/testdata/"_s << QDirIterator::IteratorFlags{}
                                << QDir::Filters(QDir::NoFilter) << QStringList(QLatin1String("*"))
                                << QString::fromLatin1(":/testdata/entrylist").split(QLatin1String(","));
-    QTest::newRow("qrc:/testdata/entrylist") << u":/testdata/entrylist"_s << QDirIterator::IteratorFlags{}
+    BOBUIest::newRow("qrc:/testdata/entrylist") << u":/testdata/entrylist"_s << QDirIterator::IteratorFlags{}
                                << QDir::Filters(QDir::NoFilter) << QStringList(QLatin1String("*"))
                                << QString::fromLatin1(":/testdata/entrylist/directory,:/testdata/entrylist/file").split(QLatin1String(","));
-    QTest::newRow("qrc:/testdata recursive") << u":/testdata"_s
+    BOBUIest::newRow("qrc:/testdata recursive") << u":/testdata"_s
                                          << QDirIterator::IteratorFlags(QDirIterator::Subdirectories)
                                          << QDir::Filters(QDir::NoFilter) << QStringList(QLatin1String("*"))
                                          << QString::fromLatin1(":/testdata/entrylist,:/testdata/entrylist/directory,:/testdata/entrylist/directory/dummy,:/testdata/entrylist/file").split(QLatin1String(","));
@@ -385,7 +385,7 @@ void tst_QDirIterator::iterateResource()
     QStringList list;
     while (it.hasNext()) {
         const QString dir = it.next();
-        if (!dir.startsWith(":/qt-project.org"))
+        if (!dir.startsWith(":/bobui-project.org"))
             list << dir;
     }
 
@@ -434,7 +434,7 @@ void tst_QDirIterator::stopLinkLoop()
     // The goal of this test is only to ensure that the test above don't malfunction
 }
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 class EngineWithNoIterator : public QFSFileEngine
 {
 public:
@@ -460,7 +460,7 @@ public:
 };
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QDirIterator::engineWithNoIterator()
 {
     EngineWithNoIteratorHandler handler;
@@ -592,21 +592,21 @@ void tst_QDirIterator::relativePaths()
 
 void tst_QDirIterator::dotNameFilters_data()
 {
-    QTest::addColumn<QStringList>("nameFilters");
-    QTest::addColumn<QDir::Filters>("dirFilters");
-    QTest::addColumn<QStringList>("expected");
+    BOBUIest::addColumn<QStringList>("nameFilters");
+    BOBUIest::addColumn<QDir::Filters>("dirFilters");
+    BOBUIest::addColumn<QStringList>("expected");
 
-    QTest::newRow("NoDotAndDotDot")
+    BOBUIest::newRow("NoDotAndDotDot")
         << QStringList{u"."_s}
         << QDir::Filters(QDir::AllEntries | QDir::NoDotAndDotDot)
         << QStringList{};
 
-    QTest::newRow("default-dirfilters")
+    BOBUIest::newRow("default-dirfilters")
         << QStringList{u"."_s}
         << QDir::Filters(QDir::AllEntries)
         << QStringList{u"."_s};
 
-    QTest::newRow("glob-everything")
+    BOBUIest::newRow("glob-everything")
         << QStringList{u".*"_s}
         << QDir::Filters(QDir::AllEntries)
         << QStringList{u"."_s, u".."_s};
@@ -635,13 +635,13 @@ void tst_QDirIterator::uncPaths_data()
     if (!uncServerAvailable)
         QSKIP("UNC server not available");
 
-    QTest::addColumn<QString>("dirName");
-    QTest::newRow("uncserver")
-            <<QString("//" + QTest::uncServerName());
-    QTest::newRow("uncserver/testshare")
-            <<QString("//" + QTest::uncServerName() + "/testshare");
-    QTest::newRow("uncserver/testshare/tmp")
-            <<QString("//" + QTest::uncServerName() + "/testshare/tmp");
+    BOBUIest::addColumn<QString>("dirName");
+    BOBUIest::newRow("uncserver")
+            <<QString("//" + BOBUIest::uncServerName());
+    BOBUIest::newRow("uncserver/testshare")
+            <<QString("//" + BOBUIest::uncServerName() + "/testshare");
+    BOBUIest::newRow("uncserver/testshare/tmp")
+            <<QString("//" + BOBUIest::uncServerName() + "/testshare/tmp");
 }
 void tst_QDirIterator::uncPaths()
 {
@@ -701,13 +701,13 @@ void tst_QDirIterator::hasNextFalseNoCrash()
     }
     QVERIFY(count > 0);
     QVERIFY(!iter.hasNext());
-    // QTBUG-130142
+    // BOBUIBUG-130142
     // When the iteration reaches the end, calling next() returns an empty string
     // and no crash happens
     QVERIFY(iter.next().isEmpty());
 }
 
-QTEST_MAIN(tst_QDirIterator)
+BOBUIEST_MAIN(tst_QDirIterator)
 
 #include "tst_qdiriterator.moc"
 

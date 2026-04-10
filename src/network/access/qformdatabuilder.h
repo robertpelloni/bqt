@@ -1,26 +1,26 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFORMDATABUILDER_H
 #define QFORMDATABUILDER_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtNetwork/qhttpheaders.h>
-#include <QtNetwork/qhttpmultipart.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUINetwork/qhttpheaders.h>
+#include <BobUINetwork/qhttpmultipart.h>
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qflags.h>
-#include <QtCore/qiodevice.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qflags.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qstring.h>
 
 #include <memory>
 
 #ifndef Q_OS_WASM
-QT_REQUIRE_CONFIG(http);
+BOBUI_REQUIRE_CONFIG(http);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHttpPartPrivate;
 class QHttpMultiPart;
@@ -35,7 +35,7 @@ class QFormDataPartBuilder
 public:
     void swap(QFormDataPartBuilder &other) noexcept
     {
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
         std::swap(m_index, other.m_index);
     }
 
@@ -87,10 +87,10 @@ public:
 
     QFormDataBuilder(QFormDataBuilder &&other) noexcept : d_ptr(std::exchange(other.d_ptr, nullptr)) {}
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFormDataBuilder)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QFormDataBuilder)
     void swap(QFormDataBuilder &other) noexcept
     {
-        qt_ptr_swap(d_ptr, other.d_ptr);
+        bobui_ptr_swap(d_ptr, other.d_ptr);
     }
 
     Q_NETWORK_EXPORT ~QFormDataBuilder();
@@ -106,6 +106,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QFormDataBuilder::Options)
 
 Q_DECLARE_SHARED(QFormDataBuilder)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFORMDATABUILDER_H

@@ -1,15 +1,15 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrangemodel.h"
-#include <QtCore/qsize.h>
+#include <BobUICore/qsize.h>
 
-#include <QtCore/private/qabstractitemmodel_p.h>
+#include <BobUICore/private/qabstractitemmodel_p.h>
 
 #include <variant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRangeModelPrivate : QAbstractItemModelPrivate
 {
@@ -88,7 +88,7 @@ void PropertyChangedHandler::operator()()
     const auto &data = std::get<Data>(storage);
     if (!data.index.isValid()) {
         if (!QObject::disconnect(connection))
-            qWarning() << "Failed to break connection for" << Qt::ItemDataRole(data.role);
+            qWarning() << "Failed to break connection for" << BobUI::ItemDataRole(data.role);
     } else {
         QRangeModelPrivate::emitDataChanged(data.index, data.role);
     }
@@ -142,7 +142,7 @@ QHash<int, QMetaProperty> QRangeModelImplBase::roleProperties(const QAbstractIte
     const auto roles = model.roleNames();
     QHash<int, QMetaProperty> result;
     for (auto &&[role, roleName] : roles.asKeyValueRange()) {
-        if (role == Qt::RangeModelDataRole)
+        if (role == BobUI::RangeModelDataRole)
             continue;
         result[role] = metaObject.property(metaObject.indexOfProperty(roleName));
     }
@@ -160,7 +160,7 @@ static bool connectPropertiesHelper(const QModelIndex &index, QObject *item, QOb
             if (!Handler(index, item, context, role, property))
                 return false;
         } else {
-            qWarning() << "Property" << property.name() << "for" << Qt::ItemDataRole(role)
+            qWarning() << "Property" << property.name() << "for" << BobUI::ItemDataRole(role)
                                      << "has no notify signal";
         }
     }
@@ -221,9 +221,9 @@ namespace QRangeModelDetails
 Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
 {
     QModelRoleData result[] = {
-        QModelRoleData{Qt::RangeModelAdapterRole},
-        QModelRoleData{Qt::RangeModelDataRole},
-        QModelRoleData{Qt::DisplayRole},
+        QModelRoleData{BobUI::RangeModelAdapterRole},
+        QModelRoleData{BobUI::RangeModelDataRole},
+        QModelRoleData{BobUI::DisplayRole},
     };
     index.multiData(result);
     QVariant variant;
@@ -239,16 +239,16 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
 
 /*!
     \class QRangeModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.10
     \ingroup model-view
     \brief QRangeModel implements QAbstractItemModel for any C++ range.
     \reentrant
 
     QRangeModel can make the data in any sequentially iterable C++ type
-    available to the \l{Model/View Programming}{model/view framework} of Qt.
-    This makes it easy to display existing data structures in the Qt Widgets
-    and Qt Quick item views, and to allow the user of the application to
+    available to the \l{Model/View Programming}{model/view framework} of BobUI.
+    This makes it easy to display existing data structures in the BobUI Widgets
+    and BobUI Quick item views, and to allow the user of the application to
     manipulate the data using a graphical user interface.
 
     To use QRangeModel, instantiate it with a C++ range and set it as
@@ -368,17 +368,17 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
     \snippet qrangemodel/main.cpp pair_int_QString
 
     An easier and more flexible alternative to implementing the tuple protocol
-    for a C++ type is to use Qt's \l{Meta-Object System}{meta-object system} to
-    declare a type with \l{Qt's Property System}{properties}. This can be a
+    for a C++ type is to use BobUI's \l{Meta-Object System}{meta-object system} to
+    declare a type with \l{BobUI's Property System}{properties}. This can be a
     value type that is declared as a \l{Q_GADGET}{gadget}, or a QObject subclass.
 
     \snippet qrangemodel/main.cpp gadget
 
-    Using QObject subclasses allows properties to be \l{Qt Bindable Properties}
+    Using QObject subclasses allows properties to be \l{BobUI Bindable Properties}
     {bindable}, or to have change notification signals. However, using QObject
     instances for items has significant memory overhead.
 
-    Using Qt gadgets or objects is more convenient and can be more flexible
+    Using BobUI gadgets or objects is more convenient and can be more flexible
     than implementing the tuple protocol. Those types are also directly
     accessible from within QML. However, the access through \l{the property system}
     comes with some runtime overhead. For performance critical models, consider
@@ -393,7 +393,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
     different item types for different columns, like in the \c{numberNames}
     case.
 
-    By default, the value gets used for the Qt::DisplayRole and Qt::EditRole
+    By default, the value gets used for the BobUI::DisplayRole and BobUI::EditRole
     roles. Most views expect the value to be
     \l{QVariant::canConvert}{convertible to and from a QString} (but a custom
     delegate might provide more flexibility).
@@ -401,7 +401,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
     \section3 Associative containers with multiple roles
 
     If the item is an associative container that uses \c{int},
-    \l{Qt::ItemDataRole}, or QString as the key type, and QVariant as the
+    \l{BobUI::ItemDataRole}, or QString as the key type, and QVariant as the
     mapped type, then QRangeModel interprets that container as the storage
     of the data for multiple roles. The data() and setData() functions return
     and modify the mapped value in the container, and setItemData() modifies all
@@ -410,7 +410,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
 
     \snippet qrangemodel/main.cpp color_map
 
-    The most efficient data type to use as the key is Qt::ItemDataRole or
+    The most efficient data type to use as the key is BobUI::ItemDataRole or
     \c{int}. When using \c{int}, itemData() returns the container as is, and
     doesn't have to create a copy of the data.
 
@@ -651,7 +651,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
     implemented by specializing \c{std::tuple_size} and \c{std::tuple_element},
     and overloading the unqualified \c{get} function. Do so for your custom row
     type to make existing structured data available to the model/view framework
-    in Qt.
+    in BobUI.
 
     \snippet qrangemodel/main.cpp tuple_protocol
 
@@ -671,7 +671,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
 
 /*!
     \class QRangeModel::RowOptions
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup model-view
     \brief The RowOptions template provides a customization point to control
            how QRangeModel represents types used as rows.
@@ -718,7 +718,7 @@ Q_CORE_EXPORT QVariant qVariantAtIndex(const QModelIndex &index)
 
 /*!
     \class QRangeModel::ItemAccess
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup model-view
     \brief The ItemAccess template provides a customization point to control
            how QRangeModel accesses role data of individual items.
@@ -899,9 +899,9 @@ int QRangeModel::columnCount(const QModelIndex &parent) const
     models operating on a range with mutable data, it also sets the flag
     that allows the item to be editable (\c ItemIsEditable).
 
-    \sa Qt::ItemFlags
+    \sa BobUI::ItemFlags
 */
-Qt::ItemFlags QRangeModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QRangeModel::flags(const QModelIndex &index) const
 {
     Q_D(const QRangeModel);
     return d->impl->call<QRangeModelImplBase::Flags>(index);
@@ -917,7 +917,7 @@ Qt::ItemFlags QRangeModel::flags(const QModelIndex &index) const
     number. Similarly, for vertical headers, the section number corresponds to
     the row number.
 
-    For the horizontal header and the Qt::DisplayRole \a role, models that
+    For the horizontal header and the BobUI::DisplayRole \a role, models that
     operate on a range that uses an array as the row type return \a section. If
     the row type is a tuple, then the implementation returns the name of the
     type at \a section. For rows that are a gadget or QObject type, this
@@ -926,9 +926,9 @@ Qt::ItemFlags QRangeModel::flags(const QModelIndex &index) const
     For the vertical header, this function always returns the result of the
     default implementation in QAbstractItemModel.
 
-    \sa Qt::ItemDataRole, setHeaderData(), QHeaderView
+    \sa BobUI::ItemDataRole, setHeaderData(), QHeaderView
 */
-QVariant QRangeModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QRangeModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QRangeModel);
     return d->impl->call<QRangeModelImplBase::HeaderData>(section, orientation, role);
@@ -937,7 +937,7 @@ QVariant QRangeModel::headerData(int section, Qt::Orientation orientation, int r
 /*!
     \reimp
 */
-bool QRangeModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &data,
+bool QRangeModel::setHeaderData(int section, BobUI::Orientation orientation, const QVariant &data,
                                 int role)
 {
     return QAbstractItemModel::setHeaderData(section, orientation, data, role);
@@ -950,7 +950,7 @@ bool QRangeModel::setHeaderData(int section, Qt::Orientation orientation, const 
     range referred to by the \a index.
 
     If the item type for that index is an associative container that maps from
-    either \c{int}, Qt::ItemDataRole, or QString to a QVariant, then the role
+    either \c{int}, BobUI::ItemDataRole, or QString to a QVariant, then the role
     data is looked up in that container and returned.
 
     If the item is a gadget or QObject, then the implementation returns the
@@ -958,11 +958,11 @@ bool QRangeModel::setHeaderData(int section, Qt::Orientation orientation, const 
     mapping.
 
     Otherwise, the implementation returns a QVariant constructed from the item
-    via \c{QVariant::fromValue()} for \c{Qt::DisplayRole} or \c{Qt::EditRole}.
+    via \c{QVariant::fromValue()} for \c{BobUI::DisplayRole} or \c{BobUI::EditRole}.
     For other roles, the implementation returns an \b invalid
     (default-constructed) QVariant.
 
-    \sa Qt::ItemDataRole, setData(), headerData()
+    \sa BobUI::ItemDataRole, setData(), headerData()
 */
 QVariant QRangeModel::data(const QModelIndex &index, int role) const
 {
@@ -976,7 +976,7 @@ QVariant QRangeModel::data(const QModelIndex &index, int role) const
     Sets the \a role data for the item at \a index to \a data.
 
     If the item type for that \a index is an associative container that maps
-    from either \c{int}, Qt::ItemDataRole, or QString to a QVariant, then
+    from either \c{int}, BobUI::ItemDataRole, or QString to a QVariant, then
     \a data is stored in that container for the key specified by \a role.
 
     If the item is a gadget or QObject, then \a data is written to the item's
@@ -986,7 +986,7 @@ QVariant QRangeModel::data(const QModelIndex &index, int role) const
     \c{false}.
 
     Otherwise, this implementation assigns the value in \a data to the item at
-    the \a index in the range for \c{Qt::DisplayRole} and \c{Qt::EditRole},
+    the \a index in the range for \c{BobUI::DisplayRole} and \c{BobUI::EditRole},
     and returns \c{true}. For other roles, the implementation returns
     \c{false}.
 
@@ -1009,7 +1009,7 @@ bool QRangeModel::setData(const QModelIndex &index, const QVariant &data, int ro
     item at the given \a index.
 
     If the item type for that \a index is an associative container that maps
-    from either \c{int}, Qt::ItemDataRole, or QString to a QVariant, then the
+    from either \c{int}, BobUI::ItemDataRole, or QString to a QVariant, then the
     data from that container is returned.
 
     If the item type is a gadget or QObject subclass, then the values of those
@@ -1018,7 +1018,7 @@ bool QRangeModel::setData(const QModelIndex &index, const QVariant &data, int ro
     If the item is not an associative container, gadget, or QObject subclass,
     then this calls the base class implementation.
 
-    \sa setItemData(), Qt::ItemDataRole, data()
+    \sa setItemData(), BobUI::ItemDataRole, data()
 */
 QMap<int, QVariant> QRangeModel::itemData(const QModelIndex &index) const
 {
@@ -1030,7 +1030,7 @@ QMap<int, QVariant> QRangeModel::itemData(const QModelIndex &index) const
     \reimp
 
     If the item type for that \a index is an associative container that maps
-    from either \c{int} or Qt::ItemDataRole to a QVariant, then the entries in
+    from either \c{int} or BobUI::ItemDataRole to a QVariant, then the entries in
     \a data are stored in that container. If the associative container maps from
     QString to QVariant, then only those values in \a data are stored for which
     there is a mapping in the \l{roleNames()}{role names} table.
@@ -1050,7 +1050,7 @@ QMap<int, QVariant> QRangeModel::itemData(const QModelIndex &index) const
     then this calls the base class implementation, which calls setData() for
     each entry in \a data.
 
-    \sa itemData(), setData(), Qt::ItemDataRole
+    \sa itemData(), setData(), BobUI::ItemDataRole
 */
 bool QRangeModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &data)
 {
@@ -1226,7 +1226,7 @@ QModelIndex QRangeModel::buddy(const QModelIndex &index) const
 /*!
     \reimp
 */
-bool QRangeModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QRangeModel::canDropMimeData(const QMimeData *data, BobUI::DropAction action,
                                         int row, int column, const QModelIndex &parent) const
 {
     return QAbstractItemModel::canDropMimeData(data, action, row, column, parent);
@@ -1235,7 +1235,7 @@ bool QRangeModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
 /*!
     \reimp
 */
-bool QRangeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool QRangeModel::dropMimeData(const QMimeData *data, BobUI::DropAction action,
                                      int row, int column, const QModelIndex &parent)
 {
     return QAbstractItemModel::dropMimeData(data, action, row, column, parent);
@@ -1261,7 +1261,7 @@ QStringList QRangeModel::mimeTypes() const
     \reimp
 */
 QModelIndexList QRangeModel::match(const QModelIndex &start, int role, const QVariant &value,
-                                         int hits, Qt::MatchFlags flags) const
+                                         int hits, BobUI::MatchFlags flags) const
 {
     return QAbstractItemModel::match(start, role, value, hits, flags);
 }
@@ -1283,7 +1283,7 @@ void QRangeModel::multiData(const QModelIndex &index, QModelRoleDataSpan roleDat
     If all columns in the range are of the same type, and if that type provides
     a meta object (i.e., it is a gadget, or a QObject subclass), then this
     property holds the names of the properties of that type, mapped to values of
-    Qt::ItemDataRole values from Qt::UserRole and up. In addition, a role
+    BobUI::ItemDataRole values from BobUI::UserRole and up. In addition, a role
     "modelData" provides access to the gadget or QObject instance.
 
     Override this default behavior by setting this property explicitly to a non-
@@ -1297,7 +1297,7 @@ QHash<int, QByteArray> QRangeModelImplBase::roleNamesForMetaObject(const QAbstra
                                                                    const QMetaObject &metaObject)
 {
     const auto defaults = model.QAbstractItemModel::roleNames();
-    QHash<int, QByteArray> result = {{Qt::RangeModelDataRole, "modelData"}};
+    QHash<int, QByteArray> result = {{BobUI::RangeModelDataRole, "modelData"}};
     int offset = metaObject.propertyOffset();
     for (int i = offset; i < metaObject.propertyCount(); ++i) {
         const auto name = metaObject.property(i).name();
@@ -1306,7 +1306,7 @@ QHash<int, QByteArray> QRangeModelImplBase::roleNamesForMetaObject(const QAbstra
             ++offset;
             result[defaultRole] = name;
         } else {
-            result[Qt::UserRole + i - offset] = name;
+            result[BobUI::UserRole + i - offset] = name;
         }
     }
     return result;
@@ -1316,9 +1316,9 @@ QHash<int, QByteArray> QRangeModelImplBase::roleNamesForSimpleType()
 {
     // just a plain value
     return QHash<int, QByteArray>{
-        {Qt::DisplayRole, "display"},
-        {Qt::EditRole, "edit"},
-        {Qt::RangeModelDataRole, "modelData"},
+        {BobUI::DisplayRole, "display"},
+        {BobUI::EditRole, "edit"},
+        {BobUI::RangeModelDataRole, "modelData"},
     };
 }
 
@@ -1428,7 +1428,7 @@ void QRangeModel::setAutoConnectPolicy(QRangeModel::AutoConnectPolicy policy)
 /*!
     \reimp
 */
-void QRangeModel::sort(int column, Qt::SortOrder order)
+void QRangeModel::sort(int column, BobUI::SortOrder order)
 {
     return QAbstractItemModel::sort(column, order);
 }
@@ -1444,7 +1444,7 @@ QSize QRangeModel::span(const QModelIndex &index) const
 /*!
     \reimp
 */
-Qt::DropActions QRangeModel::supportedDragActions() const
+BobUI::DropActions QRangeModel::supportedDragActions() const
 {
     return QAbstractItemModel::supportedDragActions();
 }
@@ -1452,7 +1452,7 @@ Qt::DropActions QRangeModel::supportedDragActions() const
 /*!
     \reimp
 */
-Qt::DropActions QRangeModel::supportedDropActions() const
+BobUI::DropActions QRangeModel::supportedDropActions() const
 {
     return QAbstractItemModel::supportedDropActions();
 }
@@ -1481,6 +1481,6 @@ bool QRangeModel::eventFilter(QObject *object, QEvent *event)
     return QAbstractItemModel::eventFilter(object, event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qrangemodel.cpp"

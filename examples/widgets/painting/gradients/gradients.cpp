@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "gradients.h"
 #include "hoverpoints.h"
@@ -14,10 +14,10 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent)
     if (m_shade_type == ARGBShade) {
         QPixmap pm(20, 20);
         QPainter pmp(&pm);
-        pmp.fillRect(0, 0, 10, 10, Qt::lightGray);
-        pmp.fillRect(10, 10, 10, 10, Qt::lightGray);
-        pmp.fillRect(0, 10, 10, 10, Qt::darkGray);
-        pmp.fillRect(10, 0, 10, 10, Qt::darkGray);
+        pmp.fillRect(0, 0, 10, 10, BobUI::lightGray);
+        pmp.fillRect(10, 10, 10, 10, BobUI::lightGray);
+        pmp.fillRect(0, 10, 10, 10, BobUI::darkGray);
+        pmp.fillRect(10, 0, 10, 10, BobUI::darkGray);
         pmp.end();
         QPalette pal = palette();
         pal.setBrush(backgroundRole(), QBrush(pm));
@@ -25,7 +25,7 @@ ShadeWidget::ShadeWidget(ShadeType type, QWidget *parent)
         setPalette(pal);
 
     } else {
-        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(BobUI::WA_OpaquePaintEvent);
     }
 
     QPolygonF points;
@@ -115,14 +115,14 @@ void ShadeWidget::generateShade()
         } else {
             m_shade = QImage(size(), QImage::Format_RGB32);
             QLinearGradient shade(0, 0, 0, height());
-            shade.setColorAt(1, Qt::black);
+            shade.setColorAt(1, BobUI::black);
 
             if (m_shade_type == RedShade)
-                shade.setColorAt(0, Qt::red);
+                shade.setColorAt(0, BobUI::red);
             else if (m_shade_type == GreenShade)
-                shade.setColorAt(0, Qt::green);
+                shade.setColorAt(0, BobUI::green);
             else
-                shade.setColorAt(0, Qt::blue);
+                shade.setColorAt(0, BobUI::blue);
 
             QPainter p(&m_shade);
             p.fillRect(rect(), shade);
@@ -373,7 +373,7 @@ GradientWidget::GradientWidget(QWidget *parent)
     m_renderer->loadSourceFile(":res/gradients/gradients.cpp");
     m_renderer->loadDescription(":res/gradients/gradients.html");
 
-    QTimer::singleShot(50, this, &GradientWidget::setDefault1);
+    BOBUIimer::singleShot(50, this, &GradientWidget::setDefault1);
 }
 
 void GradientWidget::setDefault(int config)
@@ -461,7 +461,7 @@ void GradientWidget::changePresetBy(int indexOffset)
     QLineF objectStopsLine(linearGradientPointer->start(), linearGradientPointer->finalStop());
     qreal scaleX = qFuzzyIsNull(objectStopsLine.dx()) ? 1.0 : (0.8 * m_renderer->width() / qAbs(objectStopsLine.dx()));
     qreal scaleY = qFuzzyIsNull(objectStopsLine.dy()) ? 1.0 : (0.8 * m_renderer->height() / qAbs(objectStopsLine.dy()));
-    QLineF logicalStopsLine = QTransform::fromScale(scaleX, scaleY).map(objectStopsLine);
+    QLineF logicalStopsLine = BOBUIransform::fromScale(scaleX, scaleY).map(objectStopsLine);
     logicalStopsLine.translate(m_renderer->rect().center() - logicalStopsLine.center());
     QPolygonF logicalStops;
     logicalStops << logicalStopsLine.p1() << logicalStopsLine.p2();
@@ -488,7 +488,7 @@ GradientRenderer::GradientRenderer(QWidget *parent)
     m_hoverPoints->setPoints(points);
 
     m_spread = QGradient::PadSpread;
-    m_gradientType = Qt::LinearGradientPattern;
+    m_gradientType = BobUI::LinearGradientPattern;
 }
 
 void GradientRenderer::setGradientStops(const QGradientStops &stops)
@@ -508,10 +508,10 @@ void GradientRenderer::paint(QPainter *p)
 
     QGradient g;
 
-    if (m_gradientType == Qt::LinearGradientPattern) {
+    if (m_gradientType == BobUI::LinearGradientPattern) {
         g = QLinearGradient(pts.at(0), pts.at(1));
 
-    } else if (m_gradientType == Qt::RadialGradientPattern) {
+    } else if (m_gradientType == BobUI::RadialGradientPattern) {
         g = QRadialGradient(pts.at(0), qMin(width(), height()) / 3.0, pts.at(1));
 
     } else {
@@ -526,7 +526,7 @@ void GradientRenderer::paint(QPainter *p)
     g.setSpread(m_spread);
 
     p->setBrush(g);
-    p->setPen(Qt::NoPen);
+    p->setPen(BobUI::NoPen);
 
     p->drawRect(rect());
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "hellowindow.h"
 
@@ -31,7 +31,7 @@ HelloWindow::HelloWindow(const QSharedPointer<Renderer> &renderer, QScreen *scre
     : m_colorIndex(0), m_renderer(renderer)
 {
     setSurfaceType(QWindow::OpenGLSurface);
-    setFlags(Qt::Window | Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+    setFlags(BobUI::Window | BobUI::WindowSystemMenuHint | BobUI::WindowTitleHint | BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint);
 
     setGeometry(QRect(10, 10, 640, 480));
 

@@ -1,25 +1,25 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## androidtestrunner App:
 #####################################################################
 
-qt_get_tool_target_name(target_name androidtestrunner)
-qt_internal_add_tool(${target_name}
-    TARGET_DESCRIPTION "Qt Android Test Runner Tool"
+bobui_get_tool_target_name(target_name androidtestrunner)
+bobui_internal_add_tool(${target_name}
+    TARGET_DESCRIPTION "BobUI Android Test Runner Tool"
     TOOLS_TARGET Core
     SOURCES
         main.cpp
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_CAST_TO_ASCII
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_CAST_TO_ASCII
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()
 set_target_properties(${target_name} PROPERTIES
     WIN32_EXECUTABLE FALSE
 )
@@ -27,7 +27,7 @@ set_target_properties(${target_name} PROPERTIES
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(${target_name} CONDITION windows
+bobui_internal_extend_target(${target_name} CONDITION windows
     COMPILE_OPTIONS
         -U__STRICT_ANSI__
 )

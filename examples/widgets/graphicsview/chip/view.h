@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef VIEW_H
 #define VIEW_H
@@ -7,11 +7,11 @@
 #include <QFrame>
 #include <QGraphicsView>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QLabel;
 class QSlider;
-class QToolButton;
-QT_END_NAMESPACE
+class BOBUIoolButton;
+BOBUI_END_NAMESPACE
 
 class View;
 
@@ -22,7 +22,7 @@ public:
     GraphicsView(View *v) : QGraphicsView(), view(v) { }
 
 protected:
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *) override;
 #endif
 
@@ -58,11 +58,11 @@ private:
     GraphicsView *graphicsView;
     QLabel *label;
     QLabel *label2;
-    QToolButton *selectModeButton;
-    QToolButton *dragModeButton;
-    QToolButton *antialiasButton;
-    QToolButton *printButton;
-    QToolButton *resetButton;
+    BOBUIoolButton *selectModeButton;
+    BOBUIoolButton *dragModeButton;
+    BOBUIoolButton *antialiasButton;
+    BOBUIoolButton *printButton;
+    BOBUIoolButton *resetButton;
     QSlider *zoomSlider;
     QSlider *rotateSlider;
 };

@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 
@@ -29,6 +29,6 @@ void SlowWidget::setGeometry(const QRectF &rect)
 
     if (reiterate) {
         m_window->doAgain();
-        //QTimer::singleShot(0, m_window, SLOT(doAgain()));
+        //BOBUIimer::singleShot(0, m_window, SLOT(doAgain()));
     }
 }

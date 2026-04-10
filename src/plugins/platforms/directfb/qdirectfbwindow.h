@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDIRECTFBWINDOW_H
 #define QDIRECTFBWINDOW_H
@@ -10,7 +10,7 @@
 #include "qdirectfbconvenience.h"
 #include "qdirectfbinput.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDirectFbWindow : public QPlatformWindow
 {
@@ -23,7 +23,7 @@ public:
 
     void setVisible(bool visible) override;
 
-    void setWindowFlags(Qt::WindowFlags flags) override;
+    void setWindowFlags(BobUI::WindowFlags flags) override;
     bool setKeyboardGrabEnabled(bool grab) override;
     bool setMouseGrabEnabled(bool grab) override;
     void raise() override;
@@ -42,6 +42,6 @@ protected:
     QDirectFbInput *m_inputHandler;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDIRECTFBWINDOW_H

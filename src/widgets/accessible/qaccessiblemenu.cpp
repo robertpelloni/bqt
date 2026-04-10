@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblemenu_p.h"
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 #include <qmenubar.h>
 #endif
 #include <qstyle.h>
 #include <private/qwidget_p.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtGui/private/qaccessiblehelper_p.h>
+#include <BobUIGui/private/qaccessiblehelper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 
-QString qt_accHotKey(const QString &text);
+QString bobui_accHotKey(const QString &text);
 
 QAccessibleInterface *getOrCreateMenu(QWidget *menu, QAction *action)
 {
@@ -88,7 +88,7 @@ QAccessibleInterface *QAccessibleMenu::parent() const
         parentCandidates << menu()->parentWidget() << associatedObjects;
         for (QObject *object : std::as_const(parentCandidates)) {
             if (qobject_cast<QMenu*>(object)
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
                 || qobject_cast<QMenuBar*>(object)
 #endif
                 ) {
@@ -110,7 +110,7 @@ int QAccessibleMenu::indexOfChild( const QAccessibleInterface *child) const
     return -1;
 }
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 QAccessibleMenuBar::QAccessibleMenuBar(QWidget *w)
     : QAccessibleWidgetV2(w, QAccessible::MenuBar)
 {
@@ -144,11 +144,11 @@ int QAccessibleMenuBar::indexOfChild(const QAccessibleInterface *child) const
     return -1;
 }
 
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
 /*!
     \class QAccessibleMenuItem
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 QAccessibleMenuItem::QAccessibleMenuItem(QWidget *owner, QAction *action)
@@ -216,20 +216,20 @@ QWindow *QAccessibleMenuItem::window() const
 {
     return m_owner.isNull()
         ? nullptr
-        : qt_widget_private(m_owner.data())->windowHandle(QWidgetPrivate::WindowHandleMode::Closest);
+        : bobui_widget_private(m_owner.data())->windowHandle(QWidgetPrivate::WindowHandleMode::Closest);
 }
 
 QRect QAccessibleMenuItem::rect() const
 {
     QRect rect;
     QWidget *own = owner();
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(own)) {
         rect = menuBar->actionGeometry(m_action);
         QPoint globalPos = menuBar->mapToGlobal(QPoint(0,0));
         rect = rect.translated(globalPos);
     } else
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
     if (QMenu *menu = qobject_cast<QMenu*>(own)) {
         rect = menu->actionGeometry(m_action);
         QPoint globalPos = menu->mapToGlobal(QPoint(0,0));
@@ -252,14 +252,14 @@ QAccessible::State QAccessibleMenuItem::state() const
     QAccessible::State s;
     QWidget *own = owner();
 
-    if (own && (own->testAttribute(Qt::WA_WState_Visible) == false || m_action->isVisible() == false)) {
+    if (own && (own->testAttribute(BobUI::WA_WState_Visible) == false || m_action->isVisible() == false)) {
         s.invisible = true;
     }
 
     if (QMenu *menu = qobject_cast<QMenu*>(own)) {
         if (menu->activeAction() == m_action)
             s.focused = true;
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     } else if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(own)) {
         if (menuBar->activeAction() == m_action)
             s.focused = true;
@@ -282,17 +282,17 @@ QString QAccessibleMenuItem::text(QAccessible::Text t) const
     QString str;
     switch (t) {
     case QAccessible::Name:
-        str = qt_accStripAmp(m_action->text());
+        str = bobui_accStripAmp(m_action->text());
         break;
     case QAccessible::Accelerator: {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         QKeySequence key = m_action->shortcut();
         if (!key.isEmpty()) {
             str = key.toString();
         } else
 #endif
         {
-            str = qt_accHotKey(m_action->text());
+            str = bobui_accHotKey(m_action->text());
         }
         break;
     }
@@ -324,7 +324,7 @@ void QAccessibleMenuItem::doAction(const QString &actionName)
     if (actionName == pressAction()) {
         m_action->trigger();
     } else if (actionName == showMenuAction()) {
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
         if (QMenuBar *bar = qobject_cast<QMenuBar*>(owner())) {
             if (m_action->menu() && m_action->menu()->isVisible()) {
                 m_action->menu()->hide();
@@ -359,9 +359,9 @@ QWidget *QAccessibleMenuItem::owner() const
     return m_owner;
 }
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 

@@ -1,13 +1,13 @@
 // Copyright (C) 2020 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcollator_p.h"
 #include "qlocale_p.h"
 #include "qstringlist.h"
 #include "qstring.h"
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFLocale.h>
@@ -15,7 +15,7 @@
 #include <cstring>
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QCollatorPrivate::init()
 {
@@ -36,7 +36,7 @@ void QCollatorPrivate::init()
         qWarning("Couldn't initialize the locale (%d)", int(status));
 
     UInt32 options = 0;
-    if (caseSensitivity == Qt::CaseInsensitive)
+    if (caseSensitivity == BobUI::CaseInsensitive)
         options |= kUCCollateCaseInsensitiveMask;
     if (numericMode)
         options |= kUCCollateDigitsAsNumberMask | kUCCollateDigitsOverrideMask;
@@ -121,4 +121,4 @@ int QCollatorSortKey::compare(const QCollatorSortKey &key) const
     return order;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "databaseinfo.h"
 #include "driver.h"
 #include "ui4.h"
 #include "utils.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 DatabaseInfo::DatabaseInfo() = default;
 
@@ -53,4 +53,4 @@ void DatabaseInfo::acceptWidget(DomWidget *node)
     TreeWalker::acceptWidget(node);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -5,7 +5,7 @@
 #include <QString>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QTimer>
+#include <BOBUIimer>
 
 class QQuickItem;
 
@@ -52,7 +52,7 @@ private:
     QQuickItem* m_rootItem;
     bool m_isStreaming;
     int m_streamFramerate;
-    QTimer m_streamTimer;
+    BOBUIimer m_streamTimer;
 };
 
 #endif // OMNINEURALENGINE_H

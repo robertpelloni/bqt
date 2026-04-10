@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QStandardPaths>
-#include <QtCore/QDir>
-#include <QtTest/QTest>
+#include <BobUICore/QStandardPaths>
+#include <BobUICore/QDir>
+#include <BobUITest/BOBUIest>
 
 #ifdef DEBUG_APP_DATA_LOCATION
-    #include <QtCore/QDebug>
+    #include <BobUICore/QDebug>
 #endif
 
 class AssetsIos : public QObject
@@ -66,5 +66,5 @@ void AssetsIos::bundledImageInAssetCatalog() {
     QVERIFY(imageExistsInAssetCatalog(QStringLiteral("Face")));
 }
 
-QTEST_MAIN(AssetsIos)
+BOBUIEST_MAIN(AssetsIos)
 #include "main.moc"

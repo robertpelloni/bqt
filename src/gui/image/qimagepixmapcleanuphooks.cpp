@@ -1,54 +1,54 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qimagepixmapcleanuphooks_p.h"
 #include <qpa/qplatformpixmap.h>
 #include "private/qimage_p.h"
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_GLOBAL_STATIC(QImagePixmapCleanupHooks, qt_image_and_pixmap_cleanup_hooks)
+Q_GLOBAL_STATIC(QImagePixmapCleanupHooks, bobui_image_and_pixmap_cleanup_hooks)
 
 QImagePixmapCleanupHooks *QImagePixmapCleanupHooks::instance()
 {
-    return qt_image_and_pixmap_cleanup_hooks();
+    return bobui_image_and_pixmap_cleanup_hooks();
 }
 
-void QImagePixmapCleanupHooks::addPlatformPixmapModificationHook(_qt_pixmap_cleanup_hook_pmd hook)
+void QImagePixmapCleanupHooks::addPlatformPixmapModificationHook(_bobui_pixmap_cleanup_hook_pmd hook)
 {
     pixmapModificationHooks.append(hook);
 }
 
-void QImagePixmapCleanupHooks::addPlatformPixmapDestructionHook(_qt_pixmap_cleanup_hook_pmd hook)
+void QImagePixmapCleanupHooks::addPlatformPixmapDestructionHook(_bobui_pixmap_cleanup_hook_pmd hook)
 {
     pixmapDestructionHooks.append(hook);
 }
 
 
-void QImagePixmapCleanupHooks::addImageHook(_qt_image_cleanup_hook_64 hook)
+void QImagePixmapCleanupHooks::addImageHook(_bobui_image_cleanup_hook_64 hook)
 {
     imageHooks.append(hook);
 }
 
-void QImagePixmapCleanupHooks::removePlatformPixmapModificationHook(_qt_pixmap_cleanup_hook_pmd hook)
+void QImagePixmapCleanupHooks::removePlatformPixmapModificationHook(_bobui_pixmap_cleanup_hook_pmd hook)
 {
     pixmapModificationHooks.removeAll(hook);
 }
 
-void QImagePixmapCleanupHooks::removePlatformPixmapDestructionHook(_qt_pixmap_cleanup_hook_pmd hook)
+void QImagePixmapCleanupHooks::removePlatformPixmapDestructionHook(_bobui_pixmap_cleanup_hook_pmd hook)
 {
     pixmapDestructionHooks.removeAll(hook);
 }
 
-void QImagePixmapCleanupHooks::removeImageHook(_qt_image_cleanup_hook_64 hook)
+void QImagePixmapCleanupHooks::removeImageHook(_bobui_image_cleanup_hook_64 hook)
 {
     imageHooks.removeAll(hook);
 }
 
 void QImagePixmapCleanupHooks::executePlatformPixmapModificationHooks(QPlatformPixmap* pmd)
 {
-    const QImagePixmapCleanupHooks *h = qt_image_and_pixmap_cleanup_hooks();
+    const QImagePixmapCleanupHooks *h = bobui_image_and_pixmap_cleanup_hooks();
     // the global destructor for the pixmap and image hooks might have
     // been called already if the app is "leaking" global
     // pixmaps/images
@@ -60,7 +60,7 @@ void QImagePixmapCleanupHooks::executePlatformPixmapModificationHooks(QPlatformP
 
 void QImagePixmapCleanupHooks::executePlatformPixmapDestructionHooks(QPlatformPixmap* pmd)
 {
-    const QImagePixmapCleanupHooks *h = qt_image_and_pixmap_cleanup_hooks();
+    const QImagePixmapCleanupHooks *h = bobui_image_and_pixmap_cleanup_hooks();
     // the global destructor for the pixmap and image hooks might have
     // been called already if the app is "leaking" global
     // pixmaps/images
@@ -72,7 +72,7 @@ void QImagePixmapCleanupHooks::executePlatformPixmapDestructionHooks(QPlatformPi
 
 void QImagePixmapCleanupHooks::executeImageHooks(qint64 key)
 {
-    const QImagePixmapCleanupHooks *h = qt_image_and_pixmap_cleanup_hooks();
+    const QImagePixmapCleanupHooks *h = bobui_image_and_pixmap_cleanup_hooks();
     // the global destructor for the pixmap and image hooks might have
     // been called already if the app is "leaking" global
     // pixmaps/images
@@ -110,4 +110,4 @@ bool QImagePixmapCleanupHooks::isPixmapCached(const QPixmap &pixmap)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

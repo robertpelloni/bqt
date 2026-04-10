@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusvirtualobject.h"
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     Constructs a QDBusVirtualObject with \a parent.
@@ -23,13 +23,13 @@ QDBusVirtualObject::~QDBusVirtualObject()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusvirtualobject.cpp"
 
 /*!
     \class QDBusVirtualObject
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 5.1
 
     \brief The QDBusVirtualObject class is used to handle several DBus paths with one class.
@@ -53,7 +53,7 @@ QT_END_NAMESPACE
     virtual object on \a path. It must return xml of the form:
 
     \code
-<interface name="org.qtproject.QtDBus.MyObject" >
+<interface name="org.bobuiproject.BobUIDBus.MyObject" >
     <property access="readwrite" type="i" name="prop1" />
 </interface>
     \endcode
@@ -62,4 +62,4 @@ QT_END_NAMESPACE
     Otherwise QDBus handles the introspection of the child nodes.
 */
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS

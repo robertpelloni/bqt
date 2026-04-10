@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformtheme.h"
 
 #include "qplatformtheme_p.h"
 
-#include <QtCore/QVariant>
-#include <QtCore/QStringList>
-#include <QtCore/qfileinfo.h>
+#include <BobUICore/QVariant>
+#include <BobUICore/QStringList>
+#include <BobUICore/qfileinfo.h>
 #include <qicon.h>
 #include <qpalette.h>
-#include <qtextformat.h>
+#include <bobuiextformat.h>
 #include <private/qiconloader_p.h>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
@@ -18,7 +18,7 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformTheme
@@ -79,7 +79,7 @@ QT_BEGIN_NAMESPACE
     \value MaximumScrollBarDragDistance (int) Determines the value returned by
                             QStyle::pixelMetric(PM_MaximumDragDistance)
 
-    \value ToolButtonStyle (int) A value representing a Qt::ToolButtonStyle.
+    \value ToolButtonStyle (int) A value representing a BobUI::ToolButtonStyle.
 
     \value ToolBarIconSize Icon size for tool bars.
 
@@ -110,12 +110,12 @@ QT_BEGIN_NAMESPACE
 
     \value UiEffects (int) A flag value consisting of UiEffect values specifying the enabled UI animations.
 
-    \value SpellCheckUnderlineStyle (int) A QTextCharFormat::UnderlineStyle specifying
+    \value SpellCheckUnderlineStyle (int) A BOBUIextCharFormat::UnderlineStyle specifying
                                     the underline style used misspelled words when spell checking.
 
-    \value TabFocusBehavior (int) A Qt::TabFocusBehavior specifying
+    \value TabFocusBehavior (int) A BobUI::TabFocusBehavior specifying
                          the behavior of focus change when tab key was pressed.
-                         This enum value was added in Qt 5.5.
+                         This enum value was added in BobUI 5.5.
 
     \value DialogSnapToDefaultButton (bool) Whether the mouse should snap to the default button when a dialog
                                      becomes visible.
@@ -125,7 +125,7 @@ QT_BEGIN_NAMESPACE
     \value MenuSelectionWraps (bool) Determines whether menu selection wraps. That is, whether key navigation moves
                                      the selection to the first menu item again after the last menu item has been
                                      reached, and vice versa.
-                                     This enum value was added in Qt 6.10.
+                                     This enum value was added in BobUI 6.10.
 
     \value TouchDoubleTapDistance (int) The maximum distance in logical pixels which a touchpoint can travel
                         between taps in order for the tap sequence to be handled as a double tap.
@@ -136,27 +136,27 @@ QT_BEGIN_NAMESPACE
 
     \value InteractiveResizeAcrossScreens (bool) Whether using the whole virtual geometry of all the screens
                         as basis for the resize.
-                        This enum value has been added in Qt 6.2.
+                        This enum value has been added in BobUI 6.2.
 
     \value ShowDirectoriesFirst (bool) Whether directories should be shown
            first (before files) in file dialogs.
-           This enum value was added in Qt 6.3.
+           This enum value was added in BobUI 6.3.
 
     \value PreselectFirstFileInDirectory (bool) Whether the first file in a directory
            should be automatically selected when a file dialog opens.
-           This enum value was added in Qt 6.3.
+           This enum value was added in BobUI 6.3.
 
-    \value ButtonPressKeys (QList<Qt::Key>) A list of keys that can be used to press buttons via keyboard input.
+    \value ButtonPressKeys (QList<BobUI::Key>) A list of keys that can be used to press buttons via keyboard input.
 
     \value SetFocusOnTouchRelease (bool) Whether focus objects (line edits etc) should receive
            input focus after a touch/mouse release.
-           This enum value has been added in Qt 6.5.
+           This enum value has been added in BobUI 6.5.
 
     \value MouseCursorTheme (QString) Name of the mouse cursor theme.
-           This enum value has been added in Qt 6.5.
+           This enum value has been added in BobUI 6.5.
 
     \value MouseCursorSize (QSize) Size of the mouse cursor.
-           This enum value has been added in Qt 6.5.
+           This enum value has been added in BobUI 6.5.
 
     \value ScrollSingleStepDistance (int) The distance in logical pixels that scrollable
            controls should scroll in response to a single step (e.g. scroll-bar arrow click,
@@ -166,7 +166,7 @@ QT_BEGIN_NAMESPACE
 */
 
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 // Table of key bindings. It must be sorted on key sequence:
 // The integer value of VK_KEY | Modifier Keys (e.g., VK_META, and etc.)
 // A priority of 1 indicates that this is the primary key binding when multiple are defined.
@@ -183,191 +183,191 @@ enum KeyPlatform {
 
 const QKeyBinding QPlatformThemePrivate::keyBindings[] = {
     //   StandardKey                            Priority    Key Sequence                            Platforms
-    {QKeySequence::HelpContents,            1,          Qt::CTRL | Qt::Key_Question,            KB_Mac},
-    {QKeySequence::HelpContents,            0,          Qt::Key_F1,                             KB_Win | KB_X11},
-    {QKeySequence::HelpContents,            0,          Qt::Key_Help,                           KB_All},
-    {QKeySequence::WhatsThis,               1,          Qt::SHIFT | Qt::Key_F1,                 KB_All},
-    {QKeySequence::Open,                    1,          Qt::CTRL | Qt::Key_O,                   KB_All},
-    {QKeySequence::Open,                    0,          Qt::Key_Open,                           KB_All},
-    {QKeySequence::Close,                   0,          Qt::CTRL | Qt::Key_F4,                  KB_Mac},
-    {QKeySequence::Close,                   1,          Qt::CTRL | Qt::Key_F4,                  KB_Win},
-    {QKeySequence::Close,                   1,          Qt::CTRL | Qt::Key_W,                   KB_Mac},
-    {QKeySequence::Close,                   0,          Qt::CTRL | Qt::Key_W,                   KB_Win | KB_X11},
-    {QKeySequence::Close,                   0,          Qt::Key_Close,                          KB_All},
-    {QKeySequence::Save,                    1,          Qt::CTRL | Qt::Key_S,                   KB_All},
-    {QKeySequence::Save,                    0,          Qt::Key_Save,                           KB_All},
-    {QKeySequence::New,                     1,          Qt::CTRL | Qt::Key_N,                   KB_All},
-    {QKeySequence::New,                     0,          Qt::Key_New,                            KB_All},
-    {QKeySequence::Delete,                  0,          Qt::CTRL | Qt::Key_D,                   KB_X11}, //emacs (line edit only)
-    {QKeySequence::Delete,                  1,          Qt::Key_Delete,                         KB_All},
-    {QKeySequence::Delete,                  0,          Qt::META | Qt::Key_D,                   KB_Mac},
-    {QKeySequence::Cut,                     1,          Qt::CTRL | Qt::Key_X,                   KB_All},
-    {QKeySequence::Cut,                     0,          Qt::SHIFT | Qt::Key_Delete,             KB_Win | KB_X11}, //## Check if this should work on mac
-    {QKeySequence::Cut,                     0,          Qt::Key_F20,                            KB_X11}, //Cut on sun keyboards
-    {QKeySequence::Cut,                     0,          Qt::META | Qt::Key_K,                   KB_Mac},
-    {QKeySequence::Cut,                     0,          Qt::Key_Cut,                            KB_All},
-    {QKeySequence::Copy,                    0,          Qt::CTRL | Qt::Key_Insert,              KB_X11 | KB_Win},
-    {QKeySequence::Copy,                    1,          Qt::CTRL | Qt::Key_C,                   KB_All},
-    {QKeySequence::Copy,                    0,          Qt::Key_F16,                            KB_X11}, //Copy on sun keyboards
-    {QKeySequence::Copy,                    0,          Qt::Key_Copy,                           KB_All},
-    {QKeySequence::Paste,                   0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Insert,  KB_X11},
-    {QKeySequence::Paste,                   1,          Qt::CTRL | Qt::Key_V,                   KB_All},
-    {QKeySequence::Paste,                   0,          Qt::SHIFT | Qt::Key_Insert,             KB_Win | KB_X11},
-    {QKeySequence::Paste,                   0,          Qt::Key_F18,                            KB_X11}, //Paste on sun keyboards
-    {QKeySequence::Paste,                   0,          Qt::META | Qt::Key_Y,                   KB_Mac},
-    {QKeySequence::Paste,                   0,          Qt::Key_Paste,                          KB_All},
-    {QKeySequence::Undo,                    0,          Qt::ALT  | Qt::Key_Backspace,           KB_Win},
-    {QKeySequence::Undo,                    1,          Qt::CTRL | Qt::Key_Z,                   KB_All},
-    {QKeySequence::Undo,                    0,          Qt::Key_F14,                            KB_X11}, //Undo on sun keyboards
-    {QKeySequence::Undo,                    0,          Qt::Key_Undo,                           KB_All},
-    {QKeySequence::Redo,                    0,          Qt::ALT  | Qt::SHIFT | Qt::Key_Backspace,KB_Win},
-    {QKeySequence::Redo,                    0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Z,       KB_Mac},
-    {QKeySequence::Redo,                    0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Z,       KB_Win | KB_X11},
-    {QKeySequence::Redo,                    1,          Qt::CTRL | Qt::Key_Y,                   KB_Win},
-    {QKeySequence::Redo,                    0,          Qt::Key_Redo,                           KB_All},
-    {QKeySequence::Back,                    1,          Qt::ALT  | Qt::Key_Left,                KB_Win | KB_X11},
-    {QKeySequence::Back,                    0,          Qt::CTRL | Qt::Key_Left,                KB_Mac},
-    {QKeySequence::Back,                    1,          Qt::CTRL | Qt::Key_BracketLeft,         KB_Mac},
-    {QKeySequence::Back,                    0,          Qt::Key_Backspace,                      KB_Win},
-    {QKeySequence::Back,                    0,          Qt::Key_Back,                           KB_All},
-    {QKeySequence::Forward,                 1,          Qt::ALT  | Qt::Key_Right,               KB_Win | KB_X11},
-    {QKeySequence::Forward,                 0,          Qt::CTRL | Qt::Key_Right,               KB_Mac},
-    {QKeySequence::Forward,                 1,          Qt::CTRL | Qt::Key_BracketRight,        KB_Mac},
-    {QKeySequence::Forward,                 0,          Qt::SHIFT | Qt::Key_Backspace,          KB_Win},
-    {QKeySequence::Forward,                 0,          Qt::Key_Forward,                        KB_All},
-    {QKeySequence::Refresh,                 1,          Qt::CTRL | Qt::Key_R,                   KB_Gnome | KB_Mac},
-    {QKeySequence::Refresh,                 0,          Qt::Key_F5,                             KB_Win | KB_X11},
-    {QKeySequence::Refresh,                 0,          Qt::Key_Refresh,                        KB_All},
-    {QKeySequence::ZoomIn,                  1,          Qt::CTRL | Qt::Key_Plus,                KB_All},
-    {QKeySequence::ZoomIn,                  0,          Qt::Key_ZoomIn,                         KB_All},
-    {QKeySequence::ZoomOut,                 1,          Qt::CTRL | Qt::Key_Minus,               KB_All},
-    {QKeySequence::ZoomOut,                 0,          Qt::Key_ZoomOut,                        KB_All},
-    {QKeySequence::Print,                   1,          Qt::CTRL | Qt::Key_P,                   KB_All},
-    {QKeySequence::AddTab,                  1,          Qt::CTRL | Qt::SHIFT | Qt::Key_N,       KB_KDE},
-    {QKeySequence::AddTab,                  0,          Qt::CTRL | Qt::Key_T,                   KB_All},
-    {QKeySequence::NextChild,               0,          Qt::CTRL | Qt::Key_F6,                  KB_Win},
-    {QKeySequence::NextChild,               0,          Qt::CTRL | Qt::Key_Tab,                 KB_Mac}, //different priority from above
-    {QKeySequence::NextChild,               1,          Qt::CTRL | Qt::Key_Tab,                 KB_Win | KB_X11},
-    {QKeySequence::NextChild,               1,          Qt::CTRL | Qt::Key_BraceRight,          KB_Mac},
-    {QKeySequence::NextChild,               0,          Qt::CTRL | Qt::Key_Comma,               KB_KDE},
-    {QKeySequence::NextChild,               0,          Qt::Key_Forward,                        KB_All},
-    {QKeySequence::PreviousChild,           0,          Qt::CTRL | Qt::SHIFT | Qt::Key_F6,      KB_Win},
-    {QKeySequence::PreviousChild,           0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab, KB_Mac },//different priority from above
-    {QKeySequence::PreviousChild,           1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Backtab, KB_Win | KB_X11},
-    {QKeySequence::PreviousChild,           1,          Qt::CTRL | Qt::Key_BraceLeft,           KB_Mac},
-    {QKeySequence::PreviousChild,           0,          Qt::CTRL | Qt::Key_Period,              KB_KDE},
-    {QKeySequence::PreviousChild,           0,          Qt::Key_Back,                           KB_All},
-    {QKeySequence::Find,                    0,          Qt::CTRL | Qt::Key_F,                   KB_All},
-    {QKeySequence::Find,                    0,          Qt::Key_Find,                           KB_All},
-    {QKeySequence::FindNext,                0,          Qt::CTRL | Qt::Key_G,                   KB_Win},
-    {QKeySequence::FindNext,                1,          Qt::CTRL | Qt::Key_G,                   KB_Gnome | KB_Mac},
-    {QKeySequence::FindNext,                1,          Qt::Key_F3,                             KB_Win},
-    {QKeySequence::FindNext,                0,          Qt::Key_F3,                             KB_X11},
-    {QKeySequence::FindPrevious,            0,          Qt::CTRL | Qt::SHIFT | Qt::Key_G,       KB_Win},
-    {QKeySequence::FindPrevious,            1,          Qt::CTRL | Qt::SHIFT | Qt::Key_G,       KB_Gnome | KB_Mac},
-    {QKeySequence::FindPrevious,            1,          Qt::SHIFT | Qt::Key_F3,                 KB_Win},
-    {QKeySequence::FindPrevious,            0,          Qt::SHIFT | Qt::Key_F3,                 KB_X11},
-    {QKeySequence::Replace,                 0,          Qt::CTRL | Qt::Key_R,                   KB_KDE},
-    {QKeySequence::Replace,                 0,          Qt::CTRL | Qt::Key_H,                   KB_Gnome},
-    {QKeySequence::Replace,                 0,          Qt::CTRL | Qt::Key_H,                   KB_Win},
-    {QKeySequence::SelectAll,               1,          Qt::CTRL | Qt::Key_A,                   KB_All},
-    {QKeySequence::Bold,                    1,          Qt::CTRL | Qt::Key_B,                   KB_All},
-    {QKeySequence::Italic,                  0,          Qt::CTRL | Qt::Key_I,                   KB_All},
-    {QKeySequence::Underline,               1,          Qt::CTRL | Qt::Key_U,                   KB_All},
-    {QKeySequence::MoveToNextChar,          1,          Qt::Key_Right,                          KB_All},
-    {QKeySequence::MoveToNextChar,          0,          Qt::META | Qt::Key_F,                   KB_Mac},
-    {QKeySequence::MoveToPreviousChar,      1,          Qt::Key_Left,                           KB_All},
-    {QKeySequence::MoveToPreviousChar,      0,          Qt::META | Qt::Key_B,                   KB_Mac},
-    {QKeySequence::MoveToNextWord,          0,          Qt::ALT  | Qt::Key_Right,               KB_Mac},
-    {QKeySequence::MoveToNextWord,          0,          Qt::CTRL | Qt::Key_Right,               KB_Win | KB_X11},
-    {QKeySequence::MoveToPreviousWord,      0,          Qt::ALT  | Qt::Key_Left,                KB_Mac},
-    {QKeySequence::MoveToPreviousWord,      0,          Qt::CTRL | Qt::Key_Left,                KB_Win | KB_X11},
-    {QKeySequence::MoveToNextLine,          1,          Qt::Key_Down,                           KB_All},
-    {QKeySequence::MoveToNextLine,          0,          Qt::META | Qt::Key_N,                   KB_Mac},
-    {QKeySequence::MoveToPreviousLine,      1,          Qt::Key_Up,                             KB_All},
-    {QKeySequence::MoveToPreviousLine,      0,          Qt::META | Qt::Key_P,                   KB_Mac},
-    {QKeySequence::MoveToNextPage,          0,          Qt::META | Qt::Key_PageDown,            KB_Mac},
-    {QKeySequence::MoveToNextPage,          0,          Qt::META | Qt::Key_Down,                KB_Mac},
-    {QKeySequence::MoveToNextPage,          0,          Qt::META | Qt::Key_V,                   KB_Mac},
-    {QKeySequence::MoveToNextPage,          0,          Qt::ALT  | Qt::Key_PageDown,            KB_Mac },
-    {QKeySequence::MoveToNextPage,          1,          Qt::Key_PageDown,                       KB_All},
-    {QKeySequence::MoveToPreviousPage,      0,          Qt::META | Qt::Key_PageUp,              KB_Mac},
-    {QKeySequence::MoveToPreviousPage,      0,          Qt::META | Qt::Key_Up,                  KB_Mac},
-    {QKeySequence::MoveToPreviousPage,      0,          Qt::ALT  | Qt::Key_PageUp,              KB_Mac },
-    {QKeySequence::MoveToPreviousPage,      1,          Qt::Key_PageUp,                         KB_All},
-    {QKeySequence::MoveToStartOfLine,       0,          Qt::META | Qt::Key_Left,                KB_Mac},
-    {QKeySequence::MoveToStartOfLine,       0,          Qt::CTRL | Qt::Key_Left,                KB_Mac },
-    {QKeySequence::MoveToStartOfLine,       0,          Qt::Key_Home,                           KB_Win | KB_X11},
-    {QKeySequence::MoveToEndOfLine,         0,          Qt::META | Qt::Key_Right,               KB_Mac},
-    {QKeySequence::MoveToEndOfLine,         0,          Qt::CTRL | Qt::Key_Right,               KB_Mac },
-    {QKeySequence::MoveToEndOfLine,         0,          Qt::Key_End,                            KB_Win | KB_X11},
-    {QKeySequence::MoveToEndOfLine,         0,          Qt::CTRL | Qt::Key_E,                   KB_X11},
-    {QKeySequence::MoveToStartOfBlock,      0,          Qt::META | Qt::Key_A,                   KB_Mac},
-    {QKeySequence::MoveToStartOfBlock,      1,          Qt::ALT  | Qt::Key_Up,                  KB_Mac}, //mac only
-    {QKeySequence::MoveToEndOfBlock,        0,          Qt::META | Qt::Key_E,                   KB_Mac},
-    {QKeySequence::MoveToEndOfBlock,        1,          Qt::ALT  | Qt::Key_Down,                KB_Mac}, //mac only
-    {QKeySequence::MoveToStartOfDocument,   1,          Qt::CTRL | Qt::Key_Up,                  KB_Mac},
-    {QKeySequence::MoveToStartOfDocument,   0,          Qt::CTRL | Qt::Key_Home,                KB_Win | KB_X11},
-    {QKeySequence::MoveToStartOfDocument,   0,          Qt::Key_Home,                           KB_Mac},
-    {QKeySequence::MoveToEndOfDocument,     1,          Qt::CTRL | Qt::Key_Down,                KB_Mac},
-    {QKeySequence::MoveToEndOfDocument,     0,          Qt::CTRL | Qt::Key_End,                 KB_Win | KB_X11},
-    {QKeySequence::MoveToEndOfDocument,     0,          Qt::Key_End,                            KB_Mac},
-    {QKeySequence::SelectNextChar,          0,          Qt::SHIFT | Qt::Key_Right,              KB_All},
-    {QKeySequence::SelectPreviousChar,      0,          Qt::SHIFT | Qt::Key_Left,               KB_All},
-    {QKeySequence::SelectNextWord,          0,          Qt::ALT  | Qt::SHIFT | Qt::Key_Right,   KB_Mac},
-    {QKeySequence::SelectNextWord,          0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Right,   KB_Win | KB_X11},
-    {QKeySequence::SelectPreviousWord,      0,          Qt::ALT  | Qt::SHIFT | Qt::Key_Left,    KB_Mac},
-    {QKeySequence::SelectPreviousWord,      0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Left,    KB_Win | KB_X11},
-    {QKeySequence::SelectNextLine,          0,          Qt::SHIFT | Qt::Key_Down,               KB_All},
-    {QKeySequence::SelectPreviousLine,      0,          Qt::SHIFT | Qt::Key_Up,                 KB_All},
-    {QKeySequence::SelectNextPage,          0,          Qt::SHIFT | Qt::Key_PageDown,           KB_All},
-    {QKeySequence::SelectPreviousPage,      0,          Qt::SHIFT | Qt::Key_PageUp,             KB_All},
-    {QKeySequence::SelectStartOfLine,       0,          Qt::META | Qt::SHIFT | Qt::Key_Left,    KB_Mac},
-    {QKeySequence::SelectStartOfLine,       1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Left,    KB_Mac },
-    {QKeySequence::SelectStartOfLine,       0,          Qt::SHIFT | Qt::Key_Home,               KB_Win | KB_X11},
-    {QKeySequence::SelectEndOfLine,         0,          Qt::META | Qt::SHIFT | Qt::Key_Right,   KB_Mac},
-    {QKeySequence::SelectEndOfLine,         1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Right,   KB_Mac },
-    {QKeySequence::SelectEndOfLine,         0,          Qt::SHIFT | Qt::Key_End,                KB_Win | KB_X11},
-    {QKeySequence::SelectStartOfBlock,      1,          Qt::ALT  | Qt::SHIFT | Qt::Key_Up,      KB_Mac}, //mac only
-    {QKeySequence::SelectStartOfBlock,      0,          Qt::META | Qt::SHIFT | Qt::Key_A,       KB_Mac},
-    {QKeySequence::SelectEndOfBlock,        1,          Qt::ALT  | Qt::SHIFT | Qt::Key_Down,    KB_Mac}, //mac only
-    {QKeySequence::SelectEndOfBlock,        0,          Qt::META | Qt::SHIFT | Qt::Key_E,       KB_Mac},
-    {QKeySequence::SelectStartOfDocument,   1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Up,      KB_Mac},
-    {QKeySequence::SelectStartOfDocument,   0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Home,    KB_Win | KB_X11},
-    {QKeySequence::SelectStartOfDocument,   0,          Qt::SHIFT | Qt::Key_Home,               KB_Mac},
-    {QKeySequence::SelectEndOfDocument,     1,          Qt::CTRL | Qt::SHIFT | Qt::Key_Down,    KB_Mac},
-    {QKeySequence::SelectEndOfDocument,     0,          Qt::CTRL | Qt::SHIFT | Qt::Key_End,     KB_Win | KB_X11},
-    {QKeySequence::SelectEndOfDocument,     0,          Qt::SHIFT | Qt::Key_End,                KB_Mac},
-    {QKeySequence::DeleteStartOfWord,       0,          Qt::ALT  | Qt::Key_Backspace,           KB_Mac},
-    {QKeySequence::DeleteStartOfWord,       0,          Qt::CTRL | Qt::Key_Backspace,           KB_X11 | KB_Win},
-    {QKeySequence::DeleteEndOfWord,         0,          Qt::ALT  | Qt::Key_Delete,              KB_Mac},
-    {QKeySequence::DeleteEndOfWord,         0,          Qt::CTRL | Qt::Key_Delete,              KB_X11 | KB_Win},
-    {QKeySequence::DeleteEndOfLine,         0,          Qt::CTRL | Qt::Key_K,                   KB_X11}, //emacs (line edit only)
-    {QKeySequence::InsertParagraphSeparator,0,          Qt::Key_Enter,                          KB_All},
-    {QKeySequence::InsertParagraphSeparator,0,          Qt::Key_Return,                         KB_All},
-    {QKeySequence::InsertLineSeparator,     0,          Qt::META | Qt::Key_Enter,               KB_Mac},
-    {QKeySequence::InsertLineSeparator,     0,          Qt::META | Qt::Key_Return,              KB_Mac},
-    {QKeySequence::InsertLineSeparator,     0,          Qt::SHIFT | Qt::Key_Enter,              KB_All},
-    {QKeySequence::InsertLineSeparator,     0,          Qt::SHIFT | Qt::Key_Return,             KB_All},
-    {QKeySequence::InsertLineSeparator,     0,          Qt::META | Qt::Key_O,                   KB_Mac},
-    {QKeySequence::SaveAs,                  0,          Qt::CTRL | Qt::SHIFT | Qt::Key_S,       KB_All},
-    {QKeySequence::SaveAs,                  0,          Qt::SHIFT | Qt::Key_Save,               KB_All},
-    {QKeySequence::Preferences,             0,          Qt::CTRL | Qt::Key_Comma,               KB_Mac},
-    {QKeySequence::Preferences,             0,          Qt::CTRL | Qt::SHIFT | Qt::Key_Comma,   KB_KDE},
-    {QKeySequence::Preferences,             0,          Qt::Key_Settings,                       KB_All},
-    {QKeySequence::Quit,                    0,          Qt::CTRL | Qt::Key_Q,                   KB_X11 | KB_Gnome | KB_KDE | KB_Mac},
-    {QKeySequence::Quit,                    0,          Qt::Key_Exit,                           KB_All},
-    {QKeySequence::FullScreen,              1,          Qt::META | Qt::CTRL | Qt::Key_F,        KB_Mac},
-    {QKeySequence::FullScreen,              0,          Qt::ALT  | Qt::Key_Enter,               KB_Win},
-    {QKeySequence::FullScreen,              0,          Qt::CTRL | Qt::SHIFT | Qt::Key_F,       KB_KDE},
-    {QKeySequence::FullScreen,              1,          Qt::Key_F11,                            KB_Win | KB_Gnome | KB_KDE},
-    {QKeySequence::Deselect,                0,          Qt::CTRL | Qt::SHIFT | Qt::Key_A,       KB_X11},
-    {QKeySequence::DeleteCompleteLine,      0,          Qt::CTRL | Qt::Key_U,                   KB_X11},
-    {QKeySequence::Backspace,               1,          Qt::Key_Backspace,                      KB_Mac},
-    {QKeySequence::Backspace,               0,          Qt::META | Qt::Key_H,                   KB_Mac},
-    {QKeySequence::Cancel,                  0,          Qt::Key_Escape,                         KB_All},
-    {QKeySequence::Cancel,                  0,          Qt::CTRL | Qt::Key_Period,              KB_Mac},
-    {QKeySequence::Cancel,                  0,          Qt::Key_Cancel,                         KB_All}
+    {QKeySequence::HelpContents,            1,          BobUI::CTRL | BobUI::Key_Question,            KB_Mac},
+    {QKeySequence::HelpContents,            0,          BobUI::Key_F1,                             KB_Win | KB_X11},
+    {QKeySequence::HelpContents,            0,          BobUI::Key_Help,                           KB_All},
+    {QKeySequence::WhatsThis,               1,          BobUI::SHIFT | BobUI::Key_F1,                 KB_All},
+    {QKeySequence::Open,                    1,          BobUI::CTRL | BobUI::Key_O,                   KB_All},
+    {QKeySequence::Open,                    0,          BobUI::Key_Open,                           KB_All},
+    {QKeySequence::Close,                   0,          BobUI::CTRL | BobUI::Key_F4,                  KB_Mac},
+    {QKeySequence::Close,                   1,          BobUI::CTRL | BobUI::Key_F4,                  KB_Win},
+    {QKeySequence::Close,                   1,          BobUI::CTRL | BobUI::Key_W,                   KB_Mac},
+    {QKeySequence::Close,                   0,          BobUI::CTRL | BobUI::Key_W,                   KB_Win | KB_X11},
+    {QKeySequence::Close,                   0,          BobUI::Key_Close,                          KB_All},
+    {QKeySequence::Save,                    1,          BobUI::CTRL | BobUI::Key_S,                   KB_All},
+    {QKeySequence::Save,                    0,          BobUI::Key_Save,                           KB_All},
+    {QKeySequence::New,                     1,          BobUI::CTRL | BobUI::Key_N,                   KB_All},
+    {QKeySequence::New,                     0,          BobUI::Key_New,                            KB_All},
+    {QKeySequence::Delete,                  0,          BobUI::CTRL | BobUI::Key_D,                   KB_X11}, //emacs (line edit only)
+    {QKeySequence::Delete,                  1,          BobUI::Key_Delete,                         KB_All},
+    {QKeySequence::Delete,                  0,          BobUI::META | BobUI::Key_D,                   KB_Mac},
+    {QKeySequence::Cut,                     1,          BobUI::CTRL | BobUI::Key_X,                   KB_All},
+    {QKeySequence::Cut,                     0,          BobUI::SHIFT | BobUI::Key_Delete,             KB_Win | KB_X11}, //## Check if this should work on mac
+    {QKeySequence::Cut,                     0,          BobUI::Key_F20,                            KB_X11}, //Cut on sun keyboards
+    {QKeySequence::Cut,                     0,          BobUI::META | BobUI::Key_K,                   KB_Mac},
+    {QKeySequence::Cut,                     0,          BobUI::Key_Cut,                            KB_All},
+    {QKeySequence::Copy,                    0,          BobUI::CTRL | BobUI::Key_Insert,              KB_X11 | KB_Win},
+    {QKeySequence::Copy,                    1,          BobUI::CTRL | BobUI::Key_C,                   KB_All},
+    {QKeySequence::Copy,                    0,          BobUI::Key_F16,                            KB_X11}, //Copy on sun keyboards
+    {QKeySequence::Copy,                    0,          BobUI::Key_Copy,                           KB_All},
+    {QKeySequence::Paste,                   0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Insert,  KB_X11},
+    {QKeySequence::Paste,                   1,          BobUI::CTRL | BobUI::Key_V,                   KB_All},
+    {QKeySequence::Paste,                   0,          BobUI::SHIFT | BobUI::Key_Insert,             KB_Win | KB_X11},
+    {QKeySequence::Paste,                   0,          BobUI::Key_F18,                            KB_X11}, //Paste on sun keyboards
+    {QKeySequence::Paste,                   0,          BobUI::META | BobUI::Key_Y,                   KB_Mac},
+    {QKeySequence::Paste,                   0,          BobUI::Key_Paste,                          KB_All},
+    {QKeySequence::Undo,                    0,          BobUI::ALT  | BobUI::Key_Backspace,           KB_Win},
+    {QKeySequence::Undo,                    1,          BobUI::CTRL | BobUI::Key_Z,                   KB_All},
+    {QKeySequence::Undo,                    0,          BobUI::Key_F14,                            KB_X11}, //Undo on sun keyboards
+    {QKeySequence::Undo,                    0,          BobUI::Key_Undo,                           KB_All},
+    {QKeySequence::Redo,                    0,          BobUI::ALT  | BobUI::SHIFT | BobUI::Key_Backspace,KB_Win},
+    {QKeySequence::Redo,                    0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Z,       KB_Mac},
+    {QKeySequence::Redo,                    0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Z,       KB_Win | KB_X11},
+    {QKeySequence::Redo,                    1,          BobUI::CTRL | BobUI::Key_Y,                   KB_Win},
+    {QKeySequence::Redo,                    0,          BobUI::Key_Redo,                           KB_All},
+    {QKeySequence::Back,                    1,          BobUI::ALT  | BobUI::Key_Left,                KB_Win | KB_X11},
+    {QKeySequence::Back,                    0,          BobUI::CTRL | BobUI::Key_Left,                KB_Mac},
+    {QKeySequence::Back,                    1,          BobUI::CTRL | BobUI::Key_BracketLeft,         KB_Mac},
+    {QKeySequence::Back,                    0,          BobUI::Key_Backspace,                      KB_Win},
+    {QKeySequence::Back,                    0,          BobUI::Key_Back,                           KB_All},
+    {QKeySequence::Forward,                 1,          BobUI::ALT  | BobUI::Key_Right,               KB_Win | KB_X11},
+    {QKeySequence::Forward,                 0,          BobUI::CTRL | BobUI::Key_Right,               KB_Mac},
+    {QKeySequence::Forward,                 1,          BobUI::CTRL | BobUI::Key_BracketRight,        KB_Mac},
+    {QKeySequence::Forward,                 0,          BobUI::SHIFT | BobUI::Key_Backspace,          KB_Win},
+    {QKeySequence::Forward,                 0,          BobUI::Key_Forward,                        KB_All},
+    {QKeySequence::Refresh,                 1,          BobUI::CTRL | BobUI::Key_R,                   KB_Gnome | KB_Mac},
+    {QKeySequence::Refresh,                 0,          BobUI::Key_F5,                             KB_Win | KB_X11},
+    {QKeySequence::Refresh,                 0,          BobUI::Key_Refresh,                        KB_All},
+    {QKeySequence::ZoomIn,                  1,          BobUI::CTRL | BobUI::Key_Plus,                KB_All},
+    {QKeySequence::ZoomIn,                  0,          BobUI::Key_ZoomIn,                         KB_All},
+    {QKeySequence::ZoomOut,                 1,          BobUI::CTRL | BobUI::Key_Minus,               KB_All},
+    {QKeySequence::ZoomOut,                 0,          BobUI::Key_ZoomOut,                        KB_All},
+    {QKeySequence::Print,                   1,          BobUI::CTRL | BobUI::Key_P,                   KB_All},
+    {QKeySequence::AddTab,                  1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_N,       KB_KDE},
+    {QKeySequence::AddTab,                  0,          BobUI::CTRL | BobUI::Key_T,                   KB_All},
+    {QKeySequence::NextChild,               0,          BobUI::CTRL | BobUI::Key_F6,                  KB_Win},
+    {QKeySequence::NextChild,               0,          BobUI::CTRL | BobUI::Key_Tab,                 KB_Mac}, //different priority from above
+    {QKeySequence::NextChild,               1,          BobUI::CTRL | BobUI::Key_Tab,                 KB_Win | KB_X11},
+    {QKeySequence::NextChild,               1,          BobUI::CTRL | BobUI::Key_BraceRight,          KB_Mac},
+    {QKeySequence::NextChild,               0,          BobUI::CTRL | BobUI::Key_Comma,               KB_KDE},
+    {QKeySequence::NextChild,               0,          BobUI::Key_Forward,                        KB_All},
+    {QKeySequence::PreviousChild,           0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_F6,      KB_Win},
+    {QKeySequence::PreviousChild,           0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Backtab, KB_Mac },//different priority from above
+    {QKeySequence::PreviousChild,           1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Backtab, KB_Win | KB_X11},
+    {QKeySequence::PreviousChild,           1,          BobUI::CTRL | BobUI::Key_BraceLeft,           KB_Mac},
+    {QKeySequence::PreviousChild,           0,          BobUI::CTRL | BobUI::Key_Period,              KB_KDE},
+    {QKeySequence::PreviousChild,           0,          BobUI::Key_Back,                           KB_All},
+    {QKeySequence::Find,                    0,          BobUI::CTRL | BobUI::Key_F,                   KB_All},
+    {QKeySequence::Find,                    0,          BobUI::Key_Find,                           KB_All},
+    {QKeySequence::FindNext,                0,          BobUI::CTRL | BobUI::Key_G,                   KB_Win},
+    {QKeySequence::FindNext,                1,          BobUI::CTRL | BobUI::Key_G,                   KB_Gnome | KB_Mac},
+    {QKeySequence::FindNext,                1,          BobUI::Key_F3,                             KB_Win},
+    {QKeySequence::FindNext,                0,          BobUI::Key_F3,                             KB_X11},
+    {QKeySequence::FindPrevious,            0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_G,       KB_Win},
+    {QKeySequence::FindPrevious,            1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_G,       KB_Gnome | KB_Mac},
+    {QKeySequence::FindPrevious,            1,          BobUI::SHIFT | BobUI::Key_F3,                 KB_Win},
+    {QKeySequence::FindPrevious,            0,          BobUI::SHIFT | BobUI::Key_F3,                 KB_X11},
+    {QKeySequence::Replace,                 0,          BobUI::CTRL | BobUI::Key_R,                   KB_KDE},
+    {QKeySequence::Replace,                 0,          BobUI::CTRL | BobUI::Key_H,                   KB_Gnome},
+    {QKeySequence::Replace,                 0,          BobUI::CTRL | BobUI::Key_H,                   KB_Win},
+    {QKeySequence::SelectAll,               1,          BobUI::CTRL | BobUI::Key_A,                   KB_All},
+    {QKeySequence::Bold,                    1,          BobUI::CTRL | BobUI::Key_B,                   KB_All},
+    {QKeySequence::Italic,                  0,          BobUI::CTRL | BobUI::Key_I,                   KB_All},
+    {QKeySequence::Underline,               1,          BobUI::CTRL | BobUI::Key_U,                   KB_All},
+    {QKeySequence::MoveToNextChar,          1,          BobUI::Key_Right,                          KB_All},
+    {QKeySequence::MoveToNextChar,          0,          BobUI::META | BobUI::Key_F,                   KB_Mac},
+    {QKeySequence::MoveToPreviousChar,      1,          BobUI::Key_Left,                           KB_All},
+    {QKeySequence::MoveToPreviousChar,      0,          BobUI::META | BobUI::Key_B,                   KB_Mac},
+    {QKeySequence::MoveToNextWord,          0,          BobUI::ALT  | BobUI::Key_Right,               KB_Mac},
+    {QKeySequence::MoveToNextWord,          0,          BobUI::CTRL | BobUI::Key_Right,               KB_Win | KB_X11},
+    {QKeySequence::MoveToPreviousWord,      0,          BobUI::ALT  | BobUI::Key_Left,                KB_Mac},
+    {QKeySequence::MoveToPreviousWord,      0,          BobUI::CTRL | BobUI::Key_Left,                KB_Win | KB_X11},
+    {QKeySequence::MoveToNextLine,          1,          BobUI::Key_Down,                           KB_All},
+    {QKeySequence::MoveToNextLine,          0,          BobUI::META | BobUI::Key_N,                   KB_Mac},
+    {QKeySequence::MoveToPreviousLine,      1,          BobUI::Key_Up,                             KB_All},
+    {QKeySequence::MoveToPreviousLine,      0,          BobUI::META | BobUI::Key_P,                   KB_Mac},
+    {QKeySequence::MoveToNextPage,          0,          BobUI::META | BobUI::Key_PageDown,            KB_Mac},
+    {QKeySequence::MoveToNextPage,          0,          BobUI::META | BobUI::Key_Down,                KB_Mac},
+    {QKeySequence::MoveToNextPage,          0,          BobUI::META | BobUI::Key_V,                   KB_Mac},
+    {QKeySequence::MoveToNextPage,          0,          BobUI::ALT  | BobUI::Key_PageDown,            KB_Mac },
+    {QKeySequence::MoveToNextPage,          1,          BobUI::Key_PageDown,                       KB_All},
+    {QKeySequence::MoveToPreviousPage,      0,          BobUI::META | BobUI::Key_PageUp,              KB_Mac},
+    {QKeySequence::MoveToPreviousPage,      0,          BobUI::META | BobUI::Key_Up,                  KB_Mac},
+    {QKeySequence::MoveToPreviousPage,      0,          BobUI::ALT  | BobUI::Key_PageUp,              KB_Mac },
+    {QKeySequence::MoveToPreviousPage,      1,          BobUI::Key_PageUp,                         KB_All},
+    {QKeySequence::MoveToStartOfLine,       0,          BobUI::META | BobUI::Key_Left,                KB_Mac},
+    {QKeySequence::MoveToStartOfLine,       0,          BobUI::CTRL | BobUI::Key_Left,                KB_Mac },
+    {QKeySequence::MoveToStartOfLine,       0,          BobUI::Key_Home,                           KB_Win | KB_X11},
+    {QKeySequence::MoveToEndOfLine,         0,          BobUI::META | BobUI::Key_Right,               KB_Mac},
+    {QKeySequence::MoveToEndOfLine,         0,          BobUI::CTRL | BobUI::Key_Right,               KB_Mac },
+    {QKeySequence::MoveToEndOfLine,         0,          BobUI::Key_End,                            KB_Win | KB_X11},
+    {QKeySequence::MoveToEndOfLine,         0,          BobUI::CTRL | BobUI::Key_E,                   KB_X11},
+    {QKeySequence::MoveToStartOfBlock,      0,          BobUI::META | BobUI::Key_A,                   KB_Mac},
+    {QKeySequence::MoveToStartOfBlock,      1,          BobUI::ALT  | BobUI::Key_Up,                  KB_Mac}, //mac only
+    {QKeySequence::MoveToEndOfBlock,        0,          BobUI::META | BobUI::Key_E,                   KB_Mac},
+    {QKeySequence::MoveToEndOfBlock,        1,          BobUI::ALT  | BobUI::Key_Down,                KB_Mac}, //mac only
+    {QKeySequence::MoveToStartOfDocument,   1,          BobUI::CTRL | BobUI::Key_Up,                  KB_Mac},
+    {QKeySequence::MoveToStartOfDocument,   0,          BobUI::CTRL | BobUI::Key_Home,                KB_Win | KB_X11},
+    {QKeySequence::MoveToStartOfDocument,   0,          BobUI::Key_Home,                           KB_Mac},
+    {QKeySequence::MoveToEndOfDocument,     1,          BobUI::CTRL | BobUI::Key_Down,                KB_Mac},
+    {QKeySequence::MoveToEndOfDocument,     0,          BobUI::CTRL | BobUI::Key_End,                 KB_Win | KB_X11},
+    {QKeySequence::MoveToEndOfDocument,     0,          BobUI::Key_End,                            KB_Mac},
+    {QKeySequence::SelectNextChar,          0,          BobUI::SHIFT | BobUI::Key_Right,              KB_All},
+    {QKeySequence::SelectPreviousChar,      0,          BobUI::SHIFT | BobUI::Key_Left,               KB_All},
+    {QKeySequence::SelectNextWord,          0,          BobUI::ALT  | BobUI::SHIFT | BobUI::Key_Right,   KB_Mac},
+    {QKeySequence::SelectNextWord,          0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Right,   KB_Win | KB_X11},
+    {QKeySequence::SelectPreviousWord,      0,          BobUI::ALT  | BobUI::SHIFT | BobUI::Key_Left,    KB_Mac},
+    {QKeySequence::SelectPreviousWord,      0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Left,    KB_Win | KB_X11},
+    {QKeySequence::SelectNextLine,          0,          BobUI::SHIFT | BobUI::Key_Down,               KB_All},
+    {QKeySequence::SelectPreviousLine,      0,          BobUI::SHIFT | BobUI::Key_Up,                 KB_All},
+    {QKeySequence::SelectNextPage,          0,          BobUI::SHIFT | BobUI::Key_PageDown,           KB_All},
+    {QKeySequence::SelectPreviousPage,      0,          BobUI::SHIFT | BobUI::Key_PageUp,             KB_All},
+    {QKeySequence::SelectStartOfLine,       0,          BobUI::META | BobUI::SHIFT | BobUI::Key_Left,    KB_Mac},
+    {QKeySequence::SelectStartOfLine,       1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Left,    KB_Mac },
+    {QKeySequence::SelectStartOfLine,       0,          BobUI::SHIFT | BobUI::Key_Home,               KB_Win | KB_X11},
+    {QKeySequence::SelectEndOfLine,         0,          BobUI::META | BobUI::SHIFT | BobUI::Key_Right,   KB_Mac},
+    {QKeySequence::SelectEndOfLine,         1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Right,   KB_Mac },
+    {QKeySequence::SelectEndOfLine,         0,          BobUI::SHIFT | BobUI::Key_End,                KB_Win | KB_X11},
+    {QKeySequence::SelectStartOfBlock,      1,          BobUI::ALT  | BobUI::SHIFT | BobUI::Key_Up,      KB_Mac}, //mac only
+    {QKeySequence::SelectStartOfBlock,      0,          BobUI::META | BobUI::SHIFT | BobUI::Key_A,       KB_Mac},
+    {QKeySequence::SelectEndOfBlock,        1,          BobUI::ALT  | BobUI::SHIFT | BobUI::Key_Down,    KB_Mac}, //mac only
+    {QKeySequence::SelectEndOfBlock,        0,          BobUI::META | BobUI::SHIFT | BobUI::Key_E,       KB_Mac},
+    {QKeySequence::SelectStartOfDocument,   1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Up,      KB_Mac},
+    {QKeySequence::SelectStartOfDocument,   0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Home,    KB_Win | KB_X11},
+    {QKeySequence::SelectStartOfDocument,   0,          BobUI::SHIFT | BobUI::Key_Home,               KB_Mac},
+    {QKeySequence::SelectEndOfDocument,     1,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Down,    KB_Mac},
+    {QKeySequence::SelectEndOfDocument,     0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_End,     KB_Win | KB_X11},
+    {QKeySequence::SelectEndOfDocument,     0,          BobUI::SHIFT | BobUI::Key_End,                KB_Mac},
+    {QKeySequence::DeleteStartOfWord,       0,          BobUI::ALT  | BobUI::Key_Backspace,           KB_Mac},
+    {QKeySequence::DeleteStartOfWord,       0,          BobUI::CTRL | BobUI::Key_Backspace,           KB_X11 | KB_Win},
+    {QKeySequence::DeleteEndOfWord,         0,          BobUI::ALT  | BobUI::Key_Delete,              KB_Mac},
+    {QKeySequence::DeleteEndOfWord,         0,          BobUI::CTRL | BobUI::Key_Delete,              KB_X11 | KB_Win},
+    {QKeySequence::DeleteEndOfLine,         0,          BobUI::CTRL | BobUI::Key_K,                   KB_X11}, //emacs (line edit only)
+    {QKeySequence::InsertParagraphSeparator,0,          BobUI::Key_Enter,                          KB_All},
+    {QKeySequence::InsertParagraphSeparator,0,          BobUI::Key_Return,                         KB_All},
+    {QKeySequence::InsertLineSeparator,     0,          BobUI::META | BobUI::Key_Enter,               KB_Mac},
+    {QKeySequence::InsertLineSeparator,     0,          BobUI::META | BobUI::Key_Return,              KB_Mac},
+    {QKeySequence::InsertLineSeparator,     0,          BobUI::SHIFT | BobUI::Key_Enter,              KB_All},
+    {QKeySequence::InsertLineSeparator,     0,          BobUI::SHIFT | BobUI::Key_Return,             KB_All},
+    {QKeySequence::InsertLineSeparator,     0,          BobUI::META | BobUI::Key_O,                   KB_Mac},
+    {QKeySequence::SaveAs,                  0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_S,       KB_All},
+    {QKeySequence::SaveAs,                  0,          BobUI::SHIFT | BobUI::Key_Save,               KB_All},
+    {QKeySequence::Preferences,             0,          BobUI::CTRL | BobUI::Key_Comma,               KB_Mac},
+    {QKeySequence::Preferences,             0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_Comma,   KB_KDE},
+    {QKeySequence::Preferences,             0,          BobUI::Key_Settings,                       KB_All},
+    {QKeySequence::Quit,                    0,          BobUI::CTRL | BobUI::Key_Q,                   KB_X11 | KB_Gnome | KB_KDE | KB_Mac},
+    {QKeySequence::Quit,                    0,          BobUI::Key_Exit,                           KB_All},
+    {QKeySequence::FullScreen,              1,          BobUI::META | BobUI::CTRL | BobUI::Key_F,        KB_Mac},
+    {QKeySequence::FullScreen,              0,          BobUI::ALT  | BobUI::Key_Enter,               KB_Win},
+    {QKeySequence::FullScreen,              0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_F,       KB_KDE},
+    {QKeySequence::FullScreen,              1,          BobUI::Key_F11,                            KB_Win | KB_Gnome | KB_KDE},
+    {QKeySequence::Deselect,                0,          BobUI::CTRL | BobUI::SHIFT | BobUI::Key_A,       KB_X11},
+    {QKeySequence::DeleteCompleteLine,      0,          BobUI::CTRL | BobUI::Key_U,                   KB_X11},
+    {QKeySequence::Backspace,               1,          BobUI::Key_Backspace,                      KB_Mac},
+    {QKeySequence::Backspace,               0,          BobUI::META | BobUI::Key_H,                   KB_Mac},
+    {QKeySequence::Cancel,                  0,          BobUI::Key_Escape,                         KB_All},
+    {QKeySequence::Cancel,                  0,          BobUI::CTRL | BobUI::Key_Period,              KB_Mac},
+    {QKeySequence::Cancel,                  0,          BobUI::Key_Cancel,                         KB_All}
 };
 
 const uint QPlatformThemePrivate::numberOfKeyBindings = sizeof(QPlatformThemePrivate::keyBindings)/(sizeof(QKeyBinding));
@@ -383,24 +383,24 @@ QPlatformThemePrivate::~QPlatformThemePrivate()
         delete systemPalette;
 }
 
-Q_GUI_EXPORT QPalette qt_fusionPalette()
+Q_GUI_EXPORT QPalette bobui_fusionPalette()
 {
     auto theme = QGuiApplicationPrivate::platformTheme();
     const bool darkAppearance = theme
-                              ? theme->colorScheme() == Qt::ColorScheme::Dark
+                              ? theme->colorScheme() == BobUI::ColorScheme::Dark
                               : false;
-    const QColor windowText = darkAppearance ? QColor(240, 240, 240) : Qt::black;
+    const QColor windowText = darkAppearance ? QColor(240, 240, 240) : BobUI::black;
     const QColor backGround = darkAppearance ? QColor(50, 50, 50) : QColor(239, 239, 239);
     const QColor light = backGround.lighter(150);
     const QColor mid = (backGround.darker(130));
     const QColor midLight = mid.lighter(110);
-    const QColor base = darkAppearance ? backGround.darker(140) : Qt::white;
+    const QColor base = darkAppearance ? backGround.darker(140) : BobUI::white;
     const QColor disabledBase(backGround);
     const QColor dark = backGround.darker(150);
     const QColor darkDisabled = QColor(209, 209, 209).darker(110);
-    const QColor text = darkAppearance ? windowText : Qt::black;
+    const QColor text = darkAppearance ? windowText : BobUI::black;
     const QColor highlight = QColor(48, 140, 198);
-    const QColor hightlightedText = darkAppearance ? windowText : Qt::white;
+    const QColor hightlightedText = darkAppearance ? windowText : BobUI::white;
     const QColor disabledText = darkAppearance ? QColor(130, 130, 130) : QColor(190, 190, 190);
     const QColor button = backGround;
     const QColor shadow = dark.darker(135);
@@ -432,7 +432,7 @@ Q_GUI_EXPORT QPalette qt_fusionPalette()
 
     fusionPalette.setBrush(QPalette::PlaceholderText, placeholder);
 
-    // Use a more legible light blue on dark backgrounds than the default Qt::blue.
+    // Use a more legible light blue on dark backgrounds than the default BobUI::blue.
     if (darkAppearance)
         fusionPalette.setBrush(QPalette::Link, highlight);
 
@@ -442,7 +442,7 @@ Q_GUI_EXPORT QPalette qt_fusionPalette()
 void QPlatformThemePrivate::initializeSystemPalette()
 {
     Q_ASSERT(!systemPalette);
-    systemPalette = new QPalette(qt_fusionPalette());
+    systemPalette = new QPalette(bobui_fusionPalette());
 }
 
 QPlatformTheme::QPlatformTheme()
@@ -472,12 +472,12 @@ QPlatformDialogHelper *QPlatformTheme::createPlatformDialogHelper(DialogType typ
     return nullptr;
 }
 
-Qt::ColorScheme QPlatformTheme::colorScheme() const
+BobUI::ColorScheme QPlatformTheme::colorScheme() const
 {
-    return Qt::ColorScheme::Unknown;
+    return BobUI::ColorScheme::Unknown;
 }
 
-void QPlatformTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QPlatformTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     Q_UNUSED(scheme);
     Q_D(QPlatformTheme);
@@ -487,9 +487,9 @@ void QPlatformTheme::requestColorScheme(Qt::ColorScheme scheme)
     }
 }
 
-Qt::ContrastPreference QPlatformTheme::contrastPreference() const
+BobUI::ContrastPreference QPlatformTheme::contrastPreference() const
 {
-    return Qt::ContrastPreference::NoPreference;
+    return BobUI::ContrastPreference::NoPreference;
 }
 
 /*!
@@ -631,7 +631,7 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case QPlatformTheme::ItemViewActivateItemOnSingleClick:
         return QVariant(false);
     case QPlatformTheme::ToolButtonStyle:
-        return QVariant(int(Qt::ToolButtonIconOnly));
+        return QVariant(int(BobUI::ToolButtonIconOnly));
     case QPlatformTheme::ToolBarIconSize:
         return QVariant(int(0));
     case QPlatformTheme::SystemIconThemeName:
@@ -656,9 +656,9 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case UiEffects:
         return QVariant(int(0));
     case SpellCheckUnderlineStyle:
-        return QVariant(int(QTextCharFormat::WaveUnderline));
+        return QVariant(int(BOBUIextCharFormat::WaveUnderline));
     case TabFocusBehavior:
-        return QVariant(int(Qt::TabFocusAllControls));
+        return QVariant(int(BobUI::TabFocusAllControls));
     case IconPixmapSizes:
         return QVariant::fromValue(QList<int>());
     case DialogSnapToDefaultButton:
@@ -669,7 +669,7 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case MouseDoubleClickDistance:
         {
             bool ok = false;
-            const int dist = qEnvironmentVariableIntValue("QT_DBL_CLICK_DIST", &ok);
+            const int dist = qEnvironmentVariableIntValue("BOBUI_DBL_CLICK_DIST", &ok);
             return QVariant(ok ? dist : 5);
         }
     case WheelScrollLines:
@@ -677,7 +677,7 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case TouchDoubleTapDistance:
         {
             bool ok = false;
-            int dist = qEnvironmentVariableIntValue("QT_DBL_TAP_DIST", &ok);
+            int dist = qEnvironmentVariableIntValue("BOBUI_DBL_TAP_DIST", &ok);
             if (!ok)
                 dist = defaultThemeHint(MouseDoubleClickDistance).toInt(&ok) * 2;
             return QVariant(ok ? dist : 10);
@@ -691,7 +691,7 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case PreselectFirstFileInDirectory:
         return false;
     case ButtonPressKeys:
-        return QVariant::fromValue(QList<Qt::Key>({ Qt::Key_Space, Qt::Key_Select }));
+        return QVariant::fromValue(QList<BobUI::Key>({ BobUI::Key_Space, BobUI::Key_Select }));
     case SetFocusOnTouchRelease:
         return false;
     case FlickStartDistance:
@@ -736,7 +736,7 @@ QPlatformMenuBar *QPlatformTheme::createPlatformMenuBar() const
     return nullptr;
 }
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 /*!
    Factory function for QSystemTrayIcon. This function will return 0 if the platform
    integration does not support creating any system tray icon.
@@ -753,7 +753,7 @@ QPlatformSystemTrayIcon *QPlatformTheme::createPlatformSystemTrayIcon() const
    provide their own.
 
    It is especially useful to benefit from some platform specific facilities or
-   optimizations like an inter-process cache in systems mostly built with Qt.
+   optimizations like an inter-process cache in systems mostly built with BobUI.
 
    \since 5.1
 */
@@ -762,7 +762,7 @@ QIconEngine *QPlatformTheme::createIconEngine(const QString &iconName) const
     return new QIconLoaderEngine(iconName);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 // mixed-mode predicate: all of these overloads are actually needed (but not all for every compiler)
 struct ByStandardKey {
     typedef bool result_type;
@@ -823,7 +823,7 @@ QString QPlatformTheme::standardButtonText(int button) const
     return QPlatformTheme::defaultStandardButtonText(button);
 }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 /*!
    Returns the mnemonic that should be used for a standard \a button.
 
@@ -836,7 +836,7 @@ QKeySequence QPlatformTheme::standardButtonShortcut(int button) const
     Q_UNUSED(button);
     return QKeySequence();
 }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
 QString QPlatformTheme::defaultStandardButtonText(int button)
 {
@@ -888,7 +888,7 @@ QString QPlatformTheme::removeMnemonics(const QString &original)
     const auto mnemonicInParentheses = [](QStringView text) {
         /* Format of mnemonics to remove is /\(&[^&]\)/ but accept full-width
            forms of ( and ) as equivalent, for cross-platform compatibility with
-           MS (and consequent behavior of translators, see QTBUG-110829).
+           MS (and consequent behavior of translators, see BOBUIBUG-110829).
         */
         Q_ASSERT(text.size() == 4); // Caller's responsibility.
         constexpr QChar wideOpen = u'\uff08', wideClose = u'\uff09';
@@ -926,7 +926,7 @@ unsigned QPlatformThemePrivate::currentKeyPlatforms()
 {
     const uint keyboardScheme = QGuiApplicationPrivate::platformTheme()->themeHint(QPlatformTheme::KeyboardScheme).toInt();
     unsigned result = 1u << keyboardScheme;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     if (keyboardScheme == QPlatformTheme::KdeKeyboardScheme
         || keyboardScheme == QPlatformTheme::GnomeKeyboardScheme
         || keyboardScheme == QPlatformTheme::CdeKeyboardScheme)
@@ -940,6 +940,6 @@ QString QPlatformTheme::name() const
     return d_func()->name;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformtheme.cpp"

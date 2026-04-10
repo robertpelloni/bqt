@@ -5,8 +5,8 @@
 #include <QString>
 #include <QPointF>
 #include <QList>
-#include <QtWebSockets/QWebSocketServer>
-#include <QtWebSockets/QWebSocket>
+#include <BobUIWebSockets/QWebSocketServer>
+#include <BobUIWebSockets/QWebSocket>
 #include <QJsonObject>
 #include <QJsonDocument>
 

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHEADERVIEW_P_H
 #define QHEADERVIEW_P_H
@@ -9,28 +9,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qheaderview.h"
 #include "private/qabstractitemview_p.h"
 
-#include "QtCore/qbitarray.h"
-#include "QtWidgets/qapplication.h"
-#if QT_CONFIG(label)
-#include "QtWidgets/qlabel.h"
+#include "BobUICore/qbitarray.h"
+#include "BobUIWidgets/qapplication.h"
+#if BOBUI_CONFIG(label)
+#include "BobUIWidgets/qlabel.h"
 #endif
 
 #include <array>
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Currently we support huge models with no memory per section if people are not resizing sections and not ordering sections.
 // This enum is unlikely to be public later on. (Either we go for a huge model bool or another ("subset") enum not containing the initial mode).
@@ -51,7 +51,7 @@ public:
     QHeaderViewPrivate()
         : state(NoState),
           headerOffset(0),
-          sortIndicatorOrder(Qt::DescendingOrder),
+          sortIndicatorOrder(BobUI::DescendingOrder),
           sortIndicatorSection(0),
           sortIndicatorShown(false),
           sortIndicatorClearable(false),
@@ -71,7 +71,7 @@ public:
           stretchLastSection(false),
           cascadingResizing(false),
           resizeRecursionBlock(false),
-          allowUserMoveOfSection0(true), // will be false for QTreeView and true for QTableView
+          allowUserMoveOfSection0(true), // will be false for BOBUIreeView and true for BOBUIableView
           customDefaultSectionSize(false),
           stretchSections(0),
           contentsSections(0),
@@ -80,7 +80,7 @@ public:
           lastSectionSize(0),
           lastSectionLogicalIdx(-1), // Only trust when we stretch last section
           sectionIndicatorOffset(0),
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
           sectionIndicator(nullptr),
 #endif
           globalResizeMode(QHeaderView::Interactive),
@@ -123,7 +123,7 @@ public:
     }
 
     inline bool sectionIntersectsSelection(int logical) const {
-        return (orientation == Qt::Horizontal ? columnIntersectsSelection(logical) : rowIntersectsSelection(logical));
+        return (orientation == BobUI::Horizontal ? columnIntersectsSelection(logical) : rowIntersectsSelection(logical));
     }
 
     inline bool isRowSelected(int row) const {
@@ -147,7 +147,7 @@ public:
     }
 
     inline bool reverse() const {
-        return orientation == Qt::Horizontal && q_func()->isRightToLeft();
+        return orientation == BobUI::Horizontal && q_func()->isRightToLeft();
     }
 
     inline int logicalIndex(int visualIndex) const {
@@ -158,12 +158,12 @@ public:
         return visualIndices.isEmpty() ? logicalIndex : visualIndices.at(logicalIndex);
     }
 
-    inline void setDefaultValues(Qt::Orientation o) {
+    inline void setDefaultValues(BobUI::Orientation o) {
         orientation = o;
         updateDefaultSectionSizeFromStyle();
-        defaultAlignment = (o == Qt::Horizontal
-                            ? Qt::Alignment(Qt::AlignCenter)
-                            : Qt::AlignLeft|Qt::AlignVCenter);
+        defaultAlignment = (o == BobUI::Horizontal
+                            ? BobUI::Alignment(BobUI::AlignCenter)
+                            : BobUI::AlignLeft|BobUI::AlignVCenter);
     }
 
     inline bool isVisualIndexHidden(int visual) const {
@@ -215,7 +215,7 @@ public:
     }
 
     inline int modelSectionCount() const {
-        return (orientation == Qt::Horizontal
+        return (orientation == BobUI::Horizontal
                 ? model->columnCount(root)
                 : model->rowCount(root));
     }
@@ -239,14 +239,14 @@ public:
 
     void clear();
     void flipSortIndicator(int section);
-    Qt::SortOrder defaultSortOrderForSection(int section) const;
+    BobUI::SortOrder defaultSortOrderForSection(int section) const;
     void cascadingResize(int visual, int newSize);
 
     enum State { NoState, ResizeSection, MoveSection, SelectSections, NoClear } state;
 
     int headerOffset;
-    Qt::Orientation orientation;
-    Qt::SortOrder sortIndicatorOrder;
+    BobUI::Orientation orientation;
+    BobUI::SortOrder sortIndicatorOrder;
     int sortIndicatorSection;
     bool sortIndicatorShown;
     bool sortIndicatorClearable;
@@ -290,8 +290,8 @@ public:
     int lastSectionSize;
     int lastSectionLogicalIdx; // Only trust if we stretch LastSection
     int sectionIndicatorOffset;
-    Qt::Alignment defaultAlignment;
-#if QT_CONFIG(label)
+    BobUI::Alignment defaultAlignment;
+#if BOBUI_CONFIG(label)
     QLabel *sectionIndicator;
 #endif
     QHeaderView::ResizeMode globalResizeMode;
@@ -316,7 +316,7 @@ public:
             : size(length), isHidden(0), resizeMode(mode), calculated_startpos(-1) {}
         inline int sectionSize() const { return size; }
         inline int calculatedEndPos() const { return calculated_startpos + size; }
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
         inline void write(QDataStream &out) const
         { out << static_cast<int>(size); out << 1; out << (int)resizeMode; }
         inline void read(QDataStream &in)
@@ -394,7 +394,7 @@ public:
     void setScrollOffset(const QScrollBar *scrollBar, QAbstractItemView::ScrollMode scrollMode);
     void updateSectionsBeforeAfter(int logical);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void write(QDataStream &out) const;
     bool read(QDataStream &in);
 #endif
@@ -403,6 +403,6 @@ public:
 Q_DECLARE_TYPEINFO(QHeaderViewPrivate::SectionItem, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(QHeaderViewPrivate::LayoutChangeItem, Q_RELOCATABLE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHEADERVIEW_P_H

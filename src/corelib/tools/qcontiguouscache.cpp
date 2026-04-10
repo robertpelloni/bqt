@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcontiguouscache.h"
-#ifdef QT_QCONTIGUOUSCACHE_DEBUG
+#ifdef BOBUI_QCONTIGUOUSCACHE_DEBUG
 #include <QDebug>
 #endif
 
-#include <QtCore/qmalloc.h>
+#include <BobUICore/qmalloc.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifdef QT_QCONTIGUOUSCACHE_DEBUG
+#ifdef BOBUI_QCONTIGUOUSCACHE_DEBUG
 void QContiguousCacheData::dump() const
 {
     qDebug() << "capacity:" << alloc;
@@ -33,7 +33,7 @@ void QContiguousCacheData::freeData(QContiguousCacheData *data)
 }
 
 /*! \class QContiguousCache
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QContiguousCache class is a template class that provides a contiguous cache.
     \ingroup tools
     \ingroup shared
@@ -434,4 +434,4 @@ void QContiguousCacheData::freeData(QContiguousCacheData *data)
     \sa normalizeIndexes(), append(), prepend()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

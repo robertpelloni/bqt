@@ -1,0 +1,18 @@
+[
+    {
+        "Id": "wayland-xdg-system-bell-protocol",
+        "Name": "Wayland XDG System Bell Protocol",
+        "QDocModule": "bobuiwaylandcompositor",
+        "BobUIUsage": "Used in the BobUI Wayland Compositor, and the BobUI Wayland platform plugin.",
+        "Files": "xdg-system-bell-v1.xml",
+
+        "Description": "The XDG-System-Bell protocol provides a mechanism for apps to provide visual notification feedback through the compositor.",
+        "Homepage": "https://gitlab.freedesktop.org/wayland/wayland-protocols/",
+        "Version": "1.18",
+        "DownloadLocation": "https://gitlab.freedesktop.org/wayland/wayland-protocols/tree/1.38/",
+        "LicenseId": "MIT",
+        "License": "MIT License",
+        "LicenseFile": "../MIT_LICENSE.txt",
+        "Copyright": "Copyright © 2016, 2023 Red Hat\n"
+    }
+]

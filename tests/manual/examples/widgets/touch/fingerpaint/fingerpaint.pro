@@ -1,6 +1,6 @@
-QT += widgets
-requires(qtConfig(filedialog))
-qtHaveModule(printsupport): QT += printsupport
+BOBUI += widgets
+requires(bobuiConfig(filedialog))
+bobuiHaveModule(printsupport): BOBUI += printsupport
 
 HEADERS       = mainwindow.h \
                 scribblearea.h
@@ -9,5 +9,5 @@ SOURCES       = main.cpp \
                 scribblearea.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/touch/fingerpaint
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/touch/fingerpaint
 INSTALLS += target

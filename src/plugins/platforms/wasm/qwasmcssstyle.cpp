@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmcssstyle.h"
 
 #include "qwasmbase64iconstore.h"
 
-#include <QtCore/qstring.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qfile.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 const char *Style = R"css(
-.qt-screen {
+.bobui-screen {
     --border-width: 4px;
     --resize-outline-width: 8px;
     --resize-outline-half-width: var(--resize-outline-width) / 2;
@@ -26,34 +26,34 @@ const char *Style = R"css(
     overflow: hidden;
 }
 
-.qt-screen div {
+.bobui-screen div {
     touch-action: none;
 }
 
-.qt-decorated-window {
+.bobui-decorated-window {
     position: absolute;
     background-color: lightgray;
 }
 
-.qt-window {
+.bobui-window {
     overflow: hidden;
     position: relative;
 }
 
-.qt-decorated-window.transparent-for-input {
+.bobui-decorated-window.transparent-for-input {
     pointer-events: none;
 }
 
-.qt-decorated-window.has-shadow {
+.bobui-decorated-window.has-shadow {
     box-shadow: rgb(0 0 0 / 20%) 0px 10px 16px 0px, rgb(0 0 0 / 19%) 0px 6px 20px 0px;
 }
 
-.qt-decorated-window.has-border {
+.bobui-decorated-window.has-border {
     border: var(--border-width) solid lightgray;
     caret-color: transparent;
 }
 
-.qt-decorated-window.frameless {
+.bobui-decorated-window.frameless {
     background-color: transparent;
 }
 
@@ -62,9 +62,9 @@ const char *Style = R"css(
     display: none;
 }
 
-.qt-decorated-window.no-resize > .resize-outline { display: none; }
+.bobui-decorated-window.no-resize > .resize-outline { display: none; }
 
-.qt-decorated-window.has-border:not(.maximized):not(.no-resize) > .resize-outline {
+.bobui-decorated-window.has-border:not(.maximized):not(.no-resize) > .resize-outline {
     display: block;
 }
 
@@ -140,7 +140,7 @@ const char *Style = R"css(
     padding-bottom: 4px;
 }
 
-.qt-decorated-window.has-border > .title-bar {
+.bobui-decorated-window.has-border > .title-bar {
     display: flex;
 }
 
@@ -153,7 +153,7 @@ const char *Style = R"css(
 }
 
 
-.qt-decorated-window.has-title .title-bar .window-name {
+.bobui-decorated-window.has-title .title-bar .window-name {
     display: block;
 }
 
@@ -161,11 +161,11 @@ const char *Style = R"css(
     flex-grow: 1
 }
 
-.qt-decorated-window.inactive .title-bar {
+.bobui-decorated-window.inactive .title-bar {
     opacity: 0.35;
 }
 
-.qt-window {
+.bobui-window {
     display: flex;
 }
 
@@ -173,7 +173,7 @@ const char *Style = R"css(
     pointer-events: none;
 }
 
-.qt-window-a11y-container {
+.bobui-window-a11y-container {
     position: absolute;
     z-index: -1;
 }
@@ -200,7 +200,7 @@ const char *Style = R"css(
     pointer-events: all;
 }
 
-.qt-decorated-window.blocked div {
+.bobui-decorated-window.blocked div {
     pointer-events: none;
 }
 
@@ -244,4 +244,4 @@ emscripten::val QWasmCSSStyle::createStyleElement(emscripten::val parent)
     return screenStyle;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

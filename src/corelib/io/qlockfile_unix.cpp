@@ -1,24 +1,24 @@
 // Copyright (C) 2013 David Faure <faure+bluesystems@kde.org>
 // Copyright (C) 2017 Intel Corporation.
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "private/qlockfile_p.h"
 
-#include "QtCore/qtemporaryfile.h"
-#include "QtCore/qfileinfo.h"
-#include "QtCore/qdebug.h"
-#include "QtCore/qdatetime.h"
-#include "QtCore/qfileinfo.h"
-#include "QtCore/qcache.h"
-#include "QtCore/qglobalstatic.h"
-#include "QtCore/qmutex.h"
+#include "BobUICore/bobuiemporaryfile.h"
+#include "BobUICore/qfileinfo.h"
+#include "BobUICore/qdebug.h"
+#include "BobUICore/qdatetime.h"
+#include "BobUICore/qfileinfo.h"
+#include "BobUICore/qcache.h"
+#include "BobUICore/qglobalstatic.h"
+#include "BobUICore/qmutex.h"
 
-#include "private/qcore_unix_p.h" // qt_safe_open
+#include "private/qcore_unix_p.h" // bobui_safe_open
 #include "private/qabstractfileengine_p.h"
 #include "private/qfilesystementry_p.h"
-#include "private/qtemporaryfile_p.h"
+#include "private/bobuiemporaryfile_p.h"
 
 #if !defined(Q_OS_INTEGRITY)
 #include <sys/file.h>  // flock
@@ -41,7 +41,7 @@
 #   include <cstdio>
 #elif defined(Q_OS_HAIKU)
 #   include <kernel/OS.h>
-#elif defined(Q_OS_BSD4) && !defined(QT_PLATFORM_UIKIT)
+#elif defined(Q_OS_BSD4) && !defined(BOBUI_PLATFORM_UIKIT)
 #   include <sys/cdefs.h>
 #   include <sys/param.h>
 #   include <sys/sysctl.h>
@@ -50,14 +50,14 @@
 # endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// ### merge into qt_safe_write?
-static qint64 qt_write_loop(int fd, const char *data, qint64 len)
+// ### merge into bobui_safe_write?
+static qint64 bobui_write_loop(int fd, const char *data, qint64 len)
 {
     qint64 pos = 0;
     while (pos < len) {
-        const qint64 ret = qt_safe_write(fd, data + pos, len - pos);
+        const qint64 ret = bobui_safe_write(fd, data + pos, len - pos);
         if (ret == -1) // e.g. partition full
             return pos;
         pos += ret;
@@ -92,7 +92,7 @@ static qint64 qt_write_loop(int fd, const char *data, qint64 len)
  *    simultaneously access the same region of a file.
  *
  * So in order to use POSIX locks, we'd need a global mutex that stays locked
- * while the QLockFile is locked. For that reason, Qt does not use POSIX
+ * while the QLockFile is locked. For that reason, BobUI does not use POSIX
  * advisory locks anymore.
  *
  * The next problem is that POSIX leaves undefined the relationship between
@@ -133,7 +133,7 @@ static bool setNativeLocks(int fd)
 QLockFile::LockError QLockFilePrivate::tryLock_sys()
 {
     const QByteArray lockFileName = QFile::encodeName(fileName);
-    const int fd = qt_safe_open(lockFileName.constData(), O_RDWR | O_CREAT | O_EXCL, 0666);
+    const int fd = bobui_safe_open(lockFileName.constData(), O_RDWR | O_CREAT | O_EXCL, 0666);
     if (fd < 0) {
         switch (errno) {
         case EEXIST:
@@ -148,15 +148,15 @@ QLockFile::LockError QLockFilePrivate::tryLock_sys()
     // Ensure nobody else can delete the file while we have it
     if (!setNativeLocks(fd)) {
         const int errnoSaved = errno;
-        qWarning() << "setNativeLocks failed:" << qt_error_string(errnoSaved);
+        qWarning() << "setNativeLocks failed:" << bobui_error_string(errnoSaved);
     }
 
     QByteArray fileData = lockFileContents();
-    if (qt_write_loop(fd, fileData.constData(), fileData.size()) < fileData.size()) {
-        qt_safe_close(fd);
+    if (bobui_write_loop(fd, fileData.constData(), fileData.size()) < fileData.size()) {
+        bobui_safe_close(fd);
         if (unlink(lockFileName) != 0)
             qWarning("QLockFile: Could not remove our own lock file %s: %ls.",
-                     lockFileName.constBegin(), qUtf16Printable(qt_error_string()));
+                     lockFileName.constBegin(), qUtf16Printable(bobui_error_string()));
         return QLockFile::UnknownError; // partition full
     }
 
@@ -176,7 +176,7 @@ QLockFile::LockError QLockFilePrivate::tryLock_sys()
 bool QLockFilePrivate::removeStaleLock()
 {
     const QByteArray lockFileName = QFile::encodeName(fileName);
-    const int fd = qt_safe_open(lockFileName.constData(), O_WRONLY, 0666);
+    const int fd = bobui_safe_open(lockFileName.constData(), O_WRONLY, 0666);
     if (fd < 0) // gone already?
         return false;
     bool success = setNativeLocks(fd) && (::unlink(lockFileName) == 0);
@@ -208,13 +208,13 @@ QString QLockFilePrivate::processNameByPid(qint64 pid)
     proc_name(pid, name, sizeof(name) / sizeof(char));
     return QFile::decodeName(name);
 #elif defined(Q_OS_LINUX)
-    if (!qt_haveLinuxProcfs())
+    if (!bobui_haveLinuxProcfs())
         return QString();
 
     char exePath[64];
     sprintf(exePath, "/proc/%lld/exe", pid);
 
-    QByteArray buf = qt_readlink(exePath);
+    QByteArray buf = bobui_readlink(exePath);
     if (buf.isEmpty()) {
         // The pid is gone. Return some invalid process name to fail the test.
         return QStringLiteral("/ERROR/");
@@ -231,7 +231,7 @@ QString QLockFilePrivate::processNameByPid(qint64 pid)
     if (get_thread_info(pid, &info) != B_OK)
         return QString();
     return QFile::decodeName(info.name);
-#elif defined(Q_OS_BSD4) && !defined(QT_PLATFORM_UIKIT)
+#elif defined(Q_OS_BSD4) && !defined(BOBUI_PLATFORM_UIKIT)
 # if defined(Q_OS_NETBSD)
     struct kinfo_proc2 kp;
     int mib[6] = { CTL_KERN, KERN_PROC2, KERN_PROC_PID, (int)pid, sizeof(struct kinfo_proc2), 1 };
@@ -262,18 +262,18 @@ QString QLockFilePrivate::processNameByPid(qint64 pid)
     char exePath[PATH_MAX];
     sprintf(exePath, "/proc/%lld/exefile", pid);
 
-    int fd = qt_safe_open(exePath, O_RDONLY);
+    int fd = bobui_safe_open(exePath, O_RDONLY);
     if (fd == -1)
         return QString();
 
-    QT_STATBUF sbuf;
-    if (QT_FSTAT(fd, &sbuf) == -1) {
-        qt_safe_close(fd);
+    BOBUI_STATBUF sbuf;
+    if (BOBUI_FSTAT(fd, &sbuf) == -1) {
+        bobui_safe_close(fd);
         return QString();
     }
 
-    QByteArray buffer(sbuf.st_size, Qt::Uninitialized);
-    buffer.resize(qt_safe_read(fd, buffer.data(), sbuf.st_size - 1));
+    QByteArray buffer(sbuf.st_size, BobUI::Uninitialized);
+    buffer.resize(bobui_safe_read(fd, buffer.data(), sbuf.st_size - 1));
     if (buffer.isEmpty()) {
         // The pid is gone. Return some invalid process name to fail the test.
         return QStringLiteral("/ERROR/");
@@ -287,7 +287,7 @@ QString QLockFilePrivate::processNameByPid(qint64 pid)
 
 int QLockFilePrivate::openNewFileDescriptor(const QString &fileName)
 {
-    return QT_OPEN(fileName.toLocal8Bit().constData(), QT_OPEN_RDONLY);
+    return BOBUI_OPEN(fileName.toLocal8Bit().constData(), BOBUI_OPEN_RDONLY);
 }
 
 void QLockFile::unlock()
@@ -299,7 +299,7 @@ void QLockFile::unlock()
     const QByteArray lockFileName = QFile::encodeName(d->fileName);
     if (unlink(lockFileName) != 0) {
         qWarning("Could not remove our own lock file %s: %ls (maybe permissions changed meanwhile?)",
-                 lockFileName.constBegin(), qUtf16Printable(qt_error_string()));
+                 lockFileName.constBegin(), qUtf16Printable(bobui_error_string()));
         // This is bad because other users of this lock file will now have to wait for the stale-lock-timeout...
     }
 
@@ -309,4 +309,4 @@ void QLockFile::unlock()
     d->isLocked = false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "propertyfield.h"
 #include <QDebug>
@@ -63,7 +63,7 @@ void PropertyField::propertyChanged()
         // If the value has recently changed, show the change
         if (text != m_lastText || m_lastChangeTime.elapsed() < 1000) {
             setText(m_lastTextShowing + " -> " + text);
-            modPalette.setBrush(QPalette::Text, Qt::red);
+            modPalette.setBrush(QPalette::Text, BobUI::red);
             m_lastChangeTime.start();
             m_lastText = text;
         }

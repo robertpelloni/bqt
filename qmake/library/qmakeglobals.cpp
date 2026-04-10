@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "qmakeglobals.h"
 
@@ -17,31 +17,31 @@
 #include <qstack.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #ifdef PROEVALUATOR_THREAD_SAFE
-# include <qthreadpool.h>
+# include <bobuihreadpool.h>
 #endif
 
 #ifdef Q_OS_UNIX
 #include <unistd.h>
 #include <sys/utsname.h>
 #else
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef Q_OS_WIN32
-#define QT_POPEN _popen
-#define QT_POPEN_READ "rb"
-#define QT_PCLOSE _pclose
+#define BOBUI_POPEN _popen
+#define BOBUI_POPEN_READ "rb"
+#define BOBUI_PCLOSE _pclose
 #else
-#define QT_POPEN popen
-#define QT_POPEN_READ "r"
-#define QT_PCLOSE pclose
+#define BOBUI_POPEN popen
+#define BOBUI_POPEN_READ "r"
+#define BOBUI_PCLOSE pclose
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 using namespace QMakeInternal; // for IoUtils
 
 #define fL1S(s) QString::fromLatin1(s)
@@ -88,7 +88,7 @@ QString QMakeGlobals::cleanSpec(QMakeCmdLineParserState &state, const QString &s
 QMakeGlobals::ArgumentReturn QMakeGlobals::addCommandLineArguments(
         QMakeCmdLineParserState &state, QStringList &args, int *pos)
 {
-    enum { ArgNone, ArgConfig, ArgSpec, ArgXSpec, ArgTmpl, ArgTmplPfx, ArgCache, ArgQtConf } argState = ArgNone;
+    enum { ArgNone, ArgConfig, ArgSpec, ArgXSpec, ArgTmpl, ArgTmplPfx, ArgCache, ArgBobUIConf } argState = ArgNone;
     for (; *pos < args.size(); (*pos)++) {
         QString arg = args.at(*pos);
         switch (argState) {
@@ -110,8 +110,8 @@ QMakeGlobals::ArgumentReturn QMakeGlobals::addCommandLineArguments(
         case ArgCache:
             cachefile = args[*pos] = IoUtils::resolvePath(state.pwd, arg);
             break;
-        case ArgQtConf:
-            qtconf = args[*pos] = IoUtils::resolvePath(state.pwd, arg);
+        case ArgBobUIConf:
+            bobuiconf = args[*pos] = IoUtils::resolvePath(state.pwd, arg);
             break;
         default:
             if (arg.startsWith(QLatin1Char('-'))) {
@@ -134,8 +134,8 @@ QMakeGlobals::ArgumentReturn QMakeGlobals::addCommandLineArguments(
                     do_cache = false;
                 else if (arg == QLatin1String("-cache"))
                     argState = ArgCache;
-                else if (arg == QLatin1String("-qtconf"))
-                    argState = ArgQtConf;
+                else if (arg == QLatin1String("-bobuiconf"))
+                    argState = ArgBobUIConf;
                 else if (arg == QLatin1String("-platform") || arg == QLatin1String("-spec"))
                     argState = ArgSpec;
                 else if (arg == QLatin1String("-xplatform") || arg == QLatin1String("-xspec"))
@@ -242,7 +242,7 @@ QStringList QMakeGlobals::splitPathList(const QString &val) const
     QStringList ret;
     if (!val.isEmpty()) {
         QString cwd(QDir::currentPath());
-        const QStringList vals = val.split(dirlist_sep, Qt::SkipEmptyParts);
+        const QStringList vals = val.split(dirlist_sep, BobUI::SkipEmptyParts);
         ret.reserve(vals.size());
         for (const QString &it : vals)
             ret << IoUtils::resolvePath(cwd, it);
@@ -288,24 +288,24 @@ QString QMakeGlobals::expandEnvVars(const QString &str) const
     return string;
 }
 
-#ifndef QT_BUILD_QMAKE
+#ifndef BOBUI_BUILD_QMAKE
 #ifdef PROEVALUATOR_INIT_PROPS
 bool QMakeGlobals::initProperties()
 {
     QByteArray data;
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
     QProcess proc;
     proc.start(qmake_abslocation, QStringList() << QLatin1String("-query"));
     if (!proc.waitForFinished())
         return false;
     data = proc.readAll();
 #else
-    if (FILE *proc = QT_POPEN(QString(IoUtils::shellQuote(qmake_abslocation)
-                                      + QLatin1String(" -query")).toLocal8Bit(), QT_POPEN_READ)) {
+    if (FILE *proc = BOBUI_POPEN(QString(IoUtils::shellQuote(qmake_abslocation)
+                                      + QLatin1String(" -query")).toLocal8Bit(), BOBUI_POPEN_READ)) {
         char buff[1024];
         while (!feof(proc))
             data.append(buff, int(fread(buff, 1, 1023, proc)));
-        QT_PCLOSE(proc);
+        BOBUI_PCLOSE(proc);
     }
 #endif
     parseProperties(data, properties);
@@ -328,7 +328,7 @@ void QMakeGlobals::parseProperties(const QByteArray &data, QHash<ProKey, ProStri
         if (value.isNull())
             value = ProString(""); // Make sure it is not null, to discern from missing keys
         properties.insert(ProKey(name), value);
-        if (name.startsWith(QLatin1String("QT_"))) {
+        if (name.startsWith(QLatin1String("BOBUI_"))) {
             enum { PropPut, PropRaw, PropGet } variant;
             if (name.contains(QLatin1Char('/'))) {
                 if (name.endsWith(QLatin1String("/raw")))
@@ -341,13 +341,13 @@ void QMakeGlobals::parseProperties(const QByteArray &data, QHash<ProKey, ProStri
             } else {
                 variant = PropPut;
             }
-            if (name.startsWith(QLatin1String("QT_INSTALL_"))) {
+            if (name.startsWith(QLatin1String("BOBUI_INSTALL_"))) {
                 if (variant < PropRaw) {
-                    if (name == QLatin1String("QT_INSTALL_PREFIX")
-                        || name == QLatin1String("QT_INSTALL_DATA")
-                        || name == QLatin1String("QT_INSTALL_LIBS")
-                        || name == QLatin1String("QT_INSTALL_BINS")) {
-                        // Qt4 fallback
+                    if (name == QLatin1String("BOBUI_INSTALL_PREFIX")
+                        || name == QLatin1String("BOBUI_INSTALL_DATA")
+                        || name == QLatin1String("BOBUI_INSTALL_LIBS")
+                        || name == QLatin1String("BOBUI_INSTALL_BINS")) {
+                        // BobUI4 fallback
                         QString hname = name;
                         hname.replace(3, 7, QLatin1String("HOST"));
                         properties.insert(ProKey(hname), value);
@@ -358,7 +358,7 @@ void QMakeGlobals::parseProperties(const QByteArray &data, QHash<ProKey, ProStri
                 }
                 if (variant <= PropRaw)
                     properties.insert(ProKey(name + QLatin1String("/dev")), value);
-            } else if (!name.startsWith(QLatin1String("QT_HOST_"))) {
+            } else if (!name.startsWith(QLatin1String("BOBUI_HOST_"))) {
                 continue;
             }
             if (variant != PropRaw) {
@@ -369,6 +369,6 @@ void QMakeGlobals::parseProperties(const QByteArray &data, QHash<ProKey, ProStri
         }
     }
 }
-#endif // QT_BUILD_QMAKE
+#endif // BOBUI_BUILD_QMAKE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

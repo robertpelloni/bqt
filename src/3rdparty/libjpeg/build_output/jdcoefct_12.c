@@ -363,7 +363,7 @@ smoothing_ok(j_decompress_ptr cinfo)
   boolean smoothing_useful = FALSE;
   int ci, coefi;
   jpeg_component_info *compptr;
-  JQUANT_TBL *qtable;
+  JQUANT_TBL *bobuiable;
   int *coef_bits, *prev_coef_bits;
   int *coef_bits_latch, *prev_coef_bits_latch;
 
@@ -383,19 +383,19 @@ smoothing_ok(j_decompress_ptr cinfo)
   for (ci = 0, compptr = cinfo->comp_info; ci < cinfo->num_components;
        ci++, compptr++) {
     /* All components' quantization values must already be latched. */
-    if ((qtable = compptr->quant_table) == NULL)
+    if ((bobuiable = compptr->quant_table) == NULL)
       return FALSE;
     /* Verify DC & first 9 AC quantizers are nonzero to avoid zero-divide. */
-    if (qtable->quantval[0] == 0 ||
-        qtable->quantval[Q01_POS] == 0 ||
-        qtable->quantval[Q10_POS] == 0 ||
-        qtable->quantval[Q20_POS] == 0 ||
-        qtable->quantval[Q11_POS] == 0 ||
-        qtable->quantval[Q02_POS] == 0 ||
-        qtable->quantval[Q03_POS] == 0 ||
-        qtable->quantval[Q12_POS] == 0 ||
-        qtable->quantval[Q21_POS] == 0 ||
-        qtable->quantval[Q30_POS] == 0)
+    if (bobuiable->quantval[0] == 0 ||
+        bobuiable->quantval[Q01_POS] == 0 ||
+        bobuiable->quantval[Q10_POS] == 0 ||
+        bobuiable->quantval[Q20_POS] == 0 ||
+        bobuiable->quantval[Q11_POS] == 0 ||
+        bobuiable->quantval[Q02_POS] == 0 ||
+        bobuiable->quantval[Q03_POS] == 0 ||
+        bobuiable->quantval[Q12_POS] == 0 ||
+        bobuiable->quantval[Q21_POS] == 0 ||
+        bobuiable->quantval[Q30_POS] == 0)
       return FALSE;
     /* DC values must be at least partly known for all components. */
     coef_bits = cinfo->coef_bits[ci];

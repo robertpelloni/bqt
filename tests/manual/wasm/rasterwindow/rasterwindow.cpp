@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include "rasterwindow.h"
 
 RasterWindow::RasterWindow()
@@ -16,8 +16,8 @@ RasterWindow::RasterWindow()
     format.setAlphaBufferSize(0);
     setFormat(format);
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [this](){
+    BOBUIimer *timer = new BOBUIimer(this);
+    connect(timer, &BOBUIimer::timeout, [this](){
         ++m_timeoutCount;
         m_fps = m_frameCount;
         m_frameCount = 0;
@@ -57,7 +57,7 @@ void RasterWindow::paintEvent(QPaintEvent * event)
     text += QString("Received Timers: %1\n").arg(m_timeoutCount);
     text += QString("Frames Per Second: %1\n").arg(m_fps);
 
-    p.drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, text);
+    p.drawText(QRectF(0, 0, width(), height()), BobUI::AlignCenter, text);
 }
 void RasterWindow::exposeEvent(QExposeEvent * ev)
 {
@@ -156,14 +156,14 @@ void RasterWindow::showEvent(QShowEvent * ev)
     incrementEventCount();
 }
 
-void RasterWindow::tabletEvent(QTabletEvent * ev)
+void RasterWindow::tabletEvent(BOBUIabletEvent * ev)
 {
     qDebug() << __PRETTY_FUNCTION__;
     QRasterWindow::tabletEvent(ev);
     incrementEventCount();
 }
 
-void RasterWindow::touchEvent(QTouchEvent * ev)
+void RasterWindow::touchEvent(BOBUIouchEvent * ev)
 {
     qDebug() << __PRETTY_FUNCTION__;
     QRasterWindow::touchEvent(ev);

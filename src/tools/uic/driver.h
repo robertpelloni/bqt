@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef DRIVER_H
 #define DRIVER_H
@@ -8,11 +8,11 @@
 #include <qhash.h>
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextStream;
+class BOBUIextStream;
 class DomUI;
 class DomWidget;
 class DomSpacer;
@@ -31,11 +31,11 @@ public:
 
     // tools
     bool printDependencies(const QString &fileName);
-    bool uic(const QString &fileName, QTextStream *output = nullptr);
-    bool uic(const QString &fileName, DomUI *ui, QTextStream *output = nullptr);
+    bool uic(const QString &fileName, BOBUIextStream *output = nullptr);
+    bool uic(const QString &fileName, DomUI *ui, BOBUIextStream *output = nullptr);
 
     // configuration
-    inline QTextStream &output() const { return *m_output; }
+    inline BOBUIextStream &output() const { return *m_output; }
     inline Option &option() { return m_option; }
 
     // utils
@@ -43,7 +43,7 @@ public:
     QString headerFileName() const;
 
     static QString normalizedName(const QString &name);
-    static QString qtify(const QString &name);
+    static QString bobuiify(const QString &name);
     QString unique(const QString &instanceName=QString(),
                    const QString &className=QString());
 
@@ -83,8 +83,8 @@ private:
                          bool isMember = true);
 
     Option m_option;
-    QTextStream m_stdout;
-    QTextStream *m_output;
+    BOBUIextStream m_stdout;
+    BOBUIextStream *m_output;
 
     // symbol tables
     DomObjectHash<DomWidget> m_widgets;
@@ -97,6 +97,6 @@ private:
     bool m_idBasedTranslations = false;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // DRIVER_H

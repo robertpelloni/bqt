@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "gestures.h"
 
-#include <QTouchEvent>
+#include <BOBUIouchEvent>
 
-Qt::GestureType ThreeFingerSlideGesture::Type = Qt::CustomGesture;
+BobUI::GestureType ThreeFingerSlideGesture::Type = BobUI::CustomGesture;
 
 QGesture *ThreeFingerSlideGestureRecognizer::create(QObject *)
 {
@@ -27,8 +27,8 @@ QGestureRecognizer::Result ThreeFingerSlideGestureRecognizer::recognize(QGesture
             result = QGestureRecognizer::CancelGesture;
         break;
     case QEvent::TouchUpdate:
-        if (d->state() != Qt::NoGesture) {
-            QTouchEvent *ev = static_cast<QTouchEvent*>(event);
+        if (d->state() != BobUI::NoGesture) {
+            BOBUIouchEvent *ev = static_cast<BOBUIouchEvent*>(event);
             if (ev->points().size() == 3) {
                 d->gestureFired = true;
                 result = QGestureRecognizer::TriggerGesture;
@@ -48,7 +48,7 @@ QGestureRecognizer::Result ThreeFingerSlideGestureRecognizer::recognize(QGesture
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
-        if (d->state() != Qt::NoGesture)
+        if (d->state() != BobUI::NoGesture)
             result = QGestureRecognizer::Ignore;
         else
             result = QGestureRecognizer::CancelGesture;

@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 HEADERS       = classwizard.h
 SOURCES       = classwizard.cpp \
@@ -6,5 +6,5 @@ SOURCES       = classwizard.cpp \
 RESOURCES     = classwizard.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/dialogs/classwizard
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/dialogs/classwizard
 INSTALLS += target

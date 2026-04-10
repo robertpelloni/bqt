@@ -1,18 +1,18 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qtguiglobal.h>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/bobuiguiglobal.h>
+#if BOBUI_CONFIG(accessibility)
 
 #include "qwindowsuiatextprovider.h"
 #include "qwindowsuiautils.h"
 #include "qwindowscontext.h"
 
-#include <QtGui/qaccessible.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qstring.h>
-#include <QtCore/private/qcomptr_p.h>
-QT_BEGIN_NAMESPACE
+#include <BobUIGui/qaccessible.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/private/qcomptr_p.h>
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QWindowsUiAutomation;
 
@@ -208,6 +208,6 @@ HRESULT STDMETHODCALLTYPE QWindowsUiaTextProvider::GetCaretRange(BOOL *isActive,
     return S_OK;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "driver.h"
 #include "uic.h"
@@ -12,9 +12,9 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Driver::Driver()
     : m_stdout(stdout, QFile::WriteOnly | QFile::Text),
@@ -147,7 +147,7 @@ QString Driver::unique(const QString &instanceName, const QString &className)
             name = base + QString::number(id);
         }
     } else if (!className.isEmpty()) {
-        name = unique(qtify(className));
+        name = unique(bobuiify(className));
     } else {
         name = unique("var"_L1);
     }
@@ -163,7 +163,7 @@ QString Driver::unique(const QString &instanceName, const QString &className)
     return name;
 }
 
-QString Driver::qtify(const QString &name)
+QString Driver::bobuiify(const QString &name)
 {
     QString qname = name;
 
@@ -225,12 +225,12 @@ bool Driver::printDependencies(const QString &fileName)
     return tool.printDependencies();
 }
 
-bool Driver::uic(const QString &fileName, DomUI *ui, QTextStream *out)
+bool Driver::uic(const QString &fileName, DomUI *ui, BOBUIextStream *out)
 {
     m_option.inputFile = fileName;
     setUseIdBasedTranslations(ui->attributeIdbasedtr());
 
-    QTextStream *oldOutput = m_output;
+    BOBUIextStream *oldOutput = m_output;
 
     m_output = out != nullptr ? out : &m_stdout;
 
@@ -242,7 +242,7 @@ bool Driver::uic(const QString &fileName, DomUI *ui, QTextStream *out)
     return result;
 }
 
-bool Driver::uic(const QString &fileName, QTextStream *out)
+bool Driver::uic(const QString &fileName, BOBUIextStream *out)
 {
     QFile f;
     if (fileName.isEmpty()) {
@@ -256,7 +256,7 @@ bool Driver::uic(const QString &fileName, QTextStream *out)
 
     m_option.inputFile = fileName;
 
-    QTextStream *oldOutput = m_output;
+    BOBUIextStream *oldOutput = m_output;
     bool deleteOutput = false;
 
     if (out) {
@@ -267,9 +267,9 @@ bool Driver::uic(const QString &fileName, QTextStream *out)
         // we should not create the textstream with QFile::Text flag.
         // The redirected file is opened in TextMode and this will
         // result in broken line endings as writing will replace \n again.
-        m_output = new QTextStream(stdout, QIODevice::WriteOnly);
+        m_output = new BOBUIextStream(stdout, QIODevice::WriteOnly);
 #else
-        m_output = new QTextStream(stdout, QIODevice::WriteOnly | QFile::Text);
+        m_output = new BOBUIextStream(stdout, QIODevice::WriteOnly | QFile::Text);
 #endif
         deleteOutput = true;
     }
@@ -307,4 +307,4 @@ const DomAction *Driver::actionByName(const QString &attributeName) const
     return findByAttributeName(m_actions, attributeName);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

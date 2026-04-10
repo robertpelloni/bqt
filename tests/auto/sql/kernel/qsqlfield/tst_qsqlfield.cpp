@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qsqlfield.h>
 #include <qvariant.h>
@@ -97,15 +97,15 @@ void tst_QSqlField::cleanup()
 
 void tst_QSqlField::clear_data()
 {
-    QTest::addColumn<int>("val");
-    QTest::addColumn<bool>("bval");
-    QTest::addColumn<QString>("strVal");
-    QTest::addColumn<double>("fval");
+    BOBUIest::addColumn<int>("val");
+    BOBUIest::addColumn<bool>("bval");
+    BOBUIest::addColumn<QString>("strVal");
+    BOBUIest::addColumn<double>("fval");
 
     //next we fill it with data
-    QTest::newRow( "data0" ) << (int)5 << true << QString("Hallo") << (double)0;
-    QTest::newRow( "data1" )  << -5 << false << QString("NULL") << (double)-4;
-    QTest::newRow( "data2" )  << 0 << false << QString("0") << (double)0;
+    BOBUIest::newRow( "data0" ) << (int)5 << true << QString("Hallo") << (double)0;
+    BOBUIest::newRow( "data1" )  << -5 << false << QString("NULL") << (double)-4;
+    BOBUIest::newRow( "data2" )  << 0 << false << QString("0") << (double)0;
 }
 
 void tst_QSqlField::clear()
@@ -162,12 +162,12 @@ void tst_QSqlField::isReadOnly()
 
 void tst_QSqlField::name_data()
 {
-    QTest::addColumn<QString>("val");
+    BOBUIest::addColumn<QString>("val");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << QString("test");
-    QTest::newRow( "data1" )  << QString("Harry");
-    QTest::newRow( "data2" )  << QString("");
+    BOBUIest::newRow( "data0" )  << QString("test");
+    BOBUIest::newRow( "data1" )  << QString("Harry");
+    BOBUIest::newRow( "data2" )  << QString("");
 }
 
 void tst_QSqlField::name()
@@ -231,12 +231,12 @@ void tst_QSqlField::operator_Equal()
 
 void tst_QSqlField::setName_data()
 {
-    QTest::addColumn<QString>("val");
+    BOBUIest::addColumn<QString>("val");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << QString("test");
-    QTest::newRow( "data1" )  << QString("Harry");
-    QTest::newRow( "data2" )  << QString("");
+    BOBUIest::newRow( "data0" )  << QString("test");
+    BOBUIest::newRow( "data1" )  << QString("Harry");
+    BOBUIest::newRow( "data2" )  << QString("");
 }
 
 void tst_QSqlField::setName()
@@ -280,15 +280,15 @@ void tst_QSqlField::setReadOnly()
 
 void tst_QSqlField::setValue_data()
 {
-    QTest::addColumn<int>("ival");
-    QTest::addColumn<bool>("bval");
-    QTest::addColumn<double>("dval");
-    QTest::addColumn<QString>("sval");
+    BOBUIest::addColumn<int>("ival");
+    BOBUIest::addColumn<bool>("bval");
+    BOBUIest::addColumn<double>("dval");
+    BOBUIest::addColumn<QString>("sval");
 
     //next we fill it with data
-    QTest::newRow( "data0" )  << 0 << false << (double)223.232 << QString("");
-    QTest::newRow( "data1" )  << 123 << true << (double)-232.232 << QString("Harry");
-    QTest::newRow( "data2" )  << -123 << false << (double)232222.323223233338 << QString("Woipertinger");
+    BOBUIest::newRow( "data0" )  << 0 << false << (double)223.232 << QString("");
+    BOBUIest::newRow( "data1" )  << 123 << true << (double)-232.232 << QString("Harry");
+    BOBUIest::newRow( "data2" )  << -123 << false << (double)232222.323223233338 << QString("Woipertinger");
 }
 
 void tst_QSqlField::setValue()
@@ -330,10 +330,10 @@ void tst_QSqlField::type()
 
 void tst_QSqlField::setTableName_data()
 {
-    QTest::addColumn<QString>("tableName");
+    BOBUIest::addColumn<QString>("tableName");
 
-    QTest::newRow("data0") << QString("");
-    QTest::newRow("data1") << QString("tbl");
+    BOBUIest::newRow("data0") << QString("");
+    BOBUIest::newRow("data1") << QString("tbl");
 }
 
 void tst_QSqlField::setTableName()
@@ -364,5 +364,5 @@ void tst_QSqlField::moveSemantics()
     moved = std::move(field);
 }
 
-QTEST_MAIN(tst_QSqlField)
+BOBUIEST_MAIN(tst_QSqlField)
 #include "tst_qsqlfield.moc"

@@ -1,33 +1,33 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLCONTEXT_H
 #define QOPENGLCONTEXT_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtCore/qnamespace.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qset.h>
-#include <QtCore/qnativeinterface.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qnativeinterface.h>
 
-#include <QtGui/QSurfaceFormat>
+#include <BobUIGui/QSurfaceFormat>
 
 #ifdef __GLEW_H__
 #if defined(Q_CC_GNU)
 #warning qopenglfunctions.h is not compatible with GLEW, GLEW defines will be undefined
-#warning To use GLEW with Qt, do not include <qopengl.h> or <QOpenGLFunctions> after glew.h
+#warning To use GLEW with BobUI, do not include <qopengl.h> or <QOpenGLFunctions> after glew.h
 #endif
 #endif
 
-#include <QtGui/qopengl.h>
+#include <BobUIGui/qopengl.h>
 
-#include <QtCore/qvariant.h>
+#include <BobUICore/qvariant.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QOpenGLContextPrivate;
@@ -118,7 +118,7 @@ public:
     static bool supportsThreadedOpenGL();
     static QOpenGLContext *globalShareContext();
 
-    QT_DECLARE_NATIVE_INTERFACE_ACCESSOR(QOpenGLContext)
+    BOBUI_DECLARE_NATIVE_INTERFACE_ACCESSOR(QOpenGLContext)
 
 Q_SIGNALS:
     void aboutToBeDestroyed();
@@ -146,15 +146,15 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_screenDestroyed(QObject *object))
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QOpenGLContext *ctx);
 Q_GUI_EXPORT QDebug operator<<(QDebug debug, const QOpenGLContextGroup *cg);
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#include <QtGui/qopenglcontext_platform.h>
+#include <BobUIGui/qopenglcontext_platform.h>
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLCONTEXT_H

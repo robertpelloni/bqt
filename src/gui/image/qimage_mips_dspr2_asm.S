@@ -1,7 +1,7 @@
 // Copyright (C) 2013 Imagination Technologies Limited, www.imgtec.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "../painting/qt_mips_asm_dsp_p.h"
+#include "../painting/bobui_mips_asm_dsp_p.h"
 
 LEAF_MIPS_DSPR2(premultiply_argb_inplace_mips_asm)
 
@@ -168,7 +168,7 @@ LEAF_MIPS_DSPR2(premultiply_argb_inplace_mips_asm)
 END(premultiply_argb_inplace_mips_asm)
 
 
-LEAF_MIPS_DSPR2(qt_convert_rgb888_to_rgb32_mips_dspr2_asm)
+LEAF_MIPS_DSPR2(bobui_convert_rgb888_to_rgb32_mips_dspr2_asm)
 /*
  * Parameters:
  *   a0 - dst *a8r8g8b8
@@ -258,4 +258,4 @@ LEAF_MIPS_DSPR2(qt_convert_rgb888_to_rgb32_mips_dspr2_asm)
 0:  jr ra
      nop
 
-END(qt_convert_rgb888_to_rgb32_mips_dspr2_asm)
+END(bobui_convert_rgb888_to_rgb32_mips_dspr2_asm)

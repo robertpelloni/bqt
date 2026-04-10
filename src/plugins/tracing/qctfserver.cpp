@@ -1,26 +1,26 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include <qloggingcategory.h>
 #include "qctfserver_p.h"
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
 #include <zstd.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcCtfInfoTrace, "qt.core.ctfserver", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcCtfInfoTrace, "bobui.core.ctfserver", BobUIWarningMsg)
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
 static QByteArray zstdCompress(ZSTD_CCtx *&context, const QByteArray &data, int compression)
 {
     if (context == nullptr)
         context = ZSTD_createCCtx();
     qsizetype size = data.size();
     size = ZSTD_COMPRESSBOUND(size);
-    QByteArray compressed(size, Qt::Uninitialized);
+    QByteArray compressed(size, BobUI::Uninitialized);
     char *dst = compressed.data();
     size_t n = ZSTD_compressCCtx(context, dst, size,
                                  data.constData(), data.size(),
@@ -35,7 +35,7 @@ static QByteArray zstdCompress(ZSTD_CCtx *&context, const QByteArray &data, int 
 #endif
 
 QCtfServer::QCtfServer(QObject *parent)
-    : QThread(parent)
+    : BOBUIhread(parent)
 {
     m_keySet << "cliendId"_L1
              << "clientVersion"_L1
@@ -48,7 +48,7 @@ QCtfServer::QCtfServer(QObject *parent)
 
 QCtfServer::~QCtfServer()
 {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     ZSTD_freeCCtx(m_zstdCCtx);
 #endif
 }
@@ -111,7 +111,7 @@ bool QCtfServer::waitSocket()
 {
     if (m_eventLoop)
         m_eventLoop->exec();
-    return m_socket->state() == QTcpSocket::ConnectedState;
+    return m_socket->state() == BOBUIcpSocket::ConnectedState;
 }
 
 void QCtfServer::handleString(QCborStreamReader &cbor)
@@ -229,7 +229,7 @@ void QCtfServer::writePacket(TracePacket &packet, QCborStreamWriter &cbor)
     cbor.append("data"_L1);
     if (m_compression > 0) {
         QByteArray compressed;
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
         if (m_requestedCompressionScheme == QStringLiteral("zstd"))
             compressed = zstdCompress(m_zstdCCtx, packet.stream_data, m_compression);
         else
@@ -248,7 +248,7 @@ bool QCtfServer::recognizedCompressionScheme() const
 {
     if (m_requestedCompressionScheme.isEmpty())
         return true;
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
     if (m_requestedCompressionScheme == QStringLiteral("zstd"))
         return true;
 #endif
@@ -259,7 +259,7 @@ bool QCtfServer::recognizedCompressionScheme() const
 
 void QCtfServer::run()
 {
-    m_server = new QTcpServer();
+    m_server = new BOBUIcpServer();
     QHostAddress addr;
     if (m_address.isEmpty())
         addr = QHostAddress(QHostAddress::Any);
@@ -282,11 +282,11 @@ void QCtfServer::run()
             m_eventLoop = new QEventLoop();
             m_socket = m_server->nextPendingConnection();
 
-            QObject::connect(m_socket, &QTcpSocket::readyRead, [&](){
+            QObject::connect(m_socket, &BOBUIcpSocket::readyRead, [&](){
                 if (m_eventLoop) m_eventLoop->exit();
             });
-            QObject::connect(m_socket, &QTcpSocket::bytesWritten, this, &QCtfServer::bytesWritten);
-            QObject::connect(m_socket, &QTcpSocket::disconnected, [&](){
+            QObject::connect(m_socket, &BOBUIcpSocket::bytesWritten, this, &QCtfServer::bytesWritten);
+            QObject::connect(m_socket, &BOBUIcpSocket::disconnected, [&](){
                 if (m_eventLoop) m_eventLoop->exit();
             });
 
@@ -306,7 +306,7 @@ void QCtfServer::run()
                     m_socket->close();
                 } else {
                     m_compression = m_req.flags & CompressionMask;
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
                     m_compression = qMin(m_compression, ZSTD_maxCLevel());
 #else
                     m_compression = qMin(m_compression, 9);
@@ -347,7 +347,7 @@ void QCtfServer::run()
 
                     qCInfo(lcCtfInfoTrace) << "response sent, sending data";
                     if (waitSocket()) {
-                        while (m_socket->state() == QTcpSocket::ConnectedState) {
+                        while (m_socket->state() == BOBUIcpSocket::ConnectedState) {
                             QList<TracePacket> packets;
                             {
                                 QMutexLocker lock(&m_mutex);

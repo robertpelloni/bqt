@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatformthemefactory_p.h>
 #include <qpa/qplatformthemeplugin.h>
@@ -12,12 +12,12 @@
 #include "qplatformtheme_p.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, ptLoader,
-    (QPlatformThemeFactoryInterface_iid, "/platformthemes"_L1, Qt::CaseInsensitive))
+    (QPlatformThemeFactoryInterface_iid, "/platformthemes"_L1, BobUI::CaseInsensitive))
 
 QPlatformTheme *QPlatformThemeFactory::create(const QString& key, const QString &platformPluginPath)
 {
@@ -43,4 +43,4 @@ QStringList QPlatformThemeFactory::keys(const QString &platformPluginPath)
     return ptLoader->keyMap().values();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

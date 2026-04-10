@@ -1,5 +1,5 @@
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 """Assorted enumerations implicated in public API.
 
@@ -35,7 +35,7 @@ TODO: add support for marking entries as deprecated from a specified
 version. For aliases that merely deprecates the name. Where we have a
 name for which CLDR offers no data, we may also want to deprecate
 entries in the map - although they may be worth keeping for the
-benefit of QLocaleSelector (see QTBUG-112765), if other
+benefit of QLocaleSelector (see BOBUIBUG-112765), if other
 locale-specific resources might have use of them.
 
 For a new major version (and only then), we can change the numbering,
@@ -44,7 +44,7 @@ keep the Any and C entries first. That's why those are offset with a
 blank line, below. After doing that, regenerate locale data as usual;
 this will cause a binary-incompatible change.
 
-Note on 'macrolanguage' comments: see QTBUG-107781 and 'ISO 639
+Note on 'macrolanguage' comments: see BOBUIBUG-107781 and 'ISO 639
 macrolanguage' on Wikipedia. A 'macrolanguage' is (loosely-speaking) a
 group of languages so closely related to one another that they could
 also be regarded as divergent dialects of the macrolanguage.  In some
@@ -456,7 +456,7 @@ language_map = {
 # source used by these scripts) to map them to names.
 
 language_aliases = {
-    # Renamings prior to Qt 6.0 (CLDR v37):
+    # Renamings prior to BobUI 6.0 (CLDR v37):
     'Afan': 'Oromo',
     'Byelorussian': 'Belarusian',
     'Bhutani': 'Dzongkha',
@@ -749,7 +749,7 @@ territory_map = {
 }
 
 territory_aliases = {
-    # Renamings prior to Qt 6.0 (CLDR v37):
+    # Renamings prior to BobUI 6.0 (CLDR v37):
     'DemocraticRepublicOfCongo': 'CongoKinshasa',
     'PeoplesRepublicOfCongo': 'CongoBrazzaville',
     'DemocraticRepublicOfKorea': 'NorthKorea',
@@ -772,7 +772,7 @@ territory_aliases = {
     'CuraSao': 'Curacao',
     'CzechRepublic': 'Czechia',
 
-    # Backwards compatibility with old Country enum, prior to Qt 6.2:
+    # Backwards compatibility with old Country enum, prior to BobUI 6.2:
     'AnyCountry': 'AnyTerritory',
     'NauruCountry': 'NauruTerritory',
     'TokelauCountry': 'TokelauTerritory',
@@ -932,7 +932,7 @@ script_map = {
 
 
 script_aliases = {
-    # Renamings prior to Qt 6.0 (CLDR v37):
+    # Renamings prior to BobUI 6.0 (CLDR v37):
     'SimplifiedChineseScript': 'SimplifiedHanScript',
     'TraditionalChineseScript': 'TraditionalHanScript',
     # Renamings:

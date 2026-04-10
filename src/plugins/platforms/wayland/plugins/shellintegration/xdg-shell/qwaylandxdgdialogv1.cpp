@@ -1,11 +1,11 @@
 // Copyright (C) 2023 David Reondo <kde@david-redondo.de>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandxdgdialogv1_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandXdgDialogV1::QWaylandXdgDialogV1(::xdg_dialog_v1 *object) : xdg_dialog_v1(object) { }
 
@@ -28,6 +28,6 @@ QWaylandXdgDialogV1 *QWaylandXdgDialogWmV1::getDialog(xdg_toplevel *toplevel)
     return new QWaylandXdgDialogV1(get_xdg_dialog(toplevel));
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

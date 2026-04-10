@@ -7,8 +7,8 @@ include($$SHARED_FOLDER/shared.pri)
 
 RESOURCES += deform.qrc
 
-QT += widgets
+BOBUI += widgets
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/deform
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/deform
 INSTALLS += target

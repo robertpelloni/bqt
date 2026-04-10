@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -19,7 +19,7 @@
 #include "qcocoamimetypes.h"
 #include "qcocoaaccessibility.h"
 #include "qcocoascreen.h"
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 #  include "qcocoasessionmanager.h"
 #endif
 #include "qcocoawindowmanager.h"
@@ -28,17 +28,17 @@
 #include <qpa/qplatformaccessibility.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qplatformoffscreensurface.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtGui/qpointingdevice.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUIGui/qpointingdevice.h>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qcoregraphics_p.h>
-#include <QtGui/private/qmacmimeregistry_p.h>
-#ifndef QT_NO_OPENGL
-#  include <QtGui/private/qopenglcontext_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qmacmimeregistry_p.h>
+#ifndef BOBUI_NO_OPENGL
+#  include <BobUIGui/private/qopenglcontext_p.h>
 #endif
-#include <QtGui/private/qrhibackingstore_p.h>
-#include <QtGui/private/qfontengine_coretext_p.h>
+#include <BobUIGui/private/qrhibackingstore_p.h>
+#include <BobUIGui/private/qfontengine_coretext_p.h>
 
 #include <IOKit/graphics/IOGraphicsLib.h>
 #include <UniformTypeIdentifiers/UTCoreTypes.h>
@@ -50,11 +50,11 @@ static void initResources()
     Q_INIT_RESOURCE(qcocoaresources);
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(lcQpa, "qt.qpa", QtWarningMsg);
+Q_LOGGING_CATEGORY(lcQpa, "bobui.qpa", BobUIWarningMsg);
 
 static void logVersionInformation()
 {
@@ -62,23 +62,23 @@ static void logVersionInformation()
         return;
 
     auto osVersion = QMacVersion::currentRuntime();
-    auto qtBuildSDK = QMacVersion::buildSDK(QMacVersion::QtLibraries);
-    auto qtDeploymentTarget = QMacVersion::deploymentTarget(QMacVersion::QtLibraries);
+    auto bobuiBuildSDK = QMacVersion::buildSDK(QMacVersion::BobUILibraries);
+    auto bobuiDeploymentTarget = QMacVersion::deploymentTarget(QMacVersion::BobUILibraries);
     auto appBuildSDK = QMacVersion::buildSDK(QMacVersion::ApplicationBinary);
     auto appDeploymentTarget = QMacVersion::deploymentTarget(QMacVersion::ApplicationBinary);
 
-    qCInfo(lcQpa, "Loading macOS (Cocoa) platform plugin for Qt " QT_VERSION_STR ", running on macOS %d.%d.%d\n\n" \
+    qCInfo(lcQpa, "Loading macOS (Cocoa) platform plugin for BobUI " BOBUI_VERSION_STR ", running on macOS %d.%d.%d\n\n" \
         "  Component     SDK version   Deployment target  \n" \
         " ------------- ------------- -------------------\n" \
-        "  Qt " QT_VERSION_STR "       %d.%d.%d          %d.%d.%d\n" \
+        "  BobUI " BOBUI_VERSION_STR "       %d.%d.%d          %d.%d.%d\n" \
         "  Application     %d.%d.%d          %d.%d.%d\n",
             osVersion.majorVersion(), osVersion.minorVersion(), osVersion.microVersion(),
-            qtBuildSDK.majorVersion(), qtBuildSDK.minorVersion(), qtBuildSDK.microVersion(),
-            qtDeploymentTarget.majorVersion(), qtDeploymentTarget.minorVersion(), qtDeploymentTarget.microVersion(),
+            bobuiBuildSDK.majorVersion(), bobuiBuildSDK.minorVersion(), bobuiBuildSDK.microVersion(),
+            bobuiDeploymentTarget.majorVersion(), bobuiDeploymentTarget.minorVersion(), bobuiDeploymentTarget.microVersion(),
             appBuildSDK.majorVersion(), appBuildSDK.minorVersion(), appBuildSDK.microVersion(),
             appDeploymentTarget.majorVersion(), appDeploymentTarget.minorVersion(), appDeploymentTarget.microVersion());
 
-    qCInfo(lcQpa) << "Running with Liquid Glass enabled:" << qt_apple_runningWithLiquidGlass();
+    qCInfo(lcQpa) << "Running with Liquid Glass enabled:" << bobui_apple_runningWithLiquidGlass();
 }
 
 
@@ -89,7 +89,7 @@ static QCocoaIntegration::Options parseOptions(const QStringList &paramList)
 {
     QCocoaIntegration::Options options;
     for (const QString &param : paramList) {
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
         if (param == "fontengine=freetype"_L1)
             options |= QCocoaIntegration::UseFreeTypeFontEngine;
         else
@@ -104,10 +104,10 @@ QCocoaIntegration *QCocoaIntegration::mInstance = nullptr;
 QCocoaIntegration::QCocoaIntegration(const QStringList &paramList)
     : mOptions(parseOptions(paramList))
     , mFontDb(nullptr)
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     , mAccessibility(new QCocoaAccessibility)
 #endif
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     , mCocoaClipboard(new QCocoaClipboard)
 #endif
     , mCocoaDrag(new QCocoaDrag)
@@ -120,7 +120,7 @@ QCocoaIntegration::QCocoaIntegration(const QStringList &paramList)
         qWarning("Creating multiple Cocoa platform integrations is not supported");
     mInstance = this;
 
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
     if (mOptions.testFlag(UseFreeTypeFontEngine))
         mFontDb.reset(new QCoreTextFontDatabaseEngineFactory<QFontEngineFT>);
     else
@@ -135,20 +135,20 @@ QCocoaIntegration::QCocoaIntegration(const QStringList &paramList)
     QMacAutoReleasePool pool;
 
     NSApplication *cocoaApplication = [QNSApplication sharedApplication];
-    qt_redirectNSApplicationSendEvent();
+    bobui_redirectNSApplicationSendEvent();
 
-    if (qEnvironmentVariableIsEmpty("QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM")) {
+    if (qEnvironmentVariableIsEmpty("BOBUI_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM")) {
         // Applications launched from plain executables (without an app
         // bundle) are "background" applications that does not take keyboard
-        // focus or have a dock icon or task switcher entry. Qt Gui apps generally
+        // focus or have a dock icon or task switcher entry. BobUI Gui apps generally
         // wants to be foreground applications so change the process type. (But
         // see the function implementation for exceptions.)
-        qt_mac_transformProccessToForegroundApplication();
+        bobui_mac_transformProccessToForegroundApplication();
     }
 
-    // Qt 4 also does not set the application delegate, so that behavior
+    // BobUI 4 also does not set the application delegate, so that behavior
     // is matched here.
-    if (!QCoreApplication::testAttribute(Qt::AA_PluginApplication)) {
+    if (!QCoreApplication::testAttribute(BobUI::AA_PluginApplication)) {
 
         // Set app delegate, link to the current delegate (if any)
         QCocoaApplicationDelegate *newDelegate = [QCocoaApplicationDelegate sharedDelegate];
@@ -156,8 +156,8 @@ QCocoaIntegration::QCocoaIntegration(const QStringList &paramList)
         [cocoaApplication setDelegate:newDelegate];
 
         // Load the application menu. This menu contains Preferences, Hide, Quit.
-        QCocoaMenuLoader *qtMenuLoader = [QCocoaMenuLoader sharedMenuLoader];
-        [cocoaApplication setMenu:[qtMenuLoader menu]];
+        QCocoaMenuLoader *bobuiMenuLoader = [QCocoaMenuLoader sharedMenuLoader];
+        [cocoaApplication setMenu:[bobuiMenuLoader menu]];
     }
 
     QCocoaScreen::initializeScreens();
@@ -182,10 +182,10 @@ QCocoaIntegration::~QCocoaIntegration()
 {
     mInstance = nullptr;
 
-    qt_resetNSApplicationSendEvent();
+    bobui_resetNSApplicationSendEvent();
 
     QMacAutoReleasePool pool;
-    if (!QCoreApplication::testAttribute(Qt::AA_PluginApplication)) {
+    if (!QCoreApplication::testAttribute(BobUI::AA_PluginApplication)) {
         // remove the apple event handlers installed by QCocoaApplicationDelegate
         QCocoaApplicationDelegate *delegate = [QCocoaApplicationDelegate sharedDelegate];
         [delegate removeAppleEventHandlers];
@@ -196,7 +196,7 @@ QCocoaIntegration::~QCocoaIntegration()
     // Stop global mouse event and app activation monitoring
     QCocoaWindow::removePopupMonitor();
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
     // Delete the clipboard integration and destroy mime type converters.
     // Deleting the clipboard integration flushes promised pastes using
     // the mime converters - the ordering here is important.
@@ -217,7 +217,7 @@ QCocoaIntegration::Options QCocoaIntegration::options() const
     return mOptions;
 }
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 QPlatformSessionManager *QCocoaIntegration::createPlatformSessionManager(const QString &id, const QString &key) const
 {
     return new QCocoaSessionManager(id, key);
@@ -227,7 +227,7 @@ QPlatformSessionManager *QCocoaIntegration::createPlatformSessionManager(const Q
 bool QCocoaIntegration::hasCapability(QPlatformIntegration::Capability cap) const
 {
     switch (cap) {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
     case ThreadedOpenGL:
         // AppKit expects rendering to happen on the main thread, and we can
         // easily end up in situations where rendering on secondary threads
@@ -297,7 +297,7 @@ QPlatformOffscreenSurface *QCocoaIntegration::createPlatformOffscreenSurface(QOf
     return new QCocoaOffscreenSurface(surface);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QCocoaIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     return new QCocoaGLContext(context);
@@ -353,7 +353,7 @@ QAbstractEventDispatcher *QCocoaIntegration::createEventDispatcher() const
     return new QCocoaEventDispatcher;
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 QPlatformVulkanInstance *QCocoaIntegration::createPlatformVulkanInstance(QVulkanInstance *instance) const
 {
     mCocoaVulkanInstance = new QCocoaVulkanInstance(instance);
@@ -381,14 +381,14 @@ QPlatformInputContext *QCocoaIntegration::inputContext() const
     return mInputContext.data();
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QCocoaAccessibility *QCocoaIntegration::accessibility() const
 {
     return mAccessibility.data();
 }
 #endif
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 QCocoaClipboard *QCocoaIntegration::clipboard() const
 {
     return mCocoaClipboard;
@@ -455,7 +455,7 @@ void QCocoaIntegration::setApplicationIcon(const QIcon &icon) const
     // The assigned image is scaled by the system to fit into the tile,
     // but without taking aspect ratio into account, so let's pad the
     // image up front if it's not already square.
-    image = qt_mac_padToSquareImage(image);
+    image = bobui_mac_padToSquareImage(image);
 
     NSApp.applicationIconImage = [NSImage imageFromQImage:image];
 }
@@ -503,6 +503,6 @@ void QCocoaIntegration::focusWindowChanged(QWindow *focusWindow)
     setApplicationIcon(focusWindow->icon());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcocoaintegration.cpp"

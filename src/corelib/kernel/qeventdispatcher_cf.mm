@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventdispatcher_cf_p.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/qthread.h>
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtCore/private/qthread_p.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qmetaobject.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUICore/private/bobuihread_p.h>
 
 #include <limits>
 
@@ -20,15 +20,15 @@
 #  include <UIKit/UIApplication.h>
 #endif
 
-QT_BEGIN_NAMESPACE
-namespace QtPrivate {
-Q_LOGGING_CATEGORY(lcEventDispatcher, "qt.eventdispatcher");
-Q_LOGGING_CATEGORY(lcEventDispatcherTimers, "qt.eventdispatcher.timers");
+BOBUI_BEGIN_NAMESPACE
+namespace BobUIPrivate {
+Q_LOGGING_CATEGORY(lcEventDispatcher, "bobui.eventdispatcher");
+Q_LOGGING_CATEGORY(lcEventDispatcherTimers, "bobui.eventdispatcher.timers");
 }
-using namespace QtPrivate;
-QT_END_NAMESPACE
+using namespace BobUIPrivate;
+BOBUI_END_NAMESPACE
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 /*
     During scroll view panning, and possibly other gestures, UIKit will
@@ -48,12 +48,12 @@ QT_USE_NAMESPACE
     mode, resulting in missing momentum-phases in UIScrollViews such as the
     emoji keyboard.
 */
-@interface QT_MANGLE_NAMESPACE(RunLoopModeTracker) : NSObject
+@interface BOBUI_MANGLE_NAMESPACE(RunLoopModeTracker) : NSObject
 @end
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(RunLoopModeTracker);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(RunLoopModeTracker);
 
-@implementation QT_MANGLE_NAMESPACE(RunLoopModeTracker) {
+@implementation BOBUI_MANGLE_NAMESPACE(RunLoopModeTracker) {
     QStack<CFStringRef> m_runLoopModes;
 }
 
@@ -63,10 +63,10 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(RunLoopModeTracker);
         m_runLoopModes.push(kCFRunLoopDefaultMode);
 
 #if !defined(Q_OS_WATCHOS)
-        if (!qt_apple_isApplicationExtension()) {
+        if (!bobui_apple_isApplicationExtension()) {
             [[NSNotificationCenter defaultCenter]
                 addObserver:self selector:@selector(receivedNotification:)
-                name:nil object:qt_apple_sharedApplication()];
+                name:nil object:bobui_apple_sharedApplication()];
         }
 #endif
     }
@@ -118,7 +118,7 @@ static CFStringRef runLoopMode(NSDictionary *dictionary)
 
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class RunLoopDebugger : public QObject
 {
@@ -158,7 +158,7 @@ Q_ENUM_PRINTER(Result);
 
 QDebug operator<<(QDebug s, timespec tv)
 {
-    s << tv.tv_sec << "." << qSetFieldWidth(9) << qSetPadChar(QChar(48)) << tv.tv_nsec << Qt::reset;
+    s << tv.tv_sec << "." << qSetFieldWidth(9) << qSetPadChar(QChar(48)) << tv.tv_nsec << BobUI::reset;
     return s;
 }
 
@@ -183,7 +183,7 @@ void QEventDispatcherCoreFoundation::startingUp()
 {
     // The following code must run on the event dispatcher thread, so that
     // CFRunLoopGetCurrent() returns the correct run loop.
-    Q_ASSERT(QThread::currentThread() == thread());
+    Q_ASSERT(BOBUIhread::currentThread() == thread());
 
     m_runLoop = QCFType<CFRunLoopRef>::constructFromGet(CFRunLoopGetCurrent());
     m_cfSocketNotifier.setHostEventDispatcher(this);
@@ -201,7 +201,7 @@ QEventDispatcherCoreFoundation::~QEventDispatcherCoreFoundation()
 
 QEventLoop *QEventDispatcherCoreFoundation::currentEventLoop() const
 {
-    QEventLoop *eventLoop = QThreadData::current()->eventLoops.top();
+    QEventLoop *eventLoop = BOBUIhreadData::current()->eventLoops.top();
     Q_ASSERT(eventLoop);
     return eventLoop;
 }
@@ -216,7 +216,7 @@ QEventLoop *QEventDispatcherCoreFoundation::currentEventLoop() const
 
       - All events are considered equal. This function should process
         both system/native events (that we may or may not care about),
-        as well as Qt-events (posted events and timers).
+        as well as BobUI-events (posted events and timers).
 
       - The function should not return until all queued/available events
         have been processed. If the WaitForMoreEvents is set, the
@@ -227,7 +227,7 @@ QEventLoop *QEventDispatcherCoreFoundation::currentEventLoop() const
 */
 bool QEventDispatcherCoreFoundation::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
-    QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processEvents");
+    BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processEvents");
 
     bool eventsProcessed = false;
 
@@ -293,7 +293,7 @@ bool QEventDispatcherCoreFoundation::processEvents(QEventLoop::ProcessEventsFlag
                 Q_ASSERT(result == kCFRunLoopRunStopped);
 
                 // The runloop was potentially stopped (interrupted) by us, as a response to
-                // a Qt event loop being asked to exit. We check that the topmost eventloop
+                // a BobUI event loop being asked to exit. We check that the topmost eventloop
                 // is still supposed to keep going and return if not. Note that the runloop
                 // might get stopped as a result of a non-top eventloop being asked to exit,
                 // in which case we continue running the top event loop until that is asked
@@ -335,7 +335,7 @@ bool QEventDispatcherCoreFoundation::processEvents(QEventLoop::ProcessEventsFlag
 
             } else if (m_overdueTimerScheduled && !m_processEvents.processedTimers) {
                 // CFRunLoopRunInMode does not guarantee that a scheduled timer with a fire
-                // date in the past (overdue) will fire on the next run loop pass. The Qt
+                // date in the past (overdue) will fire on the next run loop pass. The BobUI
                 // APIs on the other hand document eg. zero-interval timers to always be
                 // handled after processing all available window-system events.
                 qCDebug(lcEventDispatcher) << "Manually processing timers due to overdue timer";
@@ -381,7 +381,7 @@ bool QEventDispatcherCoreFoundation::processEvents(QEventLoop::ProcessEventsFlag
 
 bool QEventDispatcherCoreFoundation::processPostedEvents()
 {
-    QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processPostedEvents");
+    BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processPostedEvents");
 
     if (m_processEvents.processedPostedEvents && !(m_processEvents.flags & QEventLoop::EventLoopExec)) {
         qCDebug(lcEventDispatcher) << "Already processed events this pass";
@@ -399,7 +399,7 @@ bool QEventDispatcherCoreFoundation::processPostedEvents()
 
 void QEventDispatcherCoreFoundation::processTimers(CFRunLoopTimerRef timer)
 {
-    QT_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processTimers");
+    BOBUI_APPLE_SCOPED_LOG_ACTIVITY(lcEventDispatcher().isDebugEnabled(), "processTimers");
 
     if (m_processEvents.processedTimers && !(m_processEvents.flags & QEventLoop::EventLoopExec)) {
         qCDebug(lcEventDispatcher) << "Already processed timers this pass";
@@ -407,14 +407,14 @@ void QEventDispatcherCoreFoundation::processTimers(CFRunLoopTimerRef timer)
         return;
     }
 
-    qCDebug(lcEventDispatcher) << "CFRunLoopTimer" << timer << "fired, activating Qt timers";
+    qCDebug(lcEventDispatcher) << "CFRunLoopTimer" << timer << "fired, activating BobUI timers";
 
-    // Activating Qt timers might recurse into processEvents() if a timer-callback
+    // Activating BobUI timers might recurse into processEvents() if a timer-callback
     // brings up a new event-loop or tries to processes events manually. Although
     // a CFRunLoop can recurse inside its callbacks, a single CFRunLoopTimer can
     // not. So, for each recursion into processEvents() from a timer-callback we
     // need to set up a new timer-source. Instead of doing it preemtivly each
-    // time we activate Qt timers, we set a flag here, and let processEvents()
+    // time we activate BobUI timers, we set a flag here, and let processEvents()
     // decide whether or not it needs to bring up a new timer source.
 
     // We may have multiple recused timers, so keep track of the previous blocked timer
@@ -429,7 +429,7 @@ void QEventDispatcherCoreFoundation::processTimers(CFRunLoopTimerRef timer)
     updateTimers();
 }
 
-Q_STATIC_LOGGING_CATEGORY(lcEventDispatcherActivity, "qt.eventdispatcher.activity")
+Q_STATIC_LOGGING_CATEGORY(lcEventDispatcherActivity, "bobui.eventdispatcher.activity")
 
 void QEventDispatcherCoreFoundation::handleRunLoopActivity(CFRunLoopActivity activity)
 {
@@ -506,23 +506,23 @@ void QEventDispatcherCoreFoundation::unregisterSocketNotifier(QSocketNotifier *n
 
 #pragma mark - Timers
 
-void QEventDispatcherCoreFoundation::registerTimer(Qt::TimerId timerId, Duration interval,
-                                                   Qt::TimerType timerType, QObject *object)
+void QEventDispatcherCoreFoundation::registerTimer(BobUI::TimerId timerId, Duration interval,
+                                                   BobUI::TimerType timerType, QObject *object)
 {
     qCDebug(lcEventDispatcherTimers) << "Registering timer with id =" << int(timerId) << "interval =" << interval
         << "type =" << timerType << "object =" << object;
 
     Q_ASSERT(qToUnderlying(timerId) > 0 && interval.count() >= 0 && object);
-    Q_ASSERT(object->thread() == thread() && thread() == QThread::currentThread());
+    Q_ASSERT(object->thread() == thread() && thread() == BOBUIhread::currentThread());
 
     m_timerInfoList.registerTimer(timerId, interval, timerType, object);
     updateTimers();
 }
 
-bool QEventDispatcherCoreFoundation::unregisterTimer(Qt::TimerId timerId)
+bool QEventDispatcherCoreFoundation::unregisterTimer(BobUI::TimerId timerId)
 {
     Q_ASSERT(qToUnderlying(timerId) > 0);
-    Q_ASSERT(thread() == QThread::currentThread());
+    Q_ASSERT(thread() == BOBUIhread::currentThread());
 
     bool returnValue = m_timerInfoList.unregisterTimer(timerId);
 
@@ -535,7 +535,7 @@ bool QEventDispatcherCoreFoundation::unregisterTimer(Qt::TimerId timerId)
 
 bool QEventDispatcherCoreFoundation::unregisterTimers(QObject *object)
 {
-    Q_ASSERT(object && object->thread() == thread() && thread() == QThread::currentThread());
+    Q_ASSERT(object && object->thread() == thread() && thread() == BOBUIhread::currentThread());
 
     bool returnValue = m_timerInfoList.unregisterTimers(object);
 
@@ -553,7 +553,7 @@ QEventDispatcherCoreFoundation::timersForObject(QObject *object) const
 }
 
 QEventDispatcherCoreFoundation::Duration
-QEventDispatcherCoreFoundation::remainingTime(Qt::TimerId timerId) const
+QEventDispatcherCoreFoundation::remainingTime(BobUI::TimerId timerId) const
 {
     Q_ASSERT(qToUnderlying(timerId) > 0);
     return m_timerInfoList.remainingDuration(timerId);
@@ -562,7 +562,7 @@ QEventDispatcherCoreFoundation::remainingTime(Qt::TimerId timerId) const
 void QEventDispatcherCoreFoundation::updateTimers()
 {
     if (m_timerInfoList.size() > 0) {
-        // We have Qt timers registered, so create or reschedule CF timer to match
+        // We have BobUI timers registered, so create or reschedule CF timer to match
 
         using namespace std::chrono_literals;
         using DoubleSeconds = std::chrono::duration<double, std::ratio<1>>;
@@ -598,7 +598,7 @@ void QEventDispatcherCoreFoundation::updateTimers()
         qCDebug(lcEventDispatcherTimers) << "Next timeout in" << secs;
 
     } else {
-        // No Qt timers are registered, so make sure we're not running any CF timers
+        // No BobUI timers are registered, so make sure we're not running any CF timers
         invalidateTimer();
 
         m_overdueTimerScheduled = false;
@@ -617,7 +617,7 @@ void QEventDispatcherCoreFoundation::invalidateTimer()
     m_runLoopTimer = 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qeventdispatcher_cf.moc"
 #include "moc_qeventdispatcher_cf_p.cpp"

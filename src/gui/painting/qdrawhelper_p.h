@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDRAWHELPER_P_H
 #define QDRAWHELPER_P_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include "QtCore/qmath.h"
-#include "QtGui/qcolor.h"
-#include "QtGui/qpainter.h"
-#include "QtGui/qimage.h"
-#include "QtGui/qrgba64.h"
-#ifndef QT_FT_BEGIN_HEADER
-#define QT_FT_BEGIN_HEADER
-#define QT_FT_END_HEADER
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include "BobUICore/qmath.h"
+#include "BobUIGui/qcolor.h"
+#include "BobUIGui/qpainter.h"
+#include "BobUIGui/qimage.h"
+#include "BobUIGui/qrgba64.h"
+#ifndef BOBUI_FT_BEGIN_HEADER
+#define BOBUI_FT_BEGIN_HEADER
+#define BOBUI_FT_END_HEADER
 #endif
 #include "private/qpixellayout_p.h"
 #include "private/qrasterdefs_p.h"
@@ -32,7 +32,7 @@
 #include <memory>
 #include <variant> // std::monostate
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if defined(Q_CC_GNU)
 #  define Q_DECL_RESTRICT __restrict__
@@ -55,7 +55,7 @@ static const uint GMASK = 0x0000ff00;
 static const uint BMASK = 0x000000ff;
 
 struct QSolidData;
-struct QTextureData;
+struct BOBUIextureData;
 struct QGradientData;
 struct QLinearGradientData;
 struct QRadialGradientData;
@@ -69,7 +69,7 @@ class QRasterPaintEngineState;
 template<typename F> class QRgbaFloat;
 typedef QRgbaFloat<float> QRgbaFloat32;
 
-typedef QT_FT_SpanFunc ProcessSpans;
+typedef BOBUI_FT_SpanFunc ProcessSpans;
 typedef void (*BitmapBlitFunc)(QRasterBuffer *rasterBuffer,
                                int x, int y, const QRgba64 &color,
                                const uchar *bitmap,
@@ -108,7 +108,7 @@ typedef void (*SrcOverTransformFunc)(uchar *destPixels, int dbpl,
                                      const QRectF &targetRect,
                                      const QRectF &sourceRect,
                                      const QRect &clipRect,
-                                     const QTransform &targetRectTransform,
+                                     const BOBUIransform &targetRectTransform,
                                      int const_alpha);
 
 struct DrawHelper {
@@ -141,24 +141,24 @@ struct quint24 {
     uchar data[3];
 };
 
-void qBlendGradient(int count, const QT_FT_Span *spans, void *userData);
-void qBlendTexture(int count, const QT_FT_Span *spans, void *userData);
-#if defined(Q_PROCESSOR_X86) || defined(QT_COMPILER_SUPPORTS_LSX)
-extern void (*qt_memfill64)(quint64 *dest, quint64 value, qsizetype count);
-extern void (*qt_memfill32)(quint32 *dest, quint32 value, qsizetype count);
+void qBlendGradient(int count, const BOBUI_FT_Span *spans, void *userData);
+void qBlendTexture(int count, const BOBUI_FT_Span *spans, void *userData);
+#if defined(Q_PROCESSOR_X86) || defined(BOBUI_COMPILER_SUPPORTS_LSX)
+extern void (*bobui_memfill64)(quint64 *dest, quint64 value, qsizetype count);
+extern void (*bobui_memfill32)(quint32 *dest, quint32 value, qsizetype count);
 #else
-extern void qt_memfill64(quint64 *dest, quint64 value, qsizetype count);
-extern void qt_memfill32(quint32 *dest, quint32 value, qsizetype count);
+extern void bobui_memfill64(quint64 *dest, quint64 value, qsizetype count);
+extern void bobui_memfill32(quint32 *dest, quint32 value, qsizetype count);
 #endif
-extern void qt_memfill24(quint24 *dest, quint24 value, qsizetype count);
-extern void qt_memfill16(quint16 *dest, quint16 value, qsizetype count);
+extern void bobui_memfill24(quint24 *dest, quint24 value, qsizetype count);
+extern void bobui_memfill16(quint16 *dest, quint16 value, qsizetype count);
 
-typedef void (QT_FASTCALL *CompositionFunction)(uint *Q_DECL_RESTRICT dest, const uint *Q_DECL_RESTRICT src, int length, uint const_alpha);
-typedef void (QT_FASTCALL *CompositionFunction64)(QRgba64 *Q_DECL_RESTRICT dest, const QRgba64 *Q_DECL_RESTRICT src, int length, uint const_alpha);
-typedef void (QT_FASTCALL *CompositionFunctionFP)(QRgbaFloat32 *Q_DECL_RESTRICT dest, const QRgbaFloat32 *Q_DECL_RESTRICT src, int length, uint const_alpha);
-typedef void (QT_FASTCALL *CompositionFunctionSolid)(uint *dest, int length, uint color, uint const_alpha);
-typedef void (QT_FASTCALL *CompositionFunctionSolid64)(QRgba64 *dest, int length, QRgba64 color, uint const_alpha);
-typedef void (QT_FASTCALL *CompositionFunctionSolidFP)(QRgbaFloat32 *dest, int length, QRgbaFloat32 color, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunction)(uint *Q_DECL_RESTRICT dest, const uint *Q_DECL_RESTRICT src, int length, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunction64)(QRgba64 *Q_DECL_RESTRICT dest, const QRgba64 *Q_DECL_RESTRICT src, int length, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunctionFP)(QRgbaFloat32 *Q_DECL_RESTRICT dest, const QRgbaFloat32 *Q_DECL_RESTRICT src, int length, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunctionSolid)(uint *dest, int length, uint color, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunctionSolid64)(QRgba64 *dest, int length, QRgba64 color, uint const_alpha);
+typedef void (BOBUI_FASTCALL *CompositionFunctionSolidFP)(QRgbaFloat32 *dest, int length, QRgbaFloat32 color, uint const_alpha);
 
 struct LinearGradientValues
 {
@@ -179,15 +179,15 @@ struct RadialGradientValues
 };
 
 struct Operator;
-typedef uint* (QT_FASTCALL *DestFetchProc)(uint *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
-typedef QRgba64* (QT_FASTCALL *DestFetchProc64)(QRgba64 *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
-typedef QRgbaFloat32* (QT_FASTCALL *DestFetchProcFP)(QRgbaFloat32 *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
-typedef void (QT_FASTCALL *DestStoreProc)(QRasterBuffer *rasterBuffer, int x, int y, const uint *buffer, int length);
-typedef void (QT_FASTCALL *DestStoreProc64)(QRasterBuffer *rasterBuffer, int x, int y, const QRgba64 *buffer, int length);
-typedef void (QT_FASTCALL *DestStoreProcFP)(QRasterBuffer *rasterBuffer, int x, int y, const QRgbaFloat32 *buffer, int length);
-typedef const uint* (QT_FASTCALL *SourceFetchProc)(uint *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
-typedef const QRgba64* (QT_FASTCALL *SourceFetchProc64)(QRgba64 *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
-typedef const QRgbaFloat32* (QT_FASTCALL *SourceFetchProcFP)(QRgbaFloat32 *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
+typedef uint* (BOBUI_FASTCALL *DestFetchProc)(uint *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
+typedef QRgba64* (BOBUI_FASTCALL *DestFetchProc64)(QRgba64 *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
+typedef QRgbaFloat32* (BOBUI_FASTCALL *DestFetchProcFP)(QRgbaFloat32 *buffer, QRasterBuffer *rasterBuffer, int x, int y, int length);
+typedef void (BOBUI_FASTCALL *DestStoreProc)(QRasterBuffer *rasterBuffer, int x, int y, const uint *buffer, int length);
+typedef void (BOBUI_FASTCALL *DestStoreProc64)(QRasterBuffer *rasterBuffer, int x, int y, const QRgba64 *buffer, int length);
+typedef void (BOBUI_FASTCALL *DestStoreProcFP)(QRasterBuffer *rasterBuffer, int x, int y, const QRgbaFloat32 *buffer, int length);
+typedef const uint* (BOBUI_FASTCALL *SourceFetchProc)(uint *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
+typedef const QRgba64* (BOBUI_FASTCALL *SourceFetchProc64)(QRgba64 *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
+typedef const QRgbaFloat32* (BOBUI_FASTCALL *SourceFetchProcFP)(QRgbaFloat32 *buffer, const Operator *o, const QSpanData *data, int y, int x, int length);
 
 struct Operator
 {
@@ -267,7 +267,7 @@ struct QGradientData
 #define GRADIENT_STOPTABLE_SIZE 1024
 #define GRADIENT_STOPTABLE_SIZE_SHIFT 10
 
-#if QT_CONFIG(raster_64bit) || QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_64bit) || BOBUI_CONFIG(raster_fp)
     const QRgba64 *colorTable64; //[GRADIENT_STOPTABLE_SIZE];
 #endif
     const QRgb *colorTable32; //[GRADIENT_STOPTABLE_SIZE];
@@ -275,7 +275,7 @@ struct QGradientData
     uint alphaColor : 1;
 };
 
-struct QTextureData
+struct BOBUIextureData
 {
     const uchar *imageData;
     const uchar *scanLine(int y) const { return imageData + y*bytesPerLine; }
@@ -329,19 +329,19 @@ struct QSpanData
     QColor solidColor;
     union {
         QGradientData gradient;
-        QTextureData texture;
+        BOBUIextureData texture;
     };
     std::shared_ptr<const void> cachedGradient;
 
 
     void init(QRasterBuffer *rb, const QRasterPaintEngine *pe);
     void setup(const QBrush &brush, int alpha, QPainter::CompositionMode compositionMode, bool isCosmetic);
-    void setupMatrix(const QTransform &matrix, int bilinear);
-    void initTexture(const QImage *image, int alpha, QTextureData::Type = QTextureData::Plain, const QRect &sourceRect = QRect());
+    void setupMatrix(const BOBUIransform &matrix, int bilinear);
+    void initTexture(const QImage *image, int alpha, BOBUIextureData::Type = BOBUIextureData::Plain, const QRect &sourceRect = QRect());
     void adjustSpanMethods();
 };
 
-static inline uint qt_gradient_clamp(const QGradientData *data, int ipos)
+static inline uint bobui_gradient_clamp(const QGradientData *data, int ipos)
 {
     if (ipos < 0 || ipos >= GRADIENT_STOPTABLE_SIZE) {
         if (data->spread == QGradient::RepeatSpread) {
@@ -366,17 +366,17 @@ static inline uint qt_gradient_clamp(const QGradientData *data, int ipos)
     return ipos;
 }
 
-static inline uint qt_gradient_pixel(const QGradientData *data, qreal pos)
+static inline uint bobui_gradient_pixel(const QGradientData *data, qreal pos)
 {
     int ipos = int(pos * (GRADIENT_STOPTABLE_SIZE - 1) + qreal(0.5));
-    return data->colorTable32[qt_gradient_clamp(data, ipos)];
+    return data->colorTable32[bobui_gradient_clamp(data, ipos)];
 }
 
-#if QT_CONFIG(raster_64bit)
-static inline const QRgba64& qt_gradient_pixel64(const QGradientData *data, qreal pos)
+#if BOBUI_CONFIG(raster_64bit)
+static inline const QRgba64& bobui_gradient_pixel64(const QGradientData *data, qreal pos)
 {
     int ipos = int(pos * (GRADIENT_STOPTABLE_SIZE - 1) + qreal(0.5));
-    return data->colorTable64[qt_gradient_clamp(data, ipos)];
+    return data->colorTable64[bobui_gradient_clamp(data, ipos)];
 }
 #endif
 
@@ -386,7 +386,7 @@ static inline qreal qRadialDeterminant(qreal a, qreal b, qreal c)
 }
 
 template <class RadialFetchFunc, typename BlendType> static
-const BlendType * QT_FASTCALL qt_fetch_radial_gradient_template(BlendType *buffer, const Operator *op,
+const BlendType * BOBUI_FASTCALL bobui_fetch_radial_gradient_template(BlendType *buffer, const Operator *op,
                                                                 const QSpanData *data, int y, int x, int length)
 {
     // avoid division by zero
@@ -487,11 +487,11 @@ public:
     static uint null() { return 0; }
     static uint fetchSingle(const QGradientData& gradient, qreal v)
     {
-        return qt_gradient_pixel(&gradient, v);
+        return bobui_gradient_pixel(&gradient, v);
     }
     static void memfill(uint *buffer, uint fill, int length)
     {
-        qt_memfill32(buffer, fill, length);
+        bobui_memfill32(buffer, fill, length);
     }
     static void fetch(uint *buffer, uint *end, const Operator *op, const QSpanData *data, qreal det,
                       qreal delta_det, qreal delta_delta_det, qreal b, qreal delta_b)
@@ -817,7 +817,7 @@ static inline QRgba64 interpolate_4_pixels_rgb64(const QRgba64 t[], const QRgba6
 }
 #endif // __SSE2__
 
-#if QT_CONFIG(raster_fp)
+#if BOBUI_CONFIG(raster_fp)
 static inline QRgbaFloat32 multiplyAlpha_rgba32f(QRgbaFloat32 c, float a)
 {
     return QRgbaFloat32 { c.r * a, c.g * a, c.b * a, c.a * a };
@@ -866,7 +866,7 @@ static inline QRgbaFloat32 interpolate_4_pixels_rgba32f(const QRgbaFloat32 t[], 
     return xtop;
 #endif
 }
-#endif // QT_CONFIG(raster_fp)
+#endif // BOBUI_CONFIG(raster_fp)
 
 static inline uint BYTE_MUL_RGB16(uint x, uint a) {
     a += 1;
@@ -881,13 +881,13 @@ static inline uint BYTE_MUL_RGB16_32(uint x, uint a) {
     return t;
 }
 
-// qt_div_255 is a fast rounded division by 255 using an approximation that is accurate for all positive 16-bit integers
-static constexpr inline int qt_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
-static constexpr inline uint qt_div_257_floor(uint x) { return  (x - (x >> 8)) >> 8; }
-static constexpr inline uint qt_div_257(uint x) { return qt_div_257_floor(x + 128); }
-static constexpr inline uint qt_div_65535(uint x) { return (x + (x>>16) + 0x8000U) >> 16; }
+// bobui_div_255 is a fast rounded division by 255 using an approximation that is accurate for all positive 16-bit integers
+static constexpr inline int bobui_div_255(int x) { return (x + (x>>8) + 0x80) >> 8; }
+static constexpr inline uint bobui_div_257_floor(uint x) { return  (x - (x >> 8)) >> 8; }
+static constexpr inline uint bobui_div_257(uint x) { return bobui_div_257_floor(x + 128); }
+static constexpr inline uint bobui_div_65535(uint x) { return (x + (x>>16) + 0x8000U) >> 16; }
 
-template <class T> inline void qt_memfill_template(T *dest, T color, qsizetype count)
+template <class T> inline void bobui_memfill_template(T *dest, T color, qsizetype count)
 {
     if (!count)
         return;
@@ -907,47 +907,47 @@ template <class T> inline void qt_memfill_template(T *dest, T color, qsizetype c
     }
 }
 
-template <class T> inline void qt_memfill(T *dest, T value, qsizetype count)
+template <class T> inline void bobui_memfill(T *dest, T value, qsizetype count)
 {
-    qt_memfill_template(dest, value, count);
+    bobui_memfill_template(dest, value, count);
 }
 
-template<> inline void qt_memfill(quint64 *dest, quint64 color, qsizetype count)
+template<> inline void bobui_memfill(quint64 *dest, quint64 color, qsizetype count)
 {
-    qt_memfill64(dest, color, count);
+    bobui_memfill64(dest, color, count);
 }
 
-template<> inline void qt_memfill(quint32 *dest, quint32 color, qsizetype count)
+template<> inline void bobui_memfill(quint32 *dest, quint32 color, qsizetype count)
 {
-    qt_memfill32(dest, color, count);
+    bobui_memfill32(dest, color, count);
 }
 
-template<> inline void qt_memfill(quint24 *dest, quint24 color, qsizetype count)
+template<> inline void bobui_memfill(quint24 *dest, quint24 color, qsizetype count)
 {
-    qt_memfill24(dest, color, count);
+    bobui_memfill24(dest, color, count);
 }
 
-template<> inline void qt_memfill(quint16 *dest, quint16 color, qsizetype count)
+template<> inline void bobui_memfill(quint16 *dest, quint16 color, qsizetype count)
 {
-    qt_memfill16(dest, color, count);
+    bobui_memfill16(dest, color, count);
 }
 
-template<> inline void qt_memfill(quint8 *dest, quint8 color, qsizetype count)
+template<> inline void bobui_memfill(quint8 *dest, quint8 color, qsizetype count)
 {
     memset(dest, color, count);
 }
 
 template <class T> static
-inline void qt_rectfill(T *dest, T value,
+inline void bobui_rectfill(T *dest, T value,
                         int x, int y, int width, int height, qsizetype stride)
 {
     char *d = reinterpret_cast<char*>(dest + x) + y * stride;
     if (uint(stride) == (width * sizeof(T))) {
-        qt_memfill(reinterpret_cast<T*>(d), value, qsizetype(width) * height);
+        bobui_memfill(reinterpret_cast<T*>(d), value, qsizetype(width) * height);
     } else {
         for (int j = 0; j < height; ++j) {
             dest = reinterpret_cast<T*>(d);
-            qt_memfill(dest, value, width);
+            bobui_memfill(dest, value, width);
             d += stride;
         }
     }
@@ -968,7 +968,7 @@ inline QRgb qConvertRgb16To32(uint c)
         | ((((c) << 8) & 0xf80000) | (((c) << 3) & 0x70000));
 }
 
-const uint qt_bayer_matrix[16][16] = {
+const uint bobui_bayer_matrix[16][16] = {
     { 0x1, 0xc0, 0x30, 0xf0, 0xc, 0xcc, 0x3c, 0xfc,
       0x3, 0xc3, 0x33, 0xf3, 0xf, 0xcf, 0x3f, 0xff},
     { 0x80, 0x40, 0xb0, 0x70, 0x8c, 0x4c, 0xbc, 0x7c,
@@ -1047,6 +1047,6 @@ struct IntermediateBuffer
     quint32 buffer_ag[BufferSize+2];
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDRAWHELPER_P_H

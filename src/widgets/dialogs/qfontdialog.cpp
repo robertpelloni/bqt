@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowdefs.h"
 #include "qfontdialog.h"
@@ -26,9 +26,9 @@
 #include <private/qdialog_p.h>
 #include <private/qfont_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QFontListView : public QListView
 {
@@ -70,8 +70,8 @@ QFontListView::QFontListView(QWidget *parent)
     setEditTriggers(NoEditTriggers);
 }
 
-static const Qt::WindowFlags qfd_DefaultWindowFlags =
-        Qt::Dialog | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
+static const BobUI::WindowFlags qfd_DefaultWindowFlags =
+        BobUI::Dialog | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint;
 
 QFontDialogPrivate::QFontDialogPrivate()
     : writingSystem(QFontDatabase::Any),
@@ -86,7 +86,7 @@ QFontDialogPrivate::~QFontDialogPrivate()
 /*!
   \class QFontDialog
   \ingroup standard-dialogs
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
 
   \brief The QFontDialog class provides a dialog widget for selecting a font.
 
@@ -148,7 +148,7 @@ void QFontDialogPrivate::init()
     familyEdit->setFocusProxy(familyList);
 
     familyAccel = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     familyAccel->setBuddy(familyList);
 #endif
     familyAccel->setIndent(2);
@@ -159,19 +159,19 @@ void QFontDialogPrivate::init()
     styleEdit->setFocusProxy(styleList);
 
     styleAccel = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     styleAccel->setBuddy(styleList);
 #endif
     styleAccel->setIndent(2);
 
     sizeEdit = new QLineEdit(q);
-    sizeEdit->setFocusPolicy(Qt::ClickFocus);
+    sizeEdit->setFocusPolicy(BobUI::ClickFocus);
     QIntValidator *validator = new QIntValidator(1, 512, q);
     sizeEdit->setValidator(validator);
     sizeList = new QFontListView(q);
 
     sizeAccel = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     sizeAccel->setBuddy(sizeList);
 #endif
     sizeAccel->setIndent(2);
@@ -188,7 +188,7 @@ void QFontDialogPrivate::init()
     QHBoxLayout *hbox = new QHBoxLayout(sample);
     sampleEdit = new QLineEdit(sample);
     sampleEdit->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
-    sampleEdit->setAlignment(Qt::AlignCenter);
+    sampleEdit->setAlignment(BobUI::AlignCenter);
     // Note that the sample text is *not* translated with tr(), as the
     // characters used depend on the charset encoding.
     sampleEdit->setText("AaBbYyZz"_L1);
@@ -197,7 +197,7 @@ void QFontDialogPrivate::init()
     writingSystemCombo = new QComboBox(q);
 
     writingSystemAccel = new QLabel(q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     writingSystemAccel->setBuddy(writingSystemCombo);
 #endif
     writingSystemAccel->setIndent(2);
@@ -296,7 +296,7 @@ void QFontDialogPrivate::init()
 
     familyList->setFocus();
     retranslateStrings();
-    sampleEdit->setObjectName("qt_fontDialog_sampleEdit"_L1);
+    sampleEdit->setObjectName("bobui_fontDialog_sampleEdit"_L1);
 }
 
 /*!
@@ -340,7 +340,7 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial, QWidget *parent, cons
   Executes a modal font dialog and returns a font.
 
   If the user clicks \uicontrol OK, the selected font is returned. If the user
-  clicks \uicontrol Cancel, the Qt default font is returned.
+  clicks \uicontrol Cancel, the BobUI default font is returned.
 
   The dialog is constructed with the given \a parent.
   If the \a ok parameter is not-null, the value it refers to is set
@@ -388,10 +388,10 @@ bool QFontDialog::eventFilter(QObject *o , QEvent *e)
     if (e->type() == QEvent::KeyPress) {
         QKeyEvent *k = static_cast<QKeyEvent *>(e);
         if (o == d->sizeEdit &&
-        (k->key() == Qt::Key_Up ||
-             k->key() == Qt::Key_Down ||
-         k->key() == Qt::Key_PageUp ||
-         k->key() == Qt::Key_PageDown)) {
+        (k->key() == BobUI::Key_Up ||
+             k->key() == BobUI::Key_Down ||
+         k->key() == BobUI::Key_PageUp ||
+         k->key() == BobUI::Key_PageDown)) {
 
             int ci = d->sizeList->currentItem();
             QCoreApplication::sendEvent(d->sizeList, k);
@@ -401,7 +401,7 @@ bool QFontDialog::eventFilter(QObject *o , QEvent *e)
                 d->sizeEdit->selectAll();
             return true;
         } else if ((o == d->familyList || o == d->styleList) &&
-                    (k->key() == Qt::Key_Return || k->key() == Qt::Key_Enter)) {
+                    (k->key() == BobUI::Key_Return || k->key() == BobUI::Key_Enter)) {
             k->accept();
         accept();
             return true;
@@ -835,7 +835,7 @@ QFont QFontDialog::selectedFont() const
     dialog (used on Windows or Linux).
 
     \value NoButtons Don't display \uicontrol{OK} and \uicontrol{Cancel} buttons. (Useful for "live dialogs".)
-    \value DontUseNativeDialog Use Qt's standard font dialog on the Mac instead of Apple's
+    \value DontUseNativeDialog Use BobUI's standard font dialog on the Mac instead of Apple's
                                native font panel.
     \value ScalableFonts Show scalable fonts
     \value NonScalableFonts Show non scalable fonts
@@ -966,9 +966,9 @@ void QFontDialogPrivate::setVisible(bool visible)
     if (nativeDialogInUse) {
         // Set WA_DontShowOnScreen so that QDialog::setVisible(visible) below
         // updates the state correctly, but skips showing the non-native version:
-        q->setAttribute(Qt::WA_DontShowOnScreen, true);
+        q->setAttribute(BobUI::WA_DontShowOnScreen, true);
     } else {
-        q->setAttribute(Qt::WA_DontShowOnScreen, false);
+        q->setAttribute(BobUI::WA_DontShowOnScreen, false);
     }
     QDialogPrivate::setVisible(visible);
 }
@@ -1008,8 +1008,8 @@ bool QFontDialogPrivate::canBeNativeDialog() const
     const QDialog * const q = static_cast<const QDialog*>(q_ptr);
     if (nativeDialogInUse)
         return true;
-    if (QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs)
-        || q->testAttribute(Qt::WA_DontShowOnScreen)
+    if (QCoreApplication::testAttribute(BobUI::AA_DontUseNativeDialogs)
+        || q->testAttribute(BobUI::WA_DontShowOnScreen)
         || (options->options() & QFontDialog::DontUseNativeDialog)) {
         return false;
     }
@@ -1017,7 +1017,7 @@ bool QFontDialogPrivate::canBeNativeDialog() const
     return strcmp(QFontDialog::staticMetaObject.className(), q->metaObject()->className()) == 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qfontdialog.moc"
 #include "moc_qfontdialog.cpp"

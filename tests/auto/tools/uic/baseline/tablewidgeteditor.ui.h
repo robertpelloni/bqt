@@ -1,14 +1,14 @@
 /*
 
-* Copyright (C) 2016 The Qt Company Ltd.
-* SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+* Copyright (C) 2016 The BobUI Company Ltd.
+* SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 */
 
 /********************************************************************************
 ** Form generated from reading UI file 'tablewidgeteditor.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -16,25 +16,25 @@
 #ifndef TABLEWIDGETEDITOR_H
 #define TABLEWIDGETEDITOR_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTableWidget>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QListWidget>
+#include <BobUIWidgets/QSpacerItem>
+#include <BobUIWidgets/BOBUIableWidget>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
+#include <BobUIWidgets/QWidget>
 #include "iconselector_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qdesigner_internal {
 
@@ -44,7 +44,7 @@ public:
     QGridLayout *gridLayout_4;
     QGroupBox *itemsBox;
     QGridLayout *gridLayout;
-    QTableWidget *tableWidget;
+    BOBUIableWidget *tableWidget;
     QHBoxLayout *horizontalLayout_5;
     QLabel *label_3;
     qdesigner_internal::IconSelector *itemIconSelector;
@@ -56,11 +56,11 @@ public:
     QGridLayout *gridLayout_2;
     QListWidget *columnsListWidget;
     QHBoxLayout *horizontalLayout_3;
-    QToolButton *newColumnButton;
-    QToolButton *deleteColumnButton;
+    BOBUIoolButton *newColumnButton;
+    BOBUIoolButton *deleteColumnButton;
     QSpacerItem *spacerItem;
-    QToolButton *moveColumnUpButton;
-    QToolButton *moveColumnDownButton;
+    BOBUIoolButton *moveColumnUpButton;
+    BOBUIoolButton *moveColumnDownButton;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label;
     qdesigner_internal::IconSelector *columnIconSelector;
@@ -69,11 +69,11 @@ public:
     QGridLayout *gridLayout_3;
     QListWidget *rowsListWidget;
     QHBoxLayout *horizontalLayout_4;
-    QToolButton *newRowButton;
-    QToolButton *deleteRowButton;
+    BOBUIoolButton *newRowButton;
+    BOBUIoolButton *deleteRowButton;
     QSpacerItem *spacerItem2;
-    QToolButton *moveRowUpButton;
-    QToolButton *moveRowDownButton;
+    BOBUIoolButton *moveRowUpButton;
+    BOBUIoolButton *moveRowDownButton;
     QHBoxLayout *horizontalLayout;
     QLabel *label_2;
     qdesigner_internal::IconSelector *rowIconSelector;
@@ -90,7 +90,7 @@ public:
         itemsBox->setObjectName("itemsBox");
         gridLayout = new QGridLayout(itemsBox);
         gridLayout->setObjectName("gridLayout");
-        tableWidget = new QTableWidget(itemsBox);
+        tableWidget = new BOBUIableWidget(itemsBox);
         tableWidget->setObjectName("tableWidget");
 
         gridLayout->addWidget(tableWidget, 0, 0, 1, 1);
@@ -119,7 +119,7 @@ public:
 
         buttonBox = new QDialogButtonBox(qdesigner_internal__TableWidgetEditor);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         gridLayout_4->addWidget(buttonBox, 1, 0, 1, 2);
@@ -145,18 +145,18 @@ public:
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(columnsListWidget->sizePolicy().hasHeightForWidth());
         columnsListWidget->setSizePolicy(sizePolicy1);
-        columnsListWidget->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+        columnsListWidget->setFocusPolicy(BobUI::FocusPolicy::TabFocus);
 
         gridLayout_2->addWidget(columnsListWidget, 0, 0, 1, 1);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName("horizontalLayout_3");
-        newColumnButton = new QToolButton(columnsBox);
+        newColumnButton = new BOBUIoolButton(columnsBox);
         newColumnButton->setObjectName("newColumnButton");
 
         horizontalLayout_3->addWidget(newColumnButton);
 
-        deleteColumnButton = new QToolButton(columnsBox);
+        deleteColumnButton = new BOBUIoolButton(columnsBox);
         deleteColumnButton->setObjectName("deleteColumnButton");
 
         horizontalLayout_3->addWidget(deleteColumnButton);
@@ -165,12 +165,12 @@ public:
 
         horizontalLayout_3->addItem(spacerItem);
 
-        moveColumnUpButton = new QToolButton(columnsBox);
+        moveColumnUpButton = new BOBUIoolButton(columnsBox);
         moveColumnUpButton->setObjectName("moveColumnUpButton");
 
         horizontalLayout_3->addWidget(moveColumnUpButton);
 
-        moveColumnDownButton = new QToolButton(columnsBox);
+        moveColumnDownButton = new BOBUIoolButton(columnsBox);
         moveColumnDownButton->setObjectName("moveColumnDownButton");
 
         horizontalLayout_3->addWidget(moveColumnDownButton);
@@ -208,18 +208,18 @@ public:
         rowsListWidget->setObjectName("rowsListWidget");
         sizePolicy1.setHeightForWidth(rowsListWidget->sizePolicy().hasHeightForWidth());
         rowsListWidget->setSizePolicy(sizePolicy1);
-        rowsListWidget->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+        rowsListWidget->setFocusPolicy(BobUI::FocusPolicy::TabFocus);
 
         gridLayout_3->addWidget(rowsListWidget, 0, 0, 1, 1);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName("horizontalLayout_4");
-        newRowButton = new QToolButton(rowsBox);
+        newRowButton = new BOBUIoolButton(rowsBox);
         newRowButton->setObjectName("newRowButton");
 
         horizontalLayout_4->addWidget(newRowButton);
 
-        deleteRowButton = new QToolButton(rowsBox);
+        deleteRowButton = new BOBUIoolButton(rowsBox);
         deleteRowButton->setObjectName("deleteRowButton");
 
         horizontalLayout_4->addWidget(deleteRowButton);
@@ -228,12 +228,12 @@ public:
 
         horizontalLayout_4->addItem(spacerItem2);
 
-        moveRowUpButton = new QToolButton(rowsBox);
+        moveRowUpButton = new BOBUIoolButton(rowsBox);
         moveRowUpButton->setObjectName("moveRowUpButton");
 
         horizontalLayout_4->addWidget(moveRowUpButton);
 
-        moveRowDownButton = new QToolButton(rowsBox);
+        moveRowDownButton = new BOBUIoolButton(rowsBox);
         moveRowDownButton->setObjectName("moveRowDownButton");
 
         horizontalLayout_4->addWidget(moveRowDownButton);
@@ -288,50 +288,50 @@ public:
     {
         qdesigner_internal__TableWidgetEditor->setWindowTitle(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Edit Table Widget", nullptr));
         itemsBox->setTitle(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Table Items", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         tableWidget->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Table Items", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         label_3->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Icon", nullptr));
         columnsBox->setTitle(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Columns", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         columnsListWidget->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Table Columns", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newColumnButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "New Column", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         newColumnButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "New", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         deleteColumnButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Delete Column", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         deleteColumnButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Delete", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveColumnUpButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Move Column Up", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveColumnUpButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "U", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveColumnDownButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Move Column Down", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveColumnDownButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "D", nullptr));
         label->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Icon", nullptr));
         rowsBox->setTitle(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Rows", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         rowsListWidget->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Table Rows", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         newRowButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "New Row", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         newRowButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "New", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         deleteRowButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Delete Row", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         deleteRowButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Delete", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveRowUpButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Move Row Up", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveRowUpButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "U", nullptr));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         moveRowDownButton->setToolTip(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Move Row Down", nullptr));
-#endif // QT_CONFIG(tooltip)
+#endif // BOBUI_CONFIG(tooltip)
         moveRowDownButton->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "D", nullptr));
         label_2->setText(QCoreApplication::translate("qdesigner_internal::TableWidgetEditor", "Icon", nullptr));
     } // retranslateUi
@@ -346,6 +346,6 @@ namespace Ui {
 } // namespace Ui
 } // namespace qdesigner_internal
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TABLEWIDGETEDITOR_H

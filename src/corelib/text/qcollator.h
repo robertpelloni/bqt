@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2013 Aleix Pol Gonzalez <aleixpol@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trivial-impl-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trivial-impl-only
 
 #ifndef QCOLLATOR_H
 #define QCOLLATOR_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qlocale.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qlocale.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCollatorPrivate;
 class QCollatorSortKeyPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QCollatorSortKeyPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QCollatorSortKeyPrivate)
 
 class Q_CORE_EXPORT QCollatorSortKey
 {
@@ -24,7 +24,7 @@ public:
     QCollatorSortKey(QCollatorSortKey &&other) noexcept = default;
     ~QCollatorSortKey();
     QCollatorSortKey &operator=(const QCollatorSortKey &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCollatorSortKey)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QCollatorSortKey)
     void swap(QCollatorSortKey &other) noexcept
     { d.swap(other.d); }
 
@@ -51,16 +51,16 @@ public:
     QCollator &operator=(const QCollator &);
     QCollator(QCollator &&other) noexcept
         : d(other.d) { other.d = nullptr; }
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCollator)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCollator)
 
     void swap(QCollator &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
     void setLocale(const QLocale &locale);
     QLocale locale() const;
 
-    Qt::CaseSensitivity caseSensitivity() const;
-    void setCaseSensitivity(Qt::CaseSensitivity cs);
+    BobUI::CaseSensitivity caseSensitivity() const;
+    void setCaseSensitivity(BobUI::CaseSensitivity cs);
 
     void setNumericMode(bool on);
     bool numericMode() const;
@@ -70,7 +70,7 @@ public:
 
     int compare(const QString &s1, const QString &s2) const
     { return compare(QStringView(s1), QStringView(s2)); }
-#if QT_CORE_REMOVED_SINCE(6, 4) && QT_POINTER_SIZE != 4
+#if BOBUI_CORE_REMOVED_SINCE(6, 4) && BOBUI_POINTER_SIZE != 4
     int compare(const QChar *s1, int len1, const QChar *s2, int len2) const
     { return compare(QStringView(s1, len1), QStringView(s2, len2)); }
 #endif
@@ -98,6 +98,6 @@ private:
 Q_DECLARE_SHARED(QCollatorSortKey)
 Q_DECLARE_SHARED(QCollator)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOLLATOR_P_H

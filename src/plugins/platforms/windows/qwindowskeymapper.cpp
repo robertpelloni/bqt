@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowskeymapper.h"
 #include "qwindowscontext.h"
@@ -7,15 +7,15 @@
 #include "qwindowswindow.h"
 #include "qwindowsinputcontext.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qwindow.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <private/qguiapplication_p.h>
 #include <private/qhighdpiscaling_p.h>
-#include <QtGui/qevent.h>
-#include <QtGui/private/qwindowsguieventdispatcher_p.h>
-#include <QtCore/private/qdebug_p.h>
-#include <QtCore/private/qtools_p.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/private/qwindowsguieventdispatcher_p.h>
+#include <BobUICore/private/qdebug_p.h>
+#include <BobUICore/private/bobuiools_p.h>
 
 #if defined(WM_APPCOMMAND)
 #  ifndef FAPPCOMMAND_MOUSE
@@ -47,7 +47,7 @@
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsKeyMapper
@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
     The code originates from \c qkeymapper_win.cpp.
 */
 
-static void clearKeyRecorderOnApplicationInActive(Qt::ApplicationState state);
+static void clearKeyRecorderOnApplicationInActive(BobUI::ApplicationState state);
 
 QWindowsKeyMapper::QWindowsKeyMapper()
     : m_useRTLExtensions(false), m_keyGrabber(nullptr)
@@ -113,7 +113,7 @@ struct KeyRecord {
 
 // We need to record the pressed keys in order to decide, whether the key event is an autorepeat
 // event. As soon as its state changes, the chain of autorepeat events will be broken.
-static const int QT_MAX_KEY_RECORDINGS = 64; // User has LOTS of fingers...
+static const int BOBUI_MAX_KEY_RECORDINGS = 64; // User has LOTS of fingers...
 struct KeyRecorder
 {
     inline KeyRecord *findKey(int code, bool remove);
@@ -122,13 +122,13 @@ struct KeyRecorder
 
     int nrecs = 0;
     KeyRecord deleted_record; // A copy of last entry removed from records[]
-    KeyRecord records[QT_MAX_KEY_RECORDINGS];
+    KeyRecord records[BOBUI_MAX_KEY_RECORDINGS];
 };
 static KeyRecorder key_recorder;
 
-static void clearKeyRecorderOnApplicationInActive(Qt::ApplicationState state)
+static void clearKeyRecorderOnApplicationInActive(BobUI::ApplicationState state)
 {
-    if (state == Qt::ApplicationInactive)
+    if (state == BobUI::ApplicationInactive)
         key_recorder.clearKeys();
 }
 
@@ -157,12 +157,12 @@ KeyRecord *KeyRecorder::findKey(int code, bool remove)
 
 void KeyRecorder::storeKey(int code, int ascii, int state, const QString& text)
 {
-    Q_ASSERT_X(nrecs != QT_MAX_KEY_RECORDINGS,
+    Q_ASSERT_X(nrecs != BOBUI_MAX_KEY_RECORDINGS,
                "Internal KeyRecorder",
-               "Keyboard recorder buffer overflow, consider increasing QT_MAX_KEY_RECORDINGS");
+               "Keyboard recorder buffer overflow, consider increasing BOBUI_MAX_KEY_RECORDINGS");
 
-    if (nrecs == QT_MAX_KEY_RECORDINGS) {
-        qWarning("Qt: Internal keyboard buffer overflow");
+    if (nrecs == BOBUI_MAX_KEY_RECORDINGS) {
+        qWarning("BobUI: Internal keyboard buffer overflow");
         return;
     }
     records[nrecs++] = KeyRecord(code,ascii,state,text);
@@ -181,54 +181,54 @@ void KeyRecorder::clearKeys()
 //   Key_unknown = Unknown Virtual Key, no translation possible, ignore
 static const uint KeyTbl[] = { // Keyboard mapping table
                         // Dec |  Hex | Windows Virtual key
-    Qt::Key_unknown,    //   0   0x00
-    Qt::Key_unknown,    //   1   0x01   VK_LBUTTON          | Left mouse button
-    Qt::Key_unknown,    //   2   0x02   VK_RBUTTON          | Right mouse button
-    Qt::Key_Cancel,     //   3   0x03   VK_CANCEL           | Control-Break processing
-    Qt::Key_unknown,    //   4   0x04   VK_MBUTTON          | Middle mouse button
-    Qt::Key_unknown,    //   5   0x05   VK_XBUTTON1         | X1 mouse button
-    Qt::Key_unknown,    //   6   0x06   VK_XBUTTON2         | X2 mouse button
-    Qt::Key_unknown,    //   7   0x07   -- unassigned --
-    Qt::Key_Backspace,  //   8   0x08   VK_BACK             | BackSpace key
-    Qt::Key_Tab,        //   9   0x09   VK_TAB              | Tab key
-    Qt::Key_unknown,    //  10   0x0A   -- reserved --
-    Qt::Key_unknown,    //  11   0x0B   -- reserved --
-    Qt::Key_Clear,      //  12   0x0C   VK_CLEAR            | Clear key
-    Qt::Key_Return,     //  13   0x0D   VK_RETURN           | Enter key
-    Qt::Key_unknown,    //  14   0x0E   -- unassigned --
-    Qt::Key_unknown,    //  15   0x0F   -- unassigned --
-    Qt::Key_Shift,      //  16   0x10   VK_SHIFT            | Shift key
-    Qt::Key_Control,    //  17   0x11   VK_CONTROL          | Ctrl key
-    Qt::Key_Alt,        //  18   0x12   VK_MENU             | Alt key
-    Qt::Key_Pause,      //  19   0x13   VK_PAUSE            | Pause key
-    Qt::Key_CapsLock,   //  20   0x14   VK_CAPITAL          | Caps-Lock
-    Qt::Key_unknown,    //  21   0x15   VK_KANA / VK_HANGUL | IME Kana or Hangul mode
-    Qt::Key_unknown,    //  22   0x16   -- unassigned --
-    Qt::Key_unknown,    //  23   0x17   VK_JUNJA            | IME Junja mode
-    Qt::Key_unknown,    //  24   0x18   VK_FINAL            | IME final mode
-    Qt::Key_unknown,    //  25   0x19   VK_HANJA / VK_KANJI | IME Hanja or Kanji mode
-    Qt::Key_unknown,    //  26   0x1A   -- unassigned --
-    Qt::Key_Escape,     //  27   0x1B   VK_ESCAPE           | Esc key
-    Qt::Key_unknown,    //  28   0x1C   VK_CONVERT          | IME convert
-    Qt::Key_unknown,    //  29   0x1D   VK_NONCONVERT       | IME non-convert
-    Qt::Key_unknown,    //  30   0x1E   VK_ACCEPT           | IME accept
-    Qt::Key_Mode_switch,//  31   0x1F   VK_MODECHANGE       | IME mode change request
-    Qt::Key_Space,      //  32   0x20   VK_SPACE            | Spacebar
-    Qt::Key_PageUp,     //  33   0x21   VK_PRIOR            | Page Up key
-    Qt::Key_PageDown,   //  34   0x22   VK_NEXT             | Page Down key
-    Qt::Key_End,        //  35   0x23   VK_END              | End key
-    Qt::Key_Home,       //  36   0x24   VK_HOME             | Home key
-    Qt::Key_Left,       //  37   0x25   VK_LEFT             | Left arrow key
-    Qt::Key_Up,         //  38   0x26   VK_UP               | Up arrow key
-    Qt::Key_Right,      //  39   0x27   VK_RIGHT            | Right arrow key
-    Qt::Key_Down,       //  40   0x28   VK_DOWN             | Down arrow key
-    Qt::Key_Select,     //  41   0x29   VK_SELECT           | Select key
-    Qt::Key_Printer,    //  42   0x2A   VK_PRINT            | Print key
-    Qt::Key_Execute,    //  43   0x2B   VK_EXECUTE          | Execute key
-    Qt::Key_Print,      //  44   0x2C   VK_SNAPSHOT         | Print Screen key
-    Qt::Key_Insert,     //  45   0x2D   VK_INSERT           | Ins key
-    Qt::Key_Delete,     //  46   0x2E   VK_DELETE           | Del key
-    Qt::Key_Help,       //  47   0x2F   VK_HELP             | Help key
+    BobUI::Key_unknown,    //   0   0x00
+    BobUI::Key_unknown,    //   1   0x01   VK_LBUTTON          | Left mouse button
+    BobUI::Key_unknown,    //   2   0x02   VK_RBUTTON          | Right mouse button
+    BobUI::Key_Cancel,     //   3   0x03   VK_CANCEL           | Control-Break processing
+    BobUI::Key_unknown,    //   4   0x04   VK_MBUTTON          | Middle mouse button
+    BobUI::Key_unknown,    //   5   0x05   VK_XBUTTON1         | X1 mouse button
+    BobUI::Key_unknown,    //   6   0x06   VK_XBUTTON2         | X2 mouse button
+    BobUI::Key_unknown,    //   7   0x07   -- unassigned --
+    BobUI::Key_Backspace,  //   8   0x08   VK_BACK             | BackSpace key
+    BobUI::Key_Tab,        //   9   0x09   VK_TAB              | Tab key
+    BobUI::Key_unknown,    //  10   0x0A   -- reserved --
+    BobUI::Key_unknown,    //  11   0x0B   -- reserved --
+    BobUI::Key_Clear,      //  12   0x0C   VK_CLEAR            | Clear key
+    BobUI::Key_Return,     //  13   0x0D   VK_RETURN           | Enter key
+    BobUI::Key_unknown,    //  14   0x0E   -- unassigned --
+    BobUI::Key_unknown,    //  15   0x0F   -- unassigned --
+    BobUI::Key_Shift,      //  16   0x10   VK_SHIFT            | Shift key
+    BobUI::Key_Control,    //  17   0x11   VK_CONTROL          | Ctrl key
+    BobUI::Key_Alt,        //  18   0x12   VK_MENU             | Alt key
+    BobUI::Key_Pause,      //  19   0x13   VK_PAUSE            | Pause key
+    BobUI::Key_CapsLock,   //  20   0x14   VK_CAPITAL          | Caps-Lock
+    BobUI::Key_unknown,    //  21   0x15   VK_KANA / VK_HANGUL | IME Kana or Hangul mode
+    BobUI::Key_unknown,    //  22   0x16   -- unassigned --
+    BobUI::Key_unknown,    //  23   0x17   VK_JUNJA            | IME Junja mode
+    BobUI::Key_unknown,    //  24   0x18   VK_FINAL            | IME final mode
+    BobUI::Key_unknown,    //  25   0x19   VK_HANJA / VK_KANJI | IME Hanja or Kanji mode
+    BobUI::Key_unknown,    //  26   0x1A   -- unassigned --
+    BobUI::Key_Escape,     //  27   0x1B   VK_ESCAPE           | Esc key
+    BobUI::Key_unknown,    //  28   0x1C   VK_CONVERT          | IME convert
+    BobUI::Key_unknown,    //  29   0x1D   VK_NONCONVERT       | IME non-convert
+    BobUI::Key_unknown,    //  30   0x1E   VK_ACCEPT           | IME accept
+    BobUI::Key_Mode_switch,//  31   0x1F   VK_MODECHANGE       | IME mode change request
+    BobUI::Key_Space,      //  32   0x20   VK_SPACE            | Spacebar
+    BobUI::Key_PageUp,     //  33   0x21   VK_PRIOR            | Page Up key
+    BobUI::Key_PageDown,   //  34   0x22   VK_NEXT             | Page Down key
+    BobUI::Key_End,        //  35   0x23   VK_END              | End key
+    BobUI::Key_Home,       //  36   0x24   VK_HOME             | Home key
+    BobUI::Key_Left,       //  37   0x25   VK_LEFT             | Left arrow key
+    BobUI::Key_Up,         //  38   0x26   VK_UP               | Up arrow key
+    BobUI::Key_Right,      //  39   0x27   VK_RIGHT            | Right arrow key
+    BobUI::Key_Down,       //  40   0x28   VK_DOWN             | Down arrow key
+    BobUI::Key_Select,     //  41   0x29   VK_SELECT           | Select key
+    BobUI::Key_Printer,    //  42   0x2A   VK_PRINT            | Print key
+    BobUI::Key_Execute,    //  43   0x2B   VK_EXECUTE          | Execute key
+    BobUI::Key_Print,      //  44   0x2C   VK_SNAPSHOT         | Print Screen key
+    BobUI::Key_Insert,     //  45   0x2D   VK_INSERT           | Ins key
+    BobUI::Key_Delete,     //  46   0x2E   VK_DELETE           | Del key
+    BobUI::Key_Help,       //  47   0x2F   VK_HELP             | Help key
     0,                  //  48   0x30   (VK_0)              | 0 key
     0,                  //  49   0x31   (VK_1)              | 1 key
     0,                  //  50   0x32   (VK_2)              | 2 key
@@ -239,13 +239,13 @@ static const uint KeyTbl[] = { // Keyboard mapping table
     0,                  //  55   0x37   (VK_7)              | 7 key
     0,                  //  56   0x38   (VK_8)              | 8 key
     0,                  //  57   0x39   (VK_9)              | 9 key
-    Qt::Key_unknown,    //  58   0x3A   -- unassigned --
-    Qt::Key_unknown,    //  59   0x3B   -- unassigned --
-    Qt::Key_unknown,    //  60   0x3C   -- unassigned --
-    Qt::Key_unknown,    //  61   0x3D   -- unassigned --
-    Qt::Key_unknown,    //  62   0x3E   -- unassigned --
-    Qt::Key_unknown,    //  63   0x3F   -- unassigned --
-    Qt::Key_unknown,    //  64   0x40   -- unassigned --
+    BobUI::Key_unknown,    //  58   0x3A   -- unassigned --
+    BobUI::Key_unknown,    //  59   0x3B   -- unassigned --
+    BobUI::Key_unknown,    //  60   0x3C   -- unassigned --
+    BobUI::Key_unknown,    //  61   0x3D   -- unassigned --
+    BobUI::Key_unknown,    //  62   0x3E   -- unassigned --
+    BobUI::Key_unknown,    //  63   0x3F   -- unassigned --
+    BobUI::Key_unknown,    //  64   0x40   -- unassigned --
     0,                  //  65   0x41   (VK_A)              | A key
     0,                  //  66   0x42   (VK_B)              | B key
     0,                  //  67   0x43   (VK_C)              | C key
@@ -272,104 +272,104 @@ static const uint KeyTbl[] = { // Keyboard mapping table
     0,                  //  88   0x58   (VK_X)              | X key
     0,                  //  89   0x59   (VK_Y)              | Y key
     0,                  //  90   0x5A   (VK_Z)              | Z key
-    Qt::Key_Meta,       //  91   0x5B   VK_LWIN             | Left Windows  - MS Natural kbd
-    Qt::Key_Meta,       //  92   0x5C   VK_RWIN             | Right Windows - MS Natural kbd
-    Qt::Key_Menu,       //  93   0x5D   VK_APPS             | Application key-MS Natural kbd
-    Qt::Key_unknown,    //  94   0x5E   -- reserved --
-    Qt::Key_Sleep,      //  95   0x5F   VK_SLEEP
-    Qt::Key_0,          //  96   0x60   VK_NUMPAD0          | Numeric keypad 0 key
-    Qt::Key_1,          //  97   0x61   VK_NUMPAD1          | Numeric keypad 1 key
-    Qt::Key_2,          //  98   0x62   VK_NUMPAD2          | Numeric keypad 2 key
-    Qt::Key_3,          //  99   0x63   VK_NUMPAD3          | Numeric keypad 3 key
-    Qt::Key_4,          // 100   0x64   VK_NUMPAD4          | Numeric keypad 4 key
-    Qt::Key_5,          // 101   0x65   VK_NUMPAD5          | Numeric keypad 5 key
-    Qt::Key_6,          // 102   0x66   VK_NUMPAD6          | Numeric keypad 6 key
-    Qt::Key_7,          // 103   0x67   VK_NUMPAD7          | Numeric keypad 7 key
-    Qt::Key_8,          // 104   0x68   VK_NUMPAD8          | Numeric keypad 8 key
-    Qt::Key_9,          // 105   0x69   VK_NUMPAD9          | Numeric keypad 9 key
-    Qt::Key_Asterisk,   // 106   0x6A   VK_MULTIPLY         | Multiply key
-    Qt::Key_Plus,       // 107   0x6B   VK_ADD              | Add key
-    Qt::Key_unknown,    // 108   0x6C   VK_SEPARATOR        | Separator key (locale-dependent)
-    Qt::Key_Minus,      // 109   0x6D   VK_SUBTRACT         | Subtract key
-    Qt::Key_unknown,    // 110   0x6E   VK_DECIMAL          | Decimal key (locale-dependent)
-    Qt::Key_Slash,      // 111   0x6F   VK_DIVIDE           | Divide key
-    Qt::Key_F1,         // 112   0x70   VK_F1               | F1 key
-    Qt::Key_F2,         // 113   0x71   VK_F2               | F2 key
-    Qt::Key_F3,         // 114   0x72   VK_F3               | F3 key
-    Qt::Key_F4,         // 115   0x73   VK_F4               | F4 key
-    Qt::Key_F5,         // 116   0x74   VK_F5               | F5 key
-    Qt::Key_F6,         // 117   0x75   VK_F6               | F6 key
-    Qt::Key_F7,         // 118   0x76   VK_F7               | F7 key
-    Qt::Key_F8,         // 119   0x77   VK_F8               | F8 key
-    Qt::Key_F9,         // 120   0x78   VK_F9               | F9 key
-    Qt::Key_F10,        // 121   0x79   VK_F10              | F10 key
-    Qt::Key_F11,        // 122   0x7A   VK_F11              | F11 key
-    Qt::Key_F12,        // 123   0x7B   VK_F12              | F12 key
-    Qt::Key_F13,        // 124   0x7C   VK_F13              | F13 key
-    Qt::Key_F14,        // 125   0x7D   VK_F14              | F14 key
-    Qt::Key_F15,        // 126   0x7E   VK_F15              | F15 key
-    Qt::Key_F16,        // 127   0x7F   VK_F16              | F16 key
-    Qt::Key_F17,        // 128   0x80   VK_F17              | F17 key
-    Qt::Key_F18,        // 129   0x81   VK_F18              | F18 key
-    Qt::Key_F19,        // 130   0x82   VK_F19              | F19 key
-    Qt::Key_F20,        // 131   0x83   VK_F20              | F20 key
-    Qt::Key_F21,        // 132   0x84   VK_F21              | F21 key
-    Qt::Key_F22,        // 133   0x85   VK_F22              | F22 key
-    Qt::Key_F23,        // 134   0x86   VK_F23              | F23 key
-    Qt::Key_F24,        // 135   0x87   VK_F24              | F24 key
-    Qt::Key_unknown,    // 136   0x88   -- unassigned --
-    Qt::Key_unknown,    // 137   0x89   -- unassigned --
-    Qt::Key_unknown,    // 138   0x8A   -- unassigned --
-    Qt::Key_unknown,    // 139   0x8B   -- unassigned --
-    Qt::Key_unknown,    // 140   0x8C   -- unassigned --
-    Qt::Key_unknown,    // 141   0x8D   -- unassigned --
-    Qt::Key_unknown,    // 142   0x8E   -- unassigned --
-    Qt::Key_unknown,    // 143   0x8F   -- unassigned --
-    Qt::Key_NumLock,    // 144   0x90   VK_NUMLOCK          | Num Lock key
-    Qt::Key_ScrollLock, // 145   0x91   VK_SCROLL           | Scroll Lock key
+    BobUI::Key_Meta,       //  91   0x5B   VK_LWIN             | Left Windows  - MS Natural kbd
+    BobUI::Key_Meta,       //  92   0x5C   VK_RWIN             | Right Windows - MS Natural kbd
+    BobUI::Key_Menu,       //  93   0x5D   VK_APPS             | Application key-MS Natural kbd
+    BobUI::Key_unknown,    //  94   0x5E   -- reserved --
+    BobUI::Key_Sleep,      //  95   0x5F   VK_SLEEP
+    BobUI::Key_0,          //  96   0x60   VK_NUMPAD0          | Numeric keypad 0 key
+    BobUI::Key_1,          //  97   0x61   VK_NUMPAD1          | Numeric keypad 1 key
+    BobUI::Key_2,          //  98   0x62   VK_NUMPAD2          | Numeric keypad 2 key
+    BobUI::Key_3,          //  99   0x63   VK_NUMPAD3          | Numeric keypad 3 key
+    BobUI::Key_4,          // 100   0x64   VK_NUMPAD4          | Numeric keypad 4 key
+    BobUI::Key_5,          // 101   0x65   VK_NUMPAD5          | Numeric keypad 5 key
+    BobUI::Key_6,          // 102   0x66   VK_NUMPAD6          | Numeric keypad 6 key
+    BobUI::Key_7,          // 103   0x67   VK_NUMPAD7          | Numeric keypad 7 key
+    BobUI::Key_8,          // 104   0x68   VK_NUMPAD8          | Numeric keypad 8 key
+    BobUI::Key_9,          // 105   0x69   VK_NUMPAD9          | Numeric keypad 9 key
+    BobUI::Key_Asterisk,   // 106   0x6A   VK_MULTIPLY         | Multiply key
+    BobUI::Key_Plus,       // 107   0x6B   VK_ADD              | Add key
+    BobUI::Key_unknown,    // 108   0x6C   VK_SEPARATOR        | Separator key (locale-dependent)
+    BobUI::Key_Minus,      // 109   0x6D   VK_SUBTRACT         | Subtract key
+    BobUI::Key_unknown,    // 110   0x6E   VK_DECIMAL          | Decimal key (locale-dependent)
+    BobUI::Key_Slash,      // 111   0x6F   VK_DIVIDE           | Divide key
+    BobUI::Key_F1,         // 112   0x70   VK_F1               | F1 key
+    BobUI::Key_F2,         // 113   0x71   VK_F2               | F2 key
+    BobUI::Key_F3,         // 114   0x72   VK_F3               | F3 key
+    BobUI::Key_F4,         // 115   0x73   VK_F4               | F4 key
+    BobUI::Key_F5,         // 116   0x74   VK_F5               | F5 key
+    BobUI::Key_F6,         // 117   0x75   VK_F6               | F6 key
+    BobUI::Key_F7,         // 118   0x76   VK_F7               | F7 key
+    BobUI::Key_F8,         // 119   0x77   VK_F8               | F8 key
+    BobUI::Key_F9,         // 120   0x78   VK_F9               | F9 key
+    BobUI::Key_F10,        // 121   0x79   VK_F10              | F10 key
+    BobUI::Key_F11,        // 122   0x7A   VK_F11              | F11 key
+    BobUI::Key_F12,        // 123   0x7B   VK_F12              | F12 key
+    BobUI::Key_F13,        // 124   0x7C   VK_F13              | F13 key
+    BobUI::Key_F14,        // 125   0x7D   VK_F14              | F14 key
+    BobUI::Key_F15,        // 126   0x7E   VK_F15              | F15 key
+    BobUI::Key_F16,        // 127   0x7F   VK_F16              | F16 key
+    BobUI::Key_F17,        // 128   0x80   VK_F17              | F17 key
+    BobUI::Key_F18,        // 129   0x81   VK_F18              | F18 key
+    BobUI::Key_F19,        // 130   0x82   VK_F19              | F19 key
+    BobUI::Key_F20,        // 131   0x83   VK_F20              | F20 key
+    BobUI::Key_F21,        // 132   0x84   VK_F21              | F21 key
+    BobUI::Key_F22,        // 133   0x85   VK_F22              | F22 key
+    BobUI::Key_F23,        // 134   0x86   VK_F23              | F23 key
+    BobUI::Key_F24,        // 135   0x87   VK_F24              | F24 key
+    BobUI::Key_unknown,    // 136   0x88   -- unassigned --
+    BobUI::Key_unknown,    // 137   0x89   -- unassigned --
+    BobUI::Key_unknown,    // 138   0x8A   -- unassigned --
+    BobUI::Key_unknown,    // 139   0x8B   -- unassigned --
+    BobUI::Key_unknown,    // 140   0x8C   -- unassigned --
+    BobUI::Key_unknown,    // 141   0x8D   -- unassigned --
+    BobUI::Key_unknown,    // 142   0x8E   -- unassigned --
+    BobUI::Key_unknown,    // 143   0x8F   -- unassigned --
+    BobUI::Key_NumLock,    // 144   0x90   VK_NUMLOCK          | Num Lock key
+    BobUI::Key_ScrollLock, // 145   0x91   VK_SCROLL           | Scroll Lock key
                         // Fujitsu/OASYS kbd --------------------
-    0, //Qt::Key_Jisho, // 146   0x92   VK_OEM_FJ_JISHO     | 'Dictionary' key /
+    0, //BobUI::Key_Jisho, // 146   0x92   VK_OEM_FJ_JISHO     | 'Dictionary' key /
                         //              VK_OEM_NEC_EQUAL  = key on numpad on NEC PC-9800 kbd
-    Qt::Key_Massyo,     // 147   0x93   VK_OEM_FJ_MASSHOU   | 'Unregister word' key
-    Qt::Key_Touroku,    // 148   0x94   VK_OEM_FJ_TOUROKU   | 'Register word' key
-    0, //Qt::Key_Oyayubi_Left,//149   0x95  VK_OEM_FJ_LOYA  | 'Left OYAYUBI' key
-    0, //Qt::Key_Oyayubi_Right,//150  0x96  VK_OEM_FJ_ROYA  | 'Right OYAYUBI' key
-    Qt::Key_unknown,    // 151   0x97   -- unassigned --
-    Qt::Key_unknown,    // 152   0x98   -- unassigned --
-    Qt::Key_unknown,    // 153   0x99   -- unassigned --
-    Qt::Key_unknown,    // 154   0x9A   -- unassigned --
-    Qt::Key_unknown,    // 155   0x9B   -- unassigned --
-    Qt::Key_unknown,    // 156   0x9C   -- unassigned --
-    Qt::Key_unknown,    // 157   0x9D   -- unassigned --
-    Qt::Key_unknown,    // 158   0x9E   -- unassigned --
-    Qt::Key_unknown,    // 159   0x9F   -- unassigned --
-    Qt::Key_Shift,      // 160   0xA0   VK_LSHIFT           | Left Shift key
-    Qt::Key_Shift,      // 161   0xA1   VK_RSHIFT           | Right Shift key
-    Qt::Key_Control,    // 162   0xA2   VK_LCONTROL         | Left Ctrl key
-    Qt::Key_Control,    // 163   0xA3   VK_RCONTROL         | Right Ctrl key
-    Qt::Key_Alt,        // 164   0xA4   VK_LMENU            | Left Menu key
-    Qt::Key_Alt,        // 165   0xA5   VK_RMENU            | Right Menu key
-    Qt::Key_Back,       // 166   0xA6   VK_BROWSER_BACK     | Browser Back key
-    Qt::Key_Forward,    // 167   0xA7   VK_BROWSER_FORWARD  | Browser Forward key
-    Qt::Key_Refresh,    // 168   0xA8   VK_BROWSER_REFRESH  | Browser Refresh key
-    Qt::Key_Stop,       // 169   0xA9   VK_BROWSER_STOP     | Browser Stop key
-    Qt::Key_Search,     // 170   0xAA   VK_BROWSER_SEARCH   | Browser Search key
-    Qt::Key_Favorites,  // 171   0xAB   VK_BROWSER_FAVORITES| Browser Favorites key
-    Qt::Key_HomePage,   // 172   0xAC   VK_BROWSER_HOME     | Browser Start and Home key
-    Qt::Key_VolumeMute, // 173   0xAD   VK_VOLUME_MUTE      | Volume Mute key
-    Qt::Key_VolumeDown, // 174   0xAE   VK_VOLUME_DOWN      | Volume Down key
-    Qt::Key_VolumeUp,   // 175   0xAF   VK_VOLUME_UP        | Volume Up key
-    Qt::Key_MediaNext,  // 176   0xB0   VK_MEDIA_NEXT_TRACK | Next Track key
-    Qt::Key_MediaPrevious, //177 0xB1   VK_MEDIA_PREV_TRACK | Previous Track key
-    Qt::Key_MediaStop,  // 178   0xB2   VK_MEDIA_STOP       | Stop Media key
-    Qt::Key_MediaTogglePlayPause,
+    BobUI::Key_Massyo,     // 147   0x93   VK_OEM_FJ_MASSHOU   | 'Unregister word' key
+    BobUI::Key_Touroku,    // 148   0x94   VK_OEM_FJ_TOUROKU   | 'Register word' key
+    0, //BobUI::Key_Oyayubi_Left,//149   0x95  VK_OEM_FJ_LOYA  | 'Left OYAYUBI' key
+    0, //BobUI::Key_Oyayubi_Right,//150  0x96  VK_OEM_FJ_ROYA  | 'Right OYAYUBI' key
+    BobUI::Key_unknown,    // 151   0x97   -- unassigned --
+    BobUI::Key_unknown,    // 152   0x98   -- unassigned --
+    BobUI::Key_unknown,    // 153   0x99   -- unassigned --
+    BobUI::Key_unknown,    // 154   0x9A   -- unassigned --
+    BobUI::Key_unknown,    // 155   0x9B   -- unassigned --
+    BobUI::Key_unknown,    // 156   0x9C   -- unassigned --
+    BobUI::Key_unknown,    // 157   0x9D   -- unassigned --
+    BobUI::Key_unknown,    // 158   0x9E   -- unassigned --
+    BobUI::Key_unknown,    // 159   0x9F   -- unassigned --
+    BobUI::Key_Shift,      // 160   0xA0   VK_LSHIFT           | Left Shift key
+    BobUI::Key_Shift,      // 161   0xA1   VK_RSHIFT           | Right Shift key
+    BobUI::Key_Control,    // 162   0xA2   VK_LCONTROL         | Left Ctrl key
+    BobUI::Key_Control,    // 163   0xA3   VK_RCONTROL         | Right Ctrl key
+    BobUI::Key_Alt,        // 164   0xA4   VK_LMENU            | Left Menu key
+    BobUI::Key_Alt,        // 165   0xA5   VK_RMENU            | Right Menu key
+    BobUI::Key_Back,       // 166   0xA6   VK_BROWSER_BACK     | Browser Back key
+    BobUI::Key_Forward,    // 167   0xA7   VK_BROWSER_FORWARD  | Browser Forward key
+    BobUI::Key_Refresh,    // 168   0xA8   VK_BROWSER_REFRESH  | Browser Refresh key
+    BobUI::Key_Stop,       // 169   0xA9   VK_BROWSER_STOP     | Browser Stop key
+    BobUI::Key_Search,     // 170   0xAA   VK_BROWSER_SEARCH   | Browser Search key
+    BobUI::Key_Favorites,  // 171   0xAB   VK_BROWSER_FAVORITES| Browser Favorites key
+    BobUI::Key_HomePage,   // 172   0xAC   VK_BROWSER_HOME     | Browser Start and Home key
+    BobUI::Key_VolumeMute, // 173   0xAD   VK_VOLUME_MUTE      | Volume Mute key
+    BobUI::Key_VolumeDown, // 174   0xAE   VK_VOLUME_DOWN      | Volume Down key
+    BobUI::Key_VolumeUp,   // 175   0xAF   VK_VOLUME_UP        | Volume Up key
+    BobUI::Key_MediaNext,  // 176   0xB0   VK_MEDIA_NEXT_TRACK | Next Track key
+    BobUI::Key_MediaPrevious, //177 0xB1   VK_MEDIA_PREV_TRACK | Previous Track key
+    BobUI::Key_MediaStop,  // 178   0xB2   VK_MEDIA_STOP       | Stop Media key
+    BobUI::Key_MediaTogglePlayPause,
                         // 179   0xB3   VK_MEDIA_PLAY_PAUSE | Play/Pause Media key
-    Qt::Key_LaunchMail, // 180   0xB4   VK_LAUNCH_MAIL      | Start Mail key
-    Qt::Key_LaunchMedia,// 181   0xB5   VK_LAUNCH_MEDIA_SELECT Select Media key
-    Qt::Key_Launch0,    // 182   0xB6   VK_LAUNCH_APP1      | Start Application 1 key
-    Qt::Key_Launch1,    // 183   0xB7   VK_LAUNCH_APP2      | Start Application 2 key
-    Qt::Key_unknown,    // 184   0xB8   -- reserved --
-    Qt::Key_unknown,    // 185   0xB9   -- reserved --
+    BobUI::Key_LaunchMail, // 180   0xB4   VK_LAUNCH_MAIL      | Start Mail key
+    BobUI::Key_LaunchMedia,// 181   0xB5   VK_LAUNCH_MEDIA_SELECT Select Media key
+    BobUI::Key_Launch0,    // 182   0xB6   VK_LAUNCH_APP1      | Start Application 1 key
+    BobUI::Key_Launch1,    // 183   0xB7   VK_LAUNCH_APP2      | Start Application 2 key
+    BobUI::Key_unknown,    // 184   0xB8   -- reserved --
+    BobUI::Key_unknown,    // 185   0xB9   -- reserved --
     0,                  // 186   0xBA   VK_OEM_1            | ';:' for US
     0,                  // 187   0xBB   VK_OEM_PLUS         | '+' any country
     0,                  // 188   0xBC   VK_OEM_COMMA        | ',' any country
@@ -377,146 +377,146 @@ static const uint KeyTbl[] = { // Keyboard mapping table
     0,                  // 190   0xBE   VK_OEM_PERIOD       | '.' any country
     0,                  // 191   0xBF   VK_OEM_2            | '/?' for US
     0,                  // 192   0xC0   VK_OEM_3            | '`~' for US
-    Qt::Key_unknown,    // 193   0xC1   -- reserved --
-    Qt::Key_unknown,    // 194   0xC2   -- reserved --
-    Qt::Key_unknown,    // 195   0xC3   -- reserved --
-    Qt::Key_unknown,    // 196   0xC4   -- reserved --
-    Qt::Key_unknown,    // 197   0xC5   -- reserved --
-    Qt::Key_unknown,    // 198   0xC6   -- reserved --
-    Qt::Key_unknown,    // 199   0xC7   -- reserved --
-    Qt::Key_unknown,    // 200   0xC8   -- reserved --
-    Qt::Key_unknown,    // 201   0xC9   -- reserved --
-    Qt::Key_unknown,    // 202   0xCA   -- reserved --
-    Qt::Key_unknown,    // 203   0xCB   -- reserved --
-    Qt::Key_unknown,    // 204   0xCC   -- reserved --
-    Qt::Key_unknown,    // 205   0xCD   -- reserved --
-    Qt::Key_unknown,    // 206   0xCE   -- reserved --
-    Qt::Key_unknown,    // 207   0xCF   -- reserved --
-    Qt::Key_unknown,    // 208   0xD0   -- reserved --
-    Qt::Key_unknown,    // 209   0xD1   -- reserved --
-    Qt::Key_unknown,    // 210   0xD2   -- reserved --
-    Qt::Key_unknown,    // 211   0xD3   -- reserved --
-    Qt::Key_unknown,    // 212   0xD4   -- reserved --
-    Qt::Key_unknown,    // 213   0xD5   -- reserved --
-    Qt::Key_unknown,    // 214   0xD6   -- reserved --
-    Qt::Key_unknown,    // 215   0xD7   -- reserved --
-    Qt::Key_unknown,    // 216   0xD8   -- unassigned --
-    Qt::Key_unknown,    // 217   0xD9   -- unassigned --
-    Qt::Key_unknown,    // 218   0xDA   -- unassigned --
+    BobUI::Key_unknown,    // 193   0xC1   -- reserved --
+    BobUI::Key_unknown,    // 194   0xC2   -- reserved --
+    BobUI::Key_unknown,    // 195   0xC3   -- reserved --
+    BobUI::Key_unknown,    // 196   0xC4   -- reserved --
+    BobUI::Key_unknown,    // 197   0xC5   -- reserved --
+    BobUI::Key_unknown,    // 198   0xC6   -- reserved --
+    BobUI::Key_unknown,    // 199   0xC7   -- reserved --
+    BobUI::Key_unknown,    // 200   0xC8   -- reserved --
+    BobUI::Key_unknown,    // 201   0xC9   -- reserved --
+    BobUI::Key_unknown,    // 202   0xCA   -- reserved --
+    BobUI::Key_unknown,    // 203   0xCB   -- reserved --
+    BobUI::Key_unknown,    // 204   0xCC   -- reserved --
+    BobUI::Key_unknown,    // 205   0xCD   -- reserved --
+    BobUI::Key_unknown,    // 206   0xCE   -- reserved --
+    BobUI::Key_unknown,    // 207   0xCF   -- reserved --
+    BobUI::Key_unknown,    // 208   0xD0   -- reserved --
+    BobUI::Key_unknown,    // 209   0xD1   -- reserved --
+    BobUI::Key_unknown,    // 210   0xD2   -- reserved --
+    BobUI::Key_unknown,    // 211   0xD3   -- reserved --
+    BobUI::Key_unknown,    // 212   0xD4   -- reserved --
+    BobUI::Key_unknown,    // 213   0xD5   -- reserved --
+    BobUI::Key_unknown,    // 214   0xD6   -- reserved --
+    BobUI::Key_unknown,    // 215   0xD7   -- reserved --
+    BobUI::Key_unknown,    // 216   0xD8   -- unassigned --
+    BobUI::Key_unknown,    // 217   0xD9   -- unassigned --
+    BobUI::Key_unknown,    // 218   0xDA   -- unassigned --
     0,                  // 219   0xDB   VK_OEM_4            | '[{' for US
     0,                  // 220   0xDC   VK_OEM_5            | '\|' for US
     0,                  // 221   0xDD   VK_OEM_6            | ']}' for US
     0,                  // 222   0xDE   VK_OEM_7            | ''"' for US
     0,                  // 223   0xDF   VK_OEM_8
-    Qt::Key_unknown,    // 224   0xE0   -- reserved --
-    Qt::Key_unknown,    // 225   0xE1   VK_OEM_AX           | 'AX' key on Japanese AX kbd
-    Qt::Key_unknown,    // 226   0xE2   VK_OEM_102          | "<>" or "\|" on RT 102-key kbd
-    Qt::Key_unknown,    // 227   0xE3   VK_ICO_HELP         | Help key on ICO
-    Qt::Key_unknown,    // 228   0xE4   VK_ICO_00           | 00 key on ICO
-    Qt::Key_unknown,    // 229   0xE5   VK_PROCESSKEY       | IME Process key
-    Qt::Key_unknown,    // 230   0xE6   VK_ICO_CLEAR        |
-    Qt::Key_unknown,    // 231   0xE7   VK_PACKET           | Unicode char as keystrokes
-    Qt::Key_unknown,    // 232   0xE8   -- unassigned --
+    BobUI::Key_unknown,    // 224   0xE0   -- reserved --
+    BobUI::Key_unknown,    // 225   0xE1   VK_OEM_AX           | 'AX' key on Japanese AX kbd
+    BobUI::Key_unknown,    // 226   0xE2   VK_OEM_102          | "<>" or "\|" on RT 102-key kbd
+    BobUI::Key_unknown,    // 227   0xE3   VK_ICO_HELP         | Help key on ICO
+    BobUI::Key_unknown,    // 228   0xE4   VK_ICO_00           | 00 key on ICO
+    BobUI::Key_unknown,    // 229   0xE5   VK_PROCESSKEY       | IME Process key
+    BobUI::Key_unknown,    // 230   0xE6   VK_ICO_CLEAR        |
+    BobUI::Key_unknown,    // 231   0xE7   VK_PACKET           | Unicode char as keystrokes
+    BobUI::Key_unknown,    // 232   0xE8   -- unassigned --
                         // Nokia/Ericsson definitions ---------------
-    Qt::Key_unknown,    // 233   0xE9   VK_OEM_RESET
-    Qt::Key_unknown,    // 234   0xEA   VK_OEM_JUMP
-    Qt::Key_unknown,    // 235   0xEB   VK_OEM_PA1
-    Qt::Key_unknown,    // 236   0xEC   VK_OEM_PA2
-    Qt::Key_unknown,    // 237   0xED   VK_OEM_PA3
-    Qt::Key_unknown,    // 238   0xEE   VK_OEM_WSCTRL
-    Qt::Key_unknown,    // 239   0xEF   VK_OEM_CUSEL
-    Qt::Key_unknown,    // 240   0xF0   VK_OEM_ATTN
-    Qt::Key_unknown,    // 241   0xF1   VK_OEM_FINISH
-    Qt::Key_unknown,    // 242   0xF2   VK_OEM_COPY
-    Qt::Key_unknown,    // 243   0xF3   VK_OEM_AUTO
-    Qt::Key_unknown,    // 244   0xF4   VK_OEM_ENLW
-    Qt::Key_unknown,    // 245   0xF5   VK_OEM_BACKTAB
-    Qt::Key_unknown,    // 246   0xF6   VK_ATTN             | Attn key
-    Qt::Key_unknown,    // 247   0xF7   VK_CRSEL            | CrSel key
-    Qt::Key_unknown,    // 248   0xF8   VK_EXSEL            | ExSel key
-    Qt::Key_unknown,    // 249   0xF9   VK_EREOF            | Erase EOF key
-    Qt::Key_Play,       // 250   0xFA   VK_PLAY             | Play key
-    Qt::Key_Zoom,       // 251   0xFB   VK_ZOOM             | Zoom key
-    Qt::Key_unknown,    // 252   0xFC   VK_NONAME           | Reserved
-    Qt::Key_unknown,    // 253   0xFD   VK_PA1              | PA1 key
-    Qt::Key_Clear,      // 254   0xFE   VK_OEM_CLEAR        | Clear key
+    BobUI::Key_unknown,    // 233   0xE9   VK_OEM_RESET
+    BobUI::Key_unknown,    // 234   0xEA   VK_OEM_JUMP
+    BobUI::Key_unknown,    // 235   0xEB   VK_OEM_PA1
+    BobUI::Key_unknown,    // 236   0xEC   VK_OEM_PA2
+    BobUI::Key_unknown,    // 237   0xED   VK_OEM_PA3
+    BobUI::Key_unknown,    // 238   0xEE   VK_OEM_WSCTRL
+    BobUI::Key_unknown,    // 239   0xEF   VK_OEM_CUSEL
+    BobUI::Key_unknown,    // 240   0xF0   VK_OEM_ATTN
+    BobUI::Key_unknown,    // 241   0xF1   VK_OEM_FINISH
+    BobUI::Key_unknown,    // 242   0xF2   VK_OEM_COPY
+    BobUI::Key_unknown,    // 243   0xF3   VK_OEM_AUTO
+    BobUI::Key_unknown,    // 244   0xF4   VK_OEM_ENLW
+    BobUI::Key_unknown,    // 245   0xF5   VK_OEM_BACKTAB
+    BobUI::Key_unknown,    // 246   0xF6   VK_ATTN             | Attn key
+    BobUI::Key_unknown,    // 247   0xF7   VK_CRSEL            | CrSel key
+    BobUI::Key_unknown,    // 248   0xF8   VK_EXSEL            | ExSel key
+    BobUI::Key_unknown,    // 249   0xF9   VK_EREOF            | Erase EOF key
+    BobUI::Key_Play,       // 250   0xFA   VK_PLAY             | Play key
+    BobUI::Key_Zoom,       // 251   0xFB   VK_ZOOM             | Zoom key
+    BobUI::Key_unknown,    // 252   0xFC   VK_NONAME           | Reserved
+    BobUI::Key_unknown,    // 253   0xFD   VK_PA1              | PA1 key
+    BobUI::Key_Clear,      // 254   0xFE   VK_OEM_CLEAR        | Clear key
     0
 };
 
 static const uint CmdTbl[] = { // Multimedia keys mapping table
                             // Dec |  Hex | AppCommand
-    Qt::Key_unknown,        //   0   0x00
-    Qt::Key_Back,           //   1   0x01   APPCOMMAND_BROWSER_BACKWARD
-    Qt::Key_Forward,        //   2   0x02   APPCOMMAND_BROWSER_FORWARD
-    Qt::Key_Refresh,        //   3   0x03   APPCOMMAND_BROWSER_REFRESH
-    Qt::Key_Stop,           //   4   0x04   APPCOMMAND_BROWSER_STOP
-    Qt::Key_Search,         //   5   0x05   APPCOMMAND_BROWSER_SEARCH
-    Qt::Key_Favorites,      //   6   0x06   APPCOMMAND_BROWSER_FAVORITES
-    Qt::Key_Home,           //   7   0x07   APPCOMMAND_BROWSER_HOME
-    Qt::Key_VolumeMute,     //   8   0x08   APPCOMMAND_VOLUME_MUTE
-    Qt::Key_VolumeDown,     //   9   0x09   APPCOMMAND_VOLUME_DOWN
-    Qt::Key_VolumeUp,       //  10   0x0a   APPCOMMAND_VOLUME_UP
-    Qt::Key_MediaNext,      //  11   0x0b   APPCOMMAND_MEDIA_NEXTTRACK
-    Qt::Key_MediaPrevious,  //  12   0x0c   APPCOMMAND_MEDIA_PREVIOUSTRACK
-    Qt::Key_MediaStop,      //  13   0x0d   APPCOMMAND_MEDIA_STOP
-    Qt::Key_MediaTogglePlayPause,   //  14   0x0e   APPCOMMAND_MEDIA_PLAYPAUSE
-    Qt::Key_LaunchMail,     //  15   0x0f   APPCOMMAND_LAUNCH_MAIL
-    Qt::Key_LaunchMedia,    //  16   0x10   APPCOMMAND_LAUNCH_MEDIA_SELECT
-    Qt::Key_Launch0,        //  17   0x11   APPCOMMAND_LAUNCH_APP1
-    Qt::Key_Launch1,        //  18   0x12   APPCOMMAND_LAUNCH_APP2
-    Qt::Key_BassDown,       //  19   0x13   APPCOMMAND_BASS_DOWN
-    Qt::Key_BassBoost,      //  20   0x14   APPCOMMAND_BASS_BOOST
-    Qt::Key_BassUp,         //  21   0x15   APPCOMMAND_BASS_UP
-    Qt::Key_TrebleDown,     //  22   0x16   APPCOMMAND_TREBLE_DOWN
-    Qt::Key_TrebleUp,       //  23   0x17   APPCOMMAND_TREBLE_UP
-    Qt::Key_MicMute,        //  24   0x18   APPCOMMAND_MICROPHONE_VOLUME_MUTE
-    Qt::Key_MicVolumeDown,  //  25   0x19   APPCOMMAND_MICROPHONE_VOLUME_DOWN
-    Qt::Key_MicVolumeUp,    //  26   0x1a   APPCOMMAND_MICROPHONE_VOLUME_UP
-    Qt::Key_Help,           //  27   0x1b   APPCOMMAND_HELP
-    Qt::Key_Find,           //  28   0x1c   APPCOMMAND_FIND
-    Qt::Key_New,            //  29   0x1d   APPCOMMAND_NEW
-    Qt::Key_Open,           //  30   0x1e   APPCOMMAND_OPEN
-    Qt::Key_Close,          //  31   0x1f   APPCOMMAND_CLOSE
-    Qt::Key_Save,           //  32   0x20   APPCOMMAND_SAVE
-    Qt::Key_Printer,        //  33   0x21   APPCOMMAND_PRINT
-    Qt::Key_Undo,           //  34   0x22   APPCOMMAND_UNDO
-    Qt::Key_Redo,           //  35   0x23   APPCOMMAND_REDO
-    Qt::Key_Copy,           //  36   0x24   APPCOMMAND_COPY
-    Qt::Key_Cut,            //  37   0x25   APPCOMMAND_CUT
-    Qt::Key_Paste,          //  38   0x26   APPCOMMAND_PASTE
-    Qt::Key_Reply,          //  39   0x27   APPCOMMAND_REPLY_TO_MAIL
-    Qt::Key_MailForward,    //  40   0x28   APPCOMMAND_FORWARD_MAIL
-    Qt::Key_Send,           //  41   0x29   APPCOMMAND_SEND_MAIL
-    Qt::Key_Spell,          //  42   0x2a   APPCOMMAND_SPELL_CHECK
-    Qt::Key_unknown,        //  43   0x2b   APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE
-    Qt::Key_unknown,        //  44   0x2c   APPCOMMAND_MIC_ON_OFF_TOGGLE
-    Qt::Key_unknown,        //  45   0x2d   APPCOMMAND_CORRECTION_LIST
-    Qt::Key_MediaPlay,      //  46   0x2e   APPCOMMAND_MEDIA_PLAY
-    Qt::Key_MediaPause,     //  47   0x2f   APPCOMMAND_MEDIA_PAUSE
-    Qt::Key_MediaRecord,    //  48   0x30   APPCOMMAND_MEDIA_RECORD
-    Qt::Key_AudioForward,   //  49   0x31   APPCOMMAND_MEDIA_FAST_FORWARD
-    Qt::Key_AudioRewind,    //  50   0x32   APPCOMMAND_MEDIA_REWIND
-    Qt::Key_ChannelDown,    //  51   0x33   APPCOMMAND_MEDIA_CHANNEL_DOWN
-    Qt::Key_ChannelUp       //  52   0x34   APPCOMMAND_MEDIA_CHANNEL_UP
+    BobUI::Key_unknown,        //   0   0x00
+    BobUI::Key_Back,           //   1   0x01   APPCOMMAND_BROWSER_BACKWARD
+    BobUI::Key_Forward,        //   2   0x02   APPCOMMAND_BROWSER_FORWARD
+    BobUI::Key_Refresh,        //   3   0x03   APPCOMMAND_BROWSER_REFRESH
+    BobUI::Key_Stop,           //   4   0x04   APPCOMMAND_BROWSER_STOP
+    BobUI::Key_Search,         //   5   0x05   APPCOMMAND_BROWSER_SEARCH
+    BobUI::Key_Favorites,      //   6   0x06   APPCOMMAND_BROWSER_FAVORITES
+    BobUI::Key_Home,           //   7   0x07   APPCOMMAND_BROWSER_HOME
+    BobUI::Key_VolumeMute,     //   8   0x08   APPCOMMAND_VOLUME_MUTE
+    BobUI::Key_VolumeDown,     //   9   0x09   APPCOMMAND_VOLUME_DOWN
+    BobUI::Key_VolumeUp,       //  10   0x0a   APPCOMMAND_VOLUME_UP
+    BobUI::Key_MediaNext,      //  11   0x0b   APPCOMMAND_MEDIA_NEXTTRACK
+    BobUI::Key_MediaPrevious,  //  12   0x0c   APPCOMMAND_MEDIA_PREVIOUSTRACK
+    BobUI::Key_MediaStop,      //  13   0x0d   APPCOMMAND_MEDIA_STOP
+    BobUI::Key_MediaTogglePlayPause,   //  14   0x0e   APPCOMMAND_MEDIA_PLAYPAUSE
+    BobUI::Key_LaunchMail,     //  15   0x0f   APPCOMMAND_LAUNCH_MAIL
+    BobUI::Key_LaunchMedia,    //  16   0x10   APPCOMMAND_LAUNCH_MEDIA_SELECT
+    BobUI::Key_Launch0,        //  17   0x11   APPCOMMAND_LAUNCH_APP1
+    BobUI::Key_Launch1,        //  18   0x12   APPCOMMAND_LAUNCH_APP2
+    BobUI::Key_BassDown,       //  19   0x13   APPCOMMAND_BASS_DOWN
+    BobUI::Key_BassBoost,      //  20   0x14   APPCOMMAND_BASS_BOOST
+    BobUI::Key_BassUp,         //  21   0x15   APPCOMMAND_BASS_UP
+    BobUI::Key_TrebleDown,     //  22   0x16   APPCOMMAND_TREBLE_DOWN
+    BobUI::Key_TrebleUp,       //  23   0x17   APPCOMMAND_TREBLE_UP
+    BobUI::Key_MicMute,        //  24   0x18   APPCOMMAND_MICROPHONE_VOLUME_MUTE
+    BobUI::Key_MicVolumeDown,  //  25   0x19   APPCOMMAND_MICROPHONE_VOLUME_DOWN
+    BobUI::Key_MicVolumeUp,    //  26   0x1a   APPCOMMAND_MICROPHONE_VOLUME_UP
+    BobUI::Key_Help,           //  27   0x1b   APPCOMMAND_HELP
+    BobUI::Key_Find,           //  28   0x1c   APPCOMMAND_FIND
+    BobUI::Key_New,            //  29   0x1d   APPCOMMAND_NEW
+    BobUI::Key_Open,           //  30   0x1e   APPCOMMAND_OPEN
+    BobUI::Key_Close,          //  31   0x1f   APPCOMMAND_CLOSE
+    BobUI::Key_Save,           //  32   0x20   APPCOMMAND_SAVE
+    BobUI::Key_Printer,        //  33   0x21   APPCOMMAND_PRINT
+    BobUI::Key_Undo,           //  34   0x22   APPCOMMAND_UNDO
+    BobUI::Key_Redo,           //  35   0x23   APPCOMMAND_REDO
+    BobUI::Key_Copy,           //  36   0x24   APPCOMMAND_COPY
+    BobUI::Key_Cut,            //  37   0x25   APPCOMMAND_CUT
+    BobUI::Key_Paste,          //  38   0x26   APPCOMMAND_PASTE
+    BobUI::Key_Reply,          //  39   0x27   APPCOMMAND_REPLY_TO_MAIL
+    BobUI::Key_MailForward,    //  40   0x28   APPCOMMAND_FORWARD_MAIL
+    BobUI::Key_Send,           //  41   0x29   APPCOMMAND_SEND_MAIL
+    BobUI::Key_Spell,          //  42   0x2a   APPCOMMAND_SPELL_CHECK
+    BobUI::Key_unknown,        //  43   0x2b   APPCOMMAND_DICTATE_OR_COMMAND_CONTROL_TOGGLE
+    BobUI::Key_unknown,        //  44   0x2c   APPCOMMAND_MIC_ON_OFF_TOGGLE
+    BobUI::Key_unknown,        //  45   0x2d   APPCOMMAND_CORRECTION_LIST
+    BobUI::Key_MediaPlay,      //  46   0x2e   APPCOMMAND_MEDIA_PLAY
+    BobUI::Key_MediaPause,     //  47   0x2f   APPCOMMAND_MEDIA_PAUSE
+    BobUI::Key_MediaRecord,    //  48   0x30   APPCOMMAND_MEDIA_RECORD
+    BobUI::Key_AudioForward,   //  49   0x31   APPCOMMAND_MEDIA_FAST_FORWARD
+    BobUI::Key_AudioRewind,    //  50   0x32   APPCOMMAND_MEDIA_REWIND
+    BobUI::Key_ChannelDown,    //  51   0x33   APPCOMMAND_MEDIA_CHANNEL_DOWN
+    BobUI::Key_ChannelUp       //  52   0x34   APPCOMMAND_MEDIA_CHANNEL_UP
 };
 
 // Possible modifier states.
 // NOTE: The order of these states match the order in QWindowsKeyMapper::updatePossibleKeyCodes()!
-static const Qt::KeyboardModifiers ModsTbl[] = {
-    Qt::NoModifier,                                             // 0
-    Qt::ShiftModifier,                                          // 1
-    Qt::ControlModifier,                                        // 2
-    Qt::ControlModifier | Qt::ShiftModifier,                    // 3
-    Qt::AltModifier,                                            // 4
-    Qt::AltModifier | Qt::ShiftModifier,                        // 5
-    Qt::AltModifier | Qt::ControlModifier,                      // 6
-    Qt::AltModifier | Qt::ShiftModifier | Qt::ControlModifier,  // 7
-    Qt::NoModifier,                                             // Fall-back to raw Key_*
+static const BobUI::KeyboardModifiers ModsTbl[] = {
+    BobUI::NoModifier,                                             // 0
+    BobUI::ShiftModifier,                                          // 1
+    BobUI::ControlModifier,                                        // 2
+    BobUI::ControlModifier | BobUI::ShiftModifier,                    // 3
+    BobUI::AltModifier,                                            // 4
+    BobUI::AltModifier | BobUI::ShiftModifier,                        // 5
+    BobUI::AltModifier | BobUI::ControlModifier,                      // 6
+    BobUI::AltModifier | BobUI::ShiftModifier | BobUI::ControlModifier,  // 7
+    BobUI::NoModifier,                                             // Fall-back to raw Key_*
 };
 static const size_t NumMods = sizeof ModsTbl / sizeof *ModsTbl;
-static_assert((NumMods == KeyboardLayoutItem::NumQtKeys));
+static_assert((NumMods == KeyboardLayoutItem::NumBobUIKeys));
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const KeyboardLayoutItem &k)
 {
     QDebugStateSaver saver(d);
@@ -524,13 +524,13 @@ QDebug operator<<(QDebug d, const KeyboardLayoutItem &k)
     d << "KeyboardLayoutItem(";
     if (k.exists) {
         for (size_t i = 0; i < NumMods; ++i) {
-            if (const quint32 qtKey = k.qtKey[i]) {
+            if (const quint32 bobuiKey = k.bobuiKey[i]) {
                 d << '[' << i << ' ';
-                QtDebugUtils::formatQFlags(d, ModsTbl[i]);
-                d << ' ' << Qt::hex << Qt::showbase << qtKey << Qt::dec << Qt::noshowbase << ' ';
-                QtDebugUtils::formatQEnum(d, Qt::Key(qtKey));
-                if (qtKey >= 32 && qtKey < 128)
-                    d << " '" << char(qtKey)  << '\'';
+                BobUIDebugUtils::formatQFlags(d, ModsTbl[i]);
+                d << ' ' << BobUI::hex << BobUI::showbase << bobuiKey << BobUI::dec << BobUI::noshowbase << ' ';
+                BobUIDebugUtils::formatQEnum(d, BobUI::Key(bobuiKey));
+                if (bobuiKey >= 32 && bobuiKey < 128)
+                    d << " '" << char(bobuiKey)  << '\'';
                 if (k.deadkeys & (1<<i))
                     d << "  deadkey";
                 d << "] ";
@@ -540,7 +540,7 @@ QDebug operator<<(QDebug d, const KeyboardLayoutItem &k)
     d << ')';
     return d;
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 /**
   Remap return or action key to select key for windows mobile.
@@ -550,7 +550,7 @@ inline quint32 winceKeyBend(quint32 keyCode)
     return KeyTbl[keyCode];
 }
 
-// Translate a VK into a Qt key code, or unicode character
+// Translate a VK into a BobUI key code, or unicode character
 static inline quint32 toKeyOrUnicode(quint32 vk, quint32 scancode, unsigned char *kbdBuffer, bool *isDeadkey = nullptr)
 {
     Q_ASSERT(vk > 0 && vk < 256);
@@ -568,21 +568,21 @@ static inline quint32 toKeyOrUnicode(quint32 vk, quint32 scancode, unsigned char
     if (res)
         code = unicodeBuffer[0].toUpper().unicode();
 
-    // Qt::Key_*'s are not encoded below 0x20, so try again, and DEL keys (0x7f) is encoded with a
-    // proper Qt::Key_ code
+    // BobUI::Key_*'s are not encoded below 0x20, so try again, and DEL keys (0x7f) is encoded with a
+    // proper BobUI::Key_ code
     if (code < 0x20 || code == 0x7f) // Handles res==0 too
         code = winceKeyBend(vk);
 
     if (isDeadkey)
         *isDeadkey = (res == -1);
 
-    return code == Qt::Key_unknown ? 0 : code;
+    return code == BobUI::Key_unknown ? 0 : code;
 }
 
 static inline int asciiToKeycode(char a, int state)
 {
-    a = QtMiscUtils::toAsciiUpper(a);
-    if ((state & Qt::ControlModifier) != 0) {
+    a = BobUIMiscUtils::toAsciiUpper(a);
+    if ((state & BobUI::ControlModifier) != 0) {
         if (a >= 0 && a <= 31)              // Ctrl+@..Ctrl+A..CTRL+Z..Ctrl+_
             a += '@';                       // to @..A..Z.._
     }
@@ -608,7 +608,7 @@ void QWindowsKeyMapper::changeKeyboard()
      * returns a DWORD. */
 
     LCID newLCID = MAKELCID(quintptr(GetKeyboardLayout(0)), SORT_DEFAULT);
-//    keyboardInputLocale = qt_localeFromLCID(newLCID);
+//    keyboardInputLocale = bobui_localeFromLCID(newLCID);
 
     bool bidi = false;
     wchar_t LCIDFontSig[16];
@@ -616,7 +616,7 @@ void QWindowsKeyMapper::changeKeyboard()
         && (LCIDFontSig[7] & wchar_t(0x0800)))
         bidi = true;
 
-    keyboardInputDirection = bidi ? Qt::RightToLeft : Qt::LeftToRight;
+    keyboardInputDirection = bidi ? BobUI::RightToLeft : BobUI::LeftToRight;
     m_seenAltGr = false;
 }
 
@@ -666,45 +666,45 @@ void QWindowsKeyMapper::updatePossibleKeyCodes(unsigned char *kbdBuffer, quint32
 
     // keyLayout contains the actual characters which can be written using the vk_key together with the
     // different modifiers. '2' together with shift will for example cause the character
-    // to be @ for a US key layout (thus keyLayout[vk_key].qtKey[1] will be @). In addition to that
+    // to be @ for a US key layout (thus keyLayout[vk_key].bobuiKey[1] will be @). In addition to that
     // it stores whether the resulting key is a dead key as these keys have to be handled later.
     bool isDeadKey = false;
     keyLayout[vk_key].deadkeys = 0;
     keyLayout[vk_key].dirty = false;
     keyLayout[vk_key].exists = true;
     setKbdState(buffer, false, false, false);
-    keyLayout[vk_key].qtKey[0] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[0] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x01 : 0;
     setKbdState(buffer, true, false, false);
-    keyLayout[vk_key].qtKey[1] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[1] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x02 : 0;
     setKbdState(buffer, false, true, false);
-    keyLayout[vk_key].qtKey[2] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[2] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x04 : 0;
     setKbdState(buffer, true, true, false);
-    keyLayout[vk_key].qtKey[3] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[3] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x08 : 0;
     setKbdState(buffer, false, false, true);
-    keyLayout[vk_key].qtKey[4] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[4] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x10 : 0;
     setKbdState(buffer, true, false, true);
-    keyLayout[vk_key].qtKey[5] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[5] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x20 : 0;
     setKbdState(buffer, false, true, true);
-    keyLayout[vk_key].qtKey[6] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[6] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x40 : 0;
     setKbdState(buffer, true, true, true);
-    keyLayout[vk_key].qtKey[7] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
+    keyLayout[vk_key].bobuiKey[7] = toKeyOrUnicode(vk_key, scancode, buffer, &isDeadKey);
     keyLayout[vk_key].deadkeys |= isDeadKey ? 0x80 : 0;
     // Add a fall back key for layouts which don't do composition and show non-latin1 characters
     quint32 fallbackKey = winceKeyBend(vk_key);
-    if (!fallbackKey || fallbackKey == Qt::Key_unknown) {
+    if (!fallbackKey || fallbackKey == BobUI::Key_unknown) {
         fallbackKey = 0;
-        if (vk_key != keyLayout[vk_key].qtKey[0] && vk_key != keyLayout[vk_key].qtKey[1]
+        if (vk_key != keyLayout[vk_key].bobuiKey[0] && vk_key != keyLayout[vk_key].bobuiKey[1]
             && vk_key < 0x5B && vk_key > 0x2F)
             fallbackKey = vk_key;
     }
-    keyLayout[vk_key].qtKey[8] = fallbackKey;
+    keyLayout[vk_key].bobuiKey[8] = fallbackKey;
 
     // If one of the values inserted into the keyLayout above, can be considered a dead key, we have
     // to run the workaround below.
@@ -721,7 +721,7 @@ void QWindowsKeyMapper::updatePossibleKeyCodes(unsigned char *kbdBuffer, quint32
         ::ToAscii(vk_key, scancode, kbdBuffer, reinterpret_cast<LPWORD>(&buffer), 0);
     }
     qCDebug(lcQpaEvents) << __FUNCTION__ << "for virtual key="
-        << Qt::hex << Qt::showbase << vk_key << Qt::dec << Qt::noshowbase << keyLayout[vk_key];
+        << BobUI::hex << BobUI::showbase << vk_key << BobUI::dec << BobUI::noshowbase << keyLayout[vk_key];
 }
 
 static inline QString messageKeyText(const MSG &msg)
@@ -743,12 +743,12 @@ static inline QString messageKeyText(const MSG &msg)
     return captionHeight + frameHeight;
 }
 
-[[nodiscard]] static inline bool isSystemMenuOffsetNeeded(const Qt::WindowFlags flags)
+[[nodiscard]] static inline bool isSystemMenuOffsetNeeded(const BobUI::WindowFlags flags)
 {
-    static constexpr const Qt::WindowFlags titleBarHints =
-        Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint;
-    return (flags & Qt::WindowSystemMenuHint) && (flags & Qt::WindowTitleHint) && !(flags & titleBarHints)
-           && (flags & (Qt::FramelessWindowHint | Qt::CustomizeWindowHint));
+    static constexpr const BobUI::WindowFlags titleBarHints =
+        BobUI::WindowMinMaxButtonsHint | BobUI::WindowCloseButtonHint | BobUI::WindowContextHelpButtonHint;
+    return (flags & BobUI::WindowSystemMenuHint) && (flags & BobUI::WindowTitleHint) && !(flags & titleBarHints)
+           && (flags & (BobUI::FramelessWindowHint | BobUI::CustomizeWindowHint));
 }
 
 static void showSystemMenu(QWindow* w)
@@ -762,15 +762,15 @@ static void showSystemMenu(QWindow* w)
 #define enabled (MF_BYCOMMAND | MFS_ENABLED)
 #define disabled (MF_BYCOMMAND | MFS_GRAYED)
 
-    EnableMenuItem(menu, SC_MINIMIZE, (topLevel->flags() & Qt::WindowMinimizeButtonHint) ? enabled : disabled);
+    EnableMenuItem(menu, SC_MINIMIZE, (topLevel->flags() & BobUI::WindowMinimizeButtonHint) ? enabled : disabled);
     const bool maximized = IsZoomed(topLevelHwnd);
 
-    EnableMenuItem(menu, SC_MAXIMIZE, !(topLevel->flags() & Qt::WindowMaximizeButtonHint) || maximized ? disabled : enabled);
+    EnableMenuItem(menu, SC_MAXIMIZE, !(topLevel->flags() & BobUI::WindowMaximizeButtonHint) || maximized ? disabled : enabled);
 
     // We should _not_ check with the setFixedSize(x,y) case here, since Windows is not able to check
     // this and our menu here would be out-of-sync with the menu produced by mouse-click on the
     // System Menu, or right-click on the title bar.
-    EnableMenuItem(menu, SC_SIZE, (topLevel->flags() & Qt::MSWindowsFixedSizeDialogHint) || maximized ? disabled : enabled);
+    EnableMenuItem(menu, SC_SIZE, (topLevel->flags() & BobUI::MSWindowsFixedSizeDialogHint) || maximized ? disabled : enabled);
     EnableMenuItem(menu, SC_MOVE, maximized ? disabled : enabled);
     EnableMenuItem(menu, SC_CLOSE, enabled);
     EnableMenuItem(menu, SC_RESTORE, maximized ? enabled : disabled);
@@ -802,7 +802,7 @@ static void showSystemMenu(QWindow* w)
 }
 
 static inline void sendExtendedPressRelease(QWindow *w, unsigned long timestamp, int k,
-                                            Qt::KeyboardModifiers mods,
+                                            BobUI::KeyboardModifiers mods,
                                             quint32 nativeScanCode,
                                             quint32 nativeVirtualKey,
                                             quint32 nativeModifiers,
@@ -852,13 +852,13 @@ bool QWindowsKeyMapper::translateMultimediaKeyEventInternal(QWindow *window, con
 {
 #if defined(WM_APPCOMMAND)
     const int cmd = GET_APPCOMMAND_LPARAM(msg.lParam);
-    // QTBUG-57198, do not send mouse-synthesized commands as key events in addition
+    // BOBUIBUG-57198, do not send mouse-synthesized commands as key events in addition
     bool skipPressRelease = false;
     switch (GET_DEVICE_LPARAM(msg.lParam)) {
     case FAPPCOMMAND_MOUSE:
         return false;
     case FAPPCOMMAND_KEY:
-        // QTBUG-62838, use WM_KEYDOWN/WM_KEYUP for commands that are reflected
+        // BOBUIBUG-62838, use WM_KEYDOWN/WM_KEYUP for commands that are reflected
         // in VK(s) like VK_MEDIA_NEXT_TRACK, to get correct codes and autorepeat.
         // Don't do that for APPCOMMAND_BROWSER_HOME as that one does not trigger two events.
         if (cmd != APPCOMMAND_BROWSER_HOME)
@@ -868,21 +868,21 @@ bool QWindowsKeyMapper::translateMultimediaKeyEventInternal(QWindow *window, con
 
     const int dwKeys = GET_KEYSTATE_LPARAM(msg.lParam);
     int state = 0;
-    state |= (dwKeys & MK_SHIFT ? int(Qt::ShiftModifier) : 0);
-    state |= (dwKeys & MK_CONTROL ? int(Qt::ControlModifier) : 0);
+    state |= (dwKeys & MK_SHIFT ? int(BobUI::ShiftModifier) : 0);
+    state |= (dwKeys & MK_CONTROL ? int(BobUI::ControlModifier) : 0);
 
     QWindow *receiver = m_keyGrabber ? m_keyGrabber : window;
 
     if (cmd < 0 || cmd > 52)
         return false;
 
-    const int qtKey = int(CmdTbl[cmd]);
+    const int bobuiKey = int(CmdTbl[cmd]);
     if (!skipPressRelease)
-        sendExtendedPressRelease(receiver, msg.time, qtKey, Qt::KeyboardModifier(state), 0, 0, 0);
-    // QTBUG-43343: Make sure to return false if Qt does not handle the key, otherwise,
+        sendExtendedPressRelease(receiver, msg.time, bobuiKey, BobUI::KeyboardModifier(state), 0, 0, 0);
+    // BOBUIBUG-43343: Make sure to return false if BobUI does not handle the key, otherwise,
     // the keys are not passed to the active media player.
-# if QT_CONFIG(shortcut)
-    const QKeySequence sequence(Qt::Modifier(state) | Qt::Key(qtKey));
+# if BOBUI_CONFIG(shortcut)
+    const QKeySequence sequence(BobUI::Modifier(state) | BobUI::Key(bobuiKey));
     return QGuiApplicationPrivate::instance()->shortcutMap.hasShortcutForKeySequence(sequence);
 # else
     return false;
@@ -893,7 +893,7 @@ bool QWindowsKeyMapper::translateMultimediaKeyEventInternal(QWindow *window, con
 #endif
 }
 
-// QTBUG-69317: Check for AltGr found on some keyboards
+// BOBUIBUG-69317: Check for AltGr found on some keyboards
 // which is a sequence of left Ctrl (SYSKEY) + right Menu (Alt).
 static bool isAltGr(MSG *msg)
 {
@@ -948,17 +948,17 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
 
     // Get the modifier states (may be altered later, depending on key code)
     int state = 0;
-    state |= (nModifiers & ShiftAny ? int(Qt::ShiftModifier) : 0);
-    state |= (nModifiers & AltLeft ? int(Qt::AltModifier) : 0);
+    state |= (nModifiers & ShiftAny ? int(BobUI::ShiftModifier) : 0);
+    state |= (nModifiers & AltLeft ? int(BobUI::AltModifier) : 0);
     if ((nModifiers & AltRight) != 0)
-        state |= m_seenAltGr ? Qt::GroupSwitchModifier : Qt::AltModifier;
-    if ((nModifiers & ControlAny) != 0 && (state & Qt::GroupSwitchModifier) == 0)
-        state |= Qt::ControlModifier;
-    state |= (nModifiers & MetaAny ? int(Qt::MetaModifier) : 0);
+        state |= m_seenAltGr ? BobUI::GroupSwitchModifier : BobUI::AltModifier;
+    if ((nModifiers & ControlAny) != 0 && (state & BobUI::GroupSwitchModifier) == 0)
+        state |= BobUI::ControlModifier;
+    state |= (nModifiers & MetaAny ? int(BobUI::MetaModifier) : 0);
     // A multi-character key or a Input method character
     // not found by our look-ahead
     if (msgType == WM_CHAR || msgType == WM_IME_CHAR) {
-        sendExtendedPressRelease(receiver, msg.time, 0, Qt::KeyboardModifier(state), scancode, 0, nModifiers, messageKeyText(msg), false);
+        sendExtendedPressRelease(receiver, msg.time, 0, BobUI::KeyboardModifier(state), scancode, 0, nModifiers, messageKeyText(msg), false);
         return true;
     }
 
@@ -972,7 +972,7 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
     // handle Directionality changes (BiDi) with RTL extensions
     if (m_useRTLExtensions) {
         static int dirStatus = 0;
-        if (!dirStatus && state == Qt::ControlModifier
+        if (!dirStatus && state == BobUI::ControlModifier
                 && msg.wParam == VK_CONTROL
                 && msgType == WM_KEYDOWN) {
             if (GetKeyState(VK_LCONTROL) < 0)
@@ -993,14 +993,14 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
                 if (dirStatus == VK_LSHIFT
                         && ((msg.wParam == VK_SHIFT && GetKeyState(VK_LCONTROL))
                             || (msg.wParam == VK_CONTROL && GetKeyState(VK_LSHIFT)))) {
-                    sendExtendedPressRelease(receiver, msg.time, Qt::Key_Direction_L, {},
+                    sendExtendedPressRelease(receiver, msg.time, BobUI::Key_Direction_L, {},
                                              scancode, vk_key, nModifiers, QString(), false);
                     result = true;
                     dirStatus = 0;
                 } else if (dirStatus == VK_RSHIFT
                            && ( (msg.wParam == VK_SHIFT && GetKeyState(VK_RCONTROL))
                                 || (msg.wParam == VK_CONTROL && GetKeyState(VK_RSHIFT)))) {
-                    sendExtendedPressRelease(receiver, msg.time, Qt::Key_Direction_R, {},
+                    sendExtendedPressRelease(receiver, msg.time, BobUI::Key_Direction_R, {},
                                              scancode, vk_key, nModifiers, QString(), false);
                     result = true;
                     dirStatus = 0;
@@ -1017,11 +1017,11 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
     if (msg.wParam == VK_PROCESSKEY)
         return true;
 
-    // Ignore invalid virtual keycodes (see bugs 127424, QTBUG-3630)
+    // Ignore invalid virtual keycodes (see bugs 127424, BOBUIBUG-3630)
     if (msg.wParam == 0 || msg.wParam == 0xFF)
         return true;
 
-    // Translate VK_* (native) -> Key_* (Qt) keys
+    // Translate VK_* (native) -> Key_* (BobUI) keys
     int modifiersIndex = 0;
     modifiersIndex |= (nModifiers & ShiftAny ? 0x1 : 0);
     modifiersIndex |= (nModifiers & ControlAny ? 0x2 : 0);
@@ -1029,72 +1029,72 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
 
     // Note: For the resulting key, AltGr is equivalent to Alt + Ctrl (as
     // opposed to Linux); hence no entry in KeyboardLayoutItem is required
-    int code = keyLayout[vk_key].qtKey[modifiersIndex];
+    int code = keyLayout[vk_key].bobuiKey[modifiersIndex];
 
     // If the bit 24 of lParm is set you received a enter,
     // otherwise a Return. (This is the extended key bit)
-    if ((code == Qt::Key_Return) && (msg.lParam & 0x1000000))
-        code = Qt::Key_Enter;
+    if ((code == BobUI::Key_Return) && (msg.lParam & 0x1000000))
+        code = BobUI::Key_Enter;
     else if (altGr)
-        code = Qt::Key_AltGr;
+        code = BobUI::Key_AltGr;
 
     // Invert state logic:
     // If the key actually pressed is a modifier key, then we remove its modifier key from the
     // state, since a modifier-key can't have itself as a modifier
-    if (code == Qt::Key_Control)
-        state = state ^ Qt::ControlModifier;
-    else if (code == Qt::Key_Shift)
-        state = state ^ Qt::ShiftModifier;
-    else if (code == Qt::Key_Alt)
-        state = state ^ Qt::AltModifier;
-    else if (code == Qt::Key_AltGr)
-        state = state ^ Qt::GroupSwitchModifier;
+    if (code == BobUI::Key_Control)
+        state = state ^ BobUI::ControlModifier;
+    else if (code == BobUI::Key_Shift)
+        state = state ^ BobUI::ShiftModifier;
+    else if (code == BobUI::Key_Alt)
+        state = state ^ BobUI::AltModifier;
+    else if (code == BobUI::Key_AltGr)
+        state = state ^ BobUI::GroupSwitchModifier;
 
     // All cursor keys without extended bit
     if (!(msg.lParam & 0x1000000)) {
         switch (code) {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_PageUp:
-        case Qt::Key_PageDown:
-        case Qt::Key_Home:
-        case Qt::Key_End:
-        case Qt::Key_Insert:
-        case Qt::Key_Delete:
-        case Qt::Key_Asterisk:
-        case Qt::Key_Plus:
-        case Qt::Key_Minus:
-        case Qt::Key_Period:
-        case Qt::Key_Comma:
-        case Qt::Key_0:
-        case Qt::Key_1:
-        case Qt::Key_2:
-        case Qt::Key_3:
-        case Qt::Key_4:
-        case Qt::Key_5:
-        case Qt::Key_6:
-        case Qt::Key_7:
-        case Qt::Key_8:
-        case Qt::Key_9:
+        case BobUI::Key_Left:
+        case BobUI::Key_Right:
+        case BobUI::Key_Up:
+        case BobUI::Key_Down:
+        case BobUI::Key_PageUp:
+        case BobUI::Key_PageDown:
+        case BobUI::Key_Home:
+        case BobUI::Key_End:
+        case BobUI::Key_Insert:
+        case BobUI::Key_Delete:
+        case BobUI::Key_Asterisk:
+        case BobUI::Key_Plus:
+        case BobUI::Key_Minus:
+        case BobUI::Key_Period:
+        case BobUI::Key_Comma:
+        case BobUI::Key_0:
+        case BobUI::Key_1:
+        case BobUI::Key_2:
+        case BobUI::Key_3:
+        case BobUI::Key_4:
+        case BobUI::Key_5:
+        case BobUI::Key_6:
+        case BobUI::Key_7:
+        case BobUI::Key_8:
+        case BobUI::Key_9:
             state |= ((msg.wParam >= '0' && msg.wParam <= '9')
                       || (msg.wParam >= VK_OEM_PLUS && msg.wParam <= VK_OEM_3))
-                    ? 0 : int(Qt::KeypadModifier);
+                    ? 0 : int(BobUI::KeypadModifier);
             Q_FALLTHROUGH();
         default:
             if (uint(msg.lParam) == 0x004c0001 || uint(msg.lParam) == 0xc04c0001)
-                state |= Qt::KeypadModifier;
+                state |= BobUI::KeypadModifier;
             break;
         }
     }
     // Other keys with with extended bit
     else {
         switch (code) {
-        case Qt::Key_Enter:
-        case Qt::Key_Slash:
-        case Qt::Key_NumLock:
-            state |= Qt::KeypadModifier;
+        case BobUI::Key_Enter:
+        case BobUI::Key_Slash:
+        case BobUI::Key_NumLock:
+            state |= BobUI::KeypadModifier;
             break;
         default:
             break;
@@ -1190,13 +1190,13 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
         }
 
         // Special handling of global Windows hotkeys
-        if (state == Qt::AltModifier) {
+        if (state == BobUI::AltModifier) {
             switch (code) {
-            case Qt::Key_Escape:
-            case Qt::Key_Tab:
-            case Qt::Key_F4:
+            case BobUI::Key_Escape:
+            case BobUI::Key_Tab:
+            case BobUI::Key_F4:
                 return false; // Send the event on to Windows
-            case Qt::Key_Space:
+            case BobUI::Key_Space:
                 // do not pass this key to windows, we will process it ourselves
                 showSystemMenu(receiver);
                 return true;
@@ -1206,17 +1206,17 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
         }
 
         // Map SHIFT + Tab to SHIFT + BackTab, QShortcutMap knows about this translation
-        if (code == Qt::Key_Tab && (state & Qt::ShiftModifier) == Qt::ShiftModifier)
-            code = Qt::Key_Backtab;
+        if (code == BobUI::Key_Tab && (state & BobUI::ShiftModifier) == BobUI::ShiftModifier)
+            code = BobUI::Key_Backtab;
 
         // If we have a record, it means that the key is already pressed, the state is the same
         // so, we have an auto-repeating key
         if (rec) {
-            if (code < Qt::Key_Shift || code > Qt::Key_ScrollLock) {
+            if (code < BobUI::Key_Shift || code > BobUI::Key_ScrollLock) {
                 QWindowSystemInterface::handleExtendedKeyEvent(receiver, msg.time, QEvent::KeyRelease, code,
-                                                               Qt::KeyboardModifier(state), scancode, quint32(msg.wParam), nModifiers, rec->text, true);
+                                                               BobUI::KeyboardModifier(state), scancode, quint32(msg.wParam), nModifiers, rec->text, true);
                 QWindowSystemInterface::handleExtendedKeyEvent(receiver, msg.time, QEvent::KeyPress, code,
-                                                               Qt::KeyboardModifier(state), scancode, quint32(msg.wParam), nModifiers, rec->text, true);
+                                                               BobUI::KeyboardModifier(state), scancode, quint32(msg.wParam), nModifiers, rec->text, true);
                 result = true;
             }
         }
@@ -1225,17 +1225,17 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
         else {
             const QString text = uch.isNull() ? QString() : QString(uch);
             const char a = uch.row() ? char(0) : char(uch.cell());
-            const Qt::KeyboardModifiers modifiers(state);
-#ifndef QT_NO_SHORTCUT
-            // Is Qt interested in the context menu key?
-            if (modifiers == Qt::SHIFT && code == Qt::Key_F10
-                && !QGuiApplicationPrivate::instance()->shortcutMap.hasShortcutForKeySequence(QKeySequence(Qt::SHIFT | Qt::Key_F10))) {
+            const BobUI::KeyboardModifiers modifiers(state);
+#ifndef BOBUI_NO_SHORTCUT
+            // Is BobUI interested in the context menu key?
+            if (modifiers == BobUI::SHIFT && code == BobUI::Key_F10
+                && !QGuiApplicationPrivate::instance()->shortcutMap.hasShortcutForKeySequence(QKeySequence(BobUI::SHIFT | BobUI::Key_F10))) {
                 return false;
             }
-#endif // !QT_NO_SHORTCUT
+#endif // !BOBUI_NO_SHORTCUT
             key_recorder.storeKey(int(msg.wParam), a, state, text);
 
-            // QTBUG-71210
+            // BOBUIBUG-71210
             // VK_PACKET specifies multiple characters. The system only sends the first
             // character of this sequence for each.
             if (msg.wParam == VK_PACKET)
@@ -1245,7 +1245,7 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
                                                            modifiers, scancode, quint32(msg.wParam), nModifiers, text, false);
             result =true;
             bool store = true;
-            // Alt+<alphanumerical> go to the Win32 menu system if unhandled by Qt
+            // Alt+<alphanumerical> go to the Win32 menu system if unhandled by BobUI
             if (msgType == WM_SYSKEYDOWN && !result && a) {
                 HWND parent = GetParent(QWindowsWindow::handleOf(receiver));
                 while (parent) {
@@ -1270,24 +1270,24 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
         // win32 natively, or our window gets focus while a key is already press, but now gets
         // the key release event.
         const KeyRecord *rec = key_recorder.findKey(int(msg.wParam), true);
-        if (!rec && !(code == Qt::Key_Shift
-                      || code == Qt::Key_Control
-                      || code == Qt::Key_Meta
-                      || code == Qt::Key_Alt)) {
+        if (!rec && !(code == BobUI::Key_Shift
+                      || code == BobUI::Key_Control
+                      || code == BobUI::Key_Meta
+                      || code == BobUI::Key_Alt)) {
 
-            // Workaround for QTBUG-77153:
+            // Workaround for BOBUIBUG-77153:
             // The Surface Pen eraser button generates Meta+F18/19/20 keystrokes,
             // but when it is not touching the screen the Fn Down is eaten and only
             // a Fn Up with the previous state as "not pressed" is generated, which
             // would be ignored. We detect this case and synthesize the expected events.
             if ((msg.lParam & 0x40000000) == 0 &&
-                    Qt::KeyboardModifier(state) == Qt::NoModifier &&
-                    ((code == Qt::Key_F18) || (code == Qt::Key_F19) || (code == Qt::Key_F20))) {
+                    BobUI::KeyboardModifier(state) == BobUI::NoModifier &&
+                    ((code == BobUI::Key_F18) || (code == BobUI::Key_F19) || (code == BobUI::Key_F20))) {
                 QWindowSystemInterface::handleExtendedKeyEvent(receiver, msg.time, QEvent::KeyPress, code,
-                                                               Qt::MetaModifier, scancode,
+                                                               BobUI::MetaModifier, scancode,
                                                                quint32(msg.wParam), MetaLeft);
                 QWindowSystemInterface::handleExtendedKeyEvent(receiver, msg.time, QEvent::KeyRelease, code,
-                                                               Qt::NoModifier, scancode,
+                                                               BobUI::NoModifier, scancode,
                                                                quint32(msg.wParam), 0);
                 result = true;
             }
@@ -1296,15 +1296,15 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
                 code = asciiToKeycode(rec->ascii ? char(rec->ascii) : char(msg.wParam), state);
 
             // Map SHIFT + Tab to SHIFT + BackTab, QShortcutMap knows about this translation
-            if (code == Qt::Key_Tab && (state & Qt::ShiftModifier) == Qt::ShiftModifier)
-                code = Qt::Key_Backtab;
+            if (code == BobUI::Key_Tab && (state & BobUI::ShiftModifier) == BobUI::ShiftModifier)
+                code = BobUI::Key_Backtab;
             QWindowSystemInterface::handleExtendedKeyEvent(receiver, msg.time, QEvent::KeyRelease, code,
-                                                           Qt::KeyboardModifier(state), scancode, quint32(msg.wParam),
+                                                           BobUI::KeyboardModifier(state), scancode, quint32(msg.wParam),
                                                            nModifiers,
                                                            (rec ? rec->text : QString()), false);
             result = true;
-            // don't pass Alt to Windows unless we are embedded in a non-Qt window
-            if (code == Qt::Key_Alt) {
+            // don't pass Alt to Windows unless we are embedded in a non-BobUI window
+            if (code == BobUI::Key_Alt) {
                 const QWindowsContext *context = QWindowsContext::instance();
                 HWND parent = GetParent(QWindowsWindow::handleOf(receiver));
                 while (parent) {
@@ -1320,17 +1320,17 @@ bool QWindowsKeyMapper::translateKeyEventInternal(QWindow *window, MSG msg,
     return result;
 }
 
-Qt::KeyboardModifiers QWindowsKeyMapper::queryKeyboardModifiers() const
+BobUI::KeyboardModifiers QWindowsKeyMapper::queryKeyboardModifiers() const
 {
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    BobUI::KeyboardModifiers modifiers = BobUI::NoModifier;
     if (GetKeyState(VK_SHIFT) < 0)
-        modifiers |= Qt::ShiftModifier;
+        modifiers |= BobUI::ShiftModifier;
     if (GetKeyState(VK_CONTROL) < 0)
-        modifiers |= Qt::ControlModifier;
+        modifiers |= BobUI::ControlModifier;
     if (GetKeyState(VK_MENU) < 0)
-        modifiers |= Qt::AltModifier;
+        modifiers |= BobUI::AltModifier;
     if (GetKeyState(VK_LWIN) < 0 || GetKeyState(VK_RWIN) < 0)
-        modifiers |= Qt::MetaModifier;
+        modifiers |= BobUI::MetaModifier;
     return modifiers;
 }
 
@@ -1347,32 +1347,32 @@ QList<QKeyCombination> QWindowsKeyMapper::possibleKeyCombinations(const QKeyEven
     if (!kbItem.exists)
         return result;
 
-    quint32 baseKey = kbItem.qtKey[0];
-    Qt::KeyboardModifiers keyMods = e->modifiers();
-    if (baseKey == Qt::Key_Return && (e->nativeModifiers() & ExtendedKey)) {
-        result << (Qt::Key_Enter | keyMods);
+    quint32 baseKey = kbItem.bobuiKey[0];
+    BobUI::KeyboardModifiers keyMods = e->modifiers();
+    if (baseKey == BobUI::Key_Return && (e->nativeModifiers() & ExtendedKey)) {
+        result << (BobUI::Key_Enter | keyMods);
         return result;
     }
 
     // If Key_Tab+Shift is pressed we add Key_Backtab without
     // shift modifier as a possible combination too
-    if (baseKey == Qt::Key_Tab && (keyMods & Qt::ShiftModifier))
-        result << (Qt::Key_Backtab | (keyMods & ~Qt::ShiftModifier));
+    if (baseKey == BobUI::Key_Tab && (keyMods & BobUI::ShiftModifier))
+        result << (BobUI::Key_Backtab | (keyMods & ~BobUI::ShiftModifier));
 
     // The base key is _always_ valid, of course
     result << QKeyCombination::fromCombined(int(baseKey) + int(keyMods));
 
     for (size_t i = 1; i < NumMods; ++i) {
-        Qt::KeyboardModifiers neededMods = ModsTbl[i];
-        quint32 key = kbItem.qtKey[i];
+        BobUI::KeyboardModifiers neededMods = ModsTbl[i];
+        quint32 key = kbItem.bobuiKey[i];
         if (key && key != baseKey && ((keyMods & neededMods) == neededMods)) {
-            const Qt::KeyboardModifiers missingMods = keyMods & ~neededMods;
+            const BobUI::KeyboardModifiers missingMods = keyMods & ~neededMods;
             const auto matchedKey = QKeyCombination::fromCombined(int(key) + int(missingMods));
             const auto it = std::find_if(result.begin(), result.end(),
                 [key](auto keyCombination) {
                     return keyCombination.key() == key;
                 });
-            // QTBUG-67200: Use the match with the least modifiers (prefer
+            // BOBUIBUG-67200: Use the match with the least modifiers (prefer
             // Shift+9 over Alt + Shift + 9) resulting in more missing modifiers.
             if (it == result.end())
                 result << matchedKey;
@@ -1381,9 +1381,9 @@ QList<QKeyCombination> QWindowsKeyMapper::possibleKeyCombinations(const QKeyEven
         }
     }
     qCDebug(lcQpaEvents) << __FUNCTION__  << e << "nativeVirtualKey="
-        << Qt::showbase << Qt::hex << e->nativeVirtualKey() << Qt::dec << Qt::noshowbase
+        << BobUI::showbase << BobUI::hex << e->nativeVirtualKey() << BobUI::dec << BobUI::noshowbase
         << e->modifiers() << kbItem << "\n  returns" << result;
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

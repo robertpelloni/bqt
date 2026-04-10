@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qpainter.h>
 #include <qrasterwindow.h>
@@ -8,7 +8,7 @@
 #include <QProcess>
 #include <QSignalSpy>
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 class tst_QScreen_Xrandr: public QObject
 {
@@ -47,19 +47,19 @@ void tst_QScreen_Xrandr::xrandr_15_merge_and_unmerge()
     QSignalSpy removedSpy(qApp, &QGuiApplication::screenRemoved);
 
     // combine the first two screens into one monitor
-    // e.g. "xrandr --setmonitor Qt-merged auto eDP,HDMI-0"
+    // e.g. "xrandr --setmonitor BobUI-merged auto eDP,HDMI-0"
     QStringList args;
-    args << "--setmonitor" << "Qt-merged" << "auto" << mergedScreenNames.join(',');
+    args << "--setmonitor" << "BobUI-merged" << "auto" << mergedScreenNames.join(',');
     xrandr_process(args);
 
-    QTRY_COMPARE(removedSpy.count(), 2);
+    BOBUIRY_COMPARE(removedSpy.count(), 2);
     QVERIFY(QGuiApplication::screens().size() != originalScreenNames.size());
     auto combinedScreens = QGuiApplication::screens();
     qDebug() << "added" << addedSpy.count() << "removed" << removedSpy.count() << "combined screen(s):" << combinedScreens.size();
     QScreen *merged = nullptr;
     for (QScreen *s : combinedScreens) {
         qDebug() << "screen: " << s->name();
-        if (s->name() == QLatin1String("Qt-merged"))
+        if (s->name() == QLatin1String("BobUI-merged"))
             merged = s;
     }
     // the screen that we created must be in the list now
@@ -68,12 +68,12 @@ void tst_QScreen_Xrandr::xrandr_15_merge_and_unmerge()
     addedSpy.clear();
     removedSpy.clear();
 
-    // "xrandr --delmonitor Qt-merged"
+    // "xrandr --delmonitor BobUI-merged"
     args.clear();
-    args << "--delmonitor" << "Qt-merged";
+    args << "--delmonitor" << "BobUI-merged";
     xrandr_process(args);
 
-    QTRY_COMPARE(removedSpy.count(), 1);
+    BOBUIRY_COMPARE(removedSpy.count(), 1);
     QVERIFY(QGuiApplication::screens().size() != combinedScreens.size());
     auto separatedScreens = QGuiApplication::screens();
     qDebug() << "added" << addedSpy.count() << "removed" << removedSpy.count() << "separated screen(s):" << separatedScreens.size();
@@ -105,7 +105,7 @@ void tst_QScreen_Xrandr::xrandr_15_scale()
     QStringList args;
     args << "--output" << name1 << "--scale" << "1.5x1.5";
     xrandr_process(args);
-    QTRY_COMPARE(geometryChangedSpy1.count(), 1);
+    BOBUIRY_COMPARE(geometryChangedSpy1.count(), 1);
 
     QList<QScreen *> screens2 = QGuiApplication::screens();
     QVERIFY(screens2.size() >= 1);
@@ -126,7 +126,7 @@ void tst_QScreen_Xrandr::xrandr_15_scale()
     args.clear();
     args << "--output" << name1 << "--scale" << "1x1";
     xrandr_process(args);
-    QTRY_COMPARE(geometryChangedSpy2.count(), 1);
+    BOBUIRY_COMPARE(geometryChangedSpy2.count(), 1);
 
     QList<QScreen *> screens3 = QGuiApplication::screens();
     QVERIFY(screens3.size() >= 1);
@@ -160,7 +160,7 @@ void tst_QScreen_Xrandr::xrandr_15_off_and_on()
         args.clear();
         args << "--output" << name << "--off";
         xrandr_process(args);
-        QTest::qWait(500);
+        BOBUIest::qWait(500);
 
         QVERIFY(QGuiApplication::screens().size() == (i != 1 ? i - 1 : i));
     }
@@ -171,7 +171,7 @@ void tst_QScreen_Xrandr::xrandr_15_off_and_on()
         args.clear();
         args << "--output" << name << "--auto";
         xrandr_process(args);
-        QTest::qWait(500);
+        BOBUIest::qWait(500);
 
         QVERIFY(QGuiApplication::screens().size() == (i == ss ? 1 : ss - i + 1));
     }
@@ -198,7 +198,7 @@ void tst_QScreen_Xrandr::xrandr_15_primary()
         args.clear();
         args << "--output" << name << "--primary";
         xrandr_process(args);
-        QTest::qWait(500);
+        BOBUIest::qWait(500);
 
         QScreen *ps = qGuiApp->primaryScreen();
         qDebug() << "Current primary screen: " << ps;
@@ -231,7 +231,7 @@ void tst_QScreen_Xrandr::xrandr_15_rotate()
     QStringList args;
     args << "--output" << name1 << "--rotate" << "left";
     xrandr_process(args);
-    QTRY_COMPARE(geometryChangedSpy1.count(), 1);
+    BOBUIRY_COMPARE(geometryChangedSpy1.count(), 1);
 
     QList<QScreen *> screens2 = QGuiApplication::screens();
     QVERIFY(screens2.size() >= 1);
@@ -252,7 +252,7 @@ void tst_QScreen_Xrandr::xrandr_15_rotate()
     args.clear();
     args << "--output" << name1 << "--rotate" << "normal";
     xrandr_process(args);
-    QTRY_COMPARE(geometryChangedSpy2.count(), 1);
+    BOBUIRY_COMPARE(geometryChangedSpy2.count(), 1);
 
     QList<QScreen *> screens3 = QGuiApplication::screens();
     QVERIFY(screens3.size() >= 1);
@@ -278,4 +278,4 @@ void tst_QScreen_Xrandr::xrandr_process(const QStringList &args)
 }
 
 #include <tst_qscreen_xrandr.moc>
-QTEST_MAIN(tst_QScreen_Xrandr);
+BOBUIEST_MAIN(tst_QScreen_Xrandr);

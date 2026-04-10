@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 // We have to include this before the X11 headers dragged in by
 // qglxconvenience_p.h.
-#include <QtCore/qbytearray.h>
-#include <QtCore/qmetatype.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qtextstream.h>
-#include <QtGui/qcolorspace.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUIGui/qcolorspace.h>
 #include "qglxconvenience_p.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qvarlengtharray.h>
 
 
 #include <GL/glxext.h>
@@ -43,9 +43,9 @@ enum {
 #define GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB 0x20B2
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcGlx, "qt.glx")
+Q_STATIC_LOGGING_CATEGORY(lcGlx, "bobui.glx")
 
 QList<int> qglx_buildSpec(const QSurfaceFormat &format, int drawableBit, int flags)
 {
@@ -106,7 +106,7 @@ QList<int> qglx_buildSpec(const QSurfaceFormat &format, int drawableBit, int fla
 namespace  {
 struct QXcbSoftwareOpenGLEnforcer {
     QXcbSoftwareOpenGLEnforcer() {
-        // Allow forcing LIBGL_ALWAYS_SOFTWARE for Qt 5 applications only.
+        // Allow forcing LIBGL_ALWAYS_SOFTWARE for BobUI 5 applications only.
         // This is most useful with drivers that only support OpenGL 1.
         // We need OpenGL 2, but the user probably doesn't want
         // LIBGL_ALWAYS_SOFTWARE in OpenGL 1 apps.
@@ -116,7 +116,7 @@ struct QXcbSoftwareOpenGLEnforcer {
             // We want to unset LIBGL_ALWAYS_SOFTWARE at the end so it does not
             // get inherited by other processes, of course only if it wasn't
             // already set before.
-            if (!qEnvironmentVariableIsEmpty("QT_XCB_FORCE_SOFTWARE_OPENGL")
+            if (!qEnvironmentVariableIsEmpty("BOBUI_XCB_FORCE_SOFTWARE_OPENGL")
                 && !qEnvironmentVariableIsSet("LIBGL_ALWAYS_SOFTWARE"))
                 forceSoftwareOpenGL = true;
 
@@ -434,4 +434,4 @@ bool qglx_reduceFormat(QSurfaceFormat *format)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

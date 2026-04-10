@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractscrollarea.h"
 
-#if QT_CONFIG(scrollarea)
+#if BOBUI_CONFIG(scrollarea)
 
 #include "qscrollbar.h"
 #include "qapplication.h"
@@ -15,7 +15,7 @@
 #include "qboxlayout.h"
 #include "qpainter.h"
 #include "qmargins.h"
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
 #include "qheaderview.h"
 #endif
 
@@ -31,12 +31,12 @@
 #include <private/qapplication_p.h>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QAbstractScrollArea
@@ -44,7 +44,7 @@ using namespace Qt::StringLiterals;
     on-demand scroll bars.
 
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QAbstractScrollArea is a low-level abstraction of a scrolling
     area. The area provides a central widget called the viewport, in
@@ -54,7 +54,7 @@ using namespace Qt::StringLiterals;
     Next to the viewport is a vertical scroll bar, and below is a
     horizontal scroll bar. When all of the area contents fits in the
     viewport, each scroll bar can be either visible or hidden
-    depending on the scroll bar's Qt::ScrollBarPolicy. When a scroll
+    depending on the scroll bar's BobUI::ScrollBarPolicy. When a scroll
     bar is hidden, the viewport expands in order to cover all
     available space. When a scroll bar becomes visible again, the
     viewport shrinks in order to make room for the scroll bar.
@@ -80,7 +80,7 @@ using namespace Qt::StringLiterals;
           as all painting operations take place on the viewport.
     \endlist
 
-    With a scroll bar policy of Qt::ScrollBarAsNeeded (the default),
+    With a scroll bar policy of BobUI::ScrollBarAsNeeded (the default),
     QAbstractScrollArea shows scroll bars when they provide a non-zero
     scrolling range, and hides them otherwise.
 
@@ -131,7 +131,7 @@ using namespace Qt::StringLiterals;
 */
 
 QAbstractScrollAreaPrivate::QAbstractScrollAreaPrivate()
-    :hbar(nullptr), vbar(nullptr), vbarpolicy(Qt::ScrollBarAsNeeded), hbarpolicy(Qt::ScrollBarAsNeeded),
+    :hbar(nullptr), vbar(nullptr), vbarpolicy(BobUI::ScrollBarAsNeeded), hbarpolicy(BobUI::ScrollBarAsNeeded),
      shownOnce(false), inResize(false), sizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored),
      viewport(nullptr), cornerWidget(nullptr), left(0), top(0), right(0), bottom(0),
      xoffset(0), yoffset(0), viewportFilter(nullptr)
@@ -142,9 +142,9 @@ QAbstractScrollAreaPrivate::~QAbstractScrollAreaPrivate()
 {
 }
 
-QAbstractScrollAreaScrollBarContainer::QAbstractScrollAreaScrollBarContainer(Qt::Orientation orientation, QWidget *parent)
+QAbstractScrollAreaScrollBarContainer::QAbstractScrollAreaScrollBarContainer(BobUI::Orientation orientation, QWidget *parent)
     :QWidget(parent), scrollBar(new QScrollBar(orientation, this)),
-     layout(new QBoxLayout(orientation == Qt::Horizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom)),
+     layout(new QBoxLayout(orientation == BobUI::Horizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom)),
      orientation(orientation)
 {
     setLayout(layout);
@@ -160,7 +160,7 @@ QAbstractScrollAreaScrollBarContainer::QAbstractScrollAreaScrollBarContainer(Qt:
 void QAbstractScrollAreaScrollBarContainer::addWidget(QWidget *widget, LogicalPosition position)
 {
     QSizePolicy policy = widget->sizePolicy();
-    if (orientation == Qt::Vertical)
+    if (orientation == BobUI::Vertical)
         policy.setHorizontalPolicy(QSizePolicy::Ignored);
     else
         policy.setVerticalPolicy(QSizePolicy::Ignored);
@@ -211,12 +211,12 @@ int QAbstractScrollAreaScrollBarContainer::scrollBarLayoutIndex() const
 /*! \internal
 */
 void QAbstractScrollAreaPrivate::replaceScrollBar(QScrollBar *scrollBar,
-                                                  Qt::Orientation orientation)
+                                                  BobUI::Orientation orientation)
 {
     Q_Q(QAbstractScrollArea);
 
     QAbstractScrollAreaScrollBarContainer *container = scrollBarContainers[orientation];
-    bool horizontal = (orientation == Qt::Horizontal);
+    bool horizontal = (orientation == BobUI::Horizontal);
     QScrollBar *oldBar = horizontal ? hbar : vbar;
     if (horizontal)
         hbar = scrollBar;
@@ -245,42 +245,42 @@ void QAbstractScrollAreaPrivate::replaceScrollBar(QScrollBar *scrollBar,
     QObject::connect(scrollBar, SIGNAL(valueChanged(int)),
                      q, horizontal ? SLOT(_q_hslide(int)) : SLOT(_q_vslide(int)));
     QObject::connect(scrollBar, SIGNAL(rangeChanged(int,int)),
-                     q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
+                     q, SLOT(_q_showOrHideScrollBars()), BobUI::QueuedConnection);
 }
 
 void QAbstractScrollAreaPrivate::init()
 {
     Q_Q(QAbstractScrollArea);
     viewport = new QWidget(q);
-    viewport->setObjectName("qt_scrollarea_viewport"_L1);
+    viewport->setObjectName("bobui_scrollarea_viewport"_L1);
     viewport->setBackgroundRole(QPalette::Base);
     viewport->setAutoFillBackground(true);
-    scrollBarContainers[Qt::Horizontal] = new QAbstractScrollAreaScrollBarContainer(Qt::Horizontal, q);
-    scrollBarContainers[Qt::Horizontal]->setObjectName("qt_scrollarea_hcontainer"_L1);
-    hbar = scrollBarContainers[Qt::Horizontal]->scrollBar;
+    scrollBarContainers[BobUI::Horizontal] = new QAbstractScrollAreaScrollBarContainer(BobUI::Horizontal, q);
+    scrollBarContainers[BobUI::Horizontal]->setObjectName("bobui_scrollarea_hcontainer"_L1);
+    hbar = scrollBarContainers[BobUI::Horizontal]->scrollBar;
     hbar->setRange(0,0);
-    scrollBarContainers[Qt::Horizontal]->setVisible(false);
+    scrollBarContainers[BobUI::Horizontal]->setVisible(false);
     hbar->installEventFilter(q);
     QObject::connect(hbar, SIGNAL(valueChanged(int)), q, SLOT(_q_hslide(int)));
-    QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
-    scrollBarContainers[Qt::Vertical] = new QAbstractScrollAreaScrollBarContainer(Qt::Vertical, q);
-    scrollBarContainers[Qt::Vertical]->setObjectName("qt_scrollarea_vcontainer"_L1);
-    vbar = scrollBarContainers[Qt::Vertical]->scrollBar;
+    QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), BobUI::QueuedConnection);
+    scrollBarContainers[BobUI::Vertical] = new QAbstractScrollAreaScrollBarContainer(BobUI::Vertical, q);
+    scrollBarContainers[BobUI::Vertical]->setObjectName("bobui_scrollarea_vcontainer"_L1);
+    vbar = scrollBarContainers[BobUI::Vertical]->scrollBar;
     vbar->setRange(0,0);
-    scrollBarContainers[Qt::Vertical]->setVisible(false);
+    scrollBarContainers[BobUI::Vertical]->setVisible(false);
     vbar->installEventFilter(q);
     QObject::connect(vbar, SIGNAL(valueChanged(int)), q, SLOT(_q_vslide(int)));
-    QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
+    QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), BobUI::QueuedConnection);
     viewportFilter.reset(new QAbstractScrollAreaFilter(this));
     viewport->installEventFilter(viewportFilter.data());
     viewport->setFocusProxy(q);
-    q->setFocusPolicy(Qt::StrongFocus);
+    q->setFocusPolicy(BobUI::StrongFocus);
     q->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     q->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     layoutChildren();
 #ifndef Q_OS_MACOS
-#  ifndef QT_NO_GESTURES
-    viewport->grabGesture(Qt::PanGesture);
+#  ifndef BOBUI_NO_GESTURES
+    viewport->grabGesture(BobUI::PanGesture);
 #  endif
 #endif
 }
@@ -303,15 +303,15 @@ void QAbstractScrollAreaPrivate::layoutChildren_helper(bool *needHorizontalScrol
 
     hbar->initStyleOption(&barOpt);
     bool htransient = hbar->style()->styleHint(QStyle::SH_ScrollBar_Transient, &barOpt, hbar);
-    bool needh = *needHorizontalScrollbar || ((hbarpolicy != Qt::ScrollBarAlwaysOff) && ((hbarpolicy == Qt::ScrollBarAlwaysOn && !htransient)
-                            || ((hbarpolicy == Qt::ScrollBarAsNeeded || htransient)
+    bool needh = *needHorizontalScrollbar || ((hbarpolicy != BobUI::ScrollBarAlwaysOff) && ((hbarpolicy == BobUI::ScrollBarAlwaysOn && !htransient)
+                            || ((hbarpolicy == BobUI::ScrollBarAsNeeded || htransient)
                             && hbar->minimum() < hbar->maximum() && !hbar->sizeHint().isEmpty())));
     const int hscrollOverlap = hbar->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap, &barOpt, hbar);
 
     vbar->initStyleOption(&barOpt);
     bool vtransient = vbar->style()->styleHint(QStyle::SH_ScrollBar_Transient, &barOpt, vbar);
-    bool needv = *needVerticalScrollbar || ((vbarpolicy != Qt::ScrollBarAlwaysOff) && ((vbarpolicy == Qt::ScrollBarAlwaysOn && !vtransient)
-                            || ((vbarpolicy == Qt::ScrollBarAsNeeded || vtransient)
+    bool needv = *needVerticalScrollbar || ((vbarpolicy != BobUI::ScrollBarAlwaysOff) && ((vbarpolicy == BobUI::ScrollBarAlwaysOn && !vtransient)
+                            || ((vbarpolicy == BobUI::ScrollBarAsNeeded || vtransient)
                             && vbar->minimum() < vbar->maximum() && !vbar->sizeHint().isEmpty())));
     const int vscrollOverlap = vbar->style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarOverlap, &barOpt, vbar);
 
@@ -372,35 +372,35 @@ void QAbstractScrollAreaPrivate::layoutChildren_helper(bool *needHorizontalScrol
     // move the scrollbars away from top/left headers
     int vHeaderRight = 0;
     int hHeaderBottom = 0;
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
     if ((vscrollOverlap > 0 && needv) || (hscrollOverlap > 0 && needh)) {
         const QList<QHeaderView *> headers = q->findChildren<QHeaderView*>();
         if (headers.size() <= 2) {
             for (const QHeaderView *header : headers) {
                 const QRect geo = header->geometry();
-                if (header->orientation() == Qt::Vertical && header->isVisible() && QStyle::visualRect(opt.direction, opt.rect, geo).left() <= opt.rect.width() / 2)
+                if (header->orientation() == BobUI::Vertical && header->isVisible() && QStyle::visualRect(opt.direction, opt.rect, geo).left() <= opt.rect.width() / 2)
                     vHeaderRight = QStyle::visualRect(opt.direction, opt.rect, geo).right();
-                else if (header->orientation() == Qt::Horizontal && header->isVisible() && geo.top() <= q->frameWidth())
+                else if (header->orientation() == BobUI::Horizontal && header->isVisible() && geo.top() <= q->frameWidth())
                     hHeaderBottom = geo.bottom();
              }
          }
     }
-#endif // QT_CONFIG(itemviews)
+#endif // BOBUI_CONFIG(itemviews)
     if (needh) {
         QRect horizontalScrollBarRect(QPoint(controlsRect.left() + vHeaderRight, cornerPoint.y()), QPoint(cornerPoint.x() - 1, controlsRect.bottom()));
 
         if (!hasCornerWidget && htransient)
             horizontalScrollBarRect.adjust(0, 0, cornerOffset.x(), 0);
-        scrollBarContainers[Qt::Horizontal]->setGeometry(QStyle::visualRect(opt.direction, opt.rect, horizontalScrollBarRect));
-        scrollBarContainers[Qt::Horizontal]->raise();
+        scrollBarContainers[BobUI::Horizontal]->setGeometry(QStyle::visualRect(opt.direction, opt.rect, horizontalScrollBarRect));
+        scrollBarContainers[BobUI::Horizontal]->raise();
     }
 
     if (needv) {
         QRect verticalScrollBarRect  (QPoint(cornerPoint.x(), controlsRect.top() + hHeaderBottom),  QPoint(controlsRect.right(), cornerPoint.y() - 1));
         if (!hasCornerWidget && vtransient)
             verticalScrollBarRect.adjust(0, 0, 0, cornerOffset.y());
-        scrollBarContainers[Qt::Vertical]->setGeometry(QStyle::visualRect(opt.direction, opt.rect, verticalScrollBarRect));
-        scrollBarContainers[Qt::Vertical]->raise();
+        scrollBarContainers[BobUI::Vertical]->setGeometry(QStyle::visualRect(opt.direction, opt.rect, verticalScrollBarRect));
+        scrollBarContainers[BobUI::Vertical]->raise();
     }
 
     if (cornerWidget) {
@@ -408,8 +408,8 @@ void QAbstractScrollAreaPrivate::layoutChildren_helper(bool *needHorizontalScrol
         cornerWidget->setGeometry(QStyle::visualRect(opt.direction, opt.rect, cornerWidgetRect));
     }
 
-    scrollBarContainers[Qt::Horizontal]->setVisible(needh);
-    scrollBarContainers[Qt::Vertical]->setVisible(needv);
+    scrollBarContainers[BobUI::Horizontal]->setVisible(needh);
+    scrollBarContainers[BobUI::Vertical]->setVisible(needv);
 
     if (q->isRightToLeft())
         viewportRect.adjust(right, top, -left, -bottom);
@@ -445,11 +445,11 @@ QAbstractScrollArea::QAbstractScrollArea(QAbstractScrollAreaPrivate &dd, QWidget
     :QFrame(dd, parent)
 {
     Q_D(QAbstractScrollArea);
-    QT_TRY {
+    BOBUI_TRY {
         d->init();
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         d->viewportFilter.reset();
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
 }
 
@@ -462,11 +462,11 @@ QAbstractScrollArea::QAbstractScrollArea(QWidget *parent)
     :QFrame(*new QAbstractScrollAreaPrivate, parent)
 {
     Q_D(QAbstractScrollArea);
-    QT_TRY {
+    BOBUI_TRY {
         d->init();
-    } QT_CATCH(...) {
+    } BOBUI_CATCH(...) {
         d->viewportFilter.reset();
-        QT_RETHROW;
+        BOBUI_RETHROW;
     }
 }
 
@@ -503,11 +503,11 @@ void QAbstractScrollArea::setViewport(QWidget *widget)
         d->viewport->setParent(this);
         d->viewport->setFocusProxy(this);
         d->viewport->installEventFilter(d->viewportFilter.data());
-#ifndef QT_NO_GESTURES
-        d->viewport->grabGesture(Qt::PanGesture);
+#ifndef BOBUI_NO_GESTURES
+        d->viewport->grabGesture(BobUI::PanGesture);
 #endif
         d->layoutChildren();
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         QWidgetPrivate::get(d->viewport)->initializeViewportFramebuffer();
 #endif
         if (isVisible())
@@ -542,9 +542,9 @@ QSize QAbstractScrollArea::maximumViewportSize() const
     int f = 2 * d->frameWidth;
     QSize max = size() - QSize(f + d->left + d->right, f + d->top + d->bottom);
     // Count the sizeHint of the bar only if it is displayed.
-    if (d->vbarpolicy == Qt::ScrollBarAlwaysOn)
+    if (d->vbarpolicy == BobUI::ScrollBarAlwaysOn)
         max.rwidth() -= d->vbar->sizeHint().width();
-    if (d->hbarpolicy == Qt::ScrollBarAlwaysOn)
+    if (d->hbarpolicy == BobUI::ScrollBarAlwaysOn)
         max.rheight() -= d->hbar->sizeHint().height();
     return max;
 }
@@ -553,26 +553,26 @@ QSize QAbstractScrollArea::maximumViewportSize() const
     \property QAbstractScrollArea::verticalScrollBarPolicy
     \brief the policy for the vertical scroll bar
 
-    The default policy is Qt::ScrollBarAsNeeded.
+    The default policy is BobUI::ScrollBarAsNeeded.
 
     \sa horizontalScrollBarPolicy
 */
 
-Qt::ScrollBarPolicy QAbstractScrollArea::verticalScrollBarPolicy() const
+BobUI::ScrollBarPolicy QAbstractScrollArea::verticalScrollBarPolicy() const
 {
     Q_D(const QAbstractScrollArea);
     return d->vbarpolicy;
 }
 
-void QAbstractScrollArea::setVerticalScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void QAbstractScrollArea::setVerticalScrollBarPolicy(BobUI::ScrollBarPolicy policy)
 {
     Q_D(QAbstractScrollArea);
-    const Qt::ScrollBarPolicy oldPolicy = d->vbarpolicy;
+    const BobUI::ScrollBarPolicy oldPolicy = d->vbarpolicy;
     d->vbarpolicy = policy;
     if (isVisible())
         d->layoutChildren();
     if (oldPolicy != d->vbarpolicy)
-        d->scrollBarPolicyChanged(Qt::Vertical, d->vbarpolicy);
+        d->scrollBarPolicyChanged(BobUI::Vertical, d->vbarpolicy);
 }
 
 
@@ -607,33 +607,33 @@ void QAbstractScrollArea::setVerticalScrollBar(QScrollBar *scrollBar)
         return;
     }
 
-    d->replaceScrollBar(scrollBar, Qt::Vertical);
+    d->replaceScrollBar(scrollBar, BobUI::Vertical);
 }
 
 /*!
     \property QAbstractScrollArea::horizontalScrollBarPolicy
     \brief the policy for the horizontal scroll bar
 
-    The default policy is Qt::ScrollBarAsNeeded.
+    The default policy is BobUI::ScrollBarAsNeeded.
 
     \sa verticalScrollBarPolicy
 */
 
-Qt::ScrollBarPolicy QAbstractScrollArea::horizontalScrollBarPolicy() const
+BobUI::ScrollBarPolicy QAbstractScrollArea::horizontalScrollBarPolicy() const
 {
     Q_D(const QAbstractScrollArea);
     return d->hbarpolicy;
 }
 
-void QAbstractScrollArea::setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy policy)
+void QAbstractScrollArea::setHorizontalScrollBarPolicy(BobUI::ScrollBarPolicy policy)
 {
     Q_D(QAbstractScrollArea);
-    const Qt::ScrollBarPolicy oldPolicy = d->hbarpolicy;
+    const BobUI::ScrollBarPolicy oldPolicy = d->hbarpolicy;
     d->hbarpolicy = policy;
     if (isVisible())
         d->layoutChildren();
     if (oldPolicy != d->hbarpolicy)
-        d->scrollBarPolicyChanged(Qt::Horizontal, d->hbarpolicy);
+        d->scrollBarPolicyChanged(BobUI::Horizontal, d->hbarpolicy);
 }
 
 /*!
@@ -668,7 +668,7 @@ void QAbstractScrollArea::setHorizontalScrollBar(QScrollBar *scrollBar)
         return;
     }
 
-    d->replaceScrollBar(scrollBar, Qt::Horizontal);
+    d->replaceScrollBar(scrollBar, BobUI::Horizontal);
 }
 
 /*!
@@ -741,9 +741,9 @@ void QAbstractScrollArea::setCornerWidget(QWidget *widget)
     the scroll bar widgets to be always visible, set the
     scrollBarPolicy for the corresponding scroll bar to \c AlwaysOn.
 
-    \a alignment must be one of Qt::Alignleft and Qt::AlignRight,
-    which maps to the horizontal scroll bar, or Qt::AlignTop and
-    Qt::AlignBottom, which maps to the vertical scroll bar.
+    \a alignment must be one of BobUI::Alignleft and BobUI::AlignRight,
+    which maps to the horizontal scroll bar, or BobUI::AlignTop and
+    BobUI::AlignBottom, which maps to the vertical scroll bar.
 
     A scroll bar widget can be removed by either re-parenting the
     widget or deleting it. It's also possible to hide a widget with
@@ -763,17 +763,17 @@ void QAbstractScrollArea::setCornerWidget(QWidget *widget)
 
     \sa scrollBarWidgets()
 */
-void QAbstractScrollArea::addScrollBarWidget(QWidget *widget, Qt::Alignment alignment)
+void QAbstractScrollArea::addScrollBarWidget(QWidget *widget, BobUI::Alignment alignment)
 {
     Q_D(QAbstractScrollArea);
 
     if (widget == nullptr)
         return;
 
-    const Qt::Orientation scrollBarOrientation
-        = ((alignment & Qt::AlignLeft) || (alignment & Qt::AlignRight)) ? Qt::Horizontal : Qt::Vertical;
+    const BobUI::Orientation scrollBarOrientation
+        = ((alignment & BobUI::AlignLeft) || (alignment & BobUI::AlignRight)) ? BobUI::Horizontal : BobUI::Vertical;
     const QAbstractScrollAreaScrollBarContainer::LogicalPosition position
-        = ((alignment & Qt::AlignRight) || (alignment & Qt::AlignBottom))
+        = ((alignment & BobUI::AlignRight) || (alignment & BobUI::AlignBottom))
           ? QAbstractScrollAreaScrollBarContainer::LogicalRight : QAbstractScrollAreaScrollBarContainer::LogicalLeft;
     d->scrollBarContainers[scrollBarOrientation]->addWidget(widget, position);
     d->layoutChildren();
@@ -788,20 +788,20 @@ void QAbstractScrollArea::addScrollBarWidget(QWidget *widget, Qt::Alignment alig
 
     \sa addScrollBarWidget()
 */
-QWidgetList QAbstractScrollArea::scrollBarWidgets(Qt::Alignment alignment)
+QWidgetList QAbstractScrollArea::scrollBarWidgets(BobUI::Alignment alignment)
 {
     Q_D(QAbstractScrollArea);
 
     QWidgetList list;
 
-    if (alignment & Qt::AlignLeft)
-        list += d->scrollBarContainers[Qt::Horizontal]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalLeft);
-    if (alignment & Qt::AlignRight)
-        list += d->scrollBarContainers[Qt::Horizontal]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalRight);
-    if (alignment & Qt::AlignTop)
-        list += d->scrollBarContainers[Qt::Vertical]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalLeft);
-    if (alignment & Qt::AlignBottom)
-        list += d->scrollBarContainers[Qt::Vertical]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalRight);
+    if (alignment & BobUI::AlignLeft)
+        list += d->scrollBarContainers[BobUI::Horizontal]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalLeft);
+    if (alignment & BobUI::AlignRight)
+        list += d->scrollBarContainers[BobUI::Horizontal]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalRight);
+    if (alignment & BobUI::AlignTop)
+        list += d->scrollBarContainers[BobUI::Vertical]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalLeft);
+    if (alignment & BobUI::AlignBottom)
+        list += d->scrollBarContainers[BobUI::Vertical]->widgets(QAbstractScrollAreaScrollBarContainer::LogicalRight);
 
     return list;
 }
@@ -812,8 +812,8 @@ QWidgetList QAbstractScrollArea::scrollBarWidgets(Qt::Alignment alignment)
     spreadsheets with "locked" rows and columns. The marginal space
     is left blank; put widgets in the unused area.
 
-    Note that this function is frequently called by QTreeView and
-    QTableView, so margins must be implemented by QAbstractScrollArea
+    Note that this function is frequently called by BOBUIreeView and
+    BOBUIableView, so margins must be implemented by QAbstractScrollArea
     subclasses. Also, if the subclasses are to be used in item views,
     they should not call this function.
 
@@ -864,7 +864,7 @@ bool QAbstractScrollArea::eventFilter(QObject *o, QEvent *e)
 {
     Q_D(QAbstractScrollArea);
     if ((o == d->hbar || o == d->vbar) && (e->type() == QEvent::HoverEnter || e->type() == QEvent::HoverLeave)) {
-        if (d->hbarpolicy == Qt::ScrollBarAsNeeded && d->vbarpolicy == Qt::ScrollBarAsNeeded) {
+        if (d->hbarpolicy == BobUI::ScrollBarAsNeeded && d->vbarpolicy == BobUI::ScrollBarAsNeeded) {
             QScrollBar *sbar = static_cast<QScrollBar*>(o);
             QScrollBar *sibling = sbar == d->hbar ? d->vbar : d->hbar;
             if (sbar->style()->styleHint(QStyle::SH_ScrollBar_Transient, nullptr, sbar) &&
@@ -928,19 +928,19 @@ bool QAbstractScrollArea::event(QEvent *e)
         }
         QFrame::paintEvent((QPaintEvent*)e);
         break;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         if (static_cast<QContextMenuEvent *>(e)->reason() == QContextMenuEvent::Keyboard)
            return QFrame::event(e);
         e->ignore();
         break;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseButtonDblClick:
     case QEvent::MouseMove:
     case QEvent::Wheel:
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     case QEvent::Drop:
     case QEvent::DragEnter:
     case QEvent::DragMove:
@@ -951,11 +951,11 @@ bool QAbstractScrollArea::event(QEvent *e)
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd:
         return false;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QEvent::Gesture:
     {
         QGestureEvent *ge = static_cast<QGestureEvent *>(e);
-        QPanGesture *g = static_cast<QPanGesture *>(ge->gesture(Qt::PanGesture));
+        QPanGesture *g = static_cast<QPanGesture *>(ge->gesture(BobUI::PanGesture));
         if (g) {
             QScrollBar *hBar = horizontalScrollBar();
             QScrollBar *vBar = verticalScrollBar();
@@ -972,7 +972,7 @@ bool QAbstractScrollArea::event(QEvent *e)
         }
         return false;
     }
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
     case QEvent::ScrollPrepare:
     {
         QScrollPrepareEvent *se = static_cast<QScrollPrepareEvent *>(e);
@@ -1050,16 +1050,16 @@ bool QAbstractScrollArea::viewportEvent(QEvent *e)
     case QEvent::TouchEnd:
     case QEvent::MouseMove:
     case QEvent::ContextMenu:
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     case QEvent::Wheel:
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     case QEvent::Drop:
     case QEvent::DragEnter:
     case QEvent::DragMove:
     case QEvent::DragLeave:
 #endif
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         // QOpenGLWidget needs special support because it has to know
         // its size has changed, so that it can resize its fbo.
         if (e->type() == QEvent::Resize)
@@ -1067,7 +1067,7 @@ bool QAbstractScrollArea::viewportEvent(QEvent *e)
 #endif
         return QFrame::event(e);
     case QEvent::LayoutRequest:
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     case QEvent::Gesture:
     case QEvent::GestureOverride:
         return event(e);
@@ -1170,7 +1170,7 @@ void QAbstractScrollArea::mouseMoveEvent(QMouseEvent *e)
 
     \sa QWidget::wheelEvent()
 */
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QAbstractScrollArea::wheelEvent(QWheelEvent *e)
 {
     Q_D(QAbstractScrollArea);
@@ -1181,7 +1181,7 @@ void QAbstractScrollArea::wheelEvent(QWheelEvent *e)
 }
 #endif
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     This event handler can be reimplemented in a subclass to receive
     context menu events for the viewport() widget. The event is passed
@@ -1193,7 +1193,7 @@ void QAbstractScrollArea::contextMenuEvent(QContextMenuEvent *e)
 {
     e->ignore();
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*!
     This function is called with key event \a e when key presses
@@ -1204,28 +1204,28 @@ void QAbstractScrollArea::keyPressEvent(QKeyEvent * e)
 {
     Q_D(QAbstractScrollArea);
     if (false){
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     } else if (e == QKeySequence::MoveToPreviousPage) {
         d->vbar->triggerAction(QScrollBar::SliderPageStepSub);
     } else if (e == QKeySequence::MoveToNextPage) {
         d->vbar->triggerAction(QScrollBar::SliderPageStepAdd);
 #endif
     } else {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()) {
             e->ignore();
             return;
         }
 #endif
         switch (e->key()) {
-        case Qt::Key_Up:
+        case BobUI::Key_Up:
             d->vbar->triggerAction(QScrollBar::SliderSingleStepSub);
             break;
-        case Qt::Key_Down:
+        case BobUI::Key_Down:
             d->vbar->triggerAction(QScrollBar::SliderSingleStepAdd);
             break;
-        case Qt::Key_Left:
-#ifdef QT_KEYPAD_NAVIGATION
+        case BobUI::Key_Left:
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled() && hasEditFocus()
             && (!d->hbar->isVisible() || d->hbar->value() == d->hbar->minimum())) {
             //if we aren't using the hbar or we are already at the leftmost point ignore
@@ -1234,11 +1234,11 @@ void QAbstractScrollArea::keyPressEvent(QKeyEvent * e)
         }
 #endif
             d->hbar->triggerAction(
-                layoutDirection() == Qt::LeftToRight
+                layoutDirection() == BobUI::LeftToRight
                 ? QScrollBar::SliderSingleStepSub : QScrollBar::SliderSingleStepAdd);
             break;
-        case Qt::Key_Right:
-#ifdef QT_KEYPAD_NAVIGATION
+        case BobUI::Key_Right:
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled() && hasEditFocus()
             && (!d->hbar->isVisible() || d->hbar->value() == d->hbar->maximum())) {
             //if we aren't using the hbar or we are already at the rightmost point ignore
@@ -1247,7 +1247,7 @@ void QAbstractScrollArea::keyPressEvent(QKeyEvent * e)
         }
 #endif
             d->hbar->triggerAction(
-                layoutDirection() == Qt::LeftToRight
+                layoutDirection() == BobUI::LeftToRight
                 ? QScrollBar::SliderSingleStepAdd : QScrollBar::SliderSingleStepSub);
             break;
         default:
@@ -1259,7 +1259,7 @@ void QAbstractScrollArea::keyPressEvent(QKeyEvent * e)
 }
 
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \fn void QAbstractScrollArea::dragEnterEvent(QDragEnterEvent *event)
 
@@ -1351,11 +1351,11 @@ void QAbstractScrollAreaPrivate::flashScrollBars()
     hbar->initStyleOption(&opt);
 
     bool htransient = hbar->style()->styleHint(QStyle::SH_ScrollBar_Transient, &opt, hbar);
-    if ((hbarpolicy != Qt::ScrollBarAlwaysOff) && (hbarpolicy == Qt::ScrollBarAsNeeded || htransient))
+    if ((hbarpolicy != BobUI::ScrollBarAlwaysOff) && (hbarpolicy == BobUI::ScrollBarAsNeeded || htransient))
         hbar->d_func()->flash();
     vbar->initStyleOption(&opt);
     bool vtransient = vbar->style()->styleHint(QStyle::SH_ScrollBar_Transient, &opt, vbar);
-    if ((vbarpolicy != Qt::ScrollBarAlwaysOff) && (vbarpolicy == Qt::ScrollBarAsNeeded || vtransient))
+    if ((vbarpolicy != BobUI::ScrollBarAlwaysOff) && (vbarpolicy == BobUI::ScrollBarAsNeeded || vtransient))
         vbar->d_func()->flash();
 }
 
@@ -1418,8 +1418,8 @@ QSize QAbstractScrollArea::minimumSizeHint() const
         && style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, &opt, this)) {
         extra += style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarSpacing, &opt, this);
     }
-    return QSize(d->scrollBarContainers[Qt::Horizontal]->sizeHint().width() + vsbExt + extra,
-                 d->scrollBarContainers[Qt::Vertical]->sizeHint().height() + hsbExt + extra);
+    return QSize(d->scrollBarContainers[BobUI::Horizontal]->sizeHint().width() + vsbExt + extra,
+                 d->scrollBarContainers[BobUI::Vertical]->sizeHint().height() + hsbExt + extra);
 }
 
 /*!
@@ -1436,8 +1436,8 @@ QSize QAbstractScrollArea::sizeHint() const
     if (!d->sizeHint.isValid() || d->sizeAdjustPolicy == QAbstractScrollArea::AdjustToContents) {
         const int f = 2 * d->frameWidth;
         const QSize frame(f, f);
-        const bool vbarHidden = !d->vbar->isVisibleTo(this) || d->vbarpolicy == Qt::ScrollBarAlwaysOff;
-        const bool hbarHidden = !d->hbar->isVisibleTo(this) || d->hbarpolicy == Qt::ScrollBarAlwaysOff;
+        const bool vbarHidden = !d->vbar->isVisibleTo(this) || d->vbarpolicy == BobUI::ScrollBarAlwaysOff;
+        const bool hbarHidden = !d->hbar->isVisibleTo(this) || d->hbarpolicy == BobUI::ScrollBarAlwaysOff;
         const QSize scrollbars(vbarHidden ? 0 : d->vbar->sizeHint().width(),
                                hbarHidden ? 0 : d->hbar->sizeHint().height());
         d->sizeHint = frame + scrollbars + viewportSizeHint();
@@ -1510,9 +1510,9 @@ int QAbstractScrollAreaPrivate::defaultSingleStep() const
     return platformTheme->themeHint(QPlatformTheme::ScrollSingleStepDistance).value<int>();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractscrollarea.cpp"
 #include "moc_qabstractscrollarea_p.cpp"
 
-#endif // QT_CONFIG(scrollarea)
+#endif // BOBUI_CONFIG(scrollarea)

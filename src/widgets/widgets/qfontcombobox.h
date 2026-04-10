@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFONTCOMBOBOX_H
 #define QFONTCOMBOBOX_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qcombobox.h>
-#include <QtGui/qfontdatabase.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qcombobox.h>
+#include <BobUIGui/qfontdatabase.h>
 
-QT_REQUIRE_CONFIG(fontcombobox);
+BOBUI_REQUIRE_CONFIG(fontcombobox);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFontComboBoxPrivate;
 
@@ -70,6 +70,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QFontComboBox::FontFilters)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

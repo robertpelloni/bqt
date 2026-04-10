@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractprintdialog_p.h"
 #include "qcoreapplication.h"
@@ -8,7 +8,7 @@
 #include "qprinter.h"
 #include "private/qprinter_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAbstractPrintDialog
@@ -16,7 +16,7 @@ QT_BEGIN_NAMESPACE
     print dialogs used to configure printers.
 
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     This class implements getter and setter functions that are used to
     customize settings shown in print dialogs, but it is not used directly.
@@ -187,7 +187,7 @@ int QAbstractPrintDialog::minPage() const
 }
 
 /*!
-    Returns the maximum page in the page range. As of Qt 4.4, this
+    Returns the maximum page in the page range. As of BobUI 4.4, this
     function returns INT_MAX by default. Previous versions returned 1
     by default.
 */
@@ -264,7 +264,7 @@ void QAbstractPrintDialogPrivate::setPrinter(QPrinter *newPrinter)
 
     \ingroup standard-dialogs
     \ingroup printing
-    \inmodule QtPrintSupport
+    \inmodule BobUIPrintSupport
 
     The dialog allows users to change document-related settings, such
     as the paper size and orientation, type of print (color or
@@ -299,8 +299,8 @@ void QAbstractPrintDialogPrivate::setPrinter(QPrinter *newPrinter)
     The native print dialog on \macos does not support setting printer options,
     i.e. setOptions() and setOption() have no effect.
 
-    In Qt 4.4, it was possible to use the static functions to show a sheet on
-    \macos. This is no longer supported in Qt 4.5. If you want this
+    In BobUI 4.4, it was possible to use the static functions to show a sheet on
+    \macos. This is no longer supported in BobUI 4.5. If you want this
     functionality, use QPrintDialog::open().
 
     \sa QPageSetupDialog, QPrinter
@@ -374,7 +374,7 @@ void QPrintDialog::done(int result)
         // also emit finished().
         QObject::connect(this, &QDialog::accepted, this, [this]{
             emit accepted(printer());
-        }, Qt::SingleShotConnection);
+        }, BobUI::SingleShotConnection);
     }
     QDialog::done(result);
     if (d->receiverToDisconnectOnClose) {
@@ -403,6 +403,6 @@ void QPrintDialog::open(QObject *receiver, const char *member)
     QDialog::open();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractprintdialog.cpp"

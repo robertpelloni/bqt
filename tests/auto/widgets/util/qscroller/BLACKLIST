@@ -3,10 +3,10 @@ macos
 
 [scroll]
 macos
-# QTBUG-87409
+# BOBUIBUG-87409
 [scrollTo]
 android
 
 [overshoot_segments]
-macos #QTBUG-134105
-windows #QTBUG-134105
+macos #BOBUIBUG-134105
+windows #BOBUIBUG-134105

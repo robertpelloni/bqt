@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <winsock2.h>
 #include "qdnslookup_p.h"
@@ -12,17 +12,17 @@
 #include <qurl.h>
 #include <qspan.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <windns.h>
 #include <memory.h>
 
 #ifndef DNS_ADDR_MAX_SOCKADDR_LENGTH
 // MinGW headers are missing almost all of this
-typedef struct Qt_DnsAddr {
+typedef struct BobUI_DnsAddr {
   CHAR  MaxSa[32];
   DWORD DnsAddrUserDword[8];
 } DNS_ADDR, *PDNS_ADDR;
-typedef struct Qt_DnsAddrArray {
+typedef struct BobUI_DnsAddrArray {
   DWORD    MaxCount;
   DWORD    AddrCount;
   DWORD    Tag;
@@ -35,7 +35,7 @@ typedef struct Qt_DnsAddrArray {
   DNS_ADDR AddrArray[];
 } DNS_ADDR_ARRAY, *PDNS_ADDR_ARRAY;
 # ifndef DNS_QUERY_RESULTS_VERSION1
-typedef struct Qt_DNS_QUERY_RESULT {
+typedef struct BobUI_DNS_QUERY_RESULT {
   ULONG Version;
   DNS_STATUS QueryStatus;
   ULONG64 QueryOptions;
@@ -45,7 +45,7 @@ typedef struct Qt_DNS_QUERY_RESULT {
 typedef VOID WINAPI DNS_QUERY_COMPLETION_ROUTINE(PVOID pQueryContext,PDNS_QUERY_RESULT pQueryResults);
 typedef DNS_QUERY_COMPLETION_ROUTINE *PDNS_QUERY_COMPLETION_ROUTINE;
 # endif
-typedef struct Qt_DNS_QUERY_REQUEST {
+typedef struct BobUI_DNS_QUERY_REQUEST {
   ULONG                         Version;
   PCWSTR                        QueryName;
   WORD                          QueryType;
@@ -64,7 +64,7 @@ DNS_STATUS WINAPI DnsQueryEx(PDNS_QUERY_REQUEST pQueryRequest,
 }
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static DNS_STATUS sendAlternate(QDnsLookupRunnable *self, QDnsLookupReply *reply,
                                 PDNS_QUERY_REQUEST request, PDNS_QUERY_RESULT results)
@@ -258,4 +258,4 @@ void QDnsLookupRunnable::query(QDnsLookupReply *reply)
     DnsRecordListFree(results.pQueryRecords, DnsFreeRecordList);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

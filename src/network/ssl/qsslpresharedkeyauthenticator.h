@@ -1,18 +1,18 @@
 // Copyright (C) 2014 Governikus GmbH & Co. KG.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSSLPRESHAREDKEYAUTHENTICATOR_H
 #define QSSLPRESHAREDKEYAUTHENTICATOR_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/QString>
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QMetaType>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/QString>
+#include <BobUICore/QSharedDataPointer>
+#include <BobUICore/QMetaType>
 
-QT_REQUIRE_CONFIG(ssl);
+BOBUI_REQUIRE_CONFIG(ssl);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSslPreSharedKeyAuthenticatorPrivate;
 class QSslPreSharedKeyAuthenticator
@@ -41,7 +41,7 @@ public:
 private:
     Q_NETWORK_EXPORT bool isEqual(const QSslPreSharedKeyAuthenticator &other) const;
 
-    friend class QTlsBackend;
+    friend class BOBUIlsBackend;
 
     friend bool operator==(const QSslPreSharedKeyAuthenticator &lhs, const QSslPreSharedKeyAuthenticator &rhs)
     { return lhs.isEqual(rhs); }
@@ -54,9 +54,9 @@ private:
 
 Q_DECLARE_SHARED(QSslPreSharedKeyAuthenticator)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QSslPreSharedKeyAuthenticator, Q_NETWORK_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QSslPreSharedKeyAuthenticator*, QSslPreSharedKeyAuthenticator_ptr, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QSslPreSharedKeyAuthenticator, Q_NETWORK_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QSslPreSharedKeyAuthenticator*, QSslPreSharedKeyAuthenticator_ptr, Q_NETWORK_EXPORT)
 
 #endif // QSSLPRESHAREDKEYAUTHENTICATOR_H

@@ -1,20 +1,20 @@
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QEGLFSKMSVSP2SCREEN_H
 #define QEGLFSKMSVSP2SCREEN_H
 
 #include "qeglfskmsscreen_p.h"
 #include "qvsp2blendingdevice.h"
-#include <QtCore/QMutex>
+#include <BobUICore/QMutex>
 
 #include <qpa/qplatformscreen_p.h>
 
 #include <gbm.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEglFSKmsVsp2Screen : public QEglFSKmsScreen
     , public QNativeInterface::Private::QVsp2Screen
@@ -27,7 +27,7 @@ public:
 
     void initDumbFrameBuffers();
     void initVsp2();
-    void initQtLayer();
+    void initBobUILayer();
 
     //TODO: use a fixed index API instead of auto increment?
     int addLayer(int dmabufFd, const QSize &size, const QPoint &position, uint drmPixelFormat, uint bytesPerLine) override;
@@ -66,7 +66,7 @@ private:
     void initDumbFrameBuffer(FrameBuffer &fb);
     QList<void (*)()> m_blendFinishedCallbacks;
 
-    struct DmaBuffer { //these are for qt buffers before blending with additional layers (gbm buffer data)
+    struct DmaBuffer { //these are for bobui buffers before blending with additional layers (gbm buffer data)
         int dmabufFd = -1;
     };
     static void dmaBufferDestroyedHandler(gbm_bo *gbmBo, void *data);
@@ -76,9 +76,9 @@ private:
     void doDrmFlip();
 
     bool m_blendScheduled = false;
-    int m_qtLayer = 0; //TODO: add API for changing this
+    int m_bobuiLayer = 0; //TODO: add API for changing this
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QEGLFSKMSVSP2SCREEN_H

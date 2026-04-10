@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 
 #include <qpixmapcache.h>
@@ -9,13 +9,13 @@
 
 #include <functional>
 
-QT_BEGIN_NAMESPACE // The test requires QT_BUILD_INTERNAL
-Q_AUTOTEST_EXPORT void qt_qpixmapcache_flush_detached_pixmaps();
-Q_AUTOTEST_EXPORT int qt_qpixmapcache_qpixmapcache_total_used();
+BOBUI_BEGIN_NAMESPACE // The test requires BOBUI_BUILD_INTERNAL
+Q_AUTOTEST_EXPORT void bobui_qpixmapcache_flush_detached_pixmaps();
+Q_AUTOTEST_EXPORT int bobui_qpixmapcache_qpixmapcache_total_used();
 Q_AUTOTEST_EXPORT int q_QPixmapCache_keyHashSize();
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QPixmapCache : public QObject
 {
@@ -34,7 +34,7 @@ private slots:
     void find();
     void insert();
     void failedInsertReturnsInvalidKey();
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
     void replace();
 #endif
     void remove();
@@ -122,15 +122,15 @@ void tst_QPixmapCache::setCacheLimit()
     QVERIFY(!QPixmapCache::find(key, p1));
 
     QPixmapCache::setCacheLimit(1000);
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_WARNING_PUSH
-    QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_WARNING_PUSH
+    BOBUI_WARNING_DISABLE_DEPRECATED
     p1 = new QPixmap(2, 3);
     QVERIFY(!QPixmapCache::replace(key, *p1));
     QVERIFY(!QPixmapCache::find(key, p1));
 
     delete p1;
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
     //Let check if keys are released when the pixmap cache is
     //full or has been flushed.
@@ -181,7 +181,7 @@ void tst_QPixmapCache::setCacheLimit()
     p1->detach();
     QPixmapCache::Key key3 = QPixmapCache::insert(*p1);
     p1->detach();
-    qt_qpixmapcache_flush_detached_pixmaps();
+    bobui_qpixmapcache_flush_detached_pixmaps();
     key2 = QPixmapCache::insert(*p1);
     QCOMPARE(getPrivate(key2)->key, 1);
     //This old key is not valid anymore after the flush
@@ -193,7 +193,7 @@ void tst_QPixmapCache::setCacheLimit()
 void tst_QPixmapCache::find()
 {
     QPixmap p1(10, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
     QVERIFY(QPixmapCache::insert("P1", p1));
 
     QPixmap p2;
@@ -231,10 +231,10 @@ void tst_QPixmapCache::find()
 void tst_QPixmapCache::insert()
 {
     QPixmap p1(10, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
 
     QPixmap p2(10, 10);
-    p2.fill(Qt::yellow);
+    p2.fill(BobUI::yellow);
 
     // Calcuate estimated num of items what fits to cache
     int estimatedNum = (1024 * QPixmapCache::cacheLimit())
@@ -268,11 +268,11 @@ void tst_QPixmapCache::insert()
     QPixmapCache::insert("null", p3);
 
     QPixmap c1(10, 10);
-    c1.fill(Qt::yellow);
+    c1.fill(BobUI::yellow);
     QPixmapCache::insert("custom", c1);
     QVERIFY(!c1.isDetached());
     QPixmap c2(10, 10);
-    c2.fill(Qt::red);
+    c2.fill(BobUI::red);
     QPixmapCache::insert("custom", c2);
     //We have deleted the old pixmap in the cache for the same key
     QVERIFY(c1.isDetached());
@@ -305,7 +305,7 @@ void tst_QPixmapCache::failedInsertReturnsInvalidKey()
     QPixmapCache::setCacheLimit(20);
 
     QPixmap pm(256, 256);
-    pm.fill(Qt::transparent);
+    pm.fill(BobUI::transparent);
     QCOMPARE_GT(pm.width() * pm.height() * pm.depth() / 8,
                 QPixmapCache::cacheLimit() * 1024);
 
@@ -323,17 +323,17 @@ void tst_QPixmapCache::failedInsertReturnsInvalidKey()
     QVERIFY(!success);       // QString API
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QPixmapCache::replace()
 {
     //The int part of the API
     QPixmap p1(10, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
 
     QPixmap p2(10, 10);
-    p2.fill(Qt::yellow);
+    p2.fill(BobUI::yellow);
 
     QPixmapCache::Key key = QPixmapCache::insert(p1);
     QVERIFY(key.isValid());
@@ -354,16 +354,16 @@ void tst_QPixmapCache::replace()
     //Broken keys
     QCOMPARE(QPixmapCache::replace(QPixmapCache::Key(), p2), false);
 }
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 6)
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
 void tst_QPixmapCache::remove()
 {
     QPixmap p1(10, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
 
     QPixmapCache::insert("red", p1);
-    p1.fill(Qt::yellow);
+    p1.fill(BobUI::yellow);
 
     QPixmap p2;
     QVERIFY(QPixmapCache::find("red", &p2));
@@ -380,9 +380,9 @@ void tst_QPixmapCache::remove()
 
     //The int part of the API
     QPixmapCache::clear();
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
     QPixmapCache::Key key = QPixmapCache::insert(p1);
-    p1.fill(Qt::yellow);
+    p1.fill(BobUI::yellow);
 
     QVERIFY(QPixmapCache::find(key, &p2));
     QVERIFY(p1.toImage() != p2.toImage());
@@ -413,7 +413,7 @@ void tst_QPixmapCache::remove()
 
     //We mix both part of the API
     QPixmapCache::clear();
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
     QPixmapCache::insert("red", p1);
     key = QPixmapCache::insert(p1);
     QPixmapCache::remove(key);
@@ -424,7 +424,7 @@ void tst_QPixmapCache::remove()
 void tst_QPixmapCache::clear()
 {
     QPixmap p1(10, 10);
-    p1.fill(Qt::red);
+    p1.fill(BobUI::red);
 
     // Calcuate estimated num of items what fits to cache
     int estimatedNum = (1024 * QPixmapCache::cacheLimit())
@@ -453,7 +453,7 @@ void tst_QPixmapCache::clear()
 
     //The int part of the API
     QPixmap p2(10, 10);
-    p2.fill(Qt::red);
+    p2.fill(BobUI::red);
 
     QList<QPixmapCache::Key> keys;
     for (int k = 0; k < numberOfKeys; ++k)
@@ -518,7 +518,7 @@ void tst_QPixmapCache::noLeak()
     int oldSize = q_QPixmapCache_keyHashSize();
     for (int i = 0; i < 100; ++i) {
         QPixmap pm(128, 128);
-        pm.fill(Qt::transparent);
+        pm.fill(BobUI::transparent);
         key = QPixmapCache::insert(pm);
         QPixmapCache::remove(key);
     }
@@ -539,7 +539,7 @@ void tst_QPixmapCache::evictionDoesNotLeakStringKeys()
         constexpr int Iterations = 10;
         for (int i = 0; i < Iterations; ++i) {
             QPixmap pm(64, 64);
-            pm.fill(Qt::transparent);
+            pm.fill(BobUI::transparent);
             [[maybe_unused]] auto r = QPixmapCache::insert(pm);
         }
     });
@@ -565,7 +565,7 @@ void tst_QPixmapCache::stringLeak_impl(std::function<void()> whenOp)
         QPixmap pm(64, 64);
         QCOMPARE_LT(pm.width() * pm.height() * std::ceil(pm.depth() / 8.0),
                     QPixmapCache::cacheLimit() * 1024);
-        pm.fill(Qt::transparent);
+        pm.fill(BobUI::transparent);
         key = u"theKey"_s.repeated(20); // avoid eventual QString SSO
         QVERIFY(key.isDetached());
         QPixmapCache::insert(key, pm);
@@ -576,7 +576,7 @@ void tst_QPixmapCache::stringLeak_impl(std::function<void()> whenOp)
     // WHEN: performing the given operation
     //
     whenOp();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
     //
@@ -603,14 +603,14 @@ void tst_QPixmapCache::strictCacheLimit()
     // not counting the duplicate entries
     for (int i = 0; i < 200; ++i) {
         QPixmap pixmap(64, 64);
-        pixmap.fill(Qt::transparent);
+        pixmap.fill(BobUI::transparent);
 
         QString id = QString::number(i);
         QPixmapCache::insert(id + "-a", pixmap);
         QPixmapCache::insert(id + "-b", pixmap);
     }
 
-    QVERIFY(qt_qpixmapcache_qpixmapcache_total_used() <= limit);
+    QVERIFY(bobui_qpixmapcache_qpixmapcache_total_used() <= limit);
 }
 
 void tst_QPixmapCache::noCrashOnLargeInsert()
@@ -618,10 +618,10 @@ void tst_QPixmapCache::noCrashOnLargeInsert()
     QPixmapCache::clear();
     QPixmapCache::setCacheLimit(100);
     QPixmap pixmap(500, 500);
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     QPixmapCache::insert("test", pixmap);
     QVERIFY(true); // no crash
 }
 
-QTEST_MAIN(tst_QPixmapCache)
+BOBUIEST_MAIN(tst_QPixmapCache)
 #include "tst_qpixmapcache.moc"

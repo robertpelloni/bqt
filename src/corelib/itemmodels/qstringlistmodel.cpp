@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*
     A simple model that uses a QStringList as its data source.
@@ -8,16 +8,16 @@
 
 #include "qstringlistmodel.h"
 
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStringListModel
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QStringListModel class provides a model that supplies strings to views.
 
     \ingroup model-view
@@ -111,28 +111,28 @@ QMap<int, QVariant> QStringListModel::itemData(const QModelIndex &index) const
         return QMap<int, QVariant>{};
     const QVariant displayData = lst.at(index.row());
     return QMap<int, QVariant>{{
-        std::make_pair<int>(Qt::DisplayRole, displayData),
-        std::make_pair<int>(Qt::EditRole, displayData)
+        std::make_pair<int>(BobUI::DisplayRole, displayData),
+        std::make_pair<int>(BobUI::EditRole, displayData)
     }};
 }
 
 /*!
   \reimp
   \since 5.13
-  If \a roles contains both Qt::DisplayRole and Qt::EditRole, the latter will take precedence
+  If \a roles contains both BobUI::DisplayRole and BobUI::EditRole, the latter will take precedence
 */
 bool QStringListModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
 {
     if (roles.isEmpty())
         return false;
     if (std::any_of(roles.keyBegin(), roles.keyEnd(), [](int role) -> bool {
-        return role != Qt::DisplayRole && role != Qt::EditRole;
+        return role != BobUI::DisplayRole && role != BobUI::EditRole;
     })) {
         return false;
     }
-    auto roleIter = roles.constFind(Qt::EditRole);
+    auto roleIter = roles.constFind(BobUI::EditRole);
     if (roleIter == roles.constEnd())
-        roleIter = roles.constFind(Qt::DisplayRole);
+        roleIter = roles.constFind(BobUI::DisplayRole);
     Q_ASSERT(roleIter != roles.constEnd());
     return setData(index, roleIter.value(), roleIter.key());
 }
@@ -151,7 +151,7 @@ QVariant QStringListModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= lst.size())
         return QVariant();
 
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    if (role == BobUI::DisplayRole || role == BobUI::EditRole)
         return lst.at(index.row());
 
     return QVariant();
@@ -165,12 +165,12 @@ QVariant QStringListModel::data(const QModelIndex &index, int role) const
     \sa QAbstractItemModel::flags()
 */
 
-Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QStringListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return QAbstractListModel::flags(index) | Qt::ItemIsDropEnabled;
+        return QAbstractListModel::flags(index) | BobUI::ItemIsDropEnabled;
 
-    return QAbstractListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    return QAbstractListModel::flags(index) | BobUI::ItemIsEditable | BobUI::ItemIsDragEnabled | BobUI::ItemIsDropEnabled;
 }
 
 /*!
@@ -180,18 +180,18 @@ Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
     The dataChanged() signal is emitted if the item is changed.
     Returns \c true after emitting the dataChanged() signal.
 
-    \sa Qt::ItemDataRole, data()
+    \sa BobUI::ItemDataRole, data()
 */
 
 bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (index.row() >= 0 && index.row() < lst.size()
-        && (role == Qt::EditRole || role == Qt::DisplayRole)) {
+        && (role == BobUI::EditRole || role == BobUI::DisplayRole)) {
         const QString valueString = value.toString();
         if (lst.at(index.row()) == valueString)
             return true;
         lst.replace(index.row(), valueString);
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        emit dataChanged(index, index, {BobUI::DisplayRole, BobUI::EditRole});
         return true;
     }
     return false;
@@ -203,7 +203,7 @@ bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, 
  */
 bool QStringListModel::clearItemData(const QModelIndex &index)
 {
-    return setData(index, QVariant(), Qt::EditRole);
+    return setData(index, QVariant(), BobUI::EditRole);
 }
 
 /*!
@@ -313,7 +313,7 @@ static bool decendingLessThan(const std::pair<QString, int> &s1, const std::pair
 /*!
   \reimp
 */
-void QStringListModel::sort(int, Qt::SortOrder order)
+void QStringListModel::sort(int, BobUI::SortOrder order)
 {
     emit layoutAboutToBeChanged(QList<QPersistentModelIndex>(), VerticalSortHint);
 
@@ -323,7 +323,7 @@ void QStringListModel::sort(int, Qt::SortOrder order)
     for (int i = 0; i < lstCount; ++i)
         list.emplace_back(lst.at(i), i);
 
-    if (order == Qt::AscendingOrder)
+    if (order == BobUI::AscendingOrder)
         std::sort(list.begin(), list.end(), ascendingLessThan);
     else
         std::sort(list.begin(), list.end(), decendingLessThan);
@@ -370,11 +370,11 @@ void QStringListModel::setStringList(const QStringList &strings)
 /*!
   \reimp
 */
-Qt::DropActions QStringListModel::supportedDropActions() const
+BobUI::DropActions QStringListModel::supportedDropActions() const
 {
-    return QAbstractItemModel::supportedDropActions() | Qt::MoveAction;
+    return QAbstractItemModel::supportedDropActions() | BobUI::MoveAction;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qstringlistmodel.cpp"

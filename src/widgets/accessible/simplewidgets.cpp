@@ -1,77 +1,77 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "simplewidgets_p.h"
 
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
 #include <qabstractbutton.h>
 #endif
-#if QT_CONFIG(checkbox)
+#if BOBUI_CONFIG(checkbox)
 #include <qcheckbox.h>
 #endif
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
 #include <qpushbutton.h>
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 #include <qprogressbar.h>
 #endif
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
 #include <qstatusbar.h>
 #endif
-#if QT_CONFIG(radiobutton)
+#if BOBUI_CONFIG(radiobutton)
 #include <qradiobutton.h>
 #endif
-#if QT_CONFIG(toolbutton)
-#include <qtoolbutton.h>
+#if BOBUI_CONFIG(toolbutton)
+#include <bobuioolbutton.h>
 #endif
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
 #include <qlabel.h>
 #endif
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
 #include <qgroupbox.h>
 #endif
-#if QT_CONFIG(lcdnumber)
+#if BOBUI_CONFIG(lcdnumber)
 #include <qlcdnumber.h>
 #endif
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #include <private/qlineedit_p.h>
 #endif
-#ifndef QT_NO_PICTURE
-#include <QtGui/qpicture.h>
+#ifndef BOBUI_NO_PICTURE
+#include <BobUIGui/qpicture.h>
 #endif
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 #include <qmessagebox.h>
 #endif
 #include <qstyle.h>
 #include <qstyleoption.h>
-#include <qtextdocument.h>
+#include <bobuiextdocument.h>
 #include <qwindow.h>
 #include <private/qwindowcontainer_p.h>
-#include <QtCore/qvarlengtharray.h>
-#if QT_CONFIG(accessibility)
-#include <QtGui/private/qaccessiblehelper_p.h>
+#include <BobUICore/qvarlengtharray.h>
+#if BOBUI_CONFIG(accessibility)
+#include <BobUIGui/private/qaccessiblehelper_p.h>
 #endif
-#include <QtGui/qvalidator.h>
+#include <BobUIGui/qvalidator.h>
 
 #ifdef Q_OS_MAC
 #include <qfocusframe.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 QWidgetList _q_ac_childWidgets(const QWidget *widget);
 
-QString qt_accHotKey(const QString &text);
+QString bobui_accHotKey(const QString &text);
 
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
 /*!
   \class QAccessibleButton
   \brief The QAccessibleButton class implements the QAccessibleInterface for button type widgets.
@@ -109,19 +109,19 @@ QString QAccessibleButton::text(QAccessible::Text t) const
     switch (t) {
     case QAccessible::Accelerator:
     {
-#if QT_CONFIG(shortcut) && QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(shortcut) && BOBUI_CONFIG(pushbutton)
         QPushButton *pb = qobject_cast<QPushButton*>(object());
         if (pb && pb->isDefault())
-            str = QKeySequence(Qt::Key_Enter).toString(QKeySequence::NativeText);
+            str = QKeySequence(BobUI::Key_Enter).toString(QKeySequence::NativeText);
 #endif
         if (str.isEmpty())
-            str = qt_accHotKey(button()->text());
+            str = bobui_accHotKey(button()->text());
     }
          break;
     case QAccessible::Name:
         str = widget()->accessibleName();
         if (str.isEmpty())
-            str = qt_accStripAmp(button()->text());
+            str = bobui_accStripAmp(button()->text());
         break;
     default:
         break;
@@ -136,25 +136,25 @@ QAccessible::State QAccessibleButton::state() const
     QAccessible::State state = QAccessibleWidgetV2::state();
 
     QAbstractButton *b = button();
-#if QT_CONFIG(checkbox)
+#if BOBUI_CONFIG(checkbox)
     QCheckBox *cb = qobject_cast<QCheckBox *>(b);
 #endif
     if (b->isCheckable())
         state.checkable = true;
     if (b->isChecked())
         state.checked = true;
-#if QT_CONFIG(checkbox)
-    if (cb && cb->checkState() == Qt::PartiallyChecked)
+#if BOBUI_CONFIG(checkbox)
+    if (cb && cb->checkState() == BobUI::PartiallyChecked)
         state.checkStateMixed = true;
 #endif
     if (b->isDown())
         state.pressed = true;
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     QPushButton *pb = qobject_cast<QPushButton*>(b);
     if (pb) {
         if (pb->isDefault())
             state.defaultButton = true;
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
         if (pb->menu())
             state.hasPopup = true;
 #endif
@@ -170,7 +170,7 @@ QRect QAccessibleButton::rect() const
     if (!ab->isVisible())
         return QRect();
 
-#if QT_CONFIG(checkbox)
+#if BOBUI_CONFIG(checkbox)
     if (QCheckBox *cb = qobject_cast<QCheckBox *>(ab)) {
         QPoint wpos = cb->mapToGlobal(QPoint(0, 0));
         QStyleOptionButton opt;
@@ -178,7 +178,7 @@ QRect QAccessibleButton::rect() const
         return cb->style()->subElementRect(QStyle::SE_CheckBoxClickRect, &opt, cb).translated(wpos);
     }
 #endif
-#if QT_CONFIG(radiobutton)
+#if BOBUI_CONFIG(radiobutton)
     else if (QRadioButton *rb = qobject_cast<QRadioButton *>(ab)) {
         QPoint wpos = rb->mapToGlobal(QPoint(0, 0));
         QStyleOptionButton opt;
@@ -193,7 +193,7 @@ QAccessible::Role QAccessibleButton::role() const
 {
     QAbstractButton *ab = button();
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (QPushButton *pb = qobject_cast<QPushButton*>(ab)) {
         if (pb->menu())
             return QAccessible::ButtonMenu;
@@ -234,7 +234,7 @@ void QAccessibleButton::doAction(const QString &actionName)
         return;
     if (actionName == pressAction() ||
         actionName == showMenuAction()) {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
         QPushButton *pb = qobject_cast<QPushButton*>(object());
         if (pb && pb->menu())
             pb->showMenu();
@@ -251,15 +251,15 @@ void QAccessibleButton::doAction(const QString &actionName)
 QStringList QAccessibleButton::keyBindingsForAction(const QString &actionName) const
 {
     if (actionName == pressAction()) {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         return QStringList() << button()->shortcut().toString();
 #endif
     }
     return QStringList();
 }
-#endif // QT_CONFIG(abstractbutton)
+#endif // BOBUI_CONFIG(abstractbutton)
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
 /*!
   \class QAccessibleToolButton
   \brief The QAccessibleToolButton class implements the QAccessibleInterface for tool buttons.
@@ -278,9 +278,9 @@ QAccessibleToolButton::QAccessibleToolButton(QWidget *w)
 }
 
 /*! Returns the button. */
-QToolButton *QAccessibleToolButton::toolButton() const
+BOBUIoolButton *QAccessibleToolButton::toolButton() const
 {
-    return qobject_cast<QToolButton*>(object());
+    return qobject_cast<BOBUIoolButton*>(object());
 }
 
 /*!
@@ -288,14 +288,14 @@ QToolButton *QAccessibleToolButton::toolButton() const
 */
 bool QAccessibleToolButton::isSplitButton() const
 {
-#if QT_CONFIG(menu)
-    return menu() && toolButton()->popupMode() == QToolButton::MenuButtonPopup;
+#if BOBUI_CONFIG(menu)
+    return menu() && toolButton()->popupMode() == BOBUIoolButton::MenuButtonPopup;
 #else
     return false;
 #endif
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 QMenu *QAccessibleToolButton::menu() const
 {
     if (QMenu *menu = toolButton()->menu())
@@ -313,7 +313,7 @@ QAccessible::State QAccessibleToolButton::state() const
     QAccessible::State st = QAccessibleButton::state();
     if (toolButton()->autoRaise())
         st.hotTracked = true;
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (menu())
         st.hasPopup = true;
 #endif
@@ -327,11 +327,11 @@ int QAccessibleToolButton::childCount() const
 
 QAccessible::Role QAccessibleToolButton::role() const
 {
-#if QT_CONFIG(menu)
-    QToolButton *tb = toolButton();
+#if BOBUI_CONFIG(menu)
+    BOBUIoolButton *tb = toolButton();
     if (!menu())
         return tb->isCheckable() ? QAccessible::CheckBox : QAccessible::PushButton;
-    else if (tb->popupMode() == QToolButton::DelayedPopup)
+    else if (tb->popupMode() == BOBUIoolButton::DelayedPopup)
         return QAccessible::ButtonDropDown;
 #endif
 
@@ -340,7 +340,7 @@ QAccessible::Role QAccessibleToolButton::role() const
 
 QAccessibleInterface *QAccessibleToolButton::child(int index) const
 {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (index == 0 && menu())
         return QAccessible::queryAccessibleInterface(menu());
 #else
@@ -359,10 +359,10 @@ QStringList QAccessibleToolButton::actionNames() const
 {
     QStringList names;
     if (widget()->isEnabled()) {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
         if (toolButton()->menu())
             names << showMenuAction();
-        if (toolButton()->popupMode() != QToolButton::InstantPopup)
+        if (toolButton()->popupMode() != BOBUIoolButton::InstantPopup)
             names << QAccessibleButton::actionNames();
 #endif
     }
@@ -377,8 +377,8 @@ void QAccessibleToolButton::doAction(const QString &actionName)
     if (actionName == pressAction()) {
         button()->click();
     } else if (actionName == showMenuAction()) {
-#if QT_CONFIG(menu)
-        if (toolButton()->popupMode() != QToolButton::InstantPopup) {
+#if BOBUI_CONFIG(menu)
+        if (toolButton()->popupMode() != BOBUIoolButton::InstantPopup) {
             toolButton()->setDown(true);
             toolButton()->showMenu();
         }
@@ -389,7 +389,7 @@ void QAccessibleToolButton::doAction(const QString &actionName)
 
 }
 
-#endif // QT_CONFIG(toolbutton)
+#endif // BOBUI_CONFIG(toolbutton)
 
 /*!
   \class QAccessibleDisplay
@@ -410,24 +410,24 @@ QAccessibleDisplay::QAccessibleDisplay(QWidget *w, QAccessible::Role role)
 
 QAccessible::Role QAccessibleDisplay::role() const
 {
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     QLabel *l = qobject_cast<QLabel*>(object());
     if (l) {
         if (!l->pixmap().isNull())
             return QAccessible::Graphic;
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
         if (!l->picture().isNull())
             return QAccessible::Graphic;
 #endif
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
         if (l->movie())
             return QAccessible::Animation;
 #endif
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
     } else if (qobject_cast<QProgressBar*>(object())) {
         return QAccessible::ProgressBar;
 #endif
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
     } else if (qobject_cast<QStatusBar*>(object())) {
         return QAccessible::StatusBar;
 #endif
@@ -451,24 +451,24 @@ QString QAccessibleDisplay::text(QAccessible::Text t) const
         str = widget()->accessibleName();
         if (str.isEmpty()) {
             if (false) {
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
             } else if (qobject_cast<QLabel*>(object())) {
                 QLabel *label = qobject_cast<QLabel*>(object());
                 str = label->text();
-#ifndef QT_NO_TEXTHTMLPARSER
-                if (label->textFormat() == Qt::RichText
-                    || (label->textFormat() == Qt::AutoText && Qt::mightBeRichText(str))) {
-                    QTextDocument doc;
+#ifndef BOBUI_NO_TEXTHTMLPARSER
+                if (label->textFormat() == BobUI::RichText
+                    || (label->textFormat() == BobUI::AutoText && BobUI::mightBeRichText(str))) {
+                    BOBUIextDocument doc;
                     doc.setHtml(str);
                     str = doc.toPlainText();
                 }
 #endif
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
                 if (label->buddy())
-                    str = qt_accStripAmp(str);
+                    str = bobui_accStripAmp(str);
 #endif
-#endif // QT_CONFIG(label)
-#if QT_CONFIG(lcdnumber)
+#endif // BOBUI_CONFIG(label)
+#if BOBUI_CONFIG(lcdnumber)
             } else if (qobject_cast<QLCDNumber*>(object())) {
                 QLCDNumber *l = qobject_cast<QLCDNumber*>(object());
                 if (l->digitCount())
@@ -476,7 +476,7 @@ QString QAccessibleDisplay::text(QAccessible::Text t) const
                 else
                     str = QString::number(l->intValue());
 #endif
-#if QT_CONFIG(statusbar)
+#if BOBUI_CONFIG(statusbar)
             } else if (qobject_cast<QStatusBar*>(object())) {
                 return qobject_cast<QStatusBar*>(object())->currentMessage();
 #endif
@@ -484,7 +484,7 @@ QString QAccessibleDisplay::text(QAccessible::Text t) const
         }
         break;
     case QAccessible::Value:
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
         if (qobject_cast<QProgressBar*>(object()))
             str = QString::number(qobject_cast<QProgressBar*>(object())->value());
 #endif
@@ -503,7 +503,7 @@ QAccessibleDisplay::relations(QAccessible::Relation match /* = QAccessible::AllR
 {
     QList<std::pair<QAccessibleInterface *, QAccessible::Relation>> rels =
             QAccessibleWidgetV2::relations(match);
-#    if QT_CONFIG(shortcut) && QT_CONFIG(label)
+#    if BOBUI_CONFIG(shortcut) && BOBUI_CONFIG(label)
     if (match & QAccessible::Labelled) {
         if (QLabel *label = qobject_cast<QLabel*>(object())) {
             const QAccessible::Relation rel = QAccessible::Labelled;
@@ -525,7 +525,7 @@ void *QAccessibleDisplay::interface_cast(QAccessible::InterfaceType t)
 /*! \internal */
 QString QAccessibleDisplay::imageDescription() const
 {
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     return widget()->toolTip();
 #else
     return QString();
@@ -535,12 +535,12 @@ QString QAccessibleDisplay::imageDescription() const
 /*! \internal */
 QSize QAccessibleDisplay::imageSize() const
 {
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     QLabel *label = qobject_cast<QLabel *>(widget());
     if (!label)
 #endif
         return QSize();
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     return label->pixmap().size();
 #endif
 }
@@ -548,12 +548,12 @@ QSize QAccessibleDisplay::imageSize() const
 /*! \internal */
 QPoint QAccessibleDisplay::imagePosition() const
 {
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     QLabel *label = qobject_cast<QLabel *>(widget());
     if (!label)
 #endif
         return QPoint();
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     if (label->pixmap().isNull())
         return QPoint();
 
@@ -561,7 +561,7 @@ QPoint QAccessibleDisplay::imagePosition() const
 #endif
 }
 
-#if QT_CONFIG(groupbox)
+#if BOBUI_CONFIG(groupbox)
 QAccessibleGroupBox::QAccessibleGroupBox(QWidget *w)
 : QAccessibleWidgetV2(w)
 {
@@ -579,15 +579,15 @@ QString QAccessibleGroupBox::text(QAccessible::Text t) const
     if (txt.isEmpty()) {
         switch (t) {
         case QAccessible::Name:
-            txt = qt_accStripAmp(groupBox()->title());
+            txt = bobui_accStripAmp(groupBox()->title());
             break;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         case QAccessible::Description:
             txt = groupBox()->toolTip();
             break;
 #endif
         case QAccessible::Accelerator:
-            txt = qt_accHotKey(groupBox()->title());
+            txt = bobui_accHotKey(groupBox()->title());
             break;
         default:
             break;
@@ -652,7 +652,7 @@ QStringList QAccessibleGroupBox::keyBindingsForAction(const QString &) const
 
 #endif
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 /*!
   \class QAccessibleLineEdit
   \brief The QAccessibleLineEdit class implements the QAccessibleInterface for widgets with editable text
@@ -703,7 +703,7 @@ void QAccessibleLineEdit::setText(QAccessible::Text t, const QString &text)
     }
 
     QString newText = text;
-#if QT_CONFIG(validator)
+#if BOBUI_CONFIG(validator)
     if (lineEdit()->validator()) {
         int pos = 0;
         if (lineEdit()->validator()->validate(newText, pos) != QValidator::Acceptable)
@@ -871,9 +871,9 @@ void QAccessibleLineEdit::replaceText(int startOffset, int endOffset, const QStr
     lineEdit()->setText(lineEdit()->text().replace(startOffset, endOffset - startOffset, text));
 }
 
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
 
-#if QT_CONFIG(progressbar)
+#if BOBUI_CONFIG(progressbar)
 QAccessibleProgressBar::QAccessibleProgressBar(QWidget *o)
     : QAccessibleDisplay(o)
 {
@@ -953,7 +953,7 @@ QWindowContainer *QAccessibleWindowContainer::container() const
     return static_cast<QWindowContainer *>(widget());
 }
 
-#if QT_CONFIG(messagebox)
+#if BOBUI_CONFIG(messagebox)
 /*!
     \internal
     Implements QAccessibleWidget for QMessageBox
@@ -994,6 +994,6 @@ QString QAccessibleMessageBox::text(QAccessible::Text t) const
 }
 #endif
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

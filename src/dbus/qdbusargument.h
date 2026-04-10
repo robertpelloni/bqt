@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDBUSARGUMENT_H
 #define QDBUSARGUMENT_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qvariant.h>
-#include <QtDBus/qdbusextratypes.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIDBus/qdbusextratypes.h>
 
 #include <tuple>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusUnixFileDescriptor;
@@ -48,9 +48,9 @@ public:
     QDBusArgument &operator=(const QDBusArgument &other);
     ~QDBusArgument();
 
-    void swap(QDBusArgument &other) noexcept { qt_ptr_swap(d, other.d); }
+    void swap(QDBusArgument &other) noexcept { bobui_ptr_swap(d, other.d); }
 
-    // used for marshalling (Qt -> D-Bus)
+    // used for marshalling (BobUI -> D-Bus)
     QDBusArgument &operator<<(uchar arg);
     QDBusArgument &operator<<(bool arg);
     QDBusArgument &operator<<(short arg);
@@ -83,7 +83,7 @@ public:
 
     void appendVariant(const QVariant &v);
 
-    // used for de-marshalling (D-Bus -> Qt)
+    // used for de-marshalling (D-Bus -> BobUI)
     QString currentSignature() const;
     ElementType currentType() const;
 
@@ -144,9 +144,9 @@ private:
 };
 Q_DECLARE_SHARED(QDBusArgument)
 
-QT_END_NAMESPACE
-QT_DECL_METATYPE_EXTERN(QDBusArgument, Q_DBUS_EXPORT)
-QT_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
+BOBUI_DECL_METATYPE_EXTERN(QDBusArgument, Q_DBUS_EXPORT)
+BOBUI_BEGIN_NAMESPACE
 
 template<typename T> inline T qdbus_cast(const QDBusArgument &arg)
 {
@@ -183,8 +183,8 @@ Q_DBUS_EXPORT const QDBusArgument &operator>>(const QDBusArgument &a, QVariant &
 Q_DBUS_EXPORT const QDBusArgument &operator>>(const QDBusArgument &a, QDate &date);
 Q_DBUS_EXPORT QDBusArgument &operator<<(QDBusArgument &a, const QDate &date);
 
-Q_DBUS_EXPORT const QDBusArgument &operator>>(const QDBusArgument &a, QTime &time);
-Q_DBUS_EXPORT QDBusArgument &operator<<(QDBusArgument &a, const QTime &time);
+Q_DBUS_EXPORT const QDBusArgument &operator>>(const QDBusArgument &a, BOBUIime &time);
+Q_DBUS_EXPORT QDBusArgument &operator<<(QDBusArgument &a, const BOBUIime &time);
 
 Q_DBUS_EXPORT const QDBusArgument &operator>>(const QDBusArgument &a, QDateTime &dt);
 Q_DBUS_EXPORT QDBusArgument &operator<<(QDBusArgument &a, const QDateTime &dt);
@@ -254,7 +254,7 @@ inline QDBusArgument &operator<<(QDBusArgument &arg, const QVariantList &list)
 
 // Specializations for associative containers
 template <template <typename, typename> class Container, typename Key, typename T,
-         QtPrivate::IfAssociativeIteratorHasKeyAndValue<typename Container<Key, T>::iterator> = true>
+         BobUIPrivate::IfAssociativeIteratorHasKeyAndValue<typename Container<Key, T>::iterator> = true>
 inline QDBusArgument &operator<<(QDBusArgument &arg, const Container<Key, T> &map)
 {
     arg.beginMap(QMetaType::fromType<Key>(), QMetaType::fromType<T>());
@@ -270,7 +270,7 @@ inline QDBusArgument &operator<<(QDBusArgument &arg, const Container<Key, T> &ma
 }
 
 template <template <typename, typename> class Container, typename Key, typename T,
-         QtPrivate::IfAssociativeIteratorHasFirstAndSecond<typename Container<Key, T>::iterator> = true>
+         BobUIPrivate::IfAssociativeIteratorHasFirstAndSecond<typename Container<Key, T>::iterator> = true>
 inline QDBusArgument &operator<<(QDBusArgument &arg, const Container<Key, T> &map)
 {
     arg.beginMap(QMetaType::fromType<Key>(), QMetaType::fromType<T>());
@@ -286,7 +286,7 @@ inline QDBusArgument &operator<<(QDBusArgument &arg, const Container<Key, T> &ma
 }
 
 template <template <typename, typename> class Container, typename Key, typename T,
-         QtPrivate::IfAssociativeIteratorHasKeyAndValue<typename Container<Key, T>::iterator> = true>
+         BobUIPrivate::IfAssociativeIteratorHasKeyAndValue<typename Container<Key, T>::iterator> = true>
 inline const QDBusArgument &operator>>(const QDBusArgument &arg, Container<Key, T> &map)
 {
     arg.beginMap();
@@ -345,7 +345,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &arg, std::pair<T1, T
     return arg;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

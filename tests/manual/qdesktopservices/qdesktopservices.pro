@@ -1,4 +1,4 @@
-QT       += testlib
+BOBUI       += testlib
 
 TARGET = tst_manual_qdesktopservices
 CONFIG   += cmdline

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "msvc_vcproj.h"
 #include "option.h"
@@ -21,9 +21,9 @@
 //#define DEBUG_SOLUTION_GEN
 
 using namespace QMakeInternal;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 // Filter GUIDs (Do NOT change these!) ------------------------------
 const char _GUIDSourceFiles[]          = "{4FC737F1-C7A5-4376-A066-2A32D752A2FF}";
 const char _GUIDHeaderFiles[]          = "{93995380-89BD-4b04-88EB-625FBE52EBFB}";
@@ -103,7 +103,7 @@ VcprojGenerator::~VcprojGenerator()
     delete projectWriter;
 }
 
-bool VcprojGenerator::writeMakefile(QTextStream &t)
+bool VcprojGenerator::writeMakefile(BOBUIextStream &t)
 {
     initProject(); // Fills the whole project with proper data
 
@@ -132,7 +132,7 @@ bool VcprojGenerator::writeMakefile(QTextStream &t)
 
 bool VcprojGenerator::writeProjectMakefile()
 {
-    QTextStream t(&Option::output);
+    BOBUIextStream t(&Option::output);
 
     // Check if all requirements are fulfilled
     if(!project->values("QMAKE_FAILED_REQUIREMENTS").isEmpty()) {
@@ -285,13 +285,13 @@ QString VcprojGenerator::retrievePlatformToolSet() const
 bool VcprojGenerator::isStandardSuffix(const QString &suffix) const
 {
     if (!project->values("QMAKE_APP_FLAG").isEmpty()) {
-        if (suffix.compare("exe", Qt::CaseInsensitive) == 0)
+        if (suffix.compare("exe", BobUI::CaseInsensitive) == 0)
             return true;
     } else if (project->isActiveConfig("shared")) {
-        if (suffix.compare("dll", Qt::CaseInsensitive) == 0)
+        if (suffix.compare("dll", BobUI::CaseInsensitive) == 0)
             return true;
     } else {
-        if (suffix.compare("lib", Qt::CaseInsensitive) == 0)
+        if (suffix.compare("lib", BobUI::CaseInsensitive) == 0)
             return true;
     }
     return false;
@@ -320,7 +320,7 @@ ProStringList VcprojGenerator::collectDependencies(QMakeProject *proj, QHash<QSt
                                                    QHash<VcsolutionDepend *, QStringList> &extraSubdirs,
                                                    QHash<QString, VcsolutionDepend*> &solution_depends,
                                                    QList<VcsolutionDepend*> &solution_cleanup,
-                                                   QTextStream &t,
+                                                   BOBUIextStream &t,
                                                    QHash<QString, ProStringList> &subdirProjectLookup,
                                                    const ProStringList &allDependencies)
 {
@@ -443,7 +443,7 @@ ProStringList VcprojGenerator::collectDependencies(QMakeProject *proj, QHash<QSt
                         }
                     }
 
-                    // All ActiveQt Server projects are dependent on idc.exe
+                    // All ActiveBobUI Server projects are dependent on idc.exe
                     if (tmp_proj.values("CONFIG").contains("qaxserver"))
                         newDep->dependencies << "idc.exe";
 
@@ -494,7 +494,7 @@ nextfile:
     return projectsInProject;
 }
 
-void VcprojGenerator::writeSubDirs(QTextStream &t)
+void VcprojGenerator::writeSubDirs(BOBUIextStream &t)
 {
     // Check if all requirements are fulfilled
     if(!project->values("QMAKE_FAILED_REQUIREMENTS").isEmpty()) {
@@ -938,7 +938,7 @@ void VcprojGenerator::initProject()
         vcProject.PlatformName = (is64Bit ? "x64" : "Win32");
     }
     vcProject.SdkVersion = project->first("WINSDK_VER").toQString();
-    // These are not used by Qt, but may be used by customers
+    // These are not used by BobUI, but may be used by customers
     vcProject.SccProjectName = project->first("SCCPROJECTNAME").toQString();
     vcProject.SccLocalPath = project->first("SCCLOCALPATH").toQString();
     vcProject.flat_files = project->isActiveConfig("flat");
@@ -1040,7 +1040,7 @@ void VcprojGenerator::initConfiguration()
     // Only deploy for crosscompiled projects
     if (!project->isHostBuild())
         initDeploymentTool();
-    initWinDeployQtTool();
+    initWinDeployBobUITool();
     initPreLinkEventTools();
 }
 
@@ -1207,9 +1207,9 @@ void VcprojGenerator::initDeploymentTool()
         targetPath.chop(1);
     conf.deployment.RemoteDirectory = targetPath;
     const ProStringList dllPaths = project->values("QMAKE_DLL_PATHS");
-    // Only deploy Qt libs for shared build
+    // Only deploy BobUI libs for shared build
     if (!dllPaths.isEmpty()) {
-        // FIXME: This code should actually resolve the libraries from all Qt modules.
+        // FIXME: This code should actually resolve the libraries from all BobUI modules.
         ProStringList arg = project->values("LIBS") + project->values("LIBS_PRIVATE")
                 + project->values("QMAKE_LIBS") + project->values("QMAKE_LIBS_PRIVATE");
         bool qpaPluginDeployed = false;
@@ -1222,7 +1222,7 @@ void VcprojGenerator::initDeploymentTool()
             // We want to deploy .dlls not .libs
             if (dllName.endsWith(QLatin1String(".lib")))
                 dllName.replace(dllName.size() - 3, 3, QLatin1String("dll"));
-            // Use only the file name and check in Qt's install path and LIBPATHs to check for existence
+            // Use only the file name and check in BobUI's install path and LIBPATHs to check for existence
             dllName.remove(0, dllName.lastIndexOf(QLatin1Char('/')) + 1);
             QFileInfo info;
             for (const ProString &dllPath : dllPaths) {
@@ -1318,14 +1318,14 @@ void VcprojGenerator::initDeploymentTool()
     }
 }
 
-void VcprojGenerator::initWinDeployQtTool()
+void VcprojGenerator::initWinDeployBobUITool()
 {
     VCConfiguration &conf = vcProject.Configuration;
-    conf.windeployqt.ExcludedFromBuild = true;
-    if (project->isActiveConfig("windeployqt")) {
-        conf.windeployqt.Record = QStringLiteral("$(TargetName).windeployqt.$(Platform).$(Configuration)");
-        const QString commandLine = MakefileGenerator::shellQuote(QDir::toNativeSeparators(project->first("QMAKE_WINDEPLOYQT").toQString()))
-                + QLatin1Char(' ') + project->values("WINDEPLOYQT_OPTIONS").join(QLatin1Char(' '));
+    conf.windeploybobui.ExcludedFromBuild = true;
+    if (project->isActiveConfig("windeploybobui")) {
+        conf.windeploybobui.Record = QStringLiteral("$(TargetName).windeploybobui.$(Platform).$(Configuration)");
+        const QString commandLine = MakefileGenerator::shellQuote(QDir::toNativeSeparators(project->first("QMAKE_WINDEPLOYBOBUI").toQString()))
+                + QLatin1Char(' ') + project->values("WINDEPLOYBOBUI_OPTIONS").join(QLatin1Char(' '));
 
         //  Visual Studio copies all files to be deployed into the MSIL directory
         //  and then invokes MDILXapCompile on it, which checks for managed code and
@@ -1335,13 +1335,13 @@ void VcprojGenerator::initWinDeployQtTool()
         //  itself contains the original subdirectories as parameters and hence the
         //  call fails.
         //  Hence the only way to get a build done is to recreate the directory
-        //  structure manually by invoking windeployqt a second time, so that
+        //  structure manually by invoking windeploybobui a second time, so that
         //  the MDILXapCompile call succeeds and deployment continues.
-        conf.windeployqt.CommandLine += commandLine
+        conf.windeploybobui.CommandLine += commandLine
                 + QStringLiteral(" -list relative -dir \"$(MSBuildProjectDirectory)\" \"$(OutDir)\\$(TargetFileName)\" > ")
-                + MakefileGenerator::shellQuote(conf.windeployqt.Record);
-        conf.windeployqt.config = &vcProject.Configuration;
-        conf.windeployqt.ExcludedFromBuild = false;
+                + MakefileGenerator::shellQuote(conf.windeploybobui.Record);
+        conf.windeploybobui.config = &vcProject.Configuration;
+        conf.windeploybobui.ExcludedFromBuild = false;
     }
 }
 
@@ -1653,4 +1653,4 @@ bool VcprojGenerator::openOutput(QFile &file, const QString &/*build*/) const
     return Win32MakefileGenerator::openOutput(file, QString());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

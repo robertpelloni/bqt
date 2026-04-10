@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOFFSCREENINTEGRATION_H
 #define QOFFSCREENINTEGRATION_H
@@ -10,7 +10,7 @@
 #include <qscopedpointer.h>
 #include <qjsonobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenBackendData;
 class QOffscreenScreen;
@@ -31,7 +31,7 @@ public:
 
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #endif
 
@@ -51,7 +51,7 @@ public:
     QList<QOffscreenScreen *> screens() const;
 protected:
     QScopedPointer<QPlatformFontDatabase> m_fontDatabase;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QScopedPointer<QPlatformDrag> m_drag;
 #endif
     QScopedPointer<QPlatformInputContext> m_inputContext;
@@ -62,6 +62,6 @@ protected:
     QJsonObject m_configuration;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

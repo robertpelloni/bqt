@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvncclient.h"
 #include "qvnc_p.h"
 
-#include <QtNetwork/QTcpSocket>
-#include <QtCore/QCoreApplication>
+#include <BobUINetwork/BOBUIcpSocket>
+#include <BobUICore/QCoreApplication>
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUIGui/qguiapplication.h>
 
 #ifdef Q_OS_WIN
 #include <winsock2.h>
@@ -16,9 +16,9 @@
 #include <arpa/inet.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QVncClient::QVncClient(QTcpSocket *clientSocket, QVncServer *server)
+QVncClient::QVncClient(BOBUIcpSocket *clientSocket, QVncServer *server)
     : QObject(server)
     , m_server(server)
     , m_clientSocket(clientSocket)
@@ -47,7 +47,7 @@ QVncClient::~QVncClient()
     delete m_encoder;
 }
 
-QTcpSocket *QVncClient::clientSocket() const
+BOBUIcpSocket *QVncClient::clientSocket() const
 {
     return m_clientSocket;
 }
@@ -328,7 +328,7 @@ void QVncClient::readClient()
                 }
                 sim.width = m_server->screen()->geometry().width();
                 sim.height = m_server->screen()->geometry().height();
-                sim.setName("Qt for Embedded Linux VNC Server");
+                sim.setName("BobUI for Embedded Linux VNC Server");
                 sim.write(m_clientSocket);
                 m_state = Connected;
             }
@@ -386,7 +386,7 @@ void QVncClient::checkUpdate()
 {
     if (!m_wantUpdate)
         return;
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
     if (m_dirtyCursor) {
         m_server->screen()->clientCursor->write(this);
         m_dirtyCursor = false;
@@ -548,7 +548,7 @@ void QVncClient::frameBufferUpdateRequest()
 void QVncClient::pointerEvent()
 {
     QRfbPointerEvent ev;
-    static int buttonState = Qt::NoButton;
+    static int buttonState = BobUI::NoButton;
     if (ev.read(m_clientSocket)) {
         const QPointF pos = m_server->screen()->geometry().topLeft() + QPoint(ev.x, ev.y);
         int buttonStateChange = buttonState ^ int(ev.buttons);
@@ -557,7 +557,7 @@ void QVncClient::pointerEvent()
             type = QEvent::MouseButtonPress;
         else if (int(ev.buttons) < buttonState)
             type = QEvent::MouseButtonRelease;
-        QWindowSystemInterface::handleMouseEvent(nullptr, pos, pos, ev.buttons, Qt::MouseButton(buttonStateChange),
+        QWindowSystemInterface::handleMouseEvent(nullptr, pos, pos, ev.buttons, BobUI::MouseButton(buttonStateChange),
                                                  type, QGuiApplication::keyboardModifiers());
         buttonState = int(ev.buttons);
         m_handleMsg = false;
@@ -569,15 +569,15 @@ void QVncClient::keyEvent()
     QRfbKeyEvent ev;
 
     if (ev.read(m_clientSocket)) {
-        if (ev.keycode == Qt::Key_Shift)
-            m_keymod = ev.down ? m_keymod | Qt::ShiftModifier :
-                                 m_keymod & ~Qt::ShiftModifier;
-        else if (ev.keycode == Qt::Key_Control)
-            m_keymod = ev.down ? m_keymod | Qt::ControlModifier :
-                                 m_keymod & ~Qt::ControlModifier;
-        else if (ev.keycode == Qt::Key_Alt)
-            m_keymod = ev.down ? m_keymod | Qt::AltModifier :
-                                 m_keymod & ~Qt::AltModifier;
+        if (ev.keycode == BobUI::Key_Shift)
+            m_keymod = ev.down ? m_keymod | BobUI::ShiftModifier :
+                                 m_keymod & ~BobUI::ShiftModifier;
+        else if (ev.keycode == BobUI::Key_Control)
+            m_keymod = ev.down ? m_keymod | BobUI::ControlModifier :
+                                 m_keymod & ~BobUI::ControlModifier;
+        else if (ev.keycode == BobUI::Key_Alt)
+            m_keymod = ev.down ? m_keymod | BobUI::AltModifier :
+                                 m_keymod & ~BobUI::AltModifier;
         if (ev.unicode || ev.keycode)
             QWindowSystemInterface::handleKeyEvent(nullptr, ev.down ? QEvent::KeyPress : QEvent::KeyRelease, ev.keycode, m_keymod, QString(QChar::fromUcs2(ev.unicode)));
         m_handleMsg = false;
@@ -629,6 +629,6 @@ bool QVncClient::pixelConversionNeeded() const
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvncclient.cpp"

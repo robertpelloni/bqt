@@ -1,17 +1,17 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAGELAYOUT_H
 #define QPAGELAYOUT_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qmargins.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qmargins.h>
 
-#include <QtGui/qpagesize.h>
+#include <BobUIGui/qpagesize.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPageLayoutPrivate;
 class QMarginsF;
@@ -50,7 +50,7 @@ public:
                 const QMarginsF &margins, Unit units = Point,
                 const QMarginsF &minMargins = QMarginsF(0, 0, 0, 0));
     QPageLayout(const QPageLayout &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPageLayout)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPageLayout)
     QPageLayout &operator=(const QPageLayout &other);
     ~QPageLayout();
 
@@ -73,7 +73,7 @@ public:
     void setUnits(Unit units);
     Unit units() const;
 
-#if QT_GUI_REMOVED_SINCE(6, 8)
+#if BOBUI_GUI_REMOVED_SINCE(6, 8)
     bool setMargins(const QMarginsF &margins);
     bool setLeftMargin(qreal leftMargin);
     bool setRightMargin(qreal rightMargin);
@@ -120,14 +120,14 @@ private:
 
 Q_DECLARE_SHARED(QPageLayout)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug dbg, const QPageLayout &pageLayout);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QPageLayout, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QPageLayout::Unit, QPageLayout__Unit, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QPageLayout::Orientation, QPageLayout__Orientation, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QPageLayout, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPageLayout::Unit, QPageLayout__Unit, Q_GUI_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPageLayout::Orientation, QPageLayout__Orientation, Q_GUI_EXPORT)
 
 #endif // QPAGELAYOUT_H

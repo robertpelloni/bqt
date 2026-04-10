@@ -1,14 +1,14 @@
-Changes for Qt/CE 4.3.x "Kicker" release.
+Changes for BobUI/CE 4.3.x "Kicker" release.
 
 ****************************************************************************
 *                           Features                                       *
 ****************************************************************************
 
-- Integrated to Qt 4.3
+- Integrated to BobUI 4.3
 
-- Added QtXml
+- Added BobUIXml
 
-- Added QtSvg
+- Added BobUISvg
 
 - Added full QCursor support in case SDK supports it
 
@@ -41,7 +41,7 @@ Changes for Qt/CE 4.3.x "Kicker" release.
 - QSplashScreen
    * Fixed painting bug
 
-- QTestLib
+- BOBUIestLib
    * Allow more than 256 bytes for qDebug() while debugging
 
 - QWidget

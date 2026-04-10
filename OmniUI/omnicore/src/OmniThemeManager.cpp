@@ -36,7 +36,7 @@ QColor OmniThemeManager::surface() const {
 }
 
 QColor OmniThemeManager::text() const {
-    return (m_currentTheme == Light) ? Qt::black : Qt::white;
+    return (m_currentTheme == Light) ? BobUI::black : BobUI::white;
 }
 
 QColor OmniThemeManager::accent() const {

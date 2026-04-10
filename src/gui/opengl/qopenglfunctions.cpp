@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qopenglfunctions.h"
 #include "qopenglextrafunctions.h"
 #include "qopenglextensions_p.h"
 #include "qdebug.h"
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtGui/private/qopengl_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUIGui/private/qopengl_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformnativeinterface.h>
 
@@ -19,22 +19,22 @@
 #define GL_FRAMEBUFFER_SRGB_CAPABLE_EXT   0x8DBA
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#define QT_OPENGL_COUNT_FUNCTIONS(ret, name, args) +1
-#define QT_OPENGL_FUNCTION_NAMES(ret, name, args) \
+#define BOBUI_OPENGL_COUNT_FUNCTIONS(ret, name, args) +1
+#define BOBUI_OPENGL_FUNCTION_NAMES(ret, name, args) \
     "gl"#name"\0"
-#define QT_OPENGL_FLAGS(ret, name, args) \
+#define BOBUI_OPENGL_FLAGS(ret, name, args) \
     0,
-#define QT_OPENGL_IMPLEMENT(CLASS, FUNCTIONS) \
+#define BOBUI_OPENGL_IMPLEMENT(CLASS, FUNCTIONS) \
 void CLASS::init(QOpenGLContext *context) \
 { \
-    const char *names = FUNCTIONS(QT_OPENGL_FUNCTION_NAMES); \
+    const char *names = FUNCTIONS(BOBUI_OPENGL_FUNCTION_NAMES); \
     const char *name = names; \
-    for (int i = 0; i < FUNCTIONS(QT_OPENGL_COUNT_FUNCTIONS); ++i) { \
-        functions[i] = QT_PREPEND_NAMESPACE(getProcAddress(context, name)); \
+    for (int i = 0; i < FUNCTIONS(BOBUI_OPENGL_COUNT_FUNCTIONS); ++i) { \
+        functions[i] = BOBUI_PREPEND_NAMESPACE(getProcAddress(context, name)); \
         name += strlen(name) + 1; \
     } \
 }
@@ -44,7 +44,7 @@ void CLASS::init(QOpenGLContext *context) \
     \brief The QOpenGLFunctions class provides cross-platform access to the OpenGL ES 2.0 API.
     \since 5.0
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     OpenGL ES 2.0 defines a subset of the OpenGL specification that is
     common across many desktop and embedded OpenGL implementations.
@@ -146,15 +146,15 @@ struct QOpenGLFunctionsPrivateEx : public QOpenGLExtensionsPrivate, public QOpen
     int m_extensions;
 };
 
-Q_GLOBAL_STATIC(QOpenGLMultiGroupSharedResource, qt_gl_functions_resource)
+Q_GLOBAL_STATIC(QOpenGLMultiGroupSharedResource, bobui_gl_functions_resource)
 
-static QOpenGLFunctionsPrivateEx *qt_gl_functions(QOpenGLContext *context = nullptr)
+static QOpenGLFunctionsPrivateEx *bobui_gl_functions(QOpenGLContext *context = nullptr)
 {
     if (!context)
         context = QOpenGLContext::currentContext();
     Q_ASSERT(context);
     QOpenGLFunctionsPrivateEx *funcs =
-        qt_gl_functions_resource()->value<QOpenGLFunctionsPrivateEx>(context);
+        bobui_gl_functions_resource()->value<QOpenGLFunctionsPrivateEx>(context);
     return funcs;
 }
 
@@ -187,14 +187,14 @@ QOpenGLFunctions::QOpenGLFunctions(QOpenGLContext *context)
     : d_ptr(nullptr)
 {
     if (context && QOpenGLContextGroup::currentContextGroup() == context->shareGroup())
-        d_ptr = qt_gl_functions(context);
+        d_ptr = bobui_gl_functions(context);
     else
         qWarning("QOpenGLFunctions created with non-current context");
 }
 
 /*!
     \class QOpenGLExtensions
-    \inmodule QtGui
+    \inmodule BobUIGui
     \internal
 */
 
@@ -213,7 +213,7 @@ QOpenGLExtensions::QOpenGLExtensions(QOpenGLContext *context)
     Destroys this function resolver.
 */
 
-static int qt_gl_resolve_features()
+static int bobui_gl_resolve_features()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     QOpenGLExtensionMatcher extensions;
@@ -319,7 +319,7 @@ static int qt_gl_resolve_features()
     }
 }
 
-static int qt_gl_resolve_extensions()
+static int bobui_gl_resolve_extensions()
 {
     int extensions = 0;
     QOpenGLExtensionMatcher extensionMatcher;
@@ -413,9 +413,9 @@ static int qt_gl_resolve_extensions()
         QString *deviceName =
                 static_cast<QString *>(QGuiApplication::platformNativeInterface()->nativeResourceForIntegration("AndroidDeviceName"));
         static bool wrongfullyReportsBgra8888Support = deviceName != 0
-                                                        && (deviceName->compare("samsung SM-T211"_L1, Qt::CaseInsensitive) == 0
-                                                            || deviceName->compare("samsung SM-T210"_L1, Qt::CaseInsensitive) == 0
-                                                            || deviceName->compare("samsung SM-T215"_L1, Qt::CaseInsensitive) == 0);
+                                                        && (deviceName->compare("samsung SM-T211"_L1, BobUI::CaseInsensitive) == 0
+                                                            || deviceName->compare("samsung SM-T210"_L1, BobUI::CaseInsensitive) == 0
+                                                            || deviceName->compare("samsung SM-T215"_L1, BobUI::CaseInsensitive) == 0);
         if (wrongfullyReportsBgra8888Support)
             extensions &= ~QOpenGLExtensions::BGRATextureFormat;
 #endif
@@ -494,7 +494,7 @@ QOpenGLFunctions::OpenGLFeatures QOpenGLFunctions::openGLFeatures() const
     if (!d)
         return { };
     if (d->m_features == -1)
-        d->m_features = qt_gl_resolve_features();
+        d->m_features = bobui_gl_resolve_features();
     return QOpenGLFunctions::OpenGLFeatures(d->m_features);
 }
 
@@ -513,7 +513,7 @@ bool QOpenGLFunctions::hasOpenGLFeature(QOpenGLFunctions::OpenGLFeature feature)
     if (!d)
         return false;
     if (d->m_features == -1)
-        d->m_features = qt_gl_resolve_features();
+        d->m_features = bobui_gl_resolve_features();
     return (d->m_features & int(feature)) != 0;
 }
 
@@ -532,7 +532,7 @@ QOpenGLExtensions::OpenGLExtensions QOpenGLExtensions::openGLExtensions()
     if (!d)
         return { };
     if (d->m_extensions == -1)
-        d->m_extensions = qt_gl_resolve_extensions();
+        d->m_extensions = bobui_gl_resolve_extensions();
     return QOpenGLExtensions::OpenGLExtensions(d->m_extensions);
 }
 
@@ -551,7 +551,7 @@ bool QOpenGLExtensions::hasOpenGLExtension(QOpenGLExtensions::OpenGLExtension ex
     if (!d)
         return false;
     if (d->m_extensions == -1)
-        d->m_extensions = qt_gl_resolve_extensions();
+        d->m_extensions = bobui_gl_resolve_extensions();
     return (d->m_extensions & int(extension)) != 0;
 }
 
@@ -565,7 +565,7 @@ bool QOpenGLExtensions::hasOpenGLExtension(QOpenGLExtensions::OpenGLExtension ex
 */
 void QOpenGLFunctions::initializeOpenGLFunctions()
 {
-    d_ptr = qt_gl_functions();
+    d_ptr = bobui_gl_functions();
 }
 
 /*!
@@ -1108,7 +1108,7 @@ void QOpenGLFunctions::initializeOpenGLFunctions()
 
     Convenience function that calls glBindFramebuffer(\a target, \a framebuffer).
 
-    Note that Qt will translate a \a framebuffer argument of 0 to the currently
+    Note that BobUI will translate a \a framebuffer argument of 0 to the currently
     bound QOpenGLContext's defaultFramebufferObject().
 
     For more information, see the OpenGL ES 3.X documentation for
@@ -2121,20 +2121,20 @@ Func resolve(QOpenGLContext *context, const char *name, Func)
 #define RESOLVE(name) \
     resolve(context, "gl"#name, name)
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
 
 // some fallback functions
 static void QOPENGLF_APIENTRY qopenglfSpecialClearDepthf(GLclampf depth)
 {
     QOpenGLContext *context = QOpenGLContext::currentContext();
-    QOpenGLFunctionsPrivate *funcs = qt_gl_functions(context);
+    QOpenGLFunctionsPrivate *funcs = bobui_gl_functions(context);
     funcs->f.ClearDepth((GLdouble) depth);
 }
 
 static void QOPENGLF_APIENTRY qopenglfSpecialDepthRangef(GLclampf zNear, GLclampf zFar)
 {
     QOpenGLContext *context = QOpenGLContext::currentContext();
-    QOpenGLFunctionsPrivate *funcs = qt_gl_functions(context);
+    QOpenGLFunctionsPrivate *funcs = bobui_gl_functions(context);
     funcs->f.DepthRange((GLdouble) zNear, (GLdouble) zFar);
 }
 
@@ -2159,14 +2159,14 @@ static void QOPENGLF_APIENTRY qopenglfSpecialReleaseShaderCompiler()
 {
 }
 
-#endif // !QT_CONFIG(opengles2)
+#endif // !BOBUI_CONFIG(opengles2)
 
 
 QOpenGLFunctionsPrivate::QOpenGLFunctionsPrivate(QOpenGLContext *c)
 {
     init(c);
 
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     // setup fallbacks in case some methods couldn't get resolved
     bool es = QOpenGLContext::currentContext()->isOpenGLES();
     if (!f.ClearDepthf || !es)
@@ -2185,14 +2185,14 @@ QOpenGLFunctionsPrivate::QOpenGLFunctionsPrivate(QOpenGLContext *c)
 }
 
 
-QT_OPENGL_IMPLEMENT(QOpenGLFunctionsPrivate, QT_OPENGL_FUNCTIONS)
+BOBUI_OPENGL_IMPLEMENT(QOpenGLFunctionsPrivate, BOBUI_OPENGL_FUNCTIONS)
 
 /*!
     \class QOpenGLExtraFunctions
     \brief The QOpenGLExtraFunctions class provides cross-platform access to the OpenGL ES 3.0, 3.1 and 3.2 API.
     \since 5.6
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     This subclass of QOpenGLFunctions includes the OpenGL ES 3.0, 3.1 and 3.2
     functions. These will only work when an OpenGL ES 3.x context, or an
@@ -5052,7 +5052,7 @@ QOpenGLExtraFunctionsPrivate::QOpenGLExtraFunctionsPrivate(QOpenGLContext *ctx)
     init(ctx);
 }
 
-QT_OPENGL_IMPLEMENT(QOpenGLExtraFunctionsPrivate, QT_OPENGL_EXTRA_FUNCTIONS)
+BOBUI_OPENGL_IMPLEMENT(QOpenGLExtraFunctionsPrivate, BOBUI_OPENGL_EXTRA_FUNCTIONS)
 
 QOpenGLExtensionsPrivate::QOpenGLExtensionsPrivate(QOpenGLContext *ctx)
     : QOpenGLExtraFunctionsPrivate(ctx),
@@ -5110,4 +5110,4 @@ void QOpenGLExtensions::flushShared()
         glFinish();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

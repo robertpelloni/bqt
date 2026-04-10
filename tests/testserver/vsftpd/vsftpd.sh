@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Copyright (C) 2018 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2018 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 set -ex
 
@@ -24,21 +24,21 @@ su $USER -c "cp -r $TESTDATA/ftp ~/ftp"
 ln -s /home/$USER/ftp /var/ftp
 
 # tst_QNetworkReply::getFromFtp_data()
-su $USER -c "mkdir -p ~/ftp/qtest/"
-su $USER -c "cp rfc3252.txt ~/ftp/qtest/"; rm rfc3252.txt
+su $USER -c "mkdir -p ~/ftp/bobuiest/"
+su $USER -c "cp rfc3252.txt ~/ftp/bobuiest/"; rm rfc3252.txt
 
 # tst_QNetworkReply::proxy_data()
-su $USER -c "ln ~/ftp/qtest/rfc3252.txt ~/ftp/qtest/rfc3252"
-su $USER -c "mkdir -p ~/ftp/qtest/nonASCII/"
+su $USER -c "ln ~/ftp/bobuiest/rfc3252.txt ~/ftp/bobuiest/rfc3252"
+su $USER -c "mkdir -p ~/ftp/bobuiest/nonASCII/"
 
 # Duplicate rfc3252.txt 20 times for bigfile tests:
-su $USER -c "seq 20 | xargs -i cat ~/ftp/qtest/rfc3252.txt >> ~/ftp/qtest/bigfile"
+su $USER -c "seq 20 | xargs -i cat ~/ftp/bobuiest/rfc3252.txt >> ~/ftp/bobuiest/bigfile"
 
 # tst_QNetworkReply::getErrors_data(), testdata with special permissions
 su $USER -c "chmod 0600 ~/ftp/pub/file-not-readable.txt"
 
 # Shared FTP folder (sticky bit)
-su $USER -c "mkdir -p -m 1777 ~/ftp/qtest/upload" # FTP incoming dir
+su $USER -c "mkdir -p -m 1777 ~/ftp/bobuiest/upload" # FTP incoming dir
 
 # enable service with installed configurations
 service vsftpd restart

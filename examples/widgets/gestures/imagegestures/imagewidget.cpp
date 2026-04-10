@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "imagewidget.h"
 
@@ -8,7 +8,7 @@
 #include <QGestureEvent>
 #include <QPainter>
 
-Q_LOGGING_CATEGORY(lcExample, "qt.examples.imagegestures")
+Q_LOGGING_CATEGORY(lcExample, "bobui.examples.imagegestures")
 
 //! [constructor]
 ImageWidget::ImageWidget(QWidget *parent)
@@ -19,10 +19,10 @@ ImageWidget::ImageWidget(QWidget *parent)
 }
 //! [constructor]
 
-void ImageWidget::grabGestures(const QList<Qt::GestureType> &gestures)
+void ImageWidget::grabGestures(const QList<BobUI::GestureType> &gestures)
 {
     //! [enable gestures]
-    for (Qt::GestureType gesture : gestures)
+    for (BobUI::GestureType gesture : gestures)
         grabGesture(gesture);
     //! [enable gestures]
 }
@@ -42,7 +42,7 @@ void ImageWidget::paintEvent(QPaintEvent*)
     QPainter p(this);
 
     if (files.isEmpty() && !path.isEmpty()) {
-        p.drawText(rect(), Qt::AlignCenter|Qt::TextWordWrap,
+        p.drawText(rect(), BobUI::AlignCenter|BobUI::TextWordWrap,
                          tr("No supported image formats found"));
         return;
     }
@@ -76,11 +76,11 @@ void ImageWidget::mouseDoubleClickEvent(QMouseEvent *)
 bool ImageWidget::gestureEvent(QGestureEvent *event)
 {
     qCDebug(lcExample) << "gestureEvent():" << event;
-    if (QGesture *swipe = event->gesture(Qt::SwipeGesture))
+    if (QGesture *swipe = event->gesture(BobUI::SwipeGesture))
         swipeTriggered(static_cast<QSwipeGesture *>(swipe));
-    else if (QGesture *pan = event->gesture(Qt::PanGesture))
+    else if (QGesture *pan = event->gesture(BobUI::PanGesture))
         panTriggered(static_cast<QPanGesture *>(pan));
-    if (QGesture *pinch = event->gesture(Qt::PinchGesture))
+    if (QGesture *pinch = event->gesture(BobUI::PinchGesture))
         pinchTriggered(static_cast<QPinchGesture *>(pinch));
     return true;
 }
@@ -88,14 +88,14 @@ bool ImageWidget::gestureEvent(QGestureEvent *event)
 
 void ImageWidget::panTriggered(QPanGesture *gesture)
 {
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     switch (gesture->state()) {
-        case Qt::GestureStarted:
-        case Qt::GestureUpdated:
-            setCursor(Qt::SizeAllCursor);
+        case BobUI::GestureStarted:
+        case BobUI::GestureUpdated:
+            setCursor(BobUI::SizeAllCursor);
             break;
         default:
-            setCursor(Qt::ArrowCursor);
+            setCursor(BobUI::ArrowCursor);
     }
 #endif
     QPointF delta = gesture->delta();
@@ -120,7 +120,7 @@ void ImageWidget::pinchTriggered(QPinchGesture *gesture)
         qCDebug(lcExample) << "pinchTriggered(): zoom by" <<
             gesture->scaleFactor() << "->" << currentStepScaleFactor;
     }
-    if (gesture->state() == Qt::GestureFinished) {
+    if (gesture->state() == BobUI::GestureFinished) {
         scaleFactor *= currentStepScaleFactor;
         currentStepScaleFactor = 1;
     }
@@ -131,7 +131,7 @@ void ImageWidget::pinchTriggered(QPinchGesture *gesture)
 //! [swipe function]
 void ImageWidget::swipeTriggered(QSwipeGesture *gesture)
 {
-    if (gesture->state() == Qt::GestureFinished) {
+    if (gesture->state() == BobUI::GestureFinished) {
         if (gesture->swipeAngle() < 45 || gesture->swipeAngle() > 225) {
             // swipe direction right or down
             qCDebug(lcExample) << "swipeTriggered(): angle"
@@ -194,7 +194,7 @@ QImage ImageWidget::loadImage(const QFileInfo &fileInfo) const
     }
     const QSize maximumSize(2000, 2000); // Reduce in case someone has large photo images.
     if (image.size().width() > maximumSize.width() || image.height() > maximumSize.height())
-        image = image.scaled(maximumSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        image = image.scaled(maximumSize, BobUI::KeepAspectRatio, BobUI::SmoothTransformation);
     return image;
 }
 

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 typedef QDialog WordCountDialog;
 
@@ -59,7 +59,7 @@ void EditorWindow::countWords()
 }
 //! [1]
 
-#if QT_DEPRECATED_SINCE(6, 2)
+#if BOBUI_DEPRECATED_SINCE(6, 2)
 inline bool boo()
 {
     QMessageBox::information(this, "Application name",
@@ -177,14 +177,14 @@ inline bool boo()
         }
     }
 }
-#endif // QT_DEPRECATED_SINCE(6, 2)
+#endif // BOBUI_DEPRECATED_SINCE(6, 2)
 
 inline void moo()
 {
     int numFiles;
     //! [3]
     QProgressDialog progress("Copying files...", "Abort Copy", 0, numFiles, this);
-    progress.setWindowModality(Qt::WindowModal);
+    progress.setWindowModality(BobUI::WindowModal);
 
     for (int i = 0; i < numFiles; i++) {
         progress.setValue(i);
@@ -208,7 +208,7 @@ public:
 private:
     int steps;
     QProgressDialog *pd;
-    QTimer *t;
+    BOBUIimer *t;
 };
 
 //! [4]
@@ -218,8 +218,8 @@ Operation::Operation(QObject *parent)
 {
     pd = new QProgressDialog("Operation in progress.", "Cancel", 0, 100);
     connect(pd, &QProgressDialog::canceled, this, &Operation::cancel);
-    t = new QTimer(this);
-    connect(t, &QTimer::timeout, this, &Operation::perform);
+    t = new BOBUIimer(this);
+    connect(t, &BOBUIimer::timeout, this, &Operation::perform);
     t->start(0);
 }
 //! [4] //! [5]
@@ -264,7 +264,7 @@ void Operation::extension()
     //! [extension]
 
     //! [buttonbox]
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Vertical);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(BobUI::Vertical);
     buttonBox->addButton(findButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(moreButton, QDialogButtonBox::ActionRole);
     //! [buttonbox]

@@ -1,24 +1,24 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
 #ifndef QFUNCTIONALTOOLS_IMPL_H
 #define QFUNCTIONALTOOLS_IMPL_H
 
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #include <type_traits>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
-    \class QtPrivate::CompactStorage
+    \class BobUIPrivate::CompactStorage
     \internal
     CompactStorage is a small utility class that stores an object in the
     most space-efficient way possible. If the stored type is empty and not
@@ -40,9 +40,9 @@ QT_BEGIN_NAMESPACE
             bool isTemporary = false;
         };
 
-        struct FileHandle : private QtPrivate::CompactStorage<Context>
+        struct FileHandle : private BobUIPrivate::CompactStorage<Context>
         {
-            using Storage = QtPrivate::CompactStorage<Context>;
+            using Storage = BobUIPrivate::CompactStorage<Context>;
 
             FileHandle(int descriptor, bool temp)
                 : Storage(Context{descriptor, temp})
@@ -64,9 +64,9 @@ QT_BEGIN_NAMESPACE
         // When the stored type is empty, EBO removes any overhead.
         struct EmptyContext {};
 
-        struct LightweightHandle : private QtPrivate::CompactStorage<EmptyContext>
+        struct LightweightHandle : private BobUIPrivate::CompactStorage<EmptyContext>
         {
-            using Storage = QtPrivate::CompactStorage<EmptyContext>;
+            using Storage = BobUIPrivate::CompactStorage<EmptyContext>;
             int handle = -1;
 
             void reset(int h) noexcept { handle = h; }
@@ -75,7 +75,7 @@ QT_BEGIN_NAMESPACE
         static_assert(sizeof(LightweightHandle) == sizeof(int));
 */
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 namespace detail {
 
@@ -127,10 +127,10 @@ using CompactStorage = typename std::conditional_t<
         detail::StorageByValue<Object, Tag>
     >;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 #undef FOR_EACH_CVREF
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFUNCTIONALTOOLS_IMPL_H

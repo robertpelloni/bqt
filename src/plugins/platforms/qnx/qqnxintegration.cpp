@@ -1,7 +1,7 @@
 // Copyright (C) 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qqnxglobal.h"
 
@@ -19,22 +19,22 @@
 
 #include "qqnxforeignwindow.h"
 #include "qqnxrasterwindow.h"
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 #include "qqnxeglwindow.h"
 #endif
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
 #include "qqnxnavigatorpps.h"
 #include "qqnxnavigatoreventnotifier.h"
 #include "qqnxvirtualkeyboardpps.h"
 #endif
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
 #  include "qqnxbuttoneventnotifier.h"
 #  include "qqnxclipboard.h"
 #endif
 
-#if QT_CONFIG(qqnx_imf)
+#if BOBUI_CONFIG(qqnx_imf)
 #  include "qqnxinputcontext_imf.h"
 #else
 #  include "qqnxinputcontext_noimf.h"
@@ -49,28 +49,28 @@
 #include <qpa/qplatformwindow.h>
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qrhibackingstore_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qrhibackingstore_p.h>
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 #include "qqnxglcontext.h"
-#include <QtGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLContext>
 #endif
 
 #include <private/qsimpledrag_p.h>
 
-#include <QtCore/QDebug>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtCore/QFile>
+#include <BobUICore/QDebug>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QFile>
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-// Q_LOGGING_CATEGORY(lcQpaQnx, "qt.qpa.qnx");
+// Q_LOGGING_CATEGORY(lcQpaQnx, "bobui.qpa.qnx");
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QQnxIntegration *QQnxIntegration::ms_instance;
 
@@ -123,7 +123,7 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
     , m_navigatorEventHandler(new QQnxNavigatorEventHandler())
     , m_virtualKeyboard(0)
     , m_inputContext(0)
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     , m_navigatorEventNotifier(0)
     , m_buttonsNotifier(new QQnxButtonEventNotifier())
 #endif
@@ -132,14 +132,14 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
     , m_eventDispatcher(createUnixEventDispatcher())
     , m_nativeInterface(new QQnxNativeInterface(this))
     , m_screenEventHandler(new QQnxScreenEventHandler(this))
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
     , m_clipboard(0)
 #endif
     , m_navigator(0)
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     , m_drag(new QSimpleDrag())
 #endif
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     , m_eglDisplay(EGL_NO_DISPLAY)
 #endif
 {
@@ -158,16 +158,16 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
                                    m_screenContextId.data());
     m_screenContextId.resize(strlen(m_screenContextId.constData()));
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     // Create/start navigator event notifier
     m_navigatorEventNotifier = new QQnxNavigatorEventNotifier(m_navigatorEventHandler);
 
     // delay invocation of start() to the time the event loop is up and running
-    // needed to have the QThread internals of the main thread properly initialized
-    QMetaObject::invokeMethod(m_navigatorEventNotifier, "start", Qt::QueuedConnection);
+    // needed to have the BOBUIhread internals of the main thread properly initialized
+    QMetaObject::invokeMethod(m_navigatorEventNotifier, "start", BobUI::QueuedConnection);
 #endif
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     createEglDisplay();
 #endif
 
@@ -178,18 +178,18 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
 
     m_qpaInputContext = QPlatformInputContextFactory::create();
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     if (!m_qpaInputContext) {
         // Create/start the keyboard class.
         m_virtualKeyboard = new QQnxVirtualKeyboardPps();
 
         // delay invocation of start() to the time the event loop is up and running
-        // needed to have the QThread internals of the main thread properly initialized
-        QMetaObject::invokeMethod(m_virtualKeyboard, "start", Qt::QueuedConnection);
+        // needed to have the BOBUIhread internals of the main thread properly initialized
+        QMetaObject::invokeMethod(m_virtualKeyboard, "start", BobUI::QueuedConnection);
     }
 #endif
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     m_navigator = new QQnxNavigatorPps();
 #endif
 
@@ -200,19 +200,19 @@ QQnxIntegration::QQnxIntegration(const QStringList &paramList)
         QObject::connect(m_virtualKeyboard, SIGNAL(heightChanged(int)),
                          primaryDisplay(), SLOT(keyboardHeightChanged(int)));
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
         // Set up the input context
         m_inputContext = new QQnxInputContext(this, *m_virtualKeyboard);
-#if QT_CONFIG(qqnx_imf)
+#if BOBUI_CONFIG(qqnx_imf)
         m_screenEventHandler->addScreenEventFilter(m_inputContext);
 #endif
 #endif
     }
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     // delay invocation of start() to the time the event loop is up and running
-    // needed to have the QThread internals of the main thread properly initialized
-    QMetaObject::invokeMethod(m_buttonsNotifier, "start", Qt::QueuedConnection);
+    // needed to have the BOBUIhread internals of the main thread properly initialized
+    QMetaObject::invokeMethod(m_buttonsNotifier, "start", BobUI::QueuedConnection);
 #endif
 }
 
@@ -221,18 +221,18 @@ QQnxIntegration::~QQnxIntegration()
     qCDebug(lcQpaQnx) << "Platform plugin shutdown begin";
     delete m_nativeInterface;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // Destroy the drag object
     delete m_drag;
 #endif
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
     // Delete the clipboard
     delete m_clipboard;
 #endif
 
     // Stop/destroy navigator event notifier
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     delete m_navigatorEventNotifier;
 #endif
     delete m_navigatorEventHandler;
@@ -251,11 +251,11 @@ QQnxIntegration::~QQnxIntegration()
     // Close connection to QNX composition manager
     screen_destroy_context(m_screenContext);
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     destroyEglDisplay();
 #endif
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     // Destroy the hardware button notifier
     delete m_buttonsNotifier;
 
@@ -286,7 +286,7 @@ bool QQnxIntegration::hasCapability(QPlatformIntegration::Capability cap) const
     case ForeignWindows:
     case ThreadedPixmaps:
         return true;
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
     case OpenGL:
     case ThreadedOpenGL:
     case BufferQueueingOpenGL:
@@ -317,7 +317,7 @@ QPlatformWindow *QQnxIntegration::createPlatformWindow(QWindow *window) const
     switch (surfaceType) {
     case QSurface::RasterSurface:
         return new QQnxRasterWindow(window, m_screenContext, needRootWindow);
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
     case QSurface::OpenGLSurface:
         return new QQnxEglWindow(window, m_screenContext, needRootWindow);
 #endif
@@ -334,7 +334,7 @@ QPlatformBackingStore *QQnxIntegration::createPlatformBackingStore(QWindow *wind
     switch (surfaceType) {
     case QSurface::RasterSurface:
         return new QQnxRasterBackingStore(window);
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
     // Return a QRhiBackingStore for non-raster surface windows
     case QSurface::OpenGLSurface:
         return new QRhiBackingStore(window);
@@ -344,7 +344,7 @@ QPlatformBackingStore *QQnxIntegration::createPlatformBackingStore(QWindow *wind
     }
 }
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 QPlatformOpenGLContext *QQnxIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     qCDebug(lcQpaQnx) << Q_FUNC_INFO;
@@ -429,7 +429,7 @@ QAbstractEventDispatcher *QQnxIntegration::createEventDispatcher() const
 {
     qCDebug(lcQpaQnx) << Q_FUNC_INFO;
 
-    // We transfer ownersip of the event-dispatcher to QtCoreApplication
+    // We transfer ownersip of the event-dispatcher to BobUICoreApplication
     QAbstractEventDispatcher *eventDispatcher = m_eventDispatcher;
     m_eventDispatcher = 0;
 
@@ -441,12 +441,12 @@ QPlatformNativeInterface *QQnxIntegration::nativeInterface() const
     return m_nativeInterface;
 }
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
 QPlatformClipboard *QQnxIntegration::clipboard() const
 {
     qCDebug(lcQpaQnx) << Q_FUNC_INFO;
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     if (!m_clipboard)
         m_clipboard = new QQnxClipboard;
 #endif
@@ -454,7 +454,7 @@ QPlatformClipboard *QQnxIntegration::clipboard() const
 }
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QPlatformDrag *QQnxIntegration::drag() const
 {
     return m_drag;
@@ -527,7 +527,7 @@ static int getIdOfDisplay(screen_display_t display)
 static bool getRequestedDisplays(QJsonArray &requestedDisplays)
 {
    // Check if display configuration file is provided
-    QByteArray json = qgetenv("QT_QPA_QNX_DISPLAY_CONFIG");
+    QByteArray json = qgetenv("BOBUI_QPA_QNX_DISPLAY_CONFIG");
     if (json.isEmpty())
         return false;
 
@@ -555,7 +555,7 @@ static bool getRequestedDisplays(QJsonArray &requestedDisplays)
 
 /*!
   Match \a availableDisplays with display order defined in a json file
-  pointed to by QT_QPA_QNX_DISPLAY_CONFIG. Display order must use same
+  pointed to by BOBUI_QPA_QNX_DISPLAY_CONFIG. Display order must use same
   identifiers as defined for displays in graphics.conf. Number of
   available displays must be specified in \a displayCount
 
@@ -626,7 +626,7 @@ void QQnxIntegration::createDisplays()
     Q_SCREEN_CRITICALERROR(result, "Failed to query displays");
 
     // If it's primary, we create a QScreen for it even if it's not attached
-    // since Qt will dereference QGuiApplication::primaryScreen()
+    // since BobUI will dereference QGuiApplication::primaryScreen()
     createDisplay(*orderedDisplays[0], /*isPrimary=*/true);
 
     for (int i=1; i<displayCount; i++) {
@@ -661,8 +661,8 @@ void QQnxIntegration::createDisplay(screen_display_t display, bool isPrimary)
     QObject::connect(m_navigatorEventHandler, SIGNAL(rotationChanged(int)), screen, SLOT(setRotation(int)));
     QObject::connect(m_navigatorEventHandler, SIGNAL(windowGroupActivated(QByteArray)), screen, SLOT(activateWindowGroup(QByteArray)));
     QObject::connect(m_navigatorEventHandler, SIGNAL(windowGroupDeactivated(QByteArray)), screen, SLOT(deactivateWindowGroup(QByteArray)));
-    QObject::connect(m_navigatorEventHandler, SIGNAL(windowGroupStateChanged(QByteArray,Qt::WindowState)),
-            screen, SLOT(windowGroupStateChanged(QByteArray,Qt::WindowState)));
+    QObject::connect(m_navigatorEventHandler, SIGNAL(windowGroupStateChanged(QByteArray,BobUI::WindowState)),
+            screen, SLOT(windowGroupStateChanged(QByteArray,BobUI::WindowState)));
 }
 
 void QQnxIntegration::removeDisplay(QQnxScreen *screen)
@@ -724,7 +724,7 @@ bool QQnxIntegration::supportsNavigatorEvents() const
     return m_navigator != 0;
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 void QQnxIntegration::createEglDisplay()
 {
     qCDebug(lcQpaQnx) << Q_FUNC_INFO;
@@ -748,4 +748,4 @@ void QQnxIntegration::destroyEglDisplay()
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

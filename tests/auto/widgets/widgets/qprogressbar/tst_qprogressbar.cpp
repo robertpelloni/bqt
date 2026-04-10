@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include "qprogressbar.h"
 #include <qlocale.h>
 #include <qapplication.h>
 #include <qstyleoption.h>
 #include <qdebug.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <QStyleFactory>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
 class tst_QProgressBar : public QObject
 {
@@ -82,7 +82,7 @@ void tst_QProgressBar::minMaxSameValue()
     bar.setValue(10);
     bar.move(300, 300);
     bar.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&bar));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&bar));
 }
 
 void tst_QProgressBar::destroyIndeterminate()
@@ -94,11 +94,11 @@ void tst_QProgressBar::destroyIndeterminate()
     bar->setMaximum(0);
     bar->move(300, 300);
     bar->show();
-    QVERIFY(QTest::qWaitForWindowExposed(bar.data()));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(bar.data()));
 
     QEventLoop loop;
-    QTimer::singleShot(500, bar, SLOT(deleteLater()));
-    QTimer::singleShot(3000, &loop, SLOT(quit()));
+    BOBUIimer::singleShot(500, bar, SLOT(deleteLater()));
+    BOBUIimer::singleShot(3000, &loop, SLOT(quit()));
     loop.exec();
 
     QVERIFY(!bar);
@@ -139,11 +139,11 @@ void tst_QProgressBar::format()
     bar.setValue(1);
     bar.move(300, 300);
     bar.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&bar));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&bar));
 
     bar.repainted = false;
     bar.setFormat("%v of %m (%p%)");
-    QTRY_VERIFY(bar.repainted);
+    BOBUIRY_VERIFY(bar.repainted);
     bar.repainted = false;
     bar.setFormat("%v of %m (%p%)");
     qApp->processEvents();
@@ -165,12 +165,12 @@ void tst_QProgressBar::format()
 
 void tst_QProgressBar::setValueRepaint_data()
 {
-    QTest::addColumn<int>("min");
-    QTest::addColumn<int>("max");
-    QTest::addColumn<int>("increment");
+    BOBUIest::addColumn<int>("min");
+    BOBUIest::addColumn<int>("max");
+    BOBUIest::addColumn<int>("increment");
 
     auto add = [](int min, int max, int increment) {
-        QTest::addRow("%d-%d@%d", min, max, increment) << min << max << increment;
+        BOBUIest::addRow("%d-%d@%d", min, max, increment) << min << max << increment;
     };
 
     add(0, 10, 1);
@@ -200,13 +200,13 @@ void tst_QProgressBar::setValueRepaint()
     pbar.setFormat("%v");
     pbar.move(300, 300);
     pbar.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&pbar));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&pbar));
 
     QApplication::processEvents();
     for (qint64 i = min; i < max; i += increment) {
         pbar.repainted = false;
         pbar.setValue(int(i));
-        QTRY_VERIFY(pbar.repainted);
+        BOBUIRY_VERIFY(pbar.repainted);
     }
 }
 
@@ -216,20 +216,20 @@ void tst_QProgressBar::setValueRepaint()
 #ifndef Q_OS_MAC
 void tst_QProgressBar::setMinMaxRepaint()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     ProgressBar pbar;
     const QSize size(200, 25);
-    pbar.setWindowFlag(Qt::FramelessWindowHint);
+    pbar.setWindowFlag(BobUI::FramelessWindowHint);
     pbar.setMinimum(0);
     pbar.setMaximum(10);
     pbar.setFormat("%v");
     pbar.move(300, 300);
     pbar.resize(size);
     pbar.show();
-    QVERIFY(QTest::qWaitForWindowActive(&pbar));
-    QTRY_COMPARE(pbar.size(), size);
+    QVERIFY(BOBUIest::qWaitForWindowActive(&pbar));
+    BOBUIRY_COMPARE(pbar.size(), size);
 
     // Ensure pbar is displayed before updating the minimum and maximum values
     QApplication::processEvents();
@@ -237,27 +237,27 @@ void tst_QProgressBar::setMinMaxRepaint()
     // No repaint when setting minimum to the current minimum
     pbar.repainted = false;
     pbar.setMinimum(0);
-    QTest::qWait(50);
-    QTRY_VERIFY(!pbar.repainted);
+    BOBUIest::qWait(50);
+    BOBUIRY_VERIFY(!pbar.repainted);
 
     // No repaint when setting maximum to the current maximum
     pbar.repainted = false;
     pbar.setMaximum(10);
-    QTest::qWait(50);
-    QTRY_VERIFY(!pbar.repainted);
+    BOBUIest::qWait(50);
+    BOBUIRY_VERIFY(!pbar.repainted);
 
     // Repaint when setting minimum
     for (int i = 9; i >= 0; i--) {
         pbar.repainted = false;
         pbar.setMinimum(i);
-        QTRY_VERIFY(pbar.repainted);
+        BOBUIRY_VERIFY(pbar.repainted);
     }
 
     // Repaint when setting maximum
     for (int i = 0; i < 10; ++i) {
         pbar.repainted = false;
         pbar.setMaximum(i);
-        QTRY_VERIFY(pbar.repainted);
+        BOBUIRY_VERIFY(pbar.repainted);
     }
 }
 #endif // Q_OS_MACOS
@@ -282,16 +282,16 @@ void tst_QProgressBar::sizeHint()
 
 void tst_QProgressBar::formatedText_data()
 {
-    QTest::addColumn<int>("minimum");
-    QTest::addColumn<int>("maximum");
-    QTest::addColumn<int>("value");
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<int>("minimum");
+    BOBUIest::addColumn<int>("maximum");
+    BOBUIest::addColumn<int>("value");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QString>("text");
 
-    QTest::newRow("1") <<  -100 << 100 << 0 << " %p - %v - %m " << " 50 - 0 - 200 ";
-    QTest::newRow("2") <<  -100 << 0 << -25 << " %p - %v - %m " << " 75 - -25 - 100 ";
-    QTest::newRow("3") <<  10 << 10 << 10 << " %p - %v - %m " << " 100 - 10 - 0 ";
-    QTest::newRow("task152227") <<  INT_MIN << INT_MAX << 42 << " %p - %v - %m " << " 50 - 42 - 4294967295 ";
+    BOBUIest::newRow("1") <<  -100 << 100 << 0 << " %p - %v - %m " << " 50 - 0 - 200 ";
+    BOBUIest::newRow("2") <<  -100 << 0 << -25 << " %p - %v - %m " << " 75 - -25 - 100 ";
+    BOBUIest::newRow("3") <<  10 << 10 << 10 << " %p - %v - %m " << " 100 - 10 - 0 ";
+    BOBUIest::newRow("task152227") <<  INT_MIN << INT_MAX << 42 << " %p - %v - %m " << " 50 - 42 - 4294967295 ";
 }
 
 void tst_QProgressBar::formatedText()
@@ -308,7 +308,7 @@ void tst_QProgressBar::formatedText()
     QCOMPARE(bar.text(), text);
 }
 
-void tst_QProgressBar::localizedFormattedText() // QTBUG-28751
+void tst_QProgressBar::localizedFormattedText() // BOBUIBUG-28751
 {
     QProgressBar bar;
     const int value = 42;
@@ -344,11 +344,11 @@ void tst_QProgressBar::localizedFormattedText() // QTBUG-28751
 
 void tst_QProgressBar::task245201_testChangeStyleAndDelete_data()
 {
-    QTest::addColumn<QString>("style1_str");
-    QTest::addColumn<QString>("style2_str");
+    BOBUIest::addColumn<QString>("style1_str");
+    BOBUIest::addColumn<QString>("style2_str");
 
-    QTest::newRow("fusion-windows") << QString::fromLatin1("fusion") << QString::fromLatin1("windows");
-    QTest::newRow("gtk-fusion") << QString::fromLatin1("gtk") << QString::fromLatin1("fusion");
+    BOBUIest::newRow("fusion-windows") << QString::fromLatin1("fusion") << QString::fromLatin1("windows");
+    BOBUIest::newRow("gtk-fusion") << QString::fromLatin1("gtk") << QString::fromLatin1("fusion");
 }
 
 void tst_QProgressBar::task245201_testChangeStyleAndDelete()
@@ -362,16 +362,16 @@ void tst_QProgressBar::task245201_testChangeStyleAndDelete()
     bar->setStyle(style);
     bar->move(300, 300);
     bar->show();
-    QVERIFY(QTest::qWaitForWindowExposed(bar));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(bar));
     QStyle *style2 = QStyleFactory::create(style2_str);
     bar->setStyle(style2);
-    QTest::qWait(10);
+    BOBUIest::qWait(10);
 
     delete bar;
-    QTest::qWait(100); // should not crash
+    BOBUIest::qWait(100); // should not crash
     delete style;
     delete style2;
 }
 
-QTEST_MAIN(tst_QProgressBar)
+BOBUIEST_MAIN(tst_QProgressBar)
 #include "tst_qprogressbar.moc"

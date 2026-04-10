@@ -1,11 +1,11 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDEADLINETIMER_H
 #define QDEADLINETIMER_H
 
-#include <QtCore/qmetatype.h>
-#include <QtCore/qnamespace.h>
+#include <BobUICore/qmetatype.h>
+#include <BobUICore/qnamespace.h>
 
 #ifdef max
 // un-pollute the namespace. We need std::numeric_limits::max() and std::chrono::duration::max()
@@ -16,7 +16,7 @@
 
 #include <chrono>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QDeadlineTimer
 {
@@ -25,11 +25,11 @@ public:
     static constexpr ForeverConstant Forever = ForeverConstant::Forever;
 
     constexpr QDeadlineTimer() noexcept = default;
-    constexpr explicit QDeadlineTimer(Qt::TimerType type_) noexcept
+    constexpr explicit QDeadlineTimer(BobUI::TimerType type_) noexcept
         : type(type_) {}
-    constexpr QDeadlineTimer(ForeverConstant, Qt::TimerType type_ = Qt::CoarseTimer) noexcept
+    constexpr QDeadlineTimer(ForeverConstant, BobUI::TimerType type_ = BobUI::CoarseTimer) noexcept
         : t1((std::numeric_limits<qint64>::max)()), type(type_) {}
-    explicit QDeadlineTimer(qint64 msecs, Qt::TimerType type = Qt::CoarseTimer) noexcept;
+    explicit QDeadlineTimer(qint64 msecs, BobUI::TimerType type = BobUI::CoarseTimer) noexcept;
 
     void swap(QDeadlineTimer &other) noexcept
     { std::swap(t1, other.t1); std::swap(type, other.type); }
@@ -38,24 +38,24 @@ public:
     { return t1 == (std::numeric_limits<qint64>::max)(); }
     bool hasExpired() const noexcept;
 
-    Qt::TimerType timerType() const noexcept
-    { return Qt::TimerType(type & 0xff); }
-    void setTimerType(Qt::TimerType type);
+    BobUI::TimerType timerType() const noexcept
+    { return BobUI::TimerType(type & 0xff); }
+    void setTimerType(BobUI::TimerType type);
 
     qint64 remainingTime() const noexcept;
     qint64 remainingTimeNSecs() const noexcept;
-    void setRemainingTime(qint64 msecs, Qt::TimerType type = Qt::CoarseTimer) noexcept;
+    void setRemainingTime(qint64 msecs, BobUI::TimerType type = BobUI::CoarseTimer) noexcept;
     void setPreciseRemainingTime(qint64 secs, qint64 nsecs = 0,
-                                 Qt::TimerType type = Qt::CoarseTimer) noexcept;
+                                 BobUI::TimerType type = BobUI::CoarseTimer) noexcept;
 
     Q_DECL_PURE_FUNCTION qint64 deadline() const noexcept;
     Q_DECL_PURE_FUNCTION qint64 deadlineNSecs() const noexcept;
-    void setDeadline(qint64 msecs, Qt::TimerType timerType = Qt::CoarseTimer) noexcept;
+    void setDeadline(qint64 msecs, BobUI::TimerType timerType = BobUI::CoarseTimer) noexcept;
     void setPreciseDeadline(qint64 secs, qint64 nsecs = 0,
-                            Qt::TimerType type = Qt::CoarseTimer) noexcept;
+                            BobUI::TimerType type = BobUI::CoarseTimer) noexcept;
 
     Q_DECL_PURE_FUNCTION static QDeadlineTimer addNSecs(QDeadlineTimer dt, qint64 nsecs) noexcept;
-    static QDeadlineTimer current(Qt::TimerType timerType = Qt::CoarseTimer) noexcept;
+    static QDeadlineTimer current(BobUI::TimerType timerType = BobUI::CoarseTimer) noexcept;
 
     friend Q_CORE_EXPORT QDeadlineTimer operator+(QDeadlineTimer dt, qint64 msecs);
     friend QDeadlineTimer operator+(qint64 msecs, QDeadlineTimer dt)
@@ -71,7 +71,7 @@ public:
 
     template <class Clock, class Duration = typename Clock::duration>
     QDeadlineTimer(std::chrono::time_point<Clock, Duration> deadline_,
-                   Qt::TimerType type_ = Qt::CoarseTimer) : t2(0)
+                   BobUI::TimerType type_ = BobUI::CoarseTimer) : t2(0)
     { setDeadline(deadline_, type_); }
     template <class Clock, class Duration = typename Clock::duration>
     QDeadlineTimer &operator=(std::chrono::time_point<Clock, Duration> deadline_)
@@ -79,13 +79,13 @@ public:
 
     template <class Clock, class Duration = typename Clock::duration>
     void setDeadline(std::chrono::time_point<Clock, Duration> tp,
-                     Qt::TimerType type_ = Qt::CoarseTimer);
+                     BobUI::TimerType type_ = BobUI::CoarseTimer);
 
     template <class Clock, class Duration = typename Clock::duration>
     std::chrono::time_point<Clock, Duration> deadline() const;
 
     template <class Rep, class Period>
-    QDeadlineTimer(std::chrono::duration<Rep, Period> remaining, Qt::TimerType type_ = Qt::CoarseTimer)
+    QDeadlineTimer(std::chrono::duration<Rep, Period> remaining, BobUI::TimerType type_ = BobUI::CoarseTimer)
         : t2(0)
     { setRemainingTime(remaining, type_); }
 
@@ -94,7 +94,7 @@ public:
     { setRemainingTime(remaining); return *this; }
 
     template <class Rep, class Period>
-    void setRemainingTime(std::chrono::duration<Rep, Period> remaining, Qt::TimerType type_ = Qt::CoarseTimer)
+    void setRemainingTime(std::chrono::duration<Rep, Period> remaining, BobUI::TimerType type_ = BobUI::CoarseTimer)
     {
         using namespace std::chrono;
         if (remaining == remaining.max())
@@ -129,18 +129,18 @@ private:
     {
         return lhs.t1 == rhs.t1;
     }
-    friend Qt::strong_ordering compareThreeWay(const QDeadlineTimer &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QDeadlineTimer &lhs,
                                                const QDeadlineTimer &rhs) noexcept
     {
-        return Qt::compareThreeWay(lhs.t1, rhs.t1);
+        return BobUI::compareThreeWay(lhs.t1, rhs.t1);
     }
     Q_DECLARE_STRONGLY_ORDERED(QDeadlineTimer)
 
     qint64 t1 = 0;
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     unsigned t2 = 0;
 #endif
-    unsigned type = Qt::CoarseTimer;
+    unsigned type = BobUI::CoarseTimer;
 
     qint64 rawRemainingTimeNSecs() const noexcept;
 };
@@ -159,7 +159,7 @@ std::chrono::time_point<Clock, Duration> QDeadlineTimer::deadline() const
 }
 
 template<class Clock, class Duration>
-void QDeadlineTimer::setDeadline(std::chrono::time_point<Clock, Duration> tp, Qt::TimerType type_)
+void QDeadlineTimer::setDeadline(std::chrono::time_point<Clock, Duration> tp, BobUI::TimerType type_)
 {
     using namespace std::chrono;
     if (tp == tp.max()) {
@@ -176,8 +176,8 @@ void QDeadlineTimer::setDeadline(std::chrono::time_point<Clock, Duration> tp, Qt
 
 Q_DECLARE_SHARED(QDeadlineTimer)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN(QDeadlineTimer, Q_CORE_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN(QDeadlineTimer, Q_CORE_EXPORT)
 
 #endif // QDEADLINETIMER_H

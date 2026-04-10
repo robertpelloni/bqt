@@ -1,18 +1,18 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SSLCLIENT_H
 #define SSLCLIENT_H
 
-#include <QtNetwork>
+#include <BobUINetwork>
 
-QT_REQUIRE_CONFIG(ssl);
+BOBUI_REQUIRE_CONFIG(ssl);
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class Ui_Form;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class SslClient : public QWidget
 {
@@ -38,7 +38,7 @@ private:
     void appendString(const QString &line);
 
     QSslSocket *socket = nullptr;
-    QToolButton *padLock = nullptr;
+    BOBUIoolButton *padLock = nullptr;
     Ui_Form *form = nullptr;
     bool handlingSocketError = false;
     bool executingDialog = false;

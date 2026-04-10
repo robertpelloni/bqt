@@ -5,6 +5,6 @@
 ## General Guidelines
 - Adhere to the robust, elegant design principles of the `bobui` project.
 - Always include comprehensive comments for non-obvious logic.
-- Ensure all generated code supports the goal of 100% Qt6 parity.
+- Ensure all generated code supports the goal of 100% BobUI6 parity.
 - Do not generate "partially finished" code; ensure complete implementation.
 - Read `VERSION.md` and `CHANGELOG.md` to understand the current project state before suggesting massive changes.

@@ -4,7 +4,7 @@
 > This file contains only GPT-specific overrides. You must follow all protocols in the universal document and `AGENTS.md`.
 
 ## 1. GPT's Role: The Implementor & Tester
-GPT focuses on raw code generation, writing exhaustive unit tests, and implementing specific algorithms to achieve 100% Qt6 parity.
+GPT focuses on raw code generation, writing exhaustive unit tests, and implementing specific algorithms to achieve 100% BobUI6 parity.
 
 ## 2. Specific Strengths & Tasks
 *   **Code Generation:** Write robust, bug-free C++/QML/CMake code.

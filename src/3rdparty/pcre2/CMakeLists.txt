@@ -1,10 +1,10 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 #####################################################################
 ## BundledPcre2 Generic Library:
 #####################################################################
 
-qt_internal_add_3rdparty_library(BundledPcre2
+bobui_internal_add_3rdparty_library(BundledPcre2
     QMAKE_LIB_NAME pcre2
     STATIC
     SKIP_AUTOMOC
@@ -50,23 +50,23 @@ qt_internal_add_3rdparty_library(BundledPcre2
     PUBLIC_INCLUDE_DIRECTORIES
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
-qt_disable_warnings(BundledPcre2)
-qt_set_symbol_visibility_hidden(BundledPcre2)
+bobui_disable_warnings(BundledPcre2)
+bobui_set_symbol_visibility_hidden(BundledPcre2)
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(BundledPcre2 CONDITION QNX OR UIKIT
+bobui_internal_extend_target(BundledPcre2 CONDITION QNX OR UIKIT
     DEFINES
         PCRE2_DISABLE_JIT
 )
 
-qt_internal_extend_target(BundledPcre2 CONDITION (TEST_architecture_arch STREQUAL "arm") AND WIN32
+bobui_internal_extend_target(BundledPcre2 CONDITION (TEST_architecture_arch STREQUAL "arm") AND WIN32
     DEFINES
         PCRE2_DISABLE_JIT
 )
 
-qt_internal_extend_target(BundledPcre2 CONDITION (TEST_architecture_arch STREQUAL "arm64") AND WIN32
+bobui_internal_extend_target(BundledPcre2 CONDITION (TEST_architecture_arch STREQUAL "arm64") AND WIN32
     DEFINES
         PCRE2_DISABLE_JIT
 )
@@ -75,9 +75,9 @@ if (APPLE)
     target_compile_options(BundledPcre2 PRIVATE "SHELL:-Xarch_arm64 -DPCRE2_DISABLE_JIT")
 endif()
 
-qt_internal_extend_target(BundledPcre2 CONDITION WIN32
+bobui_internal_extend_target(BundledPcre2 CONDITION WIN32
     PUBLIC_DEFINES
         PCRE2_STATIC
 )
 
-qt_internal_apply_intel_cet(BundledPcre2 PRIVATE)
+bobui_internal_apply_intel_cet(BundledPcre2 PRIVATE)

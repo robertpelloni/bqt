@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "textedit.h"
@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     completer = new QCompleter(this);
     completer->setModel(modelFromFile(":/resources/wordlist.txt"));
     completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setCaseSensitivity(BobUI::CaseInsensitive);
     completer->setWrapAround(false);
     completingTextEdit->setCompleter(completer);
 
@@ -37,18 +37,18 @@ void MainWindow::createMenu()
 {
     QAction *exitAction = new QAction(tr("Exit"), this);
     QAction *aboutAct = new QAction(tr("About"), this);
-    QAction *aboutQtAct = new QAction(tr("About Qt"), this);
+    QAction *aboutBobUIAct = new QAction(tr("About BobUI"), this);
 
     connect(exitAction, &QAction::triggered, qApp, &QApplication::quit);
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
-    connect(aboutQtAct, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(aboutBobUIAct, &QAction::triggered, qApp, &QApplication::aboutBobUI);
 
     QMenu *fileMenu = menuBar()->addMenu(tr("File"));
     fileMenu->addAction(exitAction);
 
     QMenu *helpMenu = menuBar()->addMenu(tr("About"));
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQtAct);
+    helpMenu->addAction(aboutBobUIAct);
 }
 //! [1]
 
@@ -59,8 +59,8 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
     if (!file.open(QFile::ReadOnly))
         return new QStringListModel(completer);
 
-#ifndef QT_NO_CURSOR
-    QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+#ifndef BOBUI_NO_CURSOR
+    QGuiApplication::setOverrideCursor(QCursor(BobUI::WaitCursor));
 #endif
     QStringList words;
 
@@ -70,7 +70,7 @@ QAbstractItemModel *MainWindow::modelFromFile(const QString& fileName)
             words << QString::fromUtf8(line.trimmed());
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
     return new QStringListModel(words, completer);

@@ -1,21 +1,21 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <private/qvulkanfunctions_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QVulkanFunctions
     \since 5.10
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
     \wrapper
 
     \brief The QVulkanFunctions class provides cross-platform access to the
     instance level core Vulkan 1.3 API.
 
-    Qt and Qt applications do not link to any Vulkan libraries by default.
+    BobUI and BobUI applications do not link to any Vulkan libraries by default.
     Instead, all functions are resolved dynamically at run time. Each
     QVulkanInstance provides a QVulkanFunctions object retrievable via
     QVulkanInstance::functions(). This does not contain device level functions
@@ -50,9 +50,9 @@ QT_BEGIN_NAMESPACE
     the Vulkan headers. As such, these functions will only be callable by an
     application when the system's (on which the application is built) Vulkan
     header is new enough and it contains 1.1, 1.2, or 1.3 Vulkan API
-    definitions. When building Qt from source, this has an additional
+    definitions. When building BobUI from source, this has an additional
     consequence: the Vulkan headers on the build environment must also be 1.1,
-    1.2, and 1.3 compatible to get a Qt build that supports resolving
+    1.2, and 1.3 compatible to get a BobUI build that supports resolving
     the 1.1, 1.2, and 1.3 API commands. If neither of these conditions is met,
     applications will only be able to call the Vulkan 1.0 commands through
     QVulkanFunctions and QVulkanDeviceFunctions.
@@ -64,13 +64,13 @@ QT_BEGIN_NAMESPACE
     \class QVulkanDeviceFunctions
     \since 5.10
     \ingroup painting-3D
-    \inmodule QtGui
+    \inmodule BobUIGui
     \wrapper
 
     \brief The QVulkanDeviceFunctions class provides cross-platform access to
     the device level core Vulkan 1.3 API.
 
-    Qt and Qt applications do not link to any Vulkan libraries by default.
+    BobUI and BobUI applications do not link to any Vulkan libraries by default.
     Instead, all functions are resolved dynamically at run time. Each
     QVulkanInstance provides a QVulkanFunctions object retrievable via
     QVulkanInstance::functions(). This does not contain device level functions
@@ -133,4 +133,4 @@ QVulkanDeviceFunctions::~QVulkanDeviceFunctions()
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

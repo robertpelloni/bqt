@@ -1,32 +1,32 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
+bobui_find_package(WrapFreetype MODULE PROVIDED_TARGETS WrapFreetype::WrapFreetype)
 
-qt_internal_add_plugin(QVkKhrDisplayIntegrationPlugin
+bobui_internal_add_plugin(QVkKhrDisplayIntegrationPlugin
     OUTPUT_NAME qvkkhrdisplay
     PLUGIN_TYPE platforms
-    DEFAULT_IF "vkkhrdisplay" IN_LIST QT_QPA_PLATFORMS
+    DEFAULT_IF "vkkhrdisplay" IN_LIST BOBUI_QPA_PLATFORMS
     SOURCES
         main.cpp
         qvkkhrdisplayintegration.cpp qvkkhrdisplayintegration.h
         qvkkhrdisplayvulkaninstance.cpp qvkkhrdisplayvulkaninstance.h
     DEFINES
-        QT_NO_FOREACH
+        BOBUI_NO_FOREACH
     LIBRARIES
-        Qt::Core
-        Qt::CorePrivate
-        Qt::FbSupportPrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::FbSupportPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
-qt_internal_extend_target(QVkKhrDisplayIntegrationPlugin CONDITION QT_FEATURE_freetype
+bobui_internal_extend_target(QVkKhrDisplayIntegrationPlugin CONDITION BOBUI_FEATURE_freetype
     LIBRARIES
         WrapFreetype::WrapFreetype
 )
 
-qt_internal_extend_target(QVkKhrDisplayIntegrationPlugin CONDITION TARGET Qt::InputSupportPrivate
+bobui_internal_extend_target(QVkKhrDisplayIntegrationPlugin CONDITION TARGET BobUI::InputSupportPrivate
     LIBRARIES
-        Qt::InputSupportPrivate
+        BobUI::InputSupportPrivate
 )

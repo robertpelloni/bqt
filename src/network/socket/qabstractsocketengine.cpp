@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractsocketengine_p.h"
 
@@ -9,7 +9,7 @@
 #include "qmutex.h"
 #include "qnetworkproxy.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAbstractSocketEngineReceiver::~QAbstractSocketEngineReceiver() = default;
 
@@ -40,7 +40,7 @@ QSocketEngineHandler::~QSocketEngineHandler()
 QAbstractSocketEnginePrivate::QAbstractSocketEnginePrivate()
     : socketError(QAbstractSocket::UnknownSocketError)
     , hasSetSocketError(false)
-    , socketErrorString(QLatin1StringView(QT_TRANSLATE_NOOP(QSocketLayer, "Unknown error")))
+    , socketErrorString(QLatin1StringView(BOBUI_TRANSLATE_NOOP(QSocketLayer, "Unknown error")))
     , socketState(QAbstractSocket::UnconnectedState)
     , socketType(QAbstractSocket::UnknownSocketType)
     , socketProtocol(QAbstractSocket::UnknownNetworkLayerProtocol)
@@ -64,7 +64,7 @@ QAbstractSocketEngine::QAbstractSocketEngine(QAbstractSocketEnginePrivate &dd, Q
 
 QAbstractSocketEngine *QAbstractSocketEngine::createSocketEngine(QAbstractSocket::SocketType socketType, const QNetworkProxy &proxy, QObject *parent)
 {
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     // proxy type must have been resolved by now
     if (proxy.type() == QNetworkProxy::DefaultProxy)
         return nullptr;
@@ -76,7 +76,7 @@ QAbstractSocketEngine *QAbstractSocketEngine::createSocketEngine(QAbstractSocket
             return ret;
     }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     // only NoProxy can have reached here
     if (proxy.type() != QNetworkProxy::NoProxy)
         return nullptr;
@@ -147,7 +147,7 @@ void QAbstractSocketEngine::connectionNotification()
         receiver->connectionNotification();
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QAbstractSocketEngine::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
 {
     if (QAbstractSocketEngineReceiver *receiver = d_func()->receiver)
@@ -236,6 +236,6 @@ int QAbstractSocketEngine::outboundStreamCount() const
     return d_func()->outboundStreamCount;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractsocketengine_p.cpp"

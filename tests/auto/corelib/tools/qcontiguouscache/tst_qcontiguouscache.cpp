@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QObject>
-#include <QTest>
+#include <BOBUIest>
 #include <QCache>
 #include <QContiguousCache>
 
@@ -34,11 +34,11 @@ private slots:
     void modifyZeroCapacityCache();
 };
 
-QTEST_MAIN(tst_QContiguousCache)
+BOBUIEST_MAIN(tst_QContiguousCache)
 
 void tst_QContiguousCache::assignment()
 {
-    // compile-only test: QTBUG-45783
+    // compile-only test: BOBUIBUG-45783
    QContiguousCache<int> cc1, cc2;
    // copy:
    cc1 = cc2;
@@ -51,11 +51,11 @@ void tst_QContiguousCache::empty()
     QContiguousCache<int> c(10);
     QCOMPARE(c.capacity(), 10);
     QCOMPARE(c.size(), 0);
-    // NOLINTNEXTLINE(qt-port-to-std-compatible-api): Test both size() and count()
+    // NOLINTNEXTLINE(bobui-port-to-std-compatible-api): Test both size() and count()
     QCOMPARE(c.count(), 0);
     QVERIFY(c.isEmpty());
     c.append(1);
-    // NOLINTNEXTLINE(qt-port-to-std-compatible-api): Test both size() and count()
+    // NOLINTNEXTLINE(bobui-port-to-std-compatible-api): Test both size() and count()
     QCOMPARE(c.count(), 1);
     QCOMPARE(c.size(), 1);
     QVERIFY(!c.isEmpty());
@@ -85,14 +85,14 @@ void tst_QContiguousCache::swap()
 
 void tst_QContiguousCache::append_data()
 {
-    QTest::addColumn<qsizetype>("start");
-    QTest::addColumn<qsizetype>("count");
-    QTest::addColumn<qsizetype>("cacheSize");
-    QTest::addColumn<bool>("invalidIndexes");
+    BOBUIest::addColumn<qsizetype>("start");
+    BOBUIest::addColumn<qsizetype>("count");
+    BOBUIest::addColumn<qsizetype>("cacheSize");
+    BOBUIest::addColumn<bool>("invalidIndexes");
 
-    QTest::newRow("0+30[10]") << qsizetype(0) << qsizetype(30) << qsizetype(10) << false;
-    QTest::newRow("300+30[10]") << qsizetype(300) << qsizetype(30) << qsizetype(10) << false;
-    QTest::newRow("MAX-10+30[10]") << std::numeric_limits<qsizetype>::max()-10 << qsizetype(30) << qsizetype(10) << true;
+    BOBUIest::newRow("0+30[10]") << qsizetype(0) << qsizetype(30) << qsizetype(10) << false;
+    BOBUIest::newRow("300+30[10]") << qsizetype(300) << qsizetype(30) << qsizetype(10) << false;
+    BOBUIest::newRow("MAX-10+30[10]") << std::numeric_limits<qsizetype>::max()-10 << qsizetype(30) << qsizetype(10) << true;
 }
 
 void tst_QContiguousCache::append()
@@ -139,14 +139,14 @@ void tst_QContiguousCache::append()
 
 void tst_QContiguousCache::prepend_data()
 {
-    QTest::addColumn<int>("start");
-    QTest::addColumn<int>("count");
-    QTest::addColumn<int>("cacheSize");
-    QTest::addColumn<bool>("invalidIndexes");
+    BOBUIest::addColumn<int>("start");
+    BOBUIest::addColumn<int>("count");
+    BOBUIest::addColumn<int>("cacheSize");
+    BOBUIest::addColumn<bool>("invalidIndexes");
 
-    QTest::newRow("30-30[10]") << 30 << 30 << 10 << false;
-    QTest::newRow("300-30[10]") << 300 << 30 << 10 << false;
-    QTest::newRow("10-30[10]") << 10 << 30 << 10 << true;
+    BOBUIest::newRow("30-30[10]") << 30 << 30 << 10 << false;
+    BOBUIest::newRow("300-30[10]") << 300 << 30 << 10 << false;
+    BOBUIest::newRow("10-30[10]") << 10 << 30 << 10 << true;
 }
 
 void tst_QContiguousCache::prepend()

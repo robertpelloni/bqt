@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef RECYCLEDLISTITEM_H
 #define RECYCLEDLISTITEM_H
@@ -23,14 +23,14 @@ public:
     virtual void updateItemContents();
 
     virtual QVariant data(int role) const;
-    virtual void setData(const QVariant &value, int role = Qt::DisplayRole);
+    virtual void setData(const QVariant &value, int role = BobUI::DisplayRole);
 
     ListItem *item() { return m_item; }
 
     void setTwoColumns(const bool enabled);
 
 protected:
-    virtual QSizeF effectiveSizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const;
+    virtual QSizeF effectiveSizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const;
     virtual void resizeEvent(QGraphicsSceneResizeEvent *event);
 
 private:

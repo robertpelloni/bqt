@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui>
+#include <BobUIGui>
 
 #include "splitter.h"
 
-SplitterHandle::SplitterHandle(Qt::Orientation orientation, QSplitter *parent)
+SplitterHandle::SplitterHandle(BobUI::Orientation orientation, QSplitter *parent)
     : QSplitterHandle(orientation, parent)
 {
-    gradient.setColorAt(0.0, Qt::darkGreen);
-    gradient.setColorAt(0.25, Qt::white);
-    gradient.setColorAt(1.0, Qt::darkGreen);
+    gradient.setColorAt(0.0, BobUI::darkGreen);
+    gradient.setColorAt(0.25, BobUI::white);
+    gradient.setColorAt(1.0, BobUI::darkGreen);
 }
 
 //! [0]
 void SplitterHandle::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    if (orientation() == Qt::Horizontal) {
+    if (orientation() == BobUI::Horizontal) {
         gradient.setStart(rect().left(), rect().height()/2);
         gradient.setFinalStop(rect().right(), rect().height()/2);
     } else {
@@ -28,7 +28,7 @@ void SplitterHandle::paintEvent(QPaintEvent *event)
 }
 //! [0]
 
-Splitter::Splitter(Qt::Orientation orientation, QWidget *parent)
+Splitter::Splitter(BobUI::Orientation orientation, QWidget *parent)
     : QSplitter(orientation, parent)
 {
 }

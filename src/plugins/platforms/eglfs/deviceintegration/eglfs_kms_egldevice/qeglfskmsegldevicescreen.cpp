@@ -1,5 +1,5 @@
 // Copyright (C) 2016 Pelagicore AG
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfskmsegldevicescreen.h"
 #include "qeglfskmsegldevice.h"
@@ -10,7 +10,7 @@
 #include <QLoggingCategory>
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QEglFSKmsEglDeviceScreen::QEglFSKmsEglDeviceScreen(QEglFSKmsDevice *device, const QKmsOutput &output)
     : QEglFSKmsScreen(device, output)
@@ -106,9 +106,9 @@ void QEglFSKmsEglDeviceScreen::waitForFlip()
             // Maybe detecting the DPMS mode could help here, but there are no properties
             // exposed on the connector apparently. So rely on an env var for now.
             // Note that typically, we need to set crtc with the default fb even if the
-            // mode did not change, unless QT_QPA_EGLFS_ALWAYS_SET_MODE is explicitly specified.
+            // mode did not change, unless BOBUI_QPA_EGLFS_ALWAYS_SET_MODE is explicitly specified.
             static bool envVarSet = false;
-            static bool alwaysDoSet = qEnvironmentVariableIntValue("QT_QPA_EGLFS_ALWAYS_SET_MODE", &envVarSet);
+            static bool alwaysDoSet = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_ALWAYS_SET_MODE", &envVarSet);
             if (envVarSet && !alwaysDoSet) {
                 qCDebug(qLcEglfsKmsDebug, "Mode already set");
                 return;
@@ -138,4 +138,4 @@ void QEglFSKmsEglDeviceScreen::waitForFlip()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

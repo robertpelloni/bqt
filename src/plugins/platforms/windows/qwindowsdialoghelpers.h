@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSDIALOGHELPER_H
 #define QWINDOWSDIALOGHELPER_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include <qpa/qplatformdialoghelper.h>
 #include <qpa/qplatformtheme.h>
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qsharedpointer.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qsharedpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFileDialog;
 class QDialog;
-class QThread;
+class BOBUIhread;
 class QWindowsNativeDialogBase;
 
 namespace QWindowsDialogs
@@ -35,8 +35,8 @@ public:
     ~QWindowsDialogHelperBase();
 
     void exec() override;
-    bool show(Qt::WindowFlags windowFlags,
-              Qt::WindowModality windowModality,
+    bool show(BobUI::WindowFlags windowFlags,
+              BobUI::WindowModality windowModality,
               QWindow *parent) override;
     void hide() override;
 
@@ -46,7 +46,7 @@ protected:
     QWindowsDialogHelperBase() = default;
     QWindowsNativeDialogBase *nativeDialog() const;
     inline bool hasNativeDialog() const { return !m_nativeDialog.isNull(); }
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
 
 private:
     virtual QWindowsNativeDialogBase *createNativeDialog() = 0;
@@ -58,9 +58,9 @@ private:
     QWindowsNativeDialogBasePtr m_nativeDialog;
     HWND m_ownerWindow = nullptr;
     QBasicTimer m_timer;
-    QThread *m_thread = nullptr;
+    BOBUIhread *m_thread = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSDIALOGHELPER_H

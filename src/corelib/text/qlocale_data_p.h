@@ -1,7 +1,7 @@
-// Copyright (C) 2019 The Qt Company Ltd.
+// Copyright (C) 2019 The BobUI Company Ltd.
 // Copyright © 2004-2023 Unicode, Inc.
 // SPDX-License-Identifier: Unicode-3.0
-// Qt-Security score:critical reason:data-parser
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QLOCALE_DATA_P_H
 #define QLOCALE_DATA_P_H
@@ -17,12 +17,12 @@
 // We mean it.
 //
 
-#include <QtCore/private/qlocale_p.h>
+#include <BobUICore/private/qlocale_p.h>
 
 #include <array>
 #include <cstring> // std::memcmp
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // Storage for alpha codes, with length of up to 3, supporting efficient comparison.
 struct AlphaCode
@@ -67,7 +67,7 @@ struct LanguageCodeEntry
 
     Do not edit this section: instead regenerate it using
     cldr2qlocalexml.py and qlocalexml2cpp.py on updated (or
-    edited) CLDR data; see qtbase/util/locale_database/.
+    edited) CLDR data; see bobuibase/util/locale_database/.
 */
 
 static inline constexpr QLocaleId likely_subtags[] = {
@@ -1230,7 +1230,7 @@ static inline constexpr quint16 locale_index[] = {
 };
 
 static inline constexpr QLocaleData locale_data[] = {
-   //  lang  script   terr lStrt lpMid lpEnd lPair lDelm  dec  group prcnt  zero minus plus   exp  qtOpn qtEnd altQO altQE lDFmt sDFmt lTFmt sTFmt slDay lDays ssDys sDays snDay nDays   am    pm   byte siQnt iecQn crSym crDsp crFmt crFNg ntLng ntTer                                                                                                                                                        currISO   curDgt curRnd dow1st  wknd+  wknd- grpTop grpMid grpEnd
+   //  lang  script   terr lStrt lpMid lpEnd lPair lDelm  dec  group prcnt  zero minus plus   exp  bobuiOpn bobuiEnd altQO altQE lDFmt sDFmt lTFmt sTFmt slDay lDays ssDys sDays snDay nDays   am    pm   byte siQnt iecQn crSym crDsp crFmt crFNg ntLng ntTer                                                                                                                                                        currISO   curDgt curRnd dow1st  wknd+  wknd- grpTop grpMid grpEnd
     {      1,     0,     0,    0,    0,    0,    0,    6,    0,    1,    2,    3,    4,    5,    6,    7,    7,    8,    8,    0,   17,    0,    0,    0,    0,   56,   56,   83,   96,    0,    0,    0,    5,   22,    0,    0,    0,    0,    0,    0,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 17,  9, 10,  5, 56, 56, 27, 27, 13, 13,  2,  2,  5, 17, 23,  0,  0,  4,  0,  0,  0,    {0,0,0},      2,     1,     1,     6,     7,     1,     3,     3 }, // C/AnyScript/AnyTerritory
     {      2,    27,    90,    0,    0,    7,    7,    6,    1,    9,    2,    3,    4,    5,   10,   11,   12,   13,   14,   26,   48,   10,    0,  109,  109,  157,  157,  179,  179,    0,    0,    0,    5,   22,    0,    0,    4,    0,    0,    6,  6,  6,  9,  9,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 22, 10, 13,  5, 48, 48, 22, 22, 15, 15,  2,  2,  4, 17, 23,  1,  0,  5,  0,  6,  9, {71,69,76},      2,     1,     1,     6,     7,     1,     3,     3 }, // Abkhazian/Cyrillic/Georgia
     {      3,    66,    77,    0,    0,    0,    0,    6,    0,    1,    2,    3,    4,    5,   10,   14,   15,   16,   17,   58,   77,   23,   38,  194,  194,  245,  245,  272,  272,    0,    0,    0,    5,   22,    1,    0,    2,    0,   15,   20,  6,  6,  6,  6,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 19,  8, 15,  7, 51, 51, 27, 27, 13, 13,  2,  2,  4, 17, 23,  2,  0,  4,  0,  5,  7, {69,84,66},      2,     1,     7,     6,     7,     1,     3,     3 }, // Afar/Latin/Ethiopia
@@ -8535,6 +8535,6 @@ static inline constexpr unsigned char territory_code_list[] =
 
 // GENERATED PART ENDS HERE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCALE_DATA_P_H

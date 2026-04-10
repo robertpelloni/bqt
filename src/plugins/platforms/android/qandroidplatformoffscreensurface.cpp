@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidplatformoffscreensurface.h"
 
-#include <QtGui/private/qeglconvenience_p.h>
+#include <BobUIGui/private/qeglconvenience_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAndroidPlatformOffscreenSurface::QAndroidPlatformOffscreenSurface(
         ANativeWindow *nativeSurface, EGLDisplay display, QOffscreenSurface *offscreenSurface)
@@ -28,5 +28,5 @@ QAndroidPlatformOffscreenSurface::~QAndroidPlatformOffscreenSurface()
     eglDestroySurface(m_display, m_surface);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

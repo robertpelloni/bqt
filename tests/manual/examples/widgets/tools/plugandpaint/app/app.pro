@@ -2,7 +2,7 @@
 TARGET = plugandpaint
 DESTDIR = ..
 
-QT += widgets
+BOBUI += widgets
 
 HEADERS        = interfaces.h \
                  mainwindow.h \
@@ -19,7 +19,7 @@ macx-xcode {
     LIBS += -lpnp_basictools$($${QMAKE_XCODE_LIBRARY_SUFFIX_SETTING})
 } else {
     android {
-        LIBS += -lpnp_basictools_$${QT_ARCH}
+        LIBS += -lpnp_basictools_$${BOBUI_ARCH}
     } else {
         LIBS += -lpnp_basictools
     }
@@ -31,7 +31,7 @@ macx-xcode {
 #! [0]
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/plugandpaint
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tools/plugandpaint
 INSTALLS += target
 
 CONFIG += install_ok  # Do not cargo-cult this!

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "renderarea.h"
 
@@ -14,7 +14,7 @@ RenderArea::RenderArea(QWidget *parent)
     shape = Polygon;
     antialiased = false;
     transformed = false;
-    pixmap.load(":/images/qt-logo.png");
+    pixmap.load(":/images/bobui-logo.png");
 
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
@@ -136,7 +136,7 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
                 painter.drawRect(rect);
                 break;
             case RoundedRect:
-                painter.drawRoundedRect(rect, 25, 25, Qt::RelativeSize);
+                painter.drawRoundedRect(rect, 25, 25, BobUI::RelativeSize);
                 break;
             case Ellipse:
                 painter.drawEllipse(rect);
@@ -155,8 +155,8 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
                 break;
             case Text:
                 painter.drawText(rect,
-                                 Qt::AlignCenter,
-                                 tr("Qt by\nThe Qt Company"));
+                                 BobUI::AlignCenter,
+                                 tr("BobUI by\nThe BobUI Company"));
                 break;
             case Pixmap:
                 painter.drawPixmap(10, 10, pixmap);
@@ -167,7 +167,7 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
 
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(palette().dark().color());
-    painter.setBrush(Qt::NoBrush);
+    painter.setBrush(BobUI::NoBrush);
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
 }
 //! [13]

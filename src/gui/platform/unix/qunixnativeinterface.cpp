@@ -1,28 +1,28 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 
-#if QT_CONFIG(opengl)
-#  include <QtGui/private/qopenglcontext_p.h>
+#if BOBUI_CONFIG(opengl)
+#  include <BobUIGui/private/qopenglcontext_p.h>
 #endif
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformopenglcontext.h>
 #include <qpa/qplatformintegration.h>
 #include <qpa/qplatformscreen_p.h>
 #include <qpa/qplatformwindow_p.h>
 
-#include <QtGui/private/qkeymapper_p.h>
+#include <BobUIGui/private/qkeymapper_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface::Private;
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#if QT_CONFIG(xcb_glx_plugin)
+#if BOBUI_CONFIG(xcb_glx_plugin)
 
 /*!
     \class QNativeInterface::QGLXContext
@@ -31,7 +31,7 @@ using namespace QNativeInterface::Private;
 
     Accessed through QOpenGLContext::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QOpenGLContext
     \ingroup native-interfaces
     \ingroup native-interfaces-qopenglcontext
@@ -64,8 +64,8 @@ using namespace QNativeInterface::Private;
     \return the underlying GLXContext.
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QGLXContext);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QGLXIntegration);
+BOBUI_DEFINE_NATIVE_INTERFACE(QGLXContext);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QGLXIntegration);
 
 QOpenGLContext *QNativeInterface::QGLXContext::fromNative(GLXContext configBasedContext, QOpenGLContext *shareContext)
 {
@@ -78,9 +78,9 @@ QOpenGLContext *QNativeInterface::QGLXContext::fromNative(GLXContext visualBased
     return QGuiApplicationPrivate::platformIntegration()->call<
         &QGLXIntegration::createOpenGLContext>(visualBasedContext, visualInfo, shareContext);
 }
-#endif // QT_CONFIG(xcb_glx_plugin)
+#endif // BOBUI_CONFIG(xcb_glx_plugin)
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 
 /*!
     \class QNativeInterface::QEGLContext
@@ -89,7 +89,7 @@ QOpenGLContext *QNativeInterface::QGLXContext::fromNative(GLXContext visualBased
 
     Accessed through QOpenGLContext::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QOpenGLContext
     \ingroup native-interfaces
     \ingroup native-interfaces-qopenglcontext
@@ -130,7 +130,7 @@ QOpenGLContext *QNativeInterface::QGLXContext::fromNative(GLXContext visualBased
     \since 6.5
     \brief Marks the context as invalid
 
-    If this context is used by the Qt Quick scenegraph, this will trigger the
+    If this context is used by the BobUI Quick scenegraph, this will trigger the
     SceneGraph to destroy this context and create a new one.
 
     Similarly to QPlatformWindow::invalidateSurface(),
@@ -140,41 +140,41 @@ QOpenGLContext *QNativeInterface::QGLXContext::fromNative(GLXContext visualBased
     \sa QOpenGLContext::isValid(), QPlatformWindow::invalidateSurface()
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QEGLContext);
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QEGLIntegration);
+BOBUI_DEFINE_NATIVE_INTERFACE(QEGLContext);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QEGLIntegration);
 
 QOpenGLContext *QNativeInterface::QEGLContext::fromNative(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext)
 {
     return QGuiApplicationPrivate::platformIntegration()->call<
         &QEGLIntegration::createOpenGLContext>(context, display, shareContext);
 }
-#endif // QT_CONFIG(egl)
+#endif // BOBUI_CONFIG(egl)
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
 
 /*!
     \class QNativeInterface::Private::QXcbScreen
     \since 6.0
     \internal
     \brief Native interface to QPlatformScreen.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbScreen);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbScreen);
 
 /*!
     \class QNativeInterface::Private::QXcbWindow
     \since 6.0
     \internal
     \brief Native interface to QPlatformWindow.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbWindow);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbWindow);
 
 /*!
     \class QNativeInterface::QX11Application
@@ -183,7 +183,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbWindow);
 
     Accessed through QGuiApplication::nativeInterface().
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \inheaderfile QGuiApplication
     \ingroup native-interfaces
     \ingroup native-interfaces-qguiapplication
@@ -205,49 +205,49 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QXcbWindow);
     \sa display()
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QX11Application);
+BOBUI_DEFINE_NATIVE_INTERFACE(QX11Application);
 
-#endif // QT_CONFIG(xcb)
+#endif // BOBUI_CONFIG(xcb)
 
-#if QT_CONFIG(vsp2)
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QVsp2Screen);
+#if BOBUI_CONFIG(vsp2)
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QVsp2Screen);
 #endif
 
 #ifdef Q_OS_WEBOS
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWebOSScreen);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QWebOSScreen);
 #endif
 
-#if QT_CONFIG(evdev)
+#if BOBUI_CONFIG(evdev)
 
 /*!
     \class QNativeInterface::Private::QEvdevKeyMapper
     \since 6.0
     \internal
     \brief Native interface to QKeyMapper.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QEvdevKeyMapper);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QEvdevKeyMapper);
 
-#endif // QT_CONFIG(evdev)
+#endif // BOBUI_CONFIG(evdev)
 
-#if QT_CONFIG(vxworksevdev)
+#if BOBUI_CONFIG(vxworksevdev)
 
 /*!
     \class QNativeInterface::Private::QVxKeyMapper
     \since 6.8
     \internal
     \brief Native interface to QKeyMapper.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QVxKeyMapper);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QVxKeyMapper);
 
-#endif // QT_CONFIG(vxworksevdev)
+#endif // BOBUI_CONFIG(vxworksevdev)
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
 
 /*!
     \class QNativeInterface::QWaylandApplication
@@ -256,7 +256,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QVxKeyMapper);
     \brief Native interface to a Wayland application.
 
     Accessed through QGuiApplication::nativeInterface().
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
     \ingroup native-interfaces-qguiapplication
 */
@@ -298,7 +298,7 @@ QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QVxKeyMapper);
     \return the XKB context associated with the application.
 */
 
-QT_DEFINE_NATIVE_INTERFACE(QWaylandApplication);
+BOBUI_DEFINE_NATIVE_INTERFACE(QWaylandApplication);
 
 /*!
     \class QNativeInterface::QWaylandScreen
@@ -306,7 +306,7 @@ QT_DEFINE_NATIVE_INTERFACE(QWaylandApplication);
     \brief Native interface to a screen on Wayland.
 
     Accessed through QScreen::nativeInterface().
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
     \ingroup native-interfaces-qscreen
 */
@@ -314,19 +314,19 @@ QT_DEFINE_NATIVE_INTERFACE(QWaylandApplication);
     \fn wl_output *QNativeInterface::QWaylandScreen::output() const
     \return the underlying wl_output of this QScreen.
 */
-QT_DEFINE_NATIVE_INTERFACE(QWaylandScreen);
+BOBUI_DEFINE_NATIVE_INTERFACE(QWaylandScreen);
 
 /*!
     \class QNativeInterface::QWaylandWindow
     \since 6.5
     \internal
     \brief Native interface to a Wayland window.
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup native-interfaces
 */
 
-QT_DEFINE_PRIVATE_NATIVE_INTERFACE(QWaylandWindow);
+BOBUI_DEFINE_PRIVATE_NATIVE_INTERFACE(QWaylandWindow);
 
-#endif // QT_CONFIG(wayland)
+#endif // BOBUI_CONFIG(wayland)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

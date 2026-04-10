@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "datastreamconverter.h"
 #include "debugtextdumper.h"
@@ -7,11 +7,11 @@
 
 #include <QDataStream>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const char dataStreamOptionHelp[] =
         "byteorder=host|big|little      Byte order to use.\n"
-        "version=<n>                    QDataStream version (default: Qt 6.0).\n"
+        "version=<n>                    QDataStream version (default: BobUI 6.0).\n"
         ;
 
 static const char signature[] = "qds";
@@ -98,7 +98,7 @@ QVariant DataStreamConverter::loadFile(QIODevice *f, const Converter *&outputCon
 void DataStreamConverter::saveFile(QIODevice *f, const QVariant &contents,
                                    const QStringList &options) const
 {
-    QDataStream::Version version = QDataStream::Qt_6_0;
+    QDataStream::Version version = QDataStream::BobUI_6_0;
     auto order = QDataStream::ByteOrder(QSysInfo::ByteOrder);
     for (const QString &option : options) {
         const QStringList pair = option.split('=');
@@ -124,7 +124,7 @@ void DataStreamConverter::saveFile(QIODevice *f, const QVariant &contents,
                 }
 
                 qFatal("Invalid version number '%s': must be a number from 1 to %d.",
-                       qPrintable(pair.last()), QDataStream::Qt_DefaultCompiledVersion);
+                       qPrintable(pair.last()), QDataStream::BobUI_DefaultCompiledVersion);
             }
         }
 

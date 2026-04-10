@@ -6,8 +6,8 @@ ok 3 - skippingBenchmark() # SKIP This is a skipping benchmark
 not ok 4 - failingBenchmark()
   ---
   # This is a failing benchmark
-  at: tst_BenchlibCounting::failingBenchmark() (qtbase/tests/auto/testlib/selftests/benchlibcounting/tst_benchlibcounting.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/benchlibcounting/tst_benchlibcounting.cpp
+  at: tst_BenchlibCounting::failingBenchmark() (bobuibase/tests/auto/testlib/selftests/benchlibcounting/tst_benchlibcounting.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/benchlibcounting/tst_benchlibcounting.cpp
   line: 0
   ...
 ok 5 - cleanupTestCase()

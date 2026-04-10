@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:trusted-data-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:trusted-data-only
 
 #include "qsettings.h"
 
@@ -9,9 +9,9 @@
 #include "qmap.h"
 #include "qdebug.h"
 #include "qscopeguard.h"
-#include <QtCore/private/wcharhelpers_win_p.h>
+#include <BobUICore/private/wcharhelpers_win_p.h>
 
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
 // See "Accessing an Alternate Registry View" at:
 // http://msdn.microsoft.com/en-us/library/aa384129%28VS.85%29.aspx
@@ -25,9 +25,9 @@
 #  define KEY_WOW64_32KEY 0x0200
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*  Keys are stored in QStrings. If the variable name starts with 'u', this is a "user"
     key, ie. "foo/bar/alpha/beta". If the variable name starts with 'r', this is a "registry"
@@ -106,7 +106,7 @@ static void mergeKeySets(NameSet *dest, const QStringList &src)
 ** Wrappers for the insane windows registry API
 */
 
-// ### Qt 6: Use new helpers from qwinregistry.cpp (once bootstrap builds are obsolete)
+// ### BobUI 6: Use new helpers from qwinregistry.cpp (once bootstrap builds are obsolete)
 
 // Open a key with the specified "perms".
 // "access" is to explicitly use the 32- or 64-bit branch.
@@ -265,7 +265,7 @@ static void deleteChildGroups(HKEY parentHandle, REGSAM access = 0)
         RegCloseKey(childGroupHandle);
 
         // delete group itself
-        LONG res = RegDeleteKey(parentHandle, qt_castToWchar(group));
+        LONG res = RegDeleteKey(parentHandle, bobui_castToWchar(group));
         if (res != ERROR_SUCCESS) {
             qErrnoWarning(int(res), "QSettings: RegDeleteKey failed on subkey \"%ls\"",
                           qUtf16Printable(group));
@@ -587,7 +587,7 @@ void QWinSettingsPrivate::remove(const QString &uKey)
             const QStringList childKeys = childKeysOrGroups(handle, QSettingsPrivate::ChildKeys);
 
             for (const QString &group : childKeys) {
-                LONG res = RegDeleteValue(handle, qt_castToWchar(group));
+                LONG res = RegDeleteValue(handle, bobui_castToWchar(group));
                 if (res != ERROR_SUCCESS) {
                     qErrnoWarning(int(res), "QSettings: RegDeleteValue failed on subkey \"%ls\"",
                                   qUtf16Printable(group));
@@ -824,4 +824,4 @@ QSettingsPrivate *QSettingsPrivate::create(const QString &fileName, QSettings::F
     return new QConfFileSettingsPrivate(fileName, format);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

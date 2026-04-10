@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qopengl.h>
-#include <QtGui/private/qopenglcontext_p.h>
-#include <QtCore/qatomic.h>
+#include <BobUIGui/qopengl.h>
+#include <BobUIGui/private/qopenglcontext_p.h>
+#include <BobUICore/qatomic.h>
 #include "qopenglbuffer.h"
 #include <private/qopenglextensions_p.h>
 
@@ -11,14 +11,14 @@
 #define GL_CONTEXT_LOST                   0x0507
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QOpenGLBuffer
     \brief The QOpenGLBuffer class provides functions for creating and managing OpenGL buffer objects.
     \since 5.0
     \ingroup painting-3D
-    \inmodule QtOpenGL
+    \inmodule BobUIOpenGL
 
     Buffer objects are created in the OpenGL server so that the
     client application can avoid uploading vertices, indices,
@@ -333,7 +333,7 @@ void QOpenGLBuffer::destroy()
 */
 bool QOpenGLBuffer::read(int offset, void *data, int count)
 {
-#if !QT_CONFIG(opengles2)
+#if !BOBUI_CONFIG(opengles2)
     Q_D(QOpenGLBuffer);
     if (!d->funcs->hasOpenGLFeature(QOpenGLFunctions::Buffers) || !d->guard->id())
         return false;
@@ -367,7 +367,7 @@ bool QOpenGLBuffer::read(int offset, void *data, int count)
 */
 void QOpenGLBuffer::write(int offset, const void *data, int count)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::write(): buffer not created");
 #endif
@@ -387,7 +387,7 @@ void QOpenGLBuffer::write(int offset, const void *data, int count)
 */
 void QOpenGLBuffer::allocate(const void *data, int count)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::allocate(): buffer not created");
 #endif
@@ -422,7 +422,7 @@ void QOpenGLBuffer::allocate(const void *data, int count)
 */
 bool QOpenGLBuffer::bind()
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::bind(): buffer not created");
 #endif
@@ -430,7 +430,7 @@ bool QOpenGLBuffer::bind()
     GLuint bufferId = d->guard ? d->guard->id() : 0;
     if (bufferId) {
         if (d->guard->group() != QOpenGLContextGroup::currentContextGroup()) {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
             qWarning("QOpenGLBuffer::bind: buffer is not valid in the current context");
 #endif
             return false;
@@ -453,7 +453,7 @@ bool QOpenGLBuffer::bind()
 */
 void QOpenGLBuffer::release()
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::release(): buffer not created");
 #endif
@@ -532,7 +532,7 @@ int QOpenGLBuffer::size() const
 void *QOpenGLBuffer::map(QOpenGLBuffer::Access access)
 {
     Q_D(QOpenGLBuffer);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::map(): buffer not created");
 #endif
@@ -573,7 +573,7 @@ void *QOpenGLBuffer::map(QOpenGLBuffer::Access access)
 void *QOpenGLBuffer::mapRange(int offset, int count, QOpenGLBuffer::RangeAccessFlags access)
 {
     Q_D(QOpenGLBuffer);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::mapRange(): buffer not created");
 #endif
@@ -598,7 +598,7 @@ void *QOpenGLBuffer::mapRange(int offset, int count, QOpenGLBuffer::RangeAccessF
 bool QOpenGLBuffer::unmap()
 {
     Q_D(QOpenGLBuffer);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!isCreated())
         qWarning("QOpenGLBuffer::unmap(): buffer not created");
 #endif
@@ -607,4 +607,4 @@ bool QOpenGLBuffer::unmap()
     return d->funcs->glUnmapBuffer(d->type) == GL_TRUE;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

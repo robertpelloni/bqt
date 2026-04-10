@@ -1,12 +1,12 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdeadlinetimer.h"
 #include "private/qnumeric_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QDeadlineTimer)
+BOBUI_IMPL_METATYPE_EXTERN(QDeadlineTimer)
 
 using namespace std::chrono;
 
@@ -44,7 +44,7 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
 
 /*!
     \class QDeadlineTimer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QDeadlineTimer class marks a deadline in the future.
     \since 5.8
 
@@ -72,7 +72,7 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
 
     Many QDeadlineTimer functions deal with time out values, which all are
     measured in milliseconds. There are two special values, the same as many
-    other Qt functions named \c{waitFor} or similar:
+    other BobUI functions named \c{waitFor} or similar:
 
     \list
       \li 0: no time left, expired
@@ -86,18 +86,18 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
 
     \section1 Timer types
 
-    Like QTimer and QChronoTimer, QDeadlineTimer can select among
+    Like BOBUIimer and QChronoTimer, QDeadlineTimer can select among
     different levels of coarseness on the timers. You can select
-    precise timing by passing Qt::PreciseTimer to the functions that
+    precise timing by passing BobUI::PreciseTimer to the functions that
     set of change the timer, or you can select coarse timing by passing
-    Qt::CoarseTimer. Qt::VeryCoarseTimer is currently interpreted the same
-    way as Qt::CoarseTimer.
+    BobUI::CoarseTimer. BobUI::VeryCoarseTimer is currently interpreted the same
+    way as BobUI::CoarseTimer.
 
     This feature is dependent on support from the operating system: if the OS
     does not support a coarse timer functionality, then QDeadlineTimer will
-    behave like Qt::PreciseTimer was passed.
+    behave like BobUI::PreciseTimer was passed.
 
-    QDeadlineTimer defaults to Qt::CoarseTimer because on operating systems
+    QDeadlineTimer defaults to BobUI::CoarseTimer because on operating systems
     that do support coarse timing, making timing calls to that clock source is
     often much more efficient. The level of coarseness depends on the
     operating system, but should be in the order of a couple of milliseconds.
@@ -124,7 +124,7 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
 
     \snippet code/src_corelib_kernel_qdeadlinetimer.cpp 2
 
-    \sa QTime, QChronoTimer, QElapsedTimer, Qt::TimerType
+    \sa BOBUIime, QChronoTimer, QElapsedTimer, BobUI::TimerType
 */
 
 /*!
@@ -136,11 +136,11 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
 
 /*!
     \fn QDeadlineTimer::QDeadlineTimer()
-    \fn QDeadlineTimer::QDeadlineTimer(Qt::TimerType timerType)
+    \fn QDeadlineTimer::QDeadlineTimer(BobUI::TimerType timerType)
 
     Constructs an expired QDeadlineTimer object. For this object,
     remainingTime() will return 0. If \a timerType is not set, then the object
-    will use the \l{Qt::CoarseTimer}{coarse} \l{QDeadlineTimer#Timer types}{timer type}.
+    will use the \l{BobUI::CoarseTimer}{coarse} \l{QDeadlineTimer#Timer types}{timer type}.
 
     The timer type \a timerType may be ignored, since the timer is already
     expired. Similarly, for optimization purposes, this function will not
@@ -149,11 +149,11 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
     cannot be used in calculation of how long it is overdue. If that
     functionality is required, use QDeadlineTimer::current().
 
-    \sa hasExpired(), remainingTime(), Qt::TimerType, current()
+    \sa hasExpired(), remainingTime(), BobUI::TimerType, current()
 */
 
 /*!
-    \fn QDeadlineTimer::QDeadlineTimer(ForeverConstant, Qt::TimerType timerType)
+    \fn QDeadlineTimer::QDeadlineTimer(ForeverConstant, BobUI::TimerType timerType)
 
     QDeadlineTimer objects created with ForeverConstant never expire.
     For such objects, remainingTime() will return -1, deadline() will return the
@@ -183,21 +183,21 @@ static qint64 add_saturate(qint64 t1, Duration1 dur, Durations... extra)
     functionality is required, use QDeadlineTimer::current() and add time to
     it.
 
-    \note Prior to Qt 6.6, the only value that caused the timer to never expire
+    \note Prior to BobUI 6.6, the only value that caused the timer to never expire
     was -1.
 
     \sa hasExpired(), isForever(), remainingTime(), setRemainingTime()
 */
-QDeadlineTimer::QDeadlineTimer(qint64 msecs, Qt::TimerType type) noexcept
+QDeadlineTimer::QDeadlineTimer(qint64 msecs, BobUI::TimerType type) noexcept
 {
     setRemainingTime(msecs, type);
 }
 
 /*!
-    \fn template <class Clock, class Duration> QDeadlineTimer::QDeadlineTimer(std::chrono::time_point<Clock, Duration> deadline, Qt::TimerType type)
+    \fn template <class Clock, class Duration> QDeadlineTimer::QDeadlineTimer(std::chrono::time_point<Clock, Duration> deadline, BobUI::TimerType type)
 
     Constructs a QDeadlineTimer object with a deadline at \a deadline time
-    point, converting from the clock source \c{Clock} to Qt's internal clock
+    point, converting from the clock source \c{Clock} to BobUI's internal clock
     source (see QElapsedTimer::clockType()).
 
     If \a deadline is in the past, this QDeadlineTimer object is set to
@@ -210,7 +210,7 @@ QDeadlineTimer::QDeadlineTimer(qint64 msecs, Qt::TimerType type) noexcept
 */
 
 /*!
-    \fn template <class Rep, class Period> QDeadlineTimer::QDeadlineTimer(std::chrono::duration<Rep, Period> remaining, Qt::TimerType type)
+    \fn template <class Rep, class Period> QDeadlineTimer::QDeadlineTimer(std::chrono::duration<Rep, Period> remaining, BobUI::TimerType type)
 
     Constructs a QDeadlineTimer object with a remaining time of \a remaining.
     If \a remaining is zero or negative, this QDeadlineTimer object will be
@@ -235,10 +235,10 @@ QDeadlineTimer::QDeadlineTimer(qint64 msecs, Qt::TimerType type) noexcept
 */
 
 /*!
-    \fn template <class Clock, class Duration> void QDeadlineTimer::setDeadline(std::chrono::time_point<Clock, Duration> deadline, Qt::TimerType type)
+    \fn template <class Clock, class Duration> void QDeadlineTimer::setDeadline(std::chrono::time_point<Clock, Duration> deadline, BobUI::TimerType type)
 
     Sets this QDeadlineTimer to the deadline marked by \a deadline time
-    point, converting from the clock source \c{Clock} to Qt's internal clock
+    point, converting from the clock source \c{Clock} to BobUI's internal clock
     source (see QElapsedTimer::clockType()).
 
     If \a deadline is in the past, this QDeadlineTimer object is set to
@@ -265,12 +265,12 @@ QDeadlineTimer::QDeadlineTimer(qint64 msecs, Qt::TimerType type) noexcept
 
     The timer type for this QDeadlineTimer object will be set to the specified \a timerType.
 
-    \note Prior to Qt 6.6, the only value that caused the timer to never expire
+    \note Prior to BobUI 6.6, the only value that caused the timer to never expire
     was -1.
 
     \sa setPreciseRemainingTime(), hasExpired(), isForever(), remainingTime()
 */
-void QDeadlineTimer::setRemainingTime(qint64 msecs, Qt::TimerType timerType) noexcept
+void QDeadlineTimer::setRemainingTime(qint64 msecs, BobUI::TimerType timerType) noexcept
 {
     if (msecs < 0) {
         *this = QDeadlineTimer(Forever, timerType);
@@ -301,12 +301,12 @@ void QDeadlineTimer::setRemainingTime(qint64 msecs, Qt::TimerType timerType) noe
     The timer type for this QDeadlineTimer object will be set to the specified
     \a timerType.
 
-    \note Prior to Qt 6.6, the only condition that caused the timer to never
+    \note Prior to BobUI 6.6, the only condition that caused the timer to never
     expire was when \a secs was -1.
 
     \sa setRemainingTime(), hasExpired(), isForever(), remainingTime()
 */
-void QDeadlineTimer::setPreciseRemainingTime(qint64 secs, qint64 nsecs, Qt::TimerType timerType) noexcept
+void QDeadlineTimer::setPreciseRemainingTime(qint64 secs, qint64 nsecs, BobUI::TimerType timerType) noexcept
 {
     if (secs < 0) {
         *this = QDeadlineTimer(Forever, timerType);
@@ -321,7 +321,7 @@ void QDeadlineTimer::setPreciseRemainingTime(qint64 secs, qint64 nsecs, Qt::Time
 
 /*!
     \overload
-    \fn template <class Rep, class Period> void QDeadlineTimer::setRemainingTime(std::chrono::duration<Rep, Period> remaining, Qt::TimerType type)
+    \fn template <class Rep, class Period> void QDeadlineTimer::setRemainingTime(std::chrono::duration<Rep, Period> remaining, BobUI::TimerType type)
 
     Sets the remaining time for this QDeadlineTimer object to \a remaining. If
     \a remaining is zero or negative, this QDeadlineTimer object will be mark
@@ -368,7 +368,7 @@ bool QDeadlineTimer::hasExpired() const noexcept
 }
 
 /*!
-    \fn Qt::TimerType QDeadlineTimer::timerType() const
+    \fn BobUI::TimerType QDeadlineTimer::timerType() const
 
     Returns the timer type is active for this object.
 
@@ -379,14 +379,14 @@ bool QDeadlineTimer::hasExpired() const noexcept
     Changes the timer type for this object to \a timerType.
 
     The behavior for each possible value of \a timerType is operating-system
-    dependent. Qt::PreciseTimer will use the most precise timer that Qt can
+    dependent. BobUI::PreciseTimer will use the most precise timer that BobUI can
     find, with resolution of 1 millisecond or better, whereas QDeadlineTimer
-    will try to use a more coarse timer for Qt::CoarseTimer and
-    Qt::VeryCoarseTimer.
+    will try to use a more coarse timer for BobUI::CoarseTimer and
+    BobUI::VeryCoarseTimer.
 
-    \sa Qt::TimerType
+    \sa BobUI::TimerType
  */
-void QDeadlineTimer::setTimerType(Qt::TimerType timerType)
+void QDeadlineTimer::setTimerType(BobUI::TimerType timerType)
 {
     type = timerType;
 }
@@ -398,7 +398,7 @@ void QDeadlineTimer::setTimerType(Qt::TimerType timerType)
     that, see deadline()). If the timer was set to never expire, this function
     returns -1.
 
-    This function is suitable for use in Qt APIs that take a millisecond
+    This function is suitable for use in BobUI APIs that take a millisecond
     timeout, such as the many \l QIODevice \c waitFor functions or the timed
     lock functions in \l QMutex, \l QWaitCondition, \l QSemaphore, or
     \l QReadWriteLock. For example:
@@ -523,7 +523,7 @@ qint64 QDeadlineTimer::deadlineNSecs() const noexcept
 
     \sa setPreciseDeadline(), deadline(), deadlineNSecs(), setRemainingTime()
 */
-void QDeadlineTimer::setDeadline(qint64 msecs, Qt::TimerType timerType) noexcept
+void QDeadlineTimer::setDeadline(qint64 msecs, BobUI::TimerType timerType) noexcept
 {
     if (msecs == TimeReference::Max) {
         *this = QDeadlineTimer(Forever, timerType);
@@ -546,7 +546,7 @@ void QDeadlineTimer::setDeadline(qint64 msecs, Qt::TimerType timerType) noexcept
 
     \sa setDeadline(), deadline(), deadlineNSecs(), setRemainingTime()
 */
-void QDeadlineTimer::setPreciseDeadline(qint64 secs, qint64 nsecs, Qt::TimerType timerType) noexcept
+void QDeadlineTimer::setPreciseDeadline(qint64 secs, qint64 nsecs, BobUI::TimerType timerType) noexcept
 {
     type = timerType;
     t1 = add_saturate(0, seconds{secs}, nanoseconds{nsecs});
@@ -570,7 +570,7 @@ QDeadlineTimer QDeadlineTimer::addNSecs(QDeadlineTimer dt, qint64 nsecs) noexcep
 }
 
 /*!
-    \fn QDeadlineTimer QDeadlineTimer::current(Qt::TimerType timerType)
+    \fn QDeadlineTimer QDeadlineTimer::current(BobUI::TimerType timerType)
 
     Returns a QDeadlineTimer that is expired but is guaranteed to contain the
     current time. Objects created by this function can participate in the
@@ -578,7 +578,7 @@ QDeadlineTimer QDeadlineTimer::addNSecs(QDeadlineTimer dt, qint64 nsecs) noexcep
 
     The QDeadlineTimer object will be constructed with the specified \a timerType.
 */
-QDeadlineTimer QDeadlineTimer::current(Qt::TimerType timerType) noexcept
+QDeadlineTimer QDeadlineTimer::current(BobUI::TimerType timerType) noexcept
 {
     // ensure we get nanoseconds; this will work so long as steady_clock's
     // time_point isn't of finer resolution (picoseconds)
@@ -748,4 +748,4 @@ QDeadlineTimer operator+(QDeadlineTimer dt, qint64 msecs)
   Returns the time remaining before the deadline.
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

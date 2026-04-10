@@ -1,7 +1,7 @@
-Here is a list of user-visible changes in Qt from 0.98 to 0.99.
+Here is a list of user-visible changes in BobUI from 0.98 to 0.99.
 As usual, we fixed some bugs and improved the documentation.
 
-Qt 0.99 includes makefiles for Linux, Solaris, SunOS, FreeBSD, OSF/1,
+BobUI 0.99 includes makefiles for Linux, Solaris, SunOS, FreeBSD, OSF/1,
 Irix, BSD/OS, SCO and HP-UX. 
 
 
@@ -43,7 +43,7 @@ QPrinter:
 The X11 version now supports landscape printing and different paper sizes.
 
 
-QTableView:
+BOBUIableView:
 -----------
 The functions horizontalScrollBar and verticalScrollBar gives access
 to the internal scroll bars so you can connect to their signals.

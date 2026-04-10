@@ -31,7 +31,7 @@
      <item row="4" column="0">
       <widget class="QPushButton" name="startButton">
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::NoFocus</enum>
+        <enum>BobUI::FocusPolicy::NoFocus</enum>
        </property>
        <property name="text">
         <string>&amp;Start</string>
@@ -51,14 +51,14 @@
         <string>LINES REMOVED</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
+        <set>BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter</set>
        </property>
       </widget>
      </item>
      <item row="5" column="2">
       <widget class="QPushButton" name="pauseButton">
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::NoFocus</enum>
+        <enum>BobUI::FocusPolicy::NoFocus</enum>
        </property>
        <property name="text">
         <string>&amp;Pause</string>
@@ -75,7 +75,7 @@
      <item row="0" column="1" rowspan="6">
       <widget class="TetrixBoard" name="board">
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::StrongFocus</enum>
+        <enum>BobUI::FocusPolicy::StrongFocus</enum>
        </property>
        <property name="frameShape">
         <enum>QFrame::Shape::Panel</enum>
@@ -91,7 +91,7 @@
         <string>LEVEL</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
+        <set>BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter</set>
        </property>
       </widget>
      </item>
@@ -101,7 +101,7 @@
         <string>NEXT</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
+        <set>BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter</set>
        </property>
       </widget>
      </item>
@@ -118,7 +118,7 @@
         <string>SCORE</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignHCenter</set>
+        <set>BobUI::AlignmentFlag::AlignBottom|BobUI::AlignmentFlag::AlignHCenter</set>
        </property>
       </widget>
      </item>
@@ -134,14 +134,14 @@
         <string/>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>BobUI::AlignmentFlag::AlignCenter</set>
        </property>
       </widget>
      </item>
      <item row="4" column="2">
       <widget class="QPushButton" name="quitButton">
        <property name="focusPolicy">
-        <enum>Qt::FocusPolicy::NoFocus</enum>
+        <enum>BobUI::FocusPolicy::NoFocus</enum>
        </property>
        <property name="text">
         <string>&amp;Quit</string>

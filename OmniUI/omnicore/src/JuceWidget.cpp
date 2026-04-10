@@ -13,8 +13,8 @@ namespace juce {
             qDebug() << "[JUCE] Setting bounds:" << x << y << w << h;
         }
         virtual void paint(QPainter& painter) {
-            painter.setPen(Qt::blue);
-            painter.drawText(10, 20, "JUCE Component Rendered via Qt");
+            painter.setPen(BobUI::blue);
+            painter.drawText(10, 20, "JUCE Component Rendered via BobUI");
         }
     };
 }
@@ -22,8 +22,8 @@ namespace juce {
 JuceWidget::JuceWidget(QWidget *parent)
     : QWidget(parent)
 {
-    setAttribute(Qt::WA_OpaquePaintEvent);
-    setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(BobUI::WA_OpaquePaintEvent);
+    setAttribute(BobUI::WA_NoSystemBackground);
 }
 
 JuceWidget::~JuceWidget() = default;
@@ -49,9 +49,9 @@ void JuceWidget::paintEvent(QPaintEvent *event)
     if (m_juceComponent) {
         m_juceComponent->paint(painter);
     } else {
-        painter.fillRect(rect(), Qt::black);
-        painter.setPen(Qt::white);
-        painter.drawText(rect(), Qt::AlignCenter, "No JUCE Component Loaded");
+        painter.fillRect(rect(), BobUI::black);
+        painter.setPen(BobUI::white);
+        painter.drawText(rect(), BobUI::AlignCenter, "No JUCE Component Loaded");
     }
 }
 

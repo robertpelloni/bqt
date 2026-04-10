@@ -1,19 +1,19 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcbormap.h"
 #include "qcborvalue_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace QtCbor;
+using namespace BobUICbor;
 
 /*!
     \class QCborMap
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.12
 
@@ -167,7 +167,7 @@ using namespace QtCbor;
  */
 
 /*! \typedef QCborMap::const_key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.10
     \brief The QCborMap::const_key_value_iterator typedef provides an STL-style iterator for
    QCborMap.
@@ -179,7 +179,7 @@ using namespace QtCbor;
  */
 
 /*! \typedef QCborMap::key_value_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.10
     \brief The QCborMap::key_value_iterator typedef provides an STL-style iterator for QCborMap.
 
@@ -1233,7 +1233,7 @@ QCborValue QCborMap::extract(iterator it)
     predictable order, such as by ascending key value. In fact, maps with keys
     in sorted order are required for Canonical CBOR representation.
 
-    For more information on CBOR equality in Qt, see, QCborValue::compare().
+    For more information on CBOR equality in BobUI, see, QCborValue::compare().
 
     \sa compare(), QCborValue::operator==(), operator!=(), operator<()
  */
@@ -1251,7 +1251,7 @@ QCborValue QCborMap::extract(iterator it)
     predictable order, such as by ascending key value. In fact, maps with keys
     in sorted order are required for Canonical CBOR representation.
 
-    For more information on CBOR equality in Qt, see, QCborValue::compare().
+    For more information on CBOR equality in BobUI, see, QCborValue::compare().
 
     \sa compare(), QCborValue::operator==(), operator==(), operator<()
  */
@@ -1341,7 +1341,7 @@ void QCborMap::detach(qsizetype reserved)
 
 /*!
     \class QCborMap::Iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
     \reentrant
     \since 5.12
@@ -1612,7 +1612,7 @@ void QCborMap::detach(qsizetype reserved)
 
 /*!
     \class QCborMap::ConstIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup cbor
     \since 5.12
 
@@ -1858,7 +1858,7 @@ size_t qHash(const QCborMap &map, size_t seed)
     return qHashRange(map.begin(), map.end(), seed);
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QCborMap &m)
 {
     QDebugStateSaver saver(dbg);
@@ -1872,8 +1872,8 @@ QDebug operator<<(QDebug dbg, const QCborMap &m)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 QDataStream &operator<<(QDataStream &stream, const QCborMap &value)
 {
     stream << value.toCborValue().toCbor();
@@ -1893,4 +1893,4 @@ QDataStream &operator>>(QDataStream &stream, QCborMap &value)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

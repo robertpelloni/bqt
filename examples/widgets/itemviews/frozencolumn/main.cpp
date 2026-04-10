@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QStandardItemModel>
 #include <QFile>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 #include "freezetablewidget.h"
 
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     QFile file(":/grades.txt");
     if (file.open(QFile::ReadOnly)) {
-        QTextStream stream(&file);
+        BOBUIextStream stream(&file);
 
         QString line = stream.readLine();
         QStringList list = line.simplified().split(',');

@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
@@ -18,32 +18,32 @@
 #ifndef QDBUSCONNECTION_P_H
 #define QDBUSCONNECTION_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbuserror.h>
 #include <qdbusconnection.h>
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qreadwritelock.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qreadwritelock.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qvarlengtharray.h>
 
 #include "qdbus_symbols_p.h"
 
 #include <qdbusmessage.h>
 #include <qdbusservicewatcher.h>    // for the WatchMode enum
-Q_MOC_INCLUDE(<QtDBus/private/qdbuspendingcall_p.h>)
+Q_MOC_INCLUDE(<BobUIDBus/private/qdbuspendingcall_p.h>)
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusMessage;
 class QSocketNotifier;
-class QTimerEvent;
+class BOBUIimerEvent;
 class QDBusObjectPrivate;
 class QDBusCallDeliveryEvent;
 class QDBusActivateObjectEvent;
@@ -55,7 +55,7 @@ class QDBusConnectionInterface;
 class QDBusPendingCallPrivate;
 class QDBusServer;
 
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 
 class QDBusErrorInternal
 {
@@ -252,7 +252,7 @@ private:
     bool removeSignalHookImpl(const QString &key, const SignalHook &hook);
 
 protected:
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
 
 public slots:
     // public slots
@@ -347,11 +347,11 @@ public:
 
 // in qdbusmisc.cpp
 extern int qDBusParametersForMethod(const QMetaMethod &mm, QList<QMetaType> &metaTypes, QString &errorMsg);
-#    endif // QT_BOOTSTRAPPED
+#    endif // BOBUI_BOOTSTRAPPED
 extern Q_DBUS_EXPORT int qDBusParametersForMethod(const QList<QByteArray> &parameters,
                                                   QList<QMetaType> &metaTypes, QString &errorMsg);
 extern Q_DBUS_EXPORT bool qDBusCheckAsyncTag(const char *tag);
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 extern bool qDBusInterfaceInObject(QObject *obj, const QString &interface_name);
 extern QString qDBusInterfaceFromMetaObject(const QMetaObject *mo);
 
@@ -364,9 +364,9 @@ extern QDBusMessage qDBusPropertySet(const QDBusConnectionPrivate::ObjectTreeNod
 extern QDBusMessage qDBusPropertyGetAll(const QDBusConnectionPrivate::ObjectTreeNode &node,
                                         const QDBusMessage &msg);
 
-#endif // QT_BOOTSTRAPPED
+#endif // BOBUI_BOOTSTRAPPED
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 #endif

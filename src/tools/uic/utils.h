@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -9,10 +9,10 @@
 #include <qlist.h>
 #include <qhash.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 inline bool toBool(const QString &str)
-{ return QString::compare(str, QLatin1StringView("true"), Qt::CaseInsensitive) == 0; }
+{ return QString::compare(str, QLatin1StringView("true"), BobUI::CaseInsensitive) == 0; }
 
 inline QString toString(const DomString *str)
 { return str ? str->text() : QString(); }
@@ -25,6 +25,6 @@ inline QHash<QString, DomProperty *> propertyMap(const QList<DomProperty *> &pro
     return map;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // UTILS_H

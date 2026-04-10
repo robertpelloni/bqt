@@ -205,7 +205,7 @@ CHANGES BETWEEN 2.12.1 and 2.13.0 (2023-Feb-09)
   - The demo program `ftinspect` has  been completely updated and much
     enhanced.  It now  combines the functionality of  almost all other
     graphical FreeType  demo programs into a  single application based
-    on the Qt framework.  This was Charlie Jiang's GSoC 2022 project.
+    on the BobUI framework.  This was Charlie Jiang's GSoC 2022 project.
 
   - The 'COLR' v1 API is now considered as stable.
 
@@ -1359,7 +1359,7 @@ CHANGES BETWEEN 2.6.3 and 2.6.4 (2016-Jul-05)
     - The demo programs  have been extended to allow  selection of all
       available TrueType bytecode engines.
 
-    - A very early beta version of a new, Qt based demo program called
+    - A very early beta version of a new, BobUI based demo program called
       `ftinspect'  is  part  of  the   source  code  bundle;  it  will
       eventually supersede  the other  demo programs.   Currently, you
       have to compile  it manually with `qmake; make';  note that many
@@ -1485,7 +1485,7 @@ CHANGES BETWEEN 2.6 and 2.6.1 (2015-Oct-04)
       taken from the  `htmx' table, not the side  bearings.  This bug,
       introduced in  version 2.6.0, makes  it necessary to  upgrade if
       you are using  CFFs; otherwise, you get cropped  glyphs with GUI
-      interfaces like GTK or Qt.
+      interfaces like GTK or BobUI.
 
     - Accessing Type 42 fonts returned  incorrect results if the glyph
       order of the embedded TrueType font differs from the glyph order

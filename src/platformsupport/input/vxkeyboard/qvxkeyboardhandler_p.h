@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QVXKEYBOARDHANDLER_P_H
 #define QVXKEYBOARDHANDLER_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -17,16 +17,16 @@
 
 #include <qobject.h>
 #include <qloggingcategory.h>
-#include <QtInputSupport/private/qfdcontainer_p.h>
-#include <QtInputSupport/private/qkeyboardmap_p.h>
-#include <QtInputSupport/private/qkeycodeaction_p.h>
+#include <BobUIInputSupport/private/qfdcontainer_p.h>
+#include <BobUIInputSupport/private/qkeyboardmap_p.h>
+#include <BobUIInputSupport/private/qkeycodeaction_p.h>
 
 #include <QDataStream>
 #include <private/qglobal_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(qLcVxKey)
 
@@ -38,7 +38,7 @@ namespace QVxKeyboardMap {
     struct Mapping {
         quint16 keycode;
         quint16 unicode;
-        quint32 qtcode;
+        quint32 bobuicode;
         quint8 modifiers;
         quint8 flags;
         quint16 special;
@@ -84,12 +84,12 @@ namespace QVxKeyboardMap {
 
 inline QDataStream &operator>>(QDataStream &ds, QVxKeyboardMap::Mapping &m)
 {
-    return ds >> m.keycode >> m.unicode >> m.qtcode >> m.modifiers >> m.flags >> m.special;
+    return ds >> m.keycode >> m.unicode >> m.bobuicode >> m.modifiers >> m.flags >> m.special;
 }
 
 inline QDataStream &operator<<(QDataStream &ds, const QVxKeyboardMap::Mapping &m)
 {
-    return ds << m.keycode << m.unicode << m.qtcode << m.modifiers << m.flags << m.special;
+    return ds << m.keycode << m.unicode << m.bobuicode << m.modifiers << m.flags << m.special;
 }
 
 inline QDataStream &operator>>(QDataStream &ds, QVxKeyboardMap::Composing &c)
@@ -112,18 +112,18 @@ public:
                                          const QString &specification,
                                          const QString &defaultKeymapFile = QString());
 
-    static Qt::KeyboardModifiers toQtModifiers(quint8 mod)
+    static BobUI::KeyboardModifiers toBobUIModifiers(quint8 mod)
     {
-        Qt::KeyboardModifiers qtmod = Qt::NoModifier;
+        BobUI::KeyboardModifiers bobuimod = BobUI::NoModifier;
 
         if (mod & (QVxKeyboardMap::ModShift | QVxKeyboardMap::ModShiftL | QVxKeyboardMap::ModShiftR))
-            qtmod |= Qt::ShiftModifier;
+            bobuimod |= BobUI::ShiftModifier;
         if (mod & (QVxKeyboardMap::ModControl | QVxKeyboardMap::ModCtrlL | QVxKeyboardMap::ModCtrlR))
-            qtmod |= Qt::ControlModifier;
+            bobuimod |= BobUI::ControlModifier;
         if (mod & QVxKeyboardMap::ModAlt)
-            qtmod |= Qt::AltModifier;
+            bobuimod |= BobUI::AltModifier;
 
-        return qtmod;
+        return bobuimod;
     }
 
     bool loadKeymap(const QString &file);
@@ -135,8 +135,8 @@ public:
     void switchLang();
 
 private:
-    void processKeyEvent(int nativecode, int unicode, int qtcode,
-                         Qt::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
+    void processKeyEvent(int nativecode, int unicode, int bobuicode,
+                         BobUI::KeyboardModifiers modifiers, bool isPress, bool autoRepeat);
 
     QString m_device;
     QFdContainer m_fd;
@@ -162,6 +162,6 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QVXKEYBOARDHANDLER_P_H

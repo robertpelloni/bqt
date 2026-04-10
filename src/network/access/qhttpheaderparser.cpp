@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qhttpheaderparser_p.h"
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QHttpHeaderParser::QHttpHeaderParser()
     : statusCode(100) // Required by tst_QHttpNetworkConnection::ignoresslerror(failure)
@@ -224,4 +224,4 @@ void QHttpHeaderParser::setReasonPhrase(const QString &reason)
     reasonPhrase = reason;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

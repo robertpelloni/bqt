@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_cmake_library(tst_qfactoryloader_staticplugin
+bobui_internal_add_cmake_library(tst_qfactoryloader_staticplugin
     STATIC
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Core
+        BobUI::Core
 )
 
-qt_autogen_tools_initial_setup(tst_qfactoryloader_staticplugin)
+bobui_autogen_tools_initial_setup(tst_qfactoryloader_staticplugin)
 
-target_compile_definitions(tst_qfactoryloader_staticplugin PRIVATE QT_STATICPLUGIN)
+target_compile_definitions(tst_qfactoryloader_staticplugin PRIVATE BOBUI_STATICPLUGIN)

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCOMPARISONTESTHELPER_P_H
 #define QCOMPARISONTESTHELPER_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/q20type_traits.h>
-#include <QtCore/qxptype_traits.h>
-#include <QtTest/qtest.h>
+#include <BobUICore/q20type_traits.h>
+#include <BobUICore/qxptype_traits.h>
+#include <BobUITest/bobuiest.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTestPrivate {
+namespace BOBUIestPrivate {
 
 #ifdef __cpp_lib_three_way_comparison
 template <typename LT, typename RT>
@@ -102,7 +102,7 @@ template <typename LeftType, typename RightType = LeftType>
 void testAllComparisonOperatorsCompile()
 {
     testEqualityOperatorsCompile<LeftType, RightType>();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
     FOR_EACH_CREF(CHECK_SINGLE_OPERATOR, LeftType, RightType, >, bool)
     FOR_EACH_CREF(CHECK_SINGLE_OPERATOR, LeftType, RightType, <, bool)
@@ -165,10 +165,10 @@ void testAllComparisonOperatorsCompile()
     doing so, if there is any later code in the test.
 
     \code
-    QTime early(12, 34, 56, 00);
-    QTime later(12, 34, 56, 01);
-    QTestPrivate::testEqualityOperators(early, later, false);
-    if (QTest:currentTestFailed())
+    BOBUIime early(12, 34, 56, 00);
+    BOBUIime later(12, 34, 56, 01);
+    BOBUIestPrivate::testEqualityOperators(early, later, false);
+    if (BOBUIest:currentTestFailed())
         return;
     \endcode
 */
@@ -178,11 +178,11 @@ void testEqualityOperators(LeftType lhs, RightType rhs, bool expectedEqual,
                            const char *file, int line)
 {
     if (expectedEqual) {
-        if (!QTest::qCompareOp<QTest::ComparisonOperation::Equal>(lhs, rhs, lhsExpr, rhsExpr, file, line))
-            QTEST_FAIL_ACTION;
+        if (!BOBUIest::qCompareOp<BOBUIest::ComparisonOperation::Equal>(lhs, rhs, lhsExpr, rhsExpr, file, line))
+            BOBUIEST_FAIL_ACTION;
     } else {
-        if (!QTest::qCompareOp<QTest::ComparisonOperation::NotEqual>(lhs, rhs, lhsExpr, rhsExpr, file, line))
-            QTEST_FAIL_ACTION;
+        if (!BOBUIest::qCompareOp<BOBUIest::ComparisonOperation::NotEqual>(lhs, rhs, lhsExpr, rhsExpr, file, line))
+            BOBUIEST_FAIL_ACTION;
     }
 
     auto report = qScopeGuard([=] {
@@ -209,7 +209,7 @@ void testEqualityOperators(LeftType lhs, RightType rhs, bool expectedEqual,
     implemented.
 
     When compiled in C++17 mode, the \c OrderingType must be one of
-    Qt::partial_ordering, Qt::strong_ordering, or Qt::weak_ordering.
+    BobUI::partial_ordering, BobUI::strong_ordering, or BobUI::weak_ordering.
     In C++20 mode, also the \c {std::*_ordering} types can be used.
 
     The \a expectedOrdering parameter provides the expected
@@ -221,17 +221,17 @@ void testEqualityOperators(LeftType lhs, RightType rhs, bool expectedEqual,
     \code
     QDateTime now = QDateTime::currentDateTime();
     QDateTime later = now.addMSec(1);
-    QTestPrivate::testComparisonOperators(now, later, Qt::weak_ordering::less);
-    if (QTest:currentTestFailed())
+    BOBUIestPrivate::testComparisonOperators(now, later, BobUI::weak_ordering::less);
+    if (BOBUIest:currentTestFailed())
         return;
     \endcode
 */
 template <typename LeftType, typename RightType, typename OrderingType>
 void testAllComparisonOperators(LeftType lhs, RightType rhs, OrderingType expectedOrdering)
 {
-    constexpr bool isQOrderingType = std::is_same_v<OrderingType, Qt::partial_ordering>
-                                        || std::is_same_v<OrderingType, Qt::weak_ordering>
-                                        || std::is_same_v<OrderingType, Qt::strong_ordering>;
+    constexpr bool isQOrderingType = std::is_same_v<OrderingType, BobUI::partial_ordering>
+                                        || std::is_same_v<OrderingType, BobUI::weak_ordering>
+                                        || std::is_same_v<OrderingType, BobUI::strong_ordering>;
 #ifdef __cpp_lib_three_way_comparison
     constexpr bool isStdOrderingType = std::is_same_v<OrderingType, std::partial_ordering>
                                         || std::is_same_v<OrderingType, std::weak_ordering>
@@ -242,14 +242,14 @@ void testAllComparisonOperators(LeftType lhs, RightType rhs, OrderingType expect
 
     static_assert(isQOrderingType || isStdOrderingType,
                   "Please provide, as the expectedOrdering parameter, a value "
-                  "of one of the Qt::{partial,weak,strong}_ordering or "
+                  "of one of the BobUI::{partial,weak,strong}_ordering or "
                   "std::{partial,weak,strong}_ordering types.");
 
     // We have all sorts of operator==() between Q*Ordering and std::*_ordering
-    // types, so we can just compare to Qt::partial_ordering.
-    const bool expectedEqual = expectedOrdering == Qt::partial_ordering::equivalent;
-    const bool expectedLess = expectedOrdering == Qt::partial_ordering::less;
-    const bool expectedUnordered = expectedOrdering == Qt::partial_ordering::unordered;
+    // types, so we can just compare to BobUI::partial_ordering.
+    const bool expectedEqual = expectedOrdering == BobUI::partial_ordering::equivalent;
+    const bool expectedLess = expectedOrdering == BobUI::partial_ordering::less;
+    const bool expectedUnordered = expectedOrdering == BobUI::partial_ordering::unordered;
 
     CHECK_RUNTIME_CREF(CHECK_RUNTIME_LR, lhs, rhs, ==,
                        !expectedUnordered && expectedEqual);
@@ -330,44 +330,44 @@ void testAllComparisonOperators(LeftType lhs, RightType rhs, OrderingType expect
 #undef CHECK_RUNTIME_LR
 #undef CHECK_RUNTIME_CREF
 
-} // namespace QTestPrivate
+} // namespace BOBUIestPrivate
 
 /*!
     \internal
 
-    A helper macro that calls QTestPrivate::testEqualityOperators(), checks the
+    A helper macro that calls BOBUIestPrivate::testEqualityOperators(), checks the
     test's state after the function is executed, and generates a meaningful
     debug message with the original file and line numbers if the test has
     failed.
 */
-#define QT_TEST_EQUALITY_OPS(Left, Right, Expected) \
+#define BOBUI_TEST_EQUALITY_OPS(Left, Right, Expected) \
     do { \
-        QTestPrivate::testEqualityOperators(Left, Right, Expected, #Left, #Right, #Expected, \
+        BOBUIestPrivate::testEqualityOperators(Left, Right, Expected, #Left, #Right, #Expected, \
                                             __FILE__, __LINE__); \
-        if (QTest::currentTestFailed()) \
+        if (BOBUIest::currentTestFailed()) \
             return; \
     } while (false)
 
 /*!
     \internal
 
-    A helper macro that calls QTestPrivate::testAllComparisonOperators(), checks
+    A helper macro that calls BOBUIestPrivate::testAllComparisonOperators(), checks
     the test's state after the function is executed, and generates a meaningful
     debug message with the original file and line numbers if the test has
     failed.
 */
-#define QT_TEST_ALL_COMPARISON_OPS(Left, Right, Expected) \
+#define BOBUI_TEST_ALL_COMPARISON_OPS(Left, Right, Expected) \
     do { \
         auto report = qScopeGuard([] { \
             qDebug("testAllComparisonOperators(" #Left ", " #Right ", " #Expected ") " \
                    "failed in " __FILE__ " on line %d", __LINE__); \
         }); \
-        QTestPrivate::testAllComparisonOperators(Left, Right, Expected); \
-        if (QTest::currentTestFailed()) \
+        BOBUIestPrivate::testAllComparisonOperators(Left, Right, Expected); \
+        if (BOBUIest::currentTestFailed()) \
             return; \
         report.dismiss(); \
     } while (false)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOMPARISONTESTHELPER_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -12,10 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    auto *a = ui->menuStuff->addAction("Enabled Submenu (QTBUG-63172)");
-    auto *qtbug63172_Menu = new QMenu;
-    qtbug63172_Menu->addAction("We're Good!");
-    a->setMenu(qtbug63172_Menu);
+    auto *a = ui->menuStuff->addAction("Enabled Submenu (BOBUIBUG-63172)");
+    auto *bobuibug63172_Menu = new QMenu;
+    bobuibug63172_Menu->addAction("We're Good!");
+    a->setMenu(bobuibug63172_Menu);
 
     startTimer(1000);
 
@@ -56,7 +56,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::timerEvent(QTimerEvent *)
+void MainWindow::timerEvent(BOBUIimerEvent *)
 {
     menuApp->populateMenu(ui->menuPopulated_by_Timer, true /*clear*/);
     menuApp->addDynMenu(QLatin1String("Added by Timer"), ui->menuDynamic_Stuff);

@@ -1,9 +1,9 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#include <QtGui/QEventPoint>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/QEventPoint>
 
 using namespace MockCompositor;
 
@@ -27,7 +27,7 @@ class tst_seatv7 : public QObject, private SeatCompositor
 {
     Q_OBJECT
 private slots:
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void bindsToSeat();
 
     // Pointer tests
@@ -53,7 +53,7 @@ public:
         QRasterWindow::wheelEvent(event);
 //        qDebug() << event << "angleDelta" << event->angleDelta() << "pixelDelta" << event->pixelDelta();
 
-        if (event->phase() != Qt::ScrollUpdate && event->phase() != Qt::NoScrollPhase) {
+        if (event->phase() != BobUI::ScrollUpdate && event->phase() != BobUI::NoScrollPhase) {
             // Shouldn't have deltas in the these phases
             QCOMPARE(event->angleDelta(), QPoint(0, 0));
             QCOMPARE(event->pixelDelta(), QPoint(0, 0));
@@ -64,7 +64,7 @@ public:
         QCOMPARE(event->inverted(), false);
 
         // We didn't press any buttons
-        QCOMPARE(event->buttons(), Qt::NoButton);
+        QCOMPARE(event->buttons(), BobUI::NoButton);
 
         m_events.append(Event{event});
     }
@@ -78,19 +78,19 @@ public:
             , source(event->source())
         {
         }
-        Qt::ScrollPhase phase{};
+        BobUI::ScrollPhase phase{};
         QPoint pixelDelta;
         QPoint angleDelta; // eights of a degree, positive is upwards, left
-        Qt::MouseEventSource source{};
+        BobUI::MouseEventSource source{};
     };
     QList<Event> m_events;
 };
 
 void tst_seatv7::wheelDiscreteScroll_data()
 {
-    QTest::addColumn<uint>("source");
-    QTest::newRow("wheel") << uint(Pointer::axis_source_wheel);
-    QTest::newRow("wheel tilt") << uint(Pointer::axis_source_wheel_tilt);
+    BOBUIest::addColumn<uint>("source");
+    BOBUIest::newRow("wheel") << uint(Pointer::axis_source_wheel);
+    BOBUIest::newRow("wheel tilt") << uint(Pointer::axis_source_wheel_tilt);
 }
 
 void tst_seatv7::wheelDiscreteScroll()
@@ -111,10 +111,10 @@ void tst_seatv7::wheelDiscreteScroll()
         p->sendFrame(c);
     });
 
-    QTRY_VERIFY(!window.m_events.empty());
+    BOBUIRY_VERIFY(!window.m_events.empty());
     {
         auto e = window.m_events.takeFirst();
-        QCOMPARE(e.phase, Qt::NoScrollPhase);
+        QCOMPARE(e.phase, BobUI::NoScrollPhase);
         QVERIFY(qAbs(e.angleDelta.x()) <= qAbs(e.angleDelta.y())); // Vertical scroll
         // According to the docs the angle delta is in eights of a degree and most mice have
         // 1 click = 15 degrees. The angle delta should therefore be:

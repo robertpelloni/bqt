@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosglobal.h"
 #import "qiosviewcontroller.h"
 
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qapplekeymapper_p.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qapplekeymapper_p.h>
 
-#include <QtGui/QGuiApplication>
-#include <QtGui/QWindow>
-#include <QtGui/QScreen>
+#include <BobUIGui/QGuiApplication>
+#include <BobUIGui/QWindow>
+#include <BobUIGui/QScreen>
 
-#include <QtGui/private/qwindow_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qwindow_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include "qiosintegration.h"
 #include "qiosscreen.h"
@@ -22,13 +22,13 @@
 #include "qioswindow.h"
 #include "quiview.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 // -------------------------------------------------------------------------
 
 @interface QIOSViewController ()
 @property (nonatomic, assign) UIWindow *window;
-@property (nonatomic, assign) QPointer<QT_PREPEND_NAMESPACE(QIOSScreen)> platformScreen;
+@property (nonatomic, assign) QPointer<BOBUI_PREPEND_NAMESPACE(QIOSScreen)> platformScreen;
 @property (nonatomic, assign) BOOL changingOrientation;
 @end
 
@@ -44,7 +44,7 @@
     if (!(self = [super init]))
         return nil;
 
-    if (qEnvironmentVariableIntValue("QT_IOS_DEBUG_WINDOW_MANAGEMENT")) {
+    if (qEnvironmentVariableIntValue("BOBUI_IOS_DEBUG_WINDOW_MANAGEMENT")) {
         static UIImage *gridPattern = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -95,7 +95,7 @@
     // Track UIWindow via explicit property on QIOSViewController,
     // as the window property of our own view is not valid until
     // the window has been shown (below).
-    UIWindow *uiWindow = self.qtViewController.window;
+    UIWindow *uiWindow = self.bobuiViewController.window;
 
     if (uiWindow.hidden) {
         // Show the UIWindow the first time a QWindow is mapped to the screen.
@@ -130,7 +130,7 @@
 
 - (void)layoutSubviews
 {
-    if (QGuiApplication::applicationState() == Qt::ApplicationSuspended) {
+    if (QGuiApplication::applicationState() == BobUI::ApplicationSuspended) {
         // Despite the OpenGL ES Programming Guide telling us to avoid all
         // use of OpenGL while in the background, iOS will perform its view
         // snapshotting for the app switcher after the application has been
@@ -144,7 +144,7 @@
         // here. iOS will still use the latest rendered frame to create the
         // application switcher thumbnail, but it will be based on the last
         // active orientation of the application.
-        QIOSScreen *screen = self.qtViewController.platformScreen;
+        QIOSScreen *screen = self.bobuiViewController.platformScreen;
         qCDebug(lcQpaWindow) << "ignoring layout of subviews while suspended,"
             << "likely system snapshot of" << screen->screen()->primaryOrientation();
         return;
@@ -169,7 +169,7 @@
         return;
 
     // Re-apply window states to update geometry
-    if (window->windowStates() & (Qt::WindowFullScreen | Qt::WindowMaximized))
+    if (window->windowStates() & (BobUI::WindowFullScreen | BobUI::WindowMaximized))
         window->handle()->setWindowState(window->windowStates());
 }
 
@@ -253,8 +253,8 @@
 
         QIOSApplicationState *applicationState = &QIOSIntegration::instance()->applicationState;
         m_appStateChangedConnection = QObject::connect(applicationState, &QIOSApplicationState::applicationStateDidChange,
-            [self](Qt::ApplicationState oldState, Qt::ApplicationState newState) {
-                if (oldState == Qt::ApplicationSuspended && newState != Qt::ApplicationSuspended) {
+            [self](BobUI::ApplicationState oldState, BobUI::ApplicationState newState) {
+                if (oldState == BobUI::ApplicationSuspended && newState != BobUI::ApplicationSuspended) {
                     // We may have ignored an earlier layout because the application was suspended,
                     // and we didn't want to render anything at that moment in fear of being killed
                     // due to rendering in the background, so we trigger an explicit layout when
@@ -285,17 +285,17 @@
 {
     [super viewDidLoad];
 
-    Q_ASSERT(!qt_apple_isApplicationExtension());
+    Q_ASSERT(!bobui_apple_isApplicationExtension());
 
 #if !defined(Q_OS_TVOS) && !defined(Q_OS_VISIONOS)
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(willChangeStatusBarFrame:)
             name:UIApplicationWillChangeStatusBarFrameNotification
-            object:qt_apple_sharedApplication()];
+            object:bobui_apple_sharedApplication()];
 
     [center addObserver:self selector:@selector(didChangeStatusBarOrientation:)
             name:UIApplicationDidChangeStatusBarOrientationNotification
-            object:qt_apple_sharedApplication()];
+            object:bobui_apple_sharedApplication()];
 #endif
 
     // Make sure any top level windows that have already been created
@@ -340,7 +340,7 @@
 
         QScreen *newScreen = newPlatformScreen ? newPlatformScreen->screen() : nullptr;
 
-        const bool isPrimaryScene = !qt_apple_sharedApplication().supportsMultipleScenes
+        const bool isPrimaryScene = !bobui_apple_sharedApplication().supportsMultipleScenes
             && windowScene.session.role == UIWindowSceneSessionRoleApplication;
 
         if (isPrimaryScene) {
@@ -442,7 +442,7 @@
 
 - (void)updateStatusBarProperties
 {
-    if (!isQtApplication())
+    if (!isBobUIApplication())
         return;
 
     if (!self.platformScreen || !self.platformScreen->screen())
@@ -478,14 +478,14 @@
         return;
 
     // All decisions are based on the top level window
-    focusWindow = qt_window_private(focusWindow)->topLevelWindow();
+    focusWindow = bobui_window_private(focusWindow)->topLevelWindow();
 
 #if !defined(Q_OS_TVOS) && !defined(Q_OS_VISIONOS)
 
     // -------------- Status bar style and visbility ---------------
 
     UIStatusBarStyle oldStatusBarStyle = self.preferredStatusBarStyle;
-    if (focusWindow->flags() & Qt::ExpandedClientAreaHint)
+    if (focusWindow->flags() & BobUI::ExpandedClientAreaHint)
         self.preferredStatusBarStyle = UIStatusBarStyleDefault;
     else
         self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
@@ -494,7 +494,7 @@
         [self setNeedsStatusBarAppearanceUpdate];
 
     bool currentStatusBarVisibility = self.prefersStatusBarHidden;
-    self.prefersStatusBarHidden = focusWindow->windowState() == Qt::WindowFullScreen;
+    self.prefersStatusBarHidden = focusWindow->windowState() == BobUI::WindowFullScreen;
 
     if (self.prefersStatusBarHidden != currentStatusBarVisibility) {
         [self setNeedsStatusBarAppearanceUpdate];
@@ -525,10 +525,10 @@
 - (void)handleShortcut:(UIKeyCommand *)keyCommand
 {
     const QString str = QString::fromNSString([keyCommand input]);
-    Qt::KeyboardModifiers qtMods = QAppleKeyMapper::fromUIKitModifiers(keyCommand.modifierFlags);
+    BobUI::KeyboardModifiers bobuiMods = QAppleKeyMapper::fromUIKitModifiers(keyCommand.modifierFlags);
     QChar ch = str.isEmpty() ? QChar() : str.at(0);
     QShortcutMap &shortcutMap = QGuiApplicationPrivate::instance()->shortcutMap;
-    QKeyEvent keyEvent(QEvent::ShortcutOverride, Qt::Key(ch.toUpper().unicode()), qtMods, str);
+    QKeyEvent keyEvent(QEvent::ShortcutOverride, BobUI::Key(ch.toUpper().unicode()), bobuiMods, str);
     shortcutMap.tryShortcut(&keyEvent);
 }
 

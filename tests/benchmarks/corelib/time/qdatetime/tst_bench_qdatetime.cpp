@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDateTime>
-#include <QTimeZone>
-#include <QTest>
+#include <BOBUIimeZone>
+#include <BOBUIest>
 #include <QList>
 #include <qdebug.h>
-#include <QtCore/private/qdatetime_p.h>
+#include <BobUICore/private/qdatetime_p.h>
 
 class tst_QDateTime : public QObject
 {
     Q_OBJECT
 
     static QList<QDateTime> daily(qint64 start, qint64 end);
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     static QList<QDateTime> norse(qint64 start, qint64 end);
 #endif
     void decade_data();
@@ -30,30 +30,30 @@ private Q_SLOTS:
     void timeZoneAbbreviation();
     void toMSecsSinceEpoch_data() { decade_data(); }
     void toMSecsSinceEpoch();
-#if QT_CONFIG(timezone) 
+#if BOBUI_CONFIG(timezone) 
     void toMSecsSinceEpochTz_data() { decade_data(); }
     void toMSecsSinceEpochTz();
 #endif
     void setDate();
     void setTime();
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     void setTimeSpec();
     void setOffsetFromUtc();
 #endif
     void setMSecsSinceEpoch();
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     void setMSecsSinceEpochTz();
 #endif
     void toString();
     void toStringTextFormat();
     void toStringIsoFormat();
     void addDays();
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     void addDaysTz();
     void addMSecsTz();
 #endif
     void addMSecs();
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
     void toTimeSpec();
     void toOffsetFromUtc();
 #endif
@@ -73,12 +73,12 @@ private Q_SLOTS:
     void fromStringIso();
     void fromMSecsSinceEpoch();
     void fromMSecsSinceEpochUtc();
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     void fromMSecsSinceEpochTz();
 #endif
 };
 
-using namespace QtPrivate::DateTimeConstants;
+using namespace BobUIPrivate::DateTimeConstants;
 constexpr qint64 JULIAN_DAY_1 = 1721426;
 constexpr qint64 JULIAN_DAY_11 = 1725078;
 constexpr qint64 JULIAN_DAY_1890 = 2411369;
@@ -94,14 +94,14 @@ constexpr qint64 JULIAN_DAY_2060 = 2473460;
 
 void tst_QDateTime::decade_data()
 {
-    QTest::addColumn<qint64>("startJd");
-    QTest::addColumn<qint64>("stopJd");
+    BOBUIest::addColumn<qint64>("startJd");
+    BOBUIest::addColumn<qint64>("stopJd");
 
-    QTest::newRow("first-decade-CE") << JULIAN_DAY_1 << JULIAN_DAY_11;
-    QTest::newRow("1890s") << JULIAN_DAY_1890 << JULIAN_DAY_1900;
-    QTest::newRow("1950s") << JULIAN_DAY_1950 << JULIAN_DAY_1960;
-    QTest::newRow("2010s") << JULIAN_DAY_2010 << JULIAN_DAY_2020;
-    QTest::newRow("2050s") << JULIAN_DAY_2050 << JULIAN_DAY_2060;
+    BOBUIest::newRow("first-decade-CE") << JULIAN_DAY_1 << JULIAN_DAY_11;
+    BOBUIest::newRow("1890s") << JULIAN_DAY_1890 << JULIAN_DAY_1900;
+    BOBUIest::newRow("1950s") << JULIAN_DAY_1950 << JULIAN_DAY_1960;
+    BOBUIest::newRow("2010s") << JULIAN_DAY_2010 << JULIAN_DAY_2020;
+    BOBUIest::newRow("2050s") << JULIAN_DAY_2050 << JULIAN_DAY_2060;
 }
 
 QList<QDateTime> tst_QDateTime::daily(qint64 start, qint64 end)
@@ -112,10 +112,10 @@ QList<QDateTime> tst_QDateTime::daily(qint64 start, qint64 end)
         list.append(QDateTime(QDate::fromJulianDay(jd).startOfDay()));
     return list;
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 QList<QDateTime> tst_QDateTime::norse(qint64 start, qint64 end)
 {
-    const QTimeZone cet("Europe/Oslo");
+    const BOBUIimeZone cet("Europe/Oslo");
     QList<QDateTime> list;
     list.reserve(end - start);
     for (int jd = start; jd < end; ++jd)
@@ -127,7 +127,7 @@ void tst_QDateTime::create()
 {
     QFETCH(const qint64, startJd);
     QFETCH(const qint64, stopJd);
-    const QTime noon = QTime::fromMSecsSinceStartOfDay(43200 * 1000);
+    const BOBUIime noon = BOBUIime::fromMSecsSinceStartOfDay(43200 * 1000);
     QBENCHMARK {
         for (int jd = startJd; jd < stopJd; ++jd) {
             QDateTime test(QDate::fromJulianDay(jd), noon);
@@ -209,7 +209,7 @@ void tst_QDateTime::toMSecsSinceEpoch()
             test.toMSecsSinceEpoch();
     }
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QDateTime::toMSecsSinceEpochTz()
 {
     QFETCH(const qint64, startJd);
@@ -238,19 +238,19 @@ void tst_QDateTime::setTime()
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2020);
     QBENCHMARK {
         for (QDateTime test : list)
-            test.setTime(QTime(12, 0, 0));
+            test.setTime(BOBUIime(12, 0, 0));
     }
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QDateTime::setTimeSpec()
 {
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2020);
     QBENCHMARK {
         for (QDateTime test : list)
-            test.setTimeSpec(Qt::UTC);
+            test.setTimeSpec(BobUI::UTC);
     }
 }
 
@@ -262,7 +262,7 @@ void tst_QDateTime::setOffsetFromUtc()
             test.setOffsetFromUtc(3600);
     }
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif // 6.9 deprecation
 
 void tst_QDateTime::setMSecsSinceEpoch()
@@ -274,7 +274,7 @@ void tst_QDateTime::setMSecsSinceEpoch()
             test.setMSecsSinceEpoch(msecs);
     }
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QDateTime::setMSecsSinceEpochTz()
 {
     const qint64 msecs = qint64(JULIAN_DAY_2010 - JULIAN_DAY_1970 + 180) * MSECS_PER_DAY;
@@ -299,7 +299,7 @@ void tst_QDateTime::toStringTextFormat()
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2011);
     QBENCHMARK {
         for (const QDateTime &test : list)
-            test.toString(Qt::TextDate);
+            test.toString(BobUI::TextDate);
     }
 }
 
@@ -308,7 +308,7 @@ void tst_QDateTime::toStringIsoFormat()
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2011);
     QBENCHMARK {
         for (const QDateTime &test : list)
-            test.toString(Qt::ISODate);
+            test.toString(BobUI::ISODate);
     }
 }
 
@@ -322,7 +322,7 @@ void tst_QDateTime::addDays()
     }
     Q_UNUSED(next);
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QDateTime::addDaysTz()
 {
     const auto list = norse(JULIAN_DAY_2010, JULIAN_DAY_2020);
@@ -342,7 +342,7 @@ void tst_QDateTime::addMSecs()
     }
     Q_UNUSED(next);
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QDateTime::addMSecsTz()
 {
     const auto list = norse(JULIAN_DAY_2010, JULIAN_DAY_2020);
@@ -352,15 +352,15 @@ void tst_QDateTime::addMSecsTz()
     }
 }
 #endif
-#if QT_DEPRECATED_SINCE(6, 9)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
+#if BOBUI_DEPRECATED_SINCE(6, 9)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
 void tst_QDateTime::toTimeSpec()
 {
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2020);
     QBENCHMARK {
         for (const QDateTime &test : list)
-            test.toTimeSpec(Qt::UTC);
+            test.toTimeSpec(BobUI::UTC);
     }
 }
 
@@ -372,7 +372,7 @@ void tst_QDateTime::toOffsetFromUtc()
             test.toOffsetFromUtc(3600);
     }
 }
-QT_WARNING_POP
+BOBUI_WARNING_POP
 #endif
 
 void tst_QDateTime::daysTo()
@@ -414,7 +414,7 @@ void tst_QDateTime::equivalentUtc()
 {
     bool result = false;
     const QDateTime other = QDateTime::fromMSecsSinceEpoch(
-        qint64(JULIAN_DAY_2010 - JULIAN_DAY_1970) * MSECS_PER_DAY, QTimeZone::UTC);
+        qint64(JULIAN_DAY_2010 - JULIAN_DAY_1970) * MSECS_PER_DAY, BOBUIimeZone::UTC);
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2020);
     QBENCHMARK {
         for (const QDateTime &test : list)
@@ -440,7 +440,7 @@ void tst_QDateTime::lessThanUtc()
 {
     bool result = false;
     const QDateTime other = QDateTime::fromMSecsSinceEpoch(
-        qint64(JULIAN_DAY_2010 - JULIAN_DAY_1970) * MSECS_PER_DAY, QTimeZone::UTC);
+        qint64(JULIAN_DAY_2010 - JULIAN_DAY_1970) * MSECS_PER_DAY, BOBUIimeZone::UTC);
     const auto list = daily(JULIAN_DAY_2010, JULIAN_DAY_2020);
     QBENCHMARK {
         for (const QDateTime &test : list)
@@ -469,7 +469,7 @@ void tst_QDateTime::currentTime()
 {
     QBENCHMARK {
         for (int i = 0; i < 1000; ++i)
-            QTime::currentTime();
+            BOBUIime::currentTime();
     }
 }
 
@@ -505,7 +505,7 @@ void tst_QDateTime::fromStringText()
     QString input = "Wed Jan 2 01:02:03.000 2013 GMT";
     QBENCHMARK {
         for (int i = 0; i < 1000; ++i)
-            QDateTime::fromString(input, Qt::TextDate);
+            QDateTime::fromString(input, BobUI::TextDate);
     }
 }
 
@@ -514,7 +514,7 @@ void tst_QDateTime::fromStringIso()
     QString input = "2010-01-01T13:28:34.999Z";
     QBENCHMARK {
         for (int i = 0; i < 1000; ++i)
-            QDateTime::fromString(input, Qt::ISODate);
+            QDateTime::fromString(input, BobUI::ISODate);
     }
 }
 
@@ -534,15 +534,15 @@ void tst_QDateTime::fromMSecsSinceEpochUtc()
     const int end = JULIAN_DAY_2020 - JULIAN_DAY_1970;
     QBENCHMARK {
         for (int jd = start; jd < end; ++jd)
-            QDateTime::fromMSecsSinceEpoch(jd * MSECS_PER_DAY, QTimeZone::UTC);
+            QDateTime::fromMSecsSinceEpoch(jd * MSECS_PER_DAY, BOBUIimeZone::UTC);
     }
 }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 void tst_QDateTime::fromMSecsSinceEpochTz()
 {
     const int start = JULIAN_DAY_2010 - JULIAN_DAY_1970;
     const int end = JULIAN_DAY_2020 - JULIAN_DAY_1970;
-    const QTimeZone cet("Europe/Oslo");
+    const BOBUIimeZone cet("Europe/Oslo");
     QBENCHMARK {
         for (int jd = start; jd < end; ++jd)
             QDateTime test = QDateTime::fromMSecsSinceEpoch(jd * MSECS_PER_DAY, cet);
@@ -550,6 +550,6 @@ void tst_QDateTime::fromMSecsSinceEpochTz()
 }
 #endif
 
-QTEST_MAIN(tst_QDateTime)
+BOBUIEST_MAIN(tst_QDateTime)
 
 #include "tst_bench_qdatetime.moc"

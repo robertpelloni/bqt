@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page gestures-overview.html
     \title Gestures in Widgets and Graphics View
-    \startpage index.html Qt Reference Documentation
-    \ingroup qt-gui-concepts
+    \startpage index.html BobUI Reference Documentation
+    \ingroup bobui-gui-concepts
 
-    \brief An overview of Qt support for Gesture programming
+    \brief An overview of BobUI support for Gesture programming
 
-    Qt includes a framework for gesture programming that has the ability
+    BobUI includes a framework for gesture programming that has the ability
     to form gestures from a series of events, independently of the input methods
     used. A gesture could be a particular movement of a mouse, a touch screen
     action, or a series of events from some other source. The nature of the input,
@@ -18,7 +18,7 @@
 
     \section1 Overview
 
-    QGesture is the central class in Qt's gesture framework, providing a container
+    QGesture is the central class in BobUI's gesture framework, providing a container
     for information about gestures performed by the user. QGesture exposes
     properties that give general information that is common to all gestures, and
     these can be extended to provide additional gesture-specific information.
@@ -38,7 +38,7 @@
 
     To enable a gesture for a target object, call its QWidget::grabGesture() or
     QGraphicsObject::grabGesture() function with an argument describing the
-    required gesture type. The standard types are defined by the Qt::GestureType
+    required gesture type. The standard types are defined by the BobUI::GestureType
     enum and include many commonly used gestures.
 
     \snippet gestures/imagegestures/imagewidget.cpp enable gestures
@@ -74,12 +74,12 @@
     stopping interaction, for instance) but the widget can also cause state changes.
 
     The first time a particular QGesture is delivered to a widget or graphics item, it will
-    be in the Qt::GestureStarted state. The way you handle the gesture at this point
+    be in the BobUI::GestureStarted state. The way you handle the gesture at this point
     influences whether you can interact with it later.
 
     \list
     \li Accepting the gesture means the widget acts on the gesture and there will follow
-       gestures with the Qt::GestureUpdatedstate.
+       gestures with the BobUI::GestureUpdatedstate.
     \li Ignoring the gesture will mean the gesture will never be offered to you again.
        It will be offered to a parent widget or item as well.
     \li Calling setGestureCancelPolicy() on the gesture when it is in its starting state,
@@ -133,7 +133,7 @@
     looking for.
 
     Although the logic for gesture recognition is implemented in this function,
-    possibly using a state machine based on the Qt::GestureState enums, you can store
+    possibly using a state machine based on the BobUI::GestureState enums, you can store
     persistent information about the state of the recognition process in the QGesture
     object supplied.
 
@@ -176,9 +176,9 @@
     The \l{gestures/imagegestures}{Image Gestures Example} shows how to enable
     gestures for a widget in a simple image viewer application.
 
-    \section2 Gestures in Qt Quick
+    \section2 Gestures in BobUI Quick
 
-    Qt Quick does not have a generic global gesture recognizer; rather, individual
+    BobUI Quick does not have a generic global gesture recognizer; rather, individual
     components can respond to touch events in their own ways.  For example
     the \l PinchArea handles two-finger gestures, \l Flickable is for flicking
     content with a single finger, and \l MultiPointTouchArea can handle an
@@ -186,4 +186,4 @@
     write custom gesture recognition code.
 */
 
-// TODO mention Sensor Gestures when qtsensors becomes a maintained module
+// TODO mention Sensor Gestures when bobuisensors becomes a maintained module

@@ -3,7 +3,7 @@
 
 #include <QQuickItem>
 
-// Advanced RHI Hardware Node (Qt 7 Parity)
+// Advanced RHI Hardware Node (BobUI 7 Parity)
 // Allows direct injection of external GPU textures into the Scene Graph.
 class OmniRhiNode : public QQuickItem {
     Q_OBJECT

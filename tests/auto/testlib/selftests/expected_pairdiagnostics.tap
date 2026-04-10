@@ -9,8 +9,8 @@ not ok 2 - testQPair()
   found: std::pair(1, 1) (pair1)
   expected: std::pair(1, 2) (pair2)
   actual: std::pair(1, 1) (pair1)
-  at: tst_PairDiagnostics::testQPair() (qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp
+  at: tst_PairDiagnostics::testQPair() (bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp
   line: 0
   ...
 not ok 3 - testStdPair()
@@ -21,8 +21,8 @@ not ok 3 - testStdPair()
   found: std::pair(1, 1) (pair1)
   expected: std::pair(1, 2) (pair2)
   actual: std::pair(1, 1) (pair1)
-  at: tst_PairDiagnostics::testStdPair() (qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp
+  at: tst_PairDiagnostics::testStdPair() (bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/pairdiagnostics/tst_pairdiagnostics.cpp
   line: 0
   ...
 ok 4 - cleanupTestCase()

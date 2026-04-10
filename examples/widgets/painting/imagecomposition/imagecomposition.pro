@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS       = imagecomposer.h
 SOURCES       = imagecomposer.cpp \
@@ -7,5 +7,5 @@ SOURCES       = imagecomposer.cpp \
 RESOURCES     = imagecomposition.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/painting/imagecomposition
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/painting/imagecomposition
 INSTALLS += target

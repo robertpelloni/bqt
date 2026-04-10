@@ -1,5 +1,5 @@
 ********* Start testing of tst_Signaldumper *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_Signaldumper::initTestCase()
 INFO   : tst_Signaldumper::noConnections() Signal: SignalSlotClass(_POINTER_) signalWithoutParameters ()
 INFO   : tst_Signaldumper::noConnections() Signal: SignalSlotClass(_POINTER_) signalWithParameters (int(242), char(m))

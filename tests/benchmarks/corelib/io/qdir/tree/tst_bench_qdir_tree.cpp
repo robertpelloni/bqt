@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 #include <QDirIterator>
 #include <QFile>
@@ -35,7 +35,7 @@ private:
     qint64 musicsize;
     qint64 photosize;
     qint64 sourcesize;
-    FileSystem fs; // Uses QTemporaryDir to tidy away file tree created.
+    FileSystem fs; // Uses BOBUIemporaryDir to tidy away file tree created.
 
 private slots:
     void initTestCase()
@@ -111,12 +111,12 @@ private slots:
 
     void fileSearch_data() const
     {
-        QTest::addColumn<QStringList>("nameFilters");
-        QTest::addColumn<int>("filter");
-        QTest::addColumn<int>("entryCount");
+        BOBUIest::addColumn<QStringList>("nameFilters");
+        BOBUIest::addColumn<int>("filter");
+        BOBUIest::addColumn<int>("entryCount");
 
-        QTest::newRow("*.cpp") << QStringList("*.cpp") << int(QDir::Files) << 3791;
-        QTest::newRow("executables")
+        BOBUIest::newRow("*.cpp") << QStringList("*.cpp") << int(QDir::Files) << 3791;
+        BOBUIest::newRow("executables")
             << QStringList("*")
             << int(QDir::Executable | QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot)
             << 536;
@@ -170,11 +170,11 @@ private slots:
 
     void thousandFiles_data() const
     {
-        QTest::addColumn<QString>("dirName");
-        QTest::addColumn<qint64>("expectedSize");
-        QTest::newRow("music") << musicprefix << musicsize;
-        QTest::newRow("photos") << photoprefix << photosize;
-        QTest::newRow("src") << sourceprefix << sourcesize;
+        BOBUIest::addColumn<QString>("dirName");
+        BOBUIest::addColumn<qint64>("expectedSize");
+        BOBUIest::newRow("music") << musicprefix << musicsize;
+        BOBUIest::newRow("photos") << photoprefix << photosize;
+        BOBUIest::newRow("src") << sourceprefix << sourcesize;
     }
 
     void thousandFiles() const
@@ -196,6 +196,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(tst_QDir_tree)
+BOBUIEST_MAIN(tst_QDir_tree)
 
 #include "tst_bench_qdir_tree.moc"

@@ -1,14 +1,14 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qlatin1stringmatcher.h"
 #include <limits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*! \class QLatin1StringMatcher
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief Optimized search for substring in Latin-1 text.
 
     A QLatin1StringMatcher can search for one QLatin1StringView
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 */
 QLatin1StringMatcher::QLatin1StringMatcher() noexcept
     : m_pattern(),
-      m_cs(Qt::CaseSensitive),
+      m_cs(BobUI::CaseSensitive),
       m_caseSensitiveSearcher(m_pattern.data(), m_pattern.data())
 {
 }
@@ -57,7 +57,7 @@ QLatin1StringMatcher::QLatin1StringMatcher() noexcept
     to find the \a pattern in the given QLatin1StringView.
 */
 QLatin1StringMatcher::QLatin1StringMatcher(QLatin1StringView pattern,
-                                           Qt::CaseSensitivity cs) noexcept
+                                           BobUI::CaseSensitivity cs) noexcept
     : m_pattern(pattern), m_cs(cs)
 {
     setSearcher();
@@ -76,10 +76,10 @@ QLatin1StringMatcher::~QLatin1StringMatcher() noexcept
 */
 void QLatin1StringMatcher::setSearcher() noexcept
 {
-    if (m_cs == Qt::CaseSensitive) {
+    if (m_cs == BobUI::CaseSensitive) {
         new (&m_caseSensitiveSearcher) CaseSensitiveSearcher(m_pattern.data(), m_pattern.end());
     } else {
-        QtPrivate::QCaseInsensitiveLatin1Hash foldCase;
+        BobUIPrivate::QCaseInsensitiveLatin1Hash foldCase;
         qsizetype bufferSize = std::min(m_pattern.size(), qsizetype(sizeof m_foldBuffer));
         for (qsizetype i = 0; i < bufferSize; ++i)
             m_foldBuffer[i] = static_cast<char>(foldCase(m_pattern[i].toLatin1()));
@@ -94,7 +94,7 @@ void QLatin1StringMatcher::setSearcher() noexcept
 */
 void QLatin1StringMatcher::freeSearcher() noexcept
 {
-    if (m_cs == Qt::CaseSensitive)
+    if (m_cs == BobUI::CaseSensitive)
         m_caseSensitiveSearcher.~CaseSensitiveSearcher();
     else
         m_caseInsensitiveSearcher.~CaseInsensitiveSearcher();
@@ -133,7 +133,7 @@ QLatin1StringView QLatin1StringMatcher::pattern() const noexcept
 
     \sa caseSensitivity(), indexIn()
 */
-void QLatin1StringMatcher::setCaseSensitivity(Qt::CaseSensitivity cs) noexcept
+void QLatin1StringMatcher::setCaseSensitivity(BobUI::CaseSensitivity cs) noexcept
 {
     if (m_cs == cs)
         return;
@@ -148,7 +148,7 @@ void QLatin1StringMatcher::setCaseSensitivity(Qt::CaseSensitivity cs) noexcept
 
     \sa setCaseSensitivity(), indexIn()
 */
-Qt::CaseSensitivity QLatin1StringMatcher::caseSensitivity() const noexcept
+BobUI::CaseSensitivity QLatin1StringMatcher::caseSensitivity() const noexcept
 {
     return m_cs;
 }
@@ -184,7 +184,7 @@ qsizetype QLatin1StringMatcher::indexIn(QStringView haystack, qsizetype from) co
 template <typename String>
 qsizetype QLatin1StringMatcher::indexIn_helper(String haystack, qsizetype from) const noexcept
 {
-    static_assert(QtPrivate::isLatin1OrUtf16View<String>);
+    static_assert(BobUIPrivate::isLatin1OrUtf16View<String>);
 
     if (m_pattern.isEmpty() && from == haystack.size())
         return from;
@@ -203,7 +203,7 @@ qsizetype QLatin1StringMatcher::indexIn_helper(String haystack, qsizetype from) 
     auto begin = start + from;
     auto end = start + haystack.size();
     auto found = begin;
-    if (m_cs == Qt::CaseSensitive) {
+    if (m_cs == BobUI::CaseSensitive) {
         found = m_caseSensitiveSearcher(begin, end, m_pattern.begin(), m_pattern.end()).begin;
         if (found == end)
             return -1;
@@ -223,7 +223,7 @@ qsizetype QLatin1StringMatcher::indexIn_helper(String haystack, qsizetype from) 
             restHaystack = haystack.sliced(
                     qMin(haystack.size(),
                          bufferSize + qsizetype(std::distance(start, found))));
-            if (restHaystack.startsWith(restNeedle, Qt::CaseInsensitive))
+            if (restHaystack.startsWith(restNeedle, BobUI::CaseInsensitive))
                 break;
             ++found;
         } while (true);
@@ -231,4 +231,4 @@ qsizetype QLatin1StringMatcher::indexIn_helper(String haystack, qsizetype from) 
     return std::distance(start, found);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

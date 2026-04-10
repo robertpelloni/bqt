@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QCheckBox>
 #include <QMouseEvent>
@@ -13,7 +13,7 @@ public:
 //! [0]
 void MyCheckBox::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == BobUI::LeftButton) {
         // handle left mouse button here
     } else {
         // pass on other buttons to base class
@@ -41,7 +41,7 @@ bool MyWidget::event(QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
-        if (ke->key() == Qt::Key_Tab) {
+        if (ke->key() == BobUI::Key_Tab) {
             // special tab handling here
             return true;
         }

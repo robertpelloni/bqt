@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcocoaclipboard.h"
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qutimimeconverter.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qutimimeconverter.h>
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QCocoaClipboard::QCocoaClipboard()
     :m_clipboard(new QMacPasteboard(kPasteboardClipboard, QUtiMimeConverter::HandlerScopeFlag::Clipboard))
@@ -61,9 +61,9 @@ QMacPasteboard *QCocoaClipboard::pasteboardForMode(QClipboard::Mode mode) const
         return nullptr;
 }
 
-void QCocoaClipboard::handleApplicationStateChanged(Qt::ApplicationState state)
+void QCocoaClipboard::handleApplicationStateChanged(BobUI::ApplicationState state)
 {
-    if (state != Qt::ApplicationActive)
+    if (state != BobUI::ApplicationActive)
         return;
 
     if (m_clipboard->sync())
@@ -72,8 +72,8 @@ void QCocoaClipboard::handleApplicationStateChanged(Qt::ApplicationState state)
         emitChanged(QClipboard::FindBuffer);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcocoaclipboard.cpp"
 
-#endif // QT_NO_CLIPBOARD
+#endif // BOBUI_NO_CLIPBOARD

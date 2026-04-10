@@ -1,0 +1,144 @@
+# Copyright (C) 2024 The BobUI Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+# Propagate common variables via BuildInternals package.
+set(BOBUI_BUILD_SHARED_LIBS @BUILD_SHARED_LIBS@)
+option(BUILD_SHARED_LIBS "Build BobUI statically or dynamically" @BUILD_SHARED_LIBS@)
+set(BOBUI_CMAKE_EXPORT_NAMESPACE @BOBUI_CMAKE_EXPORT_NAMESPACE@)
+set(INSTALL_CMAKE_NAMESPACE @INSTALL_CMAKE_NAMESPACE@)
+set(BOBUI_BUILD_INTERNALS_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+# The relocatable install prefix is meant to be used to find things like host binaries (syncbobui),
+# when the CMAKE_INSTALL_PREFIX is overridden to point to a different path (like when building a
+# a BobUI repo using Conan, which will set a random install prefix instead of installing into the
+# original BobUI install prefix).
+get_filename_component(BOBUI_BUILD_INTERNALS_RELOCATABLE_INSTALL_PREFIX
+                       ${CMAKE_CURRENT_LIST_DIR}/../@bobui_path_from_cmake_config_dir_to_prefix@
+                       ABSOLUTE)
+
+# Stores in out_var the new install/staging prefix for this build.
+#
+# new_prefix: the new prefix for this repository
+# orig_prefix: the prefix that was used when bobuibase was configured
+#
+# On Windows hosts: if the original prefix does not start with a drive letter, this function removes
+# the drive letter from the new prefix. This is needed for installation with DESTDIR set.
+function(bobui_internal_new_prefix out_var new_prefix orig_prefix)
+    if(CMAKE_HOST_WIN32)
+        set(drive_letter_regexp "^[a-zA-Z]:")
+        if(new_prefix MATCHES "${drive_letter_regexp}"
+            AND NOT orig_prefix MATCHES "${drive_letter_regexp}")
+            string(SUBSTRING "${new_prefix}" 2 -1 new_prefix)
+        endif()
+    endif()
+    set(${out_var} "${new_prefix}" PARENT_SCOPE)
+endfunction()
+
+# If no explicit CMAKE_INSTALL_PREFIX is provided, force set the original BobUI installation prefix,
+# so that further modules / repositories are  installed into same original location.
+# This means by default when configuring bobuisvg / bobuideclarative, they will be installed the regular
+# BobUI installation prefix.
+# If an explicit installation prefix is specified,  honor it.
+# This is an attempt to support Conan, aka handle installation of modules into a
+# different installation prefix than the original one. Also allow to opt out via a special variable.
+# In a top-level build, BobUISetup.cmake takes care of setting CMAKE_INSTALL_PREFIX.
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND
+        NOT BOBUI_BUILD_INTERNALS_NO_FORCE_SET_INSTALL_PREFIX
+        AND NOT BOBUI_SUPERBUILD)
+    set(bobuibi_orig_prefix "@CMAKE_INSTALL_PREFIX@")
+    set(bobuibi_orig_staging_prefix "@CMAKE_STAGING_PREFIX@")
+    bobui_internal_new_prefix(bobuibi_new_prefix
+        "${BOBUI_BUILD_INTERNALS_RELOCATABLE_INSTALL_PREFIX}"
+        "${bobuibi_orig_prefix}")
+    if(NOT bobuibi_orig_staging_prefix STREQUAL ""
+            AND "${CMAKE_STAGING_PREFIX}" STREQUAL ""
+            AND NOT BOBUI_BUILD_INTERNALS_NO_FORCE_SET_STAGING_PREFIX)
+        bobui_internal_new_prefix(bobuibi_new_staging_prefix
+            "${bobuibi_new_prefix}"
+            "${bobuibi_orig_staging_prefix}")
+        set(CMAKE_STAGING_PREFIX "${bobuibi_new_staging_prefix}" CACHE PATH
+            "Staging path prefix, prepended onto install directories on the host machine." FORCE)
+        set(bobuibi_new_prefix "${bobuibi_orig_prefix}")
+    endif()
+    set(CMAKE_INSTALL_PREFIX "${bobuibi_new_prefix}" CACHE PATH
+        "Install path prefix, prepended onto install directories." FORCE)
+    unset(bobuibi_orig_prefix)
+    unset(bobuibi_new_prefix)
+    unset(bobuibi_orig_staging_prefix)
+    unset(bobuibi_new_staging_prefix)
+endif()
+
+# Propagate developer builds to other modules via BuildInternals package.
+if(@FEATURE_developer_build@)
+    set(FEATURE_developer_build ON CACHE BOOL "Developer build." FORCE)
+endif()
+
+# Propagate CI files installation
+set(BOBUI_INSTALL_CI_FILES @BOBUI_INSTALL_CI_FILES@ CACHE BOOL
+    "Install CI files for internal use only" FORCE)
+
+# Propagate non-prefix builds.
+set(BOBUI_WILL_INSTALL @BOBUI_WILL_INSTALL@ CACHE BOOL
+    "Boolean indicating if doing a BobUI prefix build (vs non-prefix build)." FORCE)
+
+set(BOBUI_SOURCE_TREE "@BOBUI_SOURCE_TREE@" CACHE PATH
+"A path to the source tree of the previously configured BobUIBase project." FORCE)
+
+# Propagate decision of building tests and examples to other repositories.
+set(BOBUI_BUILD_TESTS @BOBUI_BUILD_TESTS@ CACHE BOOL "Build the testing tree.")
+set(BOBUI_BUILD_EXAMPLES @BOBUI_BUILD_EXAMPLES@ CACHE BOOL "Build BobUI examples")
+set(BOBUI_BUILD_BENCHMARKS @BOBUI_BUILD_BENCHMARKS@ CACHE BOOL "Build BobUI Benchmarks")
+set(BOBUI_BUILD_MANUAL_TESTS @BOBUI_BUILD_MANUAL_TESTS@ CACHE BOOL "Build BobUI manual tests")
+set(BOBUI_BUILD_MINIMAL_STATIC_TESTS @BOBUI_BUILD_MINIMAL_STATIC_TESTS@ CACHE BOOL
+    "Build minimal subset of tests for static BobUI builds")
+set(BOBUI_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS @BOBUI_BUILD_MINIMAL_ANDROID_MULTI_ABI_TESTS@ CACHE BOOL
+    "Build minimal subset of tests for Android multi-ABI BobUI builds")
+set(BOBUI_BUILD_DOC_SNIPPETS @BOBUI_BUILD_SNIPPETS@ CACHE BOOL "Build BobUI documentation snippets")
+
+set(BOBUI_BUILD_TESTS_BATCHED @BOBUI_BUILD_TESTS_BATCHED@ CACHE BOOL
+    "Should all tests be batched into a single binary.")
+
+set(BOBUI_BUILD_TESTS_BY_DEFAULT @BOBUI_BUILD_TESTS_BY_DEFAULT@ CACHE BOOL
+    "Should tests be built as part of the default 'all' target.")
+set(BOBUI_BUILD_EXAMPLES_BY_DEFAULT @BOBUI_BUILD_EXAMPLES_BY_DEFAULT@ CACHE BOOL
+    "Should examples be built as part of the default 'all' target.")
+set(BOBUI_BUILD_TOOLS_BY_DEFAULT @BOBUI_BUILD_TOOLS_BY_DEFAULT@ CACHE BOOL
+    "Should tools be built as part of the default 'all' target.")
+
+set(BOBUI_BUILD_EXAMPLES_AS_EXTERNAL "@BOBUI_BUILD_EXAMPLES_AS_EXTERNAL@" CACHE BOOL
+    "Should examples be built as ExternalProjects.")
+
+# Propagate usage of ccache.
+set(BOBUI_USE_CCACHE @BOBUI_USE_CCACHE@ CACHE BOOL "Enable the use of ccache")
+
+# Propagate usage of vcpkg, ON by default.
+set(BOBUI_USE_VCPKG @BOBUI_USE_VCPKG@ CACHE BOOL "Enable the use of vcpkg")
+
+# Propagate usage of unity build.
+set(BOBUI_UNITY_BUILD @BOBUI_UNITY_BUILD@ CACHE BOOL "Enable unity (jumbo) build")
+set(BOBUI_UNITY_BUILD_BATCH_SIZE "@BOBUI_UNITY_BUILD_BATCH_SIZE@" CACHE STRING "Unity build batch size")
+
+# Propragate the value of WARNINGS_ARE_ERRORS.
+set(WARNINGS_ARE_ERRORS "@WARNINGS_ARE_ERRORS@" CACHE BOOL "Build BobUI with warnings as errors")
+
+# Propagate usage of versioned hard link.
+set(BOBUI_CREATE_VERSIONED_HARD_LINK "@BOBUI_CREATE_VERSIONED_HARD_LINK@" CACHE BOOL
+    "Enable the use of versioned hard link")
+
+# The minimum version required to build BobUI.
+set(BOBUI_SUPPORTED_MIN_CMAKE_VERSION_FOR_BUILDING_BOBUI "@supported_min_version_for_building_bobui@")
+set(BOBUI_COMPUTED_MIN_CMAKE_VERSION_FOR_BUILDING_BOBUI "@computed_min_version_for_building_bobui@")
+
+# The lower and upper CMake version policy range as computed by bobuibase.
+# These values are inherited when building other BobUI repositories, unless overridden
+# in the respective repository .cmake.conf file.
+# These are not cache variables, so that they can be overridden in each repo directory scope.
+if(NOT DEFINED BOBUI_MIN_NEW_POLICY_CMAKE_VERSION)
+    set(BOBUI_MIN_NEW_POLICY_CMAKE_VERSION "@min_new_policy_version@")
+endif()
+if(NOT DEFINED BOBUI_MAX_NEW_POLICY_CMAKE_VERSION)
+    set(BOBUI_MAX_NEW_POLICY_CMAKE_VERSION "@max_new_policy_version@")
+endif()
+
+# Extra set of exported variables
+@BOBUI_EXTRA_BUILD_INTERNALS_VARS@

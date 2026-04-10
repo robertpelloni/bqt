@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mainwindow.h"
 #include "dommodel.h"
 
 #include <QDomDocument>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QMenuBar>
 #include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       model(new DomModel(QDomDocument(), this)),
-      view(new QTreeView(this))
+      view(new BOBUIreeView(this))
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(tr("&Open..."), QKeySequence::Open, this, &MainWindow::openFile);

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qplatforminputcontextplugin_p.h>
@@ -10,18 +10,18 @@
 #include "qdebug.h"
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, icLoader,
-    (QPlatformInputContextFactoryInterface_iid, "/platforminputcontexts"_L1, Qt::CaseInsensitive))
+    (QPlatformInputContextFactoryInterface_iid, "/platforminputcontexts"_L1, BobUI::CaseInsensitive))
 #endif
 
 QStringList QPlatformInputContextFactory::keys()
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     return icLoader()->keyMap().values();
 #else
     return QStringList();
@@ -31,15 +31,15 @@ QStringList QPlatformInputContextFactory::keys()
 QStringList QPlatformInputContextFactory::requested()
 {
     QStringList imList;
-    QByteArray env = qgetenv("QT_IM_MODULES");
+    QByteArray env = qgetenv("BOBUI_IM_MODULES");
 
     if (!env.isEmpty())
-        imList = QString::fromLocal8Bit(env).split(QChar::fromLatin1(';'), Qt::SkipEmptyParts);
+        imList = QString::fromLocal8Bit(env).split(QChar::fromLatin1(';'), BobUI::SkipEmptyParts);
 
     if (!imList.isEmpty())
         return imList;
 
-    env = qgetenv("QT_IM_MODULE");
+    env = qgetenv("BOBUI_IM_MODULE");
     if (!env.isEmpty())
         imList = {QString::fromLocal8Bit(env)};
 
@@ -59,7 +59,7 @@ QPlatformInputContext *QPlatformInputContextFactory::create(const QStringList& k
 
 QPlatformInputContext *QPlatformInputContextFactory::create(const QString& key)
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (!key.isEmpty()) {
         QStringList paramList = key.split(u':');
         const QString platform = paramList.takeFirst().toLower();
@@ -82,5 +82,5 @@ QPlatformInputContext *QPlatformInputContextFactory::create()
     return create(requested());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

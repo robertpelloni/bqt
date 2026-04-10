@@ -1,7 +1,7 @@
 # OmniUI Vision: The Universal Interface Standard
 
 ## The Ultimate Goal
-OmniUI is designed to be the definitive successor to both Electron and traditional C++ GUI frameworks. It combines the raw performance and stability of **Qt 6**, the multimedia prowess of **JUCE**, and the developer experience of modern web frameworks (TypeScript/QML).
+OmniUI is designed to be the definitive successor to both Electron and traditional C++ GUI frameworks. It combines the raw performance and stability of **BobUI 6**, the multimedia prowess of **JUCE**, and the developer experience of modern web frameworks (TypeScript/QML).
 
 ## Core Pillars
 1.  **Unified Runtime**: Write once in TypeScript/QML, deploy natively to Desktop, Mobile, and WebAssembly with zero code changes.

@@ -1,24 +1,24 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qandroidextras_p.h"
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qdatastream.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qtimer.h>
-#include <QtCore/qset.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qmutex.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUICore/qset.h>
 
-#if QT_CONFIG(permissions)
-#include <QtCore/qpromise.h>
+#if BOBUI_CONFIG(permissions)
+#include <BobUICore/qpromise.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
-using namespace QtJniTypes;
+using namespace BobUI::StringLiterals;
+using namespace BobUIJniTypes;
 
 class QAndroidParcelPrivate
 {
@@ -89,7 +89,7 @@ QByteArray QAndroidParcelPrivate::readData() const
     auto array = handle.callObjectMethod("createByteArray", "()[B");
     QJniEnvironment env;
     auto sz = env->GetArrayLength(jbyteArray(array.object()));
-    QByteArray res(sz, Qt::Initialization::Uninitialized);
+    QByteArray res(sz, BobUI::Initialization::Uninitialized);
     env->GetByteArrayRegion(jbyteArray(array.object()), 0, sz,
                             reinterpret_cast<jbyte *>(res.data()));
     return res;
@@ -114,9 +114,9 @@ QAndroidBinder QAndroidParcelPrivate::readBinder() const
 
 /*!
     \class QAndroidParcel
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \brief Wraps the most important methods of Android Parcel class.
 
     The QAndroidParcel is a convenience class that wraps the most important
@@ -231,9 +231,9 @@ QJniObject QAndroidParcel::handle() const
 
 /*!
     \class QAndroidBinder
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \brief Wraps the most important methods of Android Binder class.
 
     The QAndroidBinder is a convenience class that wraps the most important
@@ -260,18 +260,18 @@ class QAndroidBinderPrivate
 {
 public:
     explicit QAndroidBinderPrivate(QAndroidBinder *binder)
-        : handle("org/qtproject/qt/android/extras/QtAndroidBinder", "(J)V", jlong(binder))
-        , m_isQtAndroidBinder(true)
+        : handle("org/bobuiproject/bobui/android/extras/BobUIAndroidBinder", "(J)V", jlong(binder))
+        , m_isBobUIAndroidBinder(true)
     {
         QJniEnvironment().checkAndClearExceptions();
     }
 
     explicit QAndroidBinderPrivate(const QJniObject &binder)
-        : handle(binder), m_isQtAndroidBinder(false) {};
+        : handle(binder), m_isBobUIAndroidBinder(false) {};
     void setDeleteListener(const std::function<void()> &func) { m_deleteListener = func; }
     ~QAndroidBinderPrivate()
     {
-        if (m_isQtAndroidBinder) {
+        if (m_isBobUIAndroidBinder) {
             QJniEnvironment().checkAndClearExceptions();
             handle.callMethod<void>("setId", "(J)V", jlong(0));
             if (m_deleteListener)
@@ -282,7 +282,7 @@ public:
 private:
     QJniObject handle;
     std::function<void()> m_deleteListener;
-    bool m_isQtAndroidBinder;
+    bool m_isBobUIAndroidBinder;
     friend class QAndroidBinder;
 };
 
@@ -369,16 +369,16 @@ QJniObject QAndroidBinder::handle() const
 
 /*!
     \class QAndroidServiceConnection
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \brief Wraps the most important methods of Android ServiceConnection class.
 
     The QAndroidServiceConnection is a convenience abstract class which wraps the
     \l {https://developer.android.com/reference/android/content/ServiceConnection.html}{AndroidServiceConnection}
     interface.
 
-    It is useful when you perform a QtAndroidPrivate::bindService operation.
+    It is useful when you perform a BobUIAndroidPrivate::bindService operation.
 
     \since 6.2
 */
@@ -387,7 +387,7 @@ QJniObject QAndroidBinder::handle() const
     Creates a new object
  */
 QAndroidServiceConnection::QAndroidServiceConnection()
-    : m_handle("org/qtproject/qt/android/extras/QtAndroidServiceConnection", "(J)V", jlong(this))
+    : m_handle("org/bobuiproject/bobui/android/extras/BobUIAndroidServiceConnection", "(J)V", jlong(this))
 {
 }
 
@@ -447,17 +447,17 @@ Q_CONSTINIT static QBasicAtomicInteger<uint> nextUniqueActivityRequestCode = Q_B
 // Get a unique activity request code.
 static int uniqueActivityRequestCode()
 {
-    constexpr uint ReservedForQtOffset = 0x1000; // Reserve all request codes under 0x1000 for Qt
+    constexpr uint ReservedForBobUIOffset = 0x1000; // Reserve all request codes under 0x1000 for BobUI
 
     const uint requestCodeBase = nextUniqueActivityRequestCode.fetchAndAddRelaxed(1);
-    if (requestCodeBase == uint(INT_MAX) - ReservedForQtOffset)
+    if (requestCodeBase == uint(INT_MAX) - ReservedForBobUIOffset)
         qWarning("Unique activity request code has wrapped. Unexpected behavior may occur.");
 
-    const int requestCode = static_cast<int>(requestCodeBase + ReservedForQtOffset);
+    const int requestCode = static_cast<int>(requestCodeBase + ReservedForBobUIOffset);
     return requestCode;
 }
 
-class QAndroidActivityResultReceiverPrivate: public QtAndroidPrivate::ActivityResultListener
+class QAndroidActivityResultReceiverPrivate: public BobUIAndroidPrivate::ActivityResultListener
 {
 public:
     QAndroidActivityResultReceiver *q;
@@ -496,14 +496,14 @@ public:
 
 /*!
   \class QAndroidActivityResultReceiver
-  \inheaderfile QtCore/private/qandroidextras_p.h
+  \inheaderfile BobUICore/private/qandroidextras_p.h
   \preliminary
-  \inmodule QtCorePrivate
+  \inmodule BobUICorePrivate
   \since 6.2
   \brief Interface used for callbacks from onActivityResult() in the main Android activity.
 
   Create a subclass of this class to be notified of the results when using the
-  \c QtAndroidPrivate::startActivity() and \c QtAndroidPrivate::startIntentSender() APIs.
+  \c BobUIAndroidPrivate::startActivity() and \c BobUIAndroidPrivate::startIntentSender() APIs.
 
  */
 
@@ -514,7 +514,7 @@ QAndroidActivityResultReceiver::QAndroidActivityResultReceiver()
     : d(new QAndroidActivityResultReceiverPrivate)
 {
     d->q = this;
-    QtAndroidPrivate::registerActivityResultListener(d.get());
+    BobUIAndroidPrivate::registerActivityResultListener(d.get());
 }
 
 /*!
@@ -522,14 +522,14 @@ QAndroidActivityResultReceiver::QAndroidActivityResultReceiver()
 */
 QAndroidActivityResultReceiver::~QAndroidActivityResultReceiver()
 {
-    QtAndroidPrivate::unregisterActivityResultListener(d.get());
+    BobUIAndroidPrivate::unregisterActivityResultListener(d.get());
 }
 
 /*!
    \fn void QAndroidActivityResultReceiver::handleActivityResult(int receiverRequestCode, int resultCode, const QJniObject &data)
 
     Reimplement this function to get activity results after starting an activity using
-    either QtAndroidPrivate::startActivity() or QtAndroidPrivate::startIntentSender().
+    either BobUIAndroidPrivate::startActivity() or BobUIAndroidPrivate::startIntentSender().
     The \a receiverRequestCode is the request code unique to this receiver which was
     originally passed to the startActivity() or startIntentSender() functions. The
     \a resultCode is the result returned by the activity, and \a data is either null
@@ -539,7 +539,7 @@ QAndroidActivityResultReceiver::~QAndroidActivityResultReceiver()
 
 
 
-class QAndroidServicePrivate : public QObject, public QtAndroidPrivate::OnBindListener
+class QAndroidServicePrivate : public QObject, public BobUIAndroidPrivate::OnBindListener
 {
 public:
     QAndroidServicePrivate(QAndroidService *service,
@@ -547,7 +547,7 @@ public:
         : m_service(service)
         , m_binder(binder)
     {
-        QTimer::singleShot(0,this, [this]{ QtAndroidPrivate::setOnBindListener(this);});
+        BOBUIimer::singleShot(0,this, [this]{ BobUIAndroidPrivate::setOnBindListener(this);});
     }
 
     ~QAndroidServicePrivate()
@@ -593,9 +593,9 @@ public:
 
 /*!
     \class QAndroidService
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \brief Wraps the most important methods of Android Service class.
 
     The QAndroidService is a convenience class that wraps the most important
@@ -616,7 +616,7 @@ public:
     \sa QCoreApplication
  */
 QAndroidService::QAndroidService(int &argc, char **argv, int flags)
-    : QCoreApplication (argc, argv, QtAndroidPrivate::acuqireServiceSetup(flags))
+    : QCoreApplication (argc, argv, BobUIAndroidPrivate::acuqireServiceSetup(flags))
     , d(new QAndroidServicePrivate{this})
 {
 }
@@ -635,7 +635,7 @@ QAndroidService::QAndroidService(int &argc, char **argv, int flags)
 QAndroidService::QAndroidService(int &argc, char **argv,
                                  const std::function<QAndroidBinder*(const QAndroidIntent&)> &binder,
                                  int flags)
-    : QCoreApplication (argc, argv, QtAndroidPrivate::acuqireServiceSetup(flags))
+    : QCoreApplication (argc, argv, BobUIAndroidPrivate::acuqireServiceSetup(flags))
     , d(new QAndroidServicePrivate{this, binder})
 {
 }
@@ -689,7 +689,7 @@ static void onServiceDisconnected(JNIEnv */*env*/, jclass /*cls*/, jlong id, jst
             QJniObject(name).toString());
 }
 
-bool QtAndroidPrivate::registerExtrasNatives(QJniEnvironment &env)
+bool BobUIAndroidPrivate::registerExtrasNatives(QJniEnvironment &env)
 {
     static const JNINativeMethod methods[] = {
         {"onTransact", "(JILandroid/os/Parcel;Landroid/os/Parcel;I)Z", (void *)onTransact},
@@ -697,14 +697,14 @@ bool QtAndroidPrivate::registerExtrasNatives(QJniEnvironment &env)
         {"onServiceDisconnected", "(JLjava/lang/String;)V", (void *)onServiceDisconnected}
     };
 
-    return env.registerNativeMethods("org/qtproject/qt/android/extras/QtNative", methods, 3);
+    return env.registerNativeMethods("org/bobuiproject/bobui/android/extras/BobUINative", methods, 3);
 }
 
 /*!
     \class QAndroidIntent
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \brief Wraps the most important methods of Android Intent class.
 
     The QAndroidIntent is a convenience class that wraps the most important
@@ -748,10 +748,10 @@ QAndroidIntent::QAndroidIntent(const QString &action)
     Creates a new intent and sets the provided \a packageContext and the service \a className.
     Example:
     \code
-        auto serviceIntent = QAndroidIntent(QtAndroidPrivate::androidActivity().object(), "com.example.MyService");
+        auto serviceIntent = QAndroidIntent(BobUIAndroidPrivate::androidActivity().object(), "com.example.MyService");
     \endcode
 
-    \sa QtAndroidPrivate::bindService
+    \sa BobUIAndroidPrivate::bindService
  */
 QAndroidIntent::QAndroidIntent(const QJniObject &packageContext, const char *className)
     : m_handle("android/content/Intent", "(Landroid/content/Context;Ljava/lang/Class;)V",
@@ -765,7 +765,7 @@ QAndroidIntent::QAndroidIntent(const QJniObject &packageContext, const char *cla
  */
 void QAndroidIntent::putExtra(const QString &key, const QByteArray &data)
 {
-    m_handle.callMethod<QtJniTypes::Intent>("putExtra", key, data);
+    m_handle.callMethod<BobUIJniTypes::Intent>("putExtra", key, data);
 }
 
 /*!
@@ -809,20 +809,20 @@ QJniObject QAndroidIntent::handle() const
 
 
 /*!
-    \namespace QtAndroidPrivate
+    \namespace BobUIAndroidPrivate
     \preliminary
-    \inmodule QtCorePrivate
+    \inmodule BobUICorePrivate
     \since 6.2
-    \brief The QtAndroidPrivate namespace provides miscellaneous functions
+    \brief The BobUIAndroidPrivate namespace provides miscellaneous functions
            to aid Android development.
-    \inheaderfile QtCore/private/qandroidextras_p.h
+    \inheaderfile BobUICore/private/qandroidextras_p.h
 */
 
 /*!
     \since 6.2
-    \enum QtAndroidPrivate::BindFlag
+    \enum BobUIAndroidPrivate::BindFlag
 
-    This enum is used with QtAndroidPrivate::bindService to describe the mode in which the
+    This enum is used with BobUIAndroidPrivate::bindService to describe the mode in which the
     binding is performed.
 
     \value None                 No options.
@@ -870,11 +870,11 @@ QJniObject QAndroidIntent::handle() const
   one intent.
 
  */
-void QtAndroidPrivate::startActivity(const QJniObject &intent,
+void BobUIAndroidPrivate::startActivity(const QJniObject &intent,
                               int receiverRequestCode,
                               QAndroidActivityResultReceiver *resultReceiver)
 {
-    QJniObject activity = QtAndroidPrivate::activity();
+    QJniObject activity = BobUIAndroidPrivate::activity();
     if (resultReceiver != 0) {
         QAndroidActivityResultReceiverPrivate *resultReceiverD =
                 QAndroidActivityResultReceiverPrivate::get(resultReceiver);
@@ -904,7 +904,7 @@ void QtAndroidPrivate::startActivity(const QJniObject &intent,
   one intent.
 
  */
-void QtAndroidPrivate::startActivity(const QAndroidIntent &intent,
+void BobUIAndroidPrivate::startActivity(const QAndroidIntent &intent,
                               int receiverRequestCode,
                               QAndroidActivityResultReceiver *resultReceiver)
 {
@@ -917,11 +917,11 @@ void QtAndroidPrivate::startActivity(const QAndroidIntent &intent,
   Starts the activity given by \a intent, using the request code \a receiverRequestCode,
   and provides the result by calling \a callbackFunc.
 */
-void QtAndroidPrivate::startActivity(const QJniObject &intent,
+void BobUIAndroidPrivate::startActivity(const QJniObject &intent,
                               int receiverRequestCode,
                               std::function<void(int, int, const QJniObject &data)> callbackFunc)
 {
-    QJniObject activity = QtAndroidPrivate::activity();
+    QJniObject activity = BobUIAndroidPrivate::activity();
     QAndroidActivityCallbackResultReceiver::instance()->registerCallback(receiverRequestCode,
                                                                          callbackFunc);
     startActivity(intent, receiverRequestCode, QAndroidActivityCallbackResultReceiver::instance());
@@ -942,11 +942,11 @@ void QtAndroidPrivate::startActivity(const QJniObject &intent,
   one intent.
 
 */
-void QtAndroidPrivate::startIntentSender(const QJniObject &intentSender,
+void BobUIAndroidPrivate::startIntentSender(const QJniObject &intentSender,
                                   int receiverRequestCode,
                                   QAndroidActivityResultReceiver *resultReceiver)
 {
-    QJniObject activity = QtAndroidPrivate::activity();
+    QJniObject activity = BobUIAndroidPrivate::activity();
     if (resultReceiver != 0) {
         QAndroidActivityResultReceiverPrivate *resultReceiverD =
                 QAndroidActivityResultReceiverPrivate::get(resultReceiver);
@@ -973,7 +973,7 @@ void QtAndroidPrivate::startIntentSender(const QJniObject &intentSender,
 
 /*!
     \since 6.2
-    \fn bool QtAndroidPrivate::bindService(const QAndroidIntent &serviceIntent, const QAndroidServiceConnection &serviceConnection, BindFlags flags = BindFlag::None)
+    \fn bool BobUIAndroidPrivate::bindService(const QAndroidIntent &serviceIntent, const QAndroidServiceConnection &serviceConnection, BindFlags flags = BindFlag::None)
 
     Binds the service given by \a serviceIntent, \a serviceConnection and \a flags.
     The \a serviceIntent object identifies the service to connect to.
@@ -987,11 +987,11 @@ void QtAndroidPrivate::startIntentSender(const QJniObject &intentSender,
 
     \sa QAndroidIntent, QAndroidServiceConnection, BindFlag
 */
-bool QtAndroidPrivate::bindService(const QAndroidIntent &serviceIntent,
+bool BobUIAndroidPrivate::bindService(const QAndroidIntent &serviceIntent,
                             const QAndroidServiceConnection &serviceConnection, BindFlags flags)
 {
     QJniEnvironment().checkAndClearExceptions();
-    QJniObject contextObj = QtAndroidPrivate::context();
+    QJniObject contextObj = BobUIAndroidPrivate::context();
     return contextObj.callMethod<jboolean>(
                 "bindService",
                 "(Landroid/content/Intent;Landroid/content/ServiceConnection;I)Z",
@@ -1030,16 +1030,16 @@ void QAndroidActivityCallbackResultReceiver::registerCallback(
     callbackMap.insert(receiverRequestCode, callbackFunc);
 }
 
-#if QT_CONFIG(permissions)
+#if BOBUI_CONFIG(permissions)
 // Permissions API
 
-QtAndroidPrivate::PermissionResult resultFromAndroid(jint value)
+BobUIAndroidPrivate::PermissionResult resultFromAndroid(jint value)
 {
-    return value == 0 ? QtAndroidPrivate::Authorized : QtAndroidPrivate::Denied;
+    return value == 0 ? BobUIAndroidPrivate::Authorized : BobUIAndroidPrivate::Denied;
 }
 
 using PendingPermissionRequestsHash
-            = QHash<int, QSharedPointer<QPromise<QtAndroidPrivate::PermissionResult>>>;
+            = QHash<int, QSharedPointer<QPromise<BobUIAndroidPrivate::PermissionResult>>>;
 Q_GLOBAL_STATIC(PendingPermissionRequestsHash, g_pendingPermissionRequests);
 Q_CONSTINIT static QBasicMutex g_pendingPermissionRequestsMutex;
 
@@ -1054,7 +1054,7 @@ static int nextRequestCode()
 
     This function is called when the result of the permission request is available.
     Once a permission is requested, the result is broadcast by the OS and listened
-    to by QtActivity which passes it to C++ through a native JNI method call.
+    to by BobUIActivity which passes it to C++ through a native JNI method call.
  */
 static void sendRequestPermissionsResult(JNIEnv *env, jclass obj, jint requestCode,
                                          const QJniArray<int> &grantResults)
@@ -1074,40 +1074,40 @@ static void sendRequestPermissionsResult(JNIEnv *env, jclass obj, jint requestCo
     locker.unlock();
 
     request->addResults([grantResults](){
-        QList<QtAndroidPrivate::PermissionResult> results(grantResults.size(),
-                                                          Qt::Uninitialized);
+        QList<BobUIAndroidPrivate::PermissionResult> results(grantResults.size(),
+                                                          BobUI::Uninitialized);
         for (qsizetype i = 0; i < grantResults.size(); ++i)
             results[i] = resultFromAndroid(grantResults.at(i));
         return results;
     }());
 
-    QtAndroidPrivate::releaseAndroidDeadlockProtector();
+    BobUIAndroidPrivate::releaseAndroidDeadlockProtector();
     request->finish();
 }
 Q_DECLARE_JNI_NATIVE_METHOD(sendRequestPermissionsResult)
 
-QFuture<QtAndroidPrivate::PermissionResult>
+QFuture<BobUIAndroidPrivate::PermissionResult>
 requestPermissionsInternal(const QStringList &permissions)
 {
     // No mechanism to request permission for SDK version below 23, because
     // permissions defined in the manifest are granted at install time.
-    if (QtAndroidPrivate::androidSdkVersion() < 23) {
-        QList<QtAndroidPrivate::PermissionResult> result;
+    if (BobUIAndroidPrivate::androidSdkVersion() < 23) {
+        QList<BobUIAndroidPrivate::PermissionResult> result;
         result.reserve(permissions.size());
         // ### can we kick off all checkPermission()s, and whenAll() collect results?
         for (const QString &permission : permissions)
-            result.push_back(QtAndroidPrivate::checkPermission(permission).result());
-        return QtFuture::makeReadyRangeFuture(result);
+            result.push_back(BobUIAndroidPrivate::checkPermission(permission).result());
+        return BobUIFuture::makeReadyRangeFuture(result);
     }
 
-    QtAndroidPrivate::AndroidDeadlockProtector protector(
+    BobUIAndroidPrivate::AndroidDeadlockProtector protector(
         u"requestPermissionsInternal()"_s);
     if (!protector.acquire())
-        return QtFuture::makeReadyValueFuture(QtAndroidPrivate::Denied);
+        return BobUIFuture::makeReadyValueFuture(BobUIAndroidPrivate::Denied);
 
-    QSharedPointer<QPromise<QtAndroidPrivate::PermissionResult>> promise;
-    promise.reset(new QPromise<QtAndroidPrivate::PermissionResult>());
-    QFuture<QtAndroidPrivate::PermissionResult> future = promise->future();
+    QSharedPointer<QPromise<BobUIAndroidPrivate::PermissionResult>> promise;
+    promise.reset(new QPromise<BobUIAndroidPrivate::PermissionResult>());
+    QFuture<BobUIAndroidPrivate::PermissionResult> future = promise->future();
     promise->start();
 
     const int requestCode = nextRequestCode();
@@ -1124,14 +1124,14 @@ requestPermissionsInternal(const QStringList &permissions)
         for (auto &perm : permissions)
             env->SetObjectArrayElement(array, index++, QJniObject::fromString(perm).object());
 
-        QJniObject(QtAndroidPrivate::activity()).callMethod<void>("requestPermissions",
+        QJniObject(BobUIAndroidPrivate::activity()).callMethod<void>("requestPermissions",
                                                                   "([Ljava/lang/String;I)V",
                                                                   array,
                                                                   requestCode);
         env->DeleteLocalRef(array);
     });
 
-    QtAndroidPrivate::releaseAndroidDeadlockProtector();
+    BobUIAndroidPrivate::releaseAndroidDeadlockProtector();
 
     return future;
 }
@@ -1148,18 +1148,18 @@ requestPermissionsInternal(const QStringList &permissions)
     \since 6.2
     \sa checkPermission()
 */
-QFuture<QtAndroidPrivate::PermissionResult>
-QtAndroidPrivate::requestPermission(const QString &permission)
+QFuture<BobUIAndroidPrivate::PermissionResult>
+BobUIAndroidPrivate::requestPermission(const QString &permission)
 {
     return requestPermissions({permission});
 }
 
-QFuture<QtAndroidPrivate::PermissionResult>
-QtAndroidPrivate::requestPermissions(const QStringList &permissions)
+QFuture<BobUIAndroidPrivate::PermissionResult>
+BobUIAndroidPrivate::requestPermissions(const QStringList &permissions)
 {
     // avoid the uneccessary call and response to an empty permission string
     if (permissions.isEmpty())
-        return QtFuture::makeReadyValueFuture(QtAndroidPrivate::Denied);
+        return BobUIFuture::makeReadyValueFuture(BobUIAndroidPrivate::Denied);
     return requestPermissionsInternal(permissions);
 }
 
@@ -1175,29 +1175,29 @@ QtAndroidPrivate::requestPermissions(const QStringList &permissions)
     \since 6.2
     \sa requestPermission()
 */
-QFuture<QtAndroidPrivate::PermissionResult>
-QtAndroidPrivate::checkPermission(const QString &permission)
+QFuture<BobUIAndroidPrivate::PermissionResult>
+BobUIAndroidPrivate::checkPermission(const QString &permission)
 {
-    QtAndroidPrivate::PermissionResult result = Denied;
+    BobUIAndroidPrivate::PermissionResult result = Denied;
     if (!permission.isEmpty()) {
-        auto res = QtNative::callStaticMethod<jint>("checkSelfPermission", permission);
+        auto res = BobUINative::callStaticMethod<jint>("checkSelfPermission", permission);
         result = resultFromAndroid(res);
     }
-    return QtFuture::makeReadyValueFuture(result);
+    return BobUIFuture::makeReadyValueFuture(result);
 }
 
-bool QtAndroidPrivate::registerPermissionNatives(QJniEnvironment &env)
+bool BobUIAndroidPrivate::registerPermissionNatives(QJniEnvironment &env)
 {
-    if (QtAndroidPrivate::androidSdkVersion() < 23)
+    if (BobUIAndroidPrivate::androidSdkVersion() < 23)
         return true;
 
-    return env.registerNativeMethods<QtNative>({
+    return env.registerNativeMethods<BobUINative>({
         Q_JNI_NATIVE_METHOD(sendRequestPermissionsResult)
     });
 }
 
-#endif // QT_CONFIG(permissions)
+#endif // BOBUI_CONFIG(permissions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qandroidextras_p.cpp"

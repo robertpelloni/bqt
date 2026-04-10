@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qdir.h"
 #include "qstringlist.h"
 #include "qfile.h"
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include "qresource.h"
 #include "qsettings.h"
 #endif
@@ -24,23 +24,23 @@
 #  include "private/qcore_mac_p.h"
 #endif // Q_OS_DARWIN
 
-#if QT_CONFIG(relocatable) && QT_CONFIG(dlopen) && !QT_CONFIG(framework)
+#if BOBUI_CONFIG(relocatable) && BOBUI_CONFIG(dlopen) && !BOBUI_CONFIG(framework)
 #    include <dlfcn.h>
 #endif
 
-#if QT_CONFIG(relocatable) && defined(Q_OS_WIN)
-#    include <qt_windows.h>
+#if BOBUI_CONFIG(relocatable) && defined(Q_OS_WIN)
+#    include <bobui_windows.h>
 #endif
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 extern void qDumpCPUFeatures(); // in qsimd.cpp
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 
 static std::unique_ptr<QSettings> findConfiguration();
 
@@ -55,7 +55,7 @@ struct QLibrarySettings
     bool paths;
     bool reloadOnQAppAvailable;
 };
-Q_GLOBAL_STATIC(QLibrarySettings, qt_library_settings)
+Q_GLOBAL_STATIC(QLibrarySettings, bobui_library_settings)
 
 QLibrarySettings::QLibrarySettings() : paths(false), reloadOnQAppAvailable(false)
 {
@@ -83,8 +83,8 @@ void QLibrarySettings::load()
     reloadOnQAppAvailable = !settings && !QCoreApplication::instanceExists();
 
     if (settings) {
-        // This code needs to be in the regular library, as otherwise a qt.conf that
-        // works for qmake would break things for dynamically built Qt tools.
+        // This code needs to be in the regular library, as otherwise a bobui.conf that
+        // works for qmake would break things for dynamically built BobUI tools.
         QStringList children = settings->childGroups();
         paths = !children.contains("Platforms"_L1)
                 || children.contains("Paths"_L1);
@@ -92,63 +92,63 @@ void QLibrarySettings::load()
 }
 
 namespace {
-const QString *qtconfManualPath = nullptr;
+const QString *bobuiconfManualPath = nullptr;
 }
 
-void QLibraryInfoPrivate::setQtconfManualPath(const QString *path)
+void QLibraryInfoPrivate::setBobUIconfManualPath(const QString *path)
 {
-    qtconfManualPath = path;
+    bobuiconfManualPath = path;
 }
 
 static std::unique_ptr<QSettings> findConfiguration()
 {
-    if (qtconfManualPath)
-        return std::make_unique<QSettings>(*qtconfManualPath, QSettings::IniFormat);
+    if (bobuiconfManualPath)
+        return std::make_unique<QSettings>(*bobuiconfManualPath, QSettings::IniFormat);
 
-    QString qtconfig = QStringLiteral(":/qt/etc/qt.conf");
-    if (QResource(qtconfig, QLocale::c()).isValid())
-        return std::make_unique<QSettings>(qtconfig, QSettings::IniFormat);
+    QString bobuiconfig = QStringLiteral(":/bobui/etc/bobui.conf");
+    if (QResource(bobuiconfig, QLocale::c()).isValid())
+        return std::make_unique<QSettings>(bobuiconfig, QSettings::IniFormat);
 #ifdef Q_OS_DARWIN
     CFBundleRef bundleRef = CFBundleGetMainBundle();
     if (bundleRef) {
         QCFType<CFURLRef> urlRef = CFBundleCopyResourceURL(bundleRef,
-                                                           QCFString("qt.conf"_L1),
+                                                           QCFString("bobui.conf"_L1),
                                                            0,
                                                            0);
         if (urlRef) {
             QCFString path = CFURLCopyFileSystemPath(urlRef, kCFURLPOSIXPathStyle);
-            qtconfig = QDir::cleanPath(path);
-            if (QFile::exists(qtconfig))
-                return std::make_unique<QSettings>(qtconfig, QSettings::IniFormat);
+            bobuiconfig = QDir::cleanPath(path);
+            if (QFile::exists(bobuiconfig))
+                return std::make_unique<QSettings>(bobuiconfig, QSettings::IniFormat);
         }
     }
 #endif
     if (QCoreApplication::instanceExists()) {
         QString pwd = QCoreApplication::applicationDirPath();
-        qtconfig = pwd + u"/qt" QT_STRINGIFY(QT_VERSION_MAJOR) ".conf"_s;
-        if (QFile::exists(qtconfig))
-            return std::make_unique<QSettings>(qtconfig, QSettings::IniFormat);
-        qtconfig = pwd + u"/qt.conf";
-        if (QFile::exists(qtconfig))
-            return std::make_unique<QSettings>(qtconfig, QSettings::IniFormat);
+        bobuiconfig = pwd + u"/bobui" BOBUI_STRINGIFY(BOBUI_VERSION_MAJOR) ".conf"_s;
+        if (QFile::exists(bobuiconfig))
+            return std::make_unique<QSettings>(bobuiconfig, QSettings::IniFormat);
+        bobuiconfig = pwd + u"/bobui.conf";
+        if (QFile::exists(bobuiconfig))
+            return std::make_unique<QSettings>(bobuiconfig, QSettings::IniFormat);
     }
     return nullptr;     //no luck
 }
 
 QSettings *QLibraryInfoPrivate::configuration()
 {
-    QLibrarySettings *ls = qt_library_settings();
+    QLibrarySettings *ls = bobui_library_settings();
     return ls ? ls->configuration() : nullptr;
 }
 
 void QLibraryInfoPrivate::reload()
 {
-    if (qt_library_settings.exists())
-        qt_library_settings->load();
+    if (bobui_library_settings.exists())
+        bobui_library_settings->load();
 }
 
 static bool havePaths() {
-    QLibrarySettings *ls = qt_library_settings();
+    QLibrarySettings *ls = bobui_library_settings();
     return ls && ls->havePaths();
 }
 
@@ -156,20 +156,20 @@ static bool havePaths() {
 
 /*!
     \class QLibraryInfo
-    \inmodule QtCore
-    \brief The QLibraryInfo class provides information about the Qt library.
+    \inmodule BobUICore
+    \brief The QLibraryInfo class provides information about the BobUI library.
 
-    Many pieces of information are established when Qt is configured and built.
+    Many pieces of information are established when BobUI is configured and built.
     This class provides an abstraction for accessing that information.
     By using the static functions of this class, an application can obtain
-    information about the instance of the Qt library which the application
+    information about the instance of the BobUI library which the application
     is using at run-time.
 
-    You can also use a \c qt.conf file to override the hard-coded paths
-    that are compiled into the Qt library. For more information, see
-    the \l {Using qt.conf} documentation.
+    You can also use a \c bobui.conf file to override the hard-coded paths
+    that are compiled into the BobUI library. For more information, see
+    the \l {Using bobui.conf} documentation.
 
-    \sa QSysInfo, {Using qt.conf}
+    \sa QSysInfo, {Using bobui.conf}
 */
 
 /*!
@@ -185,7 +185,7 @@ QLibraryInfo::QLibraryInfo()
 #if defined(Q_CC_CLANG) // must be before GNU, because clang claims to be GNU too
 #  define COMPILER_STRING __VERSION__       /* already includes the compiler's name */
 #elif defined(Q_CC_GHS)
-#  define COMPILER_STRING "GHS " QT_STRINGIFY(__GHS_VERSION_NUMBER)
+#  define COMPILER_STRING "GHS " BOBUI_STRINGIFY(__GHS_VERSION_NUMBER)
 #elif defined(Q_CC_GNU)
 #  define COMPILER_STRING "GCC " __VERSION__
 #elif defined(Q_CC_MSVC)
@@ -200,28 +200,28 @@ QLibraryInfo::QLibraryInfo()
 #  elif _MSC_VER < 2000
 #    define COMPILER_STRING "MSVC 2026"
 #  else
-#    define COMPILER_STRING "MSVC _MSC_VER " QT_STRINGIFY(_MSC_VER)
+#    define COMPILER_STRING "MSVC _MSC_VER " BOBUI_STRINGIFY(_MSC_VER)
 #  endif
 #else
 #  define COMPILER_STRING "<unknown compiler>"
 #endif
-#ifdef QT_NO_DEBUG
+#ifdef BOBUI_NO_DEBUG
 #  define DEBUG_STRING " release"
 #else
 #  define DEBUG_STRING " debug"
 #endif
-#ifdef QT_SHARED
+#ifdef BOBUI_SHARED
 #  define SHARED_STRING " shared (dynamic)"
 #else
 #  define SHARED_STRING " static"
 #endif
-static const char *qt_build_string() noexcept
+static const char *bobui_build_string() noexcept
 {
-    return "Qt " QT_VERSION_STR " (" ARCH_FULL SHARED_STRING DEBUG_STRING " build; by " COMPILER_STRING ")";
+    return "BobUI " BOBUI_VERSION_STR " (" ARCH_FULL SHARED_STRING DEBUG_STRING " build; by " COMPILER_STRING ")";
 }
 
 /*!
-  Returns a string describing how this version of Qt was built.
+  Returns a string describing how this version of BobUI was built.
 
   \internal
 
@@ -230,18 +230,18 @@ static const char *qt_build_string() noexcept
 
 const char *QLibraryInfo::build() noexcept
 {
-    return qt_build_string();
+    return bobui_build_string();
 }
 
 /*!
     \since 5.0
-    Returns \c true if this build of Qt was built with debugging enabled, or
+    Returns \c true if this build of BobUI was built with debugging enabled, or
     false if it was built in release mode.
 */
 bool
 QLibraryInfo::isDebugBuild() noexcept
 {
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     return true;
 #else
     return false;
@@ -250,11 +250,11 @@ QLibraryInfo::isDebugBuild() noexcept
 
 /*!
     \since 6.5
-    Returns \c true if this is a shared (dynamic) build of Qt.
+    Returns \c true if this is a shared (dynamic) build of BobUI.
 */
 bool QLibraryInfo::isSharedBuild() noexcept
 {
-#ifdef QT_SHARED
+#ifdef BOBUI_SHARED
     return true;
 #else
     return false;
@@ -263,13 +263,13 @@ bool QLibraryInfo::isSharedBuild() noexcept
 
 /*!
     \since 5.8
-    Returns the version of the Qt library.
+    Returns the version of the BobUI library.
 
     \sa qVersion()
 */
 QVersionNumber QLibraryInfo::version() noexcept
 {
-    return QVersionNumber(QT_VERSION_MAJOR, QT_VERSION_MINOR, QT_VERSION_PATCH);
+    return QVersionNumber(BOBUI_VERSION_MAJOR, BOBUI_VERSION_MINOR, BOBUI_VERSION_PATCH);
 }
 
 static QString prefixFromAppDirHelper()
@@ -298,14 +298,14 @@ static QString prefixFromAppDirHelper()
     }
 }
 
-#if QT_CONFIG(relocatable)
-#if !defined(QT_STATIC) && !(defined(Q_OS_DARWIN) && QT_CONFIG(framework)) \
-        && (QT_CONFIG(dlopen) || defined(Q_OS_WIN))
-static QString prefixFromQtCoreLibraryHelper(const QString &qtCoreLibraryPath)
+#if BOBUI_CONFIG(relocatable)
+#if !defined(BOBUI_STATIC) && !(defined(Q_OS_DARWIN) && BOBUI_CONFIG(framework)) \
+        && (BOBUI_CONFIG(dlopen) || defined(Q_OS_WIN))
+static QString prefixFromBobUICoreLibraryHelper(const QString &bobuiCoreLibraryPath)
 {
-    const QString qtCoreLibrary = QDir::fromNativeSeparators(qtCoreLibraryPath);
-    const QString libDir = QFileInfo(qtCoreLibrary).absolutePath();
-    const QString prefixDir = libDir + "/" QT_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH;
+    const QString bobuiCoreLibrary = QDir::fromNativeSeparators(bobuiCoreLibraryPath);
+    const QString libDir = QFileInfo(bobuiCoreLibrary).absolutePath();
+    const QString prefixDir = libDir + "/" BOBUI_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH;
     return QDir::cleanPath(prefixDir);
 }
 #endif
@@ -326,83 +326,83 @@ static QString getRelocatablePrefix(QLibraryInfoPrivate::UsageMode usageMode)
     QString prefixPath;
 
     // For static builds, the prefix will be the app directory.
-    // For regular builds, the prefix will be relative to the location of the QtCore shared library.
-#if defined(QT_STATIC)
+    // For regular builds, the prefix will be relative to the location of the BobUICore shared library.
+#if defined(BOBUI_STATIC)
     prefixPath = prefixFromAppDirHelper();
-    if (usageMode == QLibraryInfoPrivate::UsedFromQtBinDir) {
-        // For Qt tools in a static build, we must chop off the bin directory.
-        constexpr QByteArrayView binDir = qt_configure_strs.viewAt(QLibraryInfo::BinariesPath - 1);
+    if (usageMode == QLibraryInfoPrivate::UsedFromBobUIBinDir) {
+        // For BobUI tools in a static build, we must chop off the bin directory.
+        constexpr QByteArrayView binDir = bobui_configure_strs.viewAt(QLibraryInfo::BinariesPath - 1);
         constexpr size_t binDirLength = binDir.size() + 1;
         prefixPath.chop(binDirLength);
     }
-#elif defined(Q_OS_DARWIN) && QT_CONFIG(framework)
+#elif defined(Q_OS_DARWIN) && BOBUI_CONFIG(framework)
     Q_UNUSED(usageMode);
-#ifndef QT_LIBINFIX
-    #define QT_LIBINFIX ""
+#ifndef BOBUI_LIBINFIX
+    #define BOBUI_LIBINFIX ""
 #endif
-    auto qtCoreBundle = CFBundleGetBundleWithIdentifier(CFSTR("org.qt-project.QtCore" QT_LIBINFIX));
-    if (!qtCoreBundle) {
-        // When running Qt apps over Samba shares, CoreFoundation will fail to find
+    auto bobuiCoreBundle = CFBundleGetBundleWithIdentifier(CFSTR("org.bobui-project.BobUICore" BOBUI_LIBINFIX));
+    if (!bobuiCoreBundle) {
+        // When running BobUI apps over Samba shares, CoreFoundation will fail to find
         // the Resources directory inside the bundle, This directory is a symlink,
         // and CF relies on readdir() and dtent.dt_type to detect symlinks, which
         // does not work reliably for Samba shares. We work around it by manually
-        // looking for the QtCore bundle.
+        // looking for the BobUICore bundle.
         auto allBundles = CFBundleGetAllBundles();
         auto bundleCount = CFArrayGetCount(allBundles);
         for (int i = 0; i < bundleCount; ++i) {
             auto bundle = CFBundleRef(CFArrayGetValueAtIndex(allBundles, i));
             auto url = QCFType<CFURLRef>(CFBundleCopyBundleURL(bundle));
             auto path = QCFType<CFStringRef>(CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle));
-            if (CFStringHasSuffix(path, CFSTR("/QtCore" QT_LIBINFIX ".framework"))) {
-                qtCoreBundle = bundle;
+            if (CFStringHasSuffix(path, CFSTR("/BobUICore" BOBUI_LIBINFIX ".framework"))) {
+                bobuiCoreBundle = bundle;
                 break;
             }
         }
     }
-    Q_ASSERT(qtCoreBundle);
+    Q_ASSERT(bobuiCoreBundle);
 
-    QCFType<CFURLRef> qtCorePath = CFBundleCopyBundleURL(qtCoreBundle);
-    Q_ASSERT(qtCorePath);
+    QCFType<CFURLRef> bobuiCorePath = CFBundleCopyBundleURL(bobuiCoreBundle);
+    Q_ASSERT(bobuiCorePath);
 
-    QCFType<CFURLRef> qtCorePathAbsolute = CFURLCopyAbsoluteURL(qtCorePath);
-    Q_ASSERT(qtCorePathAbsolute);
+    QCFType<CFURLRef> bobuiCorePathAbsolute = CFURLCopyAbsoluteURL(bobuiCorePath);
+    Q_ASSERT(bobuiCorePathAbsolute);
 
-    QCFType<CFURLRef> libDirCFPath = CFURLCreateCopyDeletingLastPathComponent(NULL, qtCorePathAbsolute);
+    QCFType<CFURLRef> libDirCFPath = CFURLCreateCopyDeletingLastPathComponent(NULL, bobuiCorePathAbsolute);
 
     const QCFString libDirCFString = CFURLCopyFileSystemPath(libDirCFPath, kCFURLPOSIXPathStyle);
 
-    const QString prefixDir = QString(libDirCFString) + "/" QT_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH;
+    const QString prefixDir = QString(libDirCFString) + "/" BOBUI_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH;
 
     prefixPath = QDir::cleanPath(prefixDir);
 #elif defined(Q_OS_WASM)
     // Emscripten expects to find shared libraries at the root of the in-memory
     // file system when resolving dependencies for for dlopen() calls. So that's
-    // where libqt6core.so would be.
+    // where libbobui6core.so would be.
     prefixPath = QStringLiteral("/");
-#elif QT_CONFIG(dlopen)
+#elif BOBUI_CONFIG(dlopen)
     Q_UNUSED(usageMode);
     Dl_info info;
     int result = dladdr(reinterpret_cast<void *>(&QLibraryInfo::isDebugBuild), &info);
     if (result > 0 && info.dli_fname)
-        prefixPath = prefixFromQtCoreLibraryHelper(QString::fromLocal8Bit(info.dli_fname));
+        prefixPath = prefixFromBobUICoreLibraryHelper(QString::fromLocal8Bit(info.dli_fname));
 #elif defined(Q_OS_WIN)
     Q_UNUSED(usageMode);
     HMODULE hModule = getWindowsModuleHandle();
     const int kBufferSize = 4096;
     wchar_t buffer[kBufferSize];
     DWORD pathSize = GetModuleFileName(hModule, buffer, kBufferSize);
-    const QString qtCoreFilePath = QString::fromWCharArray(buffer, int(pathSize));
-    const QString qtCoreDirPath = QFileInfo(qtCoreFilePath).absolutePath();
+    const QString bobuiCoreFilePath = QString::fromWCharArray(buffer, int(pathSize));
+    const QString bobuiCoreDirPath = QFileInfo(bobuiCoreFilePath).absolutePath();
 
     hModule = reinterpret_cast<HMODULE>(QCoreApplicationPrivate::mainInstanceHandle);
     pathSize = GetModuleFileName(hModule, buffer, kBufferSize);
     const QString exeDirPath = QFileInfo(QString::fromWCharArray(buffer, int(pathSize))).absolutePath();
-    if (QFileInfo(exeDirPath) == QFileInfo(qtCoreDirPath)) {
-        // QtCore DLL is next to the executable. This is either a windeployqt'ed executable or an
-        // executable within the QT_HOST_BIN directory. We're detecting the latter case by checking
-        // whether there's an import library corresponding to our QtCore DLL in PREFIX/lib.
+    if (QFileInfo(exeDirPath) == QFileInfo(bobuiCoreDirPath)) {
+        // BobUICore DLL is next to the executable. This is either a windeploybobui'ed executable or an
+        // executable within the BOBUI_HOST_BIN directory. We're detecting the latter case by checking
+        // whether there's an import library corresponding to our BobUICore DLL in PREFIX/lib.
         const QString libdir = QString::fromLocal8Bit(
-            qt_configure_strs.viewAt(QLibraryInfo::LibrariesPath - 1));
+            bobui_configure_strs.viewAt(QLibraryInfo::LibrariesPath - 1));
         const QLatin1Char slash('/');
 #if defined(Q_CC_MINGW)
         const QString implibPrefix = QStringLiteral("lib");
@@ -411,30 +411,30 @@ static QString getRelocatablePrefix(QLibraryInfoPrivate::UsageMode usageMode)
         const QString implibPrefix;
         const QString implibSuffix = QStringLiteral(".lib");
 #endif
-        const QString qtCoreImpLibFileName = implibPrefix
-                + QFileInfo(qtCoreFilePath).completeBaseName() + implibSuffix;
-        const QString qtCoreImpLibPath = qtCoreDirPath
-                + slash + QT_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH
+        const QString bobuiCoreImpLibFileName = implibPrefix
+                + QFileInfo(bobuiCoreFilePath).completeBaseName() + implibSuffix;
+        const QString bobuiCoreImpLibPath = bobuiCoreDirPath
+                + slash + BOBUI_CONFIGURE_LIBLOCATION_TO_PREFIX_PATH
                 + slash + libdir
-                + slash + qtCoreImpLibFileName;
-        if (!QFileInfo::exists(qtCoreImpLibPath)) {
+                + slash + bobuiCoreImpLibFileName;
+        if (!QFileInfo::exists(bobuiCoreImpLibPath)) {
             // We did not find a corresponding import library and conclude that this is a
-            // windeployqt'ed executable.
+            // windeploybobui'ed executable.
             return exeDirPath;
         }
     }
-    if (!qtCoreFilePath.isEmpty())
-        prefixPath = prefixFromQtCoreLibraryHelper(qtCoreFilePath);
+    if (!bobuiCoreFilePath.isEmpty())
+        prefixPath = prefixFromBobUICoreLibraryHelper(bobuiCoreFilePath);
 #else
 #error "The chosen platform / config does not support querying for a dynamic prefix."
 #endif
 
-#if defined(Q_OS_LINUX) && !defined(QT_STATIC) && defined(__GLIBC__)
-    // QTBUG-78948: libQt5Core.so may be located in subdirectories below libdir.
-    // See "Hardware capabilities" in the ld.so documentation and the Qt 5.3.0
+#if defined(Q_OS_LINUX) && !defined(BOBUI_STATIC) && defined(__GLIBC__)
+    // BOBUIBUG-78948: libBobUI5Core.so may be located in subdirectories below libdir.
+    // See "Hardware capabilities" in the ld.so documentation and the BobUI 5.3.0
     // changelog regarding SSE2 support.
     const QString libdir = QString::fromLocal8Bit(
-        qt_configure_strs.viewAt(QLibraryInfo::LibrariesPath - 1));
+        bobui_configure_strs.viewAt(QLibraryInfo::LibrariesPath - 1));
     QDir prefixDir(prefixPath);
     while (!prefixDir.exists(libdir)) {
         prefixDir.cdUp();
@@ -447,18 +447,18 @@ static QString getRelocatablePrefix(QLibraryInfoPrivate::UsageMode usageMode)
 #endif
 
     Q_ASSERT_X(!prefixPath.isEmpty(), "getRelocatablePrefix",
-                                      "Failed to find the Qt prefix path.");
+                                      "Failed to find the BobUI prefix path.");
     return prefixPath;
 }
 #endif
 
 static QString getPrefix(QLibraryInfoPrivate::UsageMode usageMode)
 {
-#if QT_CONFIG(relocatable)
+#if BOBUI_CONFIG(relocatable)
     return getRelocatablePrefix(usageMode);
 #else
     Q_UNUSED(usageMode);
-    return QString::fromLocal8Bit(QT_CONFIGURE_PREFIX_PATH);
+    return QString::fromLocal8Bit(BOBUI_CONFIGURE_PREFIX_PATH);
 #endif
 }
 
@@ -466,11 +466,11 @@ QLibraryInfoPrivate::LocationInfo QLibraryInfoPrivate::locationInfo(QLibraryInfo
 {
     /*
      * To add a new entry in QLibraryInfo::LibraryPath, add it to the enum
-     * in qtbase/src/corelib/global/qlibraryinfo.h and:
-     * - add its relative path in the qtConfEntries[] array below
-     *   (the key is what appears in a qt.conf file)
+     * in bobuibase/src/corelib/global/qlibraryinfo.h and:
+     * - add its relative path in the bobuiConfEntries[] array below
+     *   (the key is what appears in a bobui.conf file)
      */
-    static constexpr auto qtConfEntries = qOffsetStringArray(
+    static constexpr auto bobuiConfEntries = qOffsetStringArray(
         "Prefix", ".",
         "Documentation", "doc", // should be ${Data}/doc
         "Headers", "include",
@@ -496,9 +496,9 @@ QLibraryInfoPrivate::LocationInfo QLibraryInfoPrivate::locationInfo(QLibraryInfo
 
     LocationInfo result;
 
-    if (int(loc) < qtConfEntries.count()) {
-        result.key = QLatin1StringView(qtConfEntries.viewAt(loc * 2));
-        result.defaultValue = QLatin1StringView(qtConfEntries.viewAt(loc * 2 + 1));
+    if (int(loc) < bobuiConfEntries.count()) {
+        result.key = QLatin1StringView(bobuiConfEntries.viewAt(loc * 2));
+        result.defaultValue = QLatin1StringView(bobuiConfEntries.viewAt(loc * 2 + 1));
         if (result.key == u"QmlImports")
             result.fallbackKey = u"Qml2Imports"_s;
 #ifndef Q_OS_WIN // On Windows we use the registry
@@ -521,7 +521,7 @@ QLibraryInfoPrivate::LocationInfo QLibraryInfoPrivate::locationInfo(QLibraryInfo
     \since 6.0
     Returns the path specified by \a p.
 
-    If there is more than one path listed in qt.conf, it will
+    If there is more than one path listed in bobui.conf, it will
     only return the first one.
     \sa paths
 */
@@ -541,22 +541,22 @@ QStringList QLibraryInfo::paths(LibraryPath p)
     return QLibraryInfoPrivate::paths(p);
 }
 
-static bool keepQtBuildDefaults()
+static bool keepBobUIBuildDefaults()
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     QSettings *config = QLibraryInfoPrivate::configuration();
     Q_ASSERT(config != nullptr);
-    return config->value("Config/MergeQtConf", false).toBool();
+    return config->value("Config/MergeBobUIConf", false).toBool();
 #else
     return false;
 #endif
 }
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 static QString normalizePath(QString ret)
 {
     qsizetype startIndex = 0;
-    /* We support placeholders of the form $(<ENV_VAR>) in qt.conf.
+    /* We support placeholders of the form $(<ENV_VAR>) in bobui.conf.
        The loop below tries to find all such placeholders, and replaces
        them with the actual value of the ENV_VAR environment variable
      */
@@ -589,9 +589,9 @@ static QVariant libraryPathToValue(QLibraryInfo::LibraryPath loc)
         return value;
     QSettings *config = QLibraryInfoPrivate::configuration();
     Q_ASSERT(config != nullptr);
-    // if keepQtBuildDefaults returns true,
-    // we only consider explicit values listed in qt.conf
-    QVariant defaultValue = keepQtBuildDefaults()
+    // if keepBobUIBuildDefaults returns true,
+    // we only consider explicit values listed in bobui.conf
+    QVariant defaultValue = keepBobUIBuildDefaults()
             ? QVariant()
             : QVariant(li.defaultValue);
     config->beginGroup("Paths"_L1);
@@ -629,7 +629,7 @@ QStringList QLibraryInfoPrivate::paths(QLibraryInfo::LibraryPath p,
     QList<QString> ret;
     bool fromConf = false;
     bool pathsAreAbsolute = true;
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (havePaths()) {
         fromConf = true;
 
@@ -647,19 +647,19 @@ QStringList QLibraryInfoPrivate::paths(QLibraryInfo::LibraryPath p,
     }
 #endif // settings
 
-    if (!fromConf || keepQtBuildDefaults()) {
+    if (!fromConf || keepBobUIBuildDefaults()) {
         QString noConfResult;
         if (loc == QLibraryInfo::PrefixPath) {
             noConfResult = getPrefix(usageMode);
-        } else if (int(loc) <= qt_configure_strs.count()) {
-            noConfResult = QString::fromLocal8Bit(qt_configure_strs.viewAt(loc - 1));
+        } else if (int(loc) <= bobui_configure_strs.count()) {
+            noConfResult = QString::fromLocal8Bit(bobui_configure_strs.viewAt(loc - 1));
 #ifndef Q_OS_WIN // On Windows we use the registry
         } else if (loc == QLibraryInfo::SettingsPath) {
             // Use of volatile is a hack to discourage compilers from calling
             // strlen(), in the inlined fromLocal8Bit(const char *)'s body, at
-            // compile-time, as Qt installers binary-patch the path, replacing
+            // compile-time, as BobUI installers binary-patch the path, replacing
             // the dummy path seen at compile-time, typically changing length.
-            const char *volatile path = QT_CONFIGURE_SETTINGS_PATH;
+            const char *volatile path = BOBUI_CONFIGURE_SETTINGS_PATH;
             noConfResult = QString::fromLocal8Bit(path);
 #endif
         }
@@ -687,7 +687,7 @@ QStringList QLibraryInfoPrivate::paths(QLibraryInfo::LibraryPath p,
 /*
     Returns the path specified by \a p.
 
-    The usage mode can be set to UsedFromQtBinDir to enable special handling for executables that
+    The usage mode can be set to UsedFromBobUIBinDir to enable special handling for executables that
     live in <install-prefix>/bin.
  */
 QString QLibraryInfoPrivate::path(QLibraryInfo::LibraryPath p, UsageMode usageMode)
@@ -699,9 +699,9 @@ QString QLibraryInfoPrivate::path(QLibraryInfo::LibraryPath p, UsageMode usageMo
   Returns additional arguments to the platform plugin matching
   \a platformName which can be specified as a string list using
   the key \c Arguments in a group called \c Platforms of the
-  \c qt.conf  file.
+  \c bobui.conf  file.
 
-  sa {Using qt.conf}
+  sa {Using bobui.conf}
 
   \internal
 
@@ -710,7 +710,7 @@ QString QLibraryInfoPrivate::path(QLibraryInfo::LibraryPath p, UsageMode usageMo
 
 QStringList QLibraryInfo::platformPluginArguments(const QString &platformName)
 {
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (const auto settings = findConfiguration()) {
         const QString key = "Platforms/"_L1
                 + platformName
@@ -735,16 +735,16 @@ QStringList QLibraryInfo::platformPluginArguments(const QString &platformName)
     \value HeadersPath The path to all headers.
     \value LibrariesPath The path to installed libraries.
     \value LibraryExecutablesPath The path to installed executables required by libraries at runtime.
-    \value BinariesPath The path to installed Qt binaries (tools and applications).
-    \value PluginsPath The path to installed Qt plugins.
+    \value BinariesPath The path to installed BobUI binaries (tools and applications).
+    \value PluginsPath The path to installed BobUI plugins.
     \value QmlImportsPath The path to installed QML extensions to import.
     \value Qml2ImportsPath This value is deprecated. Use QmlImportsPath instead.
-    \value ArchDataPath The path to general architecture-dependent Qt data.
-    \value DataPath The path to general architecture-independent Qt data.
-    \value TranslationsPath The path to translation information for Qt strings.
+    \value ArchDataPath The path to general architecture-dependent BobUI data.
+    \value DataPath The path to general architecture-independent BobUI data.
+    \value TranslationsPath The path to translation information for BobUI strings.
     \value ExamplesPath The path to examples upon install.
-    \value TestsPath The path to installed Qt testcases.
-    \value SettingsPath The path to Qt settings. Not applicable on Windows.
+    \value TestsPath The path to installed BobUI testcases.
+    \value SettingsPath The path to BobUI settings. Not applicable on Windows.
 
     \sa path()
 */
@@ -755,50 +755,50 @@ QStringList QLibraryInfo::platformPluginArguments(const QString &platformName)
 */
 
 /*!
-    \headerfile <QtVersion>
-    \inmodule QtCore
+    \headerfile <BobUIVersion>
+    \inmodule BobUICore
     \ingroup funclists
-    \brief Information about which Qt version the application is running on,
+    \brief Information about which BobUI version the application is running on,
            and the version it was compiled against.
 */
 
 /*!
-    \macro QT_VERSION_STR
-    \relates <QtVersion>
+    \macro BOBUI_VERSION_STR
+    \relates <BobUIVersion>
 
-    This macro expands to a string that specifies Qt's version number (for
+    This macro expands to a string that specifies BobUI's version number (for
     example, "6.1.2"). This is the version with which the application is
     compiled. This may be a different version than the version the application
     will find itself using at \e runtime.
 
-    \sa qVersion(), QT_VERSION
+    \sa qVersion(), BOBUI_VERSION
 */
 
 /*!
-    \relates <QtVersion>
+    \relates <BobUIVersion>
 
-    Returns the version number of Qt at runtime as a string (for example,
-    "6.1.2"). This is the version of the Qt library in use at \e runtime,
+    Returns the version number of BobUI at runtime as a string (for example,
+    "6.1.2"). This is the version of the BobUI library in use at \e runtime,
     which need not be the version the application was \e compiled with.
 
-    \sa QT_VERSION_STR, QLibraryInfo::version()
+    \sa BOBUI_VERSION_STR, QLibraryInfo::version()
 */
 
 const char *qVersion() noexcept
 {
-    return QT_VERSION_STR;
+    return BOBUI_VERSION_STR;
 }
 
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
 
 bool qSharedBuild() noexcept
 {
     return QLibraryInfo::isSharedBuild();
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 9)
+#endif // BOBUI_DEPRECATED_SINCE(6, 9)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #if defined(Q_CC_GNU) && defined(ELF_INTERPRETER)
 #  include <elf.h>
@@ -807,25 +807,25 @@ QT_END_NAMESPACE
 
 #include "private/qcoreapplication_p.h"
 
-QT_WARNING_DISABLE_GCC("-Wformat-overflow")
-QT_WARNING_DISABLE_GCC("-Wattributes")
-QT_WARNING_DISABLE_CLANG("-Wattributes")
-QT_WARNING_DISABLE_INTEL(2621)
+BOBUI_WARNING_DISABLE_GCC("-Wformat-overflow")
+BOBUI_WARNING_DISABLE_GCC("-Wattributes")
+BOBUI_WARNING_DISABLE_CLANG("-Wattributes")
+BOBUI_WARNING_DISABLE_INTEL(2621)
 
 #  if defined(Q_OS_LINUX)
 #    include "minimum-linux_p.h"
 #  endif
-#  ifdef QT_ELF_NOTE_OS_TYPE
+#  ifdef BOBUI_ELF_NOTE_OS_TYPE
 struct ElfNoteAbiTag
 {
     static_assert(sizeof(Elf32_Nhdr) == sizeof(Elf64_Nhdr),
         "The size of an ELF note is wrong (should be 12 bytes)");
     struct Payload {
-        Elf32_Word ostype = QT_ELF_NOTE_OS_TYPE;
-        Elf32_Word major = QT_ELF_NOTE_OS_MAJOR;
-        Elf32_Word minor = QT_ELF_NOTE_OS_MINOR;
-#    ifdef QT_ELF_NOTE_OS_PATCH
-        Elf32_Word patch = QT_ELF_NOTE_OS_PATCH;
+        Elf32_Word ostype = BOBUI_ELF_NOTE_OS_TYPE;
+        Elf32_Word major = BOBUI_ELF_NOTE_OS_MAJOR;
+        Elf32_Word minor = BOBUI_ELF_NOTE_OS_MINOR;
+#    ifdef BOBUI_ELF_NOTE_OS_PATCH
+        Elf32_Word patch = BOBUI_ELF_NOTE_OS_PATCH;
 #    endif
     };
 
@@ -838,29 +838,29 @@ struct ElfNoteAbiTag
     Payload payload = {};
 };
 __attribute__((section(".note.ABI-tag"), aligned(4), used))
-extern constexpr ElfNoteAbiTag QT_MANGLE_NAMESPACE(qt_abi_tag) = {};
+extern constexpr ElfNoteAbiTag BOBUI_MANGLE_NAMESPACE(bobui_abi_tag) = {};
 #  endif
 
-extern const char qt_core_interpreter[] __attribute__((section(".interp")))
+extern const char bobui_core_interpreter[] __attribute__((section(".interp")))
     = ELF_INTERPRETER;
 
-extern "C" void qt_core_boilerplate() __attribute__((force_align_arg_pointer));
-void qt_core_boilerplate()
+extern "C" void bobui_core_boilerplate() __attribute__((force_align_arg_pointer));
+void bobui_core_boilerplate()
 {
-    printf("This is the QtCore library version %s\n"
+    printf("This is the BobUICore library version %s\n"
            "%s\n"
-           "Contact: https://www.qt.io/licensing/\n"
+           "Contact: https://www.bobui.io/licensing/\n"
            "\n"
            "Installation prefix: %s\n"
            "Library path:        %s\n"
            "Plugin path:         %s\n",
-           QT_PREPEND_NAMESPACE(qt_build_string)(),
-           QT_COPYRIGHT,
-           QT_CONFIGURE_PREFIX_PATH,
-           qt_configure_strs[QT_PREPEND_NAMESPACE(QLibraryInfo)::LibrariesPath - 1],
-           qt_configure_strs[QT_PREPEND_NAMESPACE(QLibraryInfo)::PluginsPath - 1]);
+           BOBUI_PREPEND_NAMESPACE(bobui_build_string)(),
+           BOBUI_COPYRIGHT,
+           BOBUI_CONFIGURE_PREFIX_PATH,
+           bobui_configure_strs[BOBUI_PREPEND_NAMESPACE(QLibraryInfo)::LibrariesPath - 1],
+           bobui_configure_strs[BOBUI_PREPEND_NAMESPACE(QLibraryInfo)::PluginsPath - 1]);
 
-    QT_PREPEND_NAMESPACE(qDumpCPUFeatures)();
+    BOBUI_PREPEND_NAMESPACE(qDumpCPUFeatures)();
 
     exit(0);
 }

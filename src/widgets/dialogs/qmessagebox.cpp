@@ -1,54 +1,54 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/qmessagebox.h>
+#include <BobUIWidgets/qmessagebox.h>
 
-#include <QtWidgets/qdialogbuttonbox.h>
+#include <BobUIWidgets/qdialogbuttonbox.h>
 #include "private/qlabel_p.h"
 #include "private/qapplication_p.h"
-#include <QtCore/qlist.h>
-#include <QtCore/qdebug.h>
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/qgridlayout.h>
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qcheckbox.h>
-#include <QtGui/qaccessible.h>
-#include <QtGui/qicon.h>
-#include <QtGui/qtextdocument.h>
-#include <QtWidgets/qapplication.h>
-#if QT_CONFIG(textedit)
-#include <QtWidgets/qtextedit.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qdebug.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/qgridlayout.h>
+#include <BobUIWidgets/qpushbutton.h>
+#include <BobUIWidgets/qcheckbox.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUIGui/qicon.h>
+#include <BobUIGui/bobuiextdocument.h>
+#include <BobUIWidgets/qapplication.h>
+#if BOBUI_CONFIG(textedit)
+#include <BobUIWidgets/bobuiextedit.h>
 #endif
-#if QT_CONFIG(menu)
-#include <QtWidgets/qmenu.h>
+#if BOBUI_CONFIG(menu)
+#include <BobUIWidgets/qmenu.h>
 #endif
 #include "qdialog_p.h"
-#include <QtGui/qfont.h>
-#include <QtGui/qfontmetrics.h>
-#include <QtGui/qclipboard.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qfontmetrics.h>
+#include <BobUIGui/qclipboard.h>
 #include "private/qabstractbutton_p.h"
-#include <QtGui/qpa/qplatformtheme.h>
+#include <BobUIGui/qpa/qplatformtheme.h>
 
-#include <QtCore/qanystringview.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qversionnumber.h>
+#include <BobUICore/qanystringview.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qpointer.h>
+#include <BobUICore/qversionnumber.h>
 
 #ifdef Q_OS_WIN
-#    include <QtCore/qt_windows.h>
+#    include <BobUICore/bobui_windows.h>
 #include <qpa/qplatformnativeinterface.h>
 #endif
 
 #include <optional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 #if defined(Q_OS_WIN)
-HMENU qt_getWindowsSystemMenu(const QWidget *w)
+HMENU bobui_getWindowsSystemMenu(const QWidget *w)
 {
     if (QWindow *window = QApplicationPrivate::windowForWidget(w))
         if (void *handle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow("handle", window))
@@ -66,7 +66,7 @@ static_assert(std::is_same_v<std::underlying_type_t<QMessageBox::ButtonRole>,
 
 // StandardButton enums have different underlying types
 // => qToUnderlying and std::is_same_v won't work
-// ### Qt 7: make them have the same underlying type
+// ### BobUI 7: make them have the same underlying type
 static_assert(static_cast<int>(QMessageBox::StandardButton::LastButton) ==
               static_cast<int>(QDialogButtonBox::StandardButton::LastButton),
               "QMessageBox::StandardButton and QDialogButtonBox::StandardButton out of sync!");
@@ -76,24 +76,24 @@ enum Button { Old_Ok = 1, Old_Cancel = 2, Old_Yes = 3, Old_No = 4, Old_Abort = 5
               NewButtonMask = 0xFFFFFC00 };
 
 enum DetailButtonLabel { ShowLabel = 0, HideLabel = 1 };
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
 class QMessageBoxDetailsText : public QWidget
 {
     Q_OBJECT
 public:
-    class TextEdit : public QTextEdit
+    class TextEdit : public BOBUIextEdit
     {
     public:
-        TextEdit(QWidget *parent=nullptr) : QTextEdit(parent) { }
-#ifndef QT_NO_CONTEXTMENU
+        TextEdit(QWidget *parent=nullptr) : BOBUIextEdit(parent) { }
+#ifndef BOBUI_NO_CONTEXTMENU
         void contextMenuEvent(QContextMenuEvent * e) override
         {
             if (QMenu *menu = createStandardContextMenu()) {
-                menu->setAttribute(Qt::WA_DeleteOnClose);
+                menu->setAttribute(BobUI::WA_DeleteOnClose);
                 menu->popup(e->globalPos());
             }
         }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
     };
 
     QMessageBoxDetailsText(QWidget *parent=nullptr)
@@ -108,7 +108,7 @@ public:
         layout->addWidget(line);
         textEdit = new TextEdit();
         textEdit->setFixedHeight(100);
-        textEdit->setFocusPolicy(Qt::NoFocus);
+        textEdit->setFocusPolicy(BobUI::NoFocus);
         textEdit->setReadOnly(true);
         layout->addWidget(textEdit);
         setLayout(layout);
@@ -121,7 +121,7 @@ public:
 
     bool copy()
     {
-#ifdef QT_NO_CLIPBOARD
+#ifdef BOBUI_NO_CLIPBOARD
         return false;
 #else
         if (!copyAvailable)
@@ -146,7 +146,7 @@ private:
     bool copyAvailable;
     TextEdit *textEdit;
 };
-#endif // QT_CONFIG(textedit)
+#endif // BOBUI_CONFIG(textedit)
 
 class DetailButton : public QPushButton
 {
@@ -169,10 +169,10 @@ public:
         initStyleOption(&opt);
         const QFontMetrics fm = fontMetrics();
         opt.text = label(ShowLabel);
-        QSize sz = fm.size(Qt::TextShowMnemonic, opt.text);
+        QSize sz = fm.size(BobUI::TextShowMnemonic, opt.text);
         QSize ret = style()->sizeFromContents(QStyle::CT_PushButton, &opt, sz, this);
         opt.text = label(HideLabel);
-        sz = fm.size(Qt::TextShowMnemonic, opt.text);
+        sz = fm.size(BobUI::TextShowMnemonic, opt.text);
         ret = ret.expandedTo(style()->sizeFromContents(QStyle::CT_PushButton, &opt, sz, this));
         return ret;
     }
@@ -184,7 +184,7 @@ class QMessageBoxPrivate : public QDialogPrivate
 
 public:
     QMessageBoxPrivate() : escapeButton(nullptr), defaultButton(nullptr), checkbox(nullptr), clickedButton(nullptr), detailsButton(nullptr),
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
                            detailsText(nullptr),
 #endif
                            compatMode(false), autoAddOkButton(true),
@@ -239,7 +239,7 @@ public:
     QCheckBox *checkbox;
     QAbstractButton *clickedButton;
     DetailButton *detailsButton;
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     QMessageBoxDetailsText *detailsText;
 #endif
     bool compatMode;
@@ -261,16 +261,16 @@ void QMessageBoxPrivate::init(const QString &title, const QString &text)
     Q_Q(QMessageBox);
 
     label = new QLabel;
-    label->setObjectName("qt_msgbox_label"_L1);
-    label->setTextInteractionFlags(Qt::TextInteractionFlags(q->style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, q)));
-    label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    label->setObjectName("bobui_msgbox_label"_L1);
+    label->setTextInteractionFlags(BobUI::TextInteractionFlags(q->style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, q)));
+    label->setAlignment(BobUI::AlignVCenter | BobUI::AlignLeft);
     label->setOpenExternalLinks(true);
     iconLabel = new QLabel(q);
-    iconLabel->setObjectName("qt_msgboxex_icon_label"_L1);
+    iconLabel->setObjectName("bobui_msgboxex_icon_label"_L1);
     iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     buttonBox = new QDialogButtonBox;
-    buttonBox->setObjectName("qt_msgbox_buttonbox"_L1);
+    buttonBox->setObjectName("bobui_msgbox_buttonbox"_L1);
     buttonBox->setCenterButtons(q->style()->styleHint(QStyle::SH_MessageBox_CenterButtons, nullptr, q));
     QObjectPrivate::connect(buttonBox, &QDialogButtonBox::clicked,
                             this, &QMessageBoxPrivate::buttonClicked);
@@ -296,7 +296,7 @@ void QMessageBoxPrivate::setupLayout()
     const bool hasIcon = !iconLabel->pixmap().isNull();
 
     if (hasIcon)
-        grid->addWidget(iconLabel, 0, 0, 2, 1, Qt::AlignTop);
+        grid->addWidget(iconLabel, 0, 0, 2, 1, BobUI::AlignTop);
     iconLabel->setVisible(hasIcon);
 #ifdef Q_OS_MAC
     QSpacerItem *indentSpacer = new QSpacerItem(14, 1, QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -312,7 +312,7 @@ void QMessageBoxPrivate::setupLayout()
         grid->addWidget(informativeLabel, 1, hasIcon ? 2 : 1, 1, 1);
     }
     if (checkbox) {
-        grid->addWidget(checkbox, informativeLabel ? 2 : 1, hasIcon ? 2 : 1, 1, 1, Qt::AlignLeft);
+        grid->addWidget(checkbox, informativeLabel ? 2 : 1, hasIcon ? 2 : 1, 1, 1, BobUI::AlignLeft);
 #ifdef Q_OS_MAC
         grid->addItem(new QSpacerItem(1, 15, QSizePolicy::Fixed, QSizePolicy::Fixed), grid->rowCount(), 0);
 #else
@@ -330,7 +330,7 @@ void QMessageBoxPrivate::setupLayout()
 #else
     grid->addWidget(buttonBox, grid->rowCount(), 0, 1, grid->columnCount());
 #endif
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     if (detailsText)
         grid->addWidget(detailsText, grid->rowCount(), 0, 1, grid->columnCount());
 #endif
@@ -379,8 +379,8 @@ void QMessageBoxPrivate::updateSize()
         if (width > hardLimit) {
             label->d_func()->ensureTextControl();
             if (QWidgetTextControl *control = label->d_func()->control) {
-                QTextOption opt = control->document()->defaultTextOption();
-                opt.setWrapMode(QTextOption::WrapAnywhere);
+                BOBUIextOption opt = control->document()->defaultTextOption();
+                opt.setWrapMode(BOBUIextOption::WrapAnywhere);
                 control->document()->setDefaultTextOption(opt);
             }
             width = hardLimit;
@@ -396,8 +396,8 @@ void QMessageBoxPrivate::updateSize()
         if (width > hardLimit) { // longest word is really big, so wrap anywhere
             informativeLabel->d_func()->ensureTextControl();
             if (QWidgetTextControl *control = informativeLabel->d_func()->control) {
-                QTextOption opt = control->document()->defaultTextOption();
-                opt.setWrapMode(QTextOption::WrapAnywhere);
+                BOBUIextOption opt = control->document()->defaultTextOption();
+                opt.setWrapMode(BOBUIextOption::WrapAnywhere);
                 control->document()->setDefaultTextOption(opt);
             }
             width = hardLimit;
@@ -494,7 +494,7 @@ int QMessageBoxPrivate::dialogCode() const
 void QMessageBoxPrivate::buttonClicked(QAbstractButton *button)
 {
     Q_Q(QMessageBox);
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     if (detailsButton && detailsText && button == detailsButton) {
         detailsButton->setLabel(detailsText->isHidden() ? HideLabel : ShowLabel);
         detailsText->setHidden(!detailsText->isHidden());
@@ -551,7 +551,7 @@ void QMessageBoxPrivate::helperClicked(QPlatformDialogHelper::StandardButton hel
     the user or for asking the user a question and receiving an answer.
 
     \ingroup standard-dialogs
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     A message box displays a primary \l{QMessageBox::text}{text} to
     alert the user to a situation, an \l{QMessageBox::informativeText}
@@ -633,13 +633,13 @@ void QMessageBoxPrivate::helperClicked(QPlatformDialogHelper::StandardButton hel
     properties can be either plain text or rich text. These strings
     are interpreted according to the setting of the
     \l{QMessageBox::textFormat} {text format} property. The default
-    setting is \l{Qt::AutoText} {auto-text}.
+    setting is \l{BobUI::AutoText} {auto-text}.
 
     Note that for some plain text strings containing XML
-    meta-characters, the auto-text \l{Qt::mightBeRichText()} {rich
+    meta-characters, the auto-text \l{BobUI::mightBeRichText()} {rich
     text detection test} may fail causing your plain text string to be
     interpreted incorrectly as rich text. In these rare cases, use
-    Qt::convertFromPlainText() to convert your plain text string to a
+    BobUI::convertFromPlainText() to convert your plain text string to a
     visually equivalent rich text string, or set the
     \l{QMessageBox::textFormat} {text format} property explicitly with
     setTextFormat().
@@ -713,7 +713,7 @@ void QMessageBoxPrivate::helperClicked(QPlatformDialogHelper::StandardButton hel
     \snippet code/src_gui_dialogs_qmessagebox.cpp 0
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
-    how to use QMessageBox and the other built-in Qt dialogs.
+    how to use QMessageBox and the other built-in BobUI dialogs.
 
     \section1 Advanced Usage
 
@@ -825,7 +825,7 @@ void QMessageBoxPrivate::helperClicked(QPlatformDialogHelper::StandardButton hel
 */
 
 /*!
-    Constructs an \l{Qt::ApplicationModal} {application modal} message box with no text and no buttons.
+    Constructs an \l{BobUI::ApplicationModal} {application modal} message box with no text and no buttons.
     \a parent is passed to the QDialog constructor.
 
     The window modality can be overridden via setWindowModality() before calling show().
@@ -834,22 +834,22 @@ void QMessageBoxPrivate::helperClicked(QPlatformDialogHelper::StandardButton hel
     Please see the detailed documentation for each function for more information.
 
     On \macos, if you want your message box to appear
-    as a Qt::Sheet of its \a parent, set the message box's
-    \l{setWindowModality()} {window modality} to Qt::WindowModal or use open().
+    as a BobUI::Sheet of its \a parent, set the message box's
+    \l{setWindowModality()} {window modality} to BobUI::WindowModal or use open().
     Otherwise, the message box will be a standard dialog.
 
     \sa setWindowTitle(), setText(), setIcon(), setStandardButtons(), setWindowModality()
 
 */
 QMessageBox::QMessageBox(QWidget *parent)
-    : QDialog(*new QMessageBoxPrivate, parent, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
+    : QDialog(*new QMessageBoxPrivate, parent, BobUI::MSWindowsFixedSizeDialogHint | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint)
 {
     Q_D(QMessageBox);
     d->init();
 }
 
 /*!
-    Constructs an \l{Qt::ApplicationModal} {application modal} message box with the given \a icon,
+    Constructs an \l{BobUI::ApplicationModal} {application modal} message box with the given \a icon,
     \a title, \a text, and standard \a buttons. Standard or custom buttons can be
     added at any time using addButton(). The \a parent and \a f
     arguments are passed to the QDialog constructor.
@@ -860,16 +860,16 @@ QMessageBox::QMessageBox(QWidget *parent)
     Please see the detailed documentation for each function for more information.
 
     On \macos, if \a parent is not \nullptr and you want your message box
-    to appear as a Qt::Sheet of that parent, set the message box's
-    \l{setWindowModality()} {window modality} to Qt::WindowModal
+    to appear as a BobUI::Sheet of that parent, set the message box's
+    \l{setWindowModality()} {window modality} to BobUI::WindowModal
     (default). Otherwise, the message box will be a standard dialog.
 
     \sa setWindowTitle(), setText(), setIcon(), setStandardButtons(), setWindowModality()
 */
 QMessageBox::QMessageBox(Icon icon, const QString &title, const QString &text,
                          StandardButtons buttons, QWidget *parent,
-                         Qt::WindowFlags f)
-: QDialog(*new QMessageBoxPrivate, parent, f | Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
+                         BobUI::WindowFlags f)
+: QDialog(*new QMessageBoxPrivate, parent, f | BobUI::MSWindowsFixedSizeDialogHint | BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint)
 {
     Q_D(QMessageBox);
     d->init(title, text);
@@ -1328,7 +1328,7 @@ QMessageBox::Options QMessageBox::options() const
 
   The text will be interpreted either as a plain text or as rich text,
   depending on the text format setting (\l QMessageBox::textFormat).
-  The default setting is Qt::AutoText, i.e., the message box will try
+  The default setting is BobUI::AutoText, i.e., the message box will try
   to auto-detect the format of the text.
 
   The default value of this property is an empty string.
@@ -1345,8 +1345,8 @@ void QMessageBox::setText(const QString &text)
 {
     Q_D(QMessageBox);
     d->label->setText(text);
-    d->label->setWordWrap(d->label->textFormat() == Qt::RichText
-        || (d->label->textFormat() == Qt::AutoText && Qt::mightBeRichText(text)));
+    d->label->setWordWrap(d->label->textFormat() == BobUI::RichText
+        || (d->label->textFormat() == BobUI::AutoText && BobUI::mightBeRichText(text)));
     d->updateSize();
 }
 
@@ -1440,24 +1440,24 @@ void QMessageBox::setIconPixmap(const QPixmap &pixmap)
     \brief the format of the text displayed by the message box
 
     The current text format used by the message box. See the \l
-    Qt::TextFormat enum for an explanation of the possible options.
+    BobUI::TextFormat enum for an explanation of the possible options.
 
-    The default format is Qt::AutoText.
+    The default format is BobUI::AutoText.
 
     \sa setText()
 */
-Qt::TextFormat QMessageBox::textFormat() const
+BobUI::TextFormat QMessageBox::textFormat() const
 {
     Q_D(const QMessageBox);
     return d->label->textFormat();
 }
 
-void QMessageBox::setTextFormat(Qt::TextFormat format)
+void QMessageBox::setTextFormat(BobUI::TextFormat format)
 {
     Q_D(QMessageBox);
     d->label->setTextFormat(format);
-    d->label->setWordWrap(format == Qt::RichText
-                    || (format == Qt::AutoText && Qt::mightBeRichText(d->label->text())));
+    d->label->setWordWrap(format == BobUI::RichText
+                    || (format == BobUI::AutoText && BobUI::mightBeRichText(d->label->text())));
     if (d->informativeLabel)
         d->informativeLabel->setTextFormat(format);
     d->updateSize();
@@ -1475,13 +1475,13 @@ void QMessageBox::setTextFormat(Qt::TextFormat format)
     \sa QStyle::SH_MessageBox_TextInteractionFlags
 */
 
-Qt::TextInteractionFlags QMessageBox::textInteractionFlags() const
+BobUI::TextInteractionFlags QMessageBox::textInteractionFlags() const
 {
     Q_D(const QMessageBox);
     return d->label->textInteractionFlags();
 }
 
-void QMessageBox::setTextInteractionFlags(Qt::TextInteractionFlags flags)
+void QMessageBox::setTextInteractionFlags(BobUI::TextInteractionFlags flags)
 {
     Q_D(QMessageBox);
     d->label->setTextInteractionFlags(flags);
@@ -1542,7 +1542,7 @@ void QMessageBox::changeEvent(QEvent *ev)
     {
         if (d->icon != NoIcon)
             setIcon(d->icon);
-        Qt::TextInteractionFlags flags(style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, this));
+        BobUI::TextInteractionFlags flags(style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, this));
         d->label->setTextInteractionFlags(flags);
         d->buttonBox->setCenterButtons(style()->styleHint(QStyle::SH_MessageBox_CenterButtons, nullptr, this));
         if (d->informativeLabel)
@@ -1570,7 +1570,7 @@ void QMessageBox::changeEvent(QEvent *ev)
 */
 void QMessageBox::keyPressEvent(QKeyEvent *e)
 {
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         Q_D(QMessageBox);
         if (e->matches(QKeySequence::Cancel)) {
             if (d->detectedEscapeButton) {
@@ -1582,11 +1582,11 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             }
             return;
         }
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
-#if !defined(QT_NO_CLIPBOARD) && !defined(QT_NO_SHORTCUT)
+#if !defined(BOBUI_NO_CLIPBOARD) && !defined(BOBUI_NO_SHORTCUT)
 
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
         if (e == QKeySequence::Copy) {
             if (d->detailsText && d->detailsText->isVisible() && d->detailsText->copy()) {
                 e->setAccepted(true);
@@ -1597,7 +1597,7 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             e->setAccepted(true);
             return;
         }
-#endif // QT_CONFIG(textedit)
+#endif // BOBUI_CONFIG(textedit)
 
 #if defined(Q_OS_WIN)
         if (e == QKeySequence::Copy) {
@@ -1613,7 +1613,7 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
             for (const auto *button : buttons)
                 textToCopy += button->text() + "   "_L1;
             textToCopy += u'\n' + separator;
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
             if (d->detailsText)
                 textToCopy += d->detailsText->text() + u'\n' + separator;
 #endif
@@ -1622,11 +1622,11 @@ void QMessageBox::keyPressEvent(QKeyEvent *e)
         }
 #endif // Q_OS_WIN
 
-#endif // !QT_NO_CLIPBOARD && !QT_NO_SHORTCUT
+#endif // !BOBUI_NO_CLIPBOARD && !BOBUI_NO_SHORTCUT
 
-#ifndef QT_NO_SHORTCUT
-    if (!(e->modifiers() & (Qt::AltModifier | Qt::ControlModifier | Qt::MetaModifier))) {
-        int key = e->key() & ~Qt::MODIFIER_MASK;
+#ifndef BOBUI_NO_SHORTCUT
+    if (!(e->modifiers() & (BobUI::AltModifier | BobUI::ControlModifier | BobUI::MetaModifier))) {
+        int key = e->key() & ~BobUI::MODIFIER_MASK;
         if (key) {
             const QList<QAbstractButton *> buttons = d->buttonBox->buttons();
             for (auto *pb : buttons) {
@@ -1680,7 +1680,7 @@ void QMessageBoxPrivate::setVisible(bool visible)
     // Update WA_DontShowOnScreen based on whether the native dialog was shown,
     // so that QDialog::setVisible(visible) below updates the QWidget state correctly,
     // but skips showing the non-native version.
-    static_cast<QWidget*>(q_ptr)->setAttribute(Qt::WA_DontShowOnScreen, nativeDialogInUse);
+    static_cast<QWidget*>(q_ptr)->setAttribute(BobUI::WA_DontShowOnScreen, nativeDialogInUse);
 
     QDialogPrivate::setVisible(visible);
 }
@@ -1717,12 +1717,12 @@ void QMessageBox::showEvent(QShowEvent *e)
     d->clickedButton = nullptr;
     d->updateSize();
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessibleEvent event(this, QAccessible::Alert);
     QAccessible::updateAccessibility(&event);
 #endif
 #if defined(Q_OS_WIN)
-    if (const HMENU systemMenu = qt_getWindowsSystemMenu(this)) {
+    if (const HMENU systemMenu = bobui_getWindowsSystemMenu(this)) {
         EnableMenuItem(systemMenu, SC_CLOSE, d->detectedEscapeButton ?
                        MF_BYCOMMAND|MF_ENABLED : MF_BYCOMMAND|MF_GRAYED);
     }
@@ -1737,7 +1737,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent,
     QMessageBox::StandardButtons buttons,
     QMessageBox::StandardButton defaultButton)
 {
-    // necessary for source compatibility with Qt 4.0 and 4.1
+    // necessary for source compatibility with BobUI 4.0 and 4.1
     // handles (Yes, No) and (Yes|Default, No)
     if (defaultButton && !(buttons & defaultButton)) {
         const int defaultButtons = defaultButton | QMessageBox::Default;
@@ -1785,7 +1785,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent,
     \uicontrol Esc was pressed instead, the \l{Default and Escape Keys}
     {escape button} is returned.
 
-    The message box is an \l{Qt::ApplicationModal}{application modal}
+    The message box is an \l{BobUI::ApplicationModal}{application modal}
     dialog box.
 
     \warning Do not delete \a parent during the execution of the dialog.
@@ -1817,7 +1817,7 @@ QMessageBox::StandardButton QMessageBox::information(QWidget *parent, const QStr
     \uicontrol Esc was pressed instead, the \l{Default and Escape Keys}
     {escape button} is returned.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
     \warning Do not delete \a parent during the execution of the dialog.
@@ -1847,7 +1847,7 @@ QMessageBox::StandardButton QMessageBox::question(QWidget *parent, const QString
     \uicontrol Esc was pressed instead, the \l{Default and Escape Keys}
     {escape button} is returned.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
     \warning Do not delete \a parent during the execution of the dialog.
@@ -1877,7 +1877,7 @@ QMessageBox::StandardButton QMessageBox::warning(QWidget *parent, const QString 
     \uicontrol Esc was pressed instead, the \l{Default and Escape Keys}
     {escape button} is returned.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
     \warning Do not delete \a parent during the execution of the dialog.
@@ -1929,10 +1929,10 @@ void QMessageBox::about(QWidget *parent, const QString &title, const QString &te
 
     QMessageBox *msgBox = new QMessageBox(Information, title, text, NoButton, parent
 #ifdef Q_OS_MAC
-                                          , Qt::WindowTitleHint | Qt::WindowSystemMenuHint
+                                          , BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint
 #endif
     );
-    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setAttribute(BobUI::WA_DeleteOnClose);
     QIcon icon = msgBox->windowIcon();
     msgBox->setIconPixmap(icon.pixmap(QSize(64, 64), msgBox->devicePixelRatio()));
 
@@ -1953,21 +1953,21 @@ void QMessageBox::about(QWidget *parent, const QString &title, const QString &te
 }
 
 /*!
-    Displays a simple message box about Qt, with the given \a title
+    Displays a simple message box about BobUI, with the given \a title
     and centered over \a parent (if \a parent is not \nullptr). The message
-    includes the version number of Qt being used by the application.
+    includes the version number of BobUI being used by the application.
 
     This is useful for inclusion in the \uicontrol Help menu of an application,
     as shown in the \l{mainwindows/menus}{Menus} example.
 
     QApplication provides this functionality as a slot.
 
-    On \macos, the aboutQt box is popped up as a modeless window; on
+    On \macos, the aboutBobUI box is popped up as a modeless window; on
     other platforms, it is currently application modal.
 
-    \sa QApplication::aboutQt()
+    \sa QApplication::aboutBobUI()
 */
-void QMessageBox::aboutQt(QWidget *parent, const QString &title)
+void QMessageBox::aboutBobUI(QWidget *parent, const QString &title)
 {
 #ifdef Q_OS_MAC
     static QPointer<QMessageBox> oldMsgBox;
@@ -1980,44 +1980,44 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &title)
     }
 #endif
 
-    QString translatedTextAboutQtCaption;
-    translatedTextAboutQtCaption = QMessageBox::tr(
-        "<h3>About Qt</h3>"
-        "<p>This program uses Qt version %1.</p>"
-        ).arg(QT_VERSION_STR ""_L1);
+    QString translatedTextAboutBobUICaption;
+    translatedTextAboutBobUICaption = QMessageBox::tr(
+        "<h3>About BobUI</h3>"
+        "<p>This program uses BobUI version %1.</p>"
+        ).arg(BOBUI_VERSION_STR ""_L1);
     //: Leave this text untranslated or include a verbatim copy of it below
     //: and note that it is the authoritative version in case of doubt.
-    const QString translatedTextAboutQtText = QMessageBox::tr(
-        "<p>Qt is a C++ toolkit for cross-platform application "
+    const QString translatedTextAboutBobUIText = QMessageBox::tr(
+        "<p>BobUI is a C++ toolkit for cross-platform application "
         "development.</p>"
-        "<p>Qt provides single-source portability across all major desktop "
+        "<p>BobUI provides single-source portability across all major desktop "
         "operating systems. It is also available for embedded Linux and other "
         "embedded and mobile operating systems.</p>"
-        "<p>Qt is available under multiple licensing options designed "
+        "<p>BobUI is available under multiple licensing options designed "
         "to accommodate the needs of our various users.</p>"
-        "<p>Qt licensed under our commercial license agreement is appropriate "
+        "<p>BobUI licensed under our commercial license agreement is appropriate "
         "for development of proprietary/commercial software where you do not "
         "want to share any source code with third parties or otherwise cannot "
         "comply with the terms of GNU (L)GPL.</p>"
-        "<p>Qt licensed under GNU (L)GPL is appropriate for the "
-        "development of Qt&nbsp;applications provided you can comply with the terms "
+        "<p>BobUI licensed under GNU (L)GPL is appropriate for the "
+        "development of BobUI&nbsp;applications provided you can comply with the terms "
         "and conditions of the respective licenses.</p>"
         "<p>Please see <a href=\"https://%2/\">%2</a> "
-        "for an overview of Qt licensing.</p>"
-        "<p>Copyright (C) The Qt Company Ltd. and other "
+        "for an overview of BobUI licensing.</p>"
+        "<p>Copyright (C) The BobUI Company Ltd. and other "
         "contributors.</p>"
-        "<p>Qt and the Qt logo are trademarks of The Qt Company Ltd.</p>"
-        "<p>Qt is The Qt Company Ltd. product developed as an open source "
+        "<p>BobUI and the BobUI logo are trademarks of The BobUI Company Ltd.</p>"
+        "<p>BobUI is The BobUI Company Ltd. product developed as an open source "
         "project. See <a href=\"https://%3/\">%3</a> for more information.</p>"
-        ).arg(QStringLiteral("qt.io/licensing"),
-              QStringLiteral("qt.io"));
+        ).arg(QStringLiteral("bobui.io/licensing"),
+              QStringLiteral("bobui.io"));
     QMessageBox *msgBox = new QMessageBox(parent);
-    msgBox->setAttribute(Qt::WA_DeleteOnClose);
-    msgBox->setWindowTitle(title.isEmpty() ? tr("About Qt") : title);
-    msgBox->setText(translatedTextAboutQtCaption);
-    msgBox->setInformativeText(translatedTextAboutQtText);
+    msgBox->setAttribute(BobUI::WA_DeleteOnClose);
+    msgBox->setWindowTitle(title.isEmpty() ? tr("About BobUI") : title);
+    msgBox->setText(translatedTextAboutBobUICaption);
+    msgBox->setInformativeText(translatedTextAboutBobUIText);
 
-    QPixmap pm(":/qt-project.org/qmessagebox/images/qtlogo-64.png"_L1);
+    QPixmap pm(":/bobui-project.org/qmessagebox/images/bobuilogo-64.png"_L1);
     if (!pm.isNull())
         msgBox->setIconPixmap(pm);
 
@@ -2042,7 +2042,7 @@ void QMessageBox::aboutQt(QWidget *parent, const QString &title)
 
 static QMessageBox::StandardButton newButton(int button)
 {
-    // this is needed for source compatibility with Qt 4.0 and 4.1
+    // this is needed for source compatibility with BobUI 4.0 and 4.1
     if (button == QMessageBox::NoButton || (button & NewButtonMask))
         return QMessageBox::StandardButton(button & QMessageBox::ButtonMask);
 
@@ -2093,7 +2093,7 @@ QAbstractButton *QMessageBoxPrivate::abstractButtonForId(int id) const
     QAbstractButton *result = customButtonList.value(id);
     if (result)
         return result;
-    if (id & QMessageBox::FlagMask)    // for compatibility with Qt 4.0/4.1 (even if it is silly)
+    if (id & QMessageBox::FlagMask)    // for compatibility with BobUI 4.0/4.1 (even if it is silly)
         return nullptr;
     return q->button(newButton(id));
 }
@@ -2138,13 +2138,13 @@ int QMessageBoxPrivate::showOldMessageBox(QWidget *parent, QMessageBox::Icon ico
 
 void QMessageBoxPrivate::retranslateStrings()
 {
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     if (detailsButton && detailsText)
         detailsButton->setLabel(detailsText->isHidden() ? ShowLabel : HideLabel);
 #endif
 }
 
-#if QT_DEPRECATED_SINCE(6,2)
+#if BOBUI_DEPRECATED_SINCE(6,2)
 /*!
     \deprecated
 
@@ -2189,7 +2189,7 @@ void QMessageBoxPrivate::retranslateStrings()
 
     \snippet dialogs/dialogs.cpp 2
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
     The \a parent and \a f arguments are passed to
@@ -2199,9 +2199,9 @@ void QMessageBoxPrivate::retranslateStrings()
 */
 QMessageBox::QMessageBox(const QString &title, const QString &text, Icon icon,
                          int button0, int button1, int button2, QWidget *parent,
-                         Qt::WindowFlags f)
+                         BobUI::WindowFlags f)
     : QDialog(*new QMessageBoxPrivate, parent,
-              f /*| Qt::MSWindowsFixedSizeDialogHint #### */| Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint)
+              f /*| BobUI::MSWindowsFixedSizeDialogHint #### */| BobUI::WindowTitleHint | BobUI::WindowSystemMenuHint | BobUI::WindowCloseButtonHint)
 {
     Q_D(QMessageBox);
     d->init(title, text);
@@ -2239,7 +2239,7 @@ QMessageBox::QMessageBox(const QString &title, const QString &text, Icon icon,
     Returns the identity (QMessageBox::Ok, or QMessageBox::No, etc.)
     of the button that was clicked.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2275,7 +2275,7 @@ int QMessageBox::information(QWidget *parent, const QString &title, const QStrin
     supply 0, 1 or 2 to make pressing \uicontrol Esc equivalent to clicking
     the relevant button.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2326,7 +2326,7 @@ int QMessageBox::information(QWidget *parent, const QString &title, const QStrin
     Returns the identity (QMessageBox::Yes, or QMessageBox::No, etc.)
     of the button that was clicked.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2362,7 +2362,7 @@ int QMessageBox::question(QWidget *parent, const QString &title, const QString& 
     supply 0, 1 or 2 to make pressing Escape equivalent to clicking
     the relevant button.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2412,7 +2412,7 @@ int QMessageBox::question(QWidget *parent, const QString &title, const QString& 
     Returns the identity (QMessageBox::Ok or QMessageBox::No or ...)
     of the button that was clicked.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2448,7 +2448,7 @@ int QMessageBox::warning(QWidget *parent, const QString &title, const QString& t
     supply 0, 1, or 2 to make pressing Escape equivalent to clicking
     the relevant button.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2497,7 +2497,7 @@ int QMessageBox::warning(QWidget *parent, const QString &title, const QString& t
     Returns the identity (QMessageBox::Ok, or QMessageBox::No, etc.)
     of the button that was clicked.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2534,7 +2534,7 @@ int QMessageBox::critical(QWidget *parent, const QString &title, const QString& 
     supply 0, 1, or 2 to make pressing Escape equivalent to clicking
     the relevant button.
 
-    The message box is an \l{Qt::ApplicationModal} {application modal}
+    The message box is an \l{BobUI::ApplicationModal} {application modal}
     dialog box.
 
   \warning Do not delete \a parent during the execution of the dialog.
@@ -2569,7 +2569,7 @@ QString QMessageBox::buttonText(int button) const
     if (QAbstractButton *abstractButton = d->abstractButtonForId(button)) {
         return abstractButton->text();
     } else if (d->buttonBox->buttons().isEmpty() && (button == Ok || button == Old_Ok)) {
-        // for compatibility with Qt 4.0/4.1
+        // for compatibility with BobUI 4.0/4.1
         return QDialogButtonBox::tr("OK");
     }
     return QString();
@@ -2590,14 +2590,14 @@ void QMessageBox::setButtonText(int button, const QString &text)
     if (QAbstractButton *abstractButton = d->abstractButtonForId(button)) {
         abstractButton->setText(text);
     } else if (d->buttonBox->buttons().isEmpty() && (button == Ok || button == Old_Ok)) {
-        // for compatibility with Qt 4.0/4.1
+        // for compatibility with BobUI 4.0/4.1
         addButton(QMessageBox::Ok)->setText(text);
     }
 }
-#endif // QT_DEPRECATED_SINCE(6,2)
+#endif // BOBUI_DEPRECATED_SINCE(6,2)
 
 
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
 /*!
   \property QMessageBox::detailedText
   \brief the text to be displayed in the details area.
@@ -2635,7 +2635,7 @@ void QMessageBox::setDetailedText(const QString &text)
             d->detailsText->hide();
         }
         if (!d->detailsButton) {
-            const bool autoAddOkButton = d->autoAddOkButton; // QTBUG-39334, addButton() clears the flag.
+            const bool autoAddOkButton = d->autoAddOkButton; // BOBUIBUG-39334, addButton() clears the flag.
             d->detailsButton = new DetailButton(this);
             addButton(d->detailsButton, QMessageBox::ActionRole);
             d->autoAddOkButton = autoAddOkButton;
@@ -2644,7 +2644,7 @@ void QMessageBox::setDetailedText(const QString &text)
     }
     d->setupLayout();
 }
-#endif // QT_CONFIG(textedit)
+#endif // BOBUI_CONFIG(textedit)
 
 /*!
   \property QMessageBox::informativeText
@@ -2658,7 +2658,7 @@ void QMessageBox::setDetailedText(const QString &text)
 
   The text will be interpreted either as a plain text or as rich text,
   depending on the text format setting (\l QMessageBox::textFormat).
-  The default setting is Qt::AutoText, i.e., the message box will try
+  The default setting is BobUI::AutoText, i.e., the message box will try
   to auto-detect the format of the text.
 
   By default, this property contains an empty string.
@@ -2683,13 +2683,13 @@ void QMessageBox::setInformativeText(const QString &text)
     } else {
         if (!d->informativeLabel) {
             QLabel *label = new QLabel;
-            label->setObjectName("qt_msgbox_informativelabel"_L1);
-            label->setTextInteractionFlags(Qt::TextInteractionFlags(style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, this)));
-            label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+            label->setObjectName("bobui_msgbox_informativelabel"_L1);
+            label->setTextInteractionFlags(BobUI::TextInteractionFlags(style()->styleHint(QStyle::SH_MessageBox_TextInteractionFlags, nullptr, this)));
+            label->setAlignment(BobUI::AlignTop | BobUI::AlignLeft);
             label->setOpenExternalLinks(true);
 #ifdef Q_OS_MAC
             // apply a smaller font the information label on the mac
-            label->setFont(qt_app_fonts_hash()->value("QTipLabel"));
+            label->setFont(bobui_app_fonts_hash()->value("BOBUIipLabel"));
 #endif
             label->setWordWrap(true);
             label->setTextFormat(d->label->textFormat());
@@ -2723,18 +2723,18 @@ void QMessageBox::setWindowTitle(const QString &title)
 
     Sets the modality of the message box to \a windowModality.
 
-    On \macos, if the modality is set to Qt::WindowModal and the message box
-    has a parent, then the message box will be a Qt::Sheet, otherwise the
+    On \macos, if the modality is set to BobUI::WindowModal and the message box
+    has a parent, then the message box will be a BobUI::Sheet, otherwise the
     message box will be a standard dialog.
 */
-void QMessageBox::setWindowModality(Qt::WindowModality windowModality)
+void QMessageBox::setWindowModality(BobUI::WindowModality windowModality)
 {
     QDialog::setWindowModality(windowModality);
 
-    if (parentWidget() && windowModality == Qt::WindowModal)
-        setParent(parentWidget(), Qt::Sheet);
+    if (parentWidget() && windowModality == BobUI::WindowModal)
+        setParent(parentWidget(), BobUI::Sheet);
     else
-        setParent(parentWidget(), Qt::Dialog);
+        setParent(parentWidget(), BobUI::Dialog);
     setDefaultButton(d_func()->defaultButton);
 }
 
@@ -2775,7 +2775,7 @@ void QMessageBoxPrivate::initHelper(QPlatformDialogHelper *h)
     // Forward state via lambda, so that we can handle addition and removal
     // of checkbox via setCheckBox() after initializing helper.
     QObject::connect(messageDialogHelper, &QPlatformMessageDialogHelper::checkBoxStateChanged,
-        q_ptr, [this](Qt::CheckState state) {
+        q_ptr, [this](BobUI::CheckState state) {
             if (checkbox)
                 checkbox->setCheckState(state);
         }
@@ -2813,9 +2813,9 @@ bool QMessageBoxPrivate::canBeNativeDialog() const
     const QDialog * const q = static_cast<const QDialog*>(q_ptr);
     if (nativeDialogInUse)
         return true;
-    if (QCoreApplication::testAttribute(Qt::AA_DontUseNativeDialogs)
-        || q->testAttribute(Qt::WA_DontShowOnScreen)
-        || q->testAttribute(Qt::WA_StyleSheet)
+    if (QCoreApplication::testAttribute(BobUI::AA_DontUseNativeDialogs)
+        || q->testAttribute(BobUI::WA_DontShowOnScreen)
+        || q->testAttribute(BobUI::WA_StyleSheet)
         || (options->options() & QMessageDialogOptions::Option::DontUseNativeDialog)) {
         return false;
     }
@@ -2823,7 +2823,7 @@ bool QMessageBoxPrivate::canBeNativeDialog() const
     if (strcmp(QMessageBox::staticMetaObject.className(), q->metaObject()->className()) != 0)
         return false;
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     for (auto *customButton : buttonBox->buttons()) {
         if (QPushButton *pushButton = qobject_cast<QPushButton *>(customButton)) {
             // We can't support buttons with menus in native dialogs (yet)
@@ -2842,7 +2842,7 @@ void QMessageBoxPrivate::helperPrepareShow(QPlatformDialogHelper *)
     options->setWindowTitle(q->windowTitle());
     options->setText(q->text());
     options->setInformativeText(q->informativeText());
-#if QT_CONFIG(textedit)
+#if BOBUI_CONFIG(textedit)
     options->setDetailedText(q->detailedText());
 #endif
     options->setStandardIcon(helperIcon(q->icon()));
@@ -2909,14 +2909,14 @@ void qRequireVersion(int argc, char *argv[], QAnyStringView req)
     std::optional<QApplication> application;
     if (!qApp)
         application.emplace(argc, argv);
-    const QString message = QApplication::tr("Application \"%1\" requires Qt %2, found Qt %3.")
+    const QString message = QApplication::tr("Application \"%1\" requires BobUI %2, found BobUI %3.")
                                     .arg(qAppName(), required.toString(), current.toString());
-    QMessageBox::critical(nullptr, QApplication::tr("Incompatible Qt Library Error"),
+    QMessageBox::critical(nullptr, QApplication::tr("Incompatible BobUI Library Error"),
                           message, QMessageBox::Abort);
     qFatal("%ls", qUtf16Printable(message));
 }
 
-#if QT_DEPRECATED_SINCE(6,2)
+#if BOBUI_DEPRECATED_SINCE(6,2)
 /*!
     \deprecated [6.2]
 
@@ -2958,7 +2958,7 @@ QPixmap QMessageBox::standardIcon(Icon icon)
                                   StandardButton button1)
     \internal
 
-    ### Needed for Qt 4 source compatibility
+    ### Needed for BobUI 4 source compatibility
 */
 
 /*!
@@ -2983,17 +2983,17 @@ QPixmap QMessageBox::standardIcon(Icon icon)
 */
 
 /*!
-    \macro QT_REQUIRE_VERSION(int argc, char **argv, const char *version)
+    \macro BOBUI_REQUIRE_VERSION(int argc, char **argv, const char *version)
     \relates QMessageBox
 
     This macro can be used to ensure that the application is run
-    with a recent enough version of Qt. This is especially useful
+    with a recent enough version of BobUI. This is especially useful
     if your application depends on a specific bug fix introduced in a
     bug-fix release (for example, 6.1.2).
 
     The \a argc and \a argv parameters are the \c main() function's
     \c argc and \c argv parameters. The \a version parameter is a
-    string literal that specifies which version of Qt the application
+    string literal that specifies which version of BobUI the application
     requires (for example, "6.1.2").
 
     Example:
@@ -3001,7 +3001,7 @@ QPixmap QMessageBox::standardIcon(Icon icon)
     \snippet code/src_gui_dialogs_qmessagebox.cpp 4
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qmessagebox.cpp"
 #include "qmessagebox.moc"

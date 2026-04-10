@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "pythonwritedeclaration.h"
 #include <cppwriteinitialization.h>
@@ -8,12 +8,12 @@
 #include <ui4.h>
 #include <uic.h>
 
-#include <QtCore/qtextstream.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace Python {
 
@@ -47,4 +47,4 @@ void WriteDeclaration::acceptButtonGroup(const DomButtonGroup *buttonGroup)
 
 } // namespace Python
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

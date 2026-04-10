@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "proitems.h"
 
 #include <qfileinfo.h>
 #include <qset.h>
 #include <qstringlist.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <private/qduplicatetracker_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // from qhash.cpp
 size_t ProString::hash(const QChar *p, int n)
@@ -254,7 +254,7 @@ QString operator+(const ProString &one, const ProString &two)
         if (!one.m_length) {
             return two.toQString();
         } else {
-            QString neu(one.m_length + two.m_length, Qt::Uninitialized);
+            QString neu(one.m_length + two.m_length, BobUI::Uninitialized);
             ushort *ptr = (ushort *)neu.constData();
             memcpy(ptr, one.m_string.constData() + one.m_offset, one.m_length * 2);
             memcpy(ptr + one.m_length, two.m_string.constData() + two.m_offset, two.m_length * 2);
@@ -295,7 +295,7 @@ ProString ProString::trimmed() const
     return ret;
 }
 
-QTextStream &operator<<(QTextStream &t, const ProString &str)
+BOBUIextStream &operator<<(BOBUIextStream &t, const ProString &str)
 {
     t << str.toQStringView();
     return t;
@@ -312,7 +312,7 @@ static QString ProStringList_join(const ProStringList &this_, const QChar *sep, 
     if (sz)
         totalLength += sepSize * (sz - 1);
 
-    QString res(totalLength, Qt::Uninitialized);
+    QString res(totalLength, BobUI::Uninitialized);
     QChar *ptr = (QChar *)res.constData();
     for (int i = 0; i < sz; ++i) {
         if (i) {
@@ -401,7 +401,7 @@ QStringList ProStringList::toQStringList() const
     return ret;
 }
 
-bool ProStringList::contains(const ProString &str, Qt::CaseSensitivity cs) const
+bool ProStringList::contains(const ProString &str, BobUI::CaseSensitivity cs) const
 {
     for (int i = 0; i < size(); i++)
         if (!at(i).compare(str, cs))
@@ -409,7 +409,7 @@ bool ProStringList::contains(const ProString &str, Qt::CaseSensitivity cs) const
     return false;
 }
 
-bool ProStringList::contains(QStringView str, Qt::CaseSensitivity cs) const
+bool ProStringList::contains(QStringView str, BobUI::CaseSensitivity cs) const
 {
     for (int i = 0; i < size(); i++)
         if (!at(i).toQStringView().compare(str, cs))
@@ -417,7 +417,7 @@ bool ProStringList::contains(QStringView str, Qt::CaseSensitivity cs) const
     return false;
 }
 
-bool ProStringList::contains(const char *str, Qt::CaseSensitivity cs) const
+bool ProStringList::contains(const char *str, BobUI::CaseSensitivity cs) const
 {
     for (int i = 0; i < size(); i++)
         if (!at(i).compare(str, cs))
@@ -465,4 +465,4 @@ QDebug operator<<(QDebug debug, const ProString &str)
     return debug << str.toQString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

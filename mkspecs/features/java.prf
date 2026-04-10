@@ -10,7 +10,7 @@ android {
 isEmpty(CLASS_DIR): \
     CLASS_DIR = .classes
 
-CONFIG -= qt
+CONFIG -= bobui
 
 # Without these, qmake adds a name prefix and versioning postfixes (as well as file
 # links) to the target. This is hardcoded in the qmake code, so for now we use

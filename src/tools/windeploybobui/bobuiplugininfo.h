@@ -1,0 +1,47 @@
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
+
+#ifndef BOBUIPLUGININFO_H
+#define BOBUIPLUGININFO_H
+
+#include "utils.h"
+
+#include <QString>
+#include <QStringList>
+
+#include <unordered_map>
+
+enum class PluginDetection
+{
+    DebugOnly,
+    ReleaseOnly,
+    DebugAndRelease
+};
+
+struct PluginSelections
+{
+    QStringList disabledPluginTypes;
+    QStringList enabledPluginTypes;
+    QStringList excludedPlugins;
+    QStringList includedPlugins;
+};
+
+class PluginInformation
+{
+public:
+    PluginInformation() = default;
+
+    bool isTypeForPlugin(const QString &type, const QString &plugin) const;
+
+    void generateAvailablePlugins(const QMap<QString, QString> &bobuiPathsVariables,
+                                  const Platform &platform);
+    void populatePluginToType(const QDir &pluginDir, const QStringList &plugins);
+
+    const std::unordered_map<QString, QStringList> &typeMap() const { return m_typeMap; }
+
+private:
+    std::unordered_map<QString, QStringList> m_typeMap;
+    std::unordered_map<QString, QString> m_pluginMap;
+};
+
+#endif

@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGTK3INTERFACE_H
 #define QGTK3INTERFACE_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QString>
-#include <QtCore/QCache>
+#include <BobUICore/QString>
+#include <BobUICore/QCache>
 #include <private/qflatmap_p.h>
-#include <QtCore/QObject>
-#include <QtGui/QIcon>
-#include <QtGui/QPalette>
-#include <QtWidgets/QWidget>
-#include <QtCore/QLoggingCategory>
-#include <QtGui/QPixmap>
+#include <BobUICore/QObject>
+#include <BobUIGui/QIcon>
+#include <BobUIGui/QPalette>
+#include <BobUIWidgets/QWidget>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIGui/QPixmap>
 #include <qpa/qplatformtheme.h>
 
 #undef signals // Collides with GTK symbols
@@ -32,11 +32,11 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQGtk3Interface);
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class QGtk3Storage;
 
@@ -44,11 +44,11 @@ class QGtk3Storage;
     \internal
     \brief The QGtk3Interface class centralizes communication with the GTK3 library.
 
-    By encapsulating all GTK version specific syntax and conversions, it makes Qt's GTK theme
+    By encapsulating all GTK version specific syntax and conversions, it makes BobUI's GTK theme
     independent from GTK versions.
 
     \note
-    Including GTK3 headers requires #undef signals, which disables Qt signal/slot handling.
+    Including GTK3 headers requires #undef signals, which disables BobUI signal/slot handling.
  */
 
 class QGtk3Interface
@@ -139,7 +139,7 @@ public:
     QString themeName() const;
 
     // Derive color scheme from default colors
-    Qt::ColorScheme colorSchemeByColors() const;
+    BobUI::ColorScheme colorSchemeByColors() const;
 
     // Convert GTK state to/from string
     static int toGtkState(const QString &state);
@@ -184,11 +184,11 @@ private:
     mutable QFlatMap<QGtkWidget, GtkWidget *> cache;
 
     // Converters for GTK icon and GDK pixbuf
-    QImage qt_gtk_get_icon(const char *iconName) const;
-    QImage qt_convert_gdk_pixbuf(GdkPixbuf *buf) const;
+    QImage bobui_gtk_get_icon(const char *iconName) const;
+    QImage bobui_convert_gdk_pixbuf(GdkPixbuf *buf) const;
 
     // Create new GTK widget object
-    GtkWidget *qt_new_gtkWidget(QGtkWidget type) const;
+    GtkWidget *bobui_new_gtkWidget(QGtkWidget type) const;
 
     // Deliver GTK Widget from cache or create new
     GtkWidget *widget(QGtkWidget type) const;
@@ -209,5 +209,5 @@ private:
     inline static constexpr int toFontWeight(PangoWeight weight);
 
 };
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QGTK3INTERFACE_H

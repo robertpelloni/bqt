@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "filelistmodel.h"
 
@@ -29,14 +29,14 @@ QVariant FileListModel::data(const QModelIndex &index, int role) const
         return {};
 
     switch (role) {
-    case Qt::DisplayRole:
+    case BobUI::DisplayRole:
         return fileList.at(row).fileName();
-    case Qt::BackgroundRole: {
+    case BobUI::BackgroundRole: {
         const int batch = row / batchSize;
         const QPalette &palette = QGuiApplication::palette();
         return (batch % 2) != 0 ? palette.alternateBase() : palette.base();
     }
-    case Qt::DecorationRole:
+    case BobUI::DecorationRole:
         return iconProvider.icon(fileList.at(row));
     }
     return {};

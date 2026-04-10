@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
+// Copyright (C) 2023 The BobUI Company Ltd.
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QYIELDCPU_H
 #define QYIELDCPU_H
 
-#include <QtCore/qcompilerdetection.h>
-#include <QtCore/qprocessordetection.h>
-#include <QtCore/qtconfigmacros.h>
+#include <BobUICore/qcompilerdetection.h>
+#include <BobUICore/qprocessordetection.h>
+#include <BobUICore/bobuiconfigmacros.h>
 
 #if defined(Q_CC_MSVC_ONLY) && defined(Q_PROCESSOR_X86)
 // MSVC defines _YIELD_PROCESSOR() in <xatomic.h>, but as that is a private
@@ -20,7 +20,7 @@ extern "C"
 void _mm_pause(void);       // the compiler recognizes as intrinsic
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_ALWAYS_INLINE
 #ifdef Q_CC_GNU
@@ -61,6 +61,6 @@ void qYieldCpu(void)
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QYIELDCPU_H

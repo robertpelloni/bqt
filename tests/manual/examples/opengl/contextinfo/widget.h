@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef WIDGET_H
 #define WIDGET_H
 
 #include <QWidget>
 
-QT_FORWARD_DECLARE_CLASS(QComboBox)
-QT_FORWARD_DECLARE_CLASS(QTextEdit)
-QT_FORWARD_DECLARE_CLASS(QVBoxLayout)
-QT_FORWARD_DECLARE_CLASS(QSurfaceFormat)
-QT_FORWARD_DECLARE_CLASS(QSurface)
+BOBUI_FORWARD_DECLARE_CLASS(QComboBox)
+BOBUI_FORWARD_DECLARE_CLASS(BOBUIextEdit)
+BOBUI_FORWARD_DECLARE_CLASS(QVBoxLayout)
+BOBUI_FORWARD_DECLARE_CLASS(QSurfaceFormat)
+BOBUI_FORWARD_DECLARE_CLASS(QSurface)
 
 class Widget : public QWidget
 {
@@ -36,8 +36,8 @@ private:
     QLayout *m_profiles;
     QLayout *m_options;
     QLayout *m_renderables;
-    QTextEdit *m_output;
-    QTextEdit *m_extensions;
+    BOBUIextEdit *m_output;
+    BOBUIextEdit *m_extensions;
     QVBoxLayout *m_renderWindowLayout;
     QWidget *m_renderWindowContainer;
     QSurface *m_surface;

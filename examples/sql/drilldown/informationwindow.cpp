@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "informationwindow.h"
 
@@ -16,7 +16,7 @@ InformationWindow::InformationWindow(int id, QSqlRelationalTableModel *items,
     createButtons();
 
     itemText = new QLabel;
-    descriptionEditor = new QTextEdit;
+    descriptionEditor = new BOBUIextEdit;
 //! [1]
 
 //! [2]
@@ -37,7 +37,7 @@ InformationWindow::InformationWindow(int id, QSqlRelationalTableModel *items,
 //! [3]
 
 //! [4]
-    connect(descriptionEditor, &QTextEdit::textChanged, this, [this]() { enableButtons(true); });
+    connect(descriptionEditor, &BOBUIextEdit::textChanged, this, [this]() { enableButtons(true); });
     connect(imageFileEditor, &QComboBox::currentIndexChanged, this, [this]() { enableButtons(true); });
 
     QFormLayout *formLayout = new QFormLayout;
@@ -53,7 +53,7 @@ InformationWindow::InformationWindow(int id, QSqlRelationalTableModel *items,
     itemId = id;
     displayedImage = imageFileEditor->currentText();
 
-    setWindowFlags(Qt::Window);
+    setWindowFlags(BobUI::Window);
     enableButtons(false);
     setWindowTitle(itemText->text());
 }

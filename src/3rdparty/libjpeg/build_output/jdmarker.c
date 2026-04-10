@@ -57,7 +57,7 @@ typedef enum {                  /* JPEG marker codes */
   M_SOI   = 0xd8,
   M_EOI   = 0xd9,
   M_SOS   = 0xda,
-  M_DQT   = 0xdb,
+  M_DBOBUI   = 0xdb,
   M_DNL   = 0xdc,
   M_DRI   = 0xdd,
   M_DHP   = 0xde,
@@ -508,8 +508,8 @@ get_dht(j_decompress_ptr cinfo)
 
 
 LOCAL(boolean)
-get_dqt(j_decompress_ptr cinfo)
-/* Process a DQT marker */
+get_dbobui(j_decompress_ptr cinfo)
+/* Process a DBOBUI marker */
 {
   JLONG length;
   int n, i, prec;
@@ -525,10 +525,10 @@ get_dqt(j_decompress_ptr cinfo)
     prec = n >> 4;
     n &= 0x0F;
 
-    TRACEMS2(cinfo, 1, JTRC_DQT, n, prec);
+    TRACEMS2(cinfo, 1, JTRC_DBOBUI, n, prec);
 
     if (n >= NUM_QUANT_TBLS)
-      ERREXIT1(cinfo, JERR_DQT_INDEX, n);
+      ERREXIT1(cinfo, JERR_DBOBUI_INDEX, n);
 
     if (cinfo->quant_tbl_ptrs[n] == NULL)
       cinfo->quant_tbl_ptrs[n] = jpeg_alloc_quant_table((j_common_ptr)cinfo);
@@ -1053,8 +1053,8 @@ read_markers(j_decompress_ptr cinfo)
         return JPEG_SUSPENDED;
       break;
 
-    case M_DQT:
-      if (!get_dqt(cinfo))
+    case M_DBOBUI:
+      if (!get_dbobui(cinfo))
         return JPEG_SUSPENDED;
       break;
 

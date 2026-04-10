@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandnativeinterface_p.h"
 #include "qwaylanddisplay_p.h"
@@ -11,17 +11,17 @@
 #include "qwaylandwindowmanagerintegration_p.h"
 #include "qwaylandscreen_p.h"
 #include "qwaylandinputdevice_p.h"
-#include <QtCore/private/qnativeinterface_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/QScreen>
-#include <QtWaylandClient/private/qwaylandclientbufferintegration_p.h>
-#if QT_CONFIG(vulkan)
-#include <QtWaylandClient/private/qwaylandvulkanwindow_p.h>
+#include <BobUICore/private/qnativeinterface_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/QScreen>
+#include <BobUIWaylandClient/private/qwaylandclientbufferintegration_p.h>
+#if BOBUI_CONFIG(vulkan)
+#include <BobUIWaylandClient/private/qwaylandvulkanwindow_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandNativeInterface::QWaylandNativeInterface(QWaylandIntegration *integration)
     : m_integration(integration)
@@ -64,7 +64,7 @@ void *QWaylandNativeInterface::nativeResourceForIntegration(const QByteArray &re
             return touch->wl_touch();
         return nullptr;
     }
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     if (lowerCaseResource == "xkb_context") {
         return m_integration->display()->xkbContext();
     }
@@ -75,19 +75,19 @@ void *QWaylandNativeInterface::nativeResourceForIntegration(const QByteArray &re
     return nullptr;
 }
 
-wl_display *QtWaylandClient::QWaylandNativeInterface::display() const
+wl_display *BobUIWaylandClient::QWaylandNativeInterface::display() const
 {
     return m_integration->display()->wl_display();
 }
 
-wl_compositor *QtWaylandClient::QWaylandNativeInterface::compositor() const
+wl_compositor *BobUIWaylandClient::QWaylandNativeInterface::compositor() const
 {
     if (auto compositor = m_integration->display()->compositor())
         return compositor->object();
     return nullptr;
 }
 
-wl_seat *QtWaylandClient::QWaylandNativeInterface::seat() const
+wl_seat *BobUIWaylandClient::QWaylandNativeInterface::seat() const
 {
     if (auto inputDevice = m_integration->display()->defaultInputDevice()) {
         return inputDevice->wl_seat();
@@ -95,7 +95,7 @@ wl_seat *QtWaylandClient::QWaylandNativeInterface::seat() const
     return nullptr;
 }
 
-wl_keyboard *QtWaylandClient::QWaylandNativeInterface::keyboard() const
+wl_keyboard *BobUIWaylandClient::QWaylandNativeInterface::keyboard() const
 {
     if (auto inputDevice = m_integration->display()->defaultInputDevice())
         if (auto keyboard = inputDevice->keyboard())
@@ -103,7 +103,7 @@ wl_keyboard *QtWaylandClient::QWaylandNativeInterface::keyboard() const
     return nullptr;
 }
 
-wl_pointer *QtWaylandClient::QWaylandNativeInterface::pointer() const
+wl_pointer *BobUIWaylandClient::QWaylandNativeInterface::pointer() const
 {
     if (auto inputDevice = m_integration->display()->defaultInputDevice())
         if (auto pointer = inputDevice->pointer())
@@ -111,7 +111,7 @@ wl_pointer *QtWaylandClient::QWaylandNativeInterface::pointer() const
     return nullptr;
 }
 
-wl_touch *QtWaylandClient::QWaylandNativeInterface::touch() const
+wl_touch *BobUIWaylandClient::QWaylandNativeInterface::touch() const
 {
     if (auto inputDevice = m_integration->display()->defaultInputDevice())
         if (auto touch = inputDevice->touch())
@@ -119,20 +119,20 @@ wl_touch *QtWaylandClient::QWaylandNativeInterface::touch() const
     return nullptr;
 }
 
-uint QtWaylandClient::QWaylandNativeInterface::lastInputSerial() const
+uint BobUIWaylandClient::QWaylandNativeInterface::lastInputSerial() const
 {
     return m_integration->display()->lastInputSerial();
 }
 
-wl_seat *QtWaylandClient::QWaylandNativeInterface::lastInputSeat() const
+wl_seat *BobUIWaylandClient::QWaylandNativeInterface::lastInputSeat() const
 {
     if (auto inputDevice = m_integration->display()->lastInputDevice())
         return inputDevice->wl_seat();
     return nullptr;
 }
 
-#if QT_CONFIG(xkbcommon)
-struct xkb_context *QtWaylandClient::QWaylandNativeInterface::xkbContext() const
+#if BOBUI_CONFIG(xkbcommon)
+struct xkb_context *BobUIWaylandClient::QWaylandNativeInterface::xkbContext() const
 {
     return m_integration->display()->xkbContext();
 }
@@ -156,7 +156,7 @@ void *QWaylandNativeInterface::nativeResourceForWindow(const QByteArray &resourc
     if (lowerCaseResource == "egldisplay" && m_integration->clientBufferIntegration())
         return m_integration->clientBufferIntegration()->nativeResource(QWaylandClientBufferIntegration::EglDisplay);
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (lowerCaseResource == "vksurface") {
         if (window->surfaceType() == QSurface::VulkanSurface && window->handle()) {
             // return a pointer to the VkSurfaceKHR value, not the value itself
@@ -182,10 +182,10 @@ void *QWaylandNativeInterface::nativeResourceForScreen(const QByteArray &resourc
     return nullptr;
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 void *QWaylandNativeInterface::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context)
 {
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     QByteArray lowerCaseResource = resource.toLower();
 
     if (lowerCaseResource == "eglconfig" && m_integration->clientBufferIntegration())
@@ -250,4 +250,4 @@ void QWaylandNativeInterface::setWindowMargins(QWindow *window, const QMargins &
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

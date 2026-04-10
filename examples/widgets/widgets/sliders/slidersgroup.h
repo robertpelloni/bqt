@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SLIDERSGROUP_H
 #define SLIDERSGROUP_H
 
 #include <QGroupBox>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QDial;
 class QScrollBar;
 class QSlider;
 class QBoxLayout;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class SlidersGroup : public QGroupBox
@@ -30,7 +30,7 @@ public slots:
     void setMaximum(int value);
     void invertAppearance(bool invert);
     void invertKeyBindings(bool invert);
-    void setOrientation(Qt::Orientation orientation);
+    void setOrientation(BobUI::Orientation orientation);
 
 private:
     QSlider *slider;

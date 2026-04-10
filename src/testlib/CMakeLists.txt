@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 include(selfcover.cmake)
@@ -7,14 +7,14 @@ include(selfcover.cmake)
 ## Test Module:
 #####################################################################
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/QtTestProperties.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/BobUITestProperties.cmake")
 
-qt_internal_add_module(Test
+bobui_internal_add_module(Test
     CONFIG_MODULE_NAME testlib
     QMAKE_MODULE_CONFIG console testlib_defines
     EXCEPTIONS
     SOURCES
-        3rdparty/cycle/cycle_p.h # Needed by tests, so visible to syncqt.
+        3rdparty/cycle/cycle_p.h # Needed by tests, so visible to syncbobui.
         3rdparty/cycle/cycle_include_p.h # Also needed by tests.
         3rdparty/catch2/catch_p.h # Also needed by tests.
         removed_api.cpp     # keep first
@@ -34,104 +34,104 @@ qt_internal_add_module(Test
         qpropertytesthelper_p.h
         qsignaldumper.cpp qsignaldumper_p.h
         qsignalspy.cpp qsignalspy.h
-        qtaptestlogger.cpp qtaptestlogger_p.h
-        qteamcitylogger.cpp qteamcitylogger_p.h
-        qtest.h
-        qtest_gui.h
-        qtest_network.h
-        qtest_widgets.h
-        qtestaccessible.h
-        qtestassert.h
-        qtestblacklist.cpp qtestblacklist_p.h
-        qtestcase.cpp qtestcase.h qtestcase_p.h
-        qtestcoreelement_p.h
-        qtestcrashhandler_p.h
-        qtestdata.cpp qtestdata.h
-        qtestelement.cpp qtestelement_p.h
-        qtestelementattribute.cpp qtestelementattribute_p.h
-        qtestevent.h
-        qtesteventloop.h
-        qtesthelpers_p.h
-        qtestjunitstreamer.cpp qtestjunitstreamer_p.h
-        qtestkeyboard.h
-        qtestlog.cpp qtestlog_p.h
-        qtestmouse.cpp qtestmouse.h
-        qtestresult.cpp qtestresult_p.h
-        qtestspontaneevent.h
-        qtestsystem.h
-        qtesttable.cpp qtesttable_p.h
-        qtesttouch.h
-        qtesttostring.h
-        qtestwheel.h
-        qttestglobal.h
+        bobuiaptestlogger.cpp bobuiaptestlogger_p.h
+        bobuieamcitylogger.cpp bobuieamcitylogger_p.h
+        bobuiest.h
+        bobuiest_gui.h
+        bobuiest_network.h
+        bobuiest_widgets.h
+        bobuiestaccessible.h
+        bobuiestassert.h
+        bobuiestblacklist.cpp bobuiestblacklist_p.h
+        bobuiestcase.cpp bobuiestcase.h bobuiestcase_p.h
+        bobuiestcoreelement_p.h
+        bobuiestcrashhandler_p.h
+        bobuiestdata.cpp bobuiestdata.h
+        bobuiestelement.cpp bobuiestelement_p.h
+        bobuiestelementattribute.cpp bobuiestelementattribute_p.h
+        bobuiestevent.h
+        bobuiesteventloop.h
+        bobuiesthelpers_p.h
+        bobuiestjunitstreamer.cpp bobuiestjunitstreamer_p.h
+        bobuiestkeyboard.h
+        bobuiestlog.cpp bobuiestlog_p.h
+        bobuiestmouse.cpp bobuiestmouse.h
+        bobuiestresult.cpp bobuiestresult_p.h
+        bobuiestspontaneevent.h
+        bobuiestsystem.h
+        bobuiesttable.cpp bobuiesttable_p.h
+        bobuiesttouch.h
+        bobuiesttostring.h
+        bobuiestwheel.h
+        bobuitestglobal.h
         qxmltestlogger.cpp qxmltestlogger_p.h
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_CAST_TO_ASCII
-        QT_NO_CONTEXTLESS_CONNECT
-        QT_NO_DATASTREAM
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
-        QT_USE_NODISCARD_FILE_OPEN
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_CAST_TO_ASCII
+        BOBUI_NO_CONTEXTLESS_CONNECT
+        BOBUI_NO_DATASTREAM
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
+        BOBUI_USE_NODISCARD_FILE_OPEN
         # Ensure uniform location info between release and debug builds
-        QT_NO_MESSAGELOGCONTEXT
+        BOBUI_NO_MESSAGELOGCONTEXT
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     NO_PCH_SOURCES
         removed_api.cpp
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
     PRIVATE_MODULE_INTERFACE
-        Qt::CorePrivate
+        BobUI::CorePrivate
     ATTRIBUTION_FILE_DIR_PATHS
         3rdparty/catch2
         3rdparty/cycle
         3rdparty/linux
         3rdparty/valgrind
     EXTRA_CMAKE_FILES
-        "${CMAKE_CURRENT_SOURCE_DIR}/QtTestProperties.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/BobUITestProperties.cmake"
     EXTRA_CMAKE_INCLUDES
-        QtTestProperties.cmake
+        BobUITestProperties.cmake
 )
 
 if(TARGET Gui)
     set_property(TARGET Test
-        APPEND PROPERTY _qt_internal_sync_headers_deps Gui_sync_headers)
+        APPEND PROPERTY _bobui_internal_sync_headers_deps Gui_sync_headers)
 endif()
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(Test CONDITION QT_FEATURE_gui
+bobui_internal_extend_target(Test CONDITION BOBUI_FEATURE_gui
     SOURCES
-        qtestaccessible.cpp
+        bobuiestaccessible.cpp
 )
 
-qt_internal_extend_target(Test CONDITION QT_FEATURE_itemmodeltester
+bobui_internal_extend_target(Test CONDITION BOBUI_FEATURE_itemmodeltester
     SOURCES
         qabstractitemmodeltester.cpp qabstractitemmodeltester.h
 )
 
-qt_internal_extend_target(Test CONDITION QT_FEATURE_batch_test_support
+bobui_internal_extend_target(Test CONDITION BOBUI_FEATURE_batch_test_support
     SOURCES
-        qtestregistry.cpp qtestregistry_p.h
+        bobuiestregistry.cpp bobuiestregistry_p.h
 )
 
-# 3rdparty/valgrind/*_p.h deliberately omitted, so syncqt doesn't
+# 3rdparty/valgrind/*_p.h deliberately omitted, so syncbobui doesn't
 # mirror it in generated include/ directory - #include using "..._p.h"
 # with a relative path. Only this module's sources and Core's qsimd.h
 # should need to.
-qt_internal_extend_target(Test CONDITION QT_FEATURE_valgrind
+bobui_internal_extend_target(Test CONDITION BOBUI_FEATURE_valgrind
     SOURCES
         qbenchmarkvalgrind.cpp qbenchmarkvalgrind_p.h
 )
 
-qt_internal_extend_target(Test CONDITION embedded
+bobui_internal_extend_target(Test CONDITION embedded
     COMPILE_OPTIONS
         -fno-rtti
 )
 
-qt_internal_extend_target(Test CONDITION APPLE
+bobui_internal_extend_target(Test CONDITION APPLE
     SOURCES
         qappletestlogger.cpp qappletestlogger_p.h
     PUBLIC_LIBRARIES
@@ -144,9 +144,9 @@ qt_internal_extend_target(Test CONDITION APPLE
         "-DHAVE_ARMV8_CNTVCT_EL0='defined(Q_PROCESSOR_ARM)'"
 )
 
-qt_internal_extend_target(Test CONDITION MACOS
+bobui_internal_extend_target(Test CONDITION MACOS
     SOURCES
-        qtestutil_macos.mm qtestutil_macos_p.h
+        bobuiestutil_macos.mm bobuiestutil_macos_p.h
     PUBLIC_LIBRARIES
         ${FWAppKit}
         ${FWApplicationServices}
@@ -154,62 +154,62 @@ qt_internal_extend_target(Test CONDITION MACOS
         ${FWIOKit}
 )
 
-qt_internal_extend_target(Test CONDITION UNIX
+bobui_internal_extend_target(Test CONDITION UNIX
     SOURCES
-        qtestcrashhandler_unix.cpp
+        bobuiestcrashhandler_unix.cpp
 )
 
-qt_internal_extend_target(Test CONDITION WIN32
+bobui_internal_extend_target(Test CONDITION WIN32
     SOURCES
-        qtestcrashhandler_win.cpp
+        bobuiestcrashhandler_win.cpp
 )
 
-set(qt_tc_build_dir "$<TARGET_PROPERTY:QT_TESTCASE_BUILDDIR>")
-set(qt_bool_tc_build_dir "$<BOOL:${qt_tc_build_dir}>")
-set(qt_tc_build_dir_def
-    "$<IF:${qt_bool_tc_build_dir},${qt_tc_build_dir},$<TARGET_PROPERTY:BINARY_DIR>>"
+set(bobui_tc_build_dir "$<TARGET_PROPERTY:BOBUI_TESTCASE_BUILDDIR>")
+set(bobui_bool_tc_build_dir "$<BOOL:${bobui_tc_build_dir}>")
+set(bobui_tc_build_dir_def
+    "$<IF:${bobui_bool_tc_build_dir},${bobui_tc_build_dir},$<TARGET_PROPERTY:BINARY_DIR>>"
 )
 
 string(JOIN "" testcase_dirs_genex
-    "$<$<NOT:$<BOOL:$<TARGET_PROPERTY:QT_SKIP_DEFAULT_TESTCASE_DIRS>>>:"
-        "QT_TESTCASE_BUILDDIR=\"${qt_tc_build_dir_def}\"$<SEMICOLON>"
-        "QT_TESTCASE_SOURCEDIR=\"$<TARGET_PROPERTY:SOURCE_DIR>\""
+    "$<$<NOT:$<BOOL:$<TARGET_PROPERTY:BOBUI_SKIP_DEFAULT_TESTCASE_DIRS>>>:"
+        "BOBUI_TESTCASE_BUILDDIR=\"${bobui_tc_build_dir_def}\"$<SEMICOLON>"
+        "BOBUI_TESTCASE_SOURCEDIR=\"$<TARGET_PROPERTY:SOURCE_DIR>\""
     ">"
 )
 set_property(TARGET Test APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS
     ${testcase_dirs_genex}
 )
 
-qt_internal_add_docs(Test
-    doc/qttestlib.qdocconf
+bobui_internal_add_docs(Test
+    doc/bobuitestlib.qdocconf
 )
 
-qt_internal_apply_testlib_coverage_options(Test)
+bobui_internal_apply_testlib_coverage_options(Test)
 
-if(QT_BUILD_DOC_SNIPPETS)
+if(BOBUI_BUILD_DOC_SNIPPETS)
     add_subdirectory(doc/snippets/code)
 endif()
 
 if(WASM)
-    # Keep in sync with is_test files in Qt6WasmMacros.cmake
+    # Keep in sync with is_test files in BobUI6WasmMacros.cmake
     set(testrunner_files
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/batchedtestrunner.html"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/batchedtestrunner.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/emrunadapter.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qwasmjsruntime.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qwasmtestmain.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/util.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qtestoutputreporter.js"
-        "${QtBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qtestoutputreporter.css")
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/batchedtestrunner.html"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/batchedtestrunner.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/emrunadapter.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qwasmjsruntime.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/qwasmtestmain.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/util.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/bobuiestoutputreporter.js"
+        "${BobUIBase_SOURCE_DIR}/util/wasm/batchedtestrunner/bobuiestoutputreporter.css")
 
-    qt_path_join(install_dir_libexec "${QT_INSTALL_DIR}" "${INSTALL_LIBEXECDIR}")
-    qt_copy_or_install(FILES ${testrunner_files}
+    bobui_path_join(install_dir_libexec "${BOBUI_INSTALL_DIR}" "${INSTALL_LIBEXECDIR}")
+    bobui_copy_or_install(FILES ${testrunner_files}
             DESTINATION "${install_dir_libexec}")
 
     # In a prefix build, the above copy_or_install won't put the files
     # in the build dir, but they are required there for tests at configure time
-    if(QT_WILL_INSTALL)
-        qt_path_join(build_dir_libexec "${QT_BUILD_DIR}" "${INSTALL_LIBEXECDIR}")
+    if(BOBUI_WILL_INSTALL)
+        bobui_path_join(build_dir_libexec "${BOBUI_BUILD_DIR}" "${INSTALL_LIBEXECDIR}")
         foreach(testrunner_file ${testrunner_files})
             file(COPY "${testrunner_file}" DESTINATION "${build_dir_libexec}")
         endforeach()

@@ -8411,7 +8411,7 @@ namespace Catch {
 #define CATCH_TEMP_CLARA_CONFIG_CONSOLE_WIDTH CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH
 #undef CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH
 #endif
-#if 0 // Disabled by Qt so that test failures are not line-broken
+#if 0 // Disabled by BobUI so that test failures are not line-broken
 #define CATCH_CLARA_TEXTFLOW_CONFIG_CONSOLE_WIDTH CATCH_CONFIG_CONSOLE_WIDTH-1
 #endif
 

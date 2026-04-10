@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QRGBA64_H
 #define QRGBA64_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qprocessordetection.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qprocessordetection.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QRgba64 {
     quint64 rgba;
@@ -209,6 +209,6 @@ inline constexpr uint qBlue(QRgba64 rgb)
 inline constexpr uint qAlpha(QRgba64 rgb)
 { return rgb.alpha8(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QRGBA64_H

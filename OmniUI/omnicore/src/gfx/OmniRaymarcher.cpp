@@ -1,6 +1,6 @@
 #include "OmniRaymarcher.h"
 #include <QPainter>
-#include <QtConcurrent>
+#include <BobUIConcurrent>
 #include <cmath>
 #include <algorithm>
 #include <QDebug>
@@ -18,7 +18,7 @@ OmniRaymarcher::OmniRaymarcher(QQuickItem *parent)
     setWidth(400);
     setHeight(400);
 
-    connect(&m_frameTimer, &QTimer::timeout, this, &OmniRaymarcher::renderNextFrame);
+    connect(&m_frameTimer, &BOBUIimer::timeout, this, &OmniRaymarcher::renderNextFrame);
     connect(&m_watcher, &QFutureWatcher<void>::finished, this, &OmniRaymarcher::onFrameRendered);
 }
 
@@ -74,7 +74,7 @@ void OmniRaymarcher::allocateBuffer() {
     int h = std::max(1, static_cast<int>(height() * m_resolutionScale));
     
     m_buffer = QImage(w, h, QImage::Format_RGB32);
-    m_buffer.fill(Qt::black);
+    m_buffer.fill(BobUI::black);
 }
 
 double OmniRaymarcher::mapSDF(const QVector3D& p, double time) {
@@ -104,7 +104,7 @@ void OmniRaymarcher::renderNextFrame() {
     m_isRendering = true;
     m_time += 0.05;
 
-    // We must pass raw pointers to the QtConcurrent map to avoid QImage copy detaching
+    // We must pass raw pointers to the BobUIConcurrent map to avoid QImage copy detaching
     struct RenderData {
         QRgb* scanline;
         int y;
@@ -119,7 +119,7 @@ void OmniRaymarcher::renderNextFrame() {
         rows.append({reinterpret_cast<QRgb*>(m_buffer.scanLine(y)), y, m_buffer.width(), m_buffer.height(), m_time, m_cameraPos});
     }
 
-    QFuture<void> future = QtConcurrent::map(rows, [](const RenderData& data) {
+    QFuture<void> future = BobUIConcurrent::map(rows, [](const RenderData& data) {
         for (int x = 0; x < data.w; ++x) {
             double uvX = (2.0 * x - data.w) / static_cast<double>(data.h);
             double uvY = (2.0 * data.y - data.h) / static_cast<double>(data.h);

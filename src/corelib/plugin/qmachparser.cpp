@@ -1,6 +1,6 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qmachparser_p.h"
 
@@ -9,9 +9,9 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Whether we include some extra validity checks
 // (checks to ensure we don't read out-of-bounds are always included)
@@ -78,7 +78,7 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
 {
     // The minimum size of a Mach-O binary we're interested in.
     // It must have a full Mach header, at least one segment and at least one
-    // section. It's probably useless with just the "qtmetadata" section, but
+    // section. It's probably useless with just the "bobuimetadata" section, but
     // it's valid nonetheless.
     // A fat binary must have this plus the fat header, of course.
     static const size_t MinFileSize = sizeof(my_mach_header) + sizeof(my_segment_command) + sizeof(my_section);
@@ -146,7 +146,7 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
     if (Q_UNLIKELY(header->filetype != MH_BUNDLE && header->filetype != MH_DYLIB))
         return notfound(QLibrary::tr("not a dynamic library"), errorString);
 
-    // find the __TEXT segment, "qtmetadata" section
+    // find the __TEXT segment, "bobuimetadata" section
     const my_segment_command *seg = reinterpret_cast<const my_segment_command *>(header + 1);
     ulong minsize = sizeof(*header);
 
@@ -172,8 +172,8 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
         if (strcmp(seg->segname, "__TEXT") == 0) {
             const my_section *sect = reinterpret_cast<const my_section *>(seg + 1);
             for (uint j = 0; j < seg->nsects; ++j) {
-                // is this the "qtmetadata" section?
-                if (strcmp(sect[j].sectname, "qtmetadata") != 0)
+                // is this the "bobuimetadata" section?
+                if (strcmp(sect[j].sectname, "bobuimetadata") != 0)
                     continue;
 
                 // found it!
@@ -182,7 +182,7 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
                     return notfound(QString(), errorString);
 
                 if (sect[j].size < sizeof(QPluginMetaData::MagicHeader))
-                    return notfound(QLibrary::tr(".qtmetadata section is too small"), errorString);
+                    return notfound(QLibrary::tr(".bobuimetadata section is too small"), errorString);
 
                 const bool binaryIsEncrypted = isEncrypted(header);
                 qsizetype pos = reinterpret_cast<const char *>(header) - m_s + sect[j].offset;
@@ -193,7 +193,7 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
                     QByteArrayView expectedMagic = QByteArrayView::fromArray(QPluginMetaData::MagicString);
                     QByteArrayView actualMagic = QByteArrayView(m_s + pos, expectedMagic.size());
                     if (expectedMagic != actualMagic)
-                        return notfound(QLibrary::tr(".qtmetadata section has incorrect magic"), errorString);
+                        return notfound(QLibrary::tr(".bobuimetadata section has incorrect magic"), errorString);
                 }
 
                 pos += sizeof(QPluginMetaData::MagicString);
@@ -205,9 +205,9 @@ QLibraryScanResult  QMachOParser::parse(const char *m_s, ulong fdlen, QString *e
         seg = reinterpret_cast<const my_segment_command *>(reinterpret_cast<const char *>(seg) + seg->cmdsize);
     }
 
-    // No .qtmetadata section was found
-    *errorString = QLibrary::tr("'%1' is not a Qt plugin").arg(*errorString);
+    // No .bobuimetadata section was found
+    *errorString = QLibrary::tr("'%1' is not a BobUI plugin").arg(*errorString);
     return {};
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

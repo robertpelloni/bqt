@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example itemviews/editabletreemodel
@@ -47,7 +47,7 @@
     hold data for a row of items in a tree view, so it contains a list of
     values corresponding to the data shown in each column.
 
-    Since QTreeView provides a row-oriented view onto a model, it is
+    Since BOBUIreeView provides a row-oriented view onto a model, it is
     natural to choose a row-oriented design for data structures that
     will supply data via a model to this kind of view. Although this makes
     the tree model less flexible, and possibly less useful for use with
@@ -164,7 +164,7 @@
     \endtable
 
     Since the \c TreeModel implementation has been designed for use with
-    QTreeView, we have added a restriction on the way it uses \c TreeItem
+    BOBUIreeView, we have added a restriction on the way it uses \c TreeItem
     instances: each item must expose the same number of columns of data.
     This makes viewing the model consistent, allowing us to use the root
     item to determine the number of columns for any given row, and only
@@ -375,8 +375,8 @@
 
     To enable items to be edited and selected, the \c flags() function needs
     to be implemented so that it returns a combination of flags that includes
-    the Qt::ItemIsEditable and Qt::ItemIsSelectable flags as well as
-    Qt::ItemIsEnabled:
+    the BobUI::ItemIsEditable and BobUI::ItemIsSelectable flags as well as
+    BobUI::ItemIsEnabled:
 
     \snippet itemviews/editabletreemodel/treemodel.cpp 3
 
@@ -427,12 +427,12 @@
     \section1 Testing the model
 
     Correctly implementing an item model can be challenging. The class
-    \l [QtTest] QAbstractItemModelTester from the \l [QtTest]{Qt Test} module
+    \l [BobUITest] QAbstractItemModelTester from the \l [BobUITest]{BobUI Test} module
     checks for model consistency, like the model index creation and
     parent-child relationships.
 
     You can test your model by just passing a model instance to the class
-    constructor, for instance as part of a Qt unit test:
+    constructor, for instance as part of a BobUI unit test:
 
     \snippet itemviews/editabletreemodel/test.cpp 1
 

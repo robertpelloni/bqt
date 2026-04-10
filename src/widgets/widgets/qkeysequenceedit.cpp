@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Ivan Komissarov.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qkeysequenceedit.h"
 #include "qkeysequenceedit_p.h"
@@ -12,7 +12,7 @@
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static_assert(QKeySequencePrivate::MaxKeyCount == 4); // assumed by the code around here
 
@@ -21,7 +21,7 @@ void QKeySequenceEditPrivate::init()
     Q_Q(QKeySequenceEdit);
 
     lineEdit = new QLineEdit(q);
-    lineEdit->setObjectName(QStringLiteral("qt_keysequenceedit_lineedit"));
+    lineEdit->setObjectName(QStringLiteral("bobui_keysequenceedit_lineedit"));
     lineEdit->setClearButtonEnabled(false);
     q->connect(lineEdit, &QLineEdit::textChanged, q, [q](const QString& text) {
         // Clear the shortcut if the user clicked on the clear icon
@@ -31,7 +31,7 @@ void QKeySequenceEditPrivate::init()
 
     keyNum = 0;
     prevKey = -1;
-    finishingKeyCombinations = {Qt::Key_Tab, Qt::Key_Backtab};
+    finishingKeyCombinations = {BobUI::Key_Tab, BobUI::Key_Backtab};
 
     QVBoxLayout *layout = new QVBoxLayout(q);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -44,21 +44,21 @@ void QKeySequenceEditPrivate::init()
     resetState();
 
     q->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    q->setFocusPolicy(Qt::StrongFocus);
-    q->setAttribute(Qt::WA_MacShowFocusRect, true);
-    q->setAttribute(Qt::WA_InputMethodEnabled, false);
+    q->setFocusPolicy(BobUI::StrongFocus);
+    q->setAttribute(BobUI::WA_MacShowFocusRect, true);
+    q->setAttribute(BobUI::WA_InputMethodEnabled, false);
 }
 
-int QKeySequenceEditPrivate::translateModifiers(Qt::KeyboardModifiers state, const QString &text)
+int QKeySequenceEditPrivate::translateModifiers(BobUI::KeyboardModifiers state, const QString &text)
 {
     Q_UNUSED(text);
     int result = 0;
-    if (state & Qt::ControlModifier)
-        result |= Qt::CTRL;
-    if (state & Qt::MetaModifier)
-        result |= Qt::META;
-    if (state & Qt::AltModifier)
-        result |= Qt::ALT;
+    if (state & BobUI::ControlModifier)
+        result |= BobUI::CTRL;
+    if (state & BobUI::MetaModifier)
+        result |= BobUI::META;
+    if (state & BobUI::AltModifier)
+        result |= BobUI::ALT;
     return result;
 }
 
@@ -84,7 +84,7 @@ void QKeySequenceEditPrivate::finishEditing()
     \class QKeySequenceEdit
     \brief The QKeySequenceEdit widget allows to input a QKeySequence.
 
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \since 5.2
 
@@ -115,7 +115,7 @@ QKeySequenceEdit::QKeySequenceEdit(const QKeySequence &keySequence, QWidget *par
 /*!
     \internal
 */
-QKeySequenceEdit::QKeySequenceEdit(QKeySequenceEditPrivate &dd, QWidget *parent, Qt::WindowFlags f) :
+QKeySequenceEdit::QKeySequenceEdit(QKeySequenceEditPrivate &dd, QWidget *parent, BobUI::WindowFlags f) :
     QWidget(dd, parent, f)
 {
     Q_D(QKeySequenceEdit);
@@ -210,7 +210,7 @@ void QKeySequenceEdit::setMaximumSequenceLength(qsizetype count)
 
     Any combination in the list will finish the editing of key sequences.
     All other key combinations can be recorded as part of a key sequence. By
-    default, Qt::Key_Tab and Qt::Key_Backtab will finish recording the key
+    default, BobUI::Key_Tab and BobUI::Key_Backtab will finish recording the key
     sequence.
 
     \since 6.5
@@ -323,25 +323,25 @@ void QKeySequenceEdit::keyPressEvent(QKeyEvent *e)
     }
 
     d->lineEdit->setPlaceholderText(QString());
-    if (nextKey == Qt::Key_Control
-            || nextKey == Qt::Key_Shift
-            || nextKey == Qt::Key_Meta
-            || nextKey == Qt::Key_Alt
-            || nextKey == Qt::Key_unknown) {
+    if (nextKey == BobUI::Key_Control
+            || nextKey == BobUI::Key_Shift
+            || nextKey == BobUI::Key_Meta
+            || nextKey == BobUI::Key_Alt
+            || nextKey == BobUI::Key_unknown) {
         return;
     }
 
     QString selectedText = d->lineEdit->selectedText();
     if (!selectedText.isEmpty() && selectedText == d->lineEdit->text()) {
         clear();
-        if (nextKey == Qt::Key_Backspace)
+        if (nextKey == BobUI::Key_Backspace)
             return;
     }
 
     if (d->keyNum >= d->maximumSequenceLength)
         return;
 
-    if (e->modifiers() & Qt::ShiftModifier) {
+    if (e->modifiers() & BobUI::ShiftModifier) {
         const QList<QKeyCombination> possibleKeys = QKeyMapper::possibleKeys(e);
         int pkTotal = possibleKeys.size();
         if (!pkTotal)
@@ -350,7 +350,7 @@ void QKeySequenceEdit::keyPressEvent(QKeyEvent *e)
         for (int i = 0; i < possibleKeys.size(); ++i) {
             const int key = possibleKeys.at(i).toCombined();
             if (key - nextKey == int(e->modifiers())
-                || (key == nextKey && e->modifiers() == Qt::ShiftModifier)) {
+                || (key == nextKey && e->modifiers() == BobUI::ShiftModifier)) {
                 nextKey = key;
                 found = true;
                 break;
@@ -396,7 +396,7 @@ void QKeySequenceEdit::keyReleaseEvent(QKeyEvent *e)
 /*!
     \reimp
 */
-void QKeySequenceEdit::timerEvent(QTimerEvent *e)
+void QKeySequenceEdit::timerEvent(BOBUIimerEvent *e)
 {
     Q_D(QKeySequenceEdit);
     if (e->id() == d->releaseTimer.id()) {
@@ -413,11 +413,11 @@ void QKeySequenceEdit::timerEvent(QTimerEvent *e)
 void QKeySequenceEdit::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QKeySequenceEdit);
-    if (e->reason() != Qt::PopupFocusReason)
+    if (e->reason() != BobUI::PopupFocusReason)
         d->finishEditing();
     QWidget::focusOutEvent(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qkeysequenceedit.cpp"

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QBACKINGSTORERHISUPPORT_P_H
 #define QBACKINGSTORERHISUPPORT_P_H
@@ -8,21 +8,21 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qwindow.h>
-#include <QtGui/qsurfaceformat.h>
-#include <QtGui/qoffscreensurface.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qsurfaceformat.h>
+#include <BobUIGui/qoffscreensurface.h>
 #include <rhi/qrhi.h>
 #include <qpa/qplatformbackingstore.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QBackingStoreRhiSupport
 {
@@ -72,6 +72,6 @@ private:
     QBackingStoreRhiSupport *m_rhiSupport;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBACKINGSTORERHISUPPORT_P_H

@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLEXTRAFUNCTIONS_H
 #define QOPENGLEXTRAFUNCTIONS_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 
-#include <QtGui/qopenglfunctions.h>
+#include <BobUIGui/qopenglfunctions.h>
 
 // MemoryBarrier is a macro on some architectures on Windows
 #ifdef Q_OS_WIN
@@ -17,11 +17,11 @@
 #endif
 
 // GLES build without having included gl32.h -> GLDEBUGPROC is still need for the protos, define it here
-#if QT_CONFIG(opengles2) && !QT_CONFIG(opengles32)
+#if BOBUI_CONFIG(opengles2) && !BOBUI_CONFIG(opengles32)
 typedef void (QOPENGLF_APIENTRY  *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLExtraFunctionsPrivate;
 
@@ -479,17 +479,17 @@ private:
 };
 
 
-#define QT_OPENGL_DECLARE_FUNCTIONS(ret, name, args) \
+#define BOBUI_OPENGL_DECLARE_FUNCTIONS(ret, name, args) \
     ret (QOPENGLF_APIENTRYP name)args;
-#define QT_OPENGL_COUNT_FUNCTIONS(ret, name, args) +1
+#define BOBUI_OPENGL_COUNT_FUNCTIONS(ret, name, args) +1
 
-#define QT_OPENGL_DECLARE(FUNCTIONS) \
+#define BOBUI_OPENGL_DECLARE(FUNCTIONS) \
 public: \
     struct Functions { \
-        FUNCTIONS(QT_OPENGL_DECLARE_FUNCTIONS) \
+        FUNCTIONS(BOBUI_OPENGL_DECLARE_FUNCTIONS) \
     }; \
     union { \
-        QFunctionPointer functions[FUNCTIONS(QT_OPENGL_COUNT_FUNCTIONS)]; \
+        QFunctionPointer functions[FUNCTIONS(BOBUI_OPENGL_COUNT_FUNCTIONS)]; \
         Functions f; \
     }; \
 private: \
@@ -501,7 +501,7 @@ public:
     QOpenGLExtraFunctionsPrivate(QOpenGLContext *ctx);
 
     // GLES3
-#define QT_OPENGL_EXTRA_FUNCTIONS(F) \
+#define BOBUI_OPENGL_EXTRA_FUNCTIONS(F) \
     F(void, ReadBuffer, (GLenum mode)) \
     F(void, DrawRangeElements, (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices)) \
     F(void, TexImage3D, (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void *pixels)) \
@@ -719,7 +719,7 @@ public:
     F(void, TexParameterIuiv, (GLenum target, GLenum pname, const GLuint * params)) \
     F(void, TexStorage3DMultisample, (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations)) \
 
-    QT_OPENGL_DECLARE(QT_OPENGL_EXTRA_FUNCTIONS)
+    BOBUI_OPENGL_DECLARE(BOBUI_OPENGL_EXTRA_FUNCTIONS)
 };
 
 // GLES 3.0 and 3.1
@@ -2473,16 +2473,16 @@ inline void QOpenGLExtraFunctions::glTexStorage3DMultisample(GLenum target, GLsi
     Q_OPENGL_FUNCTIONS_DEBUG
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#undef QT_OPENGL_DECLARE_FUNCTIONS
-#undef QT_OPENGL_COUNT_FUNCTIONS
-#undef QT_OPENGL_DECLARE
+#undef BOBUI_OPENGL_DECLARE_FUNCTIONS
+#undef BOBUI_OPENGL_COUNT_FUNCTIONS
+#undef BOBUI_OPENGL_DECLARE
 
 #ifdef Q_OS_WIN
 #pragma pop_macro("MemoryBarrier")
 #endif
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif

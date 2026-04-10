@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "dialog.h"
 
@@ -15,12 +15,12 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QToolBox>
+#include <BOBUIoolBox>
 
 #include <QGuiApplication>
 #include <QStyleHints>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class DialogOptionsWidget : public QGroupBox
 {
@@ -79,7 +79,7 @@ Dialog::Dialog(QWidget *parent)
         verticalLayout = new QVBoxLayout(this);
     }
 
-    auto *toolbox = new QToolBox;
+    auto *toolbox = new BOBUIoolBox;
     verticalLayout->addWidget(toolbox);
 
     errorMessageDialog = new QErrorMessage(this);
@@ -279,7 +279,7 @@ void Dialog::setDouble()
     bool ok{};
     double d = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
                                        tr("Amount:"), 37.56, -10000, 10000, 2, &ok,
-                                       Qt::WindowFlags(), 1);
+                                       BobUI::WindowFlags(), 1);
     if (ok)
         doubleLabel->setText(QStringLiteral("$%1").arg(d));
 //! [1]
@@ -324,7 +324,7 @@ void Dialog::setMultiLineText()
 void Dialog::setColor()
 {
     const QColorDialog::ColorDialogOptions options = QFlag(colorDialogOptionsWidget->value());
-    const QColor color = QColorDialog::getColor(Qt::green, this, tr("Select Color"), options);
+    const QColor color = QColorDialog::getColor(BobUI::green, this, tr("Select Color"), options);
 
     if (color.isValid()) {
         colorLabel->setText(color.name());

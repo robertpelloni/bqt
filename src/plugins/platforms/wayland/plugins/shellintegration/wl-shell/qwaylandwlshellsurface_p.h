@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDWLSHELLSURFACE_H
 #define QWAYLANDWLSHELLSURFACE_H
@@ -8,41 +8,41 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/QSize>
+#include <BobUICore/QSize>
 
-#include <QtWaylandClient/qtwaylandclientglobal.h>
-#include <QtWaylandClient/private/qwayland-wayland.h>
-#include <QtWaylandClient/private/qwaylandshellsurface_p.h>
+#include <BobUIWaylandClient/bobuiwaylandclientglobal.h>
+#include <BobUIWaylandClient/private/qwayland-wayland.h>
+#include <BobUIWaylandClient/private/qwaylandshellsurface_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindow;
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 class QWaylandWindow;
 class QWaylandInputDevice;
 class QWaylandExtendedSurface;
 
 class Q_WAYLANDCLIENT_EXPORT QWaylandWlShellSurface : public QWaylandShellSurface
-    , public QtWayland::wl_shell_surface
+    , public BobUIWayland::wl_shell_surface
 {
     Q_OBJECT
 public:
     QWaylandWlShellSurface(struct ::wl_shell_surface *shell_surface, QWaylandWindow *window);
     ~QWaylandWlShellSurface() override;
 
-    using QtWayland::wl_shell_surface::resize;
-    bool resize(QWaylandInputDevice *inputDevice, Qt::Edges edges) override;
+    using BobUIWayland::wl_shell_surface::resize;
+    bool resize(QWaylandInputDevice *inputDevice, BobUI::Edges edges) override;
 
-    using QtWayland::wl_shell_surface::move;
+    using BobUIWayland::wl_shell_surface::move;
     bool move(QWaylandInputDevice *inputDevice) override;
 
     void setTitle(const QString & title) override;
@@ -54,17 +54,17 @@ public:
     std::any surfaceRole() const override { return object(); };
 
 protected:
-    void requestWindowStates(Qt::WindowStates states) override;
+    void requestWindowStates(BobUI::WindowStates states) override;
 
 private:
-    static enum resize convertToResizeEdges(Qt::Edges edges);
+    static enum resize convertToResizeEdges(BobUI::Edges edges);
     void setTopLevel();
     void updateTransientParent(QWindow *parent);
     void setPopup(QWaylandWindow *parent, QWaylandInputDevice *device, uint serial);
 
     QWaylandWindow *m_window = nullptr;
     struct {
-        Qt::WindowStates states = Qt::WindowNoState;
+        BobUI::WindowStates states = BobUI::WindowNoState;
         QSize size;
         enum resize edges = resize_none;
     } m_applied, m_pending;
@@ -82,8 +82,8 @@ private:
     friend class QWaylandWindow;
 };
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDSHELLSURFACE_H

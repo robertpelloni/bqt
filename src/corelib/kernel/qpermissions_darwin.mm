@@ -1,21 +1,21 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpermissions.h"
 #include "qpermissions_p.h"
 
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/private/qcoreapplication_p.h>
-#include <QtCore/qcborarray.h>
+#include <BobUICore/private/qfactoryloader_p.h>
+#include <BobUICore/private/qcoreapplication_p.h>
+#include <BobUICore/qcborarray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, pluginLoader,
-    (QPermissionPluginInterface_iid, QLatin1String("/permissions"), Qt::CaseInsensitive))
+    (QPermissionPluginInterface_iid, QLatin1String("/permissions"), BobUI::CaseInsensitive))
 
 QPermissionPlugin *permissionPlugin(const QPermission &permission)
 {
@@ -32,10 +32,10 @@ QPermissionPlugin *permissionPlugin(const QPermission &permission)
 
     auto metaDataList = pluginLoader()->metaData();
     for (int i = 0; i < metaDataList.size(); ++i) {
-        auto metaData = metaDataList.at(i).value(QtPluginMetaDataKeys::MetaData).toMap();
+        auto metaData = metaDataList.at(i).value(BobUIPluginMetaDataKeys::MetaData).toMap();
         auto permissions = metaData.value("Permissions"_L1).toArray();
         if (permissions.contains(QString::fromUtf8(permissionType))) {
-            auto className = metaDataList.at(i).value(QtPluginMetaDataKeys::ClassName).toString();
+            auto className = metaDataList.at(i).value(BobUIPluginMetaDataKeys::ClassName).toString();
             qCDebug(lcPermissions) << "Found matching plugin" << qUtf8Printable(className);
             auto *plugin = static_cast<QPermissionPlugin*>(pluginLoader()->instance(i));
             return plugin;
@@ -53,12 +53,12 @@ QPermissionPlugin *permissionPlugin(const QPermission &permission)
 
 namespace QPermissions::Private
 {
-    Qt::PermissionStatus checkPermission(const QPermission &permission)
+    BobUI::PermissionStatus checkPermission(const QPermission &permission)
     {
         if (auto *plugin = permissionPlugin(permission))
             return plugin->checkPermission(permission);
         else
-            return Qt::PermissionStatus::Denied;
+            return BobUI::PermissionStatus::Denied;
     }
 
     void requestPermission(const QPermission &permission, const QPermissions::Private::PermissionCallback &callback)
@@ -66,8 +66,8 @@ namespace QPermissions::Private
         if (auto *plugin = permissionPlugin(permission))
             plugin->requestPermission(permission, callback);
         else
-            callback(Qt::PermissionStatus::Denied);
+            callback(BobUI::PermissionStatus::Denied);
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,19 +1,19 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QBYTEARRAY_H
 #define QBYTEARRAY_H
 
-#include <QtCore/qrefcount.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qarraydata.h>
-#include <QtCore/qarraydatapointer.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qbytearrayalgorithms.h>
-#include <QtCore/qbytearrayview.h>
+#include <BobUICore/qrefcount.h>
+#include <BobUICore/qnamespace.h>
+#include <BobUICore/qarraydata.h>
+#include <BobUICore/qarraydatapointer.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qbytearrayalgorithms.h>
+#include <BobUICore/qbytearrayview.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,9 +21,9 @@
 #include <string>
 #include <iterator>
 
-#ifndef QT5_NULL_STRINGS
-// Would ideally be off, but in practice breaks too much (Qt 6.0).
-#define QT5_NULL_STRINGS 1
+#ifndef BOBUI5_NULL_STRINGS
+// Would ideally be off, but in practice breaks too much (BobUI 6.0).
+#define BOBUI5_NULL_STRINGS 1
 #endif
 
 #ifdef truncate
@@ -43,7 +43,7 @@ namespace emscripten {
 
 class tst_QByteArray;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QString;
 class QDataStream;
@@ -59,7 +59,7 @@ class Q_CORE_EXPORT QByteArray
 public:
     using DataPointer = QByteArrayData;
 private:
-    typedef QTypedArrayData<char> Data;
+    typedef BOBUIypedArrayData<char> Data;
 
     DataPointer d;
     static const char _empty;
@@ -67,7 +67,7 @@ private:
     friend class ::tst_QByteArray;
 
     template <typename InputIterator>
-    using if_input_iterator = QtPrivate::IfIsInputIterator<InputIterator>;
+    using if_input_iterator = BobUIPrivate::IfIsInputIterator<InputIterator>;
 public:
     enum Base64Option {
         Base64Encoding = 0,
@@ -91,7 +91,7 @@ public:
     inline constexpr QByteArray() noexcept;
     QByteArray(const char *, qsizetype size = -1);
     QByteArray(qsizetype size, char c);
-    QByteArray(qsizetype size, Qt::Initialization);
+    QByteArray(qsizetype size, BobUI::Initialization);
     explicit QByteArray(QByteArrayView v) : QByteArray(v.data(), v.size()) {}
     inline QByteArray(const QByteArray &) noexcept;
     inline ~QByteArray();
@@ -100,7 +100,7 @@ public:
     QByteArray &operator=(const char *str);
     inline QByteArray(QByteArray && other) noexcept
         = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QByteArray)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QByteArray)
     inline void swap(QByteArray &other) noexcept
     { d.swap(other.d); }
 
@@ -115,7 +115,7 @@ public:
     inline void reserve(qsizetype size);
     inline void squeeze();
 
-#ifndef QT_NO_CAST_FROM_BYTEARRAY
+#ifndef BOBUI_NO_CAST_FROM_BYTEARRAY
     inline operator const char *() const;
     inline operator const void *() const;
 #endif
@@ -126,7 +126,7 @@ public:
     // * GHS 2022.1.4 on INTEGRITY
 #if (!defined(Q_OS_QNX) || !defined(Q_CC_GNU_ONLY) || Q_CC_GNU_ONLY > 803) && \
     (!defined(Q_CC_GHS) || !defined(__GHS_VERSION_NUMBER) || __GHS_VERSION_NUMBER > 202214)
-# define QT_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
+# define BOBUI_BYTEARRAY_CONVERTS_TO_STD_STRING_VIEW
     Q_IMPLICIT operator std::string_view() const noexcept
     { return std::string_view(data(), std::size_t(size())); }
 #endif
@@ -148,27 +148,27 @@ public:
     [[nodiscard]] char back() const { return at(size() - 1); }
     [[nodiscard]] inline char &back();
 
-    QT_CORE_INLINE_SINCE(6, 8)
+    BOBUI_CORE_INLINE_SINCE(6, 8)
     qsizetype indexOf(char c, qsizetype from = 0) const;
     qsizetype indexOf(QByteArrayView bv, qsizetype from = 0) const
-    { return QtPrivate::findByteArray(qToByteArrayViewIgnoringNull(*this), from, bv); }
+    { return BobUIPrivate::findByteArray(qToByteArrayViewIgnoringNull(*this), from, bv); }
 
-    QT_CORE_INLINE_SINCE(6, 8)
+    BOBUI_CORE_INLINE_SINCE(6, 8)
     qsizetype lastIndexOf(char c, qsizetype from = -1) const;
     qsizetype lastIndexOf(QByteArrayView bv) const
     { return lastIndexOf(bv, size()); }
     qsizetype lastIndexOf(QByteArrayView bv, qsizetype from) const
-    { return QtPrivate::lastIndexOf(qToByteArrayViewIgnoringNull(*this), from, bv); }
+    { return BobUIPrivate::lastIndexOf(qToByteArrayViewIgnoringNull(*this), from, bv); }
 
     inline bool contains(char c) const;
     inline bool contains(QByteArrayView bv) const;
     qsizetype count(char c) const;
     qsizetype count(QByteArrayView bv) const
-    { return QtPrivate::count(qToByteArrayViewIgnoringNull(*this), bv); }
+    { return BobUIPrivate::count(qToByteArrayViewIgnoringNull(*this), bv); }
 
-    inline int compare(QByteArrayView a, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
+    inline int compare(QByteArrayView a, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
 
-#if QT_CORE_REMOVED_SINCE(6, 7)
+#if BOBUI_CORE_REMOVED_SINCE(6, 7)
     QByteArray left(qsizetype len) const;
     QByteArray right(qsizetype len) const;
     QByteArray mid(qsizetype index, qsizetype len = -1) const;
@@ -233,19 +233,19 @@ public:
 #endif
 
     bool startsWith(QByteArrayView bv) const
-    { return QtPrivate::startsWith(qToByteArrayViewIgnoringNull(*this), bv); }
+    { return BobUIPrivate::startsWith(qToByteArrayViewIgnoringNull(*this), bv); }
     bool startsWith(char c) const { return size() > 0 && front() == c; }
 
     bool endsWith(char c) const { return size() > 0 && back() == c; }
     bool endsWith(QByteArrayView bv) const
-    { return QtPrivate::endsWith(qToByteArrayViewIgnoringNull(*this), bv); }
+    { return BobUIPrivate::endsWith(qToByteArrayViewIgnoringNull(*this), bv); }
 
     bool isUpper() const;
     bool isLower() const;
 
     [[nodiscard]] bool isValidUtf8() const noexcept
     {
-        return QtPrivate::isValidUtf8(qToByteArrayViewIgnoringNull(*this));
+        return BobUIPrivate::isValidUtf8(qToByteArrayViewIgnoringNull(*this));
     }
 
     void truncate(qsizetype pos);
@@ -374,16 +374,16 @@ public:
 
     [[nodiscard]] QByteArray repeated(qsizetype times) const;
 
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-#if QT_CORE_REMOVED_SINCE(6, 8)
-    QT_ASCII_CAST_WARN inline bool operator==(const QString &s2) const;
-    QT_ASCII_CAST_WARN inline bool operator!=(const QString &s2) const;
-    QT_ASCII_CAST_WARN inline bool operator<(const QString &s2) const;
-    QT_ASCII_CAST_WARN inline bool operator>(const QString &s2) const;
-    QT_ASCII_CAST_WARN inline bool operator<=(const QString &s2) const;
-    QT_ASCII_CAST_WARN inline bool operator>=(const QString &s2) const;
-#endif // QT_CORE_REMOVED_SINCE(6, 8)
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
+    BOBUI_ASCII_CAST_WARN inline bool operator==(const QString &s2) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator!=(const QString &s2) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<(const QString &s2) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>(const QString &s2) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator<=(const QString &s2) const;
+    BOBUI_ASCII_CAST_WARN inline bool operator>=(const QString &s2) const;
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 8)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
     short toShort(bool *ok = nullptr, int base = 10) const;
     ushort toUShort(bool *ok = nullptr, int base = 10) const;
@@ -400,7 +400,7 @@ public:
     QByteArray toPercentEncoding(const QByteArray &exclude = QByteArray(),
                                  const QByteArray &include = QByteArray(),
                                  char percent = '%') const;
-#if QT_CORE_REMOVED_SINCE(6, 11)
+#if BOBUI_CORE_REMOVED_SINCE(6, 11)
     [[nodiscard]] QByteArray percentDecoded(char percent = '%') const;
 #else
     [[nodiscard]] QByteArray percentDecoded(char percent = '%') const &
@@ -524,17 +524,17 @@ public:
         Q_PRESUME(size_t(d.size) <= MaxSize);
         return d.size;
     }
-#if QT_DEPRECATED_SINCE(6, 4)
-    QT_DEPRECATED_VERSION_X_6_4("Use size() or length() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 4)
+    BOBUI_DEPRECATED_VERSION_X_6_4("Use size() or length() instead.")
     constexpr qsizetype count() const noexcept { return size(); }
 #endif
     constexpr qsizetype length() const noexcept { return size(); }
-    QT_CORE_CONSTEXPR_INLINE_SINCE(6, 4)
+    BOBUI_CORE_CONSTEXPR_INLINE_SINCE(6, 4)
     bool isNull() const noexcept;
 
     inline const DataPointer &data_ptr() const { return d; }
     inline DataPointer &data_ptr() { return d; }
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     explicit inline QByteArray(const DataPointer &dd) : d(dd) {}
 #endif
     explicit inline QByteArray(DataPointer &&dd) : d(std::move(dd)) {}
@@ -546,11 +546,11 @@ public:
 private:
     friend bool comparesEqual(const QByteArray &lhs, const QByteArrayView &rhs) noexcept
     { return QByteArrayView(lhs) == rhs; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QByteArray &lhs, const QByteArrayView &rhs) noexcept
     {
-        const int res = QtPrivate::compareMemory(QByteArrayView(lhs), rhs);
-        return Qt::compareThreeWay(res, 0);
+        const int res = BobUIPrivate::compareMemory(QByteArrayView(lhs), rhs);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QByteArray)
     Q_DECLARE_STRONGLY_ORDERED(QByteArray, const char *)
@@ -572,21 +572,21 @@ private:
     // Check isEmpty() instead of isNull() for backwards compatibility.
     friend bool comparesEqual(const QByteArray &lhs, std::nullptr_t) noexcept
     { return lhs.isEmpty(); }
-    friend Qt::strong_ordering compareThreeWay(const QByteArray &lhs, std::nullptr_t) noexcept
-    { return lhs.isEmpty() ? Qt::strong_ordering::equivalent : Qt::strong_ordering::greater; }
+    friend BobUI::strong_ordering compareThreeWay(const QByteArray &lhs, std::nullptr_t) noexcept
+    { return lhs.isEmpty() ? BobUI::strong_ordering::equivalent : BobUI::strong_ordering::greater; }
     Q_DECLARE_STRONGLY_ORDERED(QByteArray, std::nullptr_t)
 
     // defined in qstring.cpp
     friend Q_CORE_EXPORT bool comparesEqual(const QByteArray &lhs, const QChar &rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering
+    friend Q_CORE_EXPORT BobUI::strong_ordering
     compareThreeWay(const QByteArray &lhs, const QChar &rhs) noexcept;
     friend Q_CORE_EXPORT bool comparesEqual(const QByteArray &lhs, char16_t rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering
+    friend Q_CORE_EXPORT BobUI::strong_ordering
     compareThreeWay(const QByteArray &lhs, char16_t rhs) noexcept;
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-    Q_DECLARE_STRONGLY_ORDERED(QByteArray, QChar, QT_ASCII_CAST_WARN)
-    Q_DECLARE_STRONGLY_ORDERED(QByteArray, char16_t, QT_ASCII_CAST_WARN)
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+    Q_DECLARE_STRONGLY_ORDERED(QByteArray, QChar, BOBUI_ASCII_CAST_WARN)
+    Q_DECLARE_STRONGLY_ORDERED(QByteArray, char16_t, BOBUI_ASCII_CAST_WARN)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
 
     void reallocData(qsizetype alloc, QArrayData::AllocationOption option);
@@ -637,7 +637,7 @@ inline char QByteArray::at(qsizetype i) const
 inline char QByteArray::operator[](qsizetype i) const
 { verify(i, 1); return d.data()[i]; }
 
-#ifndef QT_NO_CAST_FROM_BYTEARRAY
+#ifndef BOBUI_NO_CAST_FROM_BYTEARRAY
 inline QByteArray::operator const char *() const
 { return data(); }
 inline QByteArray::operator const void *() const
@@ -651,7 +651,7 @@ inline char *QByteArray::data()
 }
 inline const char *QByteArray::data() const noexcept
 {
-#if QT5_NULL_STRINGS == 1
+#if BOBUI5_NULL_STRINGS == 1
     return d.data() ? d.data() : &_empty;
 #else
     return d.data();
@@ -696,12 +696,12 @@ inline bool QByteArray::contains(char c) const
 { return indexOf(c) != -1; }
 inline bool QByteArray::contains(QByteArrayView bv) const
 { return indexOf(bv) != -1; }
-inline int QByteArray::compare(QByteArrayView a, Qt::CaseSensitivity cs) const noexcept
+inline int QByteArray::compare(QByteArrayView a, BobUI::CaseSensitivity cs) const noexcept
 {
-    return cs == Qt::CaseSensitive ? QtPrivate::compareMemory(*this, a) :
+    return cs == BobUI::CaseSensitive ? BobUIPrivate::compareMemory(*this, a) :
                                      qstrnicmp(data(), size(), a.data(), a.size());
 }
-#if !defined(QT_USE_QSTRINGBUILDER)
+#if !defined(BOBUI_USE_QSTRINGBUILDER)
 inline QByteArray operator+(const QByteArray &a1, const QByteArray &a2)
 { return QByteArray(a1) += a2; }
 inline QByteArray operator+(QByteArray &&lhs, const QByteArray &rhs)
@@ -721,16 +721,16 @@ inline QByteArray operator+(char a1, const QByteArray &a2)
 Q_WEAK_OVERLOAD
 inline QByteArray operator+(const QByteArray &lhs, QByteArrayView rhs)
 {
-    QByteArray tmp{lhs.size() + rhs.size(), Qt::Uninitialized};
+    QByteArray tmp{lhs.size() + rhs.size(), BobUI::Uninitialized};
     return tmp.assign(lhs).append(rhs);
 }
 Q_WEAK_OVERLOAD
 inline QByteArray operator+(QByteArrayView lhs, const QByteArray &rhs)
 {
-    QByteArray tmp{lhs.size() + rhs.size(), Qt::Uninitialized};
+    QByteArray tmp{lhs.size() + rhs.size(), BobUI::Uninitialized};
     return tmp.assign(lhs).append(rhs);
 }
-#endif // QT_USE_QSTRINGBUILDER
+#endif // BOBUI_USE_QSTRINGBUILDER
 
 inline QByteArray &QByteArray::setNum(short n, int base)
 { return setNum(qlonglong(n), base); }
@@ -747,14 +747,14 @@ inline QByteArray &QByteArray::setNum(ulong n, int base)
 inline QByteArray &QByteArray::setNum(float n, char format, int precision)
 { return setNum(double(n), format, precision); }
 
-#if QT_CORE_INLINE_IMPL_SINCE(6, 4)
-QT_CORE_CONSTEXPR_INLINE_SINCE(6, 4)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 4)
+BOBUI_CORE_CONSTEXPR_INLINE_SINCE(6, 4)
 bool QByteArray::isNull() const noexcept
 {
     return d.isNull();
 }
 #endif
-#if QT_CORE_INLINE_IMPL_SINCE(6, 8)
+#if BOBUI_CORE_INLINE_IMPL_SINCE(6, 8)
 qsizetype QByteArray::indexOf(char ch, qsizetype from) const
 {
     return qToByteArrayViewIgnoringNull(*this).indexOf(ch, from);
@@ -765,12 +765,12 @@ qsizetype QByteArray::lastIndexOf(char ch, qsizetype from) const
 }
 #endif
 
-#if !defined(QT_NO_DATASTREAM) || defined(QT_BOOTSTRAPPED)
+#if !defined(BOBUI_NO_DATASTREAM) || defined(BOBUI_BOOTSTRAPPED)
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QByteArray &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QByteArray &);
 #endif
 
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
 Q_CORE_EXPORT QByteArray qCompress(const uchar* data, qsizetype nbytes, int compressionLevel = -1);
 Q_CORE_EXPORT QByteArray qUncompress(const uchar* data, qsizetype nbytes);
 inline QByteArray qCompress(const QByteArray& data, int compressionLevel = -1)
@@ -846,7 +846,7 @@ QByteArray QByteArrayView::toByteArray() const
     return QByteArray(*this);
 }
 
-namespace Qt {
+namespace BobUI {
 inline namespace Literals {
 inline namespace StringLiterals {
 
@@ -857,20 +857,20 @@ inline QByteArray operator""_ba(const char *str, size_t size) noexcept
 
 } // StringLiterals
 } // Literals
-} // Qt
+} // BobUI
 
-inline namespace QtLiterals {
-#if QT_DEPRECATED_SINCE(6, 8)
+inline namespace BobUILiterals {
+#if BOBUI_DEPRECATED_SINCE(6, 8)
 
-QT_DEPRECATED_VERSION_X_6_8("Use _ba from Qt::StringLiterals namespace instead.")
+BOBUI_DEPRECATED_VERSION_X_6_8("Use _ba from BobUI::StringLiterals namespace instead.")
 inline QByteArray operator""_qba(const char *str, size_t size) noexcept
 {
-    return Qt::StringLiterals::operator""_ba(str, size);
+    return BobUI::StringLiterals::operator""_ba(str, size);
 }
 
-#endif // QT_DEPRECATED_SINCE(6, 8)
-} // QtLiterals
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
+} // BobUILiterals
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBYTEARRAY_H

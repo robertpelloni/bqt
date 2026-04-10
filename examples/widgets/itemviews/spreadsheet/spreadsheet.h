@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SPREADSHEET_H
 #define SPREADSHEET_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QLabel;
 class QLineEdit;
-class QToolBar;
-class QTableWidgetItem;
-class QTableWidget;
-QT_END_NAMESPACE
+class BOBUIoolBar;
+class BOBUIableWidgetItem;
+class BOBUIableWidget;
+BOBUI_END_NAMESPACE
 
 class SpreadSheet : public QMainWindow
 {
@@ -22,9 +22,9 @@ public:
     SpreadSheet(int rows, int cols, QWidget *parent = nullptr);
 
 public slots:
-    void updateStatus(QTableWidgetItem *item);
-    void updateColor(QTableWidgetItem *item);
-    void updateLineEdit(QTableWidgetItem *item);
+    void updateStatus(BOBUIableWidgetItem *item);
+    void updateColor(BOBUIableWidgetItem *item);
+    void updateLineEdit(BOBUIableWidgetItem *item);
     void returnPressed();
     void selectColor();
     void selectFont();
@@ -54,7 +54,7 @@ protected:
                         const QString &outText,
                         QString *cell1, QString *cell2, QString *outCell);
 private:
-    QToolBar *toolBar;
+    BOBUIoolBar *toolBar;
     QAction *colorAction;
     QAction *fontAction;
     QAction *firstSeparator;
@@ -71,7 +71,7 @@ private:
     QAction *printAction;
 
     QLabel *cellLabel;
-    QTableWidget *table;
+    BOBUIableWidget *table;
     QLineEdit *formulaInput;
 
 };

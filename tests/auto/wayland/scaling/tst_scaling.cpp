@@ -1,11 +1,11 @@
 // Copyright (C) 2022 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mockcompositor.h"
-#include <QtGui/QRasterWindow>
-#include <QtGui/qpa/qplatformnativeinterface.h>
-#include <QtWaylandClient/private/wayland-wayland-client-protocol.h>
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIGui/QRasterWindow>
+#include <BobUIGui/qpa/qplatformnativeinterface.h>
+#include <BobUIWaylandClient/private/wayland-wayland-client-protocol.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
 
 using namespace MockCompositor;
 
@@ -14,7 +14,7 @@ class tst_scaling : public QObject, private DefaultCompositor
     Q_OBJECT
 private slots:
     void initTestCase();
-    void cleanup() { QTRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
+    void cleanup() { BOBUIRY_VERIFY2(isClean(), qPrintable(dirtyMessage())); }
     void scaledWindow();
     void roundingPolicy_data();
     void roundingPolicy();
@@ -23,7 +23,7 @@ private slots:
 
 void tst_scaling::initTestCase()
 {
-    qputenv("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
+    qputenv("BOBUI_WAYLAND_DISABLE_WINDOWDECORATION", "1");
 }
 
 void tst_scaling::scaledWindow()
@@ -44,7 +44,7 @@ void tst_scaling::scaledWindow()
         xdgToplevel()->sendCompleteConfigure(configureSize);
     });
 
-    QTRY_COMPARE(configureSpy.count(), 1);
+    BOBUIRY_COMPARE(configureSpy.count(), 1);
     QCOMPARE(window.devicePixelRatio(), 1.5);
 
     exec([&] {
@@ -77,9 +77,9 @@ void tst_scaling::scaledWindow()
         QVERIFY(fractionalScale());
         fractionalScale()->send_preferred_scale(2.5 * 120);
     });
-    QTRY_COMPARE(window.devicePixelRatio(), 2.5);
+    BOBUIRY_COMPARE(window.devicePixelRatio(), 2.5);
     QCOMPARE(window.size(), QSize(200,200));
-    QTRY_VERIFY(surfaceCommitSpy.count());
+    BOBUIRY_VERIFY(surfaceCommitSpy.count());
 
     exec([&] {
         Buffer *buffer = xdgToplevel()->surface()->m_committed.buffer;
@@ -93,13 +93,13 @@ void tst_scaling::scaledWindow()
 
 void tst_scaling::roundingPolicy_data()
 {
-    QTest::addColumn<QSize>("windowSize");
-    QTest::addColumn<qreal>("scale");
-    QTest::addColumn<QSize>("expectedBufferSize");
+    BOBUIest::addColumn<QSize>("windowSize");
+    BOBUIest::addColumn<qreal>("scale");
+    BOBUIest::addColumn<QSize>("expectedBufferSize");
 
-    QTest::newRow("1.125 - round down") << QSize(10, 10) << 1.125 << QSize(11,11);
-    QTest::newRow("1.25 - round up") << QSize(10, 10) << 1.25 << QSize(13,13);
-    QTest::newRow("1.5 - don't round") << QSize(10, 10) << 1.5 << QSize(15,15);
+    BOBUIest::newRow("1.125 - round down") << QSize(10, 10) << 1.125 << QSize(11,11);
+    BOBUIest::newRow("1.25 - round up") << QSize(10, 10) << 1.25 << QSize(13,13);
+    BOBUIest::newRow("1.5 - don't round") << QSize(10, 10) << 1.5 << QSize(15,15);
 }
 
 void tst_scaling::roundingPolicy()

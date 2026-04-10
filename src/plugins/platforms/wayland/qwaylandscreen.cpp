@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandscreen_p.h"
 
@@ -8,17 +8,17 @@
 #include "qwaylandcursor_p.h"
 #include "qwaylandwindow_p.h"
 
-#include <QtGui/QGuiApplication>
+#include <BobUIGui/QGuiApplication>
 
 #include <qpa/qwindowsysteminterface.h>
 #include <qpa/qplatformwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandXdgOutputManagerV1::QWaylandXdgOutputManagerV1(QWaylandDisplay* display, uint id, uint version)
-    : QtWayland::zxdg_output_manager_v1(display->wl_registry(), id, qMin(3u, version))
+    : BobUIWayland::zxdg_output_manager_v1(display->wl_registry(), id, qMin(3u, version))
 {
 }
 
@@ -28,7 +28,7 @@ QWaylandXdgOutputManagerV1::~QWaylandXdgOutputManagerV1()
 }
 
 QWaylandScreen::QWaylandScreen(QWaylandDisplay *waylandDisplay, int version, uint32_t id)
-    : QtWayland::wl_output(waylandDisplay->wl_registry(), id, qMin(version, 4))
+    : BobUIWayland::wl_output(waylandDisplay->wl_registry(), id, qMin(version, 4))
     , m_outputId(id)
     , mWaylandDisplay(waylandDisplay)
     , mOutputName(QStringLiteral("Screen%1").arg(id))
@@ -148,11 +148,11 @@ QSizeF QWaylandScreen::physicalSize() const
 
 QDpi QWaylandScreen::logicalDpi() const
 {
-    static bool physicalDpi = qEnvironmentVariable("QT_WAYLAND_FORCE_DPI") == QStringLiteral("physical");
+    static bool physicalDpi = qEnvironmentVariable("BOBUI_WAYLAND_FORCE_DPI") == QStringLiteral("physical");
     if (physicalDpi)
         return QPlatformScreen::logicalDpi();
 
-    static int forceDpi = qgetenv("QT_WAYLAND_FORCE_DPI").toInt();
+    static int forceDpi = qgetenv("BOBUI_WAYLAND_FORCE_DPI").toInt();
     if (forceDpi)
         return QDpi(forceDpi, forceDpi);
 
@@ -178,7 +178,7 @@ QList<QPlatformScreen *> QWaylandScreen::virtualSiblings() const
     return list;
 }
 
-Qt::ScreenOrientation QWaylandScreen::orientation() const
+BobUI::ScreenOrientation QWaylandScreen::orientation() const
 {
     return m_orientation;
 }
@@ -198,12 +198,12 @@ qreal QWaylandScreen::refreshRate() const
     return mRefreshRate / 1000.f;
 }
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 QPlatformCursor *QWaylandScreen::cursor() const
 {
     return mWaylandDisplay->waylandCursor();
 }
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
 QPlatformScreen::SubpixelAntialiasingType QWaylandScreen::subpixelAntialiasingTypeHint() const
 {
@@ -241,28 +241,28 @@ QWaylandScreen *QWaylandScreen::waylandScreenFromWindow(QWindow *window)
 
 QWaylandScreen *QWaylandScreen::fromWlOutput(::wl_output *output)
 {
-    if (auto *o = QtWayland::wl_output::fromObject(output))
+    if (auto *o = BobUIWayland::wl_output::fromObject(output))
         return static_cast<QWaylandScreen *>(o);
     return nullptr;
 }
 
-Qt::ScreenOrientation QWaylandScreen::toScreenOrientation(int wlTransform,
-                                                          Qt::ScreenOrientation fallback) const
+BobUI::ScreenOrientation QWaylandScreen::toScreenOrientation(int wlTransform,
+                                                          BobUI::ScreenOrientation fallback) const
 {
     auto orientation = fallback;
     bool isPortrait = mGeometry.height() > mGeometry.width();
     switch (wlTransform) {
     case WL_OUTPUT_TRANSFORM_NORMAL:
-        orientation = isPortrait ? Qt::PortraitOrientation : Qt::LandscapeOrientation;
+        orientation = isPortrait ? BobUI::PortraitOrientation : BobUI::LandscapeOrientation;
         break;
     case WL_OUTPUT_TRANSFORM_90:
-        orientation = isPortrait ? Qt::InvertedLandscapeOrientation : Qt::PortraitOrientation;
+        orientation = isPortrait ? BobUI::InvertedLandscapeOrientation : BobUI::PortraitOrientation;
         break;
     case WL_OUTPUT_TRANSFORM_180:
-        orientation = isPortrait ? Qt::InvertedPortraitOrientation : Qt::InvertedLandscapeOrientation;
+        orientation = isPortrait ? BobUI::InvertedPortraitOrientation : BobUI::InvertedLandscapeOrientation;
         break;
     case WL_OUTPUT_TRANSFORM_270:
-        orientation = isPortrait ? Qt::LandscapeOrientation : Qt::InvertedPortraitOrientation;
+        orientation = isPortrait ? BobUI::LandscapeOrientation : BobUI::InvertedPortraitOrientation;
         break;
     // Ignore these ones, at least for now
     case WL_OUTPUT_TRANSFORM_FLIPPED:
@@ -409,6 +409,6 @@ void QWaylandScreen::updateXdgOutputProperties()
     QWindowSystemInterface::handleScreenGeometryChange(screen(), geometry(), availableGeometry());
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

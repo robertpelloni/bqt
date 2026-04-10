@@ -1,7 +1,7 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 template<typename Paintable>
 class Circle : public Paintable
@@ -25,7 +25,7 @@ public:
     {
         setMinimumSize({200, 200});
         setMaximumSize({200, 200});
-        setFlags(Qt::Window | Qt::FramelessWindowHint);
+        setFlags(BobUI::Window | BobUI::FramelessWindowHint);
     }
 
 protected:
@@ -34,19 +34,19 @@ protected:
         qWarning() << "Painting into a" << this << "with DPR" << devicePixelRatio()
                     << "on a screen with DPR" << screen()->devicePixelRatio();
         QPainter painter(static_cast<Paintable *>(this));
-        painter.fillRect(0, 0, width(), height(), devicePixelRatio() == 1 ? Qt::red : Qt::green);
-        painter.setPen(QPen(Qt::black, 5));
+        painter.fillRect(0, 0, width(), height(), devicePixelRatio() == 1 ? BobUI::red : BobUI::green);
+        painter.setPen(QPen(BobUI::black, 5));
         painter.drawRect(10, 10, width() - 20, height() - 20);
-        painter.drawText(0, 0, width(), height(), Qt::AlignHCenter | Qt::AlignVCenter, metaObject()->className());
+        painter.drawText(0, 0, width(), height(), BobUI::AlignHCenter | BobUI::AlignVCenter, metaObject()->className());
     }
     void mousePressEvent(QMouseEvent *event) override
     {
-        if (event->button() == Qt::LeftButton) {
-            if (event->modifiers() & Qt::ControlModifier)
+        if (event->button() == BobUI::LeftButton) {
+            if (event->modifiers() & BobUI::ControlModifier)
                 requestUpdate();
-            else if (event->modifiers() & Qt::AltModifier)
+            else if (event->modifiers() & BobUI::AltModifier)
                 updateMask();
-            else if (event->modifiers() & Qt::ShiftModifier && startSystemMove())
+            else if (event->modifiers() & BobUI::ShiftModifier && startSystemMove())
                 dragPosition = {};
             else
                 dragPosition = event->globalPosition() - frameGeometry().topLeft();
@@ -54,7 +54,7 @@ protected:
     }
     void mouseMoveEvent(QMouseEvent *event) override
     {
-        if (event->buttons() & Qt::LeftButton && !dragPosition.isNull())
+        if (event->buttons() & BobUI::LeftButton && !dragPosition.isNull())
             setPosition((event->globalPosition() - dragPosition).toPoint());
     }
     void resizeEvent(QResizeEvent *) override
@@ -79,7 +79,7 @@ class WindowLikeWidget : public QWidget
 public:
     void setPosition(const QPoint &point) { QWidget::move(point); }
     bool startSystemMove() { return windowHandle()->startSystemMove(); }
-    void setFlags(Qt::WindowFlags flags) { setWindowFlags(flags); }
+    void setFlags(BobUI::WindowFlags flags) { setWindowFlags(flags); }
     void requestUpdate() { update(); }
 };
 
@@ -88,7 +88,7 @@ class Widget : public Circle<WindowLikeWidget>
 public:
     Widget()
     {
-        setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(BobUI::WA_TranslucentBackground);
     }
 };
 

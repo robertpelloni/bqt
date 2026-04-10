@@ -1,7 +1,7 @@
 // Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
 // Copyright (C) 2016 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef REGULAREXPRESSIONDIALOG_H
 #define REGULAREXPRESSIONDIALOG_H
@@ -9,15 +9,15 @@
 #include <QDialog>
 #include <QRegularExpression>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QCheckBox;
 class QComboBox;
 class QLabel;
 class QLineEdit;
 class QSpinBox;
 class QPlainTextEdit;
-class QTreeWidget;
-QT_END_NAMESPACE
+class BOBUIreeWidget;
+BOBUI_END_NAMESPACE
 
 class RegularExpressionDialog : public QDialog
 {
@@ -61,10 +61,10 @@ private:
     QCheckBox *anchoredMatchOptionCheckBox;
     QCheckBox *dontCheckSubjectStringMatchOptionCheckBox;
 
-    QTreeWidget *matchDetailsTreeWidget;
+    BOBUIreeWidget *matchDetailsTreeWidget;
 
     QLabel *regexpStatusLabel;
-    QTreeWidget *namedGroupsTreeWidget;
+    BOBUIreeWidget *namedGroupsTreeWidget;
 
     QRegularExpression regularExpression;
 };

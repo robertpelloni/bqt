@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QXKBCOMMON_P_H
 #define QXKBCOMMON_P_H
@@ -9,18 +9,18 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qlist.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/private/qglobal_p.h>
 
 #include <xkbcommon/xkbcommon.h>
 
@@ -28,7 +28,7 @@
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEvent;
 class QKeyEvent;
@@ -42,8 +42,8 @@ public:
 
     static QList<xkb_keysym_t> toKeysym(QKeyEvent *event);
 
-    static int keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers);
-    static int keysymToQtKey(xkb_keysym_t keysym, Qt::KeyboardModifiers modifiers,
+    static int keysymToBobUIKey(xkb_keysym_t keysym, BobUI::KeyboardModifiers modifiers);
+    static int keysymToBobUIKey(xkb_keysym_t keysym, BobUI::KeyboardModifiers modifiers,
                              xkb_state *state, xkb_keycode_t code,
                              bool superAsMeta = true, bool hyperAsMeta = true);
 
@@ -52,7 +52,7 @@ public:
     static void xkbcommon_XConvertCase(xkb_keysym_t sym, xkb_keysym_t *lower, xkb_keysym_t *upper);
     static xkb_keysym_t qxkbcommon_xkb_keysym_to_upper(xkb_keysym_t ks);
 
-    static Qt::KeyboardModifiers modifiers(struct xkb_state *state, xkb_keysym_t keysym = XKB_KEY_VoidSymbol);
+    static BobUI::KeyboardModifiers modifiers(struct xkb_state *state, xkb_keysym_t keysym = XKB_KEY_VoidSymbol);
 
     static QList<int> possibleKeys(xkb_state *state,
         const QKeyEvent *event, bool superAsMeta = false, bool hyperAsMeta = false);
@@ -124,6 +124,6 @@ public:
     using ScopedXKBContext = std::unique_ptr<struct xkb_context, XKBContextDeleter>;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QXKBCOMMON_P_H

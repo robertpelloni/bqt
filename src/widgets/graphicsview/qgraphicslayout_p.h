@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSLAYOUT_P_H
 #define QGRAPHICSLAYOUT_P_H
@@ -9,34 +9,34 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
 #include "qgraphicslayout.h"
 #include "qgraphicslayoutitem_p.h"
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qstyleoption.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qstyleoption.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsLayoutItem;
 class QGraphicsWidget;
 
-#ifdef QT_DEBUG
-inline bool qt_graphicsLayoutDebug()
+#ifdef BOBUI_DEBUG
+inline bool bobui_graphicsLayoutDebug()
 {
     static int checked_env = -1;
     if (checked_env == -1)
-        checked_env = !!qEnvironmentVariableIntValue("QT_GRAPHICSLAYOUT_DEBUG");
+        checked_env = !!qEnvironmentVariableIntValue("BOBUI_GRAPHICSLAYOUT_DEBUG");
     return checked_env;
 }
 #endif
@@ -66,18 +66,18 @@ public:
     inline bool operator!=(const QLayoutStyleInfo &other) const
         { return !(*this == other); }
 
-    inline void setDefaultSpacing(Qt::Orientation o, qreal spacing){
+    inline void setDefaultSpacing(BobUI::Orientation o, qreal spacing){
         if (spacing >= 0)
             m_defaultSpacing[int(o) - 1] = spacing;
     }
 
-    inline qreal defaultSpacing(Qt::Orientation o) const {
+    inline qreal defaultSpacing(BobUI::Orientation o) const {
         return m_defaultSpacing[int(o) - 1];
     }
 
     inline qreal perItemSpacing(QSizePolicy::ControlType control1,
                                   QSizePolicy::ControlType control2,
-                                  Qt::Orientation orientation) const
+                                  BobUI::Orientation orientation) const
     {
         Q_ASSERT(style());
         return style()->layoutSpacing(control1, control2, orientation, &m_styleOption, widget());
@@ -100,7 +100,7 @@ public:
 
     void reparentChildItems(QGraphicsItem *newParent);
     void getMargin(qreal *result, qreal userMargin, QStyle::PixelMetric pm) const;
-    Qt::LayoutDirection visualDirection() const;
+    BobUI::LayoutDirection visualDirection() const;
 
     void addChildLayoutItem(QGraphicsLayoutItem *item);
     void activateRecursive(QGraphicsLayoutItem *item);
@@ -109,6 +109,6 @@ public:
     bool activated;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

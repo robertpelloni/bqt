@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include "qtwidgetsglobal.h"
-#if QT_CONFIG(label)
+#include "bobuiwidgetsglobal.h"
+#if BOBUI_CONFIG(label)
 #include "qlabel.h"
 #endif
 #include "qpainter.h"
@@ -12,7 +12,7 @@
 #include "qevent.h"
 #include "qapplication.h"
 #include "qlist.h"
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qsystemtrayicon_p.h"
@@ -27,10 +27,10 @@
 #include <private/qguiapplication_p.h>
 #include <qdebug.h>
 
-#ifndef QT_NO_SYSTEMTRAYICON
-QT_BEGIN_NAMESPACE
+#ifndef BOBUI_NO_SYSTEMTRAYICON
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static inline unsigned long locateSystemTray()
 {
@@ -63,19 +63,19 @@ private:
 };
 
 QSystemTrayIconSys::QSystemTrayIconSys(QSystemTrayIcon *qIn)
-    : QWidget(nullptr, Qt::Window | Qt::FramelessWindowHint | Qt::BypassWindowManagerHint)
+    : QWidget(nullptr, BobUI::Window | BobUI::FramelessWindowHint | BobUI::BypassWindowManagerHint)
     , q(qIn)
 {
     setObjectName(QStringLiteral("QSystemTrayIconSys"));
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     setToolTip(q->toolTip());
 #endif
-    setAttribute(Qt::WA_AlwaysShowToolTips, true);
-    setAttribute(Qt::WA_QuitOnClose, false);
+    setAttribute(BobUI::WA_AlwaysShowToolTips, true);
+    setAttribute(BobUI::WA_QuitOnClose, false);
     const QSize size(22, 22); // Gnome, standard size
     setGeometry(QRect(QPoint(0, 0), size));
     setMinimumSize(size);
-    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(BobUI::WA_TranslucentBackground);
     setMouseTracking(true);
 }
 
@@ -87,29 +87,29 @@ QRect QSystemTrayIconSys::globalGeometry() const
 void QSystemTrayIconSys::mousePressEvent(QMouseEvent *ev)
 {
     QPoint globalPos = ev->globalPosition().toPoint();
-#ifndef QT_NO_CONTEXTMENU
-    if (ev->button() == Qt::RightButton && q->contextMenu())
+#ifndef BOBUI_NO_CONTEXTMENU
+    if (ev->button() == BobUI::RightButton && q->contextMenu())
         q->contextMenu()->popup(globalPos);
 #else
     Q_UNUSED(globalPos);
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
     if (QBalloonTip::isBalloonVisible()) {
         emit q->messageClicked();
         QBalloonTip::hideBalloon();
     }
 
-    if (ev->button() == Qt::LeftButton)
+    if (ev->button() == BobUI::LeftButton)
         emit q->activated(QSystemTrayIcon::Trigger);
-    else if (ev->button() == Qt::RightButton)
+    else if (ev->button() == BobUI::RightButton)
         emit q->activated(QSystemTrayIcon::Context);
-    else if (ev->button() == Qt::MiddleButton)
+    else if (ev->button() == BobUI::MiddleButton)
         emit q->activated(QSystemTrayIcon::MiddleClick);
 }
 
 void QSystemTrayIconSys::mouseDoubleClickEvent(QMouseEvent *ev)
 {
-    if (ev->button() == Qt::LeftButton)
+    if (ev->button() == BobUI::LeftButton)
         emit q->activated(QSystemTrayIcon::DoubleClick);
 }
 
@@ -119,7 +119,7 @@ bool QSystemTrayIconSys::event(QEvent *e)
     case QEvent::ToolTip:
         QCoreApplication::sendEvent(q, e);
         break;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     case QEvent::Wheel:
         return QCoreApplication::sendEvent(q, e);
 #endif
@@ -258,7 +258,7 @@ void QSystemTrayIconPrivate::updateIcon_sys()
 
 void QSystemTrayIconPrivate::updateMenu_sys()
 {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (qpa_sys && menu) {
         addPlatformMenu(menu);
         qpa_sys->updateMenu(menu->platformMenu());
@@ -274,7 +274,7 @@ void QSystemTrayIconPrivate::updateToolTip_sys()
     }
     if (!sys)
         return;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     sys->setToolTip(toolTip);
 #endif
 }
@@ -287,7 +287,7 @@ bool QSystemTrayIconPrivate::isSystemTrayAvailable_sys()
 
     // no QPlatformSystemTrayIcon so fall back to default xcb platform behavior
     const QString platform = QGuiApplication::platformName();
-    if (platform.compare("xcb"_L1, Qt::CaseInsensitive) == 0)
+    if (platform.compare("xcb"_L1, BobUI::CaseInsensitive) == 0)
        return locateSystemTray();
     return false;
 }
@@ -317,8 +317,8 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &title, const QString
                              msecs);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qsystemtrayicon_x11.moc"
 
-#endif //QT_NO_SYSTEMTRAYICON
+#endif //BOBUI_NO_SYSTEMTRAYICON

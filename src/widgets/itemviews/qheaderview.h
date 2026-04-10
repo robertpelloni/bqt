@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHEADERVIEW_H
 #define QHEADERVIEW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qabstractitemview.h>
-#include <QtCore/qlist.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qabstractitemview.h>
+#include <BobUICore/qlist.h>
 
-QT_REQUIRE_CONFIG(itemviews);
+BOBUI_REQUIRE_CONFIG(itemviews);
 
 class tst_QHeaderView;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QHeaderViewPrivate;
 class QStyleOptionHeader;
@@ -33,7 +33,7 @@ class Q_WIDGETS_EXPORT QHeaderView : public QAbstractItemView
                RESET resetDefaultSectionSize)
     Q_PROPERTY(int minimumSectionSize READ minimumSectionSize WRITE setMinimumSectionSize)
     Q_PROPERTY(int maximumSectionSize READ maximumSectionSize WRITE setMaximumSectionSize)
-    Q_PROPERTY(Qt::Alignment defaultAlignment READ defaultAlignment WRITE setDefaultAlignment)
+    Q_PROPERTY(BobUI::Alignment defaultAlignment READ defaultAlignment WRITE setDefaultAlignment)
     Q_PROPERTY(bool sortIndicatorClearable READ isSortIndicatorClearable
                WRITE setSortIndicatorClearable NOTIFY sortIndicatorClearableChanged)
 
@@ -49,12 +49,12 @@ public:
     };
     Q_ENUM(ResizeMode)
 
-    explicit QHeaderView(Qt::Orientation orientation, QWidget *parent = nullptr);
+    explicit QHeaderView(BobUI::Orientation orientation, QWidget *parent = nullptr);
     virtual ~QHeaderView();
 
     void setModel(QAbstractItemModel *model) override;
 
-    Qt::Orientation orientation() const;
+    BobUI::Orientation orientation() const;
     int offset() const;
     int length() const;
     QSize sizeHint() const override;
@@ -110,9 +110,9 @@ public:
     void setSortIndicatorShown(bool show);
     bool isSortIndicatorShown() const;
 
-    void setSortIndicator(int logicalIndex, Qt::SortOrder order);
+    void setSortIndicator(int logicalIndex, BobUI::SortOrder order);
     int sortIndicatorSection() const;
-    Qt::SortOrder sortIndicatorOrder() const;
+    BobUI::SortOrder sortIndicatorOrder() const;
 
     void setSortIndicatorClearable(bool clearable);
     bool isSortIndicatorClearable() const;
@@ -132,14 +132,14 @@ public:
     int maximumSectionSize() const;
     void setMaximumSectionSize(int size);
 
-    Qt::Alignment defaultAlignment() const;
-    void setDefaultAlignment(Qt::Alignment alignment);
+    BobUI::Alignment defaultAlignment() const;
+    void setDefaultAlignment(BobUI::Alignment alignment);
 
     void doItemsLayout() override;
     bool sectionsMoved() const;
     bool sectionsHidden() const;
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     QByteArray saveState() const;
     bool restoreState(const QByteArray &state);
 #endif
@@ -150,7 +150,7 @@ public Q_SLOTS:
     void setOffset(int offset);
     void setOffsetToSectionPosition(int visualIndex);
     void setOffsetToLastSection();
-    void headerDataChanged(Qt::Orientation orientation, int logicalFirst, int logicalLast);
+    void headerDataChanged(BobUI::Orientation orientation, int logicalFirst, int logicalLast);
 
 Q_SIGNALS:
     void sectionMoved(int logicalIndex, int oldVisualIndex, int newVisualIndex);
@@ -162,7 +162,7 @@ Q_SIGNALS:
     void sectionCountChanged(int oldCount, int newCount);
     void sectionHandleDoubleClicked(int logicalIndex);
     void geometriesChanged();
-    void sortIndicatorChanged(int logicalIndex, Qt::SortOrder order);
+    void sortIndicatorChanged(int logicalIndex, BobUI::SortOrder order);
     void sortIndicatorClearableChanged(bool clearable);
 
 protected Q_SLOTS:
@@ -172,7 +172,7 @@ protected Q_SLOTS:
     void sectionsAboutToBeRemoved(const QModelIndex &parent, int logicalFirst, int logicalLast);
 
 protected:
-    QHeaderView(QHeaderViewPrivate &dd, Qt::Orientation orientation, QWidget *parent = nullptr);
+    QHeaderView(QHeaderViewPrivate &dd, BobUI::Orientation orientation, QWidget *parent = nullptr);
     void initialize();
 
     void initializeSections();
@@ -205,14 +205,14 @@ protected:
     QModelIndex indexAt(const QPoint &p) const override;
     bool isIndexHidden(const QModelIndex &index) const override;
 
-    QModelIndex moveCursor(CursorAction, Qt::KeyboardModifiers) override;
+    QModelIndex moveCursor(CursorAction, BobUI::KeyboardModifiers) override;
     void setSelection(const QRect& rect, QItemSelectionModel::SelectionFlags flags) override;
     QRegion visualRegionForSelection(const QItemSelection &selection) const override;
     virtual void initStyleOptionForIndex(QStyleOptionHeader *option, int logicalIndex) const;
     virtual void initStyleOption(QStyleOptionHeader *option) const;
 
-    friend class QTableView;
-    friend class QTreeView;
+    friend class BOBUIableView;
+    friend class BOBUIreeView;
     friend class ::tst_QHeaderView;
 
 private:
@@ -223,7 +223,7 @@ private:
 };
 
 inline int QHeaderView::logicalIndexAt(int ax, int ay) const
-{ return orientation() == Qt::Horizontal ? logicalIndexAt(ax) : logicalIndexAt(ay); }
+{ return orientation() == BobUI::Horizontal ? logicalIndexAt(ax) : logicalIndexAt(ay); }
 inline int QHeaderView::logicalIndexAt(const QPoint &apos) const
 { return logicalIndexAt(apos.x(), apos.y()); }
 inline void QHeaderView::hideSection(int alogicalIndex)
@@ -231,6 +231,6 @@ inline void QHeaderView::hideSection(int alogicalIndex)
 inline void QHeaderView::showSection(int alogicalIndex)
 { setSectionHidden(alogicalIndex, false); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHEADERVIEW_H

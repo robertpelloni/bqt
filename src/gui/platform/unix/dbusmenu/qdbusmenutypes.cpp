@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusmenutypes_p.h"
 
@@ -11,27 +11,27 @@
 #include <QImage>
 #include <QPixmap>
 #include <QDebug>
-#include <QtEndian>
+#include <BobUIEndian>
 #include <QBuffer>
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
 #  include <private/qkeysequence_p.h>
 #endif
 #include <qpa/qplatformmenu.h>
 #include "qdbusplatformmenu_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QDBusMenuItem)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuItemList)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuItemKeys)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuItemKeysList)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuLayoutItem)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuLayoutItemList)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuEvent)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuEventList)
-QT_IMPL_METATYPE_EXTERN(QDBusMenuShortcut)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuItem)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuItemList)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuItemKeys)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuItemKeysList)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuLayoutItem)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuLayoutItemList)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuEvent)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuEventList)
+BOBUI_IMPL_METATYPE_EXTERN(QDBusMenuShortcut)
 
 const QDBusArgument &operator<<(QDBusArgument &arg, const QDBusMenuItem &item)
 {
@@ -170,7 +170,7 @@ QDBusMenuItem::QDBusMenuItem(const QDBusPlatformMenuItem *item)
             m_properties.insert("toggle-type"_L1, toggleType);
             m_properties.insert("toggle-state"_L1, item->isChecked() ? 1 : 0);
         }
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         const QKeySequence &scut = item->shortcut();
         if (!scut.isEmpty()) {
             QDBusMenuShortcut shortcut = convertKeySequence(scut);
@@ -212,22 +212,22 @@ QString QDBusMenuItem::convertMnemonic(const QString &label)
     return ret;
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 QDBusMenuShortcut QDBusMenuItem::convertKeySequence(const QKeySequence &sequence)
 {
     QDBusMenuShortcut shortcut;
     for (int i = 0; i < sequence.count(); ++i) {
         QStringList tokens;
         auto modifiers = sequence[i].keyboardModifiers();
-        if (modifiers & Qt::MetaModifier)
+        if (modifiers & BobUI::MetaModifier)
             tokens << QStringLiteral("Super");
-        if (modifiers & Qt::ControlModifier)
+        if (modifiers & BobUI::ControlModifier)
             tokens << QStringLiteral("Control");
-        if (modifiers & Qt::AltModifier)
+        if (modifiers & BobUI::AltModifier)
             tokens << QStringLiteral("Alt");
-        if (modifiers & Qt::ShiftModifier)
+        if (modifiers & BobUI::ShiftModifier)
             tokens << QStringLiteral("Shift");
-        if (modifiers & Qt::KeypadModifier)
+        if (modifiers & BobUI::KeypadModifier)
             tokens << QStringLiteral("Num");
 
         QString keyName = QKeySequencePrivate::keyName(sequence[i].key(), QKeySequence::PortableText);
@@ -259,7 +259,7 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, QDBusMenuEvent &ev)
     return arg;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QDBusMenuItem &item)
 {
     QDebugStateSaver saver(d);
@@ -277,4 +277,4 @@ QDebug operator<<(QDebug d, const QDBusMenuLayoutItem &item)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

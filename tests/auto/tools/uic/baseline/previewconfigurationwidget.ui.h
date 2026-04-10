@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'previewconfigurationwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,17 +9,17 @@
 #ifndef PREVIEWCONFIGURATIONWIDGET_H
 #define PREVIEWCONFIGURATIONWIDGET_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QToolButton>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/BOBUIoolButton>
 #include <textpropertyeditor_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_PreviewConfigurationWidget
 {
@@ -30,12 +30,12 @@ public:
     QLabel *m_appStyleSheetLabel;
     QHBoxLayout *hboxLayout;
     qdesigner_internal::TextPropertyEditor *m_appStyleSheetLineEdit;
-    QToolButton *m_appStyleSheetChangeButton;
-    QToolButton *m_appStyleSheetClearButton;
+    BOBUIoolButton *m_appStyleSheetChangeButton;
+    BOBUIoolButton *m_appStyleSheetClearButton;
     QLabel *m_skinLabel;
     QHBoxLayout *hboxLayout1;
     QComboBox *m_skinCombo;
-    QToolButton *m_skinRemoveButton;
+    BOBUIoolButton *m_skinRemoveButton;
 
     void setupUi(QGroupBox *PreviewConfigurationWidget)
     {
@@ -68,12 +68,12 @@ public:
 
         hboxLayout->addWidget(m_appStyleSheetLineEdit);
 
-        m_appStyleSheetChangeButton = new QToolButton(PreviewConfigurationWidget);
+        m_appStyleSheetChangeButton = new BOBUIoolButton(PreviewConfigurationWidget);
         m_appStyleSheetChangeButton->setObjectName("m_appStyleSheetChangeButton");
 
         hboxLayout->addWidget(m_appStyleSheetChangeButton);
 
-        m_appStyleSheetClearButton = new QToolButton(PreviewConfigurationWidget);
+        m_appStyleSheetClearButton = new BOBUIoolButton(PreviewConfigurationWidget);
         m_appStyleSheetClearButton->setObjectName("m_appStyleSheetClearButton");
 
         hboxLayout->addWidget(m_appStyleSheetClearButton);
@@ -93,7 +93,7 @@ public:
 
         hboxLayout1->addWidget(m_skinCombo);
 
-        m_skinRemoveButton = new QToolButton(PreviewConfigurationWidget);
+        m_skinRemoveButton = new BOBUIoolButton(PreviewConfigurationWidget);
         m_skinRemoveButton->setObjectName("m_skinRemoveButton");
 
         hboxLayout1->addWidget(m_skinRemoveButton);
@@ -125,6 +125,6 @@ namespace Ui {
     class PreviewConfigurationWidget: public Ui_PreviewConfigurationWidget {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PREVIEWCONFIGURATIONWIDGET_H

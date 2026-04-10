@@ -1,11 +1,11 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiosurfacegraphicsbuffer.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qloggingcategory.h>
 
 #include <CoreGraphics/CoreGraphics.h>
 #include <IOSurface/IOSurface.h>
@@ -14,9 +14,9 @@
 // but was only added in the 10.14 SDK, so declare it just in case.
 extern "C" CFPropertyListRef CGColorSpaceCopyPropertyList(CGColorSpaceRef space);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaIOSurface, "qt.qpa.backingstore.iosurface");
+Q_LOGGING_CATEGORY(lcQpaIOSurface, "bobui.qpa.backingstore.iosurface");
 
 QIOSurfaceGraphicsBuffer::QIOSurfaceGraphicsBuffer(const QSize &size, const QPixelFormat &format)
     : QPlatformGraphicsBuffer(size, format)
@@ -146,7 +146,7 @@ void QIOSurfaceGraphicsBuffer::doUnlock()
     Q_ASSERT_X(success, "QIOSurfaceGraphicsBuffer", "Unlocking surface should succeed");
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QIOSurfaceGraphicsBuffer *graphicsBuffer)
 {
     QDebugStateSaver saver(debug);
@@ -161,6 +161,6 @@ QDebug operator<<(QDebug debug, const QIOSurfaceGraphicsBuffer *graphicsBuffer)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

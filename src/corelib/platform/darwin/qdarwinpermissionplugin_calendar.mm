@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdarwinpermissionplugin_p_p.h"
 
@@ -10,32 +10,32 @@
 @end
 
 @implementation QDarwinCalendarPermissionHandler
-- (Qt::PermissionStatus)checkPermission:(QPermission)permission
+- (BobUI::PermissionStatus)checkPermission:(QPermission)permission
 {
     Q_UNUSED(permission);
     return [self currentStatus];
 }
 
-- (Qt::PermissionStatus)currentStatus
+- (BobUI::PermissionStatus)currentStatus
 {
     auto status = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
     switch (status) {
     case EKAuthorizationStatusNotDetermined:
-        return Qt::PermissionStatus::Undetermined;
+        return BobUI::PermissionStatus::Undetermined;
     case EKAuthorizationStatusRestricted:
     case EKAuthorizationStatusDenied:
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
     case EKAuthorizationStatusAuthorized:
-        return Qt::PermissionStatus::Granted;
-#if QT_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(140000, 170000)
+        return BobUI::PermissionStatus::Granted;
+#if BOBUI_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(140000, 170000)
     case EKAuthorizationStatusWriteOnly:
         // FIXME: Add WriteOnly AccessMode
-        return Qt::PermissionStatus::Denied;
+        return BobUI::PermissionStatus::Denied;
 #endif
     }
 
     qCWarning(lcPermissions) << "Unknown permission status" << status << "detected in" << self;
-    return Qt::PermissionStatus::Denied;
+    return BobUI::PermissionStatus::Denied;
 }
 
 - (QStringList)usageDescriptionsFor:(QPermission)permission

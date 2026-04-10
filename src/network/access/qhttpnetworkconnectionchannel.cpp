@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:network-protocol
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:network-protocol
 
 #include "qhttpnetworkconnectionchannel_p.h"
 #include "qhttpnetworkconnection_p.h"
@@ -14,18 +14,18 @@
 #include <private/http2protocol_p.h>
 #include <private/qsocketabstraction_p.h>
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 #    include <private/qsslsocket_p.h>
-#    include <QtNetwork/qsslkey.h>
-#    include <QtNetwork/qsslcipher.h>
+#    include <BobUINetwork/qsslkey.h>
+#    include <BobUINetwork/qsslcipher.h>
 #endif
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include <memory>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // TODO: Put channel specific stuff here so it does not pollute qhttpnetworkconnection.cpp
 
@@ -33,9 +33,9 @@ QT_BEGIN_NAMESPACE
 // connection times out)
 // We use 3 because we can get a _q_error 3 times depending on the timing:
 static const int reconnectAttemptsDefault = 3;
-static const char keepAliveIdleOption[] = "QT_QNAM_TCP_KEEPIDLE";
-static const char keepAliveIntervalOption[] = "QT_QNAM_TCP_KEEPINTVL";
-static const char keepAliveCountOption[] = "QT_QNAM_TCP_KEEPCNT";
+static const char keepAliveIdleOption[] = "BOBUI_QNAM_TCP_KEEPIDLE";
+static const char keepAliveIntervalOption[] = "BOBUI_QNAM_TCP_KEEPINTVL";
+static const char keepAliveCountOption[] = "BOBUI_QNAM_TCP_KEEPCNT";
 static const int TCP_KEEPIDLE_DEF = 60;
 static const int TCP_KEEPINTVL_DEF = 10;
 static const int TCP_KEEPCNT_DEF = 5;
@@ -55,7 +55,7 @@ QHttpNetworkConnectionChannel::QHttpNetworkConnectionChannel()
     , authenticationCredentialsSent(false)
     , proxyCredentialsSent(false)
     , protocolHandler(nullptr)
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     , ignoreAllSslErrors(false)
 #endif
     , pipeliningSupported(PipeliningSupportUnknown)
@@ -68,19 +68,19 @@ QHttpNetworkConnectionChannel::QHttpNetworkConnectionChannel()
 
 void QHttpNetworkConnectionChannel::init()
 {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     if (connection->d_func()->encrypt)
         socket = new QSslSocket;
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     else if (connection->d_func()->isLocalSocket)
         socket = new QLocalSocket;
 #endif
     else
-        socket = new QTcpSocket;
+        socket = new BOBUIcpSocket;
 #else
-    socket = new QTcpSocket;
+    socket = new BOBUIcpSocket;
 #endif
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     // Set by QNAM anyway, but let's be safe here
     if (auto s = qobject_cast<QAbstractSocket *>(socket))
         s->setProxy(QNetworkProxy::NoProxy);
@@ -91,17 +91,17 @@ void QHttpNetworkConnectionChannel::init()
     // which behave slightly differently on Windows vs Linux
     QObject::connect(socket, &QIODevice::bytesWritten,
                      this, &QHttpNetworkConnectionChannel::_q_bytesWritten,
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
     QObject::connect(socket, &QIODevice::readyRead,
                      this, &QHttpNetworkConnectionChannel::_q_readyRead,
-                     Qt::DirectConnection);
+                     BobUI::DirectConnection);
 
 
     QSocketAbstraction::visit([this](auto *socket){
         using SocketType = std::remove_pointer_t<decltype(socket)>;
         QObject::connect(socket, &SocketType::connected,
                         this, &QHttpNetworkConnectionChannel::_q_connected,
-                        Qt::DirectConnection);
+                        BobUI::DirectConnection);
 
         // The disconnected() and error() signals may already come
         // while calling connectToHost().
@@ -111,49 +111,49 @@ void QHttpNetworkConnectionChannel::init()
         // to connect to QNetworkReply's signals.
         QObject::connect(socket, &SocketType::disconnected,
                         this, &QHttpNetworkConnectionChannel::_q_disconnected,
-                        Qt::DirectConnection);
+                        BobUI::DirectConnection);
         if constexpr (std::is_same_v<SocketType, QAbstractSocket>) {
             QObject::connect(socket, &QAbstractSocket::errorOccurred,
                             this, &QHttpNetworkConnectionChannel::_q_error,
-                            Qt::DirectConnection);
-#if QT_CONFIG(localserver)
+                            BobUI::DirectConnection);
+#if BOBUI_CONFIG(localserver)
         } else if constexpr (std::is_same_v<SocketType, QLocalSocket>) {
             auto convertAndForward = [this](QLocalSocket::LocalSocketError error) {
                 _q_error(static_cast<QAbstractSocket::SocketError>(error));
             };
             QObject::connect(socket, &SocketType::errorOccurred,
                             this, std::move(convertAndForward),
-                            Qt::DirectConnection);
+                            BobUI::DirectConnection);
 #endif
         }
     }, socket);
 
 
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (auto *s = qobject_cast<QAbstractSocket *>(socket)) {
         QObject::connect(s, &QAbstractSocket::proxyAuthenticationRequired,
                         this, &QHttpNetworkConnectionChannel::_q_proxyAuthenticationRequired,
-                        Qt::DirectConnection);
+                        BobUI::DirectConnection);
     }
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     QSslSocket *sslSocket = qobject_cast<QSslSocket*>(socket);
     if (sslSocket) {
         // won't be a sslSocket if encrypt is false
         QObject::connect(sslSocket, &QSslSocket::encrypted,
                          this, &QHttpNetworkConnectionChannel::_q_encrypted,
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(sslSocket, &QSslSocket::sslErrors,
                          this, &QHttpNetworkConnectionChannel::_q_sslErrors,
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(sslSocket, &QSslSocket::preSharedKeyAuthenticationRequired,
                          this, &QHttpNetworkConnectionChannel::_q_preSharedKeyAuthenticationRequired,
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
         QObject::connect(sslSocket, &QSslSocket::encryptedBytesWritten,
                          this, &QHttpNetworkConnectionChannel::_q_encryptedBytesWritten,
-                         Qt::DirectConnection);
+                         BobUI::DirectConnection);
 
         if (ignoreAllSslErrors)
             sslSocket->ignoreSslErrors();
@@ -164,14 +164,14 @@ void QHttpNetworkConnectionChannel::init()
         if (sslConfiguration && !sslConfiguration->isNull())
            sslSocket->setSslConfiguration(*sslConfiguration);
     } else {
-#endif // !QT_NO_SSL
+#endif // !BOBUI_NO_SSL
         if (connection->connectionType() != QHttpNetworkConnection::ConnectionTypeHTTP2)
             protocolHandler.reset(new QHttpProtocolHandler(this));
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     }
 #endif
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     if (auto *s = qobject_cast<QAbstractSocket *>(socket);
         s && proxy.type() != QNetworkProxy::NoProxy) {
         s->setProxy(proxy);
@@ -248,7 +248,7 @@ void QHttpNetworkConnectionChannel::sendRequestDelayed()
     QMetaObject::invokeMethod(this, [this] {
         if (reply)
             sendRequest();
-    }, Qt::ConnectionType::QueuedConnection);
+    }, BobUI::ConnectionType::QueuedConnection);
 }
 
 void QHttpNetworkConnectionChannel::_q_receiveReply()
@@ -285,7 +285,7 @@ void QHttpNetworkConnectionChannel::handleUnexpectedEOF()
         if (protocolHandler)
             protocolHandler->setReply(nullptr);
         request = QHttpNetworkRequest();
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     } else {
         reconnectAttempts--;
         reply->d_func()->clear();
@@ -356,12 +356,12 @@ bool QHttpNetworkConnectionChannel::ensureConnection()
 
         QHttpNetworkReply *potentialReply = connection->d_func()->predictNextRequestsReply();
         if (potentialReply) {
-            QMetaObject::invokeMethod(potentialReply, "socketStartedConnecting", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(potentialReply, "socketStartedConnecting", BobUI::QueuedConnection);
         } else if (!h2RequestsToSend.isEmpty()) {
-            QMetaObject::invokeMethod(std::as_const(h2RequestsToSend).first().second, "socketStartedConnecting", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(std::as_const(h2RequestsToSend).first().second, "socketStartedConnecting", BobUI::QueuedConnection);
         }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         // HTTPS always use transparent proxy.
         if (connection->d_func()->networkProxy.type() != QNetworkProxy::NoProxy && !ssl) {
             connectHost = connection->d_func()->networkProxy.hostName();
@@ -369,7 +369,7 @@ bool QHttpNetworkConnectionChannel::ensureConnection()
         }
         if (auto *abSocket = qobject_cast<QAbstractSocket *>(socket);
             abSocket && abSocket->proxy().type() == QNetworkProxy::HttpProxy) {
-            // Make user-agent field available to HTTP proxy socket engine (QTBUG-17223)
+            // Make user-agent field available to HTTP proxy socket engine (BOBUIBUG-17223)
             QByteArray value;
             // ensureConnection is called before any request has been assigned, but can also be
             // called again if reconnecting
@@ -395,7 +395,7 @@ bool QHttpNetworkConnectionChannel::ensureConnection()
         }
 #endif
         if (ssl) {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
             QSslSocket *sslSocket = qobject_cast<QSslSocket*>(socket);
 
             // check whether we can re-use an existing SSL session
@@ -421,8 +421,8 @@ bool QHttpNetworkConnectionChannel::ensureConnection()
             connection->d_func()->emitReplyError(socket, reply, QNetworkReply::ProtocolUnknownError);
 #endif
         } else {
-            // In case of no proxy we can use the Unbuffered QTcpSocket
-#ifndef QT_NO_NETWORKPROXY
+            // In case of no proxy we can use the Unbuffered BOBUIcpSocket
+#ifndef BOBUI_NO_NETWORKPROXY
             if (connection->d_func()->networkProxy.type() == QNetworkProxy::NoProxy
                     && connection->cacheProxy().type() == QNetworkProxy::NoProxy
                     && connection->transparentProxy().type() == QNetworkProxy::NoProxy) {
@@ -431,14 +431,14 @@ bool QHttpNetworkConnectionChannel::ensureConnection()
                     s->connectToHost(connectHost, connectPort,
                                      QIODevice::ReadWrite | QIODevice::Unbuffered,
                                      networkLayerPreference);
-                    // For an Unbuffered QTcpSocket, the read buffer size has a special meaning.
+                    // For an Unbuffered BOBUIcpSocket, the read buffer size has a special meaning.
                     s->setReadBufferSize(1 * 1024);
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
                 } else if (auto *s = qobject_cast<QLocalSocket *>(socket)) {
                     s->connectToServer(connectHost);
 #endif
                 }
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
             } else {
                 auto *s = qobject_cast<QAbstractSocket *>(socket);
                 Q_ASSERT(s);
@@ -468,7 +468,7 @@ void QHttpNetworkConnectionChannel::allDone()
     Q_ASSERT(reply);
 
     if (!reply) {
-        qWarning("QHttpNetworkConnectionChannel::allDone() called without reply. Please report at http://bugreports.qt.io/");
+        qWarning("QHttpNetworkConnectionChannel::allDone() called without reply. Please report at http://bugreports.bobui.io/");
         return;
     }
 
@@ -489,13 +489,13 @@ void QHttpNetworkConnectionChannel::allDone()
 
             QMetaObject::invokeMethod(this, [oldHandler = std::move(protocolHandler)]() mutable {
                 oldHandler.reset();
-            }, Qt::QueuedConnection);
+            }, BobUI::QueuedConnection);
 
             connection->fillHttp2Queue();
             protocolHandler.reset(new QHttp2ProtocolHandler(this));
             QHttp2ProtocolHandler *h2c = static_cast<QHttp2ProtocolHandler *>(protocolHandler.get());
-            QMetaObject::invokeMethod(h2c, "_q_receiveReply", Qt::QueuedConnection);
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(h2c, "_q_receiveReply", BobUI::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         } else {
             // Ok, whatever happened, we do not try HTTP/2 anymore ...
@@ -516,7 +516,7 @@ void QHttpNetworkConnectionChannel::allDone()
     // slot connected to it. The socket will not fire readyRead signal, if we are already
     // in the slot connected to readyRead
     if (reply && emitFinished)
-        QMetaObject::invokeMethod(reply, "finished", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(reply, "finished", BobUI::QueuedConnection);
 
 
     // reset the reconnection attempts after we receive a complete reply.
@@ -568,13 +568,13 @@ void QHttpNetworkConnectionChannel::allDone()
         // this is weird. we had nothing pipelined but still bytes available. better close it.
         close();
 
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     } else if (alreadyPipelinedRequests.isEmpty()) {
         if (connectionCloseEnabled)
             if (QSocketAbstraction::socketState(socket) != QAbstractSocket::UnconnectedState)
                 close();
         if (qobject_cast<QHttpNetworkConnection*>(connection))
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     }
 }
 
@@ -616,7 +616,7 @@ void QHttpNetworkConnectionChannel::requeueCurrentlyPipelinedRequests()
     // this function is called from _q_disconnected which is called because
     // of ~QHttpNetworkConnectionPrivate
     if (qobject_cast<QHttpNetworkConnection*>(connection))
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 void QHttpNetworkConnectionChannel::handleStatus()
@@ -645,7 +645,7 @@ void QHttpNetworkConnectionChannel::handleStatus()
             // Instead of doing that we fail here instead, resetUploadData will already have emitted
             // a ContentReSendError, so we're done.
         } else if (qobject_cast<QHttpNetworkConnection *>(connection)) {
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
         }
         break;
     }
@@ -661,11 +661,11 @@ void QHttpNetworkConnectionChannel::handleStatus()
                 if (alreadyPipelinedRequests.isEmpty()) {
                     // this does a re-send without closing the connection
                     resendCurrent = true;
-                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
                 } else {
                     // we had requests pipelined.. better close the connection in closeAndResendCurrentRequest
                     closeAndResendCurrentRequest();
-                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
                 }
             } else {
                 //authentication cancelled, close the channel.
@@ -683,7 +683,7 @@ void QHttpNetworkConnectionChannel::handleStatus()
         break;
     default:
         if (qobject_cast<QHttpNetworkConnection*>(connection))
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     }
 }
 
@@ -708,7 +708,7 @@ bool QHttpNetworkConnectionChannel::resetUploadData()
     return true;
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 
 void QHttpNetworkConnectionChannel::setProxy(const QNetworkProxy &networkProxy)
 {
@@ -720,7 +720,7 @@ void QHttpNetworkConnectionChannel::setProxy(const QNetworkProxy &networkProxy)
 
 #endif
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 
 void QHttpNetworkConnectionChannel::ignoreSslErrors()
 {
@@ -764,7 +764,7 @@ void QHttpNetworkConnectionChannel::pipelineInto(HttpMessagePair &pair)
     reply->d_func()->autoDecompress = request.d->autoDecompress;
     reply->d_func()->pipeliningUsed = true;
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
     pipeline.append(QHttpNetworkRequestPrivate::header(request,
                                                            (connection->d_func()->networkProxy.type() != QNetworkProxy::NoProxy)));
 #else
@@ -782,8 +782,8 @@ void QHttpNetworkConnectionChannel::pipelineFlush()
         return;
 
     // The goal of this is so that we have everything in one TCP packet.
-    // For the Unbuffered QTcpSocket this is manually needed, the buffered
-    // QTcpSocket does it automatically.
+    // For the Unbuffered BOBUIcpSocket this is manually needed, the buffered
+    // BOBUIcpSocket does it automatically.
     // Also, sometimes the OS does it for us (Nagle's algorithm) but that
     // happens only sometimes.
     socket->write(pipeline);
@@ -798,7 +798,7 @@ void QHttpNetworkConnectionChannel::closeAndResendCurrentRequest()
     if (reply)
         resendCurrent = true;
     if (qobject_cast<QHttpNetworkConnection*>(connection))
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 void QHttpNetworkConnectionChannel::resendCurrentRequest()
@@ -807,7 +807,7 @@ void QHttpNetworkConnectionChannel::resendCurrentRequest()
     if (reply)
         resendCurrent = true;
     if (qobject_cast<QHttpNetworkConnection*>(connection))
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 bool QHttpNetworkConnectionChannel::isSocketBusy() const
@@ -849,7 +849,7 @@ void QHttpNetworkConnectionChannel::_q_disconnected()
 {
     if (state == QHttpNetworkConnectionChannel::ClosingState) {
         state = QHttpNetworkConnectionChannel::IdleState;
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
         return;
     }
 
@@ -865,7 +865,7 @@ void QHttpNetworkConnectionChannel::_q_disconnected()
         _q_receiveReply();
     } else if (state == QHttpNetworkConnectionChannel::IdleState && resendCurrent) {
         // re-sending request because the socket was in ClosingState
-        QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     }
     state = QHttpNetworkConnectionChannel::IdleState;
     if (alreadyPipelinedRequests.size()) {
@@ -896,7 +896,7 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
         }
         connection->d_func()->networkLayerDetected(networkLayerPreference);
         if (connection->d_func()->activeChannelCount > 1 && !connection->d_func()->encrypt)
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
     } else {
         bool anyProtocol = networkLayerPreference == QAbstractSocket::AnyIPProtocol;
         if (((connection->d_func()->networkLayerState == QHttpNetworkConnectionPrivate::IPv4)
@@ -905,7 +905,7 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
                 && (networkLayerPreference != QAbstractSocket::IPv6Protocol && !anyProtocol))) {
             close();
             // This is the second connection so it has to be closed and we can schedule it for another request.
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
             return;
         }
         //The connections networkLayerState had already been decided.
@@ -914,16 +914,16 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
     // improve performance since we get the request sent by the kernel ASAP
     //absSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
     // We have this commented out now. It did not have the effect we wanted. If we want to
-    // do this properly, Qt has to combine multiple HTTP requests into one buffer
+    // do this properly, BobUI has to combine multiple HTTP requests into one buffer
     // and send this to the kernel in one syscall and then the kernel immediately sends
     // it as one TCP packet because of TCP_NODELAY.
-    // However, this code is currently not in Qt, so we rely on the kernel combining
+    // However, this code is currently not in BobUI, so we rely on the kernel combining
     // the requests into one TCP packet.
 
     // not sure yet if it helps, but it makes sense
     absSocket->setSocketOption(QAbstractSocket::KeepAliveOption, 1);
 
-    QTcpKeepAliveConfiguration keepAliveConfig = connection->tcpKeepAliveParameters();
+    BOBUIcpKeepAliveConfiguration keepAliveConfig = connection->tcpKeepAliveParameters();
 
     auto getKeepAliveValue = [](int configValue,
                                 const char* envName,
@@ -945,7 +945,7 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
     // ### FIXME: if the server closes the connection unexpectedly, we shouldn't send the same broken request again!
     //channels[i].reconnectAttempts = 2;
     if (ssl || pendingEncrypt) { // FIXME: Didn't work properly with pendingEncrypt only, we should refactor this into an EncrypingState
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         if (!connection->sslContext()) {
             // this socket is making the 1st handshake for this connection,
             // we need to set the SSL context so new sockets can reuse it
@@ -959,7 +959,7 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
         if (h2RequestsToSend.size() > 0) {
             // In case our peer has sent us its settings (window size, max concurrent streams etc.)
             // let's give _q_receiveReply a chance to read them first ('invokeMethod', QueuedConnection).
-            QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
         }
     } else {
         state = QHttpNetworkConnectionChannel::IdleState;
@@ -984,7 +984,7 @@ void QHttpNetworkConnectionChannel::_q_connected_abstract_socket(QAbstractSocket
     }
 }
 
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
 void QHttpNetworkConnectionChannel::_q_connected_local_socket(QLocalSocket *localSocket)
 {
     state = QHttpNetworkConnectionChannel::IdleState;
@@ -999,7 +999,7 @@ void QHttpNetworkConnectionChannel::_q_connected()
 {
     if (auto *s = qobject_cast<QAbstractSocket *>(socket))
         _q_connected_abstract_socket(s);
-#if QT_CONFIG(localserver)
+#if BOBUI_CONFIG(localserver)
     else if (auto *s = qobject_cast<QLocalSocket *>(socket))
         _q_connected_local_socket(s);
 #endif
@@ -1017,7 +1017,7 @@ void QHttpNetworkConnectionChannel::_q_error(QAbstractSocket::SocketError socket
         break;
     case QAbstractSocket::ConnectionRefusedError:
         errorCode = QNetworkReply::ConnectionRefusedError;
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
         if (connection->d_func()->networkProxy.type() != QNetworkProxy::NoProxy && !ssl)
             errorCode = QNetworkReply::ProxyConnectionRefusedError;
 #endif
@@ -1061,14 +1061,14 @@ void QHttpNetworkConnectionChannel::_q_error(QAbstractSocket::SocketError socket
             if (!reply->d_func()->expectContent()) {
                 // No content expected, this is a valid way to have the connection closed by the server
                 // We need to invoke this asynchronously to make sure the state() of the socket is on QAbstractSocket::UnconnectedState
-                QMetaObject::invokeMethod(this, "_q_receiveReply", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, "_q_receiveReply", BobUI::QueuedConnection);
                 return;
             }
             if (reply->contentLength() == -1 && !reply->d_func()->isChunked()) {
                 // There was no content-length header and it's not chunked encoding,
                 // so this is a valid way to have the connection closed by the server
                 // We need to invoke this asynchronously to make sure the state() of the socket is on QAbstractSocket::UnconnectedState
-                QMetaObject::invokeMethod(this, "_q_receiveReply", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(this, "_q_receiveReply", BobUI::QueuedConnection);
                 return;
             }
             // ok, we got a disconnect even though we did not expect it
@@ -1084,7 +1084,7 @@ void QHttpNetworkConnectionChannel::_q_error(QAbstractSocket::SocketError socket
                     // No more reply assigned after the previous call? Then it had been finished successfully.
                     requeueCurrentlyPipelinedRequests();
                     state = QHttpNetworkConnectionChannel::IdleState;
-                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+                    QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
                     return;
                 }
             }
@@ -1174,7 +1174,7 @@ void QHttpNetworkConnectionChannel::_q_error(QAbstractSocket::SocketError socket
     }
 
     // send the next request
-    QMetaObject::invokeMethod(that, "_q_startNextRequest", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(that, "_q_startNextRequest", BobUI::QueuedConnection);
 
     if (that) {
         //signal emission triggered event loop
@@ -1190,7 +1190,7 @@ void QHttpNetworkConnectionChannel::_q_error(QAbstractSocket::SocketError socket
     }
 }
 
-#ifndef QT_NO_NETWORKPROXY
+#ifndef BOBUI_NO_NETWORKPROXY
 void QHttpNetworkConnectionChannel::_q_proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator* auth)
 {
     if ((connection->connectionType() == QHttpNetworkConnection::ConnectionTypeHTTP2
@@ -1227,7 +1227,7 @@ void QHttpNetworkConnectionChannel::emitFinishedWithError(QNetworkReply::Network
     }
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void QHttpNetworkConnectionChannel::_q_encrypted()
 {
     QSslSocket *sslSocket = qobject_cast<QSslSocket *>(socket);
@@ -1315,7 +1315,7 @@ void QHttpNetworkConnectionChannel::_q_encrypted()
             // no more requests to send.
             QMetaObject::invokeMethod(this,
                                       &QHttpNetworkConnectionChannel::checkAndResumeCommunication,
-                                      Qt::QueuedConnection);
+                                      BobUI::QueuedConnection);
 
             // In case our peer has sent us its settings (window size, max concurrent streams etc.)
             // let's give _q_receiveReply a chance to read them first ('invokeMethod', QueuedConnection).
@@ -1331,7 +1331,7 @@ void QHttpNetworkConnectionChannel::_q_encrypted()
         if (reply)
             sendRequestDelayed();
     }
-    QMetaObject::invokeMethod(connection, "_q_startNextRequest", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(connection, "_q_startNextRequest", BobUI::QueuedConnection);
 }
 
 
@@ -1377,7 +1377,7 @@ void QHttpNetworkConnectionChannel::_q_sslErrors(const QList<QSslError> &errors)
         if (reply)
             emit reply->sslErrors(errors);
     }
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     else { // HTTP/2
         const auto h2RequestsToSendCopy = h2RequestsToSend;
         for (const auto &httpMessagePair : h2RequestsToSendCopy) {
@@ -1387,7 +1387,7 @@ void QHttpNetworkConnectionChannel::_q_sslErrors(const QList<QSslError> &errors)
             emit currentReply->sslErrors(errors);
         }
     }
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
     connection->d_func()->resumeConnection();
 }
 
@@ -1432,6 +1432,6 @@ void QHttpNetworkConnectionChannel::setConnection(QHttpNetworkConnection *c)
     connection = c;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qhttpnetworkconnectionchannel_p.cpp"

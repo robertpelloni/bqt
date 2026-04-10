@@ -3,7 +3,7 @@
 
 OmniSplitView::OmniSplitView(QQuickItem *parent)
     : QQuickItem(parent),
-      m_orientation(Qt::Horizontal),
+      m_orientation(BobUI::Horizontal),
       m_handleSize(4.0)
 {
     setObjectName("OmniSplitView");
@@ -11,8 +11,8 @@ OmniSplitView::OmniSplitView(QQuickItem *parent)
 
 OmniSplitView::~OmniSplitView() = default;
 
-Qt::Orientation OmniSplitView::orientation() const { return m_orientation; }
-void OmniSplitView::setOrientation(Qt::Orientation o) {
+BobUI::Orientation OmniSplitView::orientation() const { return m_orientation; }
+void OmniSplitView::setOrientation(BobUI::Orientation o) {
     if (m_orientation != o) {
         m_orientation = o;
         emit orientationChanged();
@@ -49,7 +49,7 @@ void OmniSplitView::layoutChildren() {
 
     qreal totalHandleSpace = m_handleSize * (visibleCount - 1);
     
-    if (m_orientation == Qt::Horizontal) {
+    if (m_orientation == BobUI::Horizontal) {
         qreal itemWidth = (rect.width() - totalHandleSpace) / visibleCount;
         qreal currentX = 0;
         

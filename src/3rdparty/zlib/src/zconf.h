@@ -8,7 +8,7 @@
 #ifndef ZCONF_H
 #define ZCONF_H
 
-/* Since Qt Core must export these symbols, define Z_PREFIX to avoid clashes system zlib */
+/* Since BobUI Core must export these symbols, define Z_PREFIX to avoid clashes system zlib */
 #define Z_PREFIX
 
 /*

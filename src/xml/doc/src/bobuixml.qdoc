@@ -1,0 +1,20 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUIXml
+    \title BobUI XML C++ Classes
+    \ingroup modules
+    \bobuicmakepackage Xml
+    \bobuivariable xml
+
+    \brief The BobUI XML module provides a C++ implementation of the DOM standard for XML.
+
+    The \l{BobUI XML} page contains information about how to use the module.
+
+    \note BobUI XML will no longer receive additional features. For reading or
+    writing XML documents iteratively (SAX), use the QXmlStreamReader and
+    QXmlStreamWriter classes. The classes are both easier to use and more
+    compliant with the XML standard.
+
+*/

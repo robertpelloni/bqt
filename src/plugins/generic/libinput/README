@@ -8,11 +8,11 @@ xkbcommon is optional. However, no key events will be generated without it.
 The plugin is integrated with configure and is built automatically when the
 necessary dependencies are present.
 
-To use this plugin with eglfs, set QT_QPA_EGLFS_DISABLE_INPUT=1 before launching
+To use this plugin with eglfs, set BOBUI_QPA_EGLFS_DISABLE_INPUT=1 before launching
 the application and pass -plugin libinput.
 
 To get info and debug messages from libinput, enable the logging category
-qt.qpa.input.
+bobui.qpa.input.
 
 For the time being xkbcommon's default keymap is used always. Support for
 changing it will be added in the future.

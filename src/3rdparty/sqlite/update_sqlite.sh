@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Copyright (C) 2024 Christian Ehrlicher <ch.ehrlicher@gmx.de>
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #
 # This is a small script fetches the sqlite tarball, unpacks it, extracts
-# sqlite.c and sqlite.h and updates qt_attribution.json
+# sqlite.c and sqlite.h and updates bobui_attribution.json
 
 version_maj=3
 version_min=51
@@ -34,12 +34,12 @@ unzip ${fn}.zip
 cp ${fn}/sqlite3.c .
 cp ${fn}/sqlite3.h .
 
-sed -i qt_attribution.json -e "s#\"Version\": \".*\"#\"Version\": \"${version}\"#"
-sed -i qt_attribution.json -e "s#\"DownloadLocation\": \".*\"#\"DownloadLocation\": \"${url}\"#"
+sed -i bobui_attribution.json -e "s#\"Version\": \".*\"#\"Version\": \"${version}\"#"
+sed -i bobui_attribution.json -e "s#\"DownloadLocation\": \".*\"#\"DownloadLocation\": \"${url}\"#"
 
 #cleanup
 rm -rf ${fn}
 rm -rf ${fn}.zip
 
 #stage
-git add qt_attribution.json sqlite3.c sqlite3.h update_sqlite.sh
+git add bobui_attribution.json sqlite3.c sqlite3.h update_sqlite.sh

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdbusabstractinterface.h"
 #include "qdbusabstractinterface_p.h"
 
 #include <qcoreapplication.h>
-#include <qthread.h>
+#include <bobuihread.h>
 
 #include "qdbusargument.h"
 #include "qdbuspendingcall.h"
@@ -19,20 +19,20 @@
 
 #include <qdebug.h>
 
-#ifndef QT_NO_DBUS
+#ifndef BOBUI_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
-// ### Qt6: change to a regular QEvent (customEvent)
+// ### BobUI6: change to a regular QEvent (customEvent)
 // We need to use a QMetaCallEvent here because we can't override customEvent() in
-// Qt 5. Since QDBusAbstractInterface is meant to be derived from, the vtables of
+// BobUI 5. Since QDBusAbstractInterface is meant to be derived from, the vtables of
 // classes in generated code will have a pointer to QObject::customEvent instead
 // of to QDBusAbstractInterface::customEvent.
-// See solution in Patch Set 1 of this change in the Qt Gerrit servers.
-// (https://codereview.qt-project.org/#/c/126384/1)
+// See solution in Patch Set 1 of this change in the BobUI Gerrit servers.
+// (https://codereview.bobui-project.org/#/c/126384/1)
 class DisconnectRelayEvent : public QAbstractMetaCallEvent
 {
 public:
@@ -128,7 +128,7 @@ bool QDBusAbstractInterfacePrivate::property(const QMetaProperty &mp, void *retu
     if (type.id() != QMetaType::QVariant) {
         expectedSignature = QDBusMetaType::typeToSignature(type);
         if (expectedSignature == nullptr) {
-            qWarning("QDBusAbstractInterface: type %s must be registered with Qt D-Bus before it can be "
+            qWarning("QDBusAbstractInterface: type %s must be registered with BobUI D-Bus before it can be "
                      "used to read property %s.%s",
                      mp.typeName(), qPrintable(interface), mp.name());
             lastError = QDBusError(QDBusError::Failed, "Unregistered type %1 cannot be handled"_L1
@@ -234,10 +234,10 @@ QDBusAbstractInterfaceBase::QDBusAbstractInterfaceBase(QDBusAbstractInterfacePri
 {
 }
 
-int QDBusAbstractInterfaceBase::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int QDBusAbstractInterfaceBase::bobui_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     int saved_id = _id;
-    _id = QObject::qt_metacall(_c, _id, _a);
+    _id = QObject::bobui_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
 
@@ -268,10 +268,10 @@ int QDBusAbstractInterfaceBase::qt_metacall(QMetaObject::Call _c, int _id, void 
 
 /*!
     \class QDBusAbstractInterface
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
-    \brief The QDBusAbstractInterface class is the base class for all D-Bus interfaces in the Qt D-Bus binding, allowing access to remote interfaces.
+    \brief The QDBusAbstractInterface class is the base class for all D-Bus interfaces in the BobUI D-Bus binding, allowing access to remote interfaces.
 
     Generated-code classes also derive from QDBusAbstractInterface,
     all methods described here are also valid for generated-code
@@ -448,7 +448,7 @@ bool QDBusAbstractInterface::isInteractiveAuthorizationAllowed() const
 
     \warning If you use \c UseEventLoop, your code must be prepared to deal with any reentrancy:
              other method calls and signals may be delivered before this function returns, as well
-             as other Qt queued signals and events.
+             as other BobUI queued signals and events.
 
     \threadsafe
 */
@@ -495,7 +495,7 @@ QDBusMessage QDBusAbstractInterface::callWithArgumentList(QDBus::CallMode mode,
     msg.setArguments(args);
 
     QDBusMessage reply = d->connection.call(msg, mode, d->timeout);
-    if (thread() == QThread::currentThread())
+    if (thread() == BOBUIhread::currentThread())
         d->lastError = QDBusError(reply);       // will clear if reply isn't an error
 
     // ensure that there is at least one element
@@ -725,7 +725,7 @@ void QDBusAbstractInterface::internalPropSet(const char *propname, const QVarian
     Unicode string, the second call to \c "ProcessWork" will contain one string and one byte array).
     See asyncCall() for the same example in non-blocking (asynchronous) calls.
 
-    \note Before Qt 5.14, this function accepted a maximum of just eight (8) arguments.
+    \note Before BobUI 5.14, this function accepted a maximum of just eight (8) arguments.
 
     \sa callWithArgumentList()
 */
@@ -746,15 +746,15 @@ void QDBusAbstractInterface::internalPropSet(const char *propname, const QVarian
     If \a mode is \c NoWaitForReply, then this function will return immediately after
     placing the call, without waiting for a reply from the remote
     method. Otherwise, \a mode indicates whether this function should
-    activate the Qt Event Loop while waiting for the reply to arrive.
+    activate the BobUI Event Loop while waiting for the reply to arrive.
 
-    If this function reenters the Qt event loop in order to wait for the
+    If this function reenters the BobUI event loop in order to wait for the
     reply, it will exclude user input. During the wait, it may deliver
     signals and other method calls to your application. Therefore, it
     must be prepared to handle a reentrancy whenever a call is placed
     with call().
 
-    \note Before Qt 5.14, this function accepted a maximum of just eight (8) arguments.
+    \note Before BobUI 5.14, this function accepted a maximum of just eight (8) arguments.
 
     \sa callWithArgumentList()
 */
@@ -783,7 +783,7 @@ void QDBusAbstractInterface::internalPropSet(const char *propname, const QVarian
     Unicode string, the second call to \c "ProcessWork" will contain one string and one byte array).
     See call() for the same example in blocking (synchronous) calls.
 
-    \note Before Qt 5.14, this function accepted a maximum of just eight (8) arguments.
+    \note Before BobUI 5.14, this function accepted a maximum of just eight (8) arguments.
 
     \note Method calls to local \c{QDBusServer}'s are never asynchronous
     due to implementation limitations.
@@ -821,8 +821,8 @@ QDBusPendingCall QDBusAbstractInterface::doAsyncCall(const QString &method, cons
     return asyncCallWithArgumentList(method, list);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_DBUS
+#endif // BOBUI_NO_DBUS
 
 #include "moc_qdbusabstractinterface.cpp"

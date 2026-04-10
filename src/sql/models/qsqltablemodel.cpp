@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsqltablemodel.h"
 
@@ -16,9 +16,9 @@
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 using SqlTm = QSqlQueryModelSql;
 
@@ -68,7 +68,7 @@ void QSqlTableModelPrivate::initRecordAndPrimaryIndex()
 void QSqlTableModelPrivate::clear()
 {
     sortColumn = -1;
-    sortOrder = Qt::AscendingOrder;
+    sortOrder = BobUI::AscendingOrder;
     tableName.clear();
     editQuery.clear();
     cache.clear();
@@ -165,12 +165,12 @@ bool QSqlTableModelPrivate::exec(const QString &stmt, bool prepStatement,
     for a single database table.
 
     \ingroup database
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlTableModel is a high-level interface for reading and writing
     database records from a single table. It is built on top of the
     lower-level QSqlQuery and can be used to provide data to view
-    classes such as QTableView. For example:
+    classes such as BOBUIableView. For example:
 
     \snippet sqldatabase/sqldatabase_snippet.cpp 24
 
@@ -193,7 +193,7 @@ bool QSqlTableModelPrivate::exec(const QString &stmt, bool prepStatement,
     populate the model with data.
 
     The \l{tablemodel} example illustrates how to use
-    QSqlTableModel as the data source for a QTableView.
+    QSqlTableModel as the data source for a BOBUIableView.
 
     QSqlTableModel provides no direct support for foreign keys. Use
     the QSqlRelationalTableModel and QSqlRelationalDelegate if you
@@ -375,7 +375,7 @@ bool QSqlTableModel::selectRow(int row)
                                               primaryValues(row),
                                               false);
     static const QString wh = SqlTm::where() + SqlTm::sp();
-    if (d->filter.startsWith(wh, Qt::CaseInsensitive))
+    if (d->filter.startsWith(wh, BobUI::CaseInsensitive))
         d->filter.remove(0, wh.size());
 
     QString stmt;
@@ -421,7 +421,7 @@ bool QSqlTableModel::selectRow(int row)
 
     if (needsAddingToCache) {
         d->cache[row].refresh(exists, newValues);
-        emit headerDataChanged(Qt::Vertical, row, row);
+        emit headerDataChanged(BobUI::Vertical, row, row);
         emit dataChanged(createIndex(row, 0), createIndex(row, columnCount() - 1));
     }
 
@@ -434,7 +434,7 @@ bool QSqlTableModel::selectRow(int row)
 QVariant QSqlTableModel::data(const QModelIndex &index, int role) const
 {
     Q_D(const QSqlTableModel);
-    if (!index.isValid() || (role != Qt::DisplayRole && role != Qt::EditRole))
+    if (!index.isValid() || (role != BobUI::DisplayRole && role != BobUI::EditRole))
         return QVariant();
 
     const auto it = d->cache.constFind(index.row());
@@ -447,10 +447,10 @@ QVariant QSqlTableModel::data(const QModelIndex &index, int role) const
 /*!
     \reimp
 */
-QVariant QSqlTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QSqlTableModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
     Q_D(const QSqlTableModel);
-    if (orientation == Qt::Vertical && role == Qt::DisplayRole) {
+    if (orientation == BobUI::Vertical && role == BobUI::DisplayRole) {
         const QSqlTableModelPrivate::Op op = d->cache.value(section).op();
         if (op == QSqlTableModelPrivate::Insert)
             return "*"_L1;
@@ -523,7 +523,7 @@ bool QSqlTableModel::isDirty(const QModelIndex &index) const
     Returns \c true if the value could be set or false on error, for
     example if \a index is out of bounds.
 
-    Returns \c false if the role is not Qt::EditRole. To set data
+    Returns \c false if the role is not BobUI::EditRole. To set data
     for roles other than EditRole, either use a custom proxy model
     or subclass QSqlTableModel.
 
@@ -535,13 +535,13 @@ bool QSqlTableModel::setData(const QModelIndex &index, const QVariant &value, in
     if (d->busyInsertingRows)
         return false;
 
-    if (role != Qt::EditRole)
+    if (role != BobUI::EditRole)
         return QSqlQueryModel::setData(index, value, role);
 
     if (!index.isValid() || index.column() >= d->rec.count() || index.row() >= rowCount())
         return false;
 
-    if (!(flags(index) & Qt::ItemIsEditable))
+    if (!(flags(index) & BobUI::ItemIsEditable))
         return false;
 
     const QVariant oldValue = QSqlTableModel::data(index, role);
@@ -570,7 +570,7 @@ bool QSqlTableModel::setData(const QModelIndex &index, const QVariant &value, in
  */
 bool QSqlTableModel::clearItemData(const QModelIndex &index)
 {
-    return setData(index, QVariant(), Qt::EditRole);
+    return setData(index, QVariant(), BobUI::EditRole);
 }
 
 /*!
@@ -909,7 +909,7 @@ QSqlDatabase QSqlTableModel::database() const
 
     \sa setSort(), select(), orderByClause()
 */
-void QSqlTableModel::sort(int column, Qt::SortOrder order)
+void QSqlTableModel::sort(int column, BobUI::SortOrder order)
 {
     setSort(column, order);
     select();
@@ -922,7 +922,7 @@ void QSqlTableModel::sort(int column, Qt::SortOrder order)
 
     \sa select(), orderByClause()
 */
-void QSqlTableModel::setSort(int column, Qt::SortOrder order)
+void QSqlTableModel::setSort(int column, BobUI::SortOrder order)
 {
     Q_D(QSqlTableModel);
     d->sortColumn = column;
@@ -947,7 +947,7 @@ QString QSqlTableModel::orderByClause() const
     QString field = d->db.driver()->escapeIdentifier(d->tableName, QSqlDriver::TableName)
             + u'.'
             + d->db.driver()->escapeIdentifier(f.name(), QSqlDriver::FieldName);
-    field = d->sortOrder == Qt::AscendingOrder ? SqlTm::asc(field) : SqlTm::desc(field);
+    field = d->sortOrder == BobUI::AscendingOrder ? SqlTm::asc(field) : SqlTm::desc(field);
     return SqlTm::orderBy(field);
 }
 
@@ -1066,7 +1066,7 @@ bool QSqlTableModel::removeRows(int row, int count, const QModelIndex &parent)
             else
                 mrow.setOp(QSqlTableModelPrivate::Delete);
             if (d->strategy == OnManualSubmit)
-                emit headerDataChanged(Qt::Vertical, idx, idx);
+                emit headerDataChanged(BobUI::Vertical, idx, idx);
         }
     }
 
@@ -1234,7 +1234,7 @@ void QSqlTableModel::clear()
 
 /*! \reimp
 */
-Qt::ItemFlags QSqlTableModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QSqlTableModel::flags(const QModelIndex &index) const
 {
     Q_D(const QSqlTableModel);
     if (index.internalPointer() || index.column() < 0 || index.column() >= d->rec.count()
@@ -1265,7 +1265,7 @@ Qt::ItemFlags QSqlTableModel::flags(const QModelIndex &index) const
     if (!editable)
         return QSqlQueryModel::flags(index);
     else
-        return QSqlQueryModel::flags(index) | Qt::ItemIsEditable;
+        return QSqlQueryModel::flags(index) | BobUI::ItemIsEditable;
 }
 
 /*!
@@ -1401,6 +1401,6 @@ QSqlRecord QSqlTableModel::primaryValues(int row) const
         return QSqlQueryModel::record(row).keyValues(pIndex);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqltablemodel.cpp"

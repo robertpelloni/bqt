@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qmath.h>
 #include <QGraphicsLinearLayout>
@@ -15,7 +15,7 @@
 ListItemContainer::ListItemContainer(int bufferSize, ItemRecyclingList *view, QGraphicsWidget *parent)
     : AbstractItemContainer(bufferSize, parent)
     , m_view(view)
-    , m_layout(new QGraphicsLinearLayout(Qt::Vertical))
+    , m_layout(new QGraphicsLinearLayout(BobUI::Vertical))
     , m_listItemCaching(false)
 {
     setContentsMargins(0,0,0,0);
@@ -93,12 +93,12 @@ int ListItemContainer::maxItemCountInItemBuffer() const
         qreal heightOfOneItem = 0;
         if (currentItemCount > 0)
         {
-            heightOfOneItem = m_layout->effectiveSizeHint(Qt::PreferredSize).height() / currentItemCount;
+            heightOfOneItem = m_layout->effectiveSizeHint(BobUI::PreferredSize).height() / currentItemCount;
         }
         int guess = 0;
         if( heightOfOneItem <= 0 ) {
             if (m_prototype) {
-                heightOfOneItem = m_prototype->effectiveSizeHint(Qt::PreferredSize).height();
+                heightOfOneItem = m_prototype->effectiveSizeHint(BobUI::PreferredSize).height();
             }
             else
                 heightOfOneItem = 50; // TODO magic number, do we have better guess if prototype is not set?

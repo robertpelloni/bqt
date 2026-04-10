@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDIALOGHELPER_H
 #define QPLATFORMDIALOGHELPER_H
@@ -10,22 +10,22 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/QtGlobal>
-#include <QtCore/QObject>
-#include <QtCore/QList>
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QDir>
-#include <QtCore/QUrl>
-#include <QtGui/QRgb>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/BobUIGlobal>
+#include <BobUICore/QObject>
+#include <BobUICore/QList>
+#include <BobUICore/QSharedDataPointer>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QDir>
+#include <BobUICore/QUrl>
+#include <BobUIGui/QRgb>
 Q_MOC_INCLUDE(<QFont>)
 Q_MOC_INCLUDE(<QColor>)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QString;
@@ -46,7 +46,7 @@ class Q_GUI_EXPORT QPlatformDialogHelper : public QObject
     Q_OBJECT
 public:
     enum StyleHint {
-        DialogIsQtWindow
+        DialogIsBobUIWindow
     };
     enum DialogCode { Rejected, Accepted };
 
@@ -84,7 +84,7 @@ public:
 
     enum ButtonRole {
         // keep this in sync with QDialogButtonBox::ButtonRole and QMessageBox::ButtonRole
-        // TODO Qt 6: make the enum copies explicit, and make InvalidRole == 0 so that
+        // TODO BobUI 6: make the enum copies explicit, and make InvalidRole == 0 so that
         // AcceptRole can be or'ed with flags, and EOL can be the same as InvalidRole (null-termination)
         InvalidRole = -1,
         AcceptRole,
@@ -124,14 +124,14 @@ public:
     virtual QVariant styleHint(StyleHint hint) const;
 
     virtual void exec() = 0;
-    virtual bool show(Qt::WindowFlags windowFlags,
-                          Qt::WindowModality windowModality,
+    virtual bool show(BobUI::WindowFlags windowFlags,
+                          BobUI::WindowModality windowModality,
                           QWindow *parent) = 0;
     virtual void hide() = 0;
 
     static QVariant defaultStyleHint(QPlatformDialogHelper::StyleHint hint);
 
-    static const int *buttonLayout(Qt::Orientation orientation = Qt::Horizontal, ButtonLayout policy = UnknownLayout);
+    static const int *buttonLayout(BobUI::Orientation orientation = BobUI::Horizontal, ButtonLayout policy = UnknownLayout);
     static ButtonRole buttonRole(StandardButton button);
 
 Q_SIGNALS:
@@ -139,12 +139,12 @@ Q_SIGNALS:
     void reject();
 };
 
-QT_END_NAMESPACE
-QT_DECL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::StandardButton,
+BOBUI_END_NAMESPACE
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::StandardButton,
                                QPlatformDialogHelper__StandardButton, Q_GUI_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::ButtonRole,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::ButtonRole,
                                QPlatformDialogHelper__ButtonRole, Q_GUI_EXPORT)
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QColorDialogOptions
 {
@@ -465,9 +465,9 @@ public:
     const CustomButton *customButton(int id);
     void clearCustomButtons();
 
-    void setCheckBox(const QString &label, Qt::CheckState state);
+    void setCheckBox(const QString &label, BobUI::CheckState state);
     QString checkBoxLabel() const;
-    Qt::CheckState checkBoxState() const;
+    BobUI::CheckState checkBoxState() const;
 
     void setEscapeButton(int id);
     int escapeButton() const;
@@ -488,12 +488,12 @@ public:
 
 Q_SIGNALS:
     void clicked(QPlatformDialogHelper::StandardButton button, QPlatformDialogHelper::ButtonRole role);
-    void checkBoxStateChanged(Qt::CheckState state);
+    void checkBoxStateChanged(BobUI::CheckState state);
 
 private:
     QSharedPointer<QMessageDialogOptions> m_options;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPLATFORMDIALOGHELPER_H

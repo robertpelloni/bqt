@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qdbusconnection.h"
 
-#include <QTest>
+#include <BOBUIest>
 #include <QDebug>
 #include <QProcess>
 #include <QCoreApplication>
@@ -36,8 +36,8 @@ tst_QDBusConnection::tst_QDBusConnection()
 #  define QVERIFY_HOOKCALLED()          QCOMPARE(hookCallCount, 1); hookCallCount = 0
     hookSetupFunction();
 #else
-#  define QCOMPARE_HOOKCOUNT(n)         qt_noop()
-#  define QVERIFY_HOOKCALLED()          qt_noop()
+#  define QCOMPARE_HOOKCOUNT(n)         bobui_noop()
+#  define QVERIFY_HOOKCALLED()          bobui_noop()
 #endif
 }
 
@@ -109,7 +109,7 @@ void tst_QDBusConnection::sendSignalToName()
 
     QVERIFY(con.send(msg));
 
-    QTRY_COMPARE(spy.args.size(), 1);
+    BOBUIRY_COMPARE(spy.args.size(), 1);
     QCOMPARE(spy.args.at(0).toString(), QString("ping"));
 }
 
@@ -132,7 +132,7 @@ void tst_QDBusConnection::sendSignalToOtherName()
 
     QVERIFY(con.send(msg));
 
-    QTest::qWait(1000);
+    BOBUIest::qWait(1000);
 
     QCOMPARE(spy.args.size(), 0);
 }
@@ -186,7 +186,7 @@ void tst_QDBusConnection::sendAsync()
             "/org/freedesktop/DBus", "org.freedesktop.DBus", "ListNames");
     QVERIFY(con.callWithCallback(msg, &spy, SLOT(asyncReply(QDBusMessage))));
 
-    QTRY_COMPARE(spy.args.size(), 1);
+    BOBUIRY_COMPARE(spy.args.size(), 1);
     QCOMPARE(spy.args.value(0).typeName(), "QStringList");
     QVERIFY(spy.args.at(0).toStringList().contains(con.baseService()));
 }
@@ -209,7 +209,7 @@ void tst_QDBusConnection::connect()
 
     QVERIFY(con.send(msg));
 
-    QTRY_COMPARE(spy.args.size(), 1);
+    BOBUIRY_COMPARE(spy.args.size(), 1);
     QCOMPARE(spy.args.at(0).toString(), QString("ping"));
 }
 
@@ -328,13 +328,13 @@ void tst_QDBusConnection::connectToPeer()
 
 void tst_QDBusConnection::registerObject_data()
 {
-    QTest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("path");
 
-    QTest::newRow("/") << "/";
-    QTest::newRow("/p1") << "/p1";
-    QTest::newRow("/p2") << "/p2";
-    QTest::newRow("/p1/q") << "/p1/q";
-    QTest::newRow("/p1/q/r") << "/p1/q/r";
+    BOBUIest::newRow("/") << "/";
+    BOBUIest::newRow("/p1") << "/p1";
+    BOBUIest::newRow("/p2") << "/p2";
+    BOBUIest::newRow("/p1/q") << "/p1/q";
+    BOBUIest::newRow("/p1/q/r") << "/p1/q/r";
 }
 
 void tst_QDBusConnection::registerObject()
@@ -361,14 +361,14 @@ void tst_QDBusConnection::registerObject()
 
 void tst_QDBusConnection::registerObjectWithInterface_data()
 {
-    QTest::addColumn<QString>("path");
-    QTest::addColumn<QString>("interface");
+    BOBUIest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("interface");
 
-    QTest::newRow("/") << "/" << "org.foo";
-    QTest::newRow("/p1") << "/p1" << "org.foo";
-    QTest::newRow("/p2") << "/p2" << "org.foo";
-    QTest::newRow("/p1/q") << "/p1/q" << "org.foo";
-    QTest::newRow("/p1/q/r") << "/p1/q/r" << "org.foo";
+    BOBUIest::newRow("/") << "/" << "org.foo";
+    BOBUIest::newRow("/p1") << "/p1" << "org.foo";
+    BOBUIest::newRow("/p2") << "/p2" << "org.foo";
+    BOBUIest::newRow("/p1/q") << "/p1/q" << "org.foo";
+    BOBUIest::newRow("/p1/q/r") << "/p1/q/r" << "org.foo";
 
 }
 
@@ -397,13 +397,13 @@ void tst_QDBusConnection::registerObjectWithInterface()
 
 void tst_QDBusConnection::registerObjectPeer_data()
 {
-    QTest::addColumn<QString>("path");
+    BOBUIest::addColumn<QString>("path");
 
-    QTest::newRow("/") << "/";
-    QTest::newRow("/p1") << "/p1";
-    QTest::newRow("/p2") << "/p2";
-    QTest::newRow("/p1/q") << "/p1/q";
-    QTest::newRow("/p1/q/r") << "/p1/q/r";
+    BOBUIest::newRow("/") << "/";
+    BOBUIest::newRow("/p1") << "/p1";
+    BOBUIest::newRow("/p2") << "/p2";
+    BOBUIest::newRow("/p1/q") << "/p1/q";
+    BOBUIest::newRow("/p1/q/r") << "/p1/q/r";
 }
 
 void tst_QDBusConnection::registerObjectPeer()
@@ -416,14 +416,14 @@ void tst_QDBusConnection::registerObjectPeer()
     MyServer server(path);
 
     QDBusConnection::connectToPeer(server.address(), "beforeFoo");
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     {
         QDBusConnection con = QDBusConnection::connectToPeer(server.address(), "foo");
 
-        QTestEventLoop::instance().enterLoop(2);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        BOBUIestEventLoop::instance().enterLoop(2);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
         QVERIFY(con.isConnected());
 
         MyObject obj;
@@ -433,7 +433,7 @@ void tst_QDBusConnection::registerObjectPeer()
     }
 
     QDBusConnection::connectToPeer(server.address(), "afterFoo");
-    QTestEventLoop::instance().enterLoop(2);
+    BOBUIestEventLoop::instance().enterLoop(2);
 
     {
         QDBusConnection con("foo");
@@ -598,8 +598,8 @@ void tst_QDBusConnection::registerObjectPeer2()
 
     MyServer2 server;
     QDBusConnection con = QDBusConnection::connectToPeer(server.address(), "foo");
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(con.isConnected());
 
     QDBusConnection srv_con = server.connection();
@@ -801,8 +801,8 @@ void tst_QDBusConnection::registerQObjectChildrenPeer()
 
     MyServer2 server;
     QDBusConnection con = QDBusConnection::connectToPeer(server.address(), "foo");
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCoreApplication::processEvents();
     QVERIFY(con.isConnected());
 
@@ -883,7 +883,7 @@ bool tst_QDBusConnection::callMethod(const QDBusConnection &conn, const QString 
     QDBusMessage reply = conn.call(msg, QDBus::Block/*WithGui*/);
     if (reply.type() != QDBusMessage::ReplyMessage)
         return false;
-    QTest::qCompare(MyObject::path, path, "MyObject::path", "path", __FILE__, __LINE__);
+    BOBUIest::qCompare(MyObject::path, path, "MyObject::path", "path", __FILE__, __LINE__);
     return (MyObject::path == path);
 }
 
@@ -893,7 +893,7 @@ bool tst_QDBusConnection::callMethod(const QDBusConnection &conn, const QString 
     QDBusMessage reply = conn.call(msg, QDBus::Block/*WithGui*/);
     if (reply.type() != QDBusMessage::ReplyMessage)
         return false;
-    QTest::qCompare(MyObjectWithoutInterface::path, path, "MyObjectWithoutInterface::path", "path", __FILE__, __LINE__);
+    BOBUIest::qCompare(MyObjectWithoutInterface::path, path, "MyObjectWithoutInterface::path", "path", __FILE__, __LINE__);
     return (MyObjectWithoutInterface::path == path) && MyObjectWithoutInterface::interface == interface;
 }
 
@@ -904,7 +904,7 @@ bool tst_QDBusConnection::callMethodPeer(const QDBusConnection &conn, const QStr
 
     if (reply.type() != QDBusMessage::ReplyMessage)
         return false;
-    QTest::qCompare(MyObject::path, path, "MyObject::path", "path", __FILE__, __LINE__);
+    BOBUIest::qCompare(MyObject::path, path, "MyObject::path", "path", __FILE__, __LINE__);
     return (MyObject::path == path);
 }
 
@@ -941,10 +941,10 @@ void tst_QDBusConnection::callSelf()
 
 void tst_QDBusConnection::callSelfByAnotherName_data()
 {
-    QTest::addColumn<int>("registerMethod");
-    QTest::newRow("connection") << 0;
-    QTest::newRow("connection-interface") << 1;
-    QTest::newRow("direct") << 2;
+    BOBUIest::addColumn<int>("registerMethod");
+    BOBUIest::newRow("connection") << 0;
+    BOBUIest::newRow("connection-interface") << 1;
+    BOBUIest::newRow("direct") << 2;
 }
 
 void tst_QDBusConnection::callSelfByAnotherName()
@@ -963,7 +963,7 @@ void tst_QDBusConnection::callSelfByAnotherName()
             QDBusConnection::ExportAllContents));
     con.connect("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "NameOwnerChanged",
                 QStringList() << sname << "",
-                QString(), &QTestEventLoop::instance(), SLOT(exitLoop()));
+                QString(), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
     // register the name
     QFETCH(int, registerMethod);
@@ -992,11 +992,11 @@ void tst_QDBusConnection::callSelfByAnotherName()
     } deregisterer(con, sname);
 
     // give the connection a chance to find out that we're good to go
-    QTestEventLoop::instance().enterLoop(2);
+    BOBUIestEventLoop::instance().enterLoop(2);
     con.disconnect("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "NameOwnerChanged",
                  QStringList() << sname << "",
-                 QString(), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QVERIFY(!QTestEventLoop::instance().timeout());
+                 QString(), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     // make the call
     QDBusMessage msg = QDBusMessage::createMethodCall(sname, "/test",
@@ -1032,7 +1032,7 @@ void tst_QDBusConnection::connectSignal()
 
     QDBusConnection con = QDBusConnection::sessionBus();
 
-    QDBusMessage signal = QDBusMessage::createSignal("/", "org.qtproject.TestCase",
+    QDBusMessage signal = QDBusMessage::createSignal("/", "org.bobuiproject.TestCase",
                                                      "oneSignal");
     signal << "one parameter";
 
@@ -1040,7 +1040,7 @@ void tst_QDBusConnection::connectSignal()
     QVERIFY(con.connect(con.baseService(), signal.path(), signal.interface(),
                         signal.member(), &recv, SLOT(oneSlot(QString))));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, signal.arguments().at(0).toString());
 
     // disconnect and try with a signature
@@ -1051,7 +1051,7 @@ void tst_QDBusConnection::connectSignal()
     QVERIFY(con.connect(con.baseService(), signal.path(), signal.interface(),
                         signal.member(), "s", &recv, SLOT(oneSlot(QString))));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, signal.arguments().at(0).toString());
 
     // confirm that we are, indeed, a unique connection
@@ -1060,7 +1060,7 @@ void tst_QDBusConnection::connectSignal()
     QVERIFY(!con.connect(con.baseService(), signal.path(), signal.interface(),
                         signal.member(), "s", &recv, SLOT(oneSlot(QString))));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, signal.arguments().at(0).toString());
 }
 
@@ -1071,7 +1071,7 @@ void tst_QDBusConnection::slotsWithLessParameters()
 
     QDBusConnection con = QDBusConnection::sessionBus();
 
-    QDBusMessage signal = QDBusMessage::createSignal("/", "org.qtproject.TestCase",
+    QDBusMessage signal = QDBusMessage::createSignal("/", "org.bobuiproject.TestCase",
                                                      "oneSignal");
     signal << "one parameter";
 
@@ -1079,7 +1079,7 @@ void tst_QDBusConnection::slotsWithLessParameters()
     QVERIFY(con.connect(con.baseService(), signal.path(), signal.interface(),
                         signal.member(), &recv, SLOT(oneSlot())));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, QString());
 
     // disconnect and try with a signature
@@ -1089,7 +1089,7 @@ void tst_QDBusConnection::slotsWithLessParameters()
     QVERIFY(con.connect(con.baseService(), signal.path(), signal.interface(),
                         signal.member(), "s", &recv, SLOT(oneSlot())));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, QString());
 
     // confirm that we are, indeed, a unique connection
@@ -1097,7 +1097,7 @@ void tst_QDBusConnection::slotsWithLessParameters()
     QVERIFY(!con.connect(con.baseService(), signal.path(), signal.interface(),
                          signal.member(), "s", &recv, SLOT(oneSlot())));
     QVERIFY(con.send(signal));
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
     QCOMPARE(recv.argumentReceived, QString());
 }
 
@@ -1124,8 +1124,8 @@ void tst_QDBusConnection::nestedCallWithCallback()
 
     SignalReceiver recv;
     connection.callWithCallback(msg, &recv, SLOT(exitLoop()), SLOT(secondCallWithCallback()), 10);
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(recv.signalsReceived, 1);
     QCOMPARE_HOOKCOUNT(2);
 }
@@ -1136,11 +1136,11 @@ void tst_QDBusConnection::serviceRegistrationRaceCondition()
         QSKIP("Test requires a QCoreApplication");
 
     // There was a race condition in the updating of list of name owners in
-    // Qt D-Bus. When the user connects to a signal coming from a given
+    // BobUI D-Bus. When the user connects to a signal coming from a given
     // service, we must listen for NameOwnerChanged signals relevant to that
     // name and update when the owner changes. However, it's possible that we
     // receive in one chunk from the server both the NameOwnerChanged signal
-    // about the service and the signal we're interested in. Since Qt D-Bus
+    // about the service and the signal we're interested in. Since BobUI D-Bus
     // posts events in order to handle the incoming signals, the update
     // happens too late.
 
@@ -1152,7 +1152,7 @@ void tst_QDBusConnection::serviceRegistrationRaceCondition()
 
     // connect to the signal:
     RaceConditionSignalWaiter recv;
-    session.connect(serviceName, "/", "org.qtproject.TestCase", "oneSignal", &recv, SLOT(countUp()));
+    session.connect(serviceName, "/", "org.bobuiproject.TestCase", "oneSignal", &recv, SLOT(countUp()));
 
     // create a secondary connection and register a name
     QDBusConnection connection = QDBusConnection::connectToBus(QDBusConnection::SessionBus, connectionName);
@@ -1161,7 +1161,7 @@ void tst_QDBusConnection::serviceRegistrationRaceCondition()
     QVERIFY(connection.registerService(serviceName));
 
     // send a signal
-    QDBusMessage msg = QDBusMessage::createSignal("/", "org.qtproject.TestCase", "oneSignal");
+    QDBusMessage msg = QDBusMessage::createSignal("/", "org.bobuiproject.TestCase", "oneSignal");
     connection.send(msg);
 
     // make a blocking call just to be sure that the buffer was flushed
@@ -1170,7 +1170,7 @@ void tst_QDBusConnection::serviceRegistrationRaceCondition()
     msg << connectionName;
     connection.call(msg); // ignore result
 
-    // Now here's the race condition (more info on task QTBUG-15651):
+    // Now here's the race condition (more info on task BOBUIBUG-15651):
     // the bus has most likely queued three signals for us to work on:
     // 1) NameOwnerChanged for the connection we created above
     // 2) NameOwnerChanged for the service we registered above
@@ -1180,9 +1180,9 @@ void tst_QDBusConnection::serviceRegistrationRaceCondition()
     // update the owner of serviceName before we start processing the
     // "oneSignal" signal.
 
-    QTestEventLoop::instance().connect(&recv, SIGNAL(done()), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(1);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().connect(&recv, SIGNAL(done()), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(1);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(recv.count, 1);
 }
 
@@ -1285,13 +1285,13 @@ void tst_QDBusConnection::callVirtualObject()
     obj.callCount = 0;
     obj.replyArguments << 42 << 47u;
 
-    QObject::connect(&obj, SIGNAL(messageReceived(QDBusMessage)), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    QObject::connect(&obj, SIGNAL(messageReceived(QDBusMessage)), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
     QDBusMessage message = QDBusMessage::createMethodCall(con.baseService(), path, QString(), "hello");
     QDBusPendingCall reply = con2.asyncCall(message);
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY_HOOKCALLED();
 
     QCOMPARE(obj.callCount, 1);
@@ -1308,8 +1308,8 @@ void tst_QDBusConnection::callVirtualObject()
     obj.replyArguments << 99;
     QDBusPendingCall childReply = con2.asyncCall(childMessage);
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY_HOOKCALLED();
 
     QCOMPARE(obj.callCount, 2);
@@ -1326,10 +1326,10 @@ void tst_QDBusConnection::callVirtualObject()
     QDBusMessage errorMessage = QDBusMessage::createMethodCall(con.baseService(), childPath, QString(), "someFunc");
     QDBusPendingCall errorReply = con2.asyncCall(errorMessage);
 
-    QTestEventLoop::instance().enterLoop(5);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(5);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY_HOOKCALLED();
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     QVERIFY(errorReply.isError());
     QCOMPARE(errorReply.reply().errorName(), QString("org.freedesktop.DBus.Error.UnknownObject"));
 
@@ -1372,7 +1372,7 @@ void tst_QDBusConnection::callVirtualObjectLocal()
 
 void tst_QDBusConnection::pendingCallWhenDisconnected()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("Test requires QProcess");
 #else
     if (!QCoreApplication::instance())
@@ -1409,7 +1409,7 @@ void tst_QDBusConnection::pendingCallWhenDisconnected()
 
 void tst_QDBusConnection::connectionLimit()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("Test requires QProcess");
 #else
     if (!QCoreApplication::instance())
@@ -1462,16 +1462,16 @@ void tst_QDBusConnection::parentClassSignal()
                         SLOT(oneSlot())));
 
     emit obj.baseObjectSignal();
-    QTRY_COMPARE(recv.signalsReceived, 1);
+    BOBUIRY_COMPARE(recv.signalsReceived, 1);
 
     emit obj.myObjectSignal();
-    QTRY_COMPARE(recv.signalsReceived, 2);
+    BOBUIRY_COMPARE(recv.signalsReceived, 2);
 }
 
 // see also tst_qdbusconnection_delayed
 void tst_QDBusConnection::delayedDeliveryReenabledAfterUsedInMainThread()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("Test requires QProcess");
 #elif defined(HAS_HOOKSETUPFUNCTION)
     QSKIP("No difference to run by tst_QDBusConnection");
@@ -1498,5 +1498,5 @@ QString MyObjectWithoutInterface::path;
 QString MyObjectWithoutInterface::interface;
 
 #ifndef tst_QDBusConnection
-QTEST_MAIN(tst_QDBusConnection)
+BOBUIEST_MAIN(tst_QDBusConnection)
 #endif

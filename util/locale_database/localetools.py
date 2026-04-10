@@ -1,5 +1,5 @@
-# Copyright (C) 2020 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2020 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Utilities shared among the CLDR extraction tools.
 
 Functions:
@@ -16,8 +16,8 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-qtbase_root = Path(__file__).parents[2]
-assert qtbase_root.name == 'qtbase'
+bobuibase_root = Path(__file__).parents[2]
+assert bobuibase_root.name == 'bobuibase'
 
 class Error (Exception):
     def __init__(self, msg, *args):
@@ -26,21 +26,21 @@ class Error (Exception):
     def __str__(self):
         return self.message
 
-def qtVersion(root = qtbase_root, pfx = 'set(QT_REPO_MODULE_VERSION '):
+def bobuiVersion(root = bobuibase_root, pfx = 'set(BOBUI_REPO_MODULE_VERSION '):
     with open(root.joinpath('.cmake.conf')) as fd:
         for line in fd:
             if line.startswith(pfx):
                 tail = line[len(pfx):].strip()
-                assert tail, ('No Qt version given', line)
+                assert tail, ('No BobUI version given', line)
                 if tail.startswith('"') or tail.startswith("'"):
                     cut = tail.index(tail[0], 1) # assert: doesn't ValueError
-                    assert cut > 5, ('Truncated Qt version', tail)
+                    assert cut > 5, ('Truncated BobUI version', tail)
                     version = tail[1:cut].strip()
                     assert all(x.isdigit() for x in version.split('.')), version
                     return version
-                raise Error(f'Missing quotes on Qt version: {tail}')
+                raise Error(f'Missing quotes on BobUI version: {tail}')
     raise Error(f'Failed to find {pfx}...) line in {root.joinpath(".cmake.conf")}')
-qtVersion = qtVersion()
+bobuiVersion = bobuiVersion()
 
 def unicode2hex(s: str) -> list[str]:
     lst: list[str] = []

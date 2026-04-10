@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qregion.h>
 
 #include <qbitmap.h>
@@ -11,7 +11,7 @@
 #include <qpolygon.h>
 
 #ifdef Q_OS_WIN
-#  include <qt_windows.h>
+#  include <bobui_windows.h>
 #endif
 
 class tst_QRegion : public QObject
@@ -61,7 +61,7 @@ private slots:
     void scaleRegions_data();
     void scaleRegions();
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     void regionToPath_data();
     void regionToPath();
 #endif
@@ -285,34 +285,34 @@ void tst_QRegion::polygonRegion()
 
 void tst_QRegion::emptyPolygonRegion_data()
 {
-    QTest::addColumn<QPolygon>("pa");
-    QTest::addColumn<bool>("isEmpty");
-    QTest::addColumn<int>("numRects");
-    QTest::addColumn<QList<QRect>>("rects");
+    BOBUIest::addColumn<QPolygon>("pa");
+    BOBUIest::addColumn<bool>("isEmpty");
+    BOBUIest::addColumn<int>("numRects");
+    BOBUIest::addColumn<QList<QRect>>("rects");
 
     QPolygon pa;
 
-    QTest::newRow("no points") << pa << true << 0 << QList<QRect>();
+    BOBUIest::newRow("no points") << pa << true << 0 << QList<QRect>();
     pa = QPolygon() << QPoint(10,10);
-    QTest::newRow("one point") << pa << true << 0 << QList<QRect>();
+    BOBUIest::newRow("one point") << pa << true << 0 << QList<QRect>();
     pa = QPolygon() << QPoint(10,10) << QPoint(10,20);
-    QTest::newRow("two points, horizontal") << pa << true << 0 << QList<QRect>();
+    BOBUIest::newRow("two points, horizontal") << pa << true << 0 << QList<QRect>();
 
     pa = QPolygon() << QPoint(10,10) << QPoint(20,10);
-    QTest::newRow("two points, vertical") << pa << true << 0 << QList<QRect>();
+    BOBUIest::newRow("two points, vertical") << pa << true << 0 << QList<QRect>();
 
     pa = QPolygon() << QPoint(10,10) << QPoint(20,20);
-    QTest::newRow("two points, diagonal") << pa << true << 0 << QList<QRect>();
+    BOBUIest::newRow("two points, diagonal") << pa << true << 0 << QList<QRect>();
 
     pa = QPolygon() << QPoint(10,10) << QPoint(15,15) << QPoint(10,15) << QPoint(10, 10) ;
     QList<QRect> v;
     v << QRect(10,11,1, 1) << QRect(10,12,2,1) << QRect(10,13,3,1) << QRect(10,14,4,1);
-    QTest::newRow("triangle") << pa << false << 4 << v;
+    BOBUIest::newRow("triangle") << pa << false << 4 << v;
 
     v.clear();
     v << QRect(10,10,10,10);
 
-    QTest::newRow("rectangle") << QPolygon(QRect(10,10,10,10))  << false << 1 << v;
+    BOBUIest::newRow("rectangle") << QPolygon(QRect(10,10,10,10))  << false << 1 << v;
 
 }
 
@@ -321,14 +321,14 @@ void tst_QRegion::emptyPolygonRegion()
     QFETCH(QPolygon, pa);
 
     QRegion r(pa);
-    QTEST(r.isEmpty(), "isEmpty");
-    QTEST(int(std::distance(r.begin(), r.end())), "numRects");
+    BOBUIEST(r.isEmpty(), "isEmpty");
+    BOBUIEST(int(std::distance(r.begin(), r.end())), "numRects");
     QList<QRect> rects{r.begin(), r.end()};
-    QTEST(int(rects.size()), "numRects");
-    QTEST(rects, "rects");
+    BOBUIEST(int(rects.size()), "numRects");
+    BOBUIEST(rects, "rects");
     const auto span = r.rects();
     rects.assign(span.begin(), span.end());
-    QTEST(rects, "rects");
+    BOBUIEST(rects, "rects");
 }
 
 
@@ -390,16 +390,16 @@ void tst_QRegion::bitmapRegion()
 
 void tst_QRegion::intersected_data()
 {
-    QTest::addColumn<QRegion>("r1");
-    QTest::addColumn<QRegion>("r2");
-    QTest::addColumn<bool>("intersects");
-    // QTest::addColumn<QRegion>("intersected");
+    BOBUIest::addColumn<QRegion>("r1");
+    BOBUIest::addColumn<QRegion>("r2");
+    BOBUIest::addColumn<bool>("intersects");
+    // BOBUIest::addColumn<QRegion>("intersected");
 
     QPolygon ps1(8);
     QPolygon ps2(8);
     ps1.putPoints(0,8, 20,20, 50,20, 50,100, 70,100, 70,20, 120,20, 120,200, 20, 200);
     ps2.putPoints(0,8, 100,150, 140,150, 140,160, 160,160, 160,150, 200,150, 200,180, 100,180);
-    QTest::newRow("task30716") << QRegion(ps1) << QRegion(ps2) << true;
+    BOBUIest::newRow("task30716") << QRegion(ps1) << QRegion(ps2) << true;
 }
 
 void tst_QRegion::intersected()
@@ -415,23 +415,23 @@ void tst_QRegion::intersected()
 
 void tst_QRegion::intersects_region_data()
 {
-    QTest::addColumn<QRegion>("r1");
-    QTest::addColumn<QRegion>("r2");
-    QTest::addColumn<bool>("intersects");
+    BOBUIest::addColumn<QRegion>("r1");
+    BOBUIest::addColumn<QRegion>("r2");
+    BOBUIest::addColumn<bool>("intersects");
 
-    QTest::newRow("rect overlap rect") << QRegion(100, 100, 200, 200)
+    BOBUIest::newRow("rect overlap rect") << QRegion(100, 100, 200, 200)
                                        << QRegion(200, 200, 200, 200)
                                        << true;
 
-    QTest::newRow("rect not overlap rect") << QRegion(100, 100, 200, 200)
+    BOBUIest::newRow("rect not overlap rect") << QRegion(100, 100, 200, 200)
                                            << QRegion(400, 400, 200, 200)
                                            << false;
 
-    QTest::newRow("ellipse overlap ellipse") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
+    BOBUIest::newRow("ellipse overlap ellipse") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
                                              << QRegion(200, 200, 200, 200, QRegion::Ellipse)
                                              << true;
 
-    QTest::newRow("ellipse not overlap ellipse") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
+    BOBUIest::newRow("ellipse not overlap ellipse") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
                                                  << QRegion(400, 400, 200, 200, QRegion::Ellipse)
                                                  << false;
 }
@@ -447,23 +447,23 @@ void tst_QRegion::intersects_region()
 
 void tst_QRegion::intersects_rect_data()
 {
-    QTest::addColumn<QRegion>("region");
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<bool>("intersects");
+    BOBUIest::addColumn<QRegion>("region");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<bool>("intersects");
 
-    QTest::newRow("rect overlap rect") << QRegion(100, 100, 200, 200)
+    BOBUIest::newRow("rect overlap rect") << QRegion(100, 100, 200, 200)
                                        << QRect(200, 200, 200, 200)
                                        << true;
 
-    QTest::newRow("rect not overlap rect") << QRegion(100, 100, 200, 200)
+    BOBUIest::newRow("rect not overlap rect") << QRegion(100, 100, 200, 200)
                                            << QRect(400, 400, 200, 200)
                                            << false;
 
-    QTest::newRow("ellipse overlap rect") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
+    BOBUIest::newRow("ellipse overlap rect") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
                                           << QRect(200, 200, 200, 200)
                                           << true;
 
-    QTest::newRow("ellipse not overlap rect") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
+    BOBUIest::newRow("ellipse not overlap rect") << QRegion(100, 100, 200, 200, QRegion::Ellipse)
                                               << QRect(400, 400, 200, 200)
                                               << false;
 }
@@ -484,35 +484,35 @@ void tst_QRegion::contains_point()
 
 void tst_QRegion::operator_plus_data()
 {
-    QTest::addColumn<QRegion>("r1");
-    QTest::addColumn<QRegion>("r2");
-    QTest::addColumn<QRegion>("expected");
+    BOBUIest::addColumn<QRegion>("r1");
+    BOBUIest::addColumn<QRegion>("r2");
+    BOBUIest::addColumn<QRegion>("expected");
 
-    QTest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
-    QTest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
+    BOBUIest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
+    BOBUIest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
                              << QRegion(QRect(10, 10, 10, 10));
-    QTest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
+    BOBUIest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
                              << QRegion(QRect(10, 10, 10, 10));
 
     QRegion expected;
     QList<QRect> rects;
     rects << QRect(10, 10, 10, 10) << QRect(22, 10, 10, 10);
     expected.setRects(rects.constData(), rects.size());
-    QTest::newRow("non overlapping") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("non overlapping") << QRegion(10, 10, 10, 10)
                                      << QRegion(22, 10, 10, 10)
                                      << expected;
 
     rects.clear();
     rects << QRect(50, 0, 50, 2);
     expected.setRects(rects.constData(), rects.size());
-    QTest::newRow("adjacent y-rects") << QRegion(50, 0, 50, 1)
+    BOBUIest::newRow("adjacent y-rects") << QRegion(50, 0, 50, 1)
                                       << QRegion(50, 1, 50, 1)
                                       << expected;
 
     rects.clear();
     rects << QRect(50, 0, 2, 1);
     expected.setRects(rects.constData(), rects.size());
-    QTest::newRow("adjacent x-rects") << QRegion(50, 0, 1, 1)
+    BOBUIest::newRow("adjacent x-rects") << QRegion(50, 0, 1, 1)
                                       << QRegion(51, 0, 1, 1)
                                       << expected;
 
@@ -520,17 +520,17 @@ void tst_QRegion::operator_plus_data()
     rects << QRect(10, 10, 10, 10) << QRect(10, 20, 5, 10);
     QRegion r1;
     r1.setRects(rects.constData(), rects.size());
-    QTest::newRow("double merge") << r1 << QRegion(15, 20, 5, 10)
+    BOBUIest::newRow("double merge") << r1 << QRegion(15, 20, 5, 10)
                                   << QRegion(10, 10, 10, 20);
     rects.clear();
     rects << QRect(15, 10, 5, 10) << QRect(10, 20, 10, 10);
     r1.setRects(rects.constData(), rects.size());
-    QTest::newRow("double merge 2") << r1 << QRegion(10, 10, 5, 10)
+    BOBUIest::newRow("double merge 2") << r1 << QRegion(10, 10, 5, 10)
                                     << QRegion(10, 10, 10, 20);
-    QTest::newRow("overlapping x") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("overlapping x") << QRegion(10, 10, 10, 10)
                                    << QRegion(15, 10, 10, 10)
                                    << QRegion(10, 10, 15, 10);
-    QTest::newRow("overlapping y") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("overlapping y") << QRegion(10, 10, 10, 10)
                                    << QRegion(10, 15, 10, 10)
                                    << QRegion(10, 10, 10, 15);
     rects.clear();
@@ -540,7 +540,7 @@ void tst_QRegion::operator_plus_data()
     rects << QRect(15, 20, 5, 10) << QRect(10, 30, 10, 10);
     QRegion r2;
     r2.setRects(rects.constData(), rects.size());
-    QTest::newRow("triple merge") << r1 << r2
+    BOBUIest::newRow("triple merge") << r1 << r2
                                   << QRegion(10, 10, 10, 30);
 
     rects.clear();
@@ -553,12 +553,12 @@ void tst_QRegion::operator_plus_data()
     rects << QRect(10, 10, 4, 10) << QRect(15, 10, 10, 10)
           << QRect(15, 20, 10, 10);
     expected.setRects(rects.constData(), rects.size());
-    QTest::newRow("don't merge y") << r1 << r2 << expected;
+    BOBUIest::newRow("don't merge y") << r1 << r2 << expected;
 
-    QTest::newRow("equal 1") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("equal 1") << QRegion(10, 10, 10, 10)
                              << QRegion(10, 10, 10, 10)
                              << QRegion(10, 10, 10, 10);
-    QTest::newRow("equal 2") << expected << expected << expected;
+    BOBUIest::newRow("equal 2") << expected << expected << expected;
 }
 
 void tst_QRegion::operator_plus()
@@ -630,24 +630,24 @@ void tst_QRegion::operator_plus()
 
 void tst_QRegion::operator_minus_data()
 {
-    QTest::addColumn<QRegion>("dest");
-    QTest::addColumn<QRegion>("subtract");
-    QTest::addColumn<QRegion>("expected");
+    BOBUIest::addColumn<QRegion>("dest");
+    BOBUIest::addColumn<QRegion>("subtract");
+    BOBUIest::addColumn<QRegion>("expected");
 
-    QTest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
-    QTest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
+    BOBUIest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
+    BOBUIest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
                              << QRegion();
-    QTest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
+    BOBUIest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
                              << QRegion(QRect(10, 10, 10, 10));
 
     QRegion dest;
     QList<QRect> rects;
     rects << QRect(10, 10, 10, 10) << QRect(22, 10, 10, 10);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("simple 1") << dest
+    BOBUIest::newRow("simple 1") << dest
                               << QRegion(22, 10, 10, 10)
                               << QRegion(10, 10, 10, 10);
-    QTest::newRow("simple 2") << dest
+    BOBUIest::newRow("simple 2") << dest
                               << QRegion(10, 10, 10, 10)
                               << QRegion(22, 10, 10, 10);
 
@@ -659,7 +659,7 @@ void tst_QRegion::operator_minus_data()
     rects.clear();
     rects << QRect(0, 0, 12, 12) << QRect(15, 0, 12, 12);
     minus.setRects(rects.constData(), rects.size());
-    QTest::newRow("empty 3") << dest << minus << QRegion();
+    BOBUIest::newRow("empty 3") << dest << minus << QRegion();
 }
 
 void tst_QRegion::operator_minus()
@@ -685,31 +685,31 @@ void tst_QRegion::operator_minus()
 
 void tst_QRegion::operator_intersect_data()
 {
-    QTest::addColumn<QRegion>("r1");
-    QTest::addColumn<QRegion>("r2");
-    QTest::addColumn<QRegion>("expected");
+    BOBUIest::addColumn<QRegion>("r1");
+    BOBUIest::addColumn<QRegion>("r2");
+    BOBUIest::addColumn<QRegion>("expected");
 
-    QTest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
-    QTest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
+    BOBUIest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
+    BOBUIest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
                              << QRegion();
-    QTest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
+    BOBUIest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
                              << QRegion();
 
     QRegion dest;
     QList<QRect> rects;
     rects << QRect(10, 10, 10, 10) << QRect(22, 10, 10, 10);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("simple 1") << dest
+    BOBUIest::newRow("simple 1") << dest
                               << QRegion(22, 10, 10, 10)
                               << QRegion(22, 10, 10, 10);
-    QTest::newRow("simple 2") << dest
+    BOBUIest::newRow("simple 2") << dest
                               << QRegion(10, 10, 10, 10)
                               << QRegion(10, 10, 10, 10);
 
     rects.clear();
     rects << QRect(10, 10, 10, 10) << QRect(10, 20, 15, 10);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("merge 1") << dest
+    BOBUIest::newRow("merge 1") << dest
                              << QRegion(10, 10, 10, 20)
                              << QRegion(10, 10, 10, 20);
 
@@ -719,15 +719,15 @@ void tst_QRegion::operator_intersect_data()
           << QRect(11, 198, 218, 27) << QRect(264, 198, 122, 27)
           << QRect(11, 225, 218, 221);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("merge 2") << dest << QRegion(11, 11, 218, 458)
+    BOBUIest::newRow("merge 2") << dest << QRegion(11, 11, 218, 458)
                              << QRegion(11, 11, 218, 435);
 
     rects.clear();
     rects << QRect(0, 0, 10, 10) << QRect(20, 0, 10, 10);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("empty 3") << dest << QRegion(11, 0, 5, 5) << QRegion();
+    BOBUIest::newRow("empty 3") << dest << QRegion(11, 0, 5, 5) << QRegion();
 
-    QTest::newRow("extents check") << dest << QRegion(0, 0, 15, 15)
+    BOBUIest::newRow("extents check") << dest << QRegion(0, 0, 15, 15)
                                    << QRegion(0, 0, 10, 10);
 
     rects.clear();
@@ -739,7 +739,7 @@ void tst_QRegion::operator_intersect_data()
           << QRect(30, 20, 10, 10);
     QRegion expected;
     expected.setRects(rects.constData(), rects.size());
-    QTest::newRow("dont merge") << dest << QRegion(0, 0, 100, 30)
+    BOBUIest::newRow("dont merge") << dest << QRegion(0, 0, 100, 30)
                                 << expected;
 }
 
@@ -767,42 +767,42 @@ void tst_QRegion::operator_intersect()
 
 void tst_QRegion::operator_xor_data()
 {
-    QTest::addColumn<QRegion>("dest");
-    QTest::addColumn<QRegion>("arg");
-    QTest::addColumn<QRegion>("expected");
+    BOBUIest::addColumn<QRegion>("dest");
+    BOBUIest::addColumn<QRegion>("arg");
+    BOBUIest::addColumn<QRegion>("expected");
 
-    QTest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
-    QTest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
+    BOBUIest::newRow("empty 0") << QRegion() << QRegion() << QRegion();
+    BOBUIest::newRow("empty 1") << QRegion() << QRegion(QRect(10, 10, 10, 10))
                              << QRegion(QRect(10, 10, 10, 10));
-    QTest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
+    BOBUIest::newRow("empty 2") << QRegion(QRect(10, 10, 10, 10)) << QRegion()
                              << QRegion(QRect(10, 10, 10, 10));
 
     QRegion dest;
     QList<QRect> rects;
     rects << QRect(10, 10, 10, 10) << QRect(22, 10, 10, 10);
     dest.setRects(rects.constData(), rects.size());
-    QTest::newRow("simple 1") << dest
+    BOBUIest::newRow("simple 1") << dest
                               << QRegion(22, 10, 10, 10)
                               << QRegion(10, 10, 10, 10);
-    QTest::newRow("simple 2") << dest
+    BOBUIest::newRow("simple 2") << dest
                               << QRegion(10, 10, 10, 10)
                               << QRegion(22, 10, 10, 10);
-    QTest::newRow("simple 3") << dest << dest << QRegion();
-    QTest::newRow("simple 4") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("simple 3") << dest << dest << QRegion();
+    BOBUIest::newRow("simple 4") << QRegion(10, 10, 10, 10)
                               << QRegion(10, 10, 5, 10)
                               << QRegion(15, 10, 5, 10);
-    QTest::newRow("simple 5") << QRegion(10, 10, 10, 10)
+    BOBUIest::newRow("simple 5") << QRegion(10, 10, 10, 10)
                               << QRegion(10, 10, 10, 5)
                               << QRegion(10, 15, 10, 5);
 
     const QRegion rgnA(0, 0, 100, 100);
     const QRegion rgnB(0, 0, 10, 10);
 
-    QTest::newRow("simple 6") << rgnA
+    BOBUIest::newRow("simple 6") << rgnA
                               << rgnA - rgnB
                               << rgnB;
 
-    QTest::newRow("simple 7") << rgnB
+    BOBUIest::newRow("simple 7") << rgnB
                               << rgnA
                               << rgnA - rgnB;
 }
@@ -822,18 +822,18 @@ void tst_QRegion::operator_xor()
 
 void tst_QRegion::rectCount_data()
 {
-    QTest::addColumn<QRegion>("region");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QRegion>("region");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("empty") << QRegion() << 0;
-    QTest::newRow("rect") << QRegion(10, 10, 10, 10) << 1;
+    BOBUIest::newRow("empty") << QRegion() << 0;
+    BOBUIest::newRow("rect") << QRegion(10, 10, 10, 10) << 1;
 
     QRegion dest;
     QList<QRect> rects;
     rects << QRect(10, 10, 10, 10) << QRect(22, 10, 10, 10);
     dest.setRects(rects.constData(), rects.size());
 
-    QTest::newRow("2 rects") << dest << rects.size();
+    BOBUIest::newRow("2 rects") << dest << rects.size();
 }
 
 void tst_QRegion::rectCount()
@@ -846,9 +846,9 @@ void tst_QRegion::rectCount()
 
 void tst_QRegion::isEmpty_data()
 {
-    QTest::addColumn<QRegion>("region");
+    BOBUIest::addColumn<QRegion>("region");
 
-    QTest::newRow("QRegion") << QRegion();
+    BOBUIest::newRow("QRegion") << QRegion();
 
     QList<QRect> rects;
     rects << QRect(0, 0, 10, 10) << QRect(15, 0, 10, 10);
@@ -859,7 +859,7 @@ void tst_QRegion::isEmpty_data()
     rects.clear();
     rects << QRect(0, 0, 12, 12) << QRect(15, 0, 12, 12);
     r2.setRects(rects.constData(), rects.size());
-    QTest::newRow("minus") << (r1 - r2);
+    BOBUIest::newRow("minus") << (r1 - r2);
 }
 
 void tst_QRegion::isEmpty()
@@ -919,29 +919,29 @@ void tst_QRegion::regionFromPath()
 
 void tst_QRegion::scaleRegions_data()
 {
-    QTest::addColumn<qreal>("scale");
-    QTest::addColumn<QList<QRect>>("inputRects");
-    QTest::addColumn<QList<QRect>>("expectedRects");
+    BOBUIest::addColumn<qreal>("scale");
+    BOBUIest::addColumn<QList<QRect>>("inputRects");
+    BOBUIest::addColumn<QList<QRect>>("expectedRects");
 
-    QTest::newRow("1.0 single") << 1.0 << QList<QRect> { QRect(10, 10, 20, 20) }
+    BOBUIest::newRow("1.0 single") << 1.0 << QList<QRect> { QRect(10, 10, 20, 20) }
                                 << QList<QRect> { QRect(10, 10, 20, 20) };
-    QTest::newRow("1.0 multi") << 1.0
+    BOBUIest::newRow("1.0 multi") << 1.0
                                << QList<QRect> { QRect(10, 10, 20, 20), QRect(40, 10, 20, 20) }
                                << QList<QRect> { QRect(10, 10, 20, 20), QRect(40, 10, 20, 20) };
-    QTest::newRow("2.0 single") << 2.0 << QList<QRect> { QRect(10, 10, 20, 20) }
+    BOBUIest::newRow("2.0 single") << 2.0 << QList<QRect> { QRect(10, 10, 20, 20) }
                                 << QList<QRect> { QRect(20, 20, 40, 40) };
-    QTest::newRow("2.0 multi") << 2.0
+    BOBUIest::newRow("2.0 multi") << 2.0
                                << QList<QRect> { QRect(10, 10, 20, 20), QRect(40, 10, 20, 20) }
                                << QList<QRect> { QRect(20, 20, 40, 40), QRect(80, 20, 40, 40) };
-    QTest::newRow("-1.0 single") << -1.0 << QList<QRect> { QRect(10, 10, 20, 20) }
+    BOBUIest::newRow("-1.0 single") << -1.0 << QList<QRect> { QRect(10, 10, 20, 20) }
                                  << QList<QRect> { QRect(-30, -30, 20, 20) };
-    QTest::newRow("-1.0 multi") << -1.0
+    BOBUIest::newRow("-1.0 multi") << -1.0
                                 << QList<QRect> { QRect(10, 10, 20, 20), QRect(40, 10, 20, 20) }
                                 << QList<QRect> { QRect(-60, -30, 20, 20),
                                                   QRect(-30, -30, 20, 20) };
-    QTest::newRow("-2.0 single") << -2.0 << QList<QRect> { QRect(10, 10, 20, 20) }
+    BOBUIest::newRow("-2.0 single") << -2.0 << QList<QRect> { QRect(10, 10, 20, 20) }
                                  << QList<QRect> { QRect(-60, -60, 40, 40) };
-    QTest::newRow("-2.0 multi") << -2.0
+    BOBUIest::newRow("-2.0 multi") << -2.0
                                 << QList<QRect> { QRect(10, 10, 20, 20), QRect(40, 10, 20, 20) }
                                 << QList<QRect> { QRect(-120, -60, 40, 40),
                                                   QRect(-60, -60, 40, 40) };
@@ -959,7 +959,7 @@ void tst_QRegion::scaleRegions()
     QRegion expected(expectedRects.first());
     expected.setRects(expectedRects.constData(), expectedRects.size());
 
-    QTransform t;
+    BOBUIransform t;
     t.scale(scale, scale);
 
     auto result = t.map(region);
@@ -970,15 +970,15 @@ void tst_QRegion::scaleRegions()
 
 Q_DECLARE_METATYPE(QPainterPath)
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QRegion::regionToPath_data()
 {
-    QTest::addColumn<QPainterPath>("path");
+    BOBUIest::addColumn<QPainterPath>("path");
     {
         QPainterPath path;
         path.addRect(QRect(0, 0, 10, 10));
 
-        QTest::newRow("Rectangle") << path;
+        BOBUIest::newRow("Rectangle") << path;
     }
 
     {
@@ -986,14 +986,14 @@ void tst_QRegion::regionToPath_data()
         path.addRect(QRect(0, 0, 10, 10));
         path.addRect(QRect(20, 0, 10, 10));
 
-        QTest::newRow("Two rects") << path;
+        BOBUIest::newRow("Two rects") << path;
     }
 
     {
         QPainterPath path;
         path.addEllipse(QRect(0, 0, 10, 10));
 
-        QTest::newRow("Ellipse") << path;
+        BOBUIest::newRow("Ellipse") << path;
     }
 
     {
@@ -1003,7 +1003,7 @@ void tst_QRegion::regionToPath_data()
         path.addRect(QRect(3, 3, 3, 2));
         path.addRect(QRect(12, 3, 3, 2));
 
-        QTest::newRow("H-dot") << path;
+        BOBUIest::newRow("H-dot") << path;
     }
 
     {
@@ -1015,18 +1015,18 @@ void tst_QRegion::regionToPath_data()
             }
         }
 
-        QTest::newRow("Grid") << path;
+        BOBUIest::newRow("Grid") << path;
     }
 }
 #endif
 
-#ifdef QT_BUILD_INTERNAL
-QT_BEGIN_NAMESPACE
-extern QPainterPath qt_regionToPath(const QRegion &region);
-QT_END_NAMESPACE
+#ifdef BOBUI_BUILD_INTERNAL
+BOBUI_BEGIN_NAMESPACE
+extern QPainterPath bobui_regionToPath(const QRegion &region);
+BOBUI_END_NAMESPACE
 #endif
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 void tst_QRegion::regionToPath()
 {
 
@@ -1034,7 +1034,7 @@ void tst_QRegion::regionToPath()
 
     for (int i = 0; i < 360; i += 10) {
 
-        QTransform transform;
+        BOBUIransform transform;
         transform.scale(5, 5);
         transform.rotate(i);
 
@@ -1044,7 +1044,7 @@ void tst_QRegion::regionToPath()
         QPainterPath a;
         a.addRegion(region);
 
-        QPainterPath b = qt_regionToPath(region);
+        QPainterPath b = bobui_regionToPath(region);
 
         QRect r = a.boundingRect().toAlignedRect();
         QImage ia(r.size(), QImage::Format_RGB32);
@@ -1053,18 +1053,18 @@ void tst_QRegion::regionToPath()
 
         QPainter p(&ia);
         p.translate(-r.x(), -r.y());
-        p.fillPath(a, Qt::red);
+        p.fillPath(a, BobUI::red);
         p.end();
         p.begin(&ib);
         p.translate(-r.x(), -r.y());
-        p.fillPath(b, Qt::red);
+        p.fillPath(b, BobUI::red);
         p.end();
 
         QCOMPARE(ia, ib);
         QCOMPARE(a.boundingRect(), b.boundingRect());
     }
 }
-#endif // QT_BUILD_INTERNAL
+#endif // BOBUI_BUILD_INTERNAL
 
 #ifdef Q_OS_WIN
 void tst_QRegion::winConversion()
@@ -1080,5 +1080,5 @@ void tst_QRegion::winConversion()
 }
 #endif // Q_OS_WIN
 
-QTEST_MAIN(tst_QRegion)
+BOBUIEST_MAIN(tst_QRegion)
 #include "tst_qregion.moc"

@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 #ifdef Q_OS_WIN
 
-#include <QtCore/private/qbstr_p.h>
+#include <BobUICore/private/qbstr_p.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 typedef int (*SETOANOCACHE)(void);
 
@@ -221,7 +221,7 @@ private slots:
 
 };
 
-QTEST_MAIN(tst_qbstr)
+BOBUIEST_MAIN(tst_qbstr)
 #include "tst_qbstr.moc"
 
 #endif // Q_OS_WIN

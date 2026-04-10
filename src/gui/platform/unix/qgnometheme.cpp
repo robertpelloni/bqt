@@ -1,19 +1,19 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgnometheme_p.h"
 #include <qpa/qplatformdialoghelper.h>
 #include <qpa/qplatformfontdatabase.h>
-#if QT_CONFIG(dbus) && QT_CONFIG(systemtrayicon)
+#if BOBUI_CONFIG(dbus) && BOBUI_CONFIG(systemtrayicon)
 #  include <private/qdbustrayicon_p.h>
 #endif
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 #  include <private/qdbusmenubar_p.h>
 #endif
 #include <qpa/qwindowsysteminterface.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QGnomeTheme
@@ -26,10 +26,10 @@ const char *QGnomeTheme::name = "gnome";
 
 QGnomeThemePrivate::QGnomeThemePrivate()
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     QObject::connect(&m_gnomePortal, &QGnomePortalInterface::themeNameChanged, &m_gnomePortal,
                      [this](const QString &themeName) { m_themeName = themeName; });
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 }
 
 QGnomeThemePrivate::~QGnomeThemePrivate()
@@ -53,49 +53,49 @@ void QGnomeThemePrivate::configureFonts(const QString &gtkFontName) const
     qCDebug(lcQpaFonts) << "default fonts: system" << systemFont << "fixed" << fixedFont;
 }
 
-Qt::ColorScheme QGnomeThemePrivate::colorScheme() const
+BobUI::ColorScheme QGnomeThemePrivate::colorScheme() const
 {
     if (hasRequestedColorScheme())
         return m_requestedColorScheme;
 
-#if QT_CONFIG(dbus)
-    if (Qt::ColorScheme colorScheme = m_gnomePortal.colorScheme();
-        colorScheme != Qt::ColorScheme::Unknown)
+#if BOBUI_CONFIG(dbus)
+    if (BobUI::ColorScheme colorScheme = m_gnomePortal.colorScheme();
+        colorScheme != BobUI::ColorScheme::Unknown)
         return colorScheme;
 
     // If the color scheme is set to Unknown by mistake or is not set at all,
     // then maybe the theme name contains a hint about the color scheme.
     // Let's hope the theme name does not include any accent color name
     // which contains "dark" or "light" in it (e.g. lightblue). At the moment they don't.
-    if (m_themeName.contains(QLatin1StringView("light"), Qt::CaseInsensitive))
-        return Qt::ColorScheme::Light;
-    else if (m_themeName.contains(QLatin1StringView("dark"), Qt::CaseInsensitive))
-        return Qt::ColorScheme::Dark;
-#endif // QT_CONFIG(dbus)
+    if (m_themeName.contains(QLatin1StringView("light"), BobUI::CaseInsensitive))
+        return BobUI::ColorScheme::Light;
+    else if (m_themeName.contains(QLatin1StringView("dark"), BobUI::CaseInsensitive))
+        return BobUI::ColorScheme::Dark;
+#endif // BOBUI_CONFIG(dbus)
 
     // Fallback to Unknown if no color scheme is set or detected
-    return Qt::ColorScheme::Unknown;
+    return BobUI::ColorScheme::Unknown;
 }
 
 bool QGnomeThemePrivate::hasRequestedColorScheme() const
 {
-    return m_requestedColorScheme != Qt::ColorScheme::Unknown;
+    return m_requestedColorScheme != BobUI::ColorScheme::Unknown;
 }
 
 QGnomeTheme::QGnomeTheme()
     : QGenericUnixTheme(new QGnomeThemePrivate())
 {
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     Q_D(QGnomeTheme);
 
     QGnomePortalInterface *portal = &d->m_gnomePortal;
 
     QObject::connect(portal, &QGnomePortalInterface::colorSchemeChanged, portal,
-                     [this](Qt::ColorScheme colorScheme) { updateColorScheme(colorScheme); });
+                     [this](BobUI::ColorScheme colorScheme) { updateColorScheme(colorScheme); });
 
     QObject::connect(portal, &QGnomePortalInterface::contrastChanged, portal,
-                     [this](Qt::ContrastPreference contrast) { updateHighContrast(contrast); });
-#endif // QT_CONFIG(dbus)
+                     [this](BobUI::ContrastPreference contrast) { updateHighContrast(contrast); });
+#endif // BOBUI_CONFIG(dbus)
 }
 
 QVariant QGnomeTheme::themeHint(QPlatformTheme::ThemeHint hint) const
@@ -126,7 +126,7 @@ QVariant QGnomeTheme::themeHint(QPlatformTheme::ThemeHint hint) const
         return QVariant(int(HoverEffect));
     case QPlatformTheme::ButtonPressKeys:
         return QVariant::fromValue(
-                QList<Qt::Key>({ Qt::Key_Space, Qt::Key_Return, Qt::Key_Enter, Qt::Key_Select }));
+                QList<BobUI::Key>({ BobUI::Key_Space, BobUI::Key_Return, BobUI::Key_Enter, BobUI::Key_Select }));
     case QPlatformTheme::PreselectFirstFileInDirectory:
         return true;
     case QPlatformTheme::MouseCursorTheme:
@@ -143,7 +143,7 @@ QVariant QGnomeTheme::themeHint(QPlatformTheme::ThemeHint hint) const
 
 QIcon QGnomeTheme::fileIcon(const QFileInfo &fileInfo, QPlatformTheme::IconOptions) const
 {
-#if QT_CONFIG(mimetype)
+#if BOBUI_CONFIG(mimetype)
     return xdgFileIcon(fileInfo);
 #else
     Q_UNUSED(fileInfo);
@@ -172,7 +172,7 @@ QString QGnomeTheme::gtkFontName() const
                                   .arg(defaultSystemFontSize);
 }
 
-void QGnomeTheme::requestColorScheme(Qt::ColorScheme scheme)
+void QGnomeTheme::requestColorScheme(BobUI::ColorScheme scheme)
 {
     Q_D(QGnomeTheme);
     if (d->m_requestedColorScheme == scheme)
@@ -182,23 +182,23 @@ void QGnomeTheme::requestColorScheme(Qt::ColorScheme scheme)
     QWindowSystemInterface::handleThemeChange();
 }
 
-Qt::ColorScheme QGnomeTheme::colorScheme() const
+BobUI::ColorScheme QGnomeTheme::colorScheme() const
 {
     Q_D(const QGnomeTheme);
-    if (auto colorScheme = d->colorScheme(); colorScheme != Qt::ColorScheme::Unknown)
+    if (auto colorScheme = d->colorScheme(); colorScheme != BobUI::ColorScheme::Unknown)
         return colorScheme;
     // If the color scheme is not set or detected, fall back to the default
     return QPlatformTheme::colorScheme();
 }
 
-#if QT_CONFIG(dbus)
-void QGnomeTheme::updateColorScheme(Qt::ColorScheme colorScheme)
+#if BOBUI_CONFIG(dbus)
+void QGnomeTheme::updateColorScheme(BobUI::ColorScheme colorScheme)
 {
     Q_UNUSED(colorScheme);
     QWindowSystemInterface::handleThemeChange();
 }
 
-void QGnomeTheme::updateHighContrast(Qt::ContrastPreference contrast)
+void QGnomeTheme::updateHighContrast(BobUI::ContrastPreference contrast)
 {
     Q_UNUSED(contrast);
     QWindowSystemInterface::handleThemeChange();
@@ -211,21 +211,21 @@ QPlatformMenuBar *QGnomeTheme::createPlatformMenuBar() const
     return nullptr;
 }
 
-Qt::ContrastPreference QGnomeTheme::contrastPreference() const
+BobUI::ContrastPreference QGnomeTheme::contrastPreference() const
 {
     Q_D(const QGnomeTheme);
     return d->m_gnomePortal.contrastPreference();
 }
 
-#  if QT_CONFIG(systemtrayicon)
+#  if BOBUI_CONFIG(systemtrayicon)
 QPlatformSystemTrayIcon *QGnomeTheme::createPlatformSystemTrayIcon() const
 {
     if (shouldUseDBusTray())
         return new QDBusTrayIcon();
     return nullptr;
 }
-#  endif // QT_CONFIG(systemtrayicon)
-#endif // QT_CONFIG(dbus)
+#  endif // BOBUI_CONFIG(systemtrayicon)
+#endif // BOBUI_CONFIG(dbus)
 
 QString QGnomeTheme::standardButtonText(int button) const
 {
@@ -246,4 +246,4 @@ QString QGnomeTheme::standardButtonText(int button) const
     return QPlatformTheme::standardButtonText(button);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

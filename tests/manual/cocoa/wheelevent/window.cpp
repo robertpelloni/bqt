@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 
@@ -7,7 +7,7 @@
 
 #include <QBackingStore>
 #include <QPainter>
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 static int colorIndexId = 0;
 
@@ -83,10 +83,10 @@ void Window::wheelEvent(QWheelEvent *event)
     qDebug() << "wheelEvent pixelDelta" << event->pixelDelta();
     qDebug() << "wheelEvent angleDelta" << event->angleDelta();
 
-    const bool useQt4API = false;
+    const bool useBobUI4API = false;
 
-    if (useQt4API) {
-        if (event->orientation() == Qt::Horizontal)
+    if (useBobUI4API) {
+        if (event->orientation() == BobUI::Horizontal)
             scrollOffset.setX(scrollOffset.x() + event->delta());
         else
             scrollOffset.setY(scrollOffset.y() + event->delta());
@@ -142,11 +142,11 @@ void Window::resizeEvent(QResizeEvent *)
 void Window::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Backspace:
+    case BobUI::Key_Backspace:
         m_text.chop(1);
         break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         m_text.append('\n');
         break;
     default:
@@ -162,7 +162,7 @@ void Window::scheduleRender()
         m_renderTimer = startTimer(1);
 }
 
-void Window::timerEvent(QTimerEvent *)
+void Window::timerEvent(BOBUIimerEvent *)
 {
     render();
     killTimer(m_renderTimer);

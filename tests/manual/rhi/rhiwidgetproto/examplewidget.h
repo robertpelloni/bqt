@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef EXAMPLEWIDGET_H
 #define EXAMPLEWIDGET_H
@@ -10,7 +10,7 @@
 class ExampleRhiWidget : public QRhiWidget
 {
 public:
-    ExampleRhiWidget(QWidget *parent = nullptr, Qt::WindowFlags f = {});
+    ExampleRhiWidget(QWidget *parent = nullptr, BobUI::WindowFlags f = {});
 
     void initialize(QRhi *rhi, QRhiTexture *outputTexture) override;
     void render(QRhiCommandBuffer *cb) override;

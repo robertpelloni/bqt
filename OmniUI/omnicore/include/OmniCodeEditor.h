@@ -5,7 +5,7 @@
 #include <QString>
 #include <QStringList>
 #include <QColor>
-#include <QTimer>
+#include <BOBUIimer>
 
 class OmniCodeEditor : public QQuickPaintedItem {
     Q_OBJECT
@@ -56,7 +56,7 @@ private:
     bool m_cursorVisible;
     int m_scrollY;
     
-    QTimer m_blinkTimer;
+    BOBUIimer m_blinkTimer;
 };
 
 #endif // OMNICODEEDITOR_H

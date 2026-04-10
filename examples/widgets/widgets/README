@@ -1,4 +1,4 @@
-Qt comes with a large range of standard widgets that users of modern
+BobUI comes with a large range of standard widgets that users of modern
 applications have come to expect.
 
 You can also develop your own custom widgets and controls, and use them
@@ -10,4 +10,4 @@ written custom widgets.
 
 
 Documentation for these examples can be found via the Examples
-link in the main Qt documentation.
+link in the main BobUI documentation.

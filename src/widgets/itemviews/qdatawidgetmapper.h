@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QDATAWIDGETMAPPER_H
 #define QDATAWIDGETMAPPER_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
 
-#include <QtCore/qobject.h>
+#include <BobUICore/qobject.h>
 
-QT_REQUIRE_CONFIG(datawidgetmapper);
+BOBUI_REQUIRE_CONFIG(datawidgetmapper);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAbstractItemDelegate;
 class QAbstractItemModel;
@@ -23,7 +23,7 @@ class Q_WIDGETS_EXPORT QDataWidgetMapper: public QObject
     Q_OBJECT
 
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(Qt::Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(BobUI::Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(SubmitPolicy submitPolicy READ submitPolicy WRITE setSubmitPolicy)
 
 public:
@@ -39,8 +39,8 @@ public:
     void setRootIndex(const QModelIndex &index);
     QModelIndex rootIndex() const;
 
-    void setOrientation(Qt::Orientation aOrientation);
-    Qt::Orientation orientation() const;
+    void setOrientation(BobUI::Orientation aOrientation);
+    BobUI::Orientation orientation() const;
 
     enum SubmitPolicy { AutoSubmit, ManualSubmit };
     Q_ENUM(SubmitPolicy)
@@ -76,6 +76,6 @@ private:
     Q_DISABLE_COPY(QDataWidgetMapper)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QTimer>
+#include <BOBUIimer>
 #include <QBitmap>
 #include <QImage>
 #include <QPainter>
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     bcurs = QCursor(QBitmap::fromImage(bw), QBitmap::fromImage(mask));
     ui->label->setCursor(ccurs);
 
-    timer = new QTimer(this);
+    timer = new BOBUIimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(toggleOverrideCursor()));
     timer->start(2000);
 
@@ -54,13 +54,13 @@ void MainWindow::toggleOverrideCursor()
 {
     switch (override) {
     case 0:
-        QGuiApplication::setOverrideCursor(Qt::BusyCursor);
+        QGuiApplication::setOverrideCursor(BobUI::BusyCursor);
         break;
     case 1:
         QGuiApplication::restoreOverrideCursor();
         break;
     case 2:
-        ui->label->grabMouse(Qt::ForbiddenCursor);
+        ui->label->grabMouse(BobUI::ForbiddenCursor);
         break;
     case 3:
     case 5:
@@ -83,16 +83,16 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 {
     QPoint off(0, 0);
     switch (event->key()) {
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         off.setY(-4);
         break;
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         off.setY(4);
         break;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         off.setX(-4);
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         off.setX(4);
         break;
     default:

@@ -1,13 +1,13 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#ifndef QTCORE_QSMALLBYTEARRAY_P_H
-#define QTCORE_QSMALLBYTEARRAY_P_H
+#ifndef BOBUICORE_QSMALLBYTEARRAY_P_H
+#define BOBUICORE_QSMALLBYTEARRAY_P_H
 
-#include <QtCore/qbytearrayview.h>
-#include <QtCore/qtconfigmacros.h>
-#include <QtCore/qtypes.h>
+#include <BobUICore/qbytearrayview.h>
+#include <BobUICore/bobuiconfigmacros.h>
+#include <BobUICore/bobuiypes.h>
 
 #include <array>
 #include <limits>
@@ -16,14 +16,14 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 // A fixed-max-size version of QByteArray. Since it's fixed-max-size, it's
@@ -100,6 +100,6 @@ public:
     constexpr auto cend() const noexcept { return end(); }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QTCORE_QSMALLBYTEARRAY_P_H
+#endif // BOBUICORE_QSMALLBYTEARRAY_P_H

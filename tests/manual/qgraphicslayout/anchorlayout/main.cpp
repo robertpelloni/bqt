@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 static QGraphicsProxyWidget *createItem(const QSizeF &minimum = QSizeF(100.0, 100.0),
                                         const QSizeF &preferred = QSize(150.0, 100.0),
@@ -41,46 +41,46 @@ int main(int argc, char **argv)
     QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout;
     l->setSpacing(0);
 
-    QGraphicsWidget *w = new QGraphicsWidget(nullptr, Qt::Window);
+    QGraphicsWidget *w = new QGraphicsWidget(nullptr, BobUI::Window);
     w->setPos(20, 20);
     w->setLayout(l);
 
     // vertical
-    l->addAnchor(a, Qt::AnchorTop, l, Qt::AnchorTop);
-    l->addAnchor(b, Qt::AnchorTop, l, Qt::AnchorTop);
+    l->addAnchor(a, BobUI::AnchorTop, l, BobUI::AnchorTop);
+    l->addAnchor(b, BobUI::AnchorTop, l, BobUI::AnchorTop);
 
-    l->addAnchor(c, Qt::AnchorTop, a, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorTop, b, Qt::AnchorBottom);
-    l->addAnchor(c, Qt::AnchorBottom, d, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, e, Qt::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorTop, a, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorTop, b, BobUI::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorBottom, d, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, e, BobUI::AnchorTop);
 
-    l->addAnchor(d, Qt::AnchorBottom, l, Qt::AnchorBottom);
-    l->addAnchor(e, Qt::AnchorBottom, l, Qt::AnchorBottom);
+    l->addAnchor(d, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
+    l->addAnchor(e, BobUI::AnchorBottom, l, BobUI::AnchorBottom);
 
-    l->addAnchor(c, Qt::AnchorTop, f, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorVerticalCenter, f, Qt::AnchorBottom);
-    l->addAnchor(f, Qt::AnchorBottom, g, Qt::AnchorTop);
-    l->addAnchor(c, Qt::AnchorBottom, g, Qt::AnchorBottom);
+    l->addAnchor(c, BobUI::AnchorTop, f, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorVerticalCenter, f, BobUI::AnchorBottom);
+    l->addAnchor(f, BobUI::AnchorBottom, g, BobUI::AnchorTop);
+    l->addAnchor(c, BobUI::AnchorBottom, g, BobUI::AnchorBottom);
 
     // horizontal
-    l->addAnchor(l, Qt::AnchorLeft, a, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, d, Qt::AnchorLeft);
-    l->addAnchor(a, Qt::AnchorRight, b, Qt::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, a, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, d, BobUI::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, b, BobUI::AnchorLeft);
 
-    l->addAnchor(a, Qt::AnchorRight, c, Qt::AnchorLeft);
-    l->addAnchor(c, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(a, BobUI::AnchorRight, c, BobUI::AnchorLeft);
+    l->addAnchor(c, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
-    l->addAnchor(b, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(e, Qt::AnchorRight, l, Qt::AnchorRight);
-    l->addAnchor(d, Qt::AnchorRight, e, Qt::AnchorLeft);
+    l->addAnchor(b, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(e, BobUI::AnchorRight, l, BobUI::AnchorRight);
+    l->addAnchor(d, BobUI::AnchorRight, e, BobUI::AnchorLeft);
 
-    l->addAnchor(l, Qt::AnchorLeft, f, Qt::AnchorLeft);
-    l->addAnchor(l, Qt::AnchorLeft, g, Qt::AnchorLeft);
-    l->addAnchor(f, Qt::AnchorRight, g, Qt::AnchorRight);
+    l->addAnchor(l, BobUI::AnchorLeft, f, BobUI::AnchorLeft);
+    l->addAnchor(l, BobUI::AnchorLeft, g, BobUI::AnchorLeft);
+    l->addAnchor(f, BobUI::AnchorRight, g, BobUI::AnchorRight);
 
 
     scene.addItem(w);
-    scene.setBackgroundBrush(Qt::darkGreen);
+    scene.setBackgroundBrush(BobUI::darkGreen);
     QGraphicsView view(&scene);
 
     view.show();

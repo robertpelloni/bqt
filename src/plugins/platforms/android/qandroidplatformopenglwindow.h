@@ -1,6 +1,6 @@
 // Copyright (C) 2014 BogDan Vatra <bogdan@kde.org>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDPLATFORMOPENGLWINDOW_H
 #define QANDROIDPLATFORMOPENGLWINDOW_H
@@ -8,12 +8,12 @@
 #include "qandroidplatformwindow.h"
 
 #include <QWaitCondition>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
 
 #include <EGL/egl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformOpenGLWindow : public QAndroidPlatformWindow
 {
@@ -26,7 +26,7 @@ public:
     bool ensureEglSurfaceCreated(EGLConfig config);
     QSurfaceFormat format() const override;
 
-    void applicationStateChanged(Qt::ApplicationState) override;
+    void applicationStateChanged(BobUI::ApplicationState) override;
 
 protected:
     void clearSurface() override;
@@ -39,5 +39,5 @@ private:
     QSurfaceFormat m_format;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QANDROIDPLATFORMOPENGLWINDOW_H

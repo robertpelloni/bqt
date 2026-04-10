@@ -1,6 +1,6 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGET_P_H
 #define QWIDGET_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp and qfiledialog.cpp.  This header
 // file may change from version to version without notice, or even be removed.
 //
@@ -18,41 +18,41 @@
 
 
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include "QtWidgets/qwidget.h"
-#if QT_CONFIG(label)
-#include <QtWidgets/qlabel.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include "BobUIWidgets/qwidget.h"
+#if BOBUI_CONFIG(label)
+#include <BobUIWidgets/qlabel.h>
 #endif
 #include "private/qobject_p.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qlocale.h"
-#include "QtCore/qset.h"
-#include "QtGui/qregion.h"
-#include "QtGui/qinputmethod.h"
-#include "QtGui/qsurfaceformat.h"
-#include "QtGui/qscreen.h"
-#include "QtWidgets/qsizepolicy.h"
-#include "QtWidgets/qstyle.h"
-#include "QtWidgets/qapplication.h"
-#if QT_CONFIG(graphicseffect)
+#include "BobUICore/qrect.h"
+#include "BobUICore/qlocale.h"
+#include "BobUICore/qset.h"
+#include "BobUIGui/qregion.h"
+#include "BobUIGui/qinputmethod.h"
+#include "BobUIGui/qsurfaceformat.h"
+#include "BobUIGui/qscreen.h"
+#include "BobUIWidgets/qsizepolicy.h"
+#include "BobUIWidgets/qstyle.h"
+#include "BobUIWidgets/qapplication.h"
+#if BOBUI_CONFIG(graphicseffect)
 #include <private/qgraphicseffect_p.h>
 #endif
-#if QT_CONFIG(graphicsview)
-#include "QtWidgets/qgraphicsproxywidget.h"
-#include "QtWidgets/qgraphicsscene.h"
-#include "QtWidgets/qgraphicsview.h"
+#if BOBUI_CONFIG(graphicsview)
+#include "BobUIWidgets/qgraphicsproxywidget.h"
+#include "BobUIWidgets/qgraphicsscene.h"
+#include "BobUIWidgets/qgraphicsview.h"
 #endif
 #include <private/qgesture_p.h>
 #include <qpa/qplatformbackingstore.h>
-#include <QtGui/private/qbackingstorerhisupport_p.h>
+#include <BobUIGui/private/qbackingstorerhisupport_p.h>
 #include <private/qapplication_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <vector>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcWidgetPainting);
 Q_DECLARE_LOGGING_CATEGORY(lcWidgetShowHide);
@@ -70,7 +70,7 @@ class QWidgetItemV2;
 class QStyle;
 
 // implemented in qshortcut.cpp
-bool qWidgetShortcutContextMatcher(QObject *object, Qt::ShortcutContext context);
+bool qWidgetShortcutContextMatcher(QObject *object, BobUI::ShortcutContext context);
 void qSendWindowChangeToTextureChildrenRecursively(QWidget *widget, QEvent::Type eventType);
 
 class QUpdateLaterEvent : public QEvent
@@ -89,7 +89,7 @@ protected:
     QRegion m_region;
 };
 
-struct QTLWExtra {
+struct BOBUILWExtra {
     // *************************** Cross-platform variables *****************************
 
     // Regular pointers (keep them together to avoid gaps on 64 bits architectures).
@@ -111,7 +111,7 @@ struct QTLWExtra {
      // frame strut, don't use these directly, use QWidgetPrivate::frameStrut() instead.
     QRect frameStrut;
     QRect normalGeometry; // used by showMin/maximized/FullScreen
-    Qt::WindowFlags savedFlags; // Save widget flags while showing fullscreen
+    BobUI::WindowFlags savedFlags; // Save widget flags while showing fullscreen
     QPointer<QScreen> initialScreen; // Screen when passing a QDesktop[Screen]Widget as parent.
 
     std::vector<std::unique_ptr<QPlatformTextureList>> widgetTextures;
@@ -129,11 +129,11 @@ struct QWExtra {
 
     // Regular pointers (keep them together to avoid gaps on 64 bits architectures).
     void *glContext; // if the widget is hijacked by QGLWindowSurface
-    std::unique_ptr<QTLWExtra> topextra; // only useful for TLWs
-#if QT_CONFIG(graphicsview)
+    std::unique_ptr<BOBUILWExtra> topextra; // only useful for TLWs
+#if BOBUI_CONFIG(graphicsview)
     QGraphicsProxyWidget *proxyWidget; // if the widget is embedded
 #endif
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     std::unique_ptr<QCursor> curs;
 #endif
     QPointer<QStyle> style;
@@ -166,14 +166,14 @@ struct QWExtra {
     \internal
 
     Returns \c true if \a p or any of its parents enable the
-    Qt::BypassGraphicsProxyWidget window flag. Used in QWidget::show() and
+    BobUI::BypassGraphicsProxyWidget window flag. Used in QWidget::show() and
     QWidget::setParent() to determine whether it's necessary to embed the
     widget into a QGraphicsProxyWidget or not.
 */
 static inline bool bypassGraphicsProxyWidget(const QWidget *p)
 {
     while (p) {
-        if (p->windowFlags() & Qt::BypassGraphicsProxyWidget)
+        if (p->windowFlags() & BobUI::BypassGraphicsProxyWidget)
             return true;
         p = p->parentWidget();
     }
@@ -220,8 +220,8 @@ public:
                                       int frameHeight);
 
     QWExtra *extraData() const;
-    QTLWExtra *topData() const;
-    QTLWExtra *maybeTopData() const;
+    BOBUILWExtra *topData() const;
+    BOBUILWExtra *maybeTopData() const;
     QPainter *sharedPainter() const;
     void setSharedPainter(QPainter *painter);
     QWidgetRepaintManager *maybeRepaintManager() const;
@@ -244,7 +244,7 @@ public:
     template <typename T>
     void update(T t);
 
-    void init(QWidget *desktopWidget, Qt::WindowFlags f);
+    void init(QWidget *desktopWidget, BobUI::WindowFlags f);
     void create();
     void createRecursively();
     void createWinId();
@@ -286,7 +286,7 @@ public:
     void resolveFont();
     QFont naturalWidgetFont(uint inheritedMask) const;
 
-    void setLayoutDirection_helper(Qt::LayoutDirection);
+    void setLayoutDirection_helper(BobUI::LayoutDirection);
     void resolveLayoutDirection();
 
     void setLocale_helper(const QLocale &l, bool forceUpdate = false);
@@ -314,7 +314,7 @@ public:
                                 const QRegion &rgn, const QPoint &offset, DrawWidgetFlags flags,
                                 QPainter *sharedPainter, QWidgetRepaintManager *repaintManager);
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     static QGraphicsProxyWidget * nearestGraphicsProxyWidget(const QWidget *origin);
 #endif
     bool shouldPaintOnScreen() const;
@@ -330,9 +330,9 @@ public:
     void updateIsOpaque();
     void setOpaque(bool opaque);
     void updateIsTranslucent();
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     void invalidateGraphicsEffectsRecursively();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
     const QRegion &getOpaqueChildren() const;
     void setDirtyOpaqueRegion();
@@ -374,8 +374,8 @@ public:
     void setWinId(WId);
     void showChildren(bool spontaneous);
     void hideChildren(bool spontaneous);
-    void setParent_sys(QWidget *parent, Qt::WindowFlags);
-    void reparentWidgetWindows(QWidget *parentWithWindow, Qt::WindowFlags windowFlags = {});
+    void setParent_sys(QWidget *parent, BobUI::WindowFlags);
+    void reparentWidgetWindows(QWidget *parentWithWindow, BobUI::WindowFlags windowFlags = {});
     void reparentWidgetWindowChildren(QWidget *parentWithWindow);
     void scroll_sys(int dx, int dy);
     void scroll_sys(int dx, int dy, const QRect &r);
@@ -394,15 +394,15 @@ public:
     virtual void setVisible(bool);
 
     void setEnabled_helper(bool);
-    static void adjustFlags(Qt::WindowFlags &flags, QWidget *w = nullptr);
+    static void adjustFlags(BobUI::WindowFlags &flags, QWidget *w = nullptr);
 
     void updateFrameStrut();
     QRect frameStrut() const;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     static bool navigateToDirection(Direction direction);
     static QWidget *widgetInNavigationDirection(Direction direction);
-    static bool canKeypadNavigate(Qt::Orientation orientation);
+    static bool canKeypadNavigate(BobUI::Orientation orientation);
     static bool inTabWidget(QWidget *widget);
 #endif
 
@@ -411,7 +411,7 @@ public:
     void setWindowTitle_sys(const QString &cap);
     void setWindowFilePath_sys(const QString &filePath);
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void setCursor_sys(const QCursor &cursor);
     void unsetCursor_sys();
 #endif
@@ -419,7 +419,7 @@ public:
     void setWindowTitle_helper(const QString &cap);
     void setWindowFilePath_helper(const QString &filePath);
     void setWindowModified_helper();
-    virtual void setWindowFlags(Qt::WindowFlags windowFlags);
+    virtual void setWindowFlags(BobUI::WindowFlags windowFlags);
 
     bool setMinimumSize_helper(int &minw, int &minh);
     bool setMaximumSize_helper(int &maxw, int &maxh);
@@ -454,7 +454,7 @@ public:
     // the widget is on, and takes care if this one is embedded in a QGraphicsView.
     static QWidget *parentGraphicsView(const QWidget *widget)
     {
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
         QGraphicsProxyWidget *ancestorProxy = widget->d_func()->nearestGraphicsProxyWidget(widget);
         //It's embedded if it has an ancestor
         if (ancestorProxy) {
@@ -506,7 +506,7 @@ public:
 
     inline void setRedirected(QPaintDevice *replacement, const QPoint &offset)
     {
-        Q_ASSERT(q_func()->testAttribute(Qt::WA_WState_InPaintEvent));
+        Q_ASSERT(q_func()->testAttribute(BobUI::WA_WState_InPaintEvent));
         redirectDev = replacement;
         redirectOffset = offset;
     }
@@ -532,7 +532,7 @@ public:
 
         for (int i = 0; i < children.size(); ++i) {
             if (QWidget *child = qobject_cast<QWidget *>(children.at(i)))
-                child->setAttribute(Qt::WA_NativeWindow);
+                child->setAttribute(BobUI::WA_NativeWindow);
         }
     }
 
@@ -548,18 +548,18 @@ public:
 
     inline QRect effectiveRectFor(const QRect &rect) const
     {
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
         if (graphicsEffect && graphicsEffect->isEnabled())
             return graphicsEffect->boundingRectFor(rect).toAlignedRect();
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
         return rect;
     }
 
     QSize adjustedSize() const;
 
-    inline void handleSoftwareInputPanel(Qt::MouseButton button, bool clickCausedFocus)
+    inline void handleSoftwareInputPanel(BobUI::MouseButton button, bool clickCausedFocus)
     {
-        if (button == Qt::LeftButton)
+        if (button == BobUI::LeftButton)
             handleSoftwareInputPanel(clickCausedFocus);
     }
 
@@ -602,7 +602,7 @@ public:
     virtual TextureData texture() const { return {}; }
     virtual QPlatformTextureList::Flags textureListFlags() {
         Q_Q(QWidget);
-        return q->testAttribute(Qt::WA_AlwaysStackOnTop)
+        return q->testAttribute(BobUI::WA_AlwaysStackOnTop)
             ? QPlatformTextureList::StacksOnTop
             : QPlatformTextureList::Flags();
     }
@@ -659,7 +659,7 @@ public:
     QPaintEngine *extraPaintEngine;
     mutable const QMetaObject *polished;
     QGraphicsEffect *graphicsEffect;
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     // labels for which this widget is the buddy widget
     QVarLengthArray<QLabel *, 1> labels;
 #endif
@@ -668,27 +668,27 @@ public:
     // This should just ensure that all widgets are deleted by QApplication
     static QWidgetMapper *mapper;
     static QWidgetSet *allWidgets;
-#if !defined(QT_NO_IM)
-    Qt::InputMethodHints imHints;
+#if !defined(BOBUI_NO_IM)
+    BobUI::InputMethodHints imHints;
 #endif
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     static QPointer<QWidget> editingWidget;
 #endif
 
     // Implicit pointers (shared_null/shared_empty).
     QRegion opaqueChildren;
     QRegion dirty;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     QString toolTip;
     int toolTipDuration;
 #endif
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
     QString statusTip;
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     QString whatsThis;
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QString accessibleName;
     QString accessibleDescription;
     QString accessibleIdentifier;
@@ -709,16 +709,16 @@ public:
     signed char bottomLayoutItemMargin;
     static int instanceCounter; // Current number of widget instances
     static int maxInstances; // Maximum number of widget instances
-    Qt::HANDLE hd;
+    BobUI::HANDLE hd;
     QWidgetData data;
     QSizePolicy size_policy;
     QLocale locale;
     QPoint redirectOffset;
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QList<QAction*> actions;
 #endif
-#ifndef QT_NO_GESTURES
-    QMap<Qt::GestureType, Qt::GestureFlags> gestureContext;
+#ifndef BOBUI_NO_GESTURES
+    QMap<BobUI::GestureType, BobUI::GestureFlags> gestureContext;
 #endif
 
     // Bit fields.
@@ -735,7 +735,7 @@ public:
     uint mustHaveWindowHandle : 1;
     uint renderToTexture : 1;
     uint textureChildSeen : 1;
-#ifndef QT_NO_IM
+#ifndef BOBUI_NO_IM
     uint inheritsInputMethodHints : 1;
 #endif
     uint renderToTextureReallyDirty : 1;
@@ -789,7 +789,7 @@ public:
 
     bool stealKeyboardGrab(bool grab);
     bool stealMouseGrab(bool grab);
-    bool hasChildWithFocusPolicy(Qt::FocusPolicy policy, const QWidget *excludeChildrenOf = nullptr) const;
+    bool hasChildWithFocusPolicy(BobUI::FocusPolicy policy, const QWidget *excludeChildrenOf = nullptr) const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QWidgetPrivate::DrawWidgetFlags)
@@ -809,7 +809,7 @@ struct QWidgetPaintContext
     QPainter *painter;
 };
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
 class QWidgetEffectSourcePrivate : public QGraphicsEffectSourcePrivate
 {
 public:
@@ -852,30 +852,30 @@ public:
     QRect deviceRect() const override
     { return m_widget->window()->rect(); }
 
-    QRectF boundingRect(Qt::CoordinateSystem system) const override;
+    QRectF boundingRect(BobUI::CoordinateSystem system) const override;
     void draw(QPainter *p) override;
-    QPixmap pixmap(Qt::CoordinateSystem system, QPoint *offset,
+    QPixmap pixmap(BobUI::CoordinateSystem system, QPoint *offset,
                    QGraphicsEffect::PixmapPadMode mode) const override;
 
     QWidget *m_widget;
     QWidgetPaintContext *context;
-    QTransform lastEffectTransform;
+    BOBUIransform lastEffectTransform;
     bool updateDueToGraphicsEffect;
 };
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
 inline QWExtra *QWidgetPrivate::extraData() const
 {
     return extra.get();
 }
 
-inline QTLWExtra *QWidgetPrivate::topData() const
+inline BOBUILWExtra *QWidgetPrivate::topData() const
 {
     const_cast<QWidgetPrivate *>(this)->createTLExtra();
     return extra->topextra.get();
 }
 
-inline QTLWExtra *QWidgetPrivate::maybeTopData() const
+inline BOBUILWExtra *QWidgetPrivate::maybeTopData() const
 {
     return extra ? extra->topextra.get() : nullptr;
 }
@@ -883,14 +883,14 @@ inline QTLWExtra *QWidgetPrivate::maybeTopData() const
 inline QPainter *QWidgetPrivate::sharedPainter() const
 {
     Q_Q(const QWidget);
-    QTLWExtra *x = q->window()->d_func()->maybeTopData();
+    BOBUILWExtra *x = q->window()->d_func()->maybeTopData();
     return x ? x->sharedPainter : nullptr;
 }
 
 inline void QWidgetPrivate::setSharedPainter(QPainter *painter)
 {
     Q_Q(QWidget);
-    QTLWExtra *x = q->window()->d_func()->topData();
+    BOBUILWExtra *x = q->window()->d_func()->topData();
     x->sharedPainter = painter;
 }
 
@@ -906,17 +906,17 @@ inline bool QWidgetPrivate::pointInsideRectAndMask(const QPointF &p) const
     r.setBottom(qMax(-1, r.bottom() - 1));
 
     return r.toRectF().contains(p)
-            && (!extra || !extra->hasMask || q->testAttribute(Qt::WA_MouseNoMask)
+            && (!extra || !extra->hasMask || q->testAttribute(BobUI::WA_MouseNoMask)
                 || extra->mask.contains(p.toPoint() /* incorrect for the -0.1 case */));
 }
 
 inline QWidgetRepaintManager *QWidgetPrivate::maybeRepaintManager() const
 {
     Q_Q(const QWidget);
-    QTLWExtra *x = q->window()->d_func()->maybeTopData();
+    BOBUILWExtra *x = q->window()->d_func()->maybeTopData();
     return x ? x->repaintManager.get() : nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGET_P_H

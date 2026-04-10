@@ -1,6 +1,6 @@
 // REUSE-IgnoreStart
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 // REUSE-IgnoreEnd
 
 #include "cppgenerator.h"
@@ -8,30 +8,30 @@
 #include "lalr.h"
 #include "recognizer.h"
 
-#include <QtCore/qbitarray.h>
-#include <QtCore/qtextstream.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qmap.h>
-#include <QtCore/private/qconfig_p.h>
+#include <BobUICore/qbitarray.h>
+#include <BobUICore/bobuiextstream.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qmap.h>
+#include <BobUICore/private/qconfig_p.h>
 
 #include <iterator>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 
-void generateSeparator(int i, QTextStream &out)
+void generateSeparator(int i, BOBUIextStream &out)
 {
     if (!(i % 10)) {
         if (i)
             out << ",";
-        out << Qt::endl << "    ";
+        out << BobUI::endl << "    ";
     } else {
         out << ", ";
     }
 }
 
-void generateList(const QList<int> &list, QTextStream &out)
+void generateList(const QList<int> &list, BOBUIextStream &out)
 {
     for (int i = 0; i < list.size(); ++i) {
         generateSeparator(i, out);
@@ -45,8 +45,8 @@ void generateList(const QList<int> &list, QTextStream &out)
 QString CppGenerator::copyrightHeader() const
 {
   return
-    "// " QT_COPYRIGHT "\n"
-    "// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0\n"
+    "// " BOBUI_COPYRIGHT "\n"
+    "// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0\n"
     "\n"_L1;
 }
 // REUSE-IgnoreEnd
@@ -58,8 +58,8 @@ QString CppGenerator::privateCopyrightHeader() const
     "//  W A R N I N G\n"
     "//  -------------\n"
     "//\n"
-    "// This file is not part of the Qt API.  It exists for the convenience\n"
-    "// of other Qt classes.  This header file may change from version to\n"
+    "// This file is not part of the BobUI API.  It exists for the convenience\n"
+    "// of other BobUI classes.  This header file may change from version to\n"
     "// version without notice, or even be removed.\n"
     "//\n"
     "// We mean it.\n"
@@ -145,14 +145,14 @@ void CppGenerator::operator () ()
                 {
                   if (verbose)
                     qout() << "*** Warning. Found a reduce/reduce conflict in state " << q << " on token ``" << s << "'' between rule "
-                         << r << " and " << -u << Qt::endl;
+                         << r << " and " << -u << BobUI::endl;
 
                   ++reduce_reduce_conflict_count;
 
                   u = qMax (u, -r);
 
                   if (verbose)
-                    qout() << "\tresolved using rule " << -u << Qt::endl;
+                    qout() << "\tresolved using rule " << -u << BobUI::endl;
                 }
 
               else if (u > 0)
@@ -185,7 +185,7 @@ void CppGenerator::operator () ()
                       ++shift_reduce_conflict_count;
 
                       if (verbose)
-                        qout() << "*** Warning. Found a shift/reduce conflict in state " << q << " on token ``" << s << "'' with rule " << r << Qt::endl;
+                        qout() << "*** Warning. Found a shift/reduce conflict in state " << q << " on token ``" << s << "'' with rule " << r << BobUI::endl;
                     }
                 }
             }
@@ -197,18 +197,18 @@ void CppGenerator::operator () ()
       if (shift_reduce_conflict_count != grammar.expected_shift_reduce
           || reduce_reduce_conflict_count != grammar.expected_reduce_reduce)
         {
-          qerr() << "*** Conflicts: " << shift_reduce_conflict_count << " shift/reduce, " << reduce_reduce_conflict_count << " reduce/reduce" << Qt::endl;
+          qerr() << "*** Conflicts: " << shift_reduce_conflict_count << " shift/reduce, " << reduce_reduce_conflict_count << " reduce/reduce" << BobUI::endl;
           if (warnings_are_errors)
             {
               qerr() << "qlalr: error: warning occurred, treating as error due to "
-                        "--exit-on-warn." << Qt::endl;
+                        "--exit-on-warn." << BobUI::endl;
               exit(2);
             }
         }
 
       if (verbose)
-        qout() << Qt::endl << "*** Conflicts: " << shift_reduce_conflict_count << " shift/reduce, " << reduce_reduce_conflict_count << " reduce/reduce" << Qt::endl
-             << Qt::endl;
+        qout() << BobUI::endl << "*** Conflicts: " << shift_reduce_conflict_count << " shift/reduce, " << reduce_reduce_conflict_count << " reduce/reduce" << BobUI::endl
+             << BobUI::endl;
     }
 
   QBitArray used_rules{static_cast<int>(grammar.rules.size())};
@@ -232,11 +232,11 @@ void CppGenerator::operator () ()
         {
           if (rule != grammar.goal)
             {
-              qerr() << "*** Warning: Rule ``" << *rule << "'' is useless!" << Qt::endl;
+              qerr() << "*** Warning: Rule ``" << *rule << "'' is useless!" << BobUI::endl;
               if (warnings_are_errors)
                 {
                   qerr() << "qlalr: error: warning occurred, treating as error due to "
-                            "--exit-on-warn." << Qt::endl;
+                            "--exit-on-warn." << BobUI::endl;
                   exit(2);
                 }
             }
@@ -314,33 +314,33 @@ void CppGenerator::operator () ()
           return;
         }
 
-      QTextStream out (&f);
+      BOBUIextStream out (&f);
 
       // copyright headers must come first, otherwise the headers tests will fail
       if (copyright)
         {
           out << copyrightHeader()
               << privateCopyrightHeader()
-              << Qt::endl;
+              << BobUI::endl;
         }
 
       out << "// This file was generated by qlalr - DO NOT EDIT!\n";
 
-      out << startIncludeGuard(grammar.merged_output) << Qt::endl;
+      out << startIncludeGuard(grammar.merged_output) << BobUI::endl;
 
       if (copyright) {
-          out << "#if defined(ERROR)" << Qt::endl
-              << "#  undef ERROR" << Qt::endl
-              << "#endif" << Qt::endl << Qt::endl;
+          out << "#if defined(ERROR)" << BobUI::endl
+              << "#  undef ERROR" << BobUI::endl
+              << "#endif" << BobUI::endl << BobUI::endl;
       }
 
       generateDecl (out);
       generateImpl (out);
       out << p.decls();
       out << p.impls();
-      out << Qt::endl;
+      out << BobUI::endl;
 
-      out << endIncludeGuard(grammar.merged_output) << Qt::endl;
+      out << endIncludeGuard(grammar.merged_output) << BobUI::endl;
 
       return;
     }
@@ -357,7 +357,7 @@ void CppGenerator::operator () ()
                  qPrintable(declFileName), qPrintable(f.errorString()));
         return;
       }
-    QTextStream out (&f);
+    BOBUIextStream out (&f);
 
     QString prot = declFileName.toUpper ().replace (QLatin1Char ('.'), QLatin1Char ('_'));
 
@@ -366,24 +366,24 @@ void CppGenerator::operator () ()
       {
         out << copyrightHeader()
             << privateCopyrightHeader()
-            << Qt::endl;
+            << BobUI::endl;
       }
 
     out << "// This file was generated by qlalr - DO NOT EDIT!\n";
 
-    out << "#ifndef " << prot << Qt::endl
-        << "#define " << prot << Qt::endl
-        << Qt::endl;
+    out << "#ifndef " << prot << BobUI::endl
+        << "#define " << prot << BobUI::endl
+        << BobUI::endl;
 
     if (copyright) {
-        out << "#include <QtCore/qglobal.h>" << Qt::endl << Qt::endl;
-        out << "QT_BEGIN_NAMESPACE" << Qt::endl << Qt::endl;
+        out << "#include <BobUICore/qglobal.h>" << BobUI::endl << BobUI::endl;
+        out << "BOBUI_BEGIN_NAMESPACE" << BobUI::endl << BobUI::endl;
     }
     generateDecl (out);
     if (copyright)
-        out << "QT_END_NAMESPACE" << Qt::endl;
+        out << "BOBUI_END_NAMESPACE" << BobUI::endl;
 
-    out << "#endif // " << prot << Qt::endl << Qt::endl;
+    out << "#endif // " << prot << BobUI::endl << BobUI::endl;
   } // end decls
 
   { // bits...
@@ -394,7 +394,7 @@ void CppGenerator::operator () ()
                  qPrintable(bitsFileName), qPrintable(f.errorString()));
         return;
       }
-    QTextStream out (&f);
+    BOBUIextStream out (&f);
 
     // copyright headers must come first, otherwise the headers tests will fail
     if (copyright)
@@ -402,12 +402,12 @@ void CppGenerator::operator () ()
 
     out << "// This file was generated by qlalr - DO NOT EDIT!\n";
 
-    out << "#include \"" << declFileName << "\"" << Qt::endl << Qt::endl;
+    out << "#include \"" << declFileName << "\"" << BobUI::endl << BobUI::endl;
     if (copyright)
-        out << "QT_BEGIN_NAMESPACE" << Qt::endl << Qt::endl;
+        out << "BOBUI_BEGIN_NAMESPACE" << BobUI::endl << BobUI::endl;
     generateImpl(out);
     if (copyright)
-        out << "QT_END_NAMESPACE" << Qt::endl;
+        out << "BOBUI_END_NAMESPACE" << BobUI::endl;
 
   } // end bits
 
@@ -420,7 +420,7 @@ void CppGenerator::operator () ()
                    qPrintable(grammar.decl_file_name), qPrintable(f.errorString()));
           return;
         }
-      QTextStream out (&f);
+      BOBUIextStream out (&f);
       out << p.decls();
     }
 
@@ -433,7 +433,7 @@ void CppGenerator::operator () ()
                    qPrintable(grammar.impl_file_name), qPrintable(f.errorString()));
           return;
         }
-      QTextStream out (&f);
+      BOBUIextStream out (&f);
       out << p.impls();
     }
 }
@@ -446,12 +446,12 @@ QString CppGenerator::debugInfoProt() const
     return prot;
 }
 
-void CppGenerator::generateDecl (QTextStream &out)
+void CppGenerator::generateDecl (BOBUIextStream &out)
 {
-  out << "class " << grammar.table_name << Qt::endl
-      << "{" << Qt::endl
-      << "public:" << Qt::endl
-      << "    enum VariousConstants {" << Qt::endl;
+  out << "class " << grammar.table_name << BobUI::endl
+      << "{" << BobUI::endl
+      << "public:" << BobUI::endl
+      << "    enum VariousConstants {" << BobUI::endl;
 
   for (const Name &t : std::as_const(grammar.terminals))
     {
@@ -467,65 +467,65 @@ void CppGenerator::generateDecl (QTextStream &out)
       else
         name.prepend (grammar.token_prefix);
 
-      out << "        " << name << " = " << value << "," << Qt::endl;
+      out << "        " << name << " = " << value << "," << BobUI::endl;
     }
 
-  out << Qt::endl
-      << "        ACCEPT_STATE = " << accept_state << "," << Qt::endl
-      << "        RULE_COUNT = " << grammar.rules.size () << "," << Qt::endl
-      << "        STATE_COUNT = " << state_count << "," << Qt::endl
-      << "        TERMINAL_COUNT = " << terminal_count << "," << Qt::endl
-      << "        NON_TERMINAL_COUNT = " << non_terminal_count << "," << Qt::endl
-      << Qt::endl
-      << "        GOTO_INDEX_OFFSET = " << compressed_action.index.size () << "," << Qt::endl
-      << "        GOTO_INFO_OFFSET = " << compressed_action.info.size () << "," << Qt::endl
-      << "        GOTO_CHECK_OFFSET = " << compressed_action.check.size () << Qt::endl
-      << "    };" << Qt::endl
-      << Qt::endl
-      << "    static const char *const     spell[];" << Qt::endl
-      << "    static const short             lhs[];" << Qt::endl
-      << "    static const short             rhs[];" << Qt::endl;
+  out << BobUI::endl
+      << "        ACCEPT_STATE = " << accept_state << "," << BobUI::endl
+      << "        RULE_COUNT = " << grammar.rules.size () << "," << BobUI::endl
+      << "        STATE_COUNT = " << state_count << "," << BobUI::endl
+      << "        TERMINAL_COUNT = " << terminal_count << "," << BobUI::endl
+      << "        NON_TERMINAL_COUNT = " << non_terminal_count << "," << BobUI::endl
+      << BobUI::endl
+      << "        GOTO_INDEX_OFFSET = " << compressed_action.index.size () << "," << BobUI::endl
+      << "        GOTO_INFO_OFFSET = " << compressed_action.info.size () << "," << BobUI::endl
+      << "        GOTO_CHECK_OFFSET = " << compressed_action.check.size () << BobUI::endl
+      << "    };" << BobUI::endl
+      << BobUI::endl
+      << "    static const char *const     spell[];" << BobUI::endl
+      << "    static const short             lhs[];" << BobUI::endl
+      << "    static const short             rhs[];" << BobUI::endl;
 
   if (debug_info)
     {
       QString prot = debugInfoProt();
 
-      out << Qt::endl << "#ifndef " << prot << Qt::endl
-          << "    static const int     rule_index[];" << Qt::endl
-          << "    static const int      rule_info[];" << Qt::endl
-          << "#endif // " << prot << Qt::endl << Qt::endl;
+      out << BobUI::endl << "#ifndef " << prot << BobUI::endl
+          << "    static const int     rule_index[];" << BobUI::endl
+          << "    static const int      rule_info[];" << BobUI::endl
+          << "#endif // " << prot << BobUI::endl << BobUI::endl;
     }
 
-  out << "    static const short    goto_default[];" << Qt::endl
-      << "    static const short  action_default[];" << Qt::endl
-      << "    static const short    action_index[];" << Qt::endl
-      << "    static const short     action_info[];" << Qt::endl
-      << "    static const short    action_check[];" << Qt::endl
-      << Qt::endl
-      << "    static inline int nt_action (int state, int nt)" << Qt::endl
-      << "    {" << Qt::endl
-      << "        const int yyn = action_index [GOTO_INDEX_OFFSET + state] + nt;" << Qt::endl
-      << "        if (yyn < 0 || action_check [GOTO_CHECK_OFFSET + yyn] != nt)" << Qt::endl
-      << "            return goto_default [nt];" << Qt::endl
-      << Qt::endl
-      << "        return action_info [GOTO_INFO_OFFSET + yyn];" << Qt::endl
-      << "    }" << Qt::endl
-      << Qt::endl
-      << "    static inline int t_action (int state, int token)" << Qt::endl
-      << "    {" << Qt::endl
-      << "        const int yyn = action_index [state] + token;" << Qt::endl
-      << Qt::endl
-      << "        if (yyn < 0 || action_check [yyn] != token)" << Qt::endl
-      << "            return - action_default [state];" << Qt::endl
-      << Qt::endl
-      << "        return action_info [yyn];" << Qt::endl
-      << "    }" << Qt::endl
-      << "};" << Qt::endl
-      << Qt::endl
-      << Qt::endl;
+  out << "    static const short    goto_default[];" << BobUI::endl
+      << "    static const short  action_default[];" << BobUI::endl
+      << "    static const short    action_index[];" << BobUI::endl
+      << "    static const short     action_info[];" << BobUI::endl
+      << "    static const short    action_check[];" << BobUI::endl
+      << BobUI::endl
+      << "    static inline int nt_action (int state, int nt)" << BobUI::endl
+      << "    {" << BobUI::endl
+      << "        const int yyn = action_index [GOTO_INDEX_OFFSET + state] + nt;" << BobUI::endl
+      << "        if (yyn < 0 || action_check [GOTO_CHECK_OFFSET + yyn] != nt)" << BobUI::endl
+      << "            return goto_default [nt];" << BobUI::endl
+      << BobUI::endl
+      << "        return action_info [GOTO_INFO_OFFSET + yyn];" << BobUI::endl
+      << "    }" << BobUI::endl
+      << BobUI::endl
+      << "    static inline int t_action (int state, int token)" << BobUI::endl
+      << "    {" << BobUI::endl
+      << "        const int yyn = action_index [state] + token;" << BobUI::endl
+      << BobUI::endl
+      << "        if (yyn < 0 || action_check [yyn] != token)" << BobUI::endl
+      << "            return - action_default [state];" << BobUI::endl
+      << BobUI::endl
+      << "        return action_info [yyn];" << BobUI::endl
+      << "    }" << BobUI::endl
+      << "};" << BobUI::endl
+      << BobUI::endl
+      << BobUI::endl;
 }
 
-void CppGenerator::generateImpl (QTextStream &out)
+void CppGenerator::generateImpl (BOBUIextStream &out)
 {
   int idx = 0;
 
@@ -561,16 +561,16 @@ void CppGenerator::generateImpl (QTextStream &out)
             {
               first_nt = false;
               QString prot = debugInfoProt();
-              out << Qt::endl << "#ifndef " << prot << Qt::endl;
+              out << BobUI::endl << "#ifndef " << prot << BobUI::endl;
             }
           out << "\"" << *t << "\"";
         }
     }
 
   if (debug_info)
-    out << Qt::endl << "#endif // " << debugInfoProt() << Qt::endl;
+    out << BobUI::endl << "#endif // " << debugInfoProt() << BobUI::endl;
 
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::lhs [] = {";
   idx = 0;
@@ -580,7 +580,7 @@ void CppGenerator::generateImpl (QTextStream &out)
 
       out << aut.id (rule->lhs);
     }
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::rhs [] = {";
   idx = 0;
@@ -590,13 +590,13 @@ void CppGenerator::generateImpl (QTextStream &out)
 
       out << rule->rhs.size ();
     }
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   if (debug_info)
     {
       QString prot = debugInfoProt();
 
-      out << Qt::endl << "#ifndef " << prot << Qt::endl;
+      out << BobUI::endl << "#ifndef " << prot << BobUI::endl;
       out << "const int " << grammar.table_name << "::rule_info [] = {";
       idx = 0;
       for (auto rule = grammar.rules.cbegin (); rule != grammar.rules.cend (); ++rule, ++idx)
@@ -608,7 +608,7 @@ void CppGenerator::generateImpl (QTextStream &out)
           for (const Name &n : rule->rhs)
             out << ", " << name_ids.value (n);
         }
-      out << Qt::endl << "};" << Qt::endl << Qt::endl;
+      out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
       out << "const int " << grammar.table_name << "::rule_index [] = {";
       idx = 0;
@@ -620,8 +620,8 @@ void CppGenerator::generateImpl (QTextStream &out)
           out << offset;
           offset += rule->rhs.size () + 1;
         }
-      out << Qt::endl << "};" << Qt::endl
-          << "#endif // " << prot << Qt::endl << Qt::endl;
+      out << BobUI::endl << "};" << BobUI::endl
+          << "#endif // " << prot << BobUI::endl << BobUI::endl;
     }
 
   out << "const short " << grammar.table_name << "::action_default [] = {";
@@ -635,27 +635,27 @@ void CppGenerator::generateImpl (QTextStream &out)
       else
         out << "0";
     }
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::goto_default [] = {";
   generateList(defgoto, out);
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::action_index [] = {";
   generateList(compressed_action.index, out);
-  out << "," << Qt::endl;
+  out << "," << BobUI::endl;
   generateList(compressed_goto.index, out);
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::action_info [] = {";
   generateList(compressed_action.info, out);
-  out << "," << Qt::endl;
+  out << "," << BobUI::endl;
   generateList(compressed_goto.info, out);
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 
   out << "const short " << grammar.table_name << "::action_check [] = {";
   generateList(compressed_action.check, out);
-  out << "," << Qt::endl;
+  out << "," << BobUI::endl;
   generateList(compressed_goto.check, out);
-  out << Qt::endl << "};" << Qt::endl << Qt::endl;
+  out << BobUI::endl << "};" << BobUI::endl << BobUI::endl;
 }

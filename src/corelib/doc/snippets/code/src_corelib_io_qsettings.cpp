@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QSettings>
 #include <QVariant>
@@ -22,7 +22,7 @@ void examples()
     {
         //! [1]
         QSettings settings("MySoft", "Star Runner");
-        QColor color = QColor(Qt::blue);
+        QColor color = QColor(BobUI::blue);
         settings.setValue("DataPump/bgcolor", color);
         //! [1]
     }
@@ -188,7 +188,7 @@ void wrapInFunction()
     {
         //! [17]
         QSettings settings;
-        settings.setValue("fridge/color", QColor(Qt::white));
+        settings.setValue("fridge/color", QColor(BobUI::white));
         settings.setValue("fridge/size", QSize(32, 96));
         settings.setValue("sofa", true);
         settings.setValue("tv", false);
@@ -208,7 +208,7 @@ void wrapInFunction()
     {
         //! [19]
         QSettings settings;
-        settings.setValue("fridge/color", QColor(Qt::white));
+        settings.setValue("fridge/color", QColor(BobUI::white));
         settings.setValue("fridge/size", QSize(32, 96));
         settings.setValue("sofa", true);
         settings.setValue("tv", false);
@@ -228,7 +228,7 @@ void wrapInFunction()
     {
         //! [21]
         QSettings settings;
-        settings.setValue("fridge/color", QColor(Qt::white));
+        settings.setValue("fridge/color", QColor(BobUI::white));
         settings.setValue("fridge/size", QSize(32, 96));
         settings.setValue("sofa", true);
         settings.setValue("tv", false);

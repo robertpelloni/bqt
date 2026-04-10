@@ -1,22 +1,22 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 #ifndef QBYTEARRAYVIEW_H
 #define QBYTEARRAYVIEW_H
 
-#include <QtCore/qbytearrayalgorithms.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qcontainerfwd.h>
-#include <QtCore/qstringfwd.h>
-#include <QtCore/qarraydata.h>
+#include <BobUICore/qbytearrayalgorithms.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qcontainerfwd.h>
+#include <BobUICore/qstringfwd.h>
+#include <BobUICore/qarraydata.h>
 
 #include <string>
 #include <string_view>
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q20type_traits.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <typename Byte>
 struct IsCompatibleByteTypeHelper : std::false_type {};
@@ -80,7 +80,7 @@ static constexpr qsizetype lengthHelperPointer(const Char *data) noexcept
     return i;
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class Q_CORE_EXPORT QByteArrayView
 {
@@ -102,11 +102,11 @@ public:
 private:
     template <typename Byte>
     using if_compatible_byte =
-            typename std::enable_if_t<QtPrivate::IsCompatibleByteType<Byte>::value, bool>;
+            typename std::enable_if_t<BobUIPrivate::IsCompatibleByteType<Byte>::value, bool>;
 
     template <typename Pointer>
     using if_compatible_pointer =
-            typename std::enable_if_t<QtPrivate::IsCompatibleByteArrayPointer<Pointer>::value,
+            typename std::enable_if_t<BobUIPrivate::IsCompatibleByteArrayPointer<Pointer>::value,
                                       bool>;
 
     template <typename T>
@@ -115,7 +115,7 @@ private:
 
     template <typename T>
     using if_compatible_container =
-            typename std::enable_if_t<QtPrivate::IsContainerCompatibleWithQByteArrayView<T>::value,
+            typename std::enable_if_t<BobUIPrivate::IsContainerCompatibleWithQByteArrayView<T>::value,
                                       bool>;
 
     template <typename Container>
@@ -159,7 +159,7 @@ public:
     template <typename Pointer, if_compatible_pointer<Pointer> = true>
     constexpr QByteArrayView(const Pointer &data) noexcept
         : QByteArrayView(
-              data, data ? QtPrivate::lengthHelperPointer(data) : 0) {}
+              data, data ? BobUIPrivate::lengthHelperPointer(data) : 0) {}
 #endif
 
 #ifdef Q_QDOC
@@ -225,7 +225,7 @@ public:
     { if (n < 0 || n > size()) n = size(); if (n < 0) n = 0; return QByteArrayView(data() + size() - n, n); }
     [[nodiscard]] constexpr QByteArrayView mid(qsizetype pos, qsizetype n = -1) const
     {
-        using namespace QtPrivate;
+        using namespace BobUIPrivate;
         auto result = QContainerImplHelper::mid(size(), &pos, &n);
         return result == QContainerImplHelper::Null ? QByteArrayView()
                                                     : QByteArrayView(m_data + pos, n);
@@ -238,52 +238,52 @@ public:
 
     // Defined in qbytearray.cpp:
     [[nodiscard]] QByteArrayView trimmed() const noexcept
-    { return QtPrivate::trimmed(*this); }
+    { return BobUIPrivate::trimmed(*this); }
     [[nodiscard]] short toShort(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<short>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<short>(*this, ok, base); }
     [[nodiscard]] ushort toUShort(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<ushort>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<ushort>(*this, ok, base); }
     [[nodiscard]] int toInt(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<int>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<int>(*this, ok, base); }
     [[nodiscard]] uint toUInt(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<uint>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<uint>(*this, ok, base); }
     [[nodiscard]] long toLong(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<long>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<long>(*this, ok, base); }
     [[nodiscard]] ulong toULong(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<ulong>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<ulong>(*this, ok, base); }
     [[nodiscard]] qlonglong toLongLong(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<qlonglong>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<qlonglong>(*this, ok, base); }
     [[nodiscard]] qulonglong toULongLong(bool *ok = nullptr, int base = 10) const
-    { return QtPrivate::toIntegral<qulonglong>(*this, ok, base); }
+    { return BobUIPrivate::toIntegral<qulonglong>(*this, ok, base); }
     [[nodiscard]] float toFloat(bool *ok = nullptr) const
     {
-        const auto r = QtPrivate::toFloat(*this);
+        const auto r = BobUIPrivate::toFloat(*this);
         if (ok)
             *ok = bool(r);
         return r.value_or(0.0f);
     }
     [[nodiscard]] double toDouble(bool *ok = nullptr) const
     {
-        const auto r = QtPrivate::toDouble(*this);
+        const auto r = BobUIPrivate::toDouble(*this);
         if (ok)
             *ok = bool(r);
         return r.value_or(0.0);
     }
 
     [[nodiscard]] bool startsWith(QByteArrayView other) const noexcept
-    { return QtPrivate::startsWith(*this, other); }
+    { return BobUIPrivate::startsWith(*this, other); }
     [[nodiscard]] constexpr bool startsWith(char c) const noexcept
     { return !empty() && front() == c; }
 
     [[nodiscard]] bool endsWith(QByteArrayView other) const noexcept
-    { return QtPrivate::endsWith(*this, other); }
+    { return BobUIPrivate::endsWith(*this, other); }
     [[nodiscard]] constexpr bool endsWith(char c) const noexcept
     { return !empty() && back() == c; }
 
     [[nodiscard]] qsizetype indexOf(QByteArrayView a, qsizetype from = 0) const noexcept
-    { return QtPrivate::findByteArray(*this, from, a); }
+    { return BobUIPrivate::findByteArray(*this, from, a); }
     [[nodiscard]] qsizetype indexOf(char ch, qsizetype from = 0) const noexcept
-    { return QtPrivate::findByteArray(*this, from, ch); }
+    { return BobUIPrivate::findByteArray(*this, from, ch); }
 
     [[nodiscard]] bool contains(QByteArrayView a) const noexcept
     { return indexOf(a) != qsizetype(-1); }
@@ -293,18 +293,18 @@ public:
     [[nodiscard]] qsizetype lastIndexOf(QByteArrayView a) const noexcept
     { return lastIndexOf(a, size()); }
     [[nodiscard]] qsizetype lastIndexOf(QByteArrayView a, qsizetype from) const noexcept
-    { return QtPrivate::lastIndexOf(*this, from, a); }
+    { return BobUIPrivate::lastIndexOf(*this, from, a); }
     [[nodiscard]] qsizetype lastIndexOf(char ch, qsizetype from = -1) const noexcept
-    { return QtPrivate::lastIndexOf(*this, from, ch); }
+    { return BobUIPrivate::lastIndexOf(*this, from, ch); }
 
     [[nodiscard]] qsizetype count(QByteArrayView a) const noexcept
-    { return QtPrivate::count(*this, a); }
+    { return BobUIPrivate::count(*this, a); }
     [[nodiscard]] qsizetype count(char ch) const noexcept
-    { return QtPrivate::count(*this, QByteArrayView(&ch, 1)); }
+    { return BobUIPrivate::count(*this, QByteArrayView(&ch, 1)); }
 
-    inline int compare(QByteArrayView a, Qt::CaseSensitivity cs = Qt::CaseSensitive) const noexcept;
+    inline int compare(QByteArrayView a, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const noexcept;
 
-    [[nodiscard]] inline bool isValidUtf8() const noexcept { return QtPrivate::isValidUtf8(*this); }
+    [[nodiscard]] inline bool isValidUtf8() const noexcept { return BobUIPrivate::isValidUtf8(*this); }
 
     //
     // STL compatibility API:
@@ -328,7 +328,7 @@ public:
     [[nodiscard]] constexpr qsizetype max_size() const noexcept { return maxSize(); }
 
     //
-    // Qt compatibility API:
+    // BobUI compatibility API:
     //
     [[nodiscard]] constexpr bool isNull() const noexcept { return !m_data; }
     [[nodiscard]] constexpr bool isEmpty() const noexcept { return empty(); }
@@ -340,7 +340,7 @@ public:
     [[nodiscard]] static constexpr qsizetype maxSize() noexcept
     {
         // -1 to deal with the pointer one-past-the-end;
-        return QtPrivate::MaxAllocSize - 1;
+        return BobUIPrivate::MaxAllocSize - 1;
     }
 
 private:
@@ -359,27 +359,27 @@ private:
         return lhs.size() == rhs.size()
                 && (!lhs.size() || memcmp(lhs.data(), rhs.data(), lhs.size()) == 0);
     }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QByteArrayView &lhs, const QByteArrayView &rhs) noexcept
     {
-        const int res = QtPrivate::compareMemory(lhs, rhs);
-        return Qt::compareThreeWay(res, 0);
+        const int res = BobUIPrivate::compareMemory(lhs, rhs);
+        return BobUI::compareThreeWay(res, 0);
     }
     Q_DECLARE_STRONGLY_ORDERED(QByteArrayView)
 
     // defined in qstring.cpp
     friend Q_CORE_EXPORT bool
     comparesEqual(const QByteArrayView &lhs, const QChar &rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering
+    friend Q_CORE_EXPORT BobUI::strong_ordering
     compareThreeWay(const QByteArrayView &lhs, const QChar &rhs) noexcept;
     friend Q_CORE_EXPORT bool
     comparesEqual(const QByteArrayView &lhs, char16_t rhs) noexcept;
-    friend Q_CORE_EXPORT Qt::strong_ordering
+    friend Q_CORE_EXPORT BobUI::strong_ordering
     compareThreeWay(const QByteArrayView &lhs, char16_t rhs) noexcept;
-#if !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
-    Q_DECLARE_STRONGLY_ORDERED(QByteArrayView, QChar, QT_ASCII_CAST_WARN)
-    Q_DECLARE_STRONGLY_ORDERED(QByteArrayView, char16_t, QT_ASCII_CAST_WARN)
-#endif // !defined(QT_NO_CAST_FROM_ASCII) && !defined(QT_RESTRICTED_CAST_FROM_ASCII)
+#if !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
+    Q_DECLARE_STRONGLY_ORDERED(QByteArrayView, QChar, BOBUI_ASCII_CAST_WARN)
+    Q_DECLARE_STRONGLY_ORDERED(QByteArrayView, char16_t, BOBUI_ASCII_CAST_WARN)
+#endif // !defined(BOBUI_NO_CAST_FROM_ASCII) && !defined(BOBUI_RESTRICTED_CAST_FROM_ASCII)
 
     qsizetype m_size;
     const storage_type *m_data;
@@ -391,20 +391,20 @@ template<typename QByteArrayLike,
 [[nodiscard]] inline QByteArrayView qToByteArrayViewIgnoringNull(const QByteArrayLike &b) noexcept
 { return QByteArrayView(b.begin(), b.size()); }
 
-inline int QByteArrayView::compare(QByteArrayView a, Qt::CaseSensitivity cs) const noexcept
+inline int QByteArrayView::compare(QByteArrayView a, BobUI::CaseSensitivity cs) const noexcept
 {
-    return cs == Qt::CaseSensitive ? QtPrivate::compareMemory(*this, a) :
+    return cs == BobUI::CaseSensitive ? BobUIPrivate::compareMemory(*this, a) :
                                      qstrnicmp(data(), size(), a.data(), a.size());
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_DEPRECATED_VERSION_X_6_0("Use the QByteArrayView overload.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_DEPRECATED_VERSION_X_6_0("Use the QByteArrayView overload.")
 inline quint16 qChecksum(const char *s, qsizetype len,
-                         Qt::ChecksumType standard = Qt::ChecksumIso3309)
+                         BobUI::ChecksumType standard = BobUI::ChecksumIso3309)
 { return qChecksum(QByteArrayView(s, len), standard); }
 #endif
 
-qsizetype QtPrivate::findByteArray(QByteArrayView haystack, qsizetype from, char needle) noexcept
+qsizetype BobUIPrivate::findByteArray(QByteArrayView haystack, qsizetype from, char needle) noexcept
 {
     if (from < -haystack.size()) // from < 0 && abs(from) > haystack.size(), avoiding overflow
         return -1;
@@ -420,7 +420,7 @@ qsizetype QtPrivate::findByteArray(QByteArrayView haystack, qsizetype from, char
     return -1;
 }
 
-qsizetype QtPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, uchar needle) noexcept
+qsizetype BobUIPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, uchar needle) noexcept
 {
     if (from < 0)
         from = qMax(from + haystack.size(), qsizetype(0));
@@ -432,6 +432,6 @@ qsizetype QtPrivate::lastIndexOf(QByteArrayView haystack, qsizetype from, uchar 
     return n ? static_cast<const char *>(n) - b : -1;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBYTEARRAYVIEW_H

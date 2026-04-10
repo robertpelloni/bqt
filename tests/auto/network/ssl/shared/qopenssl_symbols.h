@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 /****************************************************************************
 **
 ** In addition, as a special exception, the copyright holders listed above give
-** permission to link the code of its release of Qt with the OpenSSL project's
+** permission to link the code of its release of BobUI with the OpenSSL project's
 ** "OpenSSL" library (or modified versions of the "OpenSSL" library that use the
 ** same license as the original version), and distribute the linked executables.
 **
@@ -24,7 +24,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -35,26 +35,26 @@
 // reduced to the needs of our auto-tests, that have to mess with
 // OpenSSL calls directly.
 
-#include <QtCore/qset.h>
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUICore/qset.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
-QT_REQUIRE_CONFIG(openssl);
+BOBUI_REQUIRE_CONFIG(openssl);
 
 #ifdef Q_OS_WIN
-#include <QtCore/private/qsystemlibrary_p.h>
-#elif QT_CONFIG(library)
-#include <QtCore/qlibrary.h>
+#include <BobUICore/private/qsystemlibrary_p.h>
+#elif BOBUI_CONFIG(library)
+#include <BobUICore/qlibrary.h>
 #endif // Q_OS_WIN
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qglobal.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/qstringlist.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qglobal.h>
 
 #if defined(Q_OS_UNIX)
-#include <QtCore/qdir.h>
+#include <BobUICore/qdir.h>
 #endif
 
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
@@ -62,14 +62,14 @@ QT_REQUIRE_CONFIG(openssl);
 #endif
 
 #ifdef Q_OS_DARWIN
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
 #include <algorithm>
 #include <memory>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 // wincrypt has those as macros, which may conflict with
 // typedef names in OpenSSL.
 #if defined(OCSP_RESPONSE)
@@ -89,11 +89,11 @@ QT_REQUIRE_CONFIG(openssl);
 #include <openssl/dsa.h>
 #include <openssl/rsa.h>
 #include <openssl/dh.h>
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 #include <openssl/ocsp.h>
 #endif // ocsp
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace {
 
@@ -134,7 +134,7 @@ void q_X509_free(X509 *a);
 ASN1_TIME *q_X509_gmtime_adj(ASN1_TIME *s, long adj);
 void q_ASN1_TIME_free(ASN1_TIME *t);
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 // OCSP auto-test:
 int q_i2d_OCSP_RESPONSE(OCSP_RESPONSE *r, unsigned char **ppout);
 OCSP_RESPONSE *q_OCSP_response_create(int status, OCSP_BASICRESP *bs);
@@ -149,29 +149,29 @@ void q_OCSP_BASICRESP_free(OCSP_BASICRESP *bs);
 OCSP_CERTID *q_OCSP_cert_to_id(const EVP_MD *dgst, X509 *subject, X509 *issuer);
 void q_OCSP_CERTID_free(OCSP_CERTID *cid);
 
-#endif // QT_CONFIG(ocsp)
+#endif // BOBUI_CONFIG(ocsp)
 
-#ifndef QT_LINKED_OPENSSL
+#ifndef BOBUI_LINKED_OPENSSL
 
-Q_LOGGING_CATEGORY(lcOsslSymbols, "qt.openssl.symbols");
+Q_LOGGING_CATEGORY(lcOsslSymbols, "bobui.openssl.symbols");
 
 void qsslSocketUnresolvedSymbolWarning(const char *functionName)
 {
     qCWarning(lcOsslSymbols, "QSslSocket: cannot call unresolved function %s", functionName);
 }
 
-#if QT_CONFIG(library)
+#if BOBUI_CONFIG(library)
 void qsslSocketCannotResolveSymbolWarning(const char *functionName)
 {
     qCWarning(lcOsslSymbols, "QSslSocket: cannot resolve %s", functionName);
 }
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
-#endif // QT_LINKED_OPENSS
+#endif // BOBUI_LINKED_OPENSS
 
 #define DUMMYARG
 
-#if defined(QT_LINKED_OPENSSL)
+#if defined(BOBUI_LINKED_OPENSSL)
 // **************** Static declarations ******************
 
 // ret func(arg)
@@ -309,7 +309,7 @@ void qsslSocketCannotResolveSymbolWarning(const char *functionName)
     }
 // **************** Shared declarations ******************
 
-#endif // QT_LINKED_OPENSSL
+#endif // BOBUI_LINKED_OPENSSL
 
 // BIO:
 DEFINEFUNC(BIO *, BIO_new, const BIO_METHOD *a, a, return nullptr, return)
@@ -348,7 +348,7 @@ DEFINEFUNC(void, X509_free, X509 *a, a, return, DUMMYARG)
 DEFINEFUNC2(ASN1_TIME *, X509_gmtime_adj, ASN1_TIME *s, s, long adj, adj, return nullptr, return)
 DEFINEFUNC(void, ASN1_TIME_free, ASN1_TIME *t, t, return, DUMMYARG)
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 
 DEFINEFUNC2(int, i2d_OCSP_RESPONSE, OCSP_RESPONSE *r, r, unsigned char **ppout, ppout, return 0, return)
 DEFINEFUNC2(OCSP_RESPONSE *, OCSP_response_create, int status, status, OCSP_BASICRESP *bs, bs, return nullptr, return)
@@ -362,16 +362,16 @@ DEFINEFUNC(void, OCSP_BASICRESP_free, OCSP_BASICRESP *bs, bs, return, DUMMYARG)
 DEFINEFUNC3(OCSP_CERTID *, OCSP_cert_to_id, const EVP_MD *dgst, dgst, X509 *subject, subject, X509 *issuer, issuer, return nullptr, return)
 DEFINEFUNC(void, OCSP_CERTID_free, OCSP_CERTID *cid, cid, return, DUMMYARG)
 
-#endif // QT_CONFIG(ocsp)
+#endif // BOBUI_CONFIG(ocsp)
 
-#ifndef QT_LINKED_OPENSSL
+#ifndef BOBUI_LINKED_OPENSSL
 
-#if !QT_CONFIG(library)
-bool qt_auto_test_resolve_OpenSSL_symbols()
+#if !BOBUI_CONFIG(library)
+bool bobui_auto_test_resolve_OpenSSL_symbols()
 {
-    qCWarning(lcOsslSymbols, "QSslSocket: unable to resolve symbols. Qt is configured without the "
+    qCWarning(lcOsslSymbols, "QSslSocket: unable to resolve symbols. BobUI is configured without the "
                              "'library' feature, which means runtime resolving of libraries won't work.");
-    qCWarning(lcOsslSymbols, "Either compile Qt statically or with support for runtime resolving "
+    qCWarning(lcOsslSymbols, "Either compile BobUI statically or with support for runtime resolving "
                              "of libraries.");
     return false;
 }
@@ -439,7 +439,7 @@ QStringList libraryPathList()
 
 #ifdef Q_OS_DARWIN
     paths = QString::fromLatin1(qgetenv("DYLD_LIBRARY_PATH"))
-            .split(QLatin1Char(':'), Qt::SkipEmptyParts);
+            .split(QLatin1Char(':'), BobUI::SkipEmptyParts);
 
     // search in .app/Contents/Frameworks
     UInt32 packageType;
@@ -450,7 +450,7 @@ QStringList libraryPathList()
         paths << bundleUrl.resolved(frameworksUrl).path();
     }
 #else // Q_OS_DARWIN
-    paths = QString::fromLatin1(qgetenv("LD_LIBRARY_PATH")).split(QLatin1Char(':'), Qt::SkipEmptyParts);
+    paths = QString::fromLatin1(qgetenv("LD_LIBRARY_PATH")).split(QLatin1Char(':'), BobUI::SkipEmptyParts);
 #endif // Q_OS_DARWIN
 
     paths << QLatin1String("/lib") << QLatin1String("/usr/lib") << QLatin1String("/usr/local/lib");
@@ -503,9 +503,9 @@ QStringList findAllLibCrypto()
 #ifdef Q_OS_WIN
 
 #if (OPENSSL_VERSION_NUMBER >> 28) < 3
-#define QT_OPENSSL_VERSION "1_1"
+#define BOBUI_OPENSSL_VERSION "1_1"
 #elif OPENSSL_VERSION_MAJOR == 3 // Starting with 3.0 this define is available
-#define QT_OPENSSL_VERSION "3"
+#define BOBUI_OPENSSL_VERSION "3"
 #endif // > 3 intentionally left undefined
 
 struct LoadedOpenSsl {
@@ -537,20 +537,20 @@ static LoadedOpenSsl loadOpenSsl()
     // MSVC and GCC, with architecture suffixes for non-x86 builds.
 
 #if defined(Q_PROCESSOR_X86_64)
-#define QT_SSL_SUFFIX "-x64"
+#define BOBUI_SSL_SUFFIX "-x64"
 #elif defined(Q_PROCESSOR_ARM_64)
-#define QT_SSL_SUFFIX "-arm64"
+#define BOBUI_SSL_SUFFIX "-arm64"
 #elif defined(Q_PROCESSOR_ARM_32)
-#define QT_SSL_SUFFIX "-arm"
+#define BOBUI_SSL_SUFFIX "-arm"
 #else
-#define QT_SSL_SUFFIX
+#define BOBUI_SSL_SUFFIX
 #endif
 
-    tryToLoadOpenSslWin32Library(QLatin1String("libssl-" QT_OPENSSL_VERSION QT_SSL_SUFFIX),
-                                 QLatin1String("libcrypto-" QT_OPENSSL_VERSION QT_SSL_SUFFIX),
+    tryToLoadOpenSslWin32Library(QLatin1String("libssl-" BOBUI_OPENSSL_VERSION BOBUI_SSL_SUFFIX),
+                                 QLatin1String("libcrypto-" BOBUI_OPENSSL_VERSION BOBUI_SSL_SUFFIX),
                                  result);
 
-#undef QT_SSL_SUFFIX
+#undef BOBUI_SSL_SUFFIX
     return result;
 }
 
@@ -570,7 +570,7 @@ LoadedOpenSsl loadOpenSsl()
 
     // Try to find the libssl library on the system.
     //
-    // Up until Qt 4.3, this only searched for the "ssl" library at version -1, that
+    // Up until BobUI 4.3, this only searched for the "ssl" library at version -1, that
     // is, libssl.so on most Unix systems.  However, the .so file isn't present in
     // user installations because it's considered a development file.
     //
@@ -585,8 +585,8 @@ LoadedOpenSsl loadOpenSsl()
     // we find one that works.
     //
     // If that fails, for OpenSSL 1.0 we also try some fallbacks -- look up
-    // libssl.so with a hardcoded soname. The reason is QTBUG-68156: the binary
-    // builds of Qt happen (at the time of this writing) on RHEL machines,
+    // libssl.so with a hardcoded soname. The reason is BOBUIBUG-68156: the binary
+    // builds of BobUI happen (at the time of this writing) on RHEL machines,
     // which change SHLIB_VERSION_NUMBER to a non-portable string. When running
     // those binaries on the target systems, this code won't pick up
     // libssl.so.MODIFIED_SHLIB_VERSION_NUMBER because it doesn't exist there.
@@ -696,7 +696,7 @@ LoadedOpenSsl loadOpenSsl()
 
 #endif // Q_OS_WIN
 
-bool qt_auto_test_resolve_OpenSSL_symbols()
+bool bobui_auto_test_resolve_OpenSSL_symbols()
 {
 #define RESOLVEFUNC(func) \
     if (!(_q_##func = _q_PTR_##func(libs.ssl->resolve(#func)))     \
@@ -748,7 +748,7 @@ bool qt_auto_test_resolve_OpenSSL_symbols()
     RESOLVEFUNC(X509_gmtime_adj)
     RESOLVEFUNC(ASN1_TIME_free)
 
-#if QT_CONFIG(ocsp)
+#if BOBUI_CONFIG(ocsp)
 
     RESOLVEFUNC(i2d_OCSP_RESPONSE)
     RESOLVEFUNC(OCSP_response_create)
@@ -760,28 +760,28 @@ bool qt_auto_test_resolve_OpenSSL_symbols()
     RESOLVEFUNC(OCSP_cert_to_id)
     RESOLVEFUNC(OCSP_CERTID_free)
 
-#endif // QT_CONFIG(ocsp)
+#endif // BOBUI_CONFIG(ocsp)
 
     return true;
 }
 
-#endif // QT_CONFIG(library)
+#endif // BOBUI_CONFIG(library)
 
-#else // !defined QT_LINKED_OPENSSL
+#else // !defined BOBUI_LINKED_OPENSSL
 
-bool qt_auto_test_resolve_OpenSSL_symbols()
+bool bobui_auto_test_resolve_OpenSSL_symbols()
 {
-#ifdef QT_NO_OPENSSL
+#ifdef BOBUI_NO_OPENSSL
     return false;
 #endif
     return true;
 }
 
-#endif // !defined QT_LINKED_OPENSSL
+#endif // !defined BOBUI_LINKED_OPENSSL
 
 } // Unnamed namespace
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENSSL_SYMBOLS_H
 

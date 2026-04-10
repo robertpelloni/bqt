@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSORTFILTERPROXYMODEL_H
 #define QSORTFILTERPROXYMODEL_H
 
-#include <QtCore/qabstractproxymodel.h>
+#include <BobUICore/qabstractproxymodel.h>
 
-#include <QtCore/qregularexpression.h>
+#include <BobUICore/qregularexpression.h>
 
-QT_REQUIRE_CONFIG(sortfilterproxymodel);
+BOBUI_REQUIRE_CONFIG(sortfilterproxymodel);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QSortFilterProxyModelPrivate;
@@ -30,10 +30,10 @@ class Q_CORE_EXPORT QSortFilterProxyModel : public QAbstractProxyModel
                BINDABLE bindableFilterKeyColumn)
     Q_PROPERTY(bool dynamicSortFilter READ dynamicSortFilter WRITE setDynamicSortFilter
                BINDABLE bindableDynamicSortFilter)
-    Q_PROPERTY(Qt::CaseSensitivity filterCaseSensitivity READ filterCaseSensitivity
+    Q_PROPERTY(BobUI::CaseSensitivity filterCaseSensitivity READ filterCaseSensitivity
                WRITE setFilterCaseSensitivity NOTIFY filterCaseSensitivityChanged
                BINDABLE bindableFilterCaseSensitivity)
-    Q_PROPERTY(Qt::CaseSensitivity sortCaseSensitivity READ sortCaseSensitivity
+    Q_PROPERTY(BobUI::CaseSensitivity sortCaseSensitivity READ sortCaseSensitivity
                WRITE setSortCaseSensitivity NOTIFY sortCaseSensitivityChanged
                BINDABLE bindableSortCaseSensitivity)
     Q_PROPERTY(bool isSortLocaleAware READ isSortLocaleAware WRITE setSortLocaleAware
@@ -67,20 +67,20 @@ public:
     void setFilterKeyColumn(int column);
     QBindable<int> bindableFilterKeyColumn();
 
-    Qt::CaseSensitivity filterCaseSensitivity() const;
-    void setFilterCaseSensitivity(Qt::CaseSensitivity cs);
-    QBindable<Qt::CaseSensitivity> bindableFilterCaseSensitivity();
+    BobUI::CaseSensitivity filterCaseSensitivity() const;
+    void setFilterCaseSensitivity(BobUI::CaseSensitivity cs);
+    QBindable<BobUI::CaseSensitivity> bindableFilterCaseSensitivity();
 
-    Qt::CaseSensitivity sortCaseSensitivity() const;
-    void setSortCaseSensitivity(Qt::CaseSensitivity cs);
-    QBindable<Qt::CaseSensitivity> bindableSortCaseSensitivity();
+    BobUI::CaseSensitivity sortCaseSensitivity() const;
+    void setSortCaseSensitivity(BobUI::CaseSensitivity cs);
+    QBindable<BobUI::CaseSensitivity> bindableSortCaseSensitivity();
 
     bool isSortLocaleAware() const;
     void setSortLocaleAware(bool on);
     QBindable<bool> bindableIsSortLocaleAware();
 
     int sortColumn() const;
-    Qt::SortOrder sortOrder() const;
+    BobUI::SortOrder sortOrder() const;
 
     bool dynamicSortFilter() const;
     void setDynamicSortFilter(bool enable);
@@ -123,12 +123,12 @@ protected:
 
     void beginFilterChange();
     void endFilterChange(Directions directions = Direction::Both);
-#if QT_DEPRECATED_SINCE(6, 13)
-    QT_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange() instead")
+#if BOBUI_DEPRECATED_SINCE(6, 13)
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange() instead")
     void invalidateFilter();
-    QT_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange(QSortFilterProxyModel::Direction::Rows) instead")
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange(QSortFilterProxyModel::Direction::Rows) instead")
     void invalidateRowsFilter();
-    QT_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange(QSortFilterProxyModel::Direction::Columns) instead")
+    BOBUI_DEPRECATED_VERSION_X_6_13("Use begin/endFilterChange(QSortFilterProxyModel::Direction::Columns) instead")
     void invalidateColumnsFilter();
 #endif
 
@@ -143,15 +143,15 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    QVariant data(const QModelIndex &index, int role = BobUI::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = BobUI::EditRole) override;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    bool setHeaderData(int section, Qt::Orientation orientation,
-            const QVariant &value, int role = Qt::EditRole) override;
+    QVariant headerData(int section, BobUI::Orientation orientation, int role = BobUI::DisplayRole) const override;
+    bool setHeaderData(int section, BobUI::Orientation orientation,
+            const QVariant &value, int role = BobUI::EditRole) override;
 
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+    bool dropMimeData(const QMimeData *data, BobUI::DropAction action,
                       int row, int column, const QModelIndex &parent) override;
 
     bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
@@ -161,23 +161,23 @@ public:
 
     void fetchMore(const QModelIndex &parent) override;
     bool canFetchMore(const QModelIndex &parent) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
     QModelIndex buddy(const QModelIndex &index) const override;
     QModelIndexList match(const QModelIndex &start, int role,
                           const QVariant &value, int hits = 1,
-                          Qt::MatchFlags flags =
-                          Qt::MatchFlags(Qt::MatchStartsWith|Qt::MatchWrap)) const override;
+                          BobUI::MatchFlags flags =
+                          BobUI::MatchFlags(BobUI::MatchStartsWith|BobUI::MatchWrap)) const override;
     QSize span(const QModelIndex &index) const override;
-    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void sort(int column, BobUI::SortOrder order = BobUI::AscendingOrder) override;
 
     QStringList mimeTypes() const override;
-    Qt::DropActions supportedDropActions() const override;
+    BobUI::DropActions supportedDropActions() const override;
 
 Q_SIGNALS:
     void dynamicSortFilterChanged(bool dynamicSortFilter);
-    void filterCaseSensitivityChanged(Qt::CaseSensitivity filterCaseSensitivity);
-    void sortCaseSensitivityChanged(Qt::CaseSensitivity sortCaseSensitivity);
+    void filterCaseSensitivityChanged(BobUI::CaseSensitivity filterCaseSensitivity);
+    void sortCaseSensitivityChanged(BobUI::CaseSensitivity sortCaseSensitivity);
     void sortLocaleAwareChanged(bool sortLocaleAware);
     void sortRoleChanged(int sortRole);
     void filterRoleChanged(int filterRole);
@@ -191,6 +191,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QSortFilterProxyModel::Directions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSORTFILTERPROXYMODEL_H

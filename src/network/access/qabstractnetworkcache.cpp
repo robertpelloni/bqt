@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractnetworkcache.h"
 #include "qabstractnetworkcache_p.h"
@@ -14,7 +14,7 @@
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkCacheMetaDataPrivate : public QSharedData
 {
@@ -51,7 +51,7 @@ Q_GLOBAL_STATIC(QNetworkCacheMetaDataPrivate, metadata_shared_invalid)
     \class QNetworkCacheMetaData
     \since 4.5
     \ingroup shared
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QNetworkCacheMetaData class provides cache information.
 
@@ -311,7 +311,7 @@ void QNetworkCacheMetaData::setAttributes(const AttributesMap &attributes)
 
     Writes \a metaData to the \a out stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator<<(QDataStream &out, const QNetworkCacheMetaData &metaData)
 {
@@ -349,7 +349,7 @@ void QNetworkCacheMetaDataPrivate::save(QDataStream &out, const QNetworkCacheMet
 
     Reads a QNetworkCacheMetaData from the stream \a in into \a metaData.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 QDataStream &operator>>(QDataStream &in, QNetworkCacheMetaData &metaData)
 {
@@ -399,7 +399,7 @@ void QNetworkCacheMetaDataPrivate::load(QDataStream &in, QNetworkCacheMetaData &
 /*!
     \class QAbstractNetworkCache
     \since 4.5
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QAbstractNetworkCache class provides the interface for cache implementations.
 
@@ -534,6 +534,6 @@ QAbstractNetworkCache::~QAbstractNetworkCache()
     \sa cacheSize(), remove()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractnetworkcache.cpp"

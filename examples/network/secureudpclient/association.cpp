@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "association.h"
 
@@ -27,7 +27,7 @@ DtlsAssociation::DtlsAssociation(const QHostAddress &address, quint16 port,
     //! [13]
     //! [4]
     pingTimer.setInterval(5000);
-    connect(&pingTimer, &QTimer::timeout, this, &DtlsAssociation::pingTimeout);
+    connect(&pingTimer, &BOBUIimer::timeout, this, &DtlsAssociation::pingTimeout);
     //! [4]
 }
 
@@ -69,7 +69,7 @@ void DtlsAssociation::readyRead()
     }
 
     //! [6]
-    QByteArray dgram(socket.pendingDatagramSize(), Qt::Uninitialized);
+    QByteArray dgram(socket.pendingDatagramSize(), BobUI::Uninitialized);
     const qint64 bytesRead = socket.readDatagram(dgram.data(), dgram.size());
     if (bytesRead <= 0) {
         emit warningMessage(tr("%1: spurious read notification?").arg(name));

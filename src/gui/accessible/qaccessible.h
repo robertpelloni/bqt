@@ -1,37 +1,37 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #if 0
-// keep existing syncqt header working after the move of the class
+// keep existing syncbobui header working after the move of the class
 // into qaccessible_base
-#pragma qt_class(QAccessible)
+#pragma bobui_class(QAccessible)
 #endif
 
 #ifndef QACCESSIBLE_H
 #define QACCESSIBLE_H
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qglobal.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qset.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qevent.h>
-#include <QtGui/qaccessible_base.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qvariant.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qaccessible_base.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDebug;
 class QAccessibleInterface;
 class QAccessibleEvent;
 class QWindow;
-class QTextCursor;
+class BOBUIextCursor;
 
 class QAccessible2Interface;
 class QAccessibleTextInterface;
@@ -356,7 +356,7 @@ protected:
         QAccessible::Id m_uniqueId;
     };
 
-    friend class QTestAccessibility;
+    friend class BOBUIestAccessibility;
 };
 
 class Q_GUI_EXPORT QAccessibleStateChangeEvent :public QAccessibleEvent
@@ -640,7 +640,7 @@ protected:
 };
 
 #ifndef Q_QDOC
-#define QAccessibleInterface_iid "org.qt-project.Qt.QAccessibleInterface"
+#define QAccessibleInterface_iid "org.bobui-project.BobUI.QAccessibleInterface"
 Q_DECLARE_INTERFACE(QAccessibleInterface, QAccessibleInterface_iid)
 #endif
 
@@ -648,12 +648,12 @@ Q_GUI_EXPORT const char *qAccessibleRoleString(QAccessible::Role role);
 Q_GUI_EXPORT const char *qAccessibleEventString(QAccessible::Event event);
 Q_GUI_EXPORT QString qAccessibleLocalizedActionDescription(const QString &actionName);
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAccessibleInterface *iface);
 Q_GUI_EXPORT QDebug operator<<(QDebug d, const QAccessibleEvent &ev);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 #endif // QACCESSIBLE_H

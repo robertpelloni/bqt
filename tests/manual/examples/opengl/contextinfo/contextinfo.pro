@@ -1,6 +1,6 @@
 TEMPLATE = app
-QT += widgets opengl
-requires(qtConfig(filedialog))
+BOBUI += widgets opengl
+requires(bobuiConfig(filedialog))
 
 SOURCES += main.cpp \
            widget.cpp \
@@ -10,5 +10,5 @@ HEADERS += widget.h \
            renderwindow.h
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/contextinfo
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/contextinfo
 INSTALLS += target

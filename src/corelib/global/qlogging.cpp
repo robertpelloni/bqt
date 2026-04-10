@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2016 Olivier Goffart <ogoffart@woboq.com>
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qlogging.h"
 #include "qlogging_p.h"
@@ -19,14 +19,14 @@
 #include "qmutex.h"
 #include "qscopeguard.h"
 #include "qstring.h"
-#include "qtcore_tracepoints_p.h"
-#include "qthread.h"
+#include "bobuicore_tracepoints_p.h"
+#include "bobuihread.h"
 #include "qvarlengtharray.h"
 
 #ifdef Q_CC_MSVC
 #include <intrin.h>
 #endif
-#if QT_CONFIG(slog2)
+#if BOBUI_CONFIG(slog2)
 #include <sys/slog2.h>
 #endif
 #if __has_include(<paths.h>)
@@ -38,15 +38,15 @@
 #endif
 
 #ifdef Q_OS_DARWIN
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 #endif
 
-#if QT_CONFIG(journald)
+#if BOBUI_CONFIG(journald)
 # define SD_JOURNAL_SUPPRESS_LOCATION
 # include <systemd/sd-journal.h>
 # include <syslog.h>
 #endif
-#if QT_CONFIG(syslog)
+#if BOBUI_CONFIG(syslog)
 # include <syslog.h>
 #endif
 #ifdef Q_OS_UNIX
@@ -60,7 +60,7 @@
 #include <emscripten/emscripten.h>
 #endif
 
-#if QT_CONFIG(slog2)
+#if BOBUI_CONFIG(slog2)
 extern char *__progname;
 #endif
 
@@ -69,7 +69,7 @@ extern char *__progname;
 #endif
 
 #ifdef QLOGGING_USE_EXECINFO_BACKTRACE
-#  if QT_CONFIG(dladdr)
+#  if BOBUI_CONFIG(dladdr)
 #    include <dlfcn.h>
 #  endif
 #  include BACKTRACE_HEADER
@@ -85,38 +85,38 @@ extern char *__progname;
 #include <stdio.h>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
+#include <bobui_windows.h>
 #include <processthreadsapi.h>
 #include "qfunctionpointer.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_POINT(qtcore, qt_message_print, int type, const char *category, const char *function, const char *file, int line, const QString &message);
+Q_TRACE_POINT(bobuicore, bobui_message_print, int type, const char *category, const char *function, const char *file, int line, const QString &message);
 
 /*!
-    \headerfile <QtLogging>
-    \inmodule QtCore
-    \title Qt Logging Types
+    \headerfile <BobUILogging>
+    \inmodule BobUICore
+    \title BobUI Logging Types
 
-    \brief The <QtLogging> header file defines Qt logging types, functions
+    \brief The <BobUILogging> header file defines BobUI logging types, functions
     and macros.
 
-    The <QtLogging> header file contains several types, functions and
+    The <BobUILogging> header file contains several types, functions and
     macros for logging.
 
-    The QtMsgType enum  identifies the various messages that can be generated
-    and sent to a Qt message handler; QtMessageHandler is a type definition for
+    The BobUIMsgType enum  identifies the various messages that can be generated
+    and sent to a BobUI message handler; BobUIMessageHandler is a type definition for
     a pointer to a function with the signature
-    \c {void myMessageHandler(QtMsgType, const QMessageLogContext &, const char *)}.
+    \c {void myMessageHandler(BobUIMsgType, const QMessageLogContext &, const char *)}.
     qInstallMessageHandler() function can be used to install the given
-    QtMessageHandler. QMessageLogContext class contains the line, file, and
+    BobUIMessageHandler. QMessageLogContext class contains the line, file, and
     function the message was logged at. This information is created by the
     QMessageLogger class.
 
-    <QtLogging> also contains functions that generate messages from the
+    <BobUILogging> also contains functions that generate messages from the
     given string argument: qDebug(), qInfo(), qWarning(), qCritical(),
     and qFatal(). These functions call the message handler
     with the given message.
@@ -129,11 +129,11 @@ Q_TRACE_POINT(qtcore, qt_message_print, int type, const char *category, const ch
 */
 
 template <typename String>
-static void qt_maybe_message_fatal(QtMsgType, const QMessageLogContext &context, String &&message);
-static void qt_message_print(QtMsgType, const QMessageLogContext &context, const QString &message);
-static void preformattedMessageHandler(QtMsgType type, const QMessageLogContext &context,
+static void bobui_maybe_message_fatal(BobUIMsgType, const QMessageLogContext &context, String &&message);
+static void bobui_message_print(BobUIMsgType, const QMessageLogContext &context, const QString &message);
+static void preformattedMessageHandler(BobUIMsgType type, const QMessageLogContext &context,
                                        const QString &formattedMessage);
-static QString formatLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &str);
+static QString formatLogMessage(BobUIMsgType type, const QMessageLogContext &context, const QString &str);
 
 static int checked_var_value(const char *varname)
 {
@@ -183,20 +183,20 @@ static bool isFatalCountDown(const char *varname, QBasicAtomicInt &n)
 
 Q_CONSTINIT static QBasicAtomicInt fatalCriticalsCount = Q_BASIC_ATOMIC_INITIALIZER(0);
 Q_CONSTINIT static QBasicAtomicInt fatalWarningsCount = Q_BASIC_ATOMIC_INITIALIZER(0);
-static bool isFatal(QtMsgType msgType)
+static bool isFatal(BobUIMsgType msgType)
 {
     switch (msgType){
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         return true;    // always fatal
 
-    case QtCriticalMsg:
-        return isFatalCountDown("QT_FATAL_CRITICALS", fatalCriticalsCount);
+    case BobUICriticalMsg:
+        return isFatalCountDown("BOBUI_FATAL_CRITICALS", fatalCriticalsCount);
 
-    case QtWarningMsg:
-        return isFatalCountDown("QT_FATAL_WARNINGS", fatalWarningsCount);
+    case BobUIWarningMsg:
+        return isFatalCountDown("BOBUI_FATAL_WARNINGS", fatalWarningsCount);
 
-    case QtDebugMsg:
-    case QtInfoMsg:
+    case BobUIDebugMsg:
+    case BobUIInfoMsg:
         break;  // never fatal
     }
 
@@ -204,7 +204,7 @@ static bool isFatal(QtMsgType msgType)
 }
 
 #if defined(Q_OS_LINUX) || defined(Q_OS_DARWIN) || defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
-static bool qt_append_thread_name_to(QString &message)
+static bool bobui_append_thread_name_to(QString &message)
 {
     std::array<char, 16> name{};
     if (pthread_getname_np(pthread_self(), name.data(), name.size()) == 0) {
@@ -218,9 +218,9 @@ static bool qt_append_thread_name_to(QString &message)
 }
 #elif defined(Q_OS_WIN)
 typedef HRESULT (WINAPI *GetThreadDescriptionFunc)(HANDLE, PWSTR *);
-static bool qt_append_thread_name_to(QString &message)
+static bool bobui_append_thread_name_to(QString &message)
 {
-    // Once MinGW 12.0 is required for Qt, we can call GetThreadDescription directly
+    // Once MinGW 12.0 is required for BobUI, we can call GetThreadDescription directly
     // instead of this runtime resolve:
     static GetThreadDescriptionFunc pGetThreadDescription = []() -> GetThreadDescriptionFunc {
         HMODULE hKernel = GetModuleHandleW(L"kernel32.dll");
@@ -244,7 +244,7 @@ static bool qt_append_thread_name_to(QString &message)
     return false;
 }
 #else
-static bool qt_append_thread_name_to(QString &message)
+static bool bobui_append_thread_name_to(QString &message)
 {
     Q_UNUSED(message)
     return false;
@@ -271,10 +271,10 @@ static bool systemHasStderr()
 
     If the application is started without a controlling console/terminal, but the parent
     process reads \c stderr and presents it to the user in some other way, the parent process
-    may override the detection in this function by setting the QT_ASSUME_STDERR_HAS_CONSOLE
+    may override the detection in this function by setting the BOBUI_ASSUME_STDERR_HAS_CONSOLE
     environment variable to \c 1.
 
-    \note Qt Creator does not implement a pseudo TTY, nor does it launch apps with
+    \note BobUI Creator does not implement a pseudo TTY, nor does it launch apps with
     the override environment variable set, but it will read stderr and print it to
     the user, so in effect this function cannot be used to conclude that stderr
     output will _not_ be visible to the user, as even if this function returns false,
@@ -290,13 +290,13 @@ static bool stderrHasConsoleAttached()
         if (!systemHasStderr())
             return false;
 
-        if (qEnvironmentVariableIntValue("QT_LOGGING_TO_CONSOLE")) {
-            fprintf(stderr, "warning: Environment variable QT_LOGGING_TO_CONSOLE is deprecated, use\n"
-                            "QT_ASSUME_STDERR_HAS_CONSOLE and/or QT_FORCE_STDERR_LOGGING instead.\n");
+        if (qEnvironmentVariableIntValue("BOBUI_LOGGING_TO_CONSOLE")) {
+            fprintf(stderr, "warning: Environment variable BOBUI_LOGGING_TO_CONSOLE is deprecated, use\n"
+                            "BOBUI_ASSUME_STDERR_HAS_CONSOLE and/or BOBUI_FORCE_STDERR_LOGGING instead.\n");
             return true;
         }
 
-        if (qEnvironmentVariableIntValue("QT_ASSUME_STDERR_HAS_CONSOLE"))
+        if (qEnvironmentVariableIntValue("BOBUI_ASSUME_STDERR_HAS_CONSOLE"))
             return true;
 
 #if defined(Q_OS_WIN)
@@ -308,8 +308,8 @@ static bool stderrHasConsoleAttached()
 
         // If we can open /dev/tty, we have a controlling TTY
         int ttyDevice = -1;
-        if ((ttyDevice = qt_safe_open(_PATH_TTY, O_RDONLY)) >= 0) {
-            qt_safe_close(ttyDevice);
+        if ((ttyDevice = bobui_safe_open(_PATH_TTY, O_RDONLY)) >= 0) {
+            bobui_safe_close(ttyDevice);
             return true;
         } else if (errno == ENOENT || errno == EPERM || errno == ENXIO) {
             // Fall back to isatty for some non-critical errors
@@ -326,33 +326,33 @@ static bool stderrHasConsoleAttached()
 }
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 /*!
     Returns true if logging \c stderr should be ensured.
 
     This is normally the case if \c stderr has a console attached, but may be overridden
-    by the user by setting the QT_FORCE_STDERR_LOGGING environment variable to \c 1.
+    by the user by setting the BOBUI_FORCE_STDERR_LOGGING environment variable to \c 1.
 
     \internal
     \sa stderrHasConsoleAttached()
 */
 bool shouldLogToStderr()
 {
-    static bool forceStderrLogging = qEnvironmentVariableIntValue("QT_FORCE_STDERR_LOGGING");
+    static bool forceStderrLogging = qEnvironmentVariableIntValue("BOBUI_FORCE_STDERR_LOGGING");
     return forceStderrLogging || stderrHasConsoleAttached();
 }
 
 
-} // QtPrivate
+} // BobUIPrivate
 
-using namespace QtPrivate;
+using namespace BobUIPrivate;
 
 #endif // ifndef Q_OS_WASM
 
 /*!
     \class QMessageLogContext
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMessageLogContext class provides additional information about a log message.
     \since 5.0
 
@@ -360,18 +360,18 @@ using namespace QtPrivate;
     qCritical() or qFatal() message was generated.
 
     \note By default, this information is recorded only in debug builds. You can overwrite
-    this explicitly by defining \c QT_MESSAGELOGCONTEXT or \c{QT_NO_MESSAGELOGCONTEXT}.
+    this explicitly by defining \c BOBUI_MESSAGELOGCONTEXT or \c{BOBUI_NO_MESSAGELOGCONTEXT}.
 
-    \sa QMessageLogger, QtMessageHandler, qInstallMessageHandler()
+    \sa QMessageLogger, BobUIMessageHandler, qInstallMessageHandler()
 */
 
 /*!
     \class QMessageLogger
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMessageLogger class generates log messages.
     \since 5.0
 
-    QMessageLogger is used to generate messages for the Qt logging framework. Usually one uses
+    QMessageLogger is used to generate messages for the BobUI logging framework. Usually one uses
     it through qDebug(), qInfo(), qWarning(), qCritical, or qFatal() functions,
     which are actually macros: For example qDebug() expands to
     QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug()
@@ -384,7 +384,7 @@ using namespace QtPrivate;
     \sa QMessageLogContext, qDebug(), qInfo(), qWarning(), qCritical(), qFatal()
 */
 
-#if defined(Q_CC_MSVC_ONLY) && defined(QT_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
+#if defined(Q_CC_MSVC_ONLY) && defined(BOBUI_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
 static inline void convert_to_wchar_t_elided(wchar_t *d, size_t space, const char *s) noexcept
 {
     size_t len = qstrlen(s);
@@ -405,11 +405,11 @@ static inline void convert_to_wchar_t_elided(wchar_t *d, size_t space, const cha
     \internal
 */
 Q_NEVER_INLINE
-static void qt_message(QtMsgType msgType, const QMessageLogContext &context, const char *msg, va_list ap)
+static void bobui_message(BobUIMsgType msgType, const QMessageLogContext &context, const char *msg, va_list ap)
 {
     QString buf = QString::vasprintf(msg, ap);
-    qt_message_print(msgType, context, buf);
-    qt_maybe_message_fatal(msgType, context, buf);
+    bobui_message_print(msgType, context, buf);
+    bobui_maybe_message_fatal(msgType, context, buf);
 }
 
 /*!
@@ -423,7 +423,7 @@ void QMessageLogger::debug(const char *msg, ...) const
     QInternalMessageLogContext ctxt(context);
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtDebugMsg, ctxt, msg, ap);
+    bobui_message(BobUIDebugMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -439,7 +439,7 @@ void QMessageLogger::info(const char *msg, ...) const
     QInternalMessageLogContext ctxt(context);
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtInfoMsg, ctxt, msg, ap);
+    bobui_message(BobUIInfoMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -475,7 +475,7 @@ void QMessageLogger::debug(const QLoggingCategory &cat, const char *msg, ...) co
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtDebugMsg, ctxt, msg, ap);
+    bobui_message(BobUIDebugMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -497,11 +497,11 @@ void QMessageLogger::debug(QMessageLogger::CategoryFunction catFunc,
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtDebugMsg, ctxt, msg, ap);
+    bobui_message(BobUIDebugMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 /*!
     Logs a debug message using a QDebug stream
@@ -510,7 +510,7 @@ void QMessageLogger::debug(QMessageLogger::CategoryFunction catFunc,
 */
 QDebug QMessageLogger::debug() const
 {
-    QDebug dbg = QDebug(QtDebugMsg);
+    QDebug dbg = QDebug(BobUIDebugMsg);
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
     return dbg;
@@ -524,7 +524,7 @@ QDebug QMessageLogger::debug() const
 */
 QDebug QMessageLogger::debug(const QLoggingCategory &cat) const
 {
-    QDebug dbg = QDebug(QtDebugMsg);
+    QDebug dbg = QDebug(BobUIDebugMsg);
     if (!cat.isDebugEnabled())
         dbg.stream->message_output = false;
 
@@ -563,7 +563,7 @@ void QMessageLogger::info(const QLoggingCategory &cat, const char *msg, ...) con
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtInfoMsg, ctxt, msg, ap);
+    bobui_message(BobUIInfoMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -585,11 +585,11 @@ void QMessageLogger::info(QMessageLogger::CategoryFunction catFunc,
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtInfoMsg, ctxt, msg, ap);
+    bobui_message(BobUIInfoMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 
 /*!
     Logs an informational message using a QDebug stream.
@@ -599,7 +599,7 @@ void QMessageLogger::info(QMessageLogger::CategoryFunction catFunc,
 */
 QDebug QMessageLogger::info() const
 {
-    QDebug dbg = QDebug(QtInfoMsg);
+    QDebug dbg = QDebug(BobUIInfoMsg);
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
     return dbg;
@@ -613,7 +613,7 @@ QDebug QMessageLogger::info() const
 */
 QDebug QMessageLogger::info(const QLoggingCategory &cat) const
 {
-    QDebug dbg = QDebug(QtInfoMsg);
+    QDebug dbg = QDebug(BobUIInfoMsg);
     if (!cat.isInfoEnabled())
         dbg.stream->message_output = false;
 
@@ -648,7 +648,7 @@ void QMessageLogger::warning(const char *msg, ...) const
     QInternalMessageLogContext ctxt(context);
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtWarningMsg, ctxt, msg, ap);
+    bobui_message(BobUIWarningMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -668,7 +668,7 @@ void QMessageLogger::warning(const QLoggingCategory &cat, const char *msg, ...) 
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtWarningMsg, ctxt, msg, ap);
+    bobui_message(BobUIWarningMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -690,11 +690,11 @@ void QMessageLogger::warning(QMessageLogger::CategoryFunction catFunc,
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtWarningMsg, ctxt, msg, ap);
+    bobui_message(BobUIWarningMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     Logs a warning message using a QDebug stream
 
@@ -702,7 +702,7 @@ void QMessageLogger::warning(QMessageLogger::CategoryFunction catFunc,
 */
 QDebug QMessageLogger::warning() const
 {
-    QDebug dbg = QDebug(QtWarningMsg);
+    QDebug dbg = QDebug(BobUIWarningMsg);
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
     return dbg;
@@ -715,7 +715,7 @@ QDebug QMessageLogger::warning() const
 */
 QDebug QMessageLogger::warning(const QLoggingCategory &cat) const
 {
-    QDebug dbg = QDebug(QtWarningMsg);
+    QDebug dbg = QDebug(BobUIWarningMsg);
     if (!cat.isWarningEnabled())
         dbg.stream->message_output = false;
 
@@ -750,7 +750,7 @@ void QMessageLogger::critical(const char *msg, ...) const
     QInternalMessageLogContext ctxt(context);
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtCriticalMsg, ctxt, msg, ap);
+    bobui_message(BobUICriticalMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -770,7 +770,7 @@ void QMessageLogger::critical(const QLoggingCategory &cat, const char *msg, ...)
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtCriticalMsg, ctxt, msg, ap);
+    bobui_message(BobUICriticalMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
@@ -792,11 +792,11 @@ void QMessageLogger::critical(QMessageLogger::CategoryFunction catFunc,
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtCriticalMsg, ctxt, msg, ap);
+    bobui_message(BobUICriticalMsg, ctxt, msg, ap);
     va_end(ap);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     Logs a critical message using a QDebug stream
 
@@ -804,7 +804,7 @@ void QMessageLogger::critical(QMessageLogger::CategoryFunction catFunc,
 */
 QDebug QMessageLogger::critical() const
 {
-    QDebug dbg = QDebug(QtCriticalMsg);
+    QDebug dbg = QDebug(BobUICriticalMsg);
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
     return dbg;
@@ -818,7 +818,7 @@ QDebug QMessageLogger::critical() const
 */
 QDebug QMessageLogger::critical(const QLoggingCategory &cat) const
 {
-    QDebug dbg = QDebug(QtCriticalMsg);
+    QDebug dbg = QDebug(BobUICriticalMsg);
     if (!cat.isCriticalEnabled())
         dbg.stream->message_output = false;
 
@@ -855,7 +855,7 @@ void QMessageLogger::fatal(const QLoggingCategory &cat, const char *msg, ...) co
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtFatalMsg, ctxt, msg, ap);
+    bobui_message(BobUIFatalMsg, ctxt, msg, ap);
     va_end(ap);
 
 #ifndef Q_CC_MSVC_ONLY
@@ -879,7 +879,7 @@ void QMessageLogger::fatal(QMessageLogger::CategoryFunction catFunc,
 
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtFatalMsg, ctxt, msg, ap);
+    bobui_message(BobUIFatalMsg, ctxt, msg, ap);
     va_end(ap);
 
 #ifndef Q_CC_MSVC_ONLY
@@ -898,7 +898,7 @@ void QMessageLogger::fatal(const char *msg, ...) const noexcept
     QInternalMessageLogContext ctxt(context);
     va_list ap;
     va_start(ap, msg); // use variable arg list
-    qt_message(QtFatalMsg, ctxt, msg, ap);
+    bobui_message(BobUIFatalMsg, ctxt, msg, ap);
     va_end(ap);
 
 #ifndef Q_CC_MSVC_ONLY
@@ -906,7 +906,7 @@ void QMessageLogger::fatal(const char *msg, ...) const noexcept
 #endif
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     Logs a fatal message using a QDebug stream.
 
@@ -916,7 +916,7 @@ void QMessageLogger::fatal(const char *msg, ...) const noexcept
 */
 QDebug QMessageLogger::fatal() const
 {
-    QDebug dbg = QDebug(QtFatalMsg);
+    QDebug dbg = QDebug(BobUIFatalMsg);
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
     return dbg;
@@ -930,7 +930,7 @@ QDebug QMessageLogger::fatal() const
 */
 QDebug QMessageLogger::fatal(const QLoggingCategory &cat) const
 {
-    QDebug dbg = QDebug(QtFatalMsg);
+    QDebug dbg = QDebug(BobUIFatalMsg);
 
     QMessageLogContext &ctxt = dbg.stream->context;
     ctxt.copyContextFrom(context);
@@ -949,7 +949,7 @@ QDebug QMessageLogger::fatal(QMessageLogger::CategoryFunction catFunc) const
 {
     return fatal((*catFunc)());
 }
-#endif // QT_NO_DEBUG_STREAM
+#endif // BOBUI_NO_DEBUG_STREAM
 
 static bool isDefaultCategory(const char *category)
 {
@@ -1124,7 +1124,7 @@ Q_AUTOTEST_EXPORT QByteArray qCleanupFuncinfo(QByteArray info)
     return info;
 }
 
-// tokens as recognized in QT_MESSAGE_PATTERN
+// tokens as recognized in BOBUI_MESSAGE_PATTERN
 static const char categoryTokenC[] = "%{category}";
 static const char typeTokenC[] = "%{type}";
 static const char messageTokenC[] = "%{message}";
@@ -1135,7 +1135,7 @@ static const char pidTokenC[] = "%{pid}";
 static const char appnameTokenC[] = "%{appname}";
 static const char threadidTokenC[] = "%{threadid}";
 static const char threadnameTokenC[] = "%{threadname}";
-static const char qthreadptrTokenC[] = "%{qthreadptr}";
+static const char bobuihreadptrTokenC[] = "%{bobuihreadptr}";
 static const char timeTokenC[] = "%{time"; //not a typo: this command has arguments
 static const char backtraceTokenC[] = "%{backtrace"; //ditto
 static const char ifCategoryTokenC[] = "%{if-category}";
@@ -1213,7 +1213,7 @@ Q_CONSTINIT QBasicMutex QMessagePattern::mutex;
 
 QMessagePattern::QMessagePattern()
 {
-    const QString envPattern = qEnvironmentVariable("QT_MESSAGE_PATTERN");
+    const QString envPattern = qEnvironmentVariable("BOBUI_MESSAGE_PATTERN");
     if (envPattern.isEmpty()) {
         setDefaultPattern();
         fromEnvironment = false;
@@ -1296,8 +1296,8 @@ void QMessagePattern::setPattern(const QString &pattern)
                 tokens[i] = threadidTokenC;
             else if (lexeme == QLatin1StringView(threadnameTokenC))
                 tokens[i] = threadnameTokenC;
-            else if (lexeme == QLatin1StringView(qthreadptrTokenC))
-                tokens[i] = qthreadptrTokenC;
+            else if (lexeme == QLatin1StringView(bobuihreadptrTokenC))
+                tokens[i] = bobuihreadptrTokenC;
             else if (lexeme.startsWith(QLatin1StringView(timeTokenC))) {
                 tokens[i] = timeTokenC;
                 qsizetype spaceIdx = lexeme.indexOf(QChar::fromLatin1(' '));
@@ -1316,7 +1316,7 @@ void QMessagePattern::setPattern(const QString &pattern)
                 if (m.hasMatch()) {
                     int depth = m.capturedView(1).toInt();
                     if (depth <= 0)
-                        error += "QT_MESSAGE_PATTERN: %{backtrace} depth must be a number greater than 0\n"_L1;
+                        error += "BOBUI_MESSAGE_PATTERN: %{backtrace} depth must be a number greater than 0\n"_L1;
                     else
                         backtraceDepth = depth;
                 }
@@ -1329,7 +1329,7 @@ void QMessagePattern::setPattern(const QString &pattern)
                 backtraceArgs.append(backtraceParams);
                 maxBacktraceDepth = qMax(maxBacktraceDepth, backtraceDepth);
 #else
-                error += "QT_MESSAGE_PATTERN: %{backtrace} is not supported by this Qt build\n"_L1;
+                error += "BOBUI_MESSAGE_PATTERN: %{backtrace} is not supported by this BobUI build\n"_L1;
                 tokens[i] = "";
 #endif
             }
@@ -1351,11 +1351,11 @@ void QMessagePattern::setPattern(const QString &pattern)
             else if (lexeme == QLatin1StringView(endifTokenC)) {
                 tokens[i] = endifTokenC;
                 if (!inIf && !nestedIfError)
-                    error += "QT_MESSAGE_PATTERN: %{endif} without an %{if-*}\n"_L1;
+                    error += "BOBUI_MESSAGE_PATTERN: %{endif} without an %{if-*}\n"_L1;
                 inIf = false;
             } else {
                 tokens[i] = emptyTokenC;
-                error += "QT_MESSAGE_PATTERN: Unknown placeholder "_L1 + lexeme + '\n'_L1;
+                error += "BOBUI_MESSAGE_PATTERN: Unknown placeholder "_L1 + lexeme + '\n'_L1;
             }
         } else {
             using UP = std::unique_ptr<char[]>;
@@ -1363,17 +1363,17 @@ void QMessagePattern::setPattern(const QString &pattern)
         }
     }
     if (nestedIfError)
-        error += "QT_MESSAGE_PATTERN: %{if-*} cannot be nested\n"_L1;
+        error += "BOBUI_MESSAGE_PATTERN: %{if-*} cannot be nested\n"_L1;
     else if (inIf)
-        error += "QT_MESSAGE_PATTERN: missing %{endif}\n"_L1;
+        error += "BOBUI_MESSAGE_PATTERN: missing %{endif}\n"_L1;
 
     if (!error.isEmpty()) {
         // remove the last '\n' because the sinks deal with that on their own
         error.chop(1);
 
-        QMessageLogContext ctx(QT_MESSAGELOG_FILE, QT_MESSAGELOG_LINE,
+        QMessageLogContext ctx(BOBUI_MESSAGELOG_FILE, BOBUI_MESSAGELOG_LINE,
                                "QMessagePattern::setPattern", nullptr);
-        preformattedMessageHandler(QtWarningMsg, ctx, error);
+        preformattedMessageHandler(BobUIWarningMsg, ctx, error);
     }
 
     literals.reset(new std::unique_ptr<const char[]>[literalsVar.size() + 1]);
@@ -1394,7 +1394,7 @@ void QMessagePattern::setPattern(const QString &pattern)
   Unfortunately, we can't know for sure if it has been.
 */
 static constexpr int TypicalBacktraceFrameCount = 3;
-static constexpr const char *QtCoreLibraryName = "Qt" QT_STRINGIFY(QT_VERSION_MAJOR) "Core";
+static constexpr const char *BobUICoreLibraryName = "BobUI" BOBUI_STRINGIFY(BOBUI_VERSION_MAJOR) "Core";
 
 #if defined(QLOGGING_USE_STD_BACKTRACE)
 Q_NEVER_INLINE void QInternalMessageLogContext::populateBacktrace(int frameCount)
@@ -1416,7 +1416,7 @@ backtraceFramesForLogMessage(int frameCount,
         const auto libraryNameEnd = description.indexOf('!');
         if (libraryNameEnd != -1) {
             const auto libraryName = description.first(libraryNameEnd);
-            if (!libraryName.contains(QtCoreLibraryName))
+            if (!libraryName.contains(BobUICoreLibraryName))
                 return false;
         }
 #endif
@@ -1467,7 +1467,7 @@ backtraceFramesForLogMessage(int frameCount,
         return result;
 
     auto shouldSkipFrame = [&result](const auto &library, const auto &function) {
-        if (!result.isEmpty() || !library.contains(QLatin1StringView(QtCoreLibraryName)))
+        if (!result.isEmpty() || !library.contains(QLatin1StringView(BobUICoreLibraryName)))
             return false;
         if (function.isEmpty())
             return true;
@@ -1475,7 +1475,7 @@ backtraceFramesForLogMessage(int frameCount,
             return true;
         if (function.contains("14QMessageLogger"_L1))
             return true;
-        if (function.contains("17qt_message_output"_L1))
+        if (function.contains("17bobui_message_output"_L1))
             return true;
         if (function.contains("26QInternalMessageLogContext"_L1))
             return true;
@@ -1503,7 +1503,7 @@ backtraceFramesForLogMessage(int frameCount,
             return QString::fromUtf8(fn);       // restore
     };
 
-#  if QT_CONFIG(dladdr)
+#  if BOBUI_CONFIG(dladdr)
     // use dladdr() instead of backtrace_symbols()
     QString cachedLibrary;
     const char *cachedFname = nullptr;
@@ -1550,7 +1550,7 @@ backtraceFramesForLogMessage(int frameCount,
         QString library = m.captured(1);
         QString function = m.captured(2);
 
-        // skip the trace from QtCore that are because of the qDebug itself
+        // skip the trace from BobUICore that are because of the qDebug itself
         if (shouldSkipFrame(library, function))
             return {};
 
@@ -1616,20 +1616,20 @@ void QInternalMessageLogContext::populateBacktrace(int)
 Q_GLOBAL_STATIC(QMessagePattern, qMessagePattern)
 
 /*!
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \since 5.4
 
     Generates a formatted string out of the \a type, \a context, \a str arguments.
 
     qFormatLogMessage returns a QString that is formatted according to the current message pattern.
-    It can be used by custom message handlers to format output similar to Qt's default message
+    It can be used by custom message handlers to format output similar to BobUI's default message
     handler.
 
     The function is thread-safe.
 
     \sa qInstallMessageHandler(), qSetMessagePattern()
  */
-QString qFormatLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &str)
+QString qFormatLogMessage(BobUIMsgType type, const QMessageLogContext &context, const QString &str)
 {
     return formatLogMessage(type, context, str);
 }
@@ -1637,11 +1637,11 @@ QString qFormatLogMessage(QtMsgType type, const QMessageLogContext &context, con
 // Separate function so the default message handler can bypass the public,
 // exported function above. Static functions can't get added to the dynamic
 // symbol tables, so they never show up in backtrace_symbols() or equivalent.
-static QString formatLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &str)
+static QString formatLogMessage(BobUIMsgType type, const QMessageLogContext &context, const QString &str)
 {
     QString message;
 
-    const auto locker = qt_scoped_lock(QMessagePattern::mutex);
+    const auto locker = bobui_scoped_lock(QMessagePattern::mutex);
 
     QMessagePattern *pattern = qMessagePattern();
     if (!pattern) {
@@ -1677,11 +1677,11 @@ static QString formatLogMessage(QtMsgType type, const QMessageLogContext &contex
             message.append(QLatin1StringView(context.category));
         } else if (token == typeTokenC) {
             switch (type) {
-            case QtDebugMsg:   message.append("debug"_L1); break;
-            case QtInfoMsg:    message.append("info"_L1); break;
-            case QtWarningMsg: message.append("warning"_L1); break;
-            case QtCriticalMsg:message.append("critical"_L1); break;
-            case QtFatalMsg:   message.append("fatal"_L1); break;
+            case BobUIDebugMsg:   message.append("debug"_L1); break;
+            case BobUIInfoMsg:    message.append("info"_L1); break;
+            case BobUIWarningMsg: message.append("warning"_L1); break;
+            case BobUICriticalMsg:message.append("critical"_L1); break;
+            case BobUIFatalMsg:   message.append("fatal"_L1); break;
             }
         } else if (token == fileTokenC) {
             if (context.file)
@@ -1701,13 +1701,13 @@ static QString formatLogMessage(QtMsgType type, const QMessageLogContext &contex
             message.append(QCoreApplication::applicationName());
         } else if (token == threadidTokenC) {
             // print the TID as decimal
-            message.append(QString::number(qt_gettid()));
+            message.append(QString::number(bobui_gettid()));
         } else if (token == threadnameTokenC) {
-            if (!qt_append_thread_name_to(message))
-                message.append(QString::number(qt_gettid())); // fallback to the TID
-        } else if (token == qthreadptrTokenC) {
+            if (!bobui_append_thread_name_to(message))
+                message.append(QString::number(bobui_gettid())); // fallback to the TID
+        } else if (token == bobuihreadptrTokenC) {
             message.append("0x"_L1);
-            message.append(QString::number(qlonglong(QThread::currentThread()->currentThread()), 16));
+            message.append(QString::number(qlonglong(BOBUIhread::currentThread()->currentThread()), 16));
 #ifdef QLOGGING_HAVE_BACKTRACE
         } else if (token == backtraceTokenC) {
             QMessagePattern::BacktraceParams backtraceParams = pattern->backtraceArgs.at(backtraceArgsIdx);
@@ -1731,19 +1731,19 @@ static QString formatLogMessage(QtMsgType type, const QMessageLogContext &contex
                 // just print the milliseconds since the elapsed timer reference
                 // like the Linux kernel does
                 message += formatElapsedTime(steady_clock::now().time_since_epoch());
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
             } else if (timeFormat.isEmpty()) {
-                message.append(QDateTime::currentDateTime().toString(Qt::ISODate));
+                message.append(QDateTime::currentDateTime().toString(BobUI::ISODate));
             } else {
                 message.append(QDateTime::currentDateTime().toString(timeFormat));
-#endif // QT_CONFIG(datestring)
+#endif // BOBUI_CONFIG(datestring)
             }
         } else if (token == ifCategoryTokenC) {
             if (isDefaultCategory(context.category))
                 skip = true;
 #define HANDLE_IF_TOKEN(LEVEL)  \
         } else if (token == if##LEVEL##TokenC) { \
-            skip = type != Qt##LEVEL##Msg;
+            skip = type != BobUI##LEVEL##Msg;
         HANDLE_IF_TOKEN(Debug)
         HANDLE_IF_TOKEN(Info)
         HANDLE_IF_TOKEN(Warning)
@@ -1757,19 +1757,19 @@ static QString formatLogMessage(QtMsgType type, const QMessageLogContext &contex
     return message;
 }
 
-static void qDefaultMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &buf);
+static void qDefaultMessageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &buf);
 
-// pointer to QtMessageHandler debug handler (with context)
-Q_CONSTINIT static QBasicAtomicPointer<void (QtMsgType, const QMessageLogContext &, const QString &)> messageHandler = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
+// pointer to BobUIMessageHandler debug handler (with context)
+Q_CONSTINIT static QBasicAtomicPointer<void (BobUIMsgType, const QMessageLogContext &, const QString &)> messageHandler = Q_BASIC_ATOMIC_INITIALIZER(nullptr);
 
 // ------------------------ Alternate logging sinks -------------------------
 
-#if QT_CONFIG(slog2)
-#ifndef QT_LOG_CODE
-#define QT_LOG_CODE 9000
+#if BOBUI_CONFIG(slog2)
+#ifndef BOBUI_LOG_CODE
+#define BOBUI_LOG_CODE 9000
 #endif
 
-static bool slog2_default_handler(QtMsgType type, const QMessageLogContext &,
+static bool slog2_default_handler(BobUIMsgType type, const QMessageLogContext &,
                                   const QString &message)
 {
     if (shouldLogToStderr())
@@ -1800,31 +1800,31 @@ static bool slog2_default_handler(QtMsgType type, const QMessageLogContext &,
     int severity = SLOG2_INFO;
     //Determines the severity level
     switch (type) {
-    case QtDebugMsg:
+    case BobUIDebugMsg:
         severity = SLOG2_DEBUG1;
         break;
-    case QtInfoMsg:
+    case BobUIInfoMsg:
         severity = SLOG2_INFO;
         break;
-    case QtWarningMsg:
+    case BobUIWarningMsg:
         severity = SLOG2_NOTICE;
         break;
-    case QtCriticalMsg:
+    case BobUICriticalMsg:
         severity = SLOG2_WARNING;
         break;
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         severity = SLOG2_ERROR;
         break;
     }
     //writes to the slog2 buffer
-    slog2c(NULL, QT_LOG_CODE, severity, formattedMessage.toLocal8Bit().constData());
+    slog2c(NULL, BOBUI_LOG_CODE, severity, formattedMessage.toLocal8Bit().constData());
 
     return true; // Prevent further output to stderr
 }
 #endif // slog2
 
-#if QT_CONFIG(journald)
-static bool systemd_default_message_handler(QtMsgType type,
+#if BOBUI_CONFIG(journald)
+static bool systemd_default_message_handler(BobUIMsgType type,
                                             const QMessageLogContext &context,
                                             const QString &message)
 {
@@ -1833,19 +1833,19 @@ static bool systemd_default_message_handler(QtMsgType type,
 
     int priority = LOG_INFO; // Informational
     switch (type) {
-    case QtDebugMsg:
+    case BobUIDebugMsg:
         priority = LOG_DEBUG; // Debug-level messages
         break;
-    case QtInfoMsg:
+    case BobUIInfoMsg:
         priority = LOG_INFO; // Informational conditions
         break;
-    case QtWarningMsg:
+    case BobUIWarningMsg:
         priority = LOG_WARNING; // Warning conditions
         break;
-    case QtCriticalMsg:
+    case BobUICriticalMsg:
         priority = LOG_CRIT; // Critical conditions
         break;
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         priority = LOG_ALERT; // Action must be taken immediately
         break;
     }
@@ -1853,7 +1853,7 @@ static bool systemd_default_message_handler(QtMsgType type,
     // Explicit QByteArray instead of auto, to resolve the QStringBuilder proxy
     const QByteArray messageField = "MESSAGE="_ba + message.toUtf8().constData();
     const QByteArray priorityField = "PRIORITY="_ba + QByteArray::number(priority);
-    const QByteArray tidField = "TID="_ba + QByteArray::number(qlonglong(qt_gettid()));
+    const QByteArray tidField = "TID="_ba + QByteArray::number(qlonglong(bobui_gettid()));
     const QByteArray fileField = context.file
                                  ? "CODE_FILE="_ba + context.file : QByteArray();
     const QByteArray funcField = context.function
@@ -1861,7 +1861,7 @@ static bool systemd_default_message_handler(QtMsgType type,
     const QByteArray lineField = context.line
                                  ? "CODE_LINE="_ba + QByteArray::number(context.line) : QByteArray();
     const QByteArray categoryField = context.category
-                                 ? "QT_CATEGORY="_ba + context.category : QByteArray();
+                                 ? "BOBUI_CATEGORY="_ba + context.category : QByteArray();
 
     auto toIovec = [](const QByteArray &ba) {
         return iovec{ const_cast<char*>(ba.data()), size_t(ba.size()) };
@@ -1888,8 +1888,8 @@ static bool systemd_default_message_handler(QtMsgType type,
 }
 #endif
 
-#if QT_CONFIG(syslog)
-static bool syslog_default_message_handler(QtMsgType type, const QMessageLogContext &context,
+#if BOBUI_CONFIG(syslog)
+static bool syslog_default_message_handler(BobUIMsgType type, const QMessageLogContext &context,
                                            const QString &formattedMessage)
 {
     if (shouldLogToStderr())
@@ -1897,19 +1897,19 @@ static bool syslog_default_message_handler(QtMsgType type, const QMessageLogCont
 
     int priority = LOG_INFO; // Informational
     switch (type) {
-    case QtDebugMsg:
+    case BobUIDebugMsg:
         priority = LOG_DEBUG; // Debug-level messages
         break;
-    case QtInfoMsg:
+    case BobUIInfoMsg:
         priority = LOG_INFO; // Informational conditions
         break;
-    case QtWarningMsg:
+    case BobUIWarningMsg:
         priority = LOG_WARNING; // Warning conditions
         break;
-    case QtCriticalMsg:
+    case BobUICriticalMsg:
         priority = LOG_CRIT; // Critical conditions
         break;
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         priority = LOG_ALERT; // Action must be taken immediately
         break;
     }
@@ -1921,7 +1921,7 @@ static bool syslog_default_message_handler(QtMsgType type, const QMessageLogCont
 #endif
 
 #ifdef Q_OS_ANDROID
-static bool android_default_message_handler(QtMsgType type,
+static bool android_default_message_handler(BobUIMsgType type,
                                   const QMessageLogContext &context,
                                   const QString &formattedMessage)
 {
@@ -1930,19 +1930,19 @@ static bool android_default_message_handler(QtMsgType type,
 
     android_LogPriority priority = ANDROID_LOG_DEBUG;
     switch (type) {
-    case QtDebugMsg:
+    case BobUIDebugMsg:
         priority = ANDROID_LOG_DEBUG;
         break;
-    case QtInfoMsg:
+    case BobUIInfoMsg:
         priority = ANDROID_LOG_INFO;
         break;
-    case QtWarningMsg:
+    case BobUIWarningMsg:
         priority = ANDROID_LOG_WARN;
         break;
-    case QtCriticalMsg:
+    case BobUICriticalMsg:
         priority = ANDROID_LOG_ERROR;
         break;
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         priority = ANDROID_LOG_FATAL;
         break;
     };
@@ -1963,7 +1963,7 @@ static void win_outputDebugString_helper(const QString &message)
 {
     const qsizetype maxOutputStringLength = 32766;
     Q_CONSTINIT static QBasicMutex m;
-    auto locker = qt_unique_lock(m);
+    auto locker = bobui_unique_lock(m);
     // fast path: Avoid string copies if one output is enough
     if (message.length() <= maxOutputStringLength) {
         OutputDebugString(reinterpret_cast<const wchar_t *>(message.utf16()));
@@ -1979,7 +1979,7 @@ static void win_outputDebugString_helper(const QString &message)
     }
 }
 
-static bool win_message_handler(QtMsgType, const QMessageLogContext &,
+static bool win_message_handler(BobUIMsgType, const QMessageLogContext &,
                                 const QString &formattedMessage)
 {
     if (shouldLogToStderr())
@@ -1992,28 +1992,28 @@ static bool win_message_handler(QtMsgType, const QMessageLogContext &,
 #endif
 
 #ifdef Q_OS_WASM
-static bool wasm_default_message_handler(QtMsgType type,
+static bool wasm_default_message_handler(BobUIMsgType type,
                                   const QMessageLogContext &,
                                   const QString &formattedMessage)
 {
-    static bool forceStderrLogging = qEnvironmentVariableIntValue("QT_FORCE_STDERR_LOGGING");
+    static bool forceStderrLogging = qEnvironmentVariableIntValue("BOBUI_FORCE_STDERR_LOGGING");
     if (forceStderrLogging)
         return false;
 
     int emOutputFlags = EM_LOG_CONSOLE;
     QByteArray localMsg = formattedMessage.toLocal8Bit();
     switch (type) {
-    case QtDebugMsg:
+    case BobUIDebugMsg:
         break;
-    case QtInfoMsg:
+    case BobUIInfoMsg:
         break;
-    case QtWarningMsg:
+    case BobUIWarningMsg:
         emOutputFlags |= EM_LOG_WARN;
         break;
-    case QtCriticalMsg:
+    case BobUICriticalMsg:
         emOutputFlags |= EM_LOG_ERROR;
         break;
-    case QtFatalMsg:
+    case BobUIFatalMsg:
         emOutputFlags |= EM_LOG_ERROR;
     }
     emscripten_log(emOutputFlags, "%s\n", qPrintable(formattedMessage));
@@ -2024,7 +2024,7 @@ static bool wasm_default_message_handler(QtMsgType type,
 
 // --------------------------------------------------------------------------
 
-static void stderr_message_handler(QtMsgType type, const QMessageLogContext &context,
+static void stderr_message_handler(BobUIMsgType type, const QMessageLogContext &context,
                                    const QString &formattedMessage)
 {
     Q_UNUSED(type);
@@ -2041,7 +2041,7 @@ static void stderr_message_handler(QtMsgType type, const QMessageLogContext &con
 namespace {
 struct SystemMessageSink
 {
-    using Fn = bool(QtMsgType, const QMessageLogContext &, const QString &);
+    using Fn = bool(BobUIMsgType, const QMessageLogContext &, const QString &);
     Fn *sink;
     bool messageIsUnformatted = false;
 };
@@ -2050,15 +2050,15 @@ struct SystemMessageSink
 static constexpr SystemMessageSink systemMessageSink = {
 #if defined(Q_OS_WIN)
         win_message_handler
-#elif QT_CONFIG(slog2)
+#elif BOBUI_CONFIG(slog2)
         slog2_default_handler
-#elif QT_CONFIG(journald)
+#elif BOBUI_CONFIG(journald)
         systemd_default_message_handler, true
-#elif QT_CONFIG(syslog)
+#elif BOBUI_CONFIG(syslog)
         syslog_default_message_handler
 #elif defined(Q_OS_ANDROID)
         android_default_message_handler
-#elif defined(QT_USE_APPLE_UNIFIED_LOGGING)
+#elif defined(BOBUI_USE_APPLE_UNIFIED_LOGGING)
         AppleUnifiedLogger::messageHandler, true
 #elif defined Q_OS_WASM
         wasm_default_message_handler
@@ -2067,14 +2067,14 @@ static constexpr SystemMessageSink systemMessageSink = {
 #endif
 };
 
-static void preformattedMessageHandler(QtMsgType type, const QMessageLogContext &context,
+static void preformattedMessageHandler(BobUIMsgType type, const QMessageLogContext &context,
                                        const QString &formattedMessage)
 {
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Waddress") // "the address of ~~ will never be NULL
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Waddress") // "the address of ~~ will never be NULL
     if (systemMessageSink.sink && systemMessageSink.sink(type, context, formattedMessage))
         return;
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
     stderr_message_handler(type, context, formattedMessage);
 }
@@ -2082,7 +2082,7 @@ QT_WARNING_POP
 /*!
     \internal
 */
-static void qDefaultMessageHandler(QtMsgType type, const QMessageLogContext &context,
+static void qDefaultMessageHandler(BobUIMsgType type, const QMessageLogContext &context,
                                    const QString &message)
 {
     // A message sink logs the message to a structured or unstructured destination,
@@ -2113,12 +2113,12 @@ static void ungrabMessageHandler()
     msgHandlerGrabbed = false;
 }
 
-static void qt_message_print(QtMsgType msgType, const QMessageLogContext &context, const QString &message)
+static void bobui_message_print(BobUIMsgType msgType, const QMessageLogContext &context, const QString &message)
 {
-    Q_TRACE(qt_message_print, msgType, context.category, context.function, context.file, context.line, message);
+    Q_TRACE(bobui_message_print, msgType, context.category, context.function, context.file, context.line, message);
 
     // qDebug, qWarning, ... macros do not check whether category is enabledgc
-    if (msgType != QtFatalMsg && isDefaultCategory(context.category)) {
+    if (msgType != BobUIFatalMsg && isDefaultCategory(context.category)) {
         if (QLoggingCategory *defaultCategory = QLoggingCategory::defaultCategory()) {
             if (!defaultCategory->isEnabled(msgType))
                 return;
@@ -2126,7 +2126,7 @@ static void qt_message_print(QtMsgType msgType, const QMessageLogContext &contex
     }
 
     // prevent recursion in case the message handler generates messages
-    // itself, e.g. by using Qt API
+    // itself, e.g. by using BobUI API
     if (grabMessageHandler()) {
         const auto ungrab = qScopeGuard([]{ ungrabMessageHandler(); });
         auto msgHandler = messageHandler.loadAcquire();
@@ -2137,11 +2137,11 @@ static void qt_message_print(QtMsgType msgType, const QMessageLogContext &contex
 }
 
 template <typename String> static void
-qt_maybe_message_fatal(QtMsgType msgType, const QMessageLogContext &context, String &&message)
+bobui_maybe_message_fatal(BobUIMsgType msgType, const QMessageLogContext &context, String &&message)
 {
     if (!isFatal(msgType))
         return;
-#if defined(Q_CC_MSVC_ONLY) && defined(QT_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
+#if defined(Q_CC_MSVC_ONLY) && defined(BOBUI_DEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
     wchar_t contextFileL[256];
     // we probably should let the compiler do this for us, by declaring QMessageLogContext::file to
     // be const wchar_t * in the first place, but the #ifdefery above is very complex  and we
@@ -2152,7 +2152,7 @@ qt_maybe_message_fatal(QtMsgType msgType, const QMessageLogContext &context, Str
     int reportMode = _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_WNDW);
     _CrtSetReportMode(_CRT_ERROR, reportMode);
 
-    int ret = _CrtDbgReportW(_CRT_ERROR, contextFileL, context.line, _CRT_WIDE(QT_VERSION_STR),
+    int ret = _CrtDbgReportW(_CRT_ERROR, contextFileL, context.line, _CRT_WIDE(BOBUI_VERSION_STR),
                              reinterpret_cast<const wchar_t *>(message.utf16()));
     if ((ret == 0) && (reportMode & _CRTDBG_MODE_WNDW))
         return; // ignore
@@ -2172,18 +2172,18 @@ qt_maybe_message_fatal(QtMsgType msgType, const QMessageLogContext &context, Str
 /*!
     \internal
 */
-void qt_message_output(QtMsgType msgType, const QMessageLogContext &context, const QString &message)
+void bobui_message_output(BobUIMsgType msgType, const QMessageLogContext &context, const QString &message)
 {
     QInternalMessageLogContext ctx(context);
-    qt_message_print(msgType, ctx, message);
-    qt_maybe_message_fatal(msgType, ctx, message);
+    bobui_message_print(msgType, ctx, message);
+    bobui_maybe_message_fatal(msgType, ctx, message);
 }
 
 void qErrnoWarning(const char *msg, ...)
 {
-    // qt_error_string() will allocate anyway, so we don't have
+    // bobui_error_string() will allocate anyway, so we don't have
     // to be careful here (like we do in plain qWarning())
-    QString error_string = qt_error_string(-1);  // before vasprintf changes errno/GetLastError()
+    QString error_string = bobui_error_string(-1);  // before vasprintf changes errno/GetLastError()
 
     va_list ap;
     va_start(ap, msg);
@@ -2192,26 +2192,26 @@ void qErrnoWarning(const char *msg, ...)
 
     buf += " ("_L1 + error_string + u')';
     QInternalMessageLogContext context{QMessageLogContext()};
-    qt_message_output(QtWarningMsg, context, buf);
+    bobui_message_output(BobUIWarningMsg, context, buf);
 }
 
 void qErrnoWarning(int code, const char *msg, ...)
 {
-    // qt_error_string() will allocate anyway, so we don't have
+    // bobui_error_string() will allocate anyway, so we don't have
     // to be careful here (like we do in plain qWarning())
     va_list ap;
     va_start(ap, msg);
     QString buf = QString::vasprintf(msg, ap);
     va_end(ap);
 
-    buf += " ("_L1 + qt_error_string(code) + u')';
+    buf += " ("_L1 + bobui_error_string(code) + u')';
     QInternalMessageLogContext context{QMessageLogContext()};
-    qt_message_output(QtWarningMsg, context, buf);
+    bobui_message_output(BobUIWarningMsg, context, buf);
 }
 
 /*!
-    \typedef QtMessageHandler
-    \relates <QtLogging>
+    \typedef BobUIMessageHandler
+    \relates <BobUILogging>
     \since 5.0
 
     This is a typedef for a pointer to a function with the following
@@ -2219,28 +2219,28 @@ void qErrnoWarning(int code, const char *msg, ...)
 
     \snippet code/src_corelib_global_qglobal.cpp 49
 
-    \sa QtMsgType, qInstallMessageHandler()
+    \sa BobUIMsgType, qInstallMessageHandler()
 */
 
 /*!
-    \fn QtMessageHandler qInstallMessageHandler(QtMessageHandler handler)
-    \relates <QtLogging>
+    \fn BobUIMessageHandler qInstallMessageHandler(BobUIMessageHandler handler)
+    \relates <BobUILogging>
     \since 5.0
 
-    Installs a Qt message \a handler.
+    Installs a BobUI message \a handler.
     Returns a pointer to the previously installed message handler.
 
     A message handler is a function that prints out debug, info,
-    warning, critical, and fatal messages from Qt's logging infrastructure.
-    By default, Qt uses a standard message handler that formats and
+    warning, critical, and fatal messages from BobUI's logging infrastructure.
+    By default, BobUI uses a standard message handler that formats and
     prints messages to different sinks specific to the operating system
-    and Qt configuration. Installing your own message handler allows you
+    and BobUI configuration. Installing your own message handler allows you
     to assume full control, and for instance log messages to the
     file system.
 
-    Note that Qt supports \l{QLoggingCategory}{logging categories} for
+    Note that BobUI supports \l{QLoggingCategory}{logging categories} for
     grouping related messages in semantic categories. You can use these
-    to enable or disable logging per category and \l{QtMsgType}{message type}.
+    to enable or disable logging per category and \l{BobUIMsgType}{message type}.
     As the filtering for logging categories is done even before a message
     is created, messages for disabled types and categories will not reach
     the message handler.
@@ -2250,8 +2250,8 @@ void qErrnoWarning(int code, const char *msg, ...)
     from different threads, in parallel. Therefore, writes to common sinks
     (like a database, or a file) often need to be synchronized.
 
-    Qt allows to enrich logging messages with further meta-information
-    by calling \l qSetMessagePattern(), or setting the \c QT_MESSAGE_PATTERN
+    BobUI allows to enrich logging messages with further meta-information
+    by calling \l qSetMessagePattern(), or setting the \c BOBUI_MESSAGE_PATTERN
     environment variable. To keep this formatting, a custom message handler
     can use \l qFormatLogMessage().
 
@@ -2260,7 +2260,7 @@ void qErrnoWarning(int code, const char *msg, ...)
     logging messages generated in the message handler itself will be ignored.
 
     The message handler should always return. For
-    \l{QtFatalMsg}{fatal messages}, the application aborts immediately after
+    \l{BobUIFatalMsg}{fatal messages}, the application aborts immediately after
     handling that message.
 
     Only one message handler can be installed at a time, for the whole application.
@@ -2280,13 +2280,13 @@ void qErrnoWarning(int code, const char *msg, ...)
     and \c{fflush()} to be thread-safe, so no further synchronization
     is necessary.
 
-    \sa QtMessageHandler, QtMsgType, qDebug(), qInfo(), qWarning(), qCritical(), qFatal(),
+    \sa BobUIMessageHandler, BobUIMsgType, qDebug(), qInfo(), qWarning(), qCritical(), qFatal(),
     {Debugging Techniques}, qFormatLogMessage()
 */
 
 /*!
     \fn void qSetMessagePattern(const QString &pattern)
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \since 5.0
 
     \brief Changes the output of the default message handler.
@@ -2307,8 +2307,8 @@ void qErrnoWarning(int code, const char *msg, ...)
     \row \li \c %{message} \li The actual message
     \row \li \c %{pid} \li QCoreApplication::applicationPid()
     \row \li \c %{threadid} \li The system-wide ID of current thread (if it can be obtained)
-    \row \li \c %{threadname} \li The current thread name (if it can be obtained, or the thread ID, since Qt 6.10)
-    \row \li \c %{qthreadptr} \li A pointer to the current QThread (result of QThread::currentThread())
+    \row \li \c %{threadname} \li The current thread name (if it can be obtained, or the thread ID, since BobUI 6.10)
+    \row \li \c %{bobuihreadptr} \li A pointer to the current BOBUIhread (result of BOBUIhread::currentThread())
     \row \li \c %{type} \li "debug", "warning", "critical" or "fatal"
     \row \li \c %{time process} \li time of the message, in seconds since the process started (the token "process" is literal)
     \row \li \c %{time boot} \li the time of the message, in seconds since the system boot if that
@@ -2316,7 +2316,7 @@ void qErrnoWarning(int code, const char *msg, ...)
         the output is indeterminate (see QElapsedTimer::msecsSinceReference()).
     \row \li \c %{time [format]} \li system time when the message occurred, formatted by
         passing the \c format to \l QDateTime::toString(). If the format is
-        not specified, the format of Qt::ISODate is used.
+        not specified, the format of BobUI::ISODate is used.
     \row \li \c{%{backtrace [depth=N] [separator="..."]}} \li A backtrace with the number of frames
         specified by the optional \c depth parameter (defaults to 5), and separated by the optional
         \c separator parameter (defaults to "|").
@@ -2325,7 +2325,7 @@ void qErrnoWarning(int code, const char *msg, ...)
 
         \list
         \li platforms using glibc;
-        \li platforms shipping C++23's \c{<stacktrace>} header (requires compiling Qt in C++23 mode).
+        \li platforms shipping C++23's \c{<stacktrace>} header (requires compiling BobUI in C++23 mode).
         \endlist
 
         Depending on the platform, there are some restrictions on the function
@@ -2357,12 +2357,12 @@ void qErrnoWarning(int code, const char *msg, ...)
     categories, see \l{Android: Log}{Android Logging}. If a custom \a pattern including the
     category is used, QCoreApplication::applicationName() is used as \l{Android: log_print}{tag}.
 
-    The \a pattern can also be changed at runtime by setting the QT_MESSAGE_PATTERN
-    environment variable; if both \l qSetMessagePattern() is called and QT_MESSAGE_PATTERN is
+    The \a pattern can also be changed at runtime by setting the BOBUI_MESSAGE_PATTERN
+    environment variable; if both \l qSetMessagePattern() is called and BOBUI_MESSAGE_PATTERN is
     set, the environment variable takes precedence.
 
     \note The information for the placeholders \c category, \c file, \c function and \c line is
-    only recorded in debug builds. Alternatively, \c QT_MESSAGELOGCONTEXT can be defined
+    only recorded in debug builds. Alternatively, \c BOBUI_MESSAGELOGCONTEXT can be defined
     explicitly. For more information refer to the QMessageLogContext documentation.
 
     \note The message pattern only applies to unstructured logging, such as the default
@@ -2374,7 +2374,7 @@ void qErrnoWarning(int code, const char *msg, ...)
     \sa qInstallMessageHandler(), {Debugging Techniques}, {QLoggingCategory}, QMessageLogContext
  */
 
-QtMessageHandler qInstallMessageHandler(QtMessageHandler h)
+BobUIMessageHandler qInstallMessageHandler(BobUIMessageHandler h)
 {
     const auto old = messageHandler.fetchAndStoreOrdered(h);
     if (old)
@@ -2385,7 +2385,7 @@ QtMessageHandler qInstallMessageHandler(QtMessageHandler h)
 
 void qSetMessagePattern(const QString &pattern)
 {
-    const auto locker = qt_scoped_lock(QMessagePattern::mutex);
+    const auto locker = bobui_scoped_lock(QMessagePattern::mutex);
 
     if (!qMessagePattern()->fromEnvironment)
         qMessagePattern()->setPattern(pattern);
@@ -2491,7 +2491,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 
 /*!
     \macro qDebug(const char *format, ...)
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \threadsafe
 
     Logs debug message \a format to the central message handler.
@@ -2510,7 +2510,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
     \l{QDebug::qDebug()}, which follows the streaming paradigm (similar to
      \c{std::cout} or \c{std::cerr}).
 
-    This function does nothing if \c QT_NO_DEBUG_OUTPUT was defined during compilation.
+    This function does nothing if \c BOBUI_NO_DEBUG_OUTPUT was defined during compilation.
 
     To suppress the output at runtime, install your own message handler
     with qInstallMessageHandler().
@@ -2521,7 +2521,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 
 /*!
     \macro qInfo(const char *format, ...)
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \threadsafe
     \since 5.5
 
@@ -2541,7 +2541,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
     \l{QDebug::qInfo()}, which follows the streaming paradigm (similar to
     \c{std::cout} or \c{std::cerr}).
 
-    This function does nothing if \c QT_NO_INFO_OUTPUT was defined during compilation.
+    This function does nothing if \c BOBUI_NO_INFO_OUTPUT was defined during compilation.
 
     To suppress the output at runtime, install your own message handler
     using qInstallMessageHandler().
@@ -2552,7 +2552,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 
 /*!
     \macro qWarning(const char *format, ...)
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \threadsafe
 
     Logs warning message \a format to the central message handler.
@@ -2570,7 +2570,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
     \l{QDebug::qWarning()}, which follows the streaming paradigm (similar to
      \c{std::cout} or \c{std::cerr}).
 
-    This function does nothing if \c QT_NO_WARNING_OUTPUT was defined
+    This function does nothing if \c BOBUI_NO_WARNING_OUTPUT was defined
     during compilation.
     To suppress the output at runtime, you can set
     \l{QLoggingCategory}{logging rules} or register a custom
@@ -2579,7 +2579,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
     For debugging purposes, it is sometimes convenient to let the
     program abort for warning messages. This allows you
     to inspect the core dump, or attach a debugger - see also \l{qFatal()}.
-    To enable this, set the environment variable \c{QT_FATAL_WARNINGS}
+    To enable this, set the environment variable \c{BOBUI_FATAL_WARNINGS}
     to a number \c n. The program terminates then for the n-th warning.
     That is, if the environment variable is set to 1, it will terminate
     on the first call; if it contains the value 10, it will exit on the 10th
@@ -2591,7 +2591,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 
 /*!
     \macro qCritical(const char *format, ...)
-    \relates <QtLogging>
+    \relates <BobUILogging>
     \threadsafe
 
     Logs critical message \a format to the central message handler.
@@ -2616,7 +2616,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
     For debugging purposes, it is sometimes convenient to let the
     program abort for critical messages. This allows you
     to inspect the core dump, or attach a debugger - see also \l{qFatal()}.
-    To enable this, set the environment variable \c{QT_FATAL_CRITICALS}
+    To enable this, set the environment variable \c{BOBUI_FATAL_CRITICALS}
     to a number \c n. The program terminates then for the n-th critical
     message.
     That is, if the environment variable is set to 1, it will terminate
@@ -2629,7 +2629,7 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 
 /*!
     \macro qFatal(const char *format, ...)
-    \relates <QtLogging>
+    \relates <BobUILogging>
 
     Logs fatal message \a format to the central message handler.
     \a format can contain format specifiers that are
@@ -2651,27 +2651,27 @@ QMessageLogContext &QMessageLogContext::copyContextFrom(const QMessageLogContext
 */
 
 /*!
-    \enum QtMsgType
-    \relates <QtLogging>
+    \enum BobUIMsgType
+    \relates <BobUILogging>
 
     This enum describes the messages that can be sent to a message
-    handler (QtMessageHandler). You can use the enum to identify and
+    handler (BobUIMessageHandler). You can use the enum to identify and
     associate the various message types with the appropriate
     actions. Its values are, in order of increasing severity:
 
-    \value QtDebugMsg
+    \value BobUIDebugMsg
            A message generated by the qDebug() function.
-    \value QtInfoMsg
+    \value BobUIInfoMsg
            A message generated by the qInfo() function.
-    \value QtWarningMsg
+    \value BobUIWarningMsg
            A message generated by the qWarning() function.
-    \value QtCriticalMsg
+    \value BobUICriticalMsg
            A message generated by the qCritical() function.
-    \value QtFatalMsg
+    \value BobUIFatalMsg
            A message generated by the qFatal() function.
-    \omitvalue QtSystemMsg
+    \omitvalue BobUISystemMsg
 
-    \sa QtMessageHandler, qInstallMessageHandler(), QLoggingCategory
+    \sa BobUIMessageHandler, qInstallMessageHandler(), QLoggingCategory
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

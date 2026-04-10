@@ -1,19 +1,19 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include "qtlsbackend_schannel_p.h"
-#include "qtlskey_schannel_p.h"
+#include "bobuilsbackend_schannel_p.h"
+#include "bobuilskey_schannel_p.h"
 #include "qx509_schannel_p.h"
 
-#include <QtCore/private/qsystemerror_p.h>
-#include <QtNetwork/private/qsslcertificate_p.h>
+#include <BobUICore/private/qsystemerror_p.h>
+#include <BobUINetwork/private/qsslcertificate_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QTlsPrivate {
+namespace BOBUIlsPrivate {
 
 X509CertificateSchannel::X509CertificateSchannel() = default;
 
@@ -28,9 +28,9 @@ TlsKey *X509CertificateSchannel::publicKey() const
     return key.release();
 }
 
-Qt::HANDLE X509CertificateSchannel::handle() const
+BobUI::HANDLE X509CertificateSchannel::handle() const
 {
-    return Qt::HANDLE(certificateContext.get());
+    return BobUI::HANDLE(certificateContext.get());
 }
 
 QSslCertificate X509CertificateSchannel::QSslCertificate_from_CERT_CONTEXT(const CERT_CONTEXT *certificateContext)
@@ -39,7 +39,7 @@ QSslCertificate X509CertificateSchannel::QSslCertificate_from_CERT_CONTEXT(const
                                     certificateContext->cbCertEncoded);
     QSslCertificate certificate(derData, QSsl::Der);
     if (!certificate.isNull()) {
-        auto *certBackend = QTlsBackend::backend<X509CertificateSchannel>(certificate);
+        auto *certBackend = BOBUIlsBackend::backend<X509CertificateSchannel>(certificate);
         Q_ASSERT(certBackend);
         certBackend->certificateContext.reset(CertDuplicateCertificateContext(certificateContext));
     }
@@ -170,7 +170,7 @@ bool X509CertificateSchannel::importPkcs12(QIODevice *device, QSslKey *key, QSsl
         return false;
     }
 
-    QByteArray derData(derSize, Qt::Uninitialized);
+    QByteArray derData(derSize, BobUI::Uninitialized);
 
     if (!CryptEncodeObject(X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, PKCS_PRIVATE_KEY_INFO,
                            &privateKeyInfo, reinterpret_cast<BYTE*>(derData.data()), &derSize)) {
@@ -205,7 +205,7 @@ bool X509CertificateSchannel::importPkcs12(QIODevice *device, QSslKey *key, QSsl
     return true;
 }
 
-} // namespace QTlsPrivate
+} // namespace BOBUIlsPrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

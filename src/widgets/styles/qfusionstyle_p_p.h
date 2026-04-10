@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUSIONSTYLE_P_P_H
 #define QFUSIONSTYLE_P_P_H
@@ -9,22 +9,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of qapplication_*.cpp, qwidget*.cpp and qfiledialog.cpp.  This header
 // file may change from version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qcommonstyle.h"
 #include "qcommonstyle_p.h"
 #include <qpa/qplatformtheme.h>
 #include "private/qguiapplication_p.h"
 
-#if QT_CONFIG(style_fusion)
+#if BOBUI_CONFIG(style_fusion)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFusionStylePrivate : public QCommonStylePrivate
 {
@@ -61,7 +61,7 @@ public:
 
     QColor highlightedText(const QPalette &pal) const {
         if (isMacSystemPalette(pal))
-            return Qt::white;
+            return BobUI::white;
         return pal.color(QPalette::HighlightedText);
     }
 
@@ -69,7 +69,7 @@ public:
         if (isHighContrast()) {
             return pal.text().color();
         }
-        if (pal.window().style() == Qt::TexturePattern)
+        if (pal.window().style() == BobUI::TexturePattern)
             return QColor(0, 0, 0, 160);
         auto windowColor = pal.window().color();
         if (!windowColor.isValid())
@@ -85,7 +85,7 @@ public:
     }
 
     QColor tabFrameColor(const QPalette &pal) const {
-        if (pal.window().style() == Qt::TexturePattern)
+        if (pal.window().style() == BobUI::TexturePattern)
             return QColor(255, 255, 255, 8);
         return buttonColor(pal).lighter(104);
     }
@@ -107,7 +107,7 @@ public:
     };
 
 private:
-    Qt::ColorScheme colorScheme() const
+    BobUI::ColorScheme colorScheme() const
     {
         return QGuiApplicationPrivate::platformTheme()->colorScheme();
     }
@@ -115,11 +115,11 @@ private:
     bool isHighContrast() const
     {
         return QGuiApplicationPrivate::platformTheme()->contrastPreference()
-                == Qt::ContrastPreference::HighContrast;
+                == BobUI::ContrastPreference::HighContrast;
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // style_fusion
 

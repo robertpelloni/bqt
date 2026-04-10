@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
-#include <QtCore/qtimer.h>
-#include <QtGui/qfontdatabase.h>
+#include <BobUICore/bobuiimer.h>
+#include <BobUIGui/qfontdatabase.h>
 #include <qpa/qplatformtheme.h>
 
 #include <private/qfont_p.h>
@@ -21,7 +21,7 @@
 typedef float CGFloat;  // Should only not be defined on 32-bit platforms
 #endif
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 static QFont qfontForCocoaFont(NSFont *cocoaFont, const QFont &resolveFont)
 {
@@ -39,14 +39,14 @@ static QFont qfontForCocoaFont(NSFont *cocoaFont, const QFont &resolveFont)
     return newFont;
 }
 
-@interface QT_MANGLE_NAMESPACE(QNSFontPanelDelegate) : NSObject<NSWindowDelegate, QNSPanelDelegate>
+@interface BOBUI_MANGLE_NAMESPACE(QNSFontPanelDelegate) : NSObject<NSWindowDelegate, QNSPanelDelegate>
 - (void)restoreOriginalContentView;
-- (void)updateQtFont;
+- (void)updateBobUIFont;
 - (void)changeFont:(id)sender;
 - (void)finishOffWithCode:(NSInteger)code;
 @end
 
-QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
+BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
 
 @implementation QNSFontPanelDelegate {
     @public
@@ -54,7 +54,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
     QCocoaFontDialogHelper *mHelper;
     NSView *mStolenContentView;
     QNSPanelContentsWrapper *mPanelButtons;
-    QFont mQtFont;
+    QFont mBobUIFont;
     NSInteger mResultCode;
     BOOL mDialogIsExecuting;
     BOOL mResultSet;
@@ -138,7 +138,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
 {
     if (mPanelButtons) {
         [mFontPanel close];
-        mQtFont = QFont();
+        mBobUIFont = QFont();
         [self finishOffWithCode:NSModalResponseCancel];
     }
 }
@@ -146,10 +146,10 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
 - (void)changeFont:(id)sender
 {
     Q_UNUSED(sender);
-    [self updateQtFont];
+    [self updateBobUIFont];
 }
 
-- (void)updateQtFont
+- (void)updateBobUIFont
 {
     // Get selected font
     NSFontManager *fontManager = [NSFontManager sharedFontManager];
@@ -158,10 +158,10 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
         selectedFont = [NSFont systemFontOfSize:[NSFont systemFontSize]];
     }
     NSFont *panelFont = [fontManager convertFont:selectedFont];
-    mQtFont = qfontForCocoaFont(panelFont, mQtFont);
+    mBobUIFont = qfontForCocoaFont(panelFont, mBobUIFont);
 
     if (mHelper)
-        emit mHelper->currentFontChanged(mQtFont);
+        emit mHelper->currentFontChanged(mBobUIFont);
 }
 
 - (void)showModelessPanel
@@ -218,7 +218,7 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
 {
     Q_UNUSED(window);
     if (!mPanelButtons)
-        [self updateQtFont];
+        [self updateBobUIFont];
     if (mDialogIsExecuting) {
         [self finishOffWithCode:NSModalResponseCancel];
     } else {
@@ -264,12 +264,12 @@ QT_NAMESPACE_ALIAS_OBJC_CLASS(QNSFontPanelDelegate);
 @implementation QNSView (FontPanel)
 - (void)changeFont:(id)sender
 {
-    if (auto *delegate = qt_objc_cast<QNSFontPanelDelegate*>(NSFontPanel.sharedFontPanel.delegate))
+    if (auto *delegate = bobui_objc_cast<QNSFontPanelDelegate*>(NSFontPanel.sharedFontPanel.delegate))
         [delegate changeFont:sender];
 }
 @end
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaFontPanel
 {
@@ -304,12 +304,12 @@ public:
         return [mDelegate runApplicationModalPanel];
     }
 
-    bool show(Qt::WindowModality windowModality, QWindow *parent)
+    bool show(BobUI::WindowModality windowModality, QWindow *parent)
     {
         Q_UNUSED(parent);
-        if (windowModality != Qt::ApplicationModal)
+        if (windowModality != BobUI::ApplicationModal)
             [mDelegate showModelessPanel];
-        // no need to show a Qt::ApplicationModal dialog here, because it will be shown in runApplicationModalPanel
+        // no need to show a BobUI::ApplicationModal dialog here, because it will be shown in runApplicationModalPanel
         return true;
     }
 
@@ -320,7 +320,7 @@ public:
 
     QFont currentFont() const
     {
-        return mDelegate->mQtFont;
+        return mDelegate->mBobUIFont;
     }
 
     void setCurrentFont(const QFont &font)
@@ -345,7 +345,7 @@ public:
             size:fontInfo.pointSize()];
 
         [mgr setSelectedFont:nsFont isMultiple:NO];
-        mDelegate->mQtFont = font;
+        mDelegate->mBobUIFont = font;
     }
 
 private:
@@ -371,10 +371,10 @@ void QCocoaFontDialogHelper::exec()
         emit reject();
 }
 
-bool QCocoaFontDialogHelper::show(Qt::WindowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QCocoaFontDialogHelper::show(BobUI::WindowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
-    if (windowModality == Qt::ApplicationModal)
-        windowModality = Qt::WindowModal;
+    if (windowModality == BobUI::ApplicationModal)
+        windowModality = BobUI::WindowModal;
     sharedFontPanel()->init(this);
     return sharedFontPanel()->show(windowModality, parent);
 }
@@ -395,4 +395,4 @@ QFont QCocoaFontDialogHelper::currentFont() const
     return sharedFontPanel()->currentFont();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

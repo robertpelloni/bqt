@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2013 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qmath.h>
+#include <BobUICore/qmath.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-const qreal qt_sine_table[QT_SINE_TABLE_SIZE] = {
+const qreal bobui_sine_table[BOBUI_SINE_TABLE_SIZE] = {
     qreal(0.0),
     qreal(0.024541228522912288),
     qreal(0.049067674327418015),
@@ -265,4 +265,4 @@ const qreal qt_sine_table[QT_SINE_TABLE_SIZE] = {
     qreal(-0.024541228522912448)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

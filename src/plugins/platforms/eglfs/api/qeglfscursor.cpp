@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfscursor_p.h"
 #include "qeglfsintegration_p.h"
@@ -7,23 +7,23 @@
 #include "qeglfscontext_p.h"
 
 #include <qpa/qwindowsysteminterface.h>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QOpenGLFunctions>
-#include <QtCore/QFile>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonObject>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUICore/QFile>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QJsonObject>
 
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtOpenGL/private/qopenglvertexarrayobject_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIOpenGL/private/qopenglvertexarrayobject_p.h>
 
 #ifndef GL_VERTEX_ARRAY_BINDING
 #define GL_VERTEX_ARRAY_BINDING 0x85B5
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QEglFSCursor::QEglFSCursor(QPlatformScreen *screen)
   : m_visible(true),
@@ -32,13 +32,13 @@ QEglFSCursor::QEglFSCursor(QPlatformScreen *screen)
     m_deviceListener(nullptr),
     m_updateRequested(false)
 {
-    QByteArray hideCursorVal = qgetenv("QT_QPA_EGLFS_HIDECURSOR");
+    QByteArray hideCursorVal = qgetenv("BOBUI_QPA_EGLFS_HIDECURSOR");
     if (!hideCursorVal.isEmpty())
         m_visible = hideCursorVal.toInt() == 0;
     if (!m_visible)
         return;
 
-    int rotation = qEnvironmentVariableIntValue("QT_QPA_EGLFS_ROTATION");
+    int rotation = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_ROTATION");
     if (rotation)
         m_rotationMatrix.rotate(rotation, 0, 0, 1);
 
@@ -47,8 +47,8 @@ QEglFSCursor::QEglFSCursor(QPlatformScreen *screen)
     initCursorAtlas();
 
     // initialize the cursor
-#ifndef QT_NO_CURSOR
-    QCursor cursor(Qt::ArrowCursor);
+#ifndef BOBUI_NO_CURSOR
+    QCursor cursor(BobUI::ArrowCursor);
     setCurrentCursor(&cursor);
 #endif
 
@@ -134,7 +134,7 @@ void QEglFSCursor::createCursorTexture(uint *texture, const QImage &image)
 
 void QEglFSCursor::initCursorAtlas()
 {
-    static QByteArray json = qgetenv("QT_QPA_EGLFS_CURSOR");
+    static QByteArray json = qgetenv("BOBUI_QPA_EGLFS_CURSOR");
     if (json.isEmpty())
         json = ":/cursor.json";
 
@@ -155,7 +155,7 @@ void QEglFSCursor::initCursorAtlas()
     m_cursorAtlas.cursorsPerRow = cursorsPerRow;
 
     const QJsonArray hotSpots = object.value("hotSpots"_L1).toArray();
-    Q_ASSERT(hotSpots.count() == Qt::LastCursor + 1);
+    Q_ASSERT(hotSpots.count() == BobUI::LastCursor + 1);
     for (int i = 0; i < hotSpots.count(); i++) {
         QPoint hotSpot(hotSpots[i].toArray()[0].toDouble(), hotSpots[i].toArray()[1].toDouble());
         m_cursorAtlas.hotSpots << hotSpot;
@@ -163,13 +163,13 @@ void QEglFSCursor::initCursorAtlas()
 
     QImage image = QImage(atlas).convertToFormat(QImage::Format_ARGB32_Premultiplied);
     m_cursorAtlas.cursorWidth = image.width() / m_cursorAtlas.cursorsPerRow;
-    m_cursorAtlas.cursorHeight = image.height() / ((Qt::LastCursor + cursorsPerRow) / cursorsPerRow);
+    m_cursorAtlas.cursorHeight = image.height() / ((BobUI::LastCursor + cursorsPerRow) / cursorsPerRow);
     m_cursorAtlas.width = image.width();
     m_cursorAtlas.height = image.height();
     m_cursorAtlas.image = image;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void QEglFSCursor::changeCursor(QCursor *cursor, QWindow *window)
 {
     Q_UNUSED(window);
@@ -183,16 +183,16 @@ bool QEglFSCursor::setCurrentCursor(QCursor *cursor)
     if (!m_visible)
         return false;
 
-    const Qt::CursorShape newShape = cursor ? cursor->shape() : Qt::ArrowCursor;
-    if (m_cursor.shape == newShape && newShape != Qt::BitmapCursor)
+    const BobUI::CursorShape newShape = cursor ? cursor->shape() : BobUI::ArrowCursor;
+    if (m_cursor.shape == newShape && newShape != BobUI::BitmapCursor)
         return false;
 
-    if (m_cursor.shape == Qt::BitmapCursor) {
+    if (m_cursor.shape == BobUI::BitmapCursor) {
         m_cursor.customCursorImage = QImage();
         m_cursor.customCursorPending = false;
     }
     m_cursor.shape = newShape;
-    if (newShape != Qt::BitmapCursor) { // standard cursor
+    if (newShape != BobUI::BitmapCursor) { // standard cursor
         const float ws = (float)m_cursorAtlas.cursorWidth / m_cursorAtlas.width,
                     hs = (float)m_cursorAtlas.cursorHeight / m_cursorAtlas.height;
         m_cursor.textureRect = QRectF(ws * (m_cursor.shape % m_cursorAtlas.cursorsPerRow),
@@ -337,7 +337,7 @@ void QEglFSCursor::paintOnScreen()
 
 // In order to prevent breaking code doing custom OpenGL rendering while
 // expecting the state in the context unchanged, save and restore all the state
-// we touch. The exception is Qt Quick where the scenegraph is known to be able
+// we touch. The exception is BobUI Quick where the scenegraph is known to be able
 // to deal with the changes we make.
 struct StateSaver
 {
@@ -446,12 +446,12 @@ void QEglFSCursor::draw(const QRectF &r)
         if (!gfx.atlasTexture) {
             createCursorTexture(&gfx.atlasTexture, m_cursorAtlas.image);
 
-            if (m_cursor.shape != Qt::BitmapCursor)
+            if (m_cursor.shape != BobUI::BitmapCursor)
                 m_cursor.useCustomCursor = false;
         }
     }
 
-    if (m_cursor.shape == Qt::BitmapCursor && (m_cursor.customCursorPending || m_cursor.customCursorKey != gfx.customCursorKey)) {
+    if (m_cursor.shape == BobUI::BitmapCursor && (m_cursor.customCursorPending || m_cursor.customCursorKey != gfx.customCursorKey)) {
         // upload the custom cursor
         createCursorTexture(&gfx.customCursorTexture, m_cursor.customCursorImage);
         m_cursor.useCustomCursor = true;
@@ -517,6 +517,6 @@ void QEglFSCursor::draw(const QRectF &r)
     gfx.program->release();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeglfscursor_p.cpp"

@@ -55,14 +55,14 @@
           <string>QGraphicsView Stereoscopic Example</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>BobUI::AlignCenter</set>
          </property>
         </widget>
        </item>
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>BobUI::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>

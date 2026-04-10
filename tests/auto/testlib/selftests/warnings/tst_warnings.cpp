@@ -1,11 +1,11 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QTEST_THROW_ON_FAIL // fails ### investigate
+#undef BOBUIEST_THROW_ON_FAIL // fails ### investigate
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QRegularExpression>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QRegularExpression>
+#include <BOBUIest>
 
 class tst_Warnings: public QObject
 {
@@ -13,7 +13,7 @@ class tst_Warnings: public QObject
 private slots:
     void testWarnings();
     void testMissingWarnings();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void testMissingWarningsRegularExpression();
 #endif
     void testMissingWarningsWithData_data();
@@ -21,7 +21,7 @@ private slots:
 
     void testFailOnWarnings();
     void testFailOnWarningsCleared();
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     void testFailOnWarningsWithData_data();
     void testFailOnWarningsWithData();
     void testFailOnWarningsFailInHelper();
@@ -35,64 +35,64 @@ void tst_Warnings::testWarnings()
 {
     qWarning("Warning");
 
-    QTest::ignoreMessage(QtWarningMsg, "Warning");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning");
     qWarning("Warning");
 
     qWarning("Warning");
 
     qDebug("Debug");
 
-    QTest::ignoreMessage(QtDebugMsg, "Debug");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "Debug");
     qDebug("Debug");
 
     qDebug("Debug");
 
     qInfo("Info");
 
-    QTest::ignoreMessage(QtInfoMsg, "Info");
+    BOBUIest::ignoreMessage(BobUIInfoMsg, "Info");
     qInfo("Info");
 
     qInfo("Info");
 
-    QTest::ignoreMessage(QtDebugMsg, "Bubu");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "Bubu");
     qDebug("Baba");
     qDebug("Bubu");
     qDebug("Baba");
 
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression("^Bubu.*"));
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("^Baba.*"));
+    BOBUIest::ignoreMessage(BobUIDebugMsg, QRegularExpression("^Bubu.*"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("^Baba.*"));
     qDebug("Bubublabla");
     qWarning("Babablabla");
     qDebug("Bubublabla");
     qWarning("Babablabla");
 
-    // accept redundant space at end to keep compatibility with Qt < 5.2
-    QTest::ignoreMessage(QtDebugMsg, "Bubu ");
+    // accept redundant space at end to keep compatibility with BobUI < 5.2
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "Bubu ");
     qDebug() << "Bubu";
 
     // Cope with non-ASCII messages; should be understood as UTF-8 (it comes
     // from source code on both sides), even if the system encoding is
     // different:
-    QTest::ignoreMessage(QtDebugMsg, "Hej v\xc3\xa4rlden");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "Hej v\xc3\xa4rlden");
     qDebug() << "Hej v\xc3\xa4rlden";
-    QTest::ignoreMessage(QtInfoMsg, "Hej v\xc3\xa4rlden");
+    BOBUIest::ignoreMessage(BobUIInfoMsg, "Hej v\xc3\xa4rlden");
     qInfo() << "Hej v\xc3\xa4rlden";
 }
 
 void tst_Warnings::testMissingWarnings()
 {
-    QTest::ignoreMessage(QtWarningMsg, "Warning0");
-    QTest::ignoreMessage(QtWarningMsg, "Warning1");
-    QTest::ignoreMessage(QtWarningMsg, "Warning2");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning1");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning2");
 
     qWarning("Warning2");
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_Warnings::testMissingWarningsRegularExpression()
 {
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("Warning\\d\\d"));
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("Warning\\s\\d"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("Warning\\d\\d"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("Warning\\s\\d"));
 
     qWarning("Warning11");
 }
@@ -100,17 +100,17 @@ void tst_Warnings::testMissingWarningsRegularExpression()
 
 void tst_Warnings::testMissingWarningsWithData_data()
 {
-    QTest::addColumn<int>("dummy");
+    BOBUIest::addColumn<int>("dummy");
 
-    QTest::newRow("first row") << 0;
-    QTest::newRow("second row") << 1;
+    BOBUIest::newRow("first row") << 0;
+    BOBUIest::newRow("second row") << 1;
 }
 
 void tst_Warnings::testMissingWarningsWithData()
 {
-    QTest::ignoreMessage(QtWarningMsg, "Warning0");
-    QTest::ignoreMessage(QtWarningMsg, "Warning1");
-    QTest::ignoreMessage(QtWarningMsg, "Warning2");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning0");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning1");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Warning2");
 
     qWarning("Warning2");
 }
@@ -120,9 +120,9 @@ void tst_Warnings::testFailOnWarnings()
     // failOnWarning() wasn't called yet; shouldn't fail;
     qWarning("Ran out of space!");
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     const auto warnRegex = QRegularExpression("Ran out of .*!");
-    QTest::failOnWarning(warnRegex);
+    BOBUIest::failOnWarning(warnRegex);
     // Should now fail.
     qWarning("Ran out of cabbage!");
 
@@ -135,9 +135,9 @@ void tst_Warnings::testFailOnWarnings()
 
     // Should fail; matches regex.
     qWarning("Ran out of biscuits!");
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
-    QTest::failOnWarning("Running low on toothpaste!");
+    BOBUIest::failOnWarning("Running low on toothpaste!");
 
     // Should fail; strings match.
     qWarning("Running low on toothpaste!");
@@ -159,22 +159,22 @@ void tst_Warnings::testFailOnWarningsCleared()
     qWarning("Ran out of muffins!");
 }
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 void tst_Warnings::testFailOnWarningsWithData_data()
 {
     // The warning message that should cause a failure.
-    QTest::addColumn<QString>("warningMessage");
+    BOBUIest::addColumn<QString>("warningMessage");
 
-    QTest::newRow("warning1") << "warning1";
-    QTest::newRow("warning2") << "warning2";
-    QTest::newRow("warning3") << "warning3";
+    BOBUIest::newRow("warning1") << "warning1";
+    BOBUIest::newRow("warning2") << "warning2";
+    BOBUIest::newRow("warning3") << "warning3";
 }
 
 void tst_Warnings::testFailOnWarningsWithData()
 {
     QFETCH(QString, warningMessage);
 
-    QTest::failOnWarning(QRegularExpression(warningMessage));
+    BOBUIest::failOnWarning(QRegularExpression(warningMessage));
 
     // Only one of these should fail, depending on warningMessage.
     qWarning("warning1");
@@ -184,11 +184,11 @@ void tst_Warnings::testFailOnWarningsWithData()
 
 void tst_Warnings::testFailOnWarningsFailInHelper()
 {
-    const QTest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
+    const BOBUIest::ThrowOnFailDisabler nothrow; // tests repeated QFAILs
     [](){ QFAIL("This failure message should be printed but not cause the test to abort"); }();
     // So we've already failed, but we get more messages - that don't increment counters.
     const auto warnRegex = QRegularExpression("Ran out of .*!");
-    QTest::failOnWarning(warnRegex);
+    BOBUIest::failOnWarning(warnRegex);
     qWarning("Ran out of cabbage!");
     QFAIL("My cabbage! :(");
 }
@@ -196,25 +196,25 @@ void tst_Warnings::testFailOnWarningsFailInHelper()
 void tst_Warnings::testFailOnWarningsThenSkip()
 {
     const auto warnRegex = QRegularExpression("Ran out of .*!");
-    QTest::failOnWarning(warnRegex);
+    BOBUIest::failOnWarning(warnRegex);
     qWarning("Ran out of cabbage!");
     QSKIP("My cabbage! :("); // Reports, but doesn't count.
 }
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 void tst_Warnings::testFailOnWarningsAndIgnoreWarnings()
 {
     const auto warningStr = "Running low on toothpaste!";
-    QTest::failOnWarning(warningStr);
-    QTest::ignoreMessage(QtWarningMsg, warningStr);
+    BOBUIest::failOnWarning(warningStr);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warningStr);
     // Shouldn't fail; we ignored it.
     qWarning(warningStr);
 }
 
 void tst_Warnings::testFailOnTemporaryObjectDestruction()
 {
-    QTest::failOnWarning("Running low on toothpaste!");
-    QTest::ignoreMessage(QtWarningMsg, "Ran out of cabbage!");
+    BOBUIest::failOnWarning("Running low on toothpaste!");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "Ran out of cabbage!");
 
     class TestObject : public QObject
     {
@@ -232,6 +232,6 @@ void tst_Warnings::testFailOnTemporaryObjectDestruction()
     QVERIFY(testObject);
 }
 
-QTEST_MAIN(tst_Warnings)
+BOBUIEST_MAIN(tst_Warnings)
 
 #include "tst_warnings.moc"

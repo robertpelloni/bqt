@@ -43,8 +43,8 @@ instructions:
       testdir="$(dirname $1)"
       testexecutable="$1"
       echo RUNNING via serial: "$quoted_args"
-      echo "cmd rtp exec -p 200 -t 0x01000000 -u 0x1000000 $testexecutable -- $quoted_args" > /home/qt/work/vx.sh
-      echo "cmd echo \"qtest_in_vxworks_complete: $?\"" >> /home/qt/work/vx.sh
+      echo "cmd rtp exec -p 200 -t 0x01000000 -u 0x1000000 $testexecutable -- $quoted_args" > /home/bobui/work/vx.sh
+      echo "cmd echo \"bobuiest_in_vxworks_complete: $?\"" >> /home/bobui/work/vx.sh
       #rtp exec            Execute a process.
       #               -p : specify the initial task priority
       #                     200 is high, 255 max
@@ -53,7 +53,7 @@ instructions:
       #               -u : specify the size of the process task stack
       #               -- : mark the end of "rtp exec" options.
 
-      # qtest_in_vxworks_complete echo is used to detect test process completion as it will
+      # bobuiest_in_vxworks_complete echo is used to detect test process completion as it will
       # be echoed after test process ends normally or crashes when normal log lines are not present.
 
       # Check that emulator is functioning
@@ -79,9 +79,9 @@ instructions:
           pkill qemu-system
           rm /tmp/guest.in /tmp/guest.out
           mkfifo /tmp/guest.in /tmp/guest.out
-          /bin/bash /home/qt/vxworks_qemu_launcher.sh $VXWORKS_EMULATOR_TYPE
+          /bin/bash /home/bobui/vxworks_qemu_launcher.sh $VXWORKS_EMULATOR_TYPE
           sleep 1
-          /bin/bash /home/qt/work/coin_vxworks_vars.sh
+          /bin/bash /home/bobui/work/coin_vxworks_vars.sh
           sleep 1
       else
           echo "VxWorks is functional"
@@ -105,7 +105,7 @@ instructions:
           fi
       fi
 
-      echo "</home/qt/work/vx.sh" > /tmp/guest.in
+      echo "</home/bobui/work/vx.sh" > /tmp/guest.in
 
       silent_seconds=0
       last_probe_result="NONE"
@@ -135,11 +135,11 @@ instructions:
 
           echo "$line"
 
-          if echo "$line" | /usr/bin/grep -q "qtest_in_vxworks_complete"
+          if echo "$line" | /usr/bin/grep -q "bobuiest_in_vxworks_complete"
           then
               read -t 1 line</tmp/guest.out
               echo "$line"
-              exitcode=$(echo "$line" | sed -nr 's/qtest_in_vxworks_complete: (-?[0-9]+)/\1/gp' | tr -d '\r')
+              exitcode=$(echo "$line" | sed -nr 's/bobuiest_in_vxworks_complete: (-?[0-9]+)/\1/gp' | tr -d '\r')
               exit $exitcode
           fi
 

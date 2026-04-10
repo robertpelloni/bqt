@@ -1,13 +1,13 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "debugtextdumper.h"
 #include "variantorderedmap.h"
 
 #include <QDebug>
-#include <QTextStream>
+#include <BOBUIextStream>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Static instance is declared in datastreamconverter.cpp, since it uses it.
 
@@ -69,6 +69,6 @@ void DebugTextDumper::saveFile(QIODevice *f, const QVariant &contents,
     QString s = dumpVariant(contents);
     s[s.size() - 1] = u'\n'; // replace the comma with newline
 
-    QTextStream out(f);
+    BOBUIextStream out(f);
     out << s;
 }

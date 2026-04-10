@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TOOLBAR_H
 #define TOOLBAR_H
 
-#include <QToolBar>
+#include <BOBUIoolBar>
 
-QT_FORWARD_DECLARE_CLASS(QAction)
-QT_FORWARD_DECLARE_CLASS(QActionGroup)
-QT_FORWARD_DECLARE_CLASS(QMenu)
-QT_FORWARD_DECLARE_CLASS(QSpinBox)
+BOBUI_FORWARD_DECLARE_CLASS(QAction)
+BOBUI_FORWARD_DECLARE_CLASS(QActionGroup)
+BOBUI_FORWARD_DECLARE_CLASS(QMenu)
+BOBUI_FORWARD_DECLARE_CLASS(QSpinBox)
 
-class ToolBar : public QToolBar
+class ToolBar : public BOBUIoolBar
 {
     Q_OBJECT
 
@@ -42,8 +42,8 @@ private slots:
     void insertToolBarBreak();
 
 private:
-    void allow(Qt::ToolBarArea area, bool allow);
-    void place(Qt::ToolBarArea area, bool place);
+    void allow(BobUI::ToolBarArea area, bool allow);
+    void place(BobUI::ToolBarArea area, bool place);
 
     QMainWindow *mainWindow;
 

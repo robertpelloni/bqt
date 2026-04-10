@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOSWINDOW_H
 #define QIOSWINDOW_H
@@ -12,7 +12,7 @@
 
 @class QUIView;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QIOSWindow : public QObject, public QPlatformWindow
 {
@@ -24,7 +24,7 @@ public:
 
     void setGeometry(const QRect &rect) override;
 
-    void setWindowState(Qt::WindowStates state) override;
+    void setWindowState(BobUI::WindowStates state) override;
     void setParent(const QPlatformWindow *window) override;
     void setVisible(bool visible) override;
     void setOpacity(qreal level) override;
@@ -55,7 +55,7 @@ public:
 
     void setMask(const QRegion &region) override;
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     CAEAGLLayer *eaglLayer() const;
 #endif
 
@@ -63,7 +63,7 @@ public:
     UIView *view() const;
 
 private:
-    void applicationStateChanged(Qt::ApplicationState state);
+    void applicationStateChanged(BobUI::ApplicationState state);
     void applyGeometry(const QRect &rect);
 
     UIView *m_view;
@@ -77,12 +77,12 @@ private:
     friend class QIOSScreen;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QIOSWindow *window);
 #endif
 
 QUIView *quiview_cast(UIView *view);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOSWINDOW_H

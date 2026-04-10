@@ -1,5 +1,5 @@
-# Copyright (C) 2025 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2025 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 add_library(corelib_snippets OBJECT
     customtype/customtypeexample.cpp
@@ -27,24 +27,24 @@ add_library(corelib_snippets OBJECT
 )
 
 target_link_libraries(corelib_snippets PRIVATE
-    Qt::Core
+    BobUI::Core
 )
 
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     target_sources(corelib_snippets PRIVATE
         process/process.cpp
     )
 endif()
 
-if(QT_FEATURE_process AND QT_FEATURE_processenvironment)
+if(BOBUI_FEATURE_process AND BOBUI_FEATURE_processenvironment)
     target_sources(corelib_snippets PRIVATE
         qprocess-environment/main.cpp
     )
 endif()
 
-if(QT_FEATURE_widgets)
+if(BOBUI_FEATURE_widgets)
     target_link_libraries(corelib_snippets PRIVATE
-        Qt::Widgets
+        BobUI::Widgets
     )
     target_sources(corelib_snippets PRIVATE
         events/events.cpp
@@ -54,14 +54,14 @@ if(QT_FEATURE_widgets)
         qsignalmapper/buttonwidget.cpp
         qsortfilterproxymodel-details/main.cpp
         qstring/main.cpp
-        qtcast/qtcast.cpp
+        bobuicast/bobuicast.cpp
         settings/settings.cpp
     )
 endif()
 
-if(QT_FEATURE_gui)
+if(BOBUI_FEATURE_gui)
     target_link_libraries(corelib_snippets PRIVATE
-        Qt::Gui
+        BobUI::Gui
     )
     target_sources(corelib_snippets PRIVATE
         buffer/buffer.cpp
@@ -80,7 +80,7 @@ set_target_properties(corelib_snippets PROPERTIES UNITY_BUILD OFF)
 
 add_subdirectory(qmetaobject-invokable)
 add_subdirectory(qmetaobject-revision)
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     add_subdirectory(qprocess)
 endif()
 add_subdirectory(code)

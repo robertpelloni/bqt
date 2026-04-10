@@ -4,6 +4,6 @@ SUBDIRS = \
     convert \
     savegame
 
-qtHaveModule(widgets) {
+bobuiHaveModule(widgets) {
     SUBDIRS +=  streambookmarks
 }

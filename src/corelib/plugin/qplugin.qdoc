@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \headerfile <QtPlugin>
-    \inmodule QtCore
+    \headerfile <BobUIPlugin>
+    \inmodule BobUICore
     \title Defining Plugins
-    \keyword qtplugin-defining-plugins
+    \keyword bobuiplugin-defining-plugins
     \ingroup plugins
 
-    \brief The <QtPlugin> header file defines macros for defining plugins.
+    \brief The <BobUIPlugin> header file defines macros for defining plugins.
 
-    \sa {How to Create Qt Plugins}
+    \sa {How to Create BobUI Plugins}
 */
 
 /*!
     \macro Q_DECLARE_INTERFACE(ClassName, Identifier)
-    \relates <QtPlugin>
+    \relates <BobUIPlugin>
 
     This macro associates the given \a Identifier (a string literal)
     to the interface class called \a ClassName. The \a Identifier must
@@ -29,12 +29,12 @@
     is not inside a namespace though. For example:
     \snippet code/doc_src_qplugin.cpp 0
 
-    \sa Q_INTERFACES(), {How to Create Qt Plugins}
+    \sa Q_INTERFACES(), {How to Create BobUI Plugins}
 */
 
 /*!
     \macro Q_PLUGIN_METADATA(...)
-    \relates <QtPlugin>
+    \relates <BobUIPlugin>
     \since 5.0
 
     This macro is being used to declare meta data that is part of a plugin
@@ -44,7 +44,7 @@
     the object, and reference a file containing the meta data for the plugin.
 
     There should be exactly one occurrence of this macro in the source code
-    for a Qt plugin.
+    for a BobUI plugin.
 
     Example:
 
@@ -58,12 +58,12 @@
     by the build-system.
     moc exits with an error when it could not find the specified file.
 
-    \sa Q_DECLARE_INTERFACE(), {How to Create Qt Plugins}
+    \sa Q_DECLARE_INTERFACE(), {How to Create BobUI Plugins}
 */
 
 /*!
     \macro Q_IMPORT_PLUGIN(PluginName)
-    \relates <QtPlugin>
+    \relates <BobUIPlugin>
 
     This macro imports the plugin named \a PluginName, which corresponds
     with the name of the class that declares metadata for the plugin with
@@ -80,6 +80,6 @@
     application is built. See \l{Static Plugins} for more information
     on this.
 
-    \sa {Static Plugins}, {How to Create Qt Plugins}
+    \sa {Static Plugins}, {How to Create BobUI Plugins}
 
 */

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
@@ -16,14 +16,14 @@
 
 #include "qjsonwriter_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QJsonArray
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup json
     \ingroup shared
-    \ingroup qtserialization
+    \ingroup bobuiserialization
     \reentrant
     \since 5.0
 
@@ -45,19 +45,19 @@ QT_BEGIN_NAMESPACE
 
     You can convert the array to and from text based JSON through QJsonDocument.
 
-    \sa {JSON Support in Qt}, {Saving and Loading a Game}
+    \sa {JSON Support in BobUI}, {Saving and Loading a Game}
 */
 
 /*!
     \typedef QJsonArray::Iterator
 
-    Qt-style synonym for QJsonArray::iterator.
+    BobUI-style synonym for QJsonArray::iterator.
 */
 
 /*!
     \typedef QJsonArray::ConstIterator
 
-    Qt-style synonym for QJsonArray::const_iterator.
+    BobUI-style synonym for QJsonArray::const_iterator.
 */
 
 /*!
@@ -215,7 +215,7 @@ QJsonArray QJsonArray::fromStringList(const QStringList &list)
     return array;
 }
 
-#ifndef QT_NO_VARIANT
+#ifndef BOBUI_NO_VARIANT
 /*!
     Converts the variant list \a list to a QJsonArray.
 
@@ -240,7 +240,7 @@ QVariantList QJsonArray::toVariantList() const
 {
     return QCborArray::fromJsonArray(*this).toVariantList();
 }
-#endif // !QT_NO_VARIANT
+#endif // !BOBUI_NO_VARIANT
 
 
 /*!
@@ -600,7 +600,7 @@ bool comparesEqual(const QJsonArray &lhs, const QJsonValue &rhs)
 */
 
 /*! \class QJsonArray::iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QJsonArray::iterator class provides an STL-style non-const iterator for QJsonArray.
 
     \compares strong
@@ -839,7 +839,7 @@ bool comparesEqual(const QJsonArray &lhs, const QJsonValue &rhs)
 */
 
 /*! \class QJsonArray::const_iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QJsonArray::const_iterator class provides an STL-style const iterator for QJsonArray.
 
     \compares strong
@@ -1074,7 +1074,7 @@ size_t qHash(const QJsonArray &array, size_t seed)
     return qHashRange(array.begin(), array.end(), seed);
 }
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 QDebug operator<<(QDebug dbg, const QJsonArray &a)
 {
     QDebugStateSaver saver(dbg);
@@ -1091,7 +1091,7 @@ QDebug operator<<(QDebug dbg, const QJsonArray &a)
 }
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &stream, const QJsonArray &array)
 {
     return stream << QJsonDocument{array};
@@ -1106,5 +1106,5 @@ QDataStream &operator>>(QDataStream &stream, QJsonArray &array)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 

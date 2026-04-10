@@ -1,29 +1,29 @@
 ﻿// Copyright (C) 2019 Volker Krause <vkrause@kde.org>
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "androidcontentfileengine.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjniobject.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qmimedatabase.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qloggingcategory.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qmimedatabase.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qloggingcategory.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcAndroidContentFileEngine, "qt.qpa.contentfileengine")
+Q_STATIC_LOGGING_CATEGORY(lcAndroidContentFileEngine, "bobui.qpa.contentfileengine")
 
 Q_DECLARE_JNI_CLASS(ParcelFileDescriptorType, "android/os/ParcelFileDescriptor");
 Q_DECLARE_JNI_CLASS(CursorType, "android/database/Cursor");
-Q_DECLARE_JNI_CLASS(QtContentFileEngine, "org/qtproject/qt/android/QtContentFileEngine");
+Q_DECLARE_JNI_CLASS(BobUIContentFileEngine, "org/bobuiproject/bobui/android/BobUIContentFileEngine");
 Q_DECLARE_JNI_CLASS(List, "java/util/List");
 
 constexpr char contentScheme[] = "content";
@@ -37,7 +37,7 @@ static QJniObject &contentResolverInstance()
     static QJniObject contentResolver;
     if (!contentResolver.isValid()) {
         contentResolver = QJniObject(QNativeInterface::QAndroidApplication::context())
-                .callMethod<QtJniTypes::ContentResolver>("getContentResolver");
+                .callMethod<BobUIJniTypes::ContentResolver>("getContentResolver");
     }
 
     return contentResolver;
@@ -91,9 +91,9 @@ bool AndroidContentFileEngine::open(QIODevice::OpenMode openMode,
         }
     }
 
-    using namespace QtJniTypes;
+    using namespace BobUIJniTypes;
     const QString openModeStr = (openMode & QIODevice::WriteOnly) ? "w"_L1 : "r"_L1;
-    m_pfd = QtContentFileEngine::callStaticMethod<ParcelFileDescriptorType>(
+    m_pfd = BobUIContentFileEngine::callStaticMethod<ParcelFileDescriptorType>(
                 "openFileDescriptor",
                 contentResolverInstance().object<ContentResolver>(),
                 m_documentFile->uri().object<Uri>(),
@@ -378,8 +378,8 @@ public:
                                             const QStringList &selectionArgs = {},
                                             const QString &sortOrder = {})
     {
-        using namespace QtJniTypes;
-        auto cursor = QtContentFileEngine::callStaticMethod<CursorType>("query",
+        using namespace BobUIJniTypes;
+        auto cursor = BobUIContentFileEngine::callStaticMethod<CursorType>("query",
                 contentResolverInstance().object<ContentResolver>(),
                 uri.object<Uri>(),
                 QJniArray(projection),
@@ -459,64 +459,64 @@ const QLatin1String MIME_TYPE_DIR("vnd.android.document/directory");
 
 QString documentId(const QJniObject &uri)
 {
-    return QJniObject::callStaticMethod<jstring, QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<jstring, BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "getDocumentId",
                 uri.object()).toString();
 }
 
 QString treeDocumentId(const QJniObject &uri)
 {
-    return QJniObject::callStaticMethod<jstring, QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<jstring, BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "getTreeDocumentId",
                 uri.object()).toString();
 }
 
 QJniObject buildChildDocumentsUriUsingTree(const QJniObject &uri, const QString &parentDocumentId)
 {
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "buildChildDocumentsUriUsingTree",
-                uri.object<QtJniTypes::Uri>(),
+                uri.object<BobUIJniTypes::Uri>(),
                 QJniObject::fromString(parentDocumentId).object<jstring>());
 
 }
 
 QJniObject buildDocumentUriUsingTree(const QJniObject &treeUri, const QString &documentId)
 {
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "buildDocumentUriUsingTree",
-                treeUri.object<QtJniTypes::Uri>(),
+                treeUri.object<BobUIJniTypes::Uri>(),
                 QJniObject::fromString(documentId).object<jstring>());
 }
 
 bool isDocumentUri(const QJniObject &uri)
 {
     return QJniObject::callStaticMethod<jboolean>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "isDocumentUri",
                 QNativeInterface::QAndroidApplication::context(),
-                uri.object<QtJniTypes::Uri>());
+                uri.object<BobUIJniTypes::Uri>());
 }
 
 bool isTreeUri(const QJniObject &uri)
 {
     return QJniObject::callStaticMethod<jboolean>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "isTreeUri",
-                uri.object<QtJniTypes::Uri>());
+                uri.object<BobUIJniTypes::Uri>());
 }
 
 QJniObject createDocument(const QJniObject &parentDocumentUri, const QString &mimeType,
                           const QString &displayName)
 {
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "createDocument",
-                contentResolverInstance().object<QtJniTypes::ContentResolver>(),
-                parentDocumentUri.object<QtJniTypes::Uri>(),
+                contentResolverInstance().object<BobUIJniTypes::ContentResolver>(),
+                parentDocumentUri.object<BobUIJniTypes::Uri>(),
                 QJniObject::fromString(mimeType).object<jstring>(),
                 QJniObject::fromString(displayName).object<jstring>());
 }
@@ -528,10 +528,10 @@ bool deleteDocument(const QJniObject &documentUri)
         return {};
 
     return QJniObject::callStaticMethod<jboolean>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "deleteDocument",
-                contentResolverInstance().object<QtJniTypes::ContentResolver>(),
-                documentUri.object<QtJniTypes::Uri>());
+                contentResolverInstance().object<BobUIJniTypes::ContentResolver>(),
+                documentUri.object<BobUIJniTypes::Uri>());
 }
 
 QJniObject moveDocument(const QJniObject &sourceDocumentUri,
@@ -542,13 +542,13 @@ QJniObject moveDocument(const QJniObject &sourceDocumentUri,
     if (!(flags & Document::FLAG_SUPPORTS_MOVE))
         return {};
 
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "moveDocument",
-                contentResolverInstance().object<QtJniTypes::ContentResolver>(),
-                sourceDocumentUri.object<QtJniTypes::Uri>(),
-                sourceParentDocumentUri.object<QtJniTypes::Uri>(),
-                targetParentDocumentUri.object<QtJniTypes::Uri>());
+                contentResolverInstance().object<BobUIJniTypes::ContentResolver>(),
+                sourceDocumentUri.object<BobUIJniTypes::Uri>(),
+                sourceParentDocumentUri.object<BobUIJniTypes::Uri>(),
+                targetParentDocumentUri.object<BobUIJniTypes::Uri>());
 }
 
 QJniObject renameDocument(const QJniObject &documentUri, const QString &displayName)
@@ -557,11 +557,11 @@ QJniObject renameDocument(const QJniObject &documentUri, const QString &displayN
     if (!(flags & Document::FLAG_SUPPORTS_RENAME))
         return {};
 
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::DocumentsContract>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::DocumentsContract>::className(),
                 "renameDocument",
-                contentResolverInstance().object<QtJniTypes::ContentResolver>(),
-                documentUri.object<QtJniTypes::Uri>(),
+                contentResolverInstance().object<BobUIJniTypes::ContentResolver>(),
+                documentUri.object<BobUIJniTypes::Uri>(),
                 QJniObject::fromString(displayName).object<jstring>());
 }
 } // End DocumentsContract namespace
@@ -621,7 +621,7 @@ QStringList DocumentFile::getPathSegments(const QJniObject &uri)
     if (!uri.isValid())
         return {};
 
-    const auto jSegments = uri.callMethod<QtJniTypes::List>("getPathSegments");
+    const auto jSegments = uri.callMethod<BobUIJniTypes::List>("getPathSegments");
     if (!jSegments.isValid())
         return {};
 
@@ -634,8 +634,8 @@ QStringList DocumentFile::getPathSegments(const QJniObject &uri)
 
 QJniObject parseUri(const QString &uri)
 {
-    return QJniObject::callStaticMethod<QtJniTypes::Uri>(
-                QtJniTypes::Traits<QtJniTypes::Uri>::className(),
+    return QJniObject::callStaticMethod<BobUIJniTypes::Uri>(
+                BobUIJniTypes::Traits<BobUIJniTypes::Uri>::className(),
                 "parse",
                 QJniObject::fromString(uri).object<jstring>());
 }
@@ -849,7 +849,7 @@ bool DocumentFile::canRead() const
 {
     const auto context = QJniObject(QNativeInterface::QAndroidApplication::context());
     const bool selfUriPermission = context.callMethod<jint>("checkCallingOrSelfUriPermission",
-                                                            m_uri.object<QtJniTypes::Uri>(),
+                                                            m_uri.object<BobUIJniTypes::Uri>(),
                                                             FLAG_GRANT_READ_URI_PERMISSION);
     if (selfUriPermission != 0)
         return false;
@@ -861,7 +861,7 @@ bool DocumentFile::canWrite() const
 {
     const auto context = QJniObject(QNativeInterface::QAndroidApplication::context());
     const bool selfUriPermission = context.callMethod<jint>("checkCallingOrSelfUriPermission",
-                                                            m_uri.object<QtJniTypes::Uri>(),
+                                                            m_uri.object<BobUIJniTypes::Uri>(),
                                                             FLAG_GRANT_WRITE_URI_PERMISSION);
     if (selfUriPermission != 0)
         return false;
@@ -959,6 +959,6 @@ bool DocumentFile::rename(const QString &newName)
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // End of DocumentFile

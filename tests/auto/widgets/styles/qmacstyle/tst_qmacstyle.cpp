@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtWidgets>
+#include <BOBUIest>
+#include <BobUIWidgets>
 #include <private/qstylehelper_p.h>
 
 Q_DECLARE_METATYPE(QStyleHelper::WidgetSizePolicy);
@@ -49,7 +49,7 @@ private:
     static int hgap(QWidget *widget1, QWidget *widget2) { return gap(widget1, widget2).width(); }
     static int vgap(QWidget *widget1, QWidget *widget2) { return gap(widget1, widget2).height(); }
     static void setSize(QWidget *widget, QStyleHelper::WidgetSizePolicy size);
-    static int spacing(ControlType control1, ControlType control2, Qt::Orientation orientation,
+    static int spacing(ControlType control1, ControlType control2, BobUI::Orientation orientation,
                        QStyleOption *option = nullptr, QWidget *widget = nullptr);
     static int hspacing(ControlType control1, ControlType control2, QStyleHelper::WidgetSizePolicy size = QStyleHelper::SizeLarge);
     static int vspacing(ControlType control1, ControlType control2, QStyleHelper::WidgetSizePolicy size = QStyleHelper::SizeLarge);
@@ -64,10 +64,10 @@ static bool bigSurOrAbove() {
 
 void tst_QMacStyle::sizeHints_data()
 {
-    QTest::addColumn<QStyleHelper::WidgetSizePolicy>("size");
-    QTest::newRow("normal") << QStyleHelper::SizeLarge;
-//    QTest::newRow("small") << QStyleHelper::SizeSmall;
-//    QTest::newRow("mini") << QStyleHelper::SizeMini;
+    BOBUIest::addColumn<QStyleHelper::WidgetSizePolicy>("size");
+    BOBUIest::newRow("normal") << QStyleHelper::SizeLarge;
+//    BOBUIest::newRow("small") << QStyleHelper::SizeSmall;
+//    BOBUIest::newRow("mini") << QStyleHelper::SizeMini;
 }
 
 void tst_QMacStyle::sizeHints()
@@ -80,11 +80,11 @@ void tst_QMacStyle::sizeHints()
     QCOMPARE(sh(&lineEdit1).height(), SIZE(21, 19, 16));    // 16 in Builder, 15 in AHIG
 
     QProgressBar progress1(&w);
-    progress1.setOrientation(Qt::Horizontal);
+    progress1.setOrientation(BobUI::Horizontal);
     qDebug() << "sh" << progress1.sizeHint();
     QCOMPARE(sh(&progress1).height(), SIZE(16, 10, 10));   // Builder
 
-    progress1.setOrientation(Qt::Vertical);
+    progress1.setOrientation(BobUI::Vertical);
     QCOMPARE(sh(&progress1).width(), SIZE(16, 10, 10));   // Builder
 
     QRadioButton radio1("Radio", &w);
@@ -105,13 +105,13 @@ void tst_QMacStyle::sizeHints()
 
     // Combos in toolbars use the actual widget rect to
     // avoid faulty clipping:
-    QToolBar tb;
+    BOBUIoolBar tb;
     setSize(&tb, size);
     QComboBox comboBox3(&tb);
     comboBox3.addItem("Foo");
     QCOMPARE(sh(&comboBox3).height(), SIZE(32, -1, -1));
 
-    QSlider slider1(Qt::Horizontal, &w);
+    QSlider slider1(BobUI::Horizontal, &w);
     QCOMPARE(sh(&slider1).height(), SIZE(bigSurOrAbove() ? 18 : 15, 12, 10));
 
     slider1.setTickPosition(QSlider::TicksAbove);
@@ -128,7 +128,7 @@ void tst_QMacStyle::sizeHints()
 
     QSize s1 = sh(&ok1);
     if (size == QStyleHelper::SizeLarge) {
-        // AHIG says 68, Builder does 70, and Qt seems to do 69
+        // AHIG says 68, Builder does 70, and BobUI seems to do 69
         QVERIFY(s1.width() >= 68 && s1.width() <= 70);
     }
     QCOMPARE(s1.height(), SIZE(20, 17, 14));    // 14 in Builder, 15 in AHIG
@@ -162,7 +162,7 @@ void tst_QMacStyle::sizeHints()
     QDateEdit date1(&w);
     QCOMPARE(sh(&date1).height(), h1);
 
-    QTimeEdit time1(&w);
+    BOBUIimeEdit time1(&w);
     QCOMPARE(sh(&time1).height(), h1);
 
     QDateTimeEdit dateTime1(&w);
@@ -276,17 +276,17 @@ void tst_QMacStyle::setSize(QWidget *widget, QStyleHelper::WidgetSizePolicy size
     case QStyleHelper::SizeDefault:
         break;
     case QStyleHelper::SizeLarge:
-        widget->setAttribute(Qt::WA_MacNormalSize, true);
+        widget->setAttribute(BobUI::WA_MacNormalSize, true);
         break;
     case QStyleHelper::SizeSmall:
-        widget->setAttribute(Qt::WA_MacSmallSize, true);
+        widget->setAttribute(BobUI::WA_MacSmallSize, true);
         break;
     case QStyleHelper::SizeMini:
-        widget->setAttribute(Qt::WA_MacMiniSize, true);
+        widget->setAttribute(BobUI::WA_MacMiniSize, true);
     }
 }
 
-int tst_QMacStyle::spacing(ControlType control1, ControlType control2, Qt::Orientation orientation,
+int tst_QMacStyle::spacing(ControlType control1, ControlType control2, BobUI::Orientation orientation,
                            QStyleOption *option, QWidget *widget)
 {
     return QApplication::style()->layoutSpacing(control1, control2, orientation, option, widget);
@@ -300,7 +300,7 @@ int tst_QMacStyle::hspacing(ControlType control1, ControlType control2, QStyleHe
     QStyleOption opt;
     opt.initFrom(&w);
 
-    return spacing(control1, control2, Qt::Horizontal, &opt);
+    return spacing(control1, control2, BobUI::Horizontal, &opt);
 }
 
 int tst_QMacStyle::vspacing(ControlType control1, ControlType control2, QStyleHelper::WidgetSizePolicy size)
@@ -311,26 +311,26 @@ int tst_QMacStyle::vspacing(ControlType control1, ControlType control2, QStyleHe
     QStyleOption opt;
     opt.initFrom(&w);
 
-    return spacing(control1, control2, Qt::Vertical, &opt);
+    return spacing(control1, control2, BobUI::Vertical, &opt);
 }
 
 
 void tst_QMacStyle::smallMiniNormalExclusivity_data()
 {
 
-    QTest::addColumn<int>("size1");
-    QTest::addColumn<int>("size2");
-    QTest::addColumn<int>("size3");
-    QTest::addColumn<int>("expectedHeight1");
-    QTest::addColumn<int>("expectedHeight2");
-    QTest::addColumn<int>("expectedHeight3");
+    BOBUIest::addColumn<int>("size1");
+    BOBUIest::addColumn<int>("size2");
+    BOBUIest::addColumn<int>("size3");
+    BOBUIest::addColumn<int>("expectedHeight1");
+    BOBUIest::addColumn<int>("expectedHeight2");
+    BOBUIest::addColumn<int>("expectedHeight3");
 
-    QTest::newRow("normal small mini") << int(Qt::WA_MacNormalSize) << int(Qt::WA_MacSmallSize) << int(Qt::WA_MacMiniSize) << 32 << 16 << 24;
-    QTest::newRow("normal mini small") << int(Qt::WA_MacNormalSize) <<int(Qt::WA_MacMiniSize) << int(Qt::WA_MacSmallSize) << 32 << 24 << 16;
-    QTest::newRow("small normal mini") << int(Qt::WA_MacSmallSize) << int(Qt::WA_MacNormalSize) << int(Qt::WA_MacMiniSize) << 16 << 32 << 24;
-    QTest::newRow("small mini normal") << int(Qt::WA_MacSmallSize) << int(Qt::WA_MacMiniSize) << int(Qt::WA_MacNormalSize) << 16 << 24 << 32;
-    QTest::newRow("mini small normal") << int(Qt::WA_MacMiniSize) << int(Qt::WA_MacSmallSize) << int(Qt::WA_MacNormalSize) << 24 << 16 << 32;
-    QTest::newRow("mini normal small") << int(Qt::WA_MacMiniSize) << int(Qt::WA_MacNormalSize) << int(Qt::WA_MacSmallSize) << 24 << 32 << 16;
+    BOBUIest::newRow("normal small mini") << int(BobUI::WA_MacNormalSize) << int(BobUI::WA_MacSmallSize) << int(BobUI::WA_MacMiniSize) << 32 << 16 << 24;
+    BOBUIest::newRow("normal mini small") << int(BobUI::WA_MacNormalSize) <<int(BobUI::WA_MacMiniSize) << int(BobUI::WA_MacSmallSize) << 32 << 24 << 16;
+    BOBUIest::newRow("small normal mini") << int(BobUI::WA_MacSmallSize) << int(BobUI::WA_MacNormalSize) << int(BobUI::WA_MacMiniSize) << 16 << 32 << 24;
+    BOBUIest::newRow("small mini normal") << int(BobUI::WA_MacSmallSize) << int(BobUI::WA_MacMiniSize) << int(BobUI::WA_MacNormalSize) << 16 << 24 << 32;
+    BOBUIest::newRow("mini small normal") << int(BobUI::WA_MacMiniSize) << int(BobUI::WA_MacSmallSize) << int(BobUI::WA_MacNormalSize) << 24 << 16 << 32;
+    BOBUIest::newRow("mini normal small") << int(BobUI::WA_MacMiniSize) << int(BobUI::WA_MacNormalSize) << int(BobUI::WA_MacSmallSize) << 24 << 32 << 16;
 }
 
 void tst_QMacStyle::smallMiniNormalExclusivity()
@@ -351,12 +351,12 @@ void tst_QMacStyle::smallMiniNormalExclusivity()
     QStyleOptionButton opt;
 
     for (int i = 0; i < TotalSizes; ++i) {
-        dummyWidget.setAttribute(Qt::WidgetAttribute(attrs[i]));
+        dummyWidget.setAttribute(BobUI::WidgetAttribute(attrs[i]));
         opt.initFrom(&dummyWidget);
         QSize size = dummyWidget.style()->sizeFromContents(QStyle::CT_PushButton, &opt,
                                                            QSize(0, 0), &dummyWidget);
         if (size.height() != expected[i])
-            QEXPECT_FAIL("", "QTBUG-25296", Abort);
+            QEXPECT_FAIL("", "BOBUIBUG-25296", Abort);
         QCOMPARE(size.height(), expected[i]);
     }
 }
@@ -365,13 +365,13 @@ void tst_QMacStyle::passwordCharacter()
 {
     QLineEdit lineEdit;
     lineEdit.setEchoMode(QLineEdit::Password);
-    QTest::keyClick(&lineEdit, Qt::Key_P);
+    BOBUIest::keyClick(&lineEdit, BobUI::Key_P);
     // Should be no password delay; text should instantly be masked.
     const QChar bullet(0x2022);
     const QString expected(1, bullet);
     QCOMPARE(lineEdit.displayText(), expected);
 }
 
-QTEST_MAIN(tst_QMacStyle)
+BOBUIEST_MAIN(tst_QMacStyle)
 #include "tst_qmacstyle.moc"
 

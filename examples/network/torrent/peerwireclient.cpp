@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "peerwireclient.h"
 
 #include <QHostAddress>
-#include <QTimerEvent>
-#include <QtEndian>
+#include <BOBUIimerEvent>
+#include <BobUIEndian>
 
 #include <chrono>
 
@@ -20,7 +20,7 @@ static const char ProtocolIdSize = 19;
 
 // Constructs an unconnected PeerWire client and starts the connect timer.
 PeerWireClient::PeerWireClient(const QByteArray &peerId, QObject *parent)
-    : QTcpSocket(parent), pendingBlockSizes(0),
+    : BOBUIcpSocket(parent), pendingBlockSizes(0),
       pwState(ChokingPeer | ChokedByPeer), receivedHandShake(false), gotPeerId(false),
       sentHandShake(false), nextPacketLength(-1), invalidateTimeout(false),
       torrentPeer(nullptr)
@@ -37,17 +37,17 @@ PeerWireClient::PeerWireClient(const QByteArray &peerId, QObject *parent)
     connect(this, &PeerWireClient::connected,
             this, &PeerWireClient::readyToTransfer);
 
-    connect(&socket, &QTcpSocket::connected,
+    connect(&socket, &BOBUIcpSocket::connected,
             this, &PeerWireClient::connected);
-    connect(&socket, &QTcpSocket::readyRead,
+    connect(&socket, &BOBUIcpSocket::readyRead,
             this, &PeerWireClient::readyRead);
-    connect(&socket, &QTcpSocket::disconnected,
+    connect(&socket, &BOBUIcpSocket::disconnected,
             this, &PeerWireClient::disconnected);
-    connect(&socket, &QTcpSocket::errorOccurred,
+    connect(&socket, &BOBUIcpSocket::errorOccurred,
             this, &PeerWireClient::errorOccurred);
-    connect(&socket, &QTcpSocket::bytesWritten,
+    connect(&socket, &BOBUIcpSocket::bytesWritten,
             this, &PeerWireClient::bytesWritten);
-    connect(&socket, &QTcpSocket::stateChanged,
+    connect(&socket, &BOBUIcpSocket::stateChanged,
             this, &PeerWireClient::socketStateChanged);
 
 }
@@ -340,7 +340,7 @@ void PeerWireClient::diconnectFromHost()
     socket.disconnectFromHost();
 }
 
-void PeerWireClient::timerEvent(QTimerEvent *event)
+void PeerWireClient::timerEvent(BOBUIimerEvent *event)
 {
     if (event->id() == transferSpeedTimer.id()) {
         // Rotate the upload / download records.
@@ -364,7 +364,7 @@ void PeerWireClient::timerEvent(QTimerEvent *event)
     } else if (event->id() == keepAliveTimer.id()) {
         sendKeepAlive();
     }
-    QTcpSocket::timerEvent(event);
+    BOBUIcpSocket::timerEvent(event);
 }
 
 // Sends the handshake to the peer.

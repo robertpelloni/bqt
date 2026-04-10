@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef DIALOG_H
 #define DIALOG_H
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QDialogButtonBox;
 class QGroupBox;
@@ -15,8 +15,8 @@ class QLineEdit;
 class QMenu;
 class QMenuBar;
 class QPushButton;
-class QTextEdit;
-QT_END_NAMESPACE
+class BOBUIextEdit;
+BOBUI_END_NAMESPACE
 
 //! [0]
 class Dialog : public QDialog
@@ -38,8 +38,8 @@ private:
     QGroupBox *horizontalGroupBox;
     QGroupBox *gridGroupBox;
     QGroupBox *formGroupBox;
-    QTextEdit *smallEditor;
-    QTextEdit *bigEditor;
+    BOBUIextEdit *smallEditor;
+    BOBUIextEdit *bigEditor;
     QLabel *labels[NumGridRows];
     QLineEdit *lineEdits[NumGridRows];
     QPushButton *buttons[NumButtons];

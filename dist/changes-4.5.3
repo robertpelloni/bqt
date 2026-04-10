@@ -1,17 +1,17 @@
-Qt 4.5.3 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.5.0.  For more details,
+BobUI 4.5.3 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.5.0.  For more details,
 refer to the online documentation included in this distribution. The
 documentation is also available online:
 
-  http://qt.nokia.com/doc/4.5
+  http://bobui.nokia.com/doc/4.5
 
-The Qt version 4.5 series is binary compatible with the 4.4.x series.
+The BobUI version 4.5 series is binary compatible with the 4.4.x series.
 Applications compiled for 4.4 will continue to run with 4.5.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain more
 information about a particular change.
@@ -67,7 +67,7 @@ information about a particular change.
 - QSslCertificate
     * [256066] Fix loading of a PEM when the length was a multiple of 64.
 
-- QTemporaryFile
+- BOBUIemporaryFile
     * [260165] Fixed a bug where temporary files would be left behind when
       copying a file to a non-existing directory.
 
@@ -75,7 +75,7 @@ information about a particular change.
 *                          Database Drivers                                *
 ****************************************************************************
 
-- [QT-353] (ODBC) Fixed issue of forward only datasets failing when not
+- [BOBUI-353] (ODBC) Fixed issue of forward only datasets failing when not
   explicitly set so.
 - [222678] Fixed QSqlTableModel: trying to delete the wrong row.
 - (Interbase) Fixed crash when calling numRows on unknown query type.
@@ -94,7 +94,7 @@ information about a particular change.
 *                      Platform Specific Changes                           *
 ****************************************************************************
 
-Qt for Linux/X11
+BobUI for Linux/X11
 ----------------
 - Fixed a bug where an empty KDEDIRS variable would bring /share into the icon
   search path.
@@ -103,7 +103,7 @@ Qt for Linux/X11
 - Fixed a bug that prevented QClipboard to work after some time.
 
 
-Qt for Mac OS X
+BobUI for Mac OS X
 ---------------
 - [252088] Drag and drop events will now consider the
   WA_TransparentForMouseEvents in Cocoa port.
@@ -116,11 +116,11 @@ Qt for Mac OS X
 - Fixed the wizard background images for Snow Leopard.
 
 
-Qt for Windows
+BobUI for Windows
 -----------------
 - [250188] Fixed size windows will show the maximize button if asked explicitely.
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
 - [260702] Fixed restoring of minimized Windows.
 

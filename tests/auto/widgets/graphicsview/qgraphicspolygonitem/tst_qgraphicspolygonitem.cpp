@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qgraphicsitem.h>
 #include <qpainterpath.h>
 #include <qpen.h>
@@ -83,18 +83,18 @@ void tst_QGraphicsPolygonItem::qgraphicspolygonitem()
     item.call_supportsExtension(SubQGraphicsPolygonItem::UserExtension);
     item.fillRule();
     item.polygon();
-    item.setFillRule(Qt::OddEvenFill);
+    item.setFillRule(BobUI::OddEvenFill);
     item.setPolygon(QPolygonF());
 }
 
 void tst_QGraphicsPolygonItem::boundingRect_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::addColumn<QRectF>("boundingRect");
-    QTest::newRow("null") << QPolygonF() << QRectF();
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::addColumn<QRectF>("boundingRect");
+    BOBUIest::newRow("null") << QPolygonF() << QRectF();
     QPolygonF example;
     example << QPointF(10.4, 20.5) << QPointF(20.2, 30.2);
-    QTest::newRow("example") << example << example.boundingRect();
+    BOBUIest::newRow("example") << example << example.boundingRect();
     // ### set pen width?
 }
 
@@ -105,16 +105,16 @@ void tst_QGraphicsPolygonItem::boundingRect()
     QFETCH(QRectF, boundingRect);
 
     SubQGraphicsPolygonItem item(polygon);
-    item.setPen(QPen(Qt::black, 0));
+    item.setPen(QPen(BobUI::black, 0));
     QCOMPARE(item.boundingRect(), boundingRect);
 }
 
 void tst_QGraphicsPolygonItem::contains_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::addColumn<QPointF>("point");
-    QTest::addColumn<bool>("contains");
-    QTest::newRow("null") << QPolygonF() << QPointF() << false;
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::addColumn<QPointF>("point");
+    BOBUIest::addColumn<bool>("contains");
+    BOBUIest::newRow("null") << QPolygonF() << QPointF() << false;
 }
 
 // public bool contains(QPointF const& point) const
@@ -129,20 +129,20 @@ void tst_QGraphicsPolygonItem::contains()
     QCOMPARE(item.contains(point), contains);
 }
 
-Q_DECLARE_METATYPE(Qt::FillRule)
+Q_DECLARE_METATYPE(BobUI::FillRule)
 void tst_QGraphicsPolygonItem::fillRule_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::addColumn<Qt::FillRule>("fillRule");
-    QTest::newRow("OddEvenFill") << QPolygonF() << Qt::OddEvenFill;
-    QTest::newRow("WindingFill") << QPolygonF() << Qt::WindingFill;
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::addColumn<BobUI::FillRule>("fillRule");
+    BOBUIest::newRow("OddEvenFill") << QPolygonF() << BobUI::OddEvenFill;
+    BOBUIest::newRow("WindingFill") << QPolygonF() << BobUI::WindingFill;
 }
 
-// public Qt::FillRule fillRule() const
+// public BobUI::FillRule fillRule() const
 void tst_QGraphicsPolygonItem::fillRule()
 {
     QFETCH(QPolygonF, polygon);
-    QFETCH(Qt::FillRule, fillRule);
+    QFETCH(BobUI::FillRule, fillRule);
 
     SubQGraphicsPolygonItem item(polygon);
 
@@ -153,12 +153,12 @@ void tst_QGraphicsPolygonItem::fillRule()
 
 void tst_QGraphicsPolygonItem::isObscuredBy_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::addColumn<QPolygonF>("otherPolygon");
-    QTest::addColumn<bool>("isObscuredBy");
-    QTest::newRow("null") << QPolygonF() << QPolygonF() << false;
-    //QTest::newRow("ontop-inside") << QPixmap(10, 10) << QPixmap(5, 5) << false;
-    //QTest::newRow("ontop-larger") << QPixmap(10, 10) << QPixmap(11, 11) << true;
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::addColumn<QPolygonF>("otherPolygon");
+    BOBUIest::addColumn<bool>("isObscuredBy");
+    BOBUIest::newRow("null") << QPolygonF() << QPolygonF() << false;
+    //BOBUIest::newRow("ontop-inside") << QPixmap(10, 10) << QPixmap(5, 5) << false;
+    //BOBUIest::newRow("ontop-larger") << QPixmap(10, 10) << QPixmap(11, 11) << true;
 }
 
 // public bool isObscuredBy(QGraphicsItem const* item) const
@@ -175,9 +175,9 @@ void tst_QGraphicsPolygonItem::isObscuredBy()
 Q_DECLARE_METATYPE(QPainterPath)
 void tst_QGraphicsPolygonItem::opaqueArea_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::addColumn<QPainterPath>("opaqueArea");
-    QTest::newRow("null") << QPolygonF() << QPainterPath();
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::addColumn<QPainterPath>("opaqueArea");
+    BOBUIest::newRow("null") << QPolygonF() << QPainterPath();
     // Currently QGraphicsPolygonItem just calls QGraphicsItem test there
 }
 
@@ -193,11 +193,11 @@ void tst_QGraphicsPolygonItem::opaqueArea()
 
 void tst_QGraphicsPolygonItem::polygon_data()
 {
-    QTest::addColumn<QPolygonF>("polygon");
-    QTest::newRow("null") << QPolygonF();
+    BOBUIest::addColumn<QPolygonF>("polygon");
+    BOBUIest::newRow("null") << QPolygonF();
     QPolygonF example;
     example << QPointF(10.4, 20.5) << QPointF(20.2, 30.2);
-    QTest::newRow("example") << example;
+    BOBUIest::newRow("example") << example;
 }
 
 // public QPolygonF polygon() const
@@ -212,8 +212,8 @@ void tst_QGraphicsPolygonItem::polygon()
 
 void tst_QGraphicsPolygonItem::shape_data()
 {
-    QTest::addColumn<QPainterPath>("shape");
-    QTest::newRow("null") << QPainterPath();
+    BOBUIest::addColumn<QPainterPath>("shape");
+    BOBUIest::newRow("null") << QPainterPath();
     // ### what should a normal shape look like?
 }
 
@@ -228,9 +228,9 @@ void tst_QGraphicsPolygonItem::shape()
 
 void tst_QGraphicsPolygonItem::extension_data()
 {
-    QTest::addColumn<QVariant>("variant");
-    QTest::addColumn<QVariant>("extension");
-    QTest::newRow("null") << QVariant() << QVariant();
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::addColumn<QVariant>("extension");
+    BOBUIest::newRow("null") << QVariant() << QVariant();
 }
 
 // protected QVariant extension(QVariant const& variant) const
@@ -247,9 +247,9 @@ void tst_QGraphicsPolygonItem::extension()
 Q_DECLARE_METATYPE(SubQGraphicsPolygonItem::Extension)
 void tst_QGraphicsPolygonItem::setExtension_data()
 {
-    QTest::addColumn<SubQGraphicsPolygonItem::Extension>("extension");
-    QTest::addColumn<QVariant>("variant");
-    QTest::newRow("null") << SubQGraphicsPolygonItem::Extension() << QVariant();
+    BOBUIest::addColumn<SubQGraphicsPolygonItem::Extension>("extension");
+    BOBUIest::addColumn<QVariant>("variant");
+    BOBUIest::newRow("null") << SubQGraphicsPolygonItem::Extension() << QVariant();
 }
 
 // protected void setExtension(SubQGraphicsPolygonItem::Extension extension, QVariant const& variant)
@@ -264,9 +264,9 @@ void tst_QGraphicsPolygonItem::setExtension()
 
 void tst_QGraphicsPolygonItem::supportsExtension_data()
 {
-    QTest::addColumn<SubQGraphicsPolygonItem::Extension>("extension");
-    QTest::addColumn<bool>("supportsExtension");
-    QTest::newRow("null") << SubQGraphicsPolygonItem::Extension() << false;
+    BOBUIest::addColumn<SubQGraphicsPolygonItem::Extension>("extension");
+    BOBUIest::addColumn<bool>("supportsExtension");
+    BOBUIest::newRow("null") << SubQGraphicsPolygonItem::Extension() << false;
 }
 
 // protected bool supportsExtension(SubQGraphicsPolygonItem::Extension extension) const
@@ -279,6 +279,6 @@ void tst_QGraphicsPolygonItem::supportsExtension()
     QCOMPARE(item.call_supportsExtension(extension), supportsExtension);
 }
 
-QTEST_MAIN(tst_QGraphicsPolygonItem)
+BOBUIEST_MAIN(tst_QGraphicsPolygonItem)
 #include "tst_qgraphicspolygonitem.moc"
 

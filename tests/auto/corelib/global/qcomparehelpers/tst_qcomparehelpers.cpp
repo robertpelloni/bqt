@@ -1,10 +1,10 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "tst_qcomparehelpers.h"
 #include "wrappertypes.h"
 
-#include <QtCore/qscopeguard.h>
+#include <BobUICore/qscopeguard.h>
 
 #if defined(__STDCPP_FLOAT16_T__) && __has_include(<stdfloat>)
 #include <stdfloat>
@@ -25,98 +25,98 @@ void tst_QCompareHelpers::compareImpl()
     QFETCH(RightType, rhs);
     QFETCH(OrderingType, expectedOrdering);
 
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, expectedOrdering);
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, expectedOrdering);
 #ifdef __cpp_lib_three_way_comparison
     // Also check std types.
-    QT_TEST_ALL_COMPARISON_OPS(lhs, rhs, QtOrderingPrivate::to_std(expectedOrdering));
+    BOBUI_TEST_ALL_COMPARISON_OPS(lhs, rhs, BobUIOrderingPrivate::to_std(expectedOrdering));
 #endif // __cpp_lib_three_way_comparison
 }
 
 template<typename LeftType, typename RightType>
 void tst_QCompareHelpers::compareIntData()
 {
-    QTest::addColumn<LeftType>("lhs");
-    QTest::addColumn<RightType>("rhs");
-    QTest::addColumn<Qt::strong_ordering>("expectedOrdering");
+    BOBUIest::addColumn<LeftType>("lhs");
+    BOBUIest::addColumn<RightType>("rhs");
+    BOBUIest::addColumn<BobUI::strong_ordering>("expectedOrdering");
 
-    auto createRow = [](auto lhs, auto rhs, Qt::strong_ordering ordering) {
-        QTest::addRow("%d vs %d", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
+    auto createRow = [](auto lhs, auto rhs, BobUI::strong_ordering ordering) {
+        BOBUIest::addRow("%d vs %d", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
     };
 
-    createRow(0, 0, Qt::strong_ordering::equivalent);
-    createRow(-1, 0, Qt::strong_ordering::less);
-    createRow(1, 0, Qt::strong_ordering::greater);
+    createRow(0, 0, BobUI::strong_ordering::equivalent);
+    createRow(-1, 0, BobUI::strong_ordering::less);
+    createRow(1, 0, BobUI::strong_ordering::greater);
     constexpr int max = std::numeric_limits<int>::max();
     constexpr int min = std::numeric_limits<int>::min();
-    createRow(max, max, Qt::strong_ordering::equivalent);
-    createRow(min, min, Qt::strong_ordering::equivalent);
-    createRow(max, min, Qt::strong_ordering::greater);
-    createRow(min, max, Qt::strong_ordering::less);
+    createRow(max, max, BobUI::strong_ordering::equivalent);
+    createRow(min, min, BobUI::strong_ordering::equivalent);
+    createRow(max, min, BobUI::strong_ordering::greater);
+    createRow(min, max, BobUI::strong_ordering::less);
 }
 
 template<typename LeftType, typename RightType>
 void tst_QCompareHelpers::compareFloatData()
 {
-    QTest::addColumn<LeftType>("lhs");
-    QTest::addColumn<RightType>("rhs");
-    QTest::addColumn<Qt::partial_ordering>("expectedOrdering");
+    BOBUIest::addColumn<LeftType>("lhs");
+    BOBUIest::addColumn<RightType>("rhs");
+    BOBUIest::addColumn<BobUI::partial_ordering>("expectedOrdering");
 
-    auto createRow = [](auto lhs, auto rhs, Qt::partial_ordering ordering) {
-        QTest::addRow("%f vs %f", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
+    auto createRow = [](auto lhs, auto rhs, BobUI::partial_ordering ordering) {
+        BOBUIest::addRow("%f vs %f", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
     };
 
-    createRow(0.0, 0.0, Qt::partial_ordering::equivalent);
-    createRow(-0.000001, 0.0, Qt::partial_ordering::less);
-    createRow(0.000001, 0.0, Qt::partial_ordering::greater);
+    createRow(0.0, 0.0, BobUI::partial_ordering::equivalent);
+    createRow(-0.000001, 0.0, BobUI::partial_ordering::less);
+    createRow(0.000001, 0.0, BobUI::partial_ordering::greater);
 
     const double nan = qQNaN();
-    createRow(nan, 0.0, Qt::partial_ordering::unordered);
-    createRow(0.0, nan, Qt::partial_ordering::unordered);
-    createRow(nan, nan, Qt::partial_ordering::unordered);
+    createRow(nan, 0.0, BobUI::partial_ordering::unordered);
+    createRow(0.0, nan, BobUI::partial_ordering::unordered);
+    createRow(nan, nan, BobUI::partial_ordering::unordered);
 
     const double inf = qInf();
-    createRow(inf, 0.0, Qt::partial_ordering::greater);
-    createRow(0.0, inf, Qt::partial_ordering::less);
-    createRow(-inf, 0.0, Qt::partial_ordering::less);
-    createRow(0.0, -inf, Qt::partial_ordering::greater);
-    createRow(inf, inf, Qt::partial_ordering::equivalent);
-    createRow(-inf, -inf, Qt::partial_ordering::equivalent);
-    createRow(-inf, inf, Qt::partial_ordering::less);
-    createRow(inf, -inf, Qt::partial_ordering::greater);
+    createRow(inf, 0.0, BobUI::partial_ordering::greater);
+    createRow(0.0, inf, BobUI::partial_ordering::less);
+    createRow(-inf, 0.0, BobUI::partial_ordering::less);
+    createRow(0.0, -inf, BobUI::partial_ordering::greater);
+    createRow(inf, inf, BobUI::partial_ordering::equivalent);
+    createRow(-inf, -inf, BobUI::partial_ordering::equivalent);
+    createRow(-inf, inf, BobUI::partial_ordering::less);
+    createRow(inf, -inf, BobUI::partial_ordering::greater);
 
-    createRow(nan, inf, Qt::partial_ordering::unordered);
-    createRow(inf, nan, Qt::partial_ordering::unordered);
-    createRow(nan, -inf, Qt::partial_ordering::unordered);
-    createRow(-inf, nan, Qt::partial_ordering::unordered);
+    createRow(nan, inf, BobUI::partial_ordering::unordered);
+    createRow(inf, nan, BobUI::partial_ordering::unordered);
+    createRow(nan, -inf, BobUI::partial_ordering::unordered);
+    createRow(-inf, nan, BobUI::partial_ordering::unordered);
 }
 
 template<typename LeftType, typename RightType>
 void tst_QCompareHelpers::compareStringData()
 {
-    QTest::addColumn<LeftType>("lhs");
-    QTest::addColumn<RightType>("rhs");
-    QTest::addColumn<Qt::weak_ordering>("expectedOrdering");
+    BOBUIest::addColumn<LeftType>("lhs");
+    BOBUIest::addColumn<RightType>("rhs");
+    BOBUIest::addColumn<BobUI::weak_ordering>("expectedOrdering");
 
-    auto createRow = [](auto lhs, auto rhs, Qt::weak_ordering ordering) {
-        QTest::addRow("'%s' vs '%s'", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
+    auto createRow = [](auto lhs, auto rhs, BobUI::weak_ordering ordering) {
+        BOBUIest::addRow("'%s' vs '%s'", lhs, rhs) << LeftType(lhs) << RightType(rhs) << ordering;
     };
 
-    createRow("", "", Qt::weak_ordering::equivalent);
-    createRow("Ab", "abc", Qt::weak_ordering::less);
-    createRow("aBc", "AB", Qt::weak_ordering::greater);
-    createRow("ab", "AB", Qt::weak_ordering::equivalent);
-    createRow("ABC", "abc", Qt::weak_ordering::equivalent);
+    createRow("", "", BobUI::weak_ordering::equivalent);
+    createRow("Ab", "abc", BobUI::weak_ordering::less);
+    createRow("aBc", "AB", BobUI::weak_ordering::greater);
+    createRow("ab", "AB", BobUI::weak_ordering::equivalent);
+    createRow("ABC", "abc", BobUI::weak_ordering::equivalent);
 }
 
 void tst_QCompareHelpers::comparisonCompiles()
 {
-    QTestPrivate::testAllComparisonOperatorsCompile<IntWrapper>();
-    QTestPrivate::testAllComparisonOperatorsCompile<IntWrapper, int>();
-    QTestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper>();
-    QTestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper, double>();
-    QTestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper, IntWrapper>();
-    QTestPrivate::testAllComparisonOperatorsCompile<StringWrapper<QString>>();
-    QTestPrivate::testAllComparisonOperatorsCompile<StringWrapper<QString>, QAnyStringView>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<IntWrapper>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<IntWrapper, int>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper, double>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<DoubleWrapper, IntWrapper>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<StringWrapper<QString>>();
+    BOBUIestPrivate::testAllComparisonOperatorsCompile<StringWrapper<QString>, QAnyStringView>();
 }
 
 void tst_QCompareHelpers::compare_IntWrapper_data()
@@ -126,7 +126,7 @@ void tst_QCompareHelpers::compare_IntWrapper_data()
 
 void tst_QCompareHelpers::compare_IntWrapper()
 {
-    compareImpl<IntWrapper, IntWrapper, Qt::strong_ordering>();
+    compareImpl<IntWrapper, IntWrapper, BobUI::strong_ordering>();
 }
 
 void tst_QCompareHelpers::compare_IntWrapper_int_data()
@@ -136,7 +136,7 @@ void tst_QCompareHelpers::compare_IntWrapper_int_data()
 
 void tst_QCompareHelpers::compare_IntWrapper_int()
 {
-    compareImpl<IntWrapper, int, Qt::strong_ordering>();
+    compareImpl<IntWrapper, int, BobUI::strong_ordering>();
 }
 
 void tst_QCompareHelpers::compare_DoubleWrapper_data()
@@ -146,7 +146,7 @@ void tst_QCompareHelpers::compare_DoubleWrapper_data()
 
 void tst_QCompareHelpers::compare_DoubleWrapper()
 {
-    compareImpl<DoubleWrapper, DoubleWrapper, Qt::partial_ordering>();
+    compareImpl<DoubleWrapper, DoubleWrapper, BobUI::partial_ordering>();
 }
 
 void tst_QCompareHelpers::compare_DoubleWrapper_double_data()
@@ -156,44 +156,44 @@ void tst_QCompareHelpers::compare_DoubleWrapper_double_data()
 
 void tst_QCompareHelpers::compare_DoubleWrapper_double()
 {
-    compareImpl<DoubleWrapper, double, Qt::partial_ordering>();
+    compareImpl<DoubleWrapper, double, BobUI::partial_ordering>();
 }
 
 void tst_QCompareHelpers::compare_IntWrapper_DoubleWrapper_data()
 {
-    QTest::addColumn<IntWrapper>("lhs");
-    QTest::addColumn<DoubleWrapper>("rhs");
-    QTest::addColumn<Qt::partial_ordering>("expectedOrdering");
+    BOBUIest::addColumn<IntWrapper>("lhs");
+    BOBUIest::addColumn<DoubleWrapper>("rhs");
+    BOBUIest::addColumn<BobUI::partial_ordering>("expectedOrdering");
 
-    auto createRow = [](auto lhs, auto rhs, Qt::partial_ordering ordering) {
-        QTest::addRow("%d vs %f", lhs, rhs) << IntWrapper(lhs) << DoubleWrapper(rhs) << ordering;
+    auto createRow = [](auto lhs, auto rhs, BobUI::partial_ordering ordering) {
+        BOBUIest::addRow("%d vs %f", lhs, rhs) << IntWrapper(lhs) << DoubleWrapper(rhs) << ordering;
     };
 
-    createRow(0, 0.0, Qt::partial_ordering::equivalent);
-    createRow(-1, 0.0, Qt::partial_ordering::less);
-    createRow(1, 0.0, Qt::partial_ordering::greater);
-    createRow(0, -0.000001, Qt::partial_ordering::greater);
-    createRow(0, 0.000001, Qt::partial_ordering::less);
+    createRow(0, 0.0, BobUI::partial_ordering::equivalent);
+    createRow(-1, 0.0, BobUI::partial_ordering::less);
+    createRow(1, 0.0, BobUI::partial_ordering::greater);
+    createRow(0, -0.000001, BobUI::partial_ordering::greater);
+    createRow(0, 0.000001, BobUI::partial_ordering::less);
 
     constexpr int max = std::numeric_limits<int>::max();
     constexpr int min = std::numeric_limits<int>::min();
     const double nan = qQNaN();
-    createRow(0, nan, Qt::partial_ordering::unordered);
-    createRow(max, nan, Qt::partial_ordering::unordered);
-    createRow(min, nan, Qt::partial_ordering::unordered);
+    createRow(0, nan, BobUI::partial_ordering::unordered);
+    createRow(max, nan, BobUI::partial_ordering::unordered);
+    createRow(min, nan, BobUI::partial_ordering::unordered);
 
     const double inf = qInf();
-    createRow(0, inf, Qt::partial_ordering::less);
-    createRow(0, -inf, Qt::partial_ordering::greater);
-    createRow(max, inf, Qt::partial_ordering::less);
-    createRow(max, -inf, Qt::partial_ordering::greater);
-    createRow(min, inf, Qt::partial_ordering::less);
-    createRow(min, -inf, Qt::partial_ordering::greater);
+    createRow(0, inf, BobUI::partial_ordering::less);
+    createRow(0, -inf, BobUI::partial_ordering::greater);
+    createRow(max, inf, BobUI::partial_ordering::less);
+    createRow(max, -inf, BobUI::partial_ordering::greater);
+    createRow(min, inf, BobUI::partial_ordering::less);
+    createRow(min, -inf, BobUI::partial_ordering::greater);
 }
 
 void tst_QCompareHelpers::compare_IntWrapper_DoubleWrapper()
 {
-    compareImpl<IntWrapper, DoubleWrapper, Qt::partial_ordering>();
+    compareImpl<IntWrapper, DoubleWrapper, BobUI::partial_ordering>();
 }
 
 void tst_QCompareHelpers::compare_StringWrapper_data()
@@ -203,7 +203,7 @@ void tst_QCompareHelpers::compare_StringWrapper_data()
 
 void tst_QCompareHelpers::compare_StringWrapper()
 {
-    compareImpl<StringWrapper<QString>, StringWrapper<QString>, Qt::weak_ordering>();
+    compareImpl<StringWrapper<QString>, StringWrapper<QString>, BobUI::weak_ordering>();
 }
 
 void tst_QCompareHelpers::compare_StringWrapper_AnyStringView_data()
@@ -213,7 +213,7 @@ void tst_QCompareHelpers::compare_StringWrapper_AnyStringView_data()
 
 void tst_QCompareHelpers::compare_StringWrapper_AnyStringView()
 {
-    compareImpl<StringWrapper<QString>, QAnyStringView, Qt::weak_ordering>();
+    compareImpl<StringWrapper<QString>, QAnyStringView, BobUI::weak_ordering>();
 }
 
 #define DECLARE_TYPE(Name, Type, Attrs, RetType, Constexpr, Suffix) \
@@ -245,22 +245,22 @@ Attrs Constexpr bool comparesEqual(const Dummy ## Name &lhs, int rhs) noexcept \
 Attrs Constexpr RetType compareThreeWay(const Dummy ## Name &lhs, int rhs) noexcept \
 { Q_UNUSED(lhs); Q_UNUSED(rhs); return RetType::equivalent; }
 
-DECLARE_TYPE(PartialConstAttr, PARTIALLY, Q_DECL_PURE_FUNCTION, Qt::partial_ordering, constexpr,
+DECLARE_TYPE(PartialConstAttr, PARTIALLY, Q_DECL_PURE_FUNCTION, BobUI::partial_ordering, constexpr,
              _LITERAL_TYPE)
-DECLARE_TYPE(PartialConst, PARTIALLY, /* no attrs */, Qt::partial_ordering, constexpr, _LITERAL_TYPE)
-DECLARE_TYPE(PartialAttr, PARTIALLY, Q_DECL_CONST_FUNCTION, Qt::partial_ordering, , )
-DECLARE_TYPE(Partial, PARTIALLY, /* no attrs */, Qt::partial_ordering, , )
+DECLARE_TYPE(PartialConst, PARTIALLY, /* no attrs */, BobUI::partial_ordering, constexpr, _LITERAL_TYPE)
+DECLARE_TYPE(PartialAttr, PARTIALLY, Q_DECL_CONST_FUNCTION, BobUI::partial_ordering, , )
+DECLARE_TYPE(Partial, PARTIALLY, /* no attrs */, BobUI::partial_ordering, , )
 
-DECLARE_TYPE(WeakConstAttr, WEAKLY, Q_DECL_PURE_FUNCTION, Qt::weak_ordering, constexpr, _LITERAL_TYPE)
-DECLARE_TYPE(WeakConst, WEAKLY, /* no attrs */, Qt::weak_ordering, constexpr, _LITERAL_TYPE)
-DECLARE_TYPE(WeakAttr, WEAKLY, Q_DECL_CONST_FUNCTION, Qt::weak_ordering, , )
-DECLARE_TYPE(Weak, WEAKLY, /* no attrs */, Qt::weak_ordering, , )
+DECLARE_TYPE(WeakConstAttr, WEAKLY, Q_DECL_PURE_FUNCTION, BobUI::weak_ordering, constexpr, _LITERAL_TYPE)
+DECLARE_TYPE(WeakConst, WEAKLY, /* no attrs */, BobUI::weak_ordering, constexpr, _LITERAL_TYPE)
+DECLARE_TYPE(WeakAttr, WEAKLY, Q_DECL_CONST_FUNCTION, BobUI::weak_ordering, , )
+DECLARE_TYPE(Weak, WEAKLY, /* no attrs */, BobUI::weak_ordering, , )
 
-DECLARE_TYPE(StrongConstAttr, STRONGLY, Q_DECL_PURE_FUNCTION, Qt::strong_ordering, constexpr,
+DECLARE_TYPE(StrongConstAttr, STRONGLY, Q_DECL_PURE_FUNCTION, BobUI::strong_ordering, constexpr,
              _LITERAL_TYPE)
-DECLARE_TYPE(StrongConst, STRONGLY, /* no attrs */, Qt::strong_ordering, constexpr, _LITERAL_TYPE)
-DECLARE_TYPE(StrongAttr, STRONGLY, Q_DECL_CONST_FUNCTION, Qt::strong_ordering, , )
-DECLARE_TYPE(Strong, STRONGLY, /* no attrs */, Qt::strong_ordering, , )
+DECLARE_TYPE(StrongConst, STRONGLY, /* no attrs */, BobUI::strong_ordering, constexpr, _LITERAL_TYPE)
+DECLARE_TYPE(StrongAttr, STRONGLY, Q_DECL_CONST_FUNCTION, BobUI::strong_ordering, , )
+DECLARE_TYPE(Strong, STRONGLY, /* no attrs */, BobUI::strong_ordering, , )
 
 #define DECLARE_EQUALITY_COMPARABLE(Name, Attrs, Constexpr, Suffix) \
 class Dummy ## Name \
@@ -290,8 +290,8 @@ void tst_QCompareHelpers::generatedClasses()
 {
 #define COMPARE(ClassName) \
     do { \
-        QTestPrivate::testAllComparisonOperatorsCompile<ClassName>(); \
-        QTestPrivate::testAllComparisonOperatorsCompile<ClassName, int>(); \
+        BOBUIestPrivate::testAllComparisonOperatorsCompile<ClassName>(); \
+        BOBUIestPrivate::testAllComparisonOperatorsCompile<ClassName, int>(); \
     } while (0)
 
     COMPARE(DummyPartialConstAttr);
@@ -310,69 +310,69 @@ void tst_QCompareHelpers::generatedClasses()
     COMPARE(DummyStrong);
 #undef COMPARE
 
-    QTestPrivate::testEqualityOperatorsCompile<DummyConstAttr>();
-    QTestPrivate::testEqualityOperatorsCompile<DummyConstAttr, int>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyConstAttr>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyConstAttr, int>();
 
-    QTestPrivate::testEqualityOperatorsCompile<DummyConst>();
-    QTestPrivate::testEqualityOperatorsCompile<DummyConst, int>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyConst>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyConst, int>();
 
-    QTestPrivate::testEqualityOperatorsCompile<DummyAttr>();
-    QTestPrivate::testEqualityOperatorsCompile<DummyAttr, int>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyAttr>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyAttr, int>();
 
-    QTestPrivate::testEqualityOperatorsCompile<DummyNone>();
-    QTestPrivate::testEqualityOperatorsCompile<DummyNone, int>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyNone>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<DummyNone, int>();
 }
 
 template <typename LeftType, typename RightType,
-          Qt::if_integral<LeftType> = true,
-          Qt::if_integral<RightType> = true>
+          BobUI::if_integral<LeftType> = true,
+          BobUI::if_integral<RightType> = true>
 void testOrderForTypes()
 {
     LeftType l0{0};
     LeftType l1{1};
     RightType r0{0};
     RightType r1{1};
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r1), Qt::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r0), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r1), Qt::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r1), BobUI::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r0), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r1), BobUI::strong_ordering::equivalent);
     // also swap types
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l0), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l1), Qt::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l1), Qt::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l0), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l1), BobUI::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l1), BobUI::strong_ordering::equivalent);
 
 #ifdef __cpp_lib_three_way_comparison
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r1), std::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r0), std::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r1), std::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r1), std::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r0), std::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r1), std::strong_ordering::equivalent);
 
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l0), std::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l1), std::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l1), std::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l0), std::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l1), std::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l1), std::strong_ordering::equivalent);
 #endif // __cpp_lib_three_way_comparison
 
     if constexpr (std::is_signed_v<LeftType>) {
         LeftType lm1{-1};
-        QCOMPARE_EQ(Qt::compareThreeWay(lm1, r1), Qt::strong_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(r1, lm1), Qt::strong_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(lm1, r1), BobUI::strong_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(r1, lm1), BobUI::strong_ordering::greater);
 #ifdef __cpp_lib_three_way_comparison
-        QCOMPARE_EQ(Qt::compareThreeWay(lm1, r1), std::strong_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(r1, lm1), std::strong_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(lm1, r1), std::strong_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(r1, lm1), std::strong_ordering::greater);
 #endif // __cpp_lib_three_way_comparison
     }
     if constexpr (std::is_signed_v<RightType>) {
         RightType rm1{-1};
-        QCOMPARE_EQ(Qt::compareThreeWay(rm1, l1), Qt::strong_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(l1, rm1), Qt::strong_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(rm1, l1), BobUI::strong_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(l1, rm1), BobUI::strong_ordering::greater);
 #ifdef __cpp_lib_three_way_comparison
-        QCOMPARE_EQ(Qt::compareThreeWay(rm1, l1), std::strong_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(l1, rm1), std::strong_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(rm1, l1), std::strong_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(l1, rm1), std::strong_ordering::greater);
 #endif // __cpp_lib_three_way_comparison
     }
 }
 
 template <typename LeftType, typename RightType,
-          Qt::if_floating_point<LeftType> = true,
-          Qt::if_floating_point<RightType> = true>
+          BobUI::if_floating_point<LeftType> = true,
+          BobUI::if_floating_point<RightType> = true>
 void testOrderForTypes()
 {
     constexpr auto lNeg = LeftType(-1);
@@ -381,12 +381,12 @@ void testOrderForTypes()
     constexpr auto rNeg = RightType(-1);
     constexpr auto rPos = RightType( 1);
 
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rPos), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(lPos, rNeg), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lPos), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rPos, lNeg), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rNeg), Qt::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lNeg), Qt::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rPos), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lPos, rNeg), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lPos), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rPos, lNeg), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rNeg), BobUI::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lNeg), BobUI::partial_ordering::equivalent);
 
     LeftType lNaN{std::numeric_limits<LeftType>::quiet_NaN()};
     LeftType lInf{std::numeric_limits<LeftType>::infinity()};
@@ -394,55 +394,55 @@ void testOrderForTypes()
     RightType rNaN{std::numeric_limits<RightType>::quiet_NaN()};
     RightType rInf{std::numeric_limits<RightType>::infinity()};
 
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rPos), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lNaN), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rNaN), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, lPos), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, lNaN), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rNaN), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rInf), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, -lInf), Qt::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rPos), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lNaN), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rNaN), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, lPos), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, lNaN), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rNaN), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rInf), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, -lInf), BobUI::partial_ordering::unordered);
 
-    QCOMPARE_EQ(Qt::compareThreeWay(lInf, rPos), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(rPos, lInf), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rInf, lNeg), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rInf), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(lInf, -rInf), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(-lInf, rInf), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(-rInf, lInf), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rInf, -lInf), Qt::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lInf, rPos), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rPos, lInf), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rInf, lNeg), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rInf), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lInf, -rInf), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(-lInf, rInf), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(-rInf, lInf), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rInf, -lInf), BobUI::partial_ordering::greater);
 
 #ifdef __cpp_lib_three_way_comparison
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rPos), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(lPos, rNeg), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lPos), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rPos, lNeg), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rNeg), std::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lNeg), std::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rPos), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lPos, rNeg), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lPos), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rPos, lNeg), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rNeg), std::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lNeg), std::partial_ordering::equivalent);
 
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rPos), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNeg, lNaN), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rNaN), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, lPos), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, lNaN), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rNaN), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNaN, rInf), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, -lInf), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rPos), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNeg, lNaN), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rNaN), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, lPos), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, lNaN), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rNaN), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNaN, rInf), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, -lInf), std::partial_ordering::unordered);
 
-    QCOMPARE_EQ(Qt::compareThreeWay(lInf, rPos), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(rPos, lInf), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rInf, lNeg), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(lNeg, rInf), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(lInf, -rInf), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(-lInf, rInf), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(-rInf, lInf), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(rInf, -lInf), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lInf, rPos), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rPos, lInf), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rInf, lNeg), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lNeg, rInf), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(lInf, -rInf), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(-lInf, rInf), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(-rInf, lInf), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rInf, -lInf), std::partial_ordering::greater);
 #endif // __cpp_lib_three_way_comparison
 }
 
 template <typename IntType, typename FloatType,
-          Qt::if_integral<IntType> = true,
-          Qt::if_floating_point<FloatType> = true>
+          BobUI::if_integral<IntType> = true,
+          BobUI::if_floating_point<FloatType> = true>
 void testOrderForTypes()
 {
     IntType l0{0};
@@ -452,23 +452,23 @@ void testOrderForTypes()
     constexpr FloatType r1{1};
     FloatType rNaN{std::numeric_limits<FloatType>::quiet_NaN()};
 
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r1), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r0), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l0), Qt::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l1), Qt::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r0), Qt::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l0), Qt::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, rNaN), Qt::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, l1), Qt::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r1), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r0), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l0), BobUI::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l1), BobUI::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r0), BobUI::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l0), BobUI::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, rNaN), BobUI::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, l1), BobUI::partial_ordering::unordered);
 #ifdef __cpp_lib_three_way_comparison
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r1), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l1, r0), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r1, l0), std::partial_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l1), std::partial_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, r0), std::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(r0, l0), std::partial_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(l0, rNaN), std::partial_ordering::unordered);
-    QCOMPARE_EQ(Qt::compareThreeWay(rNaN, l1), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r1), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l1, r0), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r1, l0), std::partial_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l1), std::partial_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, r0), std::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(r0, l0), std::partial_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(l0, rNaN), std::partial_ordering::unordered);
+    QCOMPARE_EQ(BobUI::compareThreeWay(rNaN, l1), std::partial_ordering::unordered);
 #endif // __cpp_lib_three_way_comparison
 }
 
@@ -482,7 +482,7 @@ void tst_QCompareHelpers::builtinOrder()
 #define TEST_BUILTIN(Left, Right) \
     do { \
         auto printOnFailure = qScopeGuard([] { \
-                qDebug("Failed Qt::compareThreeWay() test for builtin types %s and %s", \
+                qDebug("Failed BobUI::compareThreeWay() test for builtin types %s and %s", \
                        #Left, #Right); \
             }); \
         testOrderForTypes<Left, Right>(); \
@@ -517,7 +517,7 @@ void tst_QCompareHelpers::builtinOrder()
     TEST_BUILTIN(char8_t, uint)
     TEST_BUILTIN(char8_t, quint64)
 #endif // __cpp_char8_t
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
     TEST_BUILTIN(qint128, qint128)
     TEST_BUILTIN(quint128, quint128)
     TEST_BUILTIN(qint128, int)
@@ -542,70 +542,70 @@ void tst_QCompareHelpers::builtinOrder()
 #if QFLOAT16_IS_NATIVE
     {
         // Cannot use TEST_BUILTIN here, because std::numeric_limits are not defined
-        // for QtPrivate::NativeFloat16Type.
-        constexpr auto smaller = QtPrivate::NativeFloat16Type(1);
-        constexpr auto bigger  = QtPrivate::NativeFloat16Type(2);
+        // for BobUIPrivate::NativeFloat16Type.
+        constexpr auto smaller = BobUIPrivate::NativeFloat16Type(1);
+        constexpr auto bigger  = BobUIPrivate::NativeFloat16Type(2);
         // native vs native
-        QCOMPARE_EQ(Qt::compareThreeWay(smaller, smaller), Qt::partial_ordering::equivalent);
-        QCOMPARE_EQ(Qt::compareThreeWay(smaller, bigger), Qt::partial_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(bigger, smaller), Qt::partial_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(smaller, smaller), BobUI::partial_ordering::equivalent);
+        QCOMPARE_EQ(BobUI::compareThreeWay(smaller, bigger), BobUI::partial_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(bigger, smaller), BobUI::partial_ordering::greater);
         // native vs float
-        QCOMPARE_EQ(Qt::compareThreeWay(smaller, 1.0f), Qt::partial_ordering::equivalent);
-        QCOMPARE_EQ(Qt::compareThreeWay(1.0f, bigger), Qt::partial_ordering::less);
-        QCOMPARE_EQ(Qt::compareThreeWay(bigger, 1.0f), Qt::partial_ordering::greater);
+        QCOMPARE_EQ(BobUI::compareThreeWay(smaller, 1.0f), BobUI::partial_ordering::equivalent);
+        QCOMPARE_EQ(BobUI::compareThreeWay(1.0f, bigger), BobUI::partial_ordering::less);
+        QCOMPARE_EQ(BobUI::compareThreeWay(bigger, 1.0f), BobUI::partial_ordering::greater);
         const auto floatNaN = std::numeric_limits<float>::quiet_NaN();
-        QCOMPARE_EQ(Qt::compareThreeWay(bigger, floatNaN), Qt::partial_ordering::unordered);
+        QCOMPARE_EQ(BobUI::compareThreeWay(bigger, floatNaN), BobUI::partial_ordering::unordered);
     }
 #endif
 
-    QCOMPARE_EQ(Qt::compareThreeWay(TestEnum::Smaller, TestEnum::Bigger),
-                Qt::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(TestEnum::Bigger, TestEnum::Smaller),
-                Qt::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(TestEnum::Smaller, TestEnum::Smaller),
-                Qt::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(TestEnum::Smaller, TestEnum::Bigger),
+                BobUI::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(TestEnum::Bigger, TestEnum::Smaller),
+                BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(TestEnum::Smaller, TestEnum::Smaller),
+                BobUI::strong_ordering::equivalent);
 
     std::array<int, 2> arr{1, 0};
-#if QT_DEPRECATED_SINCE(6, 8)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-    QCOMPARE_EQ(Qt::compareThreeWay(&arr[0], &arr[1]), Qt::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(arr.data(), &arr[0]), Qt::strong_ordering::equivalent);
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+    QCOMPARE_EQ(BobUI::compareThreeWay(&arr[0], &arr[1]), BobUI::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(arr.data(), &arr[0]), BobUI::strong_ordering::equivalent);
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
     class Base {};
     class Derived : public Base {};
 
     auto b = std::make_unique<Base>();
     auto d = std::make_unique<Derived>();
-#if QT_DEPRECATED_SINCE(6, 8)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-    QCOMPARE_NE(Qt::compareThreeWay(b.get(), d.get()), Qt::strong_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(b.get(), nullptr), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(nullptr, d.get()), Qt::strong_ordering::less);
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 8)
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+    QCOMPARE_NE(BobUI::compareThreeWay(b.get(), d.get()), BobUI::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(b.get(), nullptr), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(nullptr, d.get()), BobUI::strong_ordering::less);
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
 
-    // Check Qt::totally_ordered_wrapper
-    auto a0 = Qt::totally_ordered_wrapper(&arr[0]);
-    auto a1 = Qt::totally_ordered_wrapper(&arr[1]);
-    QCOMPARE_EQ(Qt::compareThreeWay(a0, a1), Qt::strong_ordering::less);
-    QCOMPARE_EQ(Qt::compareThreeWay(arr.data(), a0), Qt::strong_ordering::equivalent);
+    // Check BobUI::totally_ordered_wrapper
+    auto a0 = BobUI::totally_ordered_wrapper(&arr[0]);
+    auto a1 = BobUI::totally_ordered_wrapper(&arr[1]);
+    QCOMPARE_EQ(BobUI::compareThreeWay(a0, a1), BobUI::strong_ordering::less);
+    QCOMPARE_EQ(BobUI::compareThreeWay(arr.data(), a0), BobUI::strong_ordering::equivalent);
 
-    auto bWrapper = Qt::totally_ordered_wrapper(b.get());
-    auto dWrapper = Qt::totally_ordered_wrapper(d.get());
-    QCOMPARE_NE(Qt::compareThreeWay(bWrapper, dWrapper), Qt::strong_ordering::equivalent);
-    QCOMPARE_NE(Qt::compareThreeWay(bWrapper, d.get()), Qt::strong_ordering::equivalent);
-    QCOMPARE_NE(Qt::compareThreeWay(b.get(), dWrapper), Qt::strong_ordering::equivalent);
-    QCOMPARE_EQ(Qt::compareThreeWay(bWrapper, nullptr), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(Qt::compareThreeWay(nullptr, dWrapper), Qt::strong_ordering::less);
+    auto bWrapper = BobUI::totally_ordered_wrapper(b.get());
+    auto dWrapper = BobUI::totally_ordered_wrapper(d.get());
+    QCOMPARE_NE(BobUI::compareThreeWay(bWrapper, dWrapper), BobUI::strong_ordering::equivalent);
+    QCOMPARE_NE(BobUI::compareThreeWay(bWrapper, d.get()), BobUI::strong_ordering::equivalent);
+    QCOMPARE_NE(BobUI::compareThreeWay(b.get(), dWrapper), BobUI::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(bWrapper, nullptr), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(BobUI::compareThreeWay(nullptr, dWrapper), BobUI::strong_ordering::less);
     dWrapper.reset(nullptr);
-    QCOMPARE_EQ(Qt::compareThreeWay(nullptr, dWrapper), Qt::strong_ordering::equivalent);
+    QCOMPARE_EQ(BobUI::compareThreeWay(nullptr, dWrapper), BobUI::strong_ordering::equivalent);
 
 #undef TEST_BUILTIN
 }
 
-QTEST_MAIN(tst_QCompareHelpers)
+BOBUIEST_MAIN(tst_QCompareHelpers)
 #include "moc_tst_qcomparehelpers.cpp"

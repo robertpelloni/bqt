@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qoffscreencommon.h"
 #include "qoffscreenintegration.h"
 #include "qoffscreenwindow.h"
 
 
-#include <QtGui/QPainter>
-#include <QtGui/private/qpixmap_raster_p.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformcursor.h>
 #include <qpa/qplatformwindow.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPlatformWindow *QOffscreenScreen::windowContainingCursor = nullptr;
 
@@ -54,12 +54,12 @@ public:
         if (containing != previous)
             QWindowSystemInterface::handleEnterLeaveEvent(containing, previous, local, pos);
 
-        QWindowSystemInterface::handleMouseEvent(containing, local, pos, QGuiApplication::mouseButtons(), Qt::NoButton,
-                                                 QEvent::MouseMove, QGuiApplication::keyboardModifiers(), Qt::MouseEventSynthesizedByQt);
+        QWindowSystemInterface::handleMouseEvent(containing, local, pos, QGuiApplication::mouseButtons(), BobUI::NoButton,
+                                                 QEvent::MouseMove, QGuiApplication::keyboardModifiers(), BobUI::MouseEventSynthesizedByBobUI);
 
         QOffscreenScreen::windowContainingCursor = containing ? containing->handle() : nullptr;
     }
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void changeCursor(QCursor *windowCursor, QWindow *window) override
     {
         Q_UNUSED(windowCursor);
@@ -156,7 +156,7 @@ void QOffscreenBackingStore::resize(const QSize &size, const QRegion &)
     clearHash();
 }
 
-extern void qt_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
+extern void bobui_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
 
 bool QOffscreenBackingStore::scroll(const QRegion &area, int dx, int dy)
 {
@@ -164,7 +164,7 @@ bool QOffscreenBackingStore::scroll(const QRegion &area, int dx, int dy)
         return false;
 
     const QRect rect = area.boundingRect();
-    qt_scrollRectInImage(m_image, rect, QPoint(dx, dy));
+    bobui_scrollRectInImage(m_image, rect, QPoint(dx, dy));
 
     return true;
 }
@@ -174,7 +174,7 @@ void QOffscreenBackingStore::beginPaint(const QRegion &region)
     if (QImage::toPixelFormat(m_image.format()).alphaUsage() == QPixelFormat::UsesAlpha) {
         QPainter p(&m_image);
         p.setCompositionMode(QPainter::CompositionMode_Source);
-        const QColor blank = Qt::transparent;
+        const QColor blank = BobUI::transparent;
         for (const QRect &r : region)
             p.fillRect(r, blank);
     }
@@ -251,4 +251,4 @@ void *QOffscreenPlatformNativeInterface::nativeResourceForIntegration(const QByt
         return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

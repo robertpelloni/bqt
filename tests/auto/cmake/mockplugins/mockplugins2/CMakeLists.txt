@@ -1,12 +1,12 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_module(MockPlugins2
+bobui_internal_add_module(MockPlugins2
     NO_UNITY_BUILD
     SOURCES
         fake.cpp
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
     PUBLIC_LIBRARIES
-        Qt::Core
+        BobUI::Core
 )

@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
 \page android-manifest-file-configuration.html
@@ -16,13 +16,13 @@ Permissions and hardware features can also be set from the manifest.
 
 \Q4A maintains a version of \c {AndroidManifest.xml} with default
 configuration that include features, permissions and other configuration
-used by the build system which are needed for building and running Qt apps
+used by the build system which are needed for building and running BobUI apps
 on Android.
 
-\section1 Qt Project to Manifest Configuration
+\section1 BobUI Project to Manifest Configuration
 
-Qt defines some \l {Android: App Manifest <meta-data>}{meta-data} that is passed
-from the build systems and to \l {Deploying an Application on Android}{androiddeployqt}
+BobUI defines some \l {Android: App Manifest <meta-data>}{meta-data} that is passed
+from the build systems and to \l {Deploying an Application on Android}{androiddeploybobui}
 which populates the manifest with the correct values without explicitly setting
 these in the manifest file. Such \l {Android: App Manifest <meta-data>}{meta-data}
 is assigned a value in the form \c {"-- %%INSERT_VALUE%% --"}, for example:
@@ -37,9 +37,9 @@ is assigned a value in the form \c {"-- %%INSERT_VALUE%% --"}, for example:
 This would be populated with the version code that is set in, for example,
 \c CMake.
 
-\section1 Qt Default Configuration
+\section1 BobUI Default Configuration
 
-Qt sets the following manifest configuration by default:
+BobUI sets the following manifest configuration by default:
 
 \table
 \header
@@ -49,7 +49,7 @@ Qt sets the following manifest configuration by default:
 \row
     \li {1, 5} \l {Android: App Manifest <manifest>}{<manifest>}
     \li package
-    \li Sets the package name. The default value is \c {org.qtproject.example.app_name}.
+    \li Sets the package name. The default value is \c {org.bobuiproject.example.app_name}.
         \warning This field is deprecated and moved to \c build.gradle. It will be removed
         in an upcoming release.
 \row
@@ -59,11 +59,11 @@ Qt sets the following manifest configuration by default:
 \row
     \li android:versionCode
     \li Sets the internal version code. Populated from \c ANDROID_VERSION_CODE (qmake)
-        and \c QT_ANDROID_VERSION_CODE (CMake). The default value is \c 1.
+        and \c BOBUI_ANDROID_VERSION_CODE (CMake). The default value is \c 1.
 \row
     \li android:versionName
     \li Sets the public version name. Populated from \c ANDROID_VERSION_NAME (qmake)
-        and \c QT_ANDROID_VERSION_NAME (CMake). The default value is \c {1.0}.
+        and \c BOBUI_ANDROID_VERSION_NAME (CMake). The default value is \c {1.0}.
 \row
     \li <supports-screens>
     \li Sets the screen sizes that the app supports,
@@ -73,15 +73,15 @@ Qt sets the following manifest configuration by default:
     \li {1, 7} \l {Android: App Manifest <application>}{<application>}
     \li android:name
     \li The application class name. Default value is
-        \c {org.qtproject.qt.android.bindings.QtApplication}.
+        \c {org.bobuiproject.bobui.android.bindings.BobUIApplication}.
 \row
     \li android:label
-    \li The application name label. Default value is the Qt project's target name.
-        This can be set using \l {QT_ANDROID_APP_NAME}.
+    \li The application name label. Default value is the BobUI project's target name.
+        This can be set using \l {BOBUI_ANDROID_APP_NAME}.
 \row
     \li android:icon
     \li The application icon as a reference to a drawable or mipmap resource. This
-        tag is not used unless set using \l {QT_ANDROID_APP_ICON} or set manually
+        tag is not used unless set using \l {BOBUI_ANDROID_APP_ICON} or set manually
         in the \c {AndroidManifest.xml}.
 \row
     \li android:hardwareAccelerated
@@ -101,7 +101,7 @@ Qt sets the following manifest configuration by default:
 \row
     \li {1, 6} \l {Android: App Manifest <activity>}{<activity>}
     \li android:name
-    \li The activity class name. The default value is \c {org.qtproject.qt.android.bindings.QtActivity}.
+    \li The activity class name. The default value is \c {org.bobuiproject.bobui.android.bindings.BobUIActivity}.
 \row
     \li android:configChanges
     \li Lists configuration changes that the activity handles. Default value is
@@ -127,11 +127,11 @@ Qt sets the following manifest configuration by default:
         The default value is \c true.
 \endtable
 
-\target android-manifest-qt-specific-metadata
-\section1 Qt Specific Meta-data
+\target android-manifest-bobui-specific-metadata
+\section1 BobUI Specific Meta-data
 
-In addition to the default manifest configuration that Qt sets, Qt defines
-some meta-data that is valid for Qt apps only. Such meta-data is usually
+In addition to the default manifest configuration that BobUI sets, BobUI defines
+some meta-data that is valid for BobUI apps only. Such meta-data is usually
 under the \c <activity> section in the form:
 
 \badcode
@@ -140,7 +140,7 @@ under the \c <activity> section in the form:
     android:value="meta-data-value" />
 \endcode
 
-The following is a list of such meta-data defined by Qt:
+The following is a list of such meta-data defined by BobUI:
 
 \table
 \header
@@ -150,7 +150,7 @@ The following is a list of such meta-data defined by Qt:
     \li android.app.lib_name \target android.app.lib_name
     \li The filename of the native C++ library that is used by the activity.
         \note This attribute is mandatory and shouldn't be removed.
-        Default value is the Qt project's target name.
+        Default value is the BobUI project's target name.
 \row
     \li android.app.extract_android_style
     \li The method used to extract the native Android Style information.
@@ -160,17 +160,17 @@ The following is a list of such meta-data defined by Qt:
     \li android.app.background_running \target android.app.background_running
     \li Sets whether the app keeps running tasks in the background.
         Setting this to \c true is the equivalent of setting the environment
-        variable \c QT_BLOCK_EVENT_LOOPS_WHEN_SUSPENDED to \c 0.
+        variable \c BOBUI_BLOCK_EVENT_LOOPS_WHEN_SUSPENDED to \c 0.
         The default value is \c false.
 
         \warning Setting this to \c true may cause unexpected crash if the
         application tries to draw after \l {QGuiApplication::applicationStateChanged()}
-        signal is sent with a \l {Qt::ApplicationSuspended} state.
+        signal is sent with a \l {BobUI::ApplicationSuspended} state.
 \row
     \li android.app.arguments \target android.app.arguments
     \li Sets a list of arguments to pass to the app \c {"arg1 arg2"}.
         Populated from \c ANDROID_APPLICATION_ARGUMENTS (qmake) and
-        \c QT_ANDROID_APPLICATION_ARGUMENTS (CMake).
+        \c BOBUI_ANDROID_APPLICATION_ARGUMENTS (CMake).
         Default value is not set.
 \row
     \li android.app.splash_screen_drawable_portrait
@@ -216,7 +216,7 @@ the \c <application> section:
 \row
     \li android.app.system_libs_prefix \target android.app.system_libs_prefix
     \li Specifies a custom system library path to use for library loading lookup.
-        This is necessary when using Qt libraries installed outside an app's
+        This is necessary when using BobUI libraries installed outside an app's
         default native (JNI) library directory.
         The default value is \c {/system/lib/}.
 \endtable
@@ -232,12 +232,12 @@ The main ones are:
     \li \l {android.app.arguments}
 \endlist
 
-\section2 Qt Permissions and Features
+\section2 BobUI Permissions and Features
 
-Different Qt modules might require some Android permissions or features to
-function properly, for example, Camera permission in \l {QtMultimedia}.
-\l{The androiddeployqt Tool} takes care of including such requirements into the
-Android manifest during the build. Qt defines the following lines into the
+Different BobUI modules might require some Android permissions or features to
+function properly, for example, Camera permission in \l {BobUIMultimedia}.
+\l{The androiddeploybobui Tool} takes care of including such requirements into the
+Android manifest during the build. BobUI defines the following lines into the
 manifest, which they get replaced by
 the actual values:
 
@@ -249,57 +249,57 @@ the actual values:
 </manifest>
 \endcode
 
-\note If those lines are removed from the project manifest, Qt won't be
+\note If those lines are removed from the project manifest, BobUI won't be
 able to include the correct permissions. So some functionalities
 might not work properly.
 
 \section3 Customizing Permissions
 
-Since Qt 6.8.1, it is possible to override the default permissions set
-by Qt modules. This is useful if you need to define the same permissions
-as used by a Qt module, but with additional or different attributes.
+Since BobUI 6.8.1, it is possible to override the default permissions set
+by BobUI modules. This is useful if you need to define the same permissions
+as used by a BobUI module, but with additional or different attributes.
 
 There are two ways to achieve this. First way is to use
-\l {qt_add_android_permission} CMake function in the application's
+\l {bobui_add_android_permission} CMake function in the application's
 \c {CMakeLists.txt}. Permissions defined this way take precedence over
-the same permissions defined by Qt modules, avoiding duplication.
+the same permissions defined by BobUI modules, avoiding duplication.
 
 Second way is to manually define these permissions in the Android
 manifest file. Permissions defined this way take precedence over permissions
-set by Qt modules, or set with \l {qt_add_android_permission}.
+set by BobUI modules, or set with \l {bobui_add_android_permission}.
 
 \section2 Style Extraction
 
-Qt uses different methods to determine how Qt Widgets and Qt Quick Controls
+BobUI uses different methods to determine how BobUI Widgets and BobUI Quick Controls
 should be styled:
 
 \list
-    \li \c full: when using Qt Widgets or Qt Quick Controls 1.
+    \li \c full: when using BobUI Widgets or BobUI Quick Controls 1.
         \note This method is obsolete as it uses some Android non-SDK interfaces, that were
         restricted by Google starting from Android 9.0 (API 28). You should use one of the other methods.
-    \li \c default or  \c minimal: when using Qt Quick Controls 2 and no Qt Widgets or Qt Quick
+    \li \c default or  \c minimal: when using BobUI Quick Controls 2 and no BobUI Widgets or BobUI Quick
         Controls 1. This is faster than using the default or full options.
     \li \c none: no style extraction.
 \endlist
 
-\section1 Qt Manifest before 6.2 Release
+\section1 BobUI Manifest before 6.2 Release
 
-Versions of Qt earlier than 6.2 used to have an additional set of meta-data
-defined by Qt. These attributes used to manage dependencies and some were
-used by the discontinued \c Ministro service. With Qt 6.2, they should be removed.
+Versions of BobUI earlier than 6.2 used to have an additional set of meta-data
+defined by BobUI. These attributes used to manage dependencies and some were
+used by the discontinued \c Ministro service. With BobUI 6.2, they should be removed.
 Here is a list of these attributes:
 
 \list
-    \li android.app.qt_sources_resource_id
+    \li android.app.bobui_sources_resource_id
     \li android.app.repository
     \li android.app.bundled_libs_resource_id
-    \li android.app.bundle_local_qt_libs
-    \li android.app.use_local_qt_libs
+    \li android.app.bundle_local_bobui_libs
+    \li android.app.use_local_bobui_libs
     \li android.app.libs_prefix
     \li android.app.load_local_libs_resource_id
     \li android.app.load_local_jars
     \li android.app.static_init_classes
-    \li android.app.qt_libs_resource_id
+    \li android.app.bobui_libs_resource_id
     \li android.app.ministro_not_found_msg
     \li android.app.ministro_needed_msg
     \li android.app.fatal_error_msg

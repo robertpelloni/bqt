@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \title Calendar Widget Example
@@ -117,7 +117,7 @@
     The QComboBox class lets us attach user data as a QVariant to
     each item. The data can later be retrieved with QComboBox's
     \l{QComboBox::}{itemData()} function. QVariant doesn't directly
-    support the Qt::DayOfWeek data type, but it supports \c int, and
+    support the BobUI::DayOfWeek data type, but it supports \c int, and
     C++ will happily convert any enum value to \c int.
 
     \dots
@@ -204,7 +204,7 @@
     value, \c firstDayChanged() is invoked with the index of the
     combobox's new value. We retrieve the custom data item
     associated with the new current item using
-    \l{QComboBox::}{itemData()} and cast it to a Qt::DayOfWeek.
+    \l{QComboBox::}{itemData()} and cast it to a BobUI::DayOfWeek.
 
     \c selectionModeChanged(), \c horizontalHeaderChanged(), and \c
     verticalHeaderChanged() are very similar to \c firstDayChanged(),
@@ -235,7 +235,7 @@
     set the text format of each day of the week.
 
     The text format of a column in the calendar is given as a
-    QTextCharFormat, which besides the foreground color lets us
+    BOBUIextCharFormat, which besides the foreground color lets us
     specify various character formatting information. In this
     example, we only show a subset of the possibilities.
 
@@ -251,7 +251,7 @@
     changes the text format of
     the headers. We compare the current text of the \uicontrol {Header Text Format}
     combobox to determine which format to apply. (An alternative would
-    have been to store \l{QTextCharFormat} values alongside the combobox
+    have been to store \l{BOBUIextCharFormat} values alongside the combobox
     items.)
 
     \snippet widgets/calendarwidget/window.cpp 8

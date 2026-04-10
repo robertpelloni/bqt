@@ -16,7 +16,7 @@ public:
 
     bool hasProperty(const QString& key) const;
     QString getString(const QString& key, const QString& fallback = "") const;
-    QColor getColor(const QString& key, const QColor& fallback = Qt::transparent) const;
+    QColor getColor(const QString& key, const QColor& fallback = BobUI::transparent) const;
     int getInt(const QString& key, int fallback = 0) const;
     double getDouble(const QString& key, double fallback = 0.0) const;
 

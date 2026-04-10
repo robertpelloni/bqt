@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
+#include <bobuiest.h>
+#include <BOBUIest>
 #include <QFile>
 #include <QByteArray>
 #include <QBuffer>
@@ -14,12 +14,12 @@ class tst_jpeg : public QObject
 {
     Q_OBJECT
 private slots:
-    void jpegDecodingQtWebkitStyle();
+    void jpegDecodingBobUIWebkitStyle();
 };
 
-void tst_jpeg::jpegDecodingQtWebkitStyle()
+void tst_jpeg::jpegDecodingBobUIWebkitStyle()
 {
-    // QtWebkit currently calls size() to get the image size for layouting purposes.
+    // BobUIWebkit currently calls size() to get the image size for layouting purposes.
     // Then when it is in the viewport (we assume that here) it actually gets decoded.
     QString testFile = QFINDTESTDATA("n900.jpeg");
     QVERIFY2(!testFile.isEmpty(), "cannot find test file n900.jpeg!");
@@ -47,6 +47,6 @@ void tst_jpeg::jpegDecodingQtWebkitStyle()
     }
 }
 
-QTEST_MAIN(tst_jpeg)
+BOBUIEST_MAIN(tst_jpeg)
 
 #include "jpeg.moc"

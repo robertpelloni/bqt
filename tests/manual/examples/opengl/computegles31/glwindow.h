@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
@@ -13,14 +13,14 @@
 #include <QSequentialAnimationGroup>
 #include <QRectF>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLTexture;
 class QOpenGLShaderProgram;
 class QOpenGLBuffer;
 class QOpenGLVertexArrayObject;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class GLWindow : public QOpenGLWindow
 {

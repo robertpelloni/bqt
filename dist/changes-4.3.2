@@ -1,9 +1,9 @@
-Qt 4.3.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.3.0 and Qt 4.3.1.
+BobUI 4.3.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.3.0 and BobUI 4.3.1.
 
-The Qt version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
-4.0.x series. Applications compiled for Qt 4.0, 4.1 or 4.2 will continue to
-run with Qt 4.3.
+The BobUI version 4.3 series is binary compatible with the 4.2.x, 4.1.x and
+4.0.x series. Applications compiled for BobUI 4.0, 4.1 or 4.2 will continue to
+run with BobUI 4.3.
 
 ****************************************************************************
 *                           General                                        *
@@ -15,7 +15,7 @@ General Improvements
 - Legal
     * This version adds the Academic Free License 3.0, Artistic License 2.0,
       Zope Public License 2.1 and Eclipse Public License to the GPL
-      Exception for developers using the Open Source Edition of Qt.
+      Exception for developers using the Open Source Edition of BobUI.
       See the GPL Exception Version 1.1 page in the documentation
       for more information.
 
@@ -31,7 +31,7 @@ Tools
 Build System
 ------------
 
-    * Enabled MSVC project generator for the Qt Open Source edition.
+    * Enabled MSVC project generator for the BobUI Open Source edition.
     * Ensured that the QMAKE_CC and QMAKE_CXX variables are not defined in
       the Xcode project generator to allow distributed (distcc) builds to
       work again.
@@ -41,20 +41,20 @@ Build System
       Compiler for Linux. Precompiled header support has been fixed in
       this version of the compiler, so the -no-pch workaround is no longer
       needed. Note that there is still one outstanding bug in the 64-bit
-      compiler that requires configuring and building Qt with -debug.
+      compiler that requires configuring and building BobUI with -debug.
     * Updated the compiler notes for HP-UX platforms and compilers.
     * Introduced support for 32-bit builds on HP-UXi Itanium: hpuxi-acc-32.
-    * [163661] Fixed the dependency generator for ActiveQt server projects
+    * [163661] Fixed the dependency generator for ActiveBobUI server projects
       and certain custom compilers
     * [169756] Fixed mocinclude.tmp usage for Visual Studio 6.0 project
       files for cases where the length of the includes exceeds the amount
       allowed on the command line.
     * [166407] Fixed the generated target rules when using YACCSOURCES.
-    * [156948] Ensured that QTPLUGIN libraries come before the Qt libraries
+    * [156948] Ensured that BOBUIPLUGIN libraries come before the BobUI libraries
       on the link line.
-    * Ensured that support for libtiff is not built if Qt is configured
+    * Ensured that support for libtiff is not built if BobUI is configured
       without zlib support.
-    * [172629] Ensured that syncqt does not generate zero-size master
+    * [172629] Ensured that syncbobui does not generate zero-size master
       include files for modules that are not found.
     * Fixed generation of dependencies for EXTRA_TARGETS.
     * [159113] Ensured that the description for the Post Link build step in
@@ -72,7 +72,7 @@ I18n
 General Improvements
 --------------------
 
-- Qt Script
+- BobUI Script
     * QScriptEngine::evaluate() no longer throws a syntax error in the case
       where the script contains no actual statements.
     * [175714] Fixed parsing of octal numbers on Windows and Mac OS X.
@@ -94,7 +94,7 @@ General Improvements
 
 - Text rendering
     * [168625] Fixed rendering of text with perspective transforms on X11
-      and Qtopia Core.
+      and BobUIopia Core.
     * [173792] Fixed transformed rendering of non-scalable/bitmap Freetype
       glyphs.
 
@@ -238,7 +238,7 @@ General Improvements
       in a slot connected to the linkActivated() signal.
 
 - QLayout
-    * Fixed a performance regression from Qt 4.2 related to the introduction
+    * Fixed a performance regression from BobUI 4.2 related to the introduction
       of QStyle::layoutSpacing().
 
 - QLibrary
@@ -258,7 +258,7 @@ General Improvements
     * [173391] (Windows) Fixed bug where a subWindowActivated() signal was
       not emitted when the top-level window was minimized.
     * [173628] Fixed bug that could cause an endless resize loop when using
-      Qt::ScrollBarAsNeeded as the scroll bar policy.
+      BobUI::ScrollBarAsNeeded as the scroll bar policy.
 
 - QMdiSubWindow
     * [176769] Fixed bug where the title bar font was not updated on
@@ -322,7 +322,7 @@ General Improvements
 
 - QSqlTableModel
     * [170783] Fixed a bug that caused empty rows to be displayed in a
-      QTableView when a new model was set on the view. This was caused by
+      BOBUIableView when a new model was set on the view. This was caused by
       QSqlTableModel emitting the rowsAboutToBeInserted() and rowsInserted()
       signals even when the new model was empty.
 
@@ -332,7 +332,7 @@ General Improvements
     * [174625] Ensured that only one attempt is made to resolve OpenSSL
       symbols.
     * [173734] Removed two memory leaks.
-    * [172285] (Windows) Fixed link error that occurred when Qt was built
+    * [172285] (Windows) Fixed link error that occurred when BobUI was built
       as a static library with OpenSSL enabled.
 
 - QSvgGenerator
@@ -347,22 +347,22 @@ General Improvements
     * [175651] Fixed a crash that could occur when loading SVGs with
       undefined URLs.
 
-- QTableView
+- BOBUIableView
     * [171128] Fixed painting problems caused by deleting hidden rows.
     * [175462] Fixed a bug where the region for selection spanning items was
       calculated incorrectly.
 
-- QTcpSocket
+- BOBUIcpSocket
     * Fixed a crash that could occur when using SOCKS5 proxy before
       constructing a QCoreApplication.
     * [174517] (Windows) Prevented stalling when connecting to offline
       hosts.
 
-- QTextBrowser
+- BOBUIextBrowser
     * [173945] Fixed bug that could prevent scrolling to an anchor in an
       HTML file from working successfully.
 
-- QTextEdit
+- BOBUIextEdit
     * [171130] Fixed bug that could occur when appending text lists to a
       document, causing the first list element to be treated as normal text
       instead of a list element.
@@ -375,20 +375,20 @@ General Improvements
     * [172646] Fixed a bug that caused leading spaces in marked up text to
       be lost when the text was copied and pasted.
 
-- QTextLayout
+- BOBUIextLayout
     * Fixed a regression in the line breaking algorithm that lead to wrong
       results for justified text.
 
-- QTextStream
+- BOBUIextStream
     * [174516] (Windows) Fixed a bug in readLine() when reading "\r\r\n"
       from devices opened in QIODevice::Text mode.
 
-- QToolBar
+- BOBUIoolBar
     * [270967] Fixed the behavior of floating toolbars.
 
-- QTreeView
+- BOBUIreeView
     * [171947] Fixed a bug that prevented alternate colors in an inactive
-      QTreeView from being painted with the correct inactive palette role.
+      BOBUIreeView from being painted with the correct inactive palette role.
     * Prevented a number of possible crashes that could occur when there are
       pending changes.
     * [177165] Fixed a bug that caused minimum column widths to become
@@ -398,10 +398,10 @@ General Improvements
     * [174437] Fixed a bug that made it possible to interactively change
       the check state of an item, even if it was disabled.
     * [172426] Fixed a segmentation fault in QModelIndex that would occur
-      when showing QTreeView with QSortFilterProxyModel and delayed layout
+      when showing BOBUIreeView with QSortFilterProxyModel and delayed layout
       changes were pending.
 
-- QTreeWidget
+- BOBUIreeWidget
     * [174396] Fixed an issue that could cause setItemExpanded() to fail.
     * [172876] Ensured that itemBelow() and itemAbove() return correct
       values.
@@ -478,7 +478,7 @@ Linguist
     * [175144] Fixed a build issue that prevented the QIBASE driver from
       being built at the same time as the QODBC driver if Firebird header
       files older than v2.0 were used.
-    * [177530] Fixed a regression introduced in Qt 4.3.0 that broke stored
+    * [177530] Fixed a regression introduced in BobUI 4.3.0 that broke stored
       procedure support for Interbase/Firebird. When executing a procedure
       without parameters, the values were not retrievable.
 
@@ -516,7 +516,7 @@ X11
       on Linux.
     * [177143] Fixed a bug where the last activated QShortcut would be
       incorrectly repeated when pressing a key with no KeySym defined.
-    * [171224] Fix copy and paste of non-ASCII text from Qt 3 to Qt 4
+    * [171224] Fix copy and paste of non-ASCII text from BobUI 3 to BobUI 4
       applications.
     * Applied a workaround for a bug in gcc 3.4.2 that would cause 64-bit,
       bootstrapped applications to crash on Solaris.
@@ -538,7 +538,7 @@ Windows
 
 Mac OS X
 --------
-    * Note for Leopard pre-release builds: Qt 4.3.x applications running on
+    * Note for Leopard pre-release builds: BobUI 4.3.x applications running on
       the August Leopard pre-release (build 9A527) will not show any windows
       because of a regression in the Carbon library. This has been addressed
       for a future OS X release. In the meantime, if you *must* test your
@@ -558,13 +558,13 @@ Mac OS X
       accessibility features had been used.
     * [175164] Fixed a regression where font base lines for labels,
       checkboxes and radio buttons were not properly aligned.
-    * [173007] Fixed a regression that prevented qt_mac_set_native_menubar()
+    * [173007] Fixed a regression that prevented bobui_mac_set_native_menubar()
       from working.
     * [130809] Ensured that bold fonts are used correctly when generating
       PDFs.
     * [164962] Improved support for Mac drawers in QMainWindow.
 
-Qtopia Core
+BobUIopia Core
 -----------
     * Ensured that the font database cache is preserved across QWS server
       restarts.
@@ -574,7 +574,7 @@ Qtopia Core
     * [169569] Fixed a bug that caused uninitialized data to be blitted to
       the screen when a window was shown and resized before the first paint
       event.
-    * [274291] Added support for setting the QT_QWS_FONTDIR environment
+    * [274291] Added support for setting the BOBUI_QWS_FONTDIR environment
       variable to set the font installation path.
     * [174264] Fixed synchronization of QDirectPainter::startPainting() to
       be able to guarantee that QDirectPainter::allocatedRegion() returns

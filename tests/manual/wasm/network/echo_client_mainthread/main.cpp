@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore>
-#include <QtNetwork>
+#include <BobUICore>
+#include <BobUINetwork>
 
 int main(int argc, char **argv) {
 
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
              << "where it expects to find a WebSockify server, which forwards to the fortune server.";
 
     auto echo = [hostName, port]() {
-        QTcpSocket *socket = new QTcpSocket();
+        BOBUIcpSocket *socket = new BOBUIcpSocket();
 
         QObject::connect(socket, &QAbstractSocket::connected, [socket]() {
             qDebug() << "Connected";
@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
         socket->connectToHost(hostName, port);
     };
 
-    QTimer::singleShot(500, [echo](){
+    BOBUIimer::singleShot(500, [echo](){
         echo();
     });
 

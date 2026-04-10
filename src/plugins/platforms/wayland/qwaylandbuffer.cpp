@@ -1,14 +1,14 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2017 Giulio Camuffo.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandbuffer_p.h"
 
 #include <QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandBuffer::QWaylandBuffer()
 {
@@ -46,4 +46,4 @@ const wl_buffer_listener QWaylandBuffer::listener = {
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

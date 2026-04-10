@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
-#include <QtCore>
-#include <QtXml>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
+#include <BobUICore>
+#include <BobUIXml>
 
 class XKBLayout
 {
@@ -335,12 +335,12 @@ QString mapDirection(const QString &v)
     static bool initialized = false;
     if (!initialized) {
         // 1. xkbdata-X11R7.0-1.0.1/symbols% grep -l '\([Hh]ebrew\|[Aa]rabic\)' **/*
-        map["Arabic"] = "Qt::RightToLeft";
-        map["Persian"] = "Qt::RightToLeft";
-        map["Urdu"] = "Qt::RightToLeft";
+        map["Arabic"] = "BobUI::RightToLeft";
+        map["Persian"] = "BobUI::RightToLeft";
+        map["Urdu"] = "BobUI::RightToLeft";
         initialized = true;
     }
-    return map.value(v, "Qt::LeftToRight");
+    return map.value(v, "BobUI::LeftToRight");
 }
 
 int main(int argc, char **argv)
@@ -376,8 +376,8 @@ int main(int argc, char **argv)
     QList<XKBLayout> layouts = findLayouts(layoutList);
     // REUSE-IgnoreStart
     // copyright and stuff
-    printf("// Copyright (C) 2016 The Qt Company Ltd.\n"
-           "// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only\n"
+    printf("// Copyright (C) 2016 The BobUI Company Ltd.\n"
+           "// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only\n"
            "// This file is auto-generated, do not edit!\n"
            "// (Generated using util/xkbdatagen)\n"
            "\n");
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
     printf("static struct {\n"
            "    const char *layout;\n"
            "    const char *variant; // 0 means any variant\n"
-           "    Qt::LayoutDirection direction;\n"
+           "    BobUI::LayoutDirection direction;\n"
            "    QLocale::Language language;\n"
            "    QLocale::Territory territory;\n"
            "} xkbLayoutData[] = {\n");
@@ -424,7 +424,7 @@ int main(int argc, char **argv)
     }
 
     // wrapping up
-    printf("    { 0, 0, Qt::LeftToRight, QLocale::C, QLocale::AnyTerritory }\n"
+    printf("    { 0, 0, BobUI::LeftToRight, QLocale::C, QLocale::AnyTerritory }\n"
            "};\n");
 
     return 0;

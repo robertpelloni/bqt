@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QANDROIDTYPES_P_H
 #define QANDROIDTYPES_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 
-#include <QtCore/qjniobject.h>
-#include <QtCore/qjnienvironment.h>
-#include <QtCore/qjnitypes.h>
+#include <BobUICore/qjniobject.h>
+#include <BobUICore/qjnienvironment.h>
+#include <BobUICore/qjnitypes.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_DECLARE_JNI_CLASS_STANDARD_TYPES
+#ifndef BOBUI_DECLARE_JNI_CLASS_STANDARD_TYPES
 Q_DECLARE_JNI_CLASS(Void, "java/lang/Void");
 Q_DECLARE_JNI_CLASS(Integer, "java/lang/Integer");
 Q_DECLARE_JNI_CLASS(Long, "java/lang/Long");
@@ -34,10 +34,10 @@ Q_DECLARE_JNI_CLASS(HashMap, "java/util/HashMap")
 Q_DECLARE_JNI_CLASS(Set, "java/util/Set")
 #endif
 
-Q_DECLARE_JNI_CLASS(JQtAbstractItemModel, "org/qtproject/qt/android/QtAbstractItemModel")
-Q_DECLARE_JNI_CLASS(JQtAndroidItemModelProxy, "org/qtproject/qt/android/QtAndroidItemModelProxy")
-Q_DECLARE_JNI_CLASS(JQtModelIndex, "org/qtproject/qt/android/QtModelIndex")
+Q_DECLARE_JNI_CLASS(JBobUIAbstractItemModel, "org/bobuiproject/bobui/android/BobUIAbstractItemModel")
+Q_DECLARE_JNI_CLASS(JBobUIAndroidItemModelProxy, "org/bobuiproject/bobui/android/BobUIAndroidItemModelProxy")
+Q_DECLARE_JNI_CLASS(JBobUIModelIndex, "org/bobuiproject/bobui/android/BobUIModelIndex")
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QANDROIDTYPES_P_H

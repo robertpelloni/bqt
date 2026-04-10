@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [16]
     QSqlQueryModel *model = new QSqlQueryModel;
     model->setQuery("SELECT name, salary FROM employee");
-    model->setHeaderData(0, Qt::Horizontal, tr("Name"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Salary"));
+    model->setHeaderData(0, BobUI::Horizontal, tr("Name"));
+    model->setHeaderData(1, BobUI::Horizontal, tr("Salary"));
 //! [17]
-    QTableView *view = new QTableView;
+    BOBUIableView *view = new BOBUIableView;
 //! [17] //! [18]
     view->setModel(model);
 //! [18] //! [19]
@@ -58,10 +58,10 @@ void QSqlTableModel_snippets()
     model->setTable("employee");
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
-    model->setHeaderData(0, Qt::Horizontal, tr("Name"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Salary"));
+    model->setHeaderData(0, BobUI::Horizontal, tr("Name"));
+    model->setHeaderData(1, BobUI::Horizontal, tr("Salary"));
 
-    QTableView *view = new QTableView;
+    BOBUIableView *view = new BOBUIableView;
     view->setModel(model);
     view->hideColumn(0); // don't show the ID
     view->show();

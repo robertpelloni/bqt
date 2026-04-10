@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGET_H
 #define QWIDGET_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qmargins.h>
-#if QT_CONFIG(action)
-#include <QtGui/qaction.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qmargins.h>
+#if BOBUI_CONFIG(action)
+#include <BobUIGui/qaction.h>
 #endif
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qfontmetrics.h>
-#include <QtGui/qfontinfo.h>
-#include <QtWidgets/qsizepolicy.h>
-#include <QtGui/qregion.h>
-#include <QtGui/qbrush.h>
-#include <QtGui/qcursor.h>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/qkeysequence.h>
-#endif
-
-#ifdef QT_INCLUDE_COMPAT
-#include <QtGui/qevent.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/qfontmetrics.h>
+#include <BobUIGui/qfontinfo.h>
+#include <BobUIWidgets/qsizepolicy.h>
+#include <BobUIGui/qregion.h>
+#include <BobUIGui/qbrush.h>
+#include <BobUIGui/qcursor.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/qkeysequence.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+#ifdef BOBUI_INCLUDE_COMPAT
+#include <BobUIGui/qevent.h>
+#endif
+
+BOBUI_BEGIN_NAMESPACE
 
 
 class QLayout;
@@ -50,7 +50,7 @@ class QResizeEvent;
 class QCloseEvent;
 class QContextMenuEvent;
 class QInputMethodEvent;
-class QTabletEvent;
+class BOBUIabletEvent;
 class QDragEnterEvent;
 class QDragMoveEvent;
 class QDragLeaveEvent;
@@ -66,7 +66,7 @@ class QGraphicsProxyWidget;
 class QGraphicsEffect;
 class QRasterWindowSurface;
 class QPixmap;
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 class QDebug;
 #endif
 
@@ -75,7 +75,7 @@ class QWidgetData
 public:
     WId winid;
     uint widget_attributes;
-    Qt::WindowFlags window_flags;
+    BobUI::WindowFlags window_flags;
     uint window_state : 4;
     uint focus_policy : 4;
     uint sizehint_forced :1;
@@ -101,7 +101,7 @@ class Q_WIDGETS_EXPORT QWidget : public QObject, public QPaintDevice
     Q_DECLARE_PRIVATE(QWidget)
 
     Q_PROPERTY(bool modal READ isModal)
-    Q_PROPERTY(Qt::WindowModality windowModality READ windowModality WRITE setWindowModality)
+    Q_PROPERTY(BobUI::WindowModality windowModality READ windowModality WRITE setWindowModality)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(QRect geometry READ geometry WRITE setGeometry)
     Q_PROPERTY(QRect frameGeometry READ frameGeometry)
@@ -131,15 +131,15 @@ class Q_WIDGETS_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(QSize baseSize READ baseSize WRITE setBaseSize)
     Q_PROPERTY(QPalette palette READ palette WRITE setPalette)
     Q_PROPERTY(QFont font READ font WRITE setFont)
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor RESET unsetCursor)
 #endif
     Q_PROPERTY(bool mouseTracking READ hasMouseTracking WRITE setMouseTracking)
     Q_PROPERTY(bool tabletTracking READ hasTabletTracking WRITE setTabletTracking)
     Q_PROPERTY(bool isActiveWindow READ isActiveWindow)
-    Q_PROPERTY(Qt::FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy)
+    Q_PROPERTY(BobUI::FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy)
     Q_PROPERTY(bool focus READ hasFocus)
-    Q_PROPERTY(Qt::ContextMenuPolicy contextMenuPolicy READ contextMenuPolicy WRITE setContextMenuPolicy)
+    Q_PROPERTY(BobUI::ContextMenuPolicy contextMenuPolicy READ contextMenuPolicy WRITE setContextMenuPolicy)
     Q_PROPERTY(bool updatesEnabled READ updatesEnabled WRITE setUpdatesEnabled DESIGNABLE false)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible DESIGNABLE false)
     Q_PROPERTY(bool minimized READ isMinimized)
@@ -153,32 +153,32 @@ class Q_WIDGETS_EXPORT QWidget : public QObject, public QPaintDevice
     Q_PROPERTY(QString windowIconText READ windowIconText WRITE setWindowIconText NOTIFY windowIconTextChanged) // deprecated
     Q_PROPERTY(double windowOpacity READ windowOpacity WRITE setWindowOpacity)
     Q_PROPERTY(bool windowModified READ isWindowModified WRITE setWindowModified)
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip)
     Q_PROPERTY(int toolTipDuration READ toolTipDuration WRITE setToolTipDuration)
 #endif
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
     Q_PROPERTY(QString statusTip READ statusTip WRITE setStatusTip)
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     Q_PROPERTY(QString whatsThis READ whatsThis WRITE setWhatsThis)
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_PROPERTY(QString accessibleName READ accessibleName WRITE setAccessibleName)
     Q_PROPERTY(QString accessibleDescription READ accessibleDescription WRITE setAccessibleDescription)
     Q_PROPERTY(QString accessibleIdentifier READ accessibleIdentifier WRITE setAccessibleIdentifier)
 #endif
-    Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection RESET unsetLayoutDirection)
-    QDOC_PROPERTY(Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
+    Q_PROPERTY(BobUI::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection RESET unsetLayoutDirection)
+    QDOC_PROPERTY(BobUI::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
     Q_PROPERTY(bool autoFillBackground READ autoFillBackground WRITE setAutoFillBackground)
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
 #endif
     Q_PROPERTY(QLocale locale READ locale WRITE setLocale RESET unsetLocale)
     Q_PROPERTY(QString windowFilePath READ windowFilePath WRITE setWindowFilePath)
-    Q_PROPERTY(Qt::InputMethodHints inputMethodHints READ inputMethodHints WRITE setInputMethodHints)
+    Q_PROPERTY(BobUI::InputMethodHints inputMethodHints READ inputMethodHints WRITE setInputMethodHints)
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
 #if 0
     // ### TODO: make this work (requires SFINAE-friendly connect())
     template <typename...Args>
@@ -190,9 +190,9 @@ class Q_WIDGETS_EXPORT QWidget : public QObject, public QPaintDevice
     // good-enough compromise for now
     template <typename...Args>
     using compatible_action_slot_args = std::enable_if_t<std::conjunction_v<
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
             std::disjunction<
-                std::is_same<Args, Qt::ConnectionType>,
+                std::is_same<Args, BobUI::ConnectionType>,
                 std::negation<std::is_convertible<Args, QKeySequence>>
             >...,
 #endif
@@ -201,7 +201,7 @@ class Q_WIDGETS_EXPORT QWidget : public QObject, public QPaintDevice
             std::negation<std::is_convertible<Args, QString>>...
         >>;
 #endif
-#endif // QT_CONFIG(action)
+#endif // BOBUI_CONFIG(action)
 
 public:
     enum RenderFlag {
@@ -211,7 +211,7 @@ public:
     };
     Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 
-    explicit QWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QWidget(QWidget* parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
     ~QWidget();
 
     int devType() const override;
@@ -226,15 +226,15 @@ public:
     void setStyle(QStyle *);
     // Widget types and states
 
-#if QT_DEPRECATED_SINCE(6, 1)
-    QT_DEPRECATED_VERSION_X_6_1("Use isWindow()")
+#if BOBUI_DEPRECATED_SINCE(6, 1)
+    BOBUI_DEPRECATED_VERSION_X_6_1("Use isWindow()")
     bool isTopLevel() const;
 #endif
     bool isWindow() const;
 
     bool isModal() const;
-    Qt::WindowModality windowModality() const;
-    void setWindowModality(Qt::WindowModality windowModality);
+    BobUI::WindowModality windowModality() const;
+    void setWindowModality(BobUI::WindowModality windowModality);
 
     bool isEnabled() const;
     bool isEnabledTo(const QWidget *) const;
@@ -327,7 +327,7 @@ public:
     QFontMetrics fontMetrics() const;
     QFontInfo fontInfo() const;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursor cursor() const;
     void setCursor(const QCursor &);
     void unsetCursor();
@@ -355,23 +355,23 @@ public:
 
     Q_INVOKABLE QPixmap grab(const QRect &rectangle = QRect(QPoint(0, 0), QSize(-1, -1)));
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     QGraphicsEffect *graphicsEffect() const;
     void setGraphicsEffect(QGraphicsEffect *effect);
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
-#ifndef QT_NO_GESTURES
-    void grabGesture(Qt::GestureType type, Qt::GestureFlags flags = Qt::GestureFlags());
-    void ungrabGesture(Qt::GestureType type);
+#ifndef BOBUI_NO_GESTURES
+    void grabGesture(BobUI::GestureType type, BobUI::GestureFlags flags = BobUI::GestureFlags());
+    void ungrabGesture(BobUI::GestureType type);
 #endif
 
 public Q_SLOTS:
     void setWindowTitle(const QString &);
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     void setStyleSheet(const QString& styleSheet);
 #endif
 public:
-#ifndef QT_NO_STYLE_STYLESHEET
+#ifndef BOBUI_NO_STYLE_STYLESHEET
     QString styleSheet() const;
 #endif
     QString windowTitle() const;
@@ -388,21 +388,21 @@ public:
     qreal windowOpacity() const;
 
     bool isWindowModified() const;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     void setToolTip(const QString &);
     QString toolTip() const;
     void setToolTipDuration(int msec);
     int toolTipDuration() const;
 #endif
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
     void setStatusTip(const QString &);
     QString statusTip() const;
 #endif
-#if QT_CONFIG(whatsthis)
+#if BOBUI_CONFIG(whatsthis)
     void setWhatsThis(const QString &);
     QString whatsThis() const;
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QString accessibleName() const;
     void setAccessibleName(const QString &name);
     QString accessibleDescription() const;
@@ -411,46 +411,46 @@ public:
     void setAccessibleIdentifier(const QString &identifier);
 #endif
 
-    void setLayoutDirection(Qt::LayoutDirection direction);
-    Qt::LayoutDirection layoutDirection() const;
+    void setLayoutDirection(BobUI::LayoutDirection direction);
+    BobUI::LayoutDirection layoutDirection() const;
     void unsetLayoutDirection();
 
     void setLocale(const QLocale &locale);
     QLocale locale() const;
     void unsetLocale();
 
-    inline bool isRightToLeft() const { return layoutDirection() == Qt::RightToLeft; }
-    inline bool isLeftToRight() const { return layoutDirection() == Qt::LeftToRight; }
+    inline bool isRightToLeft() const { return layoutDirection() == BobUI::RightToLeft; }
+    inline bool isLeftToRight() const { return layoutDirection() == BobUI::LeftToRight; }
 
 public Q_SLOTS:
-    inline void setFocus() { setFocus(Qt::OtherFocusReason); }
+    inline void setFocus() { setFocus(BobUI::OtherFocusReason); }
 
 public:
     bool isActiveWindow() const;
     void activateWindow();
     void clearFocus();
 
-    void setFocus(Qt::FocusReason reason);
-    Qt::FocusPolicy focusPolicy() const;
-    void setFocusPolicy(Qt::FocusPolicy policy);
+    void setFocus(BobUI::FocusReason reason);
+    BobUI::FocusPolicy focusPolicy() const;
+    void setFocusPolicy(BobUI::FocusPolicy policy);
     bool hasFocus() const;
     static void setTabOrder(QWidget *, QWidget *);
     static void setTabOrder(std::initializer_list<QWidget *> widgets);
     void setFocusProxy(QWidget *);
     QWidget *focusProxy() const;
-    Qt::ContextMenuPolicy contextMenuPolicy() const;
-    void setContextMenuPolicy(Qt::ContextMenuPolicy policy);
+    BobUI::ContextMenuPolicy contextMenuPolicy() const;
+    void setContextMenuPolicy(BobUI::ContextMenuPolicy policy);
 
     // Grab functions
     void grabMouse();
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     void grabMouse(const QCursor &);
 #endif
     void releaseMouse();
     void grabKeyboard();
     void releaseKeyboard();
-#ifndef QT_NO_SHORTCUT
-    int grabShortcut(const QKeySequence &key, Qt::ShortcutContext context = Qt::WindowShortcut);
+#ifndef BOBUI_NO_SHORTCUT
+    int grabShortcut(const QKeySequence &key, BobUI::ShortcutContext context = BobUI::WindowShortcut);
     void releaseShortcut(int id);
     void setShortcutEnabled(int id, bool enable = true);
     void setShortcutAutoRepeat(int id, bool enable = true);
@@ -462,7 +462,7 @@ public:
     inline bool updatesEnabled() const;
     void setUpdatesEnabled(bool enable);
 
-#if QT_CONFIG(graphicsview)
+#if BOBUI_CONFIG(graphicsview)
     QGraphicsProxyWidget *graphicsProxyWidget() const;
 #endif
 
@@ -515,9 +515,9 @@ public:
     bool isMaximized() const;
     bool isFullScreen() const;
 
-    Qt::WindowStates windowState() const;
-    void setWindowState(Qt::WindowStates state);
-    void overrideWindowState(Qt::WindowStates state);
+    BobUI::WindowStates windowState() const;
+    void setWindowState(BobUI::WindowStates state);
+    void overrideWindowState(BobUI::WindowStates state);
 
     virtual QSize sizeHint() const;
     virtual QSize minimumSizeHint() const;
@@ -542,7 +542,7 @@ public:
     void updateGeometry();
 
     void setParent(QWidget *parent);
-    void setParent(QWidget *parent, Qt::WindowFlags f);
+    void setParent(QWidget *parent, BobUI::WindowFlags f);
 
     void scroll(int dx, int dy);
     void scroll(int dx, int dy, const QRect&);
@@ -557,7 +557,7 @@ public:
     bool acceptDrops() const;
     void setAcceptDrops(bool on);
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     //actions
     void addAction(QAction *action);
     void addActions(const QList<QAction*> &actions);
@@ -570,9 +570,9 @@ public:
     QAction *addAction(const QString &text);
     QAction *addAction(const QIcon &icon, const QString &text);
     QAction *addAction(const QString &text, const QObject *receiver,
-                       const char *member, Qt::ConnectionType type = Qt::AutoConnection);
+                       const char *member, BobUI::ConnectionType type = BobUI::AutoConnection);
     QAction *addAction(const QIcon &icon, const QString &text, const QObject *receiver,
-                       const char *member, Qt::ConnectionType type = Qt::AutoConnection);
+                       const char *member, BobUI::ConnectionType type = BobUI::AutoConnection);
     template <typename...Args, typename = compatible_action_slot_args<Args...>>
     QAction *addAction(const QString &text, Args&&...args)
     {
@@ -588,15 +588,15 @@ public:
         return result;
     }
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     QAction *addAction(const QString &text, const QKeySequence &shortcut);
     QAction *addAction(const QIcon &icon, const QString &text, const QKeySequence &shortcut);
     QAction *addAction(const QString &text, const QKeySequence &shortcut,
                        const QObject *receiver, const char *member,
-                       Qt::ConnectionType type = Qt::AutoConnection);
+                       BobUI::ConnectionType type = BobUI::AutoConnection);
     QAction *addAction(const QIcon &icon, const QString &text, const QKeySequence &shortcut,
                        const QObject *receiver, const char *member,
-                       Qt::ConnectionType type = Qt::AutoConnection);
+                       BobUI::ConnectionType type = BobUI::AutoConnection);
 
     template <typename...Args, typename = compatible_action_slot_args<Args...>>
     QAction *addAction(const QString &text, const QKeySequence &shortcut, Args&&...args)
@@ -612,25 +612,25 @@ public:
         connect(result, &QAction::triggered, std::forward<Args>(args)...);
         return result;
     }
-#endif // QT_CONFIG(shortcut)
-#endif // QT_NO_ACTION
+#endif // BOBUI_CONFIG(shortcut)
+#endif // BOBUI_NO_ACTION
 
     QWidget *parentWidget() const;
 
-    void setWindowFlags(Qt::WindowFlags type);
-    inline Qt::WindowFlags windowFlags() const;
-    void setWindowFlag(Qt::WindowType, bool on = true);
-    void overrideWindowFlags(Qt::WindowFlags type);
+    void setWindowFlags(BobUI::WindowFlags type);
+    inline BobUI::WindowFlags windowFlags() const;
+    void setWindowFlag(BobUI::WindowType, bool on = true);
+    void overrideWindowFlags(BobUI::WindowFlags type);
 
-    inline Qt::WindowType windowType() const;
+    inline BobUI::WindowType windowType() const;
 
     static QWidget *find(WId);
     inline QWidget *childAt(int x, int y) const;
     QWidget *childAt(const QPoint &p) const;
     QWidget *childAt(const QPointF &p) const;
 
-    void setAttribute(Qt::WidgetAttribute, bool on = true);
-    inline bool testAttribute(Qt::WidgetAttribute) const;
+    void setAttribute(BobUI::WidgetAttribute, bool on = true);
+    inline bool testAttribute(BobUI::WidgetAttribute) const;
 
     QPaintEngine *paintEngine() const override;
 
@@ -638,7 +638,7 @@ public:
 
     bool isAncestorOf(const QWidget *child) const;
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     bool hasEditFocus() const;
     void setEditFocus(bool on);
 #endif
@@ -652,7 +652,7 @@ public:
     QScreen *screen() const;
     void setScreen(QScreen *);
 
-    static QWidget *createWindowContainer(QWindow *window, QWidget *parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags());
+    static QWidget *createWindowContainer(QWindow *window, QWidget *parent=nullptr, BobUI::WindowFlags flags=BobUI::WindowFlags());
 
 Q_SIGNALS:
     void windowTitleChanged(const QString &title);
@@ -667,7 +667,7 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     virtual void wheelEvent(QWheelEvent *event);
 #endif
     virtual void keyPressEvent(QKeyEvent *event);
@@ -680,17 +680,17 @@ protected:
     virtual void moveEvent(QMoveEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
     virtual void closeEvent(QCloseEvent *event);
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     virtual void contextMenuEvent(QContextMenuEvent *event);
 #endif
-#if QT_CONFIG(tabletevent)
-    virtual void tabletEvent(QTabletEvent *event);
+#if BOBUI_CONFIG(tabletevent)
+    virtual void tabletEvent(BOBUIabletEvent *event);
 #endif
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     virtual void actionEvent(QActionEvent *event);
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dragMoveEvent(QDragMoveEvent *event);
     virtual void dragLeaveEvent(QDragLeaveEvent *event);
@@ -712,13 +712,13 @@ protected:
 
     virtual void inputMethodEvent(QInputMethodEvent *);
 public:
-    virtual QVariant inputMethodQuery(Qt::InputMethodQuery) const;
+    virtual QVariant inputMethodQuery(BobUI::InputMethodQuery) const;
 
-    Qt::InputMethodHints inputMethodHints() const;
-    void setInputMethodHints(Qt::InputMethodHints hints);
+    BobUI::InputMethodHints inputMethodHints() const;
+    void setInputMethodHints(BobUI::InputMethodHints hints);
 
 protected Q_SLOTS:
-    void updateMicroFocus(Qt::InputMethodQuery query = Qt::ImQueryAll);
+    void updateMicroFocus(BobUI::InputMethodQuery query = BobUI::ImQueryAll);
 protected:
 
     void create(WId = 0, bool initializeWindow = true,
@@ -732,11 +732,11 @@ protected:
     inline bool focusPreviousChild() { return focusNextPrevChild(false); }
 
 protected:
-    QWidget(QWidgetPrivate &d, QWidget* parent, Qt::WindowFlags f);
+    QWidget(QWidgetPrivate &d, QWidget* parent, BobUI::WindowFlags f);
 private:
     void setBackingStore(QBackingStore *store);
 
-    bool testAttribute_helper(Qt::WidgetAttribute) const;
+    bool testAttribute_helper(BobUI::WidgetAttribute) const;
 
     QLayout *takeLayout();
 
@@ -768,14 +768,14 @@ private:
     friend class QAccessibleWidget;
     friend class QAccessibleTable;
     friend class QAccessibleTabButton;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QGestureManager;
     friend class QWinNativePanGestureRecognizer;
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
     friend class QWidgetEffectSourcePrivate;
 
-    friend Q_WIDGETS_EXPORT QWidgetData *qt_qwidget_data(QWidget *widget);
-    friend Q_WIDGETS_EXPORT QWidgetPrivate *qt_widget_private(QWidget *widget);
+    friend Q_WIDGETS_EXPORT QWidgetData *bobui_qwidget_data(QWidget *widget);
+    friend Q_WIDGETS_EXPORT QWidgetPrivate *bobui_widget_private(QWidget *widget);
 
 private:
     Q_DISABLE_COPY(QWidget)
@@ -803,24 +803,24 @@ template <> inline const QWidget *qobject_cast<const QWidget*>(const QObject *o)
 inline QWidget *QWidget::childAt(int ax, int ay) const
 { return childAt(QPointF(ax, ay)); }
 
-inline Qt::WindowType QWidget::windowType() const
-{ return static_cast<Qt::WindowType>((data->window_flags & Qt::WindowType_Mask).toInt()); }
-inline Qt::WindowFlags QWidget::windowFlags() const
+inline BobUI::WindowType QWidget::windowType() const
+{ return static_cast<BobUI::WindowType>((data->window_flags & BobUI::WindowType_Mask).toInt()); }
+inline BobUI::WindowFlags QWidget::windowFlags() const
 { return data->window_flags; }
 
-#if QT_DEPRECATED_SINCE(6, 1)
+#if BOBUI_DEPRECATED_SINCE(6, 1)
 inline bool QWidget::isTopLevel() const
-{ return bool(windowType() & Qt::Window); }
+{ return bool(windowType() & BobUI::Window); }
 #endif
 
 inline bool QWidget::isWindow() const
-{ return bool(windowType() & Qt::Window); }
+{ return bool(windowType() & BobUI::Window); }
 
 inline bool QWidget::isEnabled() const
-{ return !testAttribute(Qt::WA_Disabled); }
+{ return !testAttribute(BobUI::WA_Disabled); }
 
 inline bool QWidget::isModal() const
-{ return data->window_modality != Qt::NonModal; }
+{ return data->window_modality != BobUI::NonModal; }
 
 inline int QWidget::minimumWidth() const
 { return minimumSize().width(); }
@@ -856,31 +856,31 @@ inline QFontInfo QWidget::fontInfo() const
 { return QFontInfo(data->fnt); }
 
 inline void QWidget::setMouseTracking(bool enable)
-{ setAttribute(Qt::WA_MouseTracking, enable); }
+{ setAttribute(BobUI::WA_MouseTracking, enable); }
 
 inline bool QWidget::hasMouseTracking() const
-{ return testAttribute(Qt::WA_MouseTracking); }
+{ return testAttribute(BobUI::WA_MouseTracking); }
 
 inline bool QWidget::underMouse() const
-{ return testAttribute(Qt::WA_UnderMouse); }
+{ return testAttribute(BobUI::WA_UnderMouse); }
 
 inline void QWidget::setTabletTracking(bool enable)
-{ setAttribute(Qt::WA_TabletTracking, enable); }
+{ setAttribute(BobUI::WA_TabletTracking, enable); }
 
 inline bool QWidget::hasTabletTracking() const
-{ return testAttribute(Qt::WA_TabletTracking); }
+{ return testAttribute(BobUI::WA_TabletTracking); }
 
 inline bool QWidget::updatesEnabled() const
-{ return !testAttribute(Qt::WA_UpdatesDisabled); }
+{ return !testAttribute(BobUI::WA_UpdatesDisabled); }
 
 inline void QWidget::update(int ax, int ay, int aw, int ah)
 { update(QRect(ax, ay, aw, ah)); }
 
 inline bool QWidget::isVisible() const
-{ return testAttribute(Qt::WA_WState_Visible); }
+{ return testAttribute(BobUI::WA_WState_Visible); }
 
 inline bool QWidget::isHidden() const
-{ return testAttribute(Qt::WA_WState_Hidden); }
+{ return testAttribute(BobUI::WA_WState_Hidden); }
 
 inline void QWidget::move(int ax, int ay)
 { move(QPoint(ax, ay)); }
@@ -912,7 +912,7 @@ inline QWidget *QWidget::parentWidget() const
 inline void QWidget::setSizePolicy(QSizePolicy::Policy hor, QSizePolicy::Policy ver)
 { setSizePolicy(QSizePolicy(hor, ver)); }
 
-inline bool QWidget::testAttribute(Qt::WidgetAttribute attribute) const
+inline bool QWidget::testAttribute(BobUI::WidgetAttribute attribute) const
 {
     if (attribute < int(8*sizeof(uint)))
         return data->widget_attributes & (1<<attribute);
@@ -921,10 +921,10 @@ inline bool QWidget::testAttribute(Qt::WidgetAttribute attribute) const
 
 #define QWIDGETSIZE_MAX ((1<<24)-1)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug, const QWidget *);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGET_H

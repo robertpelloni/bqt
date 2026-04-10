@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QBUFFER_H
 #define QBUFFER_H
 
-#include <QtCore/qiodevice.h>
-#include <QtCore/qbytearray.h>
+#include <BobUICore/qiodevice.h>
+#include <BobUICore/qbytearray.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QObject;
 class QBufferPrivate;
 
 class Q_CORE_EXPORT QBuffer : public QIODevice
 {
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     Q_OBJECT
 #endif
 
 public:
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     explicit QBuffer(QObject *parent = nullptr);
     QBuffer(QByteArray *buf, QObject *parent = nullptr);
 #else
@@ -34,7 +34,7 @@ public:
     void setBuffer(QByteArray *a);
 
     void setData(const QByteArray &data);
-#if QT_CORE_REMOVED_SINCE(6, 5) && QT_POINTER_SIZE != 4
+#if BOBUI_CORE_REMOVED_SINCE(6, 5) && BOBUI_POINTER_SIZE != 4
     void setData(const char *data, int len) { setData(data, qsizetype(len)); }
 #endif
     void setData(const char *data, qsizetype len);
@@ -50,7 +50,7 @@ public:
     bool canReadLine() const override;
 
 protected:
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
     void connectNotify(const QMetaMethod &) override;
     void disconnectNotify(const QMetaMethod &) override;
 #endif
@@ -62,6 +62,6 @@ private:
     Q_DISABLE_COPY(QBuffer)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QBUFFER_H

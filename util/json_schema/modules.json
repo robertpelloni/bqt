@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Qt modules",
+  "title": "BobUI modules",
   "description": "Schema for the modules/*.json files",
-  "$comment": "Implemented in qt_describe_module() function from QtModuleHelpers.cmake",
+  "$comment": "Implemented in bobui_describe_module() function from BobUIModuleHelpers.cmake",
   "type": "object",
   "oneOf": [
     {
@@ -20,15 +20,15 @@
           "type": "object",
           "properties": {
             "name": {
-              "description": "Name of the Qt module",
+              "description": "Name of the BobUI module",
               "type": "string"
             },
             "version": {
-              "description": "Qt project version that built the module",
+              "description": "BobUI project version that built the module",
               "type": "string"
             },
             "repository": {
-              "description": "Qt repository where the module is defined in",
+              "description": "BobUI repository where the module is defined in",
               "type": "string"
             }
           },
@@ -44,7 +44,7 @@
       ]
     },
     "modules_v2": {
-      "$comment": "Introduced in https://codereview.qt-project.org/c/qt/qtbase/+/602617",
+      "$comment": "Introduced in https://codereview.bobui-project.org/c/bobui/bobuibase/+/602617",
       "allOf": [
         {
           "$ref": "#/$defs/modules_base"
@@ -72,7 +72,7 @@
       "unevaluatedProperties": false
     },
     "modules_v3": {
-      "$comment": "Introduced in https://codereview.qt-project.org/c/qt/qtbase/+/654550",
+      "$comment": "Introduced in https://codereview.bobui-project.org/c/bobui/bobuibase/+/654550",
       "allOf": [
         {
           "$ref": "#/$defs/modules_base"
@@ -160,7 +160,7 @@
           "type": "object",
           "properties": {
             "version": {
-              "description": "The CMAKE_SYSTEM_VERSION. Maybe null if it cannot be shared, see: https://codereview.qt-project.org/c/qt/qtbase/+/654550",
+              "description": "The CMAKE_SYSTEM_VERSION. Maybe null if it cannot be shared, see: https://codereview.bobui-project.org/c/bobui/bobuibase/+/654550",
               "type": [
                 "string",
                 "null"
@@ -206,7 +206,7 @@
       "additionalProperties": false
     },
     "extra_module_information": {
-      "$comment": "Constructed from extra_module_information in QtModuleHelpers.cmake",
+      "$comment": "Constructed from extra_module_information in BobUIModuleHelpers.cmake",
       "type": "object",
       "properties": {
         "plugin_types": {

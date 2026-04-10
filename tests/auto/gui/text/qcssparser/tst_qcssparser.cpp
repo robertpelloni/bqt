@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtXml/QtXml>
-#include <QtGui/QFontInfo>
-#include <QtGui/QFontMetrics>
+#include <BOBUIest>
+#include <BobUIXml/BobUIXml>
+#include <BobUIGui/QFontInfo>
+#include <BobUIGui/QFontMetrics>
 
 #include "private/qcssparser_p.h"
 
@@ -73,20 +73,20 @@ private slots:
 
 void tst_QCssParser::scanner_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QString>("output");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QString>("output");
 
 #if defined(Q_OS_ANDROID)
     QDir d(":/");
 #else
-    QDir d(QT_TESTCASE_SOURCEDIR);
+    QDir d(BOBUI_TESTCASE_SOURCEDIR);
 #endif
     d.cd("testdata");
     d.cd("scanner");
     const auto entries = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     for (const QFileInfo &test : entries) {
         QString dir = test.absoluteFilePath() + QDir::separator();
-        QTest::newRow(qPrintable(test.baseName()))
+        BOBUIest::newRow(qPrintable(test.baseName()))
             << dir + "input"
             << dir + "output"
             ;
@@ -200,118 +200,118 @@ Q_DECLARE_METATYPE(QCss::Value)
 
 void tst_QCssParser::term_data()
 {
-    QTest::addColumn<bool>("parseSuccess");
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QCss::Value>("expectedValue");
+    BOBUIest::addColumn<bool>("parseSuccess");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QCss::Value>("expectedValue");
 
     QCss::Value val;
 
     val.type = QCss::Value::Percentage;
     val.variant = QVariant(double(200));
-    QTest::newRow("percentage") << true << "200%" << val;
+    BOBUIest::newRow("percentage") << true << "200%" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10px");
-    QTest::newRow("px") << true << "10px" << val;
+    BOBUIest::newRow("px") << true << "10px" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10cm");
-    QTest::newRow("cm") << true << "10cm" << val;
+    BOBUIest::newRow("cm") << true << "10cm" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10mm");
-    QTest::newRow("mm") << true << "10mm" << val;
+    BOBUIest::newRow("mm") << true << "10mm" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10pt");
-    QTest::newRow("pt") << true << "10pt" << val;
+    BOBUIest::newRow("pt") << true << "10pt" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10pc");
-    QTest::newRow("pc") << true << "10pc" << val;
+    BOBUIest::newRow("pc") << true << "10pc" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("42in");
-    QTest::newRow("inch") << true << "42in" << val;
+    BOBUIest::newRow("inch") << true << "42in" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10deg");
-    QTest::newRow("deg") << true << "10deg" << val;
+    BOBUIest::newRow("deg") << true << "10deg" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10rad");
-    QTest::newRow("rad") << true << "10rad" << val;
+    BOBUIest::newRow("rad") << true << "10rad" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10grad");
-    QTest::newRow("grad") << true << "10grad" << val;
+    BOBUIest::newRow("grad") << true << "10grad" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10ms");
-    QTest::newRow("time") << true << "10ms" << val;
+    BOBUIest::newRow("time") << true << "10ms" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10s");
-    QTest::newRow("times") << true << "10s" << val;
+    BOBUIest::newRow("times") << true << "10s" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10hz");
-    QTest::newRow("hz") << true << "10hz" << val;
+    BOBUIest::newRow("hz") << true << "10hz" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10khz");
-    QTest::newRow("khz") << true << "10khz" << val;
+    BOBUIest::newRow("khz") << true << "10khz" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10myunit");
-    QTest::newRow("dimension") << true << "10myunit" << val;
+    BOBUIest::newRow("dimension") << true << "10myunit" << val;
 
     val.type = QCss::Value::Percentage;
 
     val.type = QCss::Value::Percentage;
     val.variant = QVariant(double(-200));
-    QTest::newRow("minuspercentage") << true << "-200%" << val;
+    BOBUIest::newRow("minuspercentage") << true << "-200%" << val;
 
     val.type = QCss::Value::Length;
     val.variant = QString("10em");
-    QTest::newRow("ems") << true << "10em" << val;
+    BOBUIest::newRow("ems") << true << "10em" << val;
 
     val.type = QCss::Value::String;
     val.variant = QVariant(QString("foo"));
-    QTest::newRow("string") << true << "\"foo\"" << val;
+    BOBUIest::newRow("string") << true << "\"foo\"" << val;
 
     val.type = QCss::Value::Function;
     val.variant = QVariant(QStringList() << "myFunc" << "23, (nested text)");
-    QTest::newRow("function") << true << "myFunc(23, (nested text))" << val;
+    BOBUIest::newRow("function") << true << "myFunc(23, (nested text))" << val;
 
-    QTest::newRow("function_failure") << false << "myFunction((blah)" << val;
-    QTest::newRow("function_failure2") << false << "+myFunc(23, (nested text))" << val;
+    BOBUIest::newRow("function_failure") << false << "myFunction((blah)" << val;
+    BOBUIest::newRow("function_failure2") << false << "+myFunc(23, (nested text))" << val;
 
     val.type = QCss::Value::Color;
     val.variant = QVariant(QColor("#12ff34"));
-    QTest::newRow("hexcolor") << true << "#12ff34" << val;
+    BOBUIest::newRow("hexcolor") << true << "#12ff34" << val;
 
     val.type = QCss::Value::Color;
     val.variant = QVariant(QColor("#ffbb00"));
-    QTest::newRow("hexcolor2") << true << "#fb0" << val;
+    BOBUIest::newRow("hexcolor2") << true << "#fb0" << val;
 
     val.type = QCss::Value::Uri;
     val.variant = QString("www.kde.org");
-    QTest::newRow("uri1") << true << "url(\"www.kde.org\")" << val;
-    QTest::newRow("uri2") << true << "url(www.kde.org)" << val;
+    BOBUIest::newRow("uri1") << true << "url(\"www.kde.org\")" << val;
+    BOBUIest::newRow("uri2") << true << "url(www.kde.org)" << val;
 
     val.type = QCss::Value::Uri;
     val.variant = QString("www.kde.org/test?key=value&v=123");
-    QTest::newRow("uri_query_quoted") << true << "url(\"www.kde.org/test?key=value&v=123\")" << val;
-    QTest::newRow("uri_query_unquoted") << true << "url(www.kde.org/test?key=value&v=123)" << val;
+    BOBUIest::newRow("uri_query_quoted") << true << "url(\"www.kde.org/test?key=value&v=123\")" << val;
+    BOBUIest::newRow("uri_query_unquoted") << true << "url(www.kde.org/test?key=value&v=123)" << val;
 
     val.type = QCss::Value::KnownIdentifier;
     val.variant = int(QCss::Value_Italic);
-    QTest::newRow("italic") << true << "italic" << val;
+    BOBUIest::newRow("italic") << true << "italic" << val;
 
     val.type = QCss::Value::KnownIdentifier;
     val.variant = int(QCss::Value_Italic);
-    QTest::newRow("ItaLIc") << true << "ItaLIc" << val;
+    BOBUIest::newRow("ItaLIc") << true << "ItaLIc" << val;
 }
 
 void tst_QCssParser::term()
@@ -323,7 +323,7 @@ void tst_QCssParser::term()
     QCss::Parser parser(css);
     QCss::Value val;
     QVERIFY(parser.testTerm());
-    QEXPECT_FAIL("uri_query_unquoted", "QTBUG-131842", Abort);
+    QEXPECT_FAIL("uri_query_unquoted", "BOBUIBUG-131842", Abort);
     QCOMPARE(parser.parseTerm(&val), parseSuccess);
     if (parseSuccess) {
         QCOMPARE(int(val.type), int(expectedValue.type));
@@ -336,9 +336,9 @@ void tst_QCssParser::term()
 
 void tst_QCssParser::expr_data()
 {
-    QTest::addColumn<bool>("parseSuccess");
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QList<QCss::Value>>("expectedValues");
+    BOBUIest::addColumn<bool>("parseSuccess");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QList<QCss::Value>>("expectedValues");
 
     QList<QCss::Value> values;
     QCss::Value val;
@@ -355,7 +355,7 @@ void tst_QCssParser::expr_data()
     values << comma;
     val.variant = QLatin1String("baz");
     values << val;
-    QTest::newRow("list") << true << "foo, bar, baz" << values;
+    BOBUIest::newRow("list") << true << "foo, bar, baz" << values;
     values.clear();
 }
 
@@ -514,8 +514,8 @@ Q_DECLARE_METATYPE(QCss::Selector)
 
 void tst_QCssParser::selector_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QCss::Selector>("expectedSelector");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QCss::Selector>("expectedSelector");
 
     {
         QCss::Selector sel;
@@ -529,7 +529,7 @@ void tst_QCssParser::selector_data()
         basic.elementName = "div";
         sel.basicSelectors << basic;
 
-        QTest::newRow("comment") << QString("p/* */+ div") << sel;
+        BOBUIest::newRow("comment") << QString("p/* */+ div") << sel;
     }
 
     {
@@ -539,7 +539,7 @@ void tst_QCssParser::selector_data()
         basic.elementName = QString();
         sel.basicSelectors << basic;
 
-        QTest::newRow("any") << QString("*") << sel;
+        BOBUIest::newRow("any") << QString("*") << sel;
     }
 
     {
@@ -549,7 +549,7 @@ void tst_QCssParser::selector_data()
         basic.elementName = "e";
         sel.basicSelectors << basic;
 
-        QTest::newRow("element") << QString("e") << sel;
+        BOBUIest::newRow("element") << QString("e") << sel;
     }
 
     {
@@ -564,7 +564,7 @@ void tst_QCssParser::selector_data()
         basic.relationToNext = QCss::BasicSelector::NoRelation;
         sel.basicSelectors << basic;
 
-        QTest::newRow("descendant") << QString("e f") << sel;
+        BOBUIest::newRow("descendant") << QString("e f") << sel;
     }
 
     {
@@ -579,7 +579,7 @@ void tst_QCssParser::selector_data()
         basic.relationToNext = QCss::BasicSelector::NoRelation;
         sel.basicSelectors << basic;
 
-        QTest::newRow("parent") << QString("e > f") << sel;
+        BOBUIest::newRow("parent") << QString("e > f") << sel;
     }
 
     {
@@ -592,7 +592,7 @@ void tst_QCssParser::selector_data()
         basic.pseudos.append(pseudo);
         sel.basicSelectors << basic;
 
-        QTest::newRow("first-child") << QString("e:first-child") << sel;
+        BOBUIest::newRow("first-child") << QString("e:first-child") << sel;
     }
 
     {
@@ -606,7 +606,7 @@ void tst_QCssParser::selector_data()
         basic.pseudos.append(pseudo);
         sel.basicSelectors << basic;
 
-        QTest::newRow("lang") << QString("e:lang(c)") << sel;
+        BOBUIest::newRow("lang") << QString("e:lang(c)") << sel;
     }
 
     {
@@ -621,7 +621,7 @@ void tst_QCssParser::selector_data()
         basic.relationToNext = QCss::BasicSelector::NoRelation;
         sel.basicSelectors << basic;
 
-        QTest::newRow("lastsibling") << QString("e + f") << sel;
+        BOBUIest::newRow("lastsibling") << QString("e + f") << sel;
     }
 
     {
@@ -636,7 +636,7 @@ void tst_QCssParser::selector_data()
         basic.relationToNext = QCss::BasicSelector::NoRelation;
         sel.basicSelectors << basic;
 
-        QTest::newRow("previoussibling") << QString("e ~ f") << sel;
+        BOBUIest::newRow("previoussibling") << QString("e ~ f") << sel;
     }
 
     {
@@ -649,7 +649,7 @@ void tst_QCssParser::selector_data()
         basic.attributeSelectors << attrSel;
         sel.basicSelectors << basic;
 
-        QTest::newRow("attr") << QString("e[foo]") << sel;
+        BOBUIest::newRow("attr") << QString("e[foo]") << sel;
     }
 
     {
@@ -664,7 +664,7 @@ void tst_QCssParser::selector_data()
         basic.attributeSelectors << attrSel;
         sel.basicSelectors << basic;
 
-        QTest::newRow("attr-equal") << QString("e[foo=\"warning\"]") << sel;
+        BOBUIest::newRow("attr-equal") << QString("e[foo=\"warning\"]") << sel;
     }
 
     {
@@ -679,7 +679,7 @@ void tst_QCssParser::selector_data()
         basic.attributeSelectors << attrSel;
         sel.basicSelectors << basic;
 
-        QTest::newRow("attr-includes") << QString("e[foo~=\"warning\"]") << sel;
+        BOBUIest::newRow("attr-includes") << QString("e[foo~=\"warning\"]") << sel;
     }
 
     {
@@ -694,7 +694,7 @@ void tst_QCssParser::selector_data()
         basic.attributeSelectors << attrSel;
         sel.basicSelectors << basic;
 
-        QTest::newRow("attr-dash") << QString("e[lang|=\"en\"]") << sel;
+        BOBUIest::newRow("attr-dash") << QString("e[lang|=\"en\"]") << sel;
     }
 
     {
@@ -709,7 +709,7 @@ void tst_QCssParser::selector_data()
         basic.attributeSelectors << attrSel;
         sel.basicSelectors << basic;
 
-        QTest::newRow("attr-contains") << QString("e[foo*=\"warning\"]") << sel;
+        BOBUIest::newRow("attr-contains") << QString("e[foo*=\"warning\"]") << sel;
     }
 
     {
@@ -729,7 +729,7 @@ void tst_QCssParser::selector_data()
 
         sel.basicSelectors << basic;
 
-        QTest::newRow("class") << QString("div.warning.foo") << sel;
+        BOBUIest::newRow("class") << QString("div.warning.foo") << sel;
     }
 
     {
@@ -740,7 +740,7 @@ void tst_QCssParser::selector_data()
         basic.ids << "myid";
         sel.basicSelectors << basic;
 
-        QTest::newRow("id") << QString("e#myid") << sel;
+        BOBUIest::newRow("id") << QString("e#myid") << sel;
     }
 }
 
@@ -807,15 +807,15 @@ void tst_QCssParser::escapes()
 
 void tst_QCssParser::malformedDeclarations_data()
 {
-    QTest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("css");
 
-    QTest::newRow("1") << QString("p { color:green }");
-    QTest::newRow("2") << QString("p { color:green; color }  /* malformed declaration missing ':', value */");
-    QTest::newRow("3") << QString("p { color:red;   color; color:green }  /* same with expected recovery */");
-    QTest::newRow("4") << QString("p { color:green; color: } /* malformed declaration missing value */");
-    QTest::newRow("5") << QString("p { color:red;   color:; color:green } /* same with expected recovery */");
-    QTest::newRow("6") << QString("p { color:green; color{;color:maroon} } /* unexpected tokens { } */");
-    QTest::newRow("7") << QString("p { color:red;   color{;color:maroon}; color:green } /* same with recovery */");
+    BOBUIest::newRow("1") << QString("p { color:green }");
+    BOBUIest::newRow("2") << QString("p { color:green; color }  /* malformed declaration missing ':', value */");
+    BOBUIest::newRow("3") << QString("p { color:red;   color; color:green }  /* same with expected recovery */");
+    BOBUIest::newRow("4") << QString("p { color:green; color: } /* malformed declaration missing value */");
+    BOBUIest::newRow("5") << QString("p { color:red;   color:; color:green } /* same with expected recovery */");
+    BOBUIest::newRow("6") << QString("p { color:green; color{;color:maroon} } /* unexpected tokens { } */");
+    BOBUIest::newRow("7") << QString("p { color:red;   color{;color:maroon}; color:green } /* same with recovery */");
 }
 
 void tst_QCssParser::malformedDeclarations()
@@ -870,40 +870,40 @@ void tst_QCssParser::invalidAtKeywords()
 
 void tst_QCssParser::colorValue_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QColor>("expectedColor");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QColor>("expectedColor");
 
-    QTest::newRow("identifier") << "color: black" << QColor("black");
-    QTest::newRow("string") << "color: \"green\"" << QColor("green");
-    QTest::newRow("hexcolor") << "color: #12af0e" << QColor(0x12, 0xaf, 0x0e);
-    QTest::newRow("functional1") << "color: rgb(21, 45, 73)" << QColor(21, 45, 73);
-    QTest::newRow("functional2") << "color: rgb(100%, 0%, 100%)" << QColor(0xff, 0, 0xff);
-    QTest::newRow("rgb") << "color: rgb(10, 20, 30)" << QColor(10, 20, 30);
-    QTest::newRow("rgba") << "color: rgba(10, 20, 30, 40)" << QColor(10, 20, 30, 40);
-    QTest::newRow("rgbaf") << "color: rgba(10, 20, 30, 0.5)" << QColor(10, 20, 30, 127);
-    QTest::newRow("hsv") << "color: hsv(10, 20, 30)" << QColor::fromHsv(10, 20, 30);
-    QTest::newRow("hsva") << "color: hsva(10, 20, 30, 40)" << QColor::fromHsv(10, 20, 30, 40);
+    BOBUIest::newRow("identifier") << "color: black" << QColor("black");
+    BOBUIest::newRow("string") << "color: \"green\"" << QColor("green");
+    BOBUIest::newRow("hexcolor") << "color: #12af0e" << QColor(0x12, 0xaf, 0x0e);
+    BOBUIest::newRow("functional1") << "color: rgb(21, 45, 73)" << QColor(21, 45, 73);
+    BOBUIest::newRow("functional2") << "color: rgb(100%, 0%, 100%)" << QColor(0xff, 0, 0xff);
+    BOBUIest::newRow("rgb") << "color: rgb(10, 20, 30)" << QColor(10, 20, 30);
+    BOBUIest::newRow("rgba") << "color: rgba(10, 20, 30, 40)" << QColor(10, 20, 30, 40);
+    BOBUIest::newRow("rgbaf") << "color: rgba(10, 20, 30, 0.5)" << QColor(10, 20, 30, 127);
+    BOBUIest::newRow("hsv") << "color: hsv(10, 20, 30)" << QColor::fromHsv(10, 20, 30);
+    BOBUIest::newRow("hsva") << "color: hsva(10, 20, 30, 40)" << QColor::fromHsv(10, 20, 30, 40);
     // the percent and float values are well chosen to not get in trouble due to rounding errors
-    QTest::newRow("hsva-percent") << "color: hsva(100%, 20%, 40%, 60%)" << QColor::fromHsv(359, 51, 102, 153);
-    QTest::newRow("hsva-float") << "color: hsva(180, 20%, 40%, 0.6)" << QColor::fromHsvF(0.5f, 0.2f, 0.4f, 0.6f);
-    QTest::newRow("hsl") << "color: hsl(60, 100%, 50%)" << QColor::fromHsl(60., 255, 127);
-    QTest::newRow("hsla") << "color: hsla(240, 255, 127, 192)" << QColor::fromHsl(240, 255, 127, 192);
-    QTest::newRow("hsla-percent") << "color: hsla(100%, 80%, 40%, 0%)" << QColor::fromHsl(359, 204, 102, 0);
-    QTest::newRow("hsla-float") << "color: hsla(252, 40%, 60%, 0.2)" << QColor::fromHslF(0.7f, 0.4f, 0.6f, 0.2f);
-    QTest::newRow("invalid1") << "color: rgb(why, does, it, always, rain, on, me)" << QColor();
-    QTest::newRow("invalid2") << "color: rgba(i, meant, norway)" << QColor();
-    QTest::newRow("invalid3") << "color: rgb(21)" << QColor();
-    QTest::newRow("invalid4") << "color: rgbx(1, 2, 3)" << QColor();
-    QTest::newRow("invalid5") << "color: rgbax(1, 2, 3, 4)" << QColor();
-    QTest::newRow("invalid6") << "color: hsv(360, 0, 0)" << QColor();
-    QTest::newRow("invalid7") << "color: hsla(1, a, 1, 21)" << QColor();
-    QTest::newRow("role") << "color: palette(base)" << qApp->palette().color(QPalette::Base);
-    QTest::newRow("role2") << "color: palette( window-text ) " << qApp->palette().color(QPalette::WindowText);
-    QTest::newRow("role3") << "color: palette(accent)" << qApp->palette().color(QPalette::Accent);
-    QTest::newRow("transparent") << "color: transparent" << QColor(Qt::transparent);
+    BOBUIest::newRow("hsva-percent") << "color: hsva(100%, 20%, 40%, 60%)" << QColor::fromHsv(359, 51, 102, 153);
+    BOBUIest::newRow("hsva-float") << "color: hsva(180, 20%, 40%, 0.6)" << QColor::fromHsvF(0.5f, 0.2f, 0.4f, 0.6f);
+    BOBUIest::newRow("hsl") << "color: hsl(60, 100%, 50%)" << QColor::fromHsl(60., 255, 127);
+    BOBUIest::newRow("hsla") << "color: hsla(240, 255, 127, 192)" << QColor::fromHsl(240, 255, 127, 192);
+    BOBUIest::newRow("hsla-percent") << "color: hsla(100%, 80%, 40%, 0%)" << QColor::fromHsl(359, 204, 102, 0);
+    BOBUIest::newRow("hsla-float") << "color: hsla(252, 40%, 60%, 0.2)" << QColor::fromHslF(0.7f, 0.4f, 0.6f, 0.2f);
+    BOBUIest::newRow("invalid1") << "color: rgb(why, does, it, always, rain, on, me)" << QColor();
+    BOBUIest::newRow("invalid2") << "color: rgba(i, meant, norway)" << QColor();
+    BOBUIest::newRow("invalid3") << "color: rgb(21)" << QColor();
+    BOBUIest::newRow("invalid4") << "color: rgbx(1, 2, 3)" << QColor();
+    BOBUIest::newRow("invalid5") << "color: rgbax(1, 2, 3, 4)" << QColor();
+    BOBUIest::newRow("invalid6") << "color: hsv(360, 0, 0)" << QColor();
+    BOBUIest::newRow("invalid7") << "color: hsla(1, a, 1, 21)" << QColor();
+    BOBUIest::newRow("role") << "color: palette(base)" << qApp->palette().color(QPalette::Base);
+    BOBUIest::newRow("role2") << "color: palette( window-text ) " << qApp->palette().color(QPalette::WindowText);
+    BOBUIest::newRow("role3") << "color: palette(accent)" << qApp->palette().color(QPalette::Accent);
+    BOBUIest::newRow("transparent") << "color: transparent" << QColor(BobUI::transparent);
 
-    QTest::newRow("rgb-invalid") << "color: rgb(10, 20, 30, 40)" << QColor();
-    QTest::newRow("rgba-invalid") << "color: rgba(10, 20, 30)" << QColor();
+    BOBUIest::newRow("rgb-invalid") << "color: rgb(10, 20, 30, 40)" << QColor();
+    BOBUIest::newRow("rgba-invalid") << "color: rgba(10, 20, 30)" << QColor();
 }
 
 void tst_QCssParser::colorValue()
@@ -965,8 +965,8 @@ Q_DECLARE_METATYPE(QDomDocument)
 
 void tst_QCssParser::marginValue_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QString>("expectedMargin");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("expectedMargin");
 
     QFont f;
     int ex = QFontMetrics(f).xHeight();
@@ -978,17 +978,17 @@ void tst_QCssParser::marginValue_data()
     const QString em2ex4 = QLatin1String("1 ") + QString::number(2*em) + QLatin1String(" 3 ")
         + QString::number(4 * ex);
 
-    QTest::newRow("one value") << "margin: 1px" << "1 1 1 1";
-    QTest::newRow("two values") << "margin: 1px 2px" << "1 2 1 2";
-    QTest::newRow("three value") << "margin: 1px 2px 3px" << "1 2 3 2";
-    QTest::newRow("four values") << "margin: 1px 2px 3px 4px" << "1 2 3 4";
-    QTest::newRow("default px") << "margin: 1 2 3 4" << "1 2 3 4";
-    QTest::newRow("no unit") << "margin: 1 2 3 4" << "1 2 3 4";
-    QTest::newRow("em") << "margin: 1ex 2ex 3ex 4ex"
+    BOBUIest::newRow("one value") << "margin: 1px" << "1 1 1 1";
+    BOBUIest::newRow("two values") << "margin: 1px 2px" << "1 2 1 2";
+    BOBUIest::newRow("three value") << "margin: 1px 2px 3px" << "1 2 3 2";
+    BOBUIest::newRow("four values") << "margin: 1px 2px 3px 4px" << "1 2 3 4";
+    BOBUIest::newRow("default px") << "margin: 1 2 3 4" << "1 2 3 4";
+    BOBUIest::newRow("no unit") << "margin: 1 2 3 4" << "1 2 3 4";
+    BOBUIest::newRow("em") << "margin: 1ex 2ex 3ex 4ex"
         << (QString::number(ex) + QLatin1Char(' ') + QString::number(2 * ex)
             + QLatin1Char(' ') + QString::number(3 * ex) + QLatin1Char(' ')
             + QString::number(4 * ex));
-    QTest::newRow("ex") << "margin: 1 2em 3px 4ex"
+    BOBUIest::newRow("ex") << "margin: 1 2em 3px 4ex"
         << (QLatin1String("1 ") + QString::number(2 * em) + QLatin1String(" 3 ")
            + QString::number(4 * ex));
 
@@ -996,15 +996,15 @@ void tst_QCssParser::marginValue_data()
     f.setBold(true);
     ex = QFontMetrics(f).xHeight();
     em = QFontMetrics(f).height();
-    QTest::newRow("em2") << "font: bold 20pt; margin: 1ex 2ex 3ex 4ex"
+    BOBUIest::newRow("em2") << "font: bold 20pt; margin: 1ex 2ex 3ex 4ex"
         << (QString::number(ex) + QLatin1Char(' ') + QString::number(2 * ex)
             + QLatin1Char(' ') + QString::number(3 * ex) + QLatin1Char(' ')
             + QString::number(4 * ex));
-    QTest::newRow("ex2") << "margin: 1 2em 3px 4ex; font-size: 20pt; font-weight: bold;"
+    BOBUIest::newRow("ex2") << "margin: 1 2em 3px 4ex; font-size: 20pt; font-weight: bold;"
         << (QLatin1String("1 ") + QString::number(2 * em) + QLatin1String(" 3 ")
             + QString::number(4 * ex));
 
-    QTest::newRow("crap") << "margin: crap" << "0 0 0 0";
+    BOBUIest::newRow("crap") << "margin: crap" << "0 0 0 0";
 }
 
 void tst_QCssParser::marginValue()
@@ -1043,135 +1043,135 @@ void tst_QCssParser::marginValue()
 
 void tst_QCssParser::styleSelector_data()
 {
-    QTest::addColumn<bool>("match");
-    QTest::addColumn<QString>("selector");
-    QTest::addColumn<QString>("xml");
-    QTest::addColumn<QString>("elementToCheck");
+    BOBUIest::addColumn<bool>("match");
+    BOBUIest::addColumn<QString>("selector");
+    BOBUIest::addColumn<QString>("xml");
+    BOBUIest::addColumn<QString>("elementToCheck");
 
-    QTest::newRow("plain") << true << QString("p") << QString("<p />") << QString();
-    QTest::newRow("noplain") << false << QString("bar") << QString("<p />") << QString();
+    BOBUIest::newRow("plain") << true << QString("p") << QString("<p />") << QString();
+    BOBUIest::newRow("noplain") << false << QString("bar") << QString("<p />") << QString();
 
-    QTest::newRow("class") << true << QString(".foo") << QString("<p class=\"foo\" />") << QString();
-    QTest::newRow("noclass") << false << QString(".bar") << QString("<p class=\"foo\" />") << QString();
+    BOBUIest::newRow("class") << true << QString(".foo") << QString("<p class=\"foo\" />") << QString();
+    BOBUIest::newRow("noclass") << false << QString(".bar") << QString("<p class=\"foo\" />") << QString();
 
-    QTest::newRow("attrset") << true << QString("[justset]") << QString("<p justset=\"bar\" />") << QString();
-    QTest::newRow("notattrset") << false << QString("[justset]") << QString("<p otherattribute=\"blub\" />") << QString();
+    BOBUIest::newRow("attrset") << true << QString("[justset]") << QString("<p justset=\"bar\" />") << QString();
+    BOBUIest::newRow("notattrset") << false << QString("[justset]") << QString("<p otherattribute=\"blub\" />") << QString();
 
-    QTest::newRow("attrmatch") << true << QString("[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
-    QTest::newRow("noattrmatch") << false << QString("[foo=bar]") << QString("<p foo=\"xyz\" />") << QString();
+    BOBUIest::newRow("attrmatch") << true << QString("[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
+    BOBUIest::newRow("noattrmatch") << false << QString("[foo=bar]") << QString("<p foo=\"xyz\" />") << QString();
 
-    QTest::newRow("includes") << true << QString("[foo~=bar]") << QString("<p foo=\"baz bleh bar\" />") << QString();
-    QTest::newRow("notincludes") << false << QString("[foo~=bar]") << QString("<p foo=\"bazblehbar\" />") << QString();
+    BOBUIest::newRow("includes") << true << QString("[foo~=bar]") << QString("<p foo=\"baz bleh bar\" />") << QString();
+    BOBUIest::newRow("notincludes") << false << QString("[foo~=bar]") << QString("<p foo=\"bazblehbar\" />") << QString();
 
-    QTest::newRow("dashmatch") << true << QString("[foo|=bar]") << QString("<p foo=\"bar-bleh\" />") << QString();
-    QTest::newRow("nodashmatch") << false << QString("[foo|=bar]") << QString("<p foo=\"barbleh\" />") << QString();
+    BOBUIest::newRow("dashmatch") << true << QString("[foo|=bar]") << QString("<p foo=\"bar-bleh\" />") << QString();
+    BOBUIest::newRow("nodashmatch") << false << QString("[foo|=bar]") << QString("<p foo=\"barbleh\" />") << QString();
 
-    QTest::newRow("beginswith") << true << QString("[foo^=bar]") << QString("<p foo=\"barbleh\" />") << QString();
-    QTest::newRow("nobeginswith") << false << QString("[foo^=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
+    BOBUIest::newRow("beginswith") << true << QString("[foo^=bar]") << QString("<p foo=\"barbleh\" />") << QString();
+    BOBUIest::newRow("nobeginswith") << false << QString("[foo^=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
 
-    QTest::newRow("endswith") << true << QString("[foo$=bar]") << QString("<p foo=\"barbar\" />") << QString();
-    QTest::newRow("noendswith") << false << QString("[foo$=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
+    BOBUIest::newRow("endswith") << true << QString("[foo$=bar]") << QString("<p foo=\"barbar\" />") << QString();
+    BOBUIest::newRow("noendswith") << false << QString("[foo$=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
 
-    QTest::newRow("contains") << true << QString("[foo*=bar]") << QString("<p foo=\"blehbarbleh\" />") << QString();
-    QTest::newRow("nocontains") << false << QString("[foo*=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
+    BOBUIest::newRow("contains") << true << QString("[foo*=bar]") << QString("<p foo=\"blehbarbleh\" />") << QString();
+    BOBUIest::newRow("nocontains") << false << QString("[foo*=bar]") << QString("<p foo=\"blehbleh\" />") << QString();
 
-    QTest::newRow("attr2") << true << QString("[bar=foo]") << QString("<p bleh=\"bar\" bar=\"foo\" />") << QString();
+    BOBUIest::newRow("attr2") << true << QString("[bar=foo]") << QString("<p bleh=\"bar\" bar=\"foo\" />") << QString();
 
-    QTest::newRow("universal1") << true << QString("*") << QString("<p />") << QString();
+    BOBUIest::newRow("universal1") << true << QString("*") << QString("<p />") << QString();
 
-    QTest::newRow("universal3") << false << QString("*[foo=bar]") << QString("<p foo=\"bleh\" />") << QString();
-    QTest::newRow("universal4") << true << QString("*[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
+    BOBUIest::newRow("universal3") << false << QString("*[foo=bar]") << QString("<p foo=\"bleh\" />") << QString();
+    BOBUIest::newRow("universal4") << true << QString("*[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
 
-    QTest::newRow("universal5") << false << QString("[foo=bar]") << QString("<p foo=\"bleh\" />") << QString();
-    QTest::newRow("universal6") << true << QString("[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
+    BOBUIest::newRow("universal5") << false << QString("[foo=bar]") << QString("<p foo=\"bleh\" />") << QString();
+    BOBUIest::newRow("universal6") << true << QString("[foo=bar]") << QString("<p foo=\"bar\" />") << QString();
 
-    QTest::newRow("universal7") << true << QString(".charfmt1") << QString("<p class=\"charfmt1\" />") << QString();
+    BOBUIest::newRow("universal7") << true << QString(".charfmt1") << QString("<p class=\"charfmt1\" />") << QString();
 
-    QTest::newRow("id") << true << QString("#blub") << QString("<p id=\"blub\" />") << QString();
-    QTest::newRow("noid") << false << QString("#blub") << QString("<p id=\"other\" />") << QString();
+    BOBUIest::newRow("id") << true << QString("#blub") << QString("<p id=\"blub\" />") << QString();
+    BOBUIest::newRow("noid") << false << QString("#blub") << QString("<p id=\"other\" />") << QString();
 
-    QTest::newRow("childselector") << true << QString("parent > child")
+    BOBUIest::newRow("childselector") << true << QString("parent > child")
                                    << QString("<parent><child /></parent>")
                                    << QString("parent/child");
 
-    QTest::newRow("nochildselector2") << false << QString("parent > child")
+    BOBUIest::newRow("nochildselector2") << false << QString("parent > child")
                                    << QString("<child><parent /></child>")
                                    << QString("child/parent");
 
-    QTest::newRow("nochildselector3") << false << QString("parent > child")
+    BOBUIest::newRow("nochildselector3") << false << QString("parent > child")
                                    << QString("<parent><intermediate><child /></intermediate></parent>")
                                    << QString("parent/intermediate/child");
 
-    QTest::newRow("childselector2") << true << QString("parent[foo=bar] > child")
+    BOBUIest::newRow("childselector2") << true << QString("parent[foo=bar] > child")
                                    << QString("<parent foo=\"bar\"><child /></parent>")
                                    << QString("parent/child");
 
-    QTest::newRow("nochildselector4") << false << QString("parent[foo=bar] > child")
+    BOBUIest::newRow("nochildselector4") << false << QString("parent[foo=bar] > child")
                                    << QString("<parent><child /></parent>")
                                    << QString("parent/child");
 
-    QTest::newRow("nochildselector5") << false << QString("parent[foo=bar] > child")
+    BOBUIest::newRow("nochildselector5") << false << QString("parent[foo=bar] > child")
                                    << QString("<parent foo=\"bar\"><parent><child /></parent></parent>")
                                    << QString("parent/parent/child");
 
-    QTest::newRow("childselectors") << true << QString("grandparent > parent > child")
+    BOBUIest::newRow("childselectors") << true << QString("grandparent > parent > child")
                                    << QString("<grandparent><parent><child /></parent></grandparent>")
                                    << QString("grandparent/parent/child");
 
-    QTest::newRow("descendant") << true << QString("grandparent child")
+    BOBUIest::newRow("descendant") << true << QString("grandparent child")
                                    << QString("<grandparent><parent><child /></parent></grandparent>")
                                    << QString("grandparent/parent/child");
 
-    QTest::newRow("nodescendant") << false << QString("grandparent child")
+    BOBUIest::newRow("nodescendant") << false << QString("grandparent child")
                                    << QString("<other><parent><child /></parent></other>")
                                    << QString("other/parent/child");
 
-    QTest::newRow("descendant2") << true << QString("grandgrandparent grandparent child")
+    BOBUIest::newRow("descendant2") << true << QString("grandgrandparent grandparent child")
                                    << QString("<grandgrandparent><inbetween><grandparent><parent><child /></parent></grandparent></inbetween></grandgrandparent>")
                                    << QString("grandgrandparent/inbetween/grandparent/parent/child");
 
-    QTest::newRow("combined") << true << QString("grandparent parent > child")
+    BOBUIest::newRow("combined") << true << QString("grandparent parent > child")
                               << QString("<grandparent><inbetween><parent><child /></parent></inbetween></grandparent>")
                               << QString("grandparent/inbetween/parent/child");
 
-    QTest::newRow("combined2") << true << QString("grandparent > parent child")
+    BOBUIest::newRow("combined2") << true << QString("grandparent > parent child")
                               << QString("<grandparent><parent><inbetween><child /></inbetween></parent></grandparent>")
                               << QString("grandparent/parent/inbetween/child");
 
-    QTest::newRow("combined3") << true << QString("grandparent > parent child")
+    BOBUIest::newRow("combined3") << true << QString("grandparent > parent child")
                               << QString("<grandparent><parent><inbetween><child /></inbetween></parent></grandparent>")
                               << QString("grandparent/parent/inbetween/child");
 
-    QTest::newRow("nocombined") << false << QString("grandparent parent > child")
+    BOBUIest::newRow("nocombined") << false << QString("grandparent parent > child")
                               << QString("<inbetween><parent><child /></parent></inbetween>")
                               << QString("inbetween/parent/child");
 
-    QTest::newRow("nocombined2") << false << QString("grandparent parent > child")
+    BOBUIest::newRow("nocombined2") << false << QString("grandparent parent > child")
                               << QString("<parent><child /></parent>")
                               << QString("parent/child");
 
-    QTest::newRow("previoussibling") << true << QString("p1 + p2")
+    BOBUIest::newRow("previoussibling") << true << QString("p1 + p2")
                                      << QString("<p1 /><p2 />")
                                      << QString("p2");
 
-    QTest::newRow("notprevioussibling") << false << QString("p2 + p1")
+    BOBUIest::newRow("notprevioussibling") << false << QString("p2 + p1")
                                      << QString("<p1 /><p2 />")
                                      << QString("p2");
 
-    QTest::newRow("anyprevioussibling") << true << QString("p1 ~ p3")
+    BOBUIest::newRow("anyprevioussibling") << true << QString("p1 ~ p3")
                                      << QString("<p1 /><p2 /><p3 />")
                                      << QString("p3");
 
-    QTest::newRow("noprevioussibling") << false << QString("p3 ~ p2")
+    BOBUIest::newRow("noprevioussibling") << false << QString("p3 ~ p2")
                                      << QString("<p1 /><p2 /><p3 />")
                                      << QString("p3");
 
 
-    QTest::newRow("ancestry_firstmismatch") << false << QString("parent child[foo=bar]")
+    BOBUIest::newRow("ancestry_firstmismatch") << false << QString("parent child[foo=bar]")
                                             << QString("<parent><child /></parent>")
                                             << QString("parent/child");
 
-    QTest::newRow("unknown-pseudo") << false << QString("p:enabled:foobar") << QString("<p/>") << QString();
+    BOBUIest::newRow("unknown-pseudo") << false << QString("p:enabled:foobar") << QString("<p/>") << QString();
 }
 
 void tst_QCssParser::styleSelector()
@@ -1220,25 +1220,25 @@ void tst_QCssParser::styleSelector()
 
 void tst_QCssParser::specificity_data()
 {
-    QTest::addColumn<QString>("selector");
-    QTest::addColumn<int>("specificity");
+    BOBUIest::addColumn<QString>("selector");
+    BOBUIest::addColumn<int>("specificity");
 
-    QTest::newRow("universal") << QString("*") << 0;
+    BOBUIest::newRow("universal") << QString("*") << 0;
 
-    QTest::newRow("elements+pseudos1") << QString("foo") << 1;
-    QTest::newRow("elements+pseudos2") << QString("foo *[blah]") << 1 + (1 * 0x10);
+    BOBUIest::newRow("elements+pseudos1") << QString("foo") << 1;
+    BOBUIest::newRow("elements+pseudos2") << QString("foo *[blah]") << 1 + (1 * 0x10);
 
     // should strictly speaking be '2', but we don't support pseudo-elements yet,
     // only pseudo-classes
-    QTest::newRow("elements+pseudos3") << QString("li:first-line") << 1 + (1 * 0x10);
+    BOBUIest::newRow("elements+pseudos3") << QString("li:first-line") << 1 + (1 * 0x10);
 
-    QTest::newRow("elements+pseudos4") << QString("ul li") << 2;
-    QTest::newRow("elements+pseudos5") << QString("ul ol+li") << 3;
-    QTest::newRow("elements+pseudos6") << QString("h1 + *[rel=up]") << 1 + (1 * 0x10);
+    BOBUIest::newRow("elements+pseudos4") << QString("ul li") << 2;
+    BOBUIest::newRow("elements+pseudos5") << QString("ul ol+li") << 3;
+    BOBUIest::newRow("elements+pseudos6") << QString("h1 + *[rel=up]") << 1 + (1 * 0x10);
 
-    QTest::newRow("elements+pseudos7") << QString("ul ol li.red") << 3 + (1 * 0x10);
-    QTest::newRow("elements+pseudos8") << QString("li.red.level") << 1 + (2 * 0x10);
-    QTest::newRow("id") << QString("#x34y") << 1 * 0x100;
+    BOBUIest::newRow("elements+pseudos7") << QString("ul ol li.red") << 3 + (1 * 0x10);
+    BOBUIest::newRow("elements+pseudos8") << QString("li.red.level") << 1 + (2 * 0x10);
+    BOBUIest::newRow("id") << QString("#x34y") << 1 * 0x100;
 }
 
 void tst_QCssParser::specificity()
@@ -1255,20 +1255,20 @@ void tst_QCssParser::specificity()
                         :  (!sheet.nameIndex.isEmpty())  ? *sheet.nameIndex.begin()
                         :  *sheet.idIndex.begin();
     QCOMPARE(rule.selectors.size(), 1);
-    QTEST(rule.selectors.at(0).specificity(), "specificity");
+    BOBUIEST(rule.selectors.at(0).specificity(), "specificity");
 }
 
 void tst_QCssParser::specificitySort_data()
 {
-    QTest::addColumn<QString>("firstSelector");
-    QTest::addColumn<QString>("secondSelector");
-    QTest::addColumn<QString>("xml");
+    BOBUIest::addColumn<QString>("firstSelector");
+    BOBUIest::addColumn<QString>("secondSelector");
+    BOBUIest::addColumn<QString>("xml");
 
-    QTest::newRow("universal1") << QString("*") << QString("p") << QString("<p />");
-    QTest::newRow("attr") << QString("p") << QString("p[foo=bar]") << QString("<p foo=\"bar\" />");
-    QTest::newRow("id") << QString("p") << QString("#hey") << QString("<p id=\"hey\" />");
-    QTest::newRow("id2") << QString("[id=hey]") << QString("#hey") << QString("<p id=\"hey\" />");
-    QTest::newRow("class") << QString("p") << QString(".hey") << QString("<p class=\"hey\" />");
+    BOBUIest::newRow("universal1") << QString("*") << QString("p") << QString("<p />");
+    BOBUIest::newRow("attr") << QString("p") << QString("p[foo=bar]") << QString("<p foo=\"bar\" />");
+    BOBUIest::newRow("id") << QString("p") << QString("#hey") << QString("<p id=\"hey\" />");
+    BOBUIest::newRow("id2") << QString("[id=hey]") << QString("#hey") << QString("<p id=\"hey\" />");
+    BOBUIest::newRow("class") << QString("p") << QString(".hey") << QString("<p class=\"hey\" />");
 }
 
 void tst_QCssParser::specificitySort()
@@ -1319,44 +1319,44 @@ void tst_QCssParser::specificitySort()
 
 void tst_QCssParser::rulesForNode_data()
 {
-    QTest::addColumn<QString>("xml");
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<quint64>("pseudoClass");
-    QTest::addColumn<int>("declCount");
-    QTest::addColumn<QString>("value0");
-    QTest::addColumn<QString>("value1");
+    BOBUIest::addColumn<QString>("xml");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<quint64>("pseudoClass");
+    BOBUIest::addColumn<int>("declCount");
+    BOBUIest::addColumn<QString>("value0");
+    BOBUIest::addColumn<QString>("value1");
 
-    QTest::newRow("universal1") << QString("<p/>") << QString("* { color: red }")
+    BOBUIest::newRow("universal1") << QString("<p/>") << QString("* { color: red }")
                                 << (quint64)QCss::PseudoClass_Unspecified << 1 << "red" << "";
 
-    QTest::newRow("basic") << QString("<p/>") << QString("p:enabled { color: red; bg:blue; }")
+    BOBUIest::newRow("basic") << QString("<p/>") << QString("p:enabled { color: red; bg:blue; }")
         << (quint64)QCss::PseudoClass_Enabled << 2 << "red" << "blue";
 
-    QTest::newRow("single") << QString("<p/>")
+    BOBUIest::newRow("single") << QString("<p/>")
         << QString("p:enabled { color: red; } *:hover { color: white }")
         << (quint64)QCss::PseudoClass_Hover << 1 << "white" << "";
 
-    QTest::newRow("multisel") << QString("<p/>")
+    BOBUIest::newRow("multisel") << QString("<p/>")
         << QString("p:enabled { color: red; } p:hover { color: gray } *:hover { color: white } ")
         << (quint64)QCss::PseudoClass_Hover << 2 << "white" << "gray";
 
-    QTest::newRow("multisel2") << QString("<p/>")
+    BOBUIest::newRow("multisel2") << QString("<p/>")
         << QString("p:enabled { color: red; } p:hover:focus { color: gray } *:hover { color: white } ")
         << quint64(QCss::PseudoClass_Hover|QCss::PseudoClass_Focus) << 2 << "white" << "gray";
 
-    QTest::newRow("multisel3-diffspec") << QString("<p/>")
+    BOBUIest::newRow("multisel3-diffspec") << QString("<p/>")
         << QString("p:enabled { color: red; } p:hover:focus { color: gray } *:hover { color: white } ")
         << quint64(QCss::PseudoClass_Hover) << 1 << "white" << "";
 
-    QTest::newRow("!-1") << QString("<p/>")
+    BOBUIest::newRow("!-1") << QString("<p/>")
         << QString("p:checked:!hover { color: red; } p:checked:hover { color: gray } p:checked { color: white }")
         << quint64(QCss::PseudoClass_Hover|QCss::PseudoClass_Checked) << 2 << "white" << "gray";
 
-    QTest::newRow("!-2") << QString("<p/>")
+    BOBUIest::newRow("!-2") << QString("<p/>")
         << QString("p:checked:!hover:!pressed { color: red; } p:!checked:hover { color: gray } p:!focus { color: blue }")
         << quint64(QCss::PseudoClass_Focus) << 0 << "" << "";
 
-    QTest::newRow("!-3") << QString("<p/>")
+    BOBUIest::newRow("!-3") << QString("<p/>")
         << QString("p:checked:!hover:!pressed { color: red; } p:!checked:hover { color: gray } p:!focus { color: blue; }")
         << quint64(QCss::PseudoClass_Pressed) << 1 << "blue" << "";
 }
@@ -1405,28 +1405,28 @@ void tst_QCssParser::rulesForNode()
 
 void tst_QCssParser::shorthandBackgroundProperty_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QBrush>("expectedBrush");
-    QTest::addColumn<QString>("expectedImage");
-    QTest::addColumn<int>("expectedRepeatValue");
-    QTest::addColumn<int>("expectedAlignment");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QBrush>("expectedBrush");
+    BOBUIest::addColumn<QString>("expectedImage");
+    BOBUIest::addColumn<int>("expectedRepeatValue");
+    BOBUIest::addColumn<int>("expectedAlignment");
 
-    QTest::newRow("simple color") << "background: red" << QBrush(QColor("red")) << QString() << int(QCss::Repeat_XY) << int(Qt::AlignLeft | Qt::AlignTop);
-    QTest::newRow("plain color") << "background-color: red" << QBrush(QColor("red")) << QString() << int(QCss::Repeat_XY) << int(Qt::AlignLeft | Qt::AlignTop);
-    QTest::newRow("palette color") << "background-color: palette(mid)" << qApp->palette().mid() << QString() << int(QCss::Repeat_XY) << int(Qt::AlignLeft | Qt::AlignTop);
-    QTest::newRow("multiple") << "background: url(chess.png) blue repeat-y" << QBrush(QColor("blue")) << QString("chess.png") << int(QCss::Repeat_Y) << int(Qt::AlignLeft | Qt::AlignTop);
-    QTest::newRow("plain alignment") << "background-position: center" << QBrush() << QString() << int(QCss::Repeat_XY) << int(Qt::AlignCenter);
-    QTest::newRow("plain alignment2") << "background-position: left top" << QBrush() << QString() << int(QCss::Repeat_XY) << int(Qt::AlignLeft | Qt::AlignTop);
-    QTest::newRow("plain alignment3") << "background-position: left" << QBrush() << QString() << int(QCss::Repeat_XY) << int(Qt::AlignLeft | Qt::AlignVCenter);
-    QTest::newRow("multi") << "background: left url(blah.png) repeat-x" << QBrush() << QString("blah.png") << int(QCss::Repeat_X) << int(Qt::AlignLeft | Qt::AlignVCenter);
-    QTest::newRow("multi2") << "background: url(blah.png) repeat-x top" << QBrush() << QString("blah.png") << int(QCss::Repeat_X) << int(Qt::AlignTop | Qt::AlignHCenter);
-    QTest::newRow("multi3") << "background: url(blah.png) top right" << QBrush() << QString("blah.png") << int(QCss::Repeat_XY) << int(Qt::AlignTop | Qt::AlignRight);
-    QTest::newRow("url-query-quoted") << "background: url(\"https://placecats.com/300/200?fit=contain&position=top\")"
+    BOBUIest::newRow("simple color") << "background: red" << QBrush(QColor("red")) << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignLeft | BobUI::AlignTop);
+    BOBUIest::newRow("plain color") << "background-color: red" << QBrush(QColor("red")) << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignLeft | BobUI::AlignTop);
+    BOBUIest::newRow("palette color") << "background-color: palette(mid)" << qApp->palette().mid() << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignLeft | BobUI::AlignTop);
+    BOBUIest::newRow("multiple") << "background: url(chess.png) blue repeat-y" << QBrush(QColor("blue")) << QString("chess.png") << int(QCss::Repeat_Y) << int(BobUI::AlignLeft | BobUI::AlignTop);
+    BOBUIest::newRow("plain alignment") << "background-position: center" << QBrush() << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignCenter);
+    BOBUIest::newRow("plain alignment2") << "background-position: left top" << QBrush() << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignLeft | BobUI::AlignTop);
+    BOBUIest::newRow("plain alignment3") << "background-position: left" << QBrush() << QString() << int(QCss::Repeat_XY) << int(BobUI::AlignLeft | BobUI::AlignVCenter);
+    BOBUIest::newRow("multi") << "background: left url(blah.png) repeat-x" << QBrush() << QString("blah.png") << int(QCss::Repeat_X) << int(BobUI::AlignLeft | BobUI::AlignVCenter);
+    BOBUIest::newRow("multi2") << "background: url(blah.png) repeat-x top" << QBrush() << QString("blah.png") << int(QCss::Repeat_X) << int(BobUI::AlignTop | BobUI::AlignHCenter);
+    BOBUIest::newRow("multi3") << "background: url(blah.png) top right" << QBrush() << QString("blah.png") << int(QCss::Repeat_XY) << int(BobUI::AlignTop | BobUI::AlignRight);
+    BOBUIest::newRow("url-query-quoted") << "background: url(\"https://placecats.com/300/200?fit=contain&position=top\")"
                                                                     << QBrush() << QString("https://placecats.com/300/200?fit=contain&position=top")
-                                                                    << int(QCss::Repeat_XY) << int(Qt::AlignTop | Qt::AlignLeft);
-    QTest::newRow("url-query-unquoted") << "background: url(https://placecats.com/300/200?fit=contain&position=top)"
+                                                                    << int(QCss::Repeat_XY) << int(BobUI::AlignTop | BobUI::AlignLeft);
+    BOBUIest::newRow("url-query-unquoted") << "background: url(https://placecats.com/300/200?fit=contain&position=top)"
                                                                     << QBrush() << QString("https://placecats.com/300/200?fit=contain&position=top")
-                                                                    << int(QCss::Repeat_XY) << int(Qt::AlignTop | Qt::AlignLeft);
+                                                                    << int(QCss::Repeat_XY) << int(BobUI::AlignTop | BobUI::AlignLeft);
 }
 
 void tst_QCssParser::shorthandBackgroundProperty()
@@ -1441,7 +1441,7 @@ void tst_QCssParser::shorthandBackgroundProperty()
 
     QCss::Parser parser(css);
     QCss::StyleSheet sheet;
-    QEXPECT_FAIL("url-query-unquoted", "QTBUG-131842", Abort);
+    QEXPECT_FAIL("url-query-unquoted", "BOBUIBUG-131842", Abort);
     QVERIFY(parser.parse(&sheet));
 
     DomStyleSelector testSelector(doc, sheet);
@@ -1455,7 +1455,7 @@ void tst_QCssParser::shorthandBackgroundProperty()
     QBrush brush;
     QString image;
     QCss::Repeat repeat = QCss::Repeat_XY;
-    Qt::Alignment alignment = Qt::AlignTop | Qt::AlignLeft;
+    BobUI::Alignment alignment = BobUI::AlignTop | BobUI::AlignLeft;
     QCss::Origin origin = QCss::Origin_Padding;
     QCss::Attachment attachment;
     QCss::Origin ignoredOrigin;
@@ -1464,48 +1464,48 @@ void tst_QCssParser::shorthandBackgroundProperty()
     QFETCH(QBrush, expectedBrush);
     QCOMPARE(expectedBrush.color(), brush.color());
 
-    QTEST(image, "expectedImage");
-    QTEST(int(repeat), "expectedRepeatValue");
-    QTEST(int(alignment), "expectedAlignment");
+    BOBUIEST(image, "expectedImage");
+    BOBUIEST(int(repeat), "expectedRepeatValue");
+    BOBUIEST(int(alignment), "expectedAlignment");
 
-    //QTBUG-9674  : a second evaluation should give the same results
+    //BOBUIBUG-9674  : a second evaluation should give the same results
     QVERIFY(v.extractBackground(&brush, &image, &repeat, &alignment, &origin, &attachment, &ignoredOrigin));
     QCOMPARE(expectedBrush.color(), brush.color());
-    QTEST(image, "expectedImage");
-    QTEST(int(repeat), "expectedRepeatValue");
-    QTEST(int(alignment), "expectedAlignment");
+    BOBUIEST(image, "expectedImage");
+    BOBUIEST(int(repeat), "expectedRepeatValue");
+    BOBUIEST(int(alignment), "expectedAlignment");
 }
 
 void tst_QCssParser::pseudoElement_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QString>("pseudoElement");
-    QTest::addColumn<int>("declCount");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("pseudoElement");
+    BOBUIest::addColumn<int>("declCount");
 
     // QComboBox::dropDown { border-image: blah; }
-    QTest::newRow("no pseudo-elements") << QString("dummy:hover { color: red }") << "" << 1;
-    QTest::newRow("no pseudo-elements") << QString("dummy:hover { color: red }") << "pe" << 0;
+    BOBUIest::newRow("no pseudo-elements") << QString("dummy:hover { color: red }") << "" << 1;
+    BOBUIest::newRow("no pseudo-elements") << QString("dummy:hover { color: red }") << "pe" << 0;
 
-    QTest::newRow("1 pseudo-element (1)") << QString("dummy::pe:hover { color: red }") << "pe" << 1;
-    QTest::newRow("1 pseudo-element (2)") << QString("dummy::pe:hover { color: red }") << "x" << 0;
-    QTest::newRow("1 pseudo-element (2)") << QString("whatever::pe:hover { color: red }") << "pe" << 0;
+    BOBUIest::newRow("1 pseudo-element (1)") << QString("dummy::pe:hover { color: red }") << "pe" << 1;
+    BOBUIest::newRow("1 pseudo-element (2)") << QString("dummy::pe:hover { color: red }") << "x" << 0;
+    BOBUIest::newRow("1 pseudo-element (2)") << QString("whatever::pe:hover { color: red }") << "pe" << 0;
 
-    QTest::newRow("1 pseudo-element (3)")
+    BOBUIest::newRow("1 pseudo-element (3)")
         << QString("dummy { color: white; } dummy::pe:hover { color: red }") << "x" << 0;
-    QTest::newRow("1 pseudo-element (4)")
+    BOBUIest::newRow("1 pseudo-element (4)")
         << QString("dummy { color: white; } dummy::pe:hover { color: red } dummy { x:y }") << "" << 2;
-    QTest::newRow("1 pseudo-element (5)")
+    BOBUIest::newRow("1 pseudo-element (5)")
         << QString("dummy { color: white; } dummy::pe:hover { color: red }") << "pe" << 1;
-    QTest::newRow("1 pseudo-element (6)")
+    BOBUIest::newRow("1 pseudo-element (6)")
       << QString("dummy { color: white; } dummy::pe:hover { color: red } dummy::pe:checked { x: y} ") << "pe" << 2;
 
-    QTest::newRow("2 pseudo-elements (1)")
+    BOBUIest::newRow("2 pseudo-elements (1)")
       << QString("dummy { color: white; } dummy::pe1:hover { color: red } dummy::pe2:checked { x: y} ")
       << "" << 1;
-    QTest::newRow("2 pseudo-elements (1)")
+    BOBUIest::newRow("2 pseudo-elements (1)")
       << QString("dummy { color: white; } dummy::pe1:hover { color: red } dummy::pe2:checked { x: y} ")
       << "pe1" << 1;
-    QTest::newRow("2 pseudo-elements (2)")
+    BOBUIest::newRow("2 pseudo-elements (2)")
       << QString("dummy { color: white; } dummy::pe1:hover { color: red } dummy::pe2:checked { x: y} ")
       << "pe2" << 1;
 }
@@ -1531,7 +1531,7 @@ void tst_QCssParser::pseudoElement()
     QList<QCss::Declaration> decls;
     for (int i = 0; i < rules.size(); i++) {
         const QCss::Selector& selector = rules.at(i).selectors.at(0);
-        if (pseudoElement.compare(selector.pseudoElement(), Qt::CaseInsensitive) != 0)
+        if (pseudoElement.compare(selector.pseudoElement(), BobUI::CaseInsensitive) != 0)
             continue;
         decls += rules.at(i).declarations;
 
@@ -1541,49 +1541,49 @@ void tst_QCssParser::pseudoElement()
 
 void tst_QCssParser::gradient_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QString>("type");
-    QTest::addColumn<QPointF>("start");
-    QTest::addColumn<QPointF>("finalStop");
-    QTest::addColumn<int>("spread");
-    QTest::addColumn<qreal>("stop0");
-    QTest::addColumn<QColor>("color0");
-    QTest::addColumn<qreal>("stop1");
-    QTest::addColumn<QColor>("color1");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("type");
+    BOBUIest::addColumn<QPointF>("start");
+    BOBUIest::addColumn<QPointF>("finalStop");
+    BOBUIest::addColumn<int>("spread");
+    BOBUIest::addColumn<qreal>("stop0");
+    BOBUIest::addColumn<QColor>("color0");
+    BOBUIest::addColumn<qreal>("stop1");
+    BOBUIest::addColumn<QColor>("color1");
 
-    QTest::newRow("color-string") <<
+    BOBUIest::newRow("color-string") <<
      "selection-background-color: qlineargradient(x1:1, y1:2, x2:3, y2:4, "
          "stop:0.2 red, stop:0.5 green)" << "linear" << QPointF(1, 2) << QPointF(3, 4)
                                   << 0 << qreal(0.2) << QColor("red") << qreal(0.5) << QColor("green");
 
-    QTest::newRow("color-#") <<
+    BOBUIest::newRow("color-#") <<
      "selection-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
          "spread: reflect, stop:0.2 #123, stop:0.5 #456)" << "linear" << QPointF(0, 0) << QPointF(0, 1)
                              << 1 << qreal(0.2) << QColor("#123") << qreal(0.5) << QColor("#456");
 
-    QTest::newRow("color-rgb") <<
+    BOBUIest::newRow("color-rgb") <<
      "selection-background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
          "spread: reflect, stop:0.2 rgb(1, 2, 3), stop:0.5 rgba(1, 2, 3, 4))" << "linear" << QPointF(0, 0) << QPointF(0, 1)
                              << 1 << qreal(0.2) << QColor(1, 2, 3) << qreal(0.5) << QColor(1, 2, 3, 4);
 
-    QTest::newRow("color-spaces") <<
+    BOBUIest::newRow("color-spaces") <<
      "selection-background-color: qlineargradient(x1: 0, y1 :0,x2:0, y2 : 1 , "
          "spread: reflect, stop:0.2 rgb(1, 2, 3), stop: 0.5   rgba(1, 2, 3, 4))" << "linear" << QPointF(0, 0) << QPointF(0, 1)
                              << 1 << qreal(0.2) << QColor(1, 2, 3) << qreal(0.5) << QColor(1, 2, 3, 4);
 
-    QTest::newRow("conical gradient") <<
+    BOBUIest::newRow("conical gradient") <<
      "selection-background-color: qconicalgradient(cx: 4, cy : 2, angle: 23, "
          "spread: repeat, stop:0.2 rgb(1, 2, 3), stop:0.5 rgba(1, 2, 3, 4))" << "conical" << QPointF(4, 2) << QPointF()
                              << 2 << qreal(0.2) << QColor(1, 2, 3) << qreal(0.5) << QColor(1, 2, 3, 4);
 
     // spaces before first function parameter lead to parser errors
-    QTest::newRow("QTBUG-61795") <<
+    BOBUIest::newRow("BOBUIBUG-61795") <<
      "selection-background-color: qconicalgradient( cx: 4, cy : 2, angle: 23, "
          "spread: repeat, stop:0.2 rgb( 1, 2, 3), stop:0.5 rgba( 1, 2, 3, 4))" << "conical" << QPointF(4, 2) << QPointF()
                              << 2 << qreal(0.2) << QColor(1, 2, 3) << qreal(0.5) << QColor(1, 2, 3, 4);
 
     /* won't pass: stop values are expected to be sorted
-     QTest::newRow("unsorted-stop") <<
+     BOBUIest::newRow("unsorted-stop") <<
      "selection-background: lineargradient(x1:0, y1:0, x2:0, y2:1, "
          "stop:0.5 green, stop:0.2 red)" << QPointF(0, 0) << QPointF(0, 1)
          0 << 0.2 << QColor("red") << 0.5 << QColor("green");
@@ -1627,12 +1627,12 @@ void tst_QCssParser::gradient()
                               &alternateBackground, &placeHolderTextForeground, &accent));
 
     if (type == "linear") {
-        QCOMPARE(selectedBackground.style(), Qt::LinearGradientPattern);
+        QCOMPARE(selectedBackground.style(), BobUI::LinearGradientPattern);
         const auto *lg = static_cast<const QLinearGradient *>(selectedBackground.gradient());
         QCOMPARE(lg->start(), start);
         QCOMPARE(lg->finalStop(), finalStop);
     } else if (type == "conical") {
-        QCOMPARE(selectedBackground.style(), Qt::ConicalGradientPattern);
+        QCOMPARE(selectedBackground.style(), BobUI::ConicalGradientPattern);
         const auto *cg = static_cast<const QConicalGradient *>(selectedBackground.gradient());
         QCOMPARE(cg->center(), start);
     }
@@ -1649,20 +1649,20 @@ void tst_QCssParser::extractFontFamily_data()
     if (QFontInfo(QFont("Times New Roman")).family() != "Times New Roman")
         QSKIP("'Times New Roman' font not found");
 
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QString>("expectedFamily");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("expectedFamily");
 
-    QTest::newRow("quoted-family-name") << "font-family: 'Times New Roman'" << QString("Times New Roman");
-    QTest::newRow("unquoted-family-name") << "font-family: Times New Roman" << QString("Times New Roman");
-    QTest::newRow("unquoted-family-name2") << "font-family: Times        New     Roman" << QString("Times New Roman");
-    QTest::newRow("multiple") << "font-family: Times New Roman  , foobar, 'baz'" << QString("Times New Roman");
-    QTest::newRow("multiple2") << "font-family: invalid,  Times New   Roman " << QString("Times New Roman");
-    QTest::newRow("invalid") << "font-family: invalid" << QFontInfo(QFont("invalid font")).family();
-    QTest::newRow("shorthand") << "font: 12pt Times New Roman" << QString("Times New Roman");
-    QTest::newRow("shorthand multiple quote") << "font: 12pt invalid, \"Times New Roman\" " << QString("Times New Roman");
-    QTest::newRow("shorthand multiple") << "font: 12pt invalid, Times New Roman " << QString("Times New Roman");
-    QTest::newRow("invalid spaces") << "font-family: invalid spaces, Times New Roman " << QString("Times New Roman");
-    QTest::newRow("invalid spaces quotes") << "font-family: 'invalid spaces', 'Times New Roman' " << QString("Times New Roman");
+    BOBUIest::newRow("quoted-family-name") << "font-family: 'Times New Roman'" << QString("Times New Roman");
+    BOBUIest::newRow("unquoted-family-name") << "font-family: Times New Roman" << QString("Times New Roman");
+    BOBUIest::newRow("unquoted-family-name2") << "font-family: Times        New     Roman" << QString("Times New Roman");
+    BOBUIest::newRow("multiple") << "font-family: Times New Roman  , foobar, 'baz'" << QString("Times New Roman");
+    BOBUIest::newRow("multiple2") << "font-family: invalid,  Times New   Roman " << QString("Times New Roman");
+    BOBUIest::newRow("invalid") << "font-family: invalid" << QFontInfo(QFont("invalid font")).family();
+    BOBUIest::newRow("shorthand") << "font: 12pt Times New Roman" << QString("Times New Roman");
+    BOBUIest::newRow("shorthand multiple quote") << "font: 12pt invalid, \"Times New Roman\" " << QString("Times New Roman");
+    BOBUIest::newRow("shorthand multiple") << "font: 12pt invalid, Times New Roman " << QString("Times New Roman");
+    BOBUIest::newRow("invalid spaces") << "font-family: invalid spaces, Times New Roman " << QString("Times New Roman");
+    BOBUIest::newRow("invalid spaces quotes") << "font-family: 'invalid spaces', 'Times New Roman' " << QString("Times New Roman");
 }
 
 
@@ -1689,35 +1689,35 @@ void tst_QCssParser::extractFontFamily()
     extractor.extractFont(&fnt, &adjustment);
     QFontInfo info(fnt);
 
-    QTEST(info.family(), "expectedFamily");
+    BOBUIEST(info.family(), "expectedFamily");
 }
 
 void tst_QCssParser::extractFontSize_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<int>("expectedPixelSize");
-    QTest::addColumn<int>("expectedPointSize");
-    QTest::addColumn<qreal>("expectedPointSizeF");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<int>("expectedPixelSize");
+    BOBUIest::addColumn<int>("expectedPointSize");
+    BOBUIest::addColumn<qreal>("expectedPointSizeF");
 
-    QTest::newRow("integer point size") << "font-size: 12pt" << -1 << 12 << 12.0;
-    QTest::newRow("float point size round down") << "font-size: 12.3pt" << -1 << 12 << 12.3;
-    QTest::newRow("float point size midpoint") << "font-size: 12.5pt" << -1 << 13 << 12.5;
-    QTest::newRow("float point size round up") << "font-size: 12.7pt" << -1 << 13 << 12.7;
+    BOBUIest::newRow("integer point size") << "font-size: 12pt" << -1 << 12 << 12.0;
+    BOBUIest::newRow("float point size round down") << "font-size: 12.3pt" << -1 << 12 << 12.3;
+    BOBUIest::newRow("float point size midpoint") << "font-size: 12.5pt" << -1 << 13 << 12.5;
+    BOBUIest::newRow("float point size round up") << "font-size: 12.7pt" << -1 << 13 << 12.7;
 
-    QTest::newRow("integer pixel size") << "font-size: 12px" << 12 << -1 << -1.0;
-    QTest::newRow("float pixel size round down") << "font-size: 12.3px" << 12 << -1 << -1.0;
-    QTest::newRow("float pixel size midpoint") << "font-size: 12.5px" << 13 << -1 << -1.0;
-    QTest::newRow("float pixel size round up") << "font-size: 12.7px" << 13 << -1 << -1.0;
+    BOBUIest::newRow("integer pixel size") << "font-size: 12px" << 12 << -1 << -1.0;
+    BOBUIest::newRow("float pixel size round down") << "font-size: 12.3px" << 12 << -1 << -1.0;
+    BOBUIest::newRow("float pixel size midpoint") << "font-size: 12.5px" << 13 << -1 << -1.0;
+    BOBUIest::newRow("float pixel size round up") << "font-size: 12.7px" << 13 << -1 << -1.0;
 
-    QTest::newRow("shorthand integer point size") << "font: 12pt Arial" << -1 << 12 << 12.0;
-    QTest::newRow("shorthand float point size round down") << "font: 12.3pt Arial" << -1 << 12 << 12.3;
-    QTest::newRow("shorthand float point size midpoint") << "font: 12.5pt Arial" << -1 << 13 << 12.5;
-    QTest::newRow("shorthand float point size round up") << "font: 12.7pt Arial" << -1 << 13 << 12.7;
+    BOBUIest::newRow("shorthand integer point size") << "font: 12pt Arial" << -1 << 12 << 12.0;
+    BOBUIest::newRow("shorthand float point size round down") << "font: 12.3pt Arial" << -1 << 12 << 12.3;
+    BOBUIest::newRow("shorthand float point size midpoint") << "font: 12.5pt Arial" << -1 << 13 << 12.5;
+    BOBUIest::newRow("shorthand float point size round up") << "font: 12.7pt Arial" << -1 << 13 << 12.7;
 
-    QTest::newRow("shorthand integer pixel size") << "font: 12px Arial" << 12 << -1 << -1.0;
-    QTest::newRow("shorthand float pixel size round down") << "font: 12.3px Arial" << 12 << -1 << -1.0;
-    QTest::newRow("shorthand float pixel size midpoint") << "font: 12.5px Arial" << 13 << -1 << -1.0;
-    QTest::newRow("shorthand float pixel size round up") << "font: 12.7px Arial" << 13 << -1 << -1.0;
+    BOBUIest::newRow("shorthand integer pixel size") << "font: 12px Arial" << 12 << -1 << -1.0;
+    BOBUIest::newRow("shorthand float pixel size round down") << "font: 12.3px Arial" << 12 << -1 << -1.0;
+    BOBUIest::newRow("shorthand float pixel size midpoint") << "font: 12.5px Arial" << 13 << -1 << -1.0;
+    BOBUIest::newRow("shorthand float pixel size round up") << "font: 12.7px Arial" << 13 << -1 << -1.0;
 }
 
 void tst_QCssParser::extractFontSize()
@@ -1753,30 +1753,30 @@ void tst_QCssParser::extractFontSize()
 
 void tst_QCssParser::extractBorder_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<int>("expectedTopWidth");
-    QTest::addColumn<int>("expectedTopStyle");
-    QTest::addColumn<QColor>("expectedTopColor");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<int>("expectedTopWidth");
+    BOBUIest::addColumn<int>("expectedTopStyle");
+    BOBUIest::addColumn<QColor>("expectedTopColor");
 
-    QTest::newRow("all values") << "border: 2px solid green" << 2 << (int)QCss::BorderStyle_Solid << QColor("green");
-    QTest::newRow("palette") << "border: 2px solid palette(highlight)" << 2 << (int)QCss::BorderStyle_Solid << qApp->palette().color(QPalette::Highlight);
-    QTest::newRow("just width") << "border: 2px" << 2 << (int)QCss::BorderStyle_None << QColor();
-    QTest::newRow("just style") << "border: solid" << 0 << (int)QCss::BorderStyle_Solid << QColor();
-    QTest::newRow("just color") << "border: green" << 0 << (int)QCss::BorderStyle_None << QColor("green");
-    QTest::newRow("width+style") << "border: 2px solid" << 2 << (int)QCss::BorderStyle_Solid << QColor();
-    QTest::newRow("style+color") << "border: solid green" << 0 << (int)QCss::BorderStyle_Solid << QColor("green");
-    QTest::newRow("width+color") << "border: 3px green" << 3 << (int)QCss::BorderStyle_None << QColor("green");
-    QTest::newRow("groove style") << "border: groove" << 0 << (int)QCss::BorderStyle_Groove << QColor();
-    QTest::newRow("ridge style") << "border: ridge" << 0 << (int)QCss::BorderStyle_Ridge << QColor();
-    QTest::newRow("double style") << "border: double" << 0 << (int)QCss::BorderStyle_Double << QColor();
-    QTest::newRow("inset style") << "border: inset" << 0 << (int)QCss::BorderStyle_Inset << QColor();
-    QTest::newRow("outset style") << "border: outset" << 0 << (int)QCss::BorderStyle_Outset << QColor();
-    QTest::newRow("dashed style") << "border: dashed" << 0 << (int)QCss::BorderStyle_Dashed << QColor();
-    QTest::newRow("dotted style") << "border: dotted" << 0 << (int)QCss::BorderStyle_Dotted << QColor();
-    QTest::newRow("dot-dash style") << "border: dot-dash" << 0 << (int)QCss::BorderStyle_DotDash << QColor();
-    QTest::newRow("dot-dot-dash style") << "border: dot-dot-dash" << 0 << (int)QCss::BorderStyle_DotDotDash << QColor();
+    BOBUIest::newRow("all values") << "border: 2px solid green" << 2 << (int)QCss::BorderStyle_Solid << QColor("green");
+    BOBUIest::newRow("palette") << "border: 2px solid palette(highlight)" << 2 << (int)QCss::BorderStyle_Solid << qApp->palette().color(QPalette::Highlight);
+    BOBUIest::newRow("just width") << "border: 2px" << 2 << (int)QCss::BorderStyle_None << QColor();
+    BOBUIest::newRow("just style") << "border: solid" << 0 << (int)QCss::BorderStyle_Solid << QColor();
+    BOBUIest::newRow("just color") << "border: green" << 0 << (int)QCss::BorderStyle_None << QColor("green");
+    BOBUIest::newRow("width+style") << "border: 2px solid" << 2 << (int)QCss::BorderStyle_Solid << QColor();
+    BOBUIest::newRow("style+color") << "border: solid green" << 0 << (int)QCss::BorderStyle_Solid << QColor("green");
+    BOBUIest::newRow("width+color") << "border: 3px green" << 3 << (int)QCss::BorderStyle_None << QColor("green");
+    BOBUIest::newRow("groove style") << "border: groove" << 0 << (int)QCss::BorderStyle_Groove << QColor();
+    BOBUIest::newRow("ridge style") << "border: ridge" << 0 << (int)QCss::BorderStyle_Ridge << QColor();
+    BOBUIest::newRow("double style") << "border: double" << 0 << (int)QCss::BorderStyle_Double << QColor();
+    BOBUIest::newRow("inset style") << "border: inset" << 0 << (int)QCss::BorderStyle_Inset << QColor();
+    BOBUIest::newRow("outset style") << "border: outset" << 0 << (int)QCss::BorderStyle_Outset << QColor();
+    BOBUIest::newRow("dashed style") << "border: dashed" << 0 << (int)QCss::BorderStyle_Dashed << QColor();
+    BOBUIest::newRow("dotted style") << "border: dotted" << 0 << (int)QCss::BorderStyle_Dotted << QColor();
+    BOBUIest::newRow("dot-dash style") << "border: dot-dash" << 0 << (int)QCss::BorderStyle_DotDash << QColor();
+    BOBUIest::newRow("dot-dot-dash style") << "border: dot-dot-dash" << 0 << (int)QCss::BorderStyle_DotDotDash << QColor();
 
-    QTest::newRow("top-width+color") << "border-top: 3px green" << 3 << (int)QCss::BorderStyle_None << QColor("green");
+    BOBUIest::newRow("top-width+color") << "border-top: 3px green" << 3 << (int)QCss::BorderStyle_None << QColor("green");
 }
 
 void tst_QCssParser::extractBorder()
@@ -1810,7 +1810,7 @@ void tst_QCssParser::extractBorder()
     QCOMPARE(int(styles[QCss::TopEdge]), expectedTopStyle);
     QCOMPARE(colors[QCss::TopEdge].color(), expectedTopColor);
 
-    //QTBUG-9674  : a second evaluation should give the same results
+    //BOBUIBUG-9674  : a second evaluation should give the same results
     QVERIFY(extractor.extractBorder(widths, colors, styles, radii));
     QCOMPARE(widths[QCss::TopEdge], expectedTopWidth);
     QCOMPARE(int(styles[QCss::TopEdge]), expectedTopStyle);
@@ -1819,24 +1819,24 @@ void tst_QCssParser::extractBorder()
 
 void tst_QCssParser::extractBorderImage_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QString>("imgUrl");
-    QTest::addColumn<QCss::TileMode>("tileMode1");
-    QTest::addColumn<QCss::TileMode>("tileMode2");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QString>("imgUrl");
+    BOBUIest::addColumn<QCss::TileMode>("tileMode1");
+    BOBUIest::addColumn<QCss::TileMode>("tileMode2");
 
-    QTest::newRow("no valid url, 1 stretch")
+    BOBUIest::newRow("no valid url, 1 stretch")
         << "border-image: stretch" << QString()
         << QCss::TileMode::TileMode_Stretch
         << QCss::TileMode::TileMode_Stretch;
-    QTest::newRow("tilemode stretch")
+    BOBUIest::newRow("tilemode stretch")
         << "border-image: url(:/image.png) 1 stretch"  << ":/image.png"
         << QCss::TileMode::TileMode_Stretch
         << QCss::TileMode::TileMode_Stretch;
-    QTest::newRow("tilemode repeat")
+    BOBUIest::newRow("tilemode repeat")
         << "border-image: url(:/image.png) 1 2 repeat" << ":/image.png"
         << QCss::TileMode::TileMode_Repeat
         << QCss::TileMode::TileMode_Repeat;
-    QTest::newRow("tilemode repeat and stretch")
+    BOBUIest::newRow("tilemode repeat and stretch")
         << "border-image: url(:/image.png) 1 2 3 repeat stretch" << ":/image.png"
         << QCss::TileMode::TileMode_Repeat
         << QCss::TileMode::TileMode_Stretch;
@@ -1876,22 +1876,22 @@ void tst_QCssParser::extractBorderImage()
 }
 void tst_QCssParser::extractBorderImageCuts_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<int>("expCut1");
-    QTest::addColumn<int>("expCut2");
-    QTest::addColumn<int>("expCut3");
-    QTest::addColumn<int>("expCut4");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<int>("expCut1");
+    BOBUIest::addColumn<int>("expCut2");
+    BOBUIest::addColumn<int>("expCut3");
+    BOBUIest::addColumn<int>("expCut4");
 
     const QString url = "border-image: url(:/image.png)";
-    QTest::newRow("no cuts") << url << -1 << -1 << -1 << -1;
-    QTest::newRow("1 cut, valid") << url + " 2" << 2 << 2 << 2 << 2;
-    QTest::newRow("1 cut, invalid") << url + " -42" << -1 << -1 << -1 << -1;
-    QTest::newRow("2 cuts, valid") << url + " 2 3" << 2 << 3 << 2 << 3;
-    QTest::newRow("2 cuts, invalid") << url + " 2 -3" << -1 << -1 << -1 << -1;
-    QTest::newRow("3 cuts, valid") << url + " 2 3 4" << 2 << 3 << 4 << 3;
-    QTest::newRow("3 cuts, invalid") << url + " 2 3 -4" << -1 << -1 << -1 << -1;
-    QTest::newRow("4 cuts, valid") << url + " 2 3 4 5" << 2 << 3 << 4 << 5;
-    QTest::newRow("4 cuts, invalid") << url + " 2 3 4 -5" << -1 << -1 << -1 << -1;
+    BOBUIest::newRow("no cuts") << url << -1 << -1 << -1 << -1;
+    BOBUIest::newRow("1 cut, valid") << url + " 2" << 2 << 2 << 2 << 2;
+    BOBUIest::newRow("1 cut, invalid") << url + " -42" << -1 << -1 << -1 << -1;
+    BOBUIest::newRow("2 cuts, valid") << url + " 2 3" << 2 << 3 << 2 << 3;
+    BOBUIest::newRow("2 cuts, invalid") << url + " 2 -3" << -1 << -1 << -1 << -1;
+    BOBUIest::newRow("3 cuts, valid") << url + " 2 3 4" << 2 << 3 << 4 << 3;
+    BOBUIest::newRow("3 cuts, invalid") << url + " 2 3 -4" << -1 << -1 << -1 << -1;
+    BOBUIest::newRow("4 cuts, valid") << url + " 2 3 4 5" << 2 << 3 << 4 << 5;
+    BOBUIest::newRow("4 cuts, invalid") << url + " 2 3 4 -5" << -1 << -1 << -1 << -1;
 }
 
 void tst_QCssParser::extractBorderImageCuts()
@@ -1977,14 +1977,14 @@ void tst_QCssParser::quotedAndUnquotedIdentifiers()
 
 void tst_QCssParser::whitespaceValues_data()
 {
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("normal") << "normal";
-    QTest::newRow("inherit") << "inherit";
-    QTest::newRow("nowrap") << "nowrap";
-    QTest::newRow("pre") << "pre";
-    QTest::newRow("pre-wrap") << "pre-wrap";
-    QTest::newRow("pre-line") << "pre-line";
+    BOBUIest::newRow("normal") << "normal";
+    BOBUIest::newRow("inherit") << "inherit";
+    BOBUIest::newRow("nowrap") << "nowrap";
+    BOBUIest::newRow("pre") << "pre";
+    BOBUIest::newRow("pre-wrap") << "pre-wrap";
+    BOBUIest::newRow("pre-line") << "pre-line";
 }
 
 void tst_QCssParser::whitespaceValues()
@@ -2004,17 +2004,17 @@ void tst_QCssParser::whitespaceValues()
 
 void tst_QCssParser::strokeLineCapValues_data()
 {
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("flatcap") << "flatcap";
-    QTest::newRow("roundcap") << "roundcap";
-    QTest::newRow("squarecap") << "squarecap";
+    BOBUIest::newRow("flatcap") << "flatcap";
+    BOBUIest::newRow("roundcap") << "roundcap";
+    BOBUIest::newRow("squarecap") << "squarecap";
 }
 
 void tst_QCssParser::strokeLineCapValues()
 {
     QFETCH(QString, value);
-    QCss::Parser parser(QString("foo { -qt-stroke-linecap: %1 }").arg(value));
+    QCss::Parser parser(QString("foo { -bobui-stroke-linecap: %1 }").arg(value));
     QCss::StyleSheet sheet;
     QVERIFY(parser.parse(&sheet));
 
@@ -2022,25 +2022,25 @@ void tst_QCssParser::strokeLineCapValues()
             sheet.styleRules.at(0) : *sheet.nameIndex.begin();
     QCOMPARE(rule.declarations.size(), 1);
 
-    QCOMPARE(rule.declarations.at(0).d->property, QLatin1String("-qt-stroke-linecap"));
+    QCOMPARE(rule.declarations.at(0).d->property, QLatin1String("-bobui-stroke-linecap"));
     QCOMPARE(rule.declarations.at(0).d->values.first().type, QCss::Value::KnownIdentifier);
     QCOMPARE(rule.declarations.at(0).d->values.first().toString(), value);
 }
 
 void tst_QCssParser::strokeLineJoinValues_data()
 {
-    QTest::addColumn<QString>("value");
+    BOBUIest::addColumn<QString>("value");
 
-    QTest::newRow("beveljoin") << "beveljoin";
-    QTest::newRow("miterjoin") << "miterjoin";
-    QTest::newRow("roundjoin") << "roundjoin";
-    QTest::newRow("svgmiterjoin") << "svgmiterjoin";
+    BOBUIest::newRow("beveljoin") << "beveljoin";
+    BOBUIest::newRow("miterjoin") << "miterjoin";
+    BOBUIest::newRow("roundjoin") << "roundjoin";
+    BOBUIest::newRow("svgmiterjoin") << "svgmiterjoin";
 }
 
 void tst_QCssParser::strokeLineJoinValues()
 {
     QFETCH(QString, value);
-    QCss::Parser parser(QString("foo { -qt-stroke-linejoin: %1 }").arg(value));
+    QCss::Parser parser(QString("foo { -bobui-stroke-linejoin: %1 }").arg(value));
     QCss::StyleSheet sheet;
     QVERIFY(parser.parse(&sheet));
 
@@ -2048,23 +2048,23 @@ void tst_QCssParser::strokeLineJoinValues()
             sheet.styleRules.at(0) : *sheet.nameIndex.begin();
     QCOMPARE(rule.declarations.size(), 1);
 
-    QCOMPARE(rule.declarations.at(0).d->property, QLatin1String("-qt-stroke-linejoin"));
+    QCOMPARE(rule.declarations.at(0).d->property, QLatin1String("-bobui-stroke-linejoin"));
     QCOMPARE(rule.declarations.at(0).d->values.first().type, QCss::Value::KnownIdentifier);
     QCOMPARE(rule.declarations.at(0).d->values.first().toString(), value);
 }
 
 void tst_QCssParser::borderColor_data()
 {
-    QTest::addColumn<QString>("css");
-    QTest::addColumn<QColor>("expectedTopColor");
-    QTest::addColumn<QColor>("expectedRightColor");
-    QTest::addColumn<QColor>("expectedBottomColor");
-    QTest::addColumn<QColor>("expectedLeftColor");
+    BOBUIest::addColumn<QString>("css");
+    BOBUIest::addColumn<QColor>("expectedTopColor");
+    BOBUIest::addColumn<QColor>("expectedRightColor");
+    BOBUIest::addColumn<QColor>("expectedBottomColor");
+    BOBUIest::addColumn<QColor>("expectedLeftColor");
 
-    QTest::newRow("four values") << "border-color: red green blue white" << QColor("red") << QColor("green") << QColor("blue") << QColor("white");
-    QTest::newRow("three values") << "border-color: red green blue" << QColor("red") << QColor("green") << QColor("blue") << QColor("green");
-    QTest::newRow("two values") << "border-color: red green" << QColor("red") << QColor("green") << QColor("red") << QColor("green");
-    QTest::newRow("one value") << "border-color: red" << QColor("red") << QColor("red") << QColor("red") << QColor("red");
+    BOBUIest::newRow("four values") << "border-color: red green blue white" << QColor("red") << QColor("green") << QColor("blue") << QColor("white");
+    BOBUIest::newRow("three values") << "border-color: red green blue" << QColor("red") << QColor("green") << QColor("blue") << QColor("green");
+    BOBUIest::newRow("two values") << "border-color: red green" << QColor("red") << QColor("green") << QColor("red") << QColor("green");
+    BOBUIest::newRow("one value") << "border-color: red" << QColor("red") << QColor("red") << QColor("red") << QColor("red");
 }
 
 void tst_QCssParser::borderColor()
@@ -2097,13 +2097,13 @@ void tst_QCssParser::borderColor()
     QCOMPARE(colors[QCss::BottomEdge].color(), expectedBottomColor);
     QCOMPARE(colors[QCss::LeftEdge].color(), expectedLeftColor);
 
-    //QTBUG-126381 : a second evaluation should give the same results
+    //BOBUIBUG-126381 : a second evaluation should give the same results
     QCOMPARE(colors[QCss::TopEdge].color(), expectedTopColor);
     QCOMPARE(colors[QCss::RightEdge].color(), expectedRightColor);
     QCOMPARE(colors[QCss::BottomEdge].color(), expectedBottomColor);
     QCOMPARE(colors[QCss::LeftEdge].color(), expectedLeftColor);
 }
 
-QTEST_MAIN(tst_QCssParser)
+BOBUIEST_MAIN(tst_QCssParser)
 #include "tst_qcssparser.moc"
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example dialogs/tabdialog
@@ -8,7 +8,7 @@
     \ingroup examples-dialogs
 
     \brief The Tab Dialog example shows how to construct a tab dialog using the
-    QTabWidget class.
+    BOBUIabWidget class.
 
     Dialogs provide an efficient way for the application to communicate
     with the user, but complex dialogs suffer from the problem that they
@@ -26,9 +26,9 @@
     \section1 TabDialog Class Definition
 
     The \c TabDialog class is a subclass of QDialog that displays a
-    QTabWidget and two standard dialog buttons. The class definition
+    BOBUIabWidget and two standard dialog buttons. The class definition
     only contain the class constructor and a private data member for
-    the QTabWidget:
+    the BOBUIabWidget:
 
     \snippet dialogs/tabdialog/tabdialog.h 3
 

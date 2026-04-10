@@ -1,7 +1,7 @@
 // Copyright (C) 2012 Jeremy Lainé <jeremy.laine@m4x.org>
 // Copyright (C) 2023 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qdnslookup.h"
 #include "qdnslookup_p.h"
@@ -15,20 +15,20 @@
 #include <qspan.h>
 #include <qurl.h>
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 #  include <qsslsocket.h>
 #endif
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcDnsLookup, "qt.network.dnslookup", QtCriticalMsg)
+Q_STATIC_LOGGING_CATEGORY(lcDnsLookup, "bobui.network.dnslookup", BobUICriticalMsg)
 
 namespace {
-struct QDnsLookupThreadPool : QThreadPool
+struct QDnsLookupThreadPool : BOBUIhreadPool
 {
     QDnsLookupThreadPool()
     {
@@ -40,7 +40,7 @@ struct QDnsLookupThreadPool : QThreadPool
 
 Q_APPLICATION_STATIC(QDnsLookupThreadPool, theDnsLookupThreadPool);
 
-static bool qt_qdnsmailexchangerecord_less_than(const QDnsMailExchangeRecord &r1, const QDnsMailExchangeRecord &r2)
+static bool bobui_qdnsmailexchangerecord_less_than(const QDnsMailExchangeRecord &r1, const QDnsMailExchangeRecord &r2)
 {
     // Lower numbers are more preferred than higher ones.
     return r1.preference() < r2.preference();
@@ -50,14 +50,14 @@ static bool qt_qdnsmailexchangerecord_less_than(const QDnsMailExchangeRecord &r1
     Sorts a list of QDnsMailExchangeRecord objects according to RFC 5321.
 */
 
-static void qt_qdnsmailexchangerecord_sort(QList<QDnsMailExchangeRecord> &records)
+static void bobui_qdnsmailexchangerecord_sort(QList<QDnsMailExchangeRecord> &records)
 {
     // If we have no more than one result, we are done.
     if (records.size() <= 1)
         return;
 
     // Order the records by preference.
-    std::sort(records.begin(), records.end(), qt_qdnsmailexchangerecord_less_than);
+    std::sort(records.begin(), records.end(), bobui_qdnsmailexchangerecord_less_than);
 
     int i = 0;
     while (i < records.size()) {
@@ -79,7 +79,7 @@ static void qt_qdnsmailexchangerecord_sort(QList<QDnsMailExchangeRecord> &record
     }
 }
 
-static bool qt_qdnsservicerecord_less_than(const QDnsServiceRecord &r1, const QDnsServiceRecord &r2)
+static bool bobui_qdnsservicerecord_less_than(const QDnsServiceRecord &r1, const QDnsServiceRecord &r2)
 {
     // Order by priority, or if the priorities are equal,
     // put zero weight records first.
@@ -92,7 +92,7 @@ static bool qt_qdnsservicerecord_less_than(const QDnsServiceRecord &r1, const QD
     Sorts a list of QDnsServiceRecord objects according to RFC 2782.
 */
 
-static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
+static void bobui_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
 {
     // If we have no more than one result, we are done.
     if (records.size() <= 1)
@@ -100,7 +100,7 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
 
     // Order the records by priority, and for records with an equal
     // priority, put records with a zero weight first.
-    std::sort(records.begin(), records.end(), qt_qdnsservicerecord_less_than);
+    std::sort(records.begin(), records.end(), bobui_qdnsservicerecord_less_than);
 
     int i = 0;
     while (i < records.size()) {
@@ -116,7 +116,7 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
             slice << records.at(j);
         }
 #ifdef QDNSLOOKUP_DEBUG
-        qDebug("qt_qdnsservicerecord_sort() : priority %i (size: %i, total weight: %i)",
+        qDebug("bobui_qdnsservicerecord_sort() : priority %i (size: %i, total weight: %i)",
                slicePriority, slice.size(), sliceWeight);
 #endif
 
@@ -128,7 +128,7 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
                 summedWeight += slice.at(j).weight();
                 if (summedWeight >= weightThreshold) {
 #ifdef QDNSLOOKUP_DEBUG
-                    qDebug("qt_qdnsservicerecord_sort() : adding %s %i (weight: %i)",
+                    qDebug("bobui_qdnsservicerecord_sort() : adding %s %i (weight: %i)",
                            qPrintable(slice.at(j).target()), slice.at(j).port(),
                            slice.at(j).weight());
 #endif
@@ -147,7 +147,7 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
     \brief The QDnsLookup class represents a DNS lookup.
     \since 5.0
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
 
     QDnsLookup uses the mechanisms provided by the operating system to perform
@@ -173,7 +173,7 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
 
     QDnsLookup supports DNS-over-TLS (DoT, as specified by \l{RFC 7858}) on
     some platforms. That currently includes all Unix platforms where regular
-    queries are supported, if \l QSslSocket support is present in Qt. To query
+    queries are supported, if \l QSslSocket support is present in BobUI. To query
     if support is present at runtime, use isProtocolSupported().
 
     When using DNS-over-TLS, QDnsLookup only implements the "Opportunistic
@@ -288,12 +288,12 @@ static void qt_qdnsservicerecord_sort(QList<QDnsServiceRecord> &records)
 */
 bool QDnsLookup::isProtocolSupported(Protocol protocol)
 {
-#if QT_CONFIG(libresolv) || defined(Q_OS_WIN)
+#if BOBUI_CONFIG(libresolv) || defined(Q_OS_WIN)
     switch (protocol) {
     case QDnsLookup::Standard:
         return true;
     case QDnsLookup::DnsOverTls:
-#  if QT_CONFIG(ssl)
+#  if BOBUI_CONFIG(ssl)
         if (QSslSocket::supportsSsl())
             return true;
 #  endif
@@ -629,11 +629,11 @@ QBindable<QDnsLookup::Protocol> QDnsLookup::bindableNameserverProtocol()
 
 void QDnsLookup::setNameserver(Protocol protocol, const QHostAddress &nameserver, quint16 port)
 {
-    Qt::beginPropertyUpdateGroup();
+    BobUI::beginPropertyUpdateGroup();
     setNameserver(nameserver);
     setNameserverPort(port);
     setNameserverProtocol(protocol);
-    Qt::endPropertyUpdateGroup();
+    BobUI::endPropertyUpdateGroup();
 }
 
 /*!
@@ -722,7 +722,7 @@ QList<QDnsTlsAssociationRecord> QDnsLookup::tlsAssociationRecords() const
     return d_func()->reply.tlsAssociationRecords;
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 /*!
     \since 6.8
     Sets the \a sslConfiguration to use for outgoing DNS-over-TLS connections.
@@ -789,7 +789,7 @@ void QDnsLookup::lookup()
 #ifdef QDNSLOOKUP_DEBUG
             qDebug("DNS reply for %s: %i (%s)", qPrintable(d->name), reply.error, qPrintable(reply.errorString));
 #endif
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
             d->sslConfiguration = std::move(reply.sslConfiguration);
 #endif
             d->reply = reply;
@@ -801,7 +801,7 @@ void QDnsLookup::lookup()
 
     d->runnable = new QDnsLookupRunnable(d);
     connect(d->runnable, &QDnsLookupRunnable::finished, this, l,
-            Qt::BlockingQueuedConnection);
+            BobUI::BlockingQueuedConnection);
     theDnsLookupThreadPool->start(d->runnable);
 }
 
@@ -810,7 +810,7 @@ void QDnsLookup::lookup()
     \brief The QDnsDomainNameRecord class stores information about a domain
     name record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -894,7 +894,7 @@ QDnsDomainNameRecord &QDnsDomainNameRecord::operator=(const QDnsDomainNameRecord
     \brief The QDnsHostAddressRecord class stores information about a host
     address record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -977,7 +977,7 @@ QDnsHostAddressRecord &QDnsHostAddressRecord::operator=(const QDnsHostAddressRec
     \class QDnsMailExchangeRecord
     \brief The QDnsMailExchangeRecord class stores information about a DNS MX record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -1071,7 +1071,7 @@ QDnsMailExchangeRecord &QDnsMailExchangeRecord::operator=(const QDnsMailExchange
     \class QDnsServiceRecord
     \brief The QDnsServiceRecord class stores information about a DNS SRV record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -1190,7 +1190,7 @@ QDnsServiceRecord &QDnsServiceRecord::operator=(const QDnsServiceRecord &other)
     \class QDnsTextRecord
     \brief The QDnsTextRecord class stores information about a DNS TXT record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -1276,7 +1276,7 @@ QDnsTextRecord &QDnsTextRecord::operator=(const QDnsTextRecord &other)
     \since 6.8
     \brief The QDnsTlsAssociationRecord class stores information about a DNS TLSA record.
 
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
     \ingroup network
     \ingroup shared
 
@@ -1288,7 +1288,7 @@ QDnsTextRecord &QDnsTextRecord::operator=(const QDnsTextRecord &other)
     \sa QDnsLookup
 */
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QDnsTlsAssociationRecordPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QDnsTlsAssociationRecordPrivate)
 
 /*!
     \enum QDnsTlsAssociationRecord::CertificateUsage
@@ -1494,7 +1494,7 @@ static QDnsLookupRunnable::EncodedLabel encodeLabel(const QString &label)
     if (label.isEmpty())
         return QDnsLookupRunnable::EncodedLabel(1, rootDomain);
 
-    QString encodedLabel = qt_ACE_do(label, ToAceOnly, ForbidLeadingDot);
+    QString encodedLabel = bobui_ACE_do(label, ToAceOnly, ForbidLeadingDot);
 #ifdef Q_OS_WIN
     return encodedLabel;
 #else
@@ -1511,7 +1511,7 @@ inline QDnsLookupRunnable::QDnsLookupRunnable(const QDnsLookupPrivate *d)
 {
     if (port == 0)
         port = QDnsLookup::defaultPortForProtocol(protocol);
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     sslConfiguration = d->sslConfiguration;
 #endif
 }
@@ -1529,8 +1529,8 @@ void QDnsLookupRunnable::run()
         query(&reply);
 
         // Sort results.
-        qt_qdnsmailexchangerecord_sort(reply.mailExchangeRecords);
-        qt_qdnsservicerecord_sort(reply.serviceRecords);
+        bobui_qdnsmailexchangerecord_sort(reply.mailExchangeRecords);
+        bobui_qdnsservicerecord_sort(reply.serviceRecords);
     }
 
     emit finished(reply);
@@ -1575,7 +1575,7 @@ inline QDebug operator<<(QDebug &d, QDnsLookupRunnable *r)
     return d;
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 static constexpr std::chrono::milliseconds DnsOverTlsConnectTimeout(15'000);
 static constexpr std::chrono::milliseconds DnsOverTlsTimeout(120'000);
 static constexpr quint8 DnsAuthenticDataBit = 0x20;
@@ -1601,7 +1601,7 @@ bool QDnsLookupRunnable::sendDnsOverTls(QDnsLookupReply *reply, QSpan<unsigned c
     QSslSocket socket;
     socket.setSslConfiguration(sslConfiguration.value_or(QSslConfiguration::defaultConfiguration()));
 
-#  if QT_CONFIG(networkproxy)
+#  if BOBUI_CONFIG(networkproxy)
     socket.setProtocolTag("domain-s"_L1);
 #  endif
 
@@ -1659,7 +1659,7 @@ bool QDnsLookupRunnable::sendDnsOverTls(QDnsLookupReply *reply, QSpan<unsigned c
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdnslookup.cpp"
 #include "moc_qdnslookup_p.cpp"

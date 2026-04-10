@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'embeddeddialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,16 +9,16 @@
 #ifndef EMBEDDEDDIALOG_H
 #define EMBEDDEDDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QFontComboBox>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QSlider>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QFontComboBox>
+#include <BobUIWidgets/QFormLayout>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QSlider>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_embeddedDialog
 {
@@ -79,16 +79,16 @@ public:
 
         spacing = new QSlider(embeddedDialog);
         spacing->setObjectName("spacing");
-        spacing->setOrientation(Qt::Orientation::Horizontal);
+        spacing->setOrientation(BobUI::Orientation::Horizontal);
 
         formLayout->setWidget(3, QFormLayout::ItemRole::FieldRole, spacing);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(layoutDirection);
         label_2->setBuddy(fontComboBox);
         label_3->setBuddy(style);
         label_4->setBuddy(spacing);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(embeddedDialog);
 
@@ -113,6 +113,6 @@ namespace Ui {
     class embeddedDialog: public Ui_embeddedDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // EMBEDDEDDIALOG_H

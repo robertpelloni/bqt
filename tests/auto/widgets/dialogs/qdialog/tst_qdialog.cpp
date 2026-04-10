@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "../../../shared/highdpi.h"
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 
 #include <qdialog.h>
 #include <qapplication.h>
@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 #include <QSignalSpy>
 #include <QSizeGrip>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsView>
 #include <QWindow>
@@ -22,9 +22,9 @@
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformtheme_p.h>
 
-#include <QtWidgets/private/qapplication_p.h>
+#include <BobUIWidgets/private/qapplication_p.h>
 
-QT_FORWARD_DECLARE_CLASS(QDialog)
+BOBUI_FORWARD_DECLARE_CLASS(QDialog)
 
 // work around function being protected
 class DummyDialog : public QDialog
@@ -52,7 +52,7 @@ private slots:
     void toolDialogPosition();
     void deleteMainDefault();
     void deleteInExec();
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     void showSizeGrip();
 #endif
     void setVisible();
@@ -88,7 +88,7 @@ class ToolDialog : public QDialog
 {
 public:
     ToolDialog(QWidget *parent = nullptr)
-        : QDialog(parent, Qt::Tool), mWasActive(false), mWasModalWindow(false), tId(-1) {}
+        : QDialog(parent, BobUI::Tool), mWasActive(false), mWasModalWindow(false), tId(-1) {}
 
     bool wasActive() const { return mWasActive; }
     bool wasModalWindow() const { return mWasModalWindow; }
@@ -99,7 +99,7 @@ public:
         return QDialog::exec();
     }
 protected:
-    void timerEvent(QTimerEvent *event) override
+    void timerEvent(BOBUIimerEvent *event) override
     {
         if (tId == event->timerId()) {
             killTimer(tId);
@@ -129,7 +129,7 @@ void tst_QDialog::defaultButtons()
 {
     DummyDialog testWidget;
     testWidget.resize(200, 200);
-    testWidget.setWindowTitle(QTest::currentTestFunction());
+    testWidget.setWindowTitle(BOBUIest::currentTestFunction());
     QLineEdit *lineEdit = new QLineEdit(&testWidget);
     QPushButton *push = new QPushButton("Button 1", &testWidget);
     QPushButton *pushTwo = new QPushButton("Button 2", &testWidget);
@@ -138,7 +138,7 @@ void tst_QDialog::defaultButtons()
 
     testWidget.show();
     QApplicationPrivate::setActiveWindow(&testWidget);
-    QVERIFY(QTest::qWaitForWindowExposed(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&testWidget));
 
     push->setDefault(true);
     QVERIFY(push->isDefault());
@@ -163,7 +163,7 @@ void tst_QDialog::showMaximized()
 {
     QDialog dialog(0);
     dialog.setSizeGripEnabled(true);
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QSizeGrip *sizeGrip = dialog.findChild<QSizeGrip *>();
     QVERIFY(sizeGrip);
 #endif
@@ -171,14 +171,14 @@ void tst_QDialog::showMaximized()
     dialog.showMaximized();
     QVERIFY(dialog.isMaximized());
     QVERIFY(dialog.isVisible());
-#if QT_CONFIG(sizegrip) && !defined(Q_OS_DARWIN) && !defined(Q_OS_HPUX)
+#if BOBUI_CONFIG(sizegrip) && !defined(Q_OS_DARWIN) && !defined(Q_OS_HPUX)
     QVERIFY(!sizeGrip->isVisible());
 #endif
 
     dialog.showNormal();
     QVERIFY(!dialog.isMaximized());
     QVERIFY(dialog.isVisible());
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QVERIFY(sizeGrip->isVisible());
 #endif
 
@@ -238,9 +238,9 @@ void tst_QDialog::showMinimized()
 
 void tst_QDialog::showFullScreen()
 {
-    QDialog dialog(0, Qt::X11BypassWindowManagerHint);
+    QDialog dialog(0, BobUI::X11BypassWindowManagerHint);
     dialog.setSizeGripEnabled(true);
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QSizeGrip *sizeGrip = dialog.findChild<QSizeGrip *>();
     QVERIFY(sizeGrip);
 #endif
@@ -248,14 +248,14 @@ void tst_QDialog::showFullScreen()
     dialog.showFullScreen();
     QVERIFY(dialog.isFullScreen());
     QVERIFY(dialog.isVisible());
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QVERIFY(!sizeGrip->isVisible());
 #endif
 
     dialog.showNormal();
     QVERIFY(!dialog.isFullScreen());
     QVERIFY(dialog.isVisible());
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
     QVERIFY(sizeGrip->isVisible());
 #endif
 
@@ -294,11 +294,11 @@ void tst_QDialog::showAsTool()
 
     DummyDialog testWidget;
     testWidget.resize(200, 200);
-    testWidget.setWindowTitle(QTest::currentTestFunction());
+    testWidget.setWindowTitle(BOBUIest::currentTestFunction());
     ToolDialog dialog(&testWidget);
     testWidget.show();
     testWidget.activateWindow();
-    QVERIFY(QTest::qWaitForWindowActive(&testWidget));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&testWidget));
     dialog.exec();
     if (testWidget.style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, &testWidget)) {
         QCOMPARE(dialog.wasActive(), true);
@@ -309,11 +309,11 @@ void tst_QDialog::showAsTool()
 
 void tst_QDialog::showWithoutActivating_data()
 {
-    QTest::addColumn<bool>("showWithoutActivating");
-    QTest::addColumn<int>("focusInCount");
+    BOBUIest::addColumn<bool>("showWithoutActivating");
+    BOBUIest::addColumn<int>("focusInCount");
 
-    QTest::addRow("showWithoutActivating") << true << 0;
-    QTest::addRow("showWithActivating") << false << 1;
+    BOBUIest::addRow("showWithoutActivating") << true << 0;
+    BOBUIest::addRow("showWithActivating") << false << 1;
 }
 
 void tst_QDialog::showWithoutActivating()
@@ -327,10 +327,10 @@ void tst_QDialog::showWithoutActivating()
     protected:
         void focusInEvent(QFocusEvent *) override { ++focusInCount; }
     } dialog;
-    dialog.setAttribute(Qt::WA_ShowWithoutActivating, showWithoutActivating);
+    dialog.setAttribute(BobUI::WA_ShowWithoutActivating, showWithoutActivating);
 
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     QCOMPARE(dialog.focusInCount, focusInCount);
 }
 
@@ -338,7 +338,7 @@ void tst_QDialog::showWithoutActivating()
 // for a dialog with the Tool window type.
 void tst_QDialog::toolDialogPosition()
 {
-    QDialog dialog(0, Qt::Tool);
+    QDialog dialog(0, BobUI::Tool);
     dialog.move(QPoint(100,100));
     const QPoint beforeShowPosition = dialog.pos();
     dialog.show();
@@ -364,17 +364,17 @@ void tst_QDialog::deleteMainDefault()
     button->setDefault(true);
     delete button;
     dialog.show();
-    QTestEventLoop::instance().enterLoop(2);
+    BOBUIestEventLoop::instance().enterLoop(2);
 }
 
 void tst_QDialog::deleteInExec()
 {
     QDialog *dialog = new QDialog(0);
-    QMetaObject::invokeMethod(dialog, "deleteLater", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(dialog, "deleteLater", BobUI::QueuedConnection);
     QCOMPARE(dialog->exec(), int(QDialog::Rejected));
 }
 
-#if QT_CONFIG(sizegrip)
+#if BOBUI_CONFIG(sizegrip)
 
 void tst_QDialog::showSizeGrip()
 {
@@ -402,7 +402,7 @@ void tst_QDialog::showSizeGrip()
     QVERIFY(!sizeGrip->isVisible());
 }
 
-#endif // QT_CONFIG(sizegrip)
+#endif // BOBUI_CONFIG(sizegrip)
 
 void tst_QDialog::setVisible()
 {
@@ -449,28 +449,28 @@ void tst_QDialog::reject()
 {
     TestRejectDialog dialog;
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     QVERIFY(dialog.isVisible());
     dialog.reject();
-    QTRY_VERIFY(!dialog.isVisible());
+    BOBUIRY_VERIFY(!dialog.isVisible());
     QCOMPARE(dialog.called, 1);
 
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     QVERIFY(dialog.isVisible());
     QVERIFY(dialog.close());
-    QTRY_VERIFY(!dialog.isVisible());
+    BOBUIRY_VERIFY(!dialog.isVisible());
     QCOMPARE(dialog.called, 2);
 
     dialog.cancelReject = true;
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     QVERIFY(dialog.isVisible());
     dialog.reject();
-    QTRY_VERIFY(dialog.isVisible());
+    BOBUIRY_VERIFY(dialog.isVisible());
     QCOMPARE(dialog.called, 3);
     QVERIFY(!dialog.close());
-    QTRY_VERIFY(dialog.isVisible());
+    BOBUIRY_VERIFY(dialog.isVisible());
     QCOMPARE(dialog.called, 4);
 }
 
@@ -481,10 +481,10 @@ static QByteArray formatPoint(QPoint p)
 
 void tst_QDialog::snapToDefaultButton()
 {
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
     QSKIP("Test relies on there being a cursor");
 #else
-    if (!QGuiApplication::platformName().compare(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (!QGuiApplication::platformName().compare(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("This platform does not support setting the cursor position.");
 #ifdef Q_OS_ANDROID
     QSKIP("Android does not support cursor");
@@ -497,7 +497,7 @@ void tst_QDialog::snapToDefaultButton()
 #ifdef Q_OS_MACOS
     // On OS X we use CGEventPost to move the cursor, it needs at least
     // some time before the event handled and the position really set.
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
 #endif
     QCOMPARE(QCursor::pos(), startingPos);
     QDialog dialog;
@@ -505,20 +505,20 @@ void tst_QDialog::snapToDefaultButton()
     button->setDefault(true);
     dialog.setGeometry(dialogGeometry);
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     const QPoint localPos = button->mapFromGlobal(QCursor::pos());
     if (QGuiApplicationPrivate::platformTheme()->themeHint(QPlatformTheme::DialogSnapToDefaultButton).toBool())
         QVERIFY2(button->rect().contains(localPos), formatPoint(localPos).constData());
     else
         QVERIFY2(!button->rect().contains(localPos), formatPoint(localPos).constData());
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 }
 
 void tst_QDialog::transientParent_data()
 {
-    QTest::addColumn<bool>("nativewidgets");
-    QTest::newRow("Non-native") << false;
-    QTest::newRow("Native") << true;
+    BOBUIest::addColumn<bool>("nativewidgets");
+    BOBUIest::newRow("Non-native") << false;
+    BOBUIest::newRow("Native") << true;
 }
 
 void tst_QDialog::transientParent()
@@ -533,10 +533,10 @@ void tst_QDialog::transientParent()
     if (nativewidgets)
         innerWidget->winId();
     topLevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&topLevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&topLevel));
     QDialog dialog(innerWidget);
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     // Transient parent should always be the top level, also when using
     // native child widgets.
     QCOMPARE(dialog.windowHandle()->transientParent(), topLevel.windowHandle());
@@ -544,12 +544,12 @@ void tst_QDialog::transientParent()
 
 void tst_QDialog::dialogInGraphicsView()
 {
-    // QTBUG-49124: A dialog embedded into QGraphicsView has Qt::WA_DontShowOnScreen
+    // BOBUIBUG-49124: A dialog embedded into QGraphicsView has BobUI::WA_DontShowOnScreen
     // set (as has a native dialog). It must not trigger the modal handling though
     // as not to lock up.
     QGraphicsScene scene;
     QGraphicsView view(&scene);
-    view.setWindowTitle(QTest::currentTestFunction());
+    view.setWindowTitle(BOBUIest::currentTestFunction());
     const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     view.resize(availableGeometry.size() / 2);
     view.move(availableGeometry.left() + availableGeometry.width() / 4,
@@ -557,14 +557,14 @@ void tst_QDialog::dialogInGraphicsView()
     ToolDialog *dialog = new ToolDialog;
     scene.addWidget(dialog);
     view.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&view));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&view));
     for (int i = 0; i < 3; ++i) {
         dialog->exec();
         QVERIFY(!dialog->wasModalWindow());
     }
 }
 
-// QTBUG-79147 (Windows): Closing a dialog by clicking the 'X' in the title
+// BOBUIBUG-79147 (Windows): Closing a dialog by clicking the 'X' in the title
 // bar would offset the dialog position when shown next time.
 void tst_QDialog::keepPositionOnClose()
 {
@@ -573,20 +573,20 @@ void tst_QDialog::keepPositionOnClose()
         QSKIP("Test has been written for Windows and is flaky on Linux xcb.");
 #endif
     QDialog dialog;
-    dialog.setWindowTitle(QTest::currentTestFunction());
+    dialog.setWindowTitle(BOBUIest::currentTestFunction());
     const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
     dialog.resize(availableGeometry.size() / 4);
     QPoint pos = availableGeometry.topLeft() + QPoint(100, 100);
     dialog.move(pos);
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
     pos = dialog.pos();
     dialog.close();
     dialog.windowHandle()->destroy(); // Emulate a click on close by destroying the window.
-    QTest::qWait(50);
+    BOBUIest::qWait(50);
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
-    QTest::qWait(50);
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
+    BOBUIest::qWait(50);
     QCOMPARE(dialog.pos(), pos);
 }
 
@@ -632,7 +632,7 @@ void tst_QDialog::virtualsOnClose()
     {
         Dialog dialog;
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
         dialog.accept();
         // we used to only hide the dialog, and we still don't want a
         // closeEvent call for application-triggered calls to QDialog::done
@@ -645,7 +645,7 @@ void tst_QDialog::virtualsOnClose()
     {
         Dialog dialog;
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
         dialog.reject();
         QCOMPARE(dialog.closeEventCount, 0);
         QCOMPARE(dialog.acceptCount, 0);
@@ -656,7 +656,7 @@ void tst_QDialog::virtualsOnClose()
     {
         Dialog dialog;
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
         dialog.close();
         QCOMPARE(dialog.closeEventCount, 1);
         QCOMPARE(dialog.acceptCount, 0);
@@ -668,7 +668,7 @@ void tst_QDialog::virtualsOnClose()
         // user clicks close button in title bar
         Dialog dialog;
         dialog.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
         QWindowSystemInterface::handleCloseEvent(dialog.windowHandle());
         QApplication::processEvents();
         QCOMPARE(dialog.closeEventCount, 1);
@@ -696,9 +696,9 @@ void tst_QDialog::virtualsOnClose()
         EventFilter filter(dialog);
 
         dialog->show();
-        QVERIFY(QTest::qWaitForWindowExposed(dialog));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(dialog));
         delete dialog;
-        // Qt doesn't deliver events to QWidgets closed during destruction
+        // BobUI doesn't deliver events to QWidgets closed during destruction
         QCOMPARE(filter.closeEventCount, 0);
         // QDialog doesn't emit signals when closed by destruction
         QCOMPARE(rejectedSpy.size(), 0);
@@ -706,19 +706,19 @@ void tst_QDialog::virtualsOnClose()
 }
 
 /*!
-    QDialog::done is documented to respect Qt::WA_DeleteOnClose.
+    QDialog::done is documented to respect BobUI::WA_DeleteOnClose.
 */
 void tst_QDialog::deleteOnDone()
 {
     {
         std::unique_ptr<QDialog> dialog(new QDialog);
         QPointer<QDialog> watcher(dialog.get());
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setAttribute(BobUI::WA_DeleteOnClose);
         dialog->show();
-        QVERIFY(QTest::qWaitForWindowExposed(dialog.get()));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(dialog.get()));
 
         dialog->accept();
-        QTRY_COMPARE(watcher.isNull(), true);
+        BOBUIRY_COMPARE(watcher.isNull(), true);
         dialog.release(); // if we get here, the dialog is destroyed
     }
 
@@ -726,9 +726,9 @@ void tst_QDialog::deleteOnDone()
     // have not yet been processed
     {
         std::unique_ptr<QDialog> dialog(new QDialog);
-        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setAttribute(BobUI::WA_DeleteOnClose);
         dialog->show();
-        QVERIFY(QTest::qWaitForWindowExposed(dialog.get()));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(dialog.get()));
 
         dialog->accept();
         dialog.reset();
@@ -746,13 +746,13 @@ void tst_QDialog::quitOnDone()
 
     QDialog dialog;
     dialog.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&dialog));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&dialog));
 
     // QGuiApplication::lastWindowClosed is documented to only be emitted
     // when we are in exec()
-    QTimer::singleShot(0, &dialog, &QDialog::accept);
+    BOBUIimer::singleShot(0, &dialog, &QDialog::accept);
     // also quit with a timer in case the test fails
-    QTimer::singleShot(1000, QApplication::instance(), &QApplication::quit);
+    BOBUIimer::singleShot(1000, QApplication::instance(), &QApplication::quit);
     QApplication::exec();
     QCOMPARE(quitSpy.size(), 1);
 }
@@ -781,16 +781,16 @@ void tst_QDialog::closeParentOfVisibleDialog()
 
     // On macOS, this dialog becomes a sheet and triggered an assert when
     // the widget it lived in was already gone by the time the sheet
-    // got closed. QTBUG-128302
+    // got closed. BOBUIBUG-128302
     QDialog dialog(&widget);
     dialog.open();
 
-    QTimer::singleShot(0, &widget, [&]{
+    BOBUIimer::singleShot(0, &widget, [&]{
         widget.close();
     });
 
-    QTRY_VERIFY(!widget.isVisible());
+    BOBUIRY_VERIFY(!widget.isVisible());
 }
 
-QTEST_MAIN(tst_QDialog)
+BOBUIEST_MAIN(tst_QDialog)
 #include "tst_qdialog.moc"

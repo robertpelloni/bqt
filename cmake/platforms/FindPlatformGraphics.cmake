@@ -1,4 +1,4 @@
-# Copyright (C) 2024 The Qt Company Ltd.
+# Copyright (C) 2024 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #.rst:
@@ -34,7 +34,7 @@ if(NOT TARGET PlatformGraphics::PlatformGraphics)
         string(TOLOWER "${known_var}" known_var_lc)
         if(${platform}PlatformGraphics_REQUIRED_${known_var})
             set_property(TARGET PlatformGraphics::PlatformGraphics PROPERTY
-                _qt_internal_platform_graphics_required_${known_var_lc}
+                _bobui_internal_platform_graphics_required_${known_var_lc}
                 "${${platform}PlatformGraphics_REQUIRED_${known_var}}"
             )
         endif()
@@ -48,7 +48,7 @@ function(platform_graphics_extend_check_cxx_source_required_variables)
         string(TOLOWER "${known_var}" known_var_lc)
         get_target_property(platform_graphics_required_${known_var_lc}
             PlatformGraphics::PlatformGraphics
-            _qt_internal_platform_graphics_required_${known_var_lc}
+            _bobui_internal_platform_graphics_required_${known_var_lc}
         )
         if(platform_graphics_required_${known_var_lc})
             list(APPEND CMAKE_REQUIRED_${known_var} ${platform_graphics_required_${known_var_lc}})

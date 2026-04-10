@@ -1,9 +1,9 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-include(QtFindWrapHelper NO_POLICY_SCOPE)
+include(BobUIFindWrapHelper NO_POLICY_SCOPE)
 
-qt_find_package_system_or_bundled(wrap_freetype
+bobui_find_package_system_or_bundled(wrap_freetype
     FRIENDLY_PACKAGE_NAME "Freetype"
     WRAP_PACKAGE_TARGET "WrapFreetype::WrapFreetype"
     WRAP_PACKAGE_FOUND_VAR_NAME "WrapFreetype_FOUND"

@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QtSql/QtSql>
-#include <QTableView>
+#include <BOBUIest>
+#include <BobUISql/BobUISql>
+#include <BOBUIableView>
 #include <QComboBox>
 
 #include "../../kernel/qsqldatabase/tst_databases.h"
@@ -40,7 +40,7 @@ void tst_QSqlRelationalDelegate::initTestCase_data()
 {
     QVERIFY(dbs.open());
     if (dbs.fillTestTable() == 0)
-        QSKIP("No database drivers are available in this Qt configuration");
+        QSKIP("No database drivers are available in this BobUI configuration");
 }
 
 void tst_QSqlRelationalDelegate::recreateTestTables(QSqlDatabase db)
@@ -129,7 +129,7 @@ void tst_QSqlRelationalDelegate::comboBoxEditor()
     const auto nameField = db.driver()->escapeIdentifier(QLatin1String("name"), QSqlDriver::FieldName);
     const auto titleKeyField = db.driver()->escapeIdentifier(QLatin1String("title_key"),
                                                              QSqlDriver::FieldName);
-    QTableView tv;
+    BOBUIableView tv;
     QSqlRelationalTableModel model(0, db);
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     model.setTable(reltest1);
@@ -141,7 +141,7 @@ void tst_QSqlRelationalDelegate::comboBoxEditor()
     QSqlRelationalDelegate delegate;
     tv.setItemDelegate(&delegate);
     tv.show();
-    QVERIFY(QTest::qWaitForWindowActive(&tv));
+    QVERIFY(BOBUIest::qWaitForWindowActive(&tv));
 
     QModelIndex index = model.index(0, 2);
     tv.setCurrentIndex(index);
@@ -151,10 +151,10 @@ void tst_QSqlRelationalDelegate::comboBoxEditor()
 
     QComboBox *editor = comboBoxes.at(0);
     QCOMPARE(editor->currentText(), "herr");
-    QTest::keyClick(editor, Qt::Key_Down);
-    QTest::keyClick(editor, Qt::Key_Enter);
+    BOBUIest::keyClick(editor, BobUI::Key_Down);
+    BOBUIest::keyClick(editor, BobUI::Key_Enter);
     QCOMPARE(editor->currentText(), "mister");
-    QTest::keyClick(tv.viewport(), Qt::Key_Tab);
+    BOBUIest::keyClick(tv.viewport(), BobUI::Key_Tab);
     QVERIFY_SQL(model, submitAll());
 
     QSqlQuery qry(db);
@@ -163,5 +163,5 @@ void tst_QSqlRelationalDelegate::comboBoxEditor()
     QCOMPARE(qry.value(0).toString(), "2");
 }
 
-QTEST_MAIN(tst_QSqlRelationalDelegate)
+BOBUIEST_MAIN(tst_QSqlRelationalDelegate)
 #include "tst_qsqlrelationaldelegate.moc"

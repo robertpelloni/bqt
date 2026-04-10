@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \page ipc.html
@@ -9,9 +9,9 @@
     \keyword ipc
     \ingroup explanations-networkingandconnectivity
 
-    \brief An overview of Qt's inter-process communication functionality
+    \brief An overview of BobUI's inter-process communication functionality
 
-    Qt supports many ways of communicating with other processes running in the
+    BobUI supports many ways of communicating with other processes running in the
     same system or in different systems. There are basically three types of
     inter-process communication mechanisms:
 
@@ -23,22 +23,22 @@
 
     \section1 Synchronization primitives
 
-    Qt only provides one class for explicit inter-process synchronization:
+    BobUI only provides one class for explicit inter-process synchronization:
     \l{QSystemSemaphore}. A QSystemSemaphore is like a \l{QSemaphore} that is
     accessible by multiple processes in the same system. It is globally
-    identified by a "key", which in Qt is represented by the \l{QNativeIpcKey}
-    class. Additionally, depending on the OS, Qt may support multiple different
+    identified by a "key", which in BobUI is represented by the \l{QNativeIpcKey}
+    class. Additionally, depending on the OS, BobUI may support multiple different
     backends for sharing memory; see the \l{Native IPC Keys} documentation for
     more information and limitations.
 
     It is possible to use regular thread-synchronization primitives such as
     mutexes, wait conditions, and read-write locks, located in memory that is
-    shared between processes. Qt does not provide any class to support this,
+    shared between processes. BobUI does not provide any class to support this,
     but applications can use low-level operations on certain operating systems.
 
-    Other Qt classes may be used to provide higher-level locking, like
+    Other BobUI classes may be used to provide higher-level locking, like
     \l{QLockFile}, or by acquiring a unique, system-wide resource. Such
-    techniques include \l{QTcpServer}{TCP} or \l{QUdpSocket}{UDP} ports or
+    techniques include \l{BOBUIcpServer}{TCP} or \l{QUdpSocket}{UDP} ports or
     well-known names in \l{QDBusConnection::registerService}{D-Bus}.
 
     \section1 Byte-level data sharing
@@ -48,35 +48,35 @@
     (serialized) or can allow random access (a similar condition to
     QFileDevice::isSequential()).
 
-    For serial communication, Qt provides a number of different classes and
+    For serial communication, BobUI provides a number of different classes and
     even full modules:
     \list
       \li Pipes and FIFOs: \l QFile
       \li Child processes: \l QProcess
-      \li Sockets: \l QTcpSocket, \l QUdpSocket (in \l{Qt Network})
-      \li HTTP(S): \l QNetworkAccessManager (in \l{Qt Network}) and
-                   \l QHttpServer (in \l{Qt HTTP Server})
-      \li CoAP(S): \l QCoapClient (in \l{Qt CoAP})
+      \li Sockets: \l BOBUIcpSocket, \l QUdpSocket (in \l{BobUI Network})
+      \li HTTP(S): \l QNetworkAccessManager (in \l{BobUI Network}) and
+                   \l QHttpServer (in \l{BobUI HTTP Server})
+      \li CoAP(S): \l QCoapClient (in \l{BobUI CoAP})
     \endlist
 
-    For random-access data sharing within the same system, Qt provides
+    For random-access data sharing within the same system, BobUI provides
     \l{QSharedMemory}. See the \l{Shared Memory} documentation for detailed
     information.
 
     \section1 Structured message passing
 
-    Qt also provides a number of techniques to exchange structured messages
+    BobUI also provides a number of techniques to exchange structured messages
     with other processes. Applications can build on top of the byte-level
     solutions above, such as by using \l QJsonDocument or \l QXmlStreamReader /
     \l QXmlStreamWriter over HTTP to perform JSONRPC or XMLRPC, respectively,
-    or \l QCborValue with QtCoAP.
+    or \l QCborValue with BobUICoAP.
 
-    Dedicated Qt modules for structured messages and remote procedure-calling
+    Dedicated BobUI modules for structured messages and remote procedure-calling
     include:
     \list
-      \li \l{Qt D-Bus}
-      \li \l{Qt Remote Objects}
-      \li \l{Qt WebSockets}
+      \li \l{BobUI D-Bus}
+      \li \l{BobUI Remote Objects}
+      \li \l{BobUI WebSockets}
     \endlist
 */
 
@@ -88,7 +88,7 @@
 
     \brief Overview of the techniques for sharing memory between processes.
 
-    Qt provides two techniques to share memory with other processes in the same
+    BobUI provides two techniques to share memory with other processes in the same
     system: \l{QSharedMemory} and memory-mapped files using \l{QFile}. Memory
     that is shared with other processes is often referred to as a "segment",
     and although it may have been implemented as specific segments on
@@ -111,8 +111,8 @@
     \l{QSystemSemaphore}.
 
     Shared memory segments and system semaphores are globally identified in the
-    system through a "key", which in Qt is represented by the \l{QNativeIpcKey}
-    class. Additionally, depending on the OS, Qt may support multiple different
+    system through a "key", which in BobUI is represented by the \l{QNativeIpcKey}
+    class. Additionally, depending on the OS, BobUI may support multiple different
     backends for sharing memory; see the \l{Native IPC Keys} documentation for
     more information and limitations.
 
@@ -133,8 +133,8 @@
     delayed, thus making true memory sharing impossible.
 
     This solution has the major advantages of being independent of any backend
-    API and of being simpler to interoperate with from non-Qt applications.
-    Since \l{QTemporaryFile} is a \l{QFile}, applications can use that class to
+    API and of being simpler to interoperate with from non-BobUI applications.
+    Since \l{BOBUIemporaryFile} is a \l{QFile}, applications can use that class to
     achieve clean-up semantics and to create unique shared memory segments too.
 
     To achieve locking of the shared memory segment, applications will need to
@@ -211,12 +211,12 @@
 
     The \l QSharedMemory and \l QSystemSemaphore classes identify their
     resource using a system-wide identifier known as a "key". The low-level key
-    value as well as the key type are encapsulated in Qt using the \l
+    value as well as the key type are encapsulated in BobUI using the \l
     QNativeIpcKey class. That class also provides the proper means of
     exchanging the key with other processes, by way of
     QNativeIpcKey::toString() and QNativeIpcKey::fromString().
 
-    Qt currently supports three distinct backends for those two classes, which
+    BobUI currently supports three distinct backends for those two classes, which
     match the values available in the \l{QNativeIpcKey::Type} enumeration.
     \list
       \li POSIX Realtime extensions (IEEE 1003.1b, POSIX.1b)
@@ -227,7 +227,7 @@
     As the name indicates, the Windows primitives are only available on the
     Windows operating system, where they are the default backend. The other two
     are usually both available on Unix operating systems. The following table
-    provides an overview of typical availability since Qt 6.6:
+    provides an overview of typical availability since BobUI 6.6:
 
     \table
       \header   \li Operating system    \li POSIX   \li System V    \li Windows
@@ -251,7 +251,7 @@
     call QSharedMemory::isKeyTypeSupported() and
     QSystemSemaphore::isKeyTypeSupported().
 
-    QNativeIpcKey also provides support for compatibility with Qt applications
+    QNativeIpcKey also provides support for compatibility with BobUI applications
     prior to its introduction. The following sections detail the limitations of
     the backends, the contents of the string keys themselves, and
     compatibility.
@@ -260,7 +260,7 @@
 
     QNativeIpcKey::setNativeKey() and QNativeIpcKey::nativeKey() handle the
     low-level native key, which may be used with the native APIs and shared
-    with other, non-Qt processes (see below for the API). This format is not
+    with other, non-BobUI processes (see below for the API). This format is not
     usually cross-platform, so both QSharedMemory and QSystemSemaphore provide
     a function to translate a cross-platform identifier string to the native
     key: QSharedMemory::platformSafeKey() and
@@ -276,7 +276,7 @@
     systems. The following are good examples of cross-platform keys: "myapp",
     "org.example.myapp", "org.example.myapp-12345". Note that it is up to the
     caller to prevent oversized keys, and to ensure that the key contains legal
-    characters on the respective platform. Qt will silently truncate keys that
+    characters on the respective platform. BobUI will silently truncate keys that
     are too long.
 
     \b{Apple sandbox limitations:} if the application is running inside of a
@@ -345,7 +345,7 @@
     which is accomplished with QSharedMemory::create() or by passing
     QSystemSemaphore::Create to the constructor, respectively.
 
-    On Unix systems, the Qt classes that created the object will be responsible
+    On Unix systems, the BobUI classes that created the object will be responsible
     for cleaning up the object in question. Therefore, if the application with
     that C++ object exits uncleanly (a crash, qFatal(), etc.), the object may
     be left behind. If that happens, applications may fail to create the
@@ -362,39 +362,39 @@
 
     \section3 POSIX Realtime
     POSIX Realtime object ownership is patterned after files, in the sense that
-    they exist independent of any process using them or not. Qt is unable to
+    they exist independent of any process using them or not. BobUI is unable to
     determine if the object is still in use, so auto-removal will remove it
     even then, which will make attaching to the same object impossible but
     otherwise not affecting existing attachments.
 
-    Prior to Qt 6.6, Qt never cleaned up POSIX Realtime objects, except on QNX.
+    Prior to BobUI 6.6, BobUI never cleaned up POSIX Realtime objects, except on QNX.
 
     \section3 X/Open System Interfaces (XSI) / System V
-    There are two resources managed by the Qt classes: the file the key refers
+    There are two resources managed by the BobUI classes: the file the key refers
     to and the object itself. QSharedMemory manages the object cooperatively:
     the last attachment is responsible for removing the object itself and then
     removing the key file. QSystemSemaphore will remove the object if and only
     if it was passed QSystemSemaphore::Create; additionally, if it created the
     key file, it will remove that too.
 
-    Since Qt 6.6, it is possible to ask either class not to clean up.
+    Since BobUI 6.6, it is possible to ask either class not to clean up.
 
     \section3 Windows
     The operating system owns the object and will clean up after the last
     handle to the object is closed.
 
-    \section1 Interoperability with old Qt applications
+    \section1 Interoperability with old BobUI applications
 
-    The QNativeIpcKey class was introduced in Qt 6.6. Prior to this version,
+    The QNativeIpcKey class was introduced in BobUI 6.6. Prior to this version,
     QSharedMemory and QSystemSemaphore backends were determined at the time of
-    Qt's own build. For Windows systems, it was always the Windows backend. For
+    BobUI's own build. For Windows systems, it was always the Windows backend. For
     Unix systems, it defaulted to the System V backend if the configuration
     script determined it was available. If it was not available, it fell back
     to the POSIX one. The POSIX backend could be explicitly
-    selected using the \c{-feature-ipc_posix} option to the Qt configure
-    script; if it was enabled, the \c{QT_POSIX_IPC} macro would be defined.
+    selected using the \c{-feature-ipc_posix} option to the BobUI configure
+    script; if it was enabled, the \c{BOBUI_POSIX_IPC} macro would be defined.
 
-    Qt 6.6 retains the configure script option but it no longer controls the
+    BobUI 6.6 retains the configure script option but it no longer controls the
     availability of the backends. Instead, it changes what
     QNativeIpcKey::legacyDefaultTypeForOs() will return. Applications that need
     to retain compatibility must use this key type exclusively to guarantee
@@ -430,21 +430,21 @@
     QNativeIpcKey::legacyDefaultTypeForOs().
 
     \section3 X/Open System Interfaces (XSI) / System V
-    Never use existing files for QSharedMemory keys, as the old Qt application
+    Never use existing files for QSharedMemory keys, as the old BobUI application
     may attempt to remove it. Instead, let QSharedMemory create it.
 
-    \section1 Interoperability with non-Qt applications
+    \section1 Interoperability with non-BobUI applications
 
-    Interoperability with non-Qt applications is possible, with some limitations:
+    Interoperability with non-BobUI applications is possible, with some limitations:
     \list
       \li Creation of shared memory segments must not race
       \li QSharedMemory support for locking the segment is unavailable
     \endlist
 
-    Communication with non-Qt applications must always be through the native
+    Communication with non-BobUI applications must always be through the native
     key.
 
-    QSharedMemory always maps the entire segment to memory. The non-Qt
+    QSharedMemory always maps the entire segment to memory. The non-BobUI
     application may choose to only map a subset of it to memory, with no ill
     effects.
 

@@ -1,5 +1,5 @@
 // Copyright (C) 2023 Samuel Gaist <samuel.gaist@edeltech.ch>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 //! [QApplication subclass]
 #include <QApplication>

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef TST_QDBUSCONNECTION_H
 #define TST_QDBUSCONNECTION_H
 
 #include <QObject>
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDBusServer>
@@ -65,7 +65,7 @@ public:
 public slots:
     void oneSlot(const QString &arg) { ++signalsReceived; argumentReceived = arg;}
     void oneSlot() { ++signalsReceived; }
-    void exitLoop() { ++signalsReceived; QTestEventLoop::instance().exitLoop(); }
+    void exitLoop() { ++signalsReceived; BOBUIestEventLoop::instance().exitLoop(); }
     void secondCallWithCallback();
 };
 
@@ -129,7 +129,7 @@ private slots:
     void delayedDeliveryReenabledAfterUsedInMainThread();
 
 public:
-    QString serviceName() const { return "org.qtproject.Qt.Autotests.QDBusConnection"; }
+    QString serviceName() const { return "org.bobuiproject.BobUI.Autotests.QDBusConnection"; }
     bool callMethod(const QDBusConnection &conn, const QString &path);
     bool callMethod(const QDBusConnection &conn, const QString &path, const QString &interface);
     bool callMethodPeer(const QDBusConnection &conn, const QString &path);
@@ -189,7 +189,7 @@ public slots:
         QVERIFY(isConnected());
         QVERIFY(c.isConnected());
         QVERIFY(registerObject(c));
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
 
 private:
@@ -218,7 +218,7 @@ public slots:
         m_conn = c;
         QVERIFY(isConnected());
         QVERIFY(m_conn.isConnected());
-        QTestEventLoop::instance().exitLoop();
+        BOBUIestEventLoop::instance().exitLoop();
     }
 
 private:

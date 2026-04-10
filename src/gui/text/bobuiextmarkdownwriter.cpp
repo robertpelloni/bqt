@@ -1,0 +1,734 @@
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+
+#include "bobuiextmarkdownwriter_p.h"
+#include "bobuiextdocumentlayout_p.h"
+#include "qfontinfo.h"
+#include "qfontmetrics.h"
+#include "bobuiextdocument_p.h"
+#include "bobuiextlist.h"
+#include "bobuiexttable.h"
+#include "bobuiextcursor.h"
+#include "bobuiextimagehandler_p.h"
+#include "bobuiextmarkdownimporter_p.h"
+#include "qloggingcategory.h"
+#include <BobUICore/QRegularExpression>
+#if BOBUI_CONFIG(itemmodel)
+#include "qabstractitemmodel.h"
+#endif
+
+BOBUI_BEGIN_NAMESPACE
+
+using namespace BobUI::StringLiterals;
+
+Q_STATIC_LOGGING_CATEGORY(lcMDW, "bobui.text.markdown.writer")
+
+static const QChar bobuimw_Space = u' ';
+static const QChar bobuimw_Tab = u'\t';
+static const QChar bobuimw_Newline = u'\n';
+static const QChar bobuimw_CarriageReturn = u'\r';
+static const QChar bobuimw_LineBreak = u'\x2028';
+static const QChar bobuimw_DoubleQuote = u'"';
+static const QChar bobuimw_Backtick = u'`';
+static const QChar bobuimw_Backslash = u'\\';
+static const QChar bobuimw_Period = u'.';
+
+BOBUIextMarkdownWriter::BOBUIextMarkdownWriter(BOBUIextStream &stream, BOBUIextDocument::MarkdownFeatures features)
+  : m_stream(stream), m_features(features)
+{
+}
+
+bool BOBUIextMarkdownWriter::writeAll(const BOBUIextDocument *document)
+{
+    writeFrontMatter(document->metaInformation(BOBUIextDocument::FrontMatter));
+    writeFrame(document->rootFrame());
+    return true;
+}
+
+#if BOBUI_CONFIG(itemmodel)
+void BOBUIextMarkdownWriter::writeTable(const QAbstractItemModel *table)
+{
+    QList<int> tableColumnWidths(table->columnCount());
+    for (int col = 0; col < table->columnCount(); ++col) {
+        tableColumnWidths[col] = table->headerData(col, BobUI::Horizontal).toString().size();
+        for (int row = 0; row < table->rowCount(); ++row) {
+            tableColumnWidths[col] = qMax(tableColumnWidths[col],
+                table->data(table->index(row, col)).toString().size());
+        }
+    }
+
+    // write the header and separator
+    for (int col = 0; col < table->columnCount(); ++col) {
+        QString s = table->headerData(col, BobUI::Horizontal).toString();
+        m_stream << '|' << s << QString(tableColumnWidths[col] - s.size(), bobuimw_Space);
+    }
+    m_stream << "|" << BobUI::endl;
+    for (int col = 0; col < tableColumnWidths.size(); ++col)
+        m_stream << '|' << QString(tableColumnWidths[col], u'-');
+    m_stream << '|'<< BobUI::endl;
+
+    // write the body
+    for (int row = 0; row < table->rowCount(); ++row) {
+        for (int col = 0; col < table->columnCount(); ++col) {
+            QString s = table->data(table->index(row, col)).toString();
+            m_stream << '|' << s << QString(tableColumnWidths[col] - s.size(), bobuimw_Space);
+        }
+        m_stream << '|'<< BobUI::endl;
+    }
+    m_listInfo.clear();
+}
+#endif
+
+void BOBUIextMarkdownWriter::writeFrontMatter(const QString &fm)
+{
+    const bool featureEnabled = m_features.testFlag(
+            static_cast<BOBUIextDocument::MarkdownFeature>(BOBUIextMarkdownImporter::FeatureFrontMatter));
+    qCDebug(lcMDW) << "writing FrontMatter?" << featureEnabled << "size" << fm.size();
+    if (fm.isEmpty() || !featureEnabled)
+        return;
+    m_stream << "---\n"_L1 << fm;
+    if (!fm.endsWith(bobuimw_Newline))
+        m_stream << bobuimw_Newline;
+    m_stream << "---\n"_L1;
+}
+
+void BOBUIextMarkdownWriter::writeFrame(const BOBUIextFrame *frame)
+{
+    Q_ASSERT(frame);
+    const BOBUIextTable *table = qobject_cast<const BOBUIextTable*> (frame);
+    BOBUIextFrame::iterator iterator = frame->begin();
+    BOBUIextFrame *child = nullptr;
+    int tableRow = -1;
+    bool lastWasList = false;
+    QList<int> tableColumnWidths;
+    if (table) {
+        tableColumnWidths.resize(table->columns());
+        for (int col = 0; col < table->columns(); ++col) {
+            for (int row = 0; row < table->rows(); ++ row) {
+                BOBUIextTableCell cell = table->cellAt(row, col);
+                int cellTextLen = 0;
+                auto it = cell.begin();
+                while (it != cell.end()) {
+                    BOBUIextBlock block = it.currentBlock();
+                    if (block.isValid())
+                        cellTextLen += block.text().size();
+                    ++it;
+                }
+                if (cell.columnSpan() == 1 && tableColumnWidths[col] < cellTextLen)
+                    tableColumnWidths[col] = cellTextLen;
+            }
+        }
+    }
+    while (!iterator.atEnd()) {
+        if (iterator.currentFrame() && child != iterator.currentFrame())
+            writeFrame(iterator.currentFrame());
+        else { // no frame, it's a block
+            BOBUIextBlock block = iterator.currentBlock();
+            // Look ahead and detect some cases when we should
+            // suppress needless blank lines, when there will be a big change in block format
+            bool nextIsDifferent = false;
+            bool ending = false;
+            int blockQuoteIndent = 0;
+            int nextBlockQuoteIndent = 0;
+            {
+                BOBUIextFrame::iterator next = iterator;
+                ++next;
+                BOBUIextBlockFormat format = iterator.currentBlock().blockFormat();
+                BOBUIextBlockFormat nextFormat = next.currentBlock().blockFormat();
+                blockQuoteIndent = format.intProperty(BOBUIextFormat::BlockQuoteLevel);
+                nextBlockQuoteIndent = nextFormat.intProperty(BOBUIextFormat::BlockQuoteLevel);
+                if (next.atEnd()) {
+                    nextIsDifferent = true;
+                    ending = true;
+                } else {
+                    if (nextFormat.indent() != format.indent() ||
+                        nextFormat.property(BOBUIextFormat::BlockCodeLanguage) !=
+                                format.property(BOBUIextFormat::BlockCodeLanguage))
+                        nextIsDifferent = true;
+                }
+            }
+            if (table) {
+                BOBUIextTableCell cell = table->cellAt(block.position());
+                if (tableRow < cell.row()) {
+                    if (tableRow == 0) {
+                        m_stream << bobuimw_Newline;
+                        for (int col = 0; col < tableColumnWidths.size(); ++col)
+                            m_stream << '|' << QString(tableColumnWidths[col], u'-');
+                        m_stream << '|';
+                    }
+                    m_stream << bobuimw_Newline << '|';
+                    tableRow = cell.row();
+                }
+            } else if (!block.textList()) {
+                if (lastWasList) {
+                    m_stream << bobuimw_Newline;
+                    m_linePrefixWritten = false;
+                }
+            }
+            int endingCol = writeBlock(block, !table, table && tableRow == 0,
+                                       nextIsDifferent && !block.textList());
+            m_doubleNewlineWritten = false;
+            if (table) {
+                BOBUIextTableCell cell = table->cellAt(block.position());
+                int paddingLen = -endingCol;
+                int spanEndCol = cell.column() + cell.columnSpan();
+                for (int col = cell.column(); col < spanEndCol; ++col)
+                    paddingLen += tableColumnWidths[col];
+                if (paddingLen > 0)
+                    m_stream << QString(paddingLen, bobuimw_Space);
+                for (int col = cell.column(); col < spanEndCol; ++col)
+                    m_stream << "|";
+            } else if (m_fencedCodeBlock && ending) {
+                m_stream << bobuimw_Newline << m_linePrefix << QString(m_wrappedLineIndent, bobuimw_Space)
+                         << m_codeBlockFence << bobuimw_Newline << bobuimw_Newline;
+                m_codeBlockFence.clear();
+            } else if (m_indentedCodeBlock && nextIsDifferent) {
+                m_stream << bobuimw_Newline << bobuimw_Newline;
+            } else if (endingCol > 0) {
+                if (block.textList() || block.blockFormat().hasProperty(BOBUIextFormat::BlockCodeLanguage)) {
+                    m_stream << bobuimw_Newline;
+                    if (block.textList()) {
+                        m_stream << m_linePrefix;
+                        m_linePrefixWritten = true;
+                    }
+                } else {
+                    m_stream << bobuimw_Newline;
+                    if (nextBlockQuoteIndent < blockQuoteIndent)
+                        setLinePrefixForBlockQuote(nextBlockQuoteIndent);
+                    m_stream << m_linePrefix;
+                    m_stream << bobuimw_Newline;
+                    m_doubleNewlineWritten = true;
+                }
+            }
+            lastWasList = block.textList();
+        }
+        child = iterator.currentFrame();
+        ++iterator;
+    }
+    if (table) {
+        m_stream << bobuimw_Newline << bobuimw_Newline;
+        m_doubleNewlineWritten = true;
+    }
+    m_listInfo.clear();
+}
+
+BOBUIextMarkdownWriter::ListInfo BOBUIextMarkdownWriter::listInfo(BOBUIextList *list)
+{
+    if (!m_listInfo.contains(list)) {
+        // decide whether this list is loose or tight
+        ListInfo info;
+        info.loose = false;
+        if (list->count() > 1) {
+            BOBUIextBlock first = list->item(0);
+            BOBUIextBlock last = list->item(list->count() - 1);
+            BOBUIextBlock next = first.next();
+            while (next.isValid()) {
+                if (next == last)
+                    break;
+                qCDebug(lcMDW) << "next block in list" << list << next.text() << "part of list?" << next.textList();
+                if (!next.textList()) {
+                    // If we find a continuation paragraph, this list is "loose"
+                    // because it will need a blank line to separate that paragraph.
+                    qCDebug(lcMDW) << "decided list beginning with" << first.text() << "is loose after" << next.text();
+                    info.loose = true;
+                    break;
+                }
+                next = next.next();
+            }
+        }
+        m_listInfo.insert(list, info);
+        return info;
+    }
+    return m_listInfo.value(list);
+}
+
+void BOBUIextMarkdownWriter::setLinePrefixForBlockQuote(int level)
+{
+    m_linePrefix.clear();
+    if (level > 0) {
+        m_linePrefix.reserve(level * 2);
+        for (int i = 0; i < level; ++i)
+            m_linePrefix += u"> ";
+    }
+}
+
+static int nearestWordWrapIndex(const QString &s, int before)
+{
+    before = qMin(before, s.size());
+    int fragBegin = qMax(before - 15, 0);
+    if (lcMDW().isDebugEnabled()) {
+        QString frag = s.mid(fragBegin, 30);
+        qCDebug(lcMDW) << frag << before;
+        qCDebug(lcMDW) << QString(before - fragBegin, bobuimw_Period) + u'<';
+    }
+    for (int i = before - 1; i >= 0; --i) {
+        if (s.at(i).isSpace()) {
+            qCDebug(lcMDW) << QString(i - fragBegin, bobuimw_Period) + u'^' << i;
+            return i;
+        }
+    }
+    qCDebug(lcMDW, "not possible");
+    return -1;
+}
+
+static int adjacentBackticksCount(const QString &s)
+{
+    int start = -1, len = s.size();
+    int ret = 0;
+    for (int i = 0; i < len; ++i) {
+        if (s.at(i) == bobuimw_Backtick) {
+            if (start < 0)
+                start = i;
+        } else if (start >= 0) {
+            ret = qMax(ret, i - start);
+            start = -1;
+        }
+    }
+    if (s.at(len - 1) == bobuimw_Backtick)
+        ret = qMax(ret, len - start);
+    return ret;
+}
+
+/*! \internal
+    Escape anything at the beginning of a line of markdown that would be
+    misinterpreted by a markdown parser, including any period that follows a
+    number (to avoid misinterpretation as a numbered list item).
+    https://spec.commonmark.org/0.31.2/#backslash-escapes
+*/
+static void maybeEscapeFirstChar(QString &s)
+{
+    static const QRegularExpression numericListRe(uR"(\d+([\.)])\s)"_s);
+    constexpr auto specialFirstCharacters = "#*+-"_L1;
+
+    QString sTrimmed = s.trimmed();
+    if (sTrimmed.isEmpty())
+        return;
+    QChar firstChar = sTrimmed.at(0);
+    if (specialFirstCharacters.contains(firstChar)) {
+        int i = s.indexOf(firstChar); // == 0 unless s got trimmed
+        s.insert(i, u'\\');
+    } else {
+        auto match = numericListRe.match(s, 0, QRegularExpression::NormalMatch,
+                                         QRegularExpression::AnchorAtOffsetMatchOption);
+        if (match.hasMatch())
+            s.insert(match.capturedStart(1), bobuimw_Backslash);
+    }
+}
+
+/*! \internal
+    Escape all backslashes. Then escape any special character that stands
+    alone or prefixes a "word", including the \c < that starts an HTML tag.
+    https://spec.commonmark.org/0.31.2/#backslash-escapes
+*/
+static void escapeSpecialCharacters(QString &s)
+{
+    static const QRegularExpression spaceRe(uR"(\s+)"_s);
+    static const QRegularExpression specialRe(uR"([<!*[`&]+[/\w])"_s);
+
+    s.replace("\\"_L1, "\\\\"_L1);
+
+    int i = 0;
+    while (i >= 0) {
+        if (int j = s.indexOf(specialRe, i); j >= 0) {
+            s.insert(j, bobuimw_Backslash);
+            i = j + 3;
+        }
+        i = s.indexOf(spaceRe, i);
+        if (i >= 0)
+            ++i; // past the whitespace, if found
+    }
+}
+
+struct LineEndPositions {
+    const QChar *lineEnd;
+    const QChar *nextLineBegin;
+};
+
+static LineEndPositions findLineEnd(const QChar *begin, const QChar *end)
+{
+    LineEndPositions result{ end, end };
+
+    while (begin < end) {
+        if (*begin == bobuimw_Newline) {
+            result.lineEnd = begin;
+            result.nextLineBegin = begin + 1;
+            break;
+        } else if (*begin == bobuimw_CarriageReturn) {
+            result.lineEnd = begin;
+            result.nextLineBegin = begin + 1;
+            if (((begin + 1) < end) && begin[1] == bobuimw_Newline)
+                ++result.nextLineBegin;
+            break;
+        }
+
+        ++begin;
+    }
+
+    return result;
+}
+
+static bool isBlankLine(const QChar *begin, const QChar *end)
+{
+    while (begin < end) {
+        if (*begin != bobuimw_Space && *begin != bobuimw_Tab)
+            return false;
+        ++begin;
+    }
+    return true;
+}
+
+static QString createLinkTitle(const QString &title)
+{
+    QString result;
+    result.reserve(title.size() + 2);
+    result += bobuimw_DoubleQuote;
+
+    const QChar *data = title.data();
+    const QChar *end = data + title.size();
+
+    while (data < end) {
+        const auto lineEndPositions = findLineEnd(data, end);
+
+        if (!isBlankLine(data, lineEndPositions.lineEnd)) {
+            while (data < lineEndPositions.nextLineBegin) {
+                if (*data == bobuimw_DoubleQuote)
+                    result += bobuimw_Backslash;
+                result += *data;
+                ++data;
+            }
+        }
+
+        data = lineEndPositions.nextLineBegin;
+    }
+
+    result += bobuimw_DoubleQuote;
+    return result;
+}
+
+int BOBUIextMarkdownWriter::writeBlock(const BOBUIextBlock &block, bool wrap, bool ignoreFormat, bool ignoreEmpty)
+{
+    if (block.text().isEmpty() && ignoreEmpty)
+        return 0;
+    const int ColumnLimit = 80;
+    BOBUIextBlockFormat blockFmt = block.blockFormat();
+    bool missedBlankCodeBlockLine = false;
+    const bool codeBlock = blockFmt.hasProperty(BOBUIextFormat::BlockCodeFence) ||
+            blockFmt.stringProperty(BOBUIextFormat::BlockCodeLanguage).size() > 0 ||
+            blockFmt.nonBreakableLines();
+    const int blockQuoteLevel = blockFmt.intProperty(BOBUIextFormat::BlockQuoteLevel);
+    if (m_fencedCodeBlock && !codeBlock) {
+        m_stream << m_linePrefix << m_codeBlockFence << bobuimw_Newline;
+        m_fencedCodeBlock = false;
+        m_codeBlockFence.clear();
+        m_linePrefixWritten = m_linePrefix.size() > 0;
+    }
+    m_linePrefix.clear();
+    if (!blockFmt.headingLevel() && blockQuoteLevel > 0) {
+        setLinePrefixForBlockQuote(blockQuoteLevel);
+        if (!m_linePrefixWritten) {
+            m_stream << m_linePrefix;
+            m_linePrefixWritten = true;
+        }
+    }
+    if (block.textList()) { // it's a list-item
+        auto fmt = block.textList()->format();
+        const int listLevel = fmt.indent();
+        // Negative numbers don't start a list in Markdown, so ignore them.
+        const int start = fmt.start() >= 0 ? fmt.start() : 1;
+        const int number = block.textList()->itemNumber(block) + start;
+        QByteArray bullet = " ";
+        bool numeric = false;
+        switch (fmt.style()) {
+        case BOBUIextListFormat::ListDisc:
+            bullet = "-";
+            m_wrappedLineIndent = 2;
+            break;
+        case BOBUIextListFormat::ListCircle:
+            bullet = "*";
+            m_wrappedLineIndent = 2;
+            break;
+        case BOBUIextListFormat::ListSquare:
+            bullet = "+";
+            m_wrappedLineIndent = 2;
+            break;
+        case BOBUIextListFormat::ListStyleUndefined: break;
+        case BOBUIextListFormat::ListDecimal:
+        case BOBUIextListFormat::ListLowerAlpha:
+        case BOBUIextListFormat::ListUpperAlpha:
+        case BOBUIextListFormat::ListLowerRoman:
+        case BOBUIextListFormat::ListUpperRoman:
+            numeric = true;
+            m_wrappedLineIndent = 4;
+            break;
+        }
+        switch (blockFmt.marker()) {
+        case BOBUIextBlockFormat::MarkerType::Checked:
+            bullet += " [x]";
+            break;
+        case BOBUIextBlockFormat::MarkerType::Unchecked:
+            bullet += " [ ]";
+            break;
+        default:
+            break;
+        }
+        int indentFirstLine = (listLevel - 1) * (numeric ? 4 : 2);
+        m_wrappedLineIndent += indentFirstLine;
+        if (m_lastListIndent != listLevel && !m_doubleNewlineWritten && listInfo(block.textList()).loose)
+            m_stream << bobuimw_Newline;
+        m_lastListIndent = listLevel;
+        QString prefix(indentFirstLine, bobuimw_Space);
+        if (numeric) {
+            QString suffix = fmt.numberSuffix();
+            if (suffix.isEmpty())
+                suffix = QString(bobuimw_Period);
+            QString numberStr = QString::number(number) + suffix + bobuimw_Space;
+            if (numberStr.size() == 3)
+                numberStr += bobuimw_Space;
+            prefix += numberStr;
+        } else {
+            prefix += QLatin1StringView(bullet) + bobuimw_Space;
+        }
+        m_stream << prefix;
+    } else if (blockFmt.hasProperty(BOBUIextFormat::BlockTrailingHorizontalRulerWidth)) {
+        m_stream << "- - -\n"; // unambiguous horizontal rule, not an underline under a heading
+        return 0;
+    } else if (codeBlock) {
+        // It's important to preserve blank lines in code blocks.  But blank lines in code blocks
+        // inside block quotes are getting preserved anyway (along with the "> " prefix).
+        if (!blockFmt.hasProperty(BOBUIextFormat::BlockQuoteLevel))
+            missedBlankCodeBlockLine = true; // only if we don't get any fragments below
+        if (!m_fencedCodeBlock) {
+            QString fenceChar = blockFmt.stringProperty(BOBUIextFormat::BlockCodeFence);
+            if (fenceChar.isEmpty())
+                fenceChar = "`"_L1;
+            m_codeBlockFence = QString(3, fenceChar.at(0));
+            if (blockFmt.hasProperty(BOBUIextFormat::BlockIndent))
+                m_codeBlockFence = QString(m_wrappedLineIndent, bobuimw_Space) + m_codeBlockFence;
+            // A block quote can contain an indented code block, but not vice-versa.
+            m_stream << m_codeBlockFence << blockFmt.stringProperty(BOBUIextFormat::BlockCodeLanguage)
+                     << bobuimw_Newline << m_linePrefix;
+            m_fencedCodeBlock = true;
+        }
+        wrap = false;
+    } else if (!blockFmt.indent()) {
+        m_wrappedLineIndent = 0;
+        if (blockFmt.hasProperty(BOBUIextFormat::BlockCodeLanguage)) {
+            // A block quote can contain an indented code block, but not vice-versa.
+            m_linePrefix += QString(4, bobuimw_Space);
+            m_indentedCodeBlock = true;
+        }
+        if (!m_linePrefixWritten) {
+            m_stream << m_linePrefix;
+            m_linePrefixWritten = true;
+        }
+    }
+    if (blockFmt.headingLevel()) {
+        m_stream << QByteArray(blockFmt.headingLevel(), '#') << ' ';
+        wrap = false;
+    }
+
+    QString wrapIndentString = m_linePrefix + QString(m_wrappedLineIndent, bobuimw_Space);
+    // It would be convenient if BOBUIextStream had a lineCharPos() accessor,
+    // to keep track of how many characters (not bytes) have been written on the current line,
+    // but it doesn't.  So we have to keep track with this col variable.
+    int col = wrapIndentString.size();
+    bool mono = false;
+    bool startsOrEndsWithBacktick = false;
+    bool bold = false;
+    bool italic = false;
+    bool underline = false;
+    bool strikeOut = false;
+    bool endingMarkers = false;
+    QString backticks(bobuimw_Backtick);
+    for (BOBUIextBlock::Iterator frag = block.begin(); !frag.atEnd(); ++frag) {
+        missedBlankCodeBlockLine = false;
+        QString fragmentText = frag.fragment().text();
+        while (fragmentText.endsWith(bobuimw_Newline))
+            fragmentText.chop(1);
+        if (!(m_fencedCodeBlock || m_indentedCodeBlock)) {
+            escapeSpecialCharacters(fragmentText);
+            maybeEscapeFirstChar(fragmentText);
+        }
+        if (block.textList()) { // <li>first line</br>continuation</li>
+            QString newlineIndent =
+                    QString(bobuimw_Newline) + QString(m_wrappedLineIndent, bobuimw_Space);
+            fragmentText.replace(QString(bobuimw_LineBreak), newlineIndent);
+        } else if (blockFmt.indent() > 0) { // <li>first line<p>continuation</p></li>
+            m_stream << QString(m_wrappedLineIndent, bobuimw_Space);
+        } else {
+            fragmentText.replace(bobuimw_LineBreak, bobuimw_Newline);
+        }
+        startsOrEndsWithBacktick |=
+                fragmentText.startsWith(bobuimw_Backtick) || fragmentText.endsWith(bobuimw_Backtick);
+        BOBUIextCharFormat fmt = frag.fragment().charFormat();
+        if (fmt.isImageFormat()) {
+            BOBUIextImageFormat ifmt = fmt.toImageFormat();
+            QString desc = ifmt.stringProperty(BOBUIextFormat::ImageAltText);
+            if (desc.isEmpty())
+                desc = "image"_L1;
+            QString s = "!["_L1 + desc + "]("_L1 + ifmt.name();
+            QString title = ifmt.stringProperty(BOBUIextFormat::ImageTitle);
+            if (!title.isEmpty())
+                s += bobuimw_Space + bobuimw_DoubleQuote + title + bobuimw_DoubleQuote;
+            s += u')';
+            if (wrap && col + s.size() > ColumnLimit) {
+                m_stream << bobuimw_Newline << wrapIndentString;
+                col = m_wrappedLineIndent;
+            }
+            m_stream << s;
+            col += s.size();
+        } else if (fmt.hasProperty(BOBUIextFormat::AnchorHref)) {
+            const auto href = fmt.property(BOBUIextFormat::AnchorHref).toString();
+            const bool hasToolTip = fmt.hasProperty(BOBUIextFormat::TextToolTip);
+            QString s;
+            if (!hasToolTip && href == fragmentText && !QUrl(href, QUrl::StrictMode).scheme().isEmpty()) {
+                s = u'<' + href + u'>';
+            } else {
+                s = u'[' + fragmentText + "]("_L1 + href;
+                if (hasToolTip) {
+                    s += bobuimw_Space;
+                    s += createLinkTitle(fmt.property(BOBUIextFormat::TextToolTip).toString());
+                }
+                s += u')';
+            }
+            if (wrap && col + s.size() > ColumnLimit) {
+                m_stream << bobuimw_Newline << wrapIndentString;
+                col = m_wrappedLineIndent;
+            }
+            m_stream << s;
+            col += s.size();
+        } else {
+            QFontInfo fontInfo(fmt.font());
+            bool monoFrag = fontInfo.fixedPitch() || fmt.fontFixedPitch();
+            QString markers;
+            if (!ignoreFormat) {
+                if (monoFrag != mono && !m_indentedCodeBlock && !m_fencedCodeBlock) {
+                    if (monoFrag)
+                        backticks =
+                                QString(adjacentBackticksCount(fragmentText) + 1, bobuimw_Backtick);
+                    markers += backticks;
+                    if (startsOrEndsWithBacktick)
+                        markers += bobuimw_Space;
+                    mono = monoFrag;
+                    if (!mono)
+                        endingMarkers = true;
+                }
+                if (!blockFmt.headingLevel() && !mono) {
+                    if (fontInfo.bold() != bold) {
+                        markers += "**"_L1;
+                        bold = fontInfo.bold();
+                        if (!bold)
+                            endingMarkers = true;
+                    }
+                    if (fontInfo.italic() != italic) {
+                        markers += u'*';
+                        italic = fontInfo.italic();
+                        if (!italic)
+                            endingMarkers = true;
+                    }
+                    if (fontInfo.strikeOut() != strikeOut) {
+                        markers += "~~"_L1;
+                        strikeOut = fontInfo.strikeOut();
+                        if (!strikeOut)
+                            endingMarkers = true;
+                    }
+                    if (fontInfo.underline() != underline) {
+                        // CommonMark specifies underline as another way to get emphasis (italics):
+                        // https://spec.commonmark.org/0.31.2/#example-148
+                        // but md4c allows us to distinguish them; so we support underlining (in GitHub dialect).
+                        markers += u'_';
+                        underline = fontInfo.underline();
+                        if (!underline)
+                            endingMarkers = true;
+                    }
+                }
+            }
+            if (wrap && col + markers.size() * 2 + fragmentText.size() > ColumnLimit) {
+                int i = 0;
+                const int fragLen = fragmentText.size();
+                bool breakingLine = false;
+                while (i < fragLen) {
+                    if (col >= ColumnLimit) {
+                        m_stream << markers << bobuimw_Newline << wrapIndentString;
+                        markers.clear();
+                        col = m_wrappedLineIndent;
+                        while (i < fragLen && fragmentText[i].isSpace())
+                            ++i;
+                    }
+                    int j = i + ColumnLimit - col;
+                    if (j < fragLen) {
+                        int wi = nearestWordWrapIndex(fragmentText, j);
+                        if (wi < 0) {
+                            j = fragLen;
+                            // can't break within the fragment: we need to break already _before_ it
+                            if (endingMarkers) {
+                                m_stream << markers;
+                                markers.clear();
+                            }
+                            m_stream << bobuimw_Newline << wrapIndentString;
+                            col = m_wrappedLineIndent;
+                        } else if (wi >= i) {
+                            j = wi;
+                            breakingLine = true;
+                        }
+                    } else {
+                        j = fragLen;
+                        breakingLine = false;
+                    }
+                    QString subfrag = fragmentText.mid(i, j - i);
+                    if (!i) {
+                        m_stream << markers;
+                        col += markers.size();
+                    }
+                    if (col == m_wrappedLineIndent)
+                        maybeEscapeFirstChar(subfrag);
+                    m_stream << subfrag;
+                    if (breakingLine) {
+                        m_stream << bobuimw_Newline << wrapIndentString;
+                        col = m_wrappedLineIndent;
+                    } else {
+                        col += subfrag.size();
+                    }
+                    i = j + 1;
+                } // loop over fragment characters (we know we need to break somewhere)
+            } else {
+                if (!m_linePrefixWritten && col == wrapIndentString.size()) {
+                    m_stream << m_linePrefix;
+                    col += m_linePrefix.size();
+                }
+                m_stream << markers << fragmentText;
+                col += markers.size() + fragmentText.size();
+            }
+        }
+    }
+    if (mono) {
+        if (startsOrEndsWithBacktick) {
+            m_stream << bobuimw_Space;
+            col += 1;
+        }
+        m_stream << backticks;
+        col += backticks.size();
+    }
+    if (bold) {
+        m_stream << "**";
+        col += 2;
+    }
+    if (italic) {
+        m_stream << "*";
+        col += 1;
+    }
+    if (underline) {
+        m_stream << "_";
+        col += 1;
+    }
+    if (strikeOut) {
+        m_stream << "~~";
+        col += 2;
+    }
+    if (missedBlankCodeBlockLine)
+        m_stream << bobuimw_Newline;
+    m_linePrefixWritten = false;
+    return col;
+}
+
+BOBUI_END_NAMESPACE

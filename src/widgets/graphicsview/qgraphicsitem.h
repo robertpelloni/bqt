@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSITEM_H
 #define QGRAPHICSITEM_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvariant.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qpainterpath.h>
-#include <QtGui/qpixmap.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qscopedpointer.h>
+#include <BobUIGui/qpainterpath.h>
+#include <BobUIGui/qpixmap.h>
 
 class tst_QGraphicsItem;
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QBrush;
 class QCursor;
@@ -156,12 +156,12 @@ public:
     void setPanelModality(PanelModality panelModality);
     bool isBlockedByModalPanel(QGraphicsItem **blockingPanel = nullptr) const;
 
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     QString toolTip() const;
     void setToolTip(const QString &toolTip);
 #endif
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursor cursor() const;
     void setCursor(const QCursor &cursor);
     bool hasCursor() const;
@@ -187,14 +187,14 @@ public:
     qreal effectiveOpacity() const;
     void setOpacity(qreal opacity);
 
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     // Effect
     QGraphicsEffect *graphicsEffect() const;
     void setGraphicsEffect(QGraphicsEffect *effect);
-#endif // QT_CONFIG(graphicseffect)
+#endif // BOBUI_CONFIG(graphicseffect)
 
-    Qt::MouseButtons acceptedMouseButtons() const;
-    void setAcceptedMouseButtons(Qt::MouseButtons buttons);
+    BobUI::MouseButtons acceptedMouseButtons() const;
+    void setAcceptedMouseButtons(BobUI::MouseButtons buttons);
     bool acceptHoverEvents() const;
     void setAcceptHoverEvents(bool enabled);
     bool acceptTouchEvents() const;
@@ -210,7 +210,7 @@ public:
     void setActive(bool active);
 
     bool hasFocus() const;
-    void setFocus(Qt::FocusReason focusReason = Qt::OtherFocusReason);
+    void setFocus(BobUI::FocusReason focusReason = BobUI::OtherFocusReason);
     void clearFocus();
 
     QGraphicsItem *focusProxy() const;
@@ -239,11 +239,11 @@ public:
     inline void ensureVisible(qreal x, qreal y, qreal w, qreal h, int xmargin = 50, int ymargin = 50);
 
     // Local transformation
-    QTransform transform() const;
-    QTransform sceneTransform() const;
-    QTransform deviceTransform(const QTransform &viewportTransform) const;
-    QTransform itemTransform(const QGraphicsItem *other, bool *ok = nullptr) const;
-    void setTransform(const QTransform &matrix, bool combine = false);
+    BOBUIransform transform() const;
+    BOBUIransform sceneTransform() const;
+    BOBUIransform deviceTransform(const BOBUIransform &viewportTransform) const;
+    BOBUIransform itemTransform(const QGraphicsItem *other, bool *ok = nullptr) const;
+    void setTransform(const BOBUIransform &matrix, bool combine = false);
     void resetTransform();
     void setRotation(qreal angle);
     qreal rotation() const;
@@ -274,15 +274,15 @@ public:
     bool isClipped() const;
     QPainterPath clipPath() const;
     virtual bool contains(const QPointF &point) const;
-    virtual bool collidesWithItem(const QGraphicsItem *other, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    virtual bool collidesWithPath(const QPainterPath &path, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    QList<QGraphicsItem *> collidingItems(Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
+    virtual bool collidesWithItem(const QGraphicsItem *other, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    virtual bool collidesWithPath(const QPainterPath &path, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    QList<QGraphicsItem *> collidingItems(BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
     bool isObscured(const QRectF &rect = QRectF()) const;
     inline bool isObscured(qreal x, qreal y, qreal w, qreal h) const;
     virtual bool isObscuredBy(const QGraphicsItem *item) const;
     virtual QPainterPath opaqueArea() const;
 
-    QRegion boundingRegion(const QTransform &itemToDeviceTransform) const;
+    QRegion boundingRegion(const BOBUIransform &itemToDeviceTransform) const;
     qreal boundingRegionGranularity() const;
     void setBoundingRegionGranularity(qreal granularity);
 
@@ -351,8 +351,8 @@ public:
     QVariant data(int key) const;
     void setData(int key, const QVariant &value);
 
-    Qt::InputMethodHints inputMethodHints() const;
-    void setInputMethodHints(Qt::InputMethodHints hints);
+    BobUI::InputMethodHints inputMethodHints() const;
+    void setInputMethodHints(BobUI::InputMethodHints hints);
 
     enum {
         Type = 1,
@@ -385,7 +385,7 @@ protected:
     virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
     virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
     virtual void inputMethodEvent(QInputMethodEvent *event);
-    virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
+    virtual QVariant inputMethodQuery(BobUI::InputMethodQuery query) const;
 
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -424,17 +424,17 @@ private:
     friend class QGraphicsSceneBspTreeIndexPrivate;
     friend class QGraphicsItemEffectSourcePrivate;
     friend class QGraphicsTransformPrivate;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QGestureManager;
 #endif
     friend class ::tst_QGraphicsItem;
-    friend bool qt_closestLeaf(const QGraphicsItem *, const QGraphicsItem *);
-    friend bool qt_closestItemFirst(const QGraphicsItem *, const QGraphicsItem *);
+    friend bool bobui_closestLeaf(const QGraphicsItem *, const QGraphicsItem *);
+    friend bool bobui_closestItemFirst(const QGraphicsItem *, const QGraphicsItem *);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGraphicsItem::GraphicsItemFlags)
 #ifndef Q_QDOC
-Q_DECLARE_INTERFACE(QGraphicsItem, "org.qt-project.Qt.QGraphicsItem")
+Q_DECLARE_INTERFACE(QGraphicsItem, "org.bobui-project.BobUI.QGraphicsItem")
 #endif
 
 inline void QGraphicsItem::setPos(qreal ax, qreal ay)
@@ -498,7 +498,7 @@ class Q_WIDGETS_EXPORT QGraphicsObject : public QObject, public QGraphicsItem
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QPointF transformOriginPoint READ transformOriginPoint WRITE setTransformOriginPoint)
-#if QT_CONFIG(graphicseffect)
+#if BOBUI_CONFIG(graphicseffect)
     Q_PROPERTY(QGraphicsEffect *effect READ graphicsEffect WRITE setGraphicsEffect)
 #endif
     Q_PRIVATE_PROPERTY(QGraphicsItem::d_func(), qreal width READ width WRITE setWidth
@@ -512,9 +512,9 @@ public:
 
     using QObject::children;
 
-#ifndef QT_NO_GESTURES
-    void grabGesture(Qt::GestureType type, Qt::GestureFlags flags = Qt::GestureFlags());
-    void ungrabGesture(Qt::GestureType type);
+#ifndef BOBUI_NO_GESTURES
+    void grabGesture(BobUI::GestureType type, BobUI::GestureFlags flags = BobUI::GestureFlags());
+    void ungrabGesture(BobUI::GestureType type);
 #endif
 
 protected Q_SLOTS:
@@ -697,8 +697,8 @@ public:
     QPolygonF polygon() const;
     void setPolygon(const QPolygonF &polygon);
 
-    Qt::FillRule fillRule() const;
-    void setFillRule(Qt::FillRule rule);
+    BobUI::FillRule fillRule() const;
+    void setFillRule(BobUI::FillRule rule);
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
@@ -778,8 +778,8 @@ public:
     QPixmap pixmap() const;
     void setPixmap(const QPixmap &pixmap);
 
-    Qt::TransformationMode transformationMode() const;
-    void setTransformationMode(Qt::TransformationMode mode);
+    BobUI::TransformationMode transformationMode() const;
+    void setTransformationMode(BobUI::TransformationMode mode);
 
     QPointF offset() const;
     void setOffset(const QPointF &offset);
@@ -814,13 +814,13 @@ inline void QGraphicsPixmapItem::setOffset(qreal ax, qreal ay)
 { setOffset(QPointF(ax, ay)); }
 
 class QGraphicsTextItemPrivate;
-class QTextDocument;
-class QTextCursor;
+class BOBUIextDocument;
+class BOBUIextCursor;
 class Q_WIDGETS_EXPORT QGraphicsTextItem : public QGraphicsObject
 {
     Q_OBJECT
     QDOC_PROPERTY(bool openExternalLinks READ openExternalLinks WRITE setOpenExternalLinks)
-    QDOC_PROPERTY(QTextCursor textCursor READ textCursor WRITE setTextCursor)
+    QDOC_PROPERTY(BOBUIextCursor textCursor READ textCursor WRITE setTextCursor)
 
 public:
     explicit QGraphicsTextItem(QGraphicsItem *parent = nullptr);
@@ -856,11 +856,11 @@ public:
 
     void adjustSize();
 
-    void setDocument(QTextDocument *document);
-    QTextDocument *document() const;
+    void setDocument(BOBUIextDocument *document);
+    BOBUIextDocument *document() const;
 
-    void setTextInteractionFlags(Qt::TextInteractionFlags flags);
-    Qt::TextInteractionFlags textInteractionFlags() const;
+    void setTextInteractionFlags(BobUI::TextInteractionFlags flags);
+    BobUI::TextInteractionFlags textInteractionFlags() const;
 
     void setTabChangesFocus(bool b);
     bool tabChangesFocus() const;
@@ -868,8 +868,8 @@ public:
     void setOpenExternalLinks(bool open);
     bool openExternalLinks() const;
 
-    void setTextCursor(const QTextCursor &cursor);
-    QTextCursor textCursor() const;
+    void setTextCursor(const BOBUIextCursor &cursor);
+    BOBUIextCursor textCursor() const;
 
 Q_SIGNALS:
     void linkActivated(const QString &);
@@ -895,7 +895,7 @@ protected:
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override;
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override;
 
     bool supportsExtension(Extension extension) const override;
     void setExtension(Extension extension, const QVariant &variant) override;
@@ -999,7 +999,7 @@ inline const QGraphicsItem *qgraphicsitem_cast<const QGraphicsItem *>(const QGra
     return item;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, const QGraphicsItem *item);
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, const QGraphicsObject *item);
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, QGraphicsItem::GraphicsItemChange change);
@@ -1007,8 +1007,8 @@ Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, QGraphicsItem::GraphicsItemFlag
 Q_WIDGETS_EXPORT QDebug operator<<(QDebug debug, QGraphicsItem::GraphicsItemFlags flags);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QGraphicsItem*, QGraphicsItem_ptr, Q_WIDGETS_EXPORT)
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QGraphicsItem*, QGraphicsItem_ptr, Q_WIDGETS_EXPORT)
 
 #endif // QGRAPHICSITEM_H

@@ -1,17 +1,17 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QATOMIC_H
 #define QATOMIC_H
 
-#include <QtCore/qbasicatomic.h>
+#include <BobUICore/qbasicatomic.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wextra")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wextra")
 
 // High-level atomic integer operations
 template <typename T>
@@ -114,7 +114,7 @@ class QAtomicInt : public QAtomicInteger<int>
 {
 public:
     // Non-atomic API
-    // We could use QT_COMPILER_INHERITING_CONSTRUCTORS, but we need only one;
+    // We could use BOBUI_COMPILER_INHERITING_CONSTRUCTORS, but we need only one;
     // the implicit definition for all the others is fine.
     constexpr QAtomicInt(int value = 0) noexcept : QAtomicInteger<int>(value) {}
 };
@@ -170,7 +170,7 @@ public:
 #endif
 };
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 /*!
     This is a helper for the assignment operators of implicitly
@@ -208,5 +208,5 @@ inline void qAtomicDetach(T *&d)
         delete x;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QATOMIC_H

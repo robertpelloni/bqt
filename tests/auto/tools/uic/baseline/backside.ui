@@ -62,7 +62,7 @@
            <number>42</number>
           </property>
           <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
+           <enum>BobUI::Orientation::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -94,7 +94,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="BOBUIreeWidget" name="treeWidget">
         <column>
          <property name="text">
           <string>Widgets On Graphics View</string>

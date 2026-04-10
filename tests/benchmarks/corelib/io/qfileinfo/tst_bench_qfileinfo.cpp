@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFileInfo>
-#include <QtCore/QFile>
+#include <bobuiest.h>
+#include <BOBUIest>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QFileInfo>
+#include <BobUICore/QFile>
 
 #include "private/qfsfileengine_p.h"
 #include "../../../../shared/filesystem.h"
@@ -76,14 +76,14 @@ void tst_QFileInfo::junctionTargetPerformanceMountpoint()
 
 void tst_QFileInfo::comparison_data()
 {
-    QTest::addColumn<bool>("shouldExist");
-    QTest::addRow("files do not exist") << false;
-    QTest::addRow("files exists") << true;
+    BOBUIest::addColumn<bool>("shouldExist");
+    BOBUIest::addRow("files do not exist") << false;
+    BOBUIest::addRow("files exists") << true;
 }
 
 void tst_QFileInfo::comparison()
 {
-    QTemporaryDir tmpDir;
+    BOBUIemporaryDir tmpDir;
     QVERIFY2(tmpDir.isValid(), qPrintable(tmpDir.errorString()));
 
     QFETCH(bool, shouldExist);
@@ -104,6 +104,6 @@ void tst_QFileInfo::comparison()
     }
 }
 
-QTEST_MAIN(tst_QFileInfo)
+BOBUIEST_MAIN(tst_QFileInfo)
 
 #include "tst_bench_qfileinfo.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QDEVICEDISCOVERY_H
 #define QDEVICEDISCOVERY_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,15 +20,15 @@
 #include <QStringList>
 #include <private/qglobal_p.h>
 
-#define QT_EVDEV_DEVICE_PATH "/dev/input/"
-#define QT_EVDEV_DEVICE_PREFIX "event"
-#define QT_EVDEV_DEVICE QT_EVDEV_DEVICE_PATH QT_EVDEV_DEVICE_PREFIX
+#define BOBUI_EVDEV_DEVICE_PATH "/dev/input/"
+#define BOBUI_EVDEV_DEVICE_PREFIX "event"
+#define BOBUI_EVDEV_DEVICE BOBUI_EVDEV_DEVICE_PATH BOBUI_EVDEV_DEVICE_PREFIX
 
-#define QT_DRM_DEVICE_PATH "/dev/dri/"
-#define QT_DRM_DEVICE_PREFIX "card"
-#define QT_DRM_DEVICE QT_DRM_DEVICE_PATH QT_DRM_DEVICE_PREFIX
+#define BOBUI_DRM_DEVICE_PATH "/dev/dri/"
+#define BOBUI_DRM_DEVICE_PREFIX "card"
+#define BOBUI_DRM_DEVICE BOBUI_DRM_DEVICE_PATH BOBUI_DRM_DEVICE_PREFIX
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDeviceDiscovery : public QObject
 {
@@ -69,6 +69,6 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDeviceDiscovery::QDeviceTypes)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDEVICEDISCOVERY_H

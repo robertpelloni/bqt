@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qwaylandshmbackingstore_p.h"
 #include "qwaylandwindow_p.h"
 #include "qwaylandsubsurface_p.h"
@@ -7,14 +7,14 @@
 #include "qwaylandscreen_p.h"
 #include "qwaylandabstractdecoration_p.h"
 
-#include <QtCore/qdebug.h>
-#include <QtCore/qstandardpaths.h>
-#include <QtCore/qtemporaryfile.h>
-#include <QtGui/QPainter>
-#include <QtGui/QTransform>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qstandardpaths.h>
+#include <BobUICore/bobuiemporaryfile.h>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/BOBUIransform>
 #include <QMutexLocker>
 
-#include <QtWaylandClient/private/wayland-wayland-client-protocol.h>
+#include <BobUIWaylandClient/private/wayland-wayland-client-protocol.h>
 
 #include <memory>
 
@@ -43,11 +43,11 @@
 #  endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern void qt_scrollRectInImage(QImage &, const QRect &, const QPoint &);
+extern void bobui_scrollRectInImage(QImage &, const QRect &, const QPoint &);
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandShmBuffer::QWaylandShmBuffer(QWaylandDisplay *display,
                                      const QSize &size, QImage::Format format, qreal scale, wl_event_queue *customEventQueue)
@@ -68,7 +68,7 @@ QWaylandShmBuffer::QWaylandShmBuffer(QWaylandDisplay *display,
 
     if (fd == -1) {
         auto tmpFile =
-            std::make_unique<QTemporaryFile>(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) +
+            std::make_unique<BOBUIemporaryFile>(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) +
                                        QLatin1String("/wayland-shm-XXXXXX"));
         opened = tmpFile->open();
         filePointer = std::move(tmpFile);
@@ -213,7 +213,7 @@ void QWaylandShmBackingStore::beginPaint(const QRegion &region)
     if (!bufferWasRecreated && window()->format().hasAlpha()) {
         QPainter p(paintDevice());
         p.setCompositionMode(QPainter::CompositionMode_Source);
-        const QColor blank = Qt::transparent;
+        const QColor blank = BobUI::transparent;
         for (const QRect &rect : region)
             p.fillRect(rect, blank);
     }
@@ -255,7 +255,7 @@ bool QWaylandShmBackingStore::scroll(const QRegion &region, int dx, int dy)
         const QRect inPlaceBoundingRect = inPlaceRegion.boundingRect();
         const QPoint devicePixelDelta = scrollDelta * devicePixelRatio;
 
-        qt_scrollRectInImage(*mBackBuffer->image(),
+        bobui_scrollRectInImage(*mBackBuffer->image(),
                              QRect(inPlaceBoundingRect.topLeft() * devicePixelRatio,
                                    inPlaceBoundingRect.size() * devicePixelRatio),
                              devicePixelDelta);
@@ -275,7 +275,7 @@ bool QWaylandShmBackingStore::scroll(const QRegion &region, int dx, int dy)
     }
 
     // We do not mark the source region as dirty, even though it technically has "moved".
-    // This matches the behavior of other backingstore implementations using qt_scrollRectInImage.
+    // This matches the behavior of other backingstore implementations using bobui_scrollRectInImage.
     updateDirtyStates(adjustedRegion.translated(scrollDelta));
 
     return true;
@@ -467,7 +467,7 @@ void QWaylandShmBackingStore::updateDecorations()
     qreal dp = sourceImage.devicePixelRatio();
     int dpWidth = int(sourceImage.width() / dp);
     int dpHeight = int(sourceImage.height() / dp);
-    QTransform sourceMatrix;
+    BOBUIransform sourceMatrix;
     sourceMatrix.scale(dp, dp);
     QRect target; // needs to be in device independent pixels
     QRegion dirtyRegion;
@@ -520,7 +520,7 @@ QWaylandWindow *QWaylandShmBackingStore::waylandWindow() const
     return static_cast<QWaylandWindow *>(window()->handle());
 }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 QImage QWaylandShmBackingStore::toImage() const
 {
     // Invoked from QPlatformBackingStore::composeAndFlush() that is called
@@ -535,4 +535,4 @@ QImage QWaylandShmBackingStore::toImage() const
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

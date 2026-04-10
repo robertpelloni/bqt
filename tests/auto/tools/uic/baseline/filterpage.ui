@@ -31,7 +31,7 @@
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0" rowspan="3">
-       <widget class="QTreeWidget" name="customFilterWidget">
+       <widget class="BOBUIreeWidget" name="customFilterWidget">
         <property name="columnCount">
          <number>2</number>
         </property>
@@ -64,7 +64,7 @@
       <item row="2" column="1">
        <spacer>
         <property name="orientation">
-         <enum>Qt::Orientation::Vertical</enum>
+         <enum>BobUI::Orientation::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -80,7 +80,7 @@
    <item row="0" column="0">
     <spacer>
      <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <enum>BobUI::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -93,7 +93,7 @@
    <item row="5" column="0">
     <spacer>
      <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <enum>BobUI::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
@@ -106,7 +106,7 @@
    <item row="3" column="0">
     <spacer>
      <property name="orientation">
-      <enum>Qt::Orientation::Vertical</enum>
+      <enum>BobUI::Orientation::Vertical</enum>
      </property>
      <property name="sizeType">
       <enum>QSizePolicy::Policy::Fixed</enum>

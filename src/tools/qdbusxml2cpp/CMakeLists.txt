@@ -1,24 +1,24 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## qdbusxml2cpp Tool:
 #####################################################################
 
-qt_get_tool_target_name(target_name qdbusxml2cpp)
-qt_internal_add_tool(${target_name}
+bobui_get_tool_target_name(target_name qdbusxml2cpp)
+bobui_internal_add_tool(${target_name}
     REQUIRED_FOR_DOCS
     TRY_RUN
-    TARGET_DESCRIPTION "Qt D-Bus XML to C++ Compiler"
+    TARGET_DESCRIPTION "BobUI D-Bus XML to C++ Compiler"
     TOOLS_TARGET DBus
     SOURCES
         qdbusxml2cpp.cpp
     DEFINES
-        QT_NO_CAST_FROM_ASCII
-        QT_NO_FOREACH
-        QT_NO_URL_CAST_FROM_STRING
+        BOBUI_NO_CAST_FROM_ASCII
+        BOBUI_NO_FOREACH
+        BOBUI_NO_URL_CAST_FROM_STRING
     LIBRARIES
-        Qt::CorePrivate
-        Qt::DBusPrivate
+        BobUI::CorePrivate
+        BobUI::DBusPrivate
 )
-qt_internal_return_unless_building_tools()
+bobui_internal_return_unless_building_tools()

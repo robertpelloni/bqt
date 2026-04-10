@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpagesetupdialog.h"
 
@@ -7,7 +7,7 @@
 
 #include <private/qpagesetupdialog_p.h>
 #include <private/qprintdevice_p.h>
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 #include <private/qcups_p.h>
 #endif
 
@@ -17,16 +17,16 @@
 #include "qdialogbuttonbox.h"
 #include <ui_qpagesetupwidget.h>
 
-#include <QtPrintSupport/qprinter.h>
+#include <BobUIPrintSupport/qprinter.h>
 
 #include <qpa/qplatformprintplugin.h>
 #include <qpa/qplatformprintersupport.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-extern QMarginsF qt_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
+extern QMarginsF bobui_convertMargins(const QMarginsF &margins, QPageLayout::Unit fromUnits, QPageLayout::Unit toUnits);
 
 // Disabled until we have support for papersources on unix
 // #define PSD_ENABLE_PAPERSOURCE
@@ -89,7 +89,7 @@ protected:
     void paintEvent(QPaintEvent *) override
     {
         QSize pageSize = m_pageLayout.fullRectPoints().size();
-        QSizeF scaledSize = pageSize.scaled(width() - 10, height() - 10, Qt::KeepAspectRatio);
+        QSizeF scaledSize = pageSize.scaled(width() - 10, height() - 10, BobUI::KeepAspectRatio);
         QRect pageRect = QRect(QPoint(0,0), scaledSize.toSize());
         pageRect.moveCenter(rect().center());
         qreal width_factor = scaledSize.width() / pageSize.width();
@@ -114,7 +114,7 @@ protected:
         p.fillRect(pageRect, palette().light());
 
         if (marginRect.isValid()) {
-            p.setPen(QPen(palette().color(QPalette::Dark), 0, Qt::DotLine));
+            p.setPen(QPen(palette().color(QPalette::Dark), 0, BobUI::DotLine));
             p.drawRect(marginRect);
 
             marginRect.adjust(2, 2, -1, -1);
@@ -136,7 +136,7 @@ protected:
                     QRect textRect(marginRect.left() + x * (textWidth + spacing),
                                    marginRect.top() + y * (textHeight + spacing),
                                    textWidth, textHeight);
-                    p.drawText(textRect, Qt::TextWordWrap|Qt::AlignVCenter, text);
+                    p.drawText(textRect, BobUI::TextWordWrap|BobUI::AlignVCenter, text);
                 }
             }
         }
@@ -183,7 +183,7 @@ void QUnixPageSetupDialogPrivate::init()
 
     QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok
                                                      | QDialogButtonBox::Cancel,
-                                                     Qt::Horizontal, q);
+                                                     BobUI::Horizontal, q);
     QObject::connect(buttons, SIGNAL(accepted()), q, SLOT(accept()));
     QObject::connect(buttons, SIGNAL(rejected()), q, SLOT(reject()));
 
@@ -202,7 +202,7 @@ QPageSetupWidget::QPageSetupWidget(QWidget *parent)
       m_pagePreview(nullptr),
       m_printer(nullptr),
       m_printDevice(nullptr),
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
       m_pageSizePpdOption(nullptr),
 #endif
       m_outputFormat(QPrinter::PdfFormat),
@@ -221,7 +221,7 @@ QPageSetupWidget::QPageSetupWidget(QWidget *parent)
 
     lay->addWidget(m_pagePreview);
 
-    setAttribute(Qt::WA_WState_Polished, false);
+    setAttribute(BobUI::WA_WState_Polished, false);
 
 #ifdef PSD_ENABLE_PAPERSOURCE
     for (int i=0; paperSourceNames[i]; ++i)
@@ -271,7 +271,7 @@ void QPageSetupWidget::initUnits()
 // Init the Pages Per Sheet (n-up) combo boxes if using CUPS
 void QPageSetupWidget::initPagesPerSheet()
 {
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     m_ui.pagesPerSheetLayoutCombo->addItem(QPrintDialog::tr("Left to Right, Top to Bottom"),
                                            QVariant::fromValue(QCUPSSupport::LeftToRightTopToBottom));
     m_ui.pagesPerSheetLayoutCombo->addItem(QPrintDialog::tr("Left to Right, Bottom to Top"),
@@ -366,7 +366,7 @@ void QPageSetupWidget::setPrinter(QPrinter *printer, QPrintDevice *printDevice,
     m_printer = printer;
     m_printDevice = printDevice;
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     // find the PageSize cups option
     m_pageSizePpdOption = m_printDevice ? QCUPSSupport::findPpdOption("PageSize", m_printDevice) : nullptr;
 #endif
@@ -496,7 +496,7 @@ void QPageSetupWidget::setupPrinter() const
 {
     m_printer->setPageLayout(m_pageLayout);
     m_printer->setPageOrientation(m_pageLayout.orientation());
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     QCUPSSupport::PagesPerSheet pagesPerSheet = qvariant_cast<QCUPSSupport::PagesPerSheet>(m_ui.pagesPerSheetCombo->currentData()
 );
     QCUPSSupport::PagesPerSheetLayout pagesPerSheetLayout = qvariant_cast<QCUPSSupport::PagesPerSheetLayout>(m_ui.pagesPerSheetLayoutCombo->currentData()
@@ -528,7 +528,7 @@ void QPageSetupWidget::revertToSavedValues()
     m_ui.pagesPerSheetLayoutCombo->setCurrentIndex(m_savedPagesPerSheetLayout);
 }
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
 bool QPageSetupWidget::hasPpdConflict() const
 {
     if (m_pageSizePpdOption) {
@@ -553,7 +553,7 @@ void QPageSetupWidget::pageSizeChanged()
     if (m_ui.pageSizeCombo->currentIndex() != m_realCustomPageSizeIndex) {
         pageSize = qvariant_cast<QPageSize>(m_ui.pageSizeCombo->currentData());
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
         if (m_pageSizePpdOption) {
             ppd_file_t *ppd = qvariant_cast<ppd_file_t*>(m_printDevice->property(PDPK_PpdFile));
             QStringDecoder toUtf16(ppd->lang_encoding, QStringDecoder::Flag::Stateless);
@@ -582,7 +582,7 @@ void QPageSetupWidget::pageSizeChanged()
             customSize = QSizeF(m_ui.pageWidth->value(), m_ui.pageHeight->value());
         pageSize = QPageSize(customSize, QPageSize::Unit(m_units));
 
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
         if (m_pageSizePpdOption) {
             const auto values = QStringList{} << QString::fromLatin1(m_pageSizePpdOption->keyword)
                                               << QStringLiteral("Custom");
@@ -599,7 +599,7 @@ void QPageSetupWidget::pageSizeChanged()
 
     const QMarginsF printable = m_printDevice ? m_printDevice->printableMargins(pageSize, m_pageLayout.orientation(), m_printer->resolution())
                                               : QMarginsF();
-    m_pageLayout.setPageSize(pageSize, qt_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
+    m_pageLayout.setPageSize(pageSize, bobui_convertMargins(printable, QPageLayout::Point, m_pageLayout.units()));
     m_pagePreview->setPageLayout(m_pageLayout);
 
     updateWidget();
@@ -616,7 +616,7 @@ void QPageSetupWidget::pageOrientationChanged()
 
 void QPageSetupWidget::pagesPerSheetChanged()
 {
-#if QT_CONFIG(cups)
+#if BOBUI_CONFIG(cups)
     switch (m_ui.pagesPerSheetCombo->currentData().toInt()) {
     case QCUPSSupport::OnePagePerSheet:
         m_pagePreview->setPagePreviewLayout(1, 1);
@@ -714,7 +714,7 @@ int QPageSetupDialog::exec()
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpagesetupdialog_unix_p.cpp"
 

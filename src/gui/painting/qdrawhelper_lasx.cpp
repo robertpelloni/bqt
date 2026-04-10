@@ -1,14 +1,14 @@
 // Copyright (C) 2024 Loongson Technology Corporation Limited.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qdrawhelper_p.h"
 #include "qdrawhelper_loongarch64_p.h"
 #include "qdrawingprimitive_lsx_p.h"
 #include "qrgba64_p.h"
 
-#if defined(QT_COMPILER_SUPPORTS_LASX)
+#if defined(BOBUI_COMPILER_SUPPORTS_LASX)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     FixedScale = 1 << 16,
@@ -321,7 +321,7 @@ BLEND_SOURCE_OVER_ARGB32_WITH_CONST_ALPHA_LASX(quint32 *dst, const quint32 *src,
         blend_pixel(dst[x], src[x], const_alpha);
 }
 
-void qt_blend_argb32_on_argb32_lasx(uchar *destPixels, int dbpl,
+void bobui_blend_argb32_on_argb32_lasx(uchar *destPixels, int dbpl,
                                     const uchar *srcPixels, int sbpl,
                                     int w, int h,
                                     int const_alpha)
@@ -346,7 +346,7 @@ void qt_blend_argb32_on_argb32_lasx(uchar *destPixels, int dbpl,
     }
 }
 
-void qt_blend_rgb32_on_rgb32_lasx(uchar *destPixels, int dbpl,
+void bobui_blend_rgb32_on_rgb32_lasx(uchar *destPixels, int dbpl,
                                   const uchar *srcPixels, int sbpl,
                                   int w, int h,
                                   int const_alpha)
@@ -398,7 +398,7 @@ void qt_blend_rgb32_on_rgb32_lasx(uchar *destPixels, int dbpl,
 }
 
 static Q_NEVER_INLINE
-void Q_DECL_VECTORCALL qt_memfillXX_lasx(uchar *dest, __m256i value256, qsizetype bytes)
+void Q_DECL_VECTORCALL bobui_memfillXX_lasx(uchar *dest, __m256i value256, qsizetype bytes)
 {
     __m128i value128 = *(__m128i*)(&value256);
 
@@ -431,24 +431,24 @@ void Q_DECL_VECTORCALL qt_memfillXX_lasx(uchar *dest, __m256i value256, qsizetyp
         __lasx_xvstelm_d(value256, reinterpret_cast<__m128i *>(end - 8), 0, 0);
 }
 
-void qt_memfill64_lasx(quint64 *dest, quint64 value, qsizetype count)
+void bobui_memfill64_lasx(quint64 *dest, quint64 value, qsizetype count)
 {
     __m256i value256 = __lasx_xvreplgr2vr_d(value);
 
-    qt_memfillXX_lasx(reinterpret_cast<uchar *>(dest), value256, count * sizeof(quint64));
+    bobui_memfillXX_lasx(reinterpret_cast<uchar *>(dest), value256, count * sizeof(quint64));
 }
 
-void qt_memfill32_lasx(quint32 *dest, quint32 value, qsizetype count)
+void bobui_memfill32_lasx(quint32 *dest, quint32 value, qsizetype count)
 {
     if (count % 2) {
         // odd number of pixels, round to even
         *dest++ = value;
         --count;
     }
-    qt_memfillXX_lasx(reinterpret_cast<uchar *>(dest), __lasx_xvreplgr2vr_w(value), count * sizeof(quint32));
+    bobui_memfillXX_lasx(reinterpret_cast<uchar *>(dest), __lasx_xvreplgr2vr_w(value), count * sizeof(quint32));
 }
 
-void QT_FASTCALL comp_func_SourceOver_lasx(uint *destPixels, const uint *srcPixels,
+void BOBUI_FASTCALL comp_func_SourceOver_lasx(uint *destPixels, const uint *srcPixels,
                                            int length, uint const_alpha)
 {
     Q_ASSERT(const_alpha < 256);
@@ -462,8 +462,8 @@ void QT_FASTCALL comp_func_SourceOver_lasx(uint *destPixels, const uint *srcPixe
         BLEND_SOURCE_OVER_ARGB32_WITH_CONST_ALPHA_LASX(dst, src, length, const_alpha);
 }
 
-#if QT_CONFIG(raster_64bit)
-void QT_FASTCALL comp_func_SourceOver_rgb64_lasx(QRgba64 *dst, const QRgba64 *src,
+#if BOBUI_CONFIG(raster_64bit)
+void BOBUI_FASTCALL comp_func_SourceOver_rgb64_lasx(QRgba64 *dst, const QRgba64 *src,
                                                  int length, uint const_alpha)
 {
     Q_ASSERT(const_alpha < 256); // const_alpha is in [0-255]
@@ -523,7 +523,7 @@ void QT_FASTCALL comp_func_SourceOver_rgb64_lasx(QRgba64 *dst, const QRgba64 *sr
 }
 #endif
 
-void QT_FASTCALL comp_func_Source_lasx(uint *dst, const uint *src, int length, uint const_alpha)
+void BOBUI_FASTCALL comp_func_Source_lasx(uint *dst, const uint *src, int length, uint const_alpha)
 {
     if (const_alpha == 255) {
         ::memcpy(dst, src, length * sizeof(uint));
@@ -554,8 +554,8 @@ void QT_FASTCALL comp_func_Source_lasx(uint *dst, const uint *src, int length, u
     }
 }
 
-#if QT_CONFIG(raster_64bit)
-void QT_FASTCALL comp_func_Source_rgb64_lasx(QRgba64 *dst, const QRgba64 *src,
+#if BOBUI_CONFIG(raster_64bit)
+void BOBUI_FASTCALL comp_func_Source_rgb64_lasx(QRgba64 *dst, const QRgba64 *src,
                                              int length, uint const_alpha)
 {
     Q_ASSERT(const_alpha < 256); // const_alpha is in [0-255]
@@ -591,11 +591,11 @@ void QT_FASTCALL comp_func_Source_rgb64_lasx(QRgba64 *dst, const QRgba64 *src,
 }
 #endif
 
-void QT_FASTCALL comp_func_solid_SourceOver_lasx(uint *destPixels, int length,
+void BOBUI_FASTCALL comp_func_solid_SourceOver_lasx(uint *destPixels, int length,
                                                  uint color, uint const_alpha)
 {
     if ((const_alpha & qAlpha(color)) == 255) {
-        qt_memfill32(destPixels, color, length);
+        bobui_memfill32(destPixels, color, length);
     } else {
         if (const_alpha != 255)
             color = BYTE_MUL(color, const_alpha);
@@ -623,13 +623,13 @@ void QT_FASTCALL comp_func_solid_SourceOver_lasx(uint *destPixels, int length,
     }
 }
 
-#if QT_CONFIG(raster_64bit)
-void QT_FASTCALL comp_func_solid_SourceOver_rgb64_lasx(QRgba64 *destPixels, int length,
+#if BOBUI_CONFIG(raster_64bit)
+void BOBUI_FASTCALL comp_func_solid_SourceOver_rgb64_lasx(QRgba64 *destPixels, int length,
                                                        QRgba64 color, uint const_alpha)
 {
     Q_ASSERT(const_alpha < 256); // const_alpha is in [0-255]
     if (const_alpha == 255 && color.isOpaque()) {
-        qt_memfill64((quint64*)destPixels, color, length);
+        bobui_memfill64((quint64*)destPixels, color, length);
     } else {
         if (const_alpha != 255)
             color = multiplyAlpha255(color, const_alpha);
@@ -731,11 +731,11 @@ inline void fetchTransformedBilinear_pixelBounds(int, int l1, int l2, int &v1, i
     Q_ASSERT(v2 >= l1 && v2 <= l2);
 }
 
-void QT_FASTCALL intermediate_adder_lasx(uint *b, uint *end,
+void BOBUI_FASTCALL intermediate_adder_lasx(uint *b, uint *end,
                                          const IntermediateBuffer &intermediate,
                                          int offset, int &fx, int fdx);
 
-void QT_FASTCALL fetchTransformedBilinearARGB32PM_simple_scale_helper_lasx(uint *b, uint *end, const QTextureData &image,
+void BOBUI_FASTCALL fetchTransformedBilinearARGB32PM_simple_scale_helper_lasx(uint *b, uint *end, const BOBUIextureData &image,
                                                                            int &fx, int &fy, int fdx, int /*fdy*/)
 {
     int y1 = (fy >> 16);
@@ -820,7 +820,7 @@ void QT_FASTCALL fetchTransformedBilinearARGB32PM_simple_scale_helper_lasx(uint 
     intermediate_adder_lasx(b, end, intermediate, offset, fx, fdx);
 }
 
-void QT_FASTCALL intermediate_adder_lasx(uint *b, uint *end,
+void BOBUI_FASTCALL intermediate_adder_lasx(uint *b, uint *end,
                                          const IntermediateBuffer &intermediate,
                                          int offset, int &fx, int fdx)
 {
@@ -880,7 +880,7 @@ void QT_FASTCALL intermediate_adder_lasx(uint *b, uint *end,
     fx += offset * FixedScale;
 }
 
-void QT_FASTCALL fetchTransformedBilinearARGB32PM_downscale_helper_lasx(uint *b, uint *end, const QTextureData &image,
+void BOBUI_FASTCALL fetchTransformedBilinearARGB32PM_downscale_helper_lasx(uint *b, uint *end, const BOBUIextureData &image,
                                                                         int &fx, int &fy, int fdx, int /*fdy*/)
 {
     int y1 = (fy >> 16);
@@ -968,7 +968,7 @@ void QT_FASTCALL fetchTransformedBilinearARGB32PM_downscale_helper_lasx(uint *b,
     }
 }
 
-void QT_FASTCALL fetchTransformedBilinearARGB32PM_fast_rotate_helper_lasx(uint *b, uint *end, const QTextureData &image,
+void BOBUI_FASTCALL fetchTransformedBilinearARGB32PM_fast_rotate_helper_lasx(uint *b, uint *end, const BOBUIextureData &image,
                                                                           int &fx, int &fy, int fdx, int fdy)
 {
     const qint64 min_fx = qint64(image.x1) * FixedScale;
@@ -1208,24 +1208,24 @@ static void convertARGBToARGB32PM_lasx(uint *buffer, const uint *src, qsizetype 
     }
 }
 
-void QT_FASTCALL convertARGB32ToARGB32PM_lasx(uint *buffer, int count, const QList<QRgb> *)
+void BOBUI_FASTCALL convertARGB32ToARGB32PM_lasx(uint *buffer, int count, const QList<QRgb> *)
 {
     convertARGBToARGB32PM_lasx<false>(buffer, buffer, count);
 }
 
-void QT_FASTCALL convertRGBA8888ToARGB32PM_lasx(uint *buffer, int count, const QList<QRgb> *)
+void BOBUI_FASTCALL convertRGBA8888ToARGB32PM_lasx(uint *buffer, int count, const QList<QRgb> *)
 {
     convertARGBToARGB32PM_lasx<true>(buffer, buffer, count);
 }
 
-const uint *QT_FASTCALL fetchARGB32ToARGB32PM_lasx(uint *buffer, const uchar *src, int index,
+const uint *BOBUI_FASTCALL fetchARGB32ToARGB32PM_lasx(uint *buffer, const uchar *src, int index,
                                                    int count, const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToARGB32PM_lasx<false>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-const uint *QT_FASTCALL fetchRGBA8888ToARGB32PM_lasx(uint *buffer, const uchar *src, int index, int count,
+const uint *BOBUI_FASTCALL fetchRGBA8888ToARGB32PM_lasx(uint *buffer, const uchar *src, int index, int count,
                                                      const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToARGB32PM_lasx<true>(buffer, reinterpret_cast<const uint *>(src) + index, count);
@@ -1335,34 +1335,34 @@ static void convertARGBToRGBA64PM_lasx(QRgba64 *buffer, const uint *src, qsizety
     }
 }
 
-const QRgba64 * QT_FASTCALL convertARGB32ToRGBA64PM_lasx(QRgba64 *buffer, const uint *src, int count,
+const QRgba64 * BOBUI_FASTCALL convertARGB32ToRGBA64PM_lasx(QRgba64 *buffer, const uint *src, int count,
                                                          const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToRGBA64PM_lasx<false>(buffer, src, count);
     return buffer;
 }
 
-const QRgba64 * QT_FASTCALL convertRGBA8888ToRGBA64PM_lasx(QRgba64 *buffer, const uint *src, int count,
+const QRgba64 * BOBUI_FASTCALL convertRGBA8888ToRGBA64PM_lasx(QRgba64 *buffer, const uint *src, int count,
                                                            const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToRGBA64PM_lasx<true>(buffer, src, count);
     return buffer;
 }
 
-const QRgba64 *QT_FASTCALL fetchARGB32ToRGBA64PM_lasx(QRgba64 *buffer, const uchar *src, int index, int count,
+const QRgba64 *BOBUI_FASTCALL fetchARGB32ToRGBA64PM_lasx(QRgba64 *buffer, const uchar *src, int index, int count,
                                                       const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToRGBA64PM_lasx<false>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-const QRgba64 *QT_FASTCALL fetchRGBA8888ToRGBA64PM_lasx(QRgba64 *buffer, const uchar *src, int index, int count,
+const QRgba64 *BOBUI_FASTCALL fetchRGBA8888ToRGBA64PM_lasx(QRgba64 *buffer, const uchar *src, int index, int count,
                                                         const QList<QRgb> *, QDitherInfo *)
 {
     convertARGBToRGBA64PM_lasx<true>(buffer, reinterpret_cast<const uint *>(src) + index, count);
     return buffer;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

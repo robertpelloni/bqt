@@ -8,7 +8,7 @@ tablets like this one may need an updated wacom kernel driver for
 kernels 3.2 and older.
 
 Supports x, y, pressure, pen & eraser pointer types, proximity enter,
-proximity leave. The additional advanced fields of QTabletEvent will
+proximity leave. The additional advanced fields of BOBUIabletEvent will
 not be utilized.
 
 Connecting the tablet will result in two input devices: one for finger
@@ -16,7 +16,7 @@ touch and the tablet buttons, and another for pen input including the
 stylus buttons. This plugin cares about the latter only. For touch,
 try the evdevtouch plugin.
 
-The plugin generates QTabletEvents only. For compatibility with Qt 4,
+The plugin generates BOBUIabletEvents only. For compatibility with BobUI 4,
 TabletPress, Move and Release are only sent when the stylus is
 touching the screen.
 
@@ -35,10 +35,10 @@ xinput set-prop <device> <device enabled property> 0.
 TODO #1: Indicate motion when lifted but still in proximity. Needs new
 event types.
 
-TODO #1.1: Where to report ABS_DISTANCE? Needs a new QTabletEvent member
+TODO #1.1: Where to report ABS_DISTANCE? Needs a new BOBUIabletEvent member
 (unless we hijack z).
 
 TODO #2: QKeyEvent from the stylus buttons (BTN_STYLUS, BTN_STYLUS2,
-but there are no suitable Qt::Key_* constants?)
+but there are no suitable BobUI::Key_* constants?)
 
 TODO #3: QKeyEvent in evdevtouch (or this plugin?) from tablet buttons

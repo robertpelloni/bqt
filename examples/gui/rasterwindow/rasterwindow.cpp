@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "rasterwindow.h"
 
@@ -72,6 +72,6 @@ void RasterWindow::renderNow()
 //! [4]
 void RasterWindow::render(QPainter *painter)
 {
-    painter->drawText(QRectF(0, 0, width(), height()), Qt::AlignCenter, QStringLiteral("QWindow"));
+    painter->drawText(QRectF(0, 0, width(), height()), BobUI::AlignCenter, QStringLiteral("QWindow"));
 }
 //! [4]

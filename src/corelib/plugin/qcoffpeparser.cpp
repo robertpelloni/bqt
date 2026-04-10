@@ -1,6 +1,6 @@
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcoffpeparser_p.h"
 
@@ -13,32 +13,32 @@
 // Include minimal set of headers
 #define WIN32_LEAN_AND_MEAN
 #define NOGDI
-#include <qt_windows.h>
+#include <bobui_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Whether we include some extra validity checks
 // (checks to ensure we don't read out-of-bounds are always included)
 static constexpr bool IncludeValidityChecks = true;
 
-static constexpr inline auto metadataSectionName() noexcept { return ".qtmetadata"_L1; }
+static constexpr inline auto metadataSectionName() noexcept { return ".bobuimetadata"_L1; }
 static constexpr QLatin1StringView truncatedSectionName =
         metadataSectionName().left(sizeof(IMAGE_SECTION_HEADER::Name));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #  define QCOFFPEPARSER_DEBUG
 #endif
 #if defined(QCOFFPEPARSER_DEBUG)
-Q_STATIC_LOGGING_CATEGORY(lcCoffPeParser, "qt.core.plugin.coffpeparser")
+Q_STATIC_LOGGING_CATEGORY(lcCoffPeParser, "bobui.core.plugin.coffpeparser")
 #  define peDebug       qCDebug(lcCoffPeParser) << reinterpret_cast<const char16_t *>(error.errMsg->constData()) << ':'
 #else
 #  define peDebug       if (false) {} else QNoDebug()
 #endif
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wunused-const-variable")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wunused-const-variable")
 
 static const WORD ExpectedMachine =
 #if 0
@@ -89,7 +89,7 @@ struct ErrorMaker
 
     Q_DECL_COLD_FUNCTION QLibraryScanResult notplugin(QString &&explanation) const
     {
-        *errMsg = QLibrary::tr("'%1' is not a Qt plugin (%2)").arg(*errMsg, explanation);
+        *errMsg = QLibrary::tr("'%1' is not a BobUI plugin (%2)").arg(*errMsg, explanation);
         return {};
     }
 
@@ -118,7 +118,7 @@ Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, HeaderDebug h)
     }
 
     QDebugStateSaver saver(d);
-    d.nospace() << Qt::hex << Qt::showbase;
+    d.nospace() << BobUI::hex << BobUI::showbase;
 
     switch (h.h->FileHeader.Machine) {
     case IMAGE_FILE_MACHINE_I386:       d << "i386"; break;
@@ -142,7 +142,7 @@ Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, HeaderDebug h)
     if (h.h->FileHeader.Characteristics & IMAGE_FILE_LARGE_ADDRESS_AWARE)
         d << " large-address aware";
 
-    d << ", " << Qt::dec << h.h->FileHeader.NumberOfSections << " sections, ";
+    d << ", " << BobUI::dec << h.h->FileHeader.NumberOfSections << " sections, ";
     if (h.h->FileHeader.SizeOfOptionalHeader < sizeof(IMAGE_OPTIONAL_HEADER32))
         return d;
 
@@ -156,8 +156,8 @@ Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, HeaderDebug h)
         default:                            d << " subsystem " << hdr->Subsystem << ')'; break;
         }
 
-        d.space() << Qt::hex << hdr->SizeOfHeaders << "header bytes,"
-                  << Qt::dec << hdr->NumberOfRvaAndSizes << "RVA entries";
+        d.space() << BobUI::hex << hdr->SizeOfHeaders << "header bytes,"
+                  << BobUI::dec << hdr->NumberOfRvaAndSizes << "RVA entries";
     };
 
     if (h.h->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC)
@@ -171,7 +171,7 @@ struct SectionDebug { const IMAGE_SECTION_HEADER *s; };
 Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, SectionDebug s)
 {
     QDebugStateSaver saver(d);
-    d << Qt::hex << Qt::showbase;
+    d << BobUI::hex << BobUI::showbase;
     d << "contains";
     if (s.s->Characteristics & IMAGE_SCN_CNT_CODE)
         d << "CODE";
@@ -198,7 +198,7 @@ Q_DECL_UNUSED static QDebug &operator<<(QDebug &d, SectionDebug s)
 }
 } // unnamed namespace
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 const IMAGE_NT_HEADERS *checkNtHeaders(QByteArrayView data, const ErrorMaker &error)
 {
@@ -212,7 +212,7 @@ const IMAGE_NT_HEADERS *checkNtHeaders(QByteArrayView data, const ErrorMaker &er
     auto dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER *>(data.data());
     if (dosHeader->e_magic == IMAGE_DOS_SIGNATURE) {
         off = dosHeader->e_lfanew;
-        // peDebug << "DOS file header redirects to offset" << Qt::hex << Qt::showbase << off;
+        // peDebug << "DOS file header redirects to offset" << BobUI::hex << BobUI::showbase << off;
         if (size_t end; qAddOverflow<sizeof(IMAGE_NT_HEADERS)>(off, &end)
             || end > size_t(data.size())) {
             peDebug << "file too small:" << size_t(data.size());
@@ -362,21 +362,21 @@ QLibraryScanResult QCoffPeParser::parse(QByteArrayView data, QString *errMsg)
         // if we do have a string table, the name may be complete
         if (sectionName != truncatedSectionName && sectionName != metadataSectionName())
             continue;
-        peDebug << "found .qtmetadata section";
+        peDebug << "found .bobuimetadata section";
 
         size_t size = qMin(section->SizeOfRawData, section->Misc.VirtualSize);
         if (size < sizeof(QPluginMetaData::MagicHeader))
-            return error(QLibrary::tr(".qtmetadata section is too small"));
+            return error(QLibrary::tr(".bobuimetadata section is too small"));
         if (IncludeValidityChecks) {
             QByteArrayView expectedMagic = QByteArrayView::fromArray(QPluginMetaData::MagicString);
             QByteArrayView actualMagic = data.sliced(offset, expectedMagic.size());
             if (expectedMagic != actualMagic)
-                return error(QLibrary::tr(".qtmetadata section has incorrect magic"));
+                return error(QLibrary::tr(".bobuimetadata section has incorrect magic"));
 
             if (section->Characteristics & IMAGE_SCN_MEM_WRITE)
-                return error(QLibrary::tr(".qtmetadata section is writable"));
+                return error(QLibrary::tr(".bobuimetadata section is writable"));
             if (section->Characteristics & IMAGE_SCN_MEM_EXECUTE)
-                return error(QLibrary::tr(".qtmetadata section is executable"));
+                return error(QLibrary::tr(".bobuimetadata section is executable"));
         }
 
         return { qsizetype(offset + sizeof(QPluginMetaData::MagicString)),
@@ -386,4 +386,4 @@ QLibraryScanResult QCoffPeParser::parse(QByteArrayView data, QString *errMsg)
     return error.notfound();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

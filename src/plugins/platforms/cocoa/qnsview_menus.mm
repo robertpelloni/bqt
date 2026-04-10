@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
@@ -12,7 +12,7 @@
 
 @implementation QNSView (Menus)
 
-// Qt does not (yet) have a mechanism for propagating generic actions,
+// BobUI does not (yet) have a mechanism for propagating generic actions,
 // so we can only support actions that originate from a QCocoaNSMenuItem,
 // where we can forward the action by emitting QPlatformMenuItem::activated().
 // But waiting for forwardInvocation to check that the sender is a
@@ -28,7 +28,7 @@
 {
     qCDebug(lcQpaMenus) << "Resolving action target for" << action << "from" << sender << "via" << self;
 
-    if (qt_objc_cast<QCocoaNSMenuItem *>(sender)) {
+    if (bobui_objc_cast<QCocoaNSMenuItem *>(sender)) {
         // The supplemental target must support the selector, but we
         // determine so dynamically, so check here before continuing.
         if ([self.menuHelper respondsToSelector:action])
@@ -40,7 +40,7 @@
     return [super supplementalTargetForAction:action sender:sender];
 }
 
-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
+#if BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
 - (void)showContextMenuForSelection:(id)sender
 {
     QPointF windowPoint;
@@ -55,7 +55,7 @@
     // but we can also get here via an accessibility ShowMenu action, in
     // which case QContextMenuEvent::Reason::Other reason might fit better.
     // Unfortunately QWSI/QGuiApplication/QWidgetWindow doesn't handle that
-    // yet. FIXME: Teach other parts of Qt about QContextMenuEvent::Other.
+    // yet. FIXME: Teach other parts of BobUI about QContextMenuEvent::Other.
     const bool mouseTriggered = false;
 
     qCDebug(lcQpaMenus) << "Initiating context menu at"
@@ -97,9 +97,9 @@
 {
     qCDebug(lcQpaMenus) << "Validating" << item << "for" << self.view;
 
-    auto *nativeItem = qt_objc_cast<QCocoaNSMenuItem *>(item);
+    auto *nativeItem = bobui_objc_cast<QCocoaNSMenuItem *>(item);
     if (!nativeItem)
-        return item.enabled; // FIXME Test with with Qt as plugin or embedded QWindow.
+        return item.enabled; // FIXME Test with with BobUI as plugin or embedded QWindow.
 
     auto *platformItem = nativeItem.platformMenuItem;
     if (!platformItem)
@@ -143,7 +143,7 @@
             && self.view.window.firstResponder == self.view;
     }
 
-    if (selector == @selector(qt_itemFired:))
+    if (selector == @selector(bobui_itemFired:))
         return YES;
 
     return [super respondsToSelector:selector];
@@ -157,7 +157,7 @@
         return nil;
 
     auto *appDelegate = [QCocoaApplicationDelegate sharedDelegate];
-    return [appDelegate methodSignatureForSelector:@selector(qt_itemFired:)];
+    return [appDelegate methodSignatureForSelector:@selector(bobui_itemFired:)];
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation
@@ -165,8 +165,8 @@
     NSObject *sender;
     [invocation getArgument:&sender atIndex:2];
     qCDebug(lcQpaMenus) << "Forwarding" << invocation.selector << "from" << sender;
-    Q_ASSERT(qt_objc_cast<QCocoaNSMenuItem *>(sender));
-    invocation.selector = @selector(qt_itemFired:);
+    Q_ASSERT(bobui_objc_cast<QCocoaNSMenuItem *>(sender));
+    invocation.selector = @selector(bobui_itemFired:);
     [invocation invokeWithTarget:[QCocoaApplicationDelegate sharedDelegate]];
 }
 

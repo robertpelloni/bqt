@@ -14,7 +14,7 @@ namespace juce {
             qDebug() << "[JUCE] Setting bounds:" << x << y << w << h;
         }
         virtual void paint(QPainter& painter) {
-            painter.setPen(Qt::magenta);
+            painter.setPen(BobUI::magenta);
             painter.drawText(20, 40, "NATIVE JUCE COMPONENT IN SCENEGRAPH");
             painter.drawRect(0, 0, 100, 100);
         }
@@ -25,7 +25,7 @@ OmniJuceView::OmniJuceView(QQuickItem *parent)
     : QQuickPaintedItem(parent)
 {
     setObjectName("OmniJuceView");
-    setAcceptedMouseButtons(Qt::AllButtons);
+    setAcceptedMouseButtons(BobUI::AllButtons);
     setFlag(ItemAcceptsInputMethod, true);
     setFlag(ItemHasContents, true);
     
@@ -59,8 +59,8 @@ void OmniJuceView::paint(QPainter *painter)
         m_juceComponent->paint(*painter);
     } else {
         painter->fillRect(boundingRect(), QColor("#111111"));
-        painter->setPen(Qt::white);
-        painter->drawText(boundingRect(), Qt::AlignCenter, "JUCE Container Empty");
+        painter->setPen(BobUI::white);
+        painter->drawText(boundingRect(), BobUI::AlignCenter, "JUCE Container Empty");
     }
 }
 

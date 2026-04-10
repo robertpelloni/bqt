@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
@@ -158,7 +158,7 @@ public:
     void push_back(T &&el) { data.push_back(el); }
     void push_back(const T &el) { data.push_back(el); }
 
-    // minimal interface to be usable as a Sequence in QtConcurrent
+    // minimal interface to be usable as a Sequence in BobUIConcurrent
     typedef typename std::vector<T>::const_iterator const_iterator;
     typedef typename std::vector<T>::iterator iterator;
     const_iterator cbegin() const { return data.cbegin(); }

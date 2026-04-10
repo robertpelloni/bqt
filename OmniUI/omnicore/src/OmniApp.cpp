@@ -10,7 +10,7 @@
 #include <QQmlApplicationEngine>
 #include <QMouseEvent>
 #include <QKeyEvent>
-#include <QTouchEvent>
+#include <BOBUIouchEvent>
 #include <QDebug>
 #include <QUrl>
 #include <QQuickWindow>
@@ -49,7 +49,7 @@ bool OmniApplication::loadMainSource(const QString& sourcePath) {
         if (!obj && url == objUrl) QCoreApplication::exit(-1);
         auto* window = qobject_cast<QQuickWindow*>(obj);
         if (window) OmniNeuralEngine::instance()->setRootItem(window->contentItem());
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
     m_qmlEngine->load(url);
     return true;
 }

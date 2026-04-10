@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWAYLANDCURSORSURFACE_H
 #define QWAYLANDCURSORSURFACE_H
@@ -7,11 +7,11 @@
 #include "qwaylandsurface_p.h"
 #include "qwaylandcallback_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
-#if QT_CONFIG(cursor)
+#if BOBUI_CONFIG(cursor)
 template <typename InputDevice>
 class CursorSurface : public QWaylandSurface
 {
@@ -72,10 +72,10 @@ private:
     QPoint m_hotspot;
 };
 
-#endif // QT_CONFIG(cursor)
+#endif // BOBUI_CONFIG(cursor)
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWAYLANDCURSORSURFACE_H

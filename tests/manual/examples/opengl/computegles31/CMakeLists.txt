@@ -1,5 +1,5 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
 project(computegles31 LANGUAGES CXX)
@@ -10,11 +10,11 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/opengl/computegles31")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui OpenGL)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui OpenGL)
 
-qt_standard_project_setup()
+bobui_standard_project_setup()
 
-qt_add_executable(computegles31
+bobui_add_executable(computegles31
     glwindow.cpp glwindow.h
     main.cpp
 )
@@ -25,17 +25,17 @@ set_target_properties(computegles31 PROPERTIES
 )
 
 target_link_libraries(computegles31 PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::OpenGL
+    BobUI6::Core
+    BobUI6::Gui
+    BobUI6::OpenGL
 )
 
 # Resources:
 set(computegles31_resource_files
-    "Qt-logo-medium.png"
+    "BobUI-logo-medium.png"
 )
 
-qt_add_resources(computegles31 "computegles31"
+bobui_add_resources(computegles31 "computegles31"
     PREFIX
         "/"
     FILES

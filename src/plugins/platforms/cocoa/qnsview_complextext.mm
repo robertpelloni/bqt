@@ -1,6 +1,6 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
@@ -74,7 +74,7 @@
         // Ensure we have a valid replacement range
         replacementRange = [self sanitizeReplacementRange:replacementRange];
 
-        // Qt's QInputMethodEvent has different semantics for the replacement
+        // BobUI's QInputMethodEvent has different semantics for the replacement
         // range than AppKit does, so we need to sanitize the range first.
         auto [replaceFrom, replaceLength] = [self inputMethodRangeForRange:replacementRange];
 
@@ -112,10 +112,10 @@
     // a newline, and we should do so via an QInputMethodEvent,
     // either directly or via [self insertText:@"\r"]. This is
     // also how NSTextView handles the command. But, if we did,
-    // we would bypass all the code in Qt (and clients) that
+    // we would bypass all the code in BobUI (and clients) that
     // assume that pressing the return key results in a key
     // event, for example the QLineEdit::returnPressed logic.
-    // To ensure that clients will still see the Qt::Key_Return
+    // To ensure that clients will still see the BobUI::Key_Return
     // key event, we send it as a normal key event.
 
     // But, we can not fall back to handleKeyEvent for this,
@@ -128,8 +128,8 @@
         m_currentlyInterpretedKeyEvent : NSApp.currentEvent);
     newlineEvent.type = QEvent::KeyPress;
 
-    const bool isEnter = newlineEvent.modifiers & Qt::KeypadModifier;
-    newlineEvent.key = isEnter ? Qt::Key_Enter : Qt::Key_Return;
+    const bool isEnter = newlineEvent.modifiers & BobUI::KeypadModifier;
+    newlineEvent.key = isEnter ? BobUI::Key_Enter : BobUI::Key_Return;
     newlineEvent.text = isEnter ? QLatin1Char(kEnterCharCode)
                                 : QLatin1Char(kReturnCharCode);
     newlineEvent.nativeVirtualKey = isEnter ? quint32(kVK_ANSI_KeypadEnter)
@@ -188,7 +188,7 @@
     // that allow us to propagate the preedit selection semantically
     // we resort to styling the selection via the TextFormat attribute,
     // so that the preedit selection is visible to the user.
-    QTextCharFormat selectionFormat;
+    BOBUIextCharFormat selectionFormat;
     auto *platformTheme = QGuiApplicationPrivate::platformTheme();
     auto *systemPalette = platformTheme->palette();
     selectionFormat.setBackground(systemPalette->color(QPalette::Highlight));
@@ -212,34 +212,34 @@
             : defaultMarkedTextAttributes;
 
         qCDebug(lcQpaKeys) << "Decorating range" << range << "based on" << attributes;
-        QTextCharFormat format;
+        BOBUIextCharFormat format;
 
         if (NSNumber *underlineStyle = attributes[NSUnderlineStyleAttributeName]) {
             format.setFontUnderline(true);
             NSUnderlineStyle style = underlineStyle.integerValue;
             if (style & NSUnderlineStylePatternDot)
-                format.setUnderlineStyle(QTextCharFormat::DotLine);
+                format.setUnderlineStyle(BOBUIextCharFormat::DotLine);
             else if (style & NSUnderlineStylePatternDash)
-                format.setUnderlineStyle(QTextCharFormat::DashUnderline);
+                format.setUnderlineStyle(BOBUIextCharFormat::DashUnderline);
             else if (style & NSUnderlineStylePatternDashDot)
-                format.setUnderlineStyle(QTextCharFormat::DashDotLine);
+                format.setUnderlineStyle(BOBUIextCharFormat::DashDotLine);
             if (style & NSUnderlineStylePatternDashDotDot)
-                format.setUnderlineStyle(QTextCharFormat::DashDotDotLine);
+                format.setUnderlineStyle(BOBUIextCharFormat::DashDotDotLine);
             else
-                format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+                format.setUnderlineStyle(BOBUIextCharFormat::SingleUnderline);
 
-            // Unfortunately QTextCharFormat::UnderlineStyle does not distinguish
+            // Unfortunately BOBUIextCharFormat::UnderlineStyle does not distinguish
             // between NSUnderlineStyle{Single,Thick,Double}, which is used by CJK
             // input methods to highlight the selected clause segments.
         }
         if (NSColor *underlineColor = attributes[NSUnderlineColorAttributeName])
-            format.setUnderlineColor(qt_mac_toQColor(underlineColor));
+            format.setUnderlineColor(bobui_mac_toQColor(underlineColor));
         if (NSColor *foregroundColor = attributes[NSForegroundColorAttributeName])
-            format.setForeground(qt_mac_toQColor(foregroundColor));
+            format.setForeground(bobui_mac_toQColor(foregroundColor));
         if (NSColor *backgroundColor = attributes[NSBackgroundColorAttributeName])
-            format.setBackground(qt_mac_toQColor(backgroundColor));
+            format.setBackground(bobui_mac_toQColor(backgroundColor));
 
-        if (format != QTextCharFormat()) {
+        if (format != BOBUIextCharFormat()) {
             preeditAttributes << QInputMethodEvent::Attribute(
                 QInputMethodEvent::TextFormat, range.location, range.length, format);
         }
@@ -250,7 +250,7 @@
     // Ensure we have a valid replacement range
     replacementRange = [self sanitizeReplacementRange:replacementRange];
 
-    // Qt's QInputMethodEvent has different semantics for the replacement
+    // BobUI's QInputMethodEvent has different semantics for the replacement
     // range than AppKit does, so we need to sanitize the range first.
     auto [replaceFrom, replaceLength] = [self inputMethodRangeForRange:replacementRange];
 
@@ -299,10 +299,10 @@
 */
 - (NSRange)markedRange
 {
-    if (auto queryResult = queryInputMethod(self.focusObject, Qt::ImAbsolutePosition)) {
-        int absoluteCursorPosition = queryResult.value(Qt::ImAbsolutePosition).toInt();
+    if (auto queryResult = queryInputMethod(self.focusObject, BobUI::ImAbsolutePosition)) {
+        int absoluteCursorPosition = queryResult.value(BobUI::ImAbsolutePosition).toInt();
 
-        // The cursor position as reflected by Qt::ImAbsolutePosition is not
+        // The cursor position as reflected by BobUI::ImAbsolutePosition is not
         // affected by the offset of the cursor in the preedit area. That means
         // that when composing text, the cursor position stays the same, at the
         // preedit insertion point, regardless of where the cursor is positioned within
@@ -408,18 +408,18 @@
 - (NSRange)selectedRange
 {
     if (auto queryResult = queryInputMethod(self.focusObject,
-            Qt::ImCursorPosition | Qt::ImAbsolutePosition | Qt::ImAnchorPosition)) {
+            BobUI::ImCursorPosition | BobUI::ImAbsolutePosition | BobUI::ImAnchorPosition)) {
 
-        // Unfortunately the Qt::InputMethodQuery values are all relative
+        // Unfortunately the BobUI::InputMethodQuery values are all relative
         // to the start of the current editing block (paragraph), but we
         // need them in absolute values relative to the entire text.
-        // Luckily we have one property, Qt::ImAbsolutePosition, that
+        // Luckily we have one property, BobUI::ImAbsolutePosition, that
         // we can use to compute the offset.
-        int cursorPosition = queryResult.value(Qt::ImCursorPosition).toInt();
-        int absoluteCursorPosition = queryResult.value(Qt::ImAbsolutePosition).toInt();
+        int cursorPosition = queryResult.value(BobUI::ImCursorPosition).toInt();
+        int absoluteCursorPosition = queryResult.value(BobUI::ImAbsolutePosition).toInt();
         int absoluteOffset = absoluteCursorPosition - cursorPosition;
 
-        int anchorPosition = absoluteOffset + queryResult.value(Qt::ImAnchorPosition).toInt();
+        int anchorPosition = absoluteOffset + queryResult.value(BobUI::ImAnchorPosition).toInt();
         int selectionStart = anchorPosition >= absoluteCursorPosition ? absoluteCursorPosition : anchorPosition;
         int selectionEnd = selectionStart == anchorPosition ? absoluteCursorPosition : anchorPosition;
         int selectionLength = selectionEnd - selectionStart;
@@ -455,10 +455,10 @@
 - (NSAttributedString *)attributedSubstringForProposedRange:(NSRange)range actualRange:(NSRangePointer)actualRange
 {
     if (auto queryResult = queryInputMethod(self.focusObject,
-            Qt::ImAbsolutePosition | Qt::ImTextBeforeCursor | Qt::ImTextAfterCursor)) {
-        const int absoluteCursorPosition = queryResult.value(Qt::ImAbsolutePosition).toInt();
-        const QString textBeforeCursor = queryResult.value(Qt::ImTextBeforeCursor).toString();
-        const QString textAfterCursor = queryResult.value(Qt::ImTextAfterCursor).toString();
+            BobUI::ImAbsolutePosition | BobUI::ImTextBeforeCursor | BobUI::ImTextAfterCursor)) {
+        const int absoluteCursorPosition = queryResult.value(BobUI::ImAbsolutePosition).toInt();
+        const QString textBeforeCursor = queryResult.value(BobUI::ImTextBeforeCursor).toString();
+        const QString textAfterCursor = queryResult.value(BobUI::ImTextAfterCursor).toString();
 
         // The documentation doesn't say whether the marked text should be included
         // in the available text, but observing NSTextView shows that this is the
@@ -543,7 +543,7 @@
     // want the input panel to be sandwiched between these two windows.
     // Account for this by explicitly using NSPopUpMenuWindowLevel as
     // the minimum window level, which corresponds to the highest level
-    // one can get via QWindow::setFlags(), except for Qt::ToolTip.
+    // one can get via QWindow::setFlags(), except for BobUI::ToolTip.
     return qMax(level, NSPopUpMenuWindowLevel);
 }
 
@@ -661,11 +661,11 @@
 
 - (id)validRequestorForSendType:(NSPasteboardType)sendType returnType:(NSPasteboardType)returnType
 {
-    if (auto queryResult = queryInputMethod(self.focusObject, Qt::ImReadOnly | Qt::ImCurrentSelection)) {
+    if (auto queryResult = queryInputMethod(self.focusObject, BobUI::ImReadOnly | BobUI::ImCurrentSelection)) {
         bool canWriteToPasteboard = false;
         bool canReadFromPastboard = false;
 
-        auto currentSelection = queryResult.value(Qt::ImCurrentSelection);
+        auto currentSelection = queryResult.value(BobUI::ImCurrentSelection);
         if (auto *mimeData = currentSelection.value<QMimeData*>()) {
             // If the client reports the selection as mime-data we assume
             // it can also insert mime-data via QInputMethodEvent::MimeData
@@ -686,7 +686,7 @@
             canWriteToPasteboard = [sendType isEqualToString:NSPasteboardTypeString]
                 && !currentSelection.toString().isEmpty();
             canReadFromPastboard = [returnType isEqualToString:NSPasteboardTypeString]
-                && !queryResult.value(Qt::ImReadOnly).toBool();
+                && !queryResult.value(BobUI::ImReadOnly).toBool();
         }
 
         if (!((sendType && !canWriteToPasteboard) || (returnType && !canReadFromPastboard))) {
@@ -702,8 +702,8 @@
 {
     bool didWrite = false;
 
-    if (auto queryResult = queryInputMethod(self.focusObject, Qt::ImCurrentSelection)) {
-        auto currentSelection = queryResult.value(Qt::ImCurrentSelection);
+    if (auto queryResult = queryInputMethod(self.focusObject, BobUI::ImCurrentSelection)) {
+        auto currentSelection = queryResult.value(BobUI::ImCurrentSelection);
         if (auto *mimeData = currentSelection.value<QMimeData*>()) {
             auto mimeFormats = mimeData->formats();
             auto scope = QUtiMimeConverter::HandlerScopeFlag::Clipboard;
@@ -733,7 +733,7 @@
 
         // Try plain text fallback if we didn't have QMimeData, or didn't write anything
         if (!didWrite && ([types containsObject:NSPasteboardTypeString]
-            || QT_IGNORE_DEPRECATIONS([types containsObject:NSStringPboardType]))) {
+            || BOBUI_IGNORE_DEPRECATIONS([types containsObject:NSStringPboardType]))) {
             auto selectedText = currentSelection.toString();
             qCDebug(lcQpaServices) << "Writing" << selectedText << "to service pasteboard"
                 << "as pain text" << "for type" << NSPasteboardTypeString;
@@ -792,7 +792,7 @@
         // are not UTIs, we need to resolve the underlying UTI
         // ourselves.
         uttype = [UTType typeWithTag:pasteboardType
-            tagClass:QT_IGNORE_DEPRECATIONS((NSString*)kUTTagClassNSPboardType)
+            tagClass:BOBUI_IGNORE_DEPRECATIONS((NSString*)kUTTagClassNSPboardType)
             conformingToType:nil];
     }
     return QString::fromNSString(uttype.identifier);
@@ -800,7 +800,7 @@
 
 @end
 
-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
+#if BOBUI_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
 @implementation QNSView (ContentSelectionInfo)
 
 /*

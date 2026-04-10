@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "client.h"
 #include "connection.h"
@@ -41,7 +41,7 @@ PeerManager::PeerManager(Client *client)
             this, &PeerManager::readBroadcastDatagram);
 
     broadcastTimer.setInterval(BroadcastInterval);
-    connect(&broadcastTimer, &QTimer::timeout,
+    connect(&broadcastTimer, &BOBUIimer::timeout,
             this, &PeerManager::sendBroadcastDatagram);
 }
 

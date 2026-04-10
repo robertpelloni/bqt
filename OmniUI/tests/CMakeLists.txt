@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Test)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Test)
 
 include_directories(../omnicore/include)
 
@@ -19,7 +19,7 @@ add_executable(tst_OmniInputManager
 )
 
 target_link_libraries(tst_OmniInputManager PRIVATE
-    Qt6::Core Qt6::Gui Qt6::Test
+    BobUI6::Core BobUI6::Gui BobUI6::Test
 )
 
 enable_testing()

@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QNETWORKDISKCACHE_DEBUG
 
@@ -25,9 +25,9 @@
 
 #define MAX_COMPRESSION_SIZE (1024 * 1024 * 3)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 /*!
     \class QNetworkDiskCachePrivate
@@ -37,7 +37,7 @@ using namespace Qt::StringLiterals;
 /*!
     \class QNetworkDiskCache
     \since 4.5
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \brief The QNetworkDiskCache class provides a very basic disk cache.
 
@@ -492,9 +492,9 @@ qint64 QNetworkDiskCache::expire()
             continue;
 
         const QFileInfo &info = dirEntry.fileInfo();
-        QDateTime fileTime = info.birthTime(QTimeZone::UTC);
+        QDateTime fileTime = info.birthTime(BOBUIimeZone::UTC);
         if (!fileTime.isValid())
-            fileTime = info.metadataChangeTime(QTimeZone::UTC);
+            fileTime = info.metadataChangeTime(BOBUIimeZone::UTC);
         const std::chrono::milliseconds msecs{fileTime.toMSecsSinceEpoch()};
         const qint64 size = info.size();
         cacheItems.push_back(CacheItem{msecs, info.filePath(), size});
@@ -676,6 +676,6 @@ bool QCacheItem::read(QFileDevice *device, bool readData)
     return metaData.isValid() && !metaData.headers().isEmpty();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qnetworkdiskcache.cpp"

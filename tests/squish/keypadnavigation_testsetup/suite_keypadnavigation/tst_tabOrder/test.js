@@ -1,12 +1,12 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 import * as names from 'names.js';
 
 function main() {
     startApplication("keypadnavigation");
     test.compare(waitForObjectExists(names.scrollAreaLineEditQLineEdit).focus, true);
-    mouseClick(waitForObject(names.scrollAreaLabel7QLabel), 146, 24, Qt.NoModifier, Qt.LeftButton);
+    mouseClick(waitForObject(names.scrollAreaLabel7QLabel), 146, 24, BobUI.NoModifier, BobUI.LeftButton);
     type(waitForObject(names.scrollAreaLineEditQLineEdit), "<Tab>");
     test.compare(waitForObjectExists(names.scrollAreaHorizontalSliderQSlider).sliderPosition, 0);
     type(waitForObject(names.scrollAreaHorizontalSliderQSlider), "<Tab>");
@@ -21,9 +21,9 @@ function main() {
     type(waitForObject(names.scrollAreaHorizontalSliderQSlider), "<Right>");
     type(waitForObject(names.scrollAreaHorizontalSliderQSlider), "<Left>");
     type(waitForObject(names.scrollAreaHorizontalSliderQSlider), "<Tab>");
-    test.compare(waitForObjectExists(names.scrollAreaQtSpinboxLineeditQLineEdit).displayText, "1/1/00");
-    test.compare(waitForObjectExists(names.scrollAreaQtSpinboxLineeditQLineEdit).focus, true);
-    mouseClick(waitForObject(names.scrollAreaScrollAreaWidgetContentsQWidget), 247, 183, Qt.NoModifier, Qt.LeftButton);
+    test.compare(waitForObjectExists(names.scrollAreaBobUISpinboxLineeditQLineEdit).displayText, "1/1/00");
+    test.compare(waitForObjectExists(names.scrollAreaBobUISpinboxLineeditQLineEdit).focus, true);
+    mouseClick(waitForObject(names.scrollAreaScrollAreaWidgetContentsQWidget), 247, 183, BobUI.NoModifier, BobUI.LeftButton);
     type(waitForObject(names.scrollAreaDateEditQDateEdit), "<Tab>");
     type(waitForObject(names.scrollAreaDateEditQDateEdit), "<Tab>");
     type(waitForObject(names.scrollAreaDateEditQDateEdit), "<Tab>");

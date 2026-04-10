@@ -1,29 +1,29 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHOSTADDRESS_H
 #define QHOSTADDRESS_H
 
-#include <QtNetwork/qtnetworkglobal.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qshareddata.h>
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/bobuinetworkglobal.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qshareddata.h>
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
+#include <BobUINetwork/qabstractsocket.h>
 #endif
 
 #include <utility>
 
 struct sockaddr;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QHostAddressPrivate;
-QT_DECLARE_QESDP_SPECIALIZATION_DTOR(QHostAddressPrivate)
+BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(QHostAddressPrivate)
 
-class QT6_ONLY(Q_NETWORK_EXPORT) QIPv6Address
+class BOBUI6_ONLY(Q_NETWORK_EXPORT) QIPv6Address
 {
 public:
     inline quint8 &operator [](int index) { return c[index]; }
@@ -61,7 +61,7 @@ public:
     };
     Q_DECLARE_FLAGS(ConversionMode, ConversionModeFlag)
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     using NetworkLayerProtocol = QAbstractSocket::NetworkLayerProtocol;
     static constexpr auto IPv4Protocol = QAbstractSocket::IPv4Protocol;
     static constexpr auto IPv6Protocol = QAbstractSocket::IPv6Protocol;
@@ -149,15 +149,15 @@ protected:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QHostAddress::ConversionMode)
 Q_DECLARE_SHARED(QHostAddress)
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_NETWORK_EXPORT QDebug operator<<(QDebug, const QHostAddress &);
 #endif
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_NETWORK_EXPORT QDataStream &operator<<(QDataStream &, const QHostAddress &);
 Q_NETWORK_EXPORT QDataStream &operator>>(QDataStream &, QHostAddress &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QHOSTADDRESS_H

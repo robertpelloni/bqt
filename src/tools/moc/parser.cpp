@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "parser.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const char *error_msg = nullptr;
 
@@ -92,4 +92,4 @@ void Parser::note(const char *msg) {
         printMsg("note: %.*s\n", msg, index > 0 ? symbol() : Symbol{});
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

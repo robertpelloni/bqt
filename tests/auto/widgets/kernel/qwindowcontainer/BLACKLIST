@@ -1,7 +1,7 @@
-# QTBUG-87413
+# BOBUIBUG-87413
 [testActivation]
 android
 [testAncestorChange]
 android
 [testFocus]
-wayland # QTBUG-129292
+wayland # BOBUIBUG-129292

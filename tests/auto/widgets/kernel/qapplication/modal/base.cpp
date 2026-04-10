@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "base.h"
 #include "qapplication.h"
@@ -7,9 +7,9 @@
 base::base(QWidget *parent) :
     QWidget(parent)
 {
-    m_timer = new QTimer(this);
+    m_timer = new BOBUIimer(this);
     m_timer->setSingleShot(false);
-    connect(m_timer, &QTimer::timeout, this, &base::periodicTimer);
+    connect(m_timer, &BOBUIimer::timeout, this, &base::periodicTimer);
     m_timer->start(5000);
 }
 

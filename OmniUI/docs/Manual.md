@@ -2,15 +2,15 @@
 
 ## 1. Philosophy
 OmniUI aims to unify the fragmented C++ GUI landscape.
-- **Qt** is chosen for its maturity, accessibility support, and massive widget ecosystem.
+- **BobUI** is chosen for its maturity, accessibility support, and massive widget ecosystem.
 - **JUCE** is chosen for its superior audio handling, plugin hosting (VST/AU), and low-latency event processing.
 - **TypeScript** is chosen to lower the barrier to entry, replacing the need for raw C++ or dynamic QML in high-level UI logic.
 
 ## 2. Architecture
 
 ### 2.1 The Event Loop Fusion
-Typically, Qt and JUCE both want to own the main message loop. OmniUI resolves this by letting **Qt** drive the main loop (`QApplication::exec()`).
-We inject the JUCE `MessageManager` into the Qt loop using a custom `QTimer` that pumps JUCE messages, or (on supported platforms) using native handle integration.
+Typically, BobUI and JUCE both want to own the main message loop. OmniUI resolves this by letting **BobUI** drive the main loop (`QApplication::exec()`).
+We inject the JUCE `MessageManager` into the BobUI loop using a custom `BOBUIimer` that pumps JUCE messages, or (on supported platforms) using native handle integration.
 
 ### 2.2 The `OmniApplication`
 The entry point of any OmniUI app is `OmniApplication`.
@@ -29,10 +29,10 @@ int main(int argc, char** argv) {
 ```
 
 ### 2.3 `JuceWidget`
-To render JUCE content inside Qt, we provide `JuceWidget`. This is a `QWidget` that:
+To render JUCE content inside BobUI, we provide `JuceWidget`. This is a `QWidget` that:
 1. Creates a native window handle (HWND/NSView/XID).
 2. Attaches a `juce::Component` to that handle.
-3. Forwards resize and focus events from Qt to JUCE.
+3. Forwards resize and focus events from BobUI to JUCE.
 
 ## 3. TypeScript Integration
 
@@ -43,13 +43,13 @@ To render JUCE content inside Qt, we provide `JuceWidget`. This is a `QWidget` t
 4. Signals and Slots are automatically bound.
 
 ### 3.2 Type Definitions
-OmniUI provides `omni.d.ts` which exposes Qt types (like `QString`, `QWidget` proxies) to TypeScript.
+OmniUI provides `omni.d.ts` which exposes BobUI types (like `QString`, `QWidget` proxies) to TypeScript.
 
 ## 4. WebAssembly (WASM) Build Pipeline
 
 ### 4.1 Overview
 OmniUI uses Emscripten. The build system detects if `emcc` is present.
-The `CMakeLists.txt` automatically links the static Qt for WASM libraries.
+The `CMakeLists.txt` automatically links the static BobUI for WASM libraries.
 
 ### 4.2 Threading
 Since WASM threading is complex (SharedArrayBuffer requirements), OmniUI defaults to a single-threaded cooperative loop, but can be configured for pthreads if the host environment supports it (HTTPS + COOP/COEP headers).

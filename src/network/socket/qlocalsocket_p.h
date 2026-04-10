@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLOCALSOCKET_P_H
 #define QLOCALSOCKET_P_H
@@ -9,75 +9,75 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of the QLocalSocket class.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
 
 #include "qlocalsocket.h"
 #include "private/qiodevice_p.h"
 
-#include <qtimer.h>
+#include <bobuiimer.h>
 
-QT_REQUIRE_CONFIG(localserver);
+BOBUI_REQUIRE_CONFIG(localserver);
 
-#if defined(QT_LOCALSOCKET_TCP)
-#   include "qtcpsocket.h"
+#if defined(BOBUI_LOCALSOCKET_TCP)
+#   include "bobuicpsocket.h"
 #elif defined(Q_OS_WIN)
 #   include "private/qwindowspipereader_p.h"
 #   include "private/qwindowspipewriter_p.h"
 #   include <qwineventnotifier.h>
 #else
 #   include "private/qabstractsocketengine_p.h"
-#   include <qtcpsocket.h>
+#   include <bobuicpsocket.h>
 #   include <qsocketnotifier.h>
 #   include <errno.h>
 #endif
 
 struct sockaddr_un;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if !defined(Q_OS_WIN) || defined(QT_LOCALSOCKET_TCP)
+#if !defined(Q_OS_WIN) || defined(BOBUI_LOCALSOCKET_TCP)
 
-class QLocalUnixSocket : public QTcpSocket
+class QLocalUnixSocket : public BOBUIcpSocket
 {
 
 public:
-    QLocalUnixSocket() : QTcpSocket()
+    QLocalUnixSocket() : BOBUIcpSocket()
     {
     }
 
     inline void setSocketState(QAbstractSocket::SocketState state)
     {
-        QTcpSocket::setSocketState(state);
+        BOBUIcpSocket::setSocketState(state);
     }
 
     inline void setErrorString(const QString &string)
     {
-        QTcpSocket::setErrorString(string);
+        BOBUIcpSocket::setErrorString(string);
     }
 
     inline void setSocketError(QAbstractSocket::SocketError error)
     {
-        QTcpSocket::setSocketError(error);
+        BOBUIcpSocket::setSocketError(error);
     }
 
     inline qint64 readData(char *data, qint64 maxSize) override
     {
-        return QTcpSocket::readData(data, maxSize);
+        return BOBUIcpSocket::readData(data, maxSize);
     }
 
     inline qint64 writeData(const char *data, qint64 maxSize) override
     {
-        return QTcpSocket::writeData(data, maxSize);
+        return BOBUIcpSocket::writeData(data, maxSize);
     }
 };
-#endif //#if !defined(Q_OS_WIN) || defined(QT_LOCALSOCKET_TCP)
+#endif //#if !defined(Q_OS_WIN) || defined(BOBUI_LOCALSOCKET_TCP)
 
 class QLocalSocketPrivate : public QIODevicePrivate
 {
@@ -87,7 +87,7 @@ public:
     QLocalSocketPrivate();
     void init();
 
-#if defined(QT_LOCALSOCKET_TCP)
+#if defined(BOBUI_LOCALSOCKET_TCP)
     QLocalUnixSocket* tcpSocket;
     bool ownsTcpSocket;
     void setSocket(QLocalUnixSocket*);
@@ -120,7 +120,7 @@ public:
     static bool parseSockaddr(const sockaddr_un &addr, uint len,
                               QString &fullServerName, QString &serverName, bool &abstractNamespace);
     QSocketNotifier *delayConnect;
-    QTimer *connectTimer;
+    BOBUIimer *connectTimer;
     QString connectingName;
     int connectingSocket;
     QIODevice::OpenMode connectingOpenMode;
@@ -128,7 +128,7 @@ public:
     QLocalSocket::LocalSocketState state;
     QString serverName;
     QString fullServerName;
-#if defined(Q_OS_WIN) && !defined(QT_LOCALSOCKET_TCP)
+#if defined(Q_OS_WIN) && !defined(BOBUI_LOCALSOCKET_TCP)
     bool emittedReadyRead;
     bool emittedBytesWritten;
 #endif
@@ -136,7 +136,7 @@ public:
     Q_OBJECT_BINDABLE_PROPERTY(QLocalSocketPrivate, QLocalSocket::SocketOptions, socketOptions)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLOCALSOCKET_P_H
 

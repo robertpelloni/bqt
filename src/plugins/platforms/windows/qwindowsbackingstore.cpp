@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsbackingstore.h"
 #include "qwindowswindow.h"
 #include "qwindowscontext.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/private/qwindowsnativeimage_p.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/private/qwindowsnativeimage_p.h>
 #include <private/qhighdpiscaling_p.h>
 #include <private/qimage_p.h>
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsBackingStore
@@ -51,7 +51,7 @@ void QWindowsBackingStore::flush(QWindow *window, const QRegion &region,
     Q_ASSERT(rw);
 
     const bool hasAlpha = rw->format().hasAlpha();
-    const Qt::WindowFlags flags = window->flags();
+    const BobUI::WindowFlags flags = window->flags();
     // Note: This condition must be in sync with setWindowOpacity. FIXME: Improve this :)
     if (rw->isLayered() && hasAlpha && QWindowsWindow::hasNoNativeFrame(rw->handle(), flags)) {
         // Windows with alpha: Use blend function to update.
@@ -82,7 +82,7 @@ void QWindowsBackingStore::flush(QWindow *window, const QRegion &region,
 
         if (!BitBlt(dc, br.x(), br.y(), br.width(), br.height(),
                     m_image->hdc(), br.x() + offset.x(), br.y() + offset.y(), SRCCOPY)) {
-            const DWORD lastError = GetLastError(); // QTBUG-35926, QTBUG-29716: may fail after lock screen.
+            const DWORD lastError = GetLastError(); // BOBUIBUG-35926, BOBUIBUG-29716: may fail after lock screen.
             if (lastError != ERROR_SUCCESS && lastError != ERROR_INVALID_HANDLE)
                 qErrnoWarning(int(lastError), "%s: BitBlt failed", __FUNCTION__);
         }
@@ -102,7 +102,7 @@ void QWindowsBackingStore::flush(QWindow *window, const QRegion &region,
 void QWindowsBackingStore::resize(const QSize &size, const QRegion &region)
 {
     if (m_image.isNull() || m_image->image().size() != size) {
-#ifndef QT_NO_DEBUG_OUTPUT
+#ifndef BOBUI_NO_DEBUG_OUTPUT
         if (QWindowsContext::verbose && lcQpaBackingStore().isDebugEnabled()) {
             qCDebug(lcQpaBackingStore)
                 << __FUNCTION__ << ' ' << window() << ' ' << size << ' ' << region
@@ -118,7 +118,7 @@ void QWindowsBackingStore::resize(const QSize &size, const QRegion &region)
         if (QImage::toPixelFormat(format).alphaUsage() == QPixelFormat::UsesAlpha)
             m_alphaNeedsFill = true;
         else // upgrade but here we know app painting does not rely on alpha hence no need to fill
-            format = qt_maybeDataCompatibleAlphaVersion(format);
+            format = bobui_maybeDataCompatibleAlphaVersion(format);
 
         QWindowsNativeImage *oldwni = m_image.data();
         auto *newwni = new QWindowsNativeImage(size.width(), size.height(), format);
@@ -139,7 +139,7 @@ void QWindowsBackingStore::resize(const QSize &size, const QRegion &region)
     }
 }
 
-Q_GUI_EXPORT void qt_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
+Q_GUI_EXPORT void bobui_scrollRectInImage(QImage &img, const QRect &rect, const QPoint &offset);
 
 bool QWindowsBackingStore::scroll(const QRegion &area, int dx, int dy)
 {
@@ -148,7 +148,7 @@ bool QWindowsBackingStore::scroll(const QRegion &area, int dx, int dy)
 
     const QPoint offset(dx, dy);
     const QRect rect = area.boundingRect();
-    qt_scrollRectInImage(m_image->image(), rect, offset);
+    bobui_scrollRectInImage(m_image->image(), rect, offset);
 
     return true;
 }
@@ -161,7 +161,7 @@ void QWindowsBackingStore::beginPaint(const QRegion &region)
     if (m_alphaNeedsFill) {
         QPainter p(&m_image->image());
         p.setCompositionMode(QPainter::CompositionMode_Source);
-        const QColor blank = Qt::transparent;
+        const QColor blank = BobUI::transparent;
         for (const QRect &r : region)
             p.fillRect(r, blank);
     }
@@ -183,4 +183,4 @@ QImage QWindowsBackingStore::toImage() const
     return m_image.data()->image();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

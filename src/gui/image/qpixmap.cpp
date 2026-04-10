@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include <qglobal.h>
 
@@ -22,7 +22,7 @@
 #include "qimagewriter.h"
 #include "qpaintengine.h"
 #include "qscreen.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include "qdebug.h"
 
 #include <qpa/qplatformintegration.h>
@@ -30,30 +30,30 @@
 #include "qpixmap_raster_p.h"
 #include "private/qhexstring_p.h"
 
-#include <qtgui_tracepoints_p.h>
+#include <bobuigui_tracepoints_p.h>
 
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_TRACE_PARAM_REPLACE(Qt::AspectRatioMode, int);
-Q_TRACE_PARAM_REPLACE(Qt::TransformationMode, int);
+Q_TRACE_PARAM_REPLACE(BobUI::AspectRatioMode, int);
+Q_TRACE_PARAM_REPLACE(BobUI::TransformationMode, int);
 
 // MSVC 19.28 does show spurious warning "C4723: potential divide by 0" for code that divides
 // by height() in release builds. Anyhow, all the code paths in this file are only executed
 // for valid QPixmap's, where height() cannot be 0. Therefore disable the warning.
-QT_WARNING_DISABLE_MSVC(4723)
+BOBUI_WARNING_DISABLE_MSVC(4723)
 
-static bool qt_pixmap_thread_test()
+static bool bobui_pixmap_thread_test()
 {
     if (!QCoreApplication::instanceExists()) {
         qFatal("QPixmap: Must construct a QGuiApplication before a QPixmap");
         return false;
     }
     if (QGuiApplicationPrivate::instance()
-        && !QThread::isMainThread()
+        && !BOBUIhread::isMainThread()
         && !QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::ThreadedPixmaps)) {
         qWarning("QPixmap: It is not safe to use pixmaps outside the GUI thread on this platform");
         return false;
@@ -78,7 +78,7 @@ void QPixmap::doInit(int w, int h, int type)
 QPixmap::QPixmap()
     : QPaintDevice()
 {
-    (void) qt_pixmap_thread_test();
+    (void) bobui_pixmap_thread_test();
     doInit(0, 0, QPlatformPixmap::PixmapType);
 }
 
@@ -121,7 +121,7 @@ QPixmap::QPixmap(const QSize &size)
 */
 QPixmap::QPixmap(const QSize &s, int type)
 {
-    if (!qt_pixmap_thread_test())
+    if (!bobui_pixmap_thread_test())
         doInit(0, 0, static_cast<QPlatformPixmap::PixelType>(type));
     else
         doInit(s.width(), s.height(), static_cast<QPlatformPixmap::PixelType>(type));
@@ -164,11 +164,11 @@ QPixmap::QPixmap(QPlatformPixmap *d)
     Image Files}
 */
 
-QPixmap::QPixmap(const QString& fileName, const char *format, Qt::ImageConversionFlags flags)
+QPixmap::QPixmap(const QString& fileName, const char *format, BobUI::ImageConversionFlags flags)
     : QPaintDevice()
 {
     doInit(0, 0, QPlatformPixmap::PixmapType);
-    if (!qt_pixmap_thread_test())
+    if (!bobui_pixmap_thread_test())
         return;
 
     load(fileName, format, flags);
@@ -183,7 +183,7 @@ QPixmap::QPixmap(const QString& fileName, const char *format, Qt::ImageConversio
 QPixmap::QPixmap(const QPixmap &pixmap)
     : QPaintDevice()
 {
-    if (!qt_pixmap_thread_test()) {
+    if (!bobui_pixmap_thread_test()) {
         doInit(0, 0, QPlatformPixmap::PixmapType);
         return;
     }
@@ -200,7 +200,7 @@ QPixmap::QPixmap(const QPixmap &pixmap)
     \sa swap() operator=(QPixmap&&)
 */
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QPlatformPixmap)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QPlatformPixmap)
 
 /*!
     Constructs a pixmap from the given \a xpm data, which must be a
@@ -217,7 +217,7 @@ QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QPlatformPixmap)
     slightly more efficient (for example, when the code is in a shared
     library) and ROMable when the application is to be stored in ROM.
 */
-#ifndef QT_NO_IMAGEFORMAT_XPM
+#ifndef BOBUI_NO_IMAGEFORMAT_XPM
 QPixmap::QPixmap(const char * const xpm[])
     : QPaintDevice()
 {
@@ -412,7 +412,7 @@ QImage QPixmap::toImage() const
 }
 
 /*!
-    \fn QTransform QPixmap::trueMatrix(const QTransform &matrix, int width, int height)
+    \fn BOBUIransform QPixmap::trueMatrix(const BOBUIransform &matrix, int width, int height)
 
     Returns the actual matrix used for transforming a pixmap with the
     given \a width, \a height and \a matrix.
@@ -427,7 +427,7 @@ QImage QPixmap::toImage() const
     \sa transformed(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-QTransform QPixmap::trueMatrix(const QTransform &m, int w, int h)
+BOBUIransform QPixmap::trueMatrix(const BOBUIransform &m, int w, int h)
 {
     return QImage::trueMatrix(m, w, h);
 }
@@ -590,7 +590,7 @@ qreal QPixmap::devicePixelRatio() const
     will result in effective (device-independent) painting bounds
     of 100x100.
 
-    Code paths in Qt that calculate layout geometry based on the
+    Code paths in BobUI that calculate layout geometry based on the
     pixmap size will take the ratio into account:
     QSize layoutSize = pixmap.size() / pixmap.devicePixelRatio()
     The net effect of this is that the pixmap is displayed as
@@ -628,7 +628,7 @@ QSizeF QPixmap::deviceIndependentSize() const
     return QSizeF(data->width(), data->height()) / data->devicePixelRatio();
 }
 
-#ifndef QT_NO_IMAGE_HEURISTIC_MASK
+#ifndef BOBUI_NO_IMAGE_HEURISTIC_MASK
 /*!
     Creates and returns a heuristic mask for this pixmap.
 
@@ -657,8 +657,8 @@ QBitmap QPixmap::createHeuristicMask(bool clipTight) const
 
 /*!
     Creates and returns a mask for this pixmap based on the given \a
-    maskColor. If the \a mode is Qt::MaskInColor, all pixels matching the
-    maskColor will be transparent. If \a mode is Qt::MaskOutColor, all pixels
+    maskColor. If the \a mode is BobUI::MaskInColor, all pixels matching the
+    maskColor will be transparent. If \a mode is BobUI::MaskOutColor, all pixels
     matching the maskColor will be opaque.
 
     This function is slow because it involves converting to/from a
@@ -666,7 +666,7 @@ QBitmap QPixmap::createHeuristicMask(bool clipTight) const
 
     \sa createHeuristicMask(), QImage::createMaskFromColor()
 */
-QBitmap QPixmap::createMaskFromColor(const QColor &maskColor, Qt::MaskMode mode) const
+QBitmap QPixmap::createMaskFromColor(const QColor &maskColor, BobUI::MaskMode mode) const
 {
     QImage image = toImage().convertToFormat(QImage::Format_ARGB32);
     return QBitmap::fromImage(std::move(image).createMaskFromColor(maskColor.rgba(), mode));
@@ -699,7 +699,7 @@ QBitmap QPixmap::createMaskFromColor(const QColor &maskColor, Qt::MaskMode mode)
     Files}{Reading and Writing Image Files}
 */
 
-bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConversionFlags flags)
+bool QPixmap::load(const QString &fileName, const char *format, BobUI::ImageConversionFlags flags)
 {
     if (!fileName.isEmpty()) {
 
@@ -707,11 +707,11 @@ bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConvers
         // Note: If no extension is provided, we try to match the
         // file against known plugin extensions
         if (info.completeSuffix().isEmpty() || info.exists()) {
-            const bool inGuiThread = qApp->thread() == QThread::currentThread();
+            const bool inGuiThread = qApp->thread() == BOBUIhread::currentThread();
 
-            QString key = "qt_pixmap"_L1
+            QString key = "bobui_pixmap"_L1
                     % info.absoluteFilePath()
-                    % HexString<uint>(info.lastModified(QTimeZone::UTC).toSecsSinceEpoch())
+                    % HexString<uint>(info.lastModified(BOBUIimeZone::UTC).toSecsSinceEpoch())
                     % HexString<quint64>(info.size())
                     % HexString<uint>(data ? data->pixelType() : QPlatformPixmap::PixmapType);
 
@@ -738,7 +738,7 @@ bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConvers
 }
 
 /*!
-    \fn bool QPixmap::loadFromData(const uchar *data, uint len, const char *format, Qt::ImageConversionFlags flags)
+    \fn bool QPixmap::loadFromData(const uchar *data, uint len, const char *format, BobUI::ImageConversionFlags flags)
 
     Loads a pixmap from the \a len first bytes of the given binary \a
     data.  Returns \c true if the pixmap was loaded successfully;
@@ -756,7 +756,7 @@ bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConvers
     Writing Image Files}
 */
 
-bool QPixmap::loadFromData(const uchar *buf, uint len, const char *format, Qt::ImageConversionFlags flags)
+bool QPixmap::loadFromData(const uchar *buf, uint len, const char *format, BobUI::ImageConversionFlags flags)
 {
     if (len == 0 || buf == nullptr) {
         data.reset();
@@ -773,7 +773,7 @@ bool QPixmap::loadFromData(const uchar *buf, uint len, const char *format, Qt::I
 }
 
 /*!
-    \fn bool QPixmap::loadFromData(const QByteArray &data, const char *format, Qt::ImageConversionFlags flags)
+    \fn bool QPixmap::loadFromData(const QByteArray &data, const char *format, BobUI::ImageConversionFlags flags)
 
     \overload
 
@@ -897,7 +897,7 @@ static void sendResizeEvents(QWidget *target)
     const QObjectList children = target->children();
     for (int i = 0; i < children.size(); ++i) {
         QWidget *child = static_cast<QWidget*>(children.at(i));
-        if (child->isWidgetType() && !child->isWindow() && child->testAttribute(Qt::WA_PendingResizeEvent))
+        if (child->isWidgetType() && !child->isWindow() && child->testAttribute(BobUI::WA_PendingResizeEvent))
             sendResizeEvents(child);
     }
 }
@@ -907,7 +907,7 @@ static void sendResizeEvents(QWidget *target)
 /*****************************************************************************
   QPixmap stream functions
  *****************************************************************************/
-#if !defined(QT_NO_DATASTREAM)
+#if !defined(BOBUI_NO_DATASTREAM)
 /*!
     \relates QPixmap
 
@@ -915,7 +915,7 @@ static void sendResizeEvents(QWidget *target)
     image. Note that writing the stream to a file will not produce a
     valid image file.
 
-    \sa QPixmap::save(), {Serializing Qt Data Types}
+    \sa QPixmap::save(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &stream, const QPixmap &pixmap)
@@ -928,7 +928,7 @@ QDataStream &operator<<(QDataStream &stream, const QPixmap &pixmap)
 
     Reads an image from the given \a stream into the given \a pixmap.
 
-    \sa QPixmap::load(), {Serializing Qt Data Types}
+    \sa QPixmap::load(), {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &stream, QPixmap &pixmap)
@@ -946,7 +946,7 @@ QDataStream &operator>>(QDataStream &stream, QPixmap &pixmap)
     return stream;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
     \internal
@@ -960,13 +960,13 @@ bool QPixmap::isDetached() const
 /*!
     Replaces this pixmap's data with the given \a image using the
     specified \a flags to control the conversion.  The \a flags
-    argument is a bitwise-OR of the \l{Qt::ImageConversionFlags}.
+    argument is a bitwise-OR of the \l{BobUI::ImageConversionFlags}.
     Passing 0 for \a flags sets all the default options. Returns \c true
     if the result is that this pixmap is not null.
 
     \sa fromImage()
 */
-bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags flags)
+bool QPixmap::convertFromImage(const QImage &image, BobUI::ImageConversionFlags flags)
 {
     detach();
     if (image.isNull() || !data)
@@ -978,7 +978,7 @@ bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags fla
 
 /*!
     \fn QPixmap QPixmap::scaled(int width, int height,
-    Qt::AspectRatioMode aspectRatioMode, Qt::TransformationMode
+    BobUI::AspectRatioMode aspectRatioMode, BobUI::TransformationMode
     transformMode) const
 
     \overload
@@ -992,8 +992,8 @@ bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags fla
 */
 
 /*!
-    \fn QPixmap QPixmap::scaled(const QSize &size, Qt::AspectRatioMode
-    aspectRatioMode, Qt::TransformationMode transformMode) const
+    \fn QPixmap QPixmap::scaled(const QSize &size, BobUI::AspectRatioMode
+    aspectRatioMode, BobUI::TransformationMode transformMode) const
 
     Scales the pixmap to the given \a size, using the aspect ratio and
     transformation modes specified by \a aspectRatioMode and \a
@@ -1002,11 +1002,11 @@ bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags fla
     \image qimage-scaling.png
 
     \list
-    \li If \a aspectRatioMode is Qt::IgnoreAspectRatio, the pixmap
+    \li If \a aspectRatioMode is BobUI::IgnoreAspectRatio, the pixmap
        is scaled to \a size.
-    \li If \a aspectRatioMode is Qt::KeepAspectRatio, the pixmap is
+    \li If \a aspectRatioMode is BobUI::KeepAspectRatio, the pixmap is
        scaled to a rectangle as large as possible inside \a size, preserving the aspect ratio.
-    \li If \a aspectRatioMode is Qt::KeepAspectRatioByExpanding,
+    \li If \a aspectRatioMode is BobUI::KeepAspectRatioByExpanding,
        the pixmap is scaled to a rectangle as small as possible
        outside \a size, preserving the aspect ratio.
     \endlist
@@ -1024,7 +1024,7 @@ bool QPixmap::convertFromImage(const QImage &image, Qt::ImageConversionFlags fla
     Transformations}
 
 */
-QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaled(const QSize& s, Qt::AspectRatioMode aspectMode, Qt::TransformationMode mode) const
+QPixmap Q_TRACE_INSTRUMENT(bobuigui) QPixmap::scaled(const QSize& s, BobUI::AspectRatioMode aspectMode, BobUI::TransformationMode mode) const
 {
     if (isNull()) {
         qWarning("QPixmap::scaled: Pixmap is a null pixmap");
@@ -1042,14 +1042,14 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaled(const QSize& s, Qt::AspectRati
 
     Q_TRACE_SCOPE(QPixmap_scaled, s, aspectMode, mode);
 
-    QTransform wm = QTransform::fromScale((qreal)newSize.width() / width(),
+    BOBUIransform wm = BOBUIransform::fromScale((qreal)newSize.width() / width(),
                                           (qreal)newSize.height() / height());
     QPixmap pix = transformed(wm, mode);
     return pix;
 }
 
 /*!
-    \fn QPixmap QPixmap::scaledToWidth(int width, Qt::TransformationMode
+    \fn QPixmap QPixmap::scaledToWidth(int width, BobUI::TransformationMode
     mode) const
 
     Returns a scaled copy of the image. The returned image is scaled
@@ -1062,7 +1062,7 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaled(const QSize& s, Qt::AspectRati
     \sa isNull(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToWidth(int w, Qt::TransformationMode mode) const
+QPixmap Q_TRACE_INSTRUMENT(bobuigui) QPixmap::scaledToWidth(int w, BobUI::TransformationMode mode) const
 {
     if (isNull()) {
         qWarning("QPixmap::scaleWidth: Pixmap is a null pixmap");
@@ -1074,13 +1074,13 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToWidth(int w, Qt::Transformati
     Q_TRACE_SCOPE(QPixmap_scaledToWidth, w, mode);
 
     qreal factor = (qreal) w / width();
-    QTransform wm = QTransform::fromScale(factor, factor);
+    BOBUIransform wm = BOBUIransform::fromScale(factor, factor);
     return transformed(wm, mode);
 }
 
 /*!
     \fn QPixmap QPixmap::scaledToHeight(int height,
-    Qt::TransformationMode mode) const
+    BobUI::TransformationMode mode) const
 
     Returns a scaled copy of the image. The returned image is scaled
     to the given \a height using the specified transformation \a mode.
@@ -1092,7 +1092,7 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToWidth(int w, Qt::Transformati
     \sa isNull(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToHeight(int h, Qt::TransformationMode mode) const
+QPixmap Q_TRACE_INSTRUMENT(bobuigui) QPixmap::scaledToHeight(int h, BobUI::TransformationMode mode) const
 {
     if (isNull()) {
         qWarning("QPixmap::scaleHeight: Pixmap is a null pixmap");
@@ -1104,7 +1104,7 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToHeight(int h, Qt::Transformat
     Q_TRACE_SCOPE(QPixmap_scaledToHeight, h, mode);
 
     qreal factor = (qreal) h / height();
-    QTransform wm = QTransform::fromScale(factor, factor);
+    BOBUIransform wm = BOBUIransform::fromScale(factor, factor);
     return transformed(wm, mode);
 }
 
@@ -1126,10 +1126,10 @@ QPixmap Q_TRACE_INSTRUMENT(qtgui) QPixmap::scaledToHeight(int h, Qt::Transformat
     \sa trueMatrix(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-QPixmap QPixmap::transformed(const QTransform &transform,
-                             Qt::TransformationMode mode) const
+QPixmap QPixmap::transformed(const BOBUIransform &transform,
+                             BobUI::TransformationMode mode) const
 {
-    if (isNull() || transform.type() <= QTransform::TxTranslate)
+    if (isNull() || transform.type() <= BOBUIransform::TxTranslate)
         return *this;
 
     return data->transformed(transform, mode);
@@ -1137,7 +1137,7 @@ QPixmap QPixmap::transformed(const QTransform &transform,
 
 /*!
     \class QPixmap
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QPixmap class is an off-screen image representation
     that can be used as a paint device.
@@ -1146,7 +1146,7 @@ QPixmap QPixmap::transformed(const QTransform &transform,
     \ingroup shared
 
 
-    Qt provides four classes for handling image data: QImage, QPixmap,
+    BobUI provides four classes for handling image data: QImage, QPixmap,
     QBitmap and QPicture. QImage is designed and optimized for I/O,
     and for direct pixel access and manipulation, while QPixmap is
     designed and optimized for showing images on screen. QBitmap is
@@ -1157,7 +1157,7 @@ QPixmap QPixmap::transformed(const QTransform &transform,
 
     A QPixmap can easily be displayed on the screen using QLabel or
     one of QAbstractButton's subclasses (such as QPushButton and
-    QToolButton). QLabel has a pixmap property, whereas
+    BOBUIoolButton). QLabel has a pixmap property, whereas
     QAbstractButton has an icon property.
 
     QPixmap objects can be passed around by value since the QPixmap
@@ -1190,7 +1190,7 @@ QPixmap QPixmap::transformed(const QTransform &transform,
     can be loaded when constructing the QPixmap object, or by using
     the load() or loadFromData() functions later on. When loading an
     image, the file name can either refer to an actual file on disk or
-    to one of the application's embedded resources. See \l{The Qt
+    to one of the application's embedded resources. See \l{The BobUI
     Resource System} overview for details on how to embed images and
     other resource files in the application's executable.
 
@@ -1199,11 +1199,11 @@ QPixmap QPixmap::transformed(const QTransform &transform,
     The complete list of supported file formats are available through
     the QImageReader::supportedImageFormats() and
     QImageWriter::supportedImageFormats() functions. New file formats
-    can be added as plugins. By default, Qt supports the following
+    can be added as plugins. By default, BobUI supports the following
     formats:
 
     \table
-    \header \li Format \li Description                      \li Qt's support
+    \header \li Format \li Description                      \li BobUI's support
     \row    \li BMP    \li Windows Bitmap                   \li Read/write
     \row    \li CUR    \li Windows Cursor                   \li Read/write
     \row    \li GIF    \li Graphic Interchange Format       \li Read
@@ -1221,7 +1221,7 @@ QPixmap QPixmap::transformed(const QTransform &transform,
     \row    \li XPM    \li X11 Pixmap                       \li Read/write
     \endtable
 
-    Further formats are supported if the \l{Qt Image Formats} module is installed.
+    Further formats are supported if the \l{BobUI Image Formats} module is installed.
 
     \section1 Pixmap Information
 
@@ -1385,7 +1385,7 @@ int QPixmap::defaultDepth()
 /*!
     Detaches the pixmap from shared pixmap data.
 
-    A pixmap is automatically detached by Qt whenever its contents are
+    A pixmap is automatically detached by BobUI whenever its contents are
     about to change. This is done in almost all QPixmap member
     functions that modify the pixmap (fill(), fromImage(),
     load(), etc.), and in QPainter::begin() on a pixmap.
@@ -1423,11 +1423,11 @@ void QPixmap::detach()
 }
 
 /*!
-    \fn QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
+    \fn QPixmap QPixmap::fromImage(const QImage &image, BobUI::ImageConversionFlags flags)
 
     Converts the given \a image to a pixmap using the specified \a
     flags to control the conversion.  The \a flags argument is a
-    bitwise-OR of the \l{Qt::ImageConversionFlags}. Passing 0 for \a
+    bitwise-OR of the \l{BobUI::ImageConversionFlags}. Passing 0 for \a
     flags sets all the default options.
 
     In case of monochrome and 8-bit images, the image is first
@@ -1437,7 +1437,7 @@ void QPixmap::detach()
 
     \sa fromImageReader(), toImage(), {QPixmap#Pixmap Conversion}{Pixmap Conversion}
 */
-QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
+QPixmap QPixmap::fromImage(const QImage &image, BobUI::ImageConversionFlags flags)
 {
     if (image.isNull())
         return QPixmap();
@@ -1453,7 +1453,7 @@ QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 }
 
 /*!
-    \fn QPixmap QPixmap::fromImage(QImage &&image, Qt::ImageConversionFlags flags)
+    \fn QPixmap QPixmap::fromImage(QImage &&image, BobUI::ImageConversionFlags flags)
     \since 5.3
     \overload
 
@@ -1464,7 +1464,7 @@ QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 /*!
     \internal
 */
-QPixmap QPixmap::fromImageInPlace(QImage &image, Qt::ImageConversionFlags flags)
+QPixmap QPixmap::fromImageInPlace(QImage &image, BobUI::ImageConversionFlags flags)
 {
     if (image.isNull())
         return QPixmap();
@@ -1480,10 +1480,10 @@ QPixmap QPixmap::fromImageInPlace(QImage &image, Qt::ImageConversionFlags flags)
 }
 
 /*!
-    \fn QPixmap QPixmap::fromImageReader(QImageReader *imageReader, Qt::ImageConversionFlags flags)
+    \fn QPixmap QPixmap::fromImageReader(QImageReader *imageReader, BobUI::ImageConversionFlags flags)
 
     Create a QPixmap from an image read directly from an \a imageReader.
-    The \a flags argument is a bitwise-OR of the \l{Qt::ImageConversionFlags}.
+    The \a flags argument is a bitwise-OR of the \l{BobUI::ImageConversionFlags}.
     Passing 0 for \a flags sets all the default options.
 
     On some systems, reading an image directly to QPixmap can use less memory than
@@ -1491,7 +1491,7 @@ QPixmap QPixmap::fromImageInPlace(QImage &image, Qt::ImageConversionFlags flags)
 
     \sa fromImage(), toImage(), {QPixmap#Pixmap Conversion}{Pixmap Conversion}
 */
-QPixmap QPixmap::fromImageReader(QImageReader *imageReader, Qt::ImageConversionFlags flags)
+QPixmap QPixmap::fromImageReader(QImageReader *imageReader, BobUI::ImageConversionFlags flags)
 {
     if (Q_UNLIKELY(!qobject_cast<QGuiApplication *>(QCoreApplication::instance()))) {
         qWarning("QPixmap::fromImageReader: QPixmap cannot be created without a QGuiApplication");
@@ -1511,7 +1511,7 @@ QPlatformPixmap* QPixmap::handle() const
     return data.data();
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPixmap &r)
 {
     QDebugStateSaver saver(dbg);
@@ -1523,11 +1523,11 @@ QDebug operator<<(QDebug dbg, const QPixmap &r)
     } else {
         dbg << r.size() << ",depth=" << r.depth()
             << ",devicePixelRatio=" << r.devicePixelRatio()
-            << ",cacheKey=" << Qt::showbase << Qt::hex << r.cacheKey() << Qt::dec << Qt::noshowbase;
+            << ",cacheKey=" << BobUI::showbase << BobUI::hex << r.cacheKey() << BobUI::dec << BobUI::noshowbase;
     }
     dbg << ')';
     return dbg;
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

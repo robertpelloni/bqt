@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "private/qdataurl_p.h"
-#include <QTest>
-#include <QtCore/QDebug>
+#include <BOBUIest>
+#include <BobUICore/QDebug>
 
-using namespace Qt::Literals;
+using namespace BobUI::Literals;
 
 class tst_QDataUrl : public QObject
 {
@@ -18,13 +18,13 @@ private slots:
 
 void tst_QDataUrl::decode_data()
 {
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<bool>("result");
-    QTest::addColumn<QString>("mimeType");
-    QTest::addColumn<QByteArray>("payload");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<bool>("result");
+    BOBUIest::addColumn<QString>("mimeType");
+    BOBUIest::addColumn<QByteArray>("payload");
 
     auto row = [](const char *tag, const char *url, bool success, QString mimeType = {}, QByteArray payload = {}) {
-        QTest::newRow(tag) << url << success <<mimeType << payload;
+        BOBUIest::newRow(tag) << url << success <<mimeType << payload;
     };
 
     row("nonData", "http://test.com", false);
@@ -94,5 +94,5 @@ void tst_QDataUrl::decode()
     QCOMPARE(actualPayload.isNull(), payload.isNull()); // assume nullness is significant
 }
 
-QTEST_MAIN(tst_QDataUrl)
+BOBUIEST_MAIN(tst_QDataUrl)
 #include "tst_qdataurl.moc"

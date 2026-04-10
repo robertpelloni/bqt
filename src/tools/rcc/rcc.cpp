@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (C) 2018 Intel Corporation.
 // Copyright (C) 2024 Christoph Cullmann <christoph@cullmann.io>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "rcc.h"
 
@@ -19,15 +19,15 @@
 
 #include <algorithm>
 
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
 #  include <zstd.h>
 #endif
 
-// Note: A copy of this file is used in Qt Widgets Designer (qttools/src/designer/src/lib/shared/rcc.cpp)
+// Note: A copy of this file is used in BobUI Widgets Designer (bobuitools/src/designer/src/lib/shared/rcc.cpp)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 enum {
     CONSTANT_USENAMESPACE = 1,
@@ -228,9 +228,9 @@ void RCCFileInfo::writeDataInfo(RCCResourceLibrary &lib)
 
     if (lib.formatVersion() >= 2) {
         // last modified time stamp
-        const QDateTime lastModified = m_fileInfo.lastModified(QTimeZone::UTC);
+        const QDateTime lastModified = m_fileInfo.lastModified(BOBUIimeZone::UTC);
         quint64 lastmod = quint64(lastModified.isValid() ? lastModified.toMSecsSinceEpoch() : 0);
-        static const quint64 sourceDate = 1000 * qgetenv("QT_RCC_SOURCE_DATE_OVERRIDE").toULongLong();
+        static const quint64 sourceDate = 1000 * qgetenv("BOBUI_RCC_SOURCE_DATE_OVERRIDE").toULongLong();
         if (sourceDate != 0)
             lastmod = sourceDate;
         static const quint64 sourceDate2 = 1000 * qgetenv("SOURCE_DATE_EPOCH").toULongLong();
@@ -260,14 +260,14 @@ qint64 RCCFileInfo::writeDataBlob(RCCResourceLibrary &lib,
     QByteArray data;
 
     // determine compession algorithm & level early as used in de-duplication keys
-    // this avoid corruption for the two pass variants (QTBUG-137546)
-#if QT_CONFIG(zstd)
+    // this avoid corruption for the two pass variants (BOBUIBUG-137546)
+#if BOBUI_CONFIG(zstd)
     if (m_compressAlgo == RCCResourceLibrary::CompressionAlgorithm::Best && !m_noZstd) {
         m_compressAlgo = RCCResourceLibrary::CompressionAlgorithm::Zstd;
         m_compressLevel = 19;   // not ZSTD_maxCLevel(), as 20+ are experimental
     }
 #endif
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
     if (m_compressAlgo == RCCResourceLibrary::CompressionAlgorithm::Best) {
         m_compressAlgo = RCCResourceLibrary::CompressionAlgorithm::Zlib;
         m_compressLevel = 9;
@@ -310,7 +310,7 @@ qint64 RCCFileInfo::writeDataBlob(RCCResourceLibrary &lib,
 
     // Check if compression is useful for this file
     if (data.size() != 0) {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
         if (m_compressAlgo == RCCResourceLibrary::CompressionAlgorithm::Zstd && !m_noZstd) {
             qsizetype size = data.size();
             size = ZSTD_COMPRESSBOUND(size);
@@ -319,7 +319,7 @@ qint64 RCCFileInfo::writeDataBlob(RCCResourceLibrary &lib,
             if (compressLevel < 0)
                 compressLevel = CONSTANT_ZSTDCOMPRESSLEVEL_CHECK;
 
-            QByteArray compressed(size, Qt::Uninitialized);
+            QByteArray compressed(size, BobUI::Uninitialized);
             char *dst = const_cast<char *>(compressed.constData());
             size_t n = ZSTD_compress(dst, size,
                                      data.constData(), data.size(),
@@ -352,7 +352,7 @@ qint64 RCCFileInfo::writeDataBlob(RCCResourceLibrary &lib,
             }
         }
 #endif
-#ifndef QT_NO_COMPRESS
+#ifndef BOBUI_NO_COMPRESS
         if (m_compressAlgo == RCCResourceLibrary::CompressionAlgorithm::Zlib) {
             QByteArray compressed =
                     qCompress(reinterpret_cast<uchar *>(data.data()), data.size(), m_compressLevel);
@@ -372,7 +372,7 @@ qint64 RCCFileInfo::writeDataBlob(RCCResourceLibrary &lib,
                 lib.m_errorDevice->write(msg.toUtf8());
             }
         }
-#endif // QT_NO_COMPRESS
+#endif // BOBUI_NO_COMPRESS
     }
 
     // some info
@@ -443,7 +443,7 @@ qint64 RCCFileInfo::writeDataName(RCCResourceLibrary &lib, qint64 offset)
     offset += 2;
 
     // write the hash
-    lib.writeNumber4(qt_hash(m_name));
+    lib.writeNumber4(bobui_hash(m_name));
     if (text || pass1)
         lib.writeString("\n  ");
     else if (python)
@@ -525,9 +525,9 @@ Q_DECLARE_TYPEINFO(RCCXmlTag, Q_PRIMITIVE_TYPE);
 
 static bool parseBoolean(QStringView value, QString *errorMsg)
 {
-    if (value.compare("true"_L1, Qt::CaseInsensitive) == 0)
+    if (value.compare("true"_L1, BobUI::CaseInsensitive) == 0)
         return true;
-    if (value.compare("false"_L1, Qt::CaseInsensitive) == 0)
+    if (value.compare("false"_L1, BobUI::CaseInsensitive) == 0)
         return false;
 
     *errorMsg = QString::fromLatin1("Invalid value for boolean attribute: '%1'").arg(value);
@@ -925,13 +925,13 @@ RCCResourceLibrary::CompressionAlgorithm RCCResourceLibrary::parseCompressionAlg
     if (value == "best"_L1)
         return CompressionAlgorithm::Best;
     if (value == "zlib"_L1) {
-#ifdef QT_NO_COMPRESS
+#ifdef BOBUI_NO_COMPRESS
         *errorMsg = "zlib support not compiled in"_L1;
 #else
         return CompressionAlgorithm::Zlib;
 #endif
     } else if (value == "zstd"_L1) {
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
         return CompressionAlgorithm::Zstd;
 #else
         *errorMsg = "Zstandard support not compiled in"_L1;
@@ -957,7 +957,7 @@ int RCCResourceLibrary::parseCompressionLevel(CompressionAlgorithm algo, const Q
                 return c;
             break;
         case CompressionAlgorithm::Zstd:
-#if QT_CONFIG(zstd)
+#if BOBUI_CONFIG(zstd)
             if (c >= 0 && c <= ZSTD_maxCLevel())
                 return c;
 #endif
@@ -1145,7 +1145,7 @@ void RCCResourceLibrary::writeNumber8(quint64 number)
 bool RCCResourceLibrary::writeHeader()
 {
     auto writeCopyright = [this](QByteArrayView prefix) {
-        const QStringList lines = m_legal.split(u'\n', Qt::SkipEmptyParts);
+        const QStringList lines = m_legal.split(u'\n', BobUI::SkipEmptyParts);
         for (const QString &line : lines) {
             write(prefix.data(), prefix.size());
             writeString(line.toUtf8().trimmed());
@@ -1159,8 +1159,8 @@ bool RCCResourceLibrary::writeHeader()
         writeString("** Resource object code\n");
         writeCopyright("** ");
         writeString("**\n");
-        writeString("** Created by: The Resource Compiler for Qt version ");
-        writeByteArray(QT_VERSION_STR);
+        writeString("** Created by: The Resource Compiler for BobUI version ");
+        writeByteArray(BOBUI_VERSION_STR);
         writeString("\n**\n");
         writeString("** WARNING! All changes made in this file will be lost!\n");
         writeString( "*****************************************************************************/\n\n");
@@ -1173,13 +1173,13 @@ bool RCCResourceLibrary::writeHeader()
         writeString("# Resource object code (Python 3)\n");
         writeCopyright("# ");
         writeString("# Created by: object code\n");
-        writeString("# Created by: The Resource Compiler for Qt version ");
-        writeByteArray(QT_VERSION_STR);
+        writeString("# Created by: The Resource Compiler for BobUI version ");
+        writeByteArray(BOBUI_VERSION_STR);
         writeString("\n");
         writeString("# WARNING! All changes made in this file will be lost!\n\n");
         writeString("from PySide");
-        writeByteArray(QByteArray::number(QT_VERSION_MAJOR));
-        writeString(" import QtCore\n\n");
+        writeByteArray(QByteArray::number(BOBUI_VERSION_MAJOR));
+        writeString(" import BobUICore\n\n");
         break;
     case Binary:
         writeString("qres");
@@ -1201,10 +1201,10 @@ bool RCCResourceLibrary::writeDataBlobs()
     Q_ASSERT(m_errorDevice);
     switch (m_format) {
     case C_Code:
-        writeString("static const unsigned char qt_resource_data[] = {\n");
+        writeString("static const unsigned char bobui_resource_data[] = {\n");
         break;
     case Python_Code:
-        writeString("qt_resource_data = b\"\\\n");
+        writeString("bobui_resource_data = b\"\\\n");
         break;
     case Binary:
         m_dataOffset = m_out.size();
@@ -1247,7 +1247,7 @@ bool RCCResourceLibrary::writeDataBlobs()
     case Pass1:
         if (offset < 8)
             offset = 8;
-        writeString("\nstatic const unsigned char qt_resource_data[");
+        writeString("\nstatic const unsigned char bobui_resource_data[");
         writeByteArray(QByteArray::number(offset));
         writeString("] = { 'Q', 'R', 'C', '_', 'D', 'A', 'T', 'A' };\n\n");
         break;
@@ -1262,10 +1262,10 @@ bool RCCResourceLibrary::writeDataNames()
     switch (m_format) {
     case C_Code:
     case Pass1:
-        writeString("static const unsigned char qt_resource_name[] = {\n");
+        writeString("static const unsigned char bobui_resource_name[] = {\n");
         break;
     case Python_Code:
-        writeString("qt_resource_name = b\"\\\n");
+        writeString("bobui_resource_name = b\"\\\n");
         break;
     case Binary:
         m_namesOffset = m_out.size();
@@ -1310,12 +1310,12 @@ bool RCCResourceLibrary::writeDataNames()
     return true;
 }
 
-struct qt_rcc_compare_hash
+struct bobui_rcc_compare_hash
 {
     typedef bool result_type;
     result_type operator()(const RCCFileInfo *left, const RCCFileInfo *right) const
     {
-        return qt_hash(left->m_name) < qt_hash(right->m_name);
+        return bobui_hash(left->m_name) < bobui_hash(right->m_name);
     }
 };
 
@@ -1324,10 +1324,10 @@ bool RCCResourceLibrary::writeDataStructure()
     switch (m_format) {
     case C_Code:
     case Pass1:
-        writeString("static const unsigned char qt_resource_struct[] = {\n");
+        writeString("static const unsigned char bobui_resource_struct[] = {\n");
         break;
     case Python_Code:
-        writeString("qt_resource_struct = b\"\\\n");
+        writeString("bobui_resource_struct = b\"\\\n");
         break;
     case Binary:
         m_treeOffset = m_out.size();
@@ -1350,7 +1350,7 @@ bool RCCResourceLibrary::writeDataStructure()
 
         //sort by hash value for binary lookup
         QList<RCCFileInfo*> m_children = file->m_children.values();
-        std::sort(m_children.begin(), m_children.end(), qt_rcc_compare_hash());
+        std::sort(m_children.begin(), m_children.end(), bobui_rcc_compare_hash());
 
         //write out the actual data now
         for (int i = 0; i < m_children.size(); ++i) {
@@ -1369,7 +1369,7 @@ bool RCCResourceLibrary::writeDataStructure()
 
         //sort by hash value for binary lookup
         QList<RCCFileInfo*> m_children = file->m_children.values();
-        std::sort(m_children.begin(), m_children.end(), qt_rcc_compare_hash());
+        std::sort(m_children.begin(), m_children.end(), bobui_rcc_compare_hash());
 
         //write out the actual data now
         for (int i = 0; i < m_children.size(); ++i) {
@@ -1397,7 +1397,7 @@ bool RCCResourceLibrary::writeDataStructure()
 void RCCResourceLibrary::writeMangleNamespaceFunction(const QByteArray &name)
 {
     if (m_useNameSpace) {
-        writeString("QT_RCC_MANGLE_NAMESPACE(");
+        writeString("BOBUI_RCC_MANGLE_NAMESPACE(");
         writeByteArray(name);
         writeChar(')');
     } else {
@@ -1408,7 +1408,7 @@ void RCCResourceLibrary::writeMangleNamespaceFunction(const QByteArray &name)
 void RCCResourceLibrary::writeAddNamespaceFunction(const QByteArray &name)
 {
     if (m_useNameSpace) {
-        writeString("QT_RCC_PREPEND_NAMESPACE(");
+        writeString("BOBUI_RCC_PREPEND_NAMESPACE(");
         writeByteArray(name);
         writeChar(')');
     } else {
@@ -1419,7 +1419,7 @@ void RCCResourceLibrary::writeAddNamespaceFunction(const QByteArray &name)
 bool RCCResourceLibrary::writeInitializer()
 {
     if (m_format == C_Code || m_format == Pass1) {
-        //write("\nQT_BEGIN_NAMESPACE\n");
+        //write("\nBOBUI_BEGIN_NAMESPACE\n");
         QString initNameStr = m_initName;
         if (!initNameStr.isEmpty()) {
             initNameStr.prepend(u'_');
@@ -1439,22 +1439,22 @@ bool RCCResourceLibrary::writeInitializer()
 
         //init
         if (m_useNameSpace) {
-            writeString("#ifdef QT_NAMESPACE\n"
-                        "#  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name\n"
-                        "#  define QT_RCC_MANGLE_NAMESPACE0(x) x\n"
-                        "#  define QT_RCC_MANGLE_NAMESPACE1(a, b) a##_##b\n"
-                        "#  define QT_RCC_MANGLE_NAMESPACE2(a, b) QT_RCC_MANGLE_NAMESPACE1(a,b)\n"
-                        "#  define QT_RCC_MANGLE_NAMESPACE(name) QT_RCC_MANGLE_NAMESPACE2( \\\n"
-                        "        QT_RCC_MANGLE_NAMESPACE0(name), QT_RCC_MANGLE_NAMESPACE0(QT_NAMESPACE))\n"
+            writeString("#ifdef BOBUI_NAMESPACE\n"
+                        "#  define BOBUI_RCC_PREPEND_NAMESPACE(name) ::BOBUI_NAMESPACE::name\n"
+                        "#  define BOBUI_RCC_MANGLE_NAMESPACE0(x) x\n"
+                        "#  define BOBUI_RCC_MANGLE_NAMESPACE1(a, b) a##_##b\n"
+                        "#  define BOBUI_RCC_MANGLE_NAMESPACE2(a, b) BOBUI_RCC_MANGLE_NAMESPACE1(a,b)\n"
+                        "#  define BOBUI_RCC_MANGLE_NAMESPACE(name) BOBUI_RCC_MANGLE_NAMESPACE2( \\\n"
+                        "        BOBUI_RCC_MANGLE_NAMESPACE0(name), BOBUI_RCC_MANGLE_NAMESPACE0(BOBUI_NAMESPACE))\n"
                         "#else\n"
-                        "#   define QT_RCC_PREPEND_NAMESPACE(name) name\n"
-                        "#   define QT_RCC_MANGLE_NAMESPACE(name) name\n"
+                        "#   define BOBUI_RCC_PREPEND_NAMESPACE(name) name\n"
+                        "#   define BOBUI_RCC_MANGLE_NAMESPACE(name) name\n"
                         "#endif\n\n");
 
-            writeString("#if defined(QT_INLINE_NAMESPACE)\n"
-                        "inline namespace QT_NAMESPACE {\n"
-                        "#elif defined(QT_NAMESPACE)\n"
-                        "namespace QT_NAMESPACE {\n"
+            writeString("#if defined(BOBUI_INLINE_NAMESPACE)\n"
+                        "inline namespace BOBUI_NAMESPACE {\n"
+                        "#elif defined(BOBUI_NAMESPACE)\n"
+                        "namespace BOBUI_NAMESPACE {\n"
                         "#endif\n\n");
         }
 
@@ -1472,15 +1472,15 @@ bool RCCResourceLibrary::writeInitializer()
                 if (m_overallFlags & RCCFileInfo::Compressed) {
                     writeString("static inline unsigned char qResourceFeatureZlib()\n"
                                 "{\n"
-                                "    extern const unsigned char qt_resourceFeatureZlib;\n"
-                                "    return qt_resourceFeatureZlib;\n"
+                                "    extern const unsigned char bobui_resourceFeatureZlib;\n"
+                                "    return bobui_resourceFeatureZlib;\n"
                                 "}\n");
                 }
                 if (m_overallFlags & RCCFileInfo::CompressedZstd) {
                     writeString("static inline unsigned char qResourceFeatureZstd()\n"
                                 "{\n"
-                                "    extern const unsigned char qt_resourceFeatureZstd;\n"
-                                "    return qt_resourceFeatureZstd;\n"
+                                "    extern const unsigned char bobui_resourceFeatureZstd;\n"
+                                "    return bobui_resourceFeatureZstd;\n"
                                 "}\n");
                 }
                 writeString("#else\n");
@@ -1493,7 +1493,7 @@ bool RCCResourceLibrary::writeInitializer()
         }
 
         if (m_useNameSpace)
-            writeString("#ifdef QT_NAMESPACE\n}\n#endif\n\n");
+            writeString("#ifdef BOBUI_NAMESPACE\n}\n#endif\n\n");
 
         QByteArray initResources = "qInitResources";
         initResources += initName;
@@ -1512,8 +1512,8 @@ bool RCCResourceLibrary::writeInitializer()
             writeDecimal(m_formatVersion);
             writeString(";\n    ");
             writeAddNamespaceFunction("qRegisterResourceData");
-            writeString("\n        (version, qt_resource_struct, "
-                        "qt_resource_name, qt_resource_data);\n");
+            writeString("\n        (version, bobui_resource_struct, "
+                        "bobui_resource_name, bobui_resource_data);\n");
         }
         writeString("    return 1;\n");
         writeString("}\n\n");
@@ -1535,7 +1535,7 @@ bool RCCResourceLibrary::writeInitializer()
             writeDecimal(m_formatVersion);
             writeString(";\n    ");
 
-            // ODR-use certain symbols from QtCore if we require optional features
+            // ODR-use certain symbols from BobUICore if we require optional features
             if (m_overallFlags & RCCFileInfo::Compressed) {
                 writeString("version += ");
                 writeAddNamespaceFunction("qResourceFeatureZlib()");
@@ -1548,8 +1548,8 @@ bool RCCResourceLibrary::writeInitializer()
             }
 
             writeAddNamespaceFunction("qUnregisterResourceData");
-            writeString("\n       (version, qt_resource_struct, "
-                      "qt_resource_name, qt_resource_data);\n");
+            writeString("\n       (version, bobui_resource_struct, "
+                      "bobui_resource_name, bobui_resource_data);\n");
         }
         writeString("    return 1;\n");
         writeString("}\n\n");
@@ -1564,8 +1564,8 @@ bool RCCResourceLibrary::writeInitializer()
                     "   struct initializer {\n");
 
         if (m_useNameSpace) {
-            writeByteArray("       initializer() { QT_RCC_MANGLE_NAMESPACE(" + initResources + ")(); }\n"
-                           "       ~initializer() { QT_RCC_MANGLE_NAMESPACE(" + cleanResources + ")(); }\n");
+            writeByteArray("       initializer() { BOBUI_RCC_MANGLE_NAMESPACE(" + initResources + ")(); }\n"
+                           "       ~initializer() { BOBUI_RCC_MANGLE_NAMESPACE(" + cleanResources + ")(); }\n");
         } else {
             writeByteArray("       initializer() { " + initResources + "(); }\n"
                            "       ~initializer() { " + cleanResources + "(); }\n");
@@ -1609,16 +1609,16 @@ bool RCCResourceLibrary::writeInitializer()
         }
     } else if (m_format == Python_Code) {
         writeString("def qInitResources():\n");
-        writeString("    QtCore.qRegisterResourceData(0x");
+        writeString("    BobUICore.qRegisterResourceData(0x");
         write2HexDigits(m_formatVersion);
-        writeString(", qt_resource_struct, qt_resource_name, qt_resource_data)\n\n");
+        writeString(", bobui_resource_struct, bobui_resource_name, bobui_resource_data)\n\n");
         writeString("def qCleanupResources():\n");
-        writeString("    QtCore.qUnregisterResourceData(0x");
+        writeString("    BobUICore.qUnregisterResourceData(0x");
         write2HexDigits(m_formatVersion);
-        writeString(", qt_resource_struct, qt_resource_name, qt_resource_data)\n\n");
+        writeString(", bobui_resource_struct, bobui_resource_name, bobui_resource_data)\n\n");
         writeString("qInitResources()\n");
     }
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef Q_NATIVE_INPUT
 #define Q_NATIVE_INPUT
 
-#include <QtCore>
+#include <BobUICore>
 
-QT_BEGIN_NAMESPACE
-namespace Qt {
+BOBUI_BEGIN_NAMESPACE
+namespace BobUI {
 namespace Native {
     enum Status {Success, Failure};
 }}
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 // ----------------------------------------------------------------------------
 // Declare a set of native events that can be used to communicate with
@@ -23,11 +23,11 @@ class QNativeEvent
 public:
     static const int eventId = 1;
 
-    QNativeEvent(Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeEvent(BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const = 0;
-    Qt::KeyboardModifiers modifiers; // Yields for mouse events too.
+    BobUI::KeyboardModifiers modifiers; // Yields for mouse events too.
 };
 
 class QNativeMouseEvent : public QNativeEvent {
@@ -35,7 +35,7 @@ public:
     static const int eventId = 2;
 
     QNativeMouseEvent() {}
-    QNativeMouseEvent(QPoint globalPos, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeMouseEvent(QPoint globalPos, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeMouseEvent() {}
     virtual int id() const { return eventId; }
 
@@ -47,7 +47,7 @@ public:
     static const int eventId = 4;
 
     QNativeMouseMoveEvent() {}
-    QNativeMouseMoveEvent(QPoint globalPos, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeMouseMoveEvent(QPoint globalPos, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeMouseMoveEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
@@ -58,12 +58,12 @@ public:
     static const int eventId = 8;
 
     QNativeMouseButtonEvent() {}
-    QNativeMouseButtonEvent(QPoint globalPos, Qt::MouseButton button, int clickCount, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeMouseButtonEvent(QPoint globalPos, BobUI::MouseButton button, int clickCount, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeMouseButtonEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
 
-    Qt::MouseButton button;
+    BobUI::MouseButton button;
     int clickCount;
 };
 
@@ -72,7 +72,7 @@ public:
     static const int eventId = 16;
 
     QNativeMouseDragEvent() {}
-    QNativeMouseDragEvent(QPoint globalPos, Qt::MouseButton button, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeMouseDragEvent(QPoint globalPos, BobUI::MouseButton button, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeMouseDragEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
@@ -83,7 +83,7 @@ public:
     static const int eventId = 32;
 
     QNativeMouseWheelEvent() {}
-    QNativeMouseWheelEvent(QPoint globalPos, int delta, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    QNativeMouseWheelEvent(QPoint globalPos, int delta, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
     virtual ~QNativeMouseWheelEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
@@ -96,8 +96,8 @@ class QNativeKeyEvent : public QNativeEvent {
     static const int eventId = 64;
 
     QNativeKeyEvent() {}
-    QNativeKeyEvent(int nativeKeyCode, bool press, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
-    QNativeKeyEvent(int nativeKeyCode, bool press, QChar character, Qt::KeyboardModifiers modifiers);
+    QNativeKeyEvent(int nativeKeyCode, bool press, BobUI::KeyboardModifiers modifiers = BobUI::NoModifier);
+    QNativeKeyEvent(int nativeKeyCode, bool press, QChar character, BobUI::KeyboardModifiers modifiers);
     virtual ~QNativeKeyEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
@@ -106,7 +106,7 @@ class QNativeKeyEvent : public QNativeEvent {
     bool press;
     QChar character;
 
-    // Some Qt to Native mappings:
+    // Some BobUI to Native mappings:
     static int Key_A;
     static int Key_B;
     static int Key_C;
@@ -120,7 +120,7 @@ class QNativeModifierEvent : public QNativeEvent {
 public:
     static const int eventId = 128;
 
-    QNativeModifierEvent(Qt::KeyboardModifiers modifiers = Qt::NoModifier, int nativeKeyCode = 0);
+    QNativeModifierEvent(BobUI::KeyboardModifiers modifiers = BobUI::NoModifier, int nativeKeyCode = 0);
     virtual ~QNativeModifierEvent() {}
     virtual int id() const { return eventId; }
     virtual QString toString() const;
@@ -135,21 +135,21 @@ public:
 QDebug operator<<(QDebug d, QNativeEvent *e);
 QDebug operator<<(QDebug d, const QNativeEvent &e);
 
-QTextStream &operator<<(QTextStream &s, QNativeEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeMouseEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeMouseMoveEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeMouseButtonEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeMouseDragEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeMouseWheelEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeKeyEvent *e);
-QTextStream &operator<<(QTextStream &s, QNativeModifierEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseMoveEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseButtonEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseDragEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeMouseWheelEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeKeyEvent *e);
+BOBUIextStream &operator<<(BOBUIextStream &s, QNativeModifierEvent *e);
 
-QTextStream &operator>>(QTextStream &s, QNativeMouseMoveEvent *e);
-QTextStream &operator>>(QTextStream &s, QNativeMouseButtonEvent *e);
-QTextStream &operator>>(QTextStream &s, QNativeMouseDragEvent *e);
-QTextStream &operator>>(QTextStream &s, QNativeMouseWheelEvent *e);
-QTextStream &operator>>(QTextStream &s, QNativeKeyEvent *e);
-QTextStream &operator>>(QTextStream &s, QNativeModifierEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseMoveEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseButtonEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseDragEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeMouseWheelEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeKeyEvent *e);
+BOBUIextStream &operator>>(BOBUIextStream &s, QNativeModifierEvent *e);
 
 // ----------------------------------------------------------------------------
 // Declare the main class that is supposed to be sub-classed by components
@@ -175,18 +175,18 @@ class QNativeInput
     virtual void nativeModifierEvent(QNativeModifierEvent *) {}
 
     // The following methods will differ in implementation from OS to OS:
-    static Qt::Native::Status sendNativeMouseButtonEvent(const QNativeMouseButtonEvent &event);
-    static Qt::Native::Status sendNativeMouseMoveEvent(const QNativeMouseMoveEvent &event);
-    static Qt::Native::Status sendNativeMouseDragEvent(const QNativeMouseDragEvent &event);
-    static Qt::Native::Status sendNativeMouseWheelEvent(const QNativeMouseWheelEvent &event);
-    static Qt::Native::Status sendNativeKeyEvent(const QNativeKeyEvent &event);
-    static Qt::Native::Status sendNativeModifierEvent(const QNativeModifierEvent &event);
+    static BobUI::Native::Status sendNativeMouseButtonEvent(const QNativeMouseButtonEvent &event);
+    static BobUI::Native::Status sendNativeMouseMoveEvent(const QNativeMouseMoveEvent &event);
+    static BobUI::Native::Status sendNativeMouseDragEvent(const QNativeMouseDragEvent &event);
+    static BobUI::Native::Status sendNativeMouseWheelEvent(const QNativeMouseWheelEvent &event);
+    static BobUI::Native::Status sendNativeKeyEvent(const QNativeKeyEvent &event);
+    static BobUI::Native::Status sendNativeModifierEvent(const QNativeModifierEvent &event);
     // sendNativeEvent will NOT differ from OS to OS.
-    static Qt::Native::Status sendNativeEvent(const QNativeEvent &event);
+    static BobUI::Native::Status sendNativeEvent(const QNativeEvent &event);
 
     // The following methods will differ in implementation from OS to OS:
-    Qt::Native::Status subscribeForNativeEvents();
-    Qt::Native::Status unsubscribeForNativeEvents();
+    BobUI::Native::Status subscribeForNativeEvents();
+    BobUI::Native::Status unsubscribeForNativeEvents();
 };
 
 #endif // Q_NATIVE_INPUT

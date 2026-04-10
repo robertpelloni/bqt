@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mandelbrotwidget.h"
 #include "renderthread.h"
@@ -9,7 +9,7 @@
 #include <QCommandLineOption>
 #include <QDebug>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 //! [0]
 int main(int argc, char *argv[])
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(u"Qt Mandelbrot Example"_s);
+    parser.setApplicationDescription(u"BobUI Mandelbrot Example"_s);
     parser.addHelpOption();
     parser.addVersionOption();
     QCommandLineOption passesOption(u"passes"_s, u"Number of passes (1-8)"_s, u"passes"_s);
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     }
 
     MandelbrotWidget widget;
-    widget.grabGesture(Qt::PinchGesture);
+    widget.grabGesture(BobUI::PinchGesture);
     widget.show();
     return app.exec();
 }

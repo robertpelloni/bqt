@@ -1,0 +1,43 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-add-binary-resources.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_add_binary_resources
+\keyword bobui6_add_binary_resources
+
+\summary {Creates an RCC file from a list of BobUI resource files.}
+
+\include cmake-find-package-core.qdocinc
+
+\cmakecommandsince 5.10
+
+\section1 Synopsis
+
+\badcode
+bobui_add_binary_resources(target file1.qrc [file2.qrc ...]
+                        [DESTINATION ...]
+                        [OPTIONS ...])
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_add_binary_resources()
+
+\section1 Description
+
+Adds a custom \c target that compiles BobUI resource files into a binary \c{.rcc}
+file.
+
+\section1 Arguments
+
+\c{DESTINATION} sets the path of the generated \c{.rcc} file. The default is
+\c{${CMAKE_CURRENT_BINARY_DIR}/${target}.rcc}.
+
+You can set additional \c{OPTIONS} that should be added to the \c{rcc} calls.
+You can find possible options in the \l{rcc}{rcc documentation}.
+
+\section1 Examples
+
+\snippet cmake-macros/examples.cmake bobui_add_binary_resources
+*/

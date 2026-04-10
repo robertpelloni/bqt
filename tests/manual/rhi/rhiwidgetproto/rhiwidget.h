@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef RHIWIDGET_H
 #define RHIWIDGET_H
@@ -16,7 +16,7 @@ class QRhiWidget : public QWidget
     Q_PROPERTY(QSize explicitSize READ explicitSize WRITE setExplicitSize NOTIFY explicitSizeChanged)
 
 public:
-    QRhiWidget(QWidget *parent = nullptr, Qt::WindowFlags f = {});
+    QRhiWidget(QWidget *parent = nullptr, BobUI::WindowFlags f = {});
     ~QRhiWidget();
 
     enum Api {

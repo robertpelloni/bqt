@@ -1,23 +1,23 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Stephen Kelly <stephen.kelly@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QLibraryInfo>
 #include <QProcess>
 
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/private/dbus_minimal_p.h>
+#include <BobUIDBus/QDBusConnection>
+#include <BobUIDBus/private/dbus_minimal_p.h>
 
 #include "test1.h"
 #include "test2.h"
 
 // in qdbusxmlgenerator.cpp
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 extern Q_DBUS_EXPORT QString qDBusGenerateMetaObjectXml(QString interface,
                                                         const QMetaObject *mo,
                                                         const QMetaObject *base,
                                                         int flags);
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 static QString addXmlHeader(const QString &input)
 {
@@ -34,8 +34,8 @@ class tst_qdbuscpp2xml : public QObject
 private slots:
     void qdbuscpp2xml_data();
     void qdbuscpp2xml();
-    void qtdbusTypes_data();
-    void qtdbusTypes();
+    void bobuidbusTypes_data();
+    void bobuidbusTypes();
 
     void initTestCase();
     void cleanupTestCase();
@@ -57,19 +57,19 @@ void tst_qdbuscpp2xml::cleanupTestCase()
 
 void tst_qdbuscpp2xml::qdbuscpp2xml_data()
 {
-    QTest::addColumn<QString>("inputfile");
-    QTest::addColumn<int>("flags");
+    BOBUIest::addColumn<QString>("inputfile");
+    BOBUIest::addColumn<int>("flags");
 
     QBitArray doneFlags(int(QDBusConnection::ExportAllContents) + 1);
     for (int flag = 0x10; flag < QDBusConnection::ExportScriptableContents; flag += 0x10) {
         for (const auto &testFile : m_tests.keys()) {
-            QTest::newRow("xmlgenerator-" + QByteArray::number(flag) + "-" + qUtf8Printable(testFile)) << testFile << flag;
+            BOBUIest::newRow("xmlgenerator-" + QByteArray::number(flag) + "-" + qUtf8Printable(testFile)) << testFile << flag;
             doneFlags.setBit(flag);
             for (int mask = QDBusConnection::ExportAllSlots; mask <= QDBusConnection::ExportAllContents; mask += 0x110) {
                 int flags = flag | mask;
                 if (doneFlags.testBit(flags))
                     continue;
-                QTest::newRow("xmlgenerator-" + QByteArray::number(flags) + "-" + qUtf8Printable(testFile)) << testFile << flags;
+                BOBUIest::newRow("xmlgenerator-" + QByteArray::number(flags) + "-" + qUtf8Printable(testFile)) << testFile << flags;
                 doneFlags.setBit(flags);
             }
         }
@@ -145,17 +145,17 @@ void tst_qdbuscpp2xml::qdbuscpp2xml()
     QCOMPARE(out, expected);
 }
 
-void tst_qdbuscpp2xml::qtdbusTypes_data()
+void tst_qdbuscpp2xml::bobuidbusTypes_data()
 {
-    QTest::addColumn<QByteArray>("type");
-    QTest::addColumn<QByteArray>("expectedSignature");
+    BOBUIest::addColumn<QByteArray>("type");
+    BOBUIest::addColumn<QByteArray>("expectedSignature");
     auto addRow = [](QByteArray type, QByteArray signature) {
-        QTest::addRow("%s", type.constData()) << type << signature;
+        BOBUIest::addRow("%s", type.constData()) << type << signature;
 
         // lists and vectors
-        QTest::addRow("QList-%s", type.constData())
+        BOBUIest::addRow("QList-%s", type.constData())
                 << "QList<" + type + '>' << DBUS_TYPE_ARRAY + signature;
-        QTest::addRow("QVector-%s", type.constData())
+        BOBUIest::addRow("QVector-%s", type.constData())
                 << "QVector<" + type + '>' << DBUS_TYPE_ARRAY + signature;
     };
     addRow("QDBusVariant", DBUS_TYPE_VARIANT_AS_STRING);
@@ -164,16 +164,16 @@ void tst_qdbuscpp2xml::qtdbusTypes_data()
     addRow("QDBusUnixFileDescriptor", DBUS_TYPE_UNIX_FD_AS_STRING);
 
     // QDBusMessage is not a type, but must be recognized
-    QTest::newRow("QDBusMessage") << QByteArray("QDBusMessage") << QByteArray();
+    BOBUIest::newRow("QDBusMessage") << QByteArray("QDBusMessage") << QByteArray();
 }
 
-void tst_qdbuscpp2xml::qtdbusTypes()
+void tst_qdbuscpp2xml::bobuidbusTypes()
 {
     static const char cppSkeleton[] = R"(
 class QDBusVariantBugRepro : public QDBusAbstractAdaptor
 {
    Q_OBJECT
-   Q_CLASSINFO("D-Bus Interface", "org.qtproject.test")
+   Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.test")
 public Q_SLOTS:
    void method(const @TYPE@ &);
 };)";
@@ -216,6 +216,6 @@ public Q_SLOTS:
     }
 }
 
-QTEST_APPLESS_MAIN(tst_qdbuscpp2xml)
+BOBUIEST_APPLESS_MAIN(tst_qdbuscpp2xml)
 
 #include "tst_qdbuscpp2xml.moc"

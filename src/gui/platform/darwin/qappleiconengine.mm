@@ -1,25 +1,25 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qappleiconengine_p.h"
 
 #if defined(Q_OS_MACOS)
 # include <AppKit/AppKit.h>
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
 # include <UIKit/UIKit.h>
 #endif
 
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qpalette.h>
-#include <QtGui/qstylehints.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qpalette.h>
+#include <BobUIGui/qstylehints.h>
 
-#include <QtGui/private/qcoregraphics_p.h>
-#include <QtGui/private/qicon_p.h>
+#include <BobUIGui/private/qcoregraphics_p.h>
+#include <BobUIGui/private/qicon_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 auto *loadImage(const QString &iconName)
@@ -284,7 +284,7 @@ auto *loadImage(const QString &iconName)
     NSString *systemIconName = it != std::end(iconMap) ? it->second : iconName.toNSString();
 #if defined(Q_OS_MACOS)
     return [NSImage imageWithSystemSymbolName:systemIconName accessibilityDescription:nil];
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
     return [UIImage systemImageNamed:systemIconName];
 #endif
 }
@@ -386,7 +386,7 @@ auto *configuredImage(const NSImage *image, const QColor &color)
 
     return [image imageWithSymbolConfiguration:config];
 }
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
 auto *configuredImage(const UIImage *image, const QColor &color)
 {
     auto *config = [UIImageSymbolConfiguration configurationWithPointSize:48
@@ -415,7 +415,7 @@ QPixmap QAppleIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIco
 
         pixmap = QPixmap(size * scale);
         pixmap.setDevicePixelRatio(scale);
-        pixmap.fill(Qt::transparent);
+        pixmap.fill(BobUI::transparent);
 
         if (!pixmap.isNull()) {
             QPainter painter(&pixmap);
@@ -463,13 +463,13 @@ void QAppleIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode m
 
     [image drawInRect:iconRect fromRect:sourceRect operation:NSCompositingOperationSourceOver
         fraction:1.0 respectFlipped:YES hints:@{
-        NSImageHintUserInterfaceLayoutDirection: painter->layoutDirection() == Qt::RightToLeft ?
+        NSImageHintUserInterfaceLayoutDirection: painter->layoutDirection() == BobUI::RightToLeft ?
             @(NSUserInterfaceLayoutDirectionRightToLeft) : @(NSUserInterfaceLayoutDirectionLeftToRight)
     }];
     [NSGraphicsContext restoreGraphicsState];
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
     auto *layoutDirectionTrait = [UITraitCollection traitCollectionWithLayoutDirection:
-        painter->layoutDirection() == Qt::RightToLeft ?
+        painter->layoutDirection() == BobUI::RightToLeft ?
             UITraitEnvironmentLayoutDirectionRightToLeft :
             UITraitEnvironmentLayoutDirectionLeftToRight];
 
@@ -492,4 +492,4 @@ void QAppleIconEngine::virtual_hook(int hookIdentifier, void *data)
         QIconEngine::virtual_hook(hookIdentifier, data);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

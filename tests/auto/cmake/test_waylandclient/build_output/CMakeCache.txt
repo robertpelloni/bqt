@@ -194,8 +194,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
-//The directory containing a CMake configuration file for Qt6WaylandClientPrivate.
-Qt6WaylandClientPrivate_DIR:PATH=Qt6WaylandClientPrivate_DIR-NOTFOUND
+//The directory containing a CMake configuration file for BobUI6WaylandClientPrivate.
+BobUI6WaylandClientPrivate_DIR:PATH=BobUI6WaylandClientPrivate_DIR-NOTFOUND
 
 //Value Computed by CMake
 test_plugins_BINARY_DIR:STATIC=C:/Users/hyper/workspace/bobui/tests/auto/cmake/test_waylandclient/build_output

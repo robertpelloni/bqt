@@ -1,5 +1,5 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "arrays_of_unknown_bounds.h"
 
@@ -10,13 +10,13 @@
 #include <QVarLengthArray>
 #include <QList>
 #include <private/qcomparisontesthelper_p.h>
-#if QT_CONFIG(cpp_winrt)
-#  include <private/qt_winrtbase_p.h>
+#if BOBUI_CONFIG(cpp_winrt)
+#  include <private/bobui_winrtbase_p.h>
 #endif
 #include <private/qxmlstream_p.h>
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <string>
 #include <string_view>
@@ -109,7 +109,7 @@ static_assert(CanConvert<std::array<char16_t, 123>>::value);
 static_assert(!CanConvert<std::deque<char16_t>>::value);
 static_assert(!CanConvert<std::list<char16_t>>::value);
 
-static_assert(CanConvert<QtPrivate::XmlStringRef>::value);
+static_assert(CanConvert<BobUIPrivate::XmlStringRef>::value);
 
 //
 // wchar_t
@@ -150,10 +150,10 @@ static_assert(CanConvert<std::array<wchar_t, 123>>::value == CanConvertFromWChar
 static_assert(!CanConvert<std::deque<wchar_t>>::value);
 static_assert(!CanConvert<std::list<wchar_t>>::value);
 
-#if QT_CONFIG(cpp_winrt)
+#if BOBUI_CONFIG(cpp_winrt)
 
 //
-// winrt::hstring (QTBUG-111886)
+// winrt::hstring (BOBUIBUG-111886)
 //
 
 static_assert(CanConvert<      winrt::hstring >::value);
@@ -161,7 +161,7 @@ static_assert(CanConvert<const winrt::hstring >::value);
 static_assert(CanConvert<      winrt::hstring&>::value);
 static_assert(CanConvert<const winrt::hstring&>::value);
 
-#endif // QT_CONFIG(cpp_winrt)
+#endif // BOBUI_CONFIG(cpp_winrt)
 
 class tst_QStringView : public QObject
 {
@@ -389,7 +389,7 @@ void tst_QStringView::constExpr() const
         static_assert(sv3.isEmpty());
         static_assert(sv3.size() == 0);
     }
-#if !defined(Q_CC_GNU_ONLY) || !defined(QT_SANITIZE_UNDEFINED)
+#if !defined(Q_CC_GNU_ONLY) || !defined(BOBUI_SANITIZE_UNDEFINED)
     // Below checks are disabled because of a compilation issue with GCC and
     // -fsanitize=undefined. See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=71962.
     {
@@ -425,7 +425,7 @@ void tst_QStringView::basics() const
     QVERIFY(sv1.isEmpty());
 
     QStringView sv2;
-    QT_TEST_ALL_COMPARISON_OPS(sv2, sv1, Qt::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(sv2, sv1, BobUI::strong_ordering::equal);
 }
 
 void tst_QStringView::literals() const
@@ -580,22 +580,22 @@ void tst_QStringView::fromQString() const
 void tst_QStringView::tokenize_data() const
 {
     // copied from tst_QString
-    QTest::addColumn<QString>("str");
-    QTest::addColumn<QString>("sep");
-    QTest::addColumn<QStringList>("result");
+    BOBUIest::addColumn<QString>("str");
+    BOBUIest::addColumn<QString>("sep");
+    BOBUIest::addColumn<QStringList>("result");
 
-    QTest::newRow("1") << "a,b,c" << "," << (QStringList() << "a" << "b" << "c");
-    QTest::newRow("2") << QString("-rw-r--r--  1 0  0  519240 Jul  9  2002 bigfile")
+    BOBUIest::newRow("1") << "a,b,c" << "," << (QStringList() << "a" << "b" << "c");
+    BOBUIest::newRow("2") << QString("-rw-r--r--  1 0  0  519240 Jul  9  2002 bigfile")
                        << " "
                        << (QStringList() << "-rw-r--r--" << "" << "1" << "0" << "" << "0" << ""
                                          << "519240" << "Jul" << "" << "9" << "" << "2002"
                                          << "bigfile");
-    QTest::newRow("one-empty") << "" << " " << (QStringList() << "");
-    QTest::newRow("two-empty") << " " << " " << (QStringList() << "" << "");
-    QTest::newRow("three-empty") << "  " << " " << (QStringList() << "" << "" << "");
+    BOBUIest::newRow("one-empty") << "" << " " << (QStringList() << "");
+    BOBUIest::newRow("two-empty") << " " << " " << (QStringList() << "" << "");
+    BOBUIest::newRow("three-empty") << "  " << " " << (QStringList() << "" << "" << "");
 
-    QTest::newRow("all-empty") << "" << "" << (QStringList() << "" << "");
-    QTest::newRow("sep-empty") << "abc" << "" << (QStringList() << "" << "a" << "b" << "c" << "");
+    BOBUIest::newRow("all-empty") << "" << "" << (QStringList() << "" << "");
+    BOBUIest::newRow("sep-empty") << "abc" << "" << (QStringList() << "" << "a" << "b" << "c" << "");
 }
 
 void tst_QStringView::tokenize() const
@@ -820,9 +820,9 @@ void tst_QStringView::conversion_tests(String string) const
         // check iterators:
 
         QVERIFY(std::equal(help::cbegin(string), help::cend(string),
-                           QT_MAKE_CHECKED_ARRAY_ITERATOR(sv.cbegin(), sv.size())));
+                           BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(sv.cbegin(), sv.size())));
         QVERIFY(std::equal(help::cbegin(string), help::cend(string),
-                           QT_MAKE_CHECKED_ARRAY_ITERATOR(sv.begin(), sv.size())));
+                           BOBUI_MAKE_CHECKED_ARRAY_ITERATOR(sv.begin(), sv.size())));
         QVERIFY(std::equal(help::crbegin(string), help::crend(string),
                            sv.crbegin()));
         QVERIFY(std::equal(help::crbegin(string), help::crend(string),
@@ -885,12 +885,12 @@ void tst_QStringView::comparison()
     QVERIFY(aa < bb);
     QVERIFY(bb > aa);
 
-    QT_TEST_ALL_COMPARISON_OPS(aa, aa, Qt::strong_ordering::equal);
-    QT_TEST_ALL_COMPARISON_OPS(aa, bb, Qt::strong_ordering::less);
+    BOBUI_TEST_ALL_COMPARISON_OPS(aa, aa, BobUI::strong_ordering::equal);
+    BOBUI_TEST_ALL_COMPARISON_OPS(aa, bb, BobUI::strong_ordering::less);
 
     QCOMPARE(aa.compare(aa), 0);
     QVERIFY(aa.compare(upperAa) != 0);
-    QCOMPARE(aa.compare(upperAa, Qt::CaseInsensitive), 0);
+    QCOMPARE(aa.compare(upperAa, BobUI::CaseInsensitive), 0);
     QVERIFY(aa.compare(bb) < 0);
     QVERIFY(bb.compare(aa) > 0);
 }
@@ -979,7 +979,7 @@ void tst_QStringView::std_stringview_conversion()
 
 void tst_QStringView::userDefinedLiterals()
 {
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     auto sv = u"test"_sv;
     static_assert(std::is_same_v<decltype(sv), QStringView>);
 
@@ -999,5 +999,5 @@ void tst_QStringView::userDefinedLiterals()
     QCOMPARE(csv, "constexpr test");
 }
 
-QTEST_APPLESS_MAIN(tst_QStringView)
+BOBUIEST_APPLESS_MAIN(tst_QStringView)
 #include "tst_qstringview.moc"

@@ -1,25 +1,25 @@
-// Copyright (C) 2017 The Qt Company Ltd.
+// Copyright (C) 2017 The BobUI Company Ltd.
 // Copyright (C) 2016 Pelagicore AG
 // Copyright (C) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qkmsdevice_p.h"
 
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtCore/QFile>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QJsonDocument>
+#include <BobUICore/QJsonObject>
+#include <BobUICore/QJsonArray>
+#include <BobUICore/QFile>
+#include <BobUICore/QLoggingCategory>
 
 #include <errno.h>
 
 #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(qLcKmsDebug, "qt.qpa.eglfs.kms")
+Q_STATIC_LOGGING_CATEGORY(qLcKmsDebug, "bobui.qpa.eglfs.kms")
 
 enum OutputConfiguration {
     OutputConfigOff,
@@ -350,12 +350,12 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
     }
 
     // physical size from connector < config values < env vars
-    int pwidth = qEnvironmentVariableIntValue("QT_QPA_EGLFS_PHYSICAL_WIDTH");
+    int pwidth = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_PHYSICAL_WIDTH");
     if (!pwidth)
-        pwidth = qEnvironmentVariableIntValue("QT_QPA_PHYSICAL_WIDTH");
-    int pheight = qEnvironmentVariableIntValue("QT_QPA_EGLFS_PHYSICAL_HEIGHT");
+        pwidth = qEnvironmentVariableIntValue("BOBUI_QPA_PHYSICAL_WIDTH");
+    int pheight = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_PHYSICAL_HEIGHT");
     if (!pheight)
-        pheight = qEnvironmentVariableIntValue("QT_QPA_PHYSICAL_HEIGHT");
+        pheight = qEnvironmentVariableIntValue("BOBUI_QPA_PHYSICAL_HEIGHT");
     QSizeF physSize(pwidth, pheight);
     if (physSize.isEmpty()) {
         physSize = QSize(userConnectorConfig.value(QStringLiteral("physicalWidth")).toInt(),
@@ -399,7 +399,7 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
         drmFormat = DRM_FORMAT_XRGB8888;
         drmFormatExplicit = false;
     }
-    qCDebug(qLcKmsDebug) << "Format is" << Qt::hex << drmFormat << Qt::dec << "requested_by_user =" << drmFormatExplicit
+    qCDebug(qLcKmsDebug) << "Format is" << BobUI::hex << drmFormat << BobUI::dec << "requested_by_user =" << drmFormatExplicit
                          << "for output" << connectorName;
 
     const QString cloneSource = userConnectorConfig.value(QStringLiteral("clones")).toString();
@@ -411,7 +411,7 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
     const QByteArray fbsize = userConnectorConfig.value(QStringLiteral("size")).toByteArray().toLower();
     if (!fbsize.isEmpty()) {
         if (sscanf(fbsize.constData(), "%dx%d", &framebufferSize.rwidth(), &framebufferSize.rheight()) == 2) {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
             if (hasAtomicSupport())
                 framebufferSizeSet = true;
 #endif
@@ -450,7 +450,7 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
     output.clone_source = cloneSource;
     output.size = framebufferSize;
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     if (drmModeCreatePropertyBlob(m_dri_fd, &modes[selected_mode], sizeof(drmModeModeInfo),
                                   &output.mode_blob_id) != 0) {
         qCDebug(qLcKmsDebug) << "Failed to create mode blob for mode" << selected_mode;
@@ -480,7 +480,7 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
     // may want to target a pre-configured plane. It is probably useless for
     // eglfs_kms and others. Do not confuse with generic plane support (available_planes).
     bool ok;
-    int idx = qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_PLANE_INDEX", &ok);
+    int idx = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_PLANE_INDEX", &ok);
     if (ok) {
         drmModePlaneRes *planeResources = drmModeGetPlaneResources(m_dri_fd);
         if (planeResources) {
@@ -509,8 +509,8 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
 
     // A more useful version: allows specifying "crtc_id,plane_id:crtc_id,plane_id:..."
     // in order to allow overriding the plane used for a given crtc.
-    if (qEnvironmentVariableIsSet("QT_QPA_EGLFS_KMS_PLANES_FOR_CRTCS")) {
-        const QString val = qEnvironmentVariable("QT_QPA_EGLFS_KMS_PLANES_FOR_CRTCS");
+    if (qEnvironmentVariableIsSet("BOBUI_QPA_EGLFS_KMS_PLANES_FOR_CRTCS")) {
+        const QString val = qEnvironmentVariable("BOBUI_QPA_EGLFS_KMS_PLANES_FOR_CRTCS");
         qCDebug(qLcKmsDebug, "crtc_id:plane_id override list: %s", qPrintable(val));
         const QStringList crtcPlanePairs = val.split(u':');
         for (const QString &crtcPlanePair : crtcPlanePairs) {
@@ -532,7 +532,7 @@ bool QKmsDevice::createScreenInfoForConnector(drmModeResPtr resources,
                 output.eglfs_plane->id, connectorName.constData(), output.crtc_id);
     }
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     if (hasAtomicSupport() && !output.eglfs_plane) {
         qCDebug(qLcKmsDebug, "No plane associated with output %s (crtc id %u) and atomic modesetting is enabled. This is bad.",
                 connectorName.constData(), output.crtc_id);
@@ -597,7 +597,7 @@ QKmsDevice::QKmsDevice(QKmsScreenConfig *screenConfig, const QString &path)
 
 QKmsDevice::~QKmsDevice()
 {
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     threadLocalAtomicReset();
 #endif
 }
@@ -849,12 +849,12 @@ void QKmsDevice::createScreens()
 
     drmSetClientCap(m_dri_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
     // check atomic support
     m_has_atomic_support = !drmSetClientCap(m_dri_fd, DRM_CLIENT_CAP_ATOMIC, 1);
     if (m_has_atomic_support) {
         qCDebug(qLcKmsDebug, "Atomic reported as supported");
-        if (qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_ATOMIC")) {
+        if (qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_ATOMIC")) {
             qCDebug(qLcKmsDebug, "Atomic enabled");
         } else {
             qCDebug(qLcKmsDebug, "Atomic disabled");
@@ -874,7 +874,7 @@ void QKmsDevice::createScreens()
     QList<uint32_t> newConnects;
     int wantedConnectorIndex = -1;
     bool ok;
-    int idx = qEnvironmentVariableIntValue("QT_QPA_EGLFS_KMS_CONNECTOR_INDEX", &ok);
+    int idx = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_KMS_CONNECTOR_INDEX", &ok);
     if (ok) {
         if (idx >= 0 && idx < resources->count_connectors)
             wantedConnectorIndex = idx;
@@ -910,10 +910,10 @@ void QKmsDevice::createScreens()
 
     drmModeFreeResources(resources);
 
-    if (!qEnvironmentVariable("QT_QPA_EGLFS_HOTPLUG_ENABLED").isEmpty()
+    if (!qEnvironmentVariable("BOBUI_QPA_EGLFS_HOTPLUG_ENABLED").isEmpty()
         && newConnects.empty() && m_headlessScreen == nullptr) {
-        qCDebug(qLcKmsDebug) << "'QT_QPA_EGLFS_HOTPLUG_ENABLED' was set and no screen was connected/found during start-up."
-                             << "In order for Qt to operate properly a qt_headless screen will be created."
+        qCDebug(qLcKmsDebug) << "'BOBUI_QPA_EGLFS_HOTPLUG_ENABLED' was set and no screen was connected/found during start-up."
+                             << "In order for BobUI to operate properly a bobui_headless screen will be created."
                              << "It will be automatically removed as soon as the first screen is connected";
         // Create headless screen before unregistering screens to avoid having no screens
         m_headlessScreen = createHeadlessScreen();
@@ -1274,7 +1274,7 @@ bool QKmsDevice::hasAtomicSupport()
     return m_has_atomic_support;
 }
 
-#if QT_CONFIG(drm_atomic)
+#if BOBUI_CONFIG(drm_atomic)
 drmModeAtomicReq *QKmsDevice::threadLocalAtomicRequest()
 {
     if (!m_has_atomic_support)
@@ -1382,9 +1382,9 @@ void QKmsScreenConfig::refreshConfig()
 
 void QKmsScreenConfig::loadConfig()
 {
-    QByteArray json = qgetenv("QT_QPA_EGLFS_KMS_CONFIG");
+    QByteArray json = qgetenv("BOBUI_QPA_EGLFS_KMS_CONFIG");
     if (json.isEmpty()) {
-        json = qgetenv("QT_QPA_KMS_CONFIG");
+        json = qgetenv("BOBUI_QPA_KMS_CONFIG");
         if (json.isEmpty())
             return;
     }
@@ -1520,4 +1520,4 @@ void QKmsOutput::setPowerState(QKmsDevice *device, QPlatformScreen::PowerState s
                                     dpms_prop->prop_id, (int) state);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

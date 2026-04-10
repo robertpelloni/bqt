@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -16,16 +16,16 @@
 #include "qgtk3json_p.h"
 #include "qgtk3storage_p.h"
 #include <qpa/qwindowsysteminterface.h>
-#if QT_CONFIG(dbus)
-#  include <QtGui/private/qgnomeportalinterface_p.h>
+#if BOBUI_CONFIG(dbus)
+#  include <BobUIGui/private/qgnomeportalinterface_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGtk3Storage::QGtk3Storage()
 {
     m_interface.reset(new QGtk3Interface(this));
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     m_portalInterface.reset(new QGnomePortalInterface);
 #endif
     populateMap();
@@ -134,9 +134,9 @@ QGtk3Storage::Source QGtk3Storage::brush(const TargetBrush &b, const BrushMap &m
     FIND(b);
 
     // unknown color scheme can find anything
-    if (b.colorScheme == Qt::ColorScheme::Unknown) {
-        FIND(TargetBrush(b, Qt::ColorScheme::Dark));
-        FIND(TargetBrush(b, Qt::ColorScheme::Light));
+    if (b.colorScheme == BobUI::ColorScheme::Unknown) {
+        FIND(TargetBrush(b, BobUI::ColorScheme::Dark));
+        FIND(TargetBrush(b, BobUI::ColorScheme::Light));
     }
 
     // Color group All can always be found
@@ -164,9 +164,9 @@ QPalette QGtk3Storage::standardPalette()
     QColor lightColor(backgroundColor.lighter());
     QColor darkColor(backgroundColor.darker());
     const QBrush darkBrush(darkColor);
-    QColor midColor(Qt::gray);
-    QPalette palette(Qt::black, backgroundColor, lightColor, darkColor,
-                     midColor, Qt::black, Qt::white);
+    QColor midColor(BobUI::gray);
+    QPalette palette(BobUI::black, backgroundColor, lightColor, darkColor,
+                     midColor, BobUI::black, BobUI::white);
     palette.setBrush(QPalette::Disabled, QPalette::WindowText, darkBrush);
     palette.setBrush(QPalette::Disabled, QPalette::Text, darkBrush);
     palette.setBrush(QPalette::Disabled, QPalette::ButtonText, darkBrush);
@@ -220,8 +220,8 @@ const QPalette *QGtk3Storage::palette(QPlatformTheme::Palette type) const
         const auto appSource = i.key().colorScheme;
         const auto appTheme = colorScheme();
         const bool setBrush = (appSource == appTheme) ||
-                              (appSource == Qt::ColorScheme::Unknown) ||
-                              (appTheme == Qt::ColorScheme::Unknown);
+                              (appSource == BobUI::ColorScheme::Unknown) ||
+                              (appTheme == BobUI::ColorScheme::Unknown);
 
         if (setBrush) {
             p.setBrush(i.key().colorGroup, i.key().colorRole, brush(source, brushes));
@@ -289,7 +289,7 @@ QIcon QGtk3Storage::fileIcon(const QFileInfo &fileInfo) const
  */
 void QGtk3Storage::clear()
 {
-    m_colorScheme = Qt::ColorScheme::Unknown;
+    m_colorScheme = BobUI::ColorScheme::Unknown;
     m_palettes.clear();
     for (auto &cache : m_paletteCache)
         cache.reset();
@@ -333,30 +333,30 @@ void QGtk3Storage::handleThemeChange()
     \li QPlatformTheme::TextLineEditPalette
     \endlist
 
-    The method will check the environment variable {{QT_GUI_GTK_JSON_SAVE}}. If it points to a
+    The method will check the environment variable {{BOBUI_GUI_GTK_JSON_SAVE}}. If it points to a
     valid path with write access, it will write the standard mapping into a Json file.
     That Json file can be modified and/or extended.
     The Json syntax is
     - "QGtk3Palettes" (top level value)
         - QPlatformTheme::Palette
             - QPalette::ColorRole
-                - Qt::ColorScheme
-                - Qt::ColorGroup
+                - BobUI::ColorScheme
+                - BobUI::ColorGroup
                 - Source data
                     - Source Type
                         - [source data]
 
-    If the environment variable {{QT_GUI_GTK_JSON_HARDCODED}} contains the keyword \c true,
+    If the environment variable {{BOBUI_GUI_GTK_JSON_HARDCODED}} contains the keyword \c true,
     all sources are converted to fixed sources. In that case, they contain the hard coded HexRGBA
     values read from GTK.
 
-    The method will also check the environment variable {{QT_GUI_GTK_JSON}}. If it points to a valid
+    The method will also check the environment variable {{BOBUI_GUI_GTK_JSON}}. If it points to a valid
     Json file with read access, it will be parsed instead of creating a standard mapping.
-    Parsing errors will be printed out with qCInfo if the logging category {{qt.qpa.gtk}} is activated.
+    Parsing errors will be printed out with qCInfo if the logging category {{bobui.qpa.gtk}} is activated.
     In case of a parsing error, the method will fall back to creating a standard mapping.
 
     \note
-    If a Json file contains only fixed brushes (e.g. exported with {{QT_GUI_GTK_JSON_HARDCODED=true}}),
+    If a Json file contains only fixed brushes (e.g. exported with {{BOBUI_GUI_GTK_JSON_HARDCODED=true}}),
     no colors will be imported from GTK.
  */
 void QGtk3Storage::populateMap()
@@ -364,19 +364,19 @@ void QGtk3Storage::populateMap()
     static QString m_themeName;
 
     // Distiguish initialization, theme change or call without theme change
-    Qt::ColorScheme newColorScheme = Qt::ColorScheme::Unknown;
+    BobUI::ColorScheme newColorScheme = BobUI::ColorScheme::Unknown;
     const QString newThemeName = themeName();
 
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
     // Prefer color scheme we get from xdg-desktop-portal as this is what GNOME
     // relies on these days
     newColorScheme = m_portalInterface->colorScheme();
 #endif
 
-    if (newColorScheme == Qt::ColorScheme::Unknown) {
+    if (newColorScheme == BobUI::ColorScheme::Unknown) {
         // Derive color scheme from theme name
-        newColorScheme = newThemeName.contains("dark"_L1, Qt::CaseInsensitive)
-                    ? Qt::ColorScheme::Dark : m_interface->colorSchemeByColors();
+        newColorScheme = newThemeName.contains("dark"_L1, BobUI::CaseInsensitive)
+                    ? BobUI::ColorScheme::Dark : m_interface->colorSchemeByColors();
     }
 
     if (m_themeName == newThemeName && m_colorScheme == newColorScheme)
@@ -393,7 +393,7 @@ void QGtk3Storage::populateMap()
     m_themeName = newThemeName;
 
     // create standard mapping or load from Json file?
-    const QString jsonInput = qEnvironmentVariable("QT_GUI_GTK_JSON");
+    const QString jsonInput = qEnvironmentVariable("BOBUI_GUI_GTK_JSON");
     if (!jsonInput.isEmpty()) {
         if (load(jsonInput)) {
             return;
@@ -404,7 +404,7 @@ void QGtk3Storage::populateMap()
 
     createMapping();
 
-    const QString jsonOutput = qEnvironmentVariable("QT_GUI_GTK_JSON_SAVE");
+    const QString jsonOutput = qEnvironmentVariable("BOBUI_GUI_GTK_JSON_SAVE");
     if (!jsonOutput.isEmpty() && !save(jsonOutput))
         qWarning() << "File" << jsonOutput << "could not be saved.\n";
 }
@@ -414,14 +414,14 @@ void QGtk3Storage::populateMap()
     \brief Return a palette map for saving.
 
     This method returns the existing palette map, if the environment variable
-    {{QT_GUI_GTK_JSON_HARDCODED}} is not set or does not contain the keyword \c true.
+    {{BOBUI_GUI_GTK_JSON_HARDCODED}} is not set or does not contain the keyword \c true.
     If it contains the keyword \c true, it returns a palette map with all brush
     sources converted to fixed sources.
  */
 const QGtk3Storage::PaletteMap QGtk3Storage::savePalettes() const
 {
-    const QString hard = qEnvironmentVariable("QT_GUI_GTK_JSON_HARDCODED");
-    if (!hard.contains("true"_L1, Qt::CaseInsensitive))
+    const QString hard = qEnvironmentVariable("BOBUI_GUI_GTK_JSON_HARDCODED");
+    if (!hard.contains("true"_L1, BobUI::CaseInsensitive))
         return m_palettes;
 
     // Json output is supposed to be readable without GTK connection
@@ -458,7 +458,7 @@ const QGtk3Storage::PaletteMap QGtk3Storage::savePalettes() const
     \brief Saves current palette mapping to a \param filename with Json format \param f.
 
     Saves the current palette mapping into a QJson file,
-    taking {{QT_GUI_GTK_JSON_HARDCODED}} into consideration.
+    taking {{BOBUI_GUI_GTK_JSON_HARDCODED}} into consideration.
     Returns \c true if saving was successful and \c false otherwise.
  */
 bool QGtk3Storage::save(const QString &filename, QJsonDocument::JsonFormat f) const
@@ -471,7 +471,7 @@ bool QGtk3Storage::save(const QString &filename, QJsonDocument::JsonFormat f) co
     \brief Returns a QJsonDocument with current palette mapping.
 
     Saves the current palette mapping into a QJsonDocument,
-    taking {{QT_GUI_GTK_JSON_HARDCODED}} into consideration.
+    taking {{BOBUI_GUI_GTK_JSON_HARDCODED}} into consideration.
     Returns \c true if saving was successful and \c false otherwise.
  */
 QJsonDocument QGtk3Storage::save() const
@@ -495,7 +495,7 @@ bool QGtk3Storage::load(const QString &filename)
     \brief Creates a standard palette mapping.
 
     The method creates a hard coded standard mapping, used if no external Json file
-    containing a valid mapping has been specified in the environment variable {{QT_GUI_GTK_JSON}}.
+    containing a valid mapping has been specified in the environment variable {{BOBUI_GUI_GTK_JSON}}.
  */
 void QGtk3Storage::createMapping()
 {
@@ -511,19 +511,19 @@ void QGtk3Storage::createMapping()
     // Define a modified source
 #define LIGHTER(group, role, lighter)\
     source = Source(QPalette::group, QPalette::role,\
-                    Qt::ColorScheme::Unknown, lighter)
+                    BobUI::ColorScheme::Unknown, lighter)
 #define MODIFY(group, role, red, green, blue)\
     source = Source(QPalette::group, QPalette::role,\
-                    Qt::ColorScheme::Unknown, red, green, blue)
+                    BobUI::ColorScheme::Unknown, red, green, blue)
 
     // Define fixed source
 #define FIX(color) source = FixedSource(color);
 
     // Add the source to a target brush
-    // Use default Qt::ColorScheme::Unknown, if no color scheme was specified
+    // Use default BobUI::ColorScheme::Unknown, if no color scheme was specified
 #define ADD_2(group, role) map.insert(TargetBrush(QPalette::group, QPalette::role), source);
 #define ADD_3(group, role, app) map.insert(TargetBrush(QPalette::group, QPalette::role,\
-    Qt::ColorScheme::app), source);
+    BobUI::ColorScheme::app), source);
 #define ADD_X(x, group, role, app, FUNC, ...) FUNC
 #define ADD(...) ADD_X(,##__VA_ARGS__, ADD_3(__VA_ARGS__), ADD_2(__VA_ARGS__))
     // Save target brushes to a palette type
@@ -727,4 +727,4 @@ void QGtk3Storage::createMapping()
 #undef LOAD
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

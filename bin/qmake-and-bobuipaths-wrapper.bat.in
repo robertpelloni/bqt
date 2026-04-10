@@ -1,0 +1,2 @@
+@echo off
+@host_bobui_bindir@\@tool_name@@tool_version@.exe -bobuiconf "%~dp0\target_bobui.conf" %*

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef SETTINGSTREE_H
 #define SETTINGSTREE_H
 
 #include <QIcon>
-#include <QTimer>
-#include <QTreeWidget>
+#include <BOBUIimer>
+#include <BOBUIreeWidget>
 #include <QSharedPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QSettings;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 struct TypeChecker;
 
-class SettingsTree : public QTreeWidget
+class SettingsTree : public BOBUIreeWidget
 {
     Q_OBJECT
 
@@ -39,20 +39,20 @@ protected:
     bool event(QEvent *event) override;
 
 private slots:
-    void updateSetting(QTreeWidgetItem *item);
+    void updateSetting(BOBUIreeWidgetItem *item);
 
 private:
-    void updateChildItems(QTreeWidgetItem *parent);
-    QTreeWidgetItem *createItem(const QString &text, QTreeWidgetItem *parent,
+    void updateChildItems(BOBUIreeWidgetItem *parent);
+    BOBUIreeWidgetItem *createItem(const QString &text, BOBUIreeWidgetItem *parent,
                                 int index);
-    QTreeWidgetItem *childAt(QTreeWidgetItem *parent, int index) const;
-    int childCount(QTreeWidgetItem *parent) const;
-    int findChild(QTreeWidgetItem *parent, const QString &text, int startIndex) const;
-    void moveItemForward(QTreeWidgetItem *parent, int oldIndex, int newIndex);
+    BOBUIreeWidgetItem *childAt(BOBUIreeWidgetItem *parent, int index) const;
+    int childCount(BOBUIreeWidgetItem *parent) const;
+    int findChild(BOBUIreeWidgetItem *parent, const QString &text, int startIndex) const;
+    void moveItemForward(BOBUIreeWidgetItem *parent, int oldIndex, int newIndex);
 
     SettingsPtr settings;
     TypeCheckerPtr m_typeChecker;
-    QTimer refreshTimer;
+    BOBUIimer refreshTimer;
     QIcon groupIcon;
     QIcon keyIcon;
     bool autoRefresh = false;

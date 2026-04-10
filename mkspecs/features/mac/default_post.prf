@@ -17,32 +17,32 @@ contains(TEMPLATE, .*app) {
     }
 
     # Detect incompatible SDK versions
-    # The CMake equivalent is in cmake/QtPublicAppleHelpers.cmake.
+    # The CMake equivalent is in cmake/BobUIPublicAppleHelpers.cmake.
 
-    isEmpty(QT_MAC_SDK_VERSION_MIN): \
-        QT_MAC_SDK_VERSION_MIN = $$QT_MAC_SDK_VERSION
+    isEmpty(BOBUI_MAC_SDK_VERSION_MIN): \
+        BOBUI_MAC_SDK_VERSION_MIN = $$BOBUI_MAC_SDK_VERSION
 
-    !versionAtLeast(QMAKE_MAC_SDK_VERSION, $$QT_MAC_SDK_VERSION_MIN): \
-        warning("Qt requires at least version $$QT_MAC_SDK_VERSION_MIN of the platform SDK," \
+    !versionAtLeast(QMAKE_MAC_SDK_VERSION, $$BOBUI_MAC_SDK_VERSION_MIN): \
+        warning("BobUI requires at least version $$BOBUI_MAC_SDK_VERSION_MIN of the platform SDK," \
               "you're building against version $${QMAKE_MAC_SDK_VERSION}. Please upgrade.")
 
-    !isEmpty(QT_MAC_SDK_VERSION_MAX) {
-        # For Qt developers only
-        !isEmpty($$list($$(QT_MAC_SDK_NO_VERSION_CHECK))): \
+    !isEmpty(BOBUI_MAC_SDK_VERSION_MAX) {
+        # For BobUI developers only
+        !isEmpty($$list($$(BOBUI_MAC_SDK_NO_VERSION_CHECK))): \
             CONFIG += sdk_no_version_check
 
         QMAKE_MAC_SDK_MAJOR_VERSION = $$replace(QMAKE_MAC_SDK_VERSION, "(\\d+)(\\.\\d+)(\\.\\d+)?", \\1)
 
-        !sdk_no_version_check:!versionAtMost(QMAKE_MAC_SDK_MAJOR_VERSION, $$QT_MAC_SDK_VERSION_MAX) {
-            warning("Qt has only been tested with version $$QT_MAC_SDK_VERSION_MAX"\
+        !sdk_no_version_check:!versionAtMost(QMAKE_MAC_SDK_MAJOR_VERSION, $$BOBUI_MAC_SDK_VERSION_MAX) {
+            warning("BobUI has only been tested with version $$BOBUI_MAC_SDK_VERSION_MAX"\
                     "of the platform SDK, you're using $${QMAKE_MAC_SDK_MAJOR_VERSION}.")
             warning("This is an unsupported configuration. You may experience build issues," \
                     "and by using")
             warning("the $$QMAKE_MAC_SDK_VERSION SDK you are opting in to new features" \
-                    "that Qt has not been prepared for.")
+                    "that BobUI has not been prepared for.")
 
             warning("Please downgrade the SDK you use to build your app to version" \
-                    "$$QT_MAC_SDK_VERSION_MAX, or configure")
+                    "$$BOBUI_MAC_SDK_VERSION_MAX, or configure")
             warning("with CONFIG+=sdk_no_version_check when running qmake" \
                     "to silence this warning.")
         }
@@ -80,9 +80,9 @@ macos {
         CONFIG -= only_active_arch
     } else {
         # Otherwise allow building all of the architectures available
-        # in Qt, but only build the active arch (unless the user has
+        # in BobUI, but only build the active arch (unless the user has
         # manually overridden this via CONFIG -= only_active_arch).
-        QMAKE_APPLE_DEVICE_ARCHS = $$QT_ARCHS
+        QMAKE_APPLE_DEVICE_ARCHS = $$BOBUI_ARCHS
     }
 }
 
@@ -179,7 +179,7 @@ macx-xcode {
     # This is not strictly necessary, but results in cleaner command lines
     # and makes it easier for people to override EXPORT_VALID_ARCHS to limit
     # individual rules to a different set of architecture(s) from the overall
-    # build (such as machtest in QtCore).
+    # build (such as machtest in BobUICore).
     ios:simulator:device {
         QMAKE_XARCH_CFLAGS =
         QMAKE_XARCH_LFLAGS =
@@ -276,7 +276,7 @@ cache(QMAKE_XCODE_DEVELOPER_PATH, stash)
 !isEmpty(QMAKE_XCODE_VERSION): \
     cache(QMAKE_XCODE_VERSION, stash)
 
-QMAKE_XCODE_LIBRARY_SUFFIX = $$qtPlatformTargetSuffix()
+QMAKE_XCODE_LIBRARY_SUFFIX = $$bobuiPlatformTargetSuffix()
 
 xcode_product_bundle_identifier_setting.name = PRODUCT_BUNDLE_IDENTIFIER
 xcode_product_bundle_identifier_setting.value = $$QMAKE_TARGET_BUNDLE_PREFIX

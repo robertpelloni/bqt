@@ -1,16 +1,16 @@
 // Copyright (C) 2011 Richard J. Moore <rich@kde.org>
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qocspresponse_p.h"
 #include "qocspresponse.h"
 
 #include "qhashfunctions.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(QOcspResponse)
+BOBUI_IMPL_METATYPE_EXTERN(QOcspResponse)
 
 /*!
     \class QOcspResponse
@@ -19,7 +19,7 @@ QT_IMPL_METATYPE_EXTERN(QOcspResponse)
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     The QOcspResponse class represents the revocation status of a server's certificate,
     received by the client-side socket during the TLS handshake. QSslSocket must be
@@ -39,7 +39,7 @@ QT_IMPL_METATYPE_EXTERN(QOcspResponse)
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     \value Good The certificate is not revoked, but this does not necessarily
            mean that the certificate was ever issued or that the time at which
@@ -60,7 +60,7 @@ QT_IMPL_METATYPE_EXTERN(QOcspResponse)
 
     \ingroup network
     \ingroup ssl
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
 
     This enumeration describes revocation reasons, defined in \l{RFC 5280, section 5.3.1}
@@ -210,7 +210,7 @@ size_t qHash(const QOcspResponse &response, size_t seed) noexcept
     const QOcspResponsePrivate *d = response.d.data();
     Q_ASSERT(d);
 
-    QtPrivate::QHashCombine hasher(seed);
+    BobUIPrivate::QHashCombine hasher(seed);
     size_t hash = hasher(seed, int(d->certificateStatus));
     hash = hasher(hash, int(d->revocationReason));
     if (!d->signerCert.isNull())
@@ -221,4 +221,4 @@ size_t qHash(const QOcspResponse &response, size_t seed) noexcept
     return hash;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

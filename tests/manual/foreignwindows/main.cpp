@@ -1,26 +1,26 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGui/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QToolBar>
+#include <BobUIGui/QAction>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QMainWindow>
+#include <BobUIWidgets/QMenu>
+#include <BobUIWidgets/QMenuBar>
+#include <BobUIWidgets/BOBUIoolBar>
 
-#include <QtGui/QScreen>
-#include <QtGui/QWindow>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QWindow>
 
-#include <QtCore/QCommandLineOption>
-#include <QtCore/QCommandLineParser>
-#include <QtCore/QDebug>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QStringList>
-#include <QtCore/QTextStream>
-#include <QtCore/QTimer>
+#include <BobUICore/QCommandLineOption>
+#include <BobUICore/QCommandLineParser>
+#include <BobUICore/QDebug>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/QStringList>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/BOBUIimer>
 
 #ifdef Q_OS_WIN
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 #endif
 
 #include <eventfilter.h> // diaglib
@@ -31,7 +31,7 @@
 #include <iostream>
 #include <algorithm>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 using WidgetPtr = QSharedPointer<QWidget>;
 using WidgetPtrList = QList<WidgetPtr>;
@@ -80,18 +80,18 @@ private:
 
 EmbeddingWindow::EmbeddingWindow(QWindow *window) : m_window(window)
 {
-    const QString title = QLatin1String("Qt ") + QLatin1String(QT_VERSION_STR)
+    const QString title = QLatin1String("BobUI ") + QLatin1String(BOBUI_VERSION_STR)
         + QLatin1String(" 0x") + QString::number(window->winId(), 16);
     setWindowTitle(title);
     setObjectName("MainWindow");
-    QWidget *container = QWidget::createWindowContainer(window, nullptr, Qt::Widget);
+    QWidget *container = QWidget::createWindowContainer(window, nullptr, BobUI::Widget);
     container->setObjectName("Container");
     setCentralWidget(container);
 
     QMenu *fileMenu = menuBar()->addMenu("File");
     fileMenu->setObjectName("FileMenu");
-    QToolBar *toolbar = new QToolBar;
-    addToolBar(Qt::TopToolBarArea, toolbar);
+    BOBUIoolBar *toolbar = new BOBUIoolBar;
+    addToolBar(BobUI::TopToolBarArea, toolbar);
 
     // Manipulation
     QAction *action = fileMenu->addAction("Visible");
@@ -105,19 +105,19 @@ EmbeddingWindow::EmbeddingWindow(QWindow *window) : m_window(window)
 
     fileMenu->addSeparator(); // Diaglib actions
     action = fileMenu->addAction("Dump Widgets",
-                                 this, [] () { QtDiag::dumpAllWidgets(); });
+                                 this, [] () { BobUIDiag::dumpAllWidgets(); });
     toolbar->addAction(action);
     action = fileMenu->addAction("Dump Windows",
-                                 this, [] () { QtDiag::dumpAllWindows(); });
+                                 this, [] () { BobUIDiag::dumpAllWindows(); });
     toolbar->addAction(action);
     action = fileMenu->addAction("Dump Native Windows",
-                                 this, [this] () { QtDiag::dumpNativeWindows(winId()); });
+                                 this, [this] () { BobUIDiag::dumpNativeWindows(winId()); });
     toolbar->addAction(action);
 
     fileMenu->addSeparator();
     action = fileMenu->addAction("Quit", qApp, &QCoreApplication::quit);
     toolbar->addAction(action);
-    action->setShortcut(Qt::CTRL | Qt::Key_Q);
+    action->setShortcut(BobUI::CTRL | BobUI::Key_Q);
 }
 
 void EmbeddingWindow::releaseForeignWindow()
@@ -164,16 +164,16 @@ void WindowDumper::dump() const
 static QString description(const QString &appName)
 {
     QString result;
-    QTextStream(&result)
+    BOBUIextStream(&result)
         << "\nDumps information about foreign windows passed on the command line or\n"
-        "tests embedding foreign windows into Qt.\n\nUse cases:\n\n"
+        "tests embedding foreign windows into BobUI.\n\nUse cases:\n\n"
         << appName << " -a          Dump a list of all native window ids.\n"
         << appName << " <winid>     Dump information on the window.\n"
         << appName << " -m <winid>  Move window to top left corner\n"
         << QByteArray(appName.size(), ' ')
         <<            "             (recover lost windows after changing monitor setups).\n"
         << appName << " -c <winid>  Dump information on the window continuously.\n"
-        << appName << " -e <winid>  Embed window into a Qt widget.\n"
+        << appName << " -e <winid>  Embed window into a BobUI widget.\n"
         << "\nOn Windows, class names of well known controls (EDIT, BUTTON...) can be\n"
            "passed as <winid> along with -e, which will create the control.\n";
     return result;
@@ -183,13 +183,13 @@ struct EventFilterOption
 {
     const char *name;
     const char *description;
-    QtDiag::EventFilter::EventCategories categories;
+    BobUIDiag::EventFilter::EventCategories categories;
 };
 
 static EventFilterOption eventFilterOptions[] = {
-{"mouse-events", "Dump mouse events.", QtDiag::EventFilter::MouseEvents},
-{"keyboard-events", "Dump keyboard events.", QtDiag::EventFilter::KeyEvents},
-{"state-events", "Dump state/focus change events.", QtDiag::EventFilter::StateChangeEvents | QtDiag::EventFilter::FocusEvents}
+{"mouse-events", "Dump mouse events.", BobUIDiag::EventFilter::MouseEvents},
+{"keyboard-events", "Dump keyboard events.", BobUIDiag::EventFilter::KeyEvents},
+{"state-events", "Dump state/focus change events.", BobUIDiag::EventFilter::StateChangeEvents | BobUIDiag::EventFilter::FocusEvents}
 };
 
 static inline bool isOptionSet(int argc, char *argv[], const char *option)
@@ -201,7 +201,7 @@ static inline bool isOptionSet(int argc, char *argv[], const char *option)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationVersion(QLatin1String(QT_VERSION_STR));
+    QCoreApplication::setApplicationVersion(QLatin1String(BOBUI_VERSION_STR));
     QGuiApplication::setApplicationDisplayName("Foreign window tester");
 
     QApplication app(argc, argv);
@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
                                   QStringLiteral("Move window to top left corner."));
     parser.addOption(moveOption);
     QCommandLineOption embedOption(QStringList() << QStringLiteral("e") << QStringLiteral("embed"),
-                                   QStringLiteral("Embed a foreign window into a Qt widget."));
+                                   QStringLiteral("Embed a foreign window into a BobUI widget."));
     parser.addOption(embedOption);
     const int eventFilterOptionCount = int(sizeof(eventFilterOptions) / sizeof(eventFilterOptions[0]));
     for (int i = 0; i < eventFilterOptionCount; ++i) {
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
     parser.process(QCoreApplication::arguments());
 
     if (parser.isSet(outputAllOption)) {
-        QtDiag::dumpNativeWindows();
+        BobUIDiag::dumpNativeWindows();
         return 0;
     }
 
@@ -265,13 +265,13 @@ int main(int argc, char *argv[])
     int exitCode = 0;
 
     if (parser.isSet(embedOption)) {
-        QtDiag::EventFilter::EventCategories eventCategories;
+        BobUIDiag::EventFilter::EventCategories eventCategories;
         for (int i = 0; i < eventFilterOptionCount; ++i) {
             if (parser.isSet(QLatin1String(eventFilterOptions[i].name)))
                 eventCategories |= eventFilterOptions[i].categories;
         }
         if (eventCategories)
-            app.installEventFilter(new QtDiag::EventFilter(eventCategories, &app));
+            app.installEventFilter(new BobUIDiag::EventFilter(eventCategories, &app));
 
         const QRect availableGeometry = QGuiApplication::primaryScreen()->availableGeometry();
         QPoint pos = availableGeometry.topLeft() + QPoint(availableGeometry.width(), availableGeometry.height()) / 3;
@@ -290,8 +290,8 @@ int main(int argc, char *argv[])
     } else if (parser.isSet(continuousOption)) {
         WindowDumper dumper(windows);
         dumper.dump();
-        QTimer *timer = new QTimer(&dumper);
-        QObject::connect(timer, &QTimer::timeout, &dumper, &WindowDumper::dump);
+        BOBUIimer *timer = new BOBUIimer(&dumper);
+        QObject::connect(timer, &BOBUIimer::timeout, &dumper, &WindowDumper::dump);
         timer->start(1000);
         exitCode = app.exec();
     } else {

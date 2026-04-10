@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 #include "qwindowsdirect2dcontext.h"
 #include "qwindowsdirect2dintegration.h"
 #include "qwindowsdirect2dbackingstore.h"
@@ -12,14 +12,14 @@
 #include "qwindowscontext.h"
 
 #include <qplatformdefs.h>
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qversionnumber.h>
-#include <QtGui/private/qpixmap_raster_p.h>
-#include <QtGui/qpa/qwindowsysteminterface.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qversionnumber.h>
+#include <BobUIGui/private/qpixmap_raster_p.h>
+#include <BobUIGui/qpa/qwindowsysteminterface.h>
 
 #include <QVarLengthArray>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWindowsDirect2DIntegrationPrivate
 {
@@ -75,7 +75,7 @@ QWindowsDirect2DIntegration *QWindowsDirect2DIntegration::create(const QStringLi
     const QVersionNumber minimumVersion = minimumD2DVersion();
     if (!systemVersion.isNull() && systemVersion < minimumVersion) {
         QString msg = QCoreApplication::translate("QWindowsDirect2DIntegration",
-            "Qt cannot load the direct2d platform plugin because " \
+            "BobUI cannot load the direct2d platform plugin because " \
             "the Direct2D version on this system is too old. The " \
             "minimum system requirement for this platform plugin " \
             "is Windows 7 SP1 with Platform Update.\n\n" \
@@ -158,4 +158,4 @@ bool QWindowsDirect2DIntegration::init()
     return d->m_d2dContext.init();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

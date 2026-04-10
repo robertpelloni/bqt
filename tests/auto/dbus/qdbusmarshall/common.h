@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtGlobal>
+#include <BobUIGlobal>
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -18,8 +18,8 @@
 
 static bool compareFileDescriptors(int fd1, int fd2)
 {
-    QT_STATBUF st1, st2;
-    if (QT_FSTAT(fd1, &st1) == -1 || QT_FSTAT(fd2, &st2) == -1) {
+    BOBUI_STATBUF st1, st2;
+    if (BOBUI_FSTAT(fd1, &st1) == -1 || BOBUI_FSTAT(fd2, &st2) == -1) {
         perror("fstat");
         return false;
     }
@@ -284,8 +284,8 @@ char* printableMap(const Map& map)
                               .arg(contents)));
 }
 
-QT_BEGIN_NAMESPACE
-namespace QTest {
+BOBUI_BEGIN_NAMESPACE
+namespace BOBUIest {
     template<>
     inline char* toString(const MethodMap& map)
     {
@@ -304,7 +304,7 @@ namespace QTest {
         return printableMap(map);
     }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 
@@ -434,8 +434,8 @@ bool compareToArgument(const QDBusArgument &arg, const QVariant &v2)
         return compare<QRectF>(arg, v2);
     case QMetaType::QDate:
         return compare<QDate>(arg, v2);
-    case QMetaType::QTime:
-        return compare<QTime>(arg, v2);
+    case QMetaType::BOBUIime:
+        return compare<BOBUIime>(arg, v2);
     case QMetaType::QDateTime:
         return compare<QDateTime>(arg, v2);
     default:

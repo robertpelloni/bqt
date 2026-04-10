@@ -1,5 +1,5 @@
-# Copyright (C) 2021 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# Copyright (C) 2021 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 """Shared serialization-scanning code for QLocaleXML format.
 
 Provides classes:
@@ -23,7 +23,7 @@ from typing import Any, Callable, Iterable, Iterator, NoReturn
 from xml.sax.saxutils import escape
 from xml.dom import minidom
 
-from localetools import Error, qtVersion
+from localetools import Error, bobuiVersion
 
 # Tools used by Locale:
 def camel(seq):
@@ -72,10 +72,10 @@ class QLocaleXmlReader (object):
         self.__dupes = set(v[1] for v in languages) & set(v[1] for v in territories)
 
         self.cldrVersion = self.root.attributes['versionCldr'].nodeValue
-        self.qtVersion: str = self.root.attributes['versionQt'].nodeValue
-        assert self.qtVersion == qtVersion, (
-            'Using QLocaleXml file from incompatible Qt version',
-            self.qtVersion, qtVersion
+        self.bobuiVersion: str = self.root.attributes['versionBobUI'].nodeValue
+        assert self.bobuiVersion == bobuiVersion, (
+            'Using QLocaleXml file from incompatible BobUI version',
+            self.bobuiVersion, bobuiVersion
         )
 
     def loadLocaleMap(self, calendars: Iterable[str], grumble = lambda text: None
@@ -135,7 +135,7 @@ class QLocaleXmlReader (object):
         likely: tuple[tuple[tuple[int, int, int], tuple[int, int, int]], ...
                      ] = tuple((has, got) for have, has, give, got in self.likelyMap())
         def fallbacks(key) -> Iterator[Locale]:
-            # Should match QtTimeZoneLocale::fallbackLocalesFor() in qlocale.cpp
+            # Should match BobUITimeZoneLocale::fallbackLocalesFor() in qlocale.cpp
             tried: set[tuple[int, int, int]] = { key }
             head =  2
             while head > 0:
@@ -644,7 +644,7 @@ class QLocaleXmlWriter (object):
                      # A hint to emacs to make display nicer:
                      '<!--*- tab-width: 4 -*-->')
         self.__openTag('localeDatabase', versionCldr = cldrVersion,
-                       versionQt = qtVersion)
+                       versionBobUI = bobuiVersion)
 
     # Output of various sections, in their usual order:
     def enumData(self, code2name: Callable[[str], Callable[[str, str], str]]) -> None:
@@ -915,7 +915,7 @@ class Locale (object):
 
     # Expected to be numbers, read with int():
     __asint = ("currencyDigits", "currencyRounding")
-    # Convert day-name to Qt day-of-week number:
+    # Convert day-name to BobUI day-of-week number:
     __asdow = ("firstDayOfWeek", "weekendStart", "weekendEnd")
     # Just use the raw text:
     __astxt = ("language", "languageEndonym", "script", "territory", "territoryEndonym",
@@ -937,7 +937,7 @@ class Locale (object):
     # Require special handling:
     # 'regionZoneFormats', 'zoneNaming', 'metaZoneNaming'
 
-    # Day-of-Week numbering used by Qt:
+    # Day-of-Week numbering used by BobUI:
     __qDoW = {"mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6, "sun": 7}
 
     @classmethod

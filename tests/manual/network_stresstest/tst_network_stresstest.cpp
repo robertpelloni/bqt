@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/qtesteventloop.h>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QList>
-#include <QtCore/QSemaphore>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QThread>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QTcpSocket>
+#include <BOBUIest>
+#include <BobUITest/bobuiesteventloop.h>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QList>
+#include <BobUICore/QSemaphore>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/BOBUIhread>
+#include <BobUINetwork/QNetworkAccessManager>
+#include <BobUINetwork/QNetworkReply>
+#include <BobUINetwork/BOBUIcpSocket>
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 # include <private/qnetworkaccessmanager_p.h>
 #endif
 
@@ -90,33 +90,33 @@ tst_NetworkStressTest::tst_NetworkStressTest()
 
 void tst_NetworkStressTest::initTestCase_data()
 {
-    QTest::addColumn<bool>("isLocalhost");
-    QTest::addColumn<QString>("hostname");
-    QTest::addColumn<int>("port");
+    BOBUIest::addColumn<bool>("isLocalhost");
+    BOBUIest::addColumn<QString>("hostname");
+    BOBUIest::addColumn<int>("port");
 
-    QTest::newRow("localhost") << true << "localhost" << server.port();
-    if (QtNetworkSettings::verifyTestNetworkSettings()) // emits its own warnings if not
-        QTest::newRow("remote") << false << QtNetworkSettings::serverName() << 80;
+    BOBUIest::newRow("localhost") << true << "localhost" << server.port();
+    if (BobUINetworkSettings::verifyTestNetworkSettings()) // emits its own warnings if not
+        BOBUIest::newRow("remote") << false << BobUINetworkSettings::serverName() << 80;
 }
 
 void tst_NetworkStressTest::initTestCase()
 {
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 }
 
 void tst_NetworkStressTest::init()
 {
     // clear the internal cache
-#ifndef QT_BUILD_INTERNAL
-    if (strncmp(QTest::currentTestFunction(), "nam", 3) == 0)
+#ifndef BOBUI_BUILD_INTERNAL
+    if (strncmp(BOBUIest::currentTestFunction(), "nam", 3) == 0)
         QSKIP("QNetworkAccessManager tests disabled");
 #endif
 }
 
 void tst_NetworkStressTest::clearManager()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QNetworkAccessManagerPrivate::clearAuthenticationCache(&manager);
     QNetworkAccessManagerPrivate::clearConnectionCache(&manager);
     manager.setProxy(QNetworkProxy());
@@ -213,9 +213,9 @@ void tst_NetworkStressTest::nativeBlockingConnectDisconnect()
 
         // send request
         {
-            QByteArray request = "GET /qtest/bigfile HTTP/1.1\r\n"
+            QByteArray request = "GET /bobuiest/bigfile HTTP/1.1\r\n"
                                  "Connection: close\r\n"
-                                 "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                                 "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                                  "Host: " + hostname.toLatin1() + "\r\n"
                                  "\r\n";
             qint64 bytesWritten = 0;
@@ -325,9 +325,9 @@ void tst_NetworkStressTest::nativeNonBlockingConnectDisconnect()
 
         // send request
         {
-            QByteArray request = "GET /qtest/bigfile HTTP/1.1\r\n"
+            QByteArray request = "GET /bobuiest/bigfile HTTP/1.1\r\n"
                                  "Connection: close\r\n"
-                                 "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                                 "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                                  "Host: " + hostname.toLatin1() + "\r\n"
                                  "\r\n";
             qint64 bytesWritten = 0;
@@ -387,13 +387,13 @@ void tst_NetworkStressTest::blockingConnectDisconnect()
         byteCounter = 0;
         timeout.start();
 
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(hostname, port);
         QVERIFY2(socket.waitForConnected(), "Timeout");
 
-        socket.write("GET /qtest/bigfile HTTP/1.1\r\n"
+        socket.write("GET /bobuiest/bigfile HTTP/1.1\r\n"
                      "Connection: close\r\n"
-                     "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                     "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                      "Host: " + hostname.toLatin1() + "\r\n"
                      "\r\n");
         while (socket.bytesToWrite())
@@ -428,16 +428,16 @@ void tst_NetworkStressTest::blockingPipelined()
         byteCounter = 0;
         timeout.start();
 
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(hostname, port);
         QVERIFY2(socket.waitForConnected(), "Timeout");
 
         for (int j = 0 ; j < 3; ++j) {
             if (intermediateDebug)
                 qDebug("Attempt %d%c", i, 'a' + j);
-            socket.write("GET /qtest/bigfile HTTP/1.1\r\n"
+            socket.write("GET /bobuiest/bigfile HTTP/1.1\r\n"
                          "Connection: " + QByteArray(j == 2 ? "close" : "keep-alive") + "\r\n"
-                         "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                         "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                          "Host: " + hostname.toLatin1() + "\r\n"
                          "\r\n");
             while (socket.bytesToWrite())
@@ -469,7 +469,7 @@ void tst_NetworkStressTest::blockingMultipleRequests()
     outerTimer.start();
 
     for (int i = 0; i < AttemptCount / 5; ++i) {
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(hostname, port);
         QVERIFY2(socket.waitForConnected(), "Timeout");
 
@@ -478,9 +478,9 @@ void tst_NetworkStressTest::blockingMultipleRequests()
             byteCounter = 0;
             timeout.start();
 
-            socket.write("GET /qtest/bigfile HTTP/1.1\r\n"
+            socket.write("GET /bobuiest/bigfile HTTP/1.1\r\n"
                          "Connection: keep-alive\r\n"
-                         "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                         "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                          "Host: " + hostname.toLatin1() + "\r\n"
                          "\r\n");
             while (socket.bytesToWrite())
@@ -559,19 +559,19 @@ void tst_NetworkStressTest::connectDisconnect()
         byteCounter = 0;
         timeout.start();
 
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost(hostname, port);
 
-        socket.write("GET /qtest/bigfile HTTP/1.1\r\n"
+        socket.write("GET /bobuiest/bigfile HTTP/1.1\r\n"
                      "Connection: close\r\n"
-                     "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                     "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                      "Host: " + hostname.toLatin1() + "\r\n"
                      "\r\n");
         connect(&socket, SIGNAL(readyRead()), SLOT(slotReadAll()));
 
-        QTestEventLoop::instance().connect(&socket, SIGNAL(disconnected()), SLOT(exitLoop()));
-        QTestEventLoop::instance().enterLoop(30);
-        QVERIFY2(!QTestEventLoop::instance().timeout(), "Timeout");
+        BOBUIestEventLoop::instance().connect(&socket, SIGNAL(disconnected()), SLOT(exitLoop()));
+        BOBUIestEventLoop::instance().enterLoop(30);
+        QVERIFY2(!BOBUIestEventLoop::instance().timeout(), "Timeout");
 
         totalBytes += byteCounter;
         if (intermediateDebug) {
@@ -585,17 +585,17 @@ void tst_NetworkStressTest::connectDisconnect()
 
 void tst_NetworkStressTest::parallelConnectDisconnect_data()
 {
-    QTest::addColumn<int>("parallelAttempts");
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("4") << 4;
-    QTest::newRow("5") << 5;
-    QTest::newRow("6") << 6;
-    QTest::newRow("8") << 8;
-    QTest::newRow("10") << 10;
-    QTest::newRow("25") << 25;
-    QTest::newRow("100") << 100;
-    QTest::newRow("500") << 500;
+    BOBUIest::addColumn<int>("parallelAttempts");
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("4") << 4;
+    BOBUIest::newRow("5") << 5;
+    BOBUIest::newRow("6") << 6;
+    BOBUIest::newRow("8") << 8;
+    BOBUIest::newRow("10") << 10;
+    BOBUIest::newRow("25") << 25;
+    BOBUIest::newRow("100") << 100;
+    BOBUIest::newRow("500") << 500;
 }
 
 void tst_NetworkStressTest::parallelConnectDisconnect()
@@ -619,22 +619,22 @@ void tst_NetworkStressTest::parallelConnectDisconnect()
         byteCounter = 0;
         timeout.start();
 
-        QTcpSocket *socket = new QTcpSocket[parallelAttempts];
+        BOBUIcpSocket *socket = new BOBUIcpSocket[parallelAttempts];
         for (int j = 0; j < parallelAttempts; ++j) {
             socket[j].connectToHost(hostname, port);
 
-            socket[j].write("GET /qtest/bigfile HTTP/1.1\r\n"
+            socket[j].write("GET /bobuiest/bigfile HTTP/1.1\r\n"
                             "Connection: close\r\n"
-                            "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                            "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                             "Host: " + hostname.toLatin1() + "\r\n"
                             "\r\n");
             connect(&socket[j], SIGNAL(readyRead()), SLOT(slotReadAll()));
 
-            QTestEventLoop::instance().connect(&socket[j], SIGNAL(disconnected()), SLOT(exitLoop()));
+            BOBUIestEventLoop::instance().connect(&socket[j], SIGNAL(disconnected()), SLOT(exitLoop()));
         }
 
         while (!timeout.hasExpired(30000)) {
-            QTestEventLoop::instance().enterLoop(10);
+            BOBUIestEventLoop::instance().enterLoop(10);
             int done = 0;
             for (int j = 0; j < parallelAttempts; ++j)
                 done += socket[j].state() == QAbstractSocket::UnconnectedState ? 1 : 0;
@@ -656,29 +656,29 @@ void tst_NetworkStressTest::parallelConnectDisconnect()
 
 void tst_NetworkStressTest::namGet_data()
 {
-    QTest::addColumn<int>("parallelAttempts");
-    QTest::addColumn<bool>("pipelineAllowed");
+    BOBUIest::addColumn<int>("parallelAttempts");
+    BOBUIest::addColumn<bool>("pipelineAllowed");
 
-    QTest::newRow("1") << 1 << false;
-    QTest::newRow("1p") << 1 << true;
-    QTest::newRow("2") << 2 << false;
-    QTest::newRow("2p") << 2 << true;
-    QTest::newRow("4") << 4 << false;
-    QTest::newRow("4p") << 4 << true;
-    QTest::newRow("5") << 5 << false;
-    QTest::newRow("5p") << 5 << true;
-    QTest::newRow("6") << 6 << false;
-    QTest::newRow("6p") << 6 << true;
-    QTest::newRow("8") << 8 << false;
-    QTest::newRow("8p") << 8 << true;
-    QTest::newRow("10") << 10 << false;
-    QTest::newRow("10p") << 10 << true;
-    QTest::newRow("25") << 25 << false;
-    QTest::newRow("25p") << 25 << true;
-    QTest::newRow("100") << 100 << false;
-    QTest::newRow("100p") << 100 << true;
-    QTest::newRow("500") << 500 << false;
-    QTest::newRow("500p") << 500 << true;
+    BOBUIest::newRow("1") << 1 << false;
+    BOBUIest::newRow("1p") << 1 << true;
+    BOBUIest::newRow("2") << 2 << false;
+    BOBUIest::newRow("2p") << 2 << true;
+    BOBUIest::newRow("4") << 4 << false;
+    BOBUIest::newRow("4p") << 4 << true;
+    BOBUIest::newRow("5") << 5 << false;
+    BOBUIest::newRow("5p") << 5 << true;
+    BOBUIest::newRow("6") << 6 << false;
+    BOBUIest::newRow("6p") << 6 << true;
+    BOBUIest::newRow("8") << 8 << false;
+    BOBUIest::newRow("8p") << 8 << true;
+    BOBUIest::newRow("10") << 10 << false;
+    BOBUIest::newRow("10p") << 10 << true;
+    BOBUIest::newRow("25") << 25 << false;
+    BOBUIest::newRow("25p") << 25 << true;
+    BOBUIest::newRow("100") << 100 << false;
+    BOBUIest::newRow("100p") << 100 << true;
+    BOBUIest::newRow("500") << 500 << false;
+    BOBUIest::newRow("500p") << 500 << true;
 }
 
 void tst_NetworkStressTest::namGet()
@@ -708,7 +708,7 @@ void tst_NetworkStressTest::namGet()
         url.setScheme(QStringLiteral("http"));
         url.setHost(hostname);
         url.setPort(port);
-        url.setPath(QStringLiteral("/qtest/bigfile"));
+        url.setPath(QStringLiteral("/bobuiest/bigfile"));
         QNetworkRequest req(url);
         req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, pipelineAllowed);
 
@@ -718,13 +718,13 @@ void tst_NetworkStressTest::namGet()
             QNetworkReply *r = manager.get(req);
 
             connect(r, SIGNAL(readyRead()), SLOT(slotReadAll()));
-            QTestEventLoop::instance().connect(r, SIGNAL(finished()), SLOT(exitLoop()));
+            BOBUIestEventLoop::instance().connect(r, SIGNAL(finished()), SLOT(exitLoop()));
 
             replies[j] = QSharedPointer<QNetworkReply>(r);
         }
 
         while (!timeout.hasExpired(halfMinute)) {
-            QTestEventLoop::instance().enterLoop(10);
+            BOBUIestEventLoop::instance().enterLoop(10);
             int done = 0;
             for (int j = 0; j < parallelAttempts; ++j)
                 done += replies[j]->isFinished() ? 1 : 0;
@@ -744,6 +744,6 @@ void tst_NetworkStressTest::namGet()
     qDebug() << "Average transfer rate was" << (totalBytes / 1024.0 / 1024 * 1000 / outerTimer.elapsed()) << "MB/s";
 }
 
-QTEST_MAIN(tst_NetworkStressTest);
+BOBUIEST_MAIN(tst_NetworkStressTest);
 
 #include "tst_network_stresstest.moc"

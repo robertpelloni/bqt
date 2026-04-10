@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(combobox))
+BOBUI += widgets
+requires(bobuiConfig(combobox))
 
 HEADERS       = norwegianwoodstyle.h \
                 widgetgallery.h
@@ -9,5 +9,5 @@ SOURCES       = main.cpp \
 RESOURCES     = styles.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/widgets/styles
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/widgets/styles
 INSTALLS += target

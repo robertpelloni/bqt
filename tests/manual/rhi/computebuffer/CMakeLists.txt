@@ -1,17 +1,17 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## computebuffer Binary:
 #####################################################################
 
-qt_internal_add_manual_test(computebuffer
+bobui_internal_add_manual_test(computebuffer
     GUI
     SOURCES
         computebuffer.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 # Resources:
@@ -21,7 +21,7 @@ set(computebuffer_resource_files
     "main.vert.qsb"
 )
 
-qt_internal_add_resource(computebuffer "computebuffer"
+bobui_internal_add_resource(computebuffer "computebuffer"
     PREFIX
         "/"
     FILES

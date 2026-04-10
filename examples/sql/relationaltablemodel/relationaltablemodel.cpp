@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
-#include <QtSql>
+#include <BobUIWidgets>
+#include <BobUISql>
 
 #include "../connection.h"
 
@@ -22,19 +22,19 @@ void initializeModel(QSqlRelationalTableModel *model)
 //! [2]
 
 //! [3]
-    model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    model->setHeaderData(1, Qt::Horizontal, QObject::tr("Name"));
-    model->setHeaderData(2, Qt::Horizontal, QObject::tr("City"));
-    model->setHeaderData(3, Qt::Horizontal, QObject::tr("Country"));
+    model->setHeaderData(0, BobUI::Horizontal, QObject::tr("ID"));
+    model->setHeaderData(1, BobUI::Horizontal, QObject::tr("Name"));
+    model->setHeaderData(2, BobUI::Horizontal, QObject::tr("City"));
+    model->setHeaderData(3, BobUI::Horizontal, QObject::tr("Country"));
 //! [3]
 
     model->select();
 }
 
-std::unique_ptr<QTableView> createView(const QString &title, QSqlTableModel *model)
+std::unique_ptr<BOBUIableView> createView(const QString &title, QSqlTableModel *model)
 {
 //! [4]
-    std::unique_ptr<QTableView> view{new QTableView};
+    std::unique_ptr<BOBUIableView> view{new BOBUIableView};
     view->setModel(model);
     view->setItemDelegate(new QSqlRelationalDelegate(view.get()));
 //! [4]
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     initializeModel(&model);
 
-    std::unique_ptr<QTableView> view = createView(QObject::tr("Relational Table Model"), &model);
+    std::unique_ptr<BOBUIableView> view = createView(QObject::tr("Relational Table Model"), &model);
     view->show();
 
     return app.exec();

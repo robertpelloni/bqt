@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(listview))
+BOBUI += widgets
+requires(bobuiConfig(listview))
 
 SOURCES   = adddialog.cpp \
             addresswidget.cpp \
@@ -14,5 +14,5 @@ HEADERS   = adddialog.h \
             tablemodel.h
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/addressbook
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/addressbook
 INSTALLS += target

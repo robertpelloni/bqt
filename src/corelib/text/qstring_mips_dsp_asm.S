@@ -1,8 +1,8 @@
 // Copyright (C) 2013 Imagination Technologies Limited, www.imgtec.com
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
-#include "../../gui/painting/qt_mips_asm_dsp_p.h"
+#include "../../gui/painting/bobui_mips_asm_dsp_p.h"
 
 .macro EXTRACT_HALVES_x2 src1, src2, hi_1, hi_2
 #if defined(__MIPSEL) && __MIPSEL
@@ -19,7 +19,7 @@
 .endm
 
 
-LEAF_MIPS_DSP(qt_ucstrncmp_mips_dsp_asm)
+LEAF_MIPS_DSP(bobui_ucstrncmp_mips_dsp_asm)
 /*
  * Arguments:
  *   a0 - string_a (uint16_t*)
@@ -210,13 +210,13 @@ LEAF_MIPS_DSP(qt_ucstrncmp_mips_dsp_asm)
 4:  jr     ra
      move  v0, t3
 
-END(qt_ucstrncmp_mips_dsp_asm)
+END(bobui_ucstrncmp_mips_dsp_asm)
 
 
 #if defined(__mips_dspr2)
-LEAF_MIPS_DSPR2(qt_fromlatin1_mips_asm_unroll8)
+LEAF_MIPS_DSPR2(bobui_fromlatin1_mips_asm_unroll8)
 #else
-LEAF_MIPS_DSP(qt_fromlatin1_mips_asm_unroll8)
+LEAF_MIPS_DSP(bobui_fromlatin1_mips_asm_unroll8)
 #endif
 
     andi   t0, a1, 0x3
@@ -313,10 +313,10 @@ LEAF_MIPS_DSP(qt_fromlatin1_mips_asm_unroll8)
     jr     ra
      nop
 
-END(qt_fromlatin1_mips_asm_unroll8)
+END(bobui_fromlatin1_mips_asm_unroll8)
 
 
-LEAF_MIPS_DSP(qt_fromlatin1_mips_asm_unroll4)
+LEAF_MIPS_DSP(bobui_fromlatin1_mips_asm_unroll4)
 /*
  * Arguments:
  *   a0 - dst (uint16_t*)
@@ -358,10 +358,10 @@ LEAF_MIPS_DSP(qt_fromlatin1_mips_asm_unroll4)
 0:  jr     ra
      nop
 
-END(qt_fromlatin1_mips_asm_unroll4)
+END(bobui_fromlatin1_mips_asm_unroll4)
 
 
-LEAF_MIPS_DSP(qt_toLatin1_mips_dsp_asm)
+LEAF_MIPS_DSP(bobui_toLatin1_mips_dsp_asm)
   /*
    * a0 - dst
    * a1 - src
@@ -408,5 +408,5 @@ LEAF_MIPS_DSP(qt_toLatin1_mips_dsp_asm)
     jr     ra
      nop
 
-END(qt_toLatin1_mips_dsp_asm)
+END(bobui_toLatin1_mips_dsp_asm)
 

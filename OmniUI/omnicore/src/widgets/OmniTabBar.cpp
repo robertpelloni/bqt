@@ -12,7 +12,7 @@ OmniTabBar::OmniTabBar(QQuickItem *parent)
       m_hoveredIndex(-1)
 {
     setObjectName("OmniTabBar");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setAcceptHoverEvents(true);
     setFlag(ItemHasContents, true);
     
@@ -156,17 +156,17 @@ void OmniTabBar::paint(QPainter *painter) {
             }
         } else {
             path.addRoundedRect(rect, 4, 4); // Standard tabs
-            painter->setPen(Qt::NoPen);
+            painter->setPen(BobUI::NoPen);
             painter->fillPath(path, baseColor);
         }
 
         // Draw text
-        painter->setPen(isSelected ? Qt::white : themeMgr->textColor());
+        painter->setPen(isSelected ? BobUI::white : themeMgr->textColor());
         QFont f = painter->font();
         f.setPixelSize(12);
         if (currentTheme == OmniThemeManager::Cyberpunk) f.setItalic(true);
         painter->setFont(f);
         
-        painter->drawText(rect, Qt::AlignCenter, m_tabs[i]);
+        painter->drawText(rect, BobUI::AlignCenter, m_tabs[i]);
     }
 }

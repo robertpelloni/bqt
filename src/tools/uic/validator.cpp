@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "validator.h"
 #include "driver.h"
 #include "ui4.h"
 #include "uic.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Validator::Validator(Uic *uic)   :
     m_driver(uic->driver())
@@ -53,4 +53,4 @@ void Validator::acceptAction(DomAction *node)
     TreeWalker::acceptAction(node);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

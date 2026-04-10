@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAFILEDIALOGHELPER_H
 #define QCOCOAFILEDIALOGHELPER_H
 
 #include <QObject>
 #include <qpa/qplatformdialoghelper.h>
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
-QT_DECLARE_NAMESPACED_OBJC_INTERFACE(QNSOpenSavePanelDelegate, NSObject<NSOpenSavePanelDelegate>)
+BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(QNSOpenSavePanelDelegate, NSObject<NSOpenSavePanelDelegate>)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QEventLoop;
 class QFileDialog;
@@ -27,7 +27,7 @@ public:
 
     bool defaultNameFilterDisables() const override;
 
-    bool show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent) override;
+    bool show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent) override;
     void hide() override;
     void setDirectory(const QUrl &directory) override;
     QUrl directory() const override;
@@ -49,6 +49,6 @@ private:
     QEventLoop *m_eventLoop = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCOCOAFILEDIALOGHELPER_H

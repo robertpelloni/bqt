@@ -1,22 +1,22 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/private/quniquehandle_types_p.h>
+#include <BobUICore/private/quniquehandle_types_p.h>
 
-#include "qplatformdefs.h" // For QT_CLOSE
+#include "qplatformdefs.h" // For BOBUI_CLOSE
 
 #ifdef Q_OS_WIN
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 #endif
 
 #ifdef Q_OS_UNIX
-#  include <QtCore/private/qcore_unix_p.h> // for qt_safe_close
+#  include <BobUICore/private/qcore_unix_p.h> // for bobui_safe_close
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtUniqueHandleTraits {
+namespace BobUIUniqueHandleTraits {
 
 #ifdef Q_OS_WIN
 
@@ -35,7 +35,7 @@ bool NullHandleTraits::close(Type handle) noexcept
 bool FileDescriptorHandleTraits::close(Type handle)
 {
     // not noexcept because close() is a POSIX cancellation point
-    return QT_CLOSE(handle) == 0;
+    return BOBUI_CLOSE(handle) == 0;
 }
 
 bool FILEHandleTraits::close(Type handle)
@@ -44,12 +44,12 @@ bool FILEHandleTraits::close(Type handle)
     return ::fclose(handle);
 }
 
-} // namespace QtUniqueHandleTraits
+} // namespace BobUIUniqueHandleTraits
 
 #ifdef Q_OS_UNIX
 
-using QUniqueFileDescriptorHandle = QUniqueHandle<QtUniqueHandleTraits::FileDescriptorHandleTraits>;
+using QUniqueFileDescriptorHandle = QUniqueHandle<BobUIUniqueHandleTraits::FileDescriptorHandleTraits>;
 
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

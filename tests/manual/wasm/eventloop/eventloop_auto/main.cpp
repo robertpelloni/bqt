@@ -1,15 +1,15 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QEvent>
-#include <QtCore/QMutex>
-#include <QtCore/QObject>
-#include <QtCore/QThread>
-#include <QtCore/QTimer>
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QEvent>
+#include <BobUICore/QMutex>
+#include <BobUICore/QObject>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/private/qstdweb_p.h>
 
-#include <qtwasmtestlib.h>
+#include <bobuiwasmtestlib.h>
 
 #include "emscripten.h"
 
@@ -23,7 +23,7 @@ private slots:
     void timerMainThread();
     void timerMainThreadMultiple();
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void postEventSecondaryThread();
     void postEventSecondaryThreads();
     void postEventToSecondaryThread();
@@ -37,7 +37,7 @@ private slots:
 private:
 // Disabled test function: Asyncify wait on pthread_join is not supported,
 // see https://github.com/emscripten-core/emscripten/issues/9910
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     void threadAsyncifyWait();
 #endif
 };
@@ -96,7 +96,7 @@ public:
         }();
 
         if (finalDeref)
-           QtWasmTest::completeTestFunction();
+           BobUIWasmTest::completeTestFunction();
     }
 private:
     CompleteTestFunctionRefGuard() { };
@@ -105,18 +105,18 @@ private:
     int m_counter = 0;
 };
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
-class TestThread : public QThread
+class TestThread : public BOBUIhread
 {
 public:
-    static QThread *create(std::function<void()> started, std::function<void()> finished)
+    static BOBUIhread *create(std::function<void()> started, std::function<void()> finished)
     {
         TestThread *thread = new TestThread();
-        connect(thread, &QThread::started, [started]() {
+        connect(thread, &BOBUIhread::started, [started]() {
             started();
         });
-        connect(thread, &QThread::finished, [thread, finished]() {
+        connect(thread, &BOBUIhread::finished, [thread, finished]() {
             finished();
             thread->deleteLater();
         });
@@ -131,15 +131,15 @@ public:
 void WasmEventDispatcherTest::postEventMainThread()
 {
     QCoreApplication::postEvent(EventTarget::create([](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     }), EventTarget::createEvent());
 }
 
 // Create a timer on the main thread and verify that it fires
 void WasmEventDispatcherTest::timerMainThread()
 {
-    QTimer::singleShot(timerTimeout, [](){
-        QtWasmTest::completeTestFunction();
+    BOBUIimer::singleShot(timerTimeout, [](){
+        BobUIWasmTest::completeTestFunction();
     });
 }
 
@@ -149,25 +149,25 @@ void WasmEventDispatcherTest::timerMainThreadMultiple()
     int timers = 10;
     for (int i = 0; i < timers; ++i) {
         completeGuard->ref();
-        QTimer::singleShot(timerTimeout * i, [completeGuard](){
+        BOBUIimer::singleShot(timerTimeout * i, [completeGuard](){
             completeGuard->deref();
         });
     }
 }
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 
 // Post event on a secondary thread and verify that it is processed.
 void WasmEventDispatcherTest::postEventSecondaryThread()
 {
     auto started = [](){
         QCoreApplication::postEvent(EventTarget::create([](){
-            QThread::currentThread()->quit();
+            BOBUIhread::currentThread()->quit();
         }), EventTarget::createEvent());
     };
 
     auto finished = [](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     };
 
     TestThread::create(started, finished);
@@ -178,12 +178,12 @@ void WasmEventDispatcherTest::postEventToSecondaryThread()
 {
     auto started = [](){};
     auto finished = [](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     };
 
-    QThread *t = TestThread::create(started, finished);
+    BOBUIhread *t = TestThread::create(started, finished);
     EventTarget *target = EventTarget::create([](){
-        QThread::currentThread()->quit();
+        BOBUIhread::currentThread()->quit();
     });
     target->moveToThread(t);
     QCoreApplication::postEvent(target, EventTarget::createEvent());
@@ -198,7 +198,7 @@ void WasmEventDispatcherTest::postEventSecondaryThreads()
 
     auto started = [](){
         QCoreApplication::postEvent(EventTarget::create([](){
-            QThread::currentThread()->quit();
+            BOBUIhread::currentThread()->quit();
         }), EventTarget::createEvent());
     };
 
@@ -222,13 +222,13 @@ void WasmEventDispatcherTest::postEventSecondaryThreads()
 void WasmEventDispatcherTest::timerSecondaryThread()
 {
     auto started = [](){
-        QTimer::singleShot(timerTimeout, [](){
-            QThread::currentThread()->quit();
+        BOBUIimer::singleShot(timerTimeout, [](){
+            BOBUIhread::currentThread()->quit();
         });
     };
 
     auto finished = [](){
-        QtWasmTest::completeTestFunction();
+        BobUIWasmTest::completeTestFunction();
     };
 
     TestThread::create(started, finished);
@@ -240,7 +240,7 @@ void WasmEventDispatcherTest::timerSecondaryThread()
 void WasmEventDispatcherTest::postEventAsyncify()
 {
     if (!qstdweb::haveAsyncify()) {
-        QtWasmTest::completeTestFunction(QtWasmTest::TestResult::Skip, "requires asyncify");
+        BobUIWasmTest::completeTestFunction(BobUIWasmTest::TestResult::Skip, "requires asyncify");
         return;
     }
 
@@ -250,31 +250,31 @@ void WasmEventDispatcherTest::postEventAsyncify()
     }), EventTarget::createEvent());
     loop.exec();
 
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 
 // Create a timer on the main thread and asyncify wait for it
 void WasmEventDispatcherTest::timerAsyncify()
 {
     if (!qstdweb::haveAsyncify()) {
-        QtWasmTest::completeTestFunction(QtWasmTest::TestResult::Skip, "requires asyncify");
+        BobUIWasmTest::completeTestFunction(BobUIWasmTest::TestResult::Skip, "requires asyncify");
         return;
     }
 
     QEventLoop loop;
-    QTimer::singleShot(timerTimeout, [&loop](){
+    BOBUIimer::singleShot(timerTimeout, [&loop](){
         loop.quit();
     });
     loop.exec();
 
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 
 // Asyncify wait in a loop
 void WasmEventDispatcherTest::postEventAsyncifyLoop()
 {
     if (!qstdweb::haveAsyncify()) {
-        QtWasmTest::completeTestFunction(QtWasmTest::TestResult::Skip, "requires asyncify");
+        BobUIWasmTest::completeTestFunction(BobUIWasmTest::TestResult::Skip, "requires asyncify");
         return;
     }
 
@@ -286,41 +286,41 @@ void WasmEventDispatcherTest::postEventAsyncifyLoop()
         loop.exec();
     }
 
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 
-#if QT_CONFIG(thread)
-// Asyncify wait for QThread::wait() / pthread_join()
+#if BOBUI_CONFIG(thread)
+// Asyncify wait for BOBUIhread::wait() / pthread_join()
 void WasmEventDispatcherTest::threadAsyncifyWait()
 {
     if (!qstdweb::haveAsyncify())
-        QtWasmTest::completeTestFunction(QtWasmTest::TestResult::Skip, "requires asyncify");
+        BobUIWasmTest::completeTestFunction(BobUIWasmTest::TestResult::Skip, "requires asyncify");
 
     const int threadCount = 15;
 
-    QVector<QThread *> threads;
+    QVector<BOBUIhread *> threads;
     threads.reserve(threadCount);
 
     for (int i = 0; i < threadCount; ++i) {
-        QThread *thread = new QThread();
+        BOBUIhread *thread = new BOBUIhread();
         threads.push_back(thread);
         thread->start();
     }
 
     for (int i = 0; i < threadCount; ++i) {
-        QThread *thread = threads[i];
+        BOBUIhread *thread = threads[i];
         thread->wait();
         delete thread;
     }
 
-    QtWasmTest::completeTestFunction();
+    BobUIWasmTest::completeTestFunction();
 }
 #endif
 
 int main(int argc, char **argv)
 {
     auto testObject = std::make_shared<WasmEventDispatcherTest>();
-    QtWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
+    BobUIWasmTest::initTestCase<QCoreApplication>(argc, argv, testObject);
     return 0;
 }
 

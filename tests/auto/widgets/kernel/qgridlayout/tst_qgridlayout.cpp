@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#include <QtWidgets/qapplication.h>
-#include <QtWidgets/qlabel.h>
-#include <QtWidgets/qlayout.h>
-#include <QtWidgets/qlineedit.h>
-#include <QtWidgets/qproxystyle.h>
-#include <QtWidgets/qradiobutton.h>
-#include <QtWidgets/qsizepolicy.h>
-#include <QtWidgets/qstylefactory.h>
+#include <BobUIWidgets/qapplication.h>
+#include <BobUIWidgets/qlabel.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIWidgets/qlineedit.h>
+#include <BobUIWidgets/qproxystyle.h>
+#include <BobUIWidgets/qradiobutton.h>
+#include <BobUIWidgets/qsizepolicy.h>
+#include <BobUIWidgets/qstylefactory.h>
 
-#include <QtCore/qsharedpointer.h>
+#include <BobUICore/qsharedpointer.h>
 
-#include <QtTest/private/qtesthelpers_p.h>
+#include <BobUITest/private/bobuiesthelpers_p.h>
 
-using namespace QTestPrivate;
+using namespace BOBUIestPrivate;
 
 class tst_QGridLayout : public QObject
 {
@@ -44,11 +44,11 @@ private slots:
     void contentsRect();
     void distributeMultiCell();
 
-    void taskQTBUG_27420_takeAtShouldUnparentLayout();
-    void taskQTBUG_40609_addingWidgetToItsOwnLayout();
-    void taskQTBUG_40609_addingLayoutToItself();
-    void taskQTBUG_52357_spacingWhenItemIsHidden();
-    void taskQTBUG_91261_itemIndexRange();
+    void taskBOBUIBUG_27420_takeAtShouldUnparentLayout();
+    void taskBOBUIBUG_40609_addingWidgetToItsOwnLayout();
+    void taskBOBUIBUG_40609_addingLayoutToItself();
+    void taskBOBUIBUG_52357_spacingWhenItemIsHidden();
+    void taskBOBUIBUG_91261_itemIndexRange();
     void replaceWidget();
     void dontCrashWhenExtendsToEnd();
 };
@@ -91,16 +91,16 @@ ItemTestWidget::ItemTestWidget()
     , sp(new QSpacerItem(4, 4))
 {
     setObjectName("testWidget");
-    setWindowTitle(QTest::currentTestFunction());
+    setWindowTitle(BOBUIest::currentTestFunction());
 
-    w1->setPalette(QPalette(Qt::red));
+    w1->setPalette(QPalette(BobUI::red));
     testLayout->addWidget(w1, 0, 0);
 
     testLayout->addWidget(w2, 1, 1, 2, 2);
-    w2->setPalette(QPalette(Qt::green));
+    w2->setPalette(QPalette(BobUI::green));
 
     testLayout->addWidget(w3, 0, 1, 1, 2);
-    w3->setPalette(QPalette(Qt::blue));
+    w3->setPalette(QPalette(BobUI::blue));
 
     testLayout->addItem(sp, 1, 3, 2, 1);
 }
@@ -200,7 +200,7 @@ void tst_QGridLayout::badDistributionBug()
     ui.vboxLayout->setSpacing(0);
     ui.okButton->setFixedHeight(20);
     ui.moreButton->setFixedHeight(20);
-    ui.primaryGroupBox->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+    ui.primaryGroupBox->setAttribute(BobUI::WA_LayoutUsesWidgetRect);
     ui.primaryGroupBox->setFixedHeight(200);
 
     QSize minSize = dialog.layout()->minimumSize();
@@ -209,8 +209,8 @@ void tst_QGridLayout::badDistributionBug()
 
 void tst_QGridLayout::setMinAndMaxSize()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
-        QSKIP("This test crashes on Wayland, see also QTBUG-107184");
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
+        QSKIP("This test crashes on Wayland, see also BOBUIBUG-107184");
 
     QWidget widget;
     setFrameless(&widget);
@@ -221,7 +221,7 @@ void tst_QGridLayout::setMinAndMaxSize()
     widget.show();
 
     QWidget leftChild;
-    leftChild.setPalette(QPalette(Qt::red));
+    leftChild.setPalette(QPalette(BobUI::red));
     leftChild.setMinimumSize(100, 100);
     leftChild.setMaximumSize(200, 200);
     layout.addWidget(&leftChild, 0, 0);
@@ -230,7 +230,7 @@ void tst_QGridLayout::setMinAndMaxSize()
     QCOMPARE(widget.maximumSize(), leftChild.maximumSize());
 
     QWidget rightChild;
-    rightChild.setPalette(QPalette(Qt::green));
+    rightChild.setPalette(QPalette(BobUI::green));
     rightChild.setMinimumSize(100, 100);
     rightChild.setMaximumSize(200, 200);
     layout.addWidget(&rightChild, 0, 2);
@@ -328,7 +328,7 @@ void tst_QGridLayout::setMinAndMaxSize()
     QCOMPARE(widget.maximumSize(), leftChild.maximumSize());
 
     QWidget bottomChild(&widget);
-    bottomChild.setPalette(QPalette(Qt::green));
+    bottomChild.setPalette(QPalette(BobUI::green));
     bottomChild.setMinimumSize(100, 100);
     bottomChild.setMaximumSize(200, 200);
     layout.addWidget(&bottomChild, 1, 0);
@@ -381,7 +381,7 @@ void tst_QGridLayout::spacingAndSpacers()
     QSize expectedSizeHint;
 
     SizeHinter leftChild(100,100);
-    leftChild.setPalette(QPalette(Qt::red));
+    leftChild.setPalette(QPalette(BobUI::red));
     layout.addWidget(&leftChild, 0, 0);
     QApplication::sendPostedEvents(0, 0);
     expectedSizeHint = leftChild.sizeHint();
@@ -389,7 +389,7 @@ void tst_QGridLayout::spacingAndSpacers()
 
 
     SizeHinter rightChild(200,100);
-    rightChild.setPalette(QPalette(Qt::green));
+    rightChild.setPalette(QPalette(BobUI::green));
     layout.addWidget(&rightChild, 0, 2);
     QApplication::sendPostedEvents(0, 0);
     QCOMPARE(rightChild.sizeHint(), QSize(200,100));
@@ -421,11 +421,11 @@ void tst_QGridLayout::spacingAndSpacers()
 }
 
 
-class Qt42Style : public QProxyStyle
+class BobUI42Style : public QProxyStyle
 {
     Q_OBJECT
 public:
-    Qt42Style() : QProxyStyle(QStyleFactory::create("windows"))
+    BobUI42Style() : QProxyStyle(QStyleFactory::create("windows"))
     {
     }
 
@@ -438,7 +438,7 @@ public:
 
 };
 
-int Qt42Style::pixelMetric(PixelMetric metric, const QStyleOption * option,
+int BobUI42Style::pixelMetric(PixelMetric metric, const QStyleOption * option,
                            const QWidget * widget) const
 {
     switch (metric) {
@@ -527,21 +527,21 @@ int SizeHinterFrame::heightForWidth(int width) const
 void tst_QGridLayout::spacingsAndMargins_data()
 {
     // input
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<QSize>("sizehint");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<QSize>("sizehint");
     // expected
-    QTest::addColumn<PointList>("expectedpositions");
+    BOBUIest::addColumn<PointList>("expectedpositions");
 
     int child_offset_y = 11 + 100 + 6 + 9 ;
-    QTest::newRow("1x1 grid") << 1 << 1 << QSize(100, 100)
+    BOBUIest::newRow("1x1 grid") << 1 << 1 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         // children
                                         << QPoint( 20, child_offset_y)
                        );
 
-    QTest::newRow("2x1 grid") << 2 << 1 << QSize(100, 100)
+    BOBUIest::newRow("2x1 grid") << 2 << 1 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         << QPoint( 11 + 100 + 6, 11)
@@ -550,7 +550,7 @@ void tst_QGridLayout::spacingsAndMargins_data()
                                         << QPoint( 20 + 100 + 6, child_offset_y)
                                         );
 
-    QTest::newRow("3x1 grid") << 3 << 1 << QSize(100, 100)
+    BOBUIest::newRow("3x1 grid") << 3 << 1 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         << QPoint( 11 + 100 + 6, 11)
@@ -562,7 +562,7 @@ void tst_QGridLayout::spacingsAndMargins_data()
                                         );
 
     child_offset_y = 11 + 9 + 100 + 6 + 100 + 6;
-    QTest::newRow("1x2 grid") << 1 << 2 << QSize(100, 100)
+    BOBUIest::newRow("1x2 grid") << 1 << 2 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         << QPoint( 11, 11 + 100 + 6)
@@ -571,7 +571,7 @@ void tst_QGridLayout::spacingsAndMargins_data()
                                         << QPoint( 20, child_offset_y + 100 + 6)
                                         );
     child_offset_y = 11 + 9 + 100 + 6 + 100 + 6 + 100 + 6;
-    QTest::newRow("1x3 grid") << 1 << 3 << QSize(100, 100)
+    BOBUIest::newRow("1x3 grid") << 1 << 3 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         << QPoint( 11, 11 + 100 + 6)
@@ -583,7 +583,7 @@ void tst_QGridLayout::spacingsAndMargins_data()
                                         );
 
     child_offset_y = 11 + 9 + 100 + 6 + 100 + 6;
-    QTest::newRow("2x2 grid") << 2 << 2 << QSize(100, 100)
+    BOBUIest::newRow("2x2 grid") << 2 << 2 << QSize(100, 100)
                        << (PointList()  // toplevel
                                         << QPoint( 11, 11)
                                         << QPoint( 11 + 100 + 6, 11)
@@ -612,7 +612,7 @@ void tst_QGridLayout::spacingsAndMargins()
     QFETCH(PointList, expectedpositions);
 
 
-    QApplication::setStyle(new Qt42Style);
+    QApplication::setStyle(new BobUI42Style);
     QWidget toplevel;
     setFrameless(&toplevel);
 
@@ -651,7 +651,7 @@ void tst_QGridLayout::spacingsAndMargins()
     toplevel.showNormal();
     toplevel.adjustSize();
     QApplication::processEvents();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
     QSize topsize = toplevel.size();
     QSize minimumsize = vbox.totalMinimumSize();
@@ -720,51 +720,51 @@ Q_DECLARE_METATYPE(SizeInfoList)
 void tst_QGridLayout::minMaxSize_data()
 {
     // input
-    QTest::addColumn<QString>("stylename");
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<int>("sizePolicy");
-    QTest::addColumn<QSize>("fixedSize");
+    BOBUIest::addColumn<QString>("stylename");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<int>("sizePolicy");
+    BOBUIest::addColumn<QSize>("fixedSize");
     //input and expected output
-    QTest::addColumn<SizeInfoList>("sizeinfos");
+    BOBUIest::addColumn<SizeInfoList>("sizeinfos");
 
-    QTest::newRow("3x1 grid, extend to minimumSize") << QString() << 3 << 1
+    BOBUIest::newRow("3x1 grid, extend to minimumSize") << QString() << 3 << 1
                 << int(QSizePolicy::Minimum) << QSize(152, 50) << (SizeInfoList()
                 << SizeInfo(QRect(10, 10, 43, 30), QSize( 75, 75), QSize(0,0))
                 << SizeInfo(QRect(10 + 45, 10, 43, 30), QSize(75, 75), QSize( 0, 0))
                 << SizeInfo(QRect(10 + 45 + 44, 10, 42, 30), QSize(75, 75), QSize( 0, 0))
                 );
 
-    QTest::newRow("1x1 grid, extend to minimumSize") << QString() << 1 << 1
+    BOBUIest::newRow("1x1 grid, extend to minimumSize") << QString() << 1 << 1
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
                 << SizeInfo(QPoint(10, 10), QSize( 90, 90), QSize(100,100))
                 );
-    QTest::newRow("2x1 grid, extend to minimumSize") << QString() << 2 << 1
+    BOBUIest::newRow("2x1 grid, extend to minimumSize") << QString() << 2 << 1
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
                 << SizeInfo(QPoint(10, 10), QSize( 90, 90), QSize(100,100))
                 << SizeInfo(QPoint(10 + 100 + 1, 10), QSize( 90, 90))
                 );
-    QTest::newRow("2x1 grid, extend to minimumSize, windows") << QString::fromLatin1("windows") << 2 << 1
+    BOBUIest::newRow("2x1 grid, extend to minimumSize, windows") << QString::fromLatin1("windows") << 2 << 1
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
                 << SizeInfo(QPoint(11, 11), QSize( 90, 90), QSize(100,100))
                 << SizeInfo(QPoint(11 + 100 + 6, 11), QSize( 90, 90))
                 );
-    QTest::newRow("1x2 grid, extend to minimumSize") << QString() << 1 << 2
+    BOBUIest::newRow("1x2 grid, extend to minimumSize") << QString() << 1 << 2
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
                 << SizeInfo(QPoint(10, 10), QSize( 90, 90), QSize(100,100))
                 << SizeInfo(QPoint(10, 10 + 100 + 1), QSize( 90, 90))
                 );
-    QTest::newRow("2x1 grid, crop to maximumSize") << QString() << 2 << 1
+    BOBUIest::newRow("2x1 grid, crop to maximumSize") << QString() << 2 << 1
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
             << SizeInfo(QPoint(10, 10), QSize(110,110), QSize(), QSize(100, 100))
             << SizeInfo(QPoint(10 + 100 + 1, 10), QSize( 90, 90))
             );
-    QTest::newRow("1x2 grid, crop to maximumSize") << QString() << 1 << 2
+    BOBUIest::newRow("1x2 grid, crop to maximumSize") << QString() << 1 << 2
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
             << SizeInfo(QPoint(10, 10), QSize(110,110), QSize(), QSize(100, 100))
             << SizeInfo(QPoint(10, 10 + 100 + 1), QSize( 90, 90))
             );
-    QTest::newRow("1x3 grid, heightForWidth") << QString() << 1 << 3
+    BOBUIest::newRow("1x3 grid, heightForWidth") << QString() << 1 << 3
                 << int(QSizePolicy::Preferred) << QSize() << (SizeInfoList()
             << SizeInfo(QPoint(10, 10), QSize(), QSize(200,100), QSize())
             << SizeInfo(QPoint(10, 10 + 100 + 1), QSize(100,100), QSize(), QSize(), 100*100)
@@ -788,7 +788,7 @@ void tst_QGridLayout::minMaxSize()
 
     QStyle *style = 0;
     if (stylename.isEmpty()) {
-        Qt42Style *s = new Qt42Style;
+        BobUI42Style *s = new BobUI42Style;
         s->margin_toplevel = 10;
         s->margin = 5;
         s->spacing = 1;
@@ -796,13 +796,13 @@ void tst_QGridLayout::minMaxSize()
     }else{
         style = QStyleFactory::create(stylename);
         if (!style) {
-            QSKIP( qPrintable(QString::fromLatin1("Qt has been compiled without style: %1").arg(stylename)));
+            QSKIP( qPrintable(QString::fromLatin1("BobUI has been compiled without style: %1").arg(stylename)));
         }
     }
     QApplication::setStyle(style);
     QWidget toplevel;
-    toplevel.setWindowTitle(QLatin1String(QTest::currentTestFunction())
-                            + QLatin1Char(' ') + QLatin1String(QTest::currentDataTag()));
+    toplevel.setWindowTitle(QLatin1String(BOBUIest::currentTestFunction())
+                            + QLatin1Char(' ') + QLatin1String(BOBUIest::currentDataTag()));
     setFrameless(&toplevel);
     QGridLayout *grid = new QGridLayout;
     if (fixedSize.isValid()) {
@@ -816,7 +816,7 @@ void tst_QGridLayout::minMaxSize()
     for (int pass = 0; pass < 2; ++pass) {
         toplevel.hide();
         QApplication::processEvents();
-        QTest::qWait(20);
+        BOBUIest::qWait(20);
         // Test if removeItem uninitializes data properly
         while (grid->count()) {
             QLayoutItem *item = grid->itemAt(0);
@@ -849,14 +849,14 @@ void tst_QGridLayout::minMaxSize()
         }
 
         toplevel.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+        QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
         toplevel.adjustSize();
-        QTest::qWait(240);                              // wait for the implicit adjustSize
+        BOBUIest::qWait(240);                              // wait for the implicit adjustSize
         // If the following fails we might have to wait longer.
         // If that does not help there is likely a problem with the implicit adjustSize in show()
         if (!fixedSize.isValid()) {
             // Note that this can fail if the desktop has large fonts on windows.
-            QTRY_COMPARE(toplevel.size(), toplevel.sizeHint());
+            BOBUIRY_COMPARE(toplevel.size(), toplevel.sizeHint());
         }
         // We are relying on the order here...
         for (int pi = 0; pi < sizehinters.size(); ++pi) {
@@ -889,7 +889,7 @@ public:
 
     int layoutSpacing(QSizePolicy::ControlType control1,
                       QSizePolicy::ControlType control2,
-                      Qt::Orientation orientation,
+                      BobUI::Orientation orientation,
                       const QStyleOption *option = nullptr,
                       const QWidget *widget = nullptr) const override;
 
@@ -922,11 +922,11 @@ QRect CustomLayoutStyle::subElementRect(SubElement sr, const QStyleOption *opt,
 
 int CustomLayoutStyle::layoutSpacing(QSizePolicy::ControlType control1,
                                 QSizePolicy::ControlType control2,
-                                Qt::Orientation orientation,
+                                BobUI::Orientation orientation,
                                 const QStyleOption * /*option = nullptr*/,
                                 const QWidget * /*widget = nullptr*/) const
 {
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         switch (CT2(control1, control2)) {
             case CT1(QSizePolicy::PushButton):
                 return 2;
@@ -974,29 +974,29 @@ int CustomLayoutStyle::pixelMetric(PixelMetric metric, const QStyleOption * opti
 void tst_QGridLayout::styleDependentSpacingsAndMargins_data()
 {
     // input
-    QTest::addColumn<int>("columns");
-    QTest::addColumn<int>("rows");
-    QTest::addColumn<QSize>("sizehint");
+    BOBUIest::addColumn<int>("columns");
+    BOBUIest::addColumn<int>("rows");
+    BOBUIest::addColumn<QSize>("sizehint");
     // expected
-    QTest::addColumn<PointList>("expectedpositions");
+    BOBUIest::addColumn<PointList>("expectedpositions");
 
-    QTest::newRow("1x1 grid") << 1 << 1 << QSize(100, 100)
+    BOBUIest::newRow("1x1 grid") << 1 << 1 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3) );
-    QTest::newRow("2x1 grid") << 2 << 1 << QSize(100, 100)
+    BOBUIest::newRow("2x1 grid") << 2 << 1 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3)
                                        << QPoint(0+100+5, 3));
-    QTest::newRow("3x1 grid") << 3 << 1 << QSize(100, 100)
+    BOBUIest::newRow("3x1 grid") << 3 << 1 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3)
                                        << QPoint(0+100+5, 3)
                                        << QPoint(0 + 2*105, 3));
-    QTest::newRow("1x2 grid") << 1 << 2 << QSize(100, 100)
+    BOBUIest::newRow("1x2 grid") << 1 << 2 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3)
                                        << QPoint(0, 3+100+10));
-    QTest::newRow("1x3 grid") << 1 << 3 << QSize(100, 100)
+    BOBUIest::newRow("1x3 grid") << 1 << 3 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3)
                                        << QPoint(0, 3+100+10)
                                        << QPoint(0, 3+2*110));
-    QTest::newRow("2x2 grid") << 2 << 2 << QSize(100, 100)
+    BOBUIest::newRow("2x2 grid") << 2 << 2 << QSize(100, 100)
                        << (PointList() << QPoint(0, 3) << QPoint(0+100+5, 3)
                                        << QPoint(0, 3+100+10) << QPoint(0+100+5, 3+100+10));
 }
@@ -1036,12 +1036,12 @@ void tst_QGridLayout::styleDependentSpacingsAndMargins()
 
 void tst_QGridLayout::layoutSpacing_data()
 {
-    QTest::addColumn<QWidget*>("widget");
+    BOBUIest::addColumn<QWidget*>("widget");
     // expected
-    QTest::addColumn<PointList>("expectedpositions");
-    QTest::addColumn<int>("hSpacing");
-    QTest::addColumn<int>("vSpacing");
-    QTest::addColumn<bool>("customSubElementRect");
+    BOBUIest::addColumn<PointList>("expectedpositions");
+    BOBUIest::addColumn<int>("hSpacing");
+    BOBUIest::addColumn<int>("vSpacing");
+    BOBUIest::addColumn<bool>("customSubElementRect");
 
     CustomLayoutStyle *style = new CustomLayoutStyle();
     {
@@ -1057,22 +1057,22 @@ void tst_QGridLayout::layoutSpacing_data()
         QRadioButton *rb1 = new QRadioButton(QLatin1String("Radio 1"), w);
         QRadioButton *rb2 = new QRadioButton(QLatin1String("Radio 2"), w);
         QRadioButton *rb3 = new QRadioButton(QLatin1String("Radio 3"), w);
-        layout->addWidget(rb1, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(rb2, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(rb3, 0, Qt::AlignTop | Qt::AlignLeft);
+        layout->addWidget(rb1, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(rb2, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(rb3, 0, BobUI::AlignTop | BobUI::AlignLeft);
 
         QPushButton *b1 = new QPushButton(QLatin1String("Push 1"), w);
         QPushButton *b2 = new QPushButton(QLatin1String("Push 2"), w);
         QPushButton *b3 = new QPushButton(QLatin1String("Push 3"), w);
-        layout->addWidget(b1, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(b2, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(b3, 0, Qt::AlignTop | Qt::AlignLeft);
+        layout->addWidget(b1, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(b2, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(b3, 0, BobUI::AlignTop | BobUI::AlignLeft);
 
         layout->addStretch(1);
         w->setLayout(layout);
         int rh = rb1->sizeHint().height();
         int ph = b1->sizeHint().height();
-        QTest::newRow("1x6, radio + push buttons")
+        BOBUIest::newRow("1x6, radio + push buttons")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0, 3 + rh + 2)
@@ -1094,22 +1094,22 @@ void tst_QGridLayout::layoutSpacing_data()
         QLineEdit *le1 = new QLineEdit(w);
         QLineEdit *le2 = new QLineEdit(w);
         QLineEdit *le3 = new QLineEdit(w);
-        layout->addWidget(le1, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(le2, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(le3, 0, Qt::AlignTop | Qt::AlignLeft);
+        layout->addWidget(le1, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(le2, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(le3, 0, BobUI::AlignTop | BobUI::AlignLeft);
 
         QPushButton *b1 = new QPushButton(QLatin1String("Push 1"), w);
         QPushButton *b2 = new QPushButton(QLatin1String("Push 2"), w);
         QPushButton *b3 = new QPushButton(QLatin1String("Push 3"), w);
-        layout->addWidget(b1, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(b2, 0, Qt::AlignTop | Qt::AlignLeft);
-        layout->addWidget(b3, 0, Qt::AlignTop | Qt::AlignLeft);
+        layout->addWidget(b1, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(b2, 0, BobUI::AlignTop | BobUI::AlignLeft);
+        layout->addWidget(b3, 0, BobUI::AlignTop | BobUI::AlignLeft);
 
         layout->addStretch(1);
         w->setLayout(layout);
         int lw = le1->sizeHint().width();
         int pw = b1->sizeHint().width();
-        QTest::newRow("6x1, line edit + push buttons")
+        BOBUIest::newRow("6x1, line edit + push buttons")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0 + lw + 5, 3)
@@ -1148,7 +1148,7 @@ void tst_QGridLayout::layoutSpacing_data()
         QSize psh = pb1->sizeHint();
         QSize gsh = g1->sizeHint();
 
-        QTest::newRow("subElementRect1")
+        BOBUIest::newRow("subElementRect1")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0, 3 + psh.height() + 10 - 10)
@@ -1177,7 +1177,7 @@ void tst_QGridLayout::layoutSpacing_data()
         layout->addWidget(pb1, 0, 0);
         layout->addWidget(pb2, 0, 1);
         layout->addWidget(pb3, 0, 2);
-        layout->addWidget(pb4, 1, 0, Qt::AlignTop);
+        layout->addWidget(pb4, 1, 0, BobUI::AlignTop);
 
 
         QFrame *f1 = new QFrame(w);
@@ -1185,17 +1185,17 @@ void tst_QGridLayout::layoutSpacing_data()
         f1->setMinimumSize(100, 20);
         f1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-        layout->addWidget(f1, 1, 1, Qt::AlignTop);
+        layout->addWidget(f1, 1, 1, BobUI::AlignTop);
 
 
         QPushButton *pb6 = new QPushButton(QLatin1String("Push 6"), w);
         QPushButton *pb7 = new QPushButton(QLatin1String("Push 7"), w);
         QPushButton *pb8 = new QPushButton(QLatin1String("Push 8"), w);
         QPushButton *pb9 = new QPushButton(QLatin1String("Push 9"), w);
-        layout->addWidget(pb6, 1, 2, Qt::AlignTop);
-        layout->addWidget(pb7, 2, 0, Qt::AlignTop);
-        layout->addWidget(pb8, 2, 1, Qt::AlignTop);
-        layout->addWidget(pb9, 2, 2, Qt::AlignTop);
+        layout->addWidget(pb6, 1, 2, BobUI::AlignTop);
+        layout->addWidget(pb7, 2, 0, BobUI::AlignTop);
+        layout->addWidget(pb8, 2, 1, BobUI::AlignTop);
+        layout->addWidget(pb9, 2, 2, BobUI::AlignTop);
 
         layout->setColumnStretch(2, 1);
         layout->setRowStretch(2, 1);
@@ -1211,7 +1211,7 @@ void tst_QGridLayout::layoutSpacing_data()
         r[2] = pb7->sizeHint().height();
 
 
-        QTest::newRow("subElementRect2")
+        BOBUIest::newRow("subElementRect2")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0 + c[0] + 5, 3)
@@ -1248,9 +1248,9 @@ void tst_QGridLayout::layoutSpacing_data()
 
         QPushButton *pb3 = new QPushButton(QLatin1String("Push 3"), w);
 
-        pb1->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-        g1->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-        pb3->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
+        pb1->setAttribute(BobUI::WA_LayoutUsesWidgetRect, true);
+        g1->setAttribute(BobUI::WA_LayoutUsesWidgetRect, true);
+        pb3->setAttribute(BobUI::WA_LayoutUsesWidgetRect, true);
         layout->addWidget(pb1);
         layout->addWidget(g1 );
         layout->addWidget(pb3);
@@ -1259,7 +1259,7 @@ void tst_QGridLayout::layoutSpacing_data()
         QSize psh = pb1->sizeHint();
         QSize gsh = g1->sizeHint();
 
-        QTest::newRow("subElementRect1, use widgetRect")
+        BOBUIest::newRow("subElementRect1, use widgetRect")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0, 3 + psh.height() + 10)
@@ -1288,9 +1288,9 @@ void tst_QGridLayout::layoutSpacing_data()
 
         QPushButton *pb3 = new QPushButton(QLatin1String("Push 3"), w);
 
-        pb1->setAttribute(Qt::WA_LayoutUsesWidgetRect, false);
-        g1->setAttribute(Qt::WA_LayoutUsesWidgetRect, false);
-        pb3->setAttribute(Qt::WA_LayoutUsesWidgetRect, false);
+        pb1->setAttribute(BobUI::WA_LayoutUsesWidgetRect, false);
+        g1->setAttribute(BobUI::WA_LayoutUsesWidgetRect, false);
+        pb3->setAttribute(BobUI::WA_LayoutUsesWidgetRect, false);
         layout->addWidget(pb1);
         layout->addWidget(g1 );
         layout->addWidget(pb3);
@@ -1299,7 +1299,7 @@ void tst_QGridLayout::layoutSpacing_data()
         QSize psh = pb1->sizeHint();
         QSize gsh = g1->sizeHint();
 
-        QTest::newRow("subElementRect1, use layoutItemRect")
+        BOBUIest::newRow("subElementRect1, use layoutItemRect")
                 << w << (PointList()
                 << QPoint(0, 3)
                 << QPoint(0, 3 + psh.height() + 10 - 10)
@@ -1339,7 +1339,7 @@ void tst_QGridLayout::layoutSpacing_data()
         w->setLayout(layout);
         int pw = up->sizeHint().width();
         int ph = up->sizeHint().height();
-        QTest::newRow("arrowpad with span")
+        BOBUIest::newRow("arrowpad with span")
                 << w << (PointList()
                 << QPoint(0 + pw + 5, 3)
                 << QPoint(0, 3 + ph + 10)
@@ -1383,7 +1383,7 @@ void tst_QGridLayout::layoutSpacing_data()
             int ph = up->sizeHint().height();
             QByteArray testName = "arrowpad with " + QByteArray::number(yoff)
                 + " empty rows, " + QByteArray::number(xoff) + " empty columns";
-            QTest::newRow(testName.constData())
+            BOBUIest::newRow(testName.constData())
                     << w << (PointList()
                     << QPoint(0 + pw + 5, 3)
                     << QPoint(0, 3 + ph + 10)
@@ -1415,7 +1415,7 @@ void tst_QGridLayout::layoutSpacing()
     widget->setParent(&toplevel);
     widget->resize(widget->sizeHint());
     toplevel.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&toplevel));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&toplevel));
 
     QLayout *layout = widget->layout();
     QVERIFY(layout);
@@ -1538,7 +1538,7 @@ void tst_QGridLayout::contentsRect()
     w.setLayout(&grid);
     grid.addWidget(new QPushButton(&w));
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
     int l, t, r, b;
     grid.getContentsMargins(&l, &t, &r, &b);
     QRect geom = grid.geometry();
@@ -1550,7 +1550,7 @@ void tst_QGridLayout::contentsRect()
 void tst_QGridLayout::distributeMultiCell()
 {
     QWidget w;
-    Qt42Style style;
+    BobUI42Style style;
     style.spacing = 9;
 
     w.setStyle(&style);
@@ -1573,7 +1573,7 @@ void tst_QGridLayout::distributeMultiCell()
     QCOMPARE(w.sizeHint().height(), 11 + 57 + 11);
 }
 
-void tst_QGridLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
+void tst_QGridLayout::taskBOBUIBUG_27420_takeAtShouldUnparentLayout()
 {
     QSharedPointer<QGridLayout> outer(new QGridLayout);
     QPointer<QGridLayout> inner = new QGridLayout;
@@ -1594,37 +1594,37 @@ void tst_QGridLayout::taskQTBUG_27420_takeAtShouldUnparentLayout()
         QVERIFY(!inner.isNull());
 }
 
-void tst_QGridLayout::taskQTBUG_40609_addingWidgetToItsOwnLayout(){
+void tst_QGridLayout::taskBOBUIBUG_40609_addingWidgetToItsOwnLayout(){
     QWidget widget;
     widget.setObjectName("9bb37ca762aeb7269b8");
     QGridLayout layout(&widget);
     layout.setObjectName("d631e91a35f2b66a6dff35");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add a null widget to QGridLayout/d631e91a35f2b66a6dff35");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add a null widget to QGridLayout/d631e91a35f2b66a6dff35");
     layout.addWidget(nullptr, 0, 0);
     QCOMPARE(layout.count(), 0);
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add parent widget QWidget/9bb37ca762aeb7269b8 to its child layout QGridLayout/d631e91a35f2b66a6dff35");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add parent widget QWidget/9bb37ca762aeb7269b8 to its child layout QGridLayout/d631e91a35f2b66a6dff35");
     layout.addWidget(&widget, 0, 0);
     QCOMPARE(layout.count(), 0);
 }
 
-void tst_QGridLayout::taskQTBUG_40609_addingLayoutToItself(){
+void tst_QGridLayout::taskBOBUIBUG_40609_addingLayoutToItself(){
     QWidget widget;
     widget.setObjectName("0373d417fffe2c59c6fe543");
     QGridLayout layout(&widget);
     layout.setObjectName("5d79e1b0aed83f100e3c2");
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add a null layout to QGridLayout/5d79e1b0aed83f100e3c2");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add a null layout to QGridLayout/5d79e1b0aed83f100e3c2");
     layout.addLayout(nullptr, 0, 0);
     QCOMPARE(layout.count(), 0);
 
-    QTest::ignoreMessage(QtWarningMsg, "QLayout: Cannot add layout QGridLayout/5d79e1b0aed83f100e3c2 to itself");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QLayout: Cannot add layout QGridLayout/5d79e1b0aed83f100e3c2 to itself");
     layout.addLayout(&layout, 0, 0);
     QCOMPARE(layout.count(), 0);
 }
 
-void tst_QGridLayout::taskQTBUG_52357_spacingWhenItemIsHidden()
+void tst_QGridLayout::taskBOBUIBUG_52357_spacingWhenItemIsHidden()
 {
     QWidget widget;
     setFrameless(&widget);
@@ -1638,13 +1638,13 @@ void tst_QGridLayout::taskQTBUG_52357_spacingWhenItemIsHidden()
     QPushButton button3;
     layout.addWidget(&button3, 0, 2);
     widget.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&widget));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&widget));
     int tempWidth = button1.width() + button2.width() + button3.width() + 2 * layout.spacing();
     button2.hide();
-    QTRY_COMPARE_WITH_TIMEOUT(tempWidth, button1.width() + button3.width() + layout.spacing(), 1000);
+    BOBUIRY_COMPARE_WITH_TIMEOUT(tempWidth, button1.width() + button3.width() + layout.spacing(), 1000);
 }
 
-void tst_QGridLayout::taskQTBUG_91261_itemIndexRange()
+void tst_QGridLayout::taskBOBUIBUG_91261_itemIndexRange()
 {
     QWidget widget;
     QGridLayout lay(&widget);
@@ -1706,7 +1706,7 @@ void tst_QGridLayout::replaceWidget()
         int x = n % 3;
         int y = n / 3;
         labels[n] = new QLabel(QLatin1String("label ") + QString::number(n));
-        Qt::Alignment align = (n % 3 ? Qt::AlignLeft : Qt::AlignRight);
+        BobUI::Alignment align = (n % 3 ? BobUI::AlignLeft : BobUI::AlignRight);
         l->addWidget(labels[n], x * 3, y * 3, (n % 2) + 1, (n + 1) % 2 + 1, align);
     }
     wdg.setLayout(l);
@@ -1716,7 +1716,7 @@ void tst_QGridLayout::replaceWidget()
         int i = l->indexOf(labels[n]);
         int fromRow, fromCol, fromRowSpan, fromColSpan;
         l->getItemPosition(i, &fromRow, &fromCol, &fromRowSpan, &fromColSpan);
-        Qt::Alignment fromAlign = l->itemAt(i)->alignment();
+        BobUI::Alignment fromAlign = l->itemAt(i)->alignment();
         // do replace
         QPushButton *pb = new QPushButton("replaced");
         QLayoutItem *olditem = l->replaceWidget(labels[n], pb);
@@ -1730,7 +1730,7 @@ void tst_QGridLayout::replaceWidget()
         QCOMPARE(fromCol, toCol);
         QCOMPARE(fromRowSpan, toRowSpan);
         QCOMPARE(fromColSpan, toColSpan);
-        Qt::Alignment toAlign = l->itemAt(i)->alignment();
+        BobUI::Alignment toAlign = l->itemAt(i)->alignment();
         QCOMPARE(fromAlign, toAlign);
         // clean up
         olditem->widget()->deleteLater();
@@ -1755,5 +1755,5 @@ void tst_QGridLayout::dontCrashWhenExtendsToEnd()
     l->setGeometry(QRect(0, 0, 200, 50));    // DONT CRASH HERE
 }
 
-QTEST_MAIN(tst_QGridLayout)
+BOBUIEST_MAIN(tst_QGridLayout)
 #include "tst_qgridlayout.moc"

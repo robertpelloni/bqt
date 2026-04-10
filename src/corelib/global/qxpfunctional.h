@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QXPFUNCTIONAL_H
 #define QXPFUNCTIONAL_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. Types and functions defined in this
+// This file is not part of the BobUI API. Types and functions defined in this
 // file can reliably be replaced by their std counterparts, once available.
 // You may use these definitions in your own code, but be aware that we
-// will remove them once Qt depends on the C++ version that supports
+// will remove them once BobUI depends on the C++ version that supports
 // them in namespace std. There will be NO deprecation warning, the
 // definitions will JUST go away.
 //
@@ -21,11 +21,11 @@
 // We mean it.
 //
 
-#include <QtCore/q23functional.h>
-#include <QtCore/q20type_traits.h>
+#include <BobUICore/q23functional.h>
+#include <BobUICore/q20type_traits.h>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace qxp {
 // like P0792r9's function_ref:
@@ -72,7 +72,7 @@ template <bool noex, class Const, class R, class... ArgTypes>
 class function_ref_base
 {
 protected:
-    QT_DECLARE_RO5_SMF_AS_DEFAULTED(function_ref_base)
+    BOBUI_DECLARE_RO5_SMF_AS_DEFAULTED(function_ref_base)
 
     using BoundEntityType = detail::BoundEntityType<Const>;
 
@@ -160,7 +160,7 @@ protected:
 
 } // namespace detail
 
-#define QT_SPECIALIZE_FUNCTION_REF(cv, noex) \
+#define BOBUI_SPECIALIZE_FUNCTION_REF(cv, noex) \
     template<class R, class... ArgTypes> \
     class function_ref<R(ArgTypes...) cv noexcept( noex )> \
         : private detail::function_ref_base< noex , cv void, R, ArgTypes...> \
@@ -173,12 +173,12 @@ protected:
     } \
     /* end */
 
-QT_SPECIALIZE_FUNCTION_REF(     , false);
-QT_SPECIALIZE_FUNCTION_REF(const, false);
-QT_SPECIALIZE_FUNCTION_REF(     , true );
-QT_SPECIALIZE_FUNCTION_REF(const, true );
+BOBUI_SPECIALIZE_FUNCTION_REF(     , false);
+BOBUI_SPECIALIZE_FUNCTION_REF(const, false);
+BOBUI_SPECIALIZE_FUNCTION_REF(     , true );
+BOBUI_SPECIALIZE_FUNCTION_REF(const, true );
 
-#undef QT_SPECIALIZE_FUNCTION_REF
+#undef BOBUI_SPECIALIZE_FUNCTION_REF
 
 // deduction guides [func.wrap.ref.deduct]
 
@@ -190,6 +190,6 @@ function_ref(F*) -> function_ref<F>;
 
 } // namespace qxp
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif /* QXPFUNCTIONAL_H */

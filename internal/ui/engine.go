@@ -116,6 +116,9 @@ func (e *Engine) initializeWindowManager() {
 		e.wm.SpawnManagedWindow("runtime-log", "Runtime Log", "Terminal", "Live runtime messages and execution notes.", f32.Pt(780, 320), f32.Pt(320, 200))
 		e.wm.SpawnManagedWindow("docs-pane", "Docs Pane", "Docs", "Framework notes and parity planning surfaces.", f32.Pt(740, 150), f32.Pt(300, 220))
 	}
+	if e.wm.ActiveWindow() == nil {
+		e.wm.ensureActiveVisible()
+	}
 }
 
 func (e *Engine) layout(gtx layout.Context) layout.Dimensions {

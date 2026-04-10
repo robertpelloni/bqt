@@ -1,7 +1,7 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qglobal.h"
 
@@ -14,7 +14,7 @@
    down to zero - but the clever compiler isn't quite smart enough to figure
    that out.
 */
-QT_WARNING_DISABLE_GCC("-Wfree-nonheap-object") // false positive tracking
+BOBUI_WARNING_DISABLE_GCC("-Wfree-nonheap-object") // false positive tracking
 #endif
 
 #if defined(Q_OS_MACOS)
@@ -34,8 +34,8 @@ QT_WARNING_DISABLE_GCC("-Wfree-nonheap-object") // false positive tracking
 #include "qlocale.h"
 #include "qlocale_p.h"
 #include "qlocale_tools_p.h"
-#include <private/qtools_p.h>
-#if QT_CONFIG(datetimeparser)
+#include <private/bobuiools_p.h>
+#if BOBUI_CONFIG(datetimeparser)
 #include "private/qdatetimeparser_p.h"
 #endif
 #include "qnamespace.h"
@@ -44,42 +44,42 @@ QT_WARNING_DISABLE_GCC("-Wfree-nonheap-object") // false positive tracking
 #include "qvariant.h"
 #include "qvarlengtharray.h"
 #include "qstringbuilder.h"
-#if QT_CONFIG(timezone)
-#   include "qtimezone.h"
+#if BOBUI_CONFIG(timezone)
+#   include "bobuiimezone.h"
 #endif
 #include "private/qnumeric_p.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 #include <cmath>
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 #   include "qmutex.h"
 #endif
 #ifdef Q_OS_WIN
-#   include <qt_windows.h>
+#   include <bobui_windows.h>
 #   include <time.h>
 #endif
 
 #include "private/qcalendarbackend_p.h"
 #include "private/qgregoriancalendar_p.h"
-#if QT_CONFIG(timezone) && QT_CONFIG(timezone_locale) && !QT_CONFIG(icu)
-#   include "private/qtimezonelocale_p.h"
+#if BOBUI_CONFIG(timezone) && BOBUI_CONFIG(timezone_locale) && !BOBUI_CONFIG(icu)
+#   include "private/bobuiimezonelocale_p.h"
 #endif
 
 #include <q20iterator.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 constexpr int QLocale::DefaultTwoDigitBaseYear;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QList<Qt::DayOfWeek>, QList_Qt__DayOfWeek)
-#ifndef QT_NO_SYSTEMLOCALE
-QT_IMPL_METATYPE_EXTERN_TAGGED(QSystemLocale::CurrencyToStringArgument,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QList<BobUI::DayOfWeek>, QList_BobUI__DayOfWeek)
+#ifndef BOBUI_NO_SYSTEMLOCALE
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QSystemLocale::CurrencyToStringArgument,
                                QSystemLocale__CurrencyToStringArgument)
 #endif
 
-using namespace Qt::StringLiterals;
-using namespace QtMiscUtils;
+using namespace BobUI::StringLiterals;
+using namespace BobUIMiscUtils;
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 Q_CONSTINIT static QSystemLocale *_systemLocale = nullptr;
 Q_CONSTINIT static QLocaleData systemLocaleData = {};
 #endif
@@ -99,12 +99,12 @@ static_assert(!ascii_isspace(uchar('\xA0')));   // NBSP (is a space but Latin 1,
 static_assert(!ascii_isspace(uchar('\377')));
 
 /******************************************************************************
-** Helpers for accessing Qt locale database
+** Helpers for accessing BobUI locale database
 */
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include "qlocale_data_p.h"
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 QLocale::Language QLocalePrivate::codeToLanguage(QStringView code,
                                                  QLocale::LanguageCodeTypes codeTypes) noexcept
@@ -181,13 +181,13 @@ QLocale::Language QLocalePrivate::codeToLanguage(QStringView code,
     return QLocale::AnyLanguage;
 }
 
-static qsizetype scriptIndex(QStringView code, Qt::CaseSensitivity cs) noexcept
+static qsizetype scriptIndex(QStringView code, BobUI::CaseSensitivity cs) noexcept
 {
     if (code.size() != 4)
         return -1;
 
     // Scripts are titlecased in script_code_list.
-    const bool fixCase = cs == Qt::CaseInsensitive;
+    const bool fixCase = cs == BobUI::CaseInsensitive;
     const unsigned char c0 = (fixCase ? code[0].toUpper() : code[0]).toLatin1();
     const unsigned char c1 = (fixCase ? code[1].toLower() : code[1]).toLatin1();
     const unsigned char c2 = (fixCase ? code[2].toLower() : code[2]).toLatin1();
@@ -208,7 +208,7 @@ static qsizetype scriptIndex(QStringView code, Qt::CaseSensitivity cs) noexcept
 
 QLocale::Script QLocalePrivate::codeToScript(QStringView code) noexcept
 {
-    qsizetype index = scriptIndex(code, Qt::CaseInsensitive);
+    qsizetype index = scriptIndex(code, BobUI::CaseInsensitive);
     return index < 0 ? QLocale::AnyScript : QLocale::Script(index);
 }
 
@@ -283,7 +283,7 @@ struct LikelyPair
 bool operator<(LikelyPair lhs, LikelyPair rhs)
 {
     // Must match the comparison LocaleDataWriter.likelySubtags() uses when
-    // sorting, see qtbase/util/locale_database.qlocalexml2cpp.py
+    // sorting, see bobuibase/util/locale_database.qlocalexml2cpp.py
     const auto compare = [](int lhs, int rhs) {
         // 0 sorts after all other values; lhs and rhs are passed ushort values.
         const int huge = 0x10000;
@@ -465,7 +465,7 @@ QByteArray QLocaleId::name(char separator) const
             (territory_id != QLocale::AnyTerritory
              ? territory_code_list + 3 * territory_id : nullptr);
     qsizetype len = langLen + (script ? 4 + 1 : 0) + (country ? (country[2] != 0 ? 3 : 2) + 1 : 0);
-    QByteArray name(len, Qt::Uninitialized);
+    QByteArray name(len, BobUI::Uninitialized);
     char *uc = name.data();
 
     auto langArray = lang.decode();
@@ -539,8 +539,8 @@ const QLocaleData *QLocaleData::dataForLocaleIndex(qsizetype index)
     return locale_data + index;
 }
 
-#if QT_CONFIG(timezone) && QT_CONFIG(timezone_locale) && !QT_CONFIG(icu)
-namespace QtTimeZoneLocale {
+#if BOBUI_CONFIG(timezone) && BOBUI_CONFIG(timezone_locale) && !BOBUI_CONFIG(icu)
+namespace BobUITimeZoneLocale {
 
 // Indices of locales obtained from the given by likely subtag fall-backs.
 QList<qsizetype> fallbackLocalesFor(qsizetype index)
@@ -587,7 +587,7 @@ QList<qsizetype> fallbackLocalesFor(qsizetype index)
     return result;
 }
 
-} // QtTimeZoneLocale
+} // BobUITimeZoneLocale
 #endif // timezone_locale && !icu
 
 qsizetype QLocaleData::findLocaleIndex(QLocaleId lid) noexcept
@@ -660,7 +660,7 @@ static bool validTag(QStringView tag)
     return tag.size() > 0;
 }
 
-bool qt_splitLocaleName(QStringView name,
+bool bobui_splitLocaleName(QStringView name,
                         QStringView *lang, QStringView *script, QStringView *land) noexcept
 {
     // Assume each of lang, script and land is nullptr or points to an empty QStringView.
@@ -684,7 +684,7 @@ bool qt_splitLocaleName(QStringView name,
             state = sep ? ScriptState : NoState;
             break;
         case ScriptState:
-            if (scriptIndex(tag, Qt::CaseSensitive) >= 0) {
+            if (scriptIndex(tag, BobUI::CaseSensitive) >= 0) {
                 if (script)
                     *script = tag;
                 state = sep ? CountryState : NoState;
@@ -710,11 +710,11 @@ QLocaleId QLocaleId::fromName(QStringView name) noexcept
     QStringView lang;
     QStringView script;
     QStringView land;
-    if (!qt_splitLocaleName(name, &lang, &script, &land))
+    if (!bobui_splitLocaleName(name, &lang, &script, &land))
         return { QLocale::C, 0, 0 };
 
     // POSIX is a variant, but looks like a territory.
-    if (land.compare("POSIX", Qt::CaseInsensitive) == 0)
+    if (land.compare("POSIX", BobUI::CaseInsensitive) == 0)
         return { QLocale::C, 0, 0 };
 
     QLocale::Language langId = QLocalePrivate::codeToLanguage(lang);
@@ -723,7 +723,7 @@ QLocaleId QLocaleId::fromName(QStringView name) noexcept
     return { langId, QLocalePrivate::codeToScript(script), QLocalePrivate::codeToTerritory(land) };
 }
 
-QString qt_readEscapedFormatString(QStringView format, qsizetype *idx)
+QString bobui_readEscapedFormatString(QStringView format, qsizetype *idx)
 {
     qsizetype &i = *idx;
 
@@ -768,12 +768,12 @@ QString qt_readEscapedFormatString(QStringView format, qsizetype *idx)
     characters at the start of \a s.
 
     \code
-    qt_repeatCount(u"a");   // == 1
-    qt_repeatCount(u"ab");  // == 1
-    qt_repeatCount(u"aab"); // == 2
+    bobui_repeatCount(u"a");   // == 1
+    bobui_repeatCount(u"ab");  // == 1
+    bobui_repeatCount(u"aab"); // == 2
     \endcode
 */
-qsizetype qt_repeatCount(QStringView s) noexcept
+qsizetype bobui_repeatCount(QStringView s) noexcept
 {
     if (s.isEmpty())
         return 0;
@@ -803,7 +803,7 @@ static constexpr QLocale::NumberOptions defaultNumberOptions(quint16 forLanguage
     return defaultNumberOptions(QLocale::Language(forLanguage));
 }
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
 /******************************************************************************
 ** Default system locale behavior
 */
@@ -899,11 +899,11 @@ static void updateSystemPrivate()
     if (default_data == &systemLocaleData)
         QLocalePrivate::s_generation.fetchAndAddRelaxed(1);
 }
-#endif // !QT_NO_SYSTEMLOCALE
+#endif // !BOBUI_NO_SYSTEMLOCALE
 
 static const QLocaleData *systemData(qsizetype *sysIndex = nullptr)
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     /*
       Copy over the information from the fallback locale and modify.
 
@@ -951,7 +951,7 @@ static const QLocaleData *defaultData()
 static qsizetype defaultIndex()
 {
     const QLocaleData *const data = defaultData();
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (data == &systemLocaleData) {
         // Work out a suitable index matching the system data, for use when
         // accessing calendar data, when not fetched from system.
@@ -959,7 +959,7 @@ static qsizetype defaultIndex()
     }
 #endif
 
-    using QtPrivate::q_points_into_range;
+    using BobUIPrivate::q_points_into_range;
     Q_ASSERT(q_points_into_range(data, locale_data));
     return data - locale_data;
 }
@@ -970,7 +970,7 @@ const QLocaleData *QLocaleData::c() noexcept
     return locale_data;
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 QDataStream &operator<<(QDataStream &ds, const QLocale &l)
 {
     ds << l.name();
@@ -984,7 +984,7 @@ QDataStream &operator>>(QDataStream &ds, QLocale &l)
     l = QLocale(s);
     return ds;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 Q_GLOBAL_STATIC(QSharedDataPointer<QLocalePrivate>, defaultLocalePrivate,
                 new QLocalePrivate(defaultData(), defaultIndex(),
@@ -1048,7 +1048,7 @@ bool comparesEqual(const QLocale &loc, QLocale::Language lang)
 static std::optional<QString>
 systemLocaleString(const QLocaleData *that, QSystemLocale::QueryType type)
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (that != &systemLocaleData)
         return std::nullopt;
 
@@ -1099,7 +1099,7 @@ QString QLocaleData::zeroDigit() const
 
 char32_t QLocaleData::zeroUcs() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (this == &systemLocaleData) {
         const auto text = systemLocale()->query(QSystemLocale::ZeroDigit).toString();
         if (!text.isEmpty()) {
@@ -1130,7 +1130,7 @@ QString QLocaleData::exponentSeparator() const
 
 QLocaleData::GroupSizes QLocaleData::groupSizes() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (this == &systemLocaleData) {
         QVariant queryResult = systemLocale()->query(QSystemLocale::Grouping);
         if (!queryResult.isNull()) {
@@ -1364,7 +1364,7 @@ QLocale::NumberOptions QLocale::numberOptions() const
 */
 QString QLocale::quoteString(QStringView str, QuotationStyle style) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res;
         if (style == AlternateQuotation)
@@ -1399,7 +1399,7 @@ QString QLocale::quoteString(QStringView str, QuotationStyle style) const
 QString QLocale::createSeparatedList(const QStringList &list) const
 {
     // May be empty if list is empty or sole entry is empty.
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res =
             systemLocale()->query(QSystemLocale::ListToSeparatedString, QVariant::fromValue(list));
@@ -1451,7 +1451,7 @@ void QLocale::setDefault(const QLocale &locale)
     if (defaultLocalePrivate.isDestroyed())
         return; // avoid crash on exit
     if (!defaultLocalePrivate.exists()) {
-        // Force it to exist; see QTBUG-83016
+        // Force it to exist; see BOBUIBUG-83016
         QLocale ignoreme;
         Q_ASSERT(defaultLocalePrivate.exists());
     }
@@ -1495,7 +1495,7 @@ QLocale::Territory QLocale::territory() const
     return Territory(d->territoryId());
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use \l territory() instead.
 
@@ -1548,7 +1548,7 @@ Q_DECL_COLD_FUNCTION static void badSeparatorWarning(const char *method, char se
     "language_territory", where language is a lowercase, two-letter ISO 639
     language code, and territory is an uppercase, two- or three-letter ISO 3166
     territory code. If the locale has no specified territory, only the language
-    name is returned. Since Qt 6.7 an optional \a separator parameter can be
+    name is returned. Since BobUI 6.7 an optional \a separator parameter can be
     supplied to override the default underscore character separating the two
     tags.
 
@@ -1624,7 +1624,7 @@ T toIntegral_helper(const QLocalePrivate *d, QStringView str, bool *ok)
     user-interface should be in.
 
     This function tries to conform the locale name to the IETF Best Common
-    Practice 47, defined by RFC 5646. Since Qt 6.7, it supports an optional \a
+    Practice 47, defined by RFC 5646. Since BobUI 6.7, it supports an optional \a
     separator parameter which can be used to override the BCP47-specified use of
     a hyphen to separate the tags. For use in IETF-defined protocols, however,
     the default, QLocale::TagSeparator::Dash, should be retained.
@@ -1670,7 +1670,7 @@ QString QLocale::languageToCode(Language language, LanguageCodeTypes codeTypes)
     \a languageCode, as defined in the ISO 639 standards.
 
     If specified, \a codeTypes selects which set of codes to consider for
-    conversion. By default all codes known to Qt are considered. The codes are
+    conversion. By default all codes known to BobUI are considered. The codes are
     matched in the following order: \c ISO639Part1, \c ISO639Part2B,
     \c ISO639Part2T, \c ISO639Part3, \c LegacyLanguageCode.
 
@@ -1715,7 +1715,7 @@ QLocale::Territory QLocale::codeToTerritory(QStringView territoryCode) noexcept
     return QLocalePrivate::codeToTerritory(territoryCode);
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use \l territoryToCode() instead.
 
@@ -1802,7 +1802,7 @@ QString QLocale::territoryToString(Territory territory)
     return QString::fromUtf8(territory_name_list + territory_name_index[territory]);
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use \l territoryToString() instead.
 
@@ -2359,10 +2359,10 @@ QString QLocale::toString(QDate date, const QString &format) const
     to the specified \a format.
     If \a format is an empty string, an empty string is returned.
 
-    \sa QTime::toString()
+    \sa BOBUIime::toString()
 */
 
-QString QLocale::toString(QTime time, const QString &format) const
+QString QLocale::toString(BOBUIime time, const QString &format) const
 {
     return toString(time, qToStringViewIgnoringNull(format));
 }
@@ -2375,7 +2375,7 @@ QString QLocale::toString(QTime time, const QString &format) const
     to the specified \a format.
     If \a format is an empty string, an empty string is returned.
 
-    \sa QDateTime::toString(), QDate::toString(), QTime::toString()
+    \sa QDateTime::toString(), QDate::toString(), BOBUIime::toString()
 */
 
 /*!
@@ -2389,7 +2389,7 @@ QString QLocale::toString(QTime time, const QString &format) const
 */
 QString QLocale::toString(QDate date, QStringView format, QCalendar cal) const
 {
-    return cal.dateTimeToString(format, QDateTime(), date, QTime(), *this);
+    return cal.dateTimeToString(format, QDateTime(), date, BOBUIime(), *this);
 }
 
 /*!
@@ -2398,7 +2398,7 @@ QString QLocale::toString(QDate date, QStringView format, QCalendar cal) const
 */
 QString QLocale::toString(QDate date, QStringView format) const
 {
-    return QCalendar().dateTimeToString(format, QDateTime(), date, QTime(), *this);
+    return QCalendar().dateTimeToString(format, QDateTime(), date, BOBUIime(), *this);
 }
 
 /*!
@@ -2416,7 +2416,7 @@ QString QLocale::toString(QDate date, FormatType format, QCalendar cal) const
     if (!date.isValid())
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (cal.isGregorian() && d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateToStringLong
@@ -2440,7 +2440,7 @@ QString QLocale::toString(QDate date, FormatType format) const
     if (!date.isValid())
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateToStringLong
@@ -2460,7 +2460,7 @@ static bool timeFormatContainsAP(QStringView format)
     qsizetype i = 0;
     while (i < format.size()) {
         if (format.at(i).unicode() == '\'') {
-            qt_readEscapedFormatString(format, &i);
+            bobui_readEscapedFormatString(format, &i);
             continue;
         }
 
@@ -2479,9 +2479,9 @@ static bool timeFormatContainsAP(QStringView format)
     to the specified \a format.
     If \a format is an empty string, an empty string is returned.
 
-    \sa QTime::toString()
+    \sa BOBUIime::toString()
 */
-QString QLocale::toString(QTime time, QStringView format) const
+QString QLocale::toString(BOBUIime time, QStringView format) const
 {
     return QCalendar().dateTimeToString(format, QDateTime(), QDate(), time, *this);
 }
@@ -2493,11 +2493,11 @@ QString QLocale::toString(QTime time, QStringView format) const
     to the specified \a format, optionally for a specified calendar \a cal.
     If \a format is an empty string, an empty string is returned.
 
-    \sa QDateTime::toString(), QDate::toString(), QTime::toString()
+    \sa QDateTime::toString(), QDate::toString(), BOBUIime::toString()
 */
 QString QLocale::toString(const QDateTime &dateTime, QStringView format, QCalendar cal) const
 {
-    return cal.dateTimeToString(format, dateTime, QDate(), QTime(), *this);
+    return cal.dateTimeToString(format, dateTime, QDate(), BOBUIime(), *this);
 }
 
 /*!
@@ -2506,7 +2506,7 @@ QString QLocale::toString(const QDateTime &dateTime, QStringView format, QCalend
 */
 QString QLocale::toString(const QDateTime &dateTime, QStringView format) const
 {
-    return QCalendar().dateTimeToString(format, dateTime, QDate(), QTime(), *this);
+    return QCalendar().dateTimeToString(format, dateTime, QDate(), BOBUIime(), *this);
 }
 
 /*!
@@ -2524,7 +2524,7 @@ QString QLocale::toString(const QDateTime &dateTime, FormatType format, QCalenda
     if (!dateTime.isValid())
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (cal.isGregorian() && d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateTimeToStringLong
@@ -2548,7 +2548,7 @@ QString QLocale::toString(const QDateTime &dateTime, FormatType format) const
     if (!dateTime.isValid())
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateTimeToStringLong
@@ -2569,12 +2569,12 @@ QString QLocale::toString(const QDateTime &dateTime, FormatType format) const
     specified \a format (see timeFormat()).
 */
 
-QString QLocale::toString(QTime time, FormatType format) const
+QString QLocale::toString(BOBUIime time, FormatType format) const
 {
     if (!time.isValid())
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::TimeToStringLong
@@ -2603,7 +2603,7 @@ QString QLocale::toString(QTime time, FormatType format) const
 
 QString QLocale::dateFormat(FormatType format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateFormatLong
@@ -2629,12 +2629,12 @@ QString QLocale::dateFormat(FormatType format) const
     For example, LongFormat for the \c{en_US} locale is \c{h:mm:ss AP t},
     ShortFormat is \c{h:mm AP}.
 
-    \sa QTime::toString(), QTime::fromString()
+    \sa BOBUIime::toString(), BOBUIime::fromString()
 */
 
 QString QLocale::timeFormat(FormatType format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::TimeFormatLong
@@ -2665,7 +2665,7 @@ QString QLocale::timeFormat(FormatType format) const
 
 QString QLocale::dateTimeFormat(FormatType format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QVariant res = systemLocale()->query(format == LongFormat
                                              ? QSystemLocale::DateTimeFormatLong
@@ -2679,7 +2679,7 @@ QString QLocale::dateTimeFormat(FormatType format) const
     return dateFormat(format) + u' ' + timeFormat(format);
 }
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
 /*!
     \since 4.4
 
@@ -2693,9 +2693,9 @@ QString QLocale::dateTimeFormat(FormatType format) const
 
     If the time could not be parsed, returns an invalid time.
 
-    \sa timeFormat(), toDate(), toDateTime(), QTime::fromString()
+    \sa timeFormat(), toDate(), toDateTime(), BOBUIime::fromString()
 */
-QTime QLocale::toTime(const QString &string, FormatType format) const
+BOBUIime QLocale::toTime(const QString &string, FormatType format) const
 {
     return toTime(string, timeFormat(format));
 }
@@ -2778,7 +2778,7 @@ QDateTime QLocale::toDateTime(const QString &string, FormatType format, QCalenda
 
     Reads \a string as a time in the given \a format.
 
-    Parses \a string and returns the time it represents. See QTime::fromString()
+    Parses \a string and returns the time it represents. See BOBUIime::fromString()
     for the interpretation of \a format.
 
     \note Any am/pm indicators used must match \l amText() or \l pmText(),
@@ -2786,13 +2786,13 @@ QDateTime QLocale::toDateTime(const QString &string, FormatType format, QCalenda
 
     If the time could not be parsed, returns an invalid time.
 
-    \sa timeFormat(), toDate(), toDateTime(), QTime::fromString()
+    \sa timeFormat(), toDate(), toDateTime(), BOBUIime::fromString()
 */
-QTime QLocale::toTime(const QString &string, const QString &format) const
+BOBUIime QLocale::toTime(const QString &string, const QString &format) const
 {
-    QTime time;
-#if QT_CONFIG(datetimeparser)
-    QDateTimeParser dt(QMetaType::QTime, QDateTimeParser::FromString, QCalendar());
+    BOBUIime time;
+#if BOBUI_CONFIG(datetimeparser)
+    QDateTimeParser dt(QMetaType::BOBUIime, QDateTimeParser::FromString, QCalendar());
     dt.setDefaultLocale(*this);
     if (dt.parseFormat(format))
         dt.fromString(string, nullptr, &time);
@@ -2840,7 +2840,7 @@ QDate QLocale::toDate(const QString &string, const QString &format, int baseYear
 QDate QLocale::toDate(const QString &string, const QString &format, QCalendar cal, int baseYear) const
 {
     QDate date;
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     QDateTimeParser dt(QMetaType::QDate, QDateTimeParser::FromString, cal);
     dt.setDefaultLocale(*this);
     if (dt.parseFormat(format))
@@ -2889,7 +2889,7 @@ QDateTime QLocale::toDateTime(const QString &string, const QString &format, int 
 QDateTime QLocale::toDateTime(const QString &string, const QString &format, QCalendar cal,
                               int baseYear) const
 {
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     QDateTime datetime;
 
     QDateTimeParser dt(QMetaType::QDateTime, QDateTimeParser::FromString, cal);
@@ -2916,7 +2916,7 @@ QDateTime QLocale::toDateTime(const QString &string, const QString &format, QCal
     This is the token that separates the whole number part from the fracional
     part in the representation of a number which has a fractional part. This is
     commonly called the "decimal point character" - even though, in many
-    locales, it is not a "point" (or similar dot). It is (since Qt 6.0) returned
+    locales, it is not a "point" (or similar dot). It is (since BobUI 6.0) returned
     as a string in case some locale needs more than one UTF-16 code-point to
     represent its separator.
 
@@ -2935,7 +2935,7 @@ QString QLocale::decimalPoint() const
     This is a token used to break up long sequences of digits, in the
     representation of a number, to make it easier to read. In some locales it
     may be empty, indicating that digits should not be broken up into groups in
-    this way. In others it may be a spacing character. It is (since Qt 6.0)
+    this way. In others it may be a spacing character. It is (since BobUI 6.0)
     returned as a string in case some locale needs more than one UTF-16
     code-point to represent its separator.
 
@@ -2952,7 +2952,7 @@ QString QLocale::groupSeparator() const
     Returns the percent marker of this locale.
 
     This is a token presumed to be appended to a number to indicate a
-    percentage. It is (since Qt 6.0) returned as a string because, in some
+    percentage. It is (since BobUI 6.0) returned as a string because, in some
     locales, it is not a single character - for example, because it includes a
     text-direction-control character.
 
@@ -2969,7 +2969,7 @@ QString QLocale::percent() const
     Returns the zero digit character of this locale.
 
     This is a single Unicode character but may be encoded as a surrogate pair,
-    so is (since Qt 6.0) returned as a string. In most locales, other digits
+    so is (since BobUI 6.0) returned as a string. In most locales, other digits
     follow it in Unicode ordering - however, some number systems, notably those
     using U+3007 as zero, do not have contiguous digits. Use toString() to
     obtain suitable representations of numbers, rather than trying to construct
@@ -2988,7 +2988,7 @@ QString QLocale::zeroDigit() const
     Returns the negative sign indicator of this locale.
 
     This is a token presumed to be used as a prefix to a number to indicate that
-    it is negative. It is (since Qt 6.0) returned as a string because, in some
+    it is negative. It is (since BobUI 6.0) returned as a string because, in some
     locales, it is not a single character - for example, because it includes a
     text-direction-control character.
 
@@ -3005,7 +3005,7 @@ QString QLocale::negativeSign() const
     Returns the positive sign indicator of this locale.
 
     This is a token presumed to be used as a prefix to a number to indicate that
-    it is positive. It is (since Qt 6.0) returned as a string because, in some
+    it is positive. It is (since BobUI 6.0) returned as a string because, in some
     locales, it is not a single character - for example, because it includes a
     text-direction-control character.
 
@@ -3022,7 +3022,7 @@ QString QLocale::positiveSign() const
     Returns the exponent separator for this locale.
 
     This is a token used to separate mantissa from exponent in some
-    floating-point numeric representations. It is (since Qt 6.0) returned as a
+    floating-point numeric representations. It is (since BobUI 6.0) returned as a
     string because, in some locales, it is not a single character - for example,
     it may consist of a multiplication sign and a representation of the "ten to
     the power" operator.
@@ -3073,7 +3073,7 @@ QString QLocale::toString(double f, char format, int precision) const
     QLocaleData::DoubleForm form = QLocaleData::DFDecimal;
     uint flags = isAsciiUpper(format) ? QLocaleData::CapitalEorX : 0;
 
-    switch (QtMiscUtils::toAsciiLower(format)) {
+    switch (BobUIMiscUtils::toAsciiLower(format)) {
     case 'f':
         form = QLocaleData::DFDecimal;
         break;
@@ -3135,7 +3135,7 @@ QLocale QLocale::system()
 {
     constexpr auto sysData = []() {
         // Same return as systemData(), but leave the setup to the actual call to it.
-#ifdef QT_NO_SYSTEMLOCALE
+#ifdef BOBUI_NO_SYSTEMLOCALE
         return locale_data;
 #else
         return &systemLocaleData;
@@ -3203,14 +3203,14 @@ QList<QLocale> QLocale::matchingLocales(Language language, Script script, Territ
     return result;
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use \l matchingLocales() instead and consult the \l territory() of each.
     \since 4.3
 
-    Returns the list of countries that have entries for \a language in Qt's locale
+    Returns the list of countries that have entries for \a language in BobUI's locale
     database. If the result is an empty list, then \a language is not represented in
-    Qt's locale database.
+    BobUI's locale database.
 
     \sa matchingLocales()
 */
@@ -3307,7 +3307,7 @@ static const QCalendarLocale &getMonthDataFor(const QLocalePrivate *loc,
             && locale.m_territory_id == cal.m_territory_id;
     };
     const QCalendarLocale &monthly = table[loc->m_index];
-#ifdef QT_NO_SYSTEMLOCALE
+#ifdef BOBUI_NO_SYSTEMLOCALE
     [[maybe_unused]] constexpr bool isSys = false;
 #else // Can't have preprocessor directives in a macro's parameter list, so use local.
     [[maybe_unused]] const bool isSys = loc->m_data == &systemLocaleData;
@@ -3409,7 +3409,7 @@ QString QCalendarBackend::monthName(const QLocale &locale, int month, int,
 QString QRomanCalendar::monthName(const QLocale &locale, int month, int year,
                                   QLocale::FormatType format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (locale.d->m_data == &systemLocaleData) {
         Q_ASSERT(month >= 1 && month <= 12);
         QSystemLocale::QueryType queryType = QSystemLocale::MonthNameLong;
@@ -3444,7 +3444,7 @@ QString QCalendarBackend::standaloneMonthName(const QLocale &locale, int month, 
 QString QRomanCalendar::standaloneMonthName(const QLocale &locale, int month, int year,
                                             QLocale::FormatType format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (locale.d->m_data == &systemLocaleData) {
         Q_ASSERT(month >= 1 && month <= 12);
         QSystemLocale::QueryType queryType = QSystemLocale::StandaloneMonthNameLong;
@@ -3476,7 +3476,7 @@ QString QCalendarBackend::weekDayName(const QLocale &locale, int day,
     if (day < 1 || day > 7)
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (locale.d->m_data == &systemLocaleData) {
         QSystemLocale::QueryType queryType = QSystemLocale::DayNameLong;
         switch (format) {
@@ -3505,7 +3505,7 @@ QString QCalendarBackend::standaloneWeekDayName(const QLocale &locale, int day,
     if (day < 1 || day > 7)
         return QString();
 
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (locale.d->m_data == &systemLocaleData) {
         QSystemLocale::QueryType queryType = QSystemLocale::StandaloneDayNameLong;
         switch (format) {
@@ -3535,16 +3535,16 @@ QString QCalendarBackend::standaloneWeekDayName(const QLocale &locale, int day,
 
     Returns the first day of the week according to the current locale.
 */
-Qt::DayOfWeek QLocale::firstDayOfWeek() const
+BobUI::DayOfWeek QLocale::firstDayOfWeek() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         const auto res = systemLocale()->query(QSystemLocale::FirstDayOfWeek);
         if (!res.isNull())
-            return static_cast<Qt::DayOfWeek>(res.toUInt());
+            return static_cast<BobUI::DayOfWeek>(res.toUInt());
     }
 #endif
-    return static_cast<Qt::DayOfWeek>(d->m_data->m_first_day_of_week);
+    return static_cast<BobUI::DayOfWeek>(d->m_data->m_first_day_of_week);
 }
 
 QLocale::MeasurementSystem QLocalePrivate::measurementSystem() const
@@ -3583,23 +3583,23 @@ QLocale::MeasurementSystem QLocalePrivate::measurementSystem() const
 
     Returns a list of days that are considered weekdays according to the current locale.
 */
-QList<Qt::DayOfWeek> QLocale::weekdays() const
+QList<BobUI::DayOfWeek> QLocale::weekdays() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res
-            = qvariant_cast<QList<Qt::DayOfWeek> >(systemLocale()->query(QSystemLocale::Weekdays));
+            = qvariant_cast<QList<BobUI::DayOfWeek> >(systemLocale()->query(QSystemLocale::Weekdays));
         if (!res.isEmpty())
             return res;
     }
 #endif
-    QList<Qt::DayOfWeek> weekdays;
+    QList<BobUI::DayOfWeek> weekdays;
     quint16 weekendStart = d->m_data->m_weekend_start;
     quint16 weekendEnd = d->m_data->m_weekend_end;
-    for (int day = Qt::Monday; day <= Qt::Sunday; day++) {
+    for (int day = BobUI::Monday; day <= BobUI::Sunday; day++) {
         if ((weekendEnd >= weekendStart && (day < weekendStart || day > weekendEnd)) ||
             (weekendEnd < weekendStart && (day > weekendEnd && day < weekendStart)))
-                weekdays << static_cast<Qt::DayOfWeek>(day);
+                weekdays << static_cast<BobUI::DayOfWeek>(day);
     }
     return weekdays;
 }
@@ -3611,7 +3611,7 @@ QList<Qt::DayOfWeek> QLocale::weekdays() const
 */
 QLocale::MeasurementSystem QLocale::measurementSystem() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         const auto res = systemLocale()->query(QSystemLocale::MeasurementSystem);
         if (!res.isNull())
@@ -3627,7 +3627,7 @@ QLocale::MeasurementSystem QLocale::measurementSystem() const
 
   Returns the text direction of the language.
 */
-Qt::LayoutDirection QLocale::textDirection() const
+BobUI::LayoutDirection QLocale::textDirection() const
 {
     switch (script()) {
     case AdlamScript:
@@ -3658,11 +3658,11 @@ Qt::LayoutDirection QLocale::textDirection() const
     case SamaritanScript:
     case SyriacScript:
     case ThaanaScript:
-        return Qt::RightToLeft;
+        return BobUI::RightToLeft;
     default:
         break;
     }
-    return Qt::LeftToRight;
+    return BobUI::LeftToRight;
 }
 
 /*!
@@ -3670,7 +3670,7 @@ Qt::LayoutDirection QLocale::textDirection() const
 
   Returns an uppercase copy of \a str.
 
-  If Qt Core is using the ICU libraries, they will be used to perform
+  If BobUI Core is using the ICU libraries, they will be used to perform
   the transformation according to the rules of the current locale.
   Otherwise the conversion may be done in a platform-dependent manner,
   with QString::toUpper() as a generic fallback.
@@ -3682,12 +3682,12 @@ Qt::LayoutDirection QLocale::textDirection() const
 */
 QString QLocale::toUpper(const QString &str) const
 {
-#if !defined(QT_BOOTSTRAPPED) && (QT_CONFIG(icu) || defined(Q_OS_WIN) || defined(Q_OS_APPLE))
+#if !defined(BOBUI_BOOTSTRAPPED) && (BOBUI_CONFIG(icu) || defined(Q_OS_WIN) || defined(Q_OS_APPLE))
     bool ok = true;
     QString result = d->toUpper(str, &ok);
     if (ok)
         return result;
-    // else fall through and use Qt's toUpper
+    // else fall through and use BobUI's toUpper
 #endif
     return str.toUpper();
 }
@@ -3697,7 +3697,7 @@ QString QLocale::toUpper(const QString &str) const
 
   Returns a lowercase copy of \a str.
 
-  If Qt Core is using the ICU libraries, they will be used to perform
+  If BobUI Core is using the ICU libraries, they will be used to perform
   the transformation according to the rules of the current locale.
   Otherwise the conversion may be done in a platform-dependent manner,
   with QString::toLower() as a generic fallback.
@@ -3706,12 +3706,12 @@ QString QLocale::toUpper(const QString &str) const
 */
 QString QLocale::toLower(const QString &str) const
 {
-#if !defined(QT_BOOTSTRAPPED) && (QT_CONFIG(icu) || defined(Q_OS_WIN) || defined(Q_OS_APPLE))
+#if !defined(BOBUI_BOOTSTRAPPED) && (BOBUI_CONFIG(icu) || defined(Q_OS_WIN) || defined(Q_OS_APPLE))
     bool ok = true;
     const QString result = d->toLower(str, &ok);
     if (ok)
         return result;
-    // else fall through and use Qt's toLower
+    // else fall through and use BobUI's toLower
 #endif
     return str.toLower();
 }
@@ -3727,7 +3727,7 @@ QString QLocale::toLower(const QString &str) const
 */
 QString QLocale::amText() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res = systemLocale()->query(QSystemLocale::AMText).toString();
         if (!res.isEmpty())
@@ -3747,7 +3747,7 @@ QString QLocale::amText() const
 */
 QString QLocale::pmText() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res = systemLocale()->query(QSystemLocale::PMText).toString();
         if (!res.isEmpty())
@@ -3766,7 +3766,7 @@ static QString offsetFromAbbreviation(QString &&text)
         tail = tail.sliced(3);
     // TODO: there may be a locale-specific alternative prefix.
     // Hard to know without zone-name L10n details, though.
-    return (tail.isEmpty() // The Qt::UTC case omits the zero offset:
+    return (tail.isEmpty() // The BobUI::UTC case omits the zero offset:
             ? u"+00:00"_s
             // Whole-hour offsets may lack the zero minutes:
             : (tail.size() <= 3
@@ -3774,12 +3774,12 @@ static QString offsetFromAbbreviation(QString &&text)
                : std::move(text).right(tail.size())));
 }
 
-// For the benefit of QCalendar, below, when not provided by QTZL.
-#if QT_CONFIG(icu) || !(QT_CONFIG(timezone) && QT_CONFIG(timezone_locale))
-namespace QtTimeZoneLocale {
+// For the benefit of QCalendar, below, when not provided by BOBUIZL.
+#if BOBUI_CONFIG(icu) || !(BOBUI_CONFIG(timezone) && BOBUI_CONFIG(timezone_locale))
+namespace BobUITimeZoneLocale {
 
 // TODO: is there a way to get this non-kludgily from ICU ?
-// If so, that version goes in QTZL.cpp's relevant #if-ery branch.
+// If so, that version goes in BOBUIZL.cpp's relevant #if-ery branch.
 QString zoneOffsetFormat([[maybe_unused]] const QLocale &locale,
                          qsizetype,
                          [[maybe_unused]] QLocale::FormatType width,
@@ -3789,9 +3789,9 @@ QString zoneOffsetFormat([[maybe_unused]] const QLocale &locale,
     // Only the non-ICU TZ-locale code uses the other two widths:
     Q_ASSERT(width == QLocale::ShortFormat); //
     QString text =
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
         locale != QLocale::system()
-        ? when.timeRepresentation().displayName(when, QTimeZone::OffsetName, locale)
+        ? when.timeRepresentation().displayName(when, BOBUIimeZone::OffsetName, locale)
         :
 #endif
         when.toOffsetFromUtc(offsetSeconds).timeZoneAbbreviation();
@@ -3802,17 +3802,17 @@ QString zoneOffsetFormat([[maybe_unused]] const QLocale &locale,
     return text;
 }
 
-} // QtTimeZoneLocale
+} // BobUITimeZoneLocale
 #endif // ICU or no TZ L10n
 
 // Another intrusion from QCalendar, using some of the tools above:
 
 QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &datetime,
-                                           QDate dateOnly, QTime timeOnly,
+                                           QDate dateOnly, BOBUIime timeOnly,
                                            const QLocale &locale) const
 {
     QDate date;
-    QTime time;
+    BOBUIime time;
     bool formatDate = false;
     bool formatTime = false;
     if (datetime.isValid()) {
@@ -3856,12 +3856,12 @@ QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &
     qsizetype i = 0;
     while (i < format.size()) {
         if (format.at(i).unicode() == '\'') {
-            result.append(qt_readEscapedFormatString(format, &i));
+            result.append(bobui_readEscapedFormatString(format, &i));
             continue;
         }
 
         const QChar c = format.at(i);
-        qsizetype rep = qt_repeatCount(format.mid(i));
+        qsizetype rep = bobui_repeatCount(format.mid(i));
         Q_ASSERT(rep < std::numeric_limits<int>::max());
         int repeat = int(rep);
         bool used = false;
@@ -3949,7 +3949,7 @@ QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &
                 QString text = time.hour() < 12 ? locale.amText() : locale.pmText();
                 used = true;
                 repeat = 1;
-                if (format.mid(i + 1).startsWith(u'p', Qt::CaseInsensitive))
+                if (format.mid(i + 1).startsWith(u'p', BobUI::CaseInsensitive))
                     ++repeat;
                 if (c.unicode() == 'A' && (repeat == 1 || format.at(i + 1).unicode() == 'P'))
                     text = std::move(text).toUpper();
@@ -3977,16 +3977,16 @@ QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &
                 break;
 
             case 't':
-#if QT_VERSION < QT_VERSION_CHECK(7,0,0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7,0,0) && !defined(BOBUI_BOOTSTRAPPED)
                 if (!formatDate) {
-                    /* Was mistakenly defined for QTime, using
+                    /* Was mistakenly defined for BOBUIime, using
                        currentDateTime()'s zone info. It has been documented
                        only for QDateTime since 6.12, but retain implementation
-                       until Qt 7, as this is a significant behavior change.
+                       until BobUI 7, as this is a significant behavior change.
                     */
                     qWarning("Zone specifiers are only meaningful for a full datetime. "
-                             "Their use in formatting QTime is deprecated and "
-                             "shall be retired in Qt 7.");
+                             "Their use in formatting BOBUIime is deprecated and "
+                             "shall be retired in BobUI 7.");
                 }
 #else
                 if (formatDate)
@@ -3996,18 +3996,18 @@ QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &
                 const auto tzAbbr = [locale](const QDateTime &when, AbbrType type) {
                     QString text;
                     if (type == Offset) {
-                        text = QtTimeZoneLocale::zoneOffsetFormat(locale, locale.d->m_index,
+                        text = BobUITimeZoneLocale::zoneOffsetFormat(locale, locale.d->m_index,
                                                                   QLocale::ShortFormat,
                                                                   when, when.offsetFromUtc());
                         // When using timezone_locale data, this should always succeed:
                         if (!text.isEmpty())
                             return text;
                     }
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
                     if (type != Short || locale != QLocale::system()) {
-                        QTimeZone::NameType mode =
-                            type == Short ? QTimeZone::ShortName
-                            : type == Long ? QTimeZone::LongName : QTimeZone::OffsetName;
+                        BOBUIimeZone::NameType mode =
+                            type == Short ? BOBUIimeZone::ShortName
+                            : type == Long ? BOBUIimeZone::LongName : BOBUIimeZone::OffsetName;
                         text = when.timeRepresentation().displayName(when, mode, locale);
                         if (!text.isEmpty())
                             return text;
@@ -4033,7 +4033,7 @@ QString QCalendarBackend::dateTimeToString(QStringView format, const QDateTime &
 
                 used = true;
                 repeat = qMin(repeat, 4);
-#if QT_VERSION < QT_VERSION_CHECK(7,0,0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7,0,0) && !defined(BOBUI_BOOTSTRAPPED)
                 // If we don't have a date-time, use the current system time:
                 const QDateTime when = formatDate ? datetime : QDateTime::currentDateTime();
 #else
@@ -4093,7 +4093,7 @@ QString QLocaleData::doubleToString(double d, int precision, DoubleForm form,
     qsizetype bufSize = 1;
     if (precision == QLocale::FloatingPointShortest)
         bufSize += std::numeric_limits<double>::max_digits10;
-    else if (form == DFDecimal && qt_is_finite(d))
+    else if (form == DFDecimal && bobui_is_finite(d))
         bufSize += wholePartSpace(qAbs(d)) + precision;
     else // Add extra digit due to different interpretations of precision.
         bufSize += qMax(2, precision) + 1; // Must also be big enough for "nan" or "inf"
@@ -4101,7 +4101,7 @@ QString QLocaleData::doubleToString(double d, int precision, DoubleForm form,
     QVarLengthArray<char> buf(bufSize);
     int length;
     bool negative = false;
-    qt_doubleToAscii(d, form, precision, buf.data(), bufSize, negative, length, decpt);
+    bobui_doubleToAscii(d, form, precision, buf.data(), bufSize, negative, length, decpt);
 
     const QString prefix = signPrefix(negative && !qIsNull(d), flags);
     QString numStr;
@@ -4404,7 +4404,7 @@ QString QLocaleData::applyIntegerFormatting(QString &&numStr, bool negative, int
 
 // Most users of this class are in this file, but tests in developer builds also
 // instantiate it. So it needs to be out-of-line for those builds:
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
 inline
 #endif // ... but can otherwise be inline.
 QLocaleData::NumericData::NumericData(const QLocaleData *data, QLocaleData::NumberMode mode)
@@ -4426,7 +4426,7 @@ QLocaleData::NumericData::NumericData(const QLocaleData *data, QLocaleData::Numb
         // exponentCyrillic means "apply the Cyrrilic-specific exponent hack"
         exponentCyrillic = data->m_script_id == QLocale::CyrillicScript;
     }
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (data == &systemLocaleData) {
         const auto getString = [sys = systemLocale()](QSystemLocale::QueryType query) {
             return sys->query(query).toString();
@@ -4457,9 +4457,9 @@ namespace {
 class NumericTokenizer
 {
     // TODO: use deterministic finite-state-automata.
-    // TODO QTBUG-95460: CLDR has Inf/NaN representations per locale.
+    // TODO BOBUIBUG-95460: CLDR has Inf/NaN representations per locale.
     static constexpr char lettersInfNaN[] = "afin"; // Letters of Inf, NaN
-    static constexpr auto matchInfNaN = QtPrivate::makeCharacterSetMatch<lettersInfNaN>();
+    static constexpr auto matchInfNaN = BobUIPrivate::makeCharacterSetMatch<lettersInfNaN>();
     const QStringView m_text;
     const QLocaleData::NumericData m_guide;
     qsizetype m_index;
@@ -4554,7 +4554,7 @@ char NumericTokenizer::nextToken()
             return '.';
         }
         if (m_mode == QLocaleData::DoubleScientificMode
-            && tail.startsWith(m_guide.exponent, Qt::CaseInsensitive)) {
+            && tail.startsWith(m_guide.exponent, BobUI::CaseInsensitive)) {
             m_index += m_guide.exponent.size();
             return 'e';
         }
@@ -4915,7 +4915,7 @@ double QLocaleData::stringToDouble(QStringView str, bool *ok,
             *ok = false;
         return 0.0;
     }
-    auto r = qt_asciiToDouble(buff.constData(), buff.size());
+    auto r = bobui_asciiToDouble(buff.constData(), buff.size());
     if (ok != nullptr)
         *ok = r.ok();
     return r.result;
@@ -4995,7 +4995,7 @@ QSimpleParsedNumber<quint64> QLocaleData::bytearrayToUnsLongLong(QByteArrayView 
 */
 QString QLocale::currencySymbol(CurrencySymbolFormat format) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res = systemLocale()->query(QSystemLocale::CurrencySymbol, format).toString();
         if (!res.isEmpty())
@@ -5027,7 +5027,7 @@ QString QLocale::currencySymbol(CurrencySymbolFormat format) const
 */
 QString QLocale::toCurrencyString(qlonglong value, const QString &symbol) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QSystemLocale::CurrencyToStringArgument arg(value, symbol);
         auto res = systemLocale()->query(QSystemLocale::CurrencyToString,
@@ -5054,7 +5054,7 @@ QString QLocale::toCurrencyString(qlonglong value, const QString &symbol) const
 */
 QString QLocale::toCurrencyString(qulonglong value, const QString &symbol) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QSystemLocale::CurrencyToStringArgument arg(value, symbol);
         auto res = systemLocale()->query(QSystemLocale::CurrencyToString,
@@ -5082,7 +5082,7 @@ QString QLocale::toCurrencyString(qulonglong value, const QString &symbol) const
  */
 QString QLocale::toCurrencyString(double value, const QString &symbol, int precision) const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         QSystemLocale::CurrencyToStringArgument arg(value, symbol);
         auto res = systemLocale()->query(QSystemLocale::CurrencyToString,
@@ -5147,10 +5147,10 @@ QString QLocale::formattedDataSize(qint64 bytes, int precision, DataSizeFormats 
         power = 0;
     } else if (format & DataSizeBase1000) {
         constexpr auto log10_1000 = 3; // std::log10(1000U)
-        power = int(std::log10(QtPrivate::qUnsignedAbs(bytes))) / log10_1000;
+        power = int(std::log10(BobUIPrivate::qUnsignedAbs(bytes))) / log10_1000;
     } else {
-        constexpr auto log2_1024 = 10; // QtPrivate::log2i(1024U);
-        power = QtPrivate::log2i(QtPrivate::qUnsignedAbs(bytes)) / log2_1024;
+        constexpr auto log2_1024 = 10; // BobUIPrivate::log2i(1024U);
+        power = BobUIPrivate::log2i(BobUIPrivate::qUnsignedAbs(bytes)) / log2_1024;
         base = 1024;
     }
     // Only go to doubles if we'll be using a quantifier:
@@ -5180,7 +5180,7 @@ QString QLocale::formattedDataSize(qint64 bytes, int precision, DataSizeFormats 
     Each entry in the returned list is the name of a locale suitable to the
     user's preferences for what to translate the UI into. Where a name in the
     list is composed of several tags, they are joined as indicated by \a
-    separator. Prior to Qt 6.7 a dash was used as separator.
+    separator. Prior to BobUI 6.7 a dash was used as separator.
 
     For example, using the default separator QLocale::TagSeparator::Dash, if the
     user has configured their system to use English as used in the USA, the list
@@ -5195,13 +5195,13 @@ QString QLocale::formattedDataSize(qint64 bytes, int precision, DataSizeFormats 
     configured. The order of entries is significant. For example, for the system
     locale, it reflects user preferences.
 
-    Prior to Qt 6.9, the list only contained explicitly configured locales and
+    Prior to BobUI 6.9, the list only contained explicitly configured locales and
     their equivalents. This led some callers to add truncations (such as from
     'en-Latn-DE' to 'en') as fallbacks. This could sometimes result in
     inappropriate choices, especially if these were tried before later entries
     that would be more appropriate fallbacks.
 
-    Starting from Qt 6.9, reasonable truncations are included in the returned
+    Starting from BobUI 6.9, reasonable truncations are included in the returned
     list \e after all entries equivalent to the explicitly specified
     locales. This change allows for more accurate fallback options without
     callers needing to do any truncation.
@@ -5212,9 +5212,9 @@ QString QLocale::formattedDataSize(qint64 bytes, int precision, DataSizeFormats 
     custom fallback methods.
 
     Most likely you do not need to use this function directly, but just pass the
-    QLocale object to the QTranslator::load() function.
+    QLocale object to the BOBUIranslator::load() function.
 
-    \sa QTranslator, bcp47Name()
+    \sa BOBUIranslator, bcp47Name()
 */
 QStringList QLocale::uiLanguages(TagSeparator separator) const
 {
@@ -5225,7 +5225,7 @@ QStringList QLocale::uiLanguages(TagSeparator separator) const
         return uiLanguages;
     }
     QList<QLocaleId> localeIds;
-#ifdef QT_NO_SYSTEMLOCALE
+#ifdef BOBUI_NO_SYSTEMLOCALE
     constexpr bool isSystem = false;
 #else
     const bool isSystem = d->m_data == &systemLocaleData;
@@ -5248,7 +5248,7 @@ QStringList QLocale::uiLanguages(TagSeparator separator) const
            list and that this faithfully reflects the user's wishes. None the
            less, we include it (if it isn't C) in the list below, after the last
            with the same language and script or (if none has) at the end, in
-           case there is no better option available. (See, QTBUG-104930.)
+           case there is no better option available. (See, BOBUIBUG-104930.)
         */
         const QString name = QString::fromLatin1(d->m_data->id().name(sep)); // Raw name
         if (!name.isEmpty() && language() != C && !uiLanguages.contains(name)) {
@@ -5406,7 +5406,7 @@ QStringList QLocale::uiLanguages(TagSeparator separator) const
                require a script match so we don't pick translations that the
                user cannot read, despite knowing the language. (Ideally that
                would be a constraint the caller can opt into / out of. See
-               QTBUG-112765.)
+               BOBUIBUG-112765.)
             */
             bool justAfter
                 = (QLocaleId::fromName(prefix).withLikelySubtagsAdded().script_id == max.script_id);
@@ -5471,7 +5471,7 @@ QStringList QLocale::uiLanguages(TagSeparator separator) const
 */
 QLocale QLocale::collation() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         const auto res = systemLocale()->query(QSystemLocale::Collation).toString();
         if (!res.isEmpty())
@@ -5491,7 +5491,7 @@ QLocale QLocale::collation() const
 */
 QString QLocale::nativeLanguageName() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res = systemLocale()->query(QSystemLocale::NativeLanguageName).toString();
         if (!res.isEmpty())
@@ -5511,7 +5511,7 @@ QString QLocale::nativeLanguageName() const
 */
 QString QLocale::nativeTerritoryName() const
 {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
     if (d->m_data == &systemLocaleData) {
         auto res = systemLocale()->query(QSystemLocale::NativeTerritoryName).toString();
         if (!res.isEmpty())
@@ -5521,7 +5521,7 @@ QString QLocale::nativeTerritoryName() const
     return d->m_data->endonymTerritory().getData(endonyms_data);
 }
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 /*!
     \deprecated [6.6] Use \l nativeTerritoryName() instead.
     \since 4.8
@@ -5537,7 +5537,7 @@ QString QLocale::nativeCountryName() const
 }
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QLocale &l)
 {
     QDebugStateSaver saver(dbg);
@@ -5550,8 +5550,8 @@ QDebug operator<<(QDebug dbg, const QLocale &l)
     return dbg;
 }
 #endif
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#ifndef QT_NO_QOBJECT
+#ifndef BOBUI_NO_QOBJECT
 #include "moc_qlocale.cpp"
 #endif

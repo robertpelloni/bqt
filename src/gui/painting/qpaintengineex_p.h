@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTENGINEEX_P_H
 #define QPAINTENGINEEX_P_H
@@ -8,15 +8,15 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
-#include <QtGui/qpaintengine.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
+#include <BobUIGui/qpaintengine.h>
 
 #include <private/qpaintengine_p.h>
 #include <private/qstroker_p.h>
@@ -24,7 +24,7 @@
 #include <private/qvectorpath_p.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPainterState;
@@ -32,7 +32,7 @@ class QPaintEngineExPrivate;
 class QStaticTextItem;
 struct StrokeHandler;
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug Q_GUI_EXPORT &operator<<(QDebug &, const QVectorPath &path);
 #endif
 
@@ -48,10 +48,10 @@ public:
     virtual void fill(const QVectorPath &path, const QBrush &brush) = 0;
     virtual void stroke(const QVectorPath &path, const QPen &pen);
 
-    virtual void clip(const QVectorPath &path, Qt::ClipOperation op) = 0;
-    virtual void clip(const QRect &rect, Qt::ClipOperation op);
-    virtual void clip(const QRegion &region, Qt::ClipOperation op);
-    virtual void clip(const QPainterPath &path, Qt::ClipOperation op);
+    virtual void clip(const QVectorPath &path, BobUI::ClipOperation op) = 0;
+    virtual void clip(const QRect &rect, BobUI::ClipOperation op);
+    virtual void clip(const QRegion &region, BobUI::ClipOperation op);
+    virtual void clip(const QPainterPath &path, BobUI::ClipOperation op);
 
     virtual void clipEnabledChanged() = 0;
     virtual void penChanged() = 0;
@@ -65,7 +65,7 @@ public:
     virtual void fillRect(const QRectF &rect, const QBrush &brush);
     virtual void fillRect(const QRectF &rect, const QColor &color);
 
-    virtual void drawRoundedRect(const QRectF &rect, qreal xrad, qreal yrad, Qt::SizeMode mode);
+    virtual void drawRoundedRect(const QRectF &rect, qreal xrad, qreal yrad, BobUI::SizeMode mode);
 
     virtual void drawRects(const QRect *rects, int rectCount) override;
     virtual void drawRects(const QRectF *rects, int rectCount) override;
@@ -88,7 +88,7 @@ public:
     virtual void drawPixmap(const QPointF &pos, const QPixmap &pm);
 
     virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                           Qt::ImageConversionFlags flags = Qt::AutoColor) override = 0;
+                           BobUI::ImageConversionFlags flags = BobUI::AutoColor) override = 0;
     virtual void drawImage(const QPointF &pos, const QImage &image);
 
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s) override;
@@ -116,8 +116,8 @@ public:
         IsEmulationEngine = 0x02    // If set, this object is a QEmulationEngine.
     };
     virtual uint flags() const {return 0;}
-    virtual bool requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const QTransform &m) const;
-    virtual bool shouldDrawCachedGlyphs(QFontEngine *fontEngine, const QTransform &m) const;
+    virtual bool requiresPretransformedGlyphPositions(QFontEngine *fontEngine, const BOBUIransform &m) const;
+    virtual bool shouldDrawCachedGlyphs(QFontEngine *fontEngine, const BOBUIransform &m) const;
 
 protected:
     QPaintEngineEx(QPaintEngineExPrivate &data);
@@ -142,6 +142,6 @@ public:
     QRect exDeviceRect;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

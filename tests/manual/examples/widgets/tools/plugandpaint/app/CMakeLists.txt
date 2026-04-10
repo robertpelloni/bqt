@@ -1,7 +1,7 @@
-# Copyright (C) 2022 The Qt Company Ltd.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+# Copyright (C) 2022 The BobUI Company Ltd.
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-qt_add_executable(plugandpaint
+bobui_add_executable(plugandpaint
     interfaces.h
     main.cpp
     mainwindow.cpp mainwindow.h
@@ -15,15 +15,15 @@ set_target_properties(plugandpaint PROPERTIES
 )
 
 target_link_libraries(plugandpaint PRIVATE
-    Qt6::Widgets
+    BobUI6::Widgets
     pnp_basictools
 )
 
-if(QT6_IS_SHARED_LIBS_BUILD)
+if(BOBUI6_IS_SHARED_LIBS_BUILD)
     # Build the shared plugin too when building this example target.
     add_dependencies(plugandpaint pnp_extrafilters)
 else()
-    # Link the extrafilters plugin if Qt is built statically.
+    # Link the extrafilters plugin if BobUI is built statically.
     target_link_libraries(plugandpaint PRIVATE
         pnp_extrafilters
     )

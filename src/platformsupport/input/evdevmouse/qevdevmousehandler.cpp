@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qevdevmousehandler_p.h"
 
@@ -12,7 +12,7 @@
 #include <qpa/qwindowsysteminterface.h>
 
 #include <qplatformdefs.h>
-#include <private/qcore_unix_p.h> // overrides QT_OPEN
+#include <private/qcore_unix_p.h> // overrides BOBUI_OPEN
 #include <private/qhighdpiscaling_p.h>
 
 #include <errno.h>
@@ -26,11 +26,11 @@
 
 #define TEST_BIT(array, bit)    (array[bit/8] & (1<<(bit%8)))
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcEvdevMouse, "qt.qpa.input")
+Q_LOGGING_CATEGORY(qLcEvdevMouse, "bobui.qpa.input")
 
 std::unique_ptr<QEvdevMouseHandler> QEvdevMouseHandler::create(const QString &device, const QString &specification)
 {
@@ -54,7 +54,7 @@ std::unique_ptr<QEvdevMouseHandler> QEvdevMouseHandler::create(const QString &de
     }
 
     int fd;
-    fd = qt_safe_open(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    fd = bobui_safe_open(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
     if (fd >= 0) {
         ::ioctl(fd, EVIOCGRAB, grab);
         return std::unique_ptr<QEvdevMouseHandler>(new QEvdevMouseHandler(device, fd, abs, compression, jitterLimit));
@@ -72,7 +72,7 @@ QEvdevMouseHandler::QEvdevMouseHandler(const QString &device, int fd, bool abs, 
     m_jitterLimitSquared = jitterLimit * jitterLimit;
 
     // Some touch screens present as mice with absolute coordinates.
-    // These can not be differentiated from touchpads, so supplying abs to QT_QPA_EVDEV_MOUSE_PARAMETERS
+    // These can not be differentiated from touchpads, so supplying abs to BOBUI_QPA_EVDEV_MOUSE_PARAMETERS
     // will force qevdevmousehandler to treat the coordinates as absolute, scaled to the hardware maximums.
     // Turning this on will not affect mice as these do not report in absolute coordinates
     // but will make touchpads act like touch screens
@@ -90,7 +90,7 @@ QEvdevMouseHandler::QEvdevMouseHandler(const QString &device, int fd, bool abs, 
 QEvdevMouseHandler::~QEvdevMouseHandler()
 {
     if (m_fd >= 0)
-        qt_safe_close(m_fd);
+        bobui_safe_close(m_fd);
 }
 
 void QEvdevMouseHandler::detectHiResWheelSupport()
@@ -169,7 +169,7 @@ void QEvdevMouseHandler::sendMouseEvent()
     }
 
     if (m_eventType == QEvent::MouseMove)
-        emit handleMouseEvent(x, y, m_abs, m_buttons, Qt::NoButton, m_eventType);
+        emit handleMouseEvent(x, y, m_abs, m_buttons, BobUI::NoButton, m_eventType);
     else
         emit handleMouseEvent(x, y, m_abs, m_buttons, m_button, m_eventType);
 
@@ -184,7 +184,7 @@ void QEvdevMouseHandler::readMouseData()
     bool posChanged = false, btnChanged = false;
     bool pendingMouseEvent = false;
     forever {
-        int result = QT_READ(m_fd, reinterpret_cast<char *>(buffer) + n, sizeof(buffer) - n);
+        int result = BOBUI_READ(m_fd, reinterpret_cast<char *>(buffer) + n, sizeof(buffer) - n);
 
         if (result == 0) {
             qWarning("evdevmouse: Got EOF from the input device");
@@ -197,7 +197,7 @@ void QEvdevMouseHandler::readMouseData()
                 if (errno == ENODEV) {
                     delete m_notify;
                     m_notify = nullptr;
-                    qt_safe_close(m_fd);
+                    bobui_safe_close(m_fd);
                     m_fd = -1;
                 }
                 return;
@@ -254,26 +254,26 @@ void QEvdevMouseHandler::readMouseData()
             // Need to invalidate prevx/y however to get proper relative pos.
             m_prevInvalid = true;
         } else if (data->type == EV_KEY && data->code >= BTN_LEFT && data->code <= BTN_JOYSTICK) {
-            Qt::MouseButton button = Qt::NoButton;
+            BobUI::MouseButton button = BobUI::NoButton;
             // BTN_LEFT == 0x110 in kernel's input.h
             // The range of possible mouse buttons ends just before BTN_JOYSTICK, value 0x120.
             switch (data->code) {
-            case 0x110: button = Qt::LeftButton; break;    // BTN_LEFT
-            case 0x111: button = Qt::RightButton; break;
-            case 0x112: button = Qt::MiddleButton; break;
-            case 0x113: button = Qt::ExtraButton1; break;  // AKA Qt::BackButton
-            case 0x114: button = Qt::ExtraButton2; break;  // AKA Qt::ForwardButton
-            case 0x115: button = Qt::ExtraButton3; break;  // AKA Qt::TaskButton
-            case 0x116: button = Qt::ExtraButton4; break;
-            case 0x117: button = Qt::ExtraButton5; break;
-            case 0x118: button = Qt::ExtraButton6; break;
-            case 0x119: button = Qt::ExtraButton7; break;
-            case 0x11a: button = Qt::ExtraButton8; break;
-            case 0x11b: button = Qt::ExtraButton9; break;
-            case 0x11c: button = Qt::ExtraButton10; break;
-            case 0x11d: button = Qt::ExtraButton11; break;
-            case 0x11e: button = Qt::ExtraButton12; break;
-            case 0x11f: button = Qt::ExtraButton13; break;
+            case 0x110: button = BobUI::LeftButton; break;    // BTN_LEFT
+            case 0x111: button = BobUI::RightButton; break;
+            case 0x112: button = BobUI::MiddleButton; break;
+            case 0x113: button = BobUI::ExtraButton1; break;  // AKA BobUI::BackButton
+            case 0x114: button = BobUI::ExtraButton2; break;  // AKA BobUI::ForwardButton
+            case 0x115: button = BobUI::ExtraButton3; break;  // AKA BobUI::TaskButton
+            case 0x116: button = BobUI::ExtraButton4; break;
+            case 0x117: button = BobUI::ExtraButton5; break;
+            case 0x118: button = BobUI::ExtraButton6; break;
+            case 0x119: button = BobUI::ExtraButton7; break;
+            case 0x11a: button = BobUI::ExtraButton8; break;
+            case 0x11b: button = BobUI::ExtraButton9; break;
+            case 0x11c: button = BobUI::ExtraButton10; break;
+            case 0x11d: button = BobUI::ExtraButton11; break;
+            case 0x11e: button = BobUI::ExtraButton12; break;
+            case 0x11f: button = BobUI::ExtraButton13; break;
             }
             m_buttons.setFlag(button, data->value);
             m_button = button;
@@ -305,6 +305,6 @@ void QEvdevMouseHandler::readMouseData()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qevdevmousehandler_p.cpp"

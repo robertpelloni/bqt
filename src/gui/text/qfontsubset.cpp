@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfontsubset_p.h"
 #include <qdebug.h>
@@ -12,11 +12,11 @@
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifndef QT_NO_PDF
+#ifndef BOBUI_NO_PDF
 
 // This map is used for symbol fonts to get the correct glyph names for the latin range
 static const unsigned short symbol_map[0x100] = {
@@ -259,7 +259,7 @@ qsizetype QFontSubset::addGlyph(uint index)
     return idx;
 }
 
-#endif // QT_NO_PDF
+#endif // BOBUI_NO_PDF
 
 // ------------------------------ Truetype generation ----------------------------------------------
 
@@ -269,16 +269,16 @@ typedef quint16 GlyphID;
 typedef quint16 Offset;
 
 
-class QTtfStream {
+class BOBUItfStream {
 public:
-    QTtfStream(QByteArray &ba) : data((uchar *)ba.data()) { start = data; }
-    QTtfStream &operator <<(quint8 v) { *data = v; ++data; return *this; }
-    QTtfStream &operator <<(quint16 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
-    QTtfStream &operator <<(quint32 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
-    QTtfStream &operator <<(qint8 v) { *data = quint8(v); ++data; return *this; }
-    QTtfStream &operator <<(qint16 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
-    QTtfStream &operator <<(qint32 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
-    QTtfStream &operator <<(qint64 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
+    BOBUItfStream(QByteArray &ba) : data((uchar *)ba.data()) { start = data; }
+    BOBUItfStream &operator <<(quint8 v) { *data = v; ++data; return *this; }
+    BOBUItfStream &operator <<(quint16 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
+    BOBUItfStream &operator <<(quint32 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
+    BOBUItfStream &operator <<(qint8 v) { *data = quint8(v); ++data; return *this; }
+    BOBUItfStream &operator <<(qint16 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
+    BOBUItfStream &operator <<(qint32 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
+    BOBUItfStream &operator <<(qint64 v) { qToBigEndian(v, data); data += sizeof(v); return *this; }
 
     int offset() const { return data - start; }
     void setOffset(int o) { data = start + o; }
@@ -288,14 +288,14 @@ private:
     uchar *start;
 };
 
-struct QTtfTable {
+struct BOBUItfTable {
     Tag tag;
     QByteArray data;
 };
-Q_DECLARE_TYPEINFO(QTtfTable, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUItfTable, Q_RELOCATABLE_TYPE);
 
 
-struct qttf_head_table {
+struct bobuitf_head_table {
     qint32 font_revision;
     quint16 flags;
     qint64 created;
@@ -307,10 +307,10 @@ struct qttf_head_table {
     quint16 macStyle;
     qint16 indexToLocFormat;
 };
-Q_DECLARE_TYPEINFO(qttf_head_table, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(bobuitf_head_table, Q_PRIMITIVE_TYPE);
 
 
-struct qttf_hhea_table {
+struct bobuitf_hhea_table {
     qint16 ascender;
     qint16 descender;
     qint16 lineGap;
@@ -320,10 +320,10 @@ struct qttf_hhea_table {
     qint16 xMaxExtent;
     quint16 numberOfHMetrics;
 };
-Q_DECLARE_TYPEINFO(qttf_hhea_table, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(bobuitf_hhea_table, Q_PRIMITIVE_TYPE);
 
 
-struct qttf_maxp_table {
+struct bobuitf_maxp_table {
     quint16 numGlyphs;
     quint16 maxPoints;
     quint16 maxContours;
@@ -332,31 +332,31 @@ struct qttf_maxp_table {
     quint16 maxComponentElements;
     quint16 maxComponentDepth;
 };
-Q_DECLARE_TYPEINFO(qttf_maxp_table, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(bobuitf_maxp_table, Q_PRIMITIVE_TYPE);
 
-struct qttf_name_table {
+struct bobuitf_name_table {
     QString copyright;
     QString family;
     QString subfamily;
     QString postscript_name;
 };
-Q_DECLARE_TYPEINFO(qttf_name_table, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(bobuitf_name_table, Q_RELOCATABLE_TYPE);
 
 
-static QTtfTable generateHead(const qttf_head_table &head);
-static QTtfTable generateHhea(const qttf_hhea_table &hhea);
-static QTtfTable generateMaxp(const qttf_maxp_table &maxp);
-static QTtfTable generateName(const qttf_name_table &name);
+static BOBUItfTable generateHead(const bobuitf_head_table &head);
+static BOBUItfTable generateHhea(const bobuitf_hhea_table &hhea);
+static BOBUItfTable generateMaxp(const bobuitf_maxp_table &maxp);
+static BOBUItfTable generateName(const bobuitf_name_table &name);
 
-struct qttf_font_tables
+struct bobuitf_font_tables
 {
-    qttf_head_table head;
-    qttf_hhea_table hhea;
-    qttf_maxp_table maxp;
+    bobuitf_head_table head;
+    bobuitf_hhea_table hhea;
+    bobuitf_maxp_table maxp;
 };
 
 
-struct QTtfGlyph {
+struct BOBUItfGlyph {
     quint16 index;
     qint16 xMin;
     qint16 xMax;
@@ -368,13 +368,13 @@ struct QTtfGlyph {
     quint16 numPoints;
     QByteArray data;
 };
-Q_DECLARE_TYPEINFO(QTtfGlyph, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUItfGlyph, Q_RELOCATABLE_TYPE);
 
-static QTtfGlyph generateGlyph(int index, const QPainterPath &path, qreal advance, qreal lsb, qreal ppem);
+static BOBUItfGlyph generateGlyph(int index, const QPainterPath &path, qreal advance, qreal lsb, qreal ppem);
 // generates glyf, loca and hmtx
-static QList<QTtfTable> generateGlyphTables(qttf_font_tables &tables, const QList<QTtfGlyph> &_glyphs);
+static QList<BOBUItfTable> generateGlyphTables(bobuitf_font_tables &tables, const QList<BOBUItfGlyph> &_glyphs);
 
-static QByteArray bindFont(const QList<QTtfTable>& _tables);
+static QByteArray bindFont(const QList<BOBUItfTable>& _tables);
 
 
 static quint32 checksum(const QByteArray &table)
@@ -398,14 +398,14 @@ static quint32 checksum(const QByteArray &table)
     return sum;
 }
 
-static QTtfTable generateHead(const qttf_head_table &head)
+static BOBUItfTable generateHead(const bobuitf_head_table &head)
 {
     const int head_size = 54;
-    QTtfTable t;
+    BOBUItfTable t;
     t.tag = QFont::Tag("head").value();
     t.data.resize(head_size);
 
-    QTtfStream s(t.data);
+    BOBUItfStream s(t.data);
 
 // qint32  Table version number  0x00010000 for version 1.0.
 // qint32  fontRevision  Set by font manufacturer.
@@ -469,14 +469,14 @@ static QTtfTable generateHead(const qttf_head_table &head)
 }
 
 
-static QTtfTable generateHhea(const qttf_hhea_table &hhea)
+static BOBUItfTable generateHhea(const bobuitf_hhea_table &hhea)
 {
     const int hhea_size = 36;
-    QTtfTable t;
+    BOBUItfTable t;
     t.tag = QFont::Tag("hhea").value();
     t.data.resize(hhea_size);
 
-    QTtfStream s(t.data);
+    BOBUItfStream s(t.data);
 // qint32  Table version number  0x00010000 for version 1.0.
     s << qint32(0x00010000)
 // qint16  Ascender  Typographic ascent.  (Distance from baseline of highest ascender)
@@ -520,14 +520,14 @@ static QTtfTable generateHhea(const qttf_hhea_table &hhea)
 }
 
 
-static QTtfTable generateMaxp(const qttf_maxp_table &maxp)
+static BOBUItfTable generateMaxp(const bobuitf_maxp_table &maxp)
 {
     const int maxp_size = 32;
-    QTtfTable t;
+    BOBUItfTable t;
     t.tag = QFont::Tag("maxp").value();
     t.data.resize(maxp_size);
 
-    QTtfStream s(t.data);
+    BOBUItfStream s(t.data);
 
 // qint32  Table version number  0x00010000 for version 1.0.
     s << qint32(0x00010000)
@@ -564,19 +564,19 @@ static QTtfTable generateMaxp(const qttf_maxp_table &maxp)
     return t;
 }
 
-struct QTtfNameRecord {
+struct BOBUItfNameRecord {
     quint16 nameId;
     QString value;
 };
-Q_DECLARE_TYPEINFO(QTtfNameRecord, Q_RELOCATABLE_TYPE);
+Q_DECLARE_TYPEINFO(BOBUItfNameRecord, Q_RELOCATABLE_TYPE);
 
-static QTtfTable generateName(const QList<QTtfNameRecord> &name);
+static BOBUItfTable generateName(const QList<BOBUItfNameRecord> &name);
 
-static QTtfTable generateName(const qttf_name_table &name)
+static BOBUItfTable generateName(const bobuitf_name_table &name)
 {
-    QList<QTtfNameRecord> list;
+    QList<BOBUItfNameRecord> list;
     list.reserve(5);
-    QTtfNameRecord rec;
+    BOBUItfNameRecord rec;
     rec.nameId = 0;
     rec.value = name.copyright;
     list.append(rec);
@@ -599,11 +599,11 @@ static QTtfTable generateName(const qttf_name_table &name)
 }
 
 // ####### should probably generate Macintosh/Roman name entries as well
-static QTtfTable generateName(const QList<QTtfNameRecord> &name)
+static BOBUItfTable generateName(const QList<BOBUItfNameRecord> &name)
 {
     const int char_size = 2;
 
-    QTtfTable t;
+    BOBUItfTable t;
     t.tag = QFont::Tag("name").value();
 
     const int name_size = 6 + 12*name.size();
@@ -613,7 +613,7 @@ static QTtfTable generateName(const QList<QTtfNameRecord> &name)
     }
     t.data.resize(name_size + string_size);
 
-    QTtfStream s(t.data);
+    BOBUItfStream s(t.data);
 // quint16  format  Format selector (=0).
     s << quint16(0)
 // quint16  count  Number of name records.
@@ -856,7 +856,7 @@ static int convertToRelative(QList<TTF_POINT> *points)
     return point_array_size;
 }
 
-static void getGlyphData(QTtfGlyph *glyph, const QList<TTF_POINT> &points, const QList<int> &endPoints, int point_array_size)
+static void getGlyphData(BOBUItfGlyph *glyph, const QList<TTF_POINT> &points, const QList<int> &endPoints, int point_array_size)
 {
     const int max_size = int(5 * sizeof(qint16) // header
                              + endPoints.size() * sizeof(quint16) // end points of contours
@@ -866,7 +866,7 @@ static void getGlyphData(QTtfGlyph *glyph, const QList<TTF_POINT> &points, const
 
     glyph->data.resize(max_size);
 
-    QTtfStream s(glyph->data);
+    BOBUItfStream s(glyph->data);
     s << qint16(endPoints.size())
       << glyph->xMin << glyph->yMin << glyph->xMax << glyph->yMax;
 
@@ -904,11 +904,11 @@ static void getGlyphData(QTtfGlyph *glyph, const QList<TTF_POINT> &points, const
     glyph->numPoints = points.size();
 }
 
-static QTtfGlyph generateGlyph(int index, const QPainterPath &path, qreal advance, qreal lsb, qreal ppem)
+static BOBUItfGlyph generateGlyph(int index, const QPainterPath &path, qreal advance, qreal lsb, qreal ppem)
 {
     QList<TTF_POINT> points;
     QList<int> endPoints;
-    QTtfGlyph glyph;
+    BOBUItfGlyph glyph;
     glyph.index = index;
     glyph.advanceWidth = qRound(advance * 2048. / ppem);
     glyph.lsb = qRound(lsb * 2048. / ppem);
@@ -937,15 +937,15 @@ static QTtfGlyph generateGlyph(int index, const QPainterPath &path, qreal advanc
     return glyph;
 }
 
-static bool operator <(const QTtfGlyph &g1, const QTtfGlyph &g2)
+static bool operator <(const BOBUItfGlyph &g1, const BOBUItfGlyph &g2)
 {
     return g1.index < g2.index;
 }
 
-static QList<QTtfTable> generateGlyphTables(qttf_font_tables &tables, const QList<QTtfGlyph> &_glyphs)
+static QList<BOBUItfTable> generateGlyphTables(bobuitf_font_tables &tables, const QList<BOBUItfGlyph> &_glyphs)
 {
     const int max_size_small = 65536*2;
-    QList<QTtfGlyph> glyphs = _glyphs;
+    QList<BOBUItfGlyph> glyphs = _glyphs;
     std::sort(glyphs.begin(), glyphs.end());
 
     Q_ASSERT(tables.maxp.numGlyphs == glyphs.at(glyphs.size()-1).index + 1);
@@ -958,18 +958,18 @@ static QList<QTtfTable> generateGlyphTables(qttf_font_tables &tables, const QLis
     tables.head.indexToLocFormat = glyf_size < max_size_small ? 0 : 1;
     tables.hhea.numberOfHMetrics = nGlyphs;
 
-    QTtfTable glyf;
+    BOBUItfTable glyf;
     glyf.tag = QFont::Tag("glyf").value();
 
-    QTtfTable loca;
+    BOBUItfTable loca;
     loca.tag = QFont::Tag("loca").value();
     loca.data.resize(glyf_size < max_size_small ? (nGlyphs+1)*sizeof(quint16) : (nGlyphs+1)*sizeof(quint32));
-    QTtfStream ls(loca.data);
+    BOBUItfStream ls(loca.data);
 
-    QTtfTable hmtx;
+    BOBUItfTable hmtx;
     hmtx.tag = QFont::Tag("hmtx").value();
     hmtx.data.resize(nGlyphs*4);
-    QTtfStream hs(hmtx.data);
+    BOBUItfStream hs(hmtx.data);
 
     int pos = 0;
     for (int i = 0; i < nGlyphs; ++i) {
@@ -1008,7 +1008,7 @@ static QList<QTtfTable> generateGlyphTables(qttf_font_tables &tables, const QLis
     Q_ASSERT(loca.data.size() == ls.offset());
     Q_ASSERT(hmtx.data.size() == hs.offset());
 
-    QList<QTtfTable> list;
+    QList<BOBUItfTable> list;
     list.reserve(3);
     list.append(glyf);
     list.append(loca);
@@ -1016,14 +1016,14 @@ static QList<QTtfTable> generateGlyphTables(qttf_font_tables &tables, const QLis
     return list;
 }
 
-static bool operator <(const QTtfTable &t1, const QTtfTable &t2)
+static bool operator <(const BOBUItfTable &t1, const BOBUItfTable &t2)
 {
     return t1.tag < t2.tag;
 }
 
-static QByteArray bindFont(const QList<QTtfTable>& _tables)
+static QByteArray bindFont(const QList<BOBUItfTable>& _tables)
 {
-    QList<QTtfTable> tables = _tables;
+    QList<BOBUItfTable> tables = _tables;
 
     std::sort(tables.begin(), tables.end());
 
@@ -1043,7 +1043,7 @@ static QByteArray bindFont(const QList<QTtfTable>& _tables)
 
     quint32 head_offset = 0;
     {
-        QTtfStream f(font);
+        BOBUItfStream f(font);
 // Offset Table
 // Type  Name  Description
 //   qint32  sfnt version  0x00010000 for version 1.0.
@@ -1065,7 +1065,7 @@ static QByteArray bindFont(const QList<QTtfTable>& _tables)
 //   quint32  length  Length of this table.
         quint32 table_offset = header_size + directory_size;
         for (int i = 0; i < tables.size(); ++i) {
-            const QTtfTable &t = tables.at(i);
+            const BOBUItfTable &t = tables.at(i);
             const quint32 size = (t.data.size() + 3) & ~3;
             if (t.tag == QFont::Tag("head").value())
                 head_offset = table_offset;
@@ -1109,8 +1109,8 @@ static QByteArray bindFont(const QList<QTtfTable>& _tables)
 
 QByteArray QFontSubset::toTruetype() const
 {
-    qttf_font_tables font;
-    memset(&font, 0, sizeof(qttf_font_tables));
+    bobuitf_font_tables font;
+    memset(&font, 0, sizeof(bobuitf_font_tables));
 
     qreal ppem = fontEngine->fontDef.pixelSize;
 #define TO_TTF(x) qRound(x * 2048. / ppem)
@@ -1150,7 +1150,7 @@ QByteArray QFontSubset::toTruetype() const
     font.maxp.maxComponentDepth = 0;
     const qsizetype numGlyphs = nGlyphs();
     font.maxp.numGlyphs = quint16(numGlyphs);
-    QList<QTtfGlyph> glyphs;
+    QList<BOBUItfGlyph> glyphs;
     glyphs.reserve(numGlyphs);
 
     for (qsizetype i = 0; i < numGlyphs; ++i) {
@@ -1163,7 +1163,7 @@ QByteArray QFontSubset::toTruetype() const
             if (g == 0)
                 path.addRect(QRectF(0, 0, 1000, 1000));
         }
-        QTtfGlyph glyph = generateGlyph(i, path, metric.xoff.toReal(), metric.x.toReal(), properties.emSquare.toReal());
+        BOBUItfGlyph glyph = generateGlyph(i, path, metric.xoff.toReal(), metric.x.toReal(), properties.emSquare.toReal());
 
         font.head.xMin = qMin(font.head.xMin, glyph.xMin);
         font.head.xMax = qMax(font.head.xMax, glyph.xMax);
@@ -1181,17 +1181,17 @@ QByteArray QFontSubset::toTruetype() const
     }
 
 
-    QList<QTtfTable> tables = generateGlyphTables(font, glyphs);
+    QList<BOBUItfTable> tables = generateGlyphTables(font, glyphs);
     tables.append(generateHead(font.head));
     tables.append(generateHhea(font.hhea));
     tables.append(generateMaxp(font.maxp));
     // name
-    QTtfTable name_table;
+    BOBUItfTable name_table;
     name_table.tag = QFont::Tag("name").value();
     if (!noEmbed)
         name_table.data = fontEngine->getSfntTable(name_table.tag);
     if (name_table.data.isEmpty()) {
-        qttf_name_table name;
+        bobuitf_name_table name;
         if (noEmbed)
             name.copyright = "Fake font"_L1;
         else
@@ -1204,7 +1204,7 @@ QByteArray QFontSubset::toTruetype() const
     tables.append(name_table);
 
     if (!noEmbed) {
-        QTtfTable os2;
+        BOBUItfTable os2;
         os2.tag = QFont::Tag("OS/2").value();
         os2.data = fontEngine->getSfntTable(os2.tag);
         if (!os2.data.isEmpty())
@@ -1214,4 +1214,4 @@ QByteArray QFontSubset::toTruetype() const
     return bindFont(tables);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

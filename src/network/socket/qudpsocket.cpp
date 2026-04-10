@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 //#define QUDPSOCKET_DEBUG
 
@@ -11,7 +11,7 @@
     \brief The QUdpSocket class provides a UDP socket.
 
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     UDP (User Datagram Protocol) is a lightweight, unreliable,
     datagram-oriented, connectionless protocol. It can be used when
@@ -59,7 +59,7 @@
     \l{multicastreceiver}{Multicast Receiver} examples illustrate how
     to use QUdpSocket in applications.
 
-    \sa QTcpSocket, QNetworkDatagram
+    \sa BOBUIcpSocket, QNetworkDatagram
 */
 
 #include "qudpsocket.h"
@@ -69,11 +69,11 @@
 #include "qabstractsocket_p.h"
 #include "qabstractsocketengine_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#ifndef QT_NO_UDPSOCKET
+#ifndef BOBUI_NO_UDPSOCKET
 
-#define QT_CHECK_BOUND(function, a) do { \
+#define BOBUI_CHECK_BOUND(function, a) do { \
     if (!isValid()) { \
         qWarning(function" called on a QUdpSocket when not in QUdpSocket::BoundState"); \
         return (a); \
@@ -135,7 +135,7 @@ QUdpSocket::~QUdpSocket()
 {
 }
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
 /*!
     \since 4.8
@@ -175,7 +175,7 @@ bool QUdpSocket::joinMulticastGroup(const QHostAddress &groupAddress,
                                     const QNetworkInterface &iface)
 {
     Q_D(QUdpSocket);
-    QT_CHECK_BOUND("QUdpSocket::joinMulticastGroup()", false);
+    BOBUI_CHECK_BOUND("QUdpSocket::joinMulticastGroup()", false);
     return d->socketEngine->joinMulticastGroup(groupAddress, iface);
 }
 
@@ -214,7 +214,7 @@ bool QUdpSocket::leaveMulticastGroup(const QHostAddress &groupAddress)
 bool QUdpSocket::leaveMulticastGroup(const QHostAddress &groupAddress,
                                      const QNetworkInterface &iface)
 {
-    QT_CHECK_BOUND("QUdpSocket::leaveMulticastGroup()", false);
+    BOBUI_CHECK_BOUND("QUdpSocket::leaveMulticastGroup()", false);
     return d_func()->socketEngine->leaveMulticastGroup(groupAddress, iface);
 }
 
@@ -233,7 +233,7 @@ bool QUdpSocket::leaveMulticastGroup(const QHostAddress &groupAddress,
 QNetworkInterface QUdpSocket::multicastInterface() const
 {
     Q_D(const QUdpSocket);
-    QT_CHECK_BOUND("QUdpSocket::multicastInterface()", QNetworkInterface());
+    BOBUI_CHECK_BOUND("QUdpSocket::multicastInterface()", QNetworkInterface());
     return d->socketEngine->multicastInterface();
 }
 
@@ -257,7 +257,7 @@ void QUdpSocket::setMulticastInterface(const QNetworkInterface &iface)
     d->socketEngine->setMulticastInterface(iface);
 }
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 /*!
     Returns \c true if at least one datagram is waiting to be read;
@@ -267,7 +267,7 @@ void QUdpSocket::setMulticastInterface(const QNetworkInterface &iface)
 */
 bool QUdpSocket::hasPendingDatagrams() const
 {
-    QT_CHECK_BOUND("QUdpSocket::hasPendingDatagrams()", false);
+    BOBUI_CHECK_BOUND("QUdpSocket::hasPendingDatagrams()", false);
     return d_func()->socketEngine->hasPendingDatagrams();
 }
 
@@ -279,7 +279,7 @@ bool QUdpSocket::hasPendingDatagrams() const
 */
 qint64 QUdpSocket::pendingDatagramSize() const
 {
-    QT_CHECK_BOUND("QUdpSocket::pendingDatagramSize()", -1);
+    BOBUI_CHECK_BOUND("QUdpSocket::pendingDatagramSize()", -1);
     return d_func()->socketEngine->pendingDatagramSize();
 }
 
@@ -421,14 +421,14 @@ QNetworkDatagram QUdpSocket::receiveDatagram(qint64 maxSize)
 #if defined QUDPSOCKET_DEBUG
     qDebug("QUdpSocket::receiveDatagram(%lld)", maxSize);
 #endif
-    QT_CHECK_BOUND("QUdpSocket::receiveDatagram()", QNetworkDatagram());
+    BOBUI_CHECK_BOUND("QUdpSocket::receiveDatagram()", QNetworkDatagram());
 
     if (maxSize < 0)
         maxSize = d->socketEngine->pendingDatagramSize();
     if (maxSize < 0)
         return QNetworkDatagram();
 
-    QNetworkDatagram result(QByteArray(maxSize, Qt::Uninitialized));
+    QNetworkDatagram result(QByteArray(maxSize, BobUI::Uninitialized));
     qint64 readBytes = d->socketEngine->readDatagram(result.d->data.data(), maxSize, &result.d->header,
                                                      QAbstractSocketEngine::WantAll);
     d->hasPendingData = false;
@@ -466,7 +466,7 @@ qint64 QUdpSocket::readDatagram(char *data, qint64 maxSize, QHostAddress *addres
 #if defined QUDPSOCKET_DEBUG
     qDebug("QUdpSocket::readDatagram(%p, %llu, %p, %p)", data, maxSize, address, port);
 #endif
-    QT_CHECK_BOUND("QUdpSocket::readDatagram()", -1);
+    BOBUI_CHECK_BOUND("QUdpSocket::readDatagram()", -1);
 
     qint64 readBytes;
     if (address || port) {
@@ -496,8 +496,8 @@ qint64 QUdpSocket::readDatagram(char *data, qint64 maxSize, QHostAddress *addres
     return readBytes;
 }
 
-#endif // QT_NO_UDPSOCKET
+#endif // BOBUI_NO_UDPSOCKET
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qudpsocket.cpp"

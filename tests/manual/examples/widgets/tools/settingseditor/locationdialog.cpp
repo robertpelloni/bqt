@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "locationdialog.h"
 
@@ -12,8 +12,8 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
-#include <QTableWidget>
-#include <QTableWidgetItem>
+#include <BOBUIableWidget>
+#include <BOBUIableWidgetItem>
 
 LocationDialog::LocationDialog(QWidget *parent)
     : QDialog(parent)
@@ -27,12 +27,12 @@ LocationDialog::LocationDialog(QWidget *parent)
     scopeComboBox->addItem(tr("System"));
 
     organizationComboBox = new QComboBox;
-    organizationComboBox->addItem(tr("QtProject"));
+    organizationComboBox->addItem(tr("BobUIProject"));
     organizationComboBox->setEditable(true);
 
     applicationComboBox = new QComboBox;
     applicationComboBox->addItem(tr("Any"));
-    applicationComboBox->addItem(tr("Qt Creator"));
+    applicationComboBox->addItem(tr("BobUI Creator"));
     applicationComboBox->addItem(tr("Assistant"));
     applicationComboBox->addItem(tr("Designer"));
     applicationComboBox->addItem(tr("Linguist"));
@@ -55,7 +55,7 @@ LocationDialog::LocationDialog(QWidget *parent)
 
     const QStringList labels{tr("Location"), tr("Access")};
 
-    locationsTable = new QTableWidget;
+    locationsTable = new BOBUIableWidget;
     locationsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     locationsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     locationsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -63,7 +63,7 @@ LocationDialog::LocationDialog(QWidget *parent)
     locationsTable->setHorizontalHeaderLabels(labels);
     locationsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     locationsTable->horizontalHeader()->resizeSection(1, 180);
-    connect(locationsTable, &QTableWidget::itemActivated, this, &LocationDialog::itemActivated);
+    connect(locationsTable, &BOBUIableWidget::itemActivated, this, &LocationDialog::itemActivated);
 
     buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
@@ -132,7 +132,7 @@ QString LocationDialog::application() const
         return applicationComboBox->currentText();
 }
 
-void LocationDialog::itemActivated(QTableWidgetItem *)
+void LocationDialog::itemActivated(BOBUIableWidgetItem *)
 {
     buttonBox->button(QDialogButtonBox::Ok)->animateClick();
 }
@@ -161,9 +161,9 @@ void LocationDialog::updateLocationsTable()
             int row = locationsTable->rowCount();
             locationsTable->setRowCount(row + 1);
 
-            QTableWidgetItem *item0 = new QTableWidgetItem(QDir::toNativeSeparators(settings.fileName()));
+            BOBUIableWidgetItem *item0 = new BOBUIableWidgetItem(QDir::toNativeSeparators(settings.fileName()));
 
-            QTableWidgetItem *item1 = new QTableWidgetItem;
+            BOBUIableWidgetItem *item1 = new BOBUIableWidgetItem;
             bool disable = (settings.childKeys().isEmpty()
                             && settings.childGroups().isEmpty());
 
@@ -180,8 +180,8 @@ void LocationDialog::updateLocationsTable()
             }
 
             if (disable) {
-                item0->setFlags(item0->flags() & ~Qt::ItemIsEnabled);
-                item1->setFlags(item1->flags() & ~Qt::ItemIsEnabled);
+                item0->setFlags(item0->flags() & ~BobUI::ItemIsEnabled);
+                item1->setFlags(item1->flags() & ~BobUI::ItemIsEnabled);
             }
 
             locationsTable->setItem(row, 0, item0);

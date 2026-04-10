@@ -1,21 +1,21 @@
 // Copyright (C) 2024 Jie Liu <liujie01@kylinos.cn>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylanddatacontrolv1_p.h"
 #include "qwaylandinputdevice_p.h"
 #include "qwaylanddisplay_p.h"
 #include "qwaylandmimehelper_p.h"
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
 #include <qpa/qplatformclipboard.h>
 
 #include <signal.h>
 #include <unistd.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandDataControlManagerV1::QWaylandDataControlManagerV1(QWaylandDisplay *display, uint id, uint version)
     : zwlr_data_control_manager_v1(display->wl_registry(), id, qMin(version, uint(2)))
@@ -47,7 +47,7 @@ void QWaylandDataControlOfferV1::zwlr_data_control_offer_v1_offer(const QString 
 
 QWaylandDataControlDeviceV1::QWaylandDataControlDeviceV1(
         QWaylandDataControlManagerV1 *manager, QWaylandInputDevice *seat)
-    : QtWayland::zwlr_data_control_device_v1(manager->get_data_device(seat->wl_seat()))
+    : BobUIWayland::zwlr_data_control_device_v1(manager->get_data_device(seat->wl_seat()))
     , m_display(manager->display())
     , m_seat(seat)
 {
@@ -128,7 +128,7 @@ void QWaylandDataControlDeviceV1::zwlr_data_control_device_v1_primary_selection(
 }
 
 QWaylandDataControlSourceV1::QWaylandDataControlSourceV1(QWaylandDataControlManagerV1 *manager, QMimeData *mimeData)
-    : QtWayland::zwlr_data_control_source_v1(manager->create_data_source())
+    : BobUIWayland::zwlr_data_control_source_v1(manager->create_data_source())
     , m_mimeData(mimeData)
 {
     if (!mimeData)
@@ -162,6 +162,6 @@ void QWaylandDataControlSourceV1::zwlr_data_control_source_v1_send(const QString
     close(fd);
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

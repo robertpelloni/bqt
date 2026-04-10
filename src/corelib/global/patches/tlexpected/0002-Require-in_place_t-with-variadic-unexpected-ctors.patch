@@ -1,5 +1,5 @@
 From c6064c91aa84412d07a4f3948d19496e0f294cef Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?J=C3=B8ger=20Hanseg=C3=A5rd?= <joger.hansegard@qt.io>
+From: =?UTF-8?q?J=C3=B8ger=20Hanseg=C3=A5rd?= <joger.hansegard@bobui.io>
 Date: Wed, 19 Feb 2025 14:05:45 +0100
 Subject: [PATCH 2/3] Require in_place_t with variadic unexpected ctors
 

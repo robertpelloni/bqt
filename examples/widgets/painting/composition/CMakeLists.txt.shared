@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE QtCreatorProject>
+<!DOCTYPE BobUICreatorProject>
 <!--
-    Disable 'Use junctions for CMake configuration and build operations' feature in Qt Creator 15 and above;
+    Disable 'Use junctions for CMake configuration and build operations' feature in BobUI Creator 15 and above;
     The example needs access to a 'shared' directory
 //-->
-<qtcreator>
+<bobuicreator>
   <data>
   <variable>ProjectExplorer.Project.PluginSettings</variable>
    <valuemap type="QVariantMap">
@@ -18,4 +18,4 @@
   <variable>Version</variable>
   <value type="int">22</value>
  </data>
-</qtcreator>
+</bobuicreator>

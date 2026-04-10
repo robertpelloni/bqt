@@ -14,10 +14,10 @@ OmniTextField::OmniTextField(QQuickItem *parent)
       m_isFocused(false)
 {
     setObjectName("OmniTextField");
-    setAcceptedMouseButtons(Qt::LeftButton);
+    setAcceptedMouseButtons(BobUI::LeftButton);
     setFlag(ItemAcceptsInputMethod, true);
     setFlag(ItemHasContents, true);
-    setFocusOnTouch(true); // Qt focus integration
+    setFocusOnTouch(true); // BobUI focus integration
 
     setWidth(200);
     setHeight(30);
@@ -66,7 +66,7 @@ void OmniTextField::focusOutEvent(QFocusEvent *event) {
 }
 
 void OmniTextField::mousePressEvent(QMouseEvent *event) {
-    forceActiveFocus(); // Request standard Qt focus
+    forceActiveFocus(); // Request standard BobUI focus
     // The OmniInputManager intercepts this and assigns device-specific focus
     QQuickPaintedItem::mousePressEvent(event);
 }
@@ -75,30 +75,30 @@ void OmniTextField::keyPressEvent(QKeyEvent *event) {
     // This is the core logic tested by the Multi-Cursor routing.
     // When OmniInputManager routes a key here, it proves independent typing works.
 
-    if (event->key() == Qt::Key_Backspace) {
+    if (event->key() == BobUI::Key_Backspace) {
         if (m_cursorPosition > 0) {
             m_text.remove(m_cursorPosition - 1, 1);
             m_cursorPosition--;
             emit textChanged();
             update();
         }
-    } else if (event->key() == Qt::Key_Delete) {
+    } else if (event->key() == BobUI::Key_Delete) {
         if (m_cursorPosition < m_text.length()) {
             m_text.remove(m_cursorPosition, 1);
             emit textChanged();
             update();
         }
-    } else if (event->key() == Qt::Key_Left) {
+    } else if (event->key() == BobUI::Key_Left) {
         if (m_cursorPosition > 0) {
             m_cursorPosition--;
             update();
         }
-    } else if (event->key() == Qt::Key_Right) {
+    } else if (event->key() == BobUI::Key_Right) {
         if (m_cursorPosition < m_text.length()) {
             m_cursorPosition++;
             update();
         }
-    } else if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+    } else if (event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) {
         emit returnPressed();
     } else if (!event->text().isEmpty()) {
         m_text.insert(m_cursorPosition, event->text());
@@ -130,10 +130,10 @@ void OmniTextField::paint(QPainter *painter) {
 
     if (m_text.isEmpty() && !m_isFocused) {
         painter->setPen(QColor("#888888"));
-        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, m_placeholderText);
+        painter->drawText(textRect, BobUI::AlignLeft | BobUI::AlignVCenter, m_placeholderText);
     } else {
-        painter->setPen(Qt::white);
-        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, m_text);
+        painter->setPen(BobUI::white);
+        painter->drawText(textRect, BobUI::AlignLeft | BobUI::AlignVCenter, m_text);
         
         // Draw cursor (if focused)
         if (m_isFocused) {

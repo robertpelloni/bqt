@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QApplication>
 #include <QFileSystemModel>
 #include <QFileIconProvider>
 #include <QScreen>
 #include <QScroller>
-#include <QTreeView>
+#include <BOBUIreeView>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QCoreApplication::setApplicationVersion(QT_VERSION_STR);
+    QCoreApplication::setApplicationVersion(BOBUI_VERSION_STR);
     QCommandLineParser parser;
-    parser.setApplicationDescription("Qt Dir View Example");
+    parser.setApplicationDescription("BobUI Dir View Example");
     parser.addHelpOption();
     parser.addVersionOption();
     QCommandLineOption dontUseCustomDirectoryIconsOption("c", "Set QFileSystemModel::DontUseCustomDirectoryIcons");
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         model.setOption(QFileSystemModel::DontUseCustomDirectoryIcons);
     if (parser.isSet(dontWatchOption))
         model.setOption(QFileSystemModel::DontWatchForChanges);
-    QTreeView tree;
+    BOBUIreeView tree;
     tree.setModel(&model);
     if (!rootPath.isEmpty()) {
         const QModelIndex rootIndex = model.index(QDir::cleanPath(rootPath));

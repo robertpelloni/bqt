@@ -1,12 +1,12 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QCborStreamWriter>
 #include <QBuffer>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
 class tst_QCborStreamWriter : public QObject
@@ -131,9 +131,9 @@ void compare(const QVariant &input, const QByteArray &output)
 
 void tst_QCborStreamWriter::initTestCase_data()
 {
-    QTest::addColumn<bool>("useDevice");
-    QTest::newRow("QByteArray") << false;
-    QTest::newRow("QIODevice") << true;
+    BOBUIest::addColumn<bool>("useDevice");
+    BOBUIest::newRow("QByteArray") << false;
+    BOBUIest::newRow("QIODevice") << true;
 }
 
 void tst_QCborStreamWriter::fixed_data()
@@ -157,26 +157,26 @@ void tst_QCborStreamWriter::strings_data()
 
 void tst_QCborStreamWriter::nonAsciiStrings_data()
 {
-    QTest::addColumn<QByteArray>("output");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<bool>("isLatin1");
+    BOBUIest::addColumn<QByteArray>("output");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<bool>("isLatin1");
 
     QByteArray latin1 = "Résumé";
-    QTest::newRow("shortlatin1")
+    BOBUIest::newRow("shortlatin1")
             << ("\x68" + latin1) << QString::fromUtf8(latin1) << true;
 
     // replicate it 5 times (total 40 bytes)
     latin1 += latin1 + latin1 + latin1 + latin1;
-    QTest::newRow("longlatin1")
+    BOBUIest::newRow("longlatin1")
             << ("\x78\x28" + latin1) << QString::fromUtf8(latin1) << true;
 
     QByteArray nonlatin1 = "Χαίρετε";
-    QTest::newRow("shortnonlatin1")
+    BOBUIest::newRow("shortnonlatin1")
             << ("\x6e" + nonlatin1) << QString::fromUtf8(nonlatin1) << false;
 
     // replicate it 4 times (total 56 bytes)
     nonlatin1 = nonlatin1 + nonlatin1 + nonlatin1 + nonlatin1;
-    QTest::newRow("longnonlatin1")
+    BOBUIest::newRow("longnonlatin1")
             << ("\x78\x38" + nonlatin1) << QString::fromUtf8(nonlatin1) << false;
 }
 
@@ -283,6 +283,6 @@ void tst_QCborStreamWriter::maps()
     compare(make_map({{1, input}, {input, 24}}), "\xa2\1" + output + output + "\x18\x18");
 }
 
-QTEST_MAIN(tst_QCborStreamWriter)
+BOBUIEST_MAIN(tst_QCborStreamWriter)
 
 #include "tst_qcborstreamwriter.moc"

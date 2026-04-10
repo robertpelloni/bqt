@@ -1,18 +1,18 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qpoint.h"
 #include "qdatastream.h"
 
 #include <private/qdebug_p.h>
-#include <QtCore/qhashfunctions.h>
+#include <BobUICore/qhashfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPoint
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \reentrant
 
@@ -363,7 +363,7 @@ QT_BEGIN_NAMESPACE
 /*****************************************************************************
   QPoint stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPoint &point)
     \relates QPoint
@@ -371,7 +371,7 @@ QT_BEGIN_NAMESPACE
     Writes the given \a point to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QPoint &p)
@@ -390,7 +390,7 @@ QDataStream &operator<<(QDataStream &s, const QPoint &p)
     Reads a point from the given \a stream into the given \a point
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QPoint &p)
@@ -408,7 +408,7 @@ QDataStream &operator>>(QDataStream &s, QPoint &p)
     return s;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 /*!
     \fn int QPoint::manhattanLength() const
 
@@ -428,13 +428,13 @@ QDataStream &operator>>(QDataStream &s, QPoint &p)
     the streets of Manhattan.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPoint &p)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QPoint" << '(';
-    QtDebugUtils::formatQPoint(dbg, p);
+    BobUIDebugUtils::formatQPoint(dbg, p);
     dbg << ')';
     return dbg;
 }
@@ -444,7 +444,7 @@ QDebug operator<<(QDebug dbg, const QPointF &p)
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QPointF" << '(';
-    QtDebugUtils::formatQPoint(dbg, p);
+    BobUIDebugUtils::formatQPoint(dbg, p);
     dbg << ')';
     return dbg;
 }
@@ -461,7 +461,7 @@ size_t qHash(QPoint key, size_t seed) noexcept
 
 /*!
     \class QPointF
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \reentrant
 
@@ -779,7 +779,7 @@ size_t qHash(QPoint key, size_t seed) noexcept
     \sa qFuzzyCompare
 */
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPointF &point)
     \relates QPointF
@@ -787,7 +787,7 @@ size_t qHash(QPoint key, size_t seed) noexcept
     Writes the given \a point to the given \a stream and returns a
     reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QPointF &p)
@@ -803,7 +803,7 @@ QDataStream &operator<<(QDataStream &s, const QPointF &p)
     Reads a point from the given \a stream into the given \a point
     and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QPointF &p)
@@ -815,6 +815,6 @@ QDataStream &operator>>(QDataStream &s, QPointF &p)
     p.setY(qreal(y));
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

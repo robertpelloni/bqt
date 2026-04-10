@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatforminputcontext.h"
 #include <qguiapplication.h>
@@ -8,9 +8,9 @@
 #include "private/qhighdpiscaling_p.h"
 #include <qpa/qplatforminputcontext_p.h>
 
-#include <QtGui/qtransform.h>
+#include <BobUIGui/bobuiransform.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPlatformInputContext
@@ -29,7 +29,7 @@ QT_BEGIN_NAMESPACE
     editing capability to perform grammar and semantic analysis.
 
     To abstract such different input method specific intermediate
-    information, Qt offers the QPlatformInputContext as base class. The
+    information, BobUI offers the QPlatformInputContext as base class. The
     concept is well known as 'input context' in the input method
     domain. An input context is created for a text widget in response
     to a demand. It is ensured that an input context is prepared for
@@ -51,7 +51,7 @@ QPlatformInputContext::QPlatformInputContext()
     // until super class has finished constructing.
     QMetaObject::invokeMethod(this, [this]{
         m_inputDirection = inputDirection();
-    }, Qt::QueuedConnection);
+    }, BobUI::QueuedConnection);
 }
 
 /*!
@@ -95,7 +95,7 @@ void QPlatformInputContext::commit()
 /*!
     Notification on editor updates. Called by QInputMethod::update().
  */
-void QPlatformInputContext::update(Qt::InputMethodQueries)
+void QPlatformInputContext::update(BobUI::InputMethodQueries)
 {
 }
 
@@ -208,12 +208,12 @@ void QPlatformInputContext::emitLocaleChanged()
     emitInputDirectionChanged(inputDirection());
 }
 
-Qt::LayoutDirection QPlatformInputContext::inputDirection() const
+BobUI::LayoutDirection QPlatformInputContext::inputDirection() const
 {
     return locale().textDirection();
 }
 
-void QPlatformInputContext::emitInputDirectionChanged(Qt::LayoutDirection newDirection)
+void QPlatformInputContext::emitInputDirectionChanged(BobUI::LayoutDirection newDirection)
 {
     if (newDirection == m_inputDirection)
         return;
@@ -262,11 +262,11 @@ void QPlatformInputContext::setSelectionOnFocusObject(const QPointF &nativeAncho
     const QPointF &cursorPos = QHighDpi::fromNativePixels(nativeCursorPos, window);
 
     QInputMethod *im = QGuiApplication::inputMethod();
-    const QTransform mapToLocal = im->inputItemTransform().inverted();
+    const BOBUIransform mapToLocal = im->inputItemTransform().inverted();
     bool success;
-    int anchor = QInputMethod::queryFocusObject(Qt::ImCursorPosition, anchorPos * mapToLocal).toInt(&success);
+    int anchor = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, anchorPos * mapToLocal).toInt(&success);
     if (success) {
-        int cursor = QInputMethod::queryFocusObject(Qt::ImCursorPosition, cursorPos * mapToLocal).toInt(&success);
+        int cursor = QInputMethod::queryFocusObject(BobUI::ImCursorPosition, cursorPos * mapToLocal).toInt(&success);
         if (success) {
             if (anchor == cursor && anchorPos != cursorPos)
                 return;
@@ -283,11 +283,11 @@ void QPlatformInputContext::setSelectionOnFocusObject(const QPointF &nativeAncho
 
     Queries the current foucus object with a window position in native pixels.
 */
-QVariant QPlatformInputContext::queryFocusObject(Qt::InputMethodQuery query, QPointF nativePosition)
+QVariant QPlatformInputContext::queryFocusObject(BobUI::InputMethodQuery query, QPointF nativePosition)
 {
     const QPointF position = QHighDpi::fromNativePixels(nativePosition, QGuiApplication::focusWindow());
     const QInputMethod *im = QGuiApplication::inputMethod();
-    const QTransform mapToLocal = im->inputItemTransform().inverted();
+    const BOBUIransform mapToLocal = im->inputItemTransform().inverted();
     return im->queryFocusObject(query, mapToLocal.map(position));
 }
 
@@ -352,6 +352,6 @@ QRectF QPlatformInputContext::keyboardRectangle()
         QGuiApplication::inputMethod()->keyboardRectangle(), QGuiApplication::focusWindow());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatforminputcontext.cpp"

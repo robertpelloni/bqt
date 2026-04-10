@@ -1,10 +1,10 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsqlquery.h"
 
-//#define QT_DEBUG_SQL
+//#define BOBUI_DEBUG_SQL
 
 #include "qatomic.h"
 #include "qdebug.h"
@@ -15,13 +15,13 @@
 #include "qsqldatabase.h"
 #include "private/qsqlnulldriver_p.h"
 
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
 #include "qelapsedtimer.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcSqlQuery, "qt.sql.qsqlquery")
+Q_STATIC_LOGGING_CATEGORY(lcSqlQuery, "bobui.sql.qsqlquery")
 
 class QSqlQueryPrivate
 {
@@ -71,7 +71,7 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     \ingroup database
     \ingroup shared
 
-    \inmodule QtSql
+    \inmodule BobUISql
 
     QSqlQuery encapsulates the functionality involved in creating,
     navigating and retrieving data from SQL queries which are
@@ -134,17 +134,17 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
 
     QSqlQuery supports prepared query execution and the binding of
     parameter values to placeholders. Some databases don't support
-    these features, so for those, Qt emulates the required
+    these features, so for those, BobUI emulates the required
     functionality. For example, the Oracle and ODBC drivers have
-    proper prepared query support, and Qt makes use of it; but for
-    databases that don't have this support, Qt implements the feature
+    proper prepared query support, and BobUI makes use of it; but for
+    databases that don't have this support, BobUI implements the feature
     itself, e.g. by replacing placeholders with actual values when a
     query is executed. Use numRowsAffected() to find out how many rows
     were affected by a non-\c SELECT query, and size() to find how
     many were retrieved by a \c SELECT.
 
     Oracle databases identify placeholders by using a colon-name
-    syntax, e.g \c{:name}. ODBC simply uses \c ? characters. Qt
+    syntax, e.g \c{:name}. ODBC simply uses \c ? characters. BobUI
     supports both syntaxes, with the restriction that you can't mix
     them in the same query.
 
@@ -217,12 +217,12 @@ QSqlQuery::~QSqlQuery()
         delete d;
 }
 
-#if QT_REMOVAL_QT7_DEPRECATED_SINCE(6, 2)
+#if BOBUI_REMOVAL_BOBUI7_DEPRECATED_SINCE(6, 2)
 /*!
     Constructs a copy of \a other.
 
     \deprecated [6.2] QSqlQuery cannot be meaningfully copied, and
-    therefore will no longer be copiable in Qt 7. Prepared
+    therefore will no longer be copiable in BobUI 7. Prepared
     statements, bound values and so on will not work correctly, depending
     on your database driver (for instance, changing the copy will affect
     the original). Treat QSqlQuery as a move-only type instead.
@@ -238,7 +238,7 @@ QSqlQuery::QSqlQuery(const QSqlQuery& other)
     Assigns \a other to this object.
 
     \deprecated [6.2] QSqlQuery cannot be meaningfully copied, and
-    therefore will no longer be copiable in Qt 7. Prepared
+    therefore will no longer be copiable in BobUI 7. Prepared
     statements, bound values and so on will not work correctly, depending
     on your database driver (for instance, changing the copy will affect
     the original). Treat QSqlQuery as a move-only type instead.
@@ -338,7 +338,7 @@ bool QSqlQuery::isNull(int field) const
 
     This overload is less efficient than \l{QSqlQuery::}{isNull()}
 
-    \note In Qt versions prior to 6.8, this function took QString, not
+    \note In BobUI versions prior to 6.8, this function took QString, not
     QAnyStringView.
 */
 bool QSqlQuery::isNull(QAnyStringView name) const
@@ -377,7 +377,7 @@ bool QSqlQuery::isNull(QAnyStringView name) const
 
 bool QSqlQuery::exec(const QString& query)
 {
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
     QElapsedTimer t;
     t.start();
 #endif
@@ -408,7 +408,7 @@ bool QSqlQuery::exec(const QString& query)
     }
 
     bool retval = d->sqlResult->reset(query);
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
     qCDebug(lcSqlQuery()).nospace() << "Executed query (" << t.elapsed() << "ms, "
                                     << d->sqlResult->size()
                                     << " results, " << d->sqlResult->numRowsAffected()
@@ -452,7 +452,7 @@ QVariant QSqlQuery::value(int index) const
 
     This overload is less efficient than \l{QSqlQuery::}{value()}
 
-    \note In Qt versions prior to 6.8, this function took QString, not
+    \note In BobUI versions prior to 6.8, this function took QString, not
     QAnyStringView.
 */
 QVariant QSqlQuery::value(QAnyStringView name) const
@@ -1003,7 +1003,7 @@ bool QSqlQuery::prepare(const QString& query)
         qCWarning(lcSqlQuery, "QSqlQuery::prepare: empty query");
         return false;
     }
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
     qCDebug(lcSqlQuery, "\n QSqlQuery::prepare: %ls", qUtf16Printable(query));
 #endif
     return d->sqlResult->savePrepare(query);
@@ -1020,7 +1020,7 @@ bool QSqlQuery::prepare(const QString& query)
 */
 bool QSqlQuery::exec()
 {
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
     QElapsedTimer t;
     t.start();
 #endif
@@ -1030,7 +1030,7 @@ bool QSqlQuery::exec()
         d->sqlResult->setLastError(QSqlError());
 
     bool retval = d->sqlResult->exec();
-#ifdef QT_DEBUG_SQL
+#ifdef BOBUI_DEBUG_SQL
     qCDebug(lcSqlQuery).nospace() << "Executed prepared query (" << t.elapsed() << "ms, "
                                   << d->sqlResult->size() << " results, " << d->sqlResult->numRowsAffected()
                                   << " affected): " << d->sqlResult->lastQuery();
@@ -1379,6 +1379,6 @@ bool QSqlQuery::nextResult()
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsqlquery.cpp"

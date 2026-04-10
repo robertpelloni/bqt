@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef BACKSLASH_NEWLINES_H
 #define BACKSLASH_NEWLINES_H
@@ -28,10 +28,10 @@ public slots:
 
 #endif // BACKSLASH_NEWLINES_H
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wcomment")
-QT_WARNING_DISABLE_GCC("-Wcomment")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wcomment")
+BOBUI_WARNING_DISABLE_GCC("-Wcomment")
 
-// ends with \\\r should not make moc crash (QTBUG-53441) (no new lines on purpose!!) \
+// ends with \\\r should not make moc crash (BOBUIBUG-53441) (no new lines on purpose!!) \
 
-QT_WARNING_POP
+BOBUI_WARNING_POP

@@ -1,18 +1,18 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_bench_qstringtokenizer Binary:
 #####################################################################
 
-qt_internal_add_benchmark(tst_bench_qstringtokenizer
+bobui_internal_add_benchmark(tst_bench_qstringtokenizer
     SOURCES
         tst_bench_qstringtokenizer.cpp
     LIBRARIES
-        Qt::Test
+        BobUI::Test
 )
 
-qt_add_resources(tst_bench_qstringtokenizer "qstringtokenizer_bench_data"
+bobui_add_resources(tst_bench_qstringtokenizer "qstringtokenizer_bench_data"
     PREFIX
         "/"
     FILES

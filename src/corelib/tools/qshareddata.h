@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSHAREDDATA_H
 #define QSHAREDDATA_H
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qhashfunctions.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qhashfunctions.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <class T> class QSharedDataPointer;
 template <class T> class QExplicitlySharedDataPointer;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <template <typename> class P, typename T> struct QSharedDataPointerTraits;
 template <typename T> struct QSharedDataPointerTraits<QSharedDataPointer, T>
 {
@@ -55,7 +55,7 @@ template <template <typename> class P, typename T> class QSharedDataPointerBase
 {
 #ifndef Q_QDOC
     using Self = P<T>;
-    using Traits = QtPrivate::QSharedDataPointerTraits<P, T>;
+    using Traits = BobUIPrivate::QSharedDataPointerTraits<P, T>;
     using constT = typename Traits::constT;
 
 protected:
@@ -87,7 +87,7 @@ public:
         if (ptr != d.get()) {
             if (ptr)
                 ptr->ref.ref();
-            T *old = std::exchange(d, Qt::totally_ordered_wrapper(ptr)).get();
+            T *old = std::exchange(d, BobUI::totally_ordered_wrapper(ptr)).get();
             if (old && !old->ref.deref())
                 destroy(old);
         }
@@ -97,7 +97,7 @@ public:
     bool operator!() const noexcept { return d == nullptr; }
 
     void swap(Self &other) noexcept
-    { qt_ptr_swap(d, other.d); }
+    { bobui_ptr_swap(d, other.d); }
 
 private:
     // The concrete class MUST override these, otherwise we will be calling
@@ -115,21 +115,21 @@ private:
 
     friend bool comparesEqual(const QSharedDataPointerBase &lhs, const QSharedDataPointerBase &rhs) noexcept
     { return lhs.d == rhs.d; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QSharedDataPointerBase &lhs, const QSharedDataPointerBase &rhs) noexcept
-    { return Qt::compareThreeWay(lhs.d, rhs.d); }
+    { return BobUI::compareThreeWay(lhs.d, rhs.d); }
 
     friend bool comparesEqual(const QSharedDataPointerBase &lhs, const T *rhs) noexcept
     { return lhs.d == rhs; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QSharedDataPointerBase &lhs, const T *rhs) noexcept
-    { return Qt::compareThreeWay(lhs.d, rhs); }
+    { return BobUI::compareThreeWay(lhs.d, rhs); }
 
     friend bool comparesEqual(const QSharedDataPointerBase &lhs, std::nullptr_t) noexcept
     { return lhs.d == nullptr; }
-    friend Qt::strong_ordering
+    friend BobUI::strong_ordering
     compareThreeWay(const QSharedDataPointerBase &lhs, std::nullptr_t) noexcept
-    { return Qt::compareThreeWay(lhs.d, nullptr); }
+    { return BobUI::compareThreeWay(lhs.d, nullptr); }
 
     friend size_t qHash(const QSharedDataPointerBase &ptr, size_t seed = 0) noexcept
     { return qHash(ptr.data(), seed); }
@@ -137,7 +137,7 @@ private:
 protected:
     void detach_helper();
 
-    Qt::totally_ordered_wrapper<T *> d;
+    BobUI::totally_ordered_wrapper<T *> d;
 #endif // !Q_QDOC
 };
 
@@ -194,7 +194,7 @@ public:
     QSharedDataPointer(QSharedDataPointer &&o) noexcept
         : Base(std::exchange(o.d, nullptr).get())
     {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedDataPointer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QSharedDataPointer)
 
 #ifdef Q_QDOC
     void reset(T *ptr = nullptr) noexcept;
@@ -270,8 +270,8 @@ public:
     template<typename X>
     Q_NODISCARD_CTOR
     QExplicitlySharedDataPointer(const QExplicitlySharedDataPointer<X> &o) noexcept
-#ifdef QT_ENABLE_QEXPLICITLYSHAREDDATAPOINTER_STATICCAST
-#error This macro has been removed in Qt 6.9.
+#ifdef BOBUI_ENABLE_QEXPLICITLYSHAREDDATAPOINTER_STATICCAST
+#error This macro has been removed in BobUI 6.9.
 #endif
         : Base(o.data())
     { if (d) d->ref.ref(); }
@@ -290,7 +290,7 @@ public:
     QExplicitlySharedDataPointer(QExplicitlySharedDataPointer &&o) noexcept
         : Base(std::exchange(o.d, nullptr).get())
     {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QExplicitlySharedDataPointer)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QExplicitlySharedDataPointer)
 
 #ifdef Q_QDOC
     void reset(T *ptr = nullptr) noexcept;
@@ -352,32 +352,32 @@ void swap(QExplicitlySharedDataPointer<T> &p1, QExplicitlySharedDataPointer<T> &
 template<typename T> Q_DECLARE_TYPEINFO_BODY(QSharedDataPointer<T>, Q_RELOCATABLE_TYPE);
 template<typename T> Q_DECLARE_TYPEINFO_BODY(QExplicitlySharedDataPointer<T>, Q_RELOCATABLE_TYPE);
 
-#define QT_DECLARE_QSDP_SPECIALIZATION_DTOR(Class) \
+#define BOBUI_DECLARE_QSDP_SPECIALIZATION_DTOR(Class) \
     template<> QSharedDataPointer<Class>::~QSharedDataPointer();
 
-#define QT_DECLARE_QSDP_SPECIALIZATION_DTOR_WITH_EXPORT(Class, ExportMacro) \
+#define BOBUI_DECLARE_QSDP_SPECIALIZATION_DTOR_WITH_EXPORT(Class, ExportMacro) \
     template<> ExportMacro QSharedDataPointer<Class>::~QSharedDataPointer();
 
-#define QT_DEFINE_QSDP_SPECIALIZATION_DTOR(Class) \
+#define BOBUI_DEFINE_QSDP_SPECIALIZATION_DTOR(Class) \
     template<> QSharedDataPointer<Class>::~QSharedDataPointer() \
     { \
         if (d && !d->ref.deref()) \
             delete d.get(); \
     }
 
-#define QT_DECLARE_QESDP_SPECIALIZATION_DTOR(Class) \
+#define BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR(Class) \
     template<> QExplicitlySharedDataPointer<Class>::~QExplicitlySharedDataPointer();
 
-#define QT_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(Class, ExportMacro) \
+#define BOBUI_DECLARE_QESDP_SPECIALIZATION_DTOR_WITH_EXPORT(Class, ExportMacro) \
     template<> ExportMacro QExplicitlySharedDataPointer<Class>::~QExplicitlySharedDataPointer();
 
-#define QT_DEFINE_QESDP_SPECIALIZATION_DTOR(Class) \
+#define BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(Class) \
     template<> QExplicitlySharedDataPointer<Class>::~QExplicitlySharedDataPointer() \
     { \
         if (d && !d->ref.deref()) \
             delete d.get(); \
     }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSHAREDDATA_H

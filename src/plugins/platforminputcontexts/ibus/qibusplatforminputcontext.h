@@ -1,25 +1,25 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIBUSPLATFORMINPUTCONTEXT_H
 #define QIBUSPLATFORMINPUTCONTEXT_H
 
 #include <qpa/qplatforminputcontext.h>
 
-#include <QtCore/qpointer.h>
-#include <QtCore/QLocale>
-#include <QtCore/QLoggingCategory>
-#include <QtDBus/qdbuspendingreply.h>
-#if QT_CONFIG(filesystemwatcher)
+#include <BobUICore/qpointer.h>
+#include <BobUICore/QLocale>
+#include <BobUICore/QLoggingCategory>
+#include <BobUIDBus/qdbuspendingreply.h>
+#if BOBUI_CONFIG(filesystemwatcher)
 #include <QFileSystemWatcher>
 #endif
-#include <QTimer>
+#include <BOBUIimer>
 #include <QWindow>
 
 #include "qibustypes.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaInputMethods);
 
@@ -32,7 +32,7 @@ public:
     explicit QIBusFilterEventWatcher(const QDBusPendingCall &call,
                                      QObject *parent = nullptr,
                                      QWindow *window = nullptr,
-                                     const Qt::KeyboardModifiers modifiers = { },
+                                     const BobUI::KeyboardModifiers modifiers = { },
                                      const QVariantList arguments = QVariantList())
     : QDBusPendingCallWatcher(call, parent)
     , m_window(window)
@@ -43,12 +43,12 @@ public:
     {}
 
     inline QWindow *window() const { return m_window; }
-    inline const Qt::KeyboardModifiers modifiers() const { return m_modifiers; }
+    inline const BobUI::KeyboardModifiers modifiers() const { return m_modifiers; }
     inline const QVariantList arguments() const { return m_arguments; }
 
 private:
     QPointer<QWindow> m_window;
-    const Qt::KeyboardModifiers m_modifiers;
+    const BobUI::KeyboardModifiers m_modifiers;
     const QVariantList m_arguments;
 };
 
@@ -65,7 +65,7 @@ public:
     void invokeAction(QInputMethod::Action a, int x) override;
     void reset() override;
     void commit() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
     bool filterEvent(const QEvent *event) override;
     QLocale locale() const override;
     bool hasCapability(Capability capability) const override;
@@ -90,14 +90,14 @@ public Q_SLOTS:
 private:
     QIBusPlatformInputContextPrivate *d;
     bool m_eventFilterUseSynchronousMode;
-#if QT_CONFIG(filesystemwatcher)
+#if BOBUI_CONFIG(filesystemwatcher)
     QFileSystemWatcher m_socketWatcher;
 #endif
-    QTimer m_timer;
+    BOBUIimer m_timer;
 
     void connectToContextSignals();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

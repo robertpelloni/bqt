@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
@@ -9,15 +9,15 @@
 list(APPEND test_data "../tmp/README")
 list(APPEND test_data "../modal")
 
-qt_internal_add_test(tst_qapplication
+bobui_internal_add_test(tst_qapplication
     SOURCES
         ../tst_qapplication.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
-        Qt::Widgets
-        Qt::WidgetsPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
+        BobUI::Widgets
+        BobUI::WidgetsPrivate
     TESTDATA ${test_data}
     OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.."
 )
@@ -25,7 +25,7 @@ qt_internal_add_test(tst_qapplication
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qapplication CONDITION builtin_testdata
+bobui_internal_extend_target(tst_qapplication CONDITION builtin_testdata
     DEFINES
         BUILTIN_TESTDATA
 )

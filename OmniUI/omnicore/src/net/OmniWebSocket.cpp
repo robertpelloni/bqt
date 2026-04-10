@@ -10,7 +10,7 @@ OmniWebSocket::OmniWebSocket(QObject *parent)
     connect(&m_webSocket, &QWebSocket::connected, this, &OmniWebSocket::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &OmniWebSocket::onDisconnected);
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &OmniWebSocket::onTextMessageReceived);
-    // Connect error securely avoiding overloaded signal ambiguity in Qt 5/6
+    // Connect error securely avoiding overloaded signal ambiguity in BobUI 5/6
     connect(&m_webSocket, &QWebSocket::errorOccurred, this, &OmniWebSocket::onError);
 }
 

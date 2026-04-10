@@ -1,13 +1,13 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "androidconnectivitymanager.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qjnienvironment.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qjnienvironment.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QNativeInterface;
 
@@ -19,7 +19,7 @@ struct AndroidConnectivityManagerInstance
 Q_GLOBAL_STATIC(AndroidConnectivityManagerInstance, androidConnManagerInstance)
 
 static const char networkInformationClass[] =
-        "org/qtproject/qt/android/networkinformation/QtAndroidNetworkInformation";
+        "org/bobuiproject/bobui/android/networkinformation/BobUIAndroidNetworkInformation";
 
 static void networkConnectivityChanged(JNIEnv *env, jobject obj, jint enumValue)
 {
@@ -93,6 +93,6 @@ bool AndroidConnectivityManager::registerNatives() const
     return registered;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_androidconnectivitymanager.cpp"

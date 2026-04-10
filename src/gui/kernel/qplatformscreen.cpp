@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformscreen.h"
-#include <QtCore/qdebug.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUIGui/qguiapplication.h>
 #include <qpa/qplatformcursor.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformscreen_p.h>
 #include <qpa/qplatformintegration.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qwindow.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
 #include <private/qhighdpiscaling_p.h>
 #include <private/qwindow_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QPlatformScreen::QPlatformScreen()
     : d_ptr(new QPlatformScreenPrivate)
@@ -30,7 +30,7 @@ QPlatformScreen::~QPlatformScreen()
 }
 
 /*!
-    This function is called when Qt needs to be able to grab the content of a window.
+    This function is called when BobUI needs to be able to grab the content of a window.
 
     Returns the content of the window specified with the WId handle within the boundaries of
     QRect(x,y,width,height).
@@ -138,7 +138,7 @@ QSizeF QPlatformScreen::physicalSize() const
     Reimplement this function in subclass to return the logical horizontal
     and vertical dots per inch metrics of the screen.
 
-    The logical dots per inch metrics are used by Qt to scale the user interface.
+    The logical dots per inch metrics are used by BobUI to scale the user interface.
 
     The default implementation returns logicalBaseDpi(), which results in a
     UI scale factor of 1.0.
@@ -151,10 +151,10 @@ QDpi QPlatformScreen::logicalDpi() const
 }
 
 // Helper function for accessing the platform screen logical dpi
-// which accounts for QT_FONT_DPI.
+// which accounts for BOBUI_FONT_DPI.
 QDpi QPlatformScreen::overrideDpi(const QDpi &in)
 {
-    static const int overrideDpi = qEnvironmentVariableIntValue("QT_FONT_DPI");
+    static const int overrideDpi = qEnvironmentVariableIntValue("BOBUI_FONT_DPI");
     return overrideDpi > 0 ?  QDpi(overrideDpi, overrideDpi) : in;
 }
 
@@ -163,7 +163,7 @@ QDpi QPlatformScreen::overrideDpi(const QDpi &in)
     DPI value should correspond to a standard-DPI (1x) display. The
     default implementation returns 96.
 
-    QtGui will use this value (together with logicalDpi) to compute
+    BobUIGui will use this value (together with logicalDpi) to compute
     the scale factor when high-DPI scaling is enabled, as follows:
         factor = logicalDPI / baseDPI
 */
@@ -201,11 +201,11 @@ qreal QPlatformScreen::refreshRate() const
     of the screen, e.g. the orientation where the logo sticker of the device
     appears the right way up.
 
-    The default implementation returns Qt::PrimaryOrientation.
+    The default implementation returns BobUI::PrimaryOrientation.
 */
-Qt::ScreenOrientation QPlatformScreen::nativeOrientation() const
+BobUI::ScreenOrientation QPlatformScreen::nativeOrientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
 /*!
@@ -213,16 +213,16 @@ Qt::ScreenOrientation QPlatformScreen::nativeOrientation() const
     of the screen, for example based on accelerometer data to determine
     the device orientation.
 
-    The default implementation returns Qt::PrimaryOrientation.
+    The default implementation returns BobUI::PrimaryOrientation.
 */
-Qt::ScreenOrientation QPlatformScreen::orientation() const
+BobUI::ScreenOrientation QPlatformScreen::orientation() const
 {
-    return Qt::PrimaryOrientation;
+    return BobUI::PrimaryOrientation;
 }
 
 QPlatformScreen * QPlatformScreen::platformScreenForWindow(const QWindow *window)
 {
-    // QTBUG 32681: It can happen during the transition between screens
+    // BOBUIBUG 32681: It can happen during the transition between screens
     // when one screen is disconnected that the window doesn't have a screen.
     if (!window->screen())
         return nullptr;
@@ -278,7 +278,7 @@ QString QPlatformScreen::serialNumber() const
     \brief The QPlatformScreen class provides an abstraction for visual displays.
 
     Many window systems has support for retrieving information on the attached displays. To be able
-    to query the display QPA uses QPlatformScreen. Qt its self is most dependent on the
+    to query the display QPA uses QPlatformScreen. BobUI its self is most dependent on the
     physicalSize() function, since this is the function it uses to calculate the dpi to use when
     converting point sizes to pixels sizes. However, this is unfortunate on some systems, as the
     native system fakes its dpi size.
@@ -337,12 +337,12 @@ void QPlatformScreen::resizeMaximizedWindows()
         // also when fractional DPRs introduce rounding errors in the device independent
         // QWindow and QScreen sizes.
         if (supportsMaximizeUsingFullscreen
-                && w->windowState() & Qt::WindowMaximized
-                && w->flags() & Qt::ExpandedClientAreaHint) {
+                && w->windowState() & BobUI::WindowMaximized
+                && w->flags() & BobUI::ExpandedClientAreaHint) {
             w->handle()->setGeometry(newNativeGeometry);
-        } else if (w->windowState() & Qt::WindowMaximized || w->geometry() == oldAvailableGeometry) {
+        } else if (w->windowState() & BobUI::WindowMaximized || w->geometry() == oldAvailableGeometry) {
             w->handle()->setGeometry(newNativeAvailableGeometry);
-        } else if (w->windowState() & Qt::WindowFullScreen || w->geometry() == oldGeometry) {
+        } else if (w->windowState() & BobUI::WindowFullScreen || w->geometry() == oldGeometry) {
             w->handle()->setGeometry(newNativeGeometry);
         }
     }
@@ -362,10 +362,10 @@ static int log2(uint i)
     return result;
 }
 
-int QPlatformScreen::angleBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b)
+int QPlatformScreen::angleBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b)
 {
-    if (a == Qt::PrimaryOrientation || b == Qt::PrimaryOrientation) {
-        qWarning("Use QScreen version of %sBetween() when passing Qt::PrimaryOrientation", "angle");
+    if (a == BobUI::PrimaryOrientation || b == BobUI::PrimaryOrientation) {
+        qWarning("Use QScreen version of %sBetween() when passing BobUI::PrimaryOrientation", "angle");
         return 0;
     }
 
@@ -384,19 +384,19 @@ int QPlatformScreen::angleBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation
     return angles[delta];
 }
 
-QTransform QPlatformScreen::transformBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &target)
+BOBUIransform QPlatformScreen::transformBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &target)
 {
-    if (a == Qt::PrimaryOrientation || b == Qt::PrimaryOrientation) {
-        qWarning("Use QScreen version of %sBetween() when passing Qt::PrimaryOrientation", "transform");
-        return QTransform();
+    if (a == BobUI::PrimaryOrientation || b == BobUI::PrimaryOrientation) {
+        qWarning("Use QScreen version of %sBetween() when passing BobUI::PrimaryOrientation", "transform");
+        return BOBUIransform();
     }
 
     if (a == b)
-        return QTransform();
+        return BOBUIransform();
 
     int angle = angleBetween(a, b);
 
-    QTransform result;
+    BOBUIransform result;
     switch (angle) {
     case 90:
         result.translate(target.width(), 0);
@@ -415,18 +415,18 @@ QTransform QPlatformScreen::transformBetween(Qt::ScreenOrientation a, Qt::Screen
     return result;
 }
 
-QRect QPlatformScreen::mapBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation b, const QRect &rect)
+QRect QPlatformScreen::mapBetween(BobUI::ScreenOrientation a, BobUI::ScreenOrientation b, const QRect &rect)
 {
-    if (a == Qt::PrimaryOrientation || b == Qt::PrimaryOrientation) {
-        qWarning("Use QScreen version of %sBetween() when passing Qt::PrimaryOrientation", "map");
+    if (a == BobUI::PrimaryOrientation || b == BobUI::PrimaryOrientation) {
+        qWarning("Use QScreen version of %sBetween() when passing BobUI::PrimaryOrientation", "map");
         return rect;
     }
 
     if (a == b)
         return rect;
 
-    if ((a == Qt::PortraitOrientation || a == Qt::InvertedPortraitOrientation)
-        != (b == Qt::PortraitOrientation || b == Qt::InvertedPortraitOrientation))
+    if ((a == BobUI::PortraitOrientation || a == BobUI::InvertedPortraitOrientation)
+        != (b == BobUI::PortraitOrientation || b == BobUI::InvertedPortraitOrientation))
     {
         return QRect(rect.y(), rect.x(), rect.height(), rect.width());
     }
@@ -437,7 +437,7 @@ QRect QPlatformScreen::mapBetween(Qt::ScreenOrientation a, Qt::ScreenOrientation
 /*!
   Returns a hint about this screen's subpixel layout structure.
 
-  The default implementation queries the \b{QT_SUBPIXEL_AA_TYPE} env variable.
+  The default implementation queries the \b{BOBUI_SUBPIXEL_AA_TYPE} env variable.
   This is just a hint because most platforms don't have a way to retrieve the correct value from hardware
   and instead rely on font configurations.
 */
@@ -445,7 +445,7 @@ QPlatformScreen::SubpixelAntialiasingType QPlatformScreen::subpixelAntialiasingT
 {
     static int type = -1;
     if (type == -1) {
-        QByteArray env = qgetenv("QT_SUBPIXEL_AA_TYPE");
+        QByteArray env = qgetenv("BOBUI_SUBPIXEL_AA_TYPE");
         if (env == "RGB")
             type = QPlatformScreen::Subpixel_RGB;
         else if (env == "BGR")
@@ -542,4 +542,4 @@ QList<QPlatformScreen *> QPlatformPlaceholderScreen::virtualSiblings() const
     return siblings;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

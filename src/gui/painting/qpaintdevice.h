@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPAINTDEVICE_H
 #define QPAINTDEVICE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtCore/qrect.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUICore/qrect.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 
@@ -71,7 +71,7 @@ private:
     friend class QPainterPrivate;
     friend class QFontEngineMac;
     friend class QX11PaintEngine;
-    friend Q_GUI_EXPORT int qt_paint_device_metric(const QPaintDevice *device, PaintDeviceMetric metric);
+    friend Q_GUI_EXPORT int bobui_paint_device_metric(const QPaintDevice *device, PaintDeviceMetric metric);
 };
 
 /*****************************************************************************
@@ -92,6 +92,6 @@ inline int QPaintDevice::encodeMetricF(PaintDeviceMetric metric, double value)
     return buf[metric & 1];
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPAINTDEVICE_H

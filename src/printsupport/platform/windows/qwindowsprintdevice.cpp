@@ -1,22 +1,22 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowsprintdevice_p.h"
 
-#include <QtCore/qdebug.h>
+#include <BobUICore/qdebug.h>
 
 #ifndef DC_COLLATE
 #  define DC_COLLATE 22
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using WindowsPrinterLookup = QList<QWindowsPrinterInfo>;
 Q_GLOBAL_STATIC(WindowsPrinterLookup, windowsDeviceLookup);
 
-extern qreal qt_pointMultiplier(QPageLayout::Unit unit);
+extern qreal bobui_pointMultiplier(QPageLayout::Unit unit);
 
 static inline uint qwcsnlen(const wchar_t *str, uint maxlen)
 {
@@ -165,7 +165,7 @@ void QWindowsPrintDevice::loadPageSizes() const
             && DeviceCapabilities(wcharId(), nullptr, DC_PAPERS, papers.data(), nullptr) == paperCount) {
 
             // Returned size is in tenths of a millimeter
-            const qreal multiplier = qt_pointMultiplier(QPageLayout::Millimeter);
+            const qreal multiplier = bobui_pointMultiplier(QPageLayout::Millimeter);
             for (int i = 0; i < int(paperCount); ++i) {
                 QSize size = QSize(qRound((winSizes[i].x / 10.0) * multiplier), qRound((winSizes[i].y / 10.0) * multiplier));
                 wchar_t *paper = paperNames.data() + (i * 64);
@@ -504,7 +504,7 @@ QSize QWindowsPrintDevice::maximumPhysicalPageSize() const
 void QWindowsPrintDevice::loadMinMaxPageSizes() const
 {
     // Min/Max custom size is in tenths of a millimeter
-    const qreal multiplier = qt_pointMultiplier(QPageLayout::Millimeter);
+    const qreal multiplier = bobui_pointMultiplier(QPageLayout::Millimeter);
     auto printerId = wcharId();
     DWORD min = DeviceCapabilities(printerId, nullptr, DC_MINEXTENT, nullptr, nullptr);
     m_minimumPhysicalPageSize = QSize((LOWORD(min) / 10.0) * multiplier, (HIWORD(min) / 10.0) * multiplier);
@@ -518,4 +518,4 @@ void QWindowsPrintDevice::loadMinMaxPageSizes() const
     info[m_infoIndex].m_supportsCollateCopies = m_supportsCollateCopies;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

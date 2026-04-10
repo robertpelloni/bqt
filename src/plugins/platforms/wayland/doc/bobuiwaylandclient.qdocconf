@@ -1,0 +1,37 @@
+include($BOBUI_INSTALL_DOCS/global/bobui-module-defaults.qdocconf)
+include($BOBUI_INSTALL_DOCS/config/exampleurl-bobuiwayland.qdocconf)
+
+project                                                     = BobUIWaylandClient
+description                                                 = BobUI Wayland Client Reference Documentation
+version                                                     = $BOBUI_VERSION
+
+qhp.projects                                                = BobUIWaylandClient
+
+qhp.BobUIWaylandClient.file                                    = bobuiwaylandclient.qhp
+qhp.BobUIWaylandClient.namespace                               = org.bobui-project.BobUIWaylandClient.$BOBUI_VERSION_TAG
+qhp.BobUIWaylandClient.virtualFolder                           = BobUIWaylandClient
+qhp.BobUIWaylandClient.indexTitle                              = BobUI Wayland Client
+qhp.BobUIWaylandClient.indexRoot                               =
+
+qhp.BobUIWaylandClient.subprojects = cmakecommand
+
+qhp.BobUIWaylandClient.subprojects.cmakecommand.title = bobui_generate_wayland_protocol_client_sources
+qhp.BobUIWaylandClient.subprojects.cmakecommand.indexTitle = bobui_generate_wayland_protocol_client_sources
+qhp.BobUIWaylandClient.subprojects.cmakecommand.selectors = group:cmakecommand
+
+depends += bobuicore \
+           bobuiqml \
+           bobuiquick \
+           bobuidoc \
+           bobuicmake \
+           bobuiwaylandcompositor
+
+headerdirs += \
+    ../
+sourcedirs += \
+    ../
+
+navigation.landingpage    = "BobUI Wayland Client"
+
+# Enforce zero documentation warnings
+warninglimit = 0

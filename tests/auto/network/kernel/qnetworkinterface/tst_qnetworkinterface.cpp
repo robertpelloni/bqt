@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtEndian>
+#include <BOBUIest>
+#include <BobUIEndian>
 #include <QSet>
 
 #include <qcoreapplication.h>
 #include <qnetworkinterface.h>
-#if QT_CONFIG(udpsocket)
+#if BOBUI_CONFIG(udpsocket)
 #include <qudpsocket.h>
 #endif
 #include "../../../network-settings.h"
 
-#include <private/qtnetwork-config_p.h>
+#include <private/bobuinetwork-config_p.h>
 
 Q_DECLARE_METATYPE(QHostAddress)
 
@@ -55,18 +55,18 @@ bool tst_QNetworkInterface::isIPv6Working()
     // QNetworkInterface may be unable to detect IPv6 addresses even if they
     // are there, due to limitations of the implementation.
     if (QOperatingSystemVersion::currentType() == QOperatingSystemVersion::Windows ||
-            QT_CONFIG(linux_netlink) || (QT_CONFIG(getifaddrs) && QT_CONFIG(ipv6ifname))) {
-        return QtNetworkSettings::hasIPv6();
+            BOBUI_CONFIG(linux_netlink) || (BOBUI_CONFIG(getifaddrs) && BOBUI_CONFIG(ipv6ifname))) {
+        return BobUINetworkSettings::hasIPv6();
     }
     return false;
 }
 
 void tst_QNetworkInterface::initTestCase()
 {
-#ifdef QT_TEST_SERVER
-    hasNetworkServer = QtNetworkSettings::verifyConnection(QtNetworkSettings::httpServerName(), 80);
+#ifdef BOBUI_TEST_SERVER
+    hasNetworkServer = BobUINetworkSettings::verifyConnection(BobUINetworkSettings::httpServerName(), 80);
 #else
-    hasNetworkServer = QtNetworkSettings::verifyTestNetworkSettings();
+    hasNetworkServer = BobUINetworkSettings::verifyTestNetworkSettings();
 #endif
 }
 
@@ -172,14 +172,14 @@ void tst_QNetworkInterface::loopbackIPv6()
 void tst_QNetworkInterface::localAddress_data()
 {
     bool ipv6 = isIPv6Working();
-    QTest::addColumn<QHostAddress>("target");
+    BOBUIest::addColumn<QHostAddress>("target");
 
-    QTest::newRow("localhost-ipv4") << QHostAddress(QHostAddress::LocalHost);
+    BOBUIest::newRow("localhost-ipv4") << QHostAddress(QHostAddress::LocalHost);
     if (ipv6)
-        QTest::newRow("localhost-ipv6") << QHostAddress(QHostAddress::LocalHostIPv6);
+        BOBUIest::newRow("localhost-ipv6") << QHostAddress(QHostAddress::LocalHostIPv6);
 
     if (hasNetworkServer)
-        QTest::newRow("test-server") << QtNetworkSettings::httpServerIp();
+        BOBUIest::newRow("test-server") << BobUINetworkSettings::httpServerIp();
 
     QSet<QHostAddress> added;
     const QList<QNetworkInterface> ifaces = QNetworkInterface::allInterfaces();
@@ -223,14 +223,14 @@ void tst_QNetworkInterface::localAddress_data()
                 continue;
             added.insert(addr);
 
-            QTest::addRow("%s-%s", qPrintable(iface.name()), qPrintable(addr.toString())) << addr;
+            BOBUIest::addRow("%s-%s", qPrintable(iface.name()), qPrintable(addr.toString())) << addr;
         }
     }
 }
 
 void tst_QNetworkInterface::localAddress()
 {
-#if !QT_CONFIG(udpsocket)
+#if !BOBUI_CONFIG(udpsocket)
     QSKIP("UDP socket support not built in");
 #else
     QFETCH(QHostAddress, target);
@@ -263,18 +263,18 @@ void tst_QNetworkInterface::localAddress()
 
     // check that the Path MTU is less than or equal the interface's MTU
     QCOMPARE_LE(pmtu, outgoingIface->maximumTransmissionUnit());
-#endif // QT_CONFIG(udpsocket)
+#endif // BOBUI_CONFIG(udpsocket)
 }
 
 void tst_QNetworkInterface::interfaceFromXXX_data()
 {
-    QTest::addColumn<QNetworkInterface>("iface");
+    BOBUIest::addColumn<QNetworkInterface>("iface");
 
     const QList<QNetworkInterface> allInterfaces = QNetworkInterface::allInterfaces();
     if (allInterfaces.size() == 0)
         QSKIP("No interfaces to test!");
     for (const QNetworkInterface &iface : allInterfaces)
-        QTest::newRow(iface.name().toLocal8Bit()) << iface;
+        BOBUIest::newRow(iface.name().toLocal8Bit()) << iface;
 }
 
 void tst_QNetworkInterface::interfaceFromXXX()
@@ -320,5 +320,5 @@ void tst_QNetworkInterface::copyInvalidInterface()
     QVERIFY(i.addressEntries().isEmpty());
 }
 
-QTEST_MAIN(tst_QNetworkInterface)
+BOBUIEST_MAIN(tst_QNetworkInterface)
 #include "tst_qnetworkinterface.moc"

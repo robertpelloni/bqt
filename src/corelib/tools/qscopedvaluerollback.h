@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCOPEDVALUEROLLBACK_H
 #define QSCOPEDVALUEROLLBACK_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
-#include <QtCore/q20utility.h>
+#include <BobUICore/q20utility.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T>
 class QScopedValueRollback
@@ -45,6 +45,6 @@ private:
     Q_DISABLE_COPY_MOVE(QScopedValueRollback)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSCOPEDVALUEROLLBACK_H

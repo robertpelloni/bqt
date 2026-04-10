@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qplatformdefs.h>
 #ifdef Q_OS_WASM
@@ -8,7 +8,7 @@
 #endif
 #include <private/qabstractspinbox_p.h>
 #include <private/qapplication_p.h>
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
 #include <private/qdatetimeparser_p.h>
 #endif
 #include <private/qlineedit_p.h>
@@ -19,18 +19,18 @@
 #include <qclipboard.h>
 #include <qdatetime.h>
 #include <qevent.h>
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include <qmenu.h>
 #endif
 #include <qpainter.h>
 #include <qpalette.h>
 #include <qstylepainter.h>
 #include <qdebug.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 # include <qaccessible.h>
 #endif
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 //#define QABSTRACTSPINBOX_QSBDEBUG
 #ifdef QABSTRACTSPINBOX_QSBDEBUG
@@ -39,9 +39,9 @@
 #  define QASBDEBUG if (false) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 using namespace std::chrono_literals;
 
 /*!
@@ -50,7 +50,7 @@ using namespace std::chrono_literals;
     display values.
 
     \ingroup abstractwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The class is designed as a common super class for widgets like
     QSpinBox, QDoubleSpinBox and QDateTimeEdit
@@ -71,16 +71,16 @@ using namespace std::chrono_literals;
     QAbstractSpinBox provides a virtual stepBy() function that is
     called whenever the user triggers a step. This function takes an
     integer value to signify how many steps were taken. E.g. Pressing
-    Qt::Key_Down will trigger a call to stepBy(-1).
+    BobUI::Key_Down will trigger a call to stepBy(-1).
 
-    When the user triggers a step whilst holding the Qt::ControlModifier,
+    When the user triggers a step whilst holding the BobUI::ControlModifier,
     QAbstractSpinBox steps by 10 instead of making a single step. This
     step modifier affects wheel events, key events and interaction with
     the spinbox buttons. Note that on macOS, Control corresponds to the
     Command key.
 
-    Since Qt 5.12, QStyle::SH_SpinBox_StepModifier can be used to select
-    which Qt::KeyboardModifier increases the step rate. Qt::NoModifier
+    Since BobUI 5.12, QStyle::SH_SpinBox_StepModifier can be used to select
+    which BobUI::KeyboardModifier increases the step rate. BobUI::NoModifier
     disables this feature.
 
     QAbstractSpinBox also provide a virtual function stepEnabled() to
@@ -476,24 +476,24 @@ bool QAbstractSpinBox::hasAcceptableInput() const
     \property QAbstractSpinBox::alignment
     \brief the alignment of the spin box
 
-    Possible Values are Qt::AlignLeft, Qt::AlignRight, and Qt::AlignHCenter.
+    Possible Values are BobUI::AlignLeft, BobUI::AlignRight, and BobUI::AlignHCenter.
 
-    By default, the alignment is Qt::AlignLeft
+    By default, the alignment is BobUI::AlignLeft
 
     Attempting to set the alignment to an illegal flag combination
     does nothing.
 
-    \sa Qt::Alignment
+    \sa BobUI::Alignment
 */
 
-Qt::Alignment QAbstractSpinBox::alignment() const
+BobUI::Alignment QAbstractSpinBox::alignment() const
 {
     Q_D(const QAbstractSpinBox);
 
-    return (Qt::Alignment)d->edit->alignment();
+    return (BobUI::Alignment)d->edit->alignment();
 }
 
-void QAbstractSpinBox::setAlignment(Qt::Alignment flag)
+void QAbstractSpinBox::setAlignment(BobUI::Alignment flag)
 {
     Q_D(QAbstractSpinBox);
 
@@ -612,8 +612,8 @@ void QAbstractSpinBox::stepDown()
 /*!
     Virtual function that is called whenever the user triggers a step.
     The \a steps parameter indicates how many steps were taken.
-    For example, pressing \c Qt::Key_Down will trigger a call to \c stepBy(-1),
-    whereas pressing \c Qt::Key_PageUp will trigger a call to \c stepBy(10).
+    For example, pressing \c BobUI::Key_Down will trigger a call to \c stepBy(-1),
+    whereas pressing \c BobUI::Key_PageUp will trigger a call to \c stepBy(10).
 
     If you subclass \c QAbstractSpinBox you must reimplement this
     function. Note that this function is called even if the resulting
@@ -716,7 +716,7 @@ void QAbstractSpinBox::setLineEdit(QLineEdit *lineEdit)
                 this, [this]() { updateMicroFocus(); });
     }
     d->updateEditFieldGeometry();
-    d->edit->setContextMenuPolicy(Qt::NoContextMenu);
+    d->edit->setContextMenuPolicy(BobUI::NoContextMenu);
     d->edit->d_func()->control->setAccessibleObject(this);
 
     if (isVisible())
@@ -743,12 +743,12 @@ void QAbstractSpinBox::interpretText()
 /*!
     \reimp
 */
-QVariant QAbstractSpinBox::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QAbstractSpinBox::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     Q_D(const QAbstractSpinBox);
     const QVariant lineEditValue = d->edit->inputMethodQuery(query);
     switch (query) {
-    case Qt::ImHints:
+    case BobUI::ImHints:
         if (const int hints = inputMethodHints())
             return QVariant(hints | lineEditValue.toInt());
         break;
@@ -783,7 +783,7 @@ bool QAbstractSpinBox::event(QEvent *event)
         if (d->edit->event(event))
             return true;
         break;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     case QEvent::EnterEditFocus:
     case QEvent::LeaveEditFocus:
         if (QApplicationPrivate::keypadNavigationEnabled()) {
@@ -835,7 +835,7 @@ void QAbstractSpinBox::changeEvent(QEvent *event)
                 style()->styleHint(QStyle::SH_SpinBox_ClickAutoRepeatThreshold, nullptr, this);
             if (d->edit)
                 d->edit->setFrame(!style()->styleHint(QStyle::SH_SpinBox_ButtonsInsideFrame, nullptr, this));
-            d->stepModifier = static_cast<Qt::KeyboardModifier>(style()->styleHint(QStyle::SH_SpinBox_StepModifier, nullptr, this));
+            d->stepModifier = static_cast<BobUI::KeyboardModifier>(style()->styleHint(QStyle::SH_SpinBox_StepModifier, nullptr, this));
             d->reset();
             d->updateEditFieldGeometry();
             break;
@@ -1000,25 +1000,25 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
     int steps = 1;
     bool isPgUpOrDown = false;
     switch (event->key()) {
-    case Qt::Key_PageUp:
-    case Qt::Key_PageDown:
+    case BobUI::Key_PageUp:
+    case BobUI::Key_PageDown:
         steps *= 10;
         isPgUpOrDown = true;
         Q_FALLTHROUGH();
-    case Qt::Key_Up:
-    case Qt::Key_Down: {
-#ifdef QT_KEYPAD_NAVIGATION
+    case BobUI::Key_Up:
+    case BobUI::Key_Down: {
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             // Reserve up/down for nav - use left/right for edit.
-            if (!hasEditFocus() && (event->key() == Qt::Key_Up
-                                    || event->key() == Qt::Key_Down)) {
+            if (!hasEditFocus() && (event->key() == BobUI::Key_Up
+                                    || event->key() == BobUI::Key_Down)) {
                 event->ignore();
                 return;
             }
         }
 #endif
         event->accept();
-        const bool up = (event->key() == Qt::Key_PageUp || event->key() == Qt::Key_Up);
+        const bool up = (event->key() == BobUI::Key_PageUp || event->key() == BobUI::Key_Up);
         if (!(stepEnabled() & (up ? StepUpEnabled : StepDownEnabled)))
             return;
         if (!isPgUpOrDown && (event->modifiers() & d->stepModifier))
@@ -1035,29 +1035,29 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
                 d->updateState(up, true);
             }
         }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleValueChangeEvent event(this, d->value);
         QAccessible::updateAccessibility(&event);
 #endif
         return;
     }
-#ifdef QT_KEYPAD_NAVIGATION
-    case Qt::Key_Left:
-    case Qt::Key_Right:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    case BobUI::Key_Left:
+    case BobUI::Key_Right:
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()) {
             event->ignore();
             return;
         }
         break;
-    case Qt::Key_Back:
+    case BobUI::Key_Back:
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()) {
             event->ignore();
             return;
         }
         break;
 #endif
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         d->edit->d_func()->control->clearUndo();
         d->interpret(d->keyboardTracking ? AlwaysEmit : EmitIfChanged);
         selectAll();
@@ -1067,8 +1067,8 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
         emit d->edit->returnPressed();
         return;
 
-#ifdef QT_KEYPAD_NAVIGATION
-    case Qt::Key_Select:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    case BobUI::Key_Select:
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             // Toggles between left/right moving cursor and inc/dec.
             setEditFocus(!hasEditFocus());
@@ -1076,8 +1076,8 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
         return;
 #endif
 
-    case Qt::Key_U:
-        if (event->modifiers() & Qt::ControlModifier
+    case BobUI::Key_U:
+        if (event->modifiers() & BobUI::ControlModifier
             && QGuiApplication::platformName() == "xcb"_L1) { // only X11
             event->accept();
             if (!isReadOnly())
@@ -1086,12 +1086,12 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
         }
         break;
 
-    case Qt::Key_End:
-    case Qt::Key_Home:
-        if (event->modifiers() & Qt::ShiftModifier) {
+    case BobUI::Key_End:
+    case BobUI::Key_Home:
+        if (event->modifiers() & BobUI::ShiftModifier) {
             int currentPos = d->edit->cursorPosition();
             const QString text = d->edit->displayText();
-            if (event->key() == Qt::Key_End) {
+            if (event->key() == BobUI::Key_End) {
                 if ((currentPos == 0 && !d->prefix.isEmpty()) || text.size() - d->suffix.size() <= currentPos) {
                     break; // let lineedit handle this
                 } else {
@@ -1110,7 +1110,7 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
         break;
 
     default:
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
         if (event == QKeySequence::SelectAll) {
             selectAll();
             event->accept();
@@ -1147,17 +1147,17 @@ void QAbstractSpinBox::keyReleaseEvent(QKeyEvent *event)
     \reimp
 */
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QAbstractSpinBox::wheelEvent(QWheelEvent *event)
 {
     Q_D(QAbstractSpinBox);
 #ifdef Q_OS_MACOS
     // If the event comes from a real mouse wheel, rather than a track pad
-    // (Qt::MouseEventSynthesizedBySystem), the shift modifier changes the
+    // (BobUI::MouseEventSynthesizedBySystem), the shift modifier changes the
     // scroll orientation to horizontal.
     // Convert horizontal events back to vertical whilst shift is held.
-    if ((event->modifiers() & Qt::ShiftModifier)
-            && event->source() == Qt::MouseEventNotSynthesized) {
+    if ((event->modifiers() & BobUI::ShiftModifier)
+            && event->source() == BobUI::MouseEventNotSynthesized) {
         d->wheelDeltaRemainder += event->angleDelta().x();
     } else {
         d->wheelDeltaRemainder += event->angleDelta().y();
@@ -1182,7 +1182,7 @@ void QAbstractSpinBox::focusInEvent(QFocusEvent *event)
     Q_D(QAbstractSpinBox);
 
     d->edit->event(event);
-    if (event->reason() == Qt::TabFocusReason || event->reason() == Qt::BacktabFocusReason) {
+    if (event->reason() == BobUI::TabFocusReason || event->reason() == BobUI::BacktabFocusReason) {
         selectAll();
     }
     QWidget::focusInEvent(event);
@@ -1204,7 +1204,7 @@ void QAbstractSpinBox::focusOutEvent(QFocusEvent *event)
     d->updateEdit();
     QWidget::focusOutEvent(event);
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     // editingFinished() is already emitted on LeaveEditFocus
     if (!QApplicationPrivate::keypadNavigationEnabled())
 #endif
@@ -1243,7 +1243,7 @@ void QAbstractSpinBox::hideEvent(QHideEvent *event)
     \reimp
 */
 
-void QAbstractSpinBox::timerEvent(QTimerEvent *event)
+void QAbstractSpinBox::timerEvent(BOBUIimerEvent *event)
 {
     Q_D(QAbstractSpinBox);
 
@@ -1291,7 +1291,7 @@ void QAbstractSpinBox::timerEvent(QTimerEvent *event)
     \reimp
 */
 
-#if QT_CONFIG(contextmenu)
+#if BOBUI_CONFIG(contextmenu)
 void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *event)
 {
 #ifdef Q_OS_WASM
@@ -1309,7 +1309,7 @@ void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *event)
     d->reset();
 
     QAction *selAll = new QAction(tr("&Select All"), menu);
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     selAll->setShortcut(QKeySequence::SelectAll);
 #endif
     menu->insertAction(d->edit->d_func()->selectAllAction,
@@ -1339,7 +1339,7 @@ void QAbstractSpinBox::contextMenuEvent(QContextMenuEvent *event)
     }
     event->accept();
 }
-#endif // QT_CONFIG(contextmenu)
+#endif // BOBUI_CONFIG(contextmenu)
 
 /*!
     \reimp
@@ -1374,7 +1374,7 @@ void QAbstractSpinBox::mousePressEvent(QMouseEvent *event)
     Q_D(QAbstractSpinBox);
 
     d->keyboardModifiers = event->modifiers();
-    if (event->button() != Qt::LeftButton || d->buttonState != None) {
+    if (event->button() != BobUI::LeftButton || d->buttonState != None) {
         event->ignore();
         return;
     }
@@ -1437,7 +1437,7 @@ bool QAbstractSpinBoxPrivate::updateHoverControl(const QPoint &pos)
     Q_Q(QAbstractSpinBox);
     QRect lastHoverRect = hoverRect;
     QStyle::SubControl lastHoverControl = hoverControl;
-    bool doesHover = q->testAttribute(Qt::WA_Hover);
+    bool doesHover = q->testAttribute(BobUI::WA_Hover);
     if (lastHoverControl != newHoverControl(pos) && doesHover) {
         q->update(lastHoverRect);
         q->update(hoverRect);
@@ -1612,7 +1612,7 @@ void QAbstractSpinBoxPrivate::init()
     Q_Q(QAbstractSpinBox);
 
     q->setLineEdit(new QLineEdit(q));
-    edit->setObjectName("qt_spinbox_lineedit"_L1);
+    edit->setObjectName("bobui_spinbox_lineedit"_L1);
     validator = new QSpinBoxValidator(q, this);
     edit->setValidator(validator);
 
@@ -1622,11 +1622,11 @@ void QAbstractSpinBoxPrivate::init()
     q->initStyleOption(&opt);
     spinClickTimerInterval = q->style()->styleHint(QStyle::SH_SpinBox_ClickAutoRepeatRate, &opt, q);
     spinClickThresholdTimerInterval = q->style()->styleHint(QStyle::SH_SpinBox_ClickAutoRepeatThreshold, &opt, q);
-    q->setFocusPolicy(Qt::WheelFocus);
+    q->setFocusPolicy(BobUI::WheelFocus);
     q->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed, QSizePolicy::SpinBox));
-    q->setAttribute(Qt::WA_InputMethodEnabled);
+    q->setAttribute(BobUI::WA_InputMethodEnabled);
 
-    q->setAttribute(Qt::WA_MacShowFocusRect);
+    q->setAttribute(BobUI::WA_MacShowFocusRect);
 }
 
 /*!
@@ -1669,7 +1669,7 @@ void QAbstractSpinBoxPrivate::updateState(bool up, bool fromKeyboard /* = false 
             steps *= 10;
         q->stepBy(steps);
         spinClickThresholdTimer.start(spinClickThresholdTimerInterval * 1ms, q);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         QAccessibleValueChangeEvent event(q, value);
         QAccessible::updateAccessibility(&event);
 #endif
@@ -1953,7 +1953,7 @@ QVariant QAbstractSpinBoxPrivate::calculateAdaptiveDecimalStep(int steps) const
 QSpinBoxValidator::QSpinBoxValidator(QAbstractSpinBox *qp, QAbstractSpinBoxPrivate *dp)
     : QValidator(qp), qptr(qp), dptr(dp)
 {
-    setObjectName("qt_spinboxvalidator"_L1);
+    setObjectName("bobui_spinboxvalidator"_L1);
 }
 
 /*!
@@ -2017,7 +2017,7 @@ QVariant operator+(const QVariant &arg1, const QVariant &arg2)
         break;
     }
     case QMetaType::Double: ret = QVariant(arg1.toDouble() + arg2.toDouble()); break;
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     case QMetaType::QDateTime: {
         QDateTime a2 = arg2.toDateTime();
         QDateTime a1 = arg1.toDateTime().addDays(QDATETIMEEDIT_DATE_MIN.daysTo(a2.date()));
@@ -2081,7 +2081,7 @@ QVariant operator*(const QVariant &arg1, double multiplier)
         ret = static_cast<int>(qBound<double>(INT_MIN, arg1.toInt() * multiplier, INT_MAX));
         break;
     case QMetaType::Double: ret = QVariant(arg1.toDouble() * multiplier); break;
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     case QMetaType::QDateTime: {
         double days = QDATETIMEEDIT_DATE_MIN.daysTo(arg1.toDateTime().date()) * multiplier;
         const qint64 daysInt = qint64(days);
@@ -2114,7 +2114,7 @@ double operator/(const QVariant &arg1, const QVariant &arg2)
         a1 = arg1.toDouble();
         a2 = arg2.toDouble();
         break;
-#if QT_CONFIG(datetimeparser)
+#if BOBUI_CONFIG(datetimeparser)
     case QMetaType::QDateTime:
         a1 = QDATETIMEEDIT_DATE_MIN.daysTo(arg1.toDate());
         a2 = QDATETIMEEDIT_DATE_MIN.daysTo(arg2.toDate());
@@ -2142,8 +2142,8 @@ int QAbstractSpinBoxPrivate::variantCompare(const QVariant &arg1, const QVariant
         } else {
             return 1;
         }
-    case QMetaType::QTime:
-        Q_ASSERT_X(arg1.userType() == QMetaType::QTime, "QAbstractSpinBoxPrivate::variantCompare",
+    case QMetaType::BOBUIime:
+        Q_ASSERT_X(arg1.userType() == QMetaType::BOBUIime, "QAbstractSpinBoxPrivate::variantCompare",
                    qPrintable(QString::fromLatin1("Internal error 2 (%1)").
                               arg(QString::fromLatin1(arg1.typeName()))));
         if (arg1.toTime() == arg2.toTime()) {
@@ -2206,6 +2206,6 @@ QVariant QAbstractSpinBoxPrivate::variantBound(const QVariant &min,
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractspinbox.cpp"

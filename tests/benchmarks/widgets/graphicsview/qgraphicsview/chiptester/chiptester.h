@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CHIPTESTER_H
 #define CHIPTESTER_H
 
-#include <QtWidgets/QGraphicsView>
-#include <QtCore/QEventLoop>
+#include <BobUIWidgets/QGraphicsView>
+#include <BobUICore/QEventLoop>
 
-QT_FORWARD_DECLARE_CLASS(QGraphicsScene)
-QT_FORWARD_DECLARE_CLASS(QGraphicsView)
-QT_FORWARD_DECLARE_CLASS(QLabel)
-QT_FORWARD_DECLARE_CLASS(QSlider)
-QT_FORWARD_DECLARE_CLASS(QSplitter)
+BOBUI_FORWARD_DECLARE_CLASS(QGraphicsScene)
+BOBUI_FORWARD_DECLARE_CLASS(QGraphicsView)
+BOBUI_FORWARD_DECLARE_CLASS(QLabel)
+BOBUI_FORWARD_DECLARE_CLASS(QSlider)
+BOBUI_FORWARD_DECLARE_CLASS(QSplitter)
 
 class ChipTester : public QGraphicsView
 {
@@ -30,7 +30,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(BOBUIimerEvent *event) override;
 
 private:
     void populateScene();

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.16)
@@ -6,9 +6,9 @@ project(ios_assets LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Test)
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Test)
 
-qt_add_executable(tst_manual_ios_assets
+bobui_add_executable(tst_manual_ios_assets
     main.cpp
 )
 
@@ -16,9 +16,9 @@ set_target_properties(tst_manual_ios_assets PROPERTIES
     MACOSX_BUNDLE TRUE
 )
 target_link_libraries(tst_manual_ios_assets PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::Test
+    BobUI::Core
+    BobUI::Gui
+    BobUI::Test
 )
 
 # Custom Info.plist
@@ -51,7 +51,7 @@ endif()
 # https://developer.apple.com/library/archive/qa/qa1686/_index.html
 # https://help.apple.com/xcode/mac/current/#/dev10510b1f7
 # https://web.archive.org/web/20180124234409/https://developer.apple.com/ios/human-interface-guidelines/icons-and-images/app-icon/
-# https://doc.qt.io/qt-6/ios-platform-notes.html#icons
+# https://doc.bobui.io/bobui-6/ios-platform-notes.html#icons
 # No need to copy the icons into the bundle manually when using Xcode 13+.
 # - rely on Xcode 13 to copy the needed icon files that are specified in the asset catalog (all the
 #   required ones should be specified manually)
@@ -72,7 +72,7 @@ if(IOS)
         PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
     # Make sure asset catalog compilation generates the needed app icons image sizes.
-    # This might not be needed in a future Qt version where qt_add_executable might do it
+    # This might not be needed in a future BobUI version where bobui_add_executable might do it
     # automatically. Unclear how to do it cleanly though, because specifying the option when
     # the asset catalog doesn't have an AppIcon set will cause a build failure.
     set_target_properties(tst_manual_ios_assets PROPERTIES
@@ -90,7 +90,7 @@ endif()
 #    deprecated
 # The first two expect images, the third one expects a storyboard / .xib file.
 # The last ones expect a dictionary of keys to configure the launch screen.
-# At the moment, UILaunchStoryboardName represents the lower bound of what Qt supports,
+# At the moment, UILaunchStoryboardName represents the lower bound of what BobUI supports,
 # so use it here.
 # Reference info
 # https://developer.apple.com/documentation/xcode/specifying-your-apps-launch-screen/
@@ -99,13 +99,13 @@ endif()
 # https://developer.apple.com/documentation/bundleresources/information_property_list/uilaunchimages?language=objc
 # https://developer.apple.com/documentation/bundleresources/information_property_list/uilaunchstoryboardname?language=objc
 # https://developer.apple.com/documentation/bundleresources/information_property_list/uilaunchscreen?language=objc
-# https://forum.qt.io/topic/106251/use-launch-images-in-ios-project/4
-# https://codereview.qt-project.org/c/qt/qtdoc/+/100846
+# https://forum.bobui.io/topic/106251/use-launch-images-in-ios-project/4
+# https://codereview.bobui-project.org/c/bobui/bobuidoc/+/100846
 if(IOS)
     # Because we're not using the automatically generated Info.plist, it needs to be manually
     # modified to have the UILaunchStoryboardName key.
     set_target_properties(tst_manual_ios_assets PROPERTIES
-        QT_IOS_LAUNCH_SCREEN "${CMAKE_CURRENT_SOURCE_DIR}/CustomLaunchScreen.storyboard")
+        BOBUI_IOS_LAUNCH_SCREEN "${CMAKE_CURRENT_SOURCE_DIR}/CustomLaunchScreen.storyboard")
 endif()
 
 # Flip to TRUE to debug

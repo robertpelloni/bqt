@@ -1,5 +1,5 @@
 // Copyright (C) 2023 David Edmundson <davidedmundson@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef MOCKCOMPOSITOR_CURSORSHAPE_H
 #define MOCKCOMPOSITOR_CURSORSHAPE_H
@@ -11,7 +11,7 @@ namespace MockCompositor {
 
 class CursorShapeDevice;
 
-class CursorShapeManager : public Global, public QtWaylandServer::wp_cursor_shape_manager_v1
+class CursorShapeManager : public Global, public BobUIWaylandServer::wp_cursor_shape_manager_v1
 {
     Q_OBJECT
 public:
@@ -22,7 +22,7 @@ protected:
     void wp_cursor_shape_manager_v1_get_pointer(Resource *resource, uint32_t id, wl_resource *pointer) override;
 };
 
-class CursorShapeDevice : public QObject, public QtWaylandServer::wp_cursor_shape_device_v1
+class CursorShapeDevice : public QObject, public BobUIWaylandServer::wp_cursor_shape_device_v1
 {
     Q_OBJECT
 public:

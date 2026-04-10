@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <qtest.h>
-#include <QtCore/qmetatype.h>
+#include <bobuiest.h>
+#include <BobUICore/qmetatype.h>
 
 class tst_QMetaType : public QObject
 {
@@ -58,10 +58,10 @@ Q_DECLARE_METATYPE(BigClass);
 
 void tst_QMetaType::typeBuiltin_data()
 {
-    QTest::addColumn<QByteArray>("typeName");
+    BOBUIest::addColumn<QByteArray>("typeName");
     for (int i = 0; i < QMetaType::User; ++i) {
         if (QMetaType metaType(i); metaType.isValid())
-            QTest::newRow(metaType.name()) << QByteArray(metaType.name());
+            BOBUIest::newRow(metaType.name()) << QByteArray(metaType.name());
     }
 }
 
@@ -93,10 +93,10 @@ void tst_QMetaType::typeBuiltin_QByteArray()
 
 void tst_QMetaType::typeBuiltinNotNormalized_data()
 {
-    QTest::addColumn<QByteArray>("typeName");
+    BOBUIest::addColumn<QByteArray>("typeName");
     for (int i = 0; i < QMetaType::User; ++i) {
         if (QMetaType metaType(i); metaType.isValid())
-            QTest::newRow(metaType.name()) << QByteArray(metaType.name()).append(" ");
+            BOBUIest::newRow(metaType.name()) << QByteArray(metaType.name()).append(" ");
     }
 }
 
@@ -150,10 +150,10 @@ void tst_QMetaType::typeNotRegisteredNotNormalized()
 
 void tst_QMetaType::typeNameBuiltin_data()
 {
-    QTest::addColumn<int>("type");
+    BOBUIest::addColumn<int>("type");
     for (int i = 0; i < QMetaType::User; ++i) {
         if (QMetaType metaType(i); metaType.isValid())
-            QTest::newRow(metaType.name()) << i;
+            BOBUIest::newRow(metaType.name()) << i;
     }
 }
 
@@ -219,14 +219,14 @@ void tst_QMetaType::isRegisteredNotRegistered()
 
 void tst_QMetaType::constructInPlace_data()
 {
-    QTest::addColumn<int>("typeId");
+    BOBUIest::addColumn<int>("typeId");
     for (int i = QMetaType::FirstCoreType; i <= QMetaType::LastCoreType; ++i) {
         auto name = QMetaType(i).name();
         if (name && i != QMetaType::Void)
-            QTest::newRow(name) << i;
+            BOBUIest::newRow(name) << i;
     }
 
-    QTest::newRow("custom") << qMetaTypeId<BigClass>();
+    BOBUIest::newRow("custom") << qMetaTypeId<BigClass>();
     // GUI types are tested in tst_QGuiMetaType.
 }
 
@@ -295,5 +295,5 @@ void tst_QMetaType::constructInPlaceCopyStaticLess()
     qFreeAligned(storage);
 }
 
-QTEST_MAIN(tst_QMetaType)
+BOBUIEST_MAIN(tst_QMetaType)
 #include "tst_bench_qmetatype.moc"

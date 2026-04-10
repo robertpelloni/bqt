@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qwindow.h>
 #include <qbackingstore.h>
@@ -8,12 +8,12 @@
 #include <private/qguiapplication_p.h>
 #include <qpainter.h>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QEvent>
 
 // For QSignalSpy slot connections.
-Q_DECLARE_METATYPE(Qt::ScreenOrientation)
+Q_DECLARE_METATYPE(BobUI::ScreenOrientation)
 
 class tst_QBackingStore : public QObject
 {
@@ -39,10 +39,10 @@ private slots:
 
 void tst_QBackingStore::initTestCase_data()
 {
-    QTest::addColumn<QSurfaceFormat::SwapBehavior>("swapBehavior");
+    BOBUIest::addColumn<QSurfaceFormat::SwapBehavior>("swapBehavior");
 
-    QTest::newRow("single-buffer") << QSurfaceFormat::SingleBuffer;
-    QTest::newRow("double-buffer") << QSurfaceFormat::DoubleBuffer;
+    BOBUIest::newRow("single-buffer") << QSurfaceFormat::SingleBuffer;
+    BOBUIest::newRow("double-buffer") << QSurfaceFormat::DoubleBuffer;
 }
 
 void tst_QBackingStore::init()
@@ -103,8 +103,8 @@ void tst_QBackingStore::paint()
     for (int i = 0; i < 2; ++i) {
         backingStore.beginPaint(rect);
         QPainter p(backingStore.paintDevice());
-        QColor bgColor = i ? Qt::red : Qt::blue;
-        QColor fgColor = i ? Qt::green : Qt::yellow;
+        QColor bgColor = i ? BobUI::red : BobUI::blue;
+        QColor fgColor = i ? BobUI::green : BobUI::yellow;
         p.fillRect(rect, bgColor);
         p.fillRect(QRect(50, 50, 10, 10), fgColor);
         p.end();
@@ -127,29 +127,29 @@ void tst_QBackingStore::paint()
 
 void tst_QBackingStore::scrollRectInImage_data()
 {
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<QPoint>("offset");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<QPoint>("offset");
 
-    QTest::newRow("empty rect") << QRect() << QPoint();
-    QTest::newRow("rect outside image") << QRect(-100, -100, 1000, 1000) << QPoint(10, 10);
-    QTest::newRow("scroll outside positive") << QRect(10, 10, 10, 10) << QPoint(1000, 1000);
-    QTest::newRow("scroll outside negative") << QRect(10, 10, 10, 10) << QPoint(-1000, -1000);
+    BOBUIest::newRow("empty rect") << QRect() << QPoint();
+    BOBUIest::newRow("rect outside image") << QRect(-100, -100, 1000, 1000) << QPoint(10, 10);
+    BOBUIest::newRow("scroll outside positive") << QRect(10, 10, 10, 10) << QPoint(1000, 1000);
+    BOBUIest::newRow("scroll outside negative") << QRect(10, 10, 10, 10) << QPoint(-1000, -1000);
 
-    QTest::newRow("sub-rect positive scroll") << QRect(100, 100, 50, 50) << QPoint(10, 10);
-    QTest::newRow("sub-rect negative scroll") << QRect(100, 100, 50, 50) << QPoint(-10, -10);
+    BOBUIest::newRow("sub-rect positive scroll") << QRect(100, 100, 50, 50) << QPoint(10, 10);
+    BOBUIest::newRow("sub-rect negative scroll") << QRect(100, 100, 50, 50) << QPoint(-10, -10);
 
-    QTest::newRow("positive vertical only") << QRect(100, 100, 50, 50) << QPoint(0, 10);
-    QTest::newRow("negative vertical only") << QRect(100, 100, 50, 50) << QPoint(0, -10);
-    QTest::newRow("positive horizontal only") << QRect(100, 100, 50, 50) << QPoint(10, 0);
-    QTest::newRow("negative horizontal only") << QRect(100, 100, 50, 50) << QPoint(-10, 0);
+    BOBUIest::newRow("positive vertical only") << QRect(100, 100, 50, 50) << QPoint(0, 10);
+    BOBUIest::newRow("negative vertical only") << QRect(100, 100, 50, 50) << QPoint(0, -10);
+    BOBUIest::newRow("positive horizontal only") << QRect(100, 100, 50, 50) << QPoint(10, 0);
+    BOBUIest::newRow("negative horizontal only") << QRect(100, 100, 50, 50) << QPoint(-10, 0);
 
-    QTest::newRow("whole rect positive") << QRect(0, 0, 250, 250) << QPoint(10, 10);
-    QTest::newRow("whole rect negative") << QRect(0, 0, 250, 250) << QPoint(-10, -10);
+    BOBUIest::newRow("whole rect positive") << QRect(0, 0, 250, 250) << QPoint(10, 10);
+    BOBUIest::newRow("whole rect negative") << QRect(0, 0, 250, 250) << QPoint(-10, -10);
 }
 
-QT_BEGIN_NAMESPACE
-Q_GUI_EXPORT void qt_scrollRectInImage(QImage &, const QRect &, const QPoint &);
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_GUI_EXPORT void bobui_scrollRectInImage(QImage &, const QRect &, const QPoint &);
+BOBUI_END_NAMESPACE
 
 void tst_QBackingStore::scrollRectInImage()
 {
@@ -158,7 +158,7 @@ void tst_QBackingStore::scrollRectInImage()
     QFETCH(QRect, rect);
     QFETCH(QPoint, offset);
 
-    qt_scrollRectInImage(test, rect, offset);
+    bobui_scrollRectInImage(test, rect, offset);
 }
 
 void tst_QBackingStore::scroll()
@@ -188,8 +188,8 @@ void tst_QBackingStore::scroll()
 
         backingStore.beginPaint(rect);
         QPainter p(backingStore.paintDevice());
-        QColor bgColor = i ? Qt::red : Qt::blue;
-        QColor fgColor = i ? Qt::green : Qt::yellow;
+        QColor bgColor = i ? BobUI::red : BobUI::blue;
+        QColor fgColor = i ? BobUI::green : BobUI::yellow;
         p.fillRect(rect, bgColor);
         p.fillRect(QRect(50, 50, 10, 10), fgColor);
         p.end();
@@ -256,7 +256,7 @@ public:
         backingStore.beginPaint(rect);
 
         QPainter p(backingStore.paintDevice());
-        p.fillRect(rect, Qt::white);
+        p.fillRect(rect, BobUI::white);
         p.end();
 
         backingStore.endPaint();
@@ -270,22 +270,22 @@ private:
 
 void tst_QBackingStore::flush_data()
 {
-    QTest::addColumn<Qt::WindowState>("windowState");
+    BOBUIest::addColumn<BobUI::WindowState>("windowState");
 
-    QTest::newRow("normal") << Qt::WindowNoState;
-    QTest::newRow("maximized") << Qt::WindowMaximized;
-    QTest::newRow("fullscreen") << Qt::WindowFullScreen;
+    BOBUIest::newRow("normal") << BobUI::WindowNoState;
+    BOBUIest::newRow("maximized") << BobUI::WindowMaximized;
+    BOBUIest::newRow("fullscreen") << BobUI::WindowFullScreen;
 }
 
 void tst_QBackingStore::flush()
 {
-    QFETCH(Qt::WindowState, windowState);
+    QFETCH(BobUI::WindowState, windowState);
     Window window;
     window.setGeometry(20, 20, 200, 200);
     window.setWindowState(windowState);
     window.setVisible(true);
 
-    QTRY_VERIFY(window.isExposed());
+    BOBUIRY_VERIFY(window.isExposed());
 }
 
 void tst_QBackingStore::staticContents()
@@ -315,7 +315,7 @@ void tst_QBackingStore::staticContents()
         backingStore.setStaticContents(QRect());
         backingStore.beginPaint(initialRect);
         QPainter p(backingStore.paintDevice());
-        p.fillRect(initialRect, Qt::green);
+        p.fillRect(initialRect, BobUI::green);
         p.end();
         backingStore.endPaint();
 
@@ -323,10 +323,10 @@ void tst_QBackingStore::staticContents()
         if (image.isNull())
             QSKIP("Platform backingstore does not implement toImage");
 
-        QCOMPARE(image.pixelColor(initialRect.topLeft() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.bottomLeft() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.topRight() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.bottomRight() * dpr), Qt::green);
+        QCOMPARE(image.pixelColor(initialRect.topLeft() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.bottomLeft() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.topRight() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.bottomRight() * dpr), BobUI::green);
     }
 
     {
@@ -340,7 +340,7 @@ void tst_QBackingStore::staticContents()
         backingStore.beginPaint(repaintRegion);
         QPainter p(backingStore.paintDevice());
         for (auto repaintRect : repaintRegion)
-            p.fillRect(repaintRect, Qt::red);
+            p.fillRect(repaintRect, BobUI::red);
         p.end();
         backingStore.endPaint();
 
@@ -348,19 +348,19 @@ void tst_QBackingStore::staticContents()
         if (image.isNull())
             QSKIP("Platform backingstore does not implement toImage");
 
-        QCOMPARE(image.pixelColor(initialRect.topLeft() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.bottomLeft() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.topRight() * dpr), Qt::green);
-        QCOMPARE(image.pixelColor(initialRect.bottomRight() * dpr), Qt::green);
+        QCOMPARE(image.pixelColor(initialRect.topLeft() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.bottomLeft() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.topRight() * dpr), BobUI::green);
+        QCOMPARE(image.pixelColor(initialRect.bottomRight() * dpr), BobUI::green);
 
         for (auto repaintRect : repaintRegion) {
-            QCOMPARE(image.pixelColor(repaintRect.topLeft() * dpr), Qt::red);
-            QCOMPARE(image.pixelColor(repaintRect.bottomLeft() * dpr), Qt::red);
-            QCOMPARE(image.pixelColor(repaintRect.topRight() * dpr), Qt::red);
-            QCOMPARE(image.pixelColor(repaintRect.bottomRight() * dpr), Qt::red);
+            QCOMPARE(image.pixelColor(repaintRect.topLeft() * dpr), BobUI::red);
+            QCOMPARE(image.pixelColor(repaintRect.bottomLeft() * dpr), BobUI::red);
+            QCOMPARE(image.pixelColor(repaintRect.topRight() * dpr), BobUI::red);
+            QCOMPARE(image.pixelColor(repaintRect.bottomRight() * dpr), BobUI::red);
         }
     }
 }
 
 #include <tst_qbackingstore.moc>
-QTEST_MAIN(tst_QBackingStore);
+BOBUIEST_MAIN(tst_QBackingStore);

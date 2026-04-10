@@ -1,19 +1,19 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "itemwindow.h"
 
-#include <QtGui/QPainter>
-#include <QtGui/QPaintEvent>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/QPaintEvent>
 
 void TextItem::paint(QPainter &painter)
 {
     painter.fillRect(m_rect, m_col);
     painter.drawRect(m_rect);
-    QTextOption textOption;
-    textOption.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    BOBUIextOption textOption;
+    textOption.setAlignment(BobUI::AlignHCenter | BobUI::AlignVCenter);
     painter.drawText(m_rect, m_text, textOption);
 }
 

@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_find_package(DirectFB MODULE)
-qt_find_package(EGL MODULE)
+bobui_find_package(DirectFB MODULE)
+bobui_find_package(EGL MODULE)
 
 #####################################################################
 ## QDirectFbIntegrationPlugin Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QDirectFbIntegrationPlugin
+bobui_internal_add_plugin(QDirectFbIntegrationPlugin
     OUTPUT_NAME qdirectfb
     PLUGIN_TYPE platforms
     SOURCES
@@ -25,28 +25,28 @@ qt_internal_add_plugin(QDirectFbIntegrationPlugin
     LIBRARIES
         PkgConfig::DirectFB
         EGL::EGL
-        Qt::Core
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(QDirectFbIntegrationPlugin CONDITION QT_CONFIG___contains___directfb_egl
+bobui_internal_extend_target(QDirectFbIntegrationPlugin CONDITION BOBUI_CONFIG___contains___directfb_egl
     SOURCES
         qdirectfb_egl.cpp qdirectfb_egl.h
     DEFINES
         DIRECTFB_GL_EGL
 )
 
-qt_internal_extend_target(QDirectFbIntegrationPlugin CONDITION NOT DIRECTFB_PLATFORM_HOOKS_SOURCES_ISEMPTY
+bobui_internal_extend_target(QDirectFbIntegrationPlugin CONDITION NOT DIRECTFB_PLATFORM_HOOKS_SOURCES_ISEMPTY
     DEFINES
         DIRECTFB_PLATFORM_HOOKS
 )
 
-qt_internal_extend_target(QDirectFbIntegrationPlugin CONDITION DIRECTFB_PLATFORM_HOOKS_SOURCES_ISEMPTY
+bobui_internal_extend_target(QDirectFbIntegrationPlugin CONDITION DIRECTFB_PLATFORM_HOOKS_SOURCES_ISEMPTY
     SOURCES
         qdirectfbeglhooks_stub.cpp
 )

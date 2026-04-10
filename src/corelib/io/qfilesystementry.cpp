@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfilesystementry_p.h"
 
-#include <QtCore/qdir.h>
-#include <QtCore/private/qdir_p.h>
-#include <QtCore/qfile.h>
-#include <QtCore/private/qfsfileengine_p.h>
+#include <BobUICore/qdir.h>
+#include <BobUICore/private/qdir_p.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/private/qfsfileengine_p.h>
 #ifdef Q_OS_WIN
-#include <QtCore/qstringbuilder.h>
+#include <BobUICore/qstringbuilder.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Assigned to m_lastSeparator and m_firstDotInFileName to indicate resolveFilePath()
 // hasn't been called yet
@@ -376,7 +376,7 @@ void QFileSystemEntry::findFileNameSeparators() const
 bool QFileSystemEntry::isClean() const
 {
     resolveFilePath();
-    return qt_isPathNormalized(m_filePath, QDirPrivate::DefaultNormalization);
+    return bobui_isPathNormalized(m_filePath, QDirPrivate::DefaultNormalization);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

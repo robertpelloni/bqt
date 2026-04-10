@@ -1,16 +1,16 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIKit.h>
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qfontdatabase.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qfontdatabase.h>
 #include <QDebug>
 
-#include <QtCore/private/qcore_mac_p.h>
-#include <QtGui/private/qfont_p.h>
-#include <QtGui/private/qfontengine_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
+#include <BobUIGui/private/qfont_p.h>
+#include <BobUIGui/private/qfontengine_p.h>
 
 #include "qiosglobal.h"
 #include "qiosfontdialog.h"
@@ -133,7 +133,7 @@ void QIOSFontDialog::exec()
     m_eventLoop.exec(QEventLoop::DialogExec);
 }
 
-bool QIOSFontDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QIOSFontDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
     Q_UNUSED(windowModality);
@@ -143,7 +143,7 @@ bool QIOSFontDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality window
         [m_viewController setQFont:m_currentFont];
     }
 
-    if (windowModality == Qt::ApplicationModal || windowModality == Qt::WindowModal)
+    if (windowModality == BobUI::ApplicationModal || windowModality == BobUI::WindowModal)
         m_viewController.modalInPresentation = YES;
 
     UIWindow *window = presentationWindow(parent);

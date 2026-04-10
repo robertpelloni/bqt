@@ -1,14 +1,14 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QStringTokenizer>
 #include <QStringBuilder>
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <string>
 
-Q_DECLARE_METATYPE(Qt::SplitBehavior)
+Q_DECLARE_METATYPE(BobUI::SplitBehavior)
 
 namespace {
 class tst_QStringTokenizer : public QObject
@@ -76,11 +76,11 @@ void tst_QStringTokenizer::constExpr() const
 
 void tst_QStringTokenizer::basics_data() const
 {
-    QTest::addColumn<Qt::SplitBehavior>("sb");
-    QTest::addColumn<Qt::CaseSensitivity>("cs");
+    BOBUIest::addColumn<BobUI::SplitBehavior>("sb");
+    BOBUIest::addColumn<BobUI::CaseSensitivity>("cs");
 
 #define ROW(sb, cs) \
-    do { QTest::addRow("%s/%s", #sb, #cs) << Qt::SplitBehavior{Qt::sb} << Qt::cs; } while (0)
+    do { BOBUIest::addRow("%s/%s", #sb, #cs) << BobUI::SplitBehavior{BobUI::sb} << BobUI::cs; } while (0)
 
     ROW(KeepEmptyParts, CaseSensitive);
     ROW(KeepEmptyParts, CaseInsensitive);
@@ -92,17 +92,17 @@ void tst_QStringTokenizer::basics_data() const
 
 void tst_QStringTokenizer::basics() const
 {
-    QFETCH(const Qt::SplitBehavior, sb);
-    QFETCH(const Qt::CaseSensitivity, cs);
+    QFETCH(const BobUI::SplitBehavior, sb);
+    QFETCH(const BobUI::CaseSensitivity, cs);
 
     auto expected = QStringList{"", "a", "b", "c", "d", "e", ""};
-    if (sb & Qt::SkipEmptyParts)
+    if (sb & BobUI::SkipEmptyParts)
         expected = skipped(expected);
     QCOMPARE(toQStringList(qTokenize(u",a,b,c,d,e,", u',', sb, cs)), expected);
     QCOMPARE(toQStringList(qTokenize(u",a,b,c,d,e,", u',', cs, sb)), expected);
 
     {
-        auto tok = qTokenize(expected.join(u'x'), u"X" % QString(), Qt::CaseInsensitive);
+        auto tok = qTokenize(expected.join(u'x'), u"X" % QString(), BobUI::CaseInsensitive);
         // the temporary QStrings returned from join() and the QStringBuilder expression
         // are now destroyed, but 'tok' should keep both alive
         QCOMPARE(toQStringList(tok), expected);
@@ -111,7 +111,7 @@ void tst_QStringTokenizer::basics() const
     using namespace std::string_literals;
 
     {
-        auto tok = qTokenize(expected.join(u'x'), u"X"s, Qt::CaseInsensitive);
+        auto tok = qTokenize(expected.join(u'x'), u"X"s, BobUI::CaseInsensitive);
         QCOMPARE(toQStringList(tok), expected);
     }
 
@@ -154,9 +154,9 @@ void tst_QStringTokenizer::emptyResult_data_impl() const
 {
     // try really hard to get an empty result...
 
-    QTest::addColumn<Content>("haystack");
-    QTest::addColumn<Content>("needle");
-    QTest::addColumn<Qt::SplitBehavior>("behavior");
+    BOBUIest::addColumn<Content>("haystack");
+    BOBUIest::addColumn<Content>("needle");
+    BOBUIest::addColumn<BobUI::SplitBehavior>("behavior");
 
     const auto str = [] (auto e) {
         using E = decltype(e);
@@ -169,12 +169,12 @@ void tst_QStringTokenizer::emptyResult_data_impl() const
 
     for (auto haystack : {Content::Null, Content::Empty}) {
         for (auto needle : {Content::Null, Content::Empty}) {
-            for (auto behavior : {Qt::KeepEmptyParts, Qt::SkipEmptyParts}) {
-                QTest::addRow("%s/%s (%s)",
+            for (auto behavior : {BobUI::KeepEmptyParts, BobUI::SkipEmptyParts}) {
+                BOBUIest::addRow("%s/%s (%s)",
                               str(haystack),
                               str(needle),
-                              str(Qt::SplitBehavior{behavior}))
-                        << haystack << needle << Qt::SplitBehavior{behavior};
+                              str(BobUI::SplitBehavior{behavior}))
+                        << haystack << needle << BobUI::SplitBehavior{behavior};
             }
         }
     }
@@ -185,7 +185,7 @@ void tst_QStringTokenizer::emptyResult_impl() const
 {
     QFETCH(const Content, haystack);
     QFETCH(const Content, needle);
-    QFETCH(const Qt::SplitBehavior, behavior);
+    QFETCH(const BobUI::SplitBehavior, behavior);
 
     auto select = [](Content c, View null, View empty) {
         switch (c) {
@@ -207,12 +207,12 @@ void tst_QStringTokenizer::emptyResult_impl() const
         const auto tok = qTokenize(select(haystack, null, empty),
                                    select(needle, null, empty),
                                    behavior);
-        if (behavior & Qt::SkipEmptyParts)
+        if (behavior & BobUI::SkipEmptyParts)
             QCOMPARE_EQ(tok.begin(), tok.end()); // iow: empty
         else
             QCOMPARE_NE(tok.begin(), tok.end()); // iow: not empty
     }
 }
 
-QTEST_APPLESS_MAIN(tst_QStringTokenizer)
+BOBUIEST_APPLESS_MAIN(tst_QStringTokenizer)
 #include "tst_qstringtokenizer.moc"

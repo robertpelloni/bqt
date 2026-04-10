@@ -7,7 +7,7 @@ To update:
   * Unpack the zip file; for each file in data/, replace with the new
     version; find the *BreakProperty.txt in auxiliary/ and emoji-data.txt
     in emoji/.
-  * In tst_QTextBoundaryFinder's data/ sub-directory, update its files
+  * In tst_BOBUIextBoundaryFinder's data/ sub-directory, update its files
     from the auxiliary/ sub-directory of the UCD data.
   * Download https://www.unicode.org/Public/idna/$Version/IdnaMappingTable.txt
     and put it into data/.
@@ -26,7 +26,7 @@ To update:
   * "unassigned or unhandled age value:" initAgeMap() and
     QChar::UnicodeVersion;
   * "Unhandled script property value:" initScriptMap(), QChar::Script,
-    qharfbuzzng.cpp's _qtscript_to_hbscript[] array and
+    qharfbuzzng.cpp's _bobuiscript_to_hbscript[] array and
     qfontconfigdatabase.cpp's specialLanguages.
   * "unassigned word break class:" enum WordBreakClass,
     word_break_class_string and initWordBreak();
@@ -36,10 +36,10 @@ To update:
   advice. Some bit-field may need to be expanded, for example. In some
   cases QChar may need additions to some of its enums.
 * Build with the modified code, fix any compilation issues, make check
-  in suitable directories, including tst_QTextBoundaryFinder.
-* That may have updated qtbase/src/corelib/text/qunicodetables.cpp; if
+  in suitable directories, including tst_BOBUIextBoundaryFinder.
+* That may have updated bobuibase/src/corelib/text/qunicodetables.cpp; if
   so the update matters; be sure to commit the changes to data/ at the
-  same time and update text/qt_attribution.json to match; use the UCD
+  same time and update text/bobui_attribution.json to match; use the UCD
   Revision number, rather than the Unicode standard number, as the
   Version, for all that qunicodetables.cpp uses the latter (see the
   'UAX #44, UCD' page linked from https://www.unicode.org/ucd/ for the
@@ -48,7 +48,7 @@ To update:
   update the documentation in qchar.cpp for each affected enum,
   respecting the existing ordering.
 * If you don't normally build in the source tree, remember to delete
-  qtbase/.qmake.stash while you're cleaning up.
+  bobuibase/.qmake.stash while you're cleaning up.
 
 The script writingSystems.sh generates a list of writing systems,
 ostensibly as a the basis for updating QFontDatabase::WritingSystem

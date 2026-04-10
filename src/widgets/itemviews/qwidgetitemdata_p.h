@@ -1,26 +1,26 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWIDGETITEMDATA_P_H
 #define QWIDGETITEMDATA_P_H
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qdatastream.h>
-#include <QtCore/qvariant.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qdatastream.h>
+#include <BobUICore/qvariant.h>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QWidgetItemData
 {
@@ -33,7 +33,7 @@ public:
 };
 Q_DECLARE_TYPEINFO(QWidgetItemData, Q_RELOCATABLE_TYPE);
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 inline QDataStream &operator>>(QDataStream &in, QWidgetItemData &data)
 {
@@ -49,8 +49,8 @@ inline QDataStream &operator<<(QDataStream &out, const QWidgetItemData &data)
     return out;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWIDGETITEMDATA_P_H

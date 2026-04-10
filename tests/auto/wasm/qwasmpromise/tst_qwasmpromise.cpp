@@ -1,12 +1,12 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <emscripten/val.h>
 #include <emscripten.h>
 
-#include <QtCore/private/qstdweb_p.h>
+#include <BobUICore/private/qstdweb_p.h>
 
 namespace {
 
@@ -134,8 +134,8 @@ void tst_QWasmPromise::simpleResolve()
     .addFinallyFunction([](){});
 
     g_testSupport["resolve"].call<void>("simpleResolve", std::string("Some lovely data"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::multipleResolve()
@@ -167,8 +167,8 @@ void tst_QWasmPromise::multipleResolve()
     for (int i = 0; i < promiseCount; ++i)
         g_testSupport["resolve"].call<void>(("test" + std::to_string(i)).c_str(), std::to_string(i));
 
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::simpleReject()
@@ -191,8 +191,8 @@ void tst_QWasmPromise::simpleReject()
     });
 
     g_testSupport["reject"].call<void>("simpleReject", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::multipleReject()
@@ -220,8 +220,8 @@ void tst_QWasmPromise::multipleReject()
 
     for (int i = 0; i < promiseCount; ++i)
         g_testSupport["reject"].call<void>(("test" + std::to_string(i)).c_str(), std::to_string(i));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::throwInThen()
@@ -244,8 +244,8 @@ void tst_QWasmPromise::throwInThen()
     });
 
     g_testSupport["resolve"].call<void>("throwInThen", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::bareFinally()
@@ -261,8 +261,8 @@ void tst_QWasmPromise::bareFinally()
     });
 
     g_testSupport["resolve"].call<void>("bareFinally", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::finallyWithThen()
@@ -285,8 +285,8 @@ void tst_QWasmPromise::finallyWithThen()
     });
 
     g_testSupport["resolve"].call<void>("finallyWithThen", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::finallyWithThrow()
@@ -305,8 +305,8 @@ void tst_QWasmPromise::finallyWithThrow()
     });
 
     g_testSupport["reject"].call<void>("finallyWithThrow", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::finallyWithThrowInThen()
@@ -333,8 +333,8 @@ void tst_QWasmPromise::finallyWithThrowInThen()
     });
 
     g_testSupport["resolve"].call<void>("finallyWithThrowInThen", std::string("Evil error"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::nested()
@@ -378,8 +378,8 @@ void tst_QWasmPromise::nested()
     });
 
     g_testSupport["resolve"].call<void>("outer", std::string("Outer data"));
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::all()
@@ -422,8 +422,8 @@ void tst_QWasmPromise::all()
         for (int i = promiseCount - 1; i >= 0; --i)
             g_testSupport["resolve"].call<void>(("all" + std::to_string(i)).c_str(), "Data " + std::to_string(i));
     }
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::allWithThrow()
@@ -455,8 +455,8 @@ void tst_QWasmPromise::allWithThrow()
         g_testSupport["reject"].call<void>("promise2", std::string("Error 2"));
     }
 
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::allWithFinally()
@@ -484,8 +484,8 @@ void tst_QWasmPromise::allWithFinally()
         g_testSupport["resolve"].call<void>("promise1", std::string("Data 1"));
         g_testSupport["resolve"].call<void>("promise2", std::string("Data 2"));
     }
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
 void tst_QWasmPromise::allWithFinallyAndThrow()
@@ -518,9 +518,9 @@ void tst_QWasmPromise::allWithFinallyAndThrow()
         g_testSupport["resolve"].call<void>("promise2", std::string("Data 2"));
     }
 
-    QVERIFY(QTest::qWaitFor([]() { return g_Done; }));
-    QVERIFY(QTest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return g_Done; }));
+    QVERIFY(BOBUIest::qWaitFor([]() { return qstdweb::Promise::State::numInstances() == 0; }));
 }
 
-QTEST_MAIN(tst_QWasmPromise)
+BOBUIEST_MAIN(tst_QWasmPromise)
 #include "tst_qwasmpromise.moc"

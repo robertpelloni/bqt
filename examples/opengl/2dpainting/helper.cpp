@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "helper.h"
 
@@ -11,14 +11,14 @@
 Helper::Helper()
 {
     QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
-    gradient.setColorAt(0.0, Qt::white);
+    gradient.setColorAt(0.0, BobUI::white);
     gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39));
 
     background = QBrush(QColor(64, 32, 64));
     circleBrush = QBrush(gradient);
-    circlePen = QPen(Qt::black);
+    circlePen = QPen(BobUI::black);
     circlePen.setWidth(1);
-    textPen = QPen(Qt::white);
+    textPen = QPen(BobUI::white);
     textFont.setPixelSize(50);
 }
 //! [0]
@@ -52,6 +52,6 @@ void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)
 //! [3]
     painter->setPen(textPen);
     painter->setFont(textFont);
-    painter->drawText(QRect(-50, -50, 100, 100), Qt::AlignCenter, QStringLiteral("Qt"));
+    painter->drawText(QRect(-50, -50, 100, 100), BobUI::AlignCenter, QStringLiteral("BobUI"));
 }
 //! [3]

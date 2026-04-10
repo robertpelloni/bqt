@@ -1,0 +1,80 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \class BobUIConcurrent::BOBUIaskBuilder
+    \inmodule BobUIConcurrent
+    \brief The BOBUIaskBuilder class is used for adjusting task parameters.
+    \since 6.0
+
+    \ingroup thread
+
+    The template parameter \a Task specifies the callable type, and \a Args
+    specifies the argument types that the task will be invoked with.
+
+    It's not possible to create an object of this class manually. See
+    \l {Concurrent Task} for more details and usage examples.
+*/
+
+/*!
+    \fn template <class Task, class ...Args> [[nodiscard]] QFuture<InvokeResultType> BobUIConcurrent::BOBUIaskBuilder<Task, Args...>::spawn()
+
+    Runs the task in a separate thread and returns a future object immediately.
+    This is a non-blocking call. The task might not start immediately.
+*/
+
+/*!
+    \fn template <class Task, class ...Args> void BobUIConcurrent::BOBUIaskBuilder<Task, Args...>::spawn(BobUIConcurrent::FutureResult)
+
+    Runs the task in a separate thread. This is a non-blocking call.
+    The task might not start immediately.
+*/
+
+/*!
+    \fn template <class Task, class ...Args> template <class ...ExtraArgs> [[nodiscard]] BOBUIaskBuilder<Task, ExtraArgs...> BobUIConcurrent::BOBUIaskBuilder<Task, Args...>::withArguments(ExtraArgs &&...args)
+
+    Sets the arguments \a args the task will be invoked with. The code is ill-formed
+    (causes compilation errors) if:
+    \list
+        \li This function is invoked more than once.
+        \li The arguments count is zero.
+    \endlist
+*/
+
+/*!
+    \fn template <class Task, class ...Args> [[nodiscard]] BOBUIaskBuilder<Task, Args...> &BobUIConcurrent::BOBUIaskBuilder<Task, Args...>::onThreadPool(BOBUIhreadPool &newThreadPool)
+
+    Sets the thread pool \a newThreadPool that the task will be invoked on.
+*/
+
+/*!
+    \fn template <class Task, class ...Args> [[nodiscard]] BOBUIaskBuilder<Task, Args...> &BobUIConcurrent::BOBUIaskBuilder<Task, Args...>::withPriority(int newPriority)
+
+    Sets the priority \a newPriority that the task will be invoked with.
+*/
+
+/*!
+    \typedef BobUIConcurrent::InvokeResultType
+    \relates BobUIConcurrent::BOBUIaskBuilder
+
+    The simplified definition of this type looks like this:
+    \code
+    template <class Task, class ...Args>
+    using InvokeResultType = std::invoke_result_t<std::decay_t<Task>, std::decay_t<Args>...>;
+    \endcode
+
+    The real implementation also contains a compile-time check for
+    whether the task can be invoked with the specified arguments or not.
+*/
+
+/*!
+    \enum BobUIConcurrent::FutureResult
+
+    This enum type is used to invoke a special overload of
+    BobUIConcurrent::BOBUIaskBuilder::spawn(BobUIConcurrent::FutureResult)
+    that doesn't return a future object.
+
+    \value Ignore
+           An auxiliary tag which introduced to improve code
+           readability.
+*/

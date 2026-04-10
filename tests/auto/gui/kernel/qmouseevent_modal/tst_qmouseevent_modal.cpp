@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qapplication.h>
 #include <qfontinfo.h>
 
 
 #include <qpushbutton.h>
 #include <qscrollbar.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 
 #include <qdialog.h>
 
 class TstWidget;
 class TstDialog;
-QT_FORWARD_DECLARE_CLASS(QPushButton)
+BOBUI_FORWARD_DECLARE_CLASS(QPushButton)
 
 class TestButton : public QPushButton
 {
@@ -93,29 +93,29 @@ void tst_qmouseevent_modal::mousePressRelease()
     QVERIFY( !w->d->isVisible() );
     QVERIFY( w->d->count() == 0 );
 
-    QTest::mousePress( w->pb, Qt::LeftButton );
+    BOBUIest::mousePress( w->pb, BobUI::LeftButton );
 
-    QTRY_VERIFY( !w->d->isVisible() );
+    BOBUIRY_VERIFY( !w->d->isVisible() );
     QVERIFY( w->d->count() == 1 );
     QVERIFY( !w->pb->isDown() );
 
-    QTest::mousePress( w->pb, Qt::LeftButton );
+    BOBUIest::mousePress( w->pb, BobUI::LeftButton );
 
-    QTRY_VERIFY( !w->d->isVisible() );
+    BOBUIRY_VERIFY( !w->d->isVisible() );
     QVERIFY( w->d->count() == 2 );
     QVERIFY( !w->pb->isDown() );
 
     // With the current QWS mouse handling, the 3rd press would fail...
 
-    QTest::mousePress( w->pb, Qt::LeftButton );
+    BOBUIest::mousePress( w->pb, BobUI::LeftButton );
 
-    QTRY_VERIFY( !w->d->isVisible() );
+    BOBUIRY_VERIFY( !w->d->isVisible() );
     QVERIFY( w->d->count() == 3 );
     QVERIFY( !w->pb->isDown() );
 
-    QTest::mousePress( w->pb, Qt::LeftButton );
+    BOBUIest::mousePress( w->pb, BobUI::LeftButton );
 
-    QTRY_VERIFY( !w->d->isVisible() );
+    BOBUIRY_VERIFY( !w->d->isVisible() );
     QVERIFY( w->d->count() == 4 );
     QVERIFY( !w->pb->isDown() );
 }
@@ -130,7 +130,7 @@ TstWidget::TstWidget()
 
     connect( pb, SIGNAL(pressed()), this, SLOT(buttonPressed()) );
 
-//    QScrollBar *sb = new QScrollBar( Qt::Horizontal,  this );
+//    QScrollBar *sb = new QScrollBar( BobUI::Horizontal,  this );
 
 //    sb->setGeometry( 5, pb->geometry().bottom() + 5, 100, sb->sizeHint().height() );
 
@@ -153,13 +153,13 @@ TstDialog::TstDialog( QWidget *mouseWidget, QWidget *parent, const char *name )
 
 void TstDialog::showEvent ( QShowEvent * )
 {
-    QTimer::singleShot(1, this, SLOT(releaseMouse()));
-    QTimer::singleShot(100, this, SLOT(closeDialog()));
+    BOBUIimer::singleShot(1, this, SLOT(releaseMouse()));
+    BOBUIimer::singleShot(100, this, SLOT(closeDialog()));
 }
 
 void TstDialog::releaseMouse()
 {
-    QTest::mouseRelease(m, Qt::LeftButton);
+    BOBUIest::mouseRelease(m, BobUI::LeftButton);
 }
 
 void TstDialog::closeDialog()
@@ -170,5 +170,5 @@ void TstDialog::closeDialog()
     }
 }
 
-QTEST_MAIN(tst_qmouseevent_modal)
+BOBUIEST_MAIN(tst_qmouseevent_modal)
 #include "tst_qmouseevent_modal.moc"

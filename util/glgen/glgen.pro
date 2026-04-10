@@ -1,5 +1,5 @@
-QT       -= gui
-QT       += core5compat
+BOBUI       -= gui
+BOBUI       += core5compat
 CONFIG   += cmdline
 
 # Uncomment following to enable debug output

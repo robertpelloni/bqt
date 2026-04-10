@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QLINEEDIT_P_H
 #define QLINEEDIT_P_H
@@ -9,44 +9,44 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 
 #include "private/qwidget_p.h"
-#include "QtWidgets/qlineedit.h"
-#if QT_CONFIG(toolbutton)
-#include "QtWidgets/qtoolbutton.h"
+#include "BobUIWidgets/qlineedit.h"
+#if BOBUI_CONFIG(toolbutton)
+#include "BobUIWidgets/bobuioolbutton.h"
 #endif
-#include "QtGui/qtextlayout.h"
-#include "QtGui/qicon.h"
-#include "QtWidgets/qstyleoption.h"
-#include "QtCore/qbasictimer.h"
-#if QT_CONFIG(completer)
-#include "QtWidgets/qcompleter.h"
+#include "BobUIGui/bobuiextlayout.h"
+#include "BobUIGui/qicon.h"
+#include "BobUIWidgets/qstyleoption.h"
+#include "BobUICore/qbasictimer.h"
+#if BOBUI_CONFIG(completer)
+#include "BobUIWidgets/qcompleter.h"
 #endif
-#include "QtCore/qpointer.h"
-#include "QtCore/qmimedata.h"
-#include <QtCore/qmargins.h>
+#include "BobUICore/qpointer.h"
+#include "BobUICore/qmimedata.h"
+#include <BobUICore/qmargins.h>
 
 #include "private/qwidgetlinecontrol_p.h"
 
 #include <algorithm>
 
-QT_REQUIRE_CONFIG(lineedit);
+BOBUI_REQUIRE_CONFIG(lineedit);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QLineEditPrivate;
 
 // QLineEditIconButton: This is a simple helper class that represents clickable icons that fade in with text
-#if QT_CONFIG(toolbutton)
-class Q_AUTOTEST_EXPORT QLineEditIconButton : public QToolButton
+#if BOBUI_CONFIG(toolbutton)
+class Q_AUTOTEST_EXPORT QLineEditIconButton : public BOBUIoolButton
 {
     Q_OBJECT
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
@@ -55,7 +55,7 @@ public:
 
     qreal opacity() const { return m_opacity; }
     void setOpacity(qreal value);
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     void animateShow(bool visible);
 
     bool shouldHideWithText() const;
@@ -74,25 +74,25 @@ protected:
 private slots:
     void updateCursor();
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     void onAnimationFinished();
 #endif
 
 private:
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     void startOpacityAnimation(qreal endValue);
 #endif
     QLineEditPrivate *lineEditPrivate() const;
 
     qreal m_opacity;
 
-#if QT_CONFIG(animation)
+#if BOBUI_CONFIG(animation)
     bool m_hideWithText = false;
     bool m_fadingOut = false;
 #endif
 
 };
-#endif // QT_CONFIG(toolbutton)
+#endif // BOBUI_CONFIG(toolbutton)
 
 class Q_AUTOTEST_EXPORT QLineEditPrivate : public QWidgetPrivate
 {
@@ -123,7 +123,7 @@ public:
     QLineEditPrivate()
         : control(nullptr), frame(1), contextMenuEnabled(1), cursorVisible(0),
         dragEnabled(0), clickCausedFocus(0), edited(0), hscroll(0), vscroll(0),
-        alignment(Qt::AlignLeading | Qt::AlignVCenter),
+        alignment(BobUI::AlignLeading | BobUI::AlignVCenter),
         textMargins{0, 0, 0, 0},
         lastTextSize(0), mouseYThreshold(0)
     {
@@ -135,7 +135,7 @@ public:
 
     QWidgetLineControl *control;
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     QPointer<QAction> selectAllAction;
 #endif
     void init(const QString&);
@@ -143,7 +143,7 @@ public:
 
     QRect adjustedControlRect(const QRect &) const;
 
-    int xToPos(int x, QTextLine::CursorPosition = QTextLine::CursorBetweenCharacters) const;
+    int xToPos(int x, BOBUIextLine::CursorPosition = BOBUIextLine::CursorBetweenCharacters) const;
     bool inSelection(int x) const;
     QRect cursorRect() const;
     void setCursorVisible(bool visible);
@@ -166,7 +166,7 @@ public:
     inline bool shouldShowPlaceholderText() const
     {
         return control->text().isEmpty() && control->preeditAreaText().isEmpty()
-                && !((alignment & Qt::AlignHCenter) && q_func()->hasFocus());
+                && !((alignment & BobUI::AlignHCenter) && q_func()->hasFocus());
     }
 
     static inline QLineEditPrivate *get(QLineEdit *lineEdit) {
@@ -194,18 +194,18 @@ public:
     void handleWindowActivate();
     void textEdited(const QString &);
     void cursorPositionChanged(int, int);
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     void editFocusChange(bool);
 #endif
     void selectionChanged();
     void updateNeeded(const QRect &);
-#if QT_CONFIG(completer)
+#if BOBUI_CONFIG(completer)
     void connectCompleter();
     void disconnectCompleter();
     void completionHighlighted(const QString &);
 #endif
     QPoint mousePressPos;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QBasicTimer dndTimer;
     void drag();
 #endif
@@ -217,7 +217,7 @@ public:
 
     QString placeholderText;
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     QWidget *addAction(QAction *newAction, QAction *before, QLineEdit::ActionPosition, int flags = 0);
     void removeAction(QAction *action);
 #endif
@@ -227,9 +227,9 @@ public:
     void positionSideWidgets();
     inline bool hasSideWidgets() const { return !leadingSideWidgets.empty() || !trailingSideWidgets.empty(); }
     inline const SideWidgetEntryList &leftSideWidgetList() const
-        { return q_func()->layoutDirection() == Qt::LeftToRight ? leadingSideWidgets : trailingSideWidgets; }
+        { return q_func()->layoutDirection() == BobUI::LeftToRight ? leadingSideWidgets : trailingSideWidgets; }
     inline const SideWidgetEntryList &rightSideWidgetList() const
-        { return q_func()->layoutDirection() == Qt::LeftToRight ? trailingSideWidgets : leadingSideWidgets; }
+        { return q_func()->layoutDirection() == BobUI::LeftToRight ? trailingSideWidgets : leadingSideWidgets; }
 
     QMargins effectiveTextMargins() const;
 
@@ -240,9 +240,9 @@ private:
 
         bool isValid() const { return index >= 0; }
     };
-    friend class QTypeInfo<SideWidgetLocation>;
+    friend class BOBUIypeInfo<SideWidgetLocation>;
 
-#if QT_CONFIG(action)
+#if BOBUI_CONFIG(action)
     SideWidgetLocation findSideWidget(const QAction *a) const;
 #endif
 
@@ -254,6 +254,6 @@ private:
 Q_DECLARE_TYPEINFO(QLineEditPrivate::SideWidgetEntry, Q_PRIMITIVE_TYPE);
 Q_DECLARE_TYPEINFO(QLineEditPrivate::SideWidgetLocation, Q_PRIMITIVE_TYPE);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QLINEEDIT_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSHADER_P_H
 #define QSHADER_P_H
@@ -8,19 +8,19 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of a number of Qt sources files.  This header file may change from
+// This file is not part of the BobUI API.  It exists for the convenience
+// of a number of BobUI sources files.  This header file may change from
 // version to version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include <rhi/qshader.h>
-#include <QtCore/QAtomicInt>
-#include <QtCore/QMap>
+#include <BobUICore/QAtomicInt>
+#include <BobUICore/QMap>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct Q_GUI_EXPORT QShaderPrivate
 {
@@ -64,11 +64,11 @@ struct Q_GUI_EXPORT QShaderPrivate
 
     static QShaderPrivate *get(QShader *s) { return s->d; }
     static const QShaderPrivate *get(const QShader *s) { return s->d; }
-    static int qtQsbVersion(QShader::SerializedFormatVersion qtVersion) {
-        switch (qtVersion) {
-        case QShader::SerializedFormatVersion::Qt_6_4:
+    static int bobuiQsbVersion(QShader::SerializedFormatVersion bobuiVersion) {
+        switch (bobuiVersion) {
+        case QShader::SerializedFormatVersion::BobUI_6_4:
             return (QShaderPrivate::QSB_VERSION_WITHOUT_SEPARATE_IMAGES_AND_SAMPLERS + 1);
-        case QShader::SerializedFormatVersion::Qt_6_5:
+        case QShader::SerializedFormatVersion::BobUI_6_5:
             return (QShaderPrivate::QSB_VERSION_WITHOUT_EXTENDED_STORAGE_BUFFER_INFO + 1);
         default:
             return QShaderPrivate::QSB_VERSION;
@@ -86,6 +86,6 @@ struct Q_GUI_EXPORT QShaderPrivate
     QMap<QShaderKey, QShader::NativeShaderInfo> nativeShaderInfoMap;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

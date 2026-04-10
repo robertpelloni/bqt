@@ -1,14 +1,14 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // This test is to check that the menus in a menubar are displayed correctly in both the top and
 // bottom cases. Especially when using multiple screens. If possible relayout the screens in order
 // to have one that is entirely in negative coordinates (i.e. the primary starts at 0x0 and the
 // secondary is above it).
 
-#include <QtWidgets>
-#include <QtGui/qpa/qplatformwindow.h>
-#include <QtGui/qpa/qplatformwindow_p.h>
+#include <BobUIWidgets>
+#include <BobUIGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qpa/qplatformwindow_p.h>
 
 class MainWindow : public QMainWindow
 {
@@ -56,10 +56,10 @@ public:
         menuBarBottom->setDefaultUp(true);
         menuBarBottom->setNativeMenuBar(false);
         layout->addWidget(menuBarBottom);
-        layout->setAlignment(menuBarBottom, Qt::AlignBottom);
+        layout->setAlignment(menuBarBottom, BobUI::AlignBottom);
         central->setLayout(layout);
         setCentralWidget(central);
-        setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+        setWindowFlags(windowFlags() | BobUI::FramelessWindowHint);
     }
 };
 

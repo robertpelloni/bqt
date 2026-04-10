@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // Note: this file is published under a license that is different from a default
 //       test sources license. This is intentional to comply with default
 //       snippet license.
 
 #include <QCoreApplication>
-#include <QTest>
+#include <BOBUIest>
 
 #include <qfuture.h>
 #include <qfuturewatcher.h>
@@ -24,12 +24,12 @@ public:
 
 void snippet_QPromise::basicExample()
 {
-#if QT_CONFIG(cxx11_future)
+#if BOBUI_CONFIG(cxx11_future)
 //! [basic]
     QPromise<int> promise;
     QFuture<int> future = promise.future();
 
-    const std::unique_ptr<QThread> thread(QThread::create([] (QPromise<int> promise) {
+    const std::unique_ptr<BOBUIhread> thread(BOBUIhread::create([] (QPromise<int> promise) {
         promise.start();   // notifies QFuture that the computation is started
         promise.addResult(42);
         promise.finish();  // notifies QFuture that the computation is finished
@@ -47,7 +47,7 @@ void snippet_QPromise::basicExample()
 
 void snippet_QPromise::multithreadExample()
 {
-#if QT_CONFIG(cxx11_future)
+#if BOBUI_CONFIG(cxx11_future)
 //! [multithread_init]
     const auto sharedPromise = std::make_shared<QPromise<int>>();
     QFuture<int> future = sharedPromise->future();
@@ -59,14 +59,14 @@ void snippet_QPromise::multithreadExample()
 
 //! [multithread_main]
     // here, QPromise is shared between threads via a smart pointer
-    const std::unique_ptr<QThread> threads[] = {
-        std::unique_ptr<QThread>(QThread::create([] (auto sharedPromise) {
+    const std::unique_ptr<BOBUIhread> threads[] = {
+        std::unique_ptr<BOBUIhread>(BOBUIhread::create([] (auto sharedPromise) {
             sharedPromise->addResult(0, 0);  // adds value 0 by index 0
         }, sharedPromise)),
-        std::unique_ptr<QThread>(QThread::create([] (auto sharedPromise) {
+        std::unique_ptr<BOBUIhread>(BOBUIhread::create([] (auto sharedPromise) {
             sharedPromise->addResult(-1, 1);  // adds value -1 by index 1
         }, sharedPromise)),
-        std::unique_ptr<QThread>(QThread::create([] (auto sharedPromise) {
+        std::unique_ptr<BOBUIhread>(BOBUIhread::create([] (auto sharedPromise) {
             sharedPromise->addResult(-2, 2);  // adds value -2 by index 2
         }, sharedPromise)),
         // ...
@@ -96,7 +96,7 @@ void snippet_QPromise::multithreadExample()
 
 void snippet_QPromise::suspendExample()
 {
-#if QT_CONFIG(cxx11_future)
+#if BOBUI_CONFIG(cxx11_future)
 //! [suspend_start]
     // Create promise and future
     QPromise<int> promise;
@@ -104,7 +104,7 @@ void snippet_QPromise::suspendExample()
 
     promise.start();
     // Start a computation thread that supports suspension and cancellation
-    const std::unique_ptr<QThread> thread(QThread::create([] (QPromise<int> promise) {
+    const std::unique_ptr<BOBUIhread> thread(BOBUIhread::create([] (QPromise<int> promise) {
         for (int i = 0; i < 100; ++i) {
             promise.addResult(i);
             promise.suspendIfRequested();   // support suspension
@@ -123,7 +123,7 @@ void snippet_QPromise::suspendExample()
     // wait in calling thread until future.isSuspended() becomes true or do
     // something meanwhile
     while (!future.isSuspended()) {
-        QThread::msleep(50);
+        BOBUIhread::msleep(50);
     }
 
 //! [suspend_intermediateResults]

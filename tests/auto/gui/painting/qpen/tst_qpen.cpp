@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include "qpen.h"
 #include "qbrush.h"
@@ -59,30 +59,30 @@ void tst_QPen::getSetCheck()
 
 void tst_QPen::swap()
 {
-    QPen p1(Qt::black), p2(Qt::white);
+    QPen p1(BobUI::black), p2(BobUI::white);
     p1.swap(p2);
-    QCOMPARE(p1.color(), QColor(Qt::white));
-    QCOMPARE(p2.color(), QColor(Qt::black));
+    QCOMPARE(p1.color(), QColor(BobUI::white));
+    QCOMPARE(p2.color(), QColor(BobUI::black));
 }
 
 void tst_QPen::move()
 {
-    QPen p1(Qt::black);
+    QPen p1(BobUI::black);
 
     // check that moving does the right thing:
     QPen p2 = std::move(p1); // could be move or copy construction, so don't check p1's state
-    QCOMPARE(p2.color(), QColor(Qt::black));
+    QCOMPARE(p2.color(), QColor(BobUI::black));
 
     // this, executed ehre, would crash:
-    // QVERIFY(p1.style() != Qt::NoPen);
+    // QVERIFY(p1.style() != BobUI::NoPen);
 
     // check that moved-from QPen p1 can still be safely copied:
     const QPen p3 = p1;
 
     // check that moved-from QPen p1 can still be safely assigned to:
-    const QPen p4(Qt::yellow);
+    const QPen p4(BobUI::yellow);
     p1 = p4;
-    QCOMPARE(p1.color(), QColor(Qt::yellow));
+    QCOMPARE(p1.color(), QColor(BobUI::yellow));
 
     // check that moved-from QPens p2, p3 can still be safely destroyed:
     QPen p5 = std::move(p2);
@@ -92,23 +92,23 @@ void tst_QPen::move()
 
 void tst_QPen::move_assign()
 {
-    QPen p1(Qt::black), p2(Qt::white);
+    QPen p1(BobUI::black), p2(BobUI::white);
 
     // check that moving does the right thing:
     p2 = std::move(p1); // could be move or copy assignment, so don't check p1's state
-    QCOMPARE(p2.color(), QColor(Qt::black));
+    QCOMPARE(p2.color(), QColor(BobUI::black));
 
     // check that move-assigned-from QPen p1 can still be used, albeit
     // with undocumented state (it's p2's original state):
-    QVERIFY(p1.style() != Qt::NoPen);
+    QVERIFY(p1.style() != BobUI::NoPen);
 
     // check that moved-from QPen p1 can still be safely copied:
     const QPen p3 = p1;
 
     // check that moved-from QPen p1 can still be safely assigned to:
-    const QPen p4(Qt::yellow);
+    const QPen p4(BobUI::yellow);
     p1 = p4;
-    QCOMPARE(p1.color(), QColor(Qt::yellow));
+    QCOMPARE(p1.color(), QColor(BobUI::yellow));
 
     // check that moved-from QPens p2, p3 can still be safely destroyed:
     QPen p5;
@@ -124,27 +124,27 @@ tst_QPen::tst_QPen()
 
 void tst_QPen::operator_eq_eq_data()
 {
-    QTest::addColumn<QPen>("pen1");
-    QTest::addColumn<QPen>("pen2");
-    QTest::addColumn<bool>("isEqual");
+    BOBUIest::addColumn<QPen>("pen1");
+    BOBUIest::addColumn<QPen>("pen2");
+    BOBUIest::addColumn<bool>("isEqual");
 
-    QTest::newRow("differentColor") << QPen(Qt::red)
-                                    << QPen(Qt::blue)
+    BOBUIest::newRow("differentColor") << QPen(BobUI::red)
+                                    << QPen(BobUI::blue)
                                     << false;
-    QTest::newRow("differentWidth") << QPen(Qt::red, 2)
-                                    << QPen(Qt::red, 3)
+    BOBUIest::newRow("differentWidth") << QPen(BobUI::red, 2)
+                                    << QPen(BobUI::red, 3)
                                     << false;
-    QTest::newRow("differentPenStyle") << QPen(Qt::red, 2, Qt::DashLine)
-                                       << QPen(Qt::red, 2, Qt::DotLine)
+    BOBUIest::newRow("differentPenStyle") << QPen(BobUI::red, 2, BobUI::DashLine)
+                                       << QPen(BobUI::red, 2, BobUI::DotLine)
                                        << false;
-    QTest::newRow("differentCapStyle") << QPen(Qt::red, 2, Qt::DashLine, Qt::RoundCap, Qt::BevelJoin)
-                                       << QPen(Qt::red, 2, Qt::DashLine, Qt::SquareCap, Qt::BevelJoin)
+    BOBUIest::newRow("differentCapStyle") << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::RoundCap, BobUI::BevelJoin)
+                                       << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::SquareCap, BobUI::BevelJoin)
                                        << false;
-    QTest::newRow("differentJoinStyle") << QPen(Qt::red, 2, Qt::DashLine, Qt::RoundCap, Qt::BevelJoin)
-                                        << QPen(Qt::red, 2, Qt::DashLine, Qt::RoundCap, Qt::MiterJoin)
+    BOBUIest::newRow("differentJoinStyle") << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::RoundCap, BobUI::BevelJoin)
+                                        << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::RoundCap, BobUI::MiterJoin)
                                         << false;
-    QTest::newRow("same") << QPen(Qt::red, 2, Qt::DashLine, Qt::RoundCap, Qt::BevelJoin)
-                          << QPen(Qt::red, 2, Qt::DashLine, Qt::RoundCap, Qt::BevelJoin)
+    BOBUIest::newRow("same") << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::RoundCap, BobUI::BevelJoin)
+                          << QPen(BobUI::red, 2, BobUI::DashLine, BobUI::RoundCap, BobUI::BevelJoin)
                           << true;
 
 }
@@ -164,21 +164,21 @@ void tst_QPen::operator_eq_eq()
 
 void tst_QPen::constructor_data()
 {
-    QTest::addColumn<QPen>("pen");
-    QTest::addColumn<QBrush>("brush");
-    QTest::addColumn<double>("width");
-    QTest::addColumn<int>("style");
-    QTest::addColumn<int>("capStyle");
-    QTest::addColumn<int>("joinStyle");
+    BOBUIest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QBrush>("brush");
+    BOBUIest::addColumn<double>("width");
+    BOBUIest::addColumn<int>("style");
+    BOBUIest::addColumn<int>("capStyle");
+    BOBUIest::addColumn<int>("joinStyle");
 
-    QTest::newRow("solid_black") << QPen() << QBrush(Qt::black) << 1. << (int)Qt::SolidLine
-                              << (int) Qt::SquareCap << (int)Qt::BevelJoin;
-    QTest::newRow("solid_red") << QPen(Qt::red) << QBrush(Qt::red) << 1. << (int)Qt::SolidLine
-                            << (int)Qt::SquareCap << (int)Qt::BevelJoin;
-    QTest::newRow("full") << QPen(QBrush(QLinearGradient(0, 0, 100, 100)), 10,
-                               Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin)
-                       << QBrush(QLinearGradient(0, 0, 100, 100)) << 10. << (int)Qt::SolidLine
-                       << (int)Qt::RoundCap << (int)Qt::MiterJoin;
+    BOBUIest::newRow("solid_black") << QPen() << QBrush(BobUI::black) << 1. << (int)BobUI::SolidLine
+                              << (int) BobUI::SquareCap << (int)BobUI::BevelJoin;
+    BOBUIest::newRow("solid_red") << QPen(BobUI::red) << QBrush(BobUI::red) << 1. << (int)BobUI::SolidLine
+                            << (int)BobUI::SquareCap << (int)BobUI::BevelJoin;
+    BOBUIest::newRow("full") << QPen(QBrush(QLinearGradient(0, 0, 100, 100)), 10,
+                               BobUI::SolidLine, BobUI::RoundCap, BobUI::MiterJoin)
+                       << QBrush(QLinearGradient(0, 0, 100, 100)) << 10. << (int)BobUI::SolidLine
+                       << (int)BobUI::RoundCap << (int)BobUI::MiterJoin;
 
 }
 
@@ -192,9 +192,9 @@ void tst_QPen::constructor()
     QFETCH(int, capStyle);
     QFETCH(int, joinStyle);
 
-    QCOMPARE(pen.style(), Qt::PenStyle(style));
-    QCOMPARE(pen.capStyle(), Qt::PenCapStyle(capStyle));
-    QCOMPARE(pen.joinStyle(), Qt::PenJoinStyle(joinStyle));
+    QCOMPARE(pen.style(), BobUI::PenStyle(style));
+    QCOMPARE(pen.capStyle(), BobUI::PenCapStyle(capStyle));
+    QCOMPARE(pen.joinStyle(), BobUI::PenJoinStyle(joinStyle));
     QCOMPARE(pen.widthF(), width);
     QCOMPARE(pen.brush(), brush);
 }
@@ -202,11 +202,11 @@ void tst_QPen::constructor()
 
 void tst_QPen::stream_data()
 {
-    QTest::addColumn<QPen>("pen");
+    BOBUIest::addColumn<QPen>("pen");
 
-    QTest::newRow("solid_black") << QPen();
-    QTest::newRow("solid_red") << QPen(Qt::red);
-    QTest::newRow("full") << QPen(QBrush(QLinearGradient(0, 0, 100, 100)), 10, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin);
+    BOBUIest::newRow("solid_black") << QPen();
+    BOBUIest::newRow("solid_red") << QPen(BobUI::red);
+    BOBUIest::newRow("full") << QPen(QBrush(QLinearGradient(0, 0, 100, 100)), 10, BobUI::SolidLine, BobUI::RoundCap, BobUI::MiterJoin);
 }
 
 
@@ -236,5 +236,5 @@ void tst_QPen::stream()
     QCOMPARE(pen, cmp);
 }
 
-QTEST_APPLESS_MAIN(tst_QPen)
+BOBUIEST_APPLESS_MAIN(tst_QPen)
 #include "tst_qpen.moc"

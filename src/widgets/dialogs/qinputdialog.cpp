@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qinputdialog.h"
 
@@ -19,9 +19,9 @@
 #include "qevent.h"
 #include "qdialog_p.h"
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 enum CandidateSignal {
     TextValueSelectedSignal,
@@ -56,7 +56,7 @@ static const char *signalForMember(const char *member)
     return SIGNAL(accepted());
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     These internal classes add extra validation to QSpinBox and QDoubleSpinBox by emitting
@@ -85,7 +85,7 @@ private slots:
 
 private:
     void keyPressEvent(QKeyEvent *event) override {
-        if ((event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) && !hasAcceptableInput()) {
+        if ((event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) && !hasAcceptableInput()) {
             setProperty("value", property("value"));
         } else {
             QSpinBox::keyPressEvent(event);
@@ -120,7 +120,7 @@ private slots:
 
 private:
     void keyPressEvent(QKeyEvent *event) override {
-        if ((event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) && !hasAcceptableInput()) {
+        if ((event->key() == BobUI::Key_Return || event->key() == BobUI::Key_Enter) && !hasAcceptableInput()) {
             setProperty("value", property("value"));
         } else {
             QDoubleSpinBox::keyPressEvent(event);
@@ -138,9 +138,9 @@ class QInputDialogListView : public QListView
 {
 public:
     QInputDialogListView(QWidget *parent = nullptr) : QListView(parent) {}
-    QVariant inputMethodQuery(Qt::InputMethodQuery query) const override
+    QVariant inputMethodQuery(BobUI::InputMethodQuery query) const override
     {
-        if (query == Qt::ImEnabled)
+        if (query == BobUI::ImEnabled)
             return false;
         return QListView::inputMethodQuery(query);
     }
@@ -208,12 +208,12 @@ void QInputDialogPrivate::ensureLayout()
 
     if (!label)
         label = new QLabel(QInputDialog::tr("Enter a value:"), q);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     label->setBuddy(inputWidget);
 #endif
     label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, q);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, BobUI::Horizontal, q);
     QObject::connect(buttonBox, &QDialogButtonBox::accepted, q, &QDialog::accept);
     QObject::connect(buttonBox, &QDialogButtonBox::rejected, q, &QDialog::reject);
 
@@ -231,8 +231,8 @@ void QInputDialogPrivate::ensureLineEdit()
     Q_Q(QInputDialog);
     if (!lineEdit) {
         lineEdit = new QLineEdit(q);
-#ifndef QT_NO_IM
-        qt_widget_private(lineEdit)->inheritsInputMethodHints = 1;
+#ifndef BOBUI_NO_IM
+        bobui_widget_private(lineEdit)->inheritsInputMethodHints = 1;
 #endif
         lineEdit->hide();
         QObjectPrivate::connect(lineEdit, &QLineEdit::textChanged,
@@ -246,8 +246,8 @@ void QInputDialogPrivate::ensurePlainTextEdit()
     if (!plainTextEdit) {
         plainTextEdit = new QPlainTextEdit(q);
         plainTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
-#ifndef QT_NO_IM
-        qt_widget_private(plainTextEdit)->inheritsInputMethodHints = 1;
+#ifndef BOBUI_NO_IM
+        bobui_widget_private(plainTextEdit)->inheritsInputMethodHints = 1;
 #endif
         plainTextEdit->hide();
         QObjectPrivate::connect(plainTextEdit, &QPlainTextEdit::textChanged,
@@ -260,8 +260,8 @@ void QInputDialogPrivate::ensureComboBox()
     Q_Q(QInputDialog);
     if (!comboBox) {
         comboBox = new QComboBox(q);
-#ifndef QT_NO_IM
-        qt_widget_private(comboBox)->inheritsInputMethodHints = 1;
+#ifndef BOBUI_NO_IM
+        bobui_widget_private(comboBox)->inheritsInputMethodHints = 1;
 #endif
         comboBox->hide();
         QObjectPrivate::connect(comboBox, &QComboBox::editTextChanged,
@@ -314,7 +314,7 @@ void QInputDialogPrivate::ensureEnabledConnection(QAbstractSpinBox *spinBox)
 {
     if (spinBox) {
         QAbstractButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
-        QObject::connect(spinBox, SIGNAL(textChanged(bool)), okButton, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+        QObject::connect(spinBox, SIGNAL(textChanged(bool)), okButton, SLOT(setEnabled(bool)), BobUI::UniqueConnection);
     }
 }
 
@@ -448,7 +448,7 @@ void QInputDialogPrivate::currentRowChanged(const QModelIndex &newIndex,
     \brief The QInputDialog class provides a simple convenience dialog to get a
     single value from the user.
     \ingroup standard-dialogs
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The input value can be a string, a number or an item from a list. A label
     must be set to tell the user what they should enter.
@@ -465,7 +465,7 @@ void QInputDialogPrivate::currentRowChanged(const QModelIndex &newIndex,
     \image inputdialogs.png Input Dialogs
 
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows how to use
-    QInputDialog as well as other built-in Qt dialogs.
+    QInputDialog as well as other built-in BobUI dialogs.
 
     \sa QMessageBox, {Standard Dialogs Example}
 */
@@ -487,7 +487,7 @@ void QInputDialogPrivate::currentRowChanged(const QModelIndex &newIndex,
 /*!
     Constructs a new input dialog with the given \a parent and window \a flags.
 */
-QInputDialog::QInputDialog(QWidget *parent, Qt::WindowFlags flags)
+QInputDialog::QInputDialog(QWidget *parent, BobUI::WindowFlags flags)
     : QDialog(*new QInputDialogPrivate, parent, flags)
 {
 }
@@ -1138,7 +1138,7 @@ void QInputDialog::done(int result)
 
 QString QInputDialog::getText(QWidget *parent, const QString &title, const QString &label,
                               QLineEdit::EchoMode mode, const QString &text, bool *ok,
-                              Qt::WindowFlags flags, Qt::InputMethodHints inputMethodHints)
+                              BobUI::WindowFlags flags, BobUI::InputMethodHints inputMethodHints)
 {
     QAutoPointer<QInputDialog> dialog(new QInputDialog(parent, flags));
     dialog->setWindowTitle(title);
@@ -1185,8 +1185,8 @@ QString QInputDialog::getText(QWidget *parent, const QString &title, const QStri
 */
 
 QString QInputDialog::getMultiLineText(QWidget *parent, const QString &title, const QString &label,
-                                       const QString &text, bool *ok, Qt::WindowFlags flags,
-                                       Qt::InputMethodHints inputMethodHints)
+                                       const QString &text, bool *ok, BobUI::WindowFlags flags,
+                                       BobUI::InputMethodHints inputMethodHints)
 {
     QAutoPointer<QInputDialog> dialog(new QInputDialog(parent, flags));
     dialog->setOptions(QInputDialog::UsePlainTextEditForTextInput);
@@ -1231,7 +1231,7 @@ QString QInputDialog::getMultiLineText(QWidget *parent, const QString &title, co
 */
 
 int QInputDialog::getInt(QWidget *parent, const QString &title, const QString &label, int value,
-                         int min, int max, int step, bool *ok, Qt::WindowFlags flags)
+                         int min, int max, int step, bool *ok, BobUI::WindowFlags flags)
 {
     QAutoPointer<QInputDialog> dialog(new QInputDialog(parent, flags));
     dialog->setWindowTitle(title);
@@ -1279,7 +1279,7 @@ int QInputDialog::getInt(QWidget *parent, const QString &title, const QString &l
 
 double QInputDialog::getDouble(QWidget *parent, const QString &title, const QString &label,
                                double value, double min, double max, int decimals, bool *ok,
-                               Qt::WindowFlags flags, double step)
+                               BobUI::WindowFlags flags, double step)
 {
     QAutoPointer<QInputDialog> dialog(new QInputDialog(parent, flags));
     dialog->setWindowTitle(title);
@@ -1330,7 +1330,7 @@ double QInputDialog::getDouble(QWidget *parent, const QString &title, const QStr
 
 QString QInputDialog::getItem(QWidget *parent, const QString &title, const QString &label,
                               const QStringList &items, int current, bool editable, bool *ok,
-                              Qt::WindowFlags flags, Qt::InputMethodHints inputMethodHints)
+                              BobUI::WindowFlags flags, BobUI::InputMethodHints inputMethodHints)
 {
     QString text(items.value(current));
 
@@ -1440,7 +1440,7 @@ double QInputDialog::doubleStep() const
     TextInput mode.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qinputdialog.moc"
 #include "moc_qinputdialog.cpp"

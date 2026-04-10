@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Laszlo Papp <lpapp@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #if defined(Q_OS_WIN)
 

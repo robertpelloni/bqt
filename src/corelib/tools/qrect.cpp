@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qrect.h"
 #include "qdatastream.h"
@@ -8,11 +8,11 @@
 
 #include <private/qdebug_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QRect
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \reentrant
 
@@ -1230,7 +1230,7 @@ bool QRect::intersects(const QRect &r) const noexcept
 /*****************************************************************************
   QRect stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QRect &rectangle)
     \relates QRect
@@ -1238,7 +1238,7 @@ bool QRect::intersects(const QRect &r) const noexcept
     Writes the given \a rectangle to the given \a stream, and returns
     a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QRect &r)
@@ -1259,7 +1259,7 @@ QDataStream &operator<<(QDataStream &s, const QRect &r)
     Reads a rectangle from the given \a stream into the given \a
     rectangle, and returns a reference to the stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QRect &r)
@@ -1277,16 +1277,16 @@ QDataStream &operator>>(QDataStream &s, QRect &r)
     return s;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRect &r)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QRect" << '(';
-    QtDebugUtils::formatQRect(dbg, r);
+    BobUIDebugUtils::formatQRect(dbg, r);
     dbg << ')';
     return dbg;
 }
@@ -1294,7 +1294,7 @@ QDebug operator<<(QDebug dbg, const QRect &r)
 
 /*!
     \class QRectF
-    \inmodule QtCore
+    \inmodule BobUICore
     \ingroup painting
     \reentrant
 
@@ -2485,7 +2485,7 @@ QRect QRectF::toAlignedRect() const noexcept
 /*****************************************************************************
   QRectF stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QRectF &rectangle)
 
@@ -2494,7 +2494,7 @@ QRect QRectF::toAlignedRect() const noexcept
     Writes the \a rectangle to the \a stream, and returns a reference to the
     stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QRectF &r)
@@ -2511,7 +2511,7 @@ QDataStream &operator<<(QDataStream &s, const QRectF &r)
     Reads a \a rectangle from the \a stream, and returns a reference to the
     stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QRectF &r)
@@ -2525,19 +2525,19 @@ QDataStream &operator>>(QDataStream &s, QRectF &r)
     return s;
 }
 
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRectF &r)
 {
     QDebugStateSaver saver(dbg);
     dbg.nospace();
     dbg << "QRectF" << '(';
-    QtDebugUtils::formatQRect(dbg, r);
+    BobUIDebugUtils::formatQRect(dbg, r);
     dbg << ')';
     return dbg;
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

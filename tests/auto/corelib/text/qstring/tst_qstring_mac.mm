@@ -1,48 +1,48 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QString>
-#include <QTest>
+#include <BobUICore/QString>
+#include <BOBUIest>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <Foundation/Foundation.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 void tst_QString_macTypes()
 {
     const QLatin1StringView testString("test string");
     // QString <-> CFString
     {
-        QString qtString = testString;
-        const CFStringRef cfString = qtString.toCFString();
-        QCOMPARE(QString::fromCFString(cfString), qtString);
+        QString bobuiString = testString;
+        const CFStringRef cfString = bobuiString.toCFString();
+        QCOMPARE(QString::fromCFString(cfString), bobuiString);
         CFRelease(cfString);
     }
     {
-        QString qtString = testString;
-        const CFStringRef cfString = qtString.toCFString();
-        QString qtStringCopy(qtString);
-        qtString = qtString.toUpper(); // modify
-        QCOMPARE(QString::fromCFString(cfString), qtStringCopy);
+        QString bobuiString = testString;
+        const CFStringRef cfString = bobuiString.toCFString();
+        QString bobuiStringCopy(bobuiString);
+        bobuiString = bobuiString.toUpper(); // modify
+        QCOMPARE(QString::fromCFString(cfString), bobuiStringCopy);
     }
     // QString <-> NSString
     {
         QMacAutoReleasePool pool;
 
-        QString qtString = testString;
-        const NSString *nsString = qtString.toNSString();
-        QCOMPARE(QString::fromNSString(nsString), qtString);
+        QString bobuiString = testString;
+        const NSString *nsString = bobuiString.toNSString();
+        QCOMPARE(QString::fromNSString(nsString), bobuiString);
     }
     {
         QMacAutoReleasePool pool;
 
-        QString qtString = testString;
-        const NSString *nsString = qtString.toNSString();
-        QString qtStringCopy(qtString);
-        qtString = qtString.toUpper(); // modify
-        QCOMPARE(QString::fromNSString(nsString), qtStringCopy);
+        QString bobuiString = testString;
+        const NSString *nsString = bobuiString.toNSString();
+        QString bobuiStringCopy(bobuiString);
+        bobuiString = bobuiString.toUpper(); // modify
+        QCOMPARE(QString::fromNSString(nsString), bobuiStringCopy);
     }
 }

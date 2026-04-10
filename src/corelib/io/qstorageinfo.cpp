@@ -1,23 +1,23 @@
-// Copyright (C) 2022 The Qt Company Ltd.
+// Copyright (C) 2022 The BobUI Company Ltd.
 // Copyright (C) 2015 Ivan Komissarov <ABBAPOH@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstorageinfo.h"
 #include "qstorageinfo_p.h"
 
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcStorageInfo, "qt.core.qstorageinfo", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcStorageInfo, "bobui.core.qstorageinfo", BobUIWarningMsg)
 
-QT_IMPL_METATYPE_EXTERN(QStorageInfo)
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QStorageInfoPrivate)
+BOBUI_IMPL_METATYPE_EXTERN(QStorageInfo)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QStorageInfoPrivate)
 
 /*!
     \class QStorageInfo
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.4
     \brief Provides information about currently mounted storage and drives.
 
@@ -419,7 +419,7 @@ bool comparesEqual(const QStorageInfo &lhs, const QStorageInfo &rhs) noexcept
     return lhs.d->device == rhs.d->device && lhs.d->rootPath == rhs.d->rootPath;
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug debug, const QStorageInfo &s)
 {
     QDebugStateSaver saver(debug);
@@ -450,6 +450,6 @@ QDebug operator<<(QDebug debug, const QStorageInfo &s)
     debug << ')';
     return debug;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

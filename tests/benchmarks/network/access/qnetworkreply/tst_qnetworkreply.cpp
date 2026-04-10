@@ -1,37 +1,37 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 // This file contains benchmarks for QNetworkReply functions.
 
 #include <QDebug>
-#include <qtest.h>
-#include <QTest>
-#include <QTestEventLoop>
+#include <bobuiest.h>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QSemaphore>
-#include <QTimer>
-#include <QtCore/qrandom.h>
-#include <QtCore/QElapsedTimer>
-#include <QtNetwork/qnetworkreply.h>
-#include <QtNetwork/qnetworkrequest.h>
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qtcpsocket.h>
-#include <QtNetwork/qtcpserver.h>
+#include <BOBUIimer>
+#include <BobUICore/qrandom.h>
+#include <BobUICore/QElapsedTimer>
+#include <BobUINetwork/qnetworkreply.h>
+#include <BobUINetwork/qnetworkrequest.h>
+#include <BobUINetwork/qnetworkaccessmanager.h>
+#include <BobUINetwork/bobuicpsocket.h>
+#include <BobUINetwork/bobuicpserver.h>
 #include "../../../../auto/network-settings.h"
 
-#ifdef QT_BUILD_INTERNAL
-#include <QtNetwork/private/qhostinfo_p.h>
+#ifdef BOBUI_BUILD_INTERNAL
+#include <BobUINetwork/private/qhostinfo_p.h>
 #endif
 
 using namespace std::chrono_literals;
 
 Q_DECLARE_METATYPE(QSharedPointer<char>)
 
-class TimedSender: public QThread
+class TimedSender: public BOBUIhread
 {
     Q_OBJECT
     qint64 totalBytes;
     QSemaphore ready;
     QByteArray dataToSend;
-    QTcpSocket *client;
+    BOBUIcpSocket *client;
     int timeout;
     int port;
 public:
@@ -57,7 +57,7 @@ private slots:
 protected:
     void run() override
     {
-        QTcpServer server;
+        BOBUIcpServer server;
         server.listen();
         port = server.serverPort();
         ready.release();
@@ -66,10 +66,10 @@ protected:
         client = server.nextPendingConnection();
 
         writeMore();
-        connect(client, SIGNAL(bytesWritten(qint64)), SLOT(writeMore()), Qt::DirectConnection);
+        connect(client, SIGNAL(bytesWritten(qint64)), SLOT(writeMore()), BobUI::DirectConnection);
 
         QEventLoop eventLoop;
-        QTimer::singleShot(timeout, &eventLoop, SLOT(quit()));
+        BOBUIimer::singleShot(timeout, &eventLoop, SLOT(quit()));
 
         QElapsedTimer timer;
         timer.start();
@@ -120,7 +120,7 @@ public slots:
         buffer.resize(device->bytesAvailable());
         qint64 bytesRead = device->read(buffer.data(), device->bytesAvailable());
         if (bytesRead == -1) {
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
             return;
         }
         buffer.truncate(bytesRead);
@@ -131,12 +131,12 @@ public slots:
     }
 };
 
-class ThreadedDataReader: public QThread
+class ThreadedDataReader: public BOBUIhread
 {
     Q_OBJECT
     // used to make the constructor only return after the tcp server started listening
     QSemaphore ready;
-    QTcpSocket *client;
+    BOBUIcpSocket *client;
     int port;
 public:
     qint64 transferRate;
@@ -152,7 +152,7 @@ public:
 protected:
     void run() override
     {
-        QTcpServer server;
+        BOBUIcpServer server;
         server.listen();
         port = server.serverPort();
         ready.release();
@@ -202,12 +202,12 @@ protected:
     qint64 writeData(const char *, qint64) override { return -1; }
 };
 
-class ThreadedDataReaderHttpServer: public QThread
+class ThreadedDataReaderHttpServer: public BOBUIhread
 {
     Q_OBJECT
     // used to make the constructor only return after the tcp server started listening
     QSemaphore ready;
-    QTcpSocket *client;
+    BOBUIcpSocket *client;
     int port;
 public:
     qint64 transferRate;
@@ -223,7 +223,7 @@ public:
 protected:
     void run() override
     {
-        QTcpServer server;
+        BOBUIcpServer server;
         server.listen();
         port = server.serverPort();
         ready.release();
@@ -319,8 +319,8 @@ class HttpDownloadPerformanceServer : QObject {
     Q_OBJECT;
     qint64 dataSize;
     qint64 dataSent;
-    QTcpServer server;
-    QTcpSocket *client;
+    BOBUIcpServer server;
+    BOBUIcpSocket *client;
     bool serverSendsContentLength;
     bool chunkedEncoding;
 
@@ -413,17 +413,17 @@ class tst_qnetworkreply : public QObject
 
 public:
     using QObject::connect;
-    bool connect(const QNetworkReplyPtr &sender, const char *signal, const QObject *receiver, const char *slot, Qt::ConnectionType ct = Qt::AutoConnection)
+    bool connect(const QNetworkReplyPtr &sender, const char *signal, const QObject *receiver, const char *slot, BobUI::ConnectionType ct = BobUI::AutoConnection)
     { return connect(sender.data(), signal, receiver, slot, ct); }
 private slots:
     void initTestCase();
     void httpLatency();
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
     void echoPerformance_data();
     void echoPerformance();
     void preConnectEncrypted();
-#endif // !QT_NO_SSL
+#endif // !BOBUI_NO_SSL
     void preConnectEncrypted_data();
 
     void downloadPerformance();
@@ -447,7 +447,7 @@ private:
 
 void tst_qnetworkreply::initTestCase()
 {
-    if (!QtNetworkSettings::verifyTestNetworkSettings())
+    if (!BobUINetworkSettings::verifyTestNetworkSettings())
         QSKIP("No network test server available");
 }
 
@@ -455,11 +455,11 @@ void tst_qnetworkreply::httpLatency()
 {
     QNetworkAccessManager manager;
     QBENCHMARK{
-        QNetworkRequest request(QUrl("http://" + QtNetworkSettings::serverName() + "/qtest/"));
+        QNetworkRequest request(QUrl("http://" + BobUINetworkSettings::serverName() + "/bobuiest/"));
         QNetworkReply* reply = manager.get(request);
-        connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
-        QTestEventLoop::instance().enterLoop(5s);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
+        BOBUIestEventLoop::instance().enterLoop(5s);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
         delete reply;
     }
 }
@@ -471,25 +471,25 @@ QPair<QNetworkReply *, qint64> tst_qnetworkreply::runGetRequest(
     timer.start();
     QNetworkReply *reply = manager->get(request);
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
-    QTestEventLoop::instance().enterLoop(20s);
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
+    BOBUIestEventLoop::instance().enterLoop(20s);
     qint64 elapsed = timer.elapsed();
     return qMakePair(reply, elapsed);
 }
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
 void tst_qnetworkreply::echoPerformance_data()
 {
-     QTest::addColumn<bool>("ssl");
-     QTest::newRow("no_ssl") << false;
-     QTest::newRow("ssl") << true;
+     BOBUIest::addColumn<bool>("ssl");
+     BOBUIest::newRow("no_ssl") << false;
+     BOBUIest::newRow("ssl") << true;
 }
 
 void tst_qnetworkreply::echoPerformance()
 {
     QFETCH(bool, ssl);
     QNetworkAccessManager manager;
-    QNetworkRequest request(QUrl((ssl ? "https://" : "http://") + QtNetworkSettings::serverName() + "/qtest/cgi-bin/echo.cgi"));
+    QNetworkRequest request(QUrl((ssl ? "https://" : "http://") + BobUINetworkSettings::serverName() + "/bobuiest/cgi-bin/echo.cgi"));
 
     QByteArray data;
     data.resize(1024*1024*10); // 10 MB
@@ -502,9 +502,9 @@ void tst_qnetworkreply::echoPerformance()
     QBENCHMARK{
         QNetworkReply* reply = manager.post(request, data);
         connect(reply, SIGNAL(sslErrors(QList<QSslError>)), reply, SLOT(ignoreSslErrors()));
-        connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
-        QTestEventLoop::instance().enterLoop(5s);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
+        BOBUIestEventLoop::instance().enterLoop(5s);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
         QVERIFY(reply->error() == QNetworkReply::NoError);
         delete reply;
     }
@@ -520,8 +520,8 @@ void tst_qnetworkreply::preConnectEncrypted()
 
     // make sure we have a full request including
     // DNS lookup, TCP and SSL handshakes
-#ifdef QT_BUILD_INTERNAL
-    qt_qhostinfo_clear_cache();
+#ifdef BOBUI_BUILD_INTERNAL
+    bobui_qhostinfo_clear_cache();
 #else
     qWarning("no internal build, could not clear DNS cache. Results may not be representative.");
 #endif
@@ -529,13 +529,13 @@ void tst_qnetworkreply::preConnectEncrypted()
     // first, benchmark a normal request
     QPair<QNetworkReply *, qint64> normalResult = runGetRequest(&manager, request);
     QNetworkReply *normalReply = normalResult.first;
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(normalReply->error() == QNetworkReply::NoError);
     qint64 normalElapsed = normalResult.second;
 
     // clear all caches again
-#ifdef QT_BUILD_INTERNAL
-    qt_qhostinfo_clear_cache();
+#ifdef BOBUI_BUILD_INTERNAL
+    bobui_qhostinfo_clear_cache();
 #else
     qWarning("no internal build, could not clear DNS cache. Results may not be representative.");
 #endif
@@ -543,12 +543,12 @@ void tst_qnetworkreply::preConnectEncrypted()
 
     // now try to make the connection beforehand
     manager.connectToHostEncrypted(hostName);
-    QTestEventLoop::instance().enterLoop(sleepTime);
+    BOBUIestEventLoop::instance().enterLoop(sleepTime);
 
     // now make another request and hopefully use the existing connection
     QPair<QNetworkReply *, qint64> preConnectResult = runGetRequest(&manager, request);
     QNetworkReply *preConnectReply = normalResult.first;
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(preConnectReply->error() == QNetworkReply::NoError);
     qint64 preConnectElapsed = preConnectResult.second;
     qDebug() << request.url().toString() << "full request:" << normalElapsed
@@ -556,18 +556,18 @@ void tst_qnetworkreply::preConnectEncrypted()
              << (normalElapsed - preConnectElapsed) << "ms";
 }
 
-#endif // !QT_NO_SSL
+#endif // !BOBUI_NO_SSL
 
 void tst_qnetworkreply::preConnectEncrypted_data()
 {
-#ifndef QT_NO_OPENSSL
-    QTest::addColumn<std::chrono::milliseconds>("sleepTime");
+#ifndef BOBUI_NO_OPENSSL
+    BOBUIest::addColumn<std::chrono::milliseconds>("sleepTime");
     // start a new normal request after preconnecting is done
-    QTest::newRow("HTTPS-2secs") << 2000ms;
+    BOBUIest::newRow("HTTPS-2secs") << 2000ms;
 
     // start a new normal request while preconnecting is in-flight
-    QTest::newRow("HTTPS-100ms") << 100ms;
-#endif // QT_NO_OPENSSL
+    BOBUIest::newRow("HTTPS-100ms") << 100ms;
+#endif // BOBUI_NO_OPENSSL
 }
 
 void tst_qnetworkreply::downloadPerformance()
@@ -580,9 +580,9 @@ void tst_qnetworkreply::downloadPerformance()
     DataReader reader(reply, false);
 
     QElapsedTimer loopTime;
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
     loopTime.start();
-    QTestEventLoop::instance().enterLoop(40);
+    BOBUIestEventLoop::instance().enterLoop(40);
     int elapsedTime = loopTime.elapsed();
     sender.wait();
 
@@ -600,12 +600,12 @@ void tst_qnetworkreply::uploadPerformance()
       QNetworkRequest request(QUrl(QStringLiteral("debugpipe://127.0.0.1:") + QString::number(reader.serverPort()) + QStringLiteral("/?bare=1")));
       QNetworkReplyPtr reply(manager.put(request, &generator));
       generator.start();
-      connect(&reader, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-      QTimer::singleShot(5000, &generator, SLOT(stop()));
+      connect(&reader, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+      BOBUIimer::singleShot(5000, &generator, SLOT(stop()));
 
-      QTestEventLoop::instance().enterLoop(30);
+      BOBUIestEventLoop::instance().enterLoop(30);
       QCOMPARE(reply->error(), QNetworkReply::NoError);
-      QVERIFY(!QTestEventLoop::instance().timeout());
+      QVERIFY(!BOBUIestEventLoop::instance().timeout());
 }
 
 constexpr qint64 MiB = 1024 * 1024;
@@ -622,18 +622,18 @@ void tst_qnetworkreply::httpUploadPerformance()
 
       QNetworkReplyPtr reply(manager.put(request, &generator));
 
-      connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+      connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
 
       QElapsedTimer time;
       generator.start();
       time.start();
-      QTestEventLoop::instance().enterLoop(40);
+      BOBUIestEventLoop::instance().enterLoop(40);
       qint64 elapsed = time.elapsed();
       reader.exit();
       reader.wait();
       QVERIFY(reply->isFinished());
       QCOMPARE(reply->error(), QNetworkReply::NoError);
-      QVERIFY(!QTestEventLoop::instance().timeout());
+      QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
       qDebug() << "tst_QNetworkReply::httpUploadPerformance" << elapsed << "msec, "
               << ((UploadSize/1024.0)/(elapsed/1000.0)) << " kB/sec";
@@ -648,14 +648,14 @@ void tst_qnetworkreply::performanceControlRate()
         " (bypassing QNetworkAccess)";
 
     TimedSender sender(5000);
-    QTcpSocket sink;
+    BOBUIcpSocket sink;
     sink.connectToHost("127.0.0.1", sender.serverPort());
     DataReader reader(&sink, false);
 
     QElapsedTimer loopTime;
-    connect(&sink, SIGNAL(disconnected()), &QTestEventLoop::instance(), SLOT(exitLoop()));
+    connect(&sink, SIGNAL(disconnected()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
     loopTime.start();
-    QTestEventLoop::instance().enterLoop(40);
+    BOBUIestEventLoop::instance().enterLoop(40);
     int elapsedTime = loopTime.elapsed();
     sender.wait();
 
@@ -666,12 +666,12 @@ void tst_qnetworkreply::performanceControlRate()
 
 void tst_qnetworkreply::httpDownloadPerformance_data()
 {
-    QTest::addColumn<bool>("serverSendsContentLength");
-    QTest::addColumn<bool>("chunkedEncoding");
+    BOBUIest::addColumn<bool>("serverSendsContentLength");
+    BOBUIest::addColumn<bool>("chunkedEncoding");
 
-    QTest::newRow("Server sends no Content-Length") << false << false;
-    QTest::newRow("Server sends Content-Length")     << true << false;
-    QTest::newRow("Server uses chunked encoding")     << false << true;
+    BOBUIest::newRow("Server sends no Content-Length") << false << false;
+    BOBUIest::newRow("Server sends Content-Length")     << true << false;
+    BOBUIest::newRow("Server uses chunked encoding")     << false << true;
 
 }
 
@@ -687,14 +687,14 @@ void tst_qnetworkreply::httpDownloadPerformance()
     QNetworkRequest request(QUrl("http://127.0.0.1:" + QString::number(server.serverPort()) + "/?bare=1"));
     QNetworkReplyPtr reply(manager.get(request));
 
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()), Qt::QueuedConnection);
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()), BobUI::QueuedConnection);
     HttpDownloadPerformanceClient client(reply.data());
 
     QElapsedTimer time;
     time.start();
-    QTestEventLoop::instance().enterLoop(40);
+    BOBUIestEventLoop::instance().enterLoop(40);
     QCOMPARE(reply->error(), QNetworkReply::NoError);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     qint64 elapsed = time.elapsed();
     qDebug() << "tst_QNetworkReply::httpDownloadPerformance" << elapsed << "msec, "
@@ -741,17 +741,17 @@ public:
             free(replyData);
         }
 
-        QMetaObject::invokeMethod(&QTestEventLoop::instance(), "exitLoop", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(&BOBUIestEventLoop::instance(), "exitLoop", BobUI::QueuedConnection);
     }
 };
 
 void tst_qnetworkreply::httpDownloadPerformanceDownloadBuffer_data()
 {
-    QTest::addColumn<HttpDownloadPerformanceDownloadBufferTestType>("testType");
+    BOBUIest::addColumn<HttpDownloadPerformanceDownloadBufferTestType>("testType");
 
-    QTest::newRow("use-download-buffer") << JustDownloadBuffer;
-    QTest::newRow("use-download-buffer-but-use-read") << DownloadBufferButUseRead;
-    QTest::newRow("do-not-use-download-buffer") << NoDownloadBuffer;
+    BOBUIest::newRow("use-download-buffer") << JustDownloadBuffer;
+    BOBUIest::newRow("use-download-buffer-but-use-read") << DownloadBufferButUseRead;
+    BOBUIest::newRow("do-not-use-download-buffer") << NoDownloadBuffer;
 }
 
 // Please note that the whole "zero copy" download buffer API is private right now. Do not use it.
@@ -774,10 +774,10 @@ void tst_qnetworkreply::httpDownloadPerformanceDownloadBuffer()
     HttpDownloadPerformanceClientDownloadBuffer client(reply.data(), testType, UploadSize);
 
     QBENCHMARK_ONCE {
-        QTestEventLoop::instance().enterLoop(40);
+        BOBUIestEventLoop::instance().enterLoop(40);
         QCOMPARE(reply->error(), QNetworkReply::NoError);
         QVERIFY(reply->isFinished());
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
     }
 }
 
@@ -800,7 +800,7 @@ public slots:
     void doNextRequest() {
         // all requests done
         if (requestList.isEmpty()) {
-            QTestEventLoop::instance().exitLoop();
+            BOBUIestEventLoop::instance().exitLoop();
             return;
         }
 
@@ -828,7 +828,7 @@ void tst_qnetworkreply::httpsRequestChain()
 {
     int count = 10;
 
-    QNetworkRequest request(QUrl("https://" + QtNetworkSettings::serverName() + "/fluke.gif"));
+    QNetworkRequest request(QUrl("https://" + BobUINetworkSettings::serverName() + "/fluke.gif"));
     // Disable keep-alive so we have the full re-connecting of TCP.
     request.setRawHeader("Connection", "close");
 
@@ -837,14 +837,14 @@ void tst_qnetworkreply::httpsRequestChain()
         helper.requestList.append(request);
 
     // Warm up DNS cache and then immediately start HTTP
-    QHostInfo::lookupHost(QtNetworkSettings::serverName(), &helper, SLOT(doNextRequest()));
+    QHostInfo::lookupHost(BobUINetworkSettings::serverName(), &helper, SLOT(doNextRequest()));
 
     // we can use QBENCHMARK_ONCE when we find out how to make it really run once.
     // there is still a warmup-run :(
 
     //QBENCHMARK_ONCE {
-        QTestEventLoop::instance().enterLoop(40);
-        QVERIFY(!QTestEventLoop::instance().timeout());
+        BOBUIestEventLoop::instance().enterLoop(40);
+        QVERIFY(!BOBUIestEventLoop::instance().timeout());
     //}
 
     qint64 elapsed = helper.globalTime.elapsed();
@@ -862,9 +862,9 @@ void tst_qnetworkreply::runHttpsUploadRequest(const QByteArray &data, const QNet
 {
     QNetworkReply* reply = manager.post(request, data);
     reply->ignoreSslErrors();
-    connect(reply, SIGNAL(finished()), &QTestEventLoop::instance(), SLOT(exitLoop()));
-    QTestEventLoop::instance().enterLoop(15);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    connect(reply, SIGNAL(finished()), &BOBUIestEventLoop::instance(), SLOT(exitLoop()));
+    BOBUIestEventLoop::instance().enterLoop(15);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QCOMPARE(reply->error(), QNetworkReply::NoError);
     reply->deleteLater();
 }
@@ -872,7 +872,7 @@ void tst_qnetworkreply::runHttpsUploadRequest(const QByteArray &data, const QNet
 void tst_qnetworkreply::httpsUpload()
 {
     QByteArray data = QByteArray(2*1024*1024+1, '\177');
-    QNetworkRequest request(QUrl("https://" + QtNetworkSettings::serverName() + "/qtest/cgi-bin/md5sum.cgi"));
+    QNetworkRequest request(QUrl("https://" + BobUINetworkSettings::serverName() + "/bobuiest/cgi-bin/md5sum.cgi"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
 //    for (int a = 0; a < 10; ++a)
 //        runHttpsUploadRequest(data, request); // to warmup all TCP connections
@@ -895,8 +895,8 @@ void tst_qnetworkreply::preConnect()
 
     // make sure we have a full request including
     // DNS lookup and TCP handshake
-#ifdef QT_BUILD_INTERNAL
-    qt_qhostinfo_clear_cache();
+#ifdef BOBUI_BUILD_INTERNAL
+    bobui_qhostinfo_clear_cache();
 #else
     qWarning("no internal build, could not clear DNS cache. Results may not be representative.");
 #endif
@@ -904,13 +904,13 @@ void tst_qnetworkreply::preConnect()
     // first, benchmark a normal request
     QPair<QNetworkReply *, qint64> normalResult = runGetRequest(&manager, request);
     QNetworkReply *normalReply = normalResult.first;
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(normalReply->error() == QNetworkReply::NoError);
     qint64 normalElapsed = normalResult.second;
 
     // clear all caches again
-#ifdef QT_BUILD_INTERNAL
-    qt_qhostinfo_clear_cache();
+#ifdef BOBUI_BUILD_INTERNAL
+    bobui_qhostinfo_clear_cache();
 #else
     qWarning("no internal build, could not clear DNS cache. Results may not be representative.");
 #endif
@@ -919,12 +919,12 @@ void tst_qnetworkreply::preConnect()
     // now try to make the connection beforehand
     QFETCH(std::chrono::milliseconds, sleepTime);
     manager.connectToHost(hostName);
-    QTestEventLoop::instance().enterLoop(sleepTime);
+    BOBUIestEventLoop::instance().enterLoop(sleepTime);
 
     // now make another request and hopefully use the existing connection
     QPair<QNetworkReply *, qint64> preConnectResult = runGetRequest(&manager, request);
     QNetworkReply *preConnectReply = normalResult.first;
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
     QVERIFY(preConnectReply->error() == QNetworkReply::NoError);
     qint64 preConnectElapsed = preConnectResult.second;
     qDebug() << request.url().toString() << "full request:" << normalElapsed
@@ -932,6 +932,6 @@ void tst_qnetworkreply::preConnect()
              << (normalElapsed - preConnectElapsed) << "ms";
 }
 
-QTEST_MAIN(tst_qnetworkreply)
+BOBUIEST_MAIN(tst_qnetworkreply)
 
 #include "tst_qnetworkreply.moc"

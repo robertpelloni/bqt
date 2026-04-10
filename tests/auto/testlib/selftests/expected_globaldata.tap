@@ -62,8 +62,8 @@ ok 5 - testGlobal(global=true:local=true)
 ok 6 - skip(global=false) # SKIP skipping
 ok 7 - skipLocal(global=false:local=false) # SKIP skipping
   ---
-  at: tst_globaldata::skipLocal() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipLocal() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:
@@ -73,8 +73,8 @@ ok 7 - skipLocal(global=false:local=false) # SKIP skipping
 # debug: cleanup skipLocal local=false
 ok 8 - skipLocal(global=false:local=true) # SKIP skipping
   ---
-  at: tst_globaldata::skipLocal() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipLocal() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:
@@ -84,8 +84,8 @@ ok 8 - skipLocal(global=false:local=true) # SKIP skipping
 # debug: cleanup skipLocal local=true
 ok 9 - skipLocal(global=true:local=false) # SKIP skipping
   ---
-  at: tst_globaldata::skipLocal() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipLocal() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:
@@ -95,8 +95,8 @@ ok 9 - skipLocal(global=true:local=false) # SKIP skipping
 # debug: cleanup skipLocal local=false
 ok 10 - skipLocal(global=true:local=true) # SKIP skipping
   ---
-  at: tst_globaldata::skipLocal() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipLocal() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:
@@ -117,8 +117,8 @@ ok 11 - skipSingle(global=false:local=false)
   ...
 ok 12 - skipSingle(global=false:local=true) # SKIP Skipping
   ---
-  at: tst_globaldata::skipSingle() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipSingle() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:
@@ -128,8 +128,8 @@ ok 12 - skipSingle(global=false:local=true) # SKIP Skipping
 # debug: cleanup skipSingle local=true
 ok 13 - skipSingle(global=true:local=false) # SKIP Skipping
   ---
-  at: tst_globaldata::skipSingle() (qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
-  file: qtbase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
+  at: tst_globaldata::skipSingle() (bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp:0)
+  file: bobuibase/tests/auto/testlib/selftests/globaldata/tst_globaldata.cpp
   line: 0
   extensions:
     messages:

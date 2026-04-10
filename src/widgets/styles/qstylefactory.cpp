@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qstylefactory.h"
 #include "qstyleplugin.h"
@@ -9,23 +9,23 @@
 
 #include "qapplication.h"
 #include "qwindowsstyle_p.h"
-#if QT_CONFIG(style_fusion)
+#if BOBUI_CONFIG(style_fusion)
 #include "qfusionstyle_p.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QStyleFactoryInterface_iid, "/styles"_L1, Qt::CaseInsensitive))
+    (QStyleFactoryInterface_iid, "/styles"_L1, BobUI::CaseInsensitive))
 
 /*!
     \class QStyleFactory
     \brief The QStyleFactory class creates QStyle objects.
 
     \ingroup appearance
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The QStyle class is an abstract base class that encapsulates the
     look and feel of a GUI. QStyleFactory creates a QStyle object
@@ -57,17 +57,17 @@ QStyle *QStyleFactory::create(const QString& key)
 {
     QStyle *ret = nullptr;
     QString style = key.toLower();
-#if QT_CONFIG(style_windows)
+#if BOBUI_CONFIG(style_windows)
     if (style == "windows"_L1)
         ret = new QWindowsStyle;
     else
 #endif
-#if QT_CONFIG(style_fusion)
+#if BOBUI_CONFIG(style_fusion)
     if (style == "fusion"_L1)
         ret = new QFusionStyle;
     else
 #endif
-#if defined(Q_OS_MACOS) && QT_DEPRECATED_SINCE(6, 0)
+#if defined(Q_OS_MACOS) && BOBUI_DEPRECATED_SINCE(6, 0)
     if (style == "macintosh"_L1) {
         qWarning() << "The style key 'macintosh' is deprecated. Please use 'macos' instead.";
         style = QStringLiteral("macos");
@@ -98,15 +98,15 @@ QStringList QStyleFactory::keys()
     const PluginKeyMap::const_iterator cend = keyMap.constEnd();
     for (PluginKeyMap::const_iterator it = keyMap.constBegin(); it != cend; ++it)
         list.append(it.value());
-#if QT_CONFIG(style_windows)
+#if BOBUI_CONFIG(style_windows)
     if (!list.contains("Windows"_L1))
         list << "Windows"_L1;
 #endif
-#if QT_CONFIG(style_fusion)
+#if BOBUI_CONFIG(style_fusion)
     if (!list.contains("Fusion"_L1))
         list << "Fusion"_L1;
 #endif
     return list;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

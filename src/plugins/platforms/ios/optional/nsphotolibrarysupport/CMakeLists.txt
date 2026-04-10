@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## QIosOptionalPlugin_NSPhotoLibrary Plugin:
 #####################################################################
 
-qt_internal_add_plugin(QIosOptionalPlugin_NSPhotoLibraryPlugin
+bobui_internal_add_plugin(QIosOptionalPlugin_NSPhotoLibraryPlugin
     OUTPUT_NAME qiosnsphotolibrarysupport
     STATIC # Force static, even in shared builds
     PLUGIN_TYPE platforms/darwin
@@ -20,9 +20,9 @@ qt_internal_add_plugin(QIosOptionalPlugin_NSPhotoLibraryPlugin
         ${FWAssetsLibrary}
         ${FWFoundation}
         ${FWUIKit}
-        Qt::Core
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 set_target_properties(QIosOptionalPlugin_NSPhotoLibraryPlugin

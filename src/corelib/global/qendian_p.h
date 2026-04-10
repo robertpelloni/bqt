@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QENDIAN_P_H
 #define QENDIAN_P_H
@@ -8,17 +8,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qendian.h>
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/qendian.h>
+#include <BobUICore/private/qglobal_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum class QSpecialIntegerBitfieldInitializer {};
 constexpr inline QSpecialIntegerBitfieldInitializer QSpecialIntegerBitfieldZero{};
@@ -206,6 +206,6 @@ template<int pos, int width, typename T = uint>
 using quint32_be_bitfield_member
         = QSpecialIntegerAccessor<QBigEndianStorageType<uint>, pos, width, T>;
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QENDIAN_P_H

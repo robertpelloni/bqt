@@ -1,4 +1,4 @@
-QT += widgets
+BOBUI += widgets
 
 SOURCES += \
     windowtransparency.cpp

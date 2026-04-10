@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qatomic.h"
 
 /*!
     \class QAtomicInt
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAtomicInt class provides platform-independent atomic operations on int.
     \since 4.4
 
@@ -19,7 +19,7 @@
 
 /*!
     \class QAtomicInteger
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAtomicInteger class provides platform-independent atomic operations on integers.
     \ingroup thread
     \since 5.3
@@ -153,7 +153,7 @@
     An operation that completes in constant time is said to be
     wait-free. Such operations are not implemented using locks or
     loops of any kind. For atomic operations that are always
-    supported, and that are wait-free, Qt defines the
+    supported, and that are wait-free, BobUI defines the
     Q_ATOMIC_INT\e{nn}_\e{OPERATION}_IS_WAIT_FREE in addition to the
     Q_ATOMIC_INT\e{nn}_\e{OPERATION}_IS_ALWAYS_NATIVE.
 
@@ -192,7 +192,7 @@
 
     \endlist
 
-    For compatibility with previous versions of Qt, macros with an empty \e{nn}
+    For compatibility with previous versions of BobUI, macros with an empty \e{nn}
     are equivalent to the 32-bit macros. For example,
     Q_ATOMIC_INT_REFERENCE_COUNTING_IS_WAIT_FREE is the same as
     Q_ATOMIC_INT32_REFERENCE_COUNTING_IS_WAIT_FREE.
@@ -1236,7 +1236,7 @@
 
 /*!
     \class QAtomicPointer
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QAtomicPointer class is a template class that provides platform-independent atomic operations on pointers.
     \since 4.4
 
@@ -1342,7 +1342,7 @@
     An operation that completes in constant time is said to be
     wait-free. Such operations are not implemented using locks or
     loops of any kind. For atomic operations that are always
-    supported, and that are wait-free, Qt defines the
+    supported, and that are wait-free, BobUI defines the
     Q_ATOMIC_POINTER_\e{OPERATION}_IS_WAIT_FREE in addition to the
     Q_ATOMIC_POINTER_\e{OPERATION}_IS_ALWAYS_NATIVE.
 
@@ -1767,12 +1767,12 @@
 #ifndef Q_ATOMIC_INT32_IS_SUPPORTED
 #  error "Q_ATOMIC_INT32_IS_SUPPORTED must be defined"
 #endif
-#if !defined(Q_ATOMIC_INT64_IS_SUPPORTED) && QT_POINTER_SIZE == 8
+#if !defined(Q_ATOMIC_INT64_IS_SUPPORTED) && BOBUI_POINTER_SIZE == 8
 // 64-bit platform
 #  error "Q_ATOMIC_INT64_IS_SUPPORTED must be defined on a 64-bit platform"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // The following specializations must always be defined
 static_assert(sizeof(QAtomicInteger<unsigned>));
@@ -1797,4 +1797,4 @@ static_assert(sizeof(QAtomicInteger<qint64>));
 static_assert(sizeof(QAtomicInteger<quint64>));
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

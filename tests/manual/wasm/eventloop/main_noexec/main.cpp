@@ -1,10 +1,10 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QtGui>
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BobUIGui>
 
 // This example demonstrates how to create QGuiApplication
 // without calling exec(), and then exiting main() without
-// shutting down the Qt event loop.
+// shutting down the BobUI event loop.
 
 class ClickWindow: public QRasterWindow
 {
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     ClickWindow *window = new ClickWindow();
     window->show();
 
-    // We can exit main; the Qt event loop and the emscripten runtime
+    // We can exit main; the BobUI event loop and the emscripten runtime
     // will keep running, as long as Emscriptens EXIT_RUNTIME option
     // has not been enabled.
 

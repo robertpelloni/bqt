@@ -1,8 +1,8 @@
-qtPrepareTool(QMAKE_QGLTF, qgltf)
+bobuiPrepareTool(QMAKE_QGLTF, qgltf)
 
 isEmpty(QGLTF_DIR): QGLTF_DIR = .
 
-qgltf.input = QT3D_MODELS
+qgltf.input = BOBUI3D_MODELS
 qgltf.output = $$QGLTF_DIR/${QMAKE_FILE_BASE}.qrc
 qgltf.variable_out += RESOURCES
 qgltf.depends += $$QMAKE_QGLTF_EXE

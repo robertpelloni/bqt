@@ -1,21 +1,21 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef ANDROIDPLATFORMDESKTOPSERVICE_H
 #define ANDROIDPLATFORMDESKTOPSERVICE_H
 
 #include <qpa/qplatformservices.h>
 #include "androidjnimain.h"
-#include <QtCore/private/qjnihelpers_p.h>
-#include <QtCore/qobject.h>
+#include <BobUICore/private/qjnihelpers_p.h>
+#include <BobUICore/qobject.h>
 #include <QUrl>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAndroidPlatformServices : public QObject,
                                  public QPlatformServices
-#if QT_CONFIG(desktopservices)
-                                 , public QtAndroidPrivate::NewIntentListener
+#if BOBUI_CONFIG(desktopservices)
+                                 , public BobUIAndroidPrivate::NewIntentListener
 #endif
 {
 public:
@@ -23,7 +23,7 @@ public:
 
     QByteArray desktopEnvironment() const override;
 
-#if QT_CONFIG(desktopservices)
+#if BOBUI_CONFIG(desktopservices)
     bool openUrl(const QUrl &url) override;
     bool openDocument(const QUrl &url) override;
     bool handleNewIntent(JNIEnv *env, jobject intent) override;
@@ -44,6 +44,6 @@ private:
 #endif
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // ANDROIDPLATFORMDESKTOPSERVICE_H

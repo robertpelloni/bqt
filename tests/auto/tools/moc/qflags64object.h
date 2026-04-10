@@ -1,9 +1,9 @@
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QFLAGS64OBJECT_H
 #define QFLAGS64OBJECT_H
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
 class QEnum64Object : public QObject
 {

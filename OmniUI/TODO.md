@@ -13,6 +13,6 @@
 - [ ] **OmniHardware:** Add support for decoding mock UART / I2C streams instead of just GPIO.
 
 ## Refactoring Opportunities
-- [ ] Extract the common `QTimer` tick pattern from `OmniGenesis`, `OmniKernel`, `OmniPhysics`, etc. into a single `OmniClockTickBase` inherited class.
+- [ ] Extract the common `BOBUIimer` tick pattern from `OmniGenesis`, `OmniKernel`, `OmniPhysics`, etc. into a single `OmniClockTickBase` inherited class.
 - [ ] Standardize the QML UI components: The repeated "Header" / "ToolBar" code in every `main.qml` should be pulled out into an `OmniGlobalHeader.qml` reusable component.
 - [ ] Extract the recurring `QVariantList` log patterns (e.g., in `OmniAbyss`, `OmniCompiler`, `OmniWebSocket`) into a generic `OmniLogBuffer` utility class in C++.

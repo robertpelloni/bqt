@@ -1,9 +1,9 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import BobUIQuick
+import BobUIQuick.Controls
+import BobUIQuick.Layouts
 
 Rectangle {
     anchors.fill: parent

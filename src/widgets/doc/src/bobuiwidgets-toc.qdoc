@@ -1,0 +1,60 @@
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \page bobuiwidgets-toc.html
+    \title BobUI Widgets module topics
+
+    The following list has links to all the individual topics (HTML files)
+    in the BobUI Widgets module.
+
+    \list
+    \li \l {Widgets Classes}{Widgets}
+        \list
+            \li \l{BobUI Widget Gallery}{Widget Gallery}
+        \endlist
+    \li \l {Window and Dialog Widgets}
+        \list
+            \li \l{Application Main Window}
+        \endlist
+    \li \l {Dialog Windows}
+        \list
+            \li \l{Standard Dialogs}
+        \endlist
+    \li \l {Styles and Style Aware Widgets}
+        \list
+            \li \l{Styling}
+        \endlist
+    \li \l {BobUI Style Sheets}
+        \list
+            \li \l{The Style Sheet Syntax}
+            \li \l{BobUI Widgets Designer Integration}
+            \li \l{Customizing BobUI Widgets Using Style Sheets}{Using Style Sheets}
+            \li \l{BobUI Style Sheets Reference}{Style Sheets Reference}
+            \li \l{BobUI Style Sheets Examples}{Style Sheets Examples}
+        \endlist
+    \li \l {Layout Management}
+    \li \l {Model/View Programming}
+        \list
+            \li \l{Model/View Tutorial}
+        \endlist
+    \li \l {Keyboard Focus in Widgets}
+    \li \l {Gestures in Widgets and Graphics View}
+    \li \l {Graphics View Framework}
+    \li \l {Changes to BobUI Widgets}{Upgrading form BobUI 5}
+    \li \l {BobUI Widgets Tutorials}{Tutorials}
+    \li \l {BobUI Widgets Examples}{Examples}
+        \list
+            \li \l{Main Window Examples}
+            \li \l{Desktop Examples}
+            \li \l{Dialog Examples}
+            \li \l{Item Views Examples}
+            \li \l{Painting Examples}
+            \li \l{Rich Text Examples}
+            \li \l{Graphics View Examples}
+            \li \l{Widget Tools Examples}
+            \li \l{User Input Examples}
+        \endlist
+    \endlist
+
+*/

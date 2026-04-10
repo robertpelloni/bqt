@@ -1,17 +1,17 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qjnienvironment.h"
 #include "qjnihelpers_p.h"
 
-#include <QtCore/QThread>
-#include <QtCore/QThreadStorage>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/BOBUIhreadStorage>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QJniEnvironment
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.1
     \brief The QJniEnvironment class provides access to the JNI Environment (JNIEnv).
 
@@ -40,11 +40,11 @@ class QJniEnvironmentPrivateTLS
 public:
     inline ~QJniEnvironmentPrivateTLS()
     {
-        QtAndroidPrivate::javaVM()->DetachCurrentThread();
+        BobUIAndroidPrivate::javaVM()->DetachCurrentThread();
     }
 };
 
-Q_GLOBAL_STATIC(QThreadStorage<QJniEnvironmentPrivateTLS *>, jniEnvTLS)
+Q_GLOBAL_STATIC(BOBUIhreadStorage<QJniEnvironmentPrivateTLS *>, jniEnvTLS)
 
 
 /*!
@@ -65,13 +65,13 @@ JNIEnv *QJniEnvironment::getJniEnv()
 {
     JNIEnv *jniEnv = nullptr;
 
-    JavaVM *vm = QtAndroidPrivate::javaVM();
+    JavaVM *vm = BobUIAndroidPrivate::javaVM();
     const jint ret = vm->GetEnv((void**)&jniEnv, JNI_VERSION_1_6);
 
     if (ret == JNI_EDETACHED) { // We need to (re-)attach
-        const QByteArray threadName = QThread::currentThread()->objectName().toUtf8();
+        const QByteArray threadName = BOBUIhread::currentThread()->objectName().toUtf8();
         JavaVMAttachArgs args = { JNI_VERSION_1_6,
-                                  threadName.isEmpty() ? "QtThread" : threadName.constData(),
+                                  threadName.isEmpty() ? "BobUIThread" : threadName.constData(),
                                   nullptr
                                 };
         if (vm->AttachCurrentThread(&jniEnv, &args) == JNI_OK) {
@@ -128,7 +128,7 @@ JNIEnv *QJniEnvironment::jniEnv() const
 }
 
 /*!
-    Searches for \a className using all available class loaders. Qt on Android
+    Searches for \a className using all available class loaders. BobUI on Android
     uses a custom class loader to load all the .jar files and it must be used
     to find any classes that are created by that class loader because these
     classes are not visible when using the default class loader.
@@ -145,7 +145,7 @@ JNIEnv *QJniEnvironment::jniEnv() const
 
     \code
     QJniEnvironment env;
-    jclass javaClass = env.findClass("org/qtproject/example/android/CustomClass");
+    jclass javaClass = env.findClass("org/bobuiproject/example/android/CustomClass");
     QJniObject javaMessage = QJniObject::fromString("findClass example");
     QJniObject::callStaticMethod<void>(javaClass, "printFromJava",
                                        "(Ljava/lang/String;)V", javaMessage.object<jstring>());
@@ -156,7 +156,7 @@ JNIEnv *QJniEnvironment::jniEnv() const
 */
 jclass QJniEnvironment::findClass(const char *className)
 {
-    return QtAndroidPrivate::findClass(className, d->jniEnv);
+    return BobUIAndroidPrivate::findClass(className, d->jniEnv);
 }
 
 /*!
@@ -202,7 +202,7 @@ jmethodID QJniEnvironment::findMethod(jclass clazz, const char *methodName, cons
 
     \code
     QJniEnvironment env;
-    jclass javaClass = env.findClass("org/qtproject/example/android/CustomClass");
+    jclass javaClass = env.findClass("org/bobuiproject/example/android/CustomClass");
     jmethodID methodId = env.findStaticMethod(javaClass,
                                               "staticJavaMethod",
                                               "(Ljava/lang/String;)V");
@@ -236,7 +236,7 @@ jmethodID QJniEnvironment::findStaticMethod(jclass clazz, const char *methodName
 
     \code
     QJniEnvironment env;
-    jclass javaClass = env.findClass("org/qtproject/example/android/CustomClass");
+    jclass javaClass = env.findClass("org/bobuiproject/example/android/CustomClass");
     jmethodID methodId = env.findStaticMethod<void, jstring>(javaClass, "staticJavaMethod");
     QJniObject javaMessage = QJniObject::fromString("findStaticMethod example");
     QJniObject::callStaticMethod<void>(javaClass,
@@ -316,7 +316,7 @@ jfieldID QJniEnvironment::findStaticField(jclass clazz, const char *fieldName, c
 */
 JavaVM *QJniEnvironment::javaVM()
 {
-    return QtAndroidPrivate::javaVM();
+    return BobUIAndroidPrivate::javaVM();
 }
 
 /*!
@@ -326,7 +326,7 @@ JavaVM *QJniEnvironment::javaVM()
     Registers the Java methods in \a methods with the Java class represented by
     \c Class, and returns whether the registration was successful.
 
-    The \c Class type has to be declared within the QtJniTypes namespace using
+    The \c Class type has to be declared within the BobUIJniTypes namespace using
     the Q_DECLARE_JNI_CLASS macro. Functions that are implemented as free C or
     C++ functions have to be declared using one of the
     Q_DECLARE_JNI_NATIVE_METHOD macros, and passed into the registration using
@@ -362,7 +362,7 @@ JavaVM *QJniEnvironment::javaVM()
                             {{"callNativeOne", "(I)V", reinterpret_cast<void *>(fromJavaOne)},
                             {"callNativeTwo", "(I)V", reinterpret_cast<void *>(fromJavaTwo)}};
     QJniEnvironment env;
-    env.registerNativeMethods("org/qtproject/android/TestJavaClass", methods, 2);
+    env.registerNativeMethods("org/bobuiproject/android/TestJavaClass", methods, 2);
     \endcode
 */
 bool QJniEnvironment::registerNativeMethods(const char *className, const JNINativeMethod methods[],
@@ -384,7 +384,7 @@ bool QJniEnvironment::registerNativeMethods(const char *className, const JNINati
     Returns \c true if the registration is successful, otherwise \c false.
 */
 
-#if QT_DEPRECATED_SINCE(6, 2)
+#if BOBUI_DEPRECATED_SINCE(6, 2)
 /*!
     \overload
     \deprecated [6.2] Use the overload with a const JNINativeMethod[] instead.
@@ -406,7 +406,7 @@ bool QJniEnvironment::registerNativeMethods(const char *className, const JNINati
     JNINativeMethod methods[] = {{"callNativeOne", "(I)V", reinterpret_cast<void *>(fromJavaOne)},
                                  {"callNativeTwo", "(I)V", reinterpret_cast<void *>(fromJavaTwo)}};
     QJniEnvironment env;
-    env.registerNativeMethods("org/qtproject/android/TestJavaClass", methods, 2);
+    env.registerNativeMethods("org/bobuiproject/android/TestJavaClass", methods, 2);
     \endcode
 */
 bool QJniEnvironment::registerNativeMethods(const char *className, JNINativeMethod methods[],
@@ -424,7 +424,7 @@ bool QJniEnvironment::registerNativeMethods(const char *className, JNINativeMeth
     JNINativeMethod methods[] {{"callNativeOne", "(I)V", reinterpret_cast<void *>(fromJavaOne)},
                                {"callNativeTwo", "(I)V", reinterpret_cast<void *>(fromJavaTwo)}};
     QJniEnvironment env;
-    jclass clazz = env.findClass("org/qtproject/android/TestJavaClass");
+    jclass clazz = env.findClass("org/bobuiproject/android/TestJavaClass");
     env.registerNativeMethods(clazz, methods, 2);
     \endcode
 */
@@ -567,4 +567,4 @@ QStringList QJniEnvironment::stackTrace(jthrowable exception)
     return exceptionMessage(getJniEnv(), exception).split(u'\n');
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

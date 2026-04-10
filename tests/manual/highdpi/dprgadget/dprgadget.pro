@@ -1,5 +1,5 @@
 
 CONFIG += console
 SOURCES += main.cpp
-QT += widgets gui_private
+BOBUI += widgets gui_private
 

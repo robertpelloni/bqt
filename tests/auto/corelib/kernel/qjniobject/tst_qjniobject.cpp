@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <jni.h>
 
 #include <QString>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
-#include <QTest>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
+#include <BOBUIest>
 
 #if defined(__cpp_lib_expected)
 # include <expected>
@@ -19,21 +19,21 @@ using BadAccessException = std::bad_expected_access<jthrowable>;
 // broken or not reliably available
 #define EXPECTED_HAS_MONADIC (__cpp_lib_expected >= 202211L)
 
-static_assert(QtJniTypes::Traits<QJniReturnValue<int>>::signature() ==
-              QtJniTypes::Traits<int>::signature());
-static_assert(QtJniTypes::Traits<QJniReturnValue<QString>>::signature() ==
-              QtJniTypes::Traits<QString>::signature());
+static_assert(BobUIJniTypes::Traits<QJniReturnValue<int>>::signature() ==
+              BobUIJniTypes::Traits<int>::signature());
+static_assert(BobUIJniTypes::Traits<QJniReturnValue<QString>>::signature() ==
+              BobUIJniTypes::Traits<QString>::signature());
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static constexpr const char testClassName[] = "org/qtproject/qt/android/testdatapackage/QtJniObjectTestClass";
-Q_DECLARE_JNI_CLASS(QtJniObjectTestClass, testClassName)
+static constexpr const char testClassName[] = "org/bobuiproject/bobui/android/testdatapackage/BobUIJniObjectTestClass";
+Q_DECLARE_JNI_CLASS(BobUIJniObjectTestClass, testClassName)
 Q_DECLARE_JNI_CLASS(NoSuchClass, "no/such/Class")
 
-using TestClass = QtJniTypes::QtJniObjectTestClass;
+using TestClass = BobUIJniTypes::BobUIJniObjectTestClass;
 
 static const jbyte A_BYTE_VALUE = 127;
 static const jshort A_SHORT_VALUE = 32767;
@@ -178,7 +178,7 @@ void tst_QJniObject::init()
     // Unless explicitly ignored to test error handling, warning messages
     // in this test about a failure to look up a field, method, or class
     // make the test fail.
-    QTest::failOnWarning(QRegularExpression("java.lang.NoSuch.*Error"));
+    BOBUIest::failOnWarning(QRegularExpression("java.lang.NoSuch.*Error"));
 }
 
 void tst_QJniObject::cleanupTestCase()
@@ -203,7 +203,7 @@ void tst_QJniObject::ctor()
     }
 
     {
-        // from Qt 6.7 on we can construct declared classes through the helper type
+        // from BobUI 6.7 on we can construct declared classes through the helper type
         QJniObject object = TestClass::construct();
         QVERIFY(object.isValid());
 
@@ -274,7 +274,7 @@ void tst_QJniObject::callMethodTest()
         ret = jString1.callMethod<jint>("compareToIgnoreCase", jString2.object<jstring>());
         QVERIFY(0 == ret);
 
-        // as of Qt 6.7, we can pass QString directly
+        // as of BobUI 6.7, we can pass QString directly
         ret = jString1.callMethod<jint>("compareToIgnoreCase", qString2);
         QVERIFY(0 == ret);
     }
@@ -286,7 +286,7 @@ void tst_QJniObject::callMethodTest()
         QCOMPARE(ret, jLong);
     }
 
-    // as of Qt 6.4, callMethod works with an object type as well!
+    // as of BobUI 6.4, callMethod works with an object type as well!
     {
         const QString qString = QLatin1String("Hello, Java");
         QJniObject jString = QJniObject::fromString(qString);
@@ -296,7 +296,7 @@ void tst_QJniObject::callMethodTest()
         QJniObject subString = jString.callMethod<jstring>("substring", 0, 4);
         QCOMPARE(subString.toString(), qString.mid(0, 4));
 
-        // and as of Qt 6.7, we can return and take QString directly
+        // and as of BobUI 6.7, we can return and take QString directly
         QCOMPARE(jString.callMethod<QString>("substring", 0, 4), qString.mid(0, 4));
 
         QCOMPARE(jString.callMethod<jstring>("substring", 0, 7)
@@ -307,8 +307,8 @@ void tst_QJniObject::callMethodTest()
 
 void tst_QJniObject::callMethodThrowsException()
 {
-    QtJniTypes::QtJniObjectTestClass instance;
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.Exception"));
+    BobUIJniTypes::BobUIJniObjectTestClass instance;
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.Exception"));
     auto res = instance.callMethod<jobject>("callMethodThrowsException");
     QVERIFY(!res.isValid());
     QVERIFY(!QJniEnvironment().checkAndClearExceptions());
@@ -398,8 +398,8 @@ void tst_QJniObject::className()
 
 void tst_QJniObject::callStaticMethodThrowsException()
 {
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.Exception"));
-    auto res = QtJniTypes::QtJniObjectTestClass::callStaticMethod<jobject>(
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.Exception"));
+    auto res = BobUIJniTypes::BobUIJniObjectTestClass::callStaticMethod<jobject>(
             "callStaticMethodThrowsException");
     QVERIFY(!res.isValid());
     QVERIFY(!QJniEnvironment().checkAndClearExceptions());
@@ -501,7 +501,7 @@ void tst_QJniObject::callStaticObjectMethodById()
 
     QCOMPARE(returnedString, QString::fromLatin1("test format"));
 
-    // from Qt 6.4 on we can use callStaticMethod as well
+    // from BobUI 6.4 on we can use callStaticMethod as well
     returnValue = QJniObject::callStaticMethod<jstring>(
             cls, id, formatString.object<jstring>(), jobjectArray(0));
     QVERIFY(returnValue.isValid());
@@ -1200,7 +1200,7 @@ void tst_QJniObject::setObjectField()
     QJniObject res = obj.getObjectField<jstring>("STRING_OBJECT_VAR");
     QCOMPARE(res.toString(), testValue.toString());
 
-    // as of Qt 6.7, we can set and get strings directly
+    // as of BobUI 6.7, we can set and get strings directly
     obj.setField("STRING_OBJECT_VAR", qString);
     QCOMPARE(obj.getField<QString>("STRING_OBJECT_VAR"), qString);
 }
@@ -1280,10 +1280,10 @@ void tst_QJniObject::setStaticObjectField()
     QJniObject res = QJniObject::getStaticObjectField<jstring>(testClassName, "S_STRING_OBJECT_VAR");
     QCOMPARE(res.toString(), testValue.toString());
 
-    // as of Qt 6.7, we can set and get strings directly
-    using namespace QtJniTypes;
-    QtJniObjectTestClass::setStaticField("S_STRING_OBJECT_VAR", qString);
-    QCOMPARE(QtJniObjectTestClass::getStaticField<QString>("S_STRING_OBJECT_VAR"), qString);
+    // as of BobUI 6.7, we can set and get strings directly
+    using namespace BobUIJniTypes;
+    BobUIJniObjectTestClass::setStaticField("S_STRING_OBJECT_VAR", qString);
+    QCOMPARE(BobUIJniObjectTestClass::getStaticField<QString>("S_STRING_OBJECT_VAR"), qString);
 }
 
 void tst_QJniObject::templateApiCheck()
@@ -1611,7 +1611,7 @@ void tst_QJniObject::templateApiCheck()
     // jstringArray ------------------------------------------------------------------------------
     {
         const QStringList strings{"First", "Second", "Third"};
-        const auto array = TestClass::callStaticMethod<QJniArray<QtJniTypes::String>>("staticStringArrayMethod");
+        const auto array = TestClass::callStaticMethod<QJniArray<BobUIJniTypes::String>>("staticStringArrayMethod");
         QVERIFY(array.isValid());
         QCOMPARE(array.size(), 3);
         QCOMPARE(array.at(0).toString(), strings.first());
@@ -1930,11 +1930,11 @@ void tst_QJniObject::defaultTemplateApiCheck()
     testClass.callMethod("voidMethodWithArgs", "(IZC)V", 1, true, 'c');
     testClass.callMethod("voidMethodWithArgs", 1, true, 'c');
 
-    // static QtJniType calls ---------------------------------------------------------------------
+    // static BobUIJniType calls ---------------------------------------------------------------------
     TestClass::callStaticMethod("staticVoidMethod");
     TestClass::callStaticMethod("staticVoidMethodWithArgs", 1, true, 'c');
 
-    // instance QtJniType calls -------------------------------------------------------------------
+    // instance BobUIJniType calls -------------------------------------------------------------------
     TestClass instance;
     instance.callMethod("voidMethod");
     instance.callMethod("voidMethodWithArgs", 1, true, 'c');
@@ -1943,9 +1943,9 @@ void tst_QJniObject::defaultTemplateApiCheck()
 void tst_QJniObject::isClassAvailable()
 {
     QVERIFY(QJniObject::isClassAvailable("java/lang/String"));
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("java.lang.ClassNotFoundException"));
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("java.lang.ClassNotFoundException"));
     QVERIFY(!QJniObject::isClassAvailable("class/not/Available"));
-    QVERIFY(QJniObject::isClassAvailable("org/qtproject/qt/android/QtActivityDelegate"));
+    QVERIFY(QJniObject::isClassAvailable("org/bobuiproject/bobui/android/BobUIActivityDelegate"));
 }
 
 void tst_QJniObject::fromLocalRef()
@@ -2168,22 +2168,22 @@ Q_DECLARE_JNI_NATIVE_METHOD(callbackWithMany)
 
 void tst_QJniObject::callback_data()
 {
-    QTest::addColumn<CallbackParameterType>("parameterType");
+    BOBUIest::addColumn<CallbackParameterType>("parameterType");
 
-    QTest::addRow("Object")     << CallbackParameterType::Object;
-    QTest::addRow("ObjectRef")  << CallbackParameterType::ObjectRef;
-    QTest::addRow("String")     << CallbackParameterType::String;
-    QTest::addRow("Byte")       << CallbackParameterType::Byte;
-    QTest::addRow("Boolean")    << CallbackParameterType::Boolean;
-    QTest::addRow("Int")        << CallbackParameterType::Int;
-    QTest::addRow("Double")     << CallbackParameterType::Double;
-    QTest::addRow("Float")      << CallbackParameterType::Float;
-    QTest::addRow("JniArray")   << CallbackParameterType::JniArray;
-    QTest::addRow("RawArray")   << CallbackParameterType::RawArray;
-    QTest::addRow("QList")      << CallbackParameterType::QList;
-    QTest::addRow("QStringList") << CallbackParameterType::QStringList;
-    QTest::addRow("Null")       << CallbackParameterType::Null;
-    QTest::addRow("More than 8") << CallbackParameterType::Many;
+    BOBUIest::addRow("Object")     << CallbackParameterType::Object;
+    BOBUIest::addRow("ObjectRef")  << CallbackParameterType::ObjectRef;
+    BOBUIest::addRow("String")     << CallbackParameterType::String;
+    BOBUIest::addRow("Byte")       << CallbackParameterType::Byte;
+    BOBUIest::addRow("Boolean")    << CallbackParameterType::Boolean;
+    BOBUIest::addRow("Int")        << CallbackParameterType::Int;
+    BOBUIest::addRow("Double")     << CallbackParameterType::Double;
+    BOBUIest::addRow("Float")      << CallbackParameterType::Float;
+    BOBUIest::addRow("JniArray")   << CallbackParameterType::JniArray;
+    BOBUIest::addRow("RawArray")   << CallbackParameterType::RawArray;
+    BOBUIest::addRow("QList")      << CallbackParameterType::QList;
+    BOBUIest::addRow("QStringList") << CallbackParameterType::QStringList;
+    BOBUIest::addRow("Null")       << CallbackParameterType::Null;
+    BOBUIest::addRow("More than 8") << CallbackParameterType::Many;
 }
 
 void tst_QJniObject::callback()
@@ -2335,7 +2335,7 @@ void tst_QJniObject::callStaticOverloadResolution()
     const QString value = u"Hello World"_s;
     QJniObject str = QJniObject::fromString(value);
     const auto result = QJniObject::callStaticMethod<jstring, jstring>(
-            QtJniTypes::Traits<TestClass>::className(),
+            BobUIJniTypes::Traits<TestClass>::className(),
             "staticEchoMethod", str.object<jstring>()).toString();
     QCOMPARE(result, value);
 }
@@ -2348,12 +2348,12 @@ void tst_QJniObject::implicitExceptionHandling_construct()
 
     // Constructor, including named constructor
     {
-        QTest::ignoreMessage(QtWarningMsg, invalidClass);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
         QJniObject testObject("NoSuchClass");
         QVERIFY(!env.checkAndClearExceptions());
     }
     {
-        QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+        BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
         QJniObject testObject = QJniObject::construct<TestClass>(u"NoSuchConstructor"_s);
         QVERIFY(!env.checkAndClearExceptions());
     }
@@ -2367,23 +2367,23 @@ void tst_QJniObject::implicitExceptionHandling_callMethod()
 
     QJniObject testObject = QJniObject::construct<TestClass>();
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     testObject.callMethod<void>("noSuchMethod1");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     testObject.callMethod<void>("noSuchMethod2", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, throwingMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, throwingMethod);
     testObject.callMethod<void>("throwingMethod");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     (void)testObject.callObjectMethod<jstring>("noSuchMethod");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     testObject.callObjectMethod("noSuchMethod", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 }
@@ -2398,30 +2398,30 @@ void tst_QJniObject::implicitExceptionHandling_callStaticMethod()
     const jclass classId = env.findClass<TestClass>();
     QVERIFY(classId != nullptr);
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     TestClass::callStaticMethod<void>("noSuchStaticMethod");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
-    QJniObject::callStaticMethod<void>(QtJniTypes::Traits<TestClass>::className(),
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
+    QJniObject::callStaticMethod<void>(BobUIJniTypes::Traits<TestClass>::className(),
                                        "noSuchStaticMethod2", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidClass);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
     QJniObject::callStaticMethod<void>("noSuchClass", "noSuchStaticMethod2", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, throwingMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, throwingMethod);
     jmethodID methodId = env.findStaticMethod<void>(classId, "staticThrowingMethod");
     QVERIFY(methodId != nullptr);
     QJniObject::callStaticMethod<void>(classId, methodId);
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidClass);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
     QJniObject::callStaticObjectMethod("noSuchClass", "noSuchStaticMethod", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
     QJniObject::callStaticObjectMethod(classId, "noSuchStaticMethod", "()V");
     QVERIFY(!env.checkAndClearExceptions());
 }
@@ -2432,15 +2432,15 @@ void tst_QJniObject::implicitExceptionHandling_getField()
     const QRegularExpression invalidField("java.lang.NoSuchFieldError: .*");
 
     QJniObject testObject = QJniObject::construct<TestClass>();
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)testObject.getField<int>("noSuchField");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)testObject.getObjectField<jobject>("noSuchObjectField");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)testObject.getObjectField("noSuchObjectField2", "Ljava/lang/Object;");
     QVERIFY(!env.checkAndClearExceptions());
 }
@@ -2451,11 +2451,11 @@ void tst_QJniObject::implicitExceptionHandling_setField()
     const QRegularExpression invalidField("java.lang.NoSuchFieldError: .*");
 
     QJniObject testObject = QJniObject::construct<TestClass>();
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     testObject.setField("noSuchField", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     testObject.setField("BOOLEAN_VAR", "I", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
@@ -2473,19 +2473,19 @@ void tst_QJniObject::implicitExceptionHandling_getStaticField()
     const jclass classId = env.findClass<TestClass>();
     QVERIFY(classId != nullptr);
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)TestClass::getStaticField<int>("noSuchStaticField");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)QJniObject::getStaticField<int>(classId, "noSuchStaticField");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidClass);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
     (void)QJniObject::getStaticObjectField("noSuchClass", "noSuchStaticField", "I");
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     (void)QJniObject::getStaticObjectField(classId, "S_BOOLEAN_VAR", "I");
     QVERIFY(!env.checkAndClearExceptions());
 }
@@ -2499,20 +2499,20 @@ void tst_QJniObject::implicitExceptionHandling_setStaticField()
     const jclass classId = env.findClass<TestClass>();
     QVERIFY(classId != nullptr);
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     TestClass::setStaticField("noSuchStaticField", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
     QJniObject::setStaticField(classId, "noSuchStaticField", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidClass);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
     QJniObject::setStaticField("noSuchClass", "noSuchStaticField", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
-    QTest::ignoreMessage(QtWarningMsg, invalidField);
-    QJniObject::setStaticField(QtJniTypes::Traits<TestClass>::className(),
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidField);
+    QJniObject::setStaticField(BobUIJniTypes::Traits<TestClass>::className(),
                                "S_BOOLEAN_VAR", "I", 123);
     QVERIFY(!env.checkAndClearExceptions());
 
@@ -2530,8 +2530,8 @@ void tst_QJniObject::constructWithException()
 
     const QRegularExpression invalidClass("java.lang.ClassNotFoundException: .*");
     {
-        QTest::ignoreMessage(QtWarningMsg, invalidClass);
-        QJniObject invalid = QJniObject::construct<QtJniTypes::NoSuchClass>();
+        BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
+        QJniObject invalid = QJniObject::construct<BobUIJniTypes::NoSuchClass>();
     }
 
     QVERIFY(!QJniEnvironment().checkAndClearExceptions());
@@ -2548,7 +2548,7 @@ void tst_QJniObject::constructWithException()
     QVERIFY(!QJniEnvironment().checkAndClearExceptions());
 
     {
-        const auto result = QJniObject::construct<QJniReturnValue<QtJniTypes::NoSuchClass>>();
+        const auto result = QJniObject::construct<QJniReturnValue<BobUIJniTypes::NoSuchClass>>();
         QVERIFY(!result);
         QVERIFY(result.error());
     }
@@ -2557,8 +2557,8 @@ void tst_QJniObject::constructWithException()
 
     {
         // no way to prevent implicit exception here
-        QTest::ignoreMessage(QtWarningMsg, invalidClass);
-        QtJniTypes::NoSuchClass noSuchClass;
+        BOBUIest::ignoreMessage(BobUIWarningMsg, invalidClass);
+        BobUIJniTypes::NoSuchClass noSuchClass;
         QVERIFY(!noSuchClass.isValid());
     }
 
@@ -2623,7 +2623,7 @@ void tst_QJniObject::callMethodWithException()
 
     // throwing method - QJniObject cleans the exception and prints qWarning
     {
-        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"java.lang.Throwable: "_s + A_STRING_OBJECT() + u".*"_s));
+        BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression(u"java.lang.Throwable: "_s + A_STRING_OBJECT() + u".*"_s));
         testObject.callMethod<void>("throwingMethod");
 
         auto result = testObject.callMethod<QJniReturnValue<void>>("throwingMethod");
@@ -2751,7 +2751,7 @@ void tst_QJniObject::callMethodWithTryCatch()
     TestClass testObject;
 
     const QRegularExpression invalidMethod("java.lang.NoSuchMethodError: .*");
-    QTest::ignoreMessage(QtWarningMsg, invalidMethod);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, invalidMethod);
 
     try {
         const auto result = testObject.callMethod<QJniReturnValue<QJniObject>>("objectMethod", 123);
@@ -2887,8 +2887,8 @@ void tst_QJniObject::setStaticFieldWithException()
 #endif
 }
 
-QTEST_MAIN(tst_QJniObject)
+BOBUIEST_MAIN(tst_QJniObject)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "tst_qjniobject.moc"

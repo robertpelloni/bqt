@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include <QChronoTimer>
 #include <QObject>
-#include <QTimer>
+#include <BOBUIimer>
 
 using namespace std::chrono;
 
@@ -16,58 +16,58 @@ public:
 Foo::Foo()
 {
 //! [0]
-    QTimer *timer = new QTimer(this);
+    BOBUIimer *timer = new BOBUIimer(this);
 //! [0] //! [1]
-    connect(timer, &QTimer::timeout, this, &Foo::updateCaption);
+    connect(timer, &BOBUIimer::timeout, this, &Foo::updateCaption);
 //! [1] //! [2]
     timer->start(1000);
 //! [2]
 
 //! [3]
-    QTimer::singleShot(200, this, &Foo::updateCaption);
+    BOBUIimer::singleShot(200, this, &Foo::updateCaption);
 //! [3]
 
     {
     // ZERO-CASE
 //! [4]
-    QTimer *timer = new QTimer(this);
+    BOBUIimer *timer = new BOBUIimer(this);
 //! [4] //! [5]
-    connect(timer, &QTimer::timeout, this, &Foo::processOneThing);
+    connect(timer, &BOBUIimer::timeout, this, &Foo::processOneThing);
 //! [5] //! [6]
     timer->start();
 //! [6]
     }
 }
 
-// QTimer
+// BOBUIimer
 class MyWidget : QObject
 {
     MyWidget()
     {
-//! [qtimer-singleshot]
+//! [bobuiimer-singleshot]
         MyWidget widget;
-        QTimer::singleShot(200ms, &widget, &MyWidget::updateCaption);
-//! [qtimer-singleshot]
+        BOBUIimer::singleShot(200ms, &widget, &MyWidget::updateCaption);
+//! [bobuiimer-singleshot]
 
 //! [zero-timer]
         // The default interval is 0ns
-        QTimer *timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &MyWidget::processOneThing);
+        BOBUIimer *timer = new BOBUIimer(this);
+        connect(timer, &BOBUIimer::timeout, this, &MyWidget::processOneThing);
         timer->start();
 //! [zero-timer]
 
         {
 //! [timer-interval-in-ctor]
-        QTimer *timer = new QTimer(1s, this);
-        connect(timer, &QTimer::timeout, this, &MyWidget::processOneThing);
+        BOBUIimer *timer = new BOBUIimer(1s, this);
+        connect(timer, &BOBUIimer::timeout, this, &MyWidget::processOneThing);
         timer->start();
 //! [timer-interval-in-ctor]
         }
 
         {
 //! [timer-setinterval]
-        auto *timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &MyWidget::processOneThing);
+        auto *timer = new BOBUIimer(this);
+        connect(timer, &BOBUIimer::timeout, this, &MyWidget::processOneThing);
         timer->setInterval(1s);
         timer->start();
 //! [timer-setinterval]

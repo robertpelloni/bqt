@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAACCESIBILITY_H
 #define QCOCOAACCESIBILITY_H
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 #include <qpa/qplatformaccessibility.h>
 
@@ -15,7 +15,7 @@
 
 #include <functional>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaAccessibility : public QPlatformAccessibility
 {
@@ -31,7 +31,7 @@ public:
 namespace QCocoaAccessible {
 
 /*
-    Qt Cocoa Accessibility Overview
+    BobUI Cocoa Accessibility Overview
 
     Cocoa accessibility is implemented in the following files:
 
@@ -55,7 +55,7 @@ bool shouldBeIgnored(QAccessibleInterface *interface);
 bool defaultUnignored(QAccessibleInterface *interface);
 NSArray<QMacAccessibilityElement *> *unignoredChildren(QAccessibleInterface *interface,
                         const std::function<bool(QAccessibleInterface *)> &p = defaultUnignored);
-NSString *getTranslatedAction(const QString &qtAction);
+NSString *getTranslatedAction(const QString &bobuiAction);
 QString translateAction(NSString *nsAction, QAccessibleInterface *interface);
 bool hasValueAttribute(QAccessibleInterface *interface);
 id getValueAttribute(QAccessibleInterface *interface);
@@ -63,8 +63,8 @@ id getValueAttribute(QAccessibleInterface *interface);
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)
 
 #endif // QCOCOAACCESIBILITY_H

@@ -1,16 +1,16 @@
 // Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB).
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLPIXELUPLOADOPTIONS_H
 #define QOPENGLPIXELUPLOADOPTIONS_H
 
-#include <QtOpenGL/qtopenglglobal.h>
+#include <BobUIOpenGL/bobuiopenglglobal.h>
 
-#if !defined(QT_NO_OPENGL)
+#if !defined(BOBUI_NO_OPENGL)
 
-#include <QtCore/QSharedDataPointer>
+#include <BobUICore/QSharedDataPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLPixelTransferOptionsData;
 
@@ -19,7 +19,7 @@ class Q_OPENGL_EXPORT QOpenGLPixelTransferOptions
 public:
     QOpenGLPixelTransferOptions();
     QOpenGLPixelTransferOptions(const QOpenGLPixelTransferOptions &);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QOpenGLPixelTransferOptions)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QOpenGLPixelTransferOptions)
     QOpenGLPixelTransferOptions &operator=(const QOpenGLPixelTransferOptions &);
     ~QOpenGLPixelTransferOptions();
 
@@ -56,8 +56,8 @@ private:
 
 Q_DECLARE_SHARED(QOpenGLPixelTransferOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 #endif // QOPENGLPIXELUPLOADOPTIONS_H

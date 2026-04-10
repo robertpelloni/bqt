@@ -1,6 +1,6 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QIOOPERATION_P_P_H
 #define QIOOPERATION_P_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -19,20 +19,20 @@
 #include "qiooperation_p.h"
 #include "qrandomaccessasyncfile_p.h"
 
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/private/qobject_p.h>
 
-#include <QtCore/qspan.h>
-#include <QtCore/qvarlengtharray.h>
+#include <BobUICore/qspan.h>
+#include <BobUICore/qvarlengtharray.h>
 
-#ifdef QT_RANDOMACCESSASYNCFILE_QIORING
-#include <QtCore/private/qioring_p.h>
+#ifdef BOBUI_RANDOMACCESSASYNCFILE_QIORING
+#include <BobUICore/private/qioring_p.h>
 #endif
 
 #include <variant>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QIOOperationDataStorage
 {
@@ -145,7 +145,7 @@ inline QByteArray QIOOperationDataStorage::getValue() const
     return {};
 }
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class QIOOperationPrivate : public QObjectPrivate
 {
@@ -158,7 +158,7 @@ public:
         Finished,
     };
 
-    explicit QIOOperationPrivate(QtPrivate::QIOOperationDataStorage *storage);
+    explicit QIOOperationPrivate(BobUIPrivate::QIOOperationDataStorage *storage);
     ~QIOOperationPrivate();
 
     static QIOOperationPrivate *get(QIOOperation *op)
@@ -179,9 +179,9 @@ public:
     State state = State::Running;
 
     // takes ownership
-    std::unique_ptr<QtPrivate::QIOOperationDataStorage> dataStorage;
+    std::unique_ptr<BobUIPrivate::QIOOperationDataStorage> dataStorage;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QIOOPERATION_P_P_H

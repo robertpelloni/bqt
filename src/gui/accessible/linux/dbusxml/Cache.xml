@@ -4,17 +4,17 @@
 
   <method name="GetItems">
     <arg name="nodes" type="a((so)(so)a(so)assusau)" direction="out"/>
-    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QSpiAccessibleCacheArray"/>
+    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.Out0" value="QSpiAccessibleCacheArray"/>
   </method>
 
   <signal name="AddAccessible">
     <arg name="nodeAdded" type="((so)(so)a(so)assusau)"/>
-    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QSpiAccessibleCacheItem"/>
+    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.Out0" value="QSpiAccessibleCacheItem"/>
   </signal>
 
   <signal name="RemoveAccessible">
     <arg name="nodeRemoved" type="(so)"/>
-    <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QSpiObjectReference"/>
+    <annotation name="org.bobuiproject.BobUIDBus.BobUITypeName.Out0" value="QSpiObjectReference"/>
   </signal>
 
 </interface>

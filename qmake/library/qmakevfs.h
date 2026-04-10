@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKEVFS_H
 #define QMAKEVFS_H
@@ -19,7 +19,7 @@
 # endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMAKE_EXPORT QMakeVfs
 {
@@ -69,8 +69,8 @@ private:
 #endif
     static int s_refCount;
     static QAtomicInt s_fileIdCounter;
-    // Qt Creator's ProFile cache is a singleton to maximize its cross-project
-    // effectiveness (shared prf files from QtVersions).
+    // BobUI Creator's ProFile cache is a singleton to maximize its cross-project
+    // effectiveness (shared prf files from BobUIVersions).
     // For this to actually work, real files need a global mapping.
     // This is fine, because the namespace of real files is indeed global.
     static QHash<QString, int> s_fileIdMap;
@@ -100,6 +100,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMakeVfs::VfsFlags)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMAKEVFS_H

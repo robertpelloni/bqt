@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwineventnotifier_p.h"
 
 #include "qcoreapplication.h"
-#include "qthread.h"
+#include "bobuihread.h"
 #include <QPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWinEventNotifier
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.0
     \brief The QWinEventNotifier class provides support for the Windows Wait functions.
 
@@ -149,7 +149,7 @@ void QWinEventNotifier::setEnabled(bool enable)
         return;
     d->enabled = enable;
 
-    if (Q_UNLIKELY(thread() != QThread::currentThread())) {
+    if (Q_UNLIKELY(thread() != BOBUIhread::currentThread())) {
         qWarning("QWinEventNotifier: Event notifiers cannot be enabled or disabled from another thread");
         return;
     }
@@ -188,7 +188,7 @@ bool QWinEventNotifier::event(QEvent * e)
     switch (e->type()) {
     case QEvent::ThreadChange:
         if (d->enabled) {
-            QMetaObject::invokeMethod(this, "setEnabled", Qt::QueuedConnection,
+            QMetaObject::invokeMethod(this, "setEnabled", BobUI::QueuedConnection,
                                       Q_ARG(bool, true));
             setEnabled(false);
         }
@@ -247,6 +247,6 @@ void QWinEventNotifierPrivate::waitCallback(PTP_CALLBACK_INSTANCE instance, PVOI
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwineventnotifier.cpp"

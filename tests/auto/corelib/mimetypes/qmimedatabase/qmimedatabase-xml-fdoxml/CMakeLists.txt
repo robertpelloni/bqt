@@ -1,13 +1,13 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qmimedatabase LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-if(NOT QT_FEATURE_private_tests)
+if(NOT BOBUI_FEATURE_private_tests)
     return()
 endif()
 
@@ -15,14 +15,14 @@ endif()
 ## tst_qmimedatabase-xml-fdoxml Test:
 #####################################################################
 
-qt_internal_add_test(tst_qmimedatabase-xml-fdoxml
+bobui_internal_add_test(tst_qmimedatabase-xml-fdoxml
     RUN_SERIAL
     SOURCES
         ../tst_qmimedatabase.h
         tst_qmimedatabase-xml-fdoxml.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Concurrent
+        BobUI::CorePrivate
+        BobUI::Concurrent
 )
 
 # Resources:
@@ -46,7 +46,7 @@ set(testdata_resource_files
     "../yast2-metapackage-handler-mimetypes.xml"
 )
 
-qt_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testdata"
+bobui_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testdata"
     PREFIX
         "/tst_qmimedatabase/qmime"
     BASE
@@ -55,16 +55,16 @@ qt_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testdata"
         ${testdata_resource_files}
 )
 
-qt_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testdata-fdoxml"
+bobui_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testdata-fdoxml"
     PREFIX
-        "/qt-project.org/qmime/packages"
+        "/bobui-project.org/qmime/packages"
     BASE
         "../3rdparty"
     FILES
         ${mimetypes_resource_files}
 )
 
-qt_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testfiles"
+bobui_internal_add_resource(tst_qmimedatabase-xml-fdoxml "testfiles"
     PREFIX
         "/files"
     FILES
@@ -79,7 +79,7 @@ corelib_add_mimetypes_resources(tst_qmimedatabase-xml-fdoxml)
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qmimedatabase-xml-fdoxml CONDITION GCC
+bobui_internal_extend_target(tst_qmimedatabase-xml-fdoxml CONDITION GCC
     COMPILE_OPTIONS
         -W
         -Wall
@@ -89,7 +89,7 @@ qt_internal_extend_target(tst_qmimedatabase-xml-fdoxml CONDITION GCC
         -Wshadow
 )
 
-qt_internal_extend_target(tst_qmimedatabase-xml-fdoxml CONDITION UNIX AND NOT APPLE AND NOT QNX
+bobui_internal_extend_target(tst_qmimedatabase-xml-fdoxml CONDITION UNIX AND NOT APPLE AND NOT QNX
     DEFINES
         USE_XDG_DATA_DIRS
 )

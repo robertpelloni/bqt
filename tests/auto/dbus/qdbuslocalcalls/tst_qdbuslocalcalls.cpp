@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTestEventLoop>
+#include <BOBUIest>
+#include <BOBUIestEventLoop>
 #include <QObject>
 #include <QVariant>
 #include <QList>
@@ -78,7 +78,7 @@ QDBusMessage tst_QDBusLocalCalls::doCall(const QDBusMessage &call)
 void tst_QDBusLocalCalls::replyReceived(QDBusPendingCallWatcher *watcher)
 {
     asyncReplyArgs = watcher->reply().arguments();
-    QTestEventLoop::instance().exitLoop();
+    BOBUIestEventLoop::instance().exitLoop();
 }
 
 void tst_QDBusLocalCalls::initTestCase()
@@ -86,16 +86,16 @@ void tst_QDBusLocalCalls::initTestCase()
     QVERIFY(conn.isConnected());
     QVERIFY(conn.registerObject("/", this, QDBusConnection::ExportScriptableSlots));
 
-    QTest::addColumn<bool>("useAsync");
-    QTest::newRow("sync") << false;
-    QTest::newRow("async") << true;
+    BOBUIest::addColumn<bool>("useAsync");
+    BOBUIest::newRow("sync") << false;
+    BOBUIest::newRow("async") << true;
 }
 
 void tst_QDBusLocalCalls::makeCalls_data()
 {
-    QTest::addColumn<QVariant>("value");
-    QTest::newRow("int") << QVariant(42);
-    QTest::newRow("string") << QVariant("Hello, world");
+    BOBUIest::addColumn<QVariant>("value");
+    BOBUIest::newRow("int") << QVariant(42);
+    BOBUIest::newRow("string") << QVariant("Hello, world");
 }
 
 void tst_QDBusLocalCalls::makeCallsVariant_data()
@@ -199,7 +199,7 @@ void tst_QDBusLocalCalls::makeDelayedCalls()
 {
     QDBusMessage callMsg = QDBusMessage::createMethodCall(conn.baseService(),
                                                           "/", QString(), "delayed");
-    QTest::ignoreMessage(QtWarningMsg, "QDBusConnection: cannot call local method 'delayed' at object / (with signature '') on blocking mode");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QDBusConnection: cannot call local method 'delayed' at object / (with signature '') on blocking mode");
     QDBusMessage replyMsg = doCall(callMsg);
     QCOMPARE(replyMsg.type(), QDBusMessage::ErrorMessage);
 
@@ -224,8 +224,8 @@ void tst_QDBusLocalCalls::asyncReplySignal()
     connect(&watch, SIGNAL(finished(QDBusPendingCallWatcher*)),
             SLOT(replyReceived(QDBusPendingCallWatcher*)));
 
-    QTestEventLoop::instance().enterLoop(2);
-    QVERIFY(!QTestEventLoop::instance().timeout());
+    BOBUIestEventLoop::instance().enterLoop(2);
+    QVERIFY(!BOBUIestEventLoop::instance().timeout());
 
     QVERIFY(ac.isFinished());
     QVERIFY(!ac.isError());
@@ -234,5 +234,5 @@ void tst_QDBusLocalCalls::asyncReplySignal()
     QCOMPARE(asyncReplyArgs.at(0).toString(), QString("Hello World"));
 }
 
-QTEST_MAIN(tst_QDBusLocalCalls)
+BOBUIEST_MAIN(tst_QDBusLocalCalls)
 #include "tst_qdbuslocalcalls.moc"

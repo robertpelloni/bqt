@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <qpainter.h>
 #include <qrasterwindow.h>
@@ -9,7 +9,7 @@
 #include <private/qguiapplication_p.h>
 #include <private/qhighdpiscaling_p.h>
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 
 class tst_QScreen: public QObject
@@ -29,44 +29,44 @@ private slots:
 
 void tst_QScreen::angleBetween_data()
 {
-    QTest::addColumn<uint>("oa");
-    QTest::addColumn<uint>("ob");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<uint>("oa");
+    BOBUIest::addColumn<uint>("ob");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("Portrait Portrait")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::PortraitOrientation)
+    BOBUIest::newRow("Portrait Portrait")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::PortraitOrientation)
         << 0;
 
-    QTest::newRow("Portrait Landscape")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::LandscapeOrientation)
+    BOBUIest::newRow("Portrait Landscape")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::LandscapeOrientation)
         << 270;
 
-    QTest::newRow("Portrait InvertedPortrait")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::InvertedPortraitOrientation)
+    BOBUIest::newRow("Portrait InvertedPortrait")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::InvertedPortraitOrientation)
         << 180;
 
-    QTest::newRow("Portrait InvertedLandscape")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::InvertedLandscapeOrientation)
+    BOBUIest::newRow("Portrait InvertedLandscape")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::InvertedLandscapeOrientation)
         << 90;
 
-    QTest::newRow("InvertedLandscape InvertedPortrait")
-        << uint(Qt::InvertedLandscapeOrientation)
-        << uint(Qt::InvertedPortraitOrientation)
+    BOBUIest::newRow("InvertedLandscape InvertedPortrait")
+        << uint(BobUI::InvertedLandscapeOrientation)
+        << uint(BobUI::InvertedPortraitOrientation)
         << 90;
 
-    QTest::newRow("InvertedLandscape Landscape")
-        << uint(Qt::InvertedLandscapeOrientation)
-        << uint(Qt::LandscapeOrientation)
+    BOBUIest::newRow("InvertedLandscape Landscape")
+        << uint(BobUI::InvertedLandscapeOrientation)
+        << uint(BobUI::LandscapeOrientation)
         << 180;
 
-    QTest::newRow("Landscape Primary")
-        << uint(Qt::LandscapeOrientation)
-        << uint(Qt::PrimaryOrientation)
-        << QGuiApplication::primaryScreen()->angleBetween(Qt::LandscapeOrientation, QGuiApplication::primaryScreen()->primaryOrientation());
+    BOBUIest::newRow("Landscape Primary")
+        << uint(BobUI::LandscapeOrientation)
+        << uint(BobUI::PrimaryOrientation)
+        << QGuiApplication::primaryScreen()->angleBetween(BobUI::LandscapeOrientation, QGuiApplication::primaryScreen()->primaryOrientation());
 }
 
 void tst_QScreen::angleBetween()
@@ -75,8 +75,8 @@ void tst_QScreen::angleBetween()
     QFETCH( uint, ob );
     QFETCH( int, expected );
 
-    Qt::ScreenOrientation a = Qt::ScreenOrientation(oa);
-    Qt::ScreenOrientation b = Qt::ScreenOrientation(ob);
+    BobUI::ScreenOrientation a = BobUI::ScreenOrientation(oa);
+    BobUI::ScreenOrientation b = BobUI::ScreenOrientation(ob);
 
     QCOMPARE(QGuiApplication::primaryScreen()->angleBetween(a, b), expected);
     QCOMPARE(QGuiApplication::primaryScreen()->angleBetween(b, a), (360 - expected) % 360);
@@ -84,54 +84,54 @@ void tst_QScreen::angleBetween()
 
 void tst_QScreen::transformBetween_data()
 {
-    QTest::addColumn<uint>("oa");
-    QTest::addColumn<uint>("ob");
-    QTest::addColumn<QRect>("rect");
-    QTest::addColumn<QTransform>("expected");
+    BOBUIest::addColumn<uint>("oa");
+    BOBUIest::addColumn<uint>("ob");
+    BOBUIest::addColumn<QRect>("rect");
+    BOBUIest::addColumn<BOBUIransform>("expected");
 
     QRect rect(0, 0, 480, 640);
 
-    QTest::newRow("Portrait Portrait")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::PortraitOrientation)
+    BOBUIest::newRow("Portrait Portrait")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::PortraitOrientation)
         << rect
-        << QTransform();
+        << BOBUIransform();
 
-    QTest::newRow("Portrait Landscape")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::LandscapeOrientation)
+    BOBUIest::newRow("Portrait Landscape")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::LandscapeOrientation)
         << rect
-        << QTransform(0, -1, 1, 0, 0, rect.height());
+        << BOBUIransform(0, -1, 1, 0, 0, rect.height());
 
-    QTest::newRow("Portrait InvertedPortrait")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::InvertedPortraitOrientation)
+    BOBUIest::newRow("Portrait InvertedPortrait")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::InvertedPortraitOrientation)
         << rect
-        << QTransform(-1, 0, 0, -1, rect.width(), rect.height());
+        << BOBUIransform(-1, 0, 0, -1, rect.width(), rect.height());
 
-    QTest::newRow("Portrait InvertedLandscape")
-        << uint(Qt::PortraitOrientation)
-        << uint(Qt::InvertedLandscapeOrientation)
+    BOBUIest::newRow("Portrait InvertedLandscape")
+        << uint(BobUI::PortraitOrientation)
+        << uint(BobUI::InvertedLandscapeOrientation)
         << rect
-        << QTransform(0, 1, -1, 0, rect.width(), 0);
+        << BOBUIransform(0, 1, -1, 0, rect.width(), 0);
 
-    QTest::newRow("InvertedLandscape InvertedPortrait")
-        << uint(Qt::InvertedLandscapeOrientation)
-        << uint(Qt::InvertedPortraitOrientation)
+    BOBUIest::newRow("InvertedLandscape InvertedPortrait")
+        << uint(BobUI::InvertedLandscapeOrientation)
+        << uint(BobUI::InvertedPortraitOrientation)
         << rect
-        << QTransform(0, 1, -1, 0, rect.width(), 0);
+        << BOBUIransform(0, 1, -1, 0, rect.width(), 0);
 
-    QTest::newRow("InvertedLandscape Landscape")
-        << uint(Qt::InvertedLandscapeOrientation)
-        << uint(Qt::LandscapeOrientation)
+    BOBUIest::newRow("InvertedLandscape Landscape")
+        << uint(BobUI::InvertedLandscapeOrientation)
+        << uint(BobUI::LandscapeOrientation)
         << rect
-        << QTransform(-1, 0, 0, -1, rect.width(), rect.height());
+        << BOBUIransform(-1, 0, 0, -1, rect.width(), rect.height());
 
-    QTest::newRow("Landscape Primary")
-        << uint(Qt::LandscapeOrientation)
-        << uint(Qt::PrimaryOrientation)
+    BOBUIest::newRow("Landscape Primary")
+        << uint(BobUI::LandscapeOrientation)
+        << uint(BobUI::PrimaryOrientation)
         << rect
-        << QGuiApplication::primaryScreen()->transformBetween(Qt::LandscapeOrientation, QGuiApplication::primaryScreen()->primaryOrientation(), rect);
+        << QGuiApplication::primaryScreen()->transformBetween(BobUI::LandscapeOrientation, QGuiApplication::primaryScreen()->primaryOrientation(), rect);
 }
 
 void tst_QScreen::transformBetween()
@@ -139,45 +139,45 @@ void tst_QScreen::transformBetween()
     QFETCH( uint, oa );
     QFETCH( uint, ob );
     QFETCH( QRect, rect );
-    QFETCH( QTransform, expected );
+    QFETCH( BOBUIransform, expected );
 
-    Qt::ScreenOrientation a = Qt::ScreenOrientation(oa);
-    Qt::ScreenOrientation b = Qt::ScreenOrientation(ob);
+    BobUI::ScreenOrientation a = BobUI::ScreenOrientation(oa);
+    BobUI::ScreenOrientation b = BobUI::ScreenOrientation(ob);
 
     QCOMPARE(QGuiApplication::primaryScreen()->transformBetween(a, b, rect), expected);
 }
 
 void tst_QScreen::orientationChange()
 {
-    qRegisterMetaType<Qt::ScreenOrientation>("Qt::ScreenOrientation");
+    qRegisterMetaType<BobUI::ScreenOrientation>("BobUI::ScreenOrientation");
 
     QScreen *screen = QGuiApplication::primaryScreen();
-    QSignalSpy spy(screen, SIGNAL(orientationChanged(Qt::ScreenOrientation)));
+    QSignalSpy spy(screen, SIGNAL(orientationChanged(BobUI::ScreenOrientation)));
     int expectedSignalCount = 0;
 
-    QWindowSystemInterface::handleScreenOrientationChange(screen, Qt::LandscapeOrientation);
+    QWindowSystemInterface::handleScreenOrientationChange(screen, BobUI::LandscapeOrientation);
     QWindowSystemInterface::flushWindowSystemEvents();
-    QTRY_COMPARE(screen->orientation(), Qt::LandscapeOrientation);
+    BOBUIRY_COMPARE(screen->orientation(), BobUI::LandscapeOrientation);
     QCOMPARE(spy.size(), ++expectedSignalCount);
 
-    QWindowSystemInterface::handleScreenOrientationChange(screen, Qt::PortraitOrientation);
+    QWindowSystemInterface::handleScreenOrientationChange(screen, BobUI::PortraitOrientation);
     QWindowSystemInterface::flushWindowSystemEvents();
-    QTRY_COMPARE(screen->orientation(), Qt::PortraitOrientation);
+    BOBUIRY_COMPARE(screen->orientation(), BobUI::PortraitOrientation);
     QCOMPARE(spy.size(), ++expectedSignalCount);
 
-    QWindowSystemInterface::handleScreenOrientationChange(screen, Qt::InvertedLandscapeOrientation);
+    QWindowSystemInterface::handleScreenOrientationChange(screen, BobUI::InvertedLandscapeOrientation);
     QWindowSystemInterface::flushWindowSystemEvents();
-    QTRY_COMPARE(screen->orientation(), Qt::InvertedLandscapeOrientation);
+    BOBUIRY_COMPARE(screen->orientation(), BobUI::InvertedLandscapeOrientation);
     QCOMPARE(spy.size(), ++expectedSignalCount);
 
-    QWindowSystemInterface::handleScreenOrientationChange(screen, Qt::InvertedPortraitOrientation);
+    QWindowSystemInterface::handleScreenOrientationChange(screen, BobUI::InvertedPortraitOrientation);
     QWindowSystemInterface::flushWindowSystemEvents();
-    QTRY_COMPARE(screen->orientation(), Qt::InvertedPortraitOrientation);
+    BOBUIRY_COMPARE(screen->orientation(), BobUI::InvertedPortraitOrientation);
     QCOMPARE(spy.size(), ++expectedSignalCount);
 
-    QWindowSystemInterface::handleScreenOrientationChange(screen, Qt::LandscapeOrientation);
+    QWindowSystemInterface::handleScreenOrientationChange(screen, BobUI::LandscapeOrientation);
     QWindowSystemInterface::flushWindowSystemEvents();
-    QTRY_COMPARE(screen->orientation(), Qt::LandscapeOrientation);
+    BOBUIRY_COMPARE(screen->orientation(), BobUI::LandscapeOrientation);
     QCOMPARE(spy.size(), ++expectedSignalCount);
 }
 
@@ -186,24 +186,24 @@ void tst_QScreen::grabWindow_data()
     if (!QGuiApplicationPrivate::platformIntegration()->hasCapability(QPlatformIntegration::ScreenWindowGrabbing)
             || (QGuiApplication::platformName().toLower() == QStringLiteral("xcb") && !qEnvironmentVariableIsEmpty("WAYLAND_DISPLAY")))
         QSKIP("This platform does not support grabbing windows on screen.");
-    QTest::addColumn<int>("screenIndex");
-    QTest::addColumn<QByteArray>("screenName");
-    QTest::addColumn<bool>("grabWindow");
-    QTest::addColumn<QRect>("windowRect");
-    QTest::addColumn<QRect>("grabRect");
+    BOBUIest::addColumn<int>("screenIndex");
+    BOBUIest::addColumn<QByteArray>("screenName");
+    BOBUIest::addColumn<bool>("grabWindow");
+    BOBUIest::addColumn<QRect>("windowRect");
+    BOBUIest::addColumn<QRect>("grabRect");
 
     int screenIndex = 0;
     for (const auto screen : QGuiApplication::screens()) {
         const QByteArray screenName = screen->name().toUtf8();
         const QRect availableGeometry = screen->availableGeometry();
         const QPoint topLeft = availableGeometry.topLeft() + QPoint(20, 20);
-        QTest::addRow("%s - Window", screenName.data())
+        BOBUIest::addRow("%s - Window", screenName.data())
             << screenIndex << screenName << true << QRect(topLeft, QSize(200, 200)) << QRect(0, 0, -1, -1);
-        QTest::addRow("%s - Window Section", screenName.data())
+        BOBUIest::addRow("%s - Window Section", screenName.data())
             << screenIndex << screenName << true << QRect(topLeft, QSize(200, 200)) << QRect(50, 50, 100, 100);
-        QTest::addRow("%s - Screen", screenName.data())
+        BOBUIest::addRow("%s - Screen", screenName.data())
             << screenIndex << screenName << false << QRect(topLeft, QSize(200, 200)) << QRect(0, 0, -1, -1);
-        QTest::addRow("%s - Screen Section", screenName.data())
+        BOBUIest::addRow("%s - Screen Section", screenName.data())
             << screenIndex << screenName << false << QRect(topLeft, QSize(200, 200)) << QRect(topLeft, QSize(200, 200));
 
         ++screenIndex;
@@ -224,7 +224,7 @@ void tst_QScreen::grabWindow()
         Window(QScreen *scr)
         : image(scr->size(), QImage::Format_ARGB32_Premultiplied)
         {
-            setFlags(Qt::CustomizeWindowHint|Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+            setFlags(BobUI::CustomizeWindowHint|BobUI::FramelessWindowHint|BobUI::WindowStaysOnTopHint);
             setScreen(scr);
             image.setDevicePixelRatio(scr->devicePixelRatio());
         }
@@ -236,8 +236,8 @@ void tst_QScreen::grabWindow()
             const QSize sz = e->size();
             image = image.scaled(sz * image.devicePixelRatio());
             QPainter painter(&image);
-            painter.fillRect(0, 0, sz.width(), sz.height(), Qt::black);
-            painter.setPen(QPen(Qt::red, 2));
+            painter.fillRect(0, 0, sz.width(), sz.height(), BobUI::black);
+            painter.setPen(QPen(BobUI::red, 2));
             painter.drawLine(0, 0, sz.width(), sz.height());
             painter.drawLine(0, sz.height(), sz.width(), 0);
             painter.drawRect(0, 0, sz.width(), sz.height());
@@ -272,11 +272,11 @@ void tst_QScreen::grabWindow()
     window.showNormal();
 #endif
 
-    if (!QTest::qWaitForWindowExposed(&window))
+    if (!BOBUIest::qWaitForWindowExposed(&window))
         QSKIP("Failed to expose window - aborting");
 
     // this is necessary because of scrolling effects combined with potential slowness of VMs
-    QTest::qWait(1500);
+    BOBUIest::qWait(1500);
 
     QSize expectedGrabSize = grabRect.isValid()
                            ? grabRect.size()
@@ -329,4 +329,4 @@ void tst_QScreen::grabWindow()
 }
 
 #include <tst_qscreen.moc>
-QTEST_MAIN(tst_QScreen);
+BOBUIEST_MAIN(tst_QScreen);

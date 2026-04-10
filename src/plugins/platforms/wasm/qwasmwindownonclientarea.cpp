@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmwindownonclientarea.h"
 
@@ -10,9 +10,9 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/qassert.h>
+#include <BobUICore/qassert.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 WebImageButton::Callbacks::Callbacks() = default;
 WebImageButton::Callbacks::Callbacks(std::function<void()> onInteraction,
@@ -85,7 +85,7 @@ void WebImageButton::setVisible(bool visible)
     m_containerElement["style"].set("display", visible ? "flex" : "none");
 }
 
-Resizer::ResizerElement::ResizerElement(emscripten::val parentElement, Qt::Edges edges,
+Resizer::ResizerElement::ResizerElement(emscripten::val parentElement, BobUI::Edges edges,
                                         Resizer *resizer)
     : m_element(dom::document().call<emscripten::val>("createElement", emscripten::val("div"))),
       m_edges(edges),
@@ -161,18 +161,18 @@ Resizer::Resizer(QWasmWindow *window, emscripten::val parentElement)
 {
     Q_ASSERT_X(m_window, Q_FUNC_INFO, "Window must not be null");
 
-    constexpr std::array<int, 8> ResizeEdges = { Qt::TopEdge | Qt::LeftEdge,
-                                                 Qt::TopEdge,
-                                                 Qt::TopEdge | Qt::RightEdge,
-                                                 Qt::LeftEdge,
-                                                 Qt::RightEdge,
-                                                 Qt::BottomEdge | Qt::LeftEdge,
-                                                 Qt::BottomEdge,
-                                                 Qt::BottomEdge | Qt::RightEdge };
+    constexpr std::array<int, 8> ResizeEdges = { BobUI::TopEdge | BobUI::LeftEdge,
+                                                 BobUI::TopEdge,
+                                                 BobUI::TopEdge | BobUI::RightEdge,
+                                                 BobUI::LeftEdge,
+                                                 BobUI::RightEdge,
+                                                 BobUI::BottomEdge | BobUI::LeftEdge,
+                                                 BobUI::BottomEdge,
+                                                 BobUI::BottomEdge | BobUI::RightEdge };
     std::transform(std::begin(ResizeEdges), std::end(ResizeEdges), std::back_inserter(m_elements),
                    [parentElement, this](int edges) {
                        return std::make_unique<ResizerElement>(parentElement,
-                                                               Qt::Edges::fromInt(edges), this);
+                                                               BobUI::Edges::fromInt(edges), this);
                    });
 }
 
@@ -201,7 +201,7 @@ void Resizer::onInteraction()
     m_window->onNonClientAreaInteraction();
 }
 
-void Resizer::startResize(Qt::Edges resizeEdges, const PointerEvent &event)
+void Resizer::startResize(BobUI::Edges resizeEdges, const PointerEvent &event)
 {
     Q_ASSERT_X(!m_currentResizeData, Q_FUNC_INFO, "Another resize in progress");
 
@@ -216,7 +216,7 @@ void Resizer::startResize(Qt::Edges resizeEdges, const PointerEvent &event)
 
     m_currentResizeData->maxGrow =
             QPoint(resizeConstraints.maxGrow.x(),
-                   std::min(resizeEdges & Qt::Edge::TopEdge ? resizeConstraints.maxGrowTop : INT_MAX,
+                   std::min(resizeEdges & BobUI::Edge::TopEdge ? resizeConstraints.maxGrowTop : INT_MAX,
                             resizeConstraints.maxGrow.y()));
 
     m_currentResizeData->initialBounds = m_window->window()->geometry();
@@ -230,22 +230,22 @@ void Resizer::continueResize(const PointerEvent &event)
     const QPoint cappedGrowVector(
             std::min(m_currentResizeData->maxGrow.x(),
                      std::max(m_currentResizeData->minShrink.x(),
-                              (m_currentResizeData->edges & Qt::Edge::LeftEdge) ? -amount.x()
-                                      : (m_currentResizeData->edges & Qt::Edge::RightEdge)
+                              (m_currentResizeData->edges & BobUI::Edge::LeftEdge) ? -amount.x()
+                                      : (m_currentResizeData->edges & BobUI::Edge::RightEdge)
                                       ? amount.x()
                                       : 0)),
             std::min(m_currentResizeData->maxGrow.y(),
                      std::max(m_currentResizeData->minShrink.y(),
-                              (m_currentResizeData->edges & Qt::Edge::TopEdge) ? -amount.y()
-                                      : (m_currentResizeData->edges & Qt::Edge::BottomEdge)
+                              (m_currentResizeData->edges & BobUI::Edge::TopEdge) ? -amount.y()
+                                      : (m_currentResizeData->edges & BobUI::Edge::BottomEdge)
                                       ? amount.y()
                                       : 0)));
 
     auto bounds = m_currentResizeData->initialBounds.adjusted(
-            (m_currentResizeData->edges & Qt::Edge::LeftEdge) ? -cappedGrowVector.x() : 0,
-            (m_currentResizeData->edges & Qt::Edge::TopEdge) ? -cappedGrowVector.y() : 0,
-            (m_currentResizeData->edges & Qt::Edge::RightEdge) ? cappedGrowVector.x() : 0,
-            (m_currentResizeData->edges & Qt::Edge::BottomEdge) ? cappedGrowVector.y() : 0);
+            (m_currentResizeData->edges & BobUI::Edge::LeftEdge) ? -cappedGrowVector.x() : 0,
+            (m_currentResizeData->edges & BobUI::Edge::TopEdge) ? -cappedGrowVector.y() : 0,
+            (m_currentResizeData->edges & BobUI::Edge::RightEdge) ? cappedGrowVector.x() : 0,
+            (m_currentResizeData->edges & BobUI::Edge::BottomEdge) ? cappedGrowVector.y() : 0);
 
     m_window->window()->setGeometry(bounds);
 }
@@ -262,7 +262,7 @@ TitleBar::TitleBar(QWasmWindow *window, emscripten::val parentElement)
       m_label(dom::document().call<emscripten::val>("createElement", emscripten::val("div")))
 {
     m_icon = std::make_unique<WebImageButton>();
-    m_icon->setImage(Base64IconStore::get()->getIcon(Base64IconStore::IconType::QtLogo), "svg+xml");
+    m_icon->setImage(Base64IconStore::get()->getIcon(Base64IconStore::IconType::BobUILogo), "svg+xml");
     m_element.call<void>("appendChild", m_icon->htmlElement());
     m_element.set("className", "title-bar");
 
@@ -429,10 +429,10 @@ QPointF TitleBar::clipPointWithScreen(const QPointF &pointInTitleBarCoords) cons
     return m_window->parent() ? result : m_window->platformScreen()->mapFromLocal(result).toPoint();
 }
 
-NonClientArea::NonClientArea(QWasmWindow *window, emscripten::val qtWindowElement)
-    : m_qtWindowElement(qtWindowElement),
-      m_resizer(std::make_unique<Resizer>(window, m_qtWindowElement)),
-      m_titleBar(std::make_unique<TitleBar>(window, m_qtWindowElement))
+NonClientArea::NonClientArea(QWasmWindow *window, emscripten::val bobuiWindowElement)
+    : m_bobuiWindowElement(bobuiWindowElement),
+      m_resizer(std::make_unique<Resizer>(window, m_bobuiWindowElement)),
+      m_titleBar(std::make_unique<TitleBar>(window, m_bobuiWindowElement))
 {
     updateResizability();
 }
@@ -454,7 +454,7 @@ void NonClientArea::updateResizability()
     const auto resizeConstraints = m_resizer->getResizeConstraints();
     const bool nonResizable = resizeConstraints.minShrink.isNull()
             && resizeConstraints.maxGrow.isNull() && resizeConstraints.maxGrowTop == 0;
-    dom::syncCSSClassWith(m_qtWindowElement, "no-resize", nonResizable);
+    dom::syncCSSClassWith(m_bobuiWindowElement, "no-resize", nonResizable);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsnativeinterface.h"
 #include "qwindowswindow.h"
@@ -11,12 +11,12 @@
 #include "qwindowstheme.h"
 #include "qwin10helpers.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qopenglcontext.h>
-#include <QtGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/qopenglcontext.h>
+#include <BobUIGui/qscreen.h>
 #include <qpa/qplatformscreen.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum ResourceType {
     RenderingContextType,
@@ -64,7 +64,7 @@ void *QWindowsNativeInterface::nativeResourceForWindow(const QByteArray &resourc
         }
         break;
     case QWindow::VulkanSurface:
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         if (type == VkSurface)
             return bw->surface(nullptr, nullptr); // returns the address of the VkSurfaceKHR, not the value, as expected
 #endif
@@ -91,7 +91,7 @@ void *QWindowsNativeInterface::nativeResourceForScreen(const QByteArray &resourc
     return nullptr;
 }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
 void *QWindowsNativeInterface::nativeResourceForCursor(const QByteArray &resource, const QCursor &cursor)
 {
     if (resource == QByteArrayLiteral("hcursor")) {
@@ -102,11 +102,11 @@ void *QWindowsNativeInterface::nativeResourceForCursor(const QByteArray &resourc
     }
     return nullptr;
 }
-#endif // !QT_NO_CURSOR
+#endif // !BOBUI_NO_CURSOR
 
 void *QWindowsNativeInterface::nativeResourceForIntegration(const QByteArray &resource)
 {
-#ifdef QT_NO_OPENGL
+#ifdef BOBUI_NO_OPENGL
     Q_UNUSED(resource);
 #else
     if (resourceType(resource) == GlHandleType) {
@@ -118,7 +118,7 @@ void *QWindowsNativeInterface::nativeResourceForIntegration(const QByteArray &re
     return nullptr;
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 void *QWindowsNativeInterface::nativeResourceForContext(const QByteArray &resource, QOpenGLContext *context)
 {
     if (!context || !context->handle()) {
@@ -129,6 +129,6 @@ void *QWindowsNativeInterface::nativeResourceForContext(const QByteArray &resour
     qWarning("%s: Invalid key '%s' requested.", __FUNCTION__, resource.constData());
     return nullptr;
 }
-#endif // !QT_NO_OPENGL
+#endif // !BOBUI_NO_OPENGL
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

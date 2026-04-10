@@ -1,27 +1,27 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformdialoghelper.h"
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QList>
-#if QT_CONFIG(regularexpression)
-#include <QtCore/QRegularExpression>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QList>
+#if BOBUI_CONFIG(regularexpression)
+#include <BobUICore/QRegularExpression>
 #endif
-#include <QtCore/QUrl>
-#include <QtCore/QVariant>
-#include <QtGui/QColor>
-#include <QtGui/QPixmap>
+#include <BobUICore/QUrl>
+#include <BobUICore/QVariant>
+#include <BobUIGui/QColor>
+#include <BobUIGui/QPixmap>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::StandardButton,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::StandardButton,
                                QPlatformDialogHelper__StandardButton)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::ButtonRole,
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::ButtonRole,
                                QPlatformDialogHelper__ButtonRole)
 
 /*!
@@ -39,16 +39,16 @@ QT_IMPL_METATYPE_EXTERN_TAGGED(QPlatformDialogHelper::ButtonRole,
 
     This enum type specifies platform-specific style hints.
 
-    \value DialogIsQtWindow Indicates that a platform-specific dialog is implemented
-                            as in-process Qt window. It allows to prevent blocking the
-                            dialog by an invisible proxy Qt dialog.
+    \value DialogIsBobUIWindow Indicates that a platform-specific dialog is implemented
+                            as in-process BobUI window. It allows to prevent blocking the
+                            dialog by an invisible proxy BobUI dialog.
 
     \sa styleHint()
 */
 
 static const int buttonRoleLayouts[2][6][14] =
 {
-    // Qt::Horizontal
+    // BobUI::Horizontal
     {
         // WinLayout
         { QPlatformDialogHelper::ResetRole, QPlatformDialogHelper::Stretch, QPlatformDialogHelper::YesRole, QPlatformDialogHelper::AcceptRole,
@@ -84,7 +84,7 @@ static const int buttonRoleLayouts[2][6][14] =
           QPlatformDialogHelper::YesRole | QPlatformDialogHelper::Reverse, QPlatformDialogHelper::EOL, QPlatformDialogHelper::EOL }
     },
 
-    // Qt::Vertical
+    // BobUI::Vertical
     {
         // WinLayout
         { QPlatformDialogHelper::ActionRole, QPlatformDialogHelper::YesRole, QPlatformDialogHelper::AcceptRole, QPlatformDialogHelper::AlternateRole,
@@ -713,14 +713,14 @@ const char QPlatformFileDialogHelper::filterRegExp[] =
 // Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
 QStringList QPlatformFileDialogHelper::cleanFilterList(const QString &filter)
 {
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     static const QRegularExpression regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
     QString f = filter;
     QRegularExpressionMatch match = regexp.match(filter);
     if (match.hasMatch())
         f = match.captured(2);
-    return f.split(u' ', Qt::SkipEmptyParts);
+    return f.split(u' ', BobUI::SkipEmptyParts);
 #else
     Q_UNUSED(filter);
     return QStringList();
@@ -748,7 +748,7 @@ public:
     int nextCustomButtonId;
     QPixmap iconPixmap;
     QString checkBoxLabel;
-    Qt::CheckState checkBoxState = Qt::Unchecked;
+    BobUI::CheckState checkBoxState = BobUI::Unchecked;
     int defaultButtonId = 0;
     int escapeButtonId = 0;
     QMessageDialogOptions::Options options;
@@ -887,7 +887,7 @@ const QMessageDialogOptions::CustomButton *QMessageDialogOptions::customButton(i
     return (i < 0 ? nullptr : &d->customButtons.at(i));
 }
 
-void QMessageDialogOptions::setCheckBox(const QString &label, Qt::CheckState state)
+void QMessageDialogOptions::setCheckBox(const QString &label, BobUI::CheckState state)
 {
     d->checkBoxLabel = label;
     d->checkBoxState = state;
@@ -898,7 +898,7 @@ QString QMessageDialogOptions::checkBoxLabel() const
     return d->checkBoxLabel;
 }
 
-Qt::CheckState QMessageDialogOptions::checkBoxState() const
+BobUI::CheckState QMessageDialogOptions::checkBoxState() const
 {
     return d->checkBoxState;
 }
@@ -989,7 +989,7 @@ QPlatformDialogHelper::ButtonRole QPlatformDialogHelper::buttonRole(QPlatformDia
     return InvalidRole;
 }
 
-const int *QPlatformDialogHelper::buttonLayout(Qt::Orientation orientation, ButtonLayout policy)
+const int *QPlatformDialogHelper::buttonLayout(BobUI::Orientation orientation, ButtonLayout policy)
 {
     if (policy == UnknownLayout) {
 #if defined (Q_OS_MACOS)
@@ -1002,7 +1002,7 @@ const int *QPlatformDialogHelper::buttonLayout(Qt::Orientation orientation, Butt
         policy = WinLayout;
 #endif
     }
-    return buttonRoleLayouts[orientation == Qt::Vertical][policy];
+    return buttonRoleLayouts[orientation == BobUI::Vertical][policy];
 }
 
 /*!
@@ -1024,6 +1024,6 @@ void QPlatformMessageDialogHelper::setOptions(const QSharedPointer<QMessageDialo
     m_options = options;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformdialoghelper.cpp"

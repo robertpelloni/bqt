@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
+// Copyright (C) 2021 The BobUI Company Ltd.
 // Copyright (C) 2020 Olivier Goffart <ogoffart@woboq.com>
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 // This test actually wants to practice narrowing conditions, so never define this.
-#ifdef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
-#undef QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
+#ifdef BOBUI_NO_NARROWING_CONVERSIONS_IN_CONNECT
+#undef BOBUI_NO_NARROWING_CONVERSIONS_IN_CONNECT
 #endif
 
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 #include <QStringListModel>
 #include <QAbstractEventDispatcher>
 #include <QScopedValueRollback>
@@ -17,21 +17,21 @@
 #include <qcoreapplication.h>
 #include <qpointer.h>
 #include <qproperty.h>
-#include <qtimer.h>
+#include <bobuiimer.h>
 #include <qregularexpression.h>
 #include <qmetaobject.h>
 #include <qvariant.h>
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <QThread>
+#include <BOBUIcpServer>
+#include <BOBUIcpSocket>
+#include <BOBUIhread>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QScopedPointer>
-#if QT_CONFIG(process)
+#if BOBUI_CONFIG(process)
 # include <QProcess>
 #endif
 #include "qobject.h"
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 #include <private/qobject_p.h>
 #endif
 
@@ -40,7 +40,7 @@
 #include <math.h>
 
 using namespace std::chrono_literals;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_QObject : public QObject
 {
@@ -201,7 +201,7 @@ signals:
     void signal2();
     void signal3();
     void signal4();
-    QT_MOC_COMPAT void signal5();
+    BOBUI_MOC_COMPAT void signal5();
     void signal6(void);
     void signal7(int, const QString &);
     void signalInvoke1();
@@ -215,9 +215,9 @@ public:
     Q_SCRIPTABLE void sinvoke1(){}
     int aPublicSlotCalled;
 protected:
-    Q_INVOKABLE QT_MOC_COMPAT void invoke2(){}
-    Q_INVOKABLE QT_MOC_COMPAT void invoke2(int){}
-    Q_SCRIPTABLE QT_MOC_COMPAT void sinvoke2(){}
+    Q_INVOKABLE BOBUI_MOC_COMPAT void invoke2(){}
+    Q_INVOKABLE BOBUI_MOC_COMPAT void invoke2(int){}
+    Q_SCRIPTABLE BOBUI_MOC_COMPAT void sinvoke2(){}
 private:
     Q_INVOKABLE void invoke3(int hinz = 0, int kunz = 0)
     {
@@ -337,9 +337,9 @@ void tst_QObject::disconnect()
 
     static auto re = QRegularExpression(u"QObject::connect: the SLOT\\(\\) macro is "
                                         "used with a non-slot function:.*"_s);
-    QTest::ignoreMessage(QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, re);
     connect(&s, SIGNAL(signalInvoke1()), &r1, SLOT(slotInvoke1()));
-    QTest::ignoreMessage(QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, re);
     connect(&s, SIGNAL(signalSinvoke1()), &r1, SLOT(slotSinvoke1()));
 
     s.emitSignal1();
@@ -371,9 +371,9 @@ void tst_QObject::disconnect()
 
     static auto re2 = QRegularExpression(u"QObject::disconnect: the SLOT\\(\\) macro is "
                                          "used with a non-slot function:.*"_s);
-    QTest::ignoreMessage(QtWarningMsg, re2);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, re2);
     QObject::disconnect(&s, SIGNAL(signalInvoke1()), &r1, SLOT(slotInvoke1()));
-    QTest::ignoreMessage(QtWarningMsg, re2);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, re2);
     QObject::disconnect(&s, SIGNAL(signalSinvoke1()), &r1, SLOT(slotSinvoke1()));
 
     s.emitSignalInvoke1();
@@ -444,12 +444,12 @@ void tst_QObject::disconnect()
     QVERIFY(!r1.called(2));
     QVERIFY(!r2.called(2));
 
-    // breaking a connection to QObject::destroyed can be dangerous if Qt
+    // breaking a connection to QObject::destroyed can be dangerous if BobUI
     // or other parts of the application depend on that signal to clean up
     // data structures. We want to warn if this happens as a side effect of
     // a wildcard disconnect call.
     QObject::connect(&s, &QObject::destroyed, &r1, &ReceiverObject::slot1);
-    QTest::ignoreMessage(QtWarningMsg, QRegularExpression("wildcard call disconnects from destroyed"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, QRegularExpression("wildcard call disconnects from destroyed"
                                         " signal of SenderObject::"));
     QVERIFY(s.disconnect());
 }
@@ -497,7 +497,7 @@ void tst_QObject::connect_signalToSignal()
     receiver.reset();
     static const auto re = QRegularExpression("QObject::connect: No such slot "
                            "ReceiverObject::receiverSignal7_invokable\\(int,const QString&\\).*");
-    QTest::ignoreMessage(QtWarningMsg, re);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, re);
     // Q_INVOKABLE in receiverSignal7_invokable() declaration is no-op, moc
     // registers this as a signal, consequently it only works with the SIGNAL()
     // macro in connect() calls
@@ -580,8 +580,8 @@ void tst_QObject::connectSlotsByName()
     AutoConnectSender sender(&receiver);
     sender.setObjectName("Sender");
 
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::connectSlotsByName: No matching signal for on_child_signal()");
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::connectSlotsByName: Connecting slot on_Sender_signalManyParams() with the first of the following compatible signals: QList(\"signalManyParams(int,int,int,QString,bool)\", \"signalManyParams(int,int,int,QString,bool,bool)\")");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::connectSlotsByName: No matching signal for on_child_signal()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::connectSlotsByName: Connecting slot on_Sender_signalManyParams() with the first of the following compatible signals: QList(\"signalManyParams(int,int,int,QString,bool)\", \"signalManyParams(int,int,int,QString,bool,bool)\")");
     QMetaObject::connectSlotsByName(&receiver);
 
     receiver.called_slots.clear();
@@ -646,9 +646,9 @@ void tst_QObject::findChildren()
     QObject o12(&o1);
     QObject o111(&o11);
     QObject unnamed(&o);
-    QTimer t1(&o);
-    QTimer t121(&o12);
-    QTimer emptyname(&o);
+    BOBUIimer t1(&o);
+    BOBUIimer t121(&o12);
+    BOBUIimer emptyname(&o);
     QObject oo;
     QObject o21(&oo);
     QObject o22(&oo);
@@ -687,11 +687,11 @@ void tst_QObject::findChildren()
     QCOMPARE(op, static_cast<QObject *>(&t1));
     op = o.findChild<QObject*>("t121");
     QCOMPARE(op, static_cast<QObject *>(&t121));
-    op = o.findChild<QTimer*>("t1");
+    op = o.findChild<BOBUIimer*>("t1");
     QCOMPARE(op, static_cast<QObject *>(&t1));
-    op = o.findChild<QTimer*>("t121");
+    op = o.findChild<BOBUIimer*>("t121");
     QCOMPARE(op, static_cast<QObject *>(&t121));
-    op = o.findChild<QTimer*>("o12");
+    op = o.findChild<BOBUIimer*>("o12");
     QCOMPARE(op, static_cast<QObject *>(0));
     op = o.findChild<QObject*>("o");
     QCOMPARE(op, static_cast<QObject *>(0));
@@ -722,7 +722,7 @@ void tst_QObject::findChildren()
     QCOMPARE(op, &o23);
 
     QList<QObject*> l;
-    QList<QTimer*> tl;
+    QList<BOBUIimer*> tl;
 
     l = o.findChildren<QObject*>("o1");
     QCOMPARE(l.size(), 1);
@@ -745,17 +745,17 @@ void tst_QObject::findChildren()
     l = o.findChildren<QObject*>("t121");
     QCOMPARE(l.size(), 1);
     QCOMPARE(l.at(0), static_cast<QObject *>(&t121));
-    tl = o.findChildren<QTimer*>("t1");
+    tl = o.findChildren<BOBUIimer*>("t1");
     QCOMPARE(tl.size(), 1);
     QCOMPARE(tl.at(0), &t1);
-    tl = o.findChildren<QTimer*>("t121");
+    tl = o.findChildren<BOBUIimer*>("t121");
     QCOMPARE(tl.size(), 1);
     QCOMPARE(tl.at(0), &t121);
     l = o.findChildren<QObject*>("o");
     QCOMPARE(l.size(), 0);
     l = o.findChildren<QObject*>("harry");
     QCOMPARE(l.size(), 0);
-    tl = o.findChildren<QTimer*>("o12");
+    tl = o.findChildren<BOBUIimer*>("o12");
     QCOMPARE(tl.size(), 0);
     l = o.findChildren<QObject*>("o1");
     QCOMPARE(l.size(), 1);
@@ -772,11 +772,11 @@ void tst_QObject::findChildren()
     QCOMPARE(l.size(), 2);
     QVERIFY(l.contains(&t1));
     QVERIFY(l.contains(&t121));
-    tl = o.findChildren<QTimer*>(QRegularExpression("^.*$"));
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression("^.*$"));
     QCOMPARE(tl.size(), 3);
     QVERIFY(tl.contains(&t1));
     QVERIFY(tl.contains(&t121));
-    tl = o.findChildren<QTimer*>(QRegularExpression("^o.*$"));
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression("^o.*$"));
     QCOMPARE(tl.size(), 0);
     l = o.findChildren<QObject*>(QRegularExpression("^harry$"));
     QCOMPARE(l.size(), 0);
@@ -792,11 +792,11 @@ void tst_QObject::findChildren()
     QCOMPARE(l.size(), 2);
     QVERIFY(l.contains(&t1));
     QVERIFY(l.contains(&t121));
-    tl = o.findChildren<QTimer*>(QRegularExpression(".*"));
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression(".*"));
     QCOMPARE(tl.size(), 3);
     QVERIFY(tl.contains(&t1));
     QVERIFY(tl.contains(&t121));
-    tl = o.findChildren<QTimer*>(QRegularExpression("o.*"));
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression("o.*"));
     QCOMPARE(tl.size(), 0);
     l = o.findChildren<QObject*>(QRegularExpression("harry"));
     QCOMPARE(l.size(), 0);
@@ -816,84 +816,84 @@ void tst_QObject::findChildren()
     l = o.findChildren<QObject*>("unnamed");
     QCOMPARE(l.size(), 0);
 
-    tl = o.findChildren<QTimer *>("t1");
+    tl = o.findChildren<BOBUIimer *>("t1");
     QCOMPARE(tl.size(), 1);
     QCOMPARE(tl.at(0), &t1);
 
     // Find direct child/children
 
-    op = o.findChild<QObject*>("o1", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &o1);
-    op = o.findChild<QObject*>("o2", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o2", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &o2);
-    op = o.findChild<QObject*>("o11", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o11", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("o12", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o12", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("o111", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o111", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("t1", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("t1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(&t1));
-    op = o.findChild<QObject*>("t121", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("t121", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QTimer*>("t1", Qt::FindDirectChildrenOnly);
+    op = o.findChild<BOBUIimer*>("t1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(&t1));
-    op = o.findChild<QTimer*>("t121", Qt::FindDirectChildrenOnly);
+    op = o.findChild<BOBUIimer*>("t121", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QTimer*>("o12", Qt::FindDirectChildrenOnly);
+    op = o.findChild<BOBUIimer*>("o12", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("o", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("harry", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("harry", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
-    op = o.findChild<QObject*>("o1", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("o1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &o1);
 
-    l = o.findChildren<QObject*>("o1", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 1);
     QCOMPARE(l.at(0), &o1);
-    l = o.findChildren<QObject*>("o2", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o2", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 1);
     QCOMPARE(l.at(0), &o2);
-    l = o.findChildren<QObject*>("o11", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o11", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    l = o.findChildren<QObject*>("o12", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o12", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    l = o.findChildren<QObject*>("o111", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o111", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    l = o.findChildren<QObject*>("t1", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("t1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 1);
     QCOMPARE(l.at(0), static_cast<QObject *>(&t1));
-    l = o.findChildren<QObject*>("t121", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("t121", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    tl = o.findChildren<QTimer*>("t1", Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer*>("t1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 1);
     QCOMPARE(tl.at(0), &t1);
-    tl = o.findChildren<QTimer*>("t121", Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer*>("t121", BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 0);
-    l = o.findChildren<QObject*>("o", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    l = o.findChildren<QObject*>("harry", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("harry", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
-    tl = o.findChildren<QTimer*>("o12", Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer*>("o12", BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 0);
-    l = o.findChildren<QObject*>("o1", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("o1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 1);
     QCOMPARE(l.at(0), &o1);
 
-    l = o.findChildren<QObject*>(QRegularExpression("^o.*$"), Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>(QRegularExpression("^o.*$"), BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 2);
     QVERIFY(l.contains(&o1));
     QVERIFY(l.contains(&o2));
-    l = o.findChildren<QObject*>(QRegularExpression("^t.*$"), Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>(QRegularExpression("^t.*$"), BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 1);
     QVERIFY(l.contains(&t1));
-    tl = o.findChildren<QTimer*>(QRegularExpression("^.*$"), Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression("^.*$"), BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 2);
     QVERIFY(tl.contains(&t1));
-    tl = o.findChildren<QTimer*>(QRegularExpression("^o.*$"), Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer*>(QRegularExpression("^o.*$"), BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 0);
-    l = o.findChildren<QObject*>(QRegularExpression("^harry$"), Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>(QRegularExpression("^harry$"), BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
 
     DerivedObj dr1(&o111);
@@ -902,31 +902,31 @@ void tst_QObject::findChildren()
     Q_SET_OBJECT_NAME(dr2);
 
     // empty and null string check
-    op = o.findChild<QObject*>(Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>(BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &o1);
-    op = o.findChild<QTimer*>(Qt::FindDirectChildrenOnly);
+    op = o.findChild<BOBUIimer*>(BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &t1);
-    op = o.findChild<DerivedObj*>(Qt::FindDirectChildrenOnly);
+    op = o.findChild<DerivedObj*>(BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, nullptr);
-    op = o.findChild<DerivedObj*>(Qt::FindChildrenRecursively);
+    op = o.findChild<DerivedObj*>(BobUI::FindChildrenRecursively);
     QCOMPARE(op, &dr1);
-    op = o.findChild<QObject*>(QString(), Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>(QString(), BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &o1);
-    op = o.findChild<QObject*>("", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, &unnamed);
-    op = o.findChild<QObject*>("unnamed", Qt::FindDirectChildrenOnly);
+    op = o.findChild<QObject*>("unnamed", BobUI::FindDirectChildrenOnly);
     QCOMPARE(op, static_cast<QObject *>(0));
 
-    l = o.findChildren<QObject*>(Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>(BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 5);
-    l = o.findChildren<QObject*>(QString(), Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>(QString(), BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 5);
-    l = o.findChildren<QObject*>("", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 2);
-    l = o.findChildren<QObject*>("unnamed", Qt::FindDirectChildrenOnly);
+    l = o.findChildren<QObject*>("unnamed", BobUI::FindDirectChildrenOnly);
     QCOMPARE(l.size(), 0);
 
-    tl = o.findChildren<QTimer *>("t1", Qt::FindDirectChildrenOnly);
+    tl = o.findChildren<BOBUIimer *>("t1", BobUI::FindDirectChildrenOnly);
     QCOMPARE(tl.size(), 1);
     QCOMPARE(tl.at(0), &t1);
 }
@@ -954,16 +954,16 @@ protected:
 
 void tst_QObject::connectDisconnectNotify_data()
 {
-    QTest::addColumn<QString>("a_signal");
-    QTest::addColumn<QString>("a_slot");
+    BOBUIest::addColumn<QString>("a_signal");
+    BOBUIest::addColumn<QString>("a_slot");
 
-    QTest::newRow("combo1") << SIGNAL( signal1() )        << SLOT( slot1() );
-    QTest::newRow("combo2") << SIGNAL( signal2(void) )    << SLOT( slot2(  ) );
-    QTest::newRow("combo3") << SIGNAL( signal3(  ) )      << SLOT( slot3(void) );
-    QTest::newRow("combo4") << SIGNAL(  signal4( void )  )<< SLOT(  slot4( void )  );
-    QTest::newRow("combo5") << SIGNAL( signal6( void ) )  << SLOT( slot4() );
-    QTest::newRow("combo6") << SIGNAL( signal6() )        << SLOT( slot4() );
-    QTest::newRow("combo7") << SIGNAL( signal7( int , const QString & ) ) << SLOT( slot4() );
+    BOBUIest::newRow("combo1") << SIGNAL( signal1() )        << SLOT( slot1() );
+    BOBUIest::newRow("combo2") << SIGNAL( signal2(void) )    << SLOT( slot2(  ) );
+    BOBUIest::newRow("combo3") << SIGNAL( signal3(  ) )      << SLOT( slot3(void) );
+    BOBUIest::newRow("combo4") << SIGNAL(  signal4( void )  )<< SLOT(  slot4( void )  );
+    BOBUIest::newRow("combo5") << SIGNAL( signal6( void ) )  << SLOT( slot4() );
+    BOBUIest::newRow("combo6") << SIGNAL( signal6() )        << SLOT( slot4() );
+    BOBUIest::newRow("combo7") << SIGNAL( signal7( int , const QString & ) ) << SLOT( slot4() );
 }
 
 void tst_QObject::connectDisconnectNotify()
@@ -1089,7 +1089,7 @@ void tst_QObject::connectAutoQueuedIncomplete()
 {
     auto objectWithIncomplete1 = new QObjectWithIncomplete2();
     auto objectWithIncomplete2 = new QObjectWithIncomplete2();
-    auto t = new QThread(this);
+    auto t = new BOBUIhread(this);
     auto cleanup = qScopeGuard([&](){
         t->quit();
         QVERIFY(t->wait());
@@ -1102,8 +1102,8 @@ void tst_QObject::connectAutoQueuedIncomplete()
 
     connect(objectWithIncomplete2, &QObjectWithIncomplete2::signalWithIncomplete,
             objectWithIncomplete1, &QObjectWithIncomplete2::slotWithIncomplete);
-    QMetaObject::invokeMethod(objectWithIncomplete2, "run", Qt::QueuedConnection);
-    QTRY_VERIFY(objectWithIncomplete1->calledSlot);
+    QMetaObject::invokeMethod(objectWithIncomplete2, "run", BobUI::QueuedConnection);
+    BOBUIRY_VERIFY(objectWithIncomplete1->calledSlot);
 }
 
 static void connectDisconnectNotifyTestSlot() {}
@@ -1300,11 +1300,11 @@ void tst_QObject::connectDisconnectNotify_shadowing()
     QMetaMethod slot1 = s.metaObject()->method(slot1Index);
 
     // Test connectNotify
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     const char *warning = "QMetaObject::indexOfSignal: signal signal1() from "
                           "ConnectByNameNotifySenderObject redefined in "
                           "ConnectDisconnectNotifyShadowObject";
-    QTest::ignoreMessage(QtWarningMsg, warning);
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warning);
 #endif
     QVERIFY(QObject::connect(&s, SIGNAL(signal1()), &s, SLOT(slot1())));
     QCOMPARE(s.connectedSignals.size(), 1);
@@ -1312,8 +1312,8 @@ void tst_QObject::connectDisconnectNotify_shadowing()
     QVERIFY(s.disconnectedSignals.isEmpty());
 
     // Test disconnectNotify
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtWarningMsg, warning);
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIWarningMsg, warning);
 #endif
     QVERIFY(QObject::disconnect(&s, SIGNAL(signal1()), &s, SLOT(slot1())));
     QCOMPARE(s.disconnectedSignals.size(), 1);
@@ -1688,7 +1688,7 @@ void tst_QObject::customTypes()
         QCOMPARE(instanceCount, 4);
 
         connect(&checker, SIGNAL(signal1(CustomType)), &checker, SLOT(slot1(CustomType)),
-                Qt::DirectConnection);
+                BobUI::DirectConnection);
         QCOMPARE(checker.received.value(), 0);
         checker.doEmit(t1);
         QCOMPARE(checker.received.value(), t1.value());
@@ -1698,7 +1698,7 @@ void tst_QObject::customTypes()
 
         checker.disconnect();
         connect(&checker, SIGNAL(signal1(CustomType)), &checker, SLOT(slot1(CustomType)),
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QCOMPARE(instanceCount, 4);
         checker.doEmit(t2);
         QCOMPARE(instanceCount, 5);
@@ -1818,12 +1818,12 @@ void tst_QObject::threadSignalEmissionCrash()
 {
     int loopCount = 1000;
     for (int i = 0; i < loopCount; ++i) {
-        QTcpSocket socket;
+        BOBUIcpSocket socket;
         socket.connectToHost("localhost", 80);
     }
 }
 
-class TestThread : public QThread
+class TestThread : public BOBUIhread
 {
     Q_OBJECT
 public:
@@ -1844,7 +1844,7 @@ public:
 
 void tst_QObject::thread()
 {
-    QThread *currentThread = QThread::currentThread();
+    BOBUIhread *currentThread = BOBUIhread::currentThread();
     // the current thread is the same as the QApplication
     // thread... see tst_QApplication::thread()
 
@@ -1876,7 +1876,7 @@ void tst_QObject::thread()
 
         // thread affinity for an object with no parent should be the
         // thread in which the object was created
-        QCOMPARE(object->thread(), (QThread *)&thr);
+        QCOMPARE(object->thread(), (BOBUIhread *)&thr);
         // children inherit their parent's thread
         QCOMPARE(child->thread(), object->thread());
 
@@ -1886,13 +1886,13 @@ void tst_QObject::thread()
 
         // even though the thread is no longer running, the affinity
         // should not change
-        QCOMPARE(object->thread(), (QThread *)&thr);
+        QCOMPARE(object->thread(), (BOBUIhread *)&thr);
         QCOMPARE(child->thread(), object->thread());
     }
 
     // the thread has been destroyed, thread affinity should
     // automatically reset to no thread
-    QCOMPARE(object->thread(), (QThread *)0);
+    QCOMPARE(object->thread(), (BOBUIhread *)0);
     QCOMPARE(child->thread(), object->thread());
 
     delete object;
@@ -1902,9 +1902,9 @@ class MoveToThreadObject : public QObject
 {
     Q_OBJECT
 public:
-    QThread *timerEventThread = nullptr;
-    QThread *customEventThread = nullptr;
-    QThread *slotThread = nullptr;
+    BOBUIhread *timerEventThread = nullptr;
+    BOBUIhread *customEventThread = nullptr;
+    BOBUIhread *slotThread = nullptr;
 
     MoveToThreadObject(QObject *parent = nullptr)
         : QObject(parent)
@@ -1914,15 +1914,15 @@ public:
     {
         if (customEventThread)
             qFatal("%s: customEventThread should be null", Q_FUNC_INFO);
-        customEventThread = QThread::currentThread();
+        customEventThread = BOBUIhread::currentThread();
         emit theSignal();
     }
 
-    void timerEvent(QTimerEvent *) override
+    void timerEvent(BOBUIimerEvent *) override
     {
         if (timerEventThread)
             qFatal("%s: timerEventThread should be null", Q_FUNC_INFO);
-        timerEventThread = QThread::currentThread();
+        timerEventThread = BOBUIhread::currentThread();
         emit theSignal();
     }
 
@@ -1931,7 +1931,7 @@ public slots:
     {
         if (slotThread)
             qFatal("%s: slotThread should be null", Q_FUNC_INFO);
-        slotThread = QThread::currentThread();
+        slotThread = BOBUIhread::currentThread();
         emit theSignal();
     }
 
@@ -1939,7 +1939,7 @@ signals:
     void theSignal();
 };
 
-class MoveToThreadThread : public QThread
+class MoveToThreadThread : public BOBUIhread
 {
 public:
     ~MoveToThreadThread()
@@ -1952,8 +1952,8 @@ public:
     void start()
     {
         QEventLoop eventLoop;
-        connect(this, SIGNAL(started()), &eventLoop, SLOT(quit()), Qt::QueuedConnection);
-        QThread::start();
+        connect(this, SIGNAL(started()), &eventLoop, SLOT(quit()), BobUI::QueuedConnection);
+        BOBUIhread::start();
         // wait for thread to start
         (void) eventLoop.exec();
     }
@@ -1967,7 +1967,7 @@ void tst_QObject::thread0()
     object->moveToThread(0);
     QObject *child = new QObject(object);
     QCOMPARE(child->parent(), object);
-    QCOMPARE(child->thread(), (QThread *)0);
+    QCOMPARE(child->thread(), (BOBUIhread *)0);
 
 #if 0
     // We don't support moving children into a parent that has no thread
@@ -1976,7 +1976,7 @@ void tst_QObject::thread0()
     child2->moveToThread(0);
     child2->setParent(object);
     QCOMPARE(child2->parent(), object);
-    QCOMPARE(child2->thread(), (QThread *)0);
+    QCOMPARE(child2->thread(), (BOBUIhread *)0);
 #endif
 
     delete object;
@@ -1984,7 +1984,7 @@ void tst_QObject::thread0()
 
 void tst_QObject::moveToThread()
 {
-    QThread *currentThread = QThread::currentThread();
+    BOBUIhread *currentThread = BOBUIhread::currentThread();
 
     {
         QObject *object = new QObject;
@@ -1992,16 +1992,16 @@ void tst_QObject::moveToThread()
         QCOMPARE(object->thread(), currentThread);
         QCOMPARE(child->thread(), currentThread);
         QVERIFY(object->moveToThread(nullptr));
-        QCOMPARE(object->thread(), (QThread *)0);
-        QCOMPARE(child->thread(), (QThread *)0);
+        QCOMPARE(object->thread(), (BOBUIhread *)0);
+        QCOMPARE(child->thread(), (BOBUIhread *)0);
         QVERIFY(object->moveToThread(currentThread));
         QCOMPARE(object->thread(), currentThread);
         QCOMPARE(child->thread(), currentThread);
-        QTest::ignoreMessage(QtWarningMsg, "QObject::moveToThread: Cannot move objects with a parent");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::moveToThread: Cannot move objects with a parent");
         QVERIFY(!child->moveToThread(nullptr));
         QVERIFY(object->moveToThread(nullptr));
-        QCOMPARE(object->thread(), (QThread *)0);
-        QCOMPARE(child->thread(), (QThread *)0);
+        QCOMPARE(object->thread(), (BOBUIhread *)0);
+        QCOMPARE(child->thread(), (BOBUIhread *)0);
         // can delete an object with no thread anywhere
         delete object;
     }
@@ -2018,11 +2018,11 @@ void tst_QObject::moveToThread()
         QCOMPARE(object->thread(), currentThread);
         QCOMPARE(child->thread(), currentThread);
         object->moveToThread(&thread);
-        QCOMPARE(object->thread(), (QThread *)&thread);
-        QCOMPARE(child->thread(), (QThread *)&thread);
+        QCOMPARE(object->thread(), (BOBUIhread *)&thread);
+        QCOMPARE(child->thread(), (BOBUIhread *)&thread);
 
-        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), Qt::DirectConnection);
-        QMetaObject::invokeMethod(object, "deleteLater", Qt::QueuedConnection);
+        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), BobUI::DirectConnection);
+        QMetaObject::invokeMethod(object, "deleteLater", BobUI::QueuedConnection);
         thread.wait();
 
         QVERIFY(opointer == nullptr);
@@ -2037,24 +2037,24 @@ void tst_QObject::moveToThread()
         MoveToThreadObject *object = new MoveToThreadObject;
         MoveToThreadObject *child = new MoveToThreadObject(object);
 
-        connect(object, SIGNAL(theSignal()), &thread, SLOT(quit()), Qt::DirectConnection);
+        connect(object, SIGNAL(theSignal()), &thread, SLOT(quit()), BobUI::DirectConnection);
         QCoreApplication::postEvent(child, new QEvent(QEvent::User));
         QCoreApplication::postEvent(object, new QEvent(QEvent::User));
 
         QCOMPARE(object->thread(), currentThread);
         QCOMPARE(child->thread(), currentThread);
         object->moveToThread(&thread);
-        QCOMPARE(object->thread(), (QThread *)&thread);
-        QCOMPARE(child->thread(), (QThread *)&thread);
+        QCOMPARE(object->thread(), (BOBUIhread *)&thread);
+        QCOMPARE(child->thread(), (BOBUIhread *)&thread);
 
         thread.wait();
 
-        QCOMPARE(object->customEventThread, (QThread *)&thread);
-        QCOMPARE(child->customEventThread, (QThread *)&thread);
+        QCOMPARE(object->customEventThread, (BOBUIhread *)&thread);
+        QCOMPARE(child->customEventThread, (BOBUIhread *)&thread);
 
         thread.start();
-        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), Qt::DirectConnection);
-        QMetaObject::invokeMethod(object, "deleteLater", Qt::QueuedConnection);
+        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), BobUI::DirectConnection);
+        QMetaObject::invokeMethod(object, "deleteLater", BobUI::QueuedConnection);
         thread.wait();
     }
 
@@ -2066,7 +2066,7 @@ void tst_QObject::moveToThread()
         MoveToThreadObject *object = new MoveToThreadObject;
         MoveToThreadObject *child = new MoveToThreadObject(object);
 
-        connect(object, SIGNAL(theSignal()), &thread, SLOT(quit()), Qt::DirectConnection);
+        connect(object, SIGNAL(theSignal()), &thread, SLOT(quit()), BobUI::DirectConnection);
 
         child->startTimer(90);
         object->startTimer(100);
@@ -2074,17 +2074,17 @@ void tst_QObject::moveToThread()
         QCOMPARE(object->thread(), currentThread);
         QCOMPARE(child->thread(), currentThread);
         object->moveToThread(&thread);
-        QCOMPARE(object->thread(), (QThread *)&thread);
-        QCOMPARE(child->thread(), (QThread *)&thread);
+        QCOMPARE(object->thread(), (BOBUIhread *)&thread);
+        QCOMPARE(child->thread(), (BOBUIhread *)&thread);
 
         thread.wait();
 
-        QCOMPARE(object->timerEventThread, (QThread *)&thread);
-        QCOMPARE(child->timerEventThread, (QThread *)&thread);
+        QCOMPARE(object->timerEventThread, (BOBUIhread *)&thread);
+        QCOMPARE(child->timerEventThread, (BOBUIhread *)&thread);
 
         thread.start();
-        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), Qt::DirectConnection);
-        QMetaObject::invokeMethod(object, "deleteLater", Qt::QueuedConnection);
+        connect(object, SIGNAL(destroyed()), &thread, SLOT(quit()), BobUI::DirectConnection);
+        QMetaObject::invokeMethod(object, "deleteLater", BobUI::QueuedConnection);
         thread.wait();
     }
 
@@ -2093,34 +2093,34 @@ void tst_QObject::moveToThread()
         MoveToThreadThread thread;
         thread.start();
 
-        QTcpServer server;
+        BOBUIcpServer server;
         QVERIFY(server.listen(QHostAddress::LocalHost, 0));
-        QTcpSocket *socket = new QTcpSocket;
+        BOBUIcpSocket *socket = new BOBUIcpSocket;
         MoveToThreadObject *child = new MoveToThreadObject(socket);
-        connect(socket, SIGNAL(disconnected()), child, SLOT(theSlot()), Qt::DirectConnection);
-        connect(child, SIGNAL(theSignal()), &thread, SLOT(quit()), Qt::DirectConnection);
+        connect(socket, SIGNAL(disconnected()), child, SLOT(theSlot()), BobUI::DirectConnection);
+        connect(child, SIGNAL(theSignal()), &thread, SLOT(quit()), BobUI::DirectConnection);
 
         socket->connectToHost(server.serverAddress(), server.serverPort());
 
         QVERIFY(server.waitForNewConnection(1000));
-        QTcpSocket *serverSocket = server.nextPendingConnection();
+        BOBUIcpSocket *serverSocket = server.nextPendingConnection();
         QVERIFY(serverSocket);
 
         socket->waitForConnected();
 
         QCOMPARE(socket->thread(), currentThread);
         socket->moveToThread(&thread);
-        QCOMPARE(socket->thread(), (QThread *)&thread);
+        QCOMPARE(socket->thread(), (BOBUIhread *)&thread);
 
         serverSocket->close();
 
         QVERIFY(thread.wait(10000));
 
-        QCOMPARE(child->slotThread, (QThread *)&thread);
+        QCOMPARE(child->slotThread, (BOBUIhread *)&thread);
 
         thread.start();
-        connect(socket, SIGNAL(destroyed()), &thread, SLOT(quit()), Qt::DirectConnection);
-        QMetaObject::invokeMethod(socket, "deleteLater", Qt::QueuedConnection);
+        connect(socket, SIGNAL(destroyed()), &thread, SLOT(quit()), BobUI::DirectConnection);
+        QMetaObject::invokeMethod(socket, "deleteLater", BobUI::QueuedConnection);
         thread.wait();
     }
 }
@@ -2443,13 +2443,13 @@ void tst_QObject::senderTest()
         SuperObject *receiver = new SuperObject;
         connect(sender, SIGNAL(theSignal()),
                 receiver, SLOT(rememberSender()),
-                Qt::BlockingQueuedConnection);
+                BobUI::BlockingQueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
         connect(sender, SIGNAL(theSignal()),
                 &thread, SLOT(quit()),
-                Qt::DirectConnection);
+                BobUI::DirectConnection);
 
         QCOMPARE(receiver->sender(), (QObject *)0);
         QCOMPARE(receiver->senderSignalIndex(), -1);
@@ -2485,13 +2485,13 @@ void tst_QObject::senderTest()
         SuperObject *receiver = new SuperObject;
         connect(sender, SIGNAL(theSignal()),
                 receiver, SLOT(deleteAndRememberSender()),
-                Qt::BlockingQueuedConnection);
+                BobUI::BlockingQueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
         connect(sender, SIGNAL(destroyed()),
                 &thread, SLOT(quit()),
-                Qt::DirectConnection);
+                BobUI::DirectConnection);
 
         QCOMPARE(receiver->sender(), (QObject *)0);
         receiver->theSender = sender;
@@ -2520,14 +2520,14 @@ namespace Foo
     };
 }
 
-QT_BEGIN_NAMESPACE
-Q_DECLARE_INTERFACE(Foo::Bar, "com.qtest.foobar")
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+Q_DECLARE_INTERFACE(Foo::Bar, "com.bobuiest.foobar")
+BOBUI_END_NAMESPACE
 
-#define Bleh_iid "com.qtest.bleh"
-QT_BEGIN_NAMESPACE
+#define Bleh_iid "com.bobuiest.bleh"
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(Foo::Bleh, Bleh_iid)
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class FooObject: public QObject, public Foo::Bar
 {
@@ -3073,7 +3073,7 @@ void tst_QObject::normalize()
                      &object , SLOT(constTemplateSlot3(Template<int const > ) ) ));
 
     //type does not match
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect: Incompatible sender/receiver arguments\n"
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect: Incompatible sender/receiver arguments\n"
                     "        NormalizeObject::constTemplateSignal1(Template<int>) --> NormalizeObject::constTemplateSlot3(Template<const int>)");
     QVERIFY(!connect(&object, SIGNAL(constTemplateSignal1(Template <int>)),
                      &object , SLOT(constTemplateSlot3(Template<int const> ) ) ));
@@ -3204,7 +3204,7 @@ void tst_QObject::dynamicProperties()
 
 void tst_QObject::recursiveSignalEmission()
 {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
     QSKIP("No qprocess support");
 #else
     QProcess proc;
@@ -3252,15 +3252,15 @@ void tst_QObject::blockingQueuedConnection()
         receiver.moveToThread(&thread);
         thread.start();
 
-        receiver.connect(&sender, SIGNAL(signal1()), SLOT(slot1()), Qt::BlockingQueuedConnection);
+        receiver.connect(&sender, SIGNAL(signal1()), SLOT(slot1()), BobUI::BlockingQueuedConnection);
         sender.emitSignal1();
         QVERIFY(receiver.called(1));
 
         receiver.reset();
-        QVERIFY(QMetaObject::invokeMethod(&receiver, "slot1", Qt::BlockingQueuedConnection));
+        QVERIFY(QMetaObject::invokeMethod(&receiver, "slot1", BobUI::BlockingQueuedConnection));
         QVERIFY(receiver.called(1));
 
-        connect(&sender, &SenderObject::signal2, &receiver, &ReceiverObject::slot2, Qt::BlockingQueuedConnection);
+        connect(&sender, &SenderObject::signal2, &receiver, &ReceiverObject::slot2, BobUI::BlockingQueuedConnection);
         sender.emitSignal2();
         QVERIFY(receiver.called(2));
 
@@ -3381,7 +3381,7 @@ void tst_QObject::childEvents()
 
 void tst_QObject::parentEvents()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     EventSpy::EventList expected;
 
     {
@@ -3441,7 +3441,7 @@ void tst_QObject::parentEvents()
         QCOMPARE(spy.eventList(), expected);
     }
 #else
-    QSKIP("Needs QT_BUILD_INTERNAL");
+    QSKIP("Needs BOBUI_BUILD_INTERNAL");
 #endif
 }
 
@@ -3462,7 +3462,7 @@ void tst_QObject::installEventFilter()
 
     // moving the filter causes QCoreApplication to skip the filter
     spy.moveToThread(0);
-    QTest::ignoreMessage(QtWarningMsg, "QCoreApplication: Object event filter cannot be in a different thread.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QCoreApplication: Object event filter cannot be in a different thread.");
     QCoreApplication::sendEvent(&object, &event);
     QVERIFY(spy.eventList().isEmpty());
 
@@ -3476,7 +3476,7 @@ void tst_QObject::installEventFilter()
     // cannot install an event filter that lives in a different thread
     object.removeEventFilter(&spy);
     spy.moveToThread(0);
-    QTest::ignoreMessage(QtWarningMsg, "QObject::installEventFilter(): Cannot filter events for objects in a different thread.");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::installEventFilter(): Cannot filter events for objects in a different thread.");
     object.installEventFilter(&spy);
     QCoreApplication::sendEvent(&object, &event);
     QVERIFY(spy.eventList().isEmpty());
@@ -3484,7 +3484,7 @@ void tst_QObject::installEventFilter()
 
 #define CHECK_FAIL(message) \
 do {\
-    if (QTest::currentTestFailed())\
+    if (BOBUIest::currentTestFailed())\
         QFAIL("failed one line above on " message);\
 } while (false)
 
@@ -3546,7 +3546,7 @@ void tst_QObject::installEventFilterOrder()
     QCOMPARE(spy3.thisCounter, -1);
 }
 
-class EmitThread : public QThread
+class EmitThread : public BOBUIhread
 {   Q_OBJECT
 public:
     void run(void) override {
@@ -3586,11 +3586,11 @@ void tst_QObject::deleteSelfInSlot()
         receiver->connect(&sender,
                           SIGNAL(signal1()),
                           SLOT(deleteSelf()),
-                          Qt::BlockingQueuedConnection);
+                          BobUI::BlockingQueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
-        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), Qt::DirectConnection);
+        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), BobUI::DirectConnection);
         thread.start();
 
         QPointer<QObjectTest::DeleteObject> p = receiver;
@@ -3606,15 +3606,15 @@ void tst_QObject::deleteSelfInSlot()
         receiver->connect(&sender,
                           SIGNAL(signal1()),
                           SLOT(relaySignalAndProcessEvents()),
-                          Qt::BlockingQueuedConnection);
+                          BobUI::BlockingQueuedConnection);
         receiver->connect(receiver,
                           SIGNAL(relayedSignal()),
                           SLOT(deleteSelf()),
-                          Qt::QueuedConnection);
+                          BobUI::QueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
-        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), Qt::DirectConnection);
+        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), BobUI::DirectConnection);
         thread.start();
 
         QPointer<QObjectTest::DeleteObject> p = receiver;
@@ -3627,7 +3627,7 @@ void tst_QObject::deleteSelfInSlot()
     {
         EmitThread sender;
         QObjectTest::DeleteObject *receiver = new QObjectTest::DeleteObject();
-        connect(&sender, SIGNAL(work()), receiver, SLOT(deleteSelf()), Qt::DirectConnection);
+        connect(&sender, SIGNAL(work()), receiver, SLOT(deleteSelf()), BobUI::DirectConnection);
         QPointer<QObjectTest::DeleteObject> p = receiver;
         sender.start();
         QVERIFY(sender.wait(10000));
@@ -3671,11 +3671,11 @@ void tst_QObject::disconnectSelfInSlotAndDeleteAfterEmit()
         receiver->connect(&sender,
                           SIGNAL(signal1()),
                           SLOT(disconnectSelf()),
-                          Qt::BlockingQueuedConnection);
+                          BobUI::BlockingQueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
-        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), Qt::DirectConnection);
+        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), BobUI::DirectConnection);
         thread.start();
 
         QPointer<DisconnectObject> p = receiver;
@@ -3694,15 +3694,15 @@ void tst_QObject::disconnectSelfInSlotAndDeleteAfterEmit()
         receiver->connect(&sender,
                           SIGNAL(signal1()),
                           SLOT(relaySignalAndProcessEvents()),
-                          Qt::BlockingQueuedConnection);
+                          BobUI::BlockingQueuedConnection);
         receiver->connect(receiver,
                           SIGNAL(relayedSignal()),
                           SLOT(disconnectSelf()),
-                          Qt::QueuedConnection);
+                          BobUI::QueuedConnection);
 
-        QThread thread;
+        BOBUIhread thread;
         receiver->moveToThread(&thread);
-        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), Qt::DirectConnection);
+        thread.connect(receiver, SIGNAL(destroyed()), SLOT(quit()), BobUI::DirectConnection);
         thread.start();
 
         QPointer<DisconnectObject> p = receiver;
@@ -3720,12 +3720,12 @@ void tst_QObject::dumpObjectInfo()
 {
     QObject a, b;
     QObject::connect(&a, &QObject::destroyed, &b, &QObject::deleteLater);
-    QTest::ignoreMessage(QtDebugMsg, "OBJECT QObject::unnamed");
-    QTest::ignoreMessage(QtDebugMsg, "  SIGNALS OUT");
-    QTest::ignoreMessage(QtDebugMsg, "        signal: destroyed(QObject*)");
-    QTest::ignoreMessage(QtDebugMsg, "          <functor or function pointer>");
-    QTest::ignoreMessage(QtDebugMsg, "  SIGNALS IN");
-    QTest::ignoreMessage(QtDebugMsg, "        <None>");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "OBJECT QObject::unnamed");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "  SIGNALS OUT");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "        signal: destroyed(QObject*)");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "          <functor or function pointer>");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "  SIGNALS IN");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "        <None>");
     a.dumpObjectInfo(); // should not crash
 }
 
@@ -3734,7 +3734,7 @@ void tst_QObject::dumpObjectTree()
     QObject a;
     Q_SET_OBJECT_NAME(a);
 
-    QTimer b(&a);
+    BOBUIimer b(&a);
     Q_SET_OBJECT_NAME(b);
 
     QObject c(&b);
@@ -3745,12 +3745,12 @@ void tst_QObject::dumpObjectTree()
 
     const char * const output[] = {
         "QObject::a ",
-        "    QTimer::b ",
+        "    BOBUIimer::b ",
         "        QObject::c ",
         "    QFile::f ",
     };
     for (const char *line : output)
-        QTest::ignoreMessage(QtDebugMsg, line);
+        BOBUIest::ignoreMessage(BobUIDebugMsg, line);
 
     a.dumpObjectTree();
 }
@@ -3826,10 +3826,10 @@ void tst_QObject::uniqConnection()
     r2.reset();
     ReceiverObject::sequence = 0;
 
-    QVERIFY(connect(&s, SIGNAL(signal1()), &r1, SLOT(slot1()) , Qt::UniqueConnection) );
-    QVERIFY(connect(&s, SIGNAL(signal1()), &r2, SLOT(slot1()) , Qt::UniqueConnection) );
-    QVERIFY(connect(&s, SIGNAL(signal1()), &r1, SLOT(slot3()) , Qt::UniqueConnection) );
-    QVERIFY(connect(&s, SIGNAL(signal3()), &r1, SLOT(slot3()) , Qt::UniqueConnection) );
+    QVERIFY(connect(&s, SIGNAL(signal1()), &r1, SLOT(slot1()) , BobUI::UniqueConnection) );
+    QVERIFY(connect(&s, SIGNAL(signal1()), &r2, SLOT(slot1()) , BobUI::UniqueConnection) );
+    QVERIFY(connect(&s, SIGNAL(signal1()), &r1, SLOT(slot3()) , BobUI::UniqueConnection) );
+    QVERIFY(connect(&s, SIGNAL(signal3()), &r1, SLOT(slot3()) , BobUI::UniqueConnection) );
 
     s.emitSignal1();
     s.emitSignal2();
@@ -3852,11 +3852,11 @@ void tst_QObject::uniqConnection()
     r2.reset();
     ReceiverObject::sequence = 0;
 
-    QVERIFY( connect(&s, SIGNAL(signal4()), &r1, SLOT(slot4()) , Qt::UniqueConnection));
-    QVERIFY( connect(&s, SIGNAL(signal4()), &r2, SLOT(slot4()) , Qt::UniqueConnection));
-    QVERIFY(!connect(&s, SIGNAL(signal4()), &r2, SLOT(slot4()) , Qt::UniqueConnection));
-    QVERIFY( connect(&s, SIGNAL(signal1()), &r2, SLOT(slot4()) , Qt::UniqueConnection));
-    QVERIFY(!connect(&s, SIGNAL(signal4()), &r1, SLOT(slot4()) , Qt::UniqueConnection));
+    QVERIFY( connect(&s, SIGNAL(signal4()), &r1, SLOT(slot4()) , BobUI::UniqueConnection));
+    QVERIFY( connect(&s, SIGNAL(signal4()), &r2, SLOT(slot4()) , BobUI::UniqueConnection));
+    QVERIFY(!connect(&s, SIGNAL(signal4()), &r2, SLOT(slot4()) , BobUI::UniqueConnection));
+    QVERIFY( connect(&s, SIGNAL(signal1()), &r2, SLOT(slot4()) , BobUI::UniqueConnection));
+    QVERIFY(!connect(&s, SIGNAL(signal4()), &r1, SLOT(slot4()) , BobUI::UniqueConnection));
 
     s.emitSignal4();
     QCOMPARE(r1.count_slot4, 1);
@@ -3887,13 +3887,13 @@ void tst_QObject::uniqConnectionPtr()
     ReceiverObject::sequence = 0;
 
     QVERIFY(connect(&s, &SenderObject::signal1, &r1, &ReceiverObject::slot1 ,
-                    Qt::UniqueConnection));
+                    BobUI::UniqueConnection));
     QVERIFY(connect(&s, &SenderObject::signal1, &r2, &ReceiverObject::slot1 ,
-                    Qt::UniqueConnection));
+                    BobUI::UniqueConnection));
     QVERIFY(connect(&s, &SenderObject::signal1, &r1, &ReceiverObject::slot3 ,
-                    Qt::UniqueConnection));
+                    BobUI::UniqueConnection));
     QVERIFY(connect(&s, &SenderObject::signal3, &r1, &ReceiverObject::slot3 ,
-                    Qt::UniqueConnection));
+                    BobUI::UniqueConnection));
 
     s.emitSignal1();
     s.emitSignal2();
@@ -3917,15 +3917,15 @@ void tst_QObject::uniqConnectionPtr()
     ReceiverObject::sequence = 0;
 
     QVERIFY( connect(&s, &SenderObject::signal4, &r1, &ReceiverObject::slot4 ,
-                     Qt::UniqueConnection));
+                     BobUI::UniqueConnection));
     QVERIFY( connect(&s, &SenderObject::signal4, &r2, &ReceiverObject::slot4 ,
-                     Qt::UniqueConnection));
+                     BobUI::UniqueConnection));
     QVERIFY(!connect(&s, &SenderObject::signal4, &r2, &ReceiverObject::slot4 ,
-                     Qt::UniqueConnection));
+                     BobUI::UniqueConnection));
     QVERIFY( connect(&s, &SenderObject::signal1, &r2, &ReceiverObject::slot4 ,
-                     Qt::UniqueConnection));
+                     BobUI::UniqueConnection));
     QVERIFY(!connect(&s, &SenderObject::signal4, &r1, &ReceiverObject::slot4 ,
-                     Qt::UniqueConnection));
+                     BobUI::UniqueConnection));
 
     s.emitSignal4();
     QCOMPARE(r1.count_slot4, 1);
@@ -3951,7 +3951,7 @@ void tst_QObject::interfaceIid()
     QCOMPARE(QByteArray(qobject_interface_iid<Foo::Bleh *>()),
              QByteArray(Bleh_iid));
     QCOMPARE(QByteArray(qobject_interface_iid<Foo::Bar *>()),
-             QByteArray("com.qtest.foobar"));
+             QByteArray("com.bobuiest.foobar"));
 }
 
 void tst_QObject::deleteQObjectWhenDeletingEvent()
@@ -4089,7 +4089,7 @@ void tst_QObject::isSignalConnected()
     ManySignals o;
     const QMetaObject *meta = o.metaObject();
     o.rec = 0;
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QObjectPrivate *priv = QObjectPrivate::get(&o);
     QVERIFY(!priv->isSignalConnected(priv->signalIndex("destroyed()")));
     QVERIFY(!priv->isSignalConnected(priv->signalIndex("sig00()")));
@@ -4111,7 +4111,7 @@ void tst_QObject::isSignalConnected()
     QObject::connect(&o, SIGNAL(sig69()), &o, SIGNAL(sig34()));
     QObject::connect(&o, SIGNAL(sig03()), &o, SIGNAL(sig18()));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QVERIFY(!priv->isSignalConnected(priv->signalIndex("destroyed()")));
     QVERIFY(!priv->isSignalConnected(priv->signalIndex("sig05()")));
     QVERIFY(!priv->isSignalConnected(priv->signalIndex("sig15()")));
@@ -4141,7 +4141,7 @@ void tst_QObject::isSignalConnected()
     QObject::connect(&o, SIGNAL(sig62()), &o, SIGNAL(sig28()));
     QObject::connect(&o, SIGNAL(sig28()), &o, SIGNAL(sig27()));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig18()")));
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig62()")));
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig28()")));
@@ -4161,7 +4161,7 @@ void tst_QObject::isSignalConnected()
 
     QObject::connect(&o, SIGNAL(sig27()), &o, SLOT(received()));
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig00()")));
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig03()")));
     QVERIFY(priv->isSignalConnected(priv->signalIndex("sig34()")));
@@ -4184,7 +4184,7 @@ void tst_QObject::isSignalConnected()
     emit o.sig36();
     QCOMPARE(o.rec, 2);
 
-    QObject::connect(&o, &QObject::destroyed, qt_noop);
+    QObject::connect(&o, &QObject::destroyed, bobui_noop);
     QVERIFY(o.isSignalConnected(meta->method(meta->indexOfSignal("destroyed()"))));
     QVERIFY(o.isSignalConnected(meta->method(meta->indexOfSignal("destroyed(QObject*)"))));
 
@@ -4198,14 +4198,14 @@ void tst_QObject::isSignalConnectedAfterDisconnection()
 
     const QMetaMethod sig00 = meta->method(meta->indexOfSignal("sig00()"));
     QVERIFY(!o.isSignalConnected(sig00));
-    QObject::connect(&o, &ManySignals::sig00, qt_noop);
+    QObject::connect(&o, &ManySignals::sig00, bobui_noop);
     QVERIFY(o.isSignalConnected(sig00));
     QVERIFY(QObject::disconnect(&o, &ManySignals::sig00, 0, 0));
     QVERIFY(!o.isSignalConnected(sig00));
 
     const QMetaMethod sig69 = meta->method(meta->indexOfSignal("sig69()"));
     QVERIFY(!o.isSignalConnected(sig69));
-    QObject::connect(&o, &ManySignals::sig69, qt_noop);
+    QObject::connect(&o, &ManySignals::sig69, bobui_noop);
     QVERIFY(o.isSignalConnected(sig69));
     QVERIFY(QObject::disconnect(&o, &ManySignals::sig69, 0, 0));
     QVERIFY(!o.isSignalConnected(sig69));
@@ -4219,9 +4219,9 @@ void tst_QObject::isSignalConnectedAfterDisconnection()
     QVERIFY(!o.isSignalConnected(sig00));
 
     const QMetaMethod sig01 = meta->method(meta->indexOfSignal("sig01()"));
-    QObject::connect(&o, &ManySignals::sig00, qt_noop);
-    QObject::connect(&o, &ManySignals::sig01, qt_noop);
-    QObject::connect(&o, &ManySignals::sig69, qt_noop);
+    QObject::connect(&o, &ManySignals::sig00, bobui_noop);
+    QObject::connect(&o, &ManySignals::sig01, bobui_noop);
+    QObject::connect(&o, &ManySignals::sig69, bobui_noop);
     QVERIFY(o.isSignalConnected(sig00));
     QVERIFY(o.isSignalConnected(sig01));
     QVERIFY(o.isSignalConnected(sig69));
@@ -4233,7 +4233,7 @@ void tst_QObject::isSignalConnectedAfterDisconnection()
     QVERIFY(!o.isSignalConnected(sig00));
     QVERIFY(o.isSignalConnected(sig01));
     QVERIFY(!o.isSignalConnected(sig69));
-    QObject::connect(&o, &ManySignals::sig69, qt_noop);
+    QObject::connect(&o, &ManySignals::sig69, bobui_noop);
     QVERIFY(!o.isSignalConnected(sig00));
     QVERIFY(o.isSignalConnected(sig01));
     QVERIFY(o.isSignalConnected(sig69));
@@ -4478,8 +4478,8 @@ void tst_QObject::sameName()
     c2.emitSignal1();
     QCOMPARE(c1.s, 2);
 
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::indexOfSignal: signal aPublicSlot() from SenderObject redefined in ConfusingObject");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::indexOfSignal: signal aPublicSlot() from SenderObject redefined in ConfusingObject");
 #endif
     QVERIFY(connect(&c2, SIGNAL(aPublicSlot()), &c1, SLOT(signal1())));
     c2.aPublicSlot();
@@ -4487,8 +4487,8 @@ void tst_QObject::sameName()
     QCOMPARE(c1.aPublicSlotCalled, 0);
     QCOMPARE(c1.s, 3);
 
-#ifndef QT_NO_DEBUG
-    QTest::ignoreMessage(QtWarningMsg, "QMetaObject::indexOfSignal: signal aPublicSlot() from SenderObject redefined in ConfusingObject");
+#ifndef BOBUI_NO_DEBUG
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QMetaObject::indexOfSignal: signal aPublicSlot() from SenderObject redefined in ConfusingObject");
 #endif
     QVERIFY(connect(&c2, SIGNAL(aPublicSlot()), &c1, SLOT(aPublicSlot())));
     c2.aPublicSlot();
@@ -4530,7 +4530,7 @@ void tst_QObject::connectByMetaMethodSlotInsteadOfSignal()
     QMetaMethod badMethod = smeta->method(badIndx);
     QMetaMethod slot = rmeta->method(slotIndx);
 
-    QTest::ignoreMessage(QtWarningMsg,"QObject::connect: Cannot connect SenderObject::aPublicSlot() to ReceiverObject::slot1()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QObject::connect: Cannot connect SenderObject::aPublicSlot() to ReceiverObject::slot1()");
     QVERIFY(!connect(&s,badMethod, &r,slot));
 }
 
@@ -4564,11 +4564,11 @@ void tst_QObject::connectConstructorByMetaMethod()
     QMetaMethod signal = smeta->method(sigIndx);
     QMetaMethod slot = rmeta->method(slotIndx);
 
-    QTest::ignoreMessage(QtWarningMsg,"QObject::connect: Cannot connect Constructable::Constructable() to ReceiverObject::slot1()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QObject::connect: Cannot connect Constructable::Constructable() to ReceiverObject::slot1()");
     QVERIFY(!connect(&sc,constructor, &r,slot));
-    QTest::ignoreMessage(QtWarningMsg,"QObject::connect: Cannot connect SenderObject::signal1() to Constructable::Constructable()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QObject::connect: Cannot connect SenderObject::signal1() to Constructable::Constructable()");
     QVERIFY(!connect(&s,signal, &rc,constructor));
-    QTest::ignoreMessage(QtWarningMsg,"QObject::connect: Cannot connect Constructable::Constructable() to Constructable::Constructable()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QObject::connect: Cannot connect Constructable::Constructable() to Constructable::Constructable()");
     QVERIFY(!connect(&sc,constructor, &rc,constructor));
 }
 
@@ -4675,11 +4675,11 @@ void tst_QObject::disconnectNotSignalMetaMethod()
     QMetaMethod slot = s.metaObject()->method(
             s.metaObject()->indexOfMethod("aPublicSlot()"));
 
-    QTest::ignoreMessage(QtWarningMsg,"QObject::disconnect: Attempt to unbind non-signal SenderObject::aPublicSlot()");
+    BOBUIest::ignoreMessage(BobUIWarningMsg,"QObject::disconnect: Attempt to unbind non-signal SenderObject::aPublicSlot()");
     QVERIFY(!QObject::disconnect(&s, slot, &r, QMetaMethod()));
 }
 
-class ThreadAffinityThread : public QThread
+class ThreadAffinityThread : public BOBUIhread
 {
 public:
     SenderObject *sender;
@@ -4733,12 +4733,12 @@ void tst_QObject::autoConnectionBehavior()
 
     // at emit, currentThread != sender->thread(), currentThread != receiver->thread(), sender->thread() != receiver->thread()
     ThreadAffinityThread emitThread2(sender);
-    QThread receiverThread;
-    QTimer *timer = new QTimer;
+    BOBUIhread receiverThread;
+    BOBUIimer *timer = new BOBUIimer;
     timer->setSingleShot(true);
     timer->setInterval(100);
     connect(&receiverThread, SIGNAL(started()), timer, SLOT(start()));
-    connect(timer, SIGNAL(timeout()), &receiverThread, SLOT(quit()), Qt::DirectConnection);
+    connect(timer, SIGNAL(timeout()), &receiverThread, SLOT(quit()), BobUI::DirectConnection);
     connect(&receiverThread, SIGNAL(finished()), timer, SLOT(deleteLater()));
     timer->moveToThread(&receiverThread);
 
@@ -4793,7 +4793,7 @@ void tst_QObject::baseDestroyed()
     {
         BaseDestroyed d;
         connect(&d, &QObject::destroyed, processEvents);
-        QMetaObject::invokeMethod(&d, "slotUseList", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(&d, "slotUseList", BobUI::QueuedConnection);
         //the destructor will call processEvents, that should not call the slotUseList
     }
 }
@@ -4806,13 +4806,13 @@ void tst_QObject::pointerConnect()
     r1.reset();
     r2.reset();
     ReceiverObject::sequence = 0;
-    QTimer timer;
+    BOBUIimer timer;
 
     QVERIFY(connect(&s, &SenderObject::signal1 , &r1, &ReceiverObject::slot1));
     QVERIFY(connect(&s, &SenderObject::signal1 , &r2, &ReceiverObject::slot1));
     QVERIFY(connect(&s, &SenderObject::signal1 , &r1, &ReceiverObject::slot3));
     QVERIFY(connect(&s, &SenderObject::signal3 , &r1, &ReceiverObject::slot3));
-    QVERIFY2(connect(&timer, &QTimer::timeout, &r1, &ReceiverObject::deleteLater),
+    QVERIFY2(connect(&timer, &BOBUIimer::timeout, &r1, &ReceiverObject::deleteLater),
              "Signal connection failed most likely due to failing comparison of pointers to member "
              "functions caused by problems with -reduce-relocations on this platform.");
 
@@ -4864,18 +4864,18 @@ void tst_QObject::pointerConnect()
     QVERIFY(!QObject::disconnect(con));
 
     //connect a slot to a signal (== error)
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(ReceiverObject, SenderObject): signal not found");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(ReceiverObject, SenderObject): signal not found");
     con = connect(&r1, &ReceiverObject::slot4 , &s, &SenderObject::signal4);
     QVERIFY(!con);
     QVERIFY(!QObject::disconnect(con));
 
     //connect an arbitrary PMF to a slot
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(ReceiverObject, ReceiverObject): signal not found");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(ReceiverObject, ReceiverObject): signal not found");
     con = connect(&r1, &ReceiverObject::reset, &r1, &ReceiverObject::slot1);
     QVERIFY(!con);
     QVERIFY(!QObject::disconnect(con));
 
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(ReceiverObject, ReceiverObject): signal not found");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(ReceiverObject, ReceiverObject): signal not found");
     con = connect(&r1, &ReceiverObject::reset, &r1, [](){});
     QVERIFY(!con);
     QVERIFY(!QObject::disconnect(con));
@@ -5171,7 +5171,7 @@ void tst_QObject::customTypesPointer()
         QCOMPARE(instanceCount, 4);
 
         connect(&checker, &QCustomTypeChecker::signal1, &checker, &QCustomTypeChecker::slot1,
-                Qt::DirectConnection);
+                BobUI::DirectConnection);
         QCOMPARE(checker.received.value(), 0);
         checker.doEmit(t1);
         QCOMPARE(checker.received.value(), t1.value());
@@ -5183,7 +5183,7 @@ void tst_QObject::customTypesPointer()
         qRegisterMetaType<CustomType>();
 
         connect(&checker, &QCustomTypeChecker::signal1, &checker, &QCustomTypeChecker::slot1,
-                Qt::QueuedConnection);
+                BobUI::QueuedConnection);
         QCOMPARE(instanceCount, 4);
         checker.doEmit(t2);
         QCOMPARE(instanceCount, 5);
@@ -5199,7 +5199,7 @@ void tst_QObject::customTypesPointer()
         list.append(t1);
         QCOMPARE(instanceCount, 5);
         QVERIFY(connect(&checker, &QCustomTypeChecker::signal2,
-                        &checker, &QCustomTypeChecker::slot2, Qt::QueuedConnection));
+                        &checker, &QCustomTypeChecker::slot2, BobUI::QueuedConnection));
         emit checker.signal2(list);
         QCOMPARE(instanceCount, 5); //because the list is implicitly shared.
         list.clear();
@@ -5308,7 +5308,7 @@ class LotsOfSignalsAndSlots: public QObject
         static void static_slot_vRi(int &) {}
         static void static_slot_vs(short) {}
         static void static_slot_vRs(short&) {}
-/*        #if defined(Q_COMPILER_RVALUE_REFS) || defined(QT_ENABLE_CXX0X)
+/*        #if defined(Q_COMPILER_RVALUE_REFS) || defined(BOBUI_ENABLE_CXX0X)
         static void static_slot_vOi(int &&) {}
         static void static_slot_vOs(short &&) {}
         #endif*/
@@ -5325,7 +5325,7 @@ class LotsOfSignalsAndSlots: public QObject
         void signal_vRi(int &);
         void signal_vs(short);
         void signal_vRs(short &);
-/*        #if defined(Q_COMPILER_RVALUE_REFS) || defined(QT_ENABLE_CXX0X)
+/*        #if defined(Q_COMPILER_RVALUE_REFS) || defined(BOBUI_ENABLE_CXX0X)
         void signal_vOi(int &&);
         void signal_vOs(short &&);
         #endif*/
@@ -5376,7 +5376,7 @@ void tst_QObject::connectCxx0xTypeMatching()
     QObject::connect(&obj, &Foo::signal_vi, &obj, &Foo::slot_vi); // repeated from above
     QObject::connect(&obj, &Foo::signal_vRi, &obj, &Foo::slot_vi);
     QObject::connect(&obj, &Foo::signal_vRi, &obj, &Foo::slot_vRi);
-/*#if defined(Q_COMPILER_RVALUE_REFS) || defined(QT_ENABLE_CXX0X)
+/*#if defined(Q_COMPILER_RVALUE_REFS) || defined(BOBUI_ENABLE_CXX0X)
     QObject::connect(&obj, &Foo::signal_vOi, &obj, &Foo::slot_vi);
     QObject::connect(&obj, &Foo::signal_vi, &obj, &Foo::slot_vOi);
     QObject::connect(&obj, &Foo::signal_vRi, &obj, &Foo::slot_vOi);
@@ -5388,7 +5388,7 @@ void tst_QObject::connectCxx0xTypeMatching()
 
     QObject::connect(&obj, &Foo::signal_vs, &obj, &Foo::slot_vi);
     QObject::connect(&obj, &Foo::signal_vRs, &obj, &Foo::slot_vi);
-/*#if defined(Q_COMPILER_RVALUE_REFS) || defined(QT_ENABLE_CXX0X)
+/*#if defined(Q_COMPILER_RVALUE_REFS) || defined(BOBUI_ENABLE_CXX0X)
     QObject::connect(&obj, &Foo::signal_vOs, &obj, &Foo::slot_vi);
     QObject::connect(&obj, &Foo::signal_vRs, &obj, &Foo::slot_vOi);
     QObject::connect(&obj, &Foo::signal_vOs, &obj, &Foo::slot_vOi);
@@ -5425,7 +5425,7 @@ void tst_QObject::connectCxx0xTypeMatching()
     QObject::connect(&obj, &Foo::signal_viii, &Foo::static_slot_viii);
     QObject::connect(&obj, &Foo::signal_viii, &Foo::static_slot_iiii);
 
-/*#if defined(Q_COMPILER_RVALUE_REFS) && defined(QT_ENABLE_CXX0X)
+/*#if defined(Q_COMPILER_RVALUE_REFS) && defined(BOBUI_ENABLE_CXX0X)
     QObject::connect(&obj, &Foo::signal_vi, &Foo::static_slot_vOi);
     QObject::connect(&obj, &Foo::signal_vRi, &Foo::static_slot_vi);
     QObject::connect(&obj, &Foo::signal_vRi, &Foo::static_slot_vRi);
@@ -5438,7 +5438,7 @@ void tst_QObject::connectCxx0xTypeMatching()
 
     QObject::connect(&obj, &Foo::signal_vs, &Foo::static_slot_vi);
     QObject::connect(&obj, &Foo::signal_vRs, &Foo::static_slot_vi);
-/*#if defined(Q_COMPILER_RVALUE_REFS) && defined(QT_ENABLE_CXX0X)
+/*#if defined(Q_COMPILER_RVALUE_REFS) && defined(BOBUI_ENABLE_CXX0X)
     QObject::connect(&obj, &Foo::signal_vOs, &Foo::static_slot_vi);
     QObject::connect(&obj, &Foo::signal_vRs, &Foo::static_slot_vOi);
     QObject::connect(&obj, &Foo::signal_vOs, &Foo::static_slot_vOi);
@@ -5794,7 +5794,7 @@ void tst_QObject::connectForwardDeclare()
 {
     ForwardDeclareArguments ob;
     // it should compile
-    QVERIFY(connect(&ob, &ForwardDeclareArguments::mySignal, &ob, &ForwardDeclareArguments::mySlot, Qt::QueuedConnection));
+    QVERIFY(connect(&ob, &ForwardDeclareArguments::mySignal, &ob, &ForwardDeclareArguments::mySlot, BobUI::QueuedConnection));
 }
 
 class ForwardDeclared {}; // complete definition for moc
@@ -5819,7 +5819,7 @@ void tst_QObject::connectNoDefaultConstructorArg()
 {
     NoDefaultContructorArguments ob;
     // it should compile
-    QVERIFY(connect(&ob, &NoDefaultContructorArguments::mySignal, &ob, &NoDefaultContructorArguments::mySlot, Qt::QueuedConnection));
+    QVERIFY(connect(&ob, &NoDefaultContructorArguments::mySignal, &ob, &NoDefaultContructorArguments::mySlot, BobUI::QueuedConnection));
 }
 
 struct MoveOnly
@@ -5881,10 +5881,10 @@ QString someFunctionReturningString(int i) {
 
 void tst_QObject::returnValue_data()
 {
-    QTest::addColumn<bool>("isBlockingQueued");
+    BOBUIest::addColumn<bool>("isBlockingQueued");
 
-    QTest::newRow("DirectConnection") << false;
-    QTest::newRow("BlockingQueuedConnection") << true;
+    BOBUIest::newRow("DirectConnection") << false;
+    BOBUIest::newRow("BlockingQueuedConnection") << true;
 }
 
 void tst_QObject::returnValue()
@@ -5892,13 +5892,13 @@ void tst_QObject::returnValue()
     CheckInstanceCount checker;
 
     QFETCH(bool, isBlockingQueued);
-    QThread thread;
+    BOBUIhread thread;
     ReturnValue receiver;
-    Qt::ConnectionType type = Qt::DirectConnection;
+    BobUI::ConnectionType type = BobUI::DirectConnection;
     if (isBlockingQueued) {
         thread.start();
         receiver.moveToThread(&thread);
-        type = Qt::BlockingQueuedConnection;
+        type = BobUI::BlockingQueuedConnection;
     }
 
     { // connected to nothing
@@ -5994,26 +5994,26 @@ void tst_QObject::returnValue()
         // queued connection should not forward the return value
         CheckInstanceCount checker;
         ReturnValue r;
-        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::returnVariantSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::returnVariantSlot, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnVariant(45), QVariant());
-        QVERIFY(connect(&r, &ReturnValue::returnString, &receiver, &ReturnValue::returnStringSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnString, &receiver, &ReturnValue::returnStringSlot, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnString(45), QString());
-        QVERIFY(connect(&r, &ReturnValue::returnInt, &receiver, &ReturnValue::returnIntSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnInt, &receiver, &ReturnValue::returnIntSlot, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnInt(45), int());
-        QVERIFY(connect(&r, &ReturnValue::returnCustomType, &receiver, &ReturnValue::returnCustomTypeSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnCustomType, &receiver, &ReturnValue::returnCustomTypeSlot, BobUI::QueuedConnection));
         QCOMPARE((emit r.returnCustomType(45)).value(), CustomType().value());
-        QVERIFY(connect(&r, &ReturnValue::returnPointer, &receiver, &ReturnValue::returnThisSlot1, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnPointer, &receiver, &ReturnValue::returnThisSlot1, BobUI::QueuedConnection));
         QCOMPARE((emit r.returnPointer()), static_cast<QObject *>(0));
-        QVERIFY(connect(&r, &ReturnValue::returnMoveOnly, &receiver, &ReturnValue::returnMoveOnlySlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnMoveOnly, &receiver, &ReturnValue::returnMoveOnlySlot, BobUI::QueuedConnection));
         QCOMPARE((emit r.returnMoveOnly(666)).value, MoveOnly().value);
 
         QCoreApplication::processEvents();
 
-        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::returnStringSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::returnStringSlot, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnVariant(48), QVariant());
-        QVERIFY(connect(&r, &ReturnValue::returnCustomType, &receiver, &ReturnValue::returnIntSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnCustomType, &receiver, &ReturnValue::returnIntSlot, BobUI::QueuedConnection));
         QCOMPARE((emit r.returnCustomType(48)).value(), CustomType().value());
-        QVERIFY(connect(&r, &ReturnValue::returnVoid, &receiver, &ReturnValue::returnCustomTypeSlot, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnVoid, &receiver, &ReturnValue::returnCustomTypeSlot, BobUI::QueuedConnection));
         emit r.returnVoid(48);
         QCoreApplication::processEvents();
     }
@@ -6034,7 +6034,7 @@ void tst_QObject::returnValue()
         QCOMPARE(emit r.returnVariant(45), QVariant(QStringLiteral("hello")));
         QVERIFY(connect(&r, &ReturnValue::returnVariant, intFunctor));
         QCOMPARE(emit r.returnVariant(45), QVariant(45));
-        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::return23, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnVariant, &receiver, &ReturnValue::return23, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnVariant(45), QVariant(45));
 
         QCOMPARE(emit r.returnInt(45), int());
@@ -6048,7 +6048,7 @@ void tst_QObject::returnValue()
         QCOMPARE(emit r.returnInt(45), int(23));
         QVERIFY(connect(&r, &ReturnValue::returnInt, intFunctor));
         QCOMPARE(emit r.returnInt(45), int(45));
-        QVERIFY(connect(&r, &ReturnValue::returnInt, &receiver, &ReturnValue::return23, Qt::QueuedConnection));
+        QVERIFY(connect(&r, &ReturnValue::returnInt, &receiver, &ReturnValue::return23, BobUI::QueuedConnection));
         QCOMPARE(emit r.returnInt(45), int(45));
 
         QCoreApplication::processEvents();
@@ -6069,13 +6069,13 @@ void tst_QObject::returnValue2()
     CheckInstanceCount checker;
 
     QFETCH(bool, isBlockingQueued);
-    QThread thread;
+    BOBUIhread thread;
     ReturnValue receiver;
-    Qt::ConnectionType type = Qt::DirectConnection;
+    BobUI::ConnectionType type = BobUI::DirectConnection;
     if (isBlockingQueued) {
         thread.start();
         receiver.moveToThread(&thread);
-        type = Qt::BlockingQueuedConnection;
+        type = BobUI::BlockingQueuedConnection;
     }
 
     { // connected to a simple slot
@@ -6110,25 +6110,25 @@ void tst_QObject::returnValue2()
         // queued connection should not forward the return value
         CheckInstanceCount checker;
         ReturnValue r;
-        QVERIFY(connect(&r, SIGNAL(returnVariant(int)), &receiver, SLOT(returnVariantSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnVariant(int)), &receiver, SLOT(returnVariantSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnVariant(45), QVariant());
-        QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnStringSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnStringSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnString(45), QString());
-        QVERIFY(connect(&r, SIGNAL(returnInt(int)), &receiver, SLOT(returnIntSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnInt(int)), &receiver, SLOT(returnIntSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnInt(45), int());
-        QVERIFY(connect(&r, SIGNAL(returnCustomType(int)), &receiver, SLOT(returnCustomTypeSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnCustomType(int)), &receiver, SLOT(returnCustomTypeSlot(int)), BobUI::QueuedConnection));
         QCOMPARE((emit r.returnCustomType(45)).value(), CustomType().value());
-        QVERIFY(connect(&r, SIGNAL(returnMoveOnly(int)), &receiver, SLOT(returnMoveOnlySlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnMoveOnly(int)), &receiver, SLOT(returnMoveOnlySlot(int)), BobUI::QueuedConnection));
         QCOMPARE((emit r.returnMoveOnly(45)).value, MoveOnly().value);
 
         QCoreApplication::processEvents();
 
         //Queued conneciton with different return type should be safe
-        QVERIFY(connect(&r, SIGNAL(returnVariant(int)), &receiver, SLOT(returnStringSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnVariant(int)), &receiver, SLOT(returnStringSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnVariant(48), QVariant());
-        QVERIFY(connect(&r, SIGNAL(returnCustomType(int)), &receiver, SLOT(returnIntSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnCustomType(int)), &receiver, SLOT(returnIntSlot(int)), BobUI::QueuedConnection));
         QCOMPARE((emit r.returnCustomType(48)).value(), CustomType().value());
-        QVERIFY(connect(&r, SIGNAL(returnVoid(int)), &receiver, SLOT(returnCustomTypeSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnVoid(int)), &receiver, SLOT(returnCustomTypeSlot(int)), BobUI::QueuedConnection));
         emit r.returnVoid(48);
         QCoreApplication::processEvents();
     }
@@ -6140,7 +6140,7 @@ void tst_QObject::returnValue2()
         QCOMPARE(emit r.returnInt(45), int(45));
         QVERIFY(connect(&r, SIGNAL(returnInt(int)), &receiver, SLOT(return23()), type));
         QCOMPARE(emit r.returnInt(45), int(23));
-        QVERIFY(connect(&r, SIGNAL(returnInt(int)), &receiver, SLOT(returnIntSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnInt(int)), &receiver, SLOT(returnIntSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnInt(45), int(23));
 
         QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnStringSlot(int)), type));
@@ -6149,7 +6149,7 @@ void tst_QObject::returnValue2()
         QCOMPARE(emit r.returnString(45), QString(QStringLiteral("45")));
         QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnHello()), type));
         QCOMPARE(emit r.returnString(45), QString(QStringLiteral("hello")));
-        QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnStringSlot(int)), Qt::QueuedConnection));
+        QVERIFY(connect(&r, SIGNAL(returnString(int)), &receiver, SLOT(returnStringSlot(int)), BobUI::QueuedConnection));
         QCOMPARE(emit r.returnString(45), QString(QStringLiteral("hello")));
     }
     if (isBlockingQueued) {
@@ -6185,8 +6185,8 @@ public:
 void tst_QObject::connectVirtualSlots()
 {
     VirtualSlotsObject obj;
-    QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
-    QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
+    QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
+    QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
 
     emit obj.signal1();
     QCOMPARE(obj.base_counter1, 0);
@@ -6200,8 +6200,8 @@ void tst_QObject::connectVirtualSlots()
     QCOMPARE(obj.derived_counter1, 1);
 
     /* the C++ standard say the comparison between pointer to virtual member function is unspecified
-    QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
-    QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObject::slot1, Qt::UniqueConnection));
+    QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
+    QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObject::slot1, BobUI::UniqueConnection));
     */
 }
 
@@ -6255,8 +6255,8 @@ void tst_QObject::connectSlotsVMIClass()
     // test connecting by the base
     {
         ObjectWithVirtualBase obj;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6277,10 +6277,10 @@ void tst_QObject::connectSlotsVMIClass()
     // test connecting with the actual class
     {
         ObjectWithVirtualBase obj;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::regularSlot, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::regularSlot, Qt::UniqueConnection));
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::regularSlot, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::regularSlot, BobUI::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6302,16 +6302,16 @@ void tst_QObject::connectSlotsVMIClass()
         QCOMPARE(obj.virtual_base_count, 0);
 
         /* the C++ standard say the comparison between pointer to virtual member function is unspecified
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &VirtualSlotsObjectBase::slot1, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot1, BobUI::UniqueConnection));
         */
     }
 
     // test connecting a slot that is virtual from the virtual base
     {
         ObjectWithVirtualBase obj;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot2, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot2, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot2, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, &ObjectWithVirtualBase::slot2, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6335,8 +6335,8 @@ void tst_QObject::connectSlotsVMIClass()
     {
         ObjectWithMultiInheritance obj;
         void (ObjectWithMultiInheritance::*slot)() = &ObjectWithMultiInheritance::virtualBaseSlot;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6357,8 +6357,8 @@ void tst_QObject::connectSlotsVMIClass()
     {
         ObjectWithMultiInheritance obj;
         void (ObjectWithMultiInheritance::*slot)() = &ObjectWithMultiInheritance::normalBaseSlot;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6379,8 +6379,8 @@ void tst_QObject::connectSlotsVMIClass()
     {
         ObjectWithMultiInheritance2 obj;
         void (ObjectWithMultiInheritance2::*slot)() = &ObjectWithMultiInheritance2::normalBaseSlot;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6401,8 +6401,8 @@ void tst_QObject::connectSlotsVMIClass()
     {
         ObjectWithMultiInheritance2 obj;
         void (ObjectWithMultiInheritance2::*slot)() = &ObjectWithMultiInheritance2::slot1;
-        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
-        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, Qt::UniqueConnection));
+        QVERIFY( QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
+        QVERIFY(!QObject::connect(&obj, &VirtualSlotsObjectBase::signal1, &obj, slot, BobUI::UniqueConnection));
 
         emit obj.signal1();
         QCOMPARE(obj.base_counter1, 0);
@@ -6419,9 +6419,9 @@ void tst_QObject::connectSlotsVMIClass()
     }
 }
 
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
 void tst_QObject::connectPrivateSlots()
-{QSKIP("Needs QT_BUILD_INTERNAL");}
+{QSKIP("Needs BOBUI_BUILD_INTERNAL");}
 #else
 class ConnectToPrivateSlotPrivate;
 
@@ -6465,8 +6465,8 @@ void ConnectToPrivateSlot::test(SenderObject* obj1) {
     obj1->signal7(666, QLatin1String("_"));
     QCOMPARE(d->receivedCount, 2);
     QCOMPARE(d->receivedValue, QVariant(666));
-    QVERIFY(QObjectPrivate::connect(obj1, &SenderObject::signal2, d, &ConnectToPrivateSlotPrivate::thisIsAPrivateSlot, Qt::UniqueConnection));
-    QVERIFY(!QObjectPrivate::connect(obj1, &SenderObject::signal2, d, &ConnectToPrivateSlotPrivate::thisIsAPrivateSlot, Qt::UniqueConnection));
+    QVERIFY(QObjectPrivate::connect(obj1, &SenderObject::signal2, d, &ConnectToPrivateSlotPrivate::thisIsAPrivateSlot, BobUI::UniqueConnection));
+    QVERIFY(!QObjectPrivate::connect(obj1, &SenderObject::signal2, d, &ConnectToPrivateSlotPrivate::thisIsAPrivateSlot, BobUI::UniqueConnection));
     obj1->signal2();
     QCOMPARE(d->receivedCount, 3);
     QVERIFY(QObjectPrivate::disconnect(obj1, &SenderObject::signal2, d, &ConnectToPrivateSlotPrivate::thisIsAPrivateSlot));
@@ -6507,22 +6507,22 @@ struct SlotFunctorString
 
 void tst_QObject::connectFunctorArgDifference()
 {
-    QTimer timer;
+    BOBUIimer timer;
     // Compile-time tests that the connection is successful.
-    connect(&timer, &QTimer::timeout, SlotFunctor());
-    connect(&timer, &QTimer::objectNameChanged, SlotFunctorString());
+    connect(&timer, &BOBUIimer::timeout, SlotFunctor());
+    connect(&timer, &BOBUIimer::objectNameChanged, SlotFunctorString());
     connect(qApp, &QCoreApplication::aboutToQuit, SlotFunctor());
 
-    connect(&timer, &QTimer::objectNameChanged, SlotFunctor());
+    connect(&timer, &BOBUIimer::objectNameChanged, SlotFunctor());
     QStringListModel model;
     connect(&model, &QStringListModel::rowsInserted, SlotFunctor());
 
-    connect(&timer, &QTimer::timeout, [=](){});
-    connect(&timer, &QTimer::objectNameChanged, [=](const QString &){});
-    connect(&timer, &QTimer::objectNameChanged, this, [](){});
+    connect(&timer, &BOBUIimer::timeout, [=](){});
+    connect(&timer, &BOBUIimer::objectNameChanged, [=](const QString &){});
+    connect(&timer, &BOBUIimer::objectNameChanged, this, [](){});
     connect(qApp, &QCoreApplication::aboutToQuit, [=](){});
 
-    connect(&timer, &QTimer::objectNameChanged, [=](){});
+    connect(&timer, &BOBUIimer::objectNameChanged, [=](){});
     connect(&model, &QStringListModel::rowsInserted, [=](){});
     connect(&model, &QStringListModel::rowsInserted, [=](const QModelIndex &){});
 
@@ -6554,8 +6554,8 @@ void tst_QObject::connectFunctorQueued()
     SenderObject obj;
     QEventLoop e;
 
-    connect(&obj, &SenderObject::signal1, this, SlotArgFunctor(&status), Qt::QueuedConnection);
-    connect(&obj, &SenderObject::signal1, &e, &QEventLoop::quit, Qt::QueuedConnection);
+    connect(&obj, &SenderObject::signal1, this, SlotArgFunctor(&status), BobUI::QueuedConnection);
+    connect(&obj, &SenderObject::signal1, &e, &QEventLoop::quit, BobUI::QueuedConnection);
 
     obj.emitSignal1();
     QCOMPARE(status, 1);
@@ -6563,7 +6563,7 @@ void tst_QObject::connectFunctorQueued()
     QCOMPARE(status, 2);
 
     status = 1;
-    connect(&obj, &SenderObject::signal1, this, [&status] { status = 2; }, Qt::QueuedConnection);
+    connect(&obj, &SenderObject::signal1, this, [&status] { status = 2; }, BobUI::QueuedConnection);
 
     obj.emitSignal1();
     QCOMPARE(status, 1);
@@ -6579,12 +6579,12 @@ void tst_QObject::connectFunctorWithContext()
     QEventLoop e;
 
     connect(&obj, &SenderObject::signal1, context, SlotArgFunctor(&status));
-    connect(&obj, &SenderObject::signal1, &e, &QEventLoop::quit, Qt::QueuedConnection);
+    connect(&obj, &SenderObject::signal1, &e, &QEventLoop::quit, BobUI::QueuedConnection);
 
     // When the context gets deleted, the connection should decay and the signal shouldn't trigger
     // The connection is queued to make sure the destroyed signal propagates correctly and
     // cuts the connection.
-    connect(context, &QObject::destroyed, &obj, &SenderObject::signal1, Qt::QueuedConnection);
+    connect(context, &QObject::destroyed, &obj, &SenderObject::signal1, BobUI::QueuedConnection);
     context->deleteLater();
 
     obj.emitSignal1();
@@ -6623,7 +6623,7 @@ void tst_QObject::connectFunctorWithContext()
 
     status = 1;
     connect(&obj, &SenderObject::signal1, context,
-            SlotArgFunctor(context, &obj, &status), Qt::QueuedConnection);
+            SlotArgFunctor(context, &obj, &status), BobUI::QueuedConnection);
 
     obj.emitSignal1();
     QCOMPARE(status, 1);
@@ -6631,7 +6631,7 @@ void tst_QObject::connectFunctorWithContext()
     QCOMPARE(status, 2);
 
     status = 1;
-    connect(&obj, &SenderObject::signal1, this, [this, &status, &obj] { status = 2; QCOMPARE(sender(), &obj); }, Qt::QueuedConnection);
+    connect(&obj, &SenderObject::signal1, this, [this, &status, &obj] { status = 2; QCOMPARE(sender(), &obj); }, BobUI::QueuedConnection);
 
     obj.emitSignal1();
     QCOMPARE(status, 1);
@@ -6708,7 +6708,7 @@ public slots:
         // Status check. At this point the event loop should have spinned enough to delete all the objects.
         QCOMPARE(*m_statusAwake, 2);
         QCOMPARE(*m_statusAboutToBlock, 2);
-        QMetaObject::invokeMethod(m_eventLoop, "quit", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(m_eventLoop, "quit", BobUI::QueuedConnection);
     }
 
 private:
@@ -6728,7 +6728,7 @@ void tst_QObject::deleteLaterInAboutToBlockHandler()
     int statusAboutToBlock = 1;
     QEventLoop e;
     DispatcherWatcher dw(e, &statusAwake, &statusAboutToBlock);
-    QTimer::singleShot(2000, &dw, &DispatcherWatcher::onSignal1);
+    BOBUIimer::singleShot(2000, &dw, &DispatcherWatcher::onSignal1);
 
     QCOMPARE(statusAwake, 1);
     QCOMPARE(statusAboutToBlock, 1);
@@ -6739,7 +6739,7 @@ void tst_QObject::deleteLaterInAboutToBlockHandler()
 
 void tst_QObject::connectFunctorWithContextUnique()
 {
-    // Qt::UniqueConnections currently don't work for functors, but we need to
+    // BobUI::UniqueConnections currently don't work for functors, but we need to
     // be sure that they don't crash. If that is implemented, change this test.
 
     SenderObject sender;
@@ -6750,18 +6750,18 @@ void tst_QObject::connectFunctorWithContextUnique()
     QVERIFY(QObject::connect(&sender, &SenderObject::signal2, &receiver, &ReceiverObject::slot2));
     receiver.count_slot2 = 0;
 
-    const auto oredType = Qt::ConnectionType(Qt::DirectConnection | Qt::UniqueConnection);
+    const auto oredType = BobUI::ConnectionType(BobUI::DirectConnection | BobUI::UniqueConnection);
 
     // Will assert in debug builds, so only test in release builds
-#if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
+#if defined(BOBUI_NO_DEBUG) && !defined(BOBUI_FORCE_ASSERTS)
     auto ignoreMsg = [] {
-        QTest::ignoreMessage(QtWarningMsg,
+        BOBUIest::ignoreMessage(BobUIWarningMsg,
                              "QObject::connect(SenderObject, ReceiverObject): unique connections "
                              "require a pointer to member function of a QObject subclass");
     };
 
     ignoreMsg();
-    QVERIFY(!QObject::connect(&sender, &SenderObject::signal1, &receiver, [&](){ receiver.slot1(); }, Qt::UniqueConnection));
+    QVERIFY(!QObject::connect(&sender, &SenderObject::signal1, &receiver, [&](){ receiver.slot1(); }, BobUI::UniqueConnection));
 
     ignoreMsg();
     QVERIFY(!QObject::connect(
@@ -6777,7 +6777,7 @@ void tst_QObject::connectFunctorWithContextUnique()
     // Check connecting to PMF doesn't hit the assert
 
     QVERIFY(QObject::connect(&sender, &SenderObject::signal3, &receiver, &ReceiverObject::slot3,
-                             Qt::UniqueConnection));
+                             BobUI::UniqueConnection));
     receiver.count_slot3 = 0;
     sender.emitSignal3();
     QCOMPARE(receiver.count_slot3, 1);
@@ -6854,7 +6854,7 @@ void tst_QObject::connectFunctorMoveOnly()
 
     // QueuedConnection
     status = 1;
-    connect(&obj, &SenderObject::signal3, this, MoveOnlyFunctor(&status), Qt::QueuedConnection);
+    connect(&obj, &SenderObject::signal3, this, MoveOnlyFunctor(&status), BobUI::QueuedConnection);
     obj.signal3();
     QCOMPARE(status, 1);
     QCoreApplication::processEvents();
@@ -6876,8 +6876,8 @@ void tst_QObject::connectStaticSlotWithObject()
     StaticSlotChecker *receiver = new StaticSlotChecker;
     QEventLoop e;
 
-    QVERIFY(connect(&sender, &SenderObject::signal1, receiver, &StaticSlotChecker::staticSlot, Qt::QueuedConnection));
-    connect(&sender, &SenderObject::signal1, &e, &QEventLoop::quit, Qt::QueuedConnection);
+    QVERIFY(connect(&sender, &SenderObject::signal1, receiver, &StaticSlotChecker::staticSlot, BobUI::QueuedConnection));
+    connect(&sender, &SenderObject::signal1, &e, &QEventLoop::quit, BobUI::QueuedConnection);
 
     sender.emitSignal1();
     QCOMPARE(s_static_slot_checker, 1);
@@ -6886,7 +6886,7 @@ void tst_QObject::connectStaticSlotWithObject()
 
     s_static_slot_checker = 1;
 
-    connect(receiver, &QObject::destroyed, &sender, &SenderObject::signal1, Qt::QueuedConnection);
+    connect(receiver, &QObject::destroyed, &sender, &SenderObject::signal1, BobUI::QueuedConnection);
     receiver->deleteLater();
 
     QCOMPARE(s_static_slot_checker, 1);
@@ -7087,9 +7087,9 @@ void tst_QObject::disconnectDoesNotLeakFunctor()
         {
             CountedStruct s;
             QCOMPARE(countedStructObjectsCount, 1);
-            QTimer timer;
+            BOBUIimer timer;
 
-            c1 = connect(&timer, &QTimer::timeout, s);
+            c1 = connect(&timer, &BOBUIimer::timeout, s);
             QVERIFY(c1);
             c2 = c1;
             QVERIFY(c2);
@@ -7108,9 +7108,9 @@ void tst_QObject::disconnectDoesNotLeakFunctor()
     {
         CountedStruct s;
         QCOMPARE(countedStructObjectsCount, 1);
-        QTimer timer;
+        BOBUIimer timer;
 
-        QMetaObject::Connection c = connect(&timer, &QTimer::timeout, s);
+        QMetaObject::Connection c = connect(&timer, &BOBUIimer::timeout, s);
         QVERIFY(c);
         QCOMPARE(countedStructObjectsCount, 2);
         QVERIFY(QObject::disconnect(c));
@@ -7118,23 +7118,23 @@ void tst_QObject::disconnectDoesNotLeakFunctor()
     }
     QCOMPARE(countedStructObjectsCount, 0);
     {
-        QTimer timer;
+        BOBUIimer timer;
 
-        QMetaObject::Connection c = connect(&timer, &QTimer::timeout, CountedStruct());
+        QMetaObject::Connection c = connect(&timer, &BOBUIimer::timeout, CountedStruct());
         QVERIFY(c);
-        QCOMPARE(countedStructObjectsCount, 1); // only one instance, in Qt internals
+        QCOMPARE(countedStructObjectsCount, 1); // only one instance, in BobUI internals
         QVERIFY(QObject::disconnect(c));
         QCOMPARE(countedStructObjectsCount, 0); // functor being destroyed
     }
     QCOMPARE(countedStructObjectsCount, 0);
     {
-        QTimer *timer = new QTimer;
+        BOBUIimer *timer = new BOBUIimer;
         QEventLoop e;
 
-        connect(timer, &QTimer::timeout, CountedStruct());
-        QCOMPARE(countedStructObjectsCount, 1); // only one instance, in Qt internals
+        connect(timer, &BOBUIimer::timeout, CountedStruct());
+        QCOMPARE(countedStructObjectsCount, 1); // only one instance, in BobUI internals
         timer->deleteLater();
-        connect(timer, &QObject::destroyed, &e, &QEventLoop::quit, Qt::QueuedConnection);
+        connect(timer, &QObject::destroyed, &e, &QEventLoop::quit, BobUI::QueuedConnection);
         e.exec();
         QCOMPARE(countedStructObjectsCount, 0); // functor being destroyed
     }
@@ -7157,9 +7157,9 @@ void tst_QObject::disconnectDoesNotLeakFunctor()
     {
         CountedStruct s;
         QCOMPARE(countedStructObjectsCount, 1);
-        QTimer timer;
+        BOBUIimer timer;
 
-        QMetaObject::Connection c = connect(&timer, &QTimer::timeout, [s](){});
+        QMetaObject::Connection c = connect(&timer, &BOBUIimer::timeout, [s](){});
         QVERIFY(c);
         QCOMPARE(countedStructObjectsCount, 2);
         QVERIFY(QObject::disconnect(c));
@@ -7179,7 +7179,7 @@ void tst_QObject::contextDoesNotLeakFunctor()
             SenderObject obj;
 
             connect(&obj, &SenderObject::signal1, context, CountedStruct());
-            connect(context, &QObject::destroyed, &e, &QEventLoop::quit, Qt::QueuedConnection);
+            connect(context, &QObject::destroyed, &e, &QEventLoop::quit, BobUI::QueuedConnection);
             context->deleteLater();
 
             QCOMPARE(countedStructObjectsCount, 1);
@@ -7201,7 +7201,7 @@ void tst_QObject::contextDoesNotLeakFunctor()
             connect(&obj, &GetSenderObject::aSignal, context, s);
             QCOMPARE(countedStructObjectsCount, 2);
 
-            connect(context, &QObject::destroyed, &e, &QEventLoop::quit, Qt::QueuedConnection);
+            connect(context, &QObject::destroyed, &e, &QEventLoop::quit, BobUI::QueuedConnection);
             context->deleteLater();
 
             e.exec();
@@ -7215,11 +7215,11 @@ void tst_QObject::contextDoesNotLeakFunctor()
         QEventLoop e;
         ContextObject *context = new ContextObject;
         QCOMPARE(countedStructObjectsCount, 1);
-        QTimer timer;
+        BOBUIimer timer;
 
-        connect(&timer, &QTimer::timeout, context, [s](){});
+        connect(&timer, &BOBUIimer::timeout, context, [s](){});
         QCOMPARE(countedStructObjectsCount, 2);
-        connect(context, &QObject::destroyed, &e, &QEventLoop::quit, Qt::QueuedConnection);
+        connect(context, &QObject::destroyed, &e, &QEventLoop::quit, BobUI::QueuedConnection);
         context->deleteLater();
         e.exec();
         QCOMPARE(countedStructObjectsCount, 1);
@@ -7269,31 +7269,31 @@ void tst_QObject::connectWarnings()
     ReceiverObject r1;
     r1.reset();
 
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(SenderObject, ReceiverObject): invalid nullptr parameter");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(SenderObject, ReceiverObject): invalid nullptr parameter");
     connect(static_cast<const SenderObject *>(nullptr), &SubSender::signal1, &r1, &ReceiverObject::slot1);
 
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(SubSender, Unknown): invalid nullptr parameter");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(SubSender, Unknown): invalid nullptr parameter");
     connect(&sub, &SubSender::signal1, static_cast<ReceiverObject *>(nullptr), &ReceiverObject::slot1);
 
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(SenderObject, ReceiverObject): invalid nullptr parameter");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(SenderObject, ReceiverObject): invalid nullptr parameter");
     connect(static_cast<const SenderObject *>(nullptr), &SenderObject::signal1, &r1, &ReceiverObject::slot1);
 
-    QTest::ignoreMessage(QtWarningMsg, "QObject::connect(SenderObject, Unknown): invalid nullptr parameter");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(SenderObject, Unknown): invalid nullptr parameter");
     connect(&obj, &SenderObject::signal1, static_cast<ReceiverObject *>(nullptr), &ReceiverObject::slot1);
 }
 
-struct QmlReceiver : public QtPrivate::QSlotObjectBase
+struct QmlReceiver : public BobUIPrivate::QSlotObjectBase
 {
     int callCount;
     void *magic;
 
     QmlReceiver()
-        : QtPrivate::QSlotObjectBase(&impl)
+        : BobUIPrivate::QSlotObjectBase(&impl)
         , callCount(0)
         , magic(0)
     {}
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     static void impl(int which, QSlotObjectBase *this_, QObject *, void **metaArgs, bool *ret)
 #else
     static void impl(QSlotObjectBase *this_, QObject *, void **metaArgs, int which, bool *ret)
@@ -7310,14 +7310,14 @@ struct QmlReceiver : public QtPrivate::QSlotObjectBase
 
 void tst_QObject::qmlConnect()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     SenderObject sender;
     QmlReceiver *receiver = new QmlReceiver;
     receiver->magic = receiver;
     receiver->ref();
 
     QVERIFY(QObjectPrivate::connect(&sender, sender.metaObject()->indexOfSignal("signal1()"),
-                                    receiver, Qt::AutoConnection));
+                                    receiver, BobUI::AutoConnection));
 
     QCOMPARE(receiver->callCount, 0);
     sender.emitSignal1();
@@ -7333,13 +7333,13 @@ void tst_QObject::qmlConnect()
 
     receiver->destroyIfLastRef();
 #else
-    QSKIP("Needs QT_BUILD_INTERNAL");
+    QSKIP("Needs BOBUI_BUILD_INTERNAL");
 #endif
 }
 
 void tst_QObject::qmlConnectToQObjectReceiver()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     SenderObject sender;
     QScopedPointer<QObject> receiver(new QObject);
     QmlReceiver *slotObject = new QmlReceiver;
@@ -7347,7 +7347,7 @@ void tst_QObject::qmlConnectToQObjectReceiver()
     slotObject->ref(); // extra ref so that slot object is not implicitly deleted
 
     QVERIFY(QObjectPrivate::connect(&sender, sender.metaObject()->indexOfSignal("signal1()"),
-                                    receiver.get(), slotObject, Qt::AutoConnection));
+                                    receiver.get(), slotObject, BobUI::AutoConnection));
 
     QCOMPARE(slotObject->callCount, 0);
     sender.emitSignal1();
@@ -7360,11 +7360,11 @@ void tst_QObject::qmlConnectToQObjectReceiver()
 
     slotObject->destroyIfLastRef();
 #else
-    QSKIP("Needs QT_BUILD_INTERNAL");
+    QSKIP("Needs BOBUI_BUILD_INTERNAL");
 #endif
 }
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 class ObjectException : public std::exception { };
 
 struct ThrowFunctor
@@ -7384,7 +7384,7 @@ class ExceptionThrower : public QObject
 public slots:
     CountedStruct throwException(const CountedStruct &, CountedStruct s2)
     {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
         throw ObjectException();
 #endif
         return s2;
@@ -7402,7 +7402,7 @@ public:
         : QObject(parent)
     {
         Q_UNUSED(throwException);
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
         if (throwException)
             throw ObjectException();
 #endif
@@ -7421,7 +7421,7 @@ int CountedExceptionThrower::counter = 0;
 
 void tst_QObject::exceptions()
 {
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     ReceiverObject receiver;
 
     // String based syntax
@@ -7571,8 +7571,8 @@ void tst_QObject::checkArgumentsForNarrowing()
 
     static constexpr bool IsUnscopedEnumSigned = std::is_signed_v<std::underlying_type_t<UnscopedEnum>>;
 
-#define NARROWS_IF(x, y, test) static_assert((QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<x, y>::value) != (test))
-#define FITS_IF(x, y, test)    static_assert((QtPrivate::AreArgumentsConvertibleWithoutNarrowingBase<x, y>::value) == (test))
+#define NARROWS_IF(x, y, test) static_assert((BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<x, y>::value) != (test))
+#define FITS_IF(x, y, test)    static_assert((BobUIPrivate::AreArgumentsConvertibleWithoutNarrowingBase<x, y>::value) == (test))
 #define NARROWS(x, y)          NARROWS_IF(x, y, true)
 #define FITS(x, y)             FITS_IF(x, y, true)
 
@@ -7917,7 +7917,7 @@ void tst_QObject::nullReceiver()
     QObject o;
     QObject *nullObj = nullptr; // Passing nullptr directly doesn't compile with gcc 4.8
     auto ignoreMsg = [] {
-        QTest::ignoreMessage(QtWarningMsg, "QObject::connect(QObject, Unknown): invalid nullptr parameter");
+        BOBUIest::ignoreMessage(BobUIWarningMsg, "QObject::connect(QObject, Unknown): invalid nullptr parameter");
     };
     ignoreMsg();
     QVERIFY(!connect(&o, &QObject::destroyed, nullObj, &QObject::deleteLater));
@@ -7925,7 +7925,7 @@ void tst_QObject::nullReceiver()
     QVERIFY(!connect(&o, &QObject::destroyed, nullObj, [] {}));
     ignoreMsg();
     QVERIFY(!connect(&o, &QObject::destroyed, nullObj, Functor_noexcept()));
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
         "QObject::connect: Cannot connect QObject::destroyed() to (nullptr)::deleteLater()");
     QVERIFY(!connect(&o, SIGNAL(destroyed()), nullObj, SLOT(deleteLater())));
 }
@@ -7983,7 +7983,7 @@ void tst_QObject::functorReferencesConnection()
         {
             // Sender will be destroyed when the labda goes out of scope lambda, so it will exit the event loop
             auto sender = QSharedPointer<GetSenderObject>::create();
-            connect(sender.data(), &QObject::destroyed, &eventLoop, &QEventLoop::quit, Qt::QueuedConnection);
+            connect(sender.data(), &QObject::destroyed, &eventLoop, &QEventLoop::quit, BobUI::QueuedConnection);
             globalCon = connect(sender.data(), &GetSenderObject::aSignal, this, [&slotCalled, sender, &globalCon, this] {
                 ++slotCalled;
                 // This signal will be connected, but should never be called as the sender will be destroyed before
@@ -7993,9 +7993,9 @@ void tst_QObject::functorReferencesConnection()
                 QVERIFY(!globalCon); // this connection has been disconnected
                 QVERIFY(c2); // sender should not have been deleted yet, only after the emission is done
             });
-            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, Qt::QueuedConnection);
-            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, Qt::QueuedConnection);
-            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, Qt::QueuedConnection);
+            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, BobUI::QueuedConnection);
+            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, BobUI::QueuedConnection);
+            QMetaObject::invokeMethod(sender.data(), &GetSenderObject::triggerSignal, BobUI::QueuedConnection);
         }
         eventLoop.exec();
         QCOMPARE(slotCalled, 1);
@@ -8188,7 +8188,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QMetaObject::Connection c = connect(&sender, &SenderObject::signal1,
                                             &sender, &SenderObject::aPublicSlot,
-                                            static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                                            static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8210,7 +8210,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         bool ok = connect(&sender, &SenderObject::signal1,
                           &sender, &SenderObject::aPublicSlot,
-                          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                          static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8229,7 +8229,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QMetaObject::Connection c = connect(&sender, &SenderObject::signal1,
                                             &sender, &SenderObject::aPublicSlot,
-                                            static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                                            static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8260,7 +8260,7 @@ void tst_QObject::singleShotConnection()
 
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
         QCOMPARE(sender.aPublicSlotCalled, 2);
 
         sender.emitSignal1();
@@ -8275,10 +8275,10 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
 
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8297,10 +8297,10 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
         QVERIFY(connect(&sender, &SenderObject::signal2,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
 
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8331,7 +8331,7 @@ void tst_QObject::singleShotConnection()
                         &receiver1, &ReceiverObject::slot1));
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &receiver2, &ReceiverObject::slot1,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
         QCOMPARE(receiver1.count_slot1, 0);
         QCOMPARE(receiver2.count_slot1, 0);
 
@@ -8350,7 +8350,7 @@ void tst_QObject::singleShotConnection()
         // Reestablish a single shot
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &receiver2, &ReceiverObject::slot1,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
         QCOMPARE(receiver1.count_slot1, 3);
         QCOMPARE(receiver2.count_slot1, 1);
 
@@ -8374,7 +8374,7 @@ void tst_QObject::singleShotConnection()
 
         c = connect(&sender, &SenderObject::signal1,
                     &sender, breakSlot,
-                    static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                    static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
 
         QVERIFY(c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
@@ -8399,7 +8399,7 @@ void tst_QObject::singleShotConnection()
         receiver.sender = &sender;
         bool ok = connect(&sender, SIGNAL(signal1()),
                           &receiver, SLOT(aSlotByName()),
-                          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                          static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(receiver.slotCalledCount, 0);
 
@@ -8412,7 +8412,7 @@ void tst_QObject::singleShotConnection()
         // reconnect
         ok = connect(&sender, SIGNAL(signal1()),
                      &receiver, SLOT(aSlotByName()),
-                     static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                     static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(receiver.slotCalledCount, 1);
 
@@ -8430,7 +8430,7 @@ void tst_QObject::singleShotConnection()
         receiver.sender = &sender;
         bool ok = connect(&sender, &SenderObject::signal1,
                           &receiver, &ReceiverDisconnecting::aSlotByPtr,
-                          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                          static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
 
         QVERIFY(ok);
         QCOMPARE(receiver.slotCalledCount, 0);
@@ -8444,7 +8444,7 @@ void tst_QObject::singleShotConnection()
         // reconnect
         ok = connect(&sender, &SenderObject::signal1,
                      &receiver, &ReceiverDisconnecting::aSlotByPtr,
-                     static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                     static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(receiver.slotCalledCount, 1);
 
@@ -8465,13 +8465,13 @@ void tst_QObject::singleShotConnection()
             if (reconnect) {
                 QObject::connect(&sender, &SenderObject::signal1,
                                  &sender, reconnectingSlot,
-                                 static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                                 static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
             }
         };
 
         bool ok = connect(&sender, &SenderObject::signal1,
                           &sender, reconnectingSlot,
-                          static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                          static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8484,7 +8484,7 @@ void tst_QObject::singleShotConnection()
         reconnect = true;
         ok = connect(&sender, &SenderObject::signal1,
                                   &sender, reconnectingSlot,
-                                  static_cast<Qt::ConnectionType>(Qt::SingleShotConnection));
+                                  static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection));
         QVERIFY(ok);
         QCOMPARE(sender.aPublicSlotCalled, 1);
 
@@ -8513,7 +8513,7 @@ void tst_QObject::singleShotConnection()
 
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         p.get(), &DeleteThisReceiver::deleteThis,
-                        static_cast<Qt::ConnectionType>(Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::SingleShotConnection)));
 
         QVERIFY(p);
         QCOMPARE(DeleteThisReceiver::counter, 0);
@@ -8532,7 +8532,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::QueuedConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection)));
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
         sender.emitSignal1();
@@ -8544,12 +8544,12 @@ void tst_QObject::singleShotConnection()
         sender.emitSignal1();
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
-        QTRY_COMPARE(sender.aPublicSlotCalled, 3);
+        BOBUIRY_COMPARE(sender.aPublicSlotCalled, 3);
 
         sender.emitSignal1();
         QCOMPARE(sender.aPublicSlotCalled, 3);
 
-        QTRY_COMPARE(sender.aPublicSlotCalled, 4);
+        BOBUIRY_COMPARE(sender.aPublicSlotCalled, 4);
     }
 
     {
@@ -8557,7 +8557,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection | BobUI::SingleShotConnection)));
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
         sender.emitSignal1();
@@ -8569,8 +8569,8 @@ void tst_QObject::singleShotConnection()
         sender.emitSignal1();
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
-        QTRY_COMPARE(sender.aPublicSlotCalled, 1);
-        QTest::qWait(0);
+        BOBUIRY_COMPARE(sender.aPublicSlotCalled, 1);
+        BOBUIest::qWait(0);
         QCOMPARE(sender.aPublicSlotCalled, 1);
     }
 
@@ -8579,7 +8579,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QMetaObject::Connection c = connect(&sender, &SenderObject::signal1,
                                             &sender, &SenderObject::aPublicSlot,
-                                            static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection));
+                                            static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection | BobUI::SingleShotConnection));
         QVERIFY(c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8595,9 +8595,9 @@ void tst_QObject::singleShotConnection()
         QVERIFY(!c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
-        QTRY_COMPARE(sender.aPublicSlotCalled, 1);
+        BOBUIRY_COMPARE(sender.aPublicSlotCalled, 1);
         QVERIFY(!c);
-        QTest::qWait(0);
+        BOBUIest::qWait(0);
         QVERIFY(!c);
         QCOMPARE(sender.aPublicSlotCalled, 1);
     }
@@ -8607,7 +8607,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         &sender, &SenderObject::aPublicSlot,
-                        static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection | BobUI::SingleShotConnection)));
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
         QVERIFY(QObject::disconnect(&sender, &SenderObject::signal1,
@@ -8619,7 +8619,7 @@ void tst_QObject::singleShotConnection()
         sender.emitSignal1();
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
-        QTest::qWait(0);
+        BOBUIest::qWait(0);
         QCOMPARE(sender.aPublicSlotCalled, 0);
     }
 
@@ -8628,7 +8628,7 @@ void tst_QObject::singleShotConnection()
         SenderObject sender;
         QMetaObject::Connection c = connect(&sender, &SenderObject::signal1,
                                             &sender, &SenderObject::aPublicSlot,
-                                            static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection));
+                                            static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection | BobUI::SingleShotConnection));
         QVERIFY(c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
@@ -8643,7 +8643,7 @@ void tst_QObject::singleShotConnection()
         QVERIFY(!c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
 
-        QTest::qWait(0);
+        BOBUIest::qWait(0);
         QVERIFY(!c);
         QCOMPARE(sender.aPublicSlotCalled, 0);
     }
@@ -8656,7 +8656,7 @@ void tst_QObject::singleShotConnection()
 
         QVERIFY(connect(&sender, &SenderObject::signal1,
                         p.get(), &DeleteThisReceiver::deleteThis,
-                        static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::SingleShotConnection)));
+                        static_cast<BobUI::ConnectionType>(BobUI::QueuedConnection | BobUI::SingleShotConnection)));
         QCOMPARE(DeleteThisReceiver::counter, 0);
 
         sender.emitSignal1();
@@ -8671,9 +8671,9 @@ void tst_QObject::singleShotConnection()
         QVERIFY(p);
         QCOMPARE(DeleteThisReceiver::counter, 0);
 
-        QTRY_COMPARE(DeleteThisReceiver::counter, 1);
+        BOBUIRY_COMPARE(DeleteThisReceiver::counter, 1);
         QVERIFY(!p);
-        QTest::qWait(0);
+        BOBUIest::qWait(0);
         QCOMPARE(DeleteThisReceiver::counter, 1);
         QVERIFY(!p);
     }
@@ -8682,7 +8682,7 @@ void tst_QObject::singleShotConnection()
 void tst_QObject::objectNameBinding()
 {
     QObject obj;
-    QTestPrivate::testReadWritePropertyBasics<QObject, QString>(obj, "test1", "test2",
+    BOBUIestPrivate::testReadWritePropertyBasics<QObject, QString>(obj, "test1", "test2",
                                                                 "objectName");
 }
 
@@ -8718,8 +8718,8 @@ public slots:
 };
 } // namespace EmitToDestroyedClass
 
-QT_BEGIN_NAMESPACE
-namespace QtPrivate {
+BOBUI_BEGIN_NAMESPACE
+namespace BobUIPrivate {
 template<> void assertObjectType<EmitToDestroyedClass::Derived>(QObject *o)
 {
     // override the assertion so we don't assert and so something does happen
@@ -8731,7 +8731,7 @@ template<> void assertObjectType<EmitToDestroyedClass::Derived>(QObject *o)
         throw WouldAssert();
 }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 void tst_QObject::emitToDestroyedClass()
 {
@@ -8754,15 +8754,15 @@ void tst_QObject::emitToDestroyedClass()
     QCOMPARE(wouldHaveAssertedCount, 1);
 }
 
-// Test for QtPrivate::HasQ_OBJECT_Macro
-static_assert(QtPrivate::HasQ_OBJECT_Macro<tst_QObject>::Value);
-static_assert(!QtPrivate::HasQ_OBJECT_Macro<SiblingDeleter>::Value);
+// Test for BobUIPrivate::HasQ_OBJECT_Macro
+static_assert(BobUIPrivate::HasQ_OBJECT_Macro<tst_QObject>::Value);
+static_assert(!BobUIPrivate::HasQ_OBJECT_Macro<SiblingDeleter>::Value);
 
 Q_DECLARE_SMART_POINTER_METATYPE(std::shared_ptr)
 Q_DECLARE_SMART_POINTER_METATYPE(std::unique_ptr)
 
 
-// QTBUG-103741: OK to use smart pointers to const QObject in signals/slots
+// BOBUIBUG-103741: OK to use smart pointers to const QObject in signals/slots
 class SenderWithSharedPointerConstQObject : public QObject
 {
     Q_OBJECT
@@ -8775,13 +8775,13 @@ signals:
     void aSignal5(const std::unique_ptr<const QObject> &);
 };
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 /*
     Since QObjectPrivate stores the declarativeData pointer in a union with the pointer
-    to the currently destroyed child, calls to the QtDeclarative handlers need to be
-    correctly guarded. QTBUG-105286
+    to the currently destroyed child, calls to the BobUIDeclarative handlers need to be
+    correctly guarded. BOBUIBUG-105286
 */
-namespace QtDeclarative {
+namespace BobUIDeclarative {
 static std::unique_ptr<QAbstractDeclarativeData> theData;
 
 static void destroyed(QAbstractDeclarativeData *data, QObject *)
@@ -8795,12 +8795,12 @@ static void signalEmitted(QAbstractDeclarativeData *data, QObject *, int, void *
 // we can't use QCOMPARE in the next two functions, as they don't return void
 static int receivers(QAbstractDeclarativeData *data, const QObject *, int)
 {
-    QTest::qCompare(data, theData.get(), "data", "theData", __FILE__, __LINE__);
+    BOBUIest::qCompare(data, theData.get(), "data", "theData", __FILE__, __LINE__);
     return 0;
 }
 static bool isSignalConnected(QAbstractDeclarativeData *data, const QObject *, int)
 {
-    QTest::qCompare(data, theData.get(), "data", "theData", __FILE__, __LINE__);
+    BOBUIest::qCompare(data, theData.get(), "data", "theData", __FILE__, __LINE__);
     return true;
 }
 
@@ -8829,25 +8829,25 @@ signals:
 
 void tst_QObject::declarativeData()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QScopedValueRollback destroyed(QAbstractDeclarativeData::destroyed,
-                                   QtDeclarative::destroyed);
+                                   BobUIDeclarative::destroyed);
     QScopedValueRollback signalEmitted(QAbstractDeclarativeData::signalEmitted,
-                                       QtDeclarative::signalEmitted);
+                                       BobUIDeclarative::signalEmitted);
     QScopedValueRollback receivers(QAbstractDeclarativeData::receivers,
-                                   QtDeclarative::receivers);
+                                   BobUIDeclarative::receivers);
     QScopedValueRollback isSignalConnected(QAbstractDeclarativeData::isSignalConnected,
-                                           QtDeclarative::isSignalConnected);
+                                           BobUIDeclarative::isSignalConnected);
 
-    QtDeclarative::Object p;
+    BobUIDeclarative::Object p;
     QObjectPrivate *priv = QObjectPrivate::get(&p);
     priv->declarativeData = new QAbstractDeclarativeData;
-    QtDeclarative::theData.reset(priv->declarativeData);
+    BobUIDeclarative::theData.reset(priv->declarativeData);
 
-    connect(&p, &QtDeclarative::Object::theSignal, &p, []{
+    connect(&p, &BobUIDeclarative::Object::theSignal, &p, []{
     });
 
-    QtDeclarative::Object *child = new QtDeclarative::Object;
+    BobUIDeclarative::Object *child = new BobUIDeclarative::Object;
     child->setParent(&p);
 #endif
 }
@@ -8876,14 +8876,14 @@ public:
     using Prototype1 = void(*)(QString);
 
     template<typename Functor>
-    bool callMe0(const typename QtPrivate::ContextTypeForFunctor<Functor>::ContextType *, Functor &&func)
+    bool callMe0(const typename BobUIPrivate::ContextTypeForFunctor<Functor>::ContextType *, Functor &&func)
     {
         if (slotObject) {
             slotObject->destroyIfLastRef();
             slotObject = nullptr;
         }
-        QtPrivate::AssertCompatibleFunctions<Prototype0, Functor>();
-        slotObject = QtPrivate::makeCallableObject<Prototype0>(std::forward<Functor>(func));
+        BobUIPrivate::AssertCompatibleFunctions<Prototype0, Functor>();
+        slotObject = BobUIPrivate::makeCallableObject<Prototype0>(std::forward<Functor>(func));
         return true;
     }
 
@@ -8894,14 +8894,14 @@ public:
     }
 
     template<typename Functor>
-    bool callMe1(const typename QtPrivate::ContextTypeForFunctor<Functor>::ContextType *, Functor &&func)
+    bool callMe1(const typename BobUIPrivate::ContextTypeForFunctor<Functor>::ContextType *, Functor &&func)
     {
         if (slotObject) {
             slotObject->destroyIfLastRef();
             slotObject = nullptr;
         }
-        QtPrivate::AssertCompatibleFunctions<Prototype1, Functor>();
-        slotObject = QtPrivate::makeCallableObject<Prototype1>(std::forward<Functor>(func));
+        BobUIPrivate::AssertCompatibleFunctions<Prototype1, Functor>();
+        slotObject = BobUIPrivate::makeCallableObject<Prototype1>(std::forward<Functor>(func));
         return true;
     }
 
@@ -8911,7 +8911,7 @@ public:
         return callMe1(nullptr, std::forward<Functor>(func));
     }
 
-    QtPrivate::QSlotObjectBase *slotObject = nullptr;
+    BobUIPrivate::QSlotObjectBase *slotObject = nullptr;
 };
 
 static void freeFunction0() {}
@@ -8920,7 +8920,7 @@ static void freeFunctionVariant(QVariant) {}
 
 template<typename Prototype, typename Functor>
 inline constexpr bool compiles(Functor &&) {
-    return QtPrivate::AreFunctionsCompatible<Prototype, Functor>::value;
+    return BobUIPrivate::AreFunctionsCompatible<Prototype, Functor>::value;
 }
 
 void tst_QObject::asyncCallbackHelper()
@@ -9035,7 +9035,7 @@ void tst_QObject::asyncCallbackHelper()
         } moveOnlyFunctor;
         QVERIFY(caller.callMe0(std::move(moveOnlyFunctor)));
     }
-    QTest::ignoreMessage(QtDebugMsg, expectedPayload);
+    BOBUIest::ignoreMessage(BobUIDebugMsg, expectedPayload);
     caller.slotObject->call(nullptr, argv);
     QCOMPARE(result, QLatin1String(expectedPayload).length());
 
@@ -9094,34 +9094,34 @@ void tst_QObject::disconnectQueuedConnection_pendingEventsAreDelivered()
 
     receiver.count_slot1 = 0;
     QObject::connect(&sender, &SenderObject::signal1, &receiver, &ReceiverObject::slot1,
-                     Qt::QueuedConnection);
+                     BobUI::QueuedConnection);
     sender.emitSignal1();
     QCOMPARE(receiver.count_slot1, 0);
 
     QObject::disconnect(&sender, &SenderObject::signal1, &receiver, &ReceiverObject::slot1);
     QCOMPARE(receiver.count_slot1, 0);
-    QTRY_COMPARE(receiver.count_slot1, 1);
+    BOBUIRY_COMPARE(receiver.count_slot1, 1);
 }
 
 void tst_QObject::timerWithNegativeInterval()
 {
     QObject obj;
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QObject::startTimer: negative intervals aren't allowed; the "
                          "interval will be set to 1ms.");
     int id = obj.startTimer(-100ms);
-    QCOMPARE_NE(Qt::TimerId{id}, Qt::TimerId::Invalid);
+    QCOMPARE_NE(BobUI::TimerId{id}, BobUI::TimerId::Invalid);
 }
 
 void tst_QObject::emptyQueuedMetaCallEvent()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     // don't crash
     QQueuedMetaCallEvent event(0, nullptr, 0, 0, nullptr, nullptr);
 #else
-    QSKIP("Needs QT_BUILD_INTERNAL");
+    QSKIP("Needs BOBUI_BUILD_INTERNAL");
 #endif
 }
 
-QTEST_MAIN(tst_QObject)
+BOBUIEST_MAIN(tst_QObject)
 #include "tst_qobject.moc"

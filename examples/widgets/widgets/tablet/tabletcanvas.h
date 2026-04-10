@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef TABLETCANVAS_H
 #define TABLETCANVAS_H
@@ -9,13 +9,13 @@
 #include <QPen>
 #include <QPixmap>
 #include <QPoint>
-#include <QTabletEvent>
+#include <BOBUIabletEvent>
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QPaintEvent;
 class QString;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class TabletCanvas : public QWidget
@@ -42,26 +42,26 @@ public:
         { if (c.isValid()) m_color = c; }
     QColor color() const
         { return m_color; }
-    void setTabletDevice(QTabletEvent *event)
+    void setTabletDevice(BOBUIabletEvent *event)
         { updateCursor(event); }
 
 protected:
-    void tabletEvent(QTabletEvent *event) override;
+    void tabletEvent(BOBUIabletEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
 private:
     void initPixmap();
-    void paintPixmap(QPainter &painter, QTabletEvent *event);
-    Qt::BrushStyle brushPattern(qreal value);
+    void paintPixmap(QPainter &painter, BOBUIabletEvent *event);
+    BobUI::BrushStyle brushPattern(qreal value);
     static qreal pressureToWidth(qreal pressure);
-    void updateBrush(const QTabletEvent *event);
-    void updateCursor(const QTabletEvent *event);
+    void updateBrush(const BOBUIabletEvent *event);
+    void updateCursor(const BOBUIabletEvent *event);
 
     Valuator m_alphaChannelValuator = TangentialPressureValuator;
     Valuator m_colorSaturationValuator = NoValuator;
     Valuator m_lineWidthValuator = PressureValuator;
-    QColor m_color = Qt::red;
+    QColor m_color = BobUI::red;
     QPixmap m_pixmap;
     QBrush m_brush;
     QPen m_pen;

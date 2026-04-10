@@ -1,4 +1,4 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright © 2004-2023 Unicode, Inc.
 // SPDX-License-Identifier: Unicode-3.0
 
@@ -26,7 +26,7 @@ struct LocaleListItem
 
     Do not edit this section: instead regenerate it using
     cldr2qlocalexml.py and qlocalexml2cpp.py on updated (or
-    edited) CLDR data; see qtbase/util/locale_database/.
+    edited) CLDR data; see bobuibase/util/locale_database/.
 */
 
 const LocaleListItem g_locale_list[] = {
@@ -707,14 +707,14 @@ LocaleModel::LocaleModel(QObject *parent)
     m_data_list.append(1234.5678);
     m_data_list.append(QDate::currentDate());
     m_data_list.append(QDate::currentDate());
-    m_data_list.append(QTime::currentTime());
-    m_data_list.append(QTime::currentTime());
+    m_data_list.append(BOBUIime::currentTime());
+    m_data_list.append(BOBUIime::currentTime());
 }
 
 QVariant LocaleModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()
-        || (role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::ToolTipRole)
+        || (role != BobUI::DisplayRole && role != BobUI::EditRole && role != BobUI::ToolTipRole)
         || index.column() >= g_model_cols
         || index.row() >= g_locale_list_count + 2)
         return QVariant();
@@ -724,7 +724,7 @@ QVariant LocaleModel::data(const QModelIndex &index, int role) const
         data = m_data_list.at(index.column());
 
     if (index.row() == 0) {
-        if (role == Qt::ToolTipRole)
+        if (role == BobUI::ToolTipRole)
             return QVariant();
         switch (index.column()) {
             case 0:
@@ -753,27 +753,27 @@ QVariant LocaleModel::data(const QModelIndex &index, int role) const
 
         switch (index.column()) {
             case 0:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return QVariant();
                 return locale.toString(data.toDouble());
             case 1:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return locale.dateFormat(QLocale::LongFormat);
                 return locale.toString(data.toDate(), QLocale::LongFormat);
             case 2:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return locale.dateFormat(QLocale::ShortFormat);
                 return locale.toString(data.toDate(), QLocale::ShortFormat);
             case 3:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return locale.timeFormat(QLocale::LongFormat);
                 return locale.toString(data.toTime(), QLocale::LongFormat);
             case 4:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return locale.timeFormat(QLocale::ShortFormat);
                 return locale.toString(data.toTime(), QLocale::ShortFormat);
             case 5:
-                if (role == Qt::ToolTipRole)
+                if (role == BobUI::ToolTipRole)
                     return QVariant();
                 return locale.name();
             default:
@@ -784,12 +784,12 @@ QVariant LocaleModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant LocaleModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant LocaleModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (role != Qt::DisplayRole)
+    if (role != BobUI::DisplayRole)
         return QVariant();
 
-    if (orientation == Qt::Horizontal) {
+    if (orientation == BobUI::Horizontal) {
         switch (section) {
             case 0:
                 return QLatin1String("Double");
@@ -852,14 +852,14 @@ int LocaleModel::rowCount(const QModelIndex &parent) const
     return g_locale_list_count + 2;
 }
 
-Qt::ItemFlags LocaleModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags LocaleModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return {};
     if (index.row() == 0 && index.column() == g_model_cols - 1)
         return {};
     if (index.row() == 0)
-        return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+        return QAbstractItemModel::flags(index) | BobUI::ItemIsEditable;
     return QAbstractItemModel::flags(index);
 }
 
@@ -868,7 +868,7 @@ bool LocaleModel::setData(const QModelIndex &index, const QVariant &value, int r
     if (!index.isValid()
         || index.row() != 0
         || index.column() >= g_model_cols - 1
-        || role != Qt::EditRole
+        || role != BobUI::EditRole
         || m_data_list.at(index.column()).typeId() != value.typeId())
         return false;
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "mymodel.h"
 
@@ -23,7 +23,7 @@ int MyModel::columnCount(const QModelIndex & /*parent*/) const
 //-------------------------------------------------------
 QVariant MyModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::DisplayRole) {
+    if (role == BobUI::DisplayRole) {
         return QString("Row%1, Column%2")
                 .arg(index.row() + 1)
                 .arg(index.column() +1);
@@ -32,9 +32,9 @@ QVariant MyModel::data(const QModelIndex &index, int role) const
 }
 
 //! [quoting mymodel_c]
-QVariant MyModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant MyModel::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+    if (role == BobUI::DisplayRole && orientation == BobUI::Horizontal) {
         switch (section) {
         case 0:
             return QString("first");

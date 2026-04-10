@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qgenericpluginfactory.h"
 
@@ -8,17 +8,17 @@
 #include "qgenericplugin.h"
 #include "qdebug.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, gpLoader,
-    (QGenericPluginFactoryInterface_iid, "/generic"_L1, Qt::CaseInsensitive))
+    (QGenericPluginFactoryInterface_iid, "/generic"_L1, BobUI::CaseInsensitive))
 
 /*!
     \class QGenericPluginFactory
     \ingroup plugins
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     \brief The QGenericPluginFactory class creates plugin drivers.
 
@@ -57,4 +57,4 @@ QStringList QGenericPluginFactory::keys()
     return list;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

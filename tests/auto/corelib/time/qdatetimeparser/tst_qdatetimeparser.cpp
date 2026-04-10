@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <private/qdatetimeparser_p.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // access to needed members in QDateTimeParser
 class QDTPUnitTestParser : public QDateTimeParser
@@ -34,14 +34,14 @@ bool operator==(const QDTPUnitTestParser::ParsedSection &a,
 // pretty printing for ParsedSection
 char *toString(const QDTPUnitTestParser::ParsedSection &section)
 {
-    using QTest::toString;
+    using BOBUIest::toString;
     return toString(QByteArray("ParsedSection(") + "state=" + QByteArray::number(section.state)
                     + ", value=" + QByteArray::number(section.value)
                     + ", used=" + QByteArray::number(section.used)
                     + ", zeros=" + QByteArray::number(section.zeroes) + ")");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QDateTimeParser : public QObject
 {
@@ -59,21 +59,21 @@ private Q_SLOTS:
 void tst_QDateTimeParser::reparse()
 {
     const QDateTime when = QDate(2023, 6, 15).startOfDay();
-    // QTBUG-114575: 6.2 through 6.5 got back a bogus Qt::TimeZone (with zero offset):
+    // BOBUIBUG-114575: 6.2 through 6.5 got back a bogus BobUI::TimeZone (with zero offset):
     const auto expect = ([](QStringView name) {
         // When local time is UTC or a fixed offset from it, the parser prefers
         // to interpret a UTC or offset suffix as such, rather than as local
         // time (thereby avoiding DST-ness checks). We have to match that here.
         if (name == "UTC"_L1)
-            return Qt::UTC;
+            return BobUI::UTC;
         if (name.startsWith(u'+') || name.startsWith(u'-')) {
             if (std::all_of(name.begin() + 1, name.end(), [](QChar ch) { return ch == u'0'; }))
-                return Qt::UTC;
+                return BobUI::UTC;
             if (std::all_of(name.begin() + 1, name.end(), [](QChar ch) { return ch.isDigit(); }))
-                return Qt::OffsetFromUTC;
+                return BobUI::OffsetFromUTC;
             // Potential hh:mm offset ?  Not yet seen as local tzname[] entry.
         }
-        return Qt::LocalTime;
+        return BobUI::LocalTime;
     });
 
     const QStringView format = u"dd/MM/yyyy HH:mm t";
@@ -92,10 +92,10 @@ void tst_QDateTimeParser::reparse()
         // QDT::toString() uses the C locale:
         who.setDefaultLocale(QLocale::c());
         const QString zoneName = ([when]() {
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
             if (QLocale::c() != QLocale::system()) {
                 const QString local = when.timeRepresentation().displayName(
-                    when, QTimeZone::ShortName, QLocale::c());
+                    when, BOBUIimeZone::ShortName, QLocale::c());
                 if (!local.isEmpty())
                     return local;
             }
@@ -113,45 +113,45 @@ void tst_QDateTimeParser::reparse()
 
 void tst_QDateTimeParser::parseSection_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<int>("sectionIndex");
-    QTest::addColumn<int>("offset");
-    QTest::addColumn<QDTPUnitTestParser::ParsedSection>("expected");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<int>("sectionIndex");
+    BOBUIest::addColumn<int>("offset");
+    BOBUIest::addColumn<QDTPUnitTestParser::ParsedSection>("expected");
 
     using ParsedSection = QDTPUnitTestParser::ParsedSection;
     using State = QDTPUnitTestParser::State;
-    QTest::newRow("short-year-begin")
+    BOBUIest::newRow("short-year-begin")
         << "yyyy_MM_dd" << "200_12_15" << 0 << 0
         << ParsedSection(State::Intermediate ,200, 3, 0);
 
-    QTest::newRow("short-year-middle")
+    BOBUIest::newRow("short-year-middle")
         << "MM-yyyy-dd" << "12-200-15" << 1 << 3
         << ParsedSection(State::Intermediate, 200, 3, 0);
 
-    QTest::newRow("negative-year-middle-5")
+    BOBUIest::newRow("negative-year-middle-5")
         << "MM-yyyy-dd" << "12--2000-15" << 1 << 3
         << ParsedSection(State::Acceptable, -2000, 5, 0);
 
-    QTest::newRow("short-negative-year-middle-4")
+    BOBUIest::newRow("short-negative-year-middle-4")
         << "MM-yyyy-dd" << "12--200-15" << 1 << 3
         << ParsedSection(State::Intermediate, -200, 4, 0);
 
-    QTest::newRow("short-negative-year-middle-3")
+    BOBUIest::newRow("short-negative-year-middle-3")
         << "MM-yyyy-dd" << "12--20-15" << 1 << 3
         << ParsedSection(State::Intermediate, -20, 3, 0);
 
-    QTest::newRow("short-negative-year-middle-2")
+    BOBUIest::newRow("short-negative-year-middle-2")
         << "MM-yyyy-dd" << "12--2-15" << 1 << 3
         << ParsedSection(State::Intermediate, -2, 2, 0);
 
-    QTest::newRow("short-negative-year-middle-1")
+    BOBUIest::newRow("short-negative-year-middle-1")
         << "MM-yyyy-dd" << "12---15"  << 1 << 3
         << ParsedSection(State::Intermediate, 0, 1, 0);
 
     // Here the -15 will be understood as year, with separator and day omitted,
     // although it could equally be read as month and day with missing year.
-    QTest::newRow("short-negative-year-middle-0")
+    BOBUIest::newRow("short-negative-year-middle-0")
         << "MM-yyyy-dd" << "12--15"  << 1 << 3
         << ParsedSection(State::Intermediate, -15, 3, 0);
 }
@@ -176,15 +176,15 @@ void tst_QDateTimeParser::parseSection()
 
 void tst_QDateTimeParser::intermediateYear_data()
 {
-    QTest::addColumn<QString>("format");
-    QTest::addColumn<QString>("input");
-    QTest::addColumn<QDate>("expected");
+    BOBUIest::addColumn<QString>("format");
+    BOBUIest::addColumn<QString>("input");
+    BOBUIest::addColumn<QDate>("expected");
 
-    QTest::newRow("short-year-begin")
+    BOBUIest::newRow("short-year-begin")
         << "yyyy_MM_dd" << "200_12_15" << QDate(200, 12, 15);
-    QTest::newRow("short-year-mid")
+    BOBUIest::newRow("short-year-mid")
         << "MM_yyyy_dd" << "12_200_15" << QDate(200, 12, 15);
-    QTest::newRow("short-year-end")
+    BOBUIest::newRow("short-year-end")
         << "MM_dd_yyyy" << "12_15_200" << QDate(200, 12, 15);
 }
 
@@ -206,6 +206,6 @@ void tst_QDateTimeParser::intermediateYear()
     QCOMPARE(tmp.value.date(), expected);
 }
 
-QTEST_APPLESS_MAIN(tst_QDateTimeParser)
+BOBUIEST_APPLESS_MAIN(tst_QDateTimeParser)
 
 #include "tst_qdatetimeparser.moc"

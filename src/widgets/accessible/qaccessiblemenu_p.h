@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QACCESSIBLEMENU_H
 #define QACCESSIBLEMENU_H
@@ -8,22 +8,22 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtWidgets/qaccessiblewidget.h>
-#include <QtCore/qpointer.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUIWidgets/qaccessiblewidget.h>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 class QMenu;
 class QMenuBar;
 class QAction;
@@ -46,7 +46,7 @@ protected:
     QMenu *menu() const;
 };
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
 class QAccessibleMenuBar : public QAccessibleWidgetV2
 {
 public:
@@ -60,7 +60,7 @@ public:
 protected:
     QMenuBar *menuBar() const;
 };
-#endif // QT_CONFIG(menubar)
+#endif // BOBUI_CONFIG(menubar)
 
 
 class QAccessibleMenuItem : public QAccessibleInterface, public QAccessibleActionInterface
@@ -100,8 +100,8 @@ private:
     QPointer<QWidget> m_owner; // can hold either QMenu or the QMenuBar that contains the action
 };
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
-QT_END_NAMESPACE
-#endif // QT_CONFIG(accessibility)
+BOBUI_END_NAMESPACE
+#endif // BOBUI_CONFIG(accessibility)
 #endif // QACCESSIBLEMENU_H

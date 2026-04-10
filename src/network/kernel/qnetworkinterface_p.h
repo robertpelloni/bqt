@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QNETWORKINTERFACEPRIVATE_H
 #define QNETWORKINTERFACEPRIVATE_H
@@ -9,26 +9,26 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtNetwork/private/qtnetworkglobal_p.h>
-#include <QtNetwork/qnetworkinterface.h>
-#include <QtCore/qatomic.h>
-#include <QtCore/qdeadlinetimer.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qstring.h>
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qabstractsocket.h>
+#include <BobUINetwork/private/bobuinetworkglobal_p.h>
+#include <BobUINetwork/qnetworkinterface.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qdeadlinetimer.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qstring.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qabstractsocket.h>
 #include <private/qhostaddress_p.h>
 
-#ifndef QT_NO_NETWORKINTERFACE
+#ifndef BOBUI_NO_NETWORKINTERFACE
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QNetworkAddressEntryPrivate
 {
@@ -106,8 +106,8 @@ private:
 };
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_NETWORKINTERFACE
+#endif // BOBUI_NO_NETWORKINTERFACE
 
 #endif

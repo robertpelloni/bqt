@@ -1,6 +1,6 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qdatetimeparser_p.h"
 
@@ -11,16 +11,16 @@
 #include "private/qlocale_p.h"
 #include "qset.h"
 #include "private/qstringiterator_p.h"
-#include "private/qtenvironmentvariables_p.h"
-#include "qtimezone.h"
-#if QT_CONFIG(timezone)
-#include "private/qtimezoneprivate_p.h"
+#include "private/bobuienvironmentvariables_p.h"
+#include "bobuiimezone.h"
+#if BOBUI_CONFIG(timezone)
+#include "private/bobuiimezoneprivate_p.h"
 #endif
 #include "qvarlengtharray.h"
 
 
 //#define QDATETIMEPARSER_DEBUG
-#if defined (QDATETIMEPARSER_DEBUG) && !defined(QT_NO_DEBUG_STREAM)
+#if defined (QDATETIMEPARSER_DEBUG) && !defined(BOBUI_NO_DEBUG_STREAM)
 #  define QDTPDEBUG qDebug()
 #  define QDTPDEBUGN qDebug
 #else
@@ -28,13 +28,13 @@
 #  define QDTPDEBUGN if (false) qDebug
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 constexpr int QDateTimeParser::NoSectionIndex;
 constexpr int QDateTimeParser::FirstSectionIndex;
 constexpr int QDateTimeParser::LastSectionIndex;
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 template <typename T>
 using ShortVector = QVarLengthArray<T, 13>; // enough for month (incl. leap) and day-of-week names
@@ -137,12 +137,12 @@ bool QDateTimeParser::setDigit(QDateTime &v, int index, int newVal) const
     int weekDay = calendar.dayOfWeek(oldDate);
     enum { NoFix, MonthDay, WeekDay } fixDay = NoFix;
 
-    const QTime time = v.time();
+    const BOBUIime time = v.time();
     int hour = time.hour();
     int minute = time.minute();
     int second = time.second();
     int msec = time.msec();
-    QTimeZone timeZone = v.timeRepresentation();
+    BOBUIimeZone timeZone = v.timeRepresentation();
 
     const SectionNode &node = sectionNodes.at(index);
     switch (node.type) {
@@ -175,7 +175,7 @@ bool QDateTimeParser::setDigit(QDateTime &v, int index, int newVal) const
         if (newVal < absoluteMin(index) || newVal > absoluteMax(index))
             return false;
         // Only offset from UTC is amenable to setting an int value:
-        timeZone = QTimeZone::fromSecondsAheadOfUtc(newVal);
+        timeZone = BOBUIimeZone::fromSecondsAheadOfUtc(newVal);
         break;
     case AmPmSection: hour = (newVal == 0 ? hour % 12 : (hour % 12) + 12); break;
     default:
@@ -211,7 +211,7 @@ bool QDateTimeParser::setDigit(QDateTime &v, int index, int newVal) const
     }
 
     const QDate newDate = calendar.dateFromParts(date);
-    const QTime newTime(hour, minute, second, msec);
+    const BOBUIime newTime(hour, minute, second, msec);
     if (!newDate.isValid() || !newTime.isValid())
         return false;
 
@@ -232,7 +232,7 @@ int QDateTimeParser::absoluteMax(int s, const QDateTime &cur) const
     const SectionNode &sn = sectionNode(s);
     switch (sn.type) {
     case TimeZoneSection:
-        return QTimeZone::MaxUtcOffsetSecs;
+        return BOBUIimeZone::MaxUtcOffsetSecs;
     case Hour24Section:
     case Hour12Section:
         // This is special-cased in parseSection.
@@ -276,7 +276,7 @@ int QDateTimeParser::absoluteMin(int s) const
     const SectionNode &sn = sectionNode(s);
     switch (sn.type) {
     case TimeZoneSection:
-        return QTimeZone::MinUtcOffsetSecs;
+        return BOBUIimeZone::MinUtcOffsetSecs;
     case Hour24Section:
     case Hour12Section:
     case MinuteSection:
@@ -384,7 +384,7 @@ static qsizetype digitCount(QStringView str)
 */
 static QString unquote(QStringView str)
 {
-    // ### Align unquoting format strings for both from/toString(), QTBUG-110669
+    // ### Align unquoting format strings for both from/toString(), BOBUIBUG-110669
     const QLatin1Char quote('\'');
     const QLatin1Char slash('\\');
     const QLatin1Char zero('0');
@@ -412,7 +412,7 @@ static inline int countRepeat(QStringView str, int index, int maxCount)
     if (maxCount < str.size())
         str = str.first(maxCount);
 
-    return qt_repeatCount(str);
+    return bobui_repeatCount(str);
 }
 
 static inline void appendSeparator(QStringList *list, QStringView string,
@@ -510,7 +510,7 @@ bool QDateTimeParser::parseFormat(QStringView newFormat)
                     appendSeparator(&newSeparators, newFormat, index, i - index, lastQuote);
                     newDisplay |= AmPmSection;
                     if (i + 1 < newFormat.size()
-                        && newFormat.sliced(i + 1).startsWith(u'p', Qt::CaseInsensitive)) {
+                        && newFormat.sliced(i + 1).startsWith(u'p', BobUI::CaseInsensitive)) {
                         ++i;
                         if (newFormat.at(i) != QLatin1Char(caseOpt == UpperCase ? 'P' : 'p'))
                             caseOpt = NativeCase;
@@ -521,7 +521,7 @@ bool QDateTimeParser::parseFormat(QStringView newFormat)
                 }
                 break;
             case 'y':
-                if (parserType != QMetaType::QTime) {
+                if (parserType != QMetaType::BOBUIime) {
                     const int repeat = countRepeat(newFormat, i, 4);
                     if (repeat >= 2) {
                         const SectionNode sn{repeat == 4 ? YearSection : YearSection2Digits,
@@ -535,7 +535,7 @@ bool QDateTimeParser::parseFormat(QStringView newFormat)
                 }
                 break;
             case 'M':
-                if (parserType != QMetaType::QTime) {
+                if (parserType != QMetaType::BOBUIime) {
                     const SectionNode sn{MonthSection, i - add, countRepeat(newFormat, i, 4)};
                     newSectionNodes.append(sn);
                     newSeparators.append(unquote(newFormat.first(i).sliced(index)));
@@ -545,7 +545,7 @@ bool QDateTimeParser::parseFormat(QStringView newFormat)
                 }
                 break;
             case 'd':
-                if (parserType != QMetaType::QTime) {
+                if (parserType != QMetaType::BOBUIime) {
                     const int repeat = countRepeat(newFormat, i, 4);
                     const Section sectionType = (repeat == 4 ? DayOfWeekSectionLong
                         : (repeat == 3 ? DayOfWeekSectionShort : DaySection));
@@ -649,7 +649,7 @@ int QDateTimeParser::sectionSize(int sectionIndex) const
 
 int QDateTimeParser::sectionMaxSize(Section s, int count) const
 {
-#if QT_CONFIG(textdate)
+#if BOBUI_CONFIG(textdate)
     int mcount = calendar.maximumMonthsInYear();
 #endif
 
@@ -673,12 +673,12 @@ int QDateTimeParser::sectionMaxSize(Section s, int count) const
 
     case DayOfWeekSectionShort:
     case DayOfWeekSectionLong:
-#if QT_CONFIG(textdate)
+#if BOBUI_CONFIG(textdate)
         mcount = 7;
         Q_FALLTHROUGH();
 #endif
     case MonthSection:
-#if QT_CONFIG(textdate)
+#if BOBUI_CONFIG(textdate)
         if (count <= 2)
             return 2;
 
@@ -731,7 +731,7 @@ int QDateTimeParser::sectionMaxSize(int index) const
 
 // Separator matching
 //
-// QTBUG-114909: user may be oblivious to difference between visibly
+// BOBUIBUG-114909: user may be oblivious to difference between visibly
 // indistinguishable spacing characters. For now we only treat horizontal
 // spacing characters, excluding tab, as equivalent.
 
@@ -1157,12 +1157,12 @@ static QDate actualDate(QDateTimeParser::Sections known, QCalendar calendar, int
   \internal
 */
 
-static QTime actualTime(QDateTimeParser::Sections known,
+static BOBUIime actualTime(QDateTimeParser::Sections known,
                         int hour, int hour12, int ampm,
                         int minute, int second, int msec)
 {
     // If we have no conflict, or don't know enough to diagonose one, use this:
-    QTime actual(hour, minute, second, msec);
+    BOBUIime actual(hour, minute, second, msec);
     if (hour12 < 0 || hour12 > 12) { // ignore bogus value
         known &= ~QDateTimeParser::Hour12Section;
         hour12 = hour % 12;
@@ -1184,7 +1184,7 @@ static QTime actualTime(QDateTimeParser::Sections known,
             hour = hour12 + ampm * 12;
         }
     }
-    actual = QTime(hour, minute, second, msec);
+    actual = BOBUIime(hour, minute, second, msec);
     return actual;
 }
 
@@ -1213,14 +1213,14 @@ static int startsWithLocalTimeZone(QStringView name, const QDateTime &when, cons
             }
         }
     };
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
     /* QLocale::toString would skip this if locale == QLocale::system(), but we
        might not be using the same system locale as whoever generated the text
        we're parsing. So consider it anyway. */
     {
         const auto localWhen = QDateTime(when.date(), when.time());
         consider(localWhen.timeRepresentation().displayName(
-                     localWhen, QTimeZone::ShortName, locale));
+                     localWhen, BOBUIimeZone::ShortName, locale));
     }
 #else
     Q_UNUSED(locale);
@@ -1230,26 +1230,26 @@ static int startsWithLocalTimeZone(QStringView name, const QDateTime &when, cons
     return int(longest);
 }
 
-#if QT_CONFIG(timezone)
+#if BOBUI_CONFIG(timezone)
 static auto findZoneByLongName(QStringView str, const QLocale &locale, const QDateTime &when)
 {
     struct R
     {
-        QTimeZone zone;
+        BOBUIimeZone zone;
         qsizetype nameLength = 0;
         bool isValid() const { return nameLength > 0 && zone.isValid(); }
     } result;
-    auto pfx = QTimeZonePrivate::findLongNamePrefix(str, locale, when.toMSecsSinceEpoch());
+    auto pfx = BOBUIimeZonePrivate::findLongNamePrefix(str, locale, when.toMSecsSinceEpoch());
     if (!pfx) // Incomplete data in when: try without time-point.
-        pfx = QTimeZonePrivate::findLongNamePrefix(str, locale);
+        pfx = BOBUIimeZonePrivate::findLongNamePrefix(str, locale);
     // (We don't want offset format to match 'tttt', so do need to limit this.)
-    // The final fall-back for QTZL's localeName() is a zoneOffsetFormat(,,NarrowFormat,,):
+    // The final fall-back for BOBUIZL's localeName() is a zoneOffsetFormat(,,NarrowFormat,,):
     if (!pfx)
-        pfx = QTimeZonePrivate::findNarrowOffsetPrefix(str, locale);
+        pfx = BOBUIimeZonePrivate::findNarrowOffsetPrefix(str, locale);
     if (!pfx)
-        pfx = QTimeZonePrivate::findLongUtcPrefix(str);
+        pfx = BOBUIimeZonePrivate::findLongUtcPrefix(str);
     if (pfx) {
-        result = R{ QTimeZone(pfx.ianaId), pfx.nameLength };
+        result = R{ BOBUIimeZone(pfx.ianaId), pfx.nameLength };
         Q_ASSERT(result.zone.isValid());
         // TODO: we should be able to take pfx.timeType into account.
     }
@@ -1270,7 +1270,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
     int pos = 0;
     int year, month, day;
     const QDate defaultDate = defaultValue.date();
-    const QTime defaultTime = defaultValue.time();
+    const BOBUIime defaultTime = defaultValue.time();
     defaultDate.getDate(&year, &month, &day);
     int year2digits = year % 100;
     int hour = defaultTime.hour();
@@ -1279,7 +1279,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
     int second = defaultTime.second();
     int msec = defaultTime.msec();
     int dayofweek = calendar.dayOfWeek(defaultDate);
-    QTimeZone timeZone = defaultValue.timeRepresentation();
+    BOBUIimeZone timeZone = defaultValue.timeRepresentation();
 
     int ampm = -1;
     Sections isSet = NoSection;
@@ -1302,7 +1302,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
         const QDateTime usedDateTime = [&] {
             const QDate date = actualDate(isSet, calendar, defaultCenturyStart,
                                           year, year2digits, month, day, dayofweek);
-            const QTime time = actualTime(isSet, hour, hour12, ampm, minute, second, msec);
+            const BOBUIime time = actualTime(isSet, hour, hour12, ampm, minute, second, msec);
             return QDateTime(date, time, timeZone);
         }();
         ParsedSection sect = parseSection(usedDateTime, index, pos);
@@ -1339,10 +1339,10 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
                 const bool isUtc = zoneName == "Z"_L1 || zoneName == "UTC"_L1;
 
                 if (isUtc || isUtcOffset) {
-                    timeZone = QTimeZone::fromSecondsAheadOfUtc(sect.value);
-#if QT_CONFIG(timezone)
+                    timeZone = BOBUIimeZone::fromSecondsAheadOfUtc(sect.value);
+#if BOBUI_CONFIG(timezone)
                 } else if (startsWithLocalTimeZone(zoneName, usedDateTime, locale()) != sect.used) {
-                    if (QTimeZone namedZone = QTimeZone(zoneName.toLatin1()); namedZone.isValid()) {
+                    if (BOBUIimeZone namedZone = BOBUIimeZone(zoneName.toLatin1()); namedZone.isValid()) {
                         timeZone = namedZone;
                     } else {
                         auto found = findZoneByLongName(zoneName, locale(), usedDateTime);
@@ -1352,7 +1352,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
                     }
 #endif
                 } else {
-                    timeZone = QTimeZone::LocalTime;
+                    timeZone = BOBUIimeZone::LocalTime;
                 }
             }
             break;
@@ -1400,7 +1400,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
         return StateNode();
     }
 
-    if (parserType != QMetaType::QTime) {
+    if (parserType != QMetaType::BOBUIime) {
         if (year % 100 != year2digits && (isSet & YearSection2Digits)) {
             const QDate date = actualDate(isSet, calendar, defaultCenturyStart,
                                           year, year2digits, month, day, dayofweek);
@@ -1494,7 +1494,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
     Q_ASSERT(state != Invalid);
 
     const QDate date(year, month, day, calendar);
-    const QTime time(hour, minute, second, msec);
+    const BOBUIime time(hour, minute, second, msec);
     const QDateTime when = QDateTime(date, time, timeZone);
 
     if (when.time() != time || when.date() != date) {
@@ -1509,7 +1509,7 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
                 qint64 msecs = when.toMSecsSinceEpoch();
                 // Fortunately, that gets a useful answer, even though when is invalid ...
                 const QDateTime replace = QDateTime::fromMSecsSinceEpoch(msecs, timeZone);
-                const QTime tick = replace.time();
+                const BOBUIime tick = replace.time();
                 if (replace.date() == date
                     && (!(isSet & MinuteSection) || tick.minute() == minute)
                     && (!(isSet & SecondSection) || tick.second() == second)
@@ -1519,12 +1519,12 @@ QDateTimeParser::scanString(const QDateTime &defaultValue, bool fixup) const
             } break;
             case QMetaType::QDate:
                 // Don't care about time, so just use start of day (and ignore spec):
-                return StateNode(date.startOfDay(QTimeZone::UTC),
+                return StateNode(date.startOfDay(BOBUIimeZone::UTC),
                                  state, padding, conflicts);
                 break;
-            case QMetaType::QTime:
+            case QMetaType::BOBUIime:
                 // Don't care about date or representation, so pick a safe representation:
-                return StateNode(QDateTime(date, time, QTimeZone::UTC),
+                return StateNode(QDateTime(date, time, BOBUIimeZone::UTC),
                                  state, padding, conflicts);
             default:
                 Q_UNREACHABLE_RETURN(StateNode());
@@ -1620,7 +1620,7 @@ QDateTimeParser::parse(const QString &input, int position,
                             if (scan.value.daysTo(minimum) != 0)
                                 break;
 
-                            const QTime time = scan.value.time();
+                            const BOBUIime time = scan.value.time();
                             toMin = time.msecsTo(minimum.time());
                             if (scan.value.daysTo(maximum) > 0)
                                 toMax = -1; // can't get to max
@@ -1831,7 +1831,7 @@ QDateTimeParser::ParsedSection QDateTimeParser::findUtcOffset(QStringView str, i
     if (!isInt)
         return ParsedSection();
 
-    // Keep in sync with QTimeZone::maxUtcOffset hours (14 at most). Also, user
+    // Keep in sync with BOBUIimeZone::maxUtcOffset hours (14 at most). Also, user
     // could be in the middle of updating the offset (e.g. UTC+14:23) which is
     // an intermediate state
     const State status = (hours > 14 || minutes >= 60) ? Invalid
@@ -1853,14 +1853,14 @@ QDateTimeParser::ParsedSection QDateTimeParser::findUtcOffset(QStringView str, i
 
   Return's .value is zone's offset, zone time - UTC time, in seconds.
   The caller must verify that the offset is within a valid range.
-  See QTimeZonePrivate::isValidId() for the format of zone names.
+  See BOBUIimeZonePrivate::isValidId() for the format of zone names.
  */
 QDateTimeParser::ParsedSection
 QDateTimeParser::findTimeZoneName(QStringView str, const QDateTime &when) const
 {
     const int systemLength = startsWithLocalTimeZone(str, when, locale());
-#if QT_CONFIG(timezone)
-    // Collect up plausibly-valid characters; let QTimeZone work out what's
+#if BOBUI_CONFIG(timezone)
+    // Collect up plausibly-valid characters; let BOBUIimeZone work out what's
     // truly valid.
     const auto invalidZoneNameCharacter = [] (const QChar &c) {
         const auto cu = c.unicode();
@@ -1890,7 +1890,7 @@ QDateTimeParser::findTimeZoneName(QStringView str, const QDateTime &when) const
     // Find longest IANA ID match:
     for (QStringView copy = str; index > systemLength; --index) {
         copy.truncate(index);
-        QTimeZone zone(copy.toLatin1());
+        BOBUIimeZone zone(copy.toLatin1());
         if (zone.isValid())
             return ParsedSection(Acceptable, zone.offsetFromUtc(when), index);
     }
@@ -1908,7 +1908,7 @@ QDateTimeParser::findTimeZoneName(QStringView str, const QDateTime &when) const
   \internal
 
   Return's .value is zone's offset, zone time - UTC time, in seconds.
-  See QTimeZonePrivate::isValidId() for the format of zone names.
+  See BOBUIimeZonePrivate::isValidId() for the format of zone names.
 
   The mode is the number of 't' characters in the field specifier:
   * 1: any recognized format
@@ -1988,10 +1988,10 @@ QDateTimeParser::AmPmFinder QDateTimeParser::findAmPm(QString &str, int sectionI
 
     QDTPDEBUG << "findAmPm" << str << ampm[0] << ampm[1];
 
-    if (str.startsWith(ampm[amindex], Qt::CaseInsensitive)) {
+    if (str.startsWith(ampm[amindex], BobUI::CaseInsensitive)) {
         str = ampm[amindex];
         return AM;
-    } else if (str.startsWith(ampm[pmindex], Qt::CaseInsensitive)) {
+    } else if (str.startsWith(ampm[pmindex], BobUI::CaseInsensitive)) {
         str = ampm[pmindex];
         return PM;
     } else if (context == FromString || (str.count(space) == 0 && str.size() >= size)) {
@@ -2202,7 +2202,7 @@ bool QDateTimeParser::skipToNextSection(int index, const QDateTime &current, QSt
     int min = absoluteMin(index);
     int max = absoluteMax(index, current);
     // Time-zone field is only numeric if given as offset from UTC:
-    if (node.type != TimeZoneSection || current.timeSpec() == Qt::OffsetFromUTC) {
+    if (node.type != TimeZoneSection || current.timeSpec() == BobUI::OffsetFromUTC) {
         const QDateTime maximum = getMaximum(current.timeRepresentation());
         const QDateTime minimum = getMinimum(current.timeRepresentation());
         // Range from minimum to maximum might not contain current if an earlier
@@ -2278,7 +2278,7 @@ QString QDateTimeParser::stateName(State s) const
     \internal
     Compute a defaultValue to pass to parse().
 */
-QDateTime QDateTimeParser::baseDate(const QTimeZone &zone) const
+QDateTime QDateTimeParser::baseDate(const BOBUIimeZone &zone) const
 {
     QDateTime when = QDate(defaultCenturyStart, 1, 1).startOfDay(zone);
     if (const QDateTime start = getMinimum(zone); when < start)
@@ -2289,16 +2289,16 @@ QDateTime QDateTimeParser::baseDate(const QTimeZone &zone) const
 }
 
 // Only called when we want only one of date or time; use UTC to avoid bogus DST issues.
-bool QDateTimeParser::fromString(const QString &t, QDate *date, QTime *time, int baseYear) const
+bool QDateTimeParser::fromString(const QString &t, QDate *date, BOBUIime *time, int baseYear) const
 {
     defaultCenturyStart = baseYear;
-    const StateNode tmp = parse(t, -1, baseDate(QTimeZone::UTC), false);
+    const StateNode tmp = parse(t, -1, baseDate(BOBUIimeZone::UTC), false);
     if (tmp.state != Acceptable || tmp.conflicts)
         return false;
 
     if (time) {
         Q_ASSERT(!date);
-        const QTime t = tmp.value.time();
+        const BOBUIime t = tmp.value.time();
         if (!t.isValid())
             return false;
         *time = t;
@@ -2318,15 +2318,15 @@ bool QDateTimeParser::fromString(const QString &t, QDate *date, QTime *time, int
 bool QDateTimeParser::fromString(const QString &t, QDateTime *datetime, int baseYear) const
 {
     defaultCenturyStart = baseYear;
-    const StateNode tmp = parse(t, -1, baseDate(QTimeZone::LocalTime), false);
+    const StateNode tmp = parse(t, -1, baseDate(BOBUIimeZone::LocalTime), false);
     if (datetime)
         *datetime = tmp.value;
     return tmp.state >= Intermediate && !tmp.conflicts && tmp.value.isValid();
 }
 
-QDateTime QDateTimeParser::getMinimum(const QTimeZone &zone) const
+QDateTime QDateTimeParser::getMinimum(const BOBUIimeZone &zone) const
 {
-    // NB: QDateTimeParser always uses Qt::LocalTime time spec by default. If
+    // NB: QDateTimeParser always uses BobUI::LocalTime time spec by default. If
     //     any subclass needs a changing time spec, it must override this
     //     method. At the time of writing, this is done by QDateTimeEditPrivate.
 
@@ -2334,20 +2334,20 @@ QDateTime QDateTimeParser::getMinimum(const QTimeZone &zone) const
     static const QDateTime localTimeMin(QDATETIMEEDIT_DATE_MIN.startOfDay());
     static const QDateTime utcTimeMin = localTimeMin.toUTC();
     switch (zone.timeSpec()) {
-    case Qt::LocalTime:
+    case BobUI::LocalTime:
         return localTimeMin;
-    case Qt::UTC:
+    case BobUI::UTC:
         return utcTimeMin;
-    case Qt::OffsetFromUTC:
-    case Qt::TimeZone:
+    case BobUI::OffsetFromUTC:
+    case BobUI::TimeZone:
         break;
     }
     return utcTimeMin.toTimeZone(zone);
 }
 
-QDateTime QDateTimeParser::getMaximum(const QTimeZone &zone) const
+QDateTime QDateTimeParser::getMaximum(const BOBUIimeZone &zone) const
 {
-    // NB: QDateTimeParser always uses Qt::LocalTime time spec by default. If
+    // NB: QDateTimeParser always uses BobUI::LocalTime time spec by default. If
     //     any subclass needs a changing time spec, it must override this
     //     method. At the time of writing, this is done by QDateTimeEditPrivate.
 
@@ -2355,12 +2355,12 @@ QDateTime QDateTimeParser::getMaximum(const QTimeZone &zone) const
     static const QDateTime localTimeMax(QDATETIMEEDIT_DATE_MAX.endOfDay());
     static const QDateTime utcTimeMax = localTimeMax.toUTC();
     switch (zone.timeSpec()) {
-    case Qt::LocalTime:
+    case BobUI::LocalTime:
         return localTimeMax;
-    case Qt::UTC:
+    case BobUI::UTC:
         return utcTimeMax;
-    case Qt::OffsetFromUTC:
-    case Qt::TimeZone:
+    case BobUI::OffsetFromUTC:
+    case BobUI::TimeZone:
         break;
     }
     return utcTimeMax.toTimeZone(zone);
@@ -2398,4 +2398,4 @@ void QDateTimeParser::setCalendar(QCalendar cal)
     calendar = cal;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

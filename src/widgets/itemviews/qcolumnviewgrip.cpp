@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qcolumnviewgrip_p.h"
 #include <qstyleoption.h>
@@ -9,7 +9,7 @@
 #include <qevent.h>
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*
     \internal
@@ -19,7 +19,7 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \class QColumnViewGrip
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 
     QColumnViewGrip is created to go inside QAbstractScrollArea's corner.
@@ -31,15 +31,15 @@ QT_BEGIN_NAMESPACE
 QColumnViewGrip::QColumnViewGrip(QWidget *parent)
     :  QWidget(*new QColumnViewGripPrivate, parent, { })
 {
-#ifndef QT_NO_CURSOR
-    setCursor(Qt::SplitHCursor);
+#ifndef BOBUI_NO_CURSOR
+    setCursor(BobUI::SplitHCursor);
 #endif
 }
 
 /*!
   \internal
 */
-QColumnViewGrip::QColumnViewGrip(QColumnViewGripPrivate & dd, QWidget *parent, Qt::WindowFlags f)
+QColumnViewGrip::QColumnViewGrip(QColumnViewGripPrivate & dd, QWidget *parent, BobUI::WindowFlags f)
 :  QWidget(dd, parent, f)
 {
 }
@@ -149,6 +149,6 @@ originalXLocation(-1)
 {
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qcolumnviewgrip_p.cpp"

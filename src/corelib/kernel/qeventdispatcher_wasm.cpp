@@ -1,33 +1,33 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeventdispatcher_wasm_p.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qthread.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/private/qwasmglobal_p.h>
-#include <QtCore/private/qstdweb_p.h>
-#include <QtCore/private/qwasmsocket_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/bobuihread.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/private/qwasmglobal_p.h>
+#include <BobUICore/private/qstdweb_p.h>
+#include <BobUICore/private/qwasmsocket_p.h>
 
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using emscripten::val;
 
-Q_LOGGING_CATEGORY(lcEventDispatcher, "qt.eventdispatcher");
-Q_LOGGING_CATEGORY(lcEventDispatcherTimers, "qt.eventdispatcher.timers");
+Q_LOGGING_CATEGORY(lcEventDispatcher, "bobui.eventdispatcher");
+Q_LOGGING_CATEGORY(lcEventDispatcherTimers, "bobui.eventdispatcher.timers");
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 #define LOCK_GUARD(M) std::lock_guard<std::mutex> lock(M)
 #else
 #define LOCK_GUARD(M)
 #endif
 
-#if defined(QT_STATIC)
+#if defined(BOBUI_STATIC)
 
 static bool useAsyncify()
 {
@@ -43,12 +43,12 @@ static bool useAsyncify()
     return false;
 }
 
-#endif // defined(QT_STATIC)
+#endif // defined(BOBUI_STATIC)
 
 Q_CONSTINIT QEventDispatcherWasm *QEventDispatcherWasm::g_mainThreadEventDispatcher = nullptr;
 Q_CONSTINIT std::shared_ptr<QWasmSuspendResumeControl> QEventDispatcherWasm::g_mainThreadSuspendResumeControl;
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
 Q_CONSTINIT QVector<QEventDispatcherWasm *> QEventDispatcherWasm::g_secondaryThreadEventDispatchers;
 Q_CONSTINIT std::mutex QEventDispatcherWasm::g_staticDataMutex;
 #endif
@@ -85,19 +85,19 @@ QEventDispatcherWasm::QEventDispatcherWasm(std::shared_ptr<QWasmSuspendResumeCon
         // Zero-timer used on wake() calls
         m_wakeupTimer = std::make_unique<QWasmTimer>(g_mainThreadSuspendResumeControl.get(), [](){ onWakeup(); });
 
-        // Timer set to fire at the next Qt timer timeout
+        // Timer set to fire at the next BobUI timer timeout
         m_nativeTimer = std::make_unique<QWasmTimer>(g_mainThreadSuspendResumeControl.get(), []() { onTimer(); });
 
         // Timer used when suspending to process native events
         m_suspendTimer = std::make_unique<QWasmTimer>(g_mainThreadSuspendResumeControl.get(), []() { onProcessNativeEventsResume(); });
     } else {
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
         std::lock_guard<std::mutex> lock(g_staticDataMutex);
         g_secondaryThreadEventDispatchers.append(this);
 #endif
     }
 
-    m_timerInfo = std::make_unique<QTimerInfoList>();
+    m_timerInfo = std::make_unique<BOBUIimerInfoList>();
 }
 
 QEventDispatcherWasm::~QEventDispatcherWasm()
@@ -109,7 +109,7 @@ QEventDispatcherWasm::~QEventDispatcherWasm()
     m_nativeTimer.reset();
     m_suspendTimer.reset();
 
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (isSecondaryThreadEventDispatcher()) {
         std::lock_guard<std::mutex> lock(g_staticDataMutex);
         g_secondaryThreadEventDispatchers.remove(g_secondaryThreadEventDispatchers.indexOf(this));
@@ -141,7 +141,7 @@ bool QEventDispatcherWasm::isValidEventDispatcherPointer(QEventDispatcherWasm *e
 {
     if (eventDispatcher == g_mainThreadEventDispatcher)
         return true;
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (g_secondaryThreadEventDispatchers.contains(eventDispatcher))
         return true;
 #endif
@@ -274,13 +274,13 @@ bool QEventDispatcherWasm::sendTimerEvents()
     return activatedTimers > 0;
 }
 
-void QEventDispatcherWasm::registerTimer(Qt::TimerId timerId, Duration interval, Qt::TimerType timerType, QObject *object)
+void QEventDispatcherWasm::registerTimer(BobUI::TimerId timerId, Duration interval, BobUI::TimerType timerType, QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1 || interval < 0ns || !object) {
         qWarning("QEventDispatcherWasm::registerTimer: invalid arguments");
         return;
-    } else if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWasm::registerTimer: timers cannot be started from another "
                  "thread");
         return;
@@ -292,13 +292,13 @@ void QEventDispatcherWasm::registerTimer(Qt::TimerId timerId, Duration interval,
     updateNativeTimer();
 }
 
-bool QEventDispatcherWasm::unregisterTimer(Qt::TimerId timerId)
+bool QEventDispatcherWasm::unregisterTimer(BobUI::TimerId timerId)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (qToUnderlying(timerId) < 1) {
         qWarning("QEventDispatcherWasm::unregisterTimer: invalid argument");
         return false;
-    } else if (thread() != QThread::currentThread()) {
+    } else if (thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWasm::unregisterTimer: timers cannot be stopped from another "
                  "thread");
         return false;
@@ -314,11 +314,11 @@ bool QEventDispatcherWasm::unregisterTimer(Qt::TimerId timerId)
 
 bool QEventDispatcherWasm::unregisterTimers(QObject *object)
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherWasm::unregisterTimers: invalid argument");
         return false;
-    } else if (object->thread() != thread() || thread() != QThread::currentThread()) {
+    } else if (object->thread() != thread() || thread() != BOBUIhread::currentThread()) {
         qWarning("QEventDispatcherWasm::unregisterTimers: timers cannot be stopped from another "
                  "thread");
         return false;
@@ -335,7 +335,7 @@ bool QEventDispatcherWasm::unregisterTimers(QObject *object)
 QList<QAbstractEventDispatcher::TimerInfoV2>
 QEventDispatcherWasm::timersForObject(QObject *object) const
 {
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
     if (!object) {
         qWarning("QEventDispatcherWasm:registeredTimers: invalid argument");
         return {};
@@ -345,7 +345,7 @@ QEventDispatcherWasm::timersForObject(QObject *object) const
     return m_timerInfo->registeredTimers(object);
 }
 
-QEventDispatcherWasm::Duration QEventDispatcherWasm::remainingTime(Qt::TimerId timerId) const
+QEventDispatcherWasm::Duration QEventDispatcherWasm::remainingTime(BobUI::TimerId timerId) const
 {
     return m_timerInfo->remainingDuration(timerId);
 }
@@ -359,7 +359,7 @@ void QEventDispatcherWasm::interrupt()
 void QEventDispatcherWasm::wakeUp()
 {
     m_wakeup = true;
-#if QT_CONFIG(thread)
+#if BOBUI_CONFIG(thread)
     if (isSecondaryThreadEventDispatcher()) {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_wakeUpCalled = true;
@@ -391,7 +391,7 @@ void QEventDispatcherWasm::handleNonAsyncifyErrorCases(QEventLoop::ProcessEvents
             emscripten_pause_main_loop();
         }, 0, simulateInfiniteLoop);
     } else if (flags & QEventLoop::DialogExec) {
-        qFatal() << "Calling exec() is not supported on Qt for WebAssembly in this configuration. Please build"
+        qFatal() << "Calling exec() is not supported on BobUI for WebAssembly in this configuration. Please build"
                 << "with asyncify support, or use an asynchronous API like QDialog::open()";
     } else if (flags & QEventLoop::WaitForMoreEvents) {
         qFatal("QEventLoop::WaitForMoreEvents is not supported on the main thread without asyncify");
@@ -438,8 +438,8 @@ void QEventDispatcherWasm::asyncifyWait(std::optional<std::chrono::milliseconds>
 
 bool QEventDispatcherWasm::secondaryThreadWait(std::optional<std::chrono::milliseconds> timeout)
 {
-#if QT_CONFIG(thread)
-    Q_ASSERT(QThread::currentThread() == thread());
+#if BOBUI_CONFIG(thread)
+    Q_ASSERT(BOBUIhread::currentThread() == thread());
     using namespace std::chrono_literals;
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -498,13 +498,13 @@ void QEventDispatcherWasm::onProcessNativeEventsResume()
     g_mainThreadEventDispatcher->m_wakeFromSuspendTimer = true;
 }
 
-// Updates the native timer based on currently registered Qt timers,
+// Updates the native timer based on currently registered BobUI timers,
 // by setting a timeout equivalent to the shortest timer.
 // Must be called on the event dispatcher thread.
 void QEventDispatcherWasm::updateNativeTimer()
 {
-#if QT_CONFIG(thread)
-    Q_ASSERT(QThread::currentThread() == thread());
+#if BOBUI_CONFIG(thread)
+    Q_ASSERT(BOBUIhread::currentThread() == thread());
 #endif
 
     // On secondary threads, the timeout is managed by setting the WaitForMoreEvents
@@ -540,8 +540,8 @@ namespace {
     int g_startupTasks = 0;
 }
 
-// The following functions manages sending the "qtLoaded" event/callback
-// from qtloader.js on startup, once Qt initialization has been completed
+// The following functions manages sending the "bobuiLoaded" event/callback
+// from bobuiloader.js on startup, once BobUI initialization has been completed
 // and the application is ready to display the first frame. This can be
 // either as soon as the event loop is running, or later, if additional
 // startup tasks (e.g. local font loading) have been registered.
@@ -562,15 +562,15 @@ void QEventDispatcherWasm::callOnLoadedIfRequired()
     if (g_startupTasks > 0)
         return;
 
-    static bool qtLoadedCalled = false;
-    if (qtLoadedCalled)
+    static bool bobuiLoadedCalled = false;
+    if (bobuiLoadedCalled)
         return;
-    qtLoadedCalled = true;
+    bobuiLoadedCalled = true;
 }
 
 void QEventDispatcherWasm::onLoaded()
 {
-    // TODO: call qtloader.js onLoaded from here, in order to delay
+    // TODO: call bobuiloader.js onLoaded from here, in order to delay
     // hiding the "Loading..." message until the app is ready to paint
     // the first frame. Currently onLoaded must be called early before
     // main() in order to ensure that the screen/container elements
@@ -591,7 +591,7 @@ void QEventDispatcherWasm::socketSelect(int timeout, int socket, bool waitForRea
                                         bool *selectForRead, bool *selectForWrite, bool *socketDisconnect)
 {
     QEventDispatcherWasm *eventDispatcher = static_cast<QEventDispatcherWasm *>(
-        QAbstractEventDispatcher::instance(QThread::currentThread()));
+        QAbstractEventDispatcher::instance(BOBUIhread::currentThread()));
 
     if (!eventDispatcher) {
         qWarning("QEventDispatcherWasm::socketSelect called without eventdispatcher instance");
@@ -602,6 +602,6 @@ void QEventDispatcherWasm::socketSelect(int timeout, int socket, bool waitForRea
                                     selectForRead, selectForWrite, socketDisconnect);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qeventdispatcher_wasm_p.cpp"

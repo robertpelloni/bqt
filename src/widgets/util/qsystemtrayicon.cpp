@@ -1,23 +1,23 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsystemtrayicon.h"
 #include "qsystemtrayicon_p.h"
 
-#ifndef QT_NO_SYSTEMTRAYICON
+#ifndef BOBUI_NO_SYSTEMTRAYICON
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #endif
 #include "qlist.h"
 #include "qevent.h"
 #include "qpoint.h"
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
 #include "qlabel.h"
 #include "private/qlabel_p.h"
 #endif
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
 #include "qpushbutton.h"
 #endif
 #include "qpainterpath.h"
@@ -32,7 +32,7 @@
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QIcon messageIcon2qIcon(QSystemTrayIcon::MessageIcon icon)
 {
@@ -58,7 +58,7 @@ static QIcon messageIcon2qIcon(QSystemTrayIcon::MessageIcon icon)
     \brief The QSystemTrayIcon class provides an icon for an application in the system tray.
     \since 4.2
     \ingroup desktop
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Modern operating systems usually provide a special area on the desktop,
     called the \e{system tray} or \e{notification area}, where long-running
@@ -72,7 +72,7 @@ static QIcon messageIcon2qIcon(QSystemTrayIcon::MessageIcon icon)
     \li All supported versions of Windows.
     \li All Linux desktop environments that implement the D-Bus
        \l{http://www.freedesktop.org/wiki/Specifications/StatusNotifierItem/StatusNotifierItem}
-       {StatusNotifierItem specification}, including KDE, Gnome, Xfce, LXQt, and DDE.
+       {StatusNotifierItem specification}, including KDE, Gnome, Xfce, LXBobUI, and DDE.
     \li All window managers and independent tray implementations for X11 that implement the
        \l{http://standards.freedesktop.org/systemtray-spec/systemtray-spec-0.2.html}
        {freedesktop.org XEmbed system tray specification}.
@@ -149,7 +149,7 @@ QSystemTrayIcon::~QSystemTrayIcon()
     d->remove_sys();
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 
 /*!
     Sets the specified \a menu to be the context menu for the system tray icon.
@@ -196,7 +196,7 @@ QMenu* QSystemTrayIcon::contextMenu() const
     return d->menu;
 }
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
 /*!
     \property QSystemTrayIcon::icon
@@ -384,7 +384,7 @@ bool QSystemTrayIcon::supportsMessages()
     On Windows, the \a millisecondsTimeoutHint is usually ignored by the system
     when the application has focus.
 
-    Has been turned into a slot in Qt 5.2.
+    Has been turned into a slot in BobUI 5.2.
 
     \sa show(), supportsMessages()
   */
@@ -461,27 +461,27 @@ bool QBalloonTip::isBalloonVisible()
 
 QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
                          const QString &message, QSystemTrayIcon *ti)
-    : QWidget(nullptr, Qt::ToolTip),
+    : QWidget(nullptr, BobUI::ToolTip),
       trayIcon(ti),
       showArrow(true)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(BobUI::WA_DeleteOnClose);
     QObject::connect(ti, SIGNAL(destroyed()), this, SLOT(close()));
 
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     QLabel *titleLabel = new QLabel;
     titleLabel->installEventFilter(this);
     titleLabel->setText(title);
     QFont f = titleLabel->font();
     f.setBold(true);
     titleLabel->setFont(f);
-    titleLabel->setTextFormat(Qt::PlainText); // to maintain compat with windows
+    titleLabel->setTextFormat(BobUI::PlainText); // to maintain compat with windows
 #endif
 
     const int iconSize = 18;
     const int closeButtonSize = 15;
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     QPushButton *closeButton = new QPushButton;
     closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     closeButton->setIconSize(QSize(closeButtonSize, closeButtonSize));
@@ -492,12 +492,12 @@ QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
     Q_UNUSED(closeButtonSize);
 #endif
 
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     QLabel *msgLabel = new QLabel;
     msgLabel->installEventFilter(this);
     msgLabel->setText(message);
-    msgLabel->setTextFormat(Qt::PlainText);
-    msgLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    msgLabel->setTextFormat(BobUI::PlainText);
+    msgLabel->setAlignment(BobUI::AlignTop | BobUI::AlignLeft);
 
     // smart size for the message label
     int limit = QWidgetPrivate::availableScreenGeometry(msgLabel).width() / 3;
@@ -506,8 +506,8 @@ QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
         if (msgLabel->sizeHint().width() > limit) {
             msgLabel->d_func()->ensureTextControl();
             if (QWidgetTextControl *control = msgLabel->d_func()->control) {
-                QTextOption opt = control->document()->defaultTextOption();
-                opt.setWrapMode(QTextOption::WrapAnywhere);
+                BOBUIextOption opt = control->document()->defaultTextOption();
+                opt.setWrapMode(BOBUIextOption::WrapAnywhere);
                 control->document()->setDefaultTextOption(opt);
             }
         }
@@ -518,7 +518,7 @@ QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
 #endif
 
     QGridLayout *layout = new QGridLayout;
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     if (!icon.isNull()) {
         QLabel *iconLabel = new QLabel;
         iconLabel->setPixmap(icon.pixmap(QSize(iconSize, iconSize), devicePixelRatio()));
@@ -531,11 +531,11 @@ QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
     }
 #endif
 
-#if QT_CONFIG(pushbutton)
+#if BOBUI_CONFIG(pushbutton)
     layout->addWidget(closeButton, 0, 2);
 #endif
 
-#if QT_CONFIG(label)
+#if BOBUI_CONFIG(label)
     layout->addWidget(msgLabel, 1, 0, 1, 3);
 #endif
     layout->setSizeConstraint(QLayout::SetFixedSize);
@@ -544,7 +544,7 @@ QBalloonTip::QBalloonTip(const QIcon &icon, const QString &title,
 
     QPalette pal = palette();
     pal.setColor(QPalette::Window, QColor(0xff, 0xff, 0xe1));
-    pal.setColor(QPalette::WindowText, Qt::black);
+    pal.setColor(QPalette::WindowText, BobUI::black);
     setPalette(pal);
 }
 
@@ -637,10 +637,10 @@ void QBalloonTip::balloon(const QPoint& pos, int msecs, bool showArrow)
 
     // Set the mask
     QBitmap bitmap = QBitmap(sizeHint());
-    bitmap.fill(Qt::color0);
+    bitmap.fill(BobUI::color0);
     QPainter painter1(&bitmap);
-    painter1.setPen(QPen(Qt::color1, border));
-    painter1.setBrush(QBrush(Qt::color1));
+    painter1.setPen(QPen(BobUI::color1, border));
+    painter1.setBrush(QBrush(BobUI::color1));
     painter1.drawPath(path);
     setMask(bitmap);
 
@@ -659,11 +659,11 @@ void QBalloonTip::balloon(const QPoint& pos, int msecs, bool showArrow)
 void QBalloonTip::mousePressEvent(QMouseEvent *e)
 {
     close();
-    if (e->button() == Qt::LeftButton)
+    if (e->button() == BobUI::LeftButton)
         emit trayIcon->messageClicked();
 }
 
-void QBalloonTip::timerEvent(QTimerEvent *e)
+void QBalloonTip::timerEvent(BOBUIimerEvent *e)
 {
     if (e->id() == timer.id()) {
         timer.stop();
@@ -698,7 +698,7 @@ void QSystemTrayIconPrivate::remove_sys_qpa()
 
 void QSystemTrayIconPrivate::addPlatformMenu(QMenu *menu) const
 {
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (menu->platformMenu())
         return; // The platform menu already exists.
 
@@ -717,12 +717,12 @@ void QSystemTrayIconPrivate::addPlatformMenu(QMenu *menu) const
         menu->setPlatformMenu(platformMenu);
 #else
     Q_UNUSED(menu);
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_SYSTEMTRAYICON
+#endif // BOBUI_NO_SYSTEMTRAYICON
 
 #include "moc_qsystemtrayicon.cpp"
 #include "moc_qsystemtrayicon_p.cpp"

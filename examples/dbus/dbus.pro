@@ -1,11 +1,11 @@
-requires(qtHaveModule(dbus))
+requires(bobuiHaveModule(dbus))
 
 TEMPLATE = subdirs
 SUBDIRS = pingpong
 
-qtConfig(process): SUBDIRS += complexpingpong
+bobuiConfig(process): SUBDIRS += complexpingpong
 
-qtHaveModule(widgets) {
+bobuiHaveModule(widgets) {
     SUBDIRS += chat \
                remotecontrolledcar
 }

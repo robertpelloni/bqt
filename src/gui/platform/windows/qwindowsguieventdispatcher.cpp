@@ -1,15 +1,15 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsguieventdispatcher_p.h"
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDebug>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDebug>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QWindowsGuiEventDispatcher
@@ -114,7 +114,7 @@ messageDebugEntries[] = {
     {WM_IME_ENDCOMPOSITION, "WM_IME_ENDCOMPOSITION", true},
     {WM_IME_NOTIFY, "WM_IME_NOTIFY", true},
     {WM_IME_REQUEST, "WM_IME_REQUEST", true},
-#if !defined(QT_NO_SESSIONMANAGER)
+#if !defined(BOBUI_NO_SESSIONMANAGER)
     {WM_QUERYENDSESSION, "WM_QUERYENDSESSION", true},
     {WM_ENDSESSION, "WM_ENDSESSION", true},
 #endif
@@ -196,6 +196,6 @@ const char *QWindowsGuiEventDispatcher::windowsMessageName(UINT msg)
     return "Unknown";
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qwindowsguieventdispatcher_p.cpp"

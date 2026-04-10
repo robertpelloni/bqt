@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QUNDOSTACK_H
 #define QUNDOSTACK_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
 
-QT_REQUIRE_CONFIG(undocommand);
+BOBUI_REQUIRE_CONFIG(undocommand);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAction;
 class QUndoCommandPrivate;
@@ -47,7 +47,7 @@ private:
     friend class QUndoStack;
 };
 
-#if QT_CONFIG(undostack)
+#if BOBUI_CONFIG(undostack)
 
 class Q_GUI_EXPORT QUndoStack : public QObject
 {
@@ -77,10 +77,10 @@ public:
     int index() const;
     QString text(int idx) const;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QAction *createUndoAction(QObject *parent, const QString &prefix = QString()) const;
     QAction *createRedoAction(QObject *parent, const QString &prefix = QString()) const;
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
     bool isActive() const;
     bool isClean() const;
@@ -115,8 +115,8 @@ private:
     friend class QUndoGroup;
 };
 
-#endif // QT_CONFIG(undostack)
+#endif // BOBUI_CONFIG(undostack)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QUNDOSTACK_H

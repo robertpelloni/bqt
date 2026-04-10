@@ -1,12 +1,12 @@
 
-The Qt version 2.x series is not binary compatible with the 1.x
-series. This means programs compiled with Qt version 1.x must be
-recompiled to work with Qt 2.0.
+The BobUI version 2.x series is not binary compatible with the 1.x
+series. This means programs compiled with BobUI version 1.x must be
+recompiled to work with BobUI 2.0.
 
-Qt 2.0 is mostly, but not completely, source compatible with Qt 1.x.
-See the document "Porting from Qt 1.x to Qt 2.0" in the Online
+BobUI 2.0 is mostly, but not completely, source compatible with BobUI 1.x.
+See the document "Porting from BobUI 1.x to BobUI 2.0" in the Online
 Reference Documentation for information on how to port an existing
-Qt 1.x-based program to Qt 2.0.
+BobUI 1.x-based program to BobUI 2.0.
 
 
 ****************************************************************************
@@ -20,8 +20,8 @@ Qt 1.x-based program to Qt 2.0.
 
 * Support for international software development:
 
-    QTranslator and the QObject::tr() function
-    QTextCodec (and subclasses)
+    BOBUIranslator and the QObject::tr() function
+    BOBUIextCodec (and subclasses)
     QString - a Unicode string
     QChar - a Unicode character
 
@@ -40,11 +40,11 @@ Qt 1.x-based program to Qt 2.0.
     QHGroupBox/QVGroupBox - easy framed groups of widgets
 
 * PNG Support
-    PNG support is always compiled into Qt
+    PNG support is always compiled into BobUI
 
 * Rich Text
-    QTextView - formatted text and images
-    QTextBrowser - navigate formatted text and images
+    BOBUIextView - formatted text and images
+    BOBUIextBrowser - navigate formatted text and images
     QStyleSheet - define your own XML formatting tags
     QSimpleRichText - display rixh text anywhere
 

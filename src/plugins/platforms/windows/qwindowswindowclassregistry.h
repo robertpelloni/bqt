@@ -1,17 +1,17 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QWINDOWSWINDOWCLASSREGISTRY_H
 #define QWINDOWSWINDOWCLASSREGISTRY_H
 
-#include "qtwindowsglobal.h"
+#include "bobuiwindowsglobal.h"
 
-#include <QtCore/qloggingcategory.h>
-#include <QtCore/qset.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qloggingcategory.h>
+#include <BobUICore/qset.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaWindowClass)
 
@@ -44,6 +44,6 @@ private:
     QSet<QString> m_registeredWindowClassNames;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSWINDOWCLASSREGISTRY_H

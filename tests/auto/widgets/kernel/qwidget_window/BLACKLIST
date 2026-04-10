@@ -1,4 +1,4 @@
-# QTBUG-87412
+# BOBUIBUG-87412
 [tst_move_show]
 android
 [tst_show_move_hide_show]
@@ -14,4 +14,4 @@ android
 [mouseMoveWithPopup]
 android
 [setWindowState:maximized]
-xcb ubuntu-24.04 # QTBUG-129026
+xcb ubuntu-24.04 # BOBUIBUG-129026

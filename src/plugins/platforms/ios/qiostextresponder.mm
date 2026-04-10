@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qiostextresponder.h"
 
@@ -8,12 +8,12 @@
 #include "qiosinputcontext.h"
 #include "quiview.h"
 
-#include <QtCore/qscopedvaluerollback.h>
+#include <BobUICore/qscopedvaluerollback.h>
 
-#include <QtGui/qevent.h>
-#include <QtGui/qtextformat.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/qpa/qplatformwindow.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/bobuiextformat.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/qpa/qplatformwindow.h>
 
 // -------------------------------------------------------------------------
 
@@ -128,12 +128,12 @@
 
 @implementation QIOSTextResponder {
     @public
-    QT_PREPEND_NAMESPACE(QIOSInputContext) *m_inputContext;
-    QT_PREPEND_NAMESPACE(QInputMethodQueryEvent) *m_configuredImeState;
+    BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *m_inputContext;
+    BOBUI_PREPEND_NAMESPACE(QInputMethodQueryEvent) *m_configuredImeState;
     BOOL m_inSendEventToFocusObject;
 }
 
-- (instancetype)initWithInputContext:(QT_PREPEND_NAMESPACE(QIOSInputContext) *)inputContext
+- (instancetype)initWithInputContext:(BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *)inputContext
 {
     if (!(self = [self init]))
         return self;
@@ -151,7 +151,7 @@
     [super dealloc];
 }
 
-- (QVariant)currentImeState:(Qt::InputMethodQuery)query
+- (QVariant)currentImeState:(BobUI::InputMethodQuery)query
 {
     return m_inputContext->imeState().currentState.value(query);
 }
@@ -165,7 +165,7 @@
 {
     FirstResponderCandidate firstResponderCandidate(self);
 
-    qImDebug() << "self:" << self << "first:" << [UIResponder qt_currentFirstResponder];
+    qImDebug() << "self:" << self << "first:" << [UIResponder bobui_currentFirstResponder];
 
     if (![super becomeFirstResponder]) {
         qImDebug() << self << "was not allowed to become first responder";
@@ -179,7 +179,7 @@
 
 - (BOOL)resignFirstResponder
 {
-    qImDebug() << "self:" << self << "first:" << [UIResponder qt_currentFirstResponder];
+    qImDebug() << "self:" << self << "first:" << [UIResponder bobui_currentFirstResponder];
 
     // Don't allow activation events of the window that we're doing text on behalf on
     // to steal responder.
@@ -197,21 +197,21 @@
     // a regular responder transfer to another window. In the former case, iOS
     // will set the new first-responder to our next-responder, and in the latter
     // case we'll have an active responder candidate.
-    if (![UIResponder qt_currentFirstResponder] && !FirstResponderCandidate::currentCandidate()) {
-        // No first responder set anymore, sync this with Qt by clearing the
+    if (![UIResponder bobui_currentFirstResponder] && !FirstResponderCandidate::currentCandidate()) {
+        // No first responder set anymore, sync this with BobUI by clearing the
         // focus object.
         m_inputContext->clearCurrentFocusObject();
-    } else if ([UIResponder qt_currentFirstResponder] == [self nextResponder]) {
+    } else if ([UIResponder bobui_currentFirstResponder] == [self nextResponder]) {
         // We have resigned the keyboard, and transferred first responder back to the parent view
         Q_ASSERT(!FirstResponderCandidate::currentCandidate());
-        if ([self currentImeState:Qt::ImEnabled].toBool()) {
+        if ([self currentImeState:BobUI::ImEnabled].toBool()) {
             // The current focus object expects text input, but there
             // is no keyboard to get input from. So we clear focus.
             qImDebug("no keyboard available, clearing focus object");
             m_inputContext->clearCurrentFocusObject();
         }
     } else {
-        // We've lost responder status because another Qt window was made active,
+        // We've lost responder status because another BobUI window was made active,
         // another QIOSTextResponder was made first-responder, another UIView was
         // made first-responder, or the first-responder was cleared globally. In
         // either of these cases we don't have to do anything.
@@ -233,20 +233,20 @@
 
 // -------------------------------------------------------------------------
 
-- (void)notifyInputDelegate:(Qt::InputMethodQueries)updatedProperties
+- (void)notifyInputDelegate:(BobUI::InputMethodQueries)updatedProperties
 {
     Q_UNUSED(updatedProperties);
 }
 
-- (BOOL)needsKeyboardReconfigure:(Qt::InputMethodQueries)updatedProperties
+- (BOOL)needsKeyboardReconfigure:(BobUI::InputMethodQueries)updatedProperties
 {
-    if (updatedProperties & Qt::ImEnabled) {
-        qImDebug() << "Qt::ImEnabled has changed since text responder was configured, need reconfigure";
+    if (updatedProperties & BobUI::ImEnabled) {
+        qImDebug() << "BobUI::ImEnabled has changed since text responder was configured, need reconfigure";
         return YES;
     }
 
-    if (updatedProperties & Qt::ImReadOnly) {
-        qImDebug() << "Qt::ImReadOnly has changed since text responder was configured, need reconfigure";
+    if (updatedProperties & BobUI::ImReadOnly) {
+        qImDebug() << "BobUI::ImReadOnly has changed since text responder was configured, need reconfigure";
         return YES;
     }
 
@@ -265,9 +265,9 @@
 
 // -------------------------------------------------------------------------
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 
-- (void)sendKeyPressRelease:(Qt::Key)key modifiers:(Qt::KeyboardModifiers)modifiers
+- (void)sendKeyPressRelease:(BobUI::Key)key modifiers:(BobUI::KeyboardModifiers)modifiers
 {
     QScopedValueRollback<BOOL> rollback(m_inSendEventToFocusObject, true);
     QWindowSystemInterface::handleKeyEvent(qApp->focusWindow(), QEvent::KeyPress, key, modifiers);
@@ -282,10 +282,10 @@
 
 - (BOOL)hasSelection
 {
-    QInputMethodQueryEvent query(Qt::ImAnchorPosition | Qt::ImCursorPosition);
+    QInputMethodQueryEvent query(BobUI::ImAnchorPosition | BobUI::ImCursorPosition);
     QGuiApplication::sendEvent(QGuiApplication::focusObject(), &query);
-    int anchorPos = query.value(Qt::ImAnchorPosition).toInt();
-    int cursorPos = query.value(Qt::ImCursorPosition).toInt();
+    int anchorPos = query.value(BobUI::ImAnchorPosition).toInt();
+    int cursorPos = query.value(BobUI::ImCursorPosition).toInt();
     return anchorPos != cursorPos;
 }
 
@@ -323,7 +323,7 @@
     [self sendShortcut:QKeySequence::SelectAll];
 }
 
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
 @end
 
@@ -334,65 +334,65 @@
     BOOL m_inSelectionChange;
 }
 
-- (instancetype)initWithInputContext:(QT_PREPEND_NAMESPACE(QIOSInputContext) *)inputContext
+- (instancetype)initWithInputContext:(BOBUI_PREPEND_NAMESPACE(QIOSInputContext) *)inputContext
 {
     if (!(self = [super initWithInputContext:inputContext]))
         return self;
 
     m_inSelectionChange = NO;
 
-    QVariantMap platformData = m_configuredImeState->value(Qt::ImPlatformData).toMap();
-    Qt::InputMethodHints hints = Qt::InputMethodHints(m_configuredImeState->value(Qt::ImHints).toUInt());
-    Qt::EnterKeyType enterKeyType = Qt::EnterKeyType(m_configuredImeState->value(Qt::ImEnterKeyType).toUInt());
+    QVariantMap platformData = m_configuredImeState->value(BobUI::ImPlatformData).toMap();
+    BobUI::InputMethodHints hints = BobUI::InputMethodHints(m_configuredImeState->value(BobUI::ImHints).toUInt());
+    BobUI::EnterKeyType enterKeyType = BobUI::EnterKeyType(m_configuredImeState->value(BobUI::ImEnterKeyType).toUInt());
 
     switch (enterKeyType) {
-    case Qt::EnterKeyReturn:
+    case BobUI::EnterKeyReturn:
         self.returnKeyType = UIReturnKeyDefault;
         break;
-    case Qt::EnterKeyDone:
+    case BobUI::EnterKeyDone:
         self.returnKeyType = UIReturnKeyDone;
         break;
-    case Qt::EnterKeyGo:
+    case BobUI::EnterKeyGo:
         self.returnKeyType = UIReturnKeyGo;
         break;
-    case Qt::EnterKeySend:
+    case BobUI::EnterKeySend:
         self.returnKeyType = UIReturnKeySend;
         break;
-    case Qt::EnterKeySearch:
+    case BobUI::EnterKeySearch:
         self.returnKeyType = UIReturnKeySearch;
         break;
-    case Qt::EnterKeyNext:
+    case BobUI::EnterKeyNext:
         self.returnKeyType = UIReturnKeyNext;
         break;
     default:
-        self.returnKeyType = (hints & Qt::ImhMultiLine) ? UIReturnKeyDefault : UIReturnKeyDone;
+        self.returnKeyType = (hints & BobUI::ImhMultiLine) ? UIReturnKeyDefault : UIReturnKeyDone;
         break;
     }
 
-    self.secureTextEntry = BOOL(hints & Qt::ImhHiddenText);
-    self.autocorrectionType = (hints & Qt::ImhNoPredictiveText) ?
+    self.secureTextEntry = BOOL(hints & BobUI::ImhHiddenText);
+    self.autocorrectionType = (hints & BobUI::ImhNoPredictiveText) ?
                 UITextAutocorrectionTypeNo : UITextAutocorrectionTypeDefault;
-    self.spellCheckingType = (hints & Qt::ImhNoPredictiveText) ?
+    self.spellCheckingType = (hints & BobUI::ImhNoPredictiveText) ?
                 UITextSpellCheckingTypeNo : UITextSpellCheckingTypeDefault;
 
-    if (hints & Qt::ImhUppercaseOnly)
+    if (hints & BobUI::ImhUppercaseOnly)
         self.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
-    else if (hints & Qt::ImhNoAutoUppercase)
+    else if (hints & BobUI::ImhNoAutoUppercase)
         self.autocapitalizationType = UITextAutocapitalizationTypeNone;
     else
         self.autocapitalizationType = UITextAutocapitalizationTypeSentences;
 
-    if (hints & Qt::ImhUrlCharactersOnly)
+    if (hints & BobUI::ImhUrlCharactersOnly)
         self.keyboardType = UIKeyboardTypeURL;
-    else if (hints & Qt::ImhEmailCharactersOnly)
+    else if (hints & BobUI::ImhEmailCharactersOnly)
         self.keyboardType = UIKeyboardTypeEmailAddress;
-    else if (hints & Qt::ImhDigitsOnly)
+    else if (hints & BobUI::ImhDigitsOnly)
         self.keyboardType = UIKeyboardTypeNumberPad;
-    else if (hints & Qt::ImhDialableCharactersOnly)
+    else if (hints & BobUI::ImhDialableCharactersOnly)
         self.keyboardType = UIKeyboardTypePhonePad;
-    else if (hints & Qt::ImhLatinOnly)
+    else if (hints & BobUI::ImhLatinOnly)
         self.keyboardType = UIKeyboardTypeASCIICapable;
-    else if (hints & (Qt::ImhPreferNumbers | Qt::ImhFormattedNumbersOnly))
+    else if (hints & (BobUI::ImhPreferNumbers | BobUI::ImhFormattedNumbersOnly))
         self.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
     else
         self.keyboardType = UIKeyboardTypeDefault;
@@ -430,26 +430,26 @@
     [super dealloc];
 }
 
-- (BOOL)needsKeyboardReconfigure:(Qt::InputMethodQueries)updatedProperties
+- (BOOL)needsKeyboardReconfigure:(BobUI::InputMethodQueries)updatedProperties
 {
-    Qt::InputMethodQueries relevantProperties = updatedProperties;
-    if ((relevantProperties & Qt::ImEnabled)) {
+    BobUI::InputMethodQueries relevantProperties = updatedProperties;
+    if ((relevantProperties & BobUI::ImEnabled)) {
         // When switching on input-methods we need to consider hints and platform data
         // as well, as the IM state that we were based on may have been invalidated when
         // IM was switched off.
 
         qImDebug("IM was turned on, we need to check hints and platform data as well");
-        relevantProperties |= (Qt::ImHints | Qt::ImPlatformData);
+        relevantProperties |= (BobUI::ImHints | BobUI::ImPlatformData);
     }
 
     // Based on what we set up in initWithInputContext above
-    relevantProperties &= (Qt::ImHints | Qt::ImEnterKeyType | Qt::ImPlatformData);
+    relevantProperties &= (BobUI::ImHints | BobUI::ImEnterKeyType | BobUI::ImPlatformData);
 
     if (!relevantProperties)
         return [super needsKeyboardReconfigure:updatedProperties];
 
-    for (uint i = 0; i < (sizeof(Qt::ImQueryAll) * CHAR_BIT); ++i) {
-        if (Qt::InputMethodQuery property = Qt::InputMethodQuery(int(updatedProperties & (1 << i)))) {
+    for (uint i = 0; i < (sizeof(BobUI::ImQueryAll) * CHAR_BIT); ++i) {
+        if (BobUI::InputMethodQuery property = BobUI::InputMethodQuery(int(updatedProperties & (1 << i)))) {
             if ([self currentImeState:property] != m_configuredImeState->value(property)) {
                 qImDebug() << property << "has changed since text responder was configured, need reconfigure";
                 return YES;
@@ -463,18 +463,18 @@
 - (void)reset
 {
     [self setMarkedText:@"" selectedRange:NSMakeRange(0, 0)];
-    [self notifyInputDelegate:Qt::ImSurroundingText];
+    [self notifyInputDelegate:BobUI::ImSurroundingText];
 }
 
 - (void)commit
 {
     [self unmarkText];
-    [self notifyInputDelegate:Qt::ImSurroundingText];
+    [self notifyInputDelegate:BobUI::ImSurroundingText];
 }
 
 // -------------------------------------------------------------------------
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
@@ -501,7 +501,7 @@
         return [super canPerformAction:action withSender:sender];
 
     QObject *focusObject = QGuiApplication::focusObject();
-    if (focusObject && focusObject->property("qt_im_readonly").toBool()) {
+    if (focusObject && focusObject->property("bobui_im_readonly").toBool()) {
         // exceptional menu items for read-only views: do include Copy, do not include Paste etc.
         if (action == @selector(cut:)
                 || action == @selector(paste:)
@@ -600,12 +600,12 @@
 
         // Note that, perhaps because of a bug in UIKit, the buttons on the shortcuts bar ends up
         // disabled if a undo/redo callback doesn't lead to a [UITextInputDelegate textDidChange].
-        // And we only call that method if Qt made changes to the text. The effect is that the buttons
-        // become disabled when there is nothing more to undo (Qt didn't change anything upon receiving
+        // And we only call that method if BobUI made changes to the text. The effect is that the buttons
+        // become disabled when there is nothing more to undo (BobUI didn't change anything upon receiving
         // an undo request). This seems to be OK behavior, so we let it stay like that unless it shows
         // to cause problems.
 
-        // QTBUG-63393: Having two operations on the rebuilt undo stack keeps the undo/redo widgets
+        // BOBUIBUG-63393: Having two operations on the rebuilt undo stack keeps the undo/redo widgets
         // always enabled on the shortcut bar. This workaround was found by experimenting with
         // removing the removeAllActions call, and is related to the unknown internal implementation
         // details of how the shortcut bar updates the dimming of its buttons.
@@ -616,26 +616,26 @@
 
 - (void)keyCommandTriggered:(UIKeyCommand *)keyCommand
 {
-    Qt::Key key = Qt::Key_unknown;
-    Qt::KeyboardModifiers modifiers = Qt::NoModifier;
+    BobUI::Key key = BobUI::Key_unknown;
+    BobUI::KeyboardModifiers modifiers = BobUI::NoModifier;
 
     if (keyCommand.input == UIKeyInputLeftArrow)
-        key = Qt::Key_Left;
+        key = BobUI::Key_Left;
     else if (keyCommand.input == UIKeyInputRightArrow)
-        key = Qt::Key_Right;
+        key = BobUI::Key_Right;
     else if (keyCommand.input == UIKeyInputUpArrow)
-        key = Qt::Key_Up;
+        key = BobUI::Key_Up;
     else if (keyCommand.input == UIKeyInputDownArrow)
-        key = Qt::Key_Down;
+        key = BobUI::Key_Down;
     else
         Q_UNREACHABLE();
 
     if (keyCommand.modifierFlags & UIKeyModifierAlternate)
-        modifiers |= Qt::AltModifier;
+        modifiers |= BobUI::AltModifier;
     if (keyCommand.modifierFlags & UIKeyModifierShift)
-        modifiers |= Qt::ShiftModifier;
+        modifiers |= BobUI::ShiftModifier;
     if (keyCommand.modifierFlags & UIKeyModifierCommand)
-        modifiers |= Qt::ControlModifier;
+        modifiers |= BobUI::ControlModifier;
 
     [self sendKeyPressRelease:key modifiers:modifiers];
 }
@@ -659,8 +659,8 @@
     static NSMutableArray<UIKeyCommand *> *array;
 
     dispatch_once(&once, ^{
-        // We let Qt move the cursor around when the arrow keys are being used. This
-        // is normally implemented through UITextInput, but since IM in Qt have poor
+        // We let BobUI move the cursor around when the arrow keys are being used. This
+        // is normally implemented through UITextInput, but since IM in BobUI have poor
         // support for moving the cursor vertically, and even less support for selecting
         // text across multiple paragraphs, we do this through key events.
         array = [NSMutableArray<UIKeyCommand *> new];
@@ -673,27 +673,27 @@
     return array;
 }
 
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
 // -------------------------------------------------------------------------
 
-- (void)notifyInputDelegate:(Qt::InputMethodQueries)updatedProperties
+- (void)notifyInputDelegate:(BobUI::InputMethodQueries)updatedProperties
 {
     // As documented, we should not report textWillChange/textDidChange unless the text
     // was changed externally. That will cause spell checking etc to fail. But we don't
-    // really know if the text/selection was changed by UITextInput or Qt/app when getting
-    // update calls from Qt. We therefore use a less ideal approach where we always assume
+    // really know if the text/selection was changed by UITextInput or BobUI/app when getting
+    // update calls from BobUI. We therefore use a less ideal approach where we always assume
     // that UITextView caused the change if we're currently processing an event sendt from it.
     if (m_inSendEventToFocusObject)
         return;
 
-    if (updatedProperties & (Qt::ImCursorPosition | Qt::ImAnchorPosition)) {
+    if (updatedProperties & (BobUI::ImCursorPosition | BobUI::ImAnchorPosition)) {
         QScopedValueRollback<BOOL> rollback(m_inSelectionChange, true);
         [self.inputDelegate selectionWillChange:self];
         [self.inputDelegate selectionDidChange:self];
     }
 
-    if (updatedProperties & Qt::ImSurroundingText) {
+    if (updatedProperties & BobUI::ImSurroundingText) {
         [self.inputDelegate textWillChange:self];
         [self.inputDelegate textDidChange:self];
     }
@@ -725,7 +725,7 @@
 
 - (UITextPosition *)endOfDocument
 {
-    QString surroundingText = [self currentImeState:Qt::ImSurroundingText].toString();
+    QString surroundingText = [self currentImeState:BobUI::ImSurroundingText].toString();
     int endPosition = surroundingText.length() + m_markedText.length();
     return [QUITextPosition positionWithIndex:endPosition];
 }
@@ -750,19 +750,19 @@
 
 - (UITextRange *)selectedTextRange
 {
-    int cursorPos = [self currentImeState:Qt::ImCursorPosition].toInt();
-    int anchorPos = [self currentImeState:Qt::ImAnchorPosition].toInt();
+    int cursorPos = [self currentImeState:BobUI::ImCursorPosition].toInt();
+    int anchorPos = [self currentImeState:BobUI::ImAnchorPosition].toInt();
     return [QUITextRange rangeWithNSRange:NSMakeRange(qMin(cursorPos, anchorPos), qAbs(anchorPos - cursorPos))];
 }
 
 - (NSString *)textInRange:(UITextRange *)range
 {
-    QString text = [self currentImeState:Qt::ImSurroundingText].toString();
+    QString text = [self currentImeState:BobUI::ImSurroundingText].toString();
     if (!m_markedText.isEmpty()) {
         // [UITextInput textInRange] is sparsely documented, but it turns out that unconfirmed
         // marked text should be seen as a part of the text document. This is different from
         // ImSurroundingText, which excludes it.
-        int cursorPos = [self currentImeState:Qt::ImCursorPosition].toInt();
+        int cursorPos = [self currentImeState:BobUI::ImCursorPosition].toInt();
         text = text.left(cursorPos) + m_markedText + text.mid(cursorPos);
     }
 
@@ -777,7 +777,7 @@
 
     m_markedText = markedText ? QString::fromNSString(markedText) : QString();
 
-    static QTextCharFormat markedTextFormat;
+    static BOBUIextCharFormat markedTextFormat;
     if (markedTextFormat.isEmpty()) {
         // There seems to be no way to query how the preedit text
         // should be drawn. So we need to hard-code the color.
@@ -829,7 +829,7 @@
 {
     int p = static_cast<QUITextPosition *>(position).index;
     const int posWithIndex = p + offset;
-    const int textLength = [self currentImeState:Qt::ImSurroundingText].toString().length();
+    const int textLength = [self currentImeState:BobUI::ImSurroundingText].toString().length();
     if (posWithIndex < 0 || posWithIndex > textLength)
         return nil;
     return [QUITextPosition positionWithIndex:posWithIndex];
@@ -845,7 +845,7 @@
     case UITextLayoutDirectionRight:
         return [QUITextPosition positionWithIndex:p + offset];
     default:
-        // Qt doesn't support getting the position above or below the current position, so
+        // BobUI doesn't support getting the position above or below the current position, so
         // for those cases we just return the current position, making it a no-op.
         return position;
     }
@@ -894,8 +894,8 @@
     if (!m_markedText.isEmpty())
         return CGRectZero;
 
-    int cursorPos = [self currentImeState:Qt::ImCursorPosition].toInt();
-    int anchorPos = [self currentImeState:Qt::ImAnchorPosition].toInt();
+    int cursorPos = [self currentImeState:BobUI::ImCursorPosition].toInt();
+    int anchorPos = [self currentImeState:BobUI::ImAnchorPosition].toInt();
 
     NSRange r = static_cast<QUITextRange*>(range).range;
     QList<QInputMethodEvent::Attribute> attrs;
@@ -928,7 +928,7 @@
 {
     Q_UNUSED(range);
     // This method is supposed to return a rectangle for each line with selection. Since we don't
-    // expose an API in Qt/IM for getting this information, and since we never seems to be getting
+    // expose an API in BobUI/IM for getting this information, and since we never seems to be getting
     // a call from UIKit for this, we return an empty array until a need arise.
     return [[NSArray<UITextSelectionRect *> new] autorelease];
 }
@@ -961,7 +961,7 @@
 {
     Q_UNUSED(position);
     Q_UNUSED(direction);
-    if (QLocale::system().textDirection() == Qt::RightToLeft)
+    if (QLocale::system().textDirection() == BobUI::RightToLeft)
         return NSWritingDirectionRightToLeft;
     return NSWritingDirectionLeftToRight;
 }
@@ -971,29 +971,29 @@
     int p = static_cast<QUITextPosition *>(position).index;
     if (direction == UITextLayoutDirectionLeft)
         return [QUITextRange rangeWithNSRange:NSMakeRange(0, p)];
-    int l = [self currentImeState:Qt::ImSurroundingText].toString().length();
+    int l = [self currentImeState:BobUI::ImSurroundingText].toString().length();
     return [QUITextRange rangeWithNSRange:NSMakeRange(p, l - p)];
 }
 
 - (UITextPosition *)closestPositionToPoint:(CGPoint)point
 {
-    int textPos = QPlatformInputContext::queryFocusObject(Qt::ImCursorPosition, QPointF::fromCGPoint(point)).toInt();
+    int textPos = QPlatformInputContext::queryFocusObject(BobUI::ImCursorPosition, QPointF::fromCGPoint(point)).toInt();
     return [QUITextPosition positionWithIndex:textPos];
 }
 
 - (UITextPosition *)closestPositionToPoint:(CGPoint)point withinRange:(UITextRange *)range
 {
-    // No API in Qt for determining this. Use sensible default instead:
+    // No API in BobUI for determining this. Use sensible default instead:
     Q_UNUSED(point);
     Q_UNUSED(range);
-    return [QUITextPosition positionWithIndex:[self currentImeState:Qt::ImCursorPosition].toInt()];
+    return [QUITextPosition positionWithIndex:[self currentImeState:BobUI::ImCursorPosition].toInt()];
 }
 
 - (UITextRange *)characterRangeAtPoint:(CGPoint)point
 {
-    // No API in Qt for determining this. Use sensible default instead:
+    // No API in BobUI for determining this. Use sensible default instead:
     Q_UNUSED(point);
-    return [QUITextRange rangeWithNSRange:NSMakeRange([self currentImeState:Qt::ImCursorPosition].toInt(), 0)];
+    return [QUITextRange rangeWithNSRange:NSMakeRange([self currentImeState:BobUI::ImCursorPosition].toInt(), 0)];
 }
 
 - (void)setMarkedTextStyle:(NSDictionary *)style
@@ -1014,11 +1014,11 @@
     if (!focusObject)
         return @{};
 
-    // Assume position is the same as the cursor for now. QInputMethodQueryEvent with Qt::ImFont
+    // Assume position is the same as the cursor for now. QInputMethodQueryEvent with BobUI::ImFont
     // needs to be extended to take an extra position argument before this can be fully correct.
-    QInputMethodQueryEvent e(Qt::ImFont);
+    QInputMethodQueryEvent e(BobUI::ImFont);
     QCoreApplication::sendEvent(focusObject, &e);
-    QFont qfont = qvariant_cast<QFont>(e.value(Qt::ImFont));
+    QFont qfont = qvariant_cast<QFont>(e.value(BobUI::ImFont));
     UIFont *uifont = [UIFont fontWithName:qfont.family().toNSString() size:qfont.pointSize()];
     if (!uifont)
         return @{};
@@ -1043,7 +1043,7 @@
         return;
 
     if ([text isEqualToString:@"\n"]) {
-        [self sendKeyPressRelease:Qt::Key_Return modifiers:Qt::NoModifier];
+        [self sendKeyPressRelease:BobUI::Key_Return modifiers:BobUI::NoModifier];
 
         // An onEnter handler of a TextInput might move to the next input by calling
         // nextInput.forceActiveFocus() which changes the focusObject.
@@ -1069,7 +1069,7 @@
 {
     // UITextInput selects the text to be deleted before calling this method. To avoid
     // drawing the selection, we flush after posting the key press/release.
-    [self sendKeyPressRelease:Qt::Key_Backspace modifiers:Qt::NoModifier];
+    [self sendKeyPressRelease:BobUI::Key_Backspace modifiers:BobUI::NoModifier];
 }
 
 @end

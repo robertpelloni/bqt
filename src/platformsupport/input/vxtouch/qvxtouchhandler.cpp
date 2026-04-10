@@ -1,5 +1,5 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qvxtouchhandler_p.h"
 #include "qoutputmapping_p.h"
@@ -8,13 +8,13 @@
 #include <QSocketNotifier>
 #include <QGuiApplication>
 #include <QLoggingCategory>
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtGui/qpointingdevice.h>
-#include <QtGui/private/qhighdpiscaling_p.h>
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/private/qpointingdevice_p.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUIGui/qpointingdevice.h>
+#include <BobUIGui/private/qhighdpiscaling_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qpointingdevice_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
 #include <mutex>
 
@@ -44,12 +44,12 @@ typedef EV_DEV_EVENT input_event;
 
 #include <math.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_LOGGING_CATEGORY(qLcVxTouch, "qt.qpa.input")
-Q_STATIC_LOGGING_CATEGORY(qLcVxEvents, "qt.qpa.input.events")
+Q_LOGGING_CATEGORY(qLcVxTouch, "bobui.qpa.input")
+Q_STATIC_LOGGING_CATEGORY(qLcVxEvents, "bobui.qpa.input.events")
 
 /* android (and perhaps some other linux-derived stuff) don't define everything
  * in linux/input.h, so we'll need to do that ourselves.
@@ -125,7 +125,7 @@ public:
     QString deviceNode;
     bool m_forceToActiveWindow;
     bool m_typeB;
-    QTransform m_rotate;
+    BOBUIransform m_rotate;
     bool m_singleTouch;
     QString m_screenName;
     mutable QPointer<QScreen> m_screen;
@@ -232,7 +232,7 @@ QVxTouchScreenHandler::QVxTouchScreenHandler(const QString &device, const QStrin
 
     qCDebug(qLcVxTouch, "vxtouch: Using device %ls", qUtf16Printable(device));
 
-    m_fd = QT_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
+    m_fd = BOBUI_OPEN(device.toLocal8Bit().constData(), O_RDONLY | O_NDELAY, 0);
 
     if (m_fd >= 0) {
         m_notify = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
@@ -302,13 +302,13 @@ QVxTouchScreenHandler::QVxTouchScreenHandler(const QString &device, const QStrin
     }
 
     if (rotationAngle)
-        d->m_rotate = QTransform::fromTranslate(0.5, 0.5).rotate(rotationAngle).translate(-0.5, -0.5);
+        d->m_rotate = BOBUIransform::fromTranslate(0.5, 0.5).rotate(rotationAngle).translate(-0.5, -0.5);
 
     if (invertx)
-        d->m_rotate *= QTransform::fromTranslate(0.5, 0.5).scale(-1.0, 1.0).translate(-0.5, -0.5);
+        d->m_rotate *= BOBUIransform::fromTranslate(0.5, 0.5).scale(-1.0, 1.0).translate(-0.5, -0.5);
 
     if (inverty)
-        d->m_rotate *= QTransform::fromTranslate(0.5, 0.5).scale(1.0, -1.0).translate(-0.5, -0.5);
+        d->m_rotate *= BOBUIransform::fromTranslate(0.5, 0.5).scale(1.0, -1.0).translate(-0.5, -0.5);
 
     QOutputMapping *mapping = QOutputMapping::get();
     if (mapping->load()) {
@@ -324,7 +324,7 @@ QVxTouchScreenHandler::QVxTouchScreenHandler(const QString &device, const QStrin
 QVxTouchScreenHandler::~QVxTouchScreenHandler()
 {
     if (m_fd >= 0)
-        QT_CLOSE(m_fd);
+        BOBUI_CLOSE(m_fd);
 
     delete d;
 
@@ -345,7 +345,7 @@ void QVxTouchScreenHandler::readData()
 {
     int events = 0;
     EV_DEV_EVENT ev;
-    size_t n = qt_safe_read(m_fd, (char *)(&ev), sizeof(EV_DEV_EVENT));
+    size_t n = bobui_safe_read(m_fd, (char *)(&ev), sizeof(EV_DEV_EVENT));
     if (n < sizeof(EV_DEV_EVENT)) {
         events = n;
         goto err;
@@ -364,7 +364,7 @@ err:
                 delete m_notify;
                 m_notify = nullptr;
 
-                QT_CLOSE(m_fd);
+                BOBUI_CLOSE(m_fd);
                 m_fd = -1;
 
                 unregisterPointingDevice();
@@ -728,7 +728,7 @@ void QVxTouchScreenData::reportPoints()
 
         // Generate a screen position that is always inside the active window
         // or the primary screen.  Even though we report this as a QRectF, internally
-        // Qt uses QRect/QPoint so we need to bound the size to winRect.size() - QSize(1, 1)
+        // BobUI uses QRect/QPoint so we need to bound the size to winRect.size() - QSize(1, 1)
         const qreal wx = winRect.left() + tp.normalPosition.x() * (winRect.width() - 1);
         const qreal wy = winRect.top() + tp.normalPosition.y() * (winRect.height() - 1);
         const qreal sizeRatio = (winRect.width() + winRect.height()) / qreal(hw_w + hw_h);
@@ -778,7 +778,7 @@ void QVxTouchScreenHandlerThread::run()
         connect(m_handler, &QVxTouchScreenHandler::touchPointsUpdated, this, &QVxTouchScreenHandlerThread::scheduleTouchPointUpdate);
 
     // Report the registration to the parent thread by invoking the method asynchronously
-    QMetaObject::invokeMethod(this, "notifyTouchDeviceRegistered", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "notifyTouchDeviceRegistered", BobUI::QueuedConnection);
 
     exec();
 
@@ -930,6 +930,6 @@ void QVxTouchScreenHandlerThread::filterAndSendTouchPoints()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qvxtouchhandler_p.cpp"

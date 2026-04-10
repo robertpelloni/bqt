@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-#include <QTest>
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
+#include <BOBUIest>
 #include <QErrorMessage>
 #include <QDebug>
 #include <QCheckBox>
@@ -24,18 +24,18 @@ private slots:
 
 void tst_QErrorMessage::initTestCase_data()
 {
-    QTest::addColumn<bool>("useNativeDialog");
-    QTest::newRow("widget") << false;
+    BOBUIest::addColumn<bool>("useNativeDialog");
+    BOBUIest::newRow("widget") << false;
     if (const QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme()) {
         if (theme->usePlatformNativeDialog(QPlatformTheme::MessageDialog))
-            QTest::newRow("native") << true;
+            BOBUIest::newRow("native") << true;
     }
 }
 
 void tst_QErrorMessage::init()
 {
     QFETCH_GLOBAL(bool, useNativeDialog);
-    qApp->setAttribute(Qt::AA_DontUseNativeDialogs, !useNativeDialog);
+    qApp->setAttribute(BobUI::AA_DontUseNativeDialogs, !useNativeDialog);
 }
 
 void tst_QErrorMessage::dontShowAgain()
@@ -146,5 +146,5 @@ void tst_QErrorMessage::baseClassSetVisible()
     errorMessage.close();
 }
 
-QTEST_MAIN(tst_QErrorMessage)
+BOBUIEST_MAIN(tst_QErrorMessage)
 #include "tst_qerrormessage.moc"

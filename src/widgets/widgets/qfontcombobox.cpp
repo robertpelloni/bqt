@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qfontcombobox.h"
 
@@ -16,9 +16,9 @@
 
 #include <array>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static QFontDatabase::WritingSystem writingSystemFromScript(QLocale::Script script)
 {
@@ -186,8 +186,8 @@ public:
 
 QFontFamilyDelegate::QFontFamilyDelegate(QObject *parent, QFontComboBoxPrivate *comboP)
     : QAbstractItemDelegate(parent),
-      truetype(QStringLiteral(":/qt-project.org/styles/commonstyle/images/fonttruetype-16.png")),
-      bitmap(QStringLiteral(":/qt-project.org/styles/commonstyle/images/fontbitmap-16.png")),
+      truetype(QStringLiteral(":/bobui-project.org/styles/commonstyle/images/fonttruetype-16.png")),
+      bitmap(QStringLiteral(":/bobui-project.org/styles/commonstyle/images/fontbitmap-16.png")),
       writingSystem(QFontDatabase::Any),
       comboPrivate(comboP)
 {
@@ -197,7 +197,7 @@ void QFontFamilyDelegate::paint(QPainter *painter,
                                 const QStyleOptionViewItem &option,
                                 const QModelIndex &index) const
 {
-    QString text = index.data(Qt::DisplayRole).toString();
+    QString text = index.data(BobUI::DisplayRole).toString();
     QFont font(option.font);
     font.setPointSize(QFontInfo(font).pointSize() * 3 / 2);
     QFont font2 = font;
@@ -215,7 +215,7 @@ void QFontFamilyDelegate::paint(QPainter *painter,
     if (option.state & QStyle::State_Selected) {
         painter->save();
         painter->setBrush(option.palette.highlight());
-        painter->setPen(Qt::NoPen);
+        painter->setPen(BobUI::NoPen);
         painter->drawRect(option.rect);
         painter->setPen(QPen(option.palette.highlightedText(), 0));
     }
@@ -227,8 +227,8 @@ void QFontFamilyDelegate::paint(QPainter *painter,
     const QSize actualSize = icon->actualSize(r.size());
     const QRect iconRect = QStyle::alignedRect(option.direction, option.displayAlignment,
                                                actualSize, r);
-    icon->paint(painter, iconRect, Qt::AlignLeft|Qt::AlignVCenter);
-    if (option.direction == Qt::RightToLeft)
+    icon->paint(painter, iconRect, BobUI::AlignLeft|BobUI::AlignVCenter);
+    if (option.direction == BobUI::RightToLeft)
         r.setRight(r.right() - actualSize.width() - 4);
     else
         r.setLeft(r.left() + actualSize.width() + 4);
@@ -236,7 +236,7 @@ void QFontFamilyDelegate::paint(QPainter *painter,
     QFont old = painter->font();
     painter->setFont(font);
 
-    const Qt::Alignment textAlign = QStyle::visualAlignment(option.direction, option.displayAlignment);
+    const BobUI::Alignment textAlign = QStyle::visualAlignment(option.direction, option.displayAlignment);
     // If the ascent of the font is larger than the height of the rect,
     // we will clip the text, so it's better to align the tight bounding rect in this case
     // This is specifically for fonts where the ascent is very large compared to
@@ -246,9 +246,9 @@ void QFontFamilyDelegate::paint(QPainter *painter,
         QRectF tbr = fontMetrics.tightBoundingRect(text);
         QRect textRect(r);
         textRect.setHeight(textRect.height() + (r.height() - tbr.height()));
-        painter->drawText(textRect, Qt::AlignBottom|Qt::TextSingleLine|textAlign, text);
+        painter->drawText(textRect, BobUI::AlignBottom|BobUI::TextSingleLine|textAlign, text);
     } else {
-        painter->drawText(r, Qt::AlignVCenter|Qt::TextSingleLine|textAlign, text);
+        painter->drawText(r, BobUI::AlignVCenter|BobUI::TextSingleLine|textAlign, text);
     }
 
     if (writingSystem != QFontDatabase::Any)
@@ -259,11 +259,11 @@ void QFontFamilyDelegate::paint(QPainter *painter,
         int w = painter->fontMetrics().horizontalAdvance(text + "  "_L1);
         painter->setFont(font2);
         const QString sample = !sampleText.isEmpty() ? sampleText : QFontDatabase::writingSystemSample(system);
-        if (option.direction == Qt::RightToLeft)
+        if (option.direction == BobUI::RightToLeft)
             r.setRight(r.right() - w);
         else
             r.setLeft(r.left() + w);
-        painter->drawText(r, Qt::AlignVCenter|Qt::TextSingleLine|textAlign, sample);
+        painter->drawText(r, BobUI::AlignVCenter|BobUI::TextSingleLine|textAlign, sample);
     }
     painter->setFont(old);
 
@@ -275,7 +275,7 @@ void QFontFamilyDelegate::paint(QPainter *painter,
 QSize QFontFamilyDelegate::sizeHint(const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
-    QString text = index.data(Qt::DisplayRole).toString();
+    QString text = index.data(BobUI::DisplayRole).toString();
     QFont font(option.font);
 //     font.setFamilies(QStringList{text});
     font.setPointSize(QFontInfo(font).pointSize() * 3/2);
@@ -331,7 +331,7 @@ void QFontComboBoxPrivate::updateModel()
         const QSignalBlocker blocker(m);
         m->setStringList(result);
         // Since the modelReset signal is blocked the view will not emit an accessibility event
-    #if QT_CONFIG(accessibility)
+    #if BOBUI_CONFIG(accessibility)
         if (QAccessible::isActive()) {
             QAccessibleTableModelChangeEvent accessibleEvent(q->view(), QAccessibleTableModelChangeEvent::ModelReset);
             QAccessible::updateAccessibility(&accessibleEvent);
@@ -367,7 +367,7 @@ void QFontComboBoxPrivate::currentChanged(const QString &text)
 
     \since 4.2
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     The combobox is populated with an alphabetized list of font
     family names, such as Arial, Helvetica, and Times New Roman.
@@ -377,7 +377,7 @@ void QFontComboBoxPrivate::currentChanged(const QString &text)
     family name.
 
     QFontComboBox is often used in toolbars, in conjunction with a
-    QComboBox for controlling the font size and two \l{QToolButton}s
+    QComboBox for controlling the font size and two \l{BOBUIoolButton}s
     for bold and italic.
 
     When the user selects a new font, the currentFontChanged() signal
@@ -621,7 +621,7 @@ std::optional<QFont> QFontComboBox::displayFont(const QString &fontFamily) const
     return d->displayFontForFontFamily.value(fontFamily, {});
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qfontcombobox.moc"
 #include "moc_qfontcombobox.cpp"

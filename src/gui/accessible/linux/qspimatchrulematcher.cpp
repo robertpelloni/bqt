@@ -1,18 +1,18 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qspimatchrulematcher_p.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
 #include "atspiadaptor_p.h"
 #include "qspi_constant_mappings_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspi, "qt.accessibility.atspi")
+Q_STATIC_LOGGING_CATEGORY(lcAccessibilityAtspi, "bobui.accessibility.atspi")
 
 QSpiMatchRuleMatcher::QSpiMatchRuleMatcher(const QSpiMatchRule &matchRule)
     : m_states(spiStatesFromSpiStateSet(matchRule.states)),
@@ -179,6 +179,6 @@ bool QSpiMatchRuleMatcher::match(QAccessibleInterface &iface) const
         && matchAttributes(iface);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

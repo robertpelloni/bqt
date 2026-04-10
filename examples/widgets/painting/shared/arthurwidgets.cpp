@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "arthurwidgets.h"
 #include <QApplication>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmapCache>
-#include <QtEvents>
-#include <QTextDocument>
+#include <BobUIEvents>
+#include <BOBUIextDocument>
 #include <QAbstractTextDocumentLayout>
 #include <QFile>
-#include <QTextBrowser>
+#include <BOBUIextBrowser>
 #include <QBoxLayout>
 #include <QRegularExpression>
 #include <QOffscreenSurface>
@@ -21,7 +21,7 @@ ArthurFrame::ArthurFrame(QWidget *parent)
     : QWidget(parent),
       m_tile(QPixmap(128, 128))
 {
-    m_tile.fill(Qt::white);
+    m_tile.fill(BobUI::white);
     QPainter pt(&m_tile);
     QColor color(230, 230, 230);
     pt.fillRect(0, 0, 64, 64, color);
@@ -74,7 +74,7 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
     clipPath.closeSubpath();
 
     painter.save();
-    painter.setClipPath(clipPath, Qt::IntersectClip);
+    painter.setClipPath(clipPath, BobUI::IntersectClip);
 
     painter.drawTiledPixmap(rect(), m_tile);
 
@@ -91,7 +91,7 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
 
     int level = 180;
     painter.setPen(QPen(QColor(level, level, level), 2));
-    painter.setBrush(Qt::NoBrush);
+    painter.setBrush(BobUI::NoBrush);
     painter.drawPath(clipPath);
 
     if (preferImage()) {
@@ -129,7 +129,7 @@ void ArthurFrame::loadDescription(const QString &fileName)
 
 void ArthurFrame::setDescription(const QString &text)
 {
-    m_document = new QTextDocument(this);
+    m_document = new BOBUIextDocument(this);
     m_document->setHtml(text);
 }
 
@@ -149,7 +149,7 @@ void ArthurFrame::paintDescription(QPainter *painter)
                    pageHeight);
     int pad = 10;
     QRect clearRect = textRect.adjusted(-pad, -pad, pad, pad);
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
     painter->setBrush(QColor(0, 0, 0, 63));
     int shade = 10;
     painter->drawRect(clearRect.x() + clearRect.width() + 1,
@@ -163,18 +163,18 @@ void ArthurFrame::paintDescription(QPainter *painter)
 
     painter->setRenderHint(QPainter::Antialiasing, false);
     painter->setBrush(QColor(255, 255, 255, 220));
-    painter->setPen(Qt::black);
+    painter->setPen(BobUI::black);
     painter->drawRect(clearRect);
 
-    painter->setClipRegion(textRect, Qt::IntersectClip);
+    painter->setClipRegion(textRect, BobUI::IntersectClip);
     painter->translate(textRect.topLeft());
 
     QAbstractTextDocumentLayout::PaintContext ctx;
 
     QLinearGradient g(0, 0, 0, textRect.height());
-    g.setColorAt(0, Qt::black);
-    g.setColorAt(0.9, Qt::black);
-    g.setColorAt(1, Qt::transparent);
+    g.setColorAt(0, BobUI::black);
+    g.setColorAt(0.9, BobUI::black);
+    g.setColorAt(1, BobUI::transparent);
 
     QPalette pal = palette();
     pal.setBrush(QPalette::Text, g);
@@ -192,7 +192,7 @@ void ArthurFrame::loadSourceFile(const QString &sourceFile)
 void ArthurFrame::showSource()
 {
     // Check for existing source
-    if (findChild<QTextBrowser *>())
+    if (findChild<BOBUIextBrowser *>())
         return;
 
     QString contents;
@@ -243,11 +243,11 @@ void ArthurFrame::showSource()
 
     const QString html = QStringLiteral("<html><pre>") + contents + QStringLiteral("</pre></html>");
 
-    QTextBrowser *sourceViewer = new QTextBrowser;
+    BOBUIextBrowser *sourceViewer = new BOBUIextBrowser;
     sourceViewer->setWindowTitle(tr("Source: %1").arg(QStringView{ m_sourceFileName }.mid(5)));
-    sourceViewer->setParent(this, Qt::Dialog);
-    sourceViewer->setAttribute(Qt::WA_DeleteOnClose);
-    sourceViewer->setLineWrapMode(QTextEdit::NoWrap);
+    sourceViewer->setParent(this, BobUI::Dialog);
+    sourceViewer->setAttribute(BobUI::WA_DeleteOnClose);
+    sourceViewer->setLineWrapMode(BOBUIextEdit::NoWrap);
     sourceViewer->setHtml(html);
     sourceViewer->resize(600, 600);
     sourceViewer->show();

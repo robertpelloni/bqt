@@ -1,17 +1,17 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QUNDOGROUP_H
 #define QUNDOGROUP_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qstring.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstring.h>
 
-QT_REQUIRE_CONFIG(undogroup);
+BOBUI_REQUIRE_CONFIG(undogroup);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QUndoGroupPrivate;
 class QUndoStack;
@@ -31,10 +31,10 @@ public:
     QList<QUndoStack*> stacks() const;
     QUndoStack *activeStack() const;
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     QAction *createUndoAction(QObject *parent, const QString &prefix = QString()) const;
     QAction *createRedoAction(QObject *parent, const QString &prefix = QString()) const;
-#endif // QT_NO_ACTION
+#endif // BOBUI_NO_ACTION
 
     bool canUndo() const;
     bool canRedo() const;
@@ -60,6 +60,6 @@ private:
     Q_DISABLE_COPY(QUndoGroup)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QUNDOGROUP_H

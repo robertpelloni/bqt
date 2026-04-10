@@ -1,12 +1,12 @@
 // Copyright (C) 2009 Stephen Kelly <steveire@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "dynamictreemodel.h"
 
-#include <QtCore/QHash>
-#include <QtCore/QList>
-#include <QtCore/QTimer>
-#include <QtCore/QDebug>
+#include <BobUICore/QHash>
+#include <BobUICore/QList>
+#include <BobUICore/BOBUIimer>
+#include <BobUICore/QDebug>
 
 DynamicTreeModel::DynamicTreeModel(QObject *parent) :
     QAbstractItemModel(parent),
@@ -111,7 +111,7 @@ QVariant DynamicTreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (Qt::DisplayRole == role)
+    if (BobUI::DisplayRole == role)
         return m_items.value(index.internalId());
     return QVariant();
 }

@@ -122,7 +122,7 @@ typedef short INT16;
  * basetsd.h (Win32 header) typedefs INT32 to int (always a 32-bit signed type
  * on modern platforms.)
  *
- * qglobal.h (Qt header) typedefs INT32 to int (always a 32-bit signed type on
+ * qglobal.h (BobUI header) typedefs INT32 to int (always a 32-bit signed type on
  * modern platforms.)
  *
  * This is a recipe for conflict, since "long" and "int" aren't always
@@ -136,7 +136,7 @@ typedef short INT16;
 #ifndef XMD_H                   /* X11/xmd.h correctly defines INT32 */
 #ifndef _BASETSD_H_             /* Microsoft defines it in basetsd.h */
 #ifndef _BASETSD_H              /* MinGW is slightly different */
-#ifndef QGLOBAL_H               /* Qt defines it in qglobal.h */
+#ifndef QGLOBAL_H               /* BobUI defines it in qglobal.h */
 typedef long INT32;
 #endif
 #endif

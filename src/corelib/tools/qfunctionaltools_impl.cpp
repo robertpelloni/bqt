@@ -1,15 +1,15 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtCore/qfunctionaltools_impl.h>
+#include <BobUICore/qfunctionaltools_impl.h>
 
 // Remove this file once we have tests that implicitly test all aspects of
 // CompactStorage
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 #define FOR_EACH_CVREF(op) \
     op(&) \
@@ -41,8 +41,8 @@ namespace _testing {
 #undef CHECK1
 } // namespace _testing
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 #undef FOR_EACH_CVREF
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

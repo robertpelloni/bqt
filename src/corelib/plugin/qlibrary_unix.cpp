@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2020 Intel Corporation
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:execute-external-code
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:execute-external-code
 
 #include "qplatformdefs.h"
 
@@ -24,12 +24,12 @@
 
 #ifdef Q_OS_ANDROID
 #include <private/qjnihelpers_p.h>
-#include <QtCore/qjnienvironment.h>
+#include <BobUICore/qjnienvironment.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QStringList QLibraryPrivate::suffixes_sys(const QString &fullVersion)
 {
@@ -91,7 +91,7 @@ QStringList QLibraryPrivate::suffixes_sys(const QString &fullVersion)
 
 bool QLibraryPrivate::load_sys()
 {
-#if defined(Q_OS_WASM) && defined(QT_STATIC)
+#if defined(Q_OS_WASM) && defined(BOBUI_STATIC)
     // emscripten does not support dlopen when using static linking
     return false;
 #endif
@@ -141,7 +141,7 @@ bool QLibraryPrivate::load_sys()
 #if defined(RTLD_NODELETE)
     if (loadHints & QLibrary::PreventUnloadHint) {
 #   ifdef Q_OS_ANDROID // RTLD_NODELETE flag is supported by Android 23+
-        if (QtAndroidPrivate::androidSdkVersion() > 22)
+        if (BobUIAndroidPrivate::androidSdkVersion() > 22)
 #   endif
             dlFlags |= RTLD_NODELETE;
     }
@@ -265,7 +265,7 @@ bool QLibraryPrivate::unload_sys()
         const char *error = dlerror();
 #if defined (Q_OS_QNX)
         // Workaround until fixed in QNX; fixes crash in
-        // QtDeclarative auto test "qqmlenginecleanup" for instance
+        // BobUIDeclarative auto test "qqmlenginecleanup" for instance
         if (!qstrcmp(error, "Shared objects still referenced")) // On QNX that's only "informative"
             return true;
 #endif
@@ -283,4 +283,4 @@ QFunctionPointer QLibraryPrivate::resolve_sys(const char *symbol)
     return address;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

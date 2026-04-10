@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef ITEMWINDOW_H
 #define ITEMWINDOW_H
 
-#include <QtGui/QKeySequence>
-#include <QtGui/QRasterWindow>
+#include <BobUIGui/QKeySequence>
+#include <BobUIGui/QRasterWindow>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 // ItemWindow: Primitive UI item classes for use with a ItemWindow based
 // on QRasterWindow without widgets allowing a simple UI without widgets.
@@ -73,7 +73,7 @@ void windowHandler(eventClass *e) override \
 class ItemWindow : public QRasterWindow {
     Q_OBJECT
 public:
-    explicit ItemWindow(QWindow *parent = nullptr) : QRasterWindow(parent), m_background(Qt::white) {}
+    explicit ItemWindow(QWindow *parent = nullptr) : QRasterWindow(parent), m_background(BobUI::white) {}
 
     void addItem(Item *item) { m_items.append(item); }
 

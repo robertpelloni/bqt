@@ -1,5 +1,5 @@
 ********* Start testing of tst_Pass *********
-Config: Using QtTest library
+Config: Using BobUITest library
 PASS   : tst_Pass::initTestCase()
 PASS   : tst_Pass::testNumber1()
 PASS   : tst_Pass::testNumber2()

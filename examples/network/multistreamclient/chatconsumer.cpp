@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "chatconsumer.h"
 #include <QWidget>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QString>
@@ -12,10 +12,10 @@ ChatConsumer::ChatConsumer(QObject *parent)
     : Consumer(parent)
 {
     frameWidget = new QWidget;
-    frameWidget->setFocusPolicy(Qt::TabFocus);
+    frameWidget->setFocusPolicy(BobUI::TabFocus);
 
-    textEdit = new QTextEdit;
-    textEdit->setFocusPolicy(Qt::NoFocus);
+    textEdit = new BOBUIextEdit;
+    textEdit->setFocusPolicy(BobUI::NoFocus);
     textEdit->setReadOnly(true);
 
     lineEdit = new QLineEdit;

@@ -1,22 +1,22 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "httpwindow.h"
 
 #include "ui_authenticationdialog.h"
 
-#include <QtWidgets>
-#include <QtNetwork>
+#include <BobUIWidgets>
+#include <BobUINetwork>
 #include <QUrl>
 
 #include <memory>
 #include <chrono>
 using namespace std::chrono_literals;
 
-#if QT_CONFIG(ssl)
-const char defaultUrl[] = "https://www.qt.io/";
+#if BOBUI_CONFIG(ssl)
+const char defaultUrl[] = "https://www.bobui.io/";
 #else
-const char defaultUrl[] = "http://www.qt.io/";
+const char defaultUrl[] = "http://www.bobui.io/";
 #endif
 const char defaultFileName[] = "index.html";
 
@@ -52,7 +52,7 @@ HttpWindow::HttpWindow(QWidget *parent)
     connect(&qnam, &QNetworkAccessManager::authenticationRequired,
             this, &HttpWindow::slotAuthenticationRequired);
     //! [qnam-auth-required-1]
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
     connect(&qnam, &QNetworkAccessManager::proxyAuthenticationRequired,
             this, &HttpWindow::slotProxyAuthenticationRequired);
 #endif
@@ -112,7 +112,7 @@ void HttpWindow::startRequest(const QUrl &requestedUrl)
     //! [networkreply-readyread-1]
     connect(reply.get(), &QIODevice::readyRead, this, &HttpWindow::httpReadyRead);
     //! [networkreply-readyread-1]
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     //! [sslerrors-1]
     connect(reply.get(), &QNetworkReply::sslErrors, this, &HttpWindow::sslErrors);
     //! [sslerrors-1]
@@ -120,7 +120,7 @@ void HttpWindow::startRequest(const QUrl &requestedUrl)
     //! [connecting-reply-to-slots]
 
     ProgressDialog *progressDialog = new ProgressDialog(url, this);
-    progressDialog->setAttribute(Qt::WA_DeleteOnClose);
+    progressDialog->setAttribute(BobUI::WA_DeleteOnClose);
     connect(progressDialog, &QProgressDialog::canceled, this, &HttpWindow::cancelDownload);
     connect(reply.get(), &QNetworkReply::downloadProgress,
             progressDialog, &ProgressDialog::networkReplyProgress);
@@ -270,7 +270,7 @@ void HttpWindow::slotAuthenticationRequired(QNetworkReply *, QAuthenticator *aut
 }
 //! [qnam-auth-required-2]
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 //! [sslerrors-2]
 void HttpWindow::sslErrors(const QList<QSslError> &errors)
 {
@@ -291,7 +291,7 @@ void HttpWindow::sslErrors(const QList<QSslError> &errors)
 //! [sslerrors-2]
 #endif
 
-#if QT_CONFIG(networkproxy)
+#if BOBUI_CONFIG(networkproxy)
 void HttpWindow::slotProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
 {
     QDialog authenticationDialog;

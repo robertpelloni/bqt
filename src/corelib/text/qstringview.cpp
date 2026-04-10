@@ -1,14 +1,14 @@
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:docs-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:docs-only
 
 #include "qstringview.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QStringView
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
     \brief The QStringView class provides a unified view on UTF-16 strings with a read-only subset of the QString API.
     \reentrant
@@ -451,7 +451,7 @@ QT_BEGIN_NAMESPACE
 
     Returns whether this string view is empty - that is, whether \c{size() == 0}.
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \sa empty(), isNull(), size(), length()
 */
@@ -461,7 +461,7 @@ QT_BEGIN_NAMESPACE
 
     Returns whether this string view is null - that is, whether \c{data() == nullptr}.
 
-    This functions is provided for compatibility with other Qt containers.
+    This functions is provided for compatibility with other BobUI containers.
 
     \sa empty(), isEmpty(), size(), length()
 */
@@ -481,7 +481,7 @@ QT_BEGIN_NAMESPACE
 
     Same as size().
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \sa empty(), isEmpty(), isNull(), size()
 */
@@ -521,7 +521,7 @@ QT_BEGIN_NAMESPACE
     \c Args can consist of anything that implicitly converts to QAnyStringView.
 //![qstring-multi-arg]
 
-    \note In Qt versions prior to 6.9, QAnyStringView and UTF-8 strings
+    \note In BobUI versions prior to 6.9, QAnyStringView and UTF-8 strings
     (QUtf8StringView, QByteArray, QByteArrayView, \c{const char8_t*}, etc) were
     not supported as \a args.
 
@@ -560,7 +560,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the first character in the string view. Same as front().
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \include qstringview.cpp calling-on-empty-is-UB
 
@@ -572,7 +572,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the last character in the string view. Same as back().
 
-    This function is provided for compatibility with other Qt containers.
+    This function is provided for compatibility with other BobUI containers.
 
     \include qstringview.cpp calling-on-empty-is-UB
 
@@ -751,7 +751,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn int QStringView::compare(QStringView str, Qt::CaseSensitivity cs) const
+    \fn int QStringView::compare(QStringView str, BobUI::CaseSensitivity cs) const
     \since 5.12
 
     Compares this string view with string view \a str and returns a negative integer if
@@ -764,7 +764,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn int QStringView::compare(QUtf8StringView str, Qt::CaseSensitivity cs) const
+    \fn int QStringView::compare(QUtf8StringView str, BobUI::CaseSensitivity cs) const
     \since 6.5
 
     Compares this string view with QUtf8StringView \a str and returns a negative integer if
@@ -777,9 +777,9 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn int QStringView::compare(QLatin1StringView l1, Qt::CaseSensitivity cs) const
+    \fn int QStringView::compare(QLatin1StringView l1, BobUI::CaseSensitivity cs) const
     \fn int QStringView::compare(QChar ch) const
-    \fn int QStringView::compare(QChar ch, Qt::CaseSensitivity cs) const
+    \fn int QStringView::compare(QChar ch, BobUI::CaseSensitivity cs) const
     \since 5.15
 
     Compares this string view to the Latin-1 string view \a l1, or the character \a ch.
@@ -827,10 +827,10 @@ or the character \a ch
 */
 
 /*!
-    \fn bool QStringView::startsWith(QStringView str, Qt::CaseSensitivity cs) const
-    \fn bool QStringView::startsWith(QLatin1StringView l1, Qt::CaseSensitivity cs) const
+    \fn bool QStringView::startsWith(QStringView str, BobUI::CaseSensitivity cs) const
+    \fn bool QStringView::startsWith(QLatin1StringView l1, BobUI::CaseSensitivity cs) const
     \fn bool QStringView::startsWith(QChar ch) const
-    \fn bool QStringView::startsWith(QChar ch, Qt::CaseSensitivity cs) const
+    \fn bool QStringView::startsWith(QChar ch, BobUI::CaseSensitivity cs) const
 
     Returns \c true if this string view starts with
     \include qstringview.cpp utf16-or-latin1-or-ch
@@ -842,10 +842,10 @@ or the character \a ch
 */
 
 /*!
-    \fn bool QStringView::endsWith(QStringView str, Qt::CaseSensitivity cs) const
-    \fn bool QStringView::endsWith(QLatin1StringView l1, Qt::CaseSensitivity cs) const
+    \fn bool QStringView::endsWith(QStringView str, BobUI::CaseSensitivity cs) const
+    \fn bool QStringView::endsWith(QLatin1StringView l1, BobUI::CaseSensitivity cs) const
     \fn bool QStringView::endsWith(QChar ch) const
-    \fn bool QStringView::endsWith(QChar ch, Qt::CaseSensitivity cs) const
+    \fn bool QStringView::endsWith(QChar ch, BobUI::CaseSensitivity cs) const
 
     Returns \c true if this string view ends with
     \include qstringview.cpp utf16-or-latin1-or-ch
@@ -857,9 +857,9 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::indexOf(QStringView str, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
-    \fn qsizetype QStringView::indexOf(QLatin1StringView l1, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
-    \fn qsizetype QStringView::indexOf(QChar ch, qsizetype from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    \fn qsizetype QStringView::indexOf(QStringView str, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
+    \fn qsizetype QStringView::indexOf(QLatin1StringView l1, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
+    \fn qsizetype QStringView::indexOf(QChar ch, qsizetype from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     \since 5.14
 
     Returns the index position of the first occurrence of
@@ -875,9 +875,9 @@ or the character \a ch
 */
 
 /*!
-    \fn bool QStringView::contains(QStringView str, Qt::CaseSensitivity cs) const
-    \fn bool QStringView::contains(QLatin1StringView l1, Qt::CaseSensitivity cs) const
-    \fn bool QStringView::contains(QChar ch, Qt::CaseSensitivity cs) const
+    \fn bool QStringView::contains(QStringView str, BobUI::CaseSensitivity cs) const
+    \fn bool QStringView::contains(QLatin1StringView l1, BobUI::CaseSensitivity cs) const
+    \fn bool QStringView::contains(QChar ch, BobUI::CaseSensitivity cs) const
     \since 5.14
 
     Returns \c true if this string view contains an occurrence of
@@ -890,9 +890,9 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::lastIndexOf(QStringView str, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringView::lastIndexOf(QLatin1StringView l1, qsizetype from, Qt::CaseSensitivity cs) const
-    \fn qsizetype QStringView::lastIndexOf(QChar ch, qsizetype from, Qt::CaseSensitivity cs) const
+    \fn qsizetype QStringView::lastIndexOf(QStringView str, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringView::lastIndexOf(QLatin1StringView l1, qsizetype from, BobUI::CaseSensitivity cs) const
+    \fn qsizetype QStringView::lastIndexOf(QChar ch, qsizetype from, BobUI::CaseSensitivity cs) const
     \since 5.14
 
     Returns the index position of the last occurrence of
@@ -918,8 +918,8 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::lastIndexOf(QStringView str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
-    \fn qsizetype QStringView::lastIndexOf(QLatin1StringView l1, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    \fn qsizetype QStringView::lastIndexOf(QStringView str, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
+    \fn qsizetype QStringView::lastIndexOf(QLatin1StringView l1, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
     \since 6.2
     \overload lastIndexOf()
 
@@ -934,12 +934,12 @@ or the character \a ch
 */
 
 /*!
-    \fn QStringView::lastIndexOf(QChar ch, Qt::CaseSensitivity cs) const
+    \fn QStringView::lastIndexOf(QChar ch, BobUI::CaseSensitivity cs) const
     \since 6.3
     \overload lastIndexOf()
 */
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 /*!
     \fn qsizetype QStringView::indexOf(const QRegularExpression &re, qsizetype from, QRegularExpressionMatch *rmatch) const
     \since 6.1
@@ -1031,7 +1031,7 @@ or the character \a ch
     \sa QRegularExpression::globalMatch()
 
 */
-#endif // QT_CONFIG(regularexpression)
+#endif // BOBUI_CONFIG(regularexpression)
 
 /*!
     \fn QByteArray QStringView::toLatin1() const
@@ -1169,7 +1169,7 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::count(QChar ch, Qt::CaseSensitivity cs) const noexcept
+    \fn qsizetype QStringView::count(QChar ch, BobUI::CaseSensitivity cs) const noexcept
 
     \since 6.0
     \overload count()
@@ -1183,7 +1183,7 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::count(QStringView str, Qt::CaseSensitivity cs) const noexcept
+    \fn qsizetype QStringView::count(QStringView str, BobUI::CaseSensitivity cs) const noexcept
 
     \since 6.0
     \overload count()
@@ -1197,7 +1197,7 @@ or the character \a ch
 */
 
 /*!
-    \fn qsizetype QStringView::count(QLatin1StringView l1, Qt::CaseSensitivity cs) const noexcept
+    \fn qsizetype QStringView::count(QLatin1StringView l1, BobUI::CaseSensitivity cs) const noexcept
 
     \since 6.4
     \overload count()
@@ -1498,7 +1498,7 @@ or the character \a ch
 */
 
 /*!
-    \fn Qt::Literals::StringLiterals::operator""_sv(const char16_t *str, size_t size)
+    \fn BobUI::Literals::StringLiterals::operator""_sv(const char16_t *str, size_t size)
 
     \internal
     \relates QStringView
@@ -1521,7 +1521,7 @@ or the character \a ch
     namespace(s):
 
     \code
-    using namespace Qt::StringLiterals;
+    using namespace BobUI::StringLiterals;
     auto sv = u"peace"_sv;
     \endcode
 
@@ -1534,7 +1534,7 @@ or the character \a ch
     QStringView sv2 = u"abc\0def"_sv; // sv2 == "abc\0def"
     \endcode
 
-    \sa Qt::Literals::StringLiterals
+    \sa BobUI::Literals::StringLiterals
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

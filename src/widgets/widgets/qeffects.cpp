@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qdebug.h"
@@ -12,13 +12,13 @@
 #include "qscreen.h"
 #include "qpixmap.h"
 #include "qpointer.h"
-#include "qtimer.h"
+#include "bobuiimer.h"
 #include "qwidget.h"
 #include "private/qwidget_p.h"
 #include "qwindow.h"
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct DeleteLater
 {
@@ -40,7 +40,7 @@ class QAlphaWidget: public QWidget, private QEffects
 {
     Q_OBJECT
 public:
-    QAlphaWidget(QWidget* w, Qt::WindowFlags f = { });
+    QAlphaWidget(QWidget* w, BobUI::WindowFlags f = { });
     ~QAlphaWidget();
 
     void run(int time);
@@ -64,7 +64,7 @@ private:
     int duration;
     int elapsed;
     bool showWidget;
-    QTimer anim;
+    BOBUIimer anim;
     QElapsedTimer checkTime;
 };
 
@@ -73,14 +73,14 @@ static std::unique_ptr<QAlphaWidget, DeleteLater> q_blend;
 /*
   Constructs a QAlphaWidget.
 */
-QAlphaWidget::QAlphaWidget(QWidget* w, Qt::WindowFlags f)
+QAlphaWidget::QAlphaWidget(QWidget* w, BobUI::WindowFlags f)
     : QWidget(nullptr, f)
 {
     QWidgetPrivate::get(this)->setScreen(w->screen());
 #ifndef Q_OS_WIN
     setEnabled(false);
 #endif
-    setAttribute(Qt::WA_NoSystemBackground, true);
+    setAttribute(BobUI::WA_NoSystemBackground, true);
     widget = w;
     alpha = 0;
 }
@@ -125,12 +125,12 @@ void QAlphaWidget::run(int time)
     qApp->installEventFilter(this);
     widget->setWindowOpacity(0.0);
     widget->show();
-    connect(&anim, &QTimer::timeout, this, &QAlphaWidget::render);
+    connect(&anim, &BOBUIimer::timeout, this, &QAlphaWidget::render);
     anim.start(1);
 #else
     //This is roughly equivalent to calling setVisible(true) without actually showing the widget
-    widget->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
-    widget->setAttribute(Qt::WA_WState_Hidden, false);
+    widget->setAttribute(BobUI::WA_WState_ExplicitShowHide, true);
+    widget->setAttribute(BobUI::WA_WState_Hidden, false);
 
     qApp->installEventFilter(this);
 
@@ -148,7 +148,7 @@ void QAlphaWidget::run(int time)
         show();
         setEnabled(false);
 
-        connect(&anim, &QTimer::timeout, this, &QAlphaWidget::render);
+        connect(&anim, &BOBUIimer::timeout, this, &QAlphaWidget::render);
         anim.start(1);
     } else {
        duration = 0;
@@ -180,7 +180,7 @@ bool QAlphaWidget::eventFilter(QObject *o, QEvent *e)
         render();
         break;
     case QEvent::KeyPress: {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
        QKeyEvent *ke = static_cast<QKeyEvent *>(e);
        if (ke->matches(QKeySequence::Cancel)) {
            showWidget = false;
@@ -252,7 +252,7 @@ void QAlphaWidget::render()
             } else {
                 //Since we are faking the visibility of the widget
                 //we need to unset the hidden state on it before calling show
-                widget->setAttribute(Qt::WA_WState_Hidden, true);
+                widget->setAttribute(BobUI::WA_WState_Hidden, true);
                 widget->show();
                 lower();
             }
@@ -318,7 +318,7 @@ class QRollEffect : public QWidget, private QEffects
 {
     Q_OBJECT
 public:
-    QRollEffect(QWidget* w, Qt::WindowFlags f, DirFlags orient);
+    QRollEffect(QWidget* w, BobUI::WindowFlags f, DirFlags orient);
 
     void run(int time);
 
@@ -343,7 +343,7 @@ private:
     bool showWidget;
     int orientation;
 
-    QTimer anim;
+    BOBUIimer anim;
     QElapsedTimer checkTime;
 
     QPixmap pm;
@@ -354,7 +354,7 @@ static std::unique_ptr<QRollEffect, DeleteLater> q_roll;
 /*
   Construct a QRollEffect widget.
 */
-QRollEffect::QRollEffect(QWidget* w, Qt::WindowFlags f, DirFlags orient)
+QRollEffect::QRollEffect(QWidget* w, BobUI::WindowFlags f, DirFlags orient)
     : QWidget(nullptr, f), orientation(orient)
 {
     QWidgetPrivate::get(this)->setScreen(w->screen());
@@ -365,9 +365,9 @@ QRollEffect::QRollEffect(QWidget* w, Qt::WindowFlags f, DirFlags orient)
     widget = w;
     Q_ASSERT(widget);
 
-    setAttribute(Qt::WA_NoSystemBackground, true);
+    setAttribute(BobUI::WA_NoSystemBackground, true);
 
-    if (widget->testAttribute(Qt::WA_Resized)) {
+    if (widget->testAttribute(BobUI::WA_Resized)) {
         totalWidth = widget->width();
         totalHeight = widget->height();
     } else {
@@ -437,14 +437,14 @@ void QRollEffect::run(int time)
         duration = qMin(qMax(dist/3, 50), 120);
     }
 
-    connect(&anim, &QTimer::timeout, this, &QRollEffect::scroll);
+    connect(&anim, &BOBUIimer::timeout, this, &QRollEffect::scroll);
 
     move(widget->geometry().x(),widget->geometry().y());
     resize(qMin(currentWidth, totalWidth), qMin(currentHeight, totalHeight));
 
     //This is roughly equivalent to calling setVisible(true) without actually showing the widget
-    widget->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
-    widget->setAttribute(Qt::WA_WState_Hidden, false);
+    widget->setAttribute(BobUI::WA_WState_ExplicitShowHide, true);
+    widget->setAttribute(BobUI::WA_WState_Hidden, false);
 
     show();
     setEnabled(false);
@@ -516,7 +516,7 @@ void QRollEffect::scroll()
             } else {
                 //Since we are faking the visibility of the widget
                 //we need to unset the hidden state on it before calling show
-                widget->setAttribute(Qt::WA_WState_Hidden, true);
+                widget->setAttribute(BobUI::WA_WState_Hidden, true);
                 widget->show();
                 lower();
             }
@@ -538,7 +538,7 @@ void qScrollEffect(QWidget* w, QEffects::DirFlags orient, int time)
 
     QCoreApplication::sendPostedEvents(w, QEvent::Move);
     QCoreApplication::sendPostedEvents(w, QEvent::Resize);
-    Qt::WindowFlags flags = Qt::ToolTip;
+    BobUI::WindowFlags flags = BobUI::ToolTip;
 
     // those can be popups - they would steal the focus, but are disabled
     q_roll.reset(new QRollEffect(w, flags, orient));
@@ -558,7 +558,7 @@ void qFadeEffect(QWidget* w, int time)
     QCoreApplication::sendPostedEvents(w, QEvent::Move);
     QCoreApplication::sendPostedEvents(w, QEvent::Resize);
 
-    Qt::WindowFlags flags = Qt::ToolTip;
+    BobUI::WindowFlags flags = BobUI::ToolTip;
 
     // those can be popups - they would steal the focus, but are disabled
     q_blend.reset(new QAlphaWidget(w, flags));
@@ -566,7 +566,7 @@ void qFadeEffect(QWidget* w, int time)
     q_blend->run(time);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 /*
   Delete this after timeout

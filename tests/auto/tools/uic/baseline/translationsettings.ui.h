@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'translationsettings.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,18 +9,18 @@
 #ifndef TRANSLATIONSETTINGS_H
 #define TRANSLATIONSETTINGS_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QGridLayout>
+#include <BobUIWidgets/QGroupBox>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_TranslationSettings
 {
@@ -82,14 +82,14 @@ public:
 
         buttonBox = new QDialogButtonBox(TranslationSettings);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         vboxLayout->addWidget(buttonBox);
 
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
         label->setBuddy(cbLanguageList);
-#endif // QT_CONFIG(shortcut)
+#endif // BOBUI_CONFIG(shortcut)
 
         retranslateUi(TranslationSettings);
         QObject::connect(buttonBox, &QDialogButtonBox::accepted, TranslationSettings, qOverload<>(&QDialog::accept));
@@ -100,7 +100,7 @@ public:
 
     void retranslateUi(QDialog *TranslationSettings)
     {
-        TranslationSettings->setWindowTitle(QCoreApplication::translate("TranslationSettings", "Qt Linguist - Translation file settings", nullptr));
+        TranslationSettings->setWindowTitle(QCoreApplication::translate("TranslationSettings", "BobUI Linguist - Translation file settings", nullptr));
         groupBox->setTitle(QCoreApplication::translate("TranslationSettings", "Target language", nullptr));
         label->setText(QCoreApplication::translate("TranslationSettings", "Language", nullptr));
         lblCountry->setText(QCoreApplication::translate("TranslationSettings", "Country/Region", nullptr));
@@ -112,6 +112,6 @@ namespace Ui {
     class TranslationSettings: public Ui_TranslationSettings {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // TRANSLATIONSETTINGS_H

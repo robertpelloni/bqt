@@ -1,5 +1,5 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -68,7 +68,7 @@ void MainWindow::updateFont()
         fontEngineName = QStringLiteral("freetype");
 
     QProcessEnvironment env;
-    env.insert(QStringLiteral("QT_QPA_PLATFORM"), QStringLiteral("windows:fontengine=%1").arg(fontEngineName));
+    env.insert(QStringLiteral("BOBUI_QPA_PLATFORM"), QStringLiteral("windows:fontengine=%1").arg(fontEngineName));
     env.insert(QStringLiteral("windir"), qgetenv("windir"));
     m_process->setProcessEnvironment(env);
 

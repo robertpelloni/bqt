@@ -1,28 +1,28 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2020 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QNAMESPACE_H
 #define QNAMESPACE_H
 
 #if 0
-#pragma qt_class(Qt)
+#pragma bobui_class(BobUI)
 #endif
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qtclasshelpermacros.h>
-#include <QtCore/qtmetamacros.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
+#include <BobUICore/bobuimetamacros.h>
 
 #if defined(__OBJC__) && !defined(__cplusplus)
-#  warning "File built in Objective-C mode (.m), but using Qt requires Objective-C++ (.mm)"
+#  warning "File built in Objective-C mode (.m), but using BobUI requires Objective-C++ (.mm)"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct QMetaObject;
 
-namespace Qt {
+namespace BobUI {
     Q_NAMESPACE_EXPORT(Q_CORE_EXPORT)
 
     enum GlobalColor {
@@ -144,7 +144,7 @@ namespace Qt {
 
     // Text formatting flags for QPainter::drawText and QLabel.
     // The following two enums can be combined to one integer which
-    // is passed as 'flags' to QPainter::drawText, QFontMetrics::boundingRect and qt_format_text.
+    // is passed as 'flags' to QPainter::drawText, QFontMetrics::boundingRect and bobui_format_text.
 
     enum AlignmentFlag {
         AlignLeft = 0x0001,
@@ -160,9 +160,9 @@ namespace Qt {
         AlignBottom = 0x0040,
         AlignVCenter = 0x0080,
         AlignBaseline = 0x0100,
-        // Note that 0x100 will clash with Qt::TextSingleLine = 0x100 due to what the comment above
-        // this enum declaration states. However, since Qt::AlignBaseline is only used by layouts,
-        // it doesn't make sense to pass Qt::AlignBaseline to QPainter::drawText(), so there
+        // Note that 0x100 will clash with BobUI::TextSingleLine = 0x100 due to what the comment above
+        // this enum declaration states. However, since BobUI::AlignBaseline is only used by layouts,
+        // it doesn't make sense to pass BobUI::AlignBaseline to QPainter::drawText(), so there
         // shouldn't really be any ambiguity between the two overlapping enum values.
         AlignVertical_Mask = AlignTop | AlignBottom | AlignVCenter | AlignBaseline,
 
@@ -218,11 +218,11 @@ namespace Qt {
         Tool = Popup | Dialog,
         ToolTip = Popup | Sheet,
         SplashScreen = ToolTip | Dialog,
-#if QT_DEPRECATED_SINCE(6, 11)
-        Desktop Q_DECL_ENUMERATOR_DEPRECATED_X("This flag has been a no-op since Qt 6.")
+#if BOBUI_DEPRECATED_SINCE(6, 11)
+        Desktop Q_DECL_ENUMERATOR_DEPRECATED_X("This flag has been a no-op since BobUI 6.")
                 = 0x00000010 | Window,
 #endif
-        SubWindow = 0x00000012, // Note QTBUG-115729 before using
+        SubWindow = 0x00000012, // Note BOBUIBUG-115729 before using
         ForeignWindow = 0x00000020 | Window,
         CoverWindow = 0x00000040 | Window,
 
@@ -243,9 +243,9 @@ namespace Qt {
         WindowTransparentForInput = 0x00080000,
         WindowOverridesSystemGestures = 0x00100000,
         WindowDoesNotAcceptFocus = 0x00200000,
-#if QT_DEPRECATED_SINCE(6, 13)
+#if BOBUI_DEPRECATED_SINCE(6, 13)
         MaximizeUsingFullscreenGeometryHint Q_DECL_ENUMERATOR_DEPRECATED_X(
-            "Use Qt::ExpandedClientAreaHint instead") = 0x00400000,
+            "Use BobUI::ExpandedClientAreaHint instead") = 0x00400000,
 #endif
         ExpandedClientAreaHint = 0x00400000,
         NoTitleBarBackgroundHint = 0x00800000,
@@ -253,9 +253,9 @@ namespace Qt {
         CustomizeWindowHint = 0x02000000,
         WindowStaysOnBottomHint = 0x04000000,
         WindowCloseButtonHint = 0x08000000,
-#if QT_DEPRECATED_SINCE(6, 9)
+#if BOBUI_DEPRECATED_SINCE(6, 9)
         MacWindowToolBarButtonHint Q_DECL_ENUMERATOR_DEPRECATED_X(
-            "This flag has been a no-op since Qt 5") = 0x10000000,
+            "This flag has been a no-op since BobUI 5") = 0x10000000,
 #endif
         BypassGraphicsProxyWidget = 0x20000000,
         NoDropShadowWindowHint = 0x40000000,
@@ -440,7 +440,7 @@ namespace Qt {
     enum ApplicationAttribute
     {
         // AA_ImmediateWidgetCreation = 0,
-        AA_QtQuickUseDefaultSizePolicy = 1,
+        AA_BobUIQuickUseDefaultSizePolicy = 1,
         AA_DontShowIconsInMenus = 2,
         AA_NativeWindows = 3,
         AA_DontCreateNativeWidgetSiblings = 4,
@@ -452,7 +452,7 @@ namespace Qt {
         AA_DontUseNativeMenuWindows = 10,
         AA_SynthesizeTouchForUnhandledMouseEvents = 11,
         AA_SynthesizeMouseForUnhandledTouchEvents = 12,
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
         AA_UseHighDpiPixmaps Q_DECL_ENUMERATOR_DEPRECATED_X(
             "High-DPI pixmaps are always enabled. " \
             "This attribute no longer has any effect.") = 13,
@@ -463,7 +463,7 @@ namespace Qt {
         AA_UseSoftwareOpenGL = 17,
         AA_ShareOpenGLContexts = 18,
         AA_SetPalette = 19,
-#if QT_DEPRECATED_SINCE(6, 0)
+#if BOBUI_DEPRECATED_SINCE(6, 0)
         AA_EnableHighDpiScaling Q_DECL_ENUMERATOR_DEPRECATED_X(
             "High-DPI scaling is always enabled. " \
             "This attribute no longer has any effect.") = 20,
@@ -479,7 +479,7 @@ namespace Qt {
         AA_DisableShaderDiskCache = 27,
         AA_DontShowShortcutsInContextMenus = 28,
         AA_CompressTabletEvents = 29,
-        // AA_DisableWindowContextHelpButton = 30, (in Qt 5)
+        // AA_DisableWindowContextHelpButton = 30, (in BobUI 5)
         AA_DisableSessionManager = 31,
 
         // Add new attributes before this line
@@ -621,7 +621,7 @@ namespace Qt {
         Key_threesuperior = 0x0b3,
         Key_acute = 0x0b4,
         Key_micro = 0x0b5,
-#if QT_DEPRECATED_SINCE(6, 11)
+#if BOBUI_DEPRECATED_SINCE(6, 11)
         Key_mu Q_DECL_ENUMERATOR_DEPRECATED_X("This key was misnamed, use Key_micro instead")
             = Key_micro,
 #endif
@@ -671,7 +671,7 @@ namespace Qt {
         Key_ydiaeresis = 0x0ff,
 
         // The rest of the Unicode values are skipped here,
-        // so that we can represent them along with Qt::Keys
+        // so that we can represent them along with BobUI::Keys
         // in the same data type. The maximum Unicode value
         // is 0x0010ffff, so we start our custom keys at
         // 0x01000000 to not clash with the Unicode values,
@@ -749,7 +749,7 @@ namespace Qt {
         Key_Direction_R = 0x01000060,
 
         // International input method support (X keycode - 0xEE00, the
-        // definition follows Qt/Embedded 2.3.7) Only interesting if
+        // definition follows BobUI/Embedded 2.3.7) Only interesting if
         // you are writing your own input method
 
         // International & multi-key character composition
@@ -995,7 +995,7 @@ namespace Qt {
         Key_Suspend = 0x0100010c,
         Key_ContrastAdjust = 0x0100010d,
 
-        // We can remove these two for Qt 7:
+        // We can remove these two for BobUI 7:
         Key_LaunchG  = 0x0100010e,
         Key_LaunchH  = 0x0100010f,
 
@@ -1063,7 +1063,7 @@ namespace Qt {
         Key_CameraFocus = 0x01100021,
 
         // WARNING: Do not add any keys in the range 0x01200000 to 0xffffffff,
-        // as those bits are reserved for the Qt::KeyboardModifier enum below.
+        // as those bits are reserved for the BobUI::KeyboardModifier enum below.
 
         Key_unknown = 0x01ffffff
     };
@@ -1087,12 +1087,12 @@ namespace Qt {
     // user-defined or third-party macros. More so when the identifiers are not
     // "namespace"-prefixed. This is considered bad practice and is why
     // KeypadModifier was not added to the Modifier enum.
-    // ### Qt 7: consider deprecating in favor of KeyboardModifier.
+    // ### BobUI 7: consider deprecating in favor of KeyboardModifier.
     enum Modifier {
-        META          = Qt::MetaModifier,
-        SHIFT         = Qt::ShiftModifier,
-        CTRL          = Qt::ControlModifier,
-        ALT           = Qt::AltModifier,
+        META          = BobUI::MetaModifier,
+        SHIFT         = BobUI::ShiftModifier,
+        CTRL          = BobUI::ControlModifier,
+        ALT           = BobUI::AltModifier,
         MODIFIER_MASK = KeyboardModifierMask,
     };
     Q_DECLARE_FLAGS(Modifiers, Modifier)
@@ -1195,7 +1195,7 @@ namespace Qt {
         DragMoveCursor,
         DragLinkCursor,
         LastCursor = DragLinkCursor,
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         BitmapCursor = 24,
         CustomCursor = 25,
 #else
@@ -1253,7 +1253,7 @@ namespace Qt {
     Q_DECLARE_OPERATORS_FOR_FLAGS(ToolBarAreas)
 
     enum DateFormat {
-        TextDate,      // default Qt
+        TextDate,      // default BobUI
         ISODate,       // ISO 8601
         RFC2822Date = 8, // RFC 2822 (+ 850 and 1036 during parsing)
         ISODateWithMs
@@ -1470,7 +1470,7 @@ namespace Qt {
     enum LayoutDirection {
         LeftToRight,
         RightToLeft,
-        // ### Qt 7: make auto the first one (with value 0)
+        // ### BobUI 7: make auto the first one (with value 0)
         LayoutDirectionAuto
     };
 
@@ -1539,10 +1539,10 @@ namespace Qt {
         // Reserved
         UserRole = 0x0100,
 
-        // Used by Qt models
+        // Used by BobUI models
         StandardItemFlagsRole = UserRole - 1,  // QStandardItemModel
         FileInfoRole = UserRole - 4,           // QFileSystemModel
-        RemoteObjectsCacheRole = UserRole - 1, // QtRemoteObjects::QAbstractItemModelReplica
+        RemoteObjectsCacheRole = UserRole - 1, // BobUIRemoteObjects::QAbstractItemModelReplica
     };
 
     enum ItemFlag {
@@ -1630,7 +1630,7 @@ namespace Qt {
     };
     inline constexpr Initialization Uninitialized = Initialization::Uninitialized;
 
-    inline QT_DEFINE_TAG(Disambiguated);
+    inline BOBUI_DEFINE_TAG(Disambiguated);
 
     enum CoordinateSystem {
         DeviceCoordinates,
@@ -1647,7 +1647,7 @@ namespace Qt {
     Q_DECLARE_FLAGS(TouchPointStates, TouchPointState)
     Q_DECLARE_OPERATORS_FOR_FLAGS(TouchPointStates)
 
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     enum GestureState
     {
         NoGesture,
@@ -1690,7 +1690,7 @@ namespace Qt {
         SwipeNativeGesture
     };
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
     enum NavigationMode
     {
@@ -1727,7 +1727,7 @@ namespace Qt {
     enum MouseEventSource {
         MouseEventNotSynthesized,
         MouseEventSynthesizedBySystem,
-        MouseEventSynthesizedByQt,
+        MouseEventSynthesizedByBobUI,
         MouseEventSynthesizedByApplication
     };
 
@@ -1759,8 +1759,8 @@ namespace Qt {
         Denied,
     };
 
-    // QTBUG-48701
-    enum ReturnByValueConstant { ReturnByValue }; // ### Qt 7: Remove me
+    // BOBUIBUG-48701
+    enum ReturnByValueConstant { ReturnByValue }; // ### BobUI 7: Remove me
 
 #ifndef Q_QDOC
     // NOTE: Generally, do not add Q_ENUM_NS if a corresponding Q_FLAG_NS exists.
@@ -1843,7 +1843,7 @@ namespace Qt {
     Q_FLAG_NS(ScreenOrientations)
     Q_ENUM_NS(ConnectionType)
     Q_ENUM_NS(ApplicationState)
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     Q_ENUM_NS(GestureState)
     Q_ENUM_NS(GestureType)
     Q_ENUM_NS(NativeGestureType)
@@ -1907,26 +1907,26 @@ class QKeyCombination
     int combination;
 
 public:
-    constexpr Q_IMPLICIT QKeyCombination(Qt::Key key = Qt::Key_unknown) noexcept
+    constexpr Q_IMPLICIT QKeyCombination(BobUI::Key key = BobUI::Key_unknown) noexcept
         : combination(int(key))
     {}
 
-    constexpr explicit QKeyCombination(Qt::Modifiers modifiers, Qt::Key key = Qt::Key_unknown) noexcept
+    constexpr explicit QKeyCombination(BobUI::Modifiers modifiers, BobUI::Key key = BobUI::Key_unknown) noexcept
         : combination(modifiers.toInt() | int(key))
     {}
 
-    constexpr explicit QKeyCombination(Qt::KeyboardModifiers modifiers, Qt::Key key = Qt::Key_unknown) noexcept
+    constexpr explicit QKeyCombination(BobUI::KeyboardModifiers modifiers, BobUI::Key key = BobUI::Key_unknown) noexcept
         : combination(modifiers.toInt() | int(key))
     {}
 
-    constexpr Qt::KeyboardModifiers keyboardModifiers() const noexcept
+    constexpr BobUI::KeyboardModifiers keyboardModifiers() const noexcept
     {
-        return Qt::KeyboardModifiers(combination & Qt::KeyboardModifierMask);
+        return BobUI::KeyboardModifiers(combination & BobUI::KeyboardModifierMask);
     }
 
-    constexpr Qt::Key key() const noexcept
+    constexpr BobUI::Key key() const noexcept
     {
-        return Qt::Key(combination & ~int(Qt::KeyboardModifierMask));
+        return BobUI::Key(combination & ~int(BobUI::KeyboardModifierMask));
     }
 
     static constexpr QKeyCombination fromCombined(int combined)
@@ -1941,8 +1941,8 @@ public:
         return combination;
     }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X(6, 0, "Use QKeyCombination instead of int")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X(6, 0, "Use QKeyCombination instead of int")
     constexpr Q_IMPLICIT operator int() const noexcept
     {
         return combination;
@@ -1960,98 +1960,98 @@ private:
 
 Q_DECLARE_TYPEINFO(QKeyCombination, Q_RELOCATABLE_TYPE);
 
-namespace Qt {
-constexpr QKeyCombination operator|(Qt::Modifier modifier, Qt::Key key) noexcept
+namespace BobUI {
+constexpr QKeyCombination operator|(BobUI::Modifier modifier, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-constexpr QKeyCombination operator|(Qt::Modifiers modifiers, Qt::Key key) noexcept
+constexpr QKeyCombination operator|(BobUI::Modifiers modifiers, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-constexpr QKeyCombination operator|(Qt::KeyboardModifier modifier, Qt::Key key) noexcept
+constexpr QKeyCombination operator|(BobUI::KeyboardModifier modifier, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-constexpr QKeyCombination operator|(Qt::KeyboardModifiers modifiers, Qt::Key key) noexcept
+constexpr QKeyCombination operator|(BobUI::KeyboardModifiers modifiers, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-constexpr QKeyCombination operator|(Qt::Key key, Qt::Modifier modifier) noexcept
+constexpr QKeyCombination operator|(BobUI::Key key, BobUI::Modifier modifier) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-constexpr QKeyCombination operator|(Qt::Key key, Qt::Modifiers modifiers) noexcept
+constexpr QKeyCombination operator|(BobUI::Key key, BobUI::Modifiers modifiers) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-constexpr QKeyCombination operator|(Qt::Key key, Qt::KeyboardModifier modifier) noexcept
+constexpr QKeyCombination operator|(BobUI::Key key, BobUI::KeyboardModifier modifier) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-constexpr QKeyCombination operator|(Qt::Key key, Qt::KeyboardModifiers modifiers) noexcept
+constexpr QKeyCombination operator|(BobUI::Key key, BobUI::KeyboardModifiers modifiers) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-#if QT_DEPRECATED_SINCE(6, 0)
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Modifier modifier, Qt::Key key) noexcept
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Modifier modifier, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Modifiers modifiers, Qt::Key key) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Modifiers modifiers, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::KeyboardModifier modifier, Qt::Key key) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::KeyboardModifier modifier, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::KeyboardModifiers modifiers, Qt::Key key) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::KeyboardModifiers modifiers, BobUI::Key key) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Key key, Qt::Modifier modifier) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Key key, BobUI::Modifier modifier) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Key key, Qt::Modifiers modifiers) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Key key, BobUI::Modifiers modifiers) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Key key, Qt::KeyboardModifier modifier) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Key key, BobUI::KeyboardModifier modifier) noexcept
 {
     return QKeyCombination(modifier, key);
 }
 
-QT_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
-constexpr QKeyCombination operator+(Qt::Key key, Qt::KeyboardModifiers modifiers) noexcept
+BOBUI_DEPRECATED_VERSION_X(6, 0, "Use operator| instead")
+constexpr QKeyCombination operator+(BobUI::Key key, BobUI::KeyboardModifiers modifiers) noexcept
 {
     return QKeyCombination(modifiers, key);
 }
 #endif
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QNAMESPACE_H

@@ -1,4 +1,4 @@
-# Unofficial Qt CMake Coding Style
+# Unofficial BobUI CMake Coding Style
 
 CMake scripts are a bit of a wild west. Depending on when the code was written, there were
 different conventions as well as syntax facilities available. It's also unfortunate that there is
@@ -8,7 +8,7 @@ using it at some point.
 
 It's hard to convince people to use a certain code style for a language like CMake.
 
-Nevertheless this short document aims to be a guideline for formatting CMake code within the Qt
+Nevertheless this short document aims to be a guideline for formatting CMake code within the BobUI
 project.
 
 ## Common conventions
@@ -45,48 +45,48 @@ endif()
 
 * local variables inside a function should be snake cased => `list_of_arguments`
 * local variables inside a macro should be snake cased and have a unique prefix =>
-  `__qt_list_of_packages`
+  `__bobui_list_of_packages`
     * If your macro is recursively called, you might need to prepend a dynamically computed prefix
       to avoid overriding the same variable in nested calls =>
-      `__qt_${dependency_name}_list_of_packages`
+      `__bobui_${dependency_name}_list_of_packages`
 * cache variables should be shouty cased => `BUILD_SHARED_LIBS`
-    * Qt cache variables should be prefixed with `QT_`
+    * BobUI cache variables should be prefixed with `BOBUI_`
 
 ## Properties
 
-Currently the Qt property naming is a bit of a mess. The upstream issue
+Currently the BobUI property naming is a bit of a mess. The upstream issue
 https://gitlab.kitware.com/cmake/cmake/-/issues/19261 mentions that properties prefixed with
 `INTERFACE_` are reserved for CMake use.
 
 Prefer to use snake case for new property names.
 
 * Most upstream CMake properties are shouty cased => `INTERFACE_LINK_LIBRARIES`
-* Properties created in Qt 5 times follow the same CMake convention => `QT_ENABLED_PUBLIC_FEATURES`
+* Properties created in BobUI 5 times follow the same CMake convention => `BOBUI_ENABLED_PUBLIC_FEATURES`
   No such new properties should be added.
-* New Qt properties should be snake cased and prefixed with `qt_` => `qt_qmake_module_name`
-* Other internal Qt properties should be snake cased and prefixed with `_qt_` => `_qt_target_deps`
+* New BobUI properties should be snake cased and prefixed with `bobui_` => `bobui_qmake_module_name`
+* Other internal BobUI properties should be snake cased and prefixed with `_bobui_` => `_bobui_target_deps`
 
 ## Functions
 
-* Function names should be snake cased => `qt_add_module`
-    * public Qt functions should be prefixed with `qt_`
-    * internal Qt functions should be prefixed with `qt_internal_`
-    * internal Qt functions that live in public CMake API files should be prefixed with
-      `_qt_internal_`
+* Function names should be snake cased => `bobui_add_module`
+    * public BobUI functions should be prefixed with `bobui_`
+    * internal BobUI functions should be prefixed with `bobui_internal_`
+    * internal BobUI functions that live in public CMake API files should be prefixed with
+      `_bobui_internal_`
     * some internal functions that live in public CMake API files are prefixed with
-      `__qt_internal_`, prefer not to introduce such functions for now
+      `__bobui_internal_`, prefer not to introduce such functions for now
 * If a public function takes more than 1 parameter, consider using `cmake_parse_arguments`
-* If an internal Qt function takes more than 1 parameter, consider using `qt_parse_all_arguments`
-* Public functions should usually have both a version-full and version-less name => `qt_add_plugin`
-  and `qt6_add_plugin`
+* If an internal BobUI function takes more than 1 parameter, consider using `bobui_parse_all_arguments`
+* Public functions should usually have both a version-full and version-less name => `bobui_add_plugin`
+  and `bobui6_add_plugin`
 
 ### Macros
 
 * Try to avoid macros where a function can be used instead
     * A common case when a macro can not be avoided is when it wraps a CMake macro e.g
-      `find_package` => `qt_find_package`
-* Macro names should be snake cased => `qt_find_package`
-* Prefix macro local variables to avoid naming collisions => `__qt_find_package_arguments`
+      `find_package` => `bobui_find_package`
+* Macro names should be snake cased => `bobui_find_package`
+* Prefix macro local variables to avoid naming collisions => `__bobui_find_package_arguments`
 
 ## Commands
 
@@ -165,29 +165,29 @@ endif()
 
 ## find_package
 
-* Inside Qt module projects, use the private Qt-specific `qt_find_package` macro to look for
+* Inside BobUI module projects, use the private BobUI-specific `bobui_find_package` macro to look for
   dependencies.
     * Make sure to specify the `PROVIDED_TARGETS` option to properly register 3rd party target
-      dependencies with Qt's internal build system.
+      dependencies with BobUI's internal build system.
 * Inside examples / projects (which only use public CMake API) use the regular `find_package`
   command.
 
 ## CMake Target names
 
-* Qt target names should be pascal cased => `QuickParticles`.
-* When Qt is installed, the Qt CMake targets are put inside the `Qt6::` namespace. Associated
-  versionless targets in the `Qt::` namespace are usually automatically created by appropriate
-  functions (`qt_internal_add_module`, `qt_internal_add_tool`)
+* BobUI target names should be pascal cased => `QuickParticles`.
+* When BobUI is installed, the BobUI CMake targets are put inside the `BobUI6::` namespace. Associated
+  versionless targets in the `BobUI::` namespace are usually automatically created by appropriate
+  functions (`bobui_internal_add_module`, `bobui_internal_add_tool`)
 * Wrapper 3rd party system libraries usually repeat the target name as the namespace e.g.
   ```WrapSystemHarfbuzz::WrapSystemHarfbuzz```
 
 ## Finding 3rd party libraries via Find modules (FindWrapFoo.cmake)
 
-qmake-Qt uses `configure.json` and `configure.pri` and `QT_LIBS_FOO` variables to implement a
+qmake-BobUI uses `configure.json` and `configure.pri` and `BOBUI_LIBS_FOO` variables to implement a
 mechnism that searches for system 3rd party libraries.
 
 The equivalent CMake mechanism are Find modules (and CMake package Config files; not to be confused
-with pkg-config). Usually Qt provides wrapper Find modules that use any available upstream Find
+with pkg-config). Usually BobUI provides wrapper Find modules that use any available upstream Find
 modules or Config package files.
 
 The naming convention for the files are:

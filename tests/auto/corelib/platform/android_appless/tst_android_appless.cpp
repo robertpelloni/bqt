@@ -1,12 +1,12 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 #include <QGuiApplication>
 #include <QWindow>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 class tst_AndroidAppless : public QObject
 {
@@ -24,9 +24,9 @@ private slots:
 
 void tst_AndroidAppless::app_data()
 {
-    QTest::addColumn<QString>("displayName");
-    QTest::addRow("one") << "The first QGuiApplication instance";
-    QTest::addRow("two") << "The second QGuiApplication instance";
+    BOBUIest::addColumn<QString>("displayName");
+    BOBUIest::addRow("one") << "The first QGuiApplication instance";
+    BOBUIest::addRow("two") << "The second QGuiApplication instance";
 }
 
 void tst_AndroidAppless::app()
@@ -40,7 +40,7 @@ void tst_AndroidAppless::app()
     QWindow window;
     window.show();
 
-    QTimer::singleShot(1000, &app, QGuiApplication::quit);
+    BOBUIimer::singleShot(1000, &app, QGuiApplication::quit);
 
     window.show();
     app.exec();
@@ -48,6 +48,6 @@ void tst_AndroidAppless::app()
 
 #undef CREATE_DUMMY_ARGC_ARGV
 
-QTEST_APPLESS_MAIN(tst_AndroidAppless)
+BOBUIEST_APPLESS_MAIN(tst_AndroidAppless)
 #include "tst_android_appless.moc"
 

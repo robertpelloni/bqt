@@ -1,9 +1,9 @@
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 #ifndef TESTS_AUTO_CORELIB_TOOLS_MOC_CXX11_EXPLICIT_OVERRIDE_CONTROL_H
 #define TESTS_AUTO_CORELIB_TOOLS_MOC_CXX11_EXPLICIT_OVERRIDE_CONTROL_H
 
-#include <QtCore/QObject>
+#include <BobUICore/QObject>
 
 #ifndef Q_MOC_RUN // hide from moc
 # define override
@@ -11,8 +11,8 @@
 # define sealed
 #endif
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_GCC("-Wsuggest-override")
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_GCC("-Wsuggest-override")
 
 class ExplicitOverrideControlBase : public QObject
 {
@@ -36,11 +36,11 @@ private Q_SLOTS:
 #endif
 };
 
-class ExplicitOverrideControlFinalQt : public ExplicitOverrideControlBase
+class ExplicitOverrideControlFinalBobUI : public ExplicitOverrideControlBase
 {
     Q_OBJECT
 public:
-    explicit ExplicitOverrideControlFinalQt(QObject *parent = nullptr)
+    explicit ExplicitOverrideControlFinalBobUI(QObject *parent = nullptr)
         : ExplicitOverrideControlBase(parent) {}
 
 private Q_SLOTS:
@@ -102,11 +102,11 @@ private Q_SLOTS:
 #endif
 };
 
-class ExplicitOverrideControlOverrideQt : public ExplicitOverrideControlBase
+class ExplicitOverrideControlOverrideBobUI : public ExplicitOverrideControlBase
 {
     Q_OBJECT
 public:
-    explicit ExplicitOverrideControlOverrideQt(QObject *parent = nullptr)
+    explicit ExplicitOverrideControlOverrideBobUI(QObject *parent = nullptr)
         : ExplicitOverrideControlBase(parent) {}
 
 private Q_SLOTS:
@@ -146,11 +146,11 @@ private Q_SLOTS:
 #endif
 };
 
-class ExplicitOverrideControlFinalQtOverrideQt : public ExplicitOverrideControlBase
+class ExplicitOverrideControlFinalBobUIOverrideBobUI : public ExplicitOverrideControlBase
 {
     Q_OBJECT
 public:
-    explicit ExplicitOverrideControlFinalQtOverrideQt(QObject *parent = nullptr)
+    explicit ExplicitOverrideControlFinalBobUIOverrideBobUI(QObject *parent = nullptr)
         : ExplicitOverrideControlBase(parent) {}
 
 private Q_SLOTS:
@@ -212,7 +212,7 @@ private Q_SLOTS:
 #endif
 };
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 #ifndef Q_MOC_RUN
 # undef final

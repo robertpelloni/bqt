@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pieview.h"
 #include "mainwindow.h"
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     menuBar()->addMenu(fileMenu);
     statusBar();
 
-    loadFile(":/Charts/qtdata.cht");
+    loadFile(":/Charts/bobuidata.cht");
 
     setWindowTitle(tr("Chart"));
     resize(870, 550);
@@ -36,14 +36,14 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::setupModel()
 {
     model = new QStandardItemModel(8, 2, this);
-    model->setHeaderData(0, Qt::Horizontal, tr("Label"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Quantity"));
+    model->setHeaderData(0, BobUI::Horizontal, tr("Label"));
+    model->setHeaderData(1, BobUI::Horizontal, tr("Quantity"));
 }
 
 void MainWindow::setupViews()
 {
     QSplitter *splitter = new QSplitter;
-    QTableView *table = new QTableView;
+    BOBUIableView *table = new BOBUIableView;
     pieChart = new PieView;
     splitter->addWidget(table);
     splitter->addWidget(pieChart);
@@ -77,7 +77,7 @@ void MainWindow::loadFile(const QString &fileName)
     if (!file.open(QFile::ReadOnly | QFile::Text))
         return;
 
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
 
     model->removeRows(0, model->rowCount(QModelIndex()), QModelIndex());
 
@@ -87,7 +87,7 @@ void MainWindow::loadFile(const QString &fileName)
         if (!line.isEmpty()) {
             model->insertRows(row, 1, QModelIndex());
 
-            const QStringList pieces = line.split(QLatin1Char(','), Qt::SkipEmptyParts);
+            const QStringList pieces = line.split(QLatin1Char(','), BobUI::SkipEmptyParts);
             if (pieces.size() < 3)
                 continue;
             model->setData(model->index(row, 0, QModelIndex()),
@@ -95,7 +95,7 @@ void MainWindow::loadFile(const QString &fileName)
             model->setData(model->index(row, 1, QModelIndex()),
                            pieces.value(1));
             model->setData(model->index(row, 0, QModelIndex()),
-                           QColor(pieces.value(2)), Qt::DecorationRole);
+                           QColor(pieces.value(2)), BobUI::DecorationRole);
             row++;
         }
     };
@@ -116,17 +116,17 @@ void MainWindow::saveFile()
     if (!file.open(QFile::WriteOnly | QFile::Text))
         return;
 
-    QTextStream stream(&file);
+    BOBUIextStream stream(&file);
     for (int row = 0; row < model->rowCount(QModelIndex()); ++row) {
 
         QStringList pieces;
 
         pieces.append(model->data(model->index(row, 0, QModelIndex()),
-                                  Qt::DisplayRole).toString());
+                                  BobUI::DisplayRole).toString());
         pieces.append(model->data(model->index(row, 1, QModelIndex()),
-                                  Qt::DisplayRole).toString());
+                                  BobUI::DisplayRole).toString());
         pieces.append(model->data(model->index(row, 0, QModelIndex()),
-                                  Qt::DecorationRole).toString());
+                                  BobUI::DecorationRole).toString());
 
         stream << pieces.join(',') << "\n";
     }

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "calculator.h"
 #include "button.h"
 
 #include <QGridLayout>
 #include <QLineEdit>
-#include <QtMath>
+#include <BobUIMath>
 
 //! [0]
 Calculator::Calculator(QWidget *parent)
@@ -19,7 +19,7 @@ Calculator::Calculator(QWidget *parent)
     display = new QLineEdit("0");
 //! [1] //! [2]
     display->setReadOnly(true);
-    display->setAlignment(Qt::AlignRight);
+    display->setAlignment(BobUI::AlignRight);
     display->setMaxLength(15);
 
     QFont font = display->font();

@@ -1,8 +1,8 @@
-QT += declarative
+BOBUI += declarative
 INCLUDEPATH += $$PWD
 
 # DEFINES += ACCESSIBILITYINSPECTOR_NO_UITOOLS
-# QT += uitools
+# BOBUI += uitools
 
 HEADERS += \
     $$PWD/screenreader.h \

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "cppwriteinitialization.h"
 #include "customwidgetsinfo.h"
@@ -11,19 +11,19 @@
 
 #include <language.h>
 
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 #include <qversionnumber.h>
 #include <qdebug.h>
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 namespace {
 
-    // Expand "Horizontal", "Qt::Horizontal" to "Qt::Orientation::Horizontal"
+    // Expand "Horizontal", "BobUI::Horizontal" to "BobUI::Orientation::Horizontal"
     QString expandEnum(QString value, const QString &prefix)
     {
         if (value.startsWith(prefix))
@@ -42,12 +42,12 @@ namespace {
 
     inline QString expandToolBarArea(const QString &value)
     {
-        return expandEnum(value, "Qt::ToolBarArea"_L1);
+        return expandEnum(value, "BobUI::ToolBarArea"_L1);
     }
 
     inline QString expandDockWidgetArea(const QString &value)
     {
-        return expandEnum(value, "Qt::DockWidgetArea"_L1);
+        return expandEnum(value, "BobUI::DockWidgetArea"_L1);
     }
 
     // figure out the toolbar area of a DOM attrib list.
@@ -71,7 +71,7 @@ namespace {
     }
 
     // Write a statement to create a spacer item.
-    void writeSpacerItem(const DomSpacer *node, QTextStream &output) {
+    void writeSpacerItem(const DomSpacer *node, BOBUIextStream &output) {
         const QHash<QString, DomProperty *> properties = propertyMap(node->elementProperty());
                 output << language::operatorNew << "QSpacerItem(";
 
@@ -109,7 +109,7 @@ namespace {
 
     // Write object->setFoo(x);
     template <class Value>
-        void writeSetter(const QString &indent, const QString &varName,const QString &setter, Value v, QTextStream &str) {
+        void writeSetter(const QString &indent, const QString &varName,const QString &setter, Value v, BOBUIextStream &str) {
             str << indent << varName << language::derefPointer
                 << setter << '(' << v << ')' << language::eol;
         }
@@ -127,7 +127,7 @@ namespace {
 
     // An approximation of "Unicode Standard Annex #31" for checking property
     // and enumeration identifiers to prevent code injection attacks.
-    // FIXME 6.9: Simplify according to QTBUG-126860
+    // FIXME 6.9: Simplify according to BOBUIBUG-126860
     static bool isIdStart(QChar c)
     {
         bool result = false;
@@ -206,7 +206,7 @@ namespace {
         }
 
         switch (p->kind()) {
-        // ### fixme Qt 7 remove this: Exclude deprecated properties of Qt 5.
+        // ### fixme BobUI 7 remove this: Exclude deprecated properties of BobUI 5.
         case DomProperty::Set:
             if (!checkEnumValue(p->elementSet())) {
                 qWarning("%s", qPrintable(msgInvalidValue(name, p->elementSet())));
@@ -232,7 +232,7 @@ namespace {
                 qWarning("%s", qPrintable(msg));
                 return false;
             }
-            // Qt 7 separate layout size constraints (QTBUG-17730)
+            // BobUI 7 separate layout size constraints (BOBUIBUG-17730)
             if (name == "verticalSizeConstraint"_L1 && className.contains("Layout"_L1))
                 return false;
             break;
@@ -264,11 +264,11 @@ namespace {
     }
 }
 
-// QtGui
+// BobUIGui
 static inline QString accessibilityConfigKey() { return QStringLiteral("accessibility"); }
 static inline QString shortcutConfigKey()      { return QStringLiteral("shortcut"); }
 static inline QString whatsThisConfigKey()     { return QStringLiteral("whatsthis"); }
-// QtWidgets
+// BobUIWidgets
 static inline QString statusTipConfigKey()     { return QStringLiteral("statustip"); }
 static inline QString toolTipConfigKey()       { return QStringLiteral("tooltip"); }
 
@@ -484,16 +484,16 @@ void WriteInitialization::LayoutDefaultHandler::acceptLayoutFunction(DomLayoutFu
     }
 }
 
-static inline void writeContentsMargins(const QString &indent, const QString &objectName, int value, QTextStream &str)
+static inline void writeContentsMargins(const QString &indent, const QString &objectName, int value, BOBUIextStream &str)
 {
      QString contentsMargins;
-     QTextStream(&contentsMargins) << value << ", " << value << ", " << value << ", " << value;
+     BOBUIextStream(&contentsMargins) << value << ", " << value << ", " << value << ", " << value;
      writeSetter(indent, objectName, "setContentsMargins"_L1, contentsMargins, str);
  }
 
 void WriteInitialization::LayoutDefaultHandler::writeProperty(int p, const QString &indent, const QString &objectName,
                                                               const DomPropertyMap &properties, const QString &propertyName, const QString &setter,
-                                                              int defaultStyleValue, bool suppressDefault, QTextStream &str) const
+                                                              int defaultStyleValue, bool suppressDefault, BOBUIextStream &str) const
 {
     // User value
     if (const DomProperty *prop = properties.value(propertyName)) {
@@ -537,7 +537,7 @@ void WriteInitialization::LayoutDefaultHandler::writeProperty(int p, const QStri
 void WriteInitialization::LayoutDefaultHandler::writeProperties(const QString &indent, const QString &varName,
                                                                 const DomPropertyMap &properties, int marginType,
                                                                 bool suppressMarginDefault,
-                                                                QTextStream &str) const {
+                                                                BOBUIextStream &str) const {
     // Write out properties and ignore the ones found in
     // subsequent writing of the property list.
     int defaultSpacing = marginType == WriteInitialization::Use43UiFile ? -1 : 6;
@@ -621,7 +621,7 @@ void WriteInitialization::acceptUI(DomUI *node)
     acceptWidget(node->elementWidget());
 
     if (!m_buddies.empty())
-        m_output << language::openQtConfig(shortcutConfigKey());
+        m_output << language::openBobUIConfig(shortcutConfigKey());
     for (const Buddy &b : std::as_const(m_buddies)) {
         const QString buddyVarName = m_driver->widgetVariableName(b.buddyAttributeName);
         if (buddyVarName.isEmpty()) {
@@ -635,7 +635,7 @@ void WriteInitialization::acceptUI(DomUI *node)
             << "setBuddy(" << buddyVarName << ')' << language::eol;
     }
     if (!m_buddies.empty())
-        m_output << language::closeQtConfig(shortcutConfigKey());
+        m_output << language::closeBobUIConfig(shortcutConfigKey());
 
     if (node->elementTabStops())
         acceptTabStops(node->elementTabStops());
@@ -741,9 +741,9 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         initializeComboBox(node);
     } else if (cwi->extends(className, "QListWidget")) {
         initializeListWidget(node);
-    } else if (cwi->extends(className, "QTreeWidget")) {
+    } else if (cwi->extends(className, "BOBUIreeWidget")) {
         initializeTreeWidget(node);
-    } else if (cwi->extends(className, "QTableWidget")) {
+    } else if (cwi->extends(className, "BOBUIableWidget")) {
         initializeTableWidget(node);
     }
 
@@ -785,7 +785,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
         if (cwi->extends(className, "QMenuBar")) {
             m_output << m_indent << parentWidget << language::derefPointer
                 << "setMenuBar(" << varName << ')' << language::eol;
-        } else if (cwi->extends(className, "QToolBar")) {
+        } else if (cwi->extends(className, "BOBUIoolBar")) {
             m_output << m_indent << parentWidget << language::derefPointer << "addToolBar("
                 << language::enumValue(toolBarAreaStringFromDOMAttributes(attributes)) << varName
                 << ')' << language::eol;
@@ -822,7 +822,7 @@ void WriteInitialization::acceptWidget(DomWidget *node)
             << addPageMethod << '(' << varName << ')' << language::eol;
     } else if (m_uic->customWidgetsInfo()->extends(parentClass, "QWizard")) {
         addWizardPage(varName, node, parentWidget);
-    } else if (m_uic->customWidgetsInfo()->extends(parentClass, "QToolBox")) {
+    } else if (m_uic->customWidgetsInfo()->extends(parentClass, "BOBUIoolBox")) {
         const DomProperty *plabel = attributes.value("label"_L1);
         DomString *plabelString = plabel ? plabel->elementString() : nullptr;
         QString icon;
@@ -839,13 +839,13 @@ void WriteInitialization::acceptWidget(DomWidget *node)
 
         if (DomProperty *ptoolTip = attributes.value("toolTip"_L1)) {
             autoTrOutput(ptoolTip->elementString())
-                << language::openQtConfig(toolTipConfigKey())
+                << language::openBobUIConfig(toolTipConfigKey())
                 << m_indent << parentWidget << language::derefPointer << "setItemToolTip(" << parentWidget
                 << language::derefPointer << "indexOf(" << varName << "), "
                 << autoTrCall(ptoolTip->elementString()) << ')' << language::eol
-                << language::closeQtConfig(toolTipConfigKey());
+                << language::closeBobUIConfig(toolTipConfigKey());
         }
-    } else if (m_uic->customWidgetsInfo()->extends(parentClass, "QTabWidget")) {
+    } else if (m_uic->customWidgetsInfo()->extends(parentClass, "BOBUIabWidget")) {
         const DomProperty *ptitle = attributes.value("title"_L1);
         DomString *ptitleString = ptitle ? ptitle->elementString() : nullptr;
         QString icon;
@@ -861,24 +861,24 @@ void WriteInitialization::acceptWidget(DomWidget *node)
 
         if (const DomProperty *ptoolTip = attributes.value("toolTip"_L1)) {
             autoTrOutput(ptoolTip->elementString())
-                << language::openQtConfig(toolTipConfigKey())
+                << language::openBobUIConfig(toolTipConfigKey())
                 << m_indent << parentWidget << language::derefPointer << "setTabToolTip("
                 << parentWidget << language::derefPointer << "indexOf(" << varName
                 << "), " << autoTrCall(ptoolTip->elementString()) << ')' << language::eol
-                << language::closeQtConfig(toolTipConfigKey());
+                << language::closeBobUIConfig(toolTipConfigKey());
         }
         if (const DomProperty *pwhatsThis = attributes.value("whatsThis"_L1)) {
             autoTrOutput(pwhatsThis->elementString())
-                << language::openQtConfig(whatsThisConfigKey())
+                << language::openBobUIConfig(whatsThisConfigKey())
                 << m_indent << parentWidget << language::derefPointer << "setTabWhatsThis("
                 << parentWidget << language::derefPointer << "indexOf(" << varName
                 << "), " << autoTrCall(pwhatsThis->elementString()) << ')' << language::eol
-                << language::closeQtConfig(whatsThisConfigKey());
+                << language::closeBobUIConfig(whatsThisConfigKey());
         }
     }
 
     //
-    // Special handling for qtableview/qtreeview fake header attributes
+    // Special handling for bobuiableview/bobuireeview fake header attributes
     //
     static const QLatin1StringView realPropertyNames[] = {
         "visible"_L1,
@@ -891,10 +891,10 @@ void WriteInitialization::acceptWidget(DomWidget *node)
     };
 
     static const QStringList trees = {
-        u"QTreeView"_s, u"QTreeWidget"_s
+        u"BOBUIreeView"_s, u"BOBUIreeWidget"_s
     };
     static const QStringList tables = {
-        u"QTableView"_s, u"QTableWidget"_s
+        u"BOBUIableView"_s, u"BOBUIableWidget"_s
     };
 
     if (cwi->extendsOneOf(className, trees)) {
@@ -1239,7 +1239,7 @@ void WriteInitialization::acceptActionRef(DomActionRef *node)
 QString WriteInitialization::writeStringListProperty(const DomStringList *list) const
 {
     QString propertyValue;
-    QTextStream str(&propertyValue);
+    BOBUIextStream str(&propertyValue);
     char trailingDelimiter = '}';
     switch (language::language()) {
      case Language::Cpp:
@@ -1334,7 +1334,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         if (!checkProperty(m_uic->customWidgetsInfo(), m_option.inputFile, className, p))
             continue;
         QString propertyName = p->attributeName();
-        // Qt 7 separate layout size constraints (QTBUG-17730)
+        // BobUI 7 separate layout size constraints (BOBUIBUG-17730)
         if (propertyName == "horizontalSizeConstraint"_L1 && className.contains("Layout"_L1))
             propertyName = "sizeConstraint"_L1;
         QString propertyValue;
@@ -1355,7 +1355,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
         static const QStringList currentIndexWidgets = {
             u"QComboBox"_s, u"QStackedWidget"_s,
-            u"QTabWidget"_s, u"QToolBox"_s
+            u"BOBUIabWidget"_s, u"BOBUIoolBox"_s
         };
         if (propertyName == "currentIndex"_L1 // set currentIndex later
             && (m_uic->customWidgetsInfo()->extendsOneOf(className, currentIndexWidgets))) {
@@ -1364,20 +1364,20 @@ void WriteInitialization::writeProperties(const QString &varName,
             continue;
         }
         if (propertyName == "tabSpacing"_L1
-            && m_uic->customWidgetsInfo()->extends(className, "QToolBox")) {
+            && m_uic->customWidgetsInfo()->extends(className, "BOBUIoolBox")) {
             m_delayedOut << m_indent << varName << language::derefPointer
                 << "layout()" << language::derefPointer << "setSpacing("
                 << p->elementNumber() << ')' << language::eol;
             continue;
         }
-        if (propertyName == "control"_L1 // ActiveQt support
+        if (propertyName == "control"_L1 // ActiveBobUI support
             && m_uic->customWidgetsInfo()->extends(className, "QAxWidget")) {
             // already done ;)
             continue;
         }
         if (propertyName == "default"_L1
             && m_uic->customWidgetsInfo()->extends(className, "QPushButton")) {
-            // QTBUG-44406: Setting of QPushButton::default needs to be delayed until the parent is set
+            // BOBUIBUG-44406: Setting of QPushButton::default needs to be delayed until the parent is set
             delayProperty = true;
         } else if (propertyName == "database"_L1
                     && p->elementStringList()) {
@@ -1420,7 +1420,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         } else if (propertyName == "bottomMargin"_L1 && p->kind() == DomProperty::Number) {
             bottomMargin = p->elementNumber();
             continue;
-        } else if (propertyName == "numDigits"_L1 // Deprecated in Qt 4, removed in Qt 5.
+        } else if (propertyName == "numDigits"_L1 // Deprecated in BobUI 4, removed in BobUI 5.
                    && m_uic->customWidgetsInfo()->extends(className, "QLCDNumber")) {
             qWarning("Widget '%s': Deprecated property QLCDNumber::numDigits encountered. It has been replaced by QLCDNumber::digitCount.",
                      qPrintable(varName));
@@ -1436,7 +1436,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         QString setFunction;
 
         {
-            QTextStream str(&setFunction);
+            BOBUIextStream str(&setFunction);
             if (stdset) {
                 str << language::derefPointer <<"set" << propertyName.at(0).toUpper()
                     << QStringView{propertyName}.mid(1) << '(';
@@ -1450,7 +1450,7 @@ void WriteInitialization::writeProperties(const QString &varName,
                     str << '(';
                 }
             }
-        } // QTextStream
+        } // BOBUIextStream
 
         QString varNewName = varName;
 
@@ -1468,7 +1468,7 @@ void WriteInitialization::writeProperties(const QString &varName,
                 m_buddies.append(std::move(buddy));
             } else {
                 const bool useQByteArray = !stdset && language::language() == Language::Cpp;
-                QTextStream str(&propertyValue);
+                BOBUIextStream str(&propertyValue);
                 if (useQByteArray)
                     str << "QByteArray(";
                 str << language::charliteral(p->elementCstring(), m_dindent);
@@ -1477,13 +1477,13 @@ void WriteInitialization::writeProperties(const QString &varName,
             }
             break;
         case DomProperty::Cursor:
-            propertyValue = QString::fromLatin1("QCursor(static_cast<Qt::CursorShape>(%1))")
+            propertyValue = QString::fromLatin1("QCursor(static_cast<BobUI::CursorShape>(%1))")
                             .arg(p->elementCursor());
             break;
         case DomProperty::CursorShape:
             if (p->hasAttributeStdset() && !p->attributeStdset())
                 varNewName += language::derefPointer + "viewport()"_L1;
-            propertyValue = "QCursor(Qt"_L1 + language::qualifier + "CursorShape"_L1
+            propertyValue = "QCursor(BobUI"_L1 + language::qualifier + "CursorShape"_L1
                             + language::qualifier + p->elementCursorShape() + u')';
             break;
         case DomProperty::Enum:
@@ -1548,7 +1548,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
         case DomProperty::Locale: {
              const DomLocale *locale = p->elementLocale();
-             QTextStream(&propertyValue) << "QLocale(QLocale" << language::qualifier
+             BOBUIextStream(&propertyValue) << "QLocale(QLocale" << language::qualifier
                  << locale->attributeLanguage() << ", QLocale" << language::qualifier
                  << locale->attributeCountry() << ')';
             break;
@@ -1625,7 +1625,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
         case DomProperty::Time: {
             const DomTime *t = p->elementTime();
-            propertyValue = QString::fromLatin1("QTime(%1, %2, %3)")
+            propertyValue = QString::fromLatin1("BOBUIime(%1, %2, %3)")
                             .arg(t->elementHour())
                             .arg(t->elementMinute())
                             .arg(t->elementSecond());
@@ -1633,7 +1633,7 @@ void WriteInitialization::writeProperties(const QString &varName,
         }
         case DomProperty::DateTime: {
             const DomDateTime *dt = p->elementDateTime();
-            propertyValue = QString::fromLatin1("QDateTime(QDate(%1, %2, %3), QTime(%4, %5, %6))")
+            propertyValue = QString::fromLatin1("QDateTime(QDate(%1, %2, %3), BOBUIime(%4, %5, %6))")
                             .arg(dt->elementYear())
                             .arg(dt->elementMonth())
                             .arg(dt->elementDay())
@@ -1648,7 +1648,7 @@ void WriteInitialization::writeProperties(const QString &varName,
 
         case DomProperty::Url: {
             const DomUrl* u = p->elementUrl();
-            QTextStream(&propertyValue) << "QUrl("
+            BOBUIextStream(&propertyValue) << "QUrl("
                 << language::qstring(u->elementString()->text(), m_dindent) << ")";
             break;
         }
@@ -1662,16 +1662,16 @@ void WriteInitialization::writeProperties(const QString &varName,
         if (!propertyValue.isEmpty()) {
             const QString configKey = configKeyForProperty(propertyName);
 
-            QTextStream &o = delayProperty ? m_delayedOut : autoTrOutput(p);
+            BOBUIextStream &o = delayProperty ? m_delayedOut : autoTrOutput(p);
 
             if (!configKey.isEmpty())
-                o << language::openQtConfig(configKey);
+                o << language::openBobUIConfig(configKey);
             o << m_indent << varNewName << setFunction << propertyValue;
             if (!stdset && language::language() == Language::Cpp)
                 o << ')';
             o << ')' << language::eol;
             if (!configKey.isEmpty())
-               o << language::closeQtConfig(configKey);
+               o << language::closeBobUIConfig(configKey);
 
             if (varName == m_mainFormVarName && &o == &m_refreshOut) {
                 // this is the only place (currently) where we output mainForm name to the retranslateUi().
@@ -1795,7 +1795,7 @@ QString WriteInitialization::writeFontProperties(const DomFont *f)
     return  fontName;
 }
 
-static void writeIconAddFile(QTextStream &output, const QString &indent,
+static void writeIconAddFile(BOBUIextStream &output, const QString &indent,
                              const QString &iconName, const QString &fileName,
                              const char *mode, const char *state)
 {
@@ -1807,7 +1807,7 @@ static void writeIconAddFile(QTextStream &output, const QString &indent,
 }
 
 // Post 4.4 write resource icon
-static void writeResourceIcon(QTextStream &output,
+static void writeResourceIcon(BOBUIextStream &output,
                               const QString &iconName,
                               const QString &indent,
                               const DomResourceIcon *i)
@@ -1846,7 +1846,7 @@ static void writeResourceIcon(QTextStream &output,
     }
 }
 
-static void writeIconAddPixmap(QTextStream &output, const QString &indent,
+static void writeIconAddPixmap(BOBUIextStream &output, const QString &indent,
                                const QString &iconName, const QString &call,
                                const char *mode, const char *state)
 {
@@ -1856,7 +1856,7 @@ static void writeIconAddPixmap(QTextStream &output, const QString &indent,
         << state << ')' << language::eol;
 }
 
-void WriteInitialization::writePixmapFunctionIcon(QTextStream &output,
+void WriteInitialization::writePixmapFunctionIcon(BOBUIextStream &output,
                                                   const QString &iconName,
                                                   const QString &indent,
                                                   const DomResourceIcon *i) const
@@ -1911,7 +1911,7 @@ struct iconFromTheme
     QString m_theme;
 };
 
-QTextStream &operator<<(QTextStream &str, const iconFromTheme &i)
+BOBUIextStream &operator<<(BOBUIextStream &str, const iconFromTheme &i)
 {
     str << "QIcon" << language::qualifier << "fromTheme(" << i.m_theme << ')';
     return str;
@@ -1925,7 +1925,7 @@ struct iconFromThemeStringLiteral
     QString m_theme;
 };
 
-QTextStream &operator<<(QTextStream &str, const iconFromThemeStringLiteral &i)
+BOBUIextStream &operator<<(BOBUIextStream &str, const iconFromThemeStringLiteral &i)
 {
     str << "QIcon" << language::qualifier << "fromTheme(" << language::qstring(i.m_theme) << ')';
     return str;
@@ -2079,7 +2079,7 @@ void WriteInitialization::writeColorGroup(DomColorGroup *colorGroup, const QStri
             const QVersionNumber versionAdded = colorRoleVersionAdded(roleName);
             const QString brushName = writeBrushInitialization(colorRole->elementBrush());
             if (!versionAdded.isNull()) {
-                m_output << "#if QT_VERSION >= QT_VERSION_CHECK("
+                m_output << "#if BOBUI_VERSION >= BOBUI_VERSION_CHECK("
                     << versionAdded.majorVersion() << ", " << versionAdded.minorVersion()
                     << ", " << versionAdded.microVersion() << ")\n";
             }
@@ -2188,7 +2188,7 @@ void WriteInitialization::writeBrush(const DomBrush *brush, const QString &brush
             << domColor2QString(color) << ')' << language::eol;
 
         m_output << m_indent << brushName << ".setStyle("
-            << language::qtQualifier << "BrushStyle" << language::qualifier
+            << language::bobuiQualifier << "BrushStyle" << language::qualifier
             << style << ')' << language::eol;
     }
 }
@@ -2252,7 +2252,7 @@ QString WriteInitialization::pixCall(const DomProperty *p) const
         s = p->elementPixmap()->text();
         break;
     default:
-        qWarning("%s: Warning: Unknown icon format encountered. The ui-file was generated with a too-recent version of Qt Widgets Designer.",
+        qWarning("%s: Warning: Unknown icon format encountered. The ui-file was generated with a too-recent version of BobUI Widgets Designer.",
                  qPrintable(m_option.messagePrefix()));
         return "QIcon()"_L1;
         break;
@@ -2266,7 +2266,7 @@ QString WriteInitialization::pixCall(QLatin1StringView t, const QString &text) c
         return t % "()"_L1;
 
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str << t;
     str << '(';
     const QString pixFunc = m_uic->pixmapFunction();
@@ -2343,7 +2343,7 @@ void WriteInitialization::enableSorting(DomWidget *w, const QString &varName, co
  * Initializers are just strings containing the function call and need to be prepended
  * the line indentation and the object they are supposed to initialize.
  * String initializers come with a preprocessor conditional (ifdef), so the code
- * compiles with QT_NO_xxx. A null pointer means no conditional. String initializers
+ * compiles with BOBUI_NO_xxx. A null pointer means no conditional. String initializers
  * are written to the retranslateUi() function, others to setupUi().
  */
 
@@ -2360,7 +2360,7 @@ void WriteInitialization::addInitializer(Item *item, const QString &name,
 {
     if (!value.isEmpty()) {
         QString setter;
-        QTextStream str(&setter);
+        BOBUIextStream str(&setter);
         str << language::derefPointer << "set" << name.at(0).toUpper() << QStringView{name}.mid(1) << '(';
         if (column >= 0)
             str << column << ", ";
@@ -2404,33 +2404,33 @@ void WriteInitialization::addBrushInitializer(Item *item,
 }
 
 /*!
-    Create inititializer for a flag value in the Qt namespace.
+    Create inititializer for a flag value in the BobUI namespace.
     If the named property is not in the map, the initializer is omitted.
 */
-void WriteInitialization::addQtFlagsInitializer(Item *item, const DomPropertyMap &properties,
+void WriteInitialization::addBobUIFlagsInitializer(Item *item, const DomPropertyMap &properties,
                                                 const QString &name, int column)
 {
     if (const DomProperty *p = properties.value(name)) {
-        const QString orOperator = u'|' + language::qtQualifier;
+        const QString orOperator = u'|' + language::bobuiQualifier;
         QString v = p->elementSet();
         if (!v.isEmpty()) {
             v.replace(u'|', orOperator);
-            addInitializer(item, name, column, language::qtQualifier + v);
+            addInitializer(item, name, column, language::bobuiQualifier + v);
         }
     }
 }
 
 /*!
-    Create inititializer for an enum value in the Qt namespace.
+    Create inititializer for an enum value in the BobUI namespace.
     If the named property is not in the map, the initializer is omitted.
 */
-void WriteInitialization::addQtEnumInitializer(Item *item,
+void WriteInitialization::addBobUIEnumInitializer(Item *item,
         const DomPropertyMap &properties, const QString &name, int column) const
 {
     if (const DomProperty *p = properties.value(name)) {
         QString v = p->elementEnum();
         if (!v.isEmpty())
-            addInitializer(item, name, column, language::qtQualifier + v);
+            addInitializer(item, name, column, language::bobuiQualifier + v);
     }
 }
 
@@ -2446,8 +2446,8 @@ void WriteInitialization::addCommonInitializers(Item *item,
     addBrushInitializer(item, properties, "background"_L1, column);
     if (const DomProperty *font = properties.value("font"_L1))
         addInitializer(item, "font"_L1, column, writeFontProperties(font->elementFont()));
-    addQtFlagsInitializer(item, properties, "textAlignment"_L1, column);
-    addQtEnumInitializer(item, properties, "checkState"_L1, column);
+    addBobUIFlagsInitializer(item, properties, "textAlignment"_L1, column);
+    addBobUIEnumInitializer(item, properties, "checkState"_L1, column);
     addStringInitializer(item, properties, "text"_L1, column);
     addStringInitializer(item, properties, "toolTip"_L1, column,
                          toolTipConfigKey());
@@ -2475,12 +2475,12 @@ void WriteInitialization::initializeListWidget(DomWidget *w)
         const DomPropertyMap properties = propertyMap(domItem->elementProperty());
 
         Item item("QListWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
-        addQtFlagsInitializer(&item, properties, "flags"_L1);
+        addBobUIFlagsInitializer(&item, properties, "flags"_L1);
         addCommonInitializers(&item, properties);
 
         item.writeSetupUi(varName);
         QString parentPath;
-        QTextStream(&parentPath) << varName << language::derefPointer << "item(" << i << ')';
+        BOBUIextStream(&parentPath) << varName << language::derefPointer << "item(" << i << ')';
         item.writeRetranslateUi(parentPath);
     }
     enableSorting(w, varName, tempName);
@@ -2491,7 +2491,7 @@ void WriteInitialization::initializeTreeWidget(DomWidget *w)
     const QString varName = m_driver->findOrInsertWidget(w);
 
     // columns
-    Item item("QTreeWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
+    Item item("BOBUIreeWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
 
     const auto &columns = w->elementColumn();
     for (int i = 0; i < columns.size(); ++i) {
@@ -2526,7 +2526,7 @@ void WriteInitialization::initializeTreeWidget(DomWidget *w)
         Item *itm = items[i];
         itm->writeSetupUi(varName);
         QString parentPath;
-        QTextStream(&parentPath) << varName << language::derefPointer << "topLevelItem(" << i << ')';
+        BOBUIextStream(&parentPath) << varName << language::derefPointer << "topLevelItem(" << i << ')';
         itm->writeRetranslateUi(parentPath);
         delete itm;
     }
@@ -2553,7 +2553,7 @@ WriteInitialization::Items WriteInitialization::initializeTreeWidgetItems(const 
     for (qsizetype i = 0; i < numDomItems; ++i) {
         const DomItem *domItem = domItems.at(i);
 
-        Item *item = new Item("QTreeWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
+        Item *item = new Item("BOBUIreeWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
         items << item;
 
         QHash<QString, DomProperty *> map;
@@ -2572,7 +2572,7 @@ WriteInitialization::Items WriteInitialization::initializeTreeWidgetItems(const 
         }
         addCommonInitializers(item, map, col);
         // AbstractFromBuilder saves flags last, so they always end up in the last column's map.
-        addQtFlagsInitializer(item, map, "flags"_L1);
+        addBobUIFlagsInitializer(item, map, "flags"_L1);
 
         const auto subItems = initializeTreeWidgetItems(domItem->elementItem());
         for (Item *subItem : subItems)
@@ -2602,12 +2602,12 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
         if (!column->elementProperty().isEmpty()) {
             const DomPropertyMap properties = propertyMap(column->elementProperty());
 
-            Item item("QTableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
+            Item item("BOBUIableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
             addCommonInitializers(&item, properties);
 
             QString itemName = item.writeSetupUi(QString(), Item::ConstructItemAndVariable);
             QString parentPath;
-            QTextStream(&parentPath) << varName << language::derefPointer
+            BOBUIextStream(&parentPath) << varName << language::derefPointer
                 << "horizontalHeaderItem(" << i << ')';
             item.writeRetranslateUi(parentPath);
             m_output << m_indent << varName << language::derefPointer << "setHorizontalHeaderItem("
@@ -2632,12 +2632,12 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
         if (!row->elementProperty().isEmpty()) {
             const DomPropertyMap properties = propertyMap(row->elementProperty());
 
-            Item item("QTableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
+            Item item("BOBUIableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
             addCommonInitializers(&item, properties);
 
             QString itemName = item.writeSetupUi(QString(), Item::ConstructItemAndVariable);
             QString parentPath;
-            QTextStream(&parentPath) << varName << language::derefPointer << "verticalHeaderItem(" << i << ')';
+            BOBUIextStream(&parentPath) << varName << language::derefPointer << "verticalHeaderItem(" << i << ')';
             item.writeRetranslateUi(parentPath);
             m_output << m_indent << varName << language::derefPointer << "setVerticalHeaderItem("
                 << i << ", " << itemName << ')' << language::eol;
@@ -2655,13 +2655,13 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
             const int c = cell->attributeColumn();
             const DomPropertyMap properties = propertyMap(cell->elementProperty());
 
-            Item item("QTableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
-            addQtFlagsInitializer(&item, properties, "flags"_L1);
+            Item item("BOBUIableWidgetItem"_L1, m_indent, m_output, m_refreshOut, m_driver);
+            addBobUIFlagsInitializer(&item, properties, "flags"_L1);
             addCommonInitializers(&item, properties);
 
             QString itemName = item.writeSetupUi(QString(), Item::ConstructItemAndVariable);
             QString parentPath;
-            QTextStream(&parentPath) << varName << language::derefPointer << "item(" << r
+            BOBUIextStream(&parentPath) << varName << language::derefPointer << "item(" << r
                 << ", " << c << ')';
             item.writeRetranslateUi(parentPath);
             m_output << m_indent << varName << language::derefPointer << "setItem("
@@ -2677,12 +2677,12 @@ QString WriteInitialization::trCall(const QString &str, const QString &commentHi
         return language::emptyString;
 
     QString result;
-    QTextStream ts(&result);
+    BOBUIextStream ts(&result);
 
     const bool idBasedTranslations = m_driver->useIdBasedTranslations();
     if (m_option.translateFunction.isEmpty()) {
         if (idBasedTranslations || m_option.idBased) {
-            ts << "qtTrId(";
+            ts << "bobuiTrId(";
         } else {
             ts << "QCoreApplication" << language::qualifier << "translate("
                 << '"' << m_generatedClass << "\", ";
@@ -2738,7 +2738,7 @@ QString WriteInitialization::noTrCall(DomString *str, const QString &defaultStri
     if (str)
         value = str->text();
     QString ret;
-    QTextStream ts(&ret);
+    BOBUIextStream ts(&ret);
     ts << language::qstring(value, m_dindent);
     return ret;
 }
@@ -2750,7 +2750,7 @@ QString WriteInitialization::autoTrCall(DomString *str, const QString &defaultSt
     return noTrCall(str, defaultString);
 }
 
-QTextStream &WriteInitialization::autoTrOutput(const DomProperty *property)
+BOBUIextStream &WriteInitialization::autoTrOutput(const DomProperty *property)
 {
     if (const DomString *str = property->elementString())
         return autoTrOutput(str);
@@ -2760,7 +2760,7 @@ QTextStream &WriteInitialization::autoTrOutput(const DomProperty *property)
     return m_output;
 }
 
-QTextStream &WriteInitialization::autoTrOutput(const DomString *str, const QString &defaultString)
+BOBUIextStream &WriteInitialization::autoTrOutput(const DomString *str, const QString &defaultString)
 {
     if ((!str && !defaultString.isEmpty()) || needsTranslation(str))
         return m_refreshOut;
@@ -2790,7 +2790,7 @@ ConnectionSyntax WriteInitialization::connectionSyntax(const language::SignalSlo
         return ConnectionSyntax::MemberFunctionPtr;
     if (m_option.forceStringConnectionSyntax)
         return ConnectionSyntax::StringBased;
-    // Auto mode: Use Qt 5 connection syntax for Qt classes and parameterless
+    // Auto mode: Use BobUI 5 connection syntax for BobUI classes and parameterless
     // connections. QAxWidget is special though since it has a fake Meta object.
     static const QStringList requiresStringSyntax{QStringLiteral("QAxWidget")};
     if (requiresStringSyntax.contains(sender.className)
@@ -2818,7 +2818,7 @@ void WriteInitialization::acceptConnection(DomConnection *connection)
 
     if (senderDecl.name.isEmpty() || receiverDecl.name.isEmpty()) {
         QString message;
-        QTextStream(&message) << m_option.messagePrefix()
+        BOBUIextStream(&message) << m_option.messagePrefix()
             << ": Warning: Invalid signal/slot connection: \""
             << senderName << "\" -> \"" << receiverName << "\".";
         fprintf(stderr, "%s\n", qPrintable(message));
@@ -2847,13 +2847,13 @@ void WriteInitialization::acceptConnection(DomConnection *connection)
     m_output << language::eol;
 }
 
-static void generateMultiDirectiveBegin(QTextStream &outputStream, const QSet<QString> &directives)
+static void generateMultiDirectiveBegin(BOBUIextStream &outputStream, const QSet<QString> &directives)
 {
     if (directives.isEmpty())
         return;
 
     if (directives.size() == 1) {
-        outputStream << language::openQtConfig(*directives.cbegin());
+        outputStream << language::openBobUIConfig(*directives.cbegin());
         return;
     }
 
@@ -2861,21 +2861,21 @@ static void generateMultiDirectiveBegin(QTextStream &outputStream, const QSet<QS
     // sort (always generate in the same order):
     std::sort(list.begin(), list.end());
 
-    outputStream << "#if " << language::qtConfig(list.constFirst());
+    outputStream << "#if " << language::bobuiConfig(list.constFirst());
     for (qsizetype i = 1, size = list.size(); i < size; ++i)
-        outputStream << " || " << language::qtConfig(list.at(i));
-    outputStream << Qt::endl;
+        outputStream << " || " << language::bobuiConfig(list.at(i));
+    outputStream << BobUI::endl;
 }
 
-static void generateMultiDirectiveEnd(QTextStream &outputStream, const QSet<QString> &directives)
+static void generateMultiDirectiveEnd(BOBUIextStream &outputStream, const QSet<QString> &directives)
 {
     if (directives.isEmpty())
         return;
 
-    outputStream << "#endif" << Qt::endl;
+    outputStream << "#endif" << BobUI::endl;
 }
 
-WriteInitialization::Item::Item(const QString &itemClassName, const QString &indent, QTextStream &setupUiStream, QTextStream &retranslateUiStream, Driver *driver)
+WriteInitialization::Item::Item(const QString &itemClassName, const QString &indent, BOBUIextStream &setupUiStream, BOBUIextStream &retranslateUiStream, Driver *driver)
     :
     m_itemClassName(itemClassName),
     m_indent(indent),
@@ -2928,10 +2928,10 @@ QString WriteInitialization::Item::writeSetupUi(const QString &parent, Item::Emp
     QMultiMap<QString, QString>::ConstIterator it = m_setupUiData.setters.constBegin();
     while (it != m_setupUiData.setters.constEnd()) {
         if (!it.key().isEmpty())
-            m_setupUiStream << language::openQtConfig(it.key());
-        m_setupUiStream << m_indent << uniqueName << it.value() << Qt::endl;
+            m_setupUiStream << language::openBobUIConfig(it.key());
+        m_setupUiStream << m_indent << uniqueName << it.value() << BobUI::endl;
         if (!it.key().isEmpty())
-            m_setupUiStream << language::closeQtConfig(it.key());
+            m_setupUiStream << language::closeBobUIConfig(it.key());
         ++it;
     }
     for (Item *child : std::as_const(m_children))
@@ -2962,20 +2962,20 @@ void WriteInitialization::Item::writeRetranslateUi(const QString &parentPath)
         const QString newDirective = it.key();
         if (oldDirective != newDirective) {
             if (!oldDirective.isEmpty())
-                m_retranslateUiStream << language::closeQtConfig(oldDirective);
+                m_retranslateUiStream << language::closeBobUIConfig(oldDirective);
             if (!newDirective.isEmpty())
-                m_retranslateUiStream << language::openQtConfig(newDirective);
+                m_retranslateUiStream << language::openBobUIConfig(newDirective);
             oldDirective = newDirective;
         }
-        m_retranslateUiStream << m_indent << uniqueName << it.value() << Qt::endl;
+        m_retranslateUiStream << m_indent << uniqueName << it.value() << BobUI::endl;
         ++it;
     }
     if (!oldDirective.isEmpty())
-        m_retranslateUiStream << language::closeQtConfig(oldDirective);
+        m_retranslateUiStream << language::closeBobUIConfig(oldDirective);
 
     for (int i = 0; i < m_children.size(); i++) {
         QString method;
-        QTextStream(&method) << uniqueName << language::derefPointer << "child(" << i << ')';
+        BOBUIextStream(&method) << uniqueName << language::derefPointer << "child(" << i << ')';
         m_children[i]->writeRetranslateUi(method);
     }
 }
@@ -3020,4 +3020,4 @@ void WriteInitialization::Item::addChild(Item *child)
 
 } // namespace CPP
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

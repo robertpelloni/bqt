@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QAction;
 class QActionGroup;
 class QLabel;
 class QMenu;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 //! [0]
 class MainWindow : public QMainWindow
@@ -22,9 +22,9 @@ public:
     MainWindow();
 
 protected:
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event) override;
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 //! [0]
 
 //! [1]
@@ -47,7 +47,7 @@ private slots:
     void setLineSpacing();
     void setParagraphSpacing();
     void about();
-    void aboutQt();
+    void aboutBobUI();
 //! [1]
 
 //! [2]
@@ -81,7 +81,7 @@ private:
     QAction *setLineSpacingAct;
     QAction *setParagraphSpacingAct;
     QAction *aboutAct;
-    QAction *aboutQtAct;
+    QAction *aboutBobUIAct;
     QLabel *infoLabel;
 };
 //! [3]

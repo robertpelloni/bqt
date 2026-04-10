@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGUIAPPLICATION_PLATFORM_H
 #define QGUIAPPLICATION_PLATFORM_H
@@ -10,20 +10,20 @@
 //
 // This file is part of the native interface APIs. Usage of
 // this API may make your code source and binary incompatible
-// with future versions of Qt.
+// with future versions of BobUI.
 //
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#include <QtCore/qnativeinterface.h>
-#include <QtGui/qguiapplication.h>
+#include <BobUICore/qnativeinterface.h>
+#include <BobUIGui/qguiapplication.h>
 
-#if QT_CONFIG(xcb)
+#if BOBUI_CONFIG(xcb)
 typedef struct _XDisplay Display;
 struct xcb_connection_t;
 #endif
 
-#if QT_CONFIG(wayland)
+#if BOBUI_CONFIG(wayland)
 struct wl_display;
 struct wl_compositor;
 struct wl_seat;
@@ -31,7 +31,7 @@ struct wl_keyboard;
 struct wl_pointer;
 struct wl_touch;
 
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
 struct xkb_context;
 #endif
 
@@ -53,24 +53,24 @@ typedef struct cp_layer_renderer_s *cp_layer_renderer_t;
 #endif
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QNativeInterface
 {
 
-#if QT_CONFIG(xcb) || defined(Q_QDOC)
+#if BOBUI_CONFIG(xcb) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QX11Application
 {
-    QT_DECLARE_NATIVE_INTERFACE(QX11Application, 1, QGuiApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QX11Application, 1, QGuiApplication)
     virtual Display *display() const = 0;
     virtual xcb_connection_t *connection() const = 0;
 };
 #endif
 
-#if QT_CONFIG(wayland) || defined(Q_QDOC)
+#if BOBUI_CONFIG(wayland) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QWaylandApplication
 {
-    QT_DECLARE_NATIVE_INTERFACE(QWaylandApplication, 2, QGuiApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QWaylandApplication, 2, QGuiApplication)
     virtual wl_display *display() const = 0;
     virtual wl_compositor *compositor() const = 0;
     virtual wl_seat *seat() const = 0;
@@ -79,7 +79,7 @@ struct Q_GUI_EXPORT QWaylandApplication
     virtual wl_touch *touch() const = 0;
     virtual uint lastInputSerial() const = 0;
     virtual wl_seat *lastInputSeat() const = 0;
-#if QT_CONFIG(xkbcommon)
+#if BOBUI_CONFIG(xkbcommon)
     virtual xkb_context *xkbContext() const = 0;
 #endif
 };
@@ -88,7 +88,7 @@ struct Q_GUI_EXPORT QWaylandApplication
 #if defined(Q_OS_VISIONOS) || defined(Q_QDOC)
 struct Q_GUI_EXPORT QVisionOSApplication
 {
-    QT_DECLARE_NATIVE_INTERFACE(QVisionOSApplication, 1, QGuiApplication)
+    BOBUI_DECLARE_NATIVE_INTERFACE(QVisionOSApplication, 1, QGuiApplication)
     struct ImmersiveSpaceCompositorLayer {
         virtual void configure(cp_layer_renderer_capabilities_t, cp_layer_renderer_configuration_t) const {}
         virtual void render(cp_layer_renderer_t) = 0;
@@ -102,6 +102,6 @@ struct Q_GUI_EXPORT QVisionOSApplication
 
 } // QNativeInterface
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGUIAPPLICATION_PLATFORM_H

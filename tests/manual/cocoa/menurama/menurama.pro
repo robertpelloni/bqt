@@ -1,10 +1,10 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-08-10T14:21:46
+# Project created by BobUICreator 2016-08-10T14:21:46
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+BOBUI       += core gui widgets
 
 TARGET = Menurama
 TEMPLATE = app

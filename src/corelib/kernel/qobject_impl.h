@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOBJECT_H
 #error Do not include qobject_impl.h directly
 #endif
 
 #if 0
-#pragma qt_sync_skip_header_check
-#pragma qt_sync_stop_processing
+#pragma bobui_sync_skip_header_check
+#pragma bobui_sync_stop_processing
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-namespace QtPrivate {
+namespace BobUIPrivate {
     /*
         Logic to statically generate the array of qMetaTypeId
         ConnectionTypes<FunctionPointer<Signal>::Arguments>::types() returns an array
@@ -34,8 +34,8 @@ namespace QtPrivate {
     template <> struct ConnectionTypes<List<>, true>
     { static const int *types() { return nullptr; } };
     template <typename... Args> struct ConnectionTypes<List<Args...>, true>
-    { static const int *types() { static const int t[sizeof...(Args) + 1] = { (QtPrivate::QMetaTypeIdHelper<Args>::qt_metatype_id())..., 0 }; return t; } };
+    { static const int *types() { static const int t[sizeof...(Args) + 1] = { (BobUIPrivate::QMetaTypeIdHelper<Args>::bobui_metatype_id())..., 0 }; return t; } };
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

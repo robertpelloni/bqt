@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSEFFECT_H
 #define QGRAPHICSEFFECT_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qbrush.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qbrush.h>
 
-QT_REQUIRE_CONFIG(graphicseffect);
+BOBUI_REQUIRE_CONFIG(graphicseffect);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QGraphicsItem;
 class QStyleOption;
@@ -66,9 +66,9 @@ protected:
     void updateBoundingRect();
 
     bool sourceIsPixmap() const;
-    QRectF sourceBoundingRect(Qt::CoordinateSystem system = Qt::LogicalCoordinates) const;
+    QRectF sourceBoundingRect(BobUI::CoordinateSystem system = BobUI::LogicalCoordinates) const;
     void drawSource(QPainter *painter);
-    QPixmap sourcePixmap(Qt::CoordinateSystem system = Qt::LogicalCoordinates,
+    QPixmap sourcePixmap(BobUI::CoordinateSystem system = BobUI::LogicalCoordinates,
                          QPoint *offset = nullptr,
                          PixmapPadMode mode = PadToEffectiveBoundingRect) const;
 
@@ -242,7 +242,7 @@ private:
     Q_DISABLE_COPY(QGraphicsOpacityEffect)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QGRAPHICSEFFECT_H
 

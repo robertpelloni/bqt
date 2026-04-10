@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example graphicsview/collidingmice
@@ -201,7 +201,7 @@
     by setting the view's background brush.
 
     The image used for the background is stored as a binary file in
-    the application's executable using Qt's \l {The Qt Resource
+    the application's executable using BobUI's \l {The BobUI Resource
     System}{resource system}. The QPixmap constructor accepts both
     file names that refer to actual files on disk and file names that
     refer to the application's embedded resources.
@@ -231,7 +231,7 @@
     we enter the main event loop using the QApplication::exec()
     function.
 
-    Finally, we create a QTimer and connect its timeout() signal to the
+    Finally, we create a BOBUIimer and connect its timeout() signal to the
     advance() slot of the scene. Every time the timer fires, the scene
     will advance one frame.
 

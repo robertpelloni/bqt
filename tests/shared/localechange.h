@@ -1,20 +1,20 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#ifndef QT_TESTS_SHARED_LOCALE_CHANGE_H
-#define QT_TESTS_SHARED_LOCALE_CHANGE_H
+#ifndef BOBUI_TESTS_SHARED_LOCALE_CHANGE_H
+#define BOBUI_TESTS_SHARED_LOCALE_CHANGE_H
 #include <qglobal.h>
-#include <QtCore/QByteArray>
-#include <QtCore/QLocale>
+#include <BobUICore/QByteArray>
+#include <BobUICore/QLocale>
 #include <private/qlocale_p.h>
 
 #include <locale.h>
 
-namespace QTestLocaleChange {
+namespace BOBUIestLocaleChange {
 
     inline QLocale resetSystemLocale()
     {
-#ifndef QT_NO_SYSTEMLOCALE
+#ifndef BOBUI_NO_SYSTEMLOCALE
         { // Transient instance marks system locale data as stale:
             QSystemLocale dummy;
         } // Now we can reinitialize:
@@ -27,7 +27,7 @@ namespace QTestLocaleChange {
         const int m_category;
         const QByteArray m_prior;
         const bool m_didSet;
-#if !defined(QT_NO_SYSTEMLOCALE) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+#if !defined(BOBUI_NO_SYSTEMLOCALE) && defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
 #define TRANSIENT_ENV
         // Unix system locale consults environment variables, so we need to set
         // the appropriate one, too.
@@ -85,4 +85,4 @@ namespace QTestLocaleChange {
     };
 }
 
-#endif // QT_TESTS_SHARED_LOCALE_CHANGE_H
+#endif // BOBUI_TESTS_SHARED_LOCALE_CHANGE_H

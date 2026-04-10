@@ -1,19 +1,19 @@
 // Copyright (C) 2016 Robin Burchell <robin.burchell@viroteck.net>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylanddecorationfactory_p.h"
 #include "qwaylanddecorationplugin_p.h"
 
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
+#include <BobUICore/private/qfactoryloader_p.h>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/QDir>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, qwdfiLoader,
-    (QWaylandDecorationFactoryInterface_iid, QLatin1String("/wayland-decoration-client"), Qt::CaseInsensitive))
+    (QWaylandDecorationFactoryInterface_iid, QLatin1String("/wayland-decoration-client"), BobUI::CaseInsensitive))
 
 QStringList QWaylandDecorationFactory::keys()
 {
@@ -27,4 +27,4 @@ QWaylandAbstractDecoration *QWaylandDecorationFactory::create(const QString &nam
 
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

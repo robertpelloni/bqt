@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qxcbintegration.h"
 #include "qxcbconnection.h"
@@ -13,26 +13,26 @@
 #include "qxcbclipboard.h"
 #include "qxcbeventqueue.h"
 #include "qxcbeventdispatcher.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qxcbdrag.h"
 #endif
 #include "qxcbglintegration.h"
 
-#ifndef QT_NO_SESSIONMANAGER
+#ifndef BOBUI_NO_SESSIONMANAGER
 #include "qxcbsessionmanager.h"
 #endif
 #include "qxcbxsettings.h"
 
 #include <xcb/xcb.h>
 
-#include <QtGui/private/qgenericunixfontdatabase_p.h>
-#include <QtGui/private/qdesktopunixservices_p.h>
+#include <BobUIGui/private/qgenericunixfontdatabase_p.h>
+#include <BobUIGui/private/qdesktopunixservices_p.h>
 
 #include <stdio.h>
 
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 #define register        /* C++17 deprecated register */
 #include <X11/Xlib.h>
 #undef register
@@ -40,31 +40,31 @@
 
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <private/qgenericunixtheme_p.h>
-#if QT_CONFIG(dbus)
+#if BOBUI_CONFIG(dbus)
 #include <private/qkdetheme_p.h>
 #endif
 #include <qpa/qplatforminputcontext.h>
 
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QScreen>
-#include <QtGui/QOffscreenSurface>
-#if QT_CONFIG(accessibility)
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QScreen>
+#include <BobUIGui/QOffscreenSurface>
+#if BOBUI_CONFIG(accessibility)
 #include <qpa/qplatformaccessibility.h>
-#if QT_CONFIG(accessibility_atspi_bridge)
-#include <QtGui/private/qspiaccessiblebridge_p.h>
+#if BOBUI_CONFIG(accessibility_atspi_bridge)
+#include <BobUIGui/private/qspiaccessiblebridge_p.h>
 #endif
 #endif
 
-#include <QtCore/QFileInfo>
+#include <BobUICore/QFileInfo>
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 #include "qxcbvulkaninstance.h"
 #include "qxcbvulkanwindow.h"
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Find out if our parent process is gdb by looking at the 'exe' symlink under /proc,.
 // or, for older Linuxes, read out 'cmdline'.
@@ -112,10 +112,10 @@ QXcbIntegration::QXcbIntegration(const QStringList &parameters, int &argc, char 
     Q_UNUSED(parameters);
 
     m_instance = this;
-    qApp->setAttribute(Qt::AA_CompressHighFrequencyEvents, true);
+    qApp->setAttribute(BobUI::AA_CompressHighFrequencyEvents, true);
 
     qRegisterMetaType<QXcbWindow*>();
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     XInitThreads();
 #endif
     m_nativeInterface.reset(new QXcbNativeInterface);
@@ -157,12 +157,12 @@ QXcbIntegration::QXcbIntegration(const QStringList &parameters, int &argc, char 
     }
 
     if (!noGrabArg && !doGrabArg && underDebugger) {
-        qCDebug(lcQpaXcb, "Qt: gdb: -nograb added to command-line options.\n"
+        qCDebug(lcQpaXcb, "BobUI: gdb: -nograb added to command-line options.\n"
                 "\t Use the -dograb option to enforce grabbing.");
     }
     m_canGrab = (!underDebugger && !noGrabArg) || (underDebugger && doGrabArg);
 
-    static bool canNotGrabEnv = qEnvironmentVariableIsSet("QT_XCB_NO_GRAB_SERVER");
+    static bool canNotGrabEnv = qEnvironmentVariableIsSet("BOBUI_XCB_NO_GRAB_SERVER");
     if (canNotGrabEnv)
         m_canGrab = false;
 
@@ -201,7 +201,7 @@ QPlatformWindow *QXcbIntegration::createPlatformWindow(QWindow *window) const
                 xcbWindow->create();
                 return xcbWindow;
             }
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
         } else if (window->surfaceType() == QSurface::VulkanSurface) {
             QXcbWindow *xcbWindow = new QXcbVulkanWindow(window);
             xcbWindow->create();
@@ -222,7 +222,7 @@ QPlatformWindow *QXcbIntegration::createForeignWindow(QWindow *window, WId nativ
     return new QXcbForeignWindow(window, nativeHandle);
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QXcbIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     QXcbGlIntegration *glIntegration = m_connection->glIntegration();
@@ -233,7 +233,7 @@ QPlatformOpenGLContext *QXcbIntegration::createPlatformOpenGLContext(QOpenGLCont
     return glIntegration->createPlatformOpenGLContext(context);
 }
 
-# if QT_CONFIG(xcb_glx_plugin)
+# if BOBUI_CONFIG(xcb_glx_plugin)
 QOpenGLContext *QXcbIntegration::createOpenGLContext(GLXContext context, void *visualInfo, QOpenGLContext *shareContext) const
 {
     using namespace QNativeInterface::Private;
@@ -244,7 +244,7 @@ QOpenGLContext *QXcbIntegration::createOpenGLContext(GLXContext context, void *v
 }
 # endif
 
-#if QT_CONFIG(egl)
+#if BOBUI_CONFIG(egl)
 QOpenGLContext *QXcbIntegration::createOpenGLContext(EGLContext context, EGLDisplay display, QOpenGLContext *shareContext) const
 {
     using namespace QNativeInterface::Private;
@@ -255,7 +255,7 @@ QOpenGLContext *QXcbIntegration::createOpenGLContext(EGLContext context, EGLDisp
 }
 #endif
 
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
 
 QPlatformBackingStore *QXcbIntegration::createPlatformBackingStore(QWindow *window) const
 {
@@ -366,18 +366,18 @@ QPlatformNativeInterface * QXcbIntegration::nativeInterface() const
     return m_nativeInterface.data();
 }
 
-#ifndef QT_NO_CLIPBOARD
+#ifndef BOBUI_NO_CLIPBOARD
 QPlatformClipboard *QXcbIntegration::clipboard() const
 {
     return m_connection->clipboard();
 }
 #endif
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <private/qsimpledrag_p.h>
 QPlatformDrag *QXcbIntegration::drag() const
 {
-    static const bool useSimpleDrag = qEnvironmentVariableIsSet("QT_XCB_USE_SIMPLE_DRAG");
+    static const bool useSimpleDrag = qEnvironmentVariableIsSet("BOBUI_XCB_USE_SIMPLE_DRAG");
     if (Q_UNLIKELY(useSimpleDrag)) { // This is useful for testing purposes
         static QSimpleDrag *simpleDrag = nullptr;
         if (!simpleDrag)
@@ -394,10 +394,10 @@ QPlatformInputContext *QXcbIntegration::inputContext() const
     return m_inputContext.data();
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 QPlatformAccessibility *QXcbIntegration::accessibility() const
 {
-#if !defined(QT_NO_ACCESSIBILITY_ATSPI_BRIDGE)
+#if !defined(BOBUI_NO_ACCESSIBILITY_ATSPI_BRIDGE)
     if (!m_accessibility) {
         Q_ASSERT_X(QCoreApplication::eventDispatcher(), "QXcbIntegration",
             "Initializing accessibility without event-dispatcher!");
@@ -531,7 +531,7 @@ QByteArray QXcbIntegration::wmClass() const
     return m_wmClass;
 }
 
-#if QT_CONFIG(xcb_sm)
+#if BOBUI_CONFIG(xcb_sm)
 QPlatformSessionManager *QXcbIntegration::createPlatformSessionManager(const QString &id, const QString &key) const
 {
     return new QXcbSessionManager(id, key);
@@ -557,7 +557,7 @@ void QXcbIntegration::beep() const
     xcb_flush(connection);
 }
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
 QPlatformVulkanInstance *QXcbIntegration::createPlatformVulkanInstance(QVulkanInstance *instance) const
 {
     return new QXcbVulkanInstance(instance);
@@ -601,4 +601,4 @@ void QXcbUnixServices::unregisterDBusMenuForWindow(QWindow *window)
     xcb_delete_property(xcb_connection(), window->winId(), atom(QXcbAtom::Atom_KDE_NET_WM_APPMENU_OBJECT_PATH));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

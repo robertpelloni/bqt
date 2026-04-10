@@ -50,14 +50,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="m_appStyleSheetChangeButton">
+      <widget class="BOBUIoolButton" name="m_appStyleSheetChangeButton">
        <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="m_appStyleSheetClearButton">
+      <widget class="BOBUIoolButton" name="m_appStyleSheetClearButton">
        <property name="text">
         <string>...</string>
        </property>
@@ -78,7 +78,7 @@
       <widget class="QComboBox" name="m_skinCombo"/>
      </item>
      <item>
-      <widget class="QToolButton" name="m_skinRemoveButton">
+      <widget class="BOBUIoolButton" name="m_skinRemoveButton">
        <property name="text">
         <string>...</string>
        </property>

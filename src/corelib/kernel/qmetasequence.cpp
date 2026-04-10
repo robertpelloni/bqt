@@ -1,14 +1,14 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtCore/qmetasequence.h>
-#include <QtCore/qmetatype.h>
+#include <BobUICore/qmetasequence.h>
+#include <BobUICore/qmetatype.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QMetaSequence
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.0
     \brief The QMetaSequence class allows type erased access to sequential containers.
 
@@ -62,10 +62,10 @@ bool QMetaSequence::isSortable() const
 {
     if (auto iface = d()) {
         return (iface->addRemoveCapabilities
-                & (QtMetaContainerPrivate::CanAddAtBegin | QtMetaContainerPrivate::CanAddAtEnd))
+                & (BobUIMetaContainerPrivate::CanAddAtBegin | BobUIMetaContainerPrivate::CanAddAtEnd))
                 && (iface->addRemoveCapabilities
-                    & (QtMetaContainerPrivate::CanRemoveAtBegin
-                       | QtMetaContainerPrivate::CanRemoveAtEnd));
+                    & (BobUIMetaContainerPrivate::CanRemoveAtBegin
+                       | BobUIMetaContainerPrivate::CanRemoveAtEnd));
     }
     return false;
 }
@@ -80,7 +80,7 @@ bool QMetaSequence::canAddValueAtBegin() const
 {
     if (auto iface = d()) {
         return iface->addValueFn
-                && iface->addRemoveCapabilities & QtMetaContainerPrivate::CanAddAtBegin;
+                && iface->addRemoveCapabilities & BobUIMetaContainerPrivate::CanAddAtBegin;
     }
     return false;
 }
@@ -94,7 +94,7 @@ bool QMetaSequence::canAddValueAtBegin() const
 void QMetaSequence::addValueAtBegin(void *container, const void *value) const
 {
     if (canAddValueAtBegin())
-        d()->addValueFn(container, value, QtMetaContainerPrivate::QMetaSequenceInterface::AtBegin);
+        d()->addValueFn(container, value, BobUIMetaContainerPrivate::QMetaSequenceInterface::AtBegin);
 }
 
 /*!
@@ -107,7 +107,7 @@ bool QMetaSequence::canRemoveValueAtBegin() const
 {
     if (auto iface = d()) {
         return iface->removeValueFn
-                && iface->addRemoveCapabilities & QtMetaContainerPrivate::CanRemoveAtBegin;
+                && iface->addRemoveCapabilities & BobUIMetaContainerPrivate::CanRemoveAtBegin;
     }
     return false;
 }
@@ -121,7 +121,7 @@ bool QMetaSequence::canRemoveValueAtBegin() const
 void QMetaSequence::removeValueAtBegin(void *container) const
 {
     if (canRemoveValueAtBegin())
-        d()->removeValueFn(container, QtMetaContainerPrivate::QMetaSequenceInterface::AtBegin);
+        d()->removeValueFn(container, BobUIMetaContainerPrivate::QMetaSequenceInterface::AtBegin);
 }
 
 /*!
@@ -134,7 +134,7 @@ bool QMetaSequence::canAddValueAtEnd() const
 {
     if (auto iface = d()) {
         return iface->addValueFn
-                && iface->addRemoveCapabilities & QtMetaContainerPrivate::CanAddAtEnd;
+                && iface->addRemoveCapabilities & BobUIMetaContainerPrivate::CanAddAtEnd;
     }
     return false;
 }
@@ -148,7 +148,7 @@ bool QMetaSequence::canAddValueAtEnd() const
 void QMetaSequence::addValueAtEnd(void *container, const void *value) const
 {
     if (canAddValueAtEnd())
-        d()->addValueFn(container, value, QtMetaContainerPrivate::QMetaSequenceInterface::AtEnd);
+        d()->addValueFn(container, value, BobUIMetaContainerPrivate::QMetaSequenceInterface::AtEnd);
 }
 
 /*!
@@ -161,7 +161,7 @@ bool QMetaSequence::canRemoveValueAtEnd() const
 {
     if (auto iface = d()) {
         return iface->removeValueFn
-                && iface->addRemoveCapabilities & QtMetaContainerPrivate::CanRemoveAtEnd;
+                && iface->addRemoveCapabilities & BobUIMetaContainerPrivate::CanRemoveAtEnd;
     }
     return false;
 }
@@ -175,7 +175,7 @@ bool QMetaSequence::canRemoveValueAtEnd() const
 void QMetaSequence::removeValueAtEnd(void *container) const
 {
     if (canRemoveValueAtEnd())
-        d()->removeValueFn(container, QtMetaContainerPrivate::QMetaSequenceInterface::AtEnd);
+        d()->removeValueFn(container, BobUIMetaContainerPrivate::QMetaSequenceInterface::AtEnd);
 }
 
 /*!
@@ -258,7 +258,7 @@ void QMetaSequence::addValue(void *container, const void *value) const
 {
     if (canAddValue()) {
         d()->addValueFn(container, value,
-                        QtMetaContainerPrivate::QMetaSequenceInterface::Unspecified);
+                        BobUIMetaContainerPrivate::QMetaSequenceInterface::Unspecified);
     }
 }
 
@@ -290,7 +290,7 @@ void QMetaSequence::removeValue(void *container) const
 {
     if (canRemoveValue()) {
         d()->removeValueFn(container,
-                           QtMetaContainerPrivate::QMetaSequenceInterface::Unspecified);
+                           BobUIMetaContainerPrivate::QMetaSequenceInterface::Unspecified);
     }
 }
 
@@ -472,7 +472,7 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
     \class QMetaSequence::Iterable
     \inherits QIterable
     \since 6.11
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QMetaSequence::Iterable class is an iterable interface for a container in a QVariant.
 
     This class allows several methods of accessing the values of a container
@@ -480,7 +480,7 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
     extracted from a QVariant if it can be converted to a QVariantList, or if
     the container it contains is registered using
     Q_DECLARE_SEQUENTIAL_CONTAINER_METATYPE. Most sequential containers found
-    in Qt and some found in the C++ standard library are automatically
+    in BobUI and some found in the C++ standard library are automatically
     registered.
 
     \snippet code/src_corelib_kernel_qvariant.cpp 9
@@ -537,7 +537,7 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
     \note If the underlying container does not provide a native way to retrieve
           an element at an index, this method will synthesize the access using
           iterators. This behavior is deprecated and will be removed in a future
-          version of Qt.
+          version of BobUI.
 */
 
 /*!
@@ -547,7 +547,7 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
 
 /*!
     \class QMetaSequence::Iterable::ConstIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \inherits QConstIterator
     \since 6.11
     \brief QMetaSequence::Iterable::ConstIterator allows iteration over a container in a QVariant.
@@ -561,7 +561,7 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
 
 /*!
     \class QMetaSequence::Iterable::Iterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \inherits QIterator
     \since 6.11
     \brief QMetaSequence::Iterable::Iterator allows iteration over a container in a QVariant.
@@ -602,4 +602,4 @@ void QMetaSequence::valueAtConstIterator(const void *iterator, void *result) con
     QVariant.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

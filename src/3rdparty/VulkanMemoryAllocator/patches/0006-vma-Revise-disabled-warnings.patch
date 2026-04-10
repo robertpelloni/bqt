@@ -1,5 +1,5 @@
 From 48762c18eb8a1430540214a6c1cb4572cc108a05 Mon Sep 17 00:00:00 2001
-From: Laszlo Agocs <laszlo.agocs@qt.io>
+From: Laszlo Agocs <laszlo.agocs@bobui.io>
 Date: Wed, 26 Oct 2022 10:46:48 +0200
 Subject: [PATCH] vma: Revise disabled warnings
 

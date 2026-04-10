@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qapplication.h"
 #include "qbitmap.h"
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
 #include <private/qdialog_p.h>
 #endif
 #include "qdrawutil.h"
@@ -16,26 +16,26 @@
 #include "qpushbutton.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
-#if QT_CONFIG(toolbar)
-#include "qtoolbar.h"
+#if BOBUI_CONFIG(toolbar)
+#include "bobuioolbar.h"
 #endif
 #include "qdebug.h"
 #include "qlayoutitem.h"
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
 #include "qdialogbuttonbox.h"
 #endif
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include "qaccessible.h"
 #endif
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 #include "qmenu.h"
 #include "private/qmenu_p.h"
 #endif
 #include "private/qpushbutton_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 /*!
@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
     \brief The QPushButton widget provides a command button.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-pushbutton.png
            {Push button for creating a new document}
@@ -110,7 +110,7 @@ QT_BEGIN_NAMESPACE
     Small, typically square buttons that change the state of the
     window rather than performing an action (such as the buttons in
     the top-right corner of the QFileDialog) are not command buttons,
-    but tool buttons. Qt provides a special class (QToolButton) for
+    but tool buttons. BobUI provides a special class (BOBUIoolButton) for
     these buttons.
 
     If you need toggle behavior (see setCheckable()) or a button
@@ -133,11 +133,11 @@ QT_BEGIN_NAMESPACE
     check boxes (see QCheckBox).
 
 
-    In Qt, the QAbstractButton base class provides most of the modes
+    In BobUI, the QAbstractButton base class provides most of the modes
     and other API, and QPushButton provides GUI logic.
     See QAbstractButton for more information about the API.
 
-    \sa QToolButton, QRadioButton, QCheckBox
+    \sa BOBUIoolButton, QRadioButton, QCheckBox
 */
 
 /*!
@@ -148,7 +148,7 @@ QT_BEGIN_NAMESPACE
     default button.
 
     In some GUI styles a default button is drawn with an extra frame
-    around it, up to 3 pixels or more. Qt automatically keeps this
+    around it, up to 3 pixels or more. BobUI automatically keeps this
     space free around auto-default buttons, i.e., auto-default buttons
     may have a slightly larger size hint.
 
@@ -251,7 +251,7 @@ QPushButton::~QPushButton()
 {
 }
 
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
 QDialog *QPushButtonPrivate::dialogParent() const
 {
     Q_Q(const QPushButton);
@@ -282,7 +282,7 @@ void QPushButton::initStyleOption(QStyleOptionButton *option) const
     option->features = QStyleOptionButton::None;
     if (d->flat)
         option->features |= QStyleOptionButton::Flat;
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (d->menu)
         option->features |= QStyleOptionButton::HasMenu;
 #endif
@@ -322,14 +322,14 @@ void QPushButton::setDefault(bool enable)
     if (d->defaultButton == enable)
         return;
     d->defaultButton = enable;
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
     if (d->defaultButton) {
         if (QDialog *dlg = d->dialogParent())
             dlg->d_func()->setMainDefault(this);
     }
 #endif
     update();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     QAccessible::State s;
     s.defaultButton = true;
     QAccessibleStateChangeEvent event(this, s);
@@ -360,7 +360,7 @@ QSize QPushButton::sizeHint() const
     initStyleOption(&opt);
 
     // calculate contents size...
-#if !defined(QT_NO_ICON) && QT_CONFIG(dialogbuttonbox)
+#if !defined(BOBUI_NO_ICON) && BOBUI_CONFIG(dialogbuttonbox)
     bool showButtonBoxIcons = qobject_cast<QDialogButtonBox*>(parentWidget())
                           && style()->styleHint(QStyle::SH_DialogButtonBox_ButtonsHaveIcons, nullptr, this);
 
@@ -376,13 +376,13 @@ QSize QPushButton::sizeHint() const
     if (empty)
         s = QStringLiteral("XXXX");
     QFontMetrics fm = fontMetrics();
-    QSize sz = fm.size(Qt::TextShowMnemonic, s);
+    QSize sz = fm.size(BobUI::TextShowMnemonic, s);
     if (!empty || !w)
         w += sz.width();
     if (!empty || !h)
         h = qMax(h, sz.height());
     opt.rect.setSize(QSize(w, h)); // PM_MenuButtonIndicator depends on the height
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (menu())
         w += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &opt, this);
 #endif
@@ -415,8 +415,8 @@ void QPushButton::keyPressEvent(QKeyEvent *e)
 {
     Q_D(QPushButton);
     switch (e->key()) {
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         if (autoDefault() || d->defaultButton) {
             click();
             break;
@@ -433,9 +433,9 @@ void QPushButton::keyPressEvent(QKeyEvent *e)
 void QPushButton::focusInEvent(QFocusEvent *e)
 {
     Q_D(QPushButton);
-    if (e->reason() != Qt::PopupFocusReason && autoDefault() && !d->defaultButton) {
+    if (e->reason() != BobUI::PopupFocusReason && autoDefault() && !d->defaultButton) {
         d->defaultButton = true;
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
         QDialog *dlg = qobject_cast<QDialog*>(window());
         if (dlg)
             dlg->d_func()->setDefault(this);
@@ -450,8 +450,8 @@ void QPushButton::focusInEvent(QFocusEvent *e)
 void QPushButton::focusOutEvent(QFocusEvent *e)
 {
     Q_D(QPushButton);
-    if (e->reason() != Qt::PopupFocusReason && autoDefault() && d->defaultButton) {
-#if QT_CONFIG(dialog)
+    if (e->reason() != BobUI::PopupFocusReason && autoDefault() && d->defaultButton) {
+#if BOBUI_CONFIG(dialog)
         QDialog *dlg = qobject_cast<QDialog*>(window());
         if (dlg)
             dlg->d_func()->setDefault(nullptr);
@@ -461,7 +461,7 @@ void QPushButton::focusOutEvent(QFocusEvent *e)
     }
 
     QAbstractButton::focusOutEvent(e);
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     if (d->menu && d->menu->isVisible())        // restore pressed status
         setDown(true);
 #endif
@@ -474,7 +474,7 @@ void QPushButton::mouseMoveEvent(QMouseEvent *e)
 {
     Q_D(QPushButton);
 
-    if (testAttribute(Qt::WA_Hover)) {
+    if (testAttribute(BobUI::WA_Hover)) {
         bool hit = false;
         if (underMouse())
             hit = hitButton(e->position().toPoint());
@@ -499,7 +499,7 @@ bool QPushButton::hitButton(const QPoint &pos) const
     return bevel.contains(pos);
 }
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
 /*!
     Associates the popup menu \a menu with this push button. This
     turns the button into a menu button, which in some styles will
@@ -509,7 +509,7 @@ bool QPushButton::hitButton(const QPoint &pos) const
 
     \image fusion-pushbutton-menu.png
            {Push button with popup menu}
-    A push button with popup menus shown in the \l{Qt Widget Gallery}
+    A push button with popup menus shown in the \l{BobUI Widget Gallery}
     {Fusion widget style}.
 
     \sa menu()
@@ -522,7 +522,7 @@ void QPushButton::setMenu(QMenu* menu)
 
     if (menu && !d->menu) {
         QObjectPrivate::connect(this, &QPushButton::pressed,
-                                d, &QPushButtonPrivate::popupPressed, Qt::UniqueConnection);
+                                d, &QPushButtonPrivate::popupPressed, BobUI::UniqueConnection);
     }
     if (d->menu)
         removeAction(d->menu->menuAction());
@@ -578,7 +578,7 @@ void QPushButtonPrivate::popupPressed()
     //menu visibility to avoid flicker on button release
     menuOpen = true;
     QObject::connect(menu, &QMenu::aboutToHide,
-                     q, [q, this]{ menuOpen = false; q->setDown(false); }, Qt::SingleShotConnection);
+                     q, [q, this]{ menuOpen = false; q->setDown(false); }, BobUI::SingleShotConnection);
     menu->popup(menuPos);
 }
 
@@ -587,9 +587,9 @@ QPoint QPushButtonPrivate::adjustedMenuPosition()
     Q_Q(QPushButton);
 
     bool horizontal = true;
-#if QT_CONFIG(toolbar)
-    QToolBar *tb = qobject_cast<QToolBar*>(parent);
-    if (tb && tb->orientation() == Qt::Vertical)
+#if BOBUI_CONFIG(toolbar)
+    BOBUIoolBar *tb = qobject_cast<BOBUIoolBar*>(parent);
+    if (tb && tb->orientation() == BobUI::Vertical)
         horizontal = false;
 #endif
 
@@ -608,7 +608,7 @@ QPoint QPushButtonPrivate::adjustedMenuPosition()
         } else if (globalPos.y() - menuSize.height() >= availableGeometry.y()) {
             y -= menuSize.height();
         }
-        if (q->layoutDirection() == Qt::RightToLeft)
+        if (q->layoutDirection() == BobUI::RightToLeft)
             x += rect.width() - menuSize.width();
     } else {
         if (globalPos.x() + rect.width() + menu->sizeHint().width() <= availableGeometry.right()) {
@@ -621,12 +621,12 @@ QPoint QPushButtonPrivate::adjustedMenuPosition()
     return QPoint(x,y);
 }
 
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
 void QPushButtonPrivate::init()
 {
     Q_Q(QPushButton);
-    q->setAttribute(Qt::WA_MacShowFocusRect);
+    q->setAttribute(BobUI::WA_MacShowFocusRect);
     resetLayoutItemMargins();
 }
 
@@ -676,7 +676,7 @@ bool QPushButton::event(QEvent *e)
 {
     Q_D(QPushButton);
     if (e->type() == QEvent::ParentChange) {
-#if QT_CONFIG(dialog)
+#if BOBUI_CONFIG(dialog)
         if (QDialog *dialog = d->dialogParent()) {
             if (d->defaultButton)
                 dialog->d_func()->setMainDefault(this);
@@ -695,6 +695,6 @@ bool QPushButton::event(QEvent *e)
     return QAbstractButton::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpushbutton.cpp"

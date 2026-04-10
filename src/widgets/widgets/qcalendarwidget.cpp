@@ -1,20 +1,20 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qcalendarwidget.h"
 
 #include <qabstractitemmodel.h>
 #include <qstyleditemdelegate.h>
 #include <qdatetime.h>
-#include <qtableview.h>
+#include <bobuiableview.h>
 #include <qlayout.h>
 #include <qevent.h>
-#include <qtextformat.h>
+#include <bobuiextformat.h>
 #include <qheaderview.h>
 #include <private/qwidget_p.h>
 #include <qpushbutton.h>
-#include <qtoolbutton.h>
+#include <bobuioolbutton.h>
 #include <qlabel.h>
 #include <qspinbox.h>
 #include <qmenu.h>
@@ -26,9 +26,9 @@
 
 #include <vector>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 enum {
     RowCount = 6,
@@ -43,7 +43,7 @@ static QString formatNumber(int number, int fieldWidth)
     return QString::number(number).rightJustified(fieldWidth, u'0');
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QCalendarDateSectionValidator
 {
@@ -101,22 +101,22 @@ QCalendarDayValidator::QCalendarDayValidator()
 
 QCalendarDateSectionValidator::Section QCalendarDayValidator::handleKey(int key)
 {
-    if (key == Qt::Key_Right || key == Qt::Key_Left) {
+    if (key == BobUI::Key_Right || key == BobUI::Key_Left) {
         m_pos = 0;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Up) {
+    } else if (key == BobUI::Key_Up) {
         m_pos = 0;
         ++m_day;
         if (m_day > 31)
             m_day = 1;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Down) {
+    } else if (key == BobUI::Key_Down) {
         m_pos = 0;
         --m_day;
         if (m_day < 1)
             m_day = 31;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Back || key == Qt::Key_Backspace) {
+    } else if (key == BobUI::Key_Back || key == BobUI::Key_Backspace) {
         --m_pos;
         if (m_pos < 0)
             m_pos = 1;
@@ -131,9 +131,9 @@ QCalendarDateSectionValidator::Section QCalendarDayValidator::handleKey(int key)
             return QCalendarDateSectionValidator::PrevSection;
         return QCalendarDateSectionValidator::ThisSection;
     }
-    if (key < Qt::Key_0 || key > Qt::Key_9)
+    if (key < BobUI::Key_0 || key > BobUI::Key_9)
         return QCalendarDateSectionValidator::ThisSection;
-    int pressedKey = key - Qt::Key_0;
+    int pressedKey = key - BobUI::Key_0;
     if (m_pos == 0)
         m_day = pressedKey;
     else
@@ -206,22 +206,22 @@ QCalendarMonthValidator::QCalendarMonthValidator()
 
 QCalendarDateSectionValidator::Section QCalendarMonthValidator::handleKey(int key)
 {
-    if (key == Qt::Key_Right || key == Qt::Key_Left) {
+    if (key == BobUI::Key_Right || key == BobUI::Key_Left) {
         m_pos = 0;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Up) {
+    } else if (key == BobUI::Key_Up) {
         m_pos = 0;
         ++m_month;
         if (m_month > 12)
             m_month = 1;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Down) {
+    } else if (key == BobUI::Key_Down) {
         m_pos = 0;
         --m_month;
         if (m_month < 1)
             m_month = 12;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Back || key == Qt::Key_Backspace) {
+    } else if (key == BobUI::Key_Back || key == BobUI::Key_Backspace) {
         --m_pos;
         if (m_pos < 0)
             m_pos = 1;
@@ -236,9 +236,9 @@ QCalendarDateSectionValidator::Section QCalendarMonthValidator::handleKey(int ke
             return QCalendarDateSectionValidator::PrevSection;
         return QCalendarDateSectionValidator::ThisSection;
     }
-    if (key < Qt::Key_0 || key > Qt::Key_9)
+    if (key < BobUI::Key_0 || key > BobUI::Key_9)
         return QCalendarDateSectionValidator::ThisSection;
-    int pressedKey = key - Qt::Key_0;
+    int pressedKey = key - BobUI::Key_0;
     if (m_pos == 0)
         m_month = pressedKey;
     else
@@ -325,18 +325,18 @@ int QCalendarYearValidator::pow10(int n)
 
 QCalendarDateSectionValidator::Section QCalendarYearValidator::handleKey(int key)
 {
-    if (key == Qt::Key_Right || key == Qt::Key_Left) {
+    if (key == BobUI::Key_Right || key == BobUI::Key_Left) {
         m_pos = 0;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Up) {
+    } else if (key == BobUI::Key_Up) {
         m_pos = 0;
         ++m_year;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Down) {
+    } else if (key == BobUI::Key_Down) {
         m_pos = 0;
         --m_year;
         return QCalendarDateSectionValidator::ThisSection;
-    } else if (key == Qt::Key_Back || key == Qt::Key_Backspace) {
+    } else if (key == BobUI::Key_Back || key == BobUI::Key_Backspace) {
         --m_pos;
         if (m_pos < 0)
             m_pos = 3;
@@ -348,9 +348,9 @@ QCalendarDateSectionValidator::Section QCalendarYearValidator::handleKey(int key
             return QCalendarDateSectionValidator::PrevSection;
         return QCalendarDateSectionValidator::ThisSection;
     }
-    if (key < Qt::Key_0 || key > Qt::Key_9)
+    if (key < BobUI::Key_0 || key > BobUI::Key_9)
         return QCalendarDateSectionValidator::ThisSection;
-    int pressedKey = key - Qt::Key_0;
+    int pressedKey = key - BobUI::Key_0;
     int pow = pow10(m_pos);
     m_year = m_year / (pow * 10) * (pow * 10) + m_year % pow * 10 + pressedKey;
     ++m_pos;
@@ -399,11 +399,11 @@ struct SectionToken {
     QCalendarDateSectionValidator *validator;
     int repeat;
 };
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-Q_DECLARE_TYPEINFO(QtPrivate::SectionToken, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(BobUIPrivate::SectionToken, Q_PRIMITIVE_TYPE);
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 class QCalendarDateValidator
 {
@@ -586,12 +586,12 @@ void QCalendarDateValidator::handleKeyEvent(QKeyEvent *keyEvent,QCalendar cal)
 
     int key = keyEvent->key();
     if (m_lastSectionMove == QCalendarDateSectionValidator::NextSection) {
-        if (key == Qt::Key_Back || key == Qt::Key_Backspace)
+        if (key == BobUI::Key_Back || key == BobUI::Key_Backspace)
             toPreviousToken();
     }
-    if (key == Qt::Key_Right)
+    if (key == BobUI::Key_Right)
         toNextToken();
-    else if (key == Qt::Key_Left)
+    else if (key == BobUI::Key_Left)
         toPreviousToken();
 
     m_lastSectionMove = m_tokens[m_currentToken].validator->handleKey(key);
@@ -622,7 +622,7 @@ public:
     void setDate(QDate date);
 
     bool eventFilter(QObject *o, QEvent *e) override;
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
 
 signals:
     void dateChanged(QDate date);
@@ -732,11 +732,11 @@ bool QCalendarTextNavigator::eventFilter(QObject *o, QEvent *e)
         if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {
             QKeyEvent *ke = static_cast<QKeyEvent *>(e);
             if ((ke->text().size() > 0 && ke->text().at(0).isPrint()) || m_dateFrame) {
-                if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Select) {
+                if (ke->key() == BobUI::Key_Return || ke->key() == BobUI::Key_Enter || ke->key() == BobUI::Key_Select) {
                     applyDate();
                     emit editingFinished();
                     removeDateLabel();
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
                 } else if (ke->matches(QKeySequence::Cancel)) {
                     removeDateLabel();
 #endif
@@ -763,7 +763,7 @@ bool QCalendarTextNavigator::eventFilter(QObject *o, QEvent *e)
     return QObject::eventFilter(o,e);
 }
 
-void QCalendarTextNavigator::timerEvent(QTimerEvent *e)
+void QCalendarTextNavigator::timerEvent(BOBUIimerEvent *e)
 {
     if (e->timerId() == m_acceptTimer.timerId()) {
         applyDate();
@@ -783,41 +783,41 @@ void QCalendarTextNavigator::setDateEditAcceptDelay(int delay)
 
 class QCalendarView;
 
-// a small helper class that replaces a QMap<Qt::DayOfWeek, T>,
+// a small helper class that replaces a QMap<BobUI::DayOfWeek, T>,
 // but requires T to have a member-swap and a default constructor
 // which should be cheap (no memory allocations)
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_MSVC(4351) // "new behavior: elements of array ... will be default initialized"
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_MSVC(4351) // "new behavior: elements of array ... will be default initialized"
 
 template <typename T>
 class StaticDayOfWeekAssociativeArray {
     bool contained[7];
     T data[7];
 
-    static constexpr int day2idx(Qt::DayOfWeek day) noexcept { return int(day) - 1; } // alt: day % 7
+    static constexpr int day2idx(BobUI::DayOfWeek day) noexcept { return int(day) - 1; } // alt: day % 7
 public:
     constexpr StaticDayOfWeekAssociativeArray() noexcept(noexcept(T()))
         : contained{}, data{}   // arrays require uniform initialization
     {}
 
-    constexpr bool contains(Qt::DayOfWeek day) const noexcept { return contained[day2idx(day)]; }
-    constexpr const T &value(Qt::DayOfWeek day) const noexcept { return data[day2idx(day)]; }
+    constexpr bool contains(BobUI::DayOfWeek day) const noexcept { return contained[day2idx(day)]; }
+    constexpr const T &value(BobUI::DayOfWeek day) const noexcept { return data[day2idx(day)]; }
 
-    constexpr T &operator[](Qt::DayOfWeek day) noexcept
+    constexpr T &operator[](BobUI::DayOfWeek day) noexcept
     {
         const int idx = day2idx(day);
         contained[idx] = true;
         return data[idx];
     }
 
-    constexpr void insert(Qt::DayOfWeek day, T v) noexcept
+    constexpr void insert(BobUI::DayOfWeek day, T v) noexcept
     {
         operator[](day).swap(v);
     }
 };
 
-QT_WARNING_POP
+BOBUI_WARNING_POP
 
 class QCalendarModel : public QAbstractTableModel
 {
@@ -840,7 +840,7 @@ public:
     }
 
     QVariant data(const QModelIndex &index, int role) const override;
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    BobUI::ItemFlags flags(const QModelIndex &index) const override;
 
     void showMonth(int year, int month);
     void setDate(QDate d);
@@ -855,18 +855,18 @@ public:
 
     void setHorizontalHeaderFormat(QCalendarWidget::HorizontalHeaderFormat format);
 
-    void setFirstColumnDay(Qt::DayOfWeek dayOfWeek);
-    Qt::DayOfWeek firstColumnDay() const;
+    void setFirstColumnDay(BobUI::DayOfWeek dayOfWeek);
+    BobUI::DayOfWeek firstColumnDay() const;
 
     bool weekNumbersShown() const;
     void setWeekNumbersShown(bool show);
 
-    QTextCharFormat formatForCell(int row, int col) const;
-    Qt::DayOfWeek dayOfWeekForColumn(int section) const;
-    int columnForDayOfWeek(Qt::DayOfWeek day) const;
+    BOBUIextCharFormat formatForCell(int row, int col) const;
+    BobUI::DayOfWeek dayOfWeekForColumn(int section) const;
+    int columnForDayOfWeek(BobUI::DayOfWeek day) const;
     QDate dateForCell(int row, int column) const;
     void cellForDate(QDate date, int *row, int *column) const;
-    QString dayName(Qt::DayOfWeek day) const;
+    QString dayName(BobUI::DayOfWeek day) const;
 
     void setView(QCalendarView *view)
         { m_view = view; }
@@ -888,16 +888,16 @@ public:
     QDate m_maximumDate;
     int m_shownYear;
     int m_shownMonth;
-    Qt::DayOfWeek m_firstDay;
+    BobUI::DayOfWeek m_firstDay;
     QCalendarWidget::HorizontalHeaderFormat m_horizontalHeaderFormat;
     bool m_weekNumbersShown;
-    StaticDayOfWeekAssociativeArray<QTextCharFormat> m_dayFormats;
-    QMap<QDate, QTextCharFormat> m_dateFormats;
-    QTextCharFormat m_headerFormat;
+    StaticDayOfWeekAssociativeArray<BOBUIextCharFormat> m_dayFormats;
+    QMap<QDate, BOBUIextCharFormat> m_dateFormats;
+    BOBUIextCharFormat m_headerFormat;
     QCalendarView *m_view;
 };
 
-class QCalendarView : public QTableView
+class QCalendarView : public BOBUIableView
 {
     Q_OBJECT
 public:
@@ -913,12 +913,12 @@ signals:
     void clicked(QDate date);
     void editingFinished();
 protected:
-    QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) override;
+    QModelIndex moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif
     void keyPressEvent(QKeyEvent *event) override;
@@ -929,7 +929,7 @@ public:
     bool readOnly;
 private:
     bool validDateClicked;
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     QDate origDate;
 #endif
 };
@@ -950,18 +950,18 @@ QCalendarModel::QCalendarModel(QObject *parent)
 {
 }
 
-Qt::DayOfWeek QCalendarModel::dayOfWeekForColumn(int column) const
+BobUI::DayOfWeek QCalendarModel::dayOfWeekForColumn(int column) const
 {
     int col = column - m_firstColumn;
     if (col < 0 || col > 6)
-        return Qt::Sunday;
+        return BobUI::Sunday;
     int day = m_firstDay + col;
     if (day > 7)
         day -= 7;
-    return Qt::DayOfWeek(day);
+    return BobUI::DayOfWeek(day);
 }
 
-int QCalendarModel::columnForDayOfWeek(Qt::DayOfWeek day) const
+int QCalendarModel::columnForDayOfWeek(BobUI::DayOfWeek day) const
 {
     if (day < 1 || unsigned(day) > unsigned(7))
         return -1;
@@ -998,7 +998,7 @@ QDate QCalendarModel::referenceDate() const
 
 int QCalendarModel::columnForFirstOfMonth(QDate date) const
 {
-    return (columnForDayOfWeek(static_cast<Qt::DayOfWeek>(m_calendar.dayOfWeek(date)))
+    return (columnForDayOfWeek(static_cast<BobUI::DayOfWeek>(m_calendar.dayOfWeek(date)))
             - (date.day(m_calendar) % 7) + 8) % 7;
 }
 
@@ -1057,7 +1057,7 @@ void QCalendarModel::cellForDate(QDate date, int *row, int *column) const
         *column = c + m_firstColumn;
 }
 
-QString QCalendarModel::dayName(Qt::DayOfWeek day) const
+QString QCalendarModel::dayName(BobUI::DayOfWeek day) const
 {
     switch (m_horizontalHeaderFormat) {
         case QCalendarWidget::SingleLetterDayNames: {
@@ -1076,11 +1076,11 @@ QString QCalendarModel::dayName(Qt::DayOfWeek day) const
     return QString();
 }
 
-QTextCharFormat QCalendarModel::formatForCell(int row, int col) const
+BOBUIextCharFormat QCalendarModel::formatForCell(int row, int col) const
 {
     QPalette pal;
     QPalette::ColorGroup cg = QPalette::Active;
-    QTextCharFormat format;
+    BOBUIextCharFormat format;
 
     if (m_view) {
         pal = m_view->palette();
@@ -1100,7 +1100,7 @@ QTextCharFormat QCalendarModel::formatForCell(int row, int col) const
     }
 
     if (col >= m_firstColumn && col < m_firstColumn + ColumnCount) {
-        Qt::DayOfWeek dayOfWeek = dayOfWeekForColumn(col);
+        BobUI::DayOfWeek dayOfWeek = dayOfWeekForColumn(col);
         if (m_dayFormats.contains(dayOfWeek))
             format.merge(m_dayFormats.value(dayOfWeek));
     }
@@ -1118,16 +1118,16 @@ QTextCharFormat QCalendarModel::formatForCell(int row, int col) const
 
 QVariant QCalendarModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::TextAlignmentRole)
-        return (int) Qt::AlignCenter;
+    if (role == BobUI::TextAlignmentRole)
+        return (int) BobUI::AlignCenter;
 
     int row = index.row();
     int column = index.column();
 
-    if (role == Qt::DisplayRole) {
+    if (role == BobUI::DisplayRole) {
         if (m_weekNumbersShown && column == HeaderColumn
             && row >= m_firstRow && row < m_firstRow + RowCount) {
-            QDate date = dateForCell(row, columnForDayOfWeek(Qt::Monday));
+            QDate date = dateForCell(row, columnForDayOfWeek(BobUI::Monday));
             if (date.isValid())
                 return date.weekNumber();
         }
@@ -1140,19 +1140,19 @@ QVariant QCalendarModel::data(const QModelIndex &index, int role) const
         return QString();
     }
 
-    QTextCharFormat fmt = formatForCell(row, column);
-    if (role == Qt::BackgroundRole)
+    BOBUIextCharFormat fmt = formatForCell(row, column);
+    if (role == BobUI::BackgroundRole)
         return fmt.background().color();
-    if (role == Qt::ForegroundRole)
+    if (role == BobUI::ForegroundRole)
         return fmt.foreground().color();
-    if (role == Qt::FontRole)
+    if (role == BobUI::FontRole)
         return fmt.font();
-    if (role == Qt::ToolTipRole)
+    if (role == BobUI::ToolTipRole)
         return fmt.toolTip();
     return QVariant();
 }
 
-Qt::ItemFlags QCalendarModel::flags(const QModelIndex &index) const
+BobUI::ItemFlags QCalendarModel::flags(const QModelIndex &index) const
 {
     QDate date = dateForCell(index.row(), index.column());
     if (!date.isValid())
@@ -1242,8 +1242,8 @@ void QCalendarModel::internalUpdate()
     QModelIndex begin = index(0, 0);
     QModelIndex end = index(m_firstRow + RowCount - 1, m_firstColumn + ColumnCount - 1);
     emit dataChanged(begin, end);
-    emit headerDataChanged(Qt::Vertical, 0, m_firstRow + RowCount - 1);
-    emit headerDataChanged(Qt::Horizontal, 0, m_firstColumn + ColumnCount - 1);
+    emit headerDataChanged(BobUI::Vertical, 0, m_firstRow + RowCount - 1);
+    emit headerDataChanged(BobUI::Horizontal, 0, m_firstColumn + ColumnCount - 1);
 }
 
 void QCalendarModel::setHorizontalHeaderFormat(QCalendarWidget::HorizontalHeaderFormat format)
@@ -1265,7 +1265,7 @@ void QCalendarModel::setHorizontalHeaderFormat(QCalendarWidget::HorizontalHeader
     internalUpdate();
 }
 
-void QCalendarModel::setFirstColumnDay(Qt::DayOfWeek dayOfWeek)
+void QCalendarModel::setFirstColumnDay(BobUI::DayOfWeek dayOfWeek)
 {
     if (m_firstDay == dayOfWeek)
         return;
@@ -1274,7 +1274,7 @@ void QCalendarModel::setFirstColumnDay(Qt::DayOfWeek dayOfWeek)
     internalUpdate();
 }
 
-Qt::DayOfWeek QCalendarModel::firstColumnDay() const
+BobUI::DayOfWeek QCalendarModel::firstColumnDay() const
 {
     return m_firstDay;
 }
@@ -1303,7 +1303,7 @@ void QCalendarModel::setWeekNumbersShown(bool show)
 }
 
 QCalendarView::QCalendarView(QWidget *parent)
-    : QTableView(parent),
+    : BOBUIableView(parent),
     readOnly(false),
     validDateClicked(false)
 {
@@ -1311,15 +1311,15 @@ QCalendarView::QCalendarView(QWidget *parent)
     setShowGrid(false);
     verticalHeader()->setVisible(false);
     horizontalHeader()->setVisible(false);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(BobUI::ScrollBarAlwaysOff);
 }
 
-QModelIndex QCalendarView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+QModelIndex QCalendarView::moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers)
 {
     QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model());
     if (!calendarModel)
-        return QTableView::moveCursor(cursorAction, modifiers);
+        return BOBUIableView::moveCursor(cursorAction, modifiers);
 
     QCalendar cal = calendarModel->calendar();
 
@@ -1375,15 +1375,15 @@ QModelIndex QCalendarView::moveCursor(CursorAction cursorAction, Qt::KeyboardMod
 
 void QCalendarView::keyPressEvent(QKeyEvent *event)
 {
-#ifdef QT_KEYPAD_NAVIGATION
-    if (event->key() == Qt::Key_Select) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+    if (event->key() == BobUI::Key_Select) {
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             if (!hasEditFocus()) {
                 setEditFocus(true);
                 return;
             }
         }
-    } else if (event->key() == Qt::Key_Back) {
+    } else if (event->key() == BobUI::Key_Back) {
         if (QApplicationPrivate::keypadNavigationEnabled() && hasEditFocus()) {
             if (qobject_cast<QCalendarModel *>(model())) {
                 emit changeDate(origDate, true); //changes selection back to origDate, but doesn't activate
@@ -1396,19 +1396,19 @@ void QCalendarView::keyPressEvent(QKeyEvent *event)
 
     if (!readOnly) {
         switch (event->key()) {
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-            case Qt::Key_Select:
+            case BobUI::Key_Return:
+            case BobUI::Key_Enter:
+            case BobUI::Key_Select:
                 emit editingFinished();
                 return;
             default:
                 break;
         }
     }
-    QTableView::keyPressEvent(event);
+    BOBUIableView::keyPressEvent(event);
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QCalendarView::wheelEvent(QWheelEvent *event)
 {
     const int numDegrees = event->angleDelta().y() / 8;
@@ -1423,7 +1423,7 @@ void QCalendarView::wheelEvent(QWheelEvent *event)
 
 bool QCalendarView::event(QEvent *event)
 {
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     if (event->type() == QEvent::FocusIn) {
         if (QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model())) {
             origDate = calendarModel->m_date;
@@ -1431,7 +1431,7 @@ bool QCalendarView::event(QEvent *event)
     }
 #endif
 
-    return QTableView::event(event);
+    return BOBUIableView::event(event);
 }
 
 QDate QCalendarView::handleMouseEvent(QMouseEvent *event)
@@ -1454,7 +1454,7 @@ void QCalendarView::mouseDoubleClickEvent(QMouseEvent *event)
 {
     QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model());
     if (!calendarModel) {
-        QTableView::mouseDoubleClickEvent(event);
+        BOBUIableView::mouseDoubleClickEvent(event);
         return;
     }
 
@@ -1473,14 +1473,14 @@ void QCalendarView::mousePressEvent(QMouseEvent *event)
 {
     QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model());
     if (!calendarModel) {
-        QTableView::mousePressEvent(event);
+        BOBUIableView::mousePressEvent(event);
         return;
     }
 
     if (readOnly)
         return;
 
-    if (event->button() != Qt::LeftButton)
+    if (event->button() != BobUI::LeftButton)
         return;
 
     QDate date = handleMouseEvent(event);
@@ -1501,7 +1501,7 @@ void QCalendarView::mouseMoveEvent(QMouseEvent *event)
 {
     QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model());
     if (!calendarModel) {
-        QTableView::mouseMoveEvent(event);
+        BOBUIableView::mouseMoveEvent(event);
         return;
     }
 
@@ -1526,11 +1526,11 @@ void QCalendarView::mouseReleaseEvent(QMouseEvent *event)
 {
     QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model());
     if (!calendarModel) {
-        QTableView::mouseReleaseEvent(event);
+        BOBUIableView::mouseReleaseEvent(event);
         return;
     }
 
-    if (event->button() != Qt::LeftButton)
+    if (event->button() != BobUI::LeftButton)
         return;
 
     if (readOnly)
@@ -1567,11 +1567,11 @@ private:
 };
 
 //Private tool button class
-class QCalToolButton: public QToolButton
+class QCalToolButton: public BOBUIoolButton
 {
 public:
     QCalToolButton(QWidget * parent)
-        : QToolButton(parent)
+        : BOBUIoolButton(parent)
           {  }
 protected:
     void paintEvent(QPaintEvent *e) override
@@ -1590,11 +1590,11 @@ protected:
     }
 };
 
-class QPrevNextCalButton : public QToolButton
+class QPrevNextCalButton : public BOBUIoolButton
 {
     Q_OBJECT
 public:
-    QPrevNextCalButton(QWidget *parent) : QToolButton(parent) {}
+    QPrevNextCalButton(QWidget *parent) : BOBUIoolButton(parent) {}
 protected:
     void paintEvent(QPaintEvent *) override {
         QStylePainter painter(this);
@@ -1605,20 +1605,20 @@ protected:
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
-using QCalendarDateSectionValidator = QtPrivate::QCalendarDateSectionValidator;
-using QCalendarDayValidator = QtPrivate::QCalendarDayValidator;
-using QCalendarMonthValidator = QtPrivate::QCalendarMonthValidator;
-using QCalendarYearValidator = QtPrivate::QCalendarYearValidator;
-using QCalendarDateValidator = QtPrivate::QCalendarDateValidator;
-using QPrevNextCalButton = QtPrivate::QPrevNextCalButton;
-using QCalendarDelegate = QtPrivate::QCalendarDelegate;
-using QCalToolButton = QtPrivate::QCalToolButton;
-using QCalendarDelegate = QtPrivate::QCalendarDelegate;
-using QCalendarModel = QtPrivate::QCalendarModel;
-using QCalendarView = QtPrivate::QCalendarView;
-using QCalendarTextNavigator = QtPrivate::QCalendarTextNavigator;
+using QCalendarDateSectionValidator = BobUIPrivate::QCalendarDateSectionValidator;
+using QCalendarDayValidator = BobUIPrivate::QCalendarDayValidator;
+using QCalendarMonthValidator = BobUIPrivate::QCalendarMonthValidator;
+using QCalendarYearValidator = BobUIPrivate::QCalendarYearValidator;
+using QCalendarDateValidator = BobUIPrivate::QCalendarDateValidator;
+using QPrevNextCalButton = BobUIPrivate::QPrevNextCalButton;
+using QCalendarDelegate = BobUIPrivate::QCalendarDelegate;
+using QCalToolButton = BobUIPrivate::QCalToolButton;
+using QCalendarDelegate = BobUIPrivate::QCalendarDelegate;
+using QCalendarModel = BobUIPrivate::QCalendarModel;
+using QCalendarView = BobUIPrivate::QCalendarView;
+using QCalendarTextNavigator = BobUIPrivate::QCalendarTextNavigator;
 
 class QCalendarWidgetPrivate : public QWidgetPrivate
 {
@@ -1656,8 +1656,8 @@ public:
     QCalendarTextNavigator *m_navigator;
     bool m_dateEditEnabled;
 
-    QToolButton *nextMonth;
-    QToolButton *prevMonth;
+    BOBUIoolButton *nextMonth;
+    BOBUIoolButton *prevMonth;
     QCalToolButton *monthButton;
     QMenu *monthMenu;
     QMap<int, QAction *> monthToAction;
@@ -1668,7 +1668,7 @@ public:
 
     bool navBarVisible;
     mutable QSize cachedSizeHint;
-    Qt::FocusPolicy oldFocusPolicy;
+    BobUI::FocusPolicy oldFocusPolicy;
 };
 
 void QCalendarDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -1704,7 +1704,7 @@ QCalendarWidgetPrivate::QCalendarWidgetPrivate()
     m_navigator = nullptr;
     m_dateEditEnabled = false;
     navBarVisible = true;
-    oldFocusPolicy = Qt::StrongFocus;
+    oldFocusPolicy = BobUI::StrongFocus;
 }
 
 void QCalendarWidgetPrivate::setNavigatorEnabled(bool enable)
@@ -1736,7 +1736,7 @@ void QCalendarWidgetPrivate::createNavigationBar(QWidget *widget)
 {
     Q_Q(QCalendarWidget);
     navBarBackground = new QWidget(widget);
-    navBarBackground->setObjectName("qt_calendar_navigationbar"_L1);
+    navBarBackground->setObjectName("bobui_calendar_navigationbar"_L1);
     navBarBackground->setAutoFillBackground(true);
     navBarBackground->setBackgroundRole(QPalette::Highlight);
 
@@ -1754,7 +1754,7 @@ void QCalendarWidgetPrivate::createNavigationBar(QWidget *widget)
     monthButton = new QCalToolButton(navBarBackground);
     monthButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     monthButton->setAutoRaise(true);
-    monthButton->setPopupMode(QToolButton::InstantPopup);
+    monthButton->setPopupMode(BOBUIoolButton::InstantPopup);
     monthMenu = new QMenu(monthButton);
     for (int i = 1, e = m_model->m_calendar.maximumMonthsInYear(); i <= e; i++) {
         QString monthName(m_model->monthName(q->locale(), i));
@@ -1790,18 +1790,18 @@ void QCalendarWidgetPrivate::createNavigationBar(QWidget *widget)
     headerLayout->addWidget(nextMonth);
     navBarBackground->setLayout(headerLayout);
 
-    yearEdit->setFocusPolicy(Qt::StrongFocus);
-    prevMonth->setFocusPolicy(Qt::NoFocus);
-    nextMonth->setFocusPolicy(Qt::NoFocus);
-    yearButton->setFocusPolicy(Qt::NoFocus);
-    monthButton->setFocusPolicy(Qt::NoFocus);
+    yearEdit->setFocusPolicy(BobUI::StrongFocus);
+    prevMonth->setFocusPolicy(BobUI::NoFocus);
+    nextMonth->setFocusPolicy(BobUI::NoFocus);
+    yearButton->setFocusPolicy(BobUI::NoFocus);
+    monthButton->setFocusPolicy(BobUI::NoFocus);
 
     //set names for the header controls.
-    prevMonth->setObjectName("qt_calendar_prevmonth"_L1);
-    nextMonth->setObjectName("qt_calendar_nextmonth"_L1);
-    monthButton->setObjectName("qt_calendar_monthbutton"_L1);
-    yearButton->setObjectName("qt_calendar_yearbutton"_L1);
-    yearEdit->setObjectName("qt_calendar_yearedit"_L1);
+    prevMonth->setObjectName("bobui_calendar_prevmonth"_L1);
+    nextMonth->setObjectName("bobui_calendar_nextmonth"_L1);
+    monthButton->setObjectName("bobui_calendar_monthbutton"_L1);
+    yearButton->setObjectName("bobui_calendar_yearbutton"_L1);
+    yearEdit->setObjectName("bobui_calendar_yearedit"_L1);
 
     updateMonthMenu();
     showMonth(m_model->m_date.year(m_model->m_calendar), m_model->m_date.month(m_model->m_calendar));
@@ -1923,12 +1923,12 @@ void QCalendarWidgetPrivate::_q_yearClicked()
     spaceHolder->changeSize(yearButton->width(), 0);
     yearButton->hide();
     oldFocusPolicy = q->focusPolicy();
-    q->setFocusPolicy(Qt::NoFocus);
+    q->setFocusPolicy(BobUI::NoFocus);
     yearEdit->show();
     qApp->installEventFilter(q);
     yearEdit->raise();
     yearEdit->selectAll();
-    yearEdit->setFocus(Qt::MouseFocusReason);
+    yearEdit->setFocus(BobUI::MouseFocusReason);
 }
 
 void QCalendarWidgetPrivate::showMonth(int year, int month)
@@ -2013,7 +2013,7 @@ void QCalendarWidgetPrivate::_q_editingFinished()
     \since 4.2
 
     \ingroup advanced
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-calendarwidget.png
            {Calendar widget showing the month, year, and a selected day}
@@ -2068,15 +2068,15 @@ void QCalendarWidgetPrivate::_q_editingFinished()
     possible to respond to user interaction.
 
     The rendering of the headers, weekdays or single days can be
-    largely customized by setting QTextCharFormat's for some special
+    largely customized by setting BOBUIextCharFormat's for some special
     weekday, a special date or for the rendering of the headers.
 
-    Only a subset of the properties in QTextCharFormat are used by the
+    Only a subset of the properties in BOBUIextCharFormat are used by the
     calendar widget. Currently, the foreground, background and font
     properties are used to determine the rendering of individual cells
     in the widget.
 
-    \sa QDate, QDateEdit, QTextCharFormat
+    \sa QDate, QDateEdit, BOBUIextCharFormat
 */
 
 /*!
@@ -2110,12 +2110,12 @@ QCalendarWidget::QCalendarWidget(QWidget *parent)
     QVBoxLayout *layoutV = new QVBoxLayout(this);
     layoutV->setContentsMargins(QMargins());
     d->m_model = new QCalendarModel(this);
-    QTextCharFormat fmt;
-    fmt.setForeground(QBrush(Qt::red));
-    d->m_model->m_dayFormats.insert(Qt::Saturday, fmt);
-    d->m_model->m_dayFormats.insert(Qt::Sunday, fmt);
+    BOBUIextCharFormat fmt;
+    fmt.setForeground(QBrush(BobUI::red));
+    d->m_model->m_dayFormats.insert(BobUI::Saturday, fmt);
+    d->m_model->m_dayFormats.insert(BobUI::Sunday, fmt);
     d->m_view = new QCalendarView(this);
-    d->m_view->setObjectName("qt_calendar_calendarview"_L1);
+    d->m_view->setObjectName("bobui_calendar_calendarview"_L1);
     d->m_view->setModel(d->m_model);
     d->m_model->setView(d->m_view);
     d->m_view->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -2131,7 +2131,7 @@ QCalendarWidget::QCalendarWidget(QWidget *parent)
     d->m_view->setItemDelegate(d->m_delegate);
     d->update();
     d->updateNavigationBar();
-    setFocusPolicy(Qt::StrongFocus);
+    setFocusPolicy(BobUI::StrongFocus);
     setFocusProxy(d->m_view);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -2498,7 +2498,7 @@ void QCalendarWidget::showToday()
     setMinimumDate() function does nothing.
 
     The default minimum date is November 25, 4714 BCE.
-    You can restore this default by calling clearMinimumDate() (since Qt 6.6).
+    You can restore this default by calling clearMinimumDate() (since BobUI 6.6).
 
     \sa setDateRange()
 */
@@ -2555,7 +2555,7 @@ void QCalendarWidget::clearMinimumDate()
     setMaximumDate() function does nothing.
 
     The default maximum date is December 31, 9999 CE.
-    You can restore this default by calling clearMaximumDate() (since Qt 6.6).
+    You can restore this default by calling clearMaximumDate() (since BobUI 6.6).
 
     \sa setDateRange()
 */
@@ -2813,26 +2813,26 @@ void QCalendarWidget::setSelectionMode(SelectionMode mode)
     is the first day of the week for the calendar's locale.
 */
 
-void QCalendarWidget::setFirstDayOfWeek(Qt::DayOfWeek dayOfWeek)
+void QCalendarWidget::setFirstDayOfWeek(BobUI::DayOfWeek dayOfWeek)
 {
     Q_D(QCalendarWidget);
-    if ((Qt::DayOfWeek)d->m_model->firstColumnDay() == dayOfWeek)
+    if ((BobUI::DayOfWeek)d->m_model->firstColumnDay() == dayOfWeek)
         return;
 
     d->m_model->setFirstColumnDay(dayOfWeek);
     d->update();
 }
 
-Qt::DayOfWeek QCalendarWidget::firstDayOfWeek() const
+BobUI::DayOfWeek QCalendarWidget::firstDayOfWeek() const
 {
     Q_D(const QCalendarWidget);
-    return (Qt::DayOfWeek)d->m_model->firstColumnDay();
+    return (BobUI::DayOfWeek)d->m_model->firstColumnDay();
 }
 
 /*!
     Returns the text char format for rendering the header.
 */
-QTextCharFormat QCalendarWidget::headerTextFormat() const
+BOBUIextCharFormat QCalendarWidget::headerTextFormat() const
 {
     Q_D(const QCalendarWidget);
     return d->m_model->m_headerFormat;
@@ -2845,7 +2845,7 @@ QTextCharFormat QCalendarWidget::headerTextFormat() const
     The other formatting information will still be decided by
     the header's format.
 */
-void QCalendarWidget::setHeaderTextFormat(const QTextCharFormat &format)
+void QCalendarWidget::setHeaderTextFormat(const BOBUIextCharFormat &format)
 {
     Q_D(QCalendarWidget);
     d->m_model->m_headerFormat = format;
@@ -2859,7 +2859,7 @@ void QCalendarWidget::setHeaderTextFormat(const QTextCharFormat &format)
 
     \sa headerTextFormat()
 */
-QTextCharFormat QCalendarWidget::weekdayTextFormat(Qt::DayOfWeek dayOfWeek) const
+BOBUIextCharFormat QCalendarWidget::weekdayTextFormat(BobUI::DayOfWeek dayOfWeek) const
 {
     Q_D(const QCalendarWidget);
     return d->m_model->m_dayFormats.value(dayOfWeek);
@@ -2872,7 +2872,7 @@ QTextCharFormat QCalendarWidget::weekdayTextFormat(Qt::DayOfWeek dayOfWeek) cons
 
     \sa setHeaderTextFormat()
 */
-void QCalendarWidget::setWeekdayTextFormat(Qt::DayOfWeek dayOfWeek, const QTextCharFormat &format)
+void QCalendarWidget::setWeekdayTextFormat(BobUI::DayOfWeek dayOfWeek, const BOBUIextCharFormat &format)
 {
     Q_D(QCalendarWidget);
     d->m_model->m_dayFormats[dayOfWeek] = format;
@@ -2882,20 +2882,20 @@ void QCalendarWidget::setWeekdayTextFormat(Qt::DayOfWeek dayOfWeek, const QTextC
 }
 
 /*!
-    Returns a QMap from QDate to QTextCharFormat showing all dates
+    Returns a QMap from QDate to BOBUIextCharFormat showing all dates
     that use a special format that alters their rendering.
 */
-QMap<QDate, QTextCharFormat> QCalendarWidget::dateTextFormat() const
+QMap<QDate, BOBUIextCharFormat> QCalendarWidget::dateTextFormat() const
 {
     Q_D(const QCalendarWidget);
     return d->m_model->m_dateFormats;
 }
 
 /*!
-    Returns a QTextCharFormat for \a date. The char format can be
+    Returns a BOBUIextCharFormat for \a date. The char format can be
     empty if the date is not rendered specially.
 */
-QTextCharFormat QCalendarWidget::dateTextFormat(QDate date) const
+BOBUIextCharFormat QCalendarWidget::dateTextFormat(QDate date) const
 {
     Q_D(const QCalendarWidget);
     return d->m_model->m_dateFormats.value(date);
@@ -2906,7 +2906,7 @@ QTextCharFormat QCalendarWidget::dateTextFormat(QDate date) const
 
     If \a date is null, all date formats are cleared.
 */
-void QCalendarWidget::setDateTextFormat(QDate date, const QTextCharFormat &format)
+void QCalendarWidget::setDateTextFormat(QDate date, const BOBUIextCharFormat &format)
 {
     Q_D(QCalendarWidget);
     if (date.isNull())
@@ -3132,7 +3132,7 @@ bool QCalendarWidget::eventFilter(QObject *watched, QEvent *event)
 {
     Q_D(QCalendarWidget);
     if (event->type() == QEvent::MouseButtonPress && d->yearEdit->hasFocus()) {
-        // We can get filtered press events that were intended for Qt Virtual Keyboard's
+        // We can get filtered press events that were intended for BobUI Virtual Keyboard's
         // input panel (QQuickView), so we have to make sure that the window is indeed a QWidget - no static_cast.
         // In addition, as we have a event filter on the whole application we first make sure that the top level widget
         // of both this and the watched widget are the same to decide if we should finish the year edition.
@@ -3158,7 +3158,7 @@ bool QCalendarWidget::eventFilter(QObject *watched, QEvent *event)
 */
 void QCalendarWidget::mousePressEvent(QMouseEvent *event)
 {
-    setAttribute(Qt::WA_NoMouseReplay);
+    setAttribute(BobUI::WA_NoMouseReplay);
     QWidget::mousePressEvent(event);
     setFocus();
 }
@@ -3184,7 +3184,7 @@ void QCalendarWidget::resizeEvent(QResizeEvent * event)
 */
 void QCalendarWidget::keyPressEvent(QKeyEvent * event)
 {
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     Q_D(QCalendarWidget);
     if (d->yearEdit->isVisible()&& event->matches(QKeySequence::Cancel)) {
         d->yearEdit->setValue(yearShown());
@@ -3195,7 +3195,7 @@ void QCalendarWidget::keyPressEvent(QKeyEvent * event)
     QWidget::keyPressEvent(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qcalendarwidget.moc"
 #include "moc_qcalendarwidget.cpp"

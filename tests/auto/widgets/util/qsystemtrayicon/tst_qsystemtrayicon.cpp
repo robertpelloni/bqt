@@ -1,9 +1,9 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
-#include <QTimer>
+#include <BOBUIest>
+#include <BOBUIimer>
 #include <QSignalSpy>
 
 #include <qguiapplication.h>
@@ -83,7 +83,7 @@ void tst_QSystemTrayIcon::getSetCheck()
 
 void tst_QSystemTrayIcon::supportsMessages()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive))
         QSKIP("Wayland: This fails. Figure out why.");
 
     if (QGuiApplication::platformName() == u"offscreen")
@@ -91,10 +91,10 @@ void tst_QSystemTrayIcon::supportsMessages()
 
     // ### fixme: Check platforms.
     const QString platform = QGuiApplication::platformName();
-    if (platform.compare(QStringLiteral("xcb"), Qt::CaseInsensitive)
-        && platform.compare(QStringLiteral("windows"), Qt::CaseInsensitive)
-        && platform.compare(QStringLiteral("cocoa"), Qt::CaseInsensitive)) {
-            QEXPECT_FAIL("", "QTBUG-20978 QSystemTrayIcon is unimplemented for this platform", Abort);
+    if (platform.compare(QStringLiteral("xcb"), BobUI::CaseInsensitive)
+        && platform.compare(QStringLiteral("windows"), BobUI::CaseInsensitive)
+        && platform.compare(QStringLiteral("cocoa"), BobUI::CaseInsensitive)) {
+            QEXPECT_FAIL("", "BOBUIBUG-20978 QSystemTrayIcon is unimplemented for this platform", Abort);
     }
     QCOMPARE(QSystemTrayIcon::supportsMessages(), true);
 }
@@ -107,11 +107,11 @@ void tst_QSystemTrayIcon::lastWindowClosed()
     icon.setIcon(QIcon(":/icons/icon.png"));
     icon.show();
     window.show();
-    QTimer::singleShot(2500, &window, SLOT(close()));
-    QTimer::singleShot(20000, qApp, SLOT(quit())); // in case the test fails
+    BOBUIimer::singleShot(2500, &window, SLOT(close()));
+    BOBUIimer::singleShot(20000, qApp, SLOT(quit())); // in case the test fails
     qApp->exec();
     QCOMPARE(spy.size(), 1);
 }
 
-QTEST_MAIN(tst_QSystemTrayIcon)
+BOBUIEST_MAIN(tst_QSystemTrayIcon)
 #include "tst_qsystemtrayicon.moc"

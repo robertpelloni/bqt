@@ -1,4 +1,4 @@
-QT += widgets opengl openglwidgets
+BOBUI += widgets opengl openglwidgets
 
 HEADERS     = glwidget.h \
               helper.h \
@@ -11,5 +11,5 @@ SOURCES     = glwidget.cpp \
               window.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/opengl/2dpainting
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/opengl/2dpainting
 INSTALLS += target

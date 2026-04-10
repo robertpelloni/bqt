@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <iostream>
 #include <cstring>
 #include <QFile>
@@ -67,10 +67,10 @@ QDomElement element4 = document.createElement("MyElement");
 QDomElement e;
 //...
 QDomAttr a = e.attributeNode("href");
-cout << qPrintable(a.value()) << '\n';   // prints "http://qt-project.org"
-a.setValue("http://qt-project.org/doc"); // change the node's attribute
+cout << qPrintable(a.value()) << '\n';   // prints "http://bobui-project.org"
+a.setValue("http://bobui-project.org/doc"); // change the node's attribute
 QDomAttr a2 = e.attributeNode("href");
-cout << qPrintable(a2.value()) << '\n';  // prints "http://qt-project.org/doc"
+cout << qPrintable(a2.value()) << '\n';  // prints "http://bobui-project.org/doc"
 //! [8]
 }
 

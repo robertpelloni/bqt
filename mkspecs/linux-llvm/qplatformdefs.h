@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMDEFS_H
 #define QPLATFORMDEFS_H
 
-// Get Qt defines/settings
+// Get BobUI defines/settings
 
 #include "qglobal.h"
 
@@ -41,12 +41,12 @@
 #include <sys/wait.h>
 #include <netinet/in.h>
 
-#define QT_USE_XOPEN_LFS_EXTENSIONS
+#define BOBUI_USE_XOPEN_LFS_EXTENSIONS
 #include "../common/posix/qplatformdefs.h"
 
 #if defined(_XOPEN_SOURCE) && (_XOPEN_SOURCE >= 500)
-#define QT_SNPRINTF             ::snprintf
-#define QT_VSNPRINTF            ::vsnprintf
+#define BOBUI_SNPRINTF             ::snprintf
+#define BOBUI_VSNPRINTF            ::vsnprintf
 #endif
 
 #endif // QPLATFORMDEFS_H

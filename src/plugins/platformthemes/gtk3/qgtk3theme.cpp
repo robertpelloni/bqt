@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgtk3theme.h"
 #include "qgtk3dialoghelpers.h"
@@ -11,13 +11,13 @@
 #undef signals
 #include <gtk/gtk.h>
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
 #include <X11/Xlib.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 const char *QGtk3Theme::name = "gtk3";
 
@@ -62,15 +62,15 @@ QGtk3Theme::QGtk3Theme()
     else if (QGuiApplication::platformName() == "xcb"_L1)
         gdk_set_allowed_backends("x11,wayland");
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     // gtk_init will reset the Xlib error handler, and that causes
-    // Qt applications to quit on X errors. Therefore, we need to manually restore it.
+    // BobUI applications to quit on X errors. Therefore, we need to manually restore it.
     int (*oldErrorHandler)(Display *, XErrorEvent *) = XSetErrorHandler(nullptr);
 #endif
 
     gtk_init(nullptr, nullptr);
 
-#if QT_CONFIG(xcb_xlib)
+#if BOBUI_CONFIG(xcb_xlib)
     XSetErrorHandler(oldErrorHandler);
 #endif
 
@@ -164,15 +164,15 @@ QString QGtk3Theme::gtkFontName() const
     return QGnomeTheme::gtkFontName();
 }
 
-Qt::ColorScheme QGtk3Theme::colorScheme() const
+BobUI::ColorScheme QGtk3Theme::colorScheme() const
 {
     Q_ASSERT(m_storage);
 
     Q_D(const QGnomeTheme);
-    const Qt::ColorScheme colorScheme = d->colorScheme();
+    const BobUI::ColorScheme colorScheme = d->colorScheme();
     const bool hasRequestedColorScheme = d->hasRequestedColorScheme();
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (hasRequestedColorScheme && colorScheme != m_storage->colorScheme()) {
         qCDebug(lcQGtk3Interface) << "Requested color scheme" << colorScheme
                                   << "differs from theme color scheme" << m_storage->colorScheme();
@@ -182,9 +182,9 @@ Qt::ColorScheme QGtk3Theme::colorScheme() const
     return hasRequestedColorScheme ? colorScheme : m_storage->colorScheme();
 }
 
-void QGtk3Theme::requestColorScheme(Qt::ColorScheme scheme)
+void QGtk3Theme::requestColorScheme(BobUI::ColorScheme scheme)
 {
-    const Qt::ColorScheme oldColorScheme = colorScheme();
+    const BobUI::ColorScheme oldColorScheme = colorScheme();
     QGnomeTheme::requestColorScheme(scheme);
     if (oldColorScheme == colorScheme())
         return;
@@ -242,10 +242,10 @@ const QPalette *QGtk3Theme::palette(Palette type) const
     Q_ASSERT(m_storage);
 
     Q_D(const QGnomeTheme);
-    const Qt::ColorScheme colorScheme = d->colorScheme();
+    const BobUI::ColorScheme colorScheme = d->colorScheme();
     const bool hasRequestedColorScheme = d->hasRequestedColorScheme();
 
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
     if (hasRequestedColorScheme && colorScheme != m_storage->colorScheme()) {
         qCDebug(lcQGtk3Interface) << "Current KDE theme doesn't support requested color scheme"
                                   << colorScheme << "Falling back to fusion palette.";
@@ -278,14 +278,14 @@ QIcon QGtk3Theme::fileIcon(const QFileInfo &fileInfo,
     return m_storage->fileIcon(fileInfo);
 }
 
-#if QT_CONFIG(dbus)
-void QGtk3Theme::updateColorScheme(Qt::ColorScheme newColorScheme)
+#if BOBUI_CONFIG(dbus)
+void QGtk3Theme::updateColorScheme(BobUI::ColorScheme newColorScheme)
 {
     if (newColorScheme == colorScheme())
         QGnomeTheme::updateColorScheme(newColorScheme);
     else
         m_storage->handleThemeChange();
 }
-#endif // QT_CONFIG(dbus)
+#endif // BOBUI_CONFIG(dbus)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

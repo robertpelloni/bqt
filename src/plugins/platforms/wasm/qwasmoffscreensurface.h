@@ -1,5 +1,5 @@
-// Copyright (C) 2019 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2019 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef QWASMOFFSCREENSURFACE_H
 #define QWASMOFFSCREENSURFACE_H
@@ -10,7 +10,7 @@
 
 #include <string>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOffscreenSurface;
 class QWasmOffscreenSurface final : public QPlatformOffscreenSurface
@@ -27,6 +27,6 @@ private:
     emscripten::val m_offscreenCanvas;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

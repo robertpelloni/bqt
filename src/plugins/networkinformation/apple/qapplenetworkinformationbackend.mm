@@ -1,18 +1,18 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtNetwork/private/qnetworkinformation_p.h>
+#include <BobUINetwork/private/qnetworkinformation_p.h>
 
-#include <QtCore/qglobal.h>
-#include <QtCore/private/qobject_p.h>
-#include <QtCore/qmutex.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/private/qobject_p.h>
+#include <BobUICore/qmutex.h>
 
 #include <Network/Network.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 Q_DECLARE_LOGGING_CATEGORY(lcNetInfoSCR)
-Q_LOGGING_CATEGORY(lcNetInfoSCR, "qt.network.info.applenetworkinfo");
+Q_LOGGING_CATEGORY(lcNetInfoSCR, "bobui.network.info.applenetworkinfo");
 
 namespace {
 
@@ -21,7 +21,7 @@ class ReachabilityDispatchQueue
 public:
     ReachabilityDispatchQueue()
     {
-        queue = dispatch_queue_create("qt-network-reachability-queue", nullptr);
+        queue = dispatch_queue_create("bobui-network-reachability-queue", nullptr);
         if (!queue)
             qCWarning(lcNetInfoSCR, "Failed to create a dispatch queue for reachability probes");
     }
@@ -43,7 +43,7 @@ private:
     Q_DISABLE_COPY_MOVE(ReachabilityDispatchQueue)
 };
 
-dispatch_queue_t qt_reachability_queue()
+dispatch_queue_t bobui_reachability_queue()
 {
     static const ReachabilityDispatchQueue reachabilityQueue;
     return reachabilityQueue.data();
@@ -187,7 +187,7 @@ bool QAppleNetworkInformationBackend::startMonitoring()
         return false;
     }
 
-    auto queue = qt_reachability_queue();
+    auto queue = bobui_reachability_queue();
     if (!queue) {
         qCWarning(lcNetInfoSCR, "Failed to create a dispatch queue to schedule a probe on");
         nw_release(monitor);
@@ -275,6 +275,6 @@ void QAppleNetworkInformationBackend::updateState(nw_path_t state)
         interfaceTypeChanged(interface);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "qapplenetworkinformationbackend.moc"

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qmetaobjectbuilder_p.h"
 
@@ -9,11 +9,11 @@
 #include <vector>
 #include <stdlib.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QMetaObjectBuilder
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMetaObjectBuilder class supports building QMetaObject objects at runtime.
 
@@ -1040,7 +1040,7 @@ int QMetaObjectBuilder::indexOfClassInfo(const QByteArray &name)
 
 /*!
     \class QMetaStringTable
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMetaStringTable class can generate a meta-object string table at runtime.
 */
@@ -1105,7 +1105,7 @@ void QMetaStringTable::writeBlob(char *out) const
     int offsetOfStringdataMember = int(m_entries.size() * 2 * sizeof(uint));
     int stringdataOffset = 0;
 
-    // qt_metacast expects the first string in the string table to be the class name.
+    // bobui_metacast expects the first string in the string table to be the class name.
     writeString(out, /*index*/ 0, m_className, offsetOfStringdataMember, stringdataOffset);
 
     for (Entries::ConstIterator it = m_entries.constBegin(), end = m_entries.constEnd();
@@ -1431,8 +1431,8 @@ static int buildMetaObject(QMetaObjectBuilderPrivate *d, char *buf,
         size += sizeof(SuperData) * (d->relatedMetaObjects.size() + 1);
     }
 
-    ALIGN(size, QtPrivate::QMetaTypeInterface *);
-    auto types = reinterpret_cast<const QtPrivate::QMetaTypeInterface **>(buf + size);
+    ALIGN(size, BobUIPrivate::QMetaTypeInterface *);
+    auto types = reinterpret_cast<const BobUIPrivate::QMetaTypeInterface **>(buf + size);
     if constexpr (mode == Construct) {
         meta->d.metaTypes = types;
         for (const auto &prop : d->properties) {
@@ -1453,7 +1453,7 @@ static int buildMetaObject(QMetaObjectBuilderPrivate *d, char *buf,
         types++;
         for (const auto &method: d->methods) {
             QMetaType mt(QMetaType::fromName(method.returnType).id());
-            *types = reinterpret_cast<QtPrivate::QMetaTypeInterface *&>(mt);
+            *types = reinterpret_cast<BobUIPrivate::QMetaTypeInterface *&>(mt);
             types++;
             for (auto parameterType: method.parameterTypes()) {
                 QMetaType mt = QMetaType::fromName(parameterType);
@@ -1529,7 +1529,7 @@ void QMetaObjectBuilder::setStaticMetacallFunction
 
 /*!
     \class QMetaMethodBuilder
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMetaMethodBuilder class enables modifications to a method definition on a meta object builder.
 */
@@ -1795,7 +1795,7 @@ void QMetaMethodBuilder::setRevision(int revision)
 
 /*!
     \class QMetaPropertyBuilder
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMetaPropertyBuilder class enables modifications to a property definition on a meta object builder.
 */
@@ -2013,9 +2013,9 @@ bool QMetaPropertyBuilder::isUser() const
 
 /*!
     Returns \c true if the property has a C++ setter function that
-    follows Qt's standard "name" / "setName" pattern. Designer and uic
+    follows BobUI's standard "name" / "setName" pattern. Designer and uic
     query hasStdCppSet() in order to avoid expensive
-    QObject::setProperty() calls. All properties in Qt [should] follow
+    QObject::setProperty() calls. All properties in BobUI [should] follow
     this pattern.  The default value is false.
 
     \sa setStdCppSet()
@@ -2218,7 +2218,7 @@ void QMetaPropertyBuilder::setUser(bool value)
 
 /*!
     Sets the C++ setter flag on this property to \a value, which is
-    true if the property has a C++ setter function that follows Qt's
+    true if the property has a C++ setter function that follows BobUI's
     standard "name" / "setName" pattern.
 
     \sa hasStdCppSet()
@@ -2346,7 +2346,7 @@ void QMetaPropertyBuilder::setRevision(int revision)
 
 /*!
     \class QMetaEnumBuilder
-    \inmodule QtCore
+    \inmodule BobUICore
     \internal
     \brief The QMetaEnumBuilder class enables modifications to an enumerator definition on a meta object builder.
 */
@@ -2637,4 +2637,4 @@ void QMetaEnumBuilder::removeKey(int index)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QFACTORYINTERFACE_H
 #define QFACTORYINTERFACE_H
 
-#include <QtCore/qobject.h>
-#include <QtCore/qstringlist.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qstringlist.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 struct Q_CORE_EXPORT QFactoryInterface
 {
@@ -16,9 +16,9 @@ struct Q_CORE_EXPORT QFactoryInterface
 };
 
 #ifndef Q_QDOC
-Q_DECLARE_INTERFACE(QFactoryInterface, "org.qt-project.Qt.QFactoryInterface")
+Q_DECLARE_INTERFACE(QFactoryInterface, "org.bobui-project.BobUI.QFactoryInterface")
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFACTORYINTERFACE_H

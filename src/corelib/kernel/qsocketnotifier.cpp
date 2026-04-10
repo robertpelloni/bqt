@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #define BUILDING_QSOCKETNOTIFIER
 #include "qsocketnotifier.h"
@@ -13,15 +13,15 @@
 #include "qmetatype.h"
 
 #include "qobject_p.h"
-#include <private/qthread_p.h>
+#include <private/bobuihread_p.h>
 
-#include <QtCore/QLoggingCategory>
-#include <QtCore/qpointer.h>
+#include <BobUICore/QLoggingCategory>
+#include <BobUICore/qpointer.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN_TAGGED(QSocketNotifier::Type, QSocketNotifier_Type)
-QT_IMPL_METATYPE_EXTERN(QSocketDescriptor)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QSocketNotifier::Type, QSocketNotifier_Type)
+BOBUI_IMPL_METATYPE_EXTERN(QSocketDescriptor)
 
 class QSocketNotifierPrivate : public QObjectPrivate
 {
@@ -34,16 +34,16 @@ public:
 
 /*!
     \class QSocketNotifier
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSocketNotifier class provides support for monitoring
     activity on a file descriptor.
 
     \ingroup network
     \ingroup io
 
-    The QSocketNotifier makes it possible to integrate Qt's event
+    The QSocketNotifier makes it possible to integrate BobUI's event
     loop with other event loops based on file descriptors. File
-    descriptor action is detected in Qt's main event
+    descriptor action is detected in BobUI's main event
     loop (QCoreApplication::exec()).
 
     \target write notifiers
@@ -80,10 +80,10 @@ public:
     Finally, you can use the socket() function to retrieve the
     socket identifier.  Although the class is called QSocketNotifier,
     it is normally used for other types of devices than sockets.
-    QTcpSocket and QUdpSocket provide notification through signals, so
+    BOBUIcpSocket and QUdpSocket provide notification through signals, so
     there is normally no need to use a QSocketNotifier on them.
 
-    \sa QFile, QProcess, QTcpSocket, QUdpSocket
+    \sa QFile, QProcess, BOBUIcpSocket, QUdpSocket
 */
 
 /*!
@@ -291,7 +291,7 @@ void QSocketNotifier::setEnabled(bool enable)
 
     if (!thisThreadData->hasEventDispatcher()) // perhaps application/thread is shutting down
         return;
-    if (Q_UNLIKELY(thread() != QThread::currentThread())) {
+    if (Q_UNLIKELY(thread() != BOBUIhread::currentThread())) {
         qWarning("QSocketNotifier: Socket notifiers cannot be enabled or disabled from another thread");
         return;
     }
@@ -312,7 +312,7 @@ bool QSocketNotifier::event(QEvent *e)
     switch (e->type()) {
     case QEvent::ThreadChange:
         if (d->snenabled) {
-            QMetaObject::invokeMethod(this, "setEnabled", Qt::QueuedConnection,
+            QMetaObject::invokeMethod(this, "setEnabled", BobUI::QueuedConnection,
                                       Q_ARG(bool, d->snenabled));
             setEnabled(false);
         }
@@ -322,7 +322,7 @@ bool QSocketNotifier::event(QEvent *e)
         {
             QPointer<QSocketNotifier> alive(this);
             emit activated(d->sockfd, d->sntype, QPrivateSignal());
-            // ### Qt7: Remove emission if the activated(int) signal is removed
+            // ### BobUI7: Remove emission if the activated(int) signal is removed
             if (alive)
                 emit activated(int(qintptr(d->sockfd)), QPrivateSignal());
         }
@@ -335,7 +335,7 @@ bool QSocketNotifier::event(QEvent *e)
 
 /*!
     \class QSocketDescriptor
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief A class which holds a native socket descriptor.
     \internal
 
@@ -347,7 +347,7 @@ bool QSocketNotifier::event(QEvent *e)
     QSocketDescriptor makes it easier to handle native socket
     descriptors in cross-platform code.
 
-    On Windows it holds a \c {Qt::HANDLE} and on Unix it holds an \c int.
+    On Windows it holds a \c {BobUI::HANDLE} and on Unix it holds an \c int.
     The class will implicitly convert between the class and the
     native descriptor type.
 */
@@ -369,7 +369,7 @@ bool QSocketNotifier::event(QEvent *e)
 */
 
 /*!
-    \fn Qt::HANDLE QSocketDescriptor::winHandle() const noexcept
+    \fn BobUI::HANDLE QSocketDescriptor::winHandle() const noexcept
     \internal
 
     Returns the internal handle.
@@ -377,6 +377,6 @@ bool QSocketNotifier::event(QEvent *e)
     \note This function is only available on Windows.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsocketnotifier.cpp"

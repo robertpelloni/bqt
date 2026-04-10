@@ -1,15 +1,15 @@
-Qt 4.4.2 is a bug-fix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 4.4.1 and 4.4.0.
+BobUI 4.4.2 is a bug-fix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 4.4.1 and 4.4.0.
 
-The Qt version 4.4 series is binary compatible with the 4.3.x series.
-The Qt for Embedded Linux version 4.4 series is binary compatible with
-the Qtopia Core 4.3.x series. Applications compiled for 4.0, 4.1, 4.2,
+The BobUI version 4.4 series is binary compatible with the 4.3.x series.
+The BobUI for Embedded Linux version 4.4 series is binary compatible with
+the BobUIopia Core 4.3.x series. Applications compiled for 4.0, 4.1, 4.2,
 and 4.3 will continue to run with 4.4.
 
 Some of the changes listed in this file include issue tracking numbers
 corresponding to tasks in the Task Tracker:
 
-  http://qt.nokia.com/developer/task-tracker
+  http://bobui.nokia.com/developer/task-tracker
 
 Each of these identifiers can be entered in the task tracker to obtain
 more information about a particular change.
@@ -30,12 +30,12 @@ Third party components
 *                          Library                                         *
 ****************************************************************************
 
-QtCore
+BobUICore
 ------
 
 - QVariant
     * [220112] correct documentation with respect to conversions
-    involving QTime.
+    involving BOBUIime.
 
 - QHash
     * [215348] Document that uniqueKeys() doesn't sort its keys.
@@ -49,19 +49,19 @@ QtCore
     without a manifest.
 
 - QDataStream
-    * Fixed storing a QPalette into a stream with a version older than Qt_2_1
+    * Fixed storing a QPalette into a stream with a version older than BobUI_2_1
 
-- QtConcurrent
+- BobUIConcurrent
     * [221671] Fixed filtered() compile error when using filter functions that
       takes its argument by const reference.
     * [220804] Fix several compile errors with STL containers.
     
-- QThreadPool
-    * [215365] The Q[Core]Application destructor now waits for all QThreadPool
-      threads to finish. This fixes ussues when unloading the Qt dlls on windows
-      as well as when using Qt features that need on a QApplication instance
+- BOBUIhreadPool
+    * [215365] The Q[Core]Application destructor now waits for all BOBUIhreadPool
+      threads to finish. This fixes ussues when unloading the BobUI dlls on windows
+      as well as when using BobUI features that need on a QApplication instance
       in a worker thread.
-QtGui
+BobUIGui
 -------------
 
    * [215794] setWindowFilePath() didn't update window title until the
@@ -110,17 +110,17 @@ QtGui
 - QSplitter
    * [214480] Improve docs on how the effective stretch facors are calculated.
 
-- QTextEdit
+- BOBUIextEdit
    * [214956] Fix painting problems with text in floating frames
    * [215192] Fix HTML alignment in QLabels with RTL
    * [213259] Fix to handle ShortcutOverride for Ctrl+Shift+Right
 
-- QTextCursor
+- BOBUIextCursor
    * [214457] Fix assert when deleting empty cells
-   * [210496] Fix the usecase that  QTextCursor::select( QTextCursor::LineUnderCursor )
+   * [210496] Fix the usecase that  BOBUIextCursor::select( BOBUIextCursor::LineUnderCursor )
      doesn't work when the text has not been layed out yet
 
-- QTextDocument
+- BOBUIextDocument
    * [207779] Fix HTML import of page-breaks on empty lines to not get lost
    * [212848] Fix  FullWidthSelection to work if LineWrapMode set to NoWrap
    * Fixes the positioning of bullets to always honor the text direction
@@ -129,21 +129,21 @@ QtGui
    * [219446] Fixed a bug where calling repaint() before QApplication::exec() did not
      invoke a paintEvent().
 
-QtScript
+BobUIScript
 --------
 
     * [219126] Fixed bug that caused the decimal point to appear in
     the wrong position when converting a number with a negative
     exponent to a string.
 
-QtGui
+BobUIGui
 -----
 
 - QDateTimeEdit
     * [220926] QDateTimeEdit::textFromDateTime: valueFromText vs. date
     TimeFromText -- clarify documentation
 
-- QTimeEdit
+- BOBUIimeEdit
     * [215426] Fixed a typo in the declaration of a Q_PROPERTY
 
 - QPainter
@@ -156,7 +156,7 @@ QtGui
       text not being transformed or not shown at all.
     * [222520] Fixed issue in raster paint engine where StretchToDevice
       mode for gradients wasn't respected.
-    * [222848] Prevent potential crash on NaN in qt_curves_for_arc()
+    * [222848] Prevent potential crash on NaN in bobui_curves_for_arc()
       when drawing squiggly underlined text.
 
 - QBrush
@@ -190,7 +190,7 @@ QtGui
 
 - QMatrix
     * [198791] Fixed bug in QMatrix::map(const QPolygon &) causing a behavioral
-      difference from Qt 3's QWMatrix.
+      difference from BobUI 3's QWMatrix.
 
 * Fixed bugs in QPolygon to QRegion conversion causing to many rectangles to be
   generated.
@@ -203,17 +203,17 @@ QtGui
 * [216910] Use the 'eieio' instruction instead of 'lwsync' in the
   PowerPC implementation of QAtomicInt and QAtomicPointer since the
   latter is not available in all hardware implementations. The 'eieio'
-  instruction was used successfully in Qt 4.3 and earlier.
+  instruction was used successfully in BobUI 4.3 and earlier.
 
 - QDockWidget
     * [222222] The sizeHint for dockwidget is now respected when it is redocked
     * [222030] The minimum size and minimum size hint are now respected
 
-- QToolBar
+- BOBUIoolBar
     * [216929] Fixed the extension when the orientation is vertical
 
-- QTabBar
-    * [214527] Fixed the geometry of QTabBarnot being correctly updated when
+- BOBUIabBar
+    * [214527] Fixed the geometry of BOBUIabBarnot being correctly updated when
                adding a tab.
 
 - QMainWindow
@@ -224,7 +224,7 @@ QtGui
     * [158984] Fixed crash while using stylesheet in combinaison with a proxy style
     * [217470] Fixed setting a stylesheet on a QDockWidget remove its border
 
-- QTreeView
+- BOBUIreeView
     * [220298] Fixed regression where clicking outside of the first column doesn't
                always select the item.
     * [224598] Fixed item not always appearing when QStandardItemModel::appendColumns
@@ -234,23 +234,23 @@ QtGui
     * [209473] Fixed assert/crash when selectAll were called on a treeview with no
       items.
 
-- QTableView
+- BOBUIableView
     * [314519] Fixed crash with very big models.
     * [211039] Fixed assert when moving a header section in a vertical header.
 
-QtGui
+BobUIGui
 -----
 * [214146, 215170] Fix a regression with multiple screens on
   X11. Multiple screens are now reported with their correct size
   regardless of how X11 is configured.
 
-QtOpenGL
+BobUIOpenGL
 --------
 
 * [217429] Fixed issue on certain Intel drivers causing a GL error to be
-  generated when computing the max texture size in qt_gl_maxTextureSize().
+  generated when computing the max texture size in bobui_gl_maxTextureSize().
 
-QtWebKit
+BobUIWebKit
 --------
 * Fixed potential crash when deleting QWebView instances.
 * Fixed blurry widgets in the web page due to antialiased painting.
@@ -265,21 +265,21 @@ QtWebKit
 * Fix QWebFrame::setHtml() not setting the contents immediately
 * [218789] Fix WebKit not displaying content on 403 HTTP responses
 
-QtXml
+BobUIXml
 -----
 
 - QDomElement
     * [220115] Document QDomElement::setAttribute(double)'s behavior with
     respect to locale.
 
-QtXmlPatterns
+BobUIXmlPatterns
 -------------
 
 - QXmlQuery
     * [219070] Fix after the QXmlQuery object is deleted it doesn't
     seem to be cleaning up afterwards.
 
-QtNetwork
+BobUINetwork
 ---------
 
 - QNetworkReply & QNetworkAccessManager
@@ -293,14 +293,14 @@ QtNetwork
     length 0 when reading from a QIODevice.
 
 
-QtTest
+BobUITest
 ------
 
 - QCOMPARE
     * [219067] Document behavior of qFuzzyCompare/QCOMPARE when
     comparing with 0.0.
 
-QtDBus
+BobUIDBus
 ------
 
 - QDBusConnection
@@ -314,14 +314,14 @@ QtDBus
     * [190546] Improved the error messages generated by QDBusReply in
     case of mismatched signatures.
 
-QtHelp
+BobUIHelp
 ------
 
    * [219454] Index also .htm and .txt files for the full text search.
    * [233415] Use the proper encoding when parsing the title of a html
    document.
 
-Qt3Support
+BobUI3Support
 ----------
 
     * [216806] Fixed a crash in Q3ScrollView when setting a null corner widget
@@ -366,8 +366,8 @@ Windows
      keyboard layouts).
    * [223951] Fixed a crash while accessing 'QAxObject*' for methods returning a
      VARIANT with IDispatch inside.
-   * [223145] Fixed a regression which prevented use of Qt::WindowSystemMenuHint
-     together with flags like Qt::FramelessWindowHint.
+   * [223145] Fixed a regression which prevented use of BobUI::WindowSystemMenuHint
+     together with flags like BobUI::FramelessWindowHint.
    * [224063] Fixed a crash in QFile when QFile::handle() was called.
    * [221924] Fixed the binary installer for Visual Studio 2005 Express.
    * [218215] Fix custom paper sizes for printing under Windows.
@@ -401,14 +401,14 @@ Mac OS X
    * [312012] Fixed support for secondary shortcuts on menu bar.
    * [315450] Fixed build issue for Phonon on OS 10.4/Macbooks regarding OpenGL headers.
 
-Qt for Embedded Linux
+BobUI for Embedded Linux
 ---------------------
 
 - Raster paint engine
    * Fixed pixel errors when drawing pixmaps into a semi-transparent window.
    * Fixed an assert when drawing an 16-bit image onto an image of format
      QImage::Format_ARGB8565_Premultiplied.
-   * [217400] Fixed painting errors with Qt::WA_NoSystemBackground used on
+   * [217400] Fixed painting errors with BobUI::WA_NoSystemBackground used on
      a 16bit screen.
    * Fixed CompositionMode_Source with new QImage formats introduced in 4.4.0.
 
@@ -419,20 +419,20 @@ Qt for Embedded Linux
 - DirectFB screen driver
    * Fixed a cache corruption which randomly resulting in painting errors
      when using QPainter::drawImage().
-   * Fixed use of Qt::SmoothTransformation with QPixmap::scaled().
+   * Fixed use of BobUI::SmoothTransformation with QPixmap::scaled().
    * Fixed painting errors when drawing transparent windows and compiled
-     width QT_NO_DIRECTFB_VM.
-   * Added QT_NO_DIRECTFB_PREALLOCATED to work around issues with drivers
+     width BOBUI_NO_DIRECTFB_VM.
+   * Added BOBUI_NO_DIRECTFB_PREALLOCATED to work around issues with drivers
      not properly implementing blitting to/from preallocated surfaces.
 
 - VNC screen driver
    * Fixed a crash when used on top of a screen with a non-standard line step.
    * Fixed remote cursor when used on top of a hardware accelerated cursor.
 
-Qt for Windows CE
+BobUI for Windows CE
 -----------------
    * [219644] Maximized MDI windows had a double title bar on Windows Mobile.
-   * [223975] Qt version displayed wrong in Windows Explorer.
+   * [223975] BobUI version displayed wrong in Windows Explorer.
    * [217576] QLocale always displayed "C" as language.
    * [215020] Windows with parent were always embedded into the parent window
      instead of being toplevel itself.

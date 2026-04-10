@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QVARIANTANIMATION_H
 #define QVARIANTANIMATION_H
 
-#include <QtCore/qabstractanimation.h>
-#include <QtCore/qeasingcurve.h>
-#include <QtCore/qlist.h>
-#include <QtCore/qpair.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qabstractanimation.h>
+#include <BobUICore/qeasingcurve.h>
+#include <BobUICore/qlist.h>
+#include <BobUICore/qpair.h>
+#include <BobUICore/qvariant.h>
 
-QT_REQUIRE_CONFIG(animation);
+BOBUI_REQUIRE_CONFIG(animation);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVariantAnimationPrivate;
 class Q_CORE_EXPORT QVariantAnimation : public QAbstractAnimation
@@ -83,6 +83,6 @@ void qRegisterAnimationInterpolator(QVariant (*func)(const T &from, const T &to,
     QVariantAnimation::registerInterpolator(reinterpret_cast<QVariantAnimation::Interpolator>(reinterpret_cast<void(*)()>(func)), qMetaTypeId<T>());
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QVARIANTANIMATION_H

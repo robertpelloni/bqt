@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2012 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author James Turner <james.turner@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPLATFORMMENU_H
 #define QPLATFORMMENU_H
@@ -10,19 +10,19 @@
 //
 // This file is part of the QPA API and is not meant to be used
 // in applications. Usage of this API may make your code
-// source and binary incompatible with future versions of Qt.
+// source and binary incompatible with future versions of BobUI.
 //
 
-#include <QtCore/qobject.h>
-#include <QtGui/qtguiglobal.h>
-#include <QtCore/qpointer.h>
-#include <QtGui/qfont.h>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/qkeysequence.h>
+#include <BobUICore/qobject.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUICore/qpointer.h>
+#include <BobUIGui/qfont.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/qkeysequence.h>
 #endif
-#include <QtGui/qicon.h>
+#include <BobUIGui/qicon.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QPlatformMenu;
 class Q_GUI_EXPORT QPlatformMenuItem : public QObject
@@ -32,7 +32,7 @@ public:
     QPlatformMenuItem();
 
     // copied from, and must stay in sync with, QAction menu roles.
-    enum MenuRole { NoRole = 0, TextHeuristicRole, ApplicationSpecificRole, AboutQtRole,
+    enum MenuRole { NoRole = 0, TextHeuristicRole, ApplicationSpecificRole, AboutBobUIRole,
                     AboutRole, PreferencesRole, QuitRole,
                     // However these roles are private, perhaps temporarily.
                     // They could be added as public QAction roles if necessary.
@@ -52,7 +52,7 @@ public:
     virtual void setRole(MenuRole role) = 0;
     virtual void setCheckable(bool checkable) = 0;
     virtual void setChecked(bool isChecked) = 0;
-#if QT_CONFIG(shortcut)
+#if BOBUI_CONFIG(shortcut)
     virtual void setShortcut(const QKeySequence& shortcut) = 0;
 #endif
     virtual void setEnabled(bool enabled) = 0;
@@ -131,7 +131,7 @@ public:
     virtual QPlatformMenu *createMenu() const;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

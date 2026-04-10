@@ -1,7 +1,7 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "quuid.h"
 #include "quuid_p.h"
@@ -11,12 +11,12 @@
 #include "qdebug.h"
 #include "qendian.h"
 #include "qrandom.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // ensure QList of this is efficient
-static_assert(QTypeInfo<QUuid::Id128Bytes>::isRelocatable);
+static_assert(BOBUIypeInfo<QUuid::Id128Bytes>::isRelocatable);
 
 // 16 bytes (a uint, two shorts and a uchar[8]), each represented by two hex
 // digits; plus four dashes and a pair of enclosing brace: 16*2 + 4 + 2 = 38.
@@ -30,12 +30,12 @@ void _q_toHex(char *&dst, Integral value)
     const char *p = reinterpret_cast<const char *>(&value);
 
     for (uint i = 0; i < sizeof(Integral); ++i, dst += 2) {
-        dst[0] = QtMiscUtils::toHexLower((p[i] >> 4) & 0xf);
-        dst[1] = QtMiscUtils::toHexLower(p[i] & 0xf);
+        dst[0] = BobUIMiscUtils::toHexLower((p[i] >> 4) & 0xf);
+        dst[1] = BobUIMiscUtils::toHexLower(p[i] & 0xf);
     }
 }
 
-#if QT_VERSION_MAJOR == 7
+#if BOBUI_VERSION_MAJOR == 7
 #  warning Consider storing the UUID as simple bytes, not as {uint, ushort, short, array}
 #endif
 template <class Integral>
@@ -45,7 +45,7 @@ bool _q_fromHex(const char *&src, Integral &value)
 
     for (uint i = 0; i < sizeof(Integral) * 2; ++i) {
         uint ch = *src++;
-        int tmp = QtMiscUtils::fromHex(ch);
+        int tmp = BobUIMiscUtils::fromHex(ch);
         if (tmp == -1)
             return false;
 
@@ -142,7 +142,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
 
 /*!
     \class QUuid
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QUuid class stores a Universally Unique Identifier (UUID).
 
     \reentrant
@@ -301,7 +301,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
 
 /*!
     \class QUuid::Id128Bytes
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 6.6
 
     This trivial structure is 128 bits (16 bytes) in size and holds the binary
@@ -319,7 +319,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
     Converts \a src from big-endian byte order and returns the struct holding
     the binary representation of UUID in host byte order.
 
-    \sa <QtEndian>
+    \sa <BobUIEndian>
 */
 
 /*!
@@ -331,7 +331,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
     Converts \a src from little-endian byte order and returns the struct holding
     the binary representation of UUID in host byte order.
 
-    \sa <QtEndian>
+    \sa <BobUIEndian>
 */
 
 /*!
@@ -343,7 +343,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
     Converts \a src from host byte order and returns the struct holding the
     binary representation of UUID in big-endian byte order.
 
-    \sa <QtEndian>
+    \sa <BobUIEndian>
 */
 
 /*!
@@ -355,7 +355,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
     Converts \a src from host byte order and returns the struct holding the
     binary representation of UUID in little-endian byte order.
 
-    \sa <QtEndian>
+    \sa <BobUIEndian>
 */
 
 /*!
@@ -421,7 +421,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
 /*!
     \fn QUuid::QUuid(const GUID &guid)
 
-    Casts a Windows \a guid to a Qt QUuid.
+    Casts a Windows \a guid to a BobUI QUuid.
 
     \warning This function is only for Windows platforms.
 */
@@ -429,7 +429,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
 /*!
     \fn QUuid &QUuid::operator=(const GUID &guid)
 
-    Assigns a Windows \a guid to a Qt QUuid.
+    Assigns a Windows \a guid to a BobUI QUuid.
 
     \warning This function is only for Windows platforms.
 */
@@ -471,7 +471,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
   toString() for an explanation of how the five hex fields map to the
   public data members in QUuid.
 
-    \note In Qt versions prior to 6.3, this constructor was an overload
+    \note In BobUI versions prior to 6.3, this constructor was an overload
     set consisting of QString, QByteArray and \c{const char*}
     instead of one constructor taking QAnyStringView.
 
@@ -490,7 +490,7 @@ static QUuid createFromName(QUuid ns, QByteArrayView baseData, QCryptographicHas
     toString() for an explanation of how the five hex fields map to the
     public data members in QUuid.
 
-    \note In Qt versions prior to 6.3, this function was an overload
+    \note In BobUI versions prior to 6.3, this function was an overload
     set consisting of QStringView and QLatin1StringView instead of
     one function taking QAnyStringView.
 
@@ -542,7 +542,7 @@ QUuid QUuid::fromString(QAnyStringView text) noexcept
   This function returns a new UUID with variant QUuid::DCE and version QUuid::Md5.
   \a ns is the namespace and \a baseData is the basic data as described by RFC 4122.
 
-  \note In Qt versions prior to 6.8, this function took QByteArray, not
+  \note In BobUI versions prior to 6.8, this function took QByteArray, not
   QByteArrayView.
 
   \sa variant(), version(), createUuidV5(), createUuidV7()
@@ -565,7 +565,7 @@ QUuid QUuid::fromString(QAnyStringView text) noexcept
   This function returns a new UUID with variant QUuid::DCE and version QUuid::Sha1.
   \a ns is the namespace and \a baseData is the basic data as described by RFC 4122.
 
-  \note In Qt versions prior to 6.8, this function took QByteArray, not
+  \note In BobUI versions prior to 6.8, this function took QByteArray, not
   QByteArrayView.
 
   \sa variant(), version(), createUuidV3()
@@ -616,7 +616,7 @@ QUuid QUuid::createUuidV7()
 
   If the conversion fails, a null UUID is created.
 
-    \note In Qt versions prior to 6.3, this function took QByteArray, not
+    \note In BobUI versions prior to 6.3, this function took QByteArray, not
     QByteArrayView.
 
     \since 4.8
@@ -721,7 +721,7 @@ QString QUuid::toString(QUuid::StringFormat mode) const
 */
 QByteArray QUuid::toByteArray(QUuid::StringFormat mode) const
 {
-    QByteArray result(MaxStringUuidLength, Qt::Uninitialized);
+    QByteArray result(MaxStringUuidLength, BobUI::Uninitialized);
     const auto end = _q_uuidToHex(*this, const_cast<char *>(result.constData()), mode);
     result.resize(end - result.constData());
     return result;
@@ -769,7 +769,7 @@ QByteArray QUuid::toRfc4122() const
     return QByteArrayView(bytes).toByteArray();
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \relates QUuid
     Writes the UUID \a id to the data stream \a s.
@@ -840,7 +840,7 @@ QDataStream &operator>>(QDataStream &s, QUuid &id)
 
     return s;
 }
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
 /*!
     \fn bool QUuid::isNull() const
@@ -933,9 +933,9 @@ QDataStream &operator>>(QDataStream &s, QUuid &id)
 */
 #if defined(Q_OS_WIN)
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <objbase.h> // For CoCreateGuid
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 QUuid QUuid::createUuid()
 {
@@ -949,7 +949,7 @@ QUuid QUuid::createUuid()
 
 QUuid QUuid::createUuid()
 {
-    QUuid result(Qt::Uninitialized);
+    QUuid result(BobUI::Uninitialized);
     uint *data = &(result.data1);
     enum { AmountToRead = 4 };
     QRandomGenerator::system()->fillRange(data, AmountToRead);
@@ -975,7 +975,7 @@ QUuid QUuid::createUuid()
     otherwise returns \c false.
 */
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 /*!
     \relates QUuid
     Writes the UUID \a id to the output stream for debugging information \a dbg.
@@ -1001,4 +1001,4 @@ size_t qHash(const QUuid &uuid, size_t seed) noexcept
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

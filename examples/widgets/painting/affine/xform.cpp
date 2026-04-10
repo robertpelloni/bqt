@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "xform.h"
 #include "hoverpoints.h"
@@ -15,7 +15,7 @@ XFormView::XFormView(QWidget *parent)
     : ArthurFrame(parent),
       m_pixmap(QPixmap(":res/affine/bg1.jpg"))
 {
-    setAttribute(Qt::WA_MouseTracking);
+    setAttribute(BobUI::WA_MouseTracking);
 
     m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
     m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
@@ -171,7 +171,7 @@ void XFormView::setRotation(qreal r)
     m_rotation = r;
 
     QPointF center(m_hoverPoints->points().at(0));
-    QTransform m;
+    BOBUIransform m;
     m.translate(center.x(), center.y());
     m.rotate(m_rotation - old_rot);
     m.translate(-center.x(), -center.y());
@@ -180,11 +180,11 @@ void XFormView::setRotation(qreal r)
     update();
 }
 
-void XFormView::timerEvent(QTimerEvent *e)
+void XFormView::timerEvent(BOBUIimerEvent *e)
 {
     if (e->timerId() == timer.timerId()) {
         QPointF center(m_hoverPoints->points().at(0));
-        QTransform m;
+        BOBUIransform m;
         m.translate(center.x(), center.y());
         m.rotate(0.2);
         m.translate(-center.x(), -center.y());
@@ -205,7 +205,7 @@ void XFormView::timerEvent(QTimerEvent *e)
     }
 }
 
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void XFormView::wheelEvent(QWheelEvent *e)
 {
     m_scale += e->angleDelta().y() / qreal(600);
@@ -237,8 +237,8 @@ void XFormView::drawPixmapType(QPainter *painter)
 
     painter->drawPixmap(QPointF(0, 0), m_pixmap);
     painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25,
-                         Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
-    painter->setBrush(Qt::NoBrush);
+                         BobUI::SolidLine, BobUI::FlatCap, BobUI::BevelJoin));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(QRectF(0, 0, m_pixmap.width(),
                              m_pixmap.height()).adjusted(-2, -2, 2, 2));
 }
@@ -263,11 +263,11 @@ void XFormView::drawTextType(QPainter *painter)
     painter->shear(0, m_shear);
     painter->translate(-center);
 
-    painter->fillPath(path, Qt::black);
+    painter->fillPath(path, BobUI::black);
 
     painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25,
-                         Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
-    painter->setBrush(Qt::NoBrush);
+                         BobUI::SolidLine, BobUI::FlatCap, BobUI::BevelJoin));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(br.adjusted(-1, -1, 1, 1));
 }
 
@@ -287,14 +287,14 @@ void XFormView::drawVectorType(QPainter *painter)
     painter->shear(0, m_shear);
     painter->translate(-center.x(), -center.y());
 
-    painter->setPen(Qt::NoPen);
+    painter->setPen(BobUI::NoPen);
     path.moveTo(120, 470);
     path.lineTo(60 + 245, 470);
     path.lineTo(60 + 245, 470 + 350);
     path.lineTo(60, 470 + 350);
     path.lineTo(60, 470 + 80);
 
-    painter->setBrush(Qt::white);
+    painter->setBrush(BobUI::white);
     painter->drawPath(path);
     path = QPainterPath();
 
@@ -723,8 +723,8 @@ void XFormView::drawVectorType(QPainter *painter)
     path.closeSubpath();
     painter->drawPath(path);
 
-    painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, BobUI::SolidLine, BobUI::FlatCap, BobUI::BevelJoin));
+    painter->setBrush(BobUI::NoBrush);
     painter->drawRect(br.adjusted(-1, -1, 1, 1));
 }
 
@@ -743,19 +743,19 @@ XFormWidget::XFormWidget(QWidget *parent)
 
     QGroupBox *rotateGroup = new QGroupBox(mainGroup);
     rotateGroup->setTitle(tr("Rotate"));
-    QSlider *rotateSlider = new QSlider(Qt::Horizontal, rotateGroup);
+    QSlider *rotateSlider = new QSlider(BobUI::Horizontal, rotateGroup);
     rotateSlider->setRange(0, 3600);
     rotateSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *scaleGroup = new QGroupBox(mainGroup);
     scaleGroup->setTitle(tr("Scale"));
-    QSlider *scaleSlider = new QSlider(Qt::Horizontal, scaleGroup);
+    QSlider *scaleSlider = new QSlider(BobUI::Horizontal, scaleGroup);
     scaleSlider->setRange(1, 4000);
     scaleSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *shearGroup = new QGroupBox(mainGroup);
     shearGroup->setTitle(tr("Shear"));
-    QSlider *shearSlider = new QSlider(Qt::Horizontal, shearGroup);
+    QSlider *shearSlider = new QSlider(BobUI::Horizontal, shearGroup);
     shearSlider->setRange(-990, 990);
     shearSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
@@ -849,7 +849,7 @@ XFormWidget::XFormWidget(QWidget *parent)
     // defaults
     view->reset();
     vectorType->setChecked(true);
-    textEditor->setText("Qt Affine Transformation Example");
+    textEditor->setText("BobUI Affine Transformation Example");
     textEditor->setEnabled(false);
 
     animateButton->animateClick();

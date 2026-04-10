@@ -1,0 +1,87 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-android-generate-deployment-settings.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_android_generate_deployment_settings
+\keyword bobui6_android_generate_deployment_settings
+
+\summary {Generates the deployment settings file needed by androiddeploybobui.}
+
+\include cmake-find-package-core.qdocinc
+
+\cmakecommandsince 6.0
+\warning This command is deprecated since BobUI 6.5. Use \l bobui_add_executable instead.
+\cmakecommandandroidonly
+
+\section1 Synopsis
+
+\badcode
+bobui_android_generate_deployment_settings(target)
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_android_generate_deployment_settings()
+
+\section1 Description
+
+The \c{androiddeploybobui} tool expects a deployment settings file as input. This
+command reads CMake variables and properties of the \c{target} to generate such
+a file in the target's binary directory. Upon return, the full path to this file
+is available in the target's \c{BOBUI_ANDROID_DEPLOYMENT_SETTINGS_FILE} property.
+
+\section2 CMake Variables
+
+A number of variables are used while generating the deployment settings file.
+Some are provided by BobUI, others by CMake or the Android NDK.
+
+\list
+\li \l{cmake-variable-ANDROID_NDK_HOST_SYSTEM_NAME}{ANDROID_NDK_HOST_SYSTEM_NAME}
+\li \l{cmake-variable-ANDROID_SDK_ROOT}{ANDROID_SDK_ROOT}
+\li \c{CMAKE_ANDROID_ARCH_ABI}
+\li \c{CMAKE_ANDROID_NDK}
+\li \c{CMAKE_SYSROOT}
+\li \l{cmake-variable-BOBUI_ANDROID_APPLICATION_ARGUMENTS}{BOBUI_ANDROID_APPLICATION_ARGUMENTS}
+\li \l{cmake-variable-BOBUI_HOST_PATH}{BOBUI_HOST_PATH}
+\endlist
+
+\section2 Target Properties
+
+The properties below will be read from the specified \c{target}. Note that this
+command is called as part of target finalization (see
+\l{bobui6_finalize_target}{bobui_finalize_target()}). If you are using
+\l{bobui6_add_executable}{bobui_add_executable()} to create the target and you need to
+modify some of these target properties, you need to ensure that target
+finalization is deferred. See \l{bobui6_add_executable}{bobui_add_executable()} for
+how to accomplish this.
+
+\list
+\li \l{cmake-target-property-BOBUI_ANDROID_DEPLOYMENT_DEPENDENCIES}{BOBUI_ANDROID_DEPLOYMENT_DEPENDENCIES}
+\li \l{cmake-target-property-BOBUI_ANDROID_EXTRA_LIBS}{BOBUI_ANDROID_EXTRA_LIBS}
+\li \l{cmake-target-property-BOBUI_ANDROID_EXTRA_PLUGINS}{BOBUI_ANDROID_EXTRA_PLUGINS}
+\li \l{cmake-target-property-BOBUI_ANDROID_MIN_SDK_VERSION}{BOBUI_ANDROID_MIN_SDK_VERSION}
+\li \l{cmake-target-property-BOBUI_ANDROID_PACKAGE_SOURCE_DIR}{BOBUI_ANDROID_PACKAGE_SOURCE_DIR}
+\li \l{cmake-target-property-BOBUI_ANDROID_TARGET_SDK_VERSION}{BOBUI_ANDROID_TARGET_SDK_VERSION}
+\li \l{cmake-target-property-BOBUI_ANDROID_COMPILE_SDK_VERSION}{BOBUI_ANDROID_COMPILE_SDK_VERSION}
+\li \l{cmake-target-property-BOBUI_ANDROID_PACKAGE_NAME}{BOBUI_ANDROID_PACKAGE_NAME}
+\li \l{cmake-target-property-BOBUI_ANDROID_APP_NAME}{BOBUI_ANDROID_APP_NAME}
+\li \l{cmake-target-property-BOBUI_ANDROID_APP_ICON}{BOBUI_ANDROID_APP_ICON}
+\li \l{cmake-target-property-BOBUI_ANDROID_VERSION_NAME}{BOBUI_ANDROID_VERSION_NAME}
+\li \l{cmake-target-property-BOBUI_ANDROID_VERSION_CODE}{BOBUI_ANDROID_VERSION_CODE}
+\li \l{cmake-target-property-BOBUI_ANDROID_LEGACY_PACKAGING}{BOBUI_ANDROID_LEGACY_PACKAGING}
+\li \l{cmake-target-property-BOBUI_QML_IMPORT_PATH}{BOBUI_QML_IMPORT_PATH}
+\li \l{cmake-target-property-BOBUI_QML_ROOT_PATH}{BOBUI_QML_ROOT_PATH}
+\li \l{cmake-target-property-bobui_no_entrypoint}{bobui_no_entrypoint}
+\endlist
+
+Upon return, the \c{BOBUI_ANDROID_DEPLOYMENT_SETTINGS_FILE} target property will
+contain the location of the generated deployment settings file.
+
+\sa {bobui6_android_add_apk_target}{bobui_android_add_apk_target()},
+    {bobui6_finalize_target}{bobui_finalize_target()}
+
+\section1 Example
+
+\snippet cmake-macros/examples.cmake bobui_android_deploy_basic
+*/

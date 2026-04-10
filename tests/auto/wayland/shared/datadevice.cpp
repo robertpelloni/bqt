@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "datadevice.h"
 
@@ -37,7 +37,7 @@ void DataDeviceManager::data_device_manager_get_data_device(Resource *resource, 
 
 void DataDeviceManager::data_device_manager_create_data_source(Resource *resource, uint32_t id)
 {
-    new QtWaylandServer::wl_data_source(resource->client(), id, 1);
+    new BobUIWaylandServer::wl_data_source(resource->client(), id, 1);
 }
 
 DataDevice::~DataDevice()
@@ -106,7 +106,7 @@ void DataOffer::data_offer_receive(Resource *resource, const QString &mime_type,
     emit receive(mime_type, fd);
 }
 
-void DataOffer::data_offer_destroy(QtWaylandServer::wl_data_offer::Resource *resource)
+void DataOffer::data_offer_destroy(BobUIWaylandServer::wl_data_offer::Resource *resource)
 {
     m_dataDevice->m_sentSelectionOffers.removeOne(this);
     wl_resource_destroy(resource->handle);

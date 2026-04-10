@@ -1,14 +1,14 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qmovie Test:
 #####################################################################
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qmovie LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
 # Collect test data
@@ -17,12 +17,12 @@ file(GLOB_RECURSE test_data_glob
     animations/* multiframe/*)
 list(APPEND test_data ${test_data_glob})
 
-qt_internal_add_test(tst_qmovie
+bobui_internal_add_test(tst_qmovie
     SOURCES
         tst_qmovie.cpp
     LIBRARIES
-        Qt::Gui
-        Qt::TestPrivate
+        BobUI::Gui
+        BobUI::TestPrivate
     TESTDATA ${test_data}
 )
 
@@ -34,7 +34,7 @@ set(resources_resource_files
     "multiframe/Obj_N2_Internal_Mem.ico"
 )
 
-qt_internal_add_resource(tst_qmovie "resources"
+bobui_internal_add_resource(tst_qmovie "resources"
     PREFIX
         "/"
     FILES
@@ -44,17 +44,17 @@ qt_internal_add_resource(tst_qmovie "resources"
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qmovie CONDITION TARGET Qt::Widgets
+bobui_internal_extend_target(tst_qmovie CONDITION TARGET BobUI::Widgets
     LIBRARIES
-        Qt::Widgets
+        BobUI::Widgets
 )
 
-qt_internal_extend_target(tst_qmovie CONDITION QT_FEATURE_gif
+bobui_internal_extend_target(tst_qmovie CONDITION BOBUI_FEATURE_gif
     DEFINES
-        QTEST_HAVE_GIF
+        BOBUIEST_HAVE_GIF
 )
 
-qt_internal_extend_target(tst_qmovie CONDITION QT_FEATURE_jpeg
+bobui_internal_extend_target(tst_qmovie CONDITION BOBUI_FEATURE_jpeg
     DEFINES
-        QTEST_HAVE_JPEG
+        BOBUIEST_HAVE_JPEG
 )

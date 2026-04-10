@@ -1,27 +1,27 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qsplashscreen.h"
 
 #include "qapplication.h"
 #include "qpainter.h"
 #include "qpixmap.h"
-#include "qtextdocument.h"
-#include "qtextcursor.h"
-#include <QtGui/qscreen.h>
-#include <QtGui/qwindow.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qelapsedtimer.h>
+#include "bobuiextdocument.h"
+#include "bobuiextcursor.h"
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qelapsedtimer.h>
 #include <private/qwidget_p.h>
 
 #ifdef Q_OS_WIN
-#  include <QtCore/qt_windows.h>
+#  include <BobUICore/bobui_windows.h>
 #else
 #  include <time.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSplashScreenPrivate : public QWidgetPrivate
 {
@@ -42,7 +42,7 @@ public:
    \brief The QSplashScreen widget provides a splash screen that can
    be shown during application startup.
 
-   \inmodule QtWidgets
+   \inmodule BobUIWidgets
 
    A splash screen is a widget that is usually displayed when an
    application is being started. Splash screens are often used for
@@ -51,7 +51,7 @@ public:
    provide the user with feedback that the application is loading.
 
    The splash screen appears in the center of the screen. It may be
-   useful to add the Qt::WindowStaysOnTopHint to the splash widget's
+   useful to add the BobUI::WindowStaysOnTopHint to the splash widget's
    window flags if you want to keep it above all the other windows on
    the desktop.
 
@@ -93,10 +93,10 @@ public:
     Construct a splash screen that will display the \a pixmap.
 
     There should be no need to set the widget flags, \a f, except
-    perhaps Qt::WindowStaysOnTopHint.
+    perhaps BobUI::WindowStaysOnTopHint.
 */
-QSplashScreen::QSplashScreen(const QPixmap &pixmap, Qt::WindowFlags f)
-    : QWidget(*(new QSplashScreenPrivate()), nullptr, Qt::SplashScreen | Qt::FramelessWindowHint | f)
+QSplashScreen::QSplashScreen(const QPixmap &pixmap, BobUI::WindowFlags f)
+    : QWidget(*(new QSplashScreenPrivate()), nullptr, BobUI::SplashScreen | BobUI::FramelessWindowHint | f)
 {
     setPixmap(pixmap);  // Does an implicit repaint
 }
@@ -110,8 +110,8 @@ QSplashScreen::QSplashScreen(const QPixmap &pixmap, Qt::WindowFlags f)
     prefer to have the splash screen on a different screen than your primary
     one. In that case pass the proper \a screen.
 */
-QSplashScreen::QSplashScreen(QScreen *screen, const QPixmap &pixmap, Qt::WindowFlags f)
-    : QWidget(*(new QSplashScreenPrivate()), nullptr, Qt::SplashScreen | Qt::FramelessWindowHint | f)
+QSplashScreen::QSplashScreen(QScreen *screen, const QPixmap &pixmap, BobUI::WindowFlags f)
+    : QWidget(*(new QSplashScreenPrivate()), nullptr, BobUI::SplashScreen | BobUI::FramelessWindowHint | f)
 {
     Q_D(QSplashScreen);
     d->setScreen(screen);
@@ -163,7 +163,7 @@ void QSplashScreen::repaint()
     repainted immediately. As a result the message is kept up
     to date with what your application is doing (e.g. loading files).
 
-    \sa Qt::Alignment, clearMessage(), message()
+    \sa BobUI::Alignment, clearMessage(), message()
 */
 void QSplashScreen::showMessage(const QString &message, int alignment,
                                 const QColor &color)
@@ -250,7 +250,7 @@ void QSplashScreen::setPixmap(const QPixmap &pixmap)
 {
     Q_D(QSplashScreen);
     d->pixmap = pixmap;
-    setAttribute(Qt::WA_TranslucentBackground, pixmap.hasAlpha());
+    setAttribute(BobUI::WA_TranslucentBackground, pixmap.hasAlpha());
 
     const QRect r(QPoint(), pixmap.deviceIndependentSize().toSize());
     resize(r.size());
@@ -272,7 +272,7 @@ const QPixmap QSplashScreen::pixmap() const
 /*!
     \internal
 */
-inline QSplashScreenPrivate::QSplashScreenPrivate() : currAlign(Qt::AlignLeft)
+inline QSplashScreenPrivate::QSplashScreenPrivate() : currAlign(BobUI::AlignLeft)
 {
 }
 
@@ -287,24 +287,24 @@ void QSplashScreen::drawContents(QPainter *painter)
     Q_D(QSplashScreen);
     painter->setPen(d->currColor);
     QRect r = rect().adjusted(5, 5, -5, -5);
-    if (Qt::mightBeRichText(d->currStatus)) {
-        QTextDocument doc;
-#ifdef QT_NO_TEXTHTMLPARSER
+    if (BobUI::mightBeRichText(d->currStatus)) {
+        BOBUIextDocument doc;
+#ifdef BOBUI_NO_TEXTHTMLPARSER
         doc.setPlainText(d->currStatus);
 #else
         doc.setHtml(d->currStatus);
 #endif
         doc.setTextWidth(r.width());
-        QTextCursor cursor(&doc);
-        cursor.select(QTextCursor::Document);
-        QTextBlockFormat fmt;
-        fmt.setAlignment(Qt::Alignment(d->currAlign));
+        BOBUIextCursor cursor(&doc);
+        cursor.select(BOBUIextCursor::Document);
+        BOBUIextBlockFormat fmt;
+        fmt.setAlignment(BobUI::Alignment(d->currAlign));
         fmt.setLayoutDirection(layoutDirection());
         cursor.mergeBlockFormat(fmt);
         const QSizeF txtSize = doc.size();
-        if (d->currAlign & Qt::AlignBottom)
+        if (d->currAlign & BobUI::AlignBottom)
             r.setTop(r.height() - txtSize.height());
-        else if (d->currAlign & Qt::AlignVCenter)
+        else if (d->currAlign & BobUI::AlignVCenter)
             r.setTop(r.height() / 2 - txtSize.height() / 2);
         painter->save();
         painter->translate(r.topLeft());
@@ -345,6 +345,6 @@ bool QSplashScreen::event(QEvent *e)
     return QWidget::event(e);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsplashscreen.cpp"

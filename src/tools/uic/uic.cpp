@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "uic.h"
 #include "ui4.h"
@@ -18,11 +18,11 @@
 #include <qxmlstream.h>
 #include <qfileinfo.h>
 #include <qscopedpointer.h>
-#include <qtextstream.h>
+#include <bobuiextstream.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 Uic::Uic(Driver *d)
      : drv(d),
@@ -94,7 +94,7 @@ void Uic::writeCopyrightHeaderCpp(const DomUI *ui) const
     out << "/********************************************************************************\n";
     out << "** Form generated from reading UI file '" << QFileInfo(opt.inputFile).fileName() << "'\n";
     out << "**\n";
-    out << "** Created by: Qt User Interface Compiler version " << QT_VERSION_STR << "\n";
+    out << "** Created by: BobUI User Interface Compiler version " << BOBUI_VERSION_STR << "\n";
     out << "**\n";
     out << "** WARNING! All changes made in this file will be lost when recompiling UI file!\n";
     out << "********************************************************************************/\n\n";
@@ -137,7 +137,7 @@ void Uic::writeCopyrightHeaderPython(const DomUI *ui) const
 
     out << language::repeat(80, '#') << "\n## Form generated from reading UI file '"
         << QFileInfo(opt.inputFile).fileName()
-        << "'\n##\n## Created by: Qt User Interface Compiler version " << QT_VERSION_STR
+        << "'\n##\n## Created by: BobUI User Interface Compiler version " << BOBUI_VERSION_STR
         << "\n##\n## WARNING! All changes made in this file will be lost when recompiling UI file!\n"
         << language::repeat(80, '#') << "\n\n";
 }
@@ -161,11 +161,11 @@ DomUI *Uic::parseUiFile(QXmlStreamReader &reader)
     const auto uiElement = "ui"_L1;
     while (!reader.atEnd()) {
         if (reader.readNext() == QXmlStreamReader::StartElement) {
-            if (reader.name().compare(uiElement, Qt::CaseInsensitive) == 0
+            if (reader.name().compare(uiElement, BobUI::CaseInsensitive) == 0
                 && !ui) {
                 const double version = versionFromUiAttribute(reader);
                 if (version < 4.0) {
-                    const QString msg = QString::fromLatin1("uic: File generated with too old version of Qt Widgets Designer (%1)").arg(version);
+                    const QString msg = QString::fromLatin1("uic: File generated with too old version of BobUI Widgets Designer (%1)").arg(version);
                     fprintf(stderr, "%s\n", qPrintable(msg));
                     return nullptr;
                 }
@@ -202,14 +202,14 @@ bool Uic::write(QIODevice *in)
 
     double version = ui->attributeVersion().toDouble();
     if (version < 4.0) {
-        fprintf(stderr, "uic: File generated with too old version of Qt Widgets Designer\n");
+        fprintf(stderr, "uic: File generated with too old version of BobUI Widgets Designer\n");
         return false;
     }
 
     const QString &language = ui->attributeLanguage();
     driver()->setUseIdBasedTranslations(ui->attributeIdbasedtr());
 
-    if (!language.isEmpty() && language.compare("c++"_L1, Qt::CaseInsensitive) != 0) {
+    if (!language.isEmpty() && language.compare("c++"_L1, BobUI::CaseInsensitive) != 0) {
         fprintf(stderr, "uic: File is not a \"c++\" ui file, language=%s\n", qPrintable(language));
         return false;
     }
@@ -292,7 +292,7 @@ void Uic::writeHeaderProtectionEnd()
 bool Uic::isButton(const QString &className) const
 {
     static const QStringList buttons = {
-        u"QRadioButton"_s, u"QToolButton"_s,
+        u"QRadioButton"_s, u"BOBUIoolButton"_s,
         u"QCheckBox"_s, u"QPushButton"_s,
         u"QCommandLinkButton"_s
     };
@@ -302,8 +302,8 @@ bool Uic::isButton(const QString &className) const
 bool Uic::isContainer(const QString &className) const
 {
     static const QStringList containers = {
-        u"QStackedWidget"_s, u"QToolBox"_s,
-        u"QTabWidget"_s, u"QScrollArea"_s,
+        u"QStackedWidget"_s, u"BOBUIoolBox"_s,
+        u"BOBUIabWidget"_s, u"QScrollArea"_s,
         u"QMdiArea"_s, u"QWizard"_s,
         u"QDockWidget"_s
     };
@@ -319,4 +319,4 @@ bool Uic::isMenu(const QString &className) const
     return customWidgetsInfo()->extendsOneOf(className, menus);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

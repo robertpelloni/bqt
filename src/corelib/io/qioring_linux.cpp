@@ -1,22 +1,22 @@
-// Copyright (C) 2025 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2025 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qioring_p.h"
 
-QT_REQUIRE_CONFIG(liburing);
+BOBUI_REQUIRE_CONFIG(liburing);
 
-#include <QtCore/qobject.h>
-#include <QtCore/qscopedvaluerollback.h>
-#include <QtCore/private/qcore_unix_p.h>
-#include <QtCore/private/qfiledevice_p.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qscopedvaluerollback.h>
+#include <BobUICore/private/qcore_unix_p.h>
+#include <BobUICore/private/qfiledevice_p.h>
 
 #include <liburing.h>
 #include <sys/mman.h>
 #include <sys/eventfd.h>
 #include <sys/stat.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // We pretend that iovec and QSpans are the same, assert that size and alignment match:
 static_assert(sizeof(iovec)
@@ -40,14 +40,14 @@ static_assert(std::atomic<qsizetype>::is_always_lock_free);
 
 // For test purposes we want to be able to decrease the max value.
 // For that, expose a helper variable that can be adjusted in the unit tests.
-Q_CONSTINIT std::atomic<qsizetype> QtPrivate::testMaxReadWriteLen{MaxReadWriteLen};
+Q_CONSTINIT std::atomic<qsizetype> BobUIPrivate::testMaxReadWriteLen{MaxReadWriteLen};
 
 static qsizetype maxReadWriteLen()
 {
-#ifndef QT_DEBUG
+#ifndef BOBUI_DEBUG
     return MaxReadWriteLen;
 #else
-    return QtPrivate::testMaxReadWriteLen.load(std::memory_order_relaxed);
+    return BobUIPrivate::testMaxReadWriteLen.load(std::memory_order_relaxed);
 #endif
 }
 
@@ -290,24 +290,24 @@ bool QIORing::waitForCompletions(QDeadlineTimer deadline)
         notifier->setEnabled(true);
     });
 
-    pollfd pfd = qt_make_pollfd(eventDescriptor, POLLIN);
-    return qt_safe_poll(&pfd, 1, deadline) > 0;
+    pollfd pfd = bobui_make_pollfd(eventDescriptor, POLLIN);
+    return bobui_safe_poll(&pfd, 1, deadline) > 0;
 }
 
 bool QIORing::supportsOperation(Operation op)
 {
     switch (op) {
-    case QtPrivate::Operation::Open:
-    case QtPrivate::Operation::Close:
-    case QtPrivate::Operation::Read:
-    case QtPrivate::Operation::Write:
-    case QtPrivate::Operation::VectoredRead:
-    case QtPrivate::Operation::VectoredWrite:
-    case QtPrivate::Operation::Flush:
-    case QtPrivate::Operation::Cancel:
-    case QtPrivate::Operation::Stat:
+    case BobUIPrivate::Operation::Open:
+    case BobUIPrivate::Operation::Close:
+    case BobUIPrivate::Operation::Read:
+    case BobUIPrivate::Operation::Write:
+    case BobUIPrivate::Operation::VectoredRead:
+    case BobUIPrivate::Operation::VectoredWrite:
+    case BobUIPrivate::Operation::Flush:
+    case BobUIPrivate::Operation::Cancel:
+    case BobUIPrivate::Operation::Stat:
         return true;
-    case QtPrivate::Operation::NumOperations:
+    case BobUIPrivate::Operation::NumOperations:
         return false;
     }
     return false; // May not always be unreachable!
@@ -335,19 +335,19 @@ void QIORing::submitRequests()
     }
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename T>
 using DetectFd = decltype(std::declval<const T &>().fd);
 
 template <typename T>
 constexpr bool HasFdMember = qxp::is_detected_v<DetectFd, T>;
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 bool QIORing::verifyFd(QIORing::GenericRequestType &req)
 {
     bool result = true;
     invokeOnOp(req, [&](auto *request) {
-        if constexpr (QtPrivate::HasFdMember<decltype(*request)>) {
+        if constexpr (BobUIPrivate::HasFdMember<decltype(*request)>) {
             result = request->fd > 0;
         }
     });
@@ -462,28 +462,28 @@ static void prepareFileReadWrite(io_uring_sqe *sqe, const QIORingRequestOffsetFd
 // @todo: stolen from qfsfileengine_unix.cpp
 static inline int openModeToOpenFlags(QIODevice::OpenMode mode)
 {
-    int oflags = QT_OPEN_RDONLY;
-#ifdef QT_LARGEFILE_SUPPORT
-    oflags |= QT_OPEN_LARGEFILE;
+    int oflags = BOBUI_OPEN_RDONLY;
+#ifdef BOBUI_LARGEFILE_SUPPORT
+    oflags |= BOBUI_OPEN_LARGEFILE;
 #endif
 
     if ((mode & QIODevice::ReadWrite) == QIODevice::ReadWrite)
-        oflags = QT_OPEN_RDWR;
+        oflags = BOBUI_OPEN_RDWR;
     else if (mode & QIODevice::WriteOnly)
-        oflags = QT_OPEN_WRONLY;
+        oflags = BOBUI_OPEN_WRONLY;
 
     if ((mode & QIODevice::WriteOnly)
         && !(mode & QIODevice::ExistingOnly)) // QFSFileEnginePrivate::openModeCanCreate(mode))
-        oflags |= QT_OPEN_CREAT;
+        oflags |= BOBUI_OPEN_CREAT;
 
     if (mode & QIODevice::Truncate)
-        oflags |= QT_OPEN_TRUNC;
+        oflags |= BOBUI_OPEN_TRUNC;
 
     if (mode & QIODevice::Append)
-        oflags |= QT_OPEN_APPEND;
+        oflags |= BOBUI_OPEN_APPEND;
 
     if (mode & QIODevice::NewOnly)
-        oflags |= QT_OPEN_EXCL;
+        oflags |= BOBUI_OPEN_EXCL;
 
     return oflags;
 }
@@ -529,7 +529,7 @@ auto QIORing::getVectoredOpAddressAndSize(QIORing::GenericRequestType &request, 
     } r;
 
     // Skip the spans we have already processed, if any:
-    if (auto *extra = request.getExtra<QtPrivate::ReadWriteExtra>())
+    if (auto *extra = request.getExtra<BobUIPrivate::ReadWriteExtra>())
         spans.slice(extra->spanIndex);
 
     // Defaults, may change:
@@ -550,7 +550,7 @@ auto QIORing::getVectoredOpAddressAndSize(QIORing::GenericRequestType &request, 
     }();
     if (exceedAtIndex != spans.size()) {
         // We have to split up the read/write a bit:
-        auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+        auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
         if (extra->spanIndex == 0 && extra->spanOffset == 0) { // First time setup
             ++ongoingSplitOperations;
             extra->numSpans = spans.size();
@@ -600,7 +600,7 @@ auto QIORing::prepareRequest(io_uring_sqe *sqe, GenericRequestType &request) -> 
         sqe->addr = reinterpret_cast<quint64>(openRequest->path.native().c_str());
         sqe->open_flags = openModeToOpenFlags(openRequest->flags);
         auto &mode = sqe->len;
-        mode = 0666; // With an explicit API we can use QtPrivate::toMode_t() for this
+        mode = 0666; // With an explicit API we can use BobUIPrivate::toMode_t() for this
         break;
     }
     case Operation::Close: {
@@ -620,7 +620,7 @@ auto QIORing::prepareRequest(io_uring_sqe *sqe, GenericRequestType &request) -> 
         auto offset = readRequest->offset;
         if (span.size() >= maxReadWriteLen()) {
             qCDebug(lcQIORing) << "Requested Read of size" << span.size() << "has to be split";
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0) // First time setup
                 ++ongoingSplitOperations;
             qsizetype remaining = span.size() - extra->spanOffset;
@@ -637,7 +637,7 @@ auto QIORing::prepareRequest(io_uring_sqe *sqe, GenericRequestType &request) -> 
         auto offset = writeRequest->offset;
         if (span.size() >= maxReadWriteLen()) {
             qCDebug(lcQIORing) << "Requested Write of size" << span.size() << "has to be split";
-            auto *extra = request.getOrInitializeExtra<QtPrivate::ReadWriteExtra>();
+            auto *extra = request.getOrInitializeExtra<BobUIPrivate::ReadWriteExtra>();
             if (extra->spanOffset == 0) // First time setup
                 ++ongoingSplitOperations;
             qsizetype remaining = span.size() - extra->spanOffset;
@@ -651,7 +651,7 @@ auto QIORing::prepareRequest(io_uring_sqe *sqe, GenericRequestType &request) -> 
         const QIORingRequest<Operation::VectoredRead>
                 *readvRequest = request.template requestData<Operation::VectoredRead>();
         quint64 offset = readvRequest->offset;
-        if (auto *extra = request.getExtra<QtPrivate::ReadWriteExtra>())
+        if (auto *extra = request.getExtra<BobUIPrivate::ReadWriteExtra>())
             offset += extra->totalProcessed;
         const auto r = getVectoredOpAddressAndSize(request, readvRequest->destinations);
         sqe->opcode = toUringOp(r.op);
@@ -662,7 +662,7 @@ auto QIORing::prepareRequest(io_uring_sqe *sqe, GenericRequestType &request) -> 
         const QIORingRequest<Operation::VectoredWrite>
                 *writevRequest = request.template requestData<Operation::VectoredWrite>();
         quint64 offset = writevRequest->offset;
-        if (auto *extra = request.getExtra<QtPrivate::ReadWriteExtra>())
+        if (auto *extra = request.getExtra<BobUIPrivate::ReadWriteExtra>())
             offset += extra->totalProcessed;
         const auto r = getVectoredOpAddressAndSize(request, writevRequest->sources);
         sqe->opcode = toUringOp(r.op);
@@ -738,7 +738,7 @@ void QIORing::GenericRequestType::cleanupExtra(Operation op, void *extra)
     case Operation::Write:
     case Operation::VectoredRead:
     case Operation::VectoredWrite:
-        delete static_cast<QtPrivate::ReadWriteExtra *>(extra);
+        delete static_cast<BobUIPrivate::ReadWriteExtra *>(extra);
         return;
     case Operation::Stat:
         delete static_cast<struct statx *>(extra);
@@ -746,4 +746,4 @@ void QIORing::GenericRequestType::cleanupExtra(Operation op, void *extra)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

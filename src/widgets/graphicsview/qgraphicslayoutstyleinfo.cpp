@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qgraphicslayoutstyleinfo_p.h"
 
 #include "qgraphicslayout_p.h"
 #include "qgraphicswidget.h"
-#include <QtWidgets/qstyle.h>
-#include <QtWidgets/qwidget.h>
-#include <QtWidgets/qapplication.h>
+#include <BobUIWidgets/qstyle.h>
+#include <BobUIWidgets/qwidget.h>
+#include <BobUIWidgets/qapplication.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QGraphicsLayoutStyleInfo::QGraphicsLayoutStyleInfo(const QGraphicsLayoutPrivate *layout)
     : m_layout(layout), m_style(nullptr)
@@ -26,7 +26,7 @@ QGraphicsLayoutStyleInfo::~QGraphicsLayoutStyleInfo()
 
 qreal QGraphicsLayoutStyleInfo::combinedLayoutSpacing(QLayoutPolicy::ControlTypes controls1,
                                                       QLayoutPolicy::ControlTypes controls2,
-                                                      Qt::Orientation orientation) const
+                                                      BobUI::Orientation orientation) const
 {
     Q_ASSERT(style());
     return style()->combinedLayoutSpacing(QSizePolicy::ControlTypes(int(controls1)), QSizePolicy::ControlTypes(int(controls2)),
@@ -35,24 +35,24 @@ qreal QGraphicsLayoutStyleInfo::combinedLayoutSpacing(QLayoutPolicy::ControlType
 
 qreal QGraphicsLayoutStyleInfo::perItemSpacing(QLayoutPolicy::ControlType control1,
                                                QLayoutPolicy::ControlType control2,
-                                               Qt::Orientation orientation) const
+                                               BobUI::Orientation orientation) const
 {
     Q_ASSERT(style());
     return style()->layoutSpacing(QSizePolicy::ControlType(control1), QSizePolicy::ControlType(control2),
                                   orientation, const_cast<QStyleOption*>(&m_styleOption), widget());
 }
 
-qreal QGraphicsLayoutStyleInfo::spacing(Qt::Orientation orientation) const
+qreal QGraphicsLayoutStyleInfo::spacing(BobUI::Orientation orientation) const
 {
     Q_ASSERT(style());
-    return style()->pixelMetric(orientation == Qt::Horizontal
+    return style()->pixelMetric(orientation == BobUI::Horizontal
         ? QStyle::PM_LayoutHorizontalSpacing : QStyle::PM_LayoutVerticalSpacing,
         &m_styleOption, widget());
 }
 
-qreal QGraphicsLayoutStyleInfo::windowMargin(Qt::Orientation orientation) const
+qreal QGraphicsLayoutStyleInfo::windowMargin(BobUI::Orientation orientation) const
 {
-    return style()->pixelMetric(orientation == Qt::Vertical
+    return style()->pixelMetric(orientation == BobUI::Vertical
                                 ? QStyle::PM_LayoutBottomMargin
                                 : QStyle::PM_LayoutRightMargin,
                                 const_cast<QStyleOption*>(&m_styleOption), widget());
@@ -70,4 +70,4 @@ QStyle *QGraphicsLayoutStyleInfo::style() const
     return m_style;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,5 +1,5 @@
 // Copyright (C) 2013 - 2014 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
 #include "qqnxeglwindow.h"
@@ -10,9 +10,9 @@
 
 #include <errno.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaWindowEgl, "qt.qpa.window.egl");
+Q_LOGGING_CATEGORY(lcQpaWindowEgl, "bobui.qpa.window.egl");
 
 QQnxEglWindow::QQnxEglWindow(QWindow *window, screen_context_t context, bool needRootWindow) :
     QQnxWindow(window, context, needRootWindow),
@@ -173,4 +173,4 @@ void QQnxEglWindow::resetBuffers()
     m_requestedBufferSize = QSize();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "addtorrentdialog.h"
 #include "mainwindow.h"
 #include "ratecontroller.h"
 #include "torrentclient.h"
 
-// TorrentView extends QTreeWidget to allow drag and drop.
-class TorrentView : public QTreeWidget
+// TorrentView extends BOBUIreeWidget to allow drag and drop.
+class TorrentView : public BOBUIreeWidget
 {
     Q_OBJECT
 public:
     TorrentView(QWidget *parent = nullptr);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 signals:
     void fileDropped(const QString &fileName);
 
@@ -49,7 +49,7 @@ public:
         progressBarOption.fontMetrics = QFontMetrics(QApplication::font());
         progressBarOption.minimum = 0;
         progressBarOption.maximum = 100;
-        progressBarOption.textAlignment = Qt::AlignCenter;
+        progressBarOption.textAlignment = BobUI::AlignCenter;
         progressBarOption.textVisible = true;
 
         // Set the progress and text values of the style option.
@@ -105,11 +105,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Help menu
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(QIcon(":/icons/about.svg"), tr("&About"), this, &MainWindow::about);
-    helpMenu->addAction(QIcon(":/icons/about.svg"), tr("About &Qt"), qApp, QApplication::aboutQt);
+    helpMenu->addAction(QIcon(":/icons/about.svg"), tr("About &BobUI"), qApp, QApplication::aboutBobUI);
 
     // Top toolbar
-    QToolBar *topBar = new QToolBar(tr("Tools"));
-    addToolBar(Qt::TopToolBarArea, topBar);
+    BOBUIoolBar *topBar = new BOBUIoolBar(tr("Tools"));
+    addToolBar(BobUI::TopToolBarArea, topBar);
     topBar->setMovable(false);
     topBar->addAction(newTorrentAction);
     topBar->addAction(removeTorrentAction);
@@ -119,17 +119,17 @@ MainWindow::MainWindow(QWidget *parent)
     upActionTool = topBar->addAction(QIcon(tr(":/icons/1uparrow.svg")), tr("Move up"));
 
     // Bottom toolbar
-    QToolBar *bottomBar = new QToolBar(tr("Rate control"));
-    addToolBar(Qt::BottomToolBarArea, bottomBar);
+    BOBUIoolBar *bottomBar = new BOBUIoolBar(tr("Rate control"));
+    addToolBar(BobUI::BottomToolBarArea, bottomBar);
     bottomBar->setMovable(false);
-    downloadLimitSlider = new QSlider(Qt::Horizontal);
+    downloadLimitSlider = new QSlider(BobUI::Horizontal);
     downloadLimitSlider->setRange(0, 1000);
     bottomBar->addWidget(new QLabel(tr("Max download:")));
     bottomBar->addWidget(downloadLimitSlider);
     bottomBar->addWidget((downloadLimitLabel = new QLabel(tr("0 KB/s"))));
     downloadLimitLabel->setFixedSize(QSize(fm.horizontalAdvance(tr("99999 KB/s")), fm.lineSpacing()));
     bottomBar->addSeparator();
-    uploadLimitSlider = new QSlider(Qt::Horizontal);
+    uploadLimitSlider = new QSlider(BobUI::Horizontal);
     uploadLimitSlider->setRange(0, 1000);
     bottomBar->addWidget(new QLabel(tr("Max upload:")));
     bottomBar->addWidget(uploadLimitSlider);
@@ -163,7 +163,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Load settings and start
     setWindowTitle(tr("Torrent Client"));
     setActionsEnabled();
-    QMetaObject::invokeMethod(this, "loadSettings", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "loadSettings", BobUI::QueuedConnection);
 }
 
 QSize MainWindow::sizeHint() const
@@ -202,7 +202,7 @@ int MainWindow::rowOfClient(TorrentClient *client) const
 void MainWindow::loadSettings()
 {
     // Load base settings (last working directory, upload/download limits).
-    QSettings settings("QtProject", "Torrent");
+    QSettings settings("BobUIProject", "Torrent");
     lastDirectory = settings.value("LastDirectory").toString();
     if (lastDirectory.isEmpty())
         lastDirectory = QDir::currentPath();
@@ -249,7 +249,7 @@ bool MainWindow::addTorrent()
     addTorrent(fileName, addTorrentDialog->destinationFolder());
     if (!saveChanges) {
         saveChanges = true;
-        QTimer::singleShot(1000, this, &MainWindow::saveSettings);
+        BOBUIimer::singleShot(1000, this, &MainWindow::saveSettings);
     }
     return true;
 }
@@ -355,10 +355,10 @@ bool MainWindow::addTorrent(const QString &fileName, const QString &destinationF
     jobs << job;
 
     // Create and add a row in the torrent view for this download.
-    QTreeWidgetItem *item = new QTreeWidgetItem(torrentView);
+    BOBUIreeWidgetItem *item = new BOBUIreeWidgetItem(torrentView);
 
     QString baseFileName = QFileInfo(fileName).fileName();
-    if (baseFileName.endsWith(u".torrent", Qt::CaseInsensitive))
+    if (baseFileName.endsWith(u".torrent", BobUI::CaseInsensitive))
         baseFileName.chop(8);
 
     item->setText(0, baseFileName);
@@ -369,12 +369,12 @@ bool MainWindow::addTorrent(const QString &fileName, const QString &destinationF
     item->setText(3, "0.0 KB/s");
     item->setText(4, "0.0 KB/s");
     item->setText(5, tr("Idle"));
-    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-    item->setTextAlignment(1, Qt::AlignHCenter);
+    item->setFlags(item->flags() & ~BobUI::ItemIsEditable);
+    item->setTextAlignment(1, BobUI::AlignHCenter);
 
     if (!saveChanges) {
         saveChanges = true;
-        QTimer::singleShot(5000, this, &MainWindow::saveSettings);
+        BOBUIimer::singleShot(5000, this, &MainWindow::saveSettings);
     }
     client->start();
     return true;
@@ -387,7 +387,7 @@ void MainWindow::saveSettings()
     saveChanges = false;
 
     // Prepare and reset the settings
-    QSettings settings("QtProject", "Torrent");
+    QSettings settings("BobUIProject", "Torrent");
     settings.clear();
 
     settings.setValue("LastDirectory", lastDirectory);
@@ -413,7 +413,7 @@ void MainWindow::updateState(TorrentClient::State)
     // Update the state string whenever the client's state changes.
     TorrentClient *client = qobject_cast<TorrentClient *>(sender());
     int row = rowOfClient(client);
-    QTreeWidgetItem *item = torrentView->topLevelItem(row);
+    BOBUIreeWidgetItem *item = torrentView->topLevelItem(row);
     if (item) {
         item->setToolTip(0, tr("Torrent: %1<br>Destination: %2<br>State: %3")
                          .arg(jobs.at(row).torrentFileName)
@@ -431,7 +431,7 @@ void MainWindow::updatePeerInfo()
     TorrentClient *client = qobject_cast<TorrentClient *>(sender());
     int row = rowOfClient(client);
 
-    QTreeWidgetItem *item = torrentView->topLevelItem(row);
+    BOBUIreeWidgetItem *item = torrentView->topLevelItem(row);
     item->setText(1, tr("%1/%2").arg(client->connectedPeerCount())
                   .arg(client->seedCount()));
 }
@@ -442,7 +442,7 @@ void MainWindow::updateProgress(int percent)
     int row = rowOfClient(client);
 
     // Update the progressbar.
-    QTreeWidgetItem *item = torrentView->topLevelItem(row);
+    BOBUIreeWidgetItem *item = torrentView->topLevelItem(row);
     if (item)
         item->setText(2, QString::number(percent));
 }
@@ -451,7 +451,7 @@ void MainWindow::setActionsEnabled()
 {
     // Find the view item and client for the current row, and update
     // the states of the actions.
-    QTreeWidgetItem *item = nullptr;
+    BOBUIreeWidgetItem *item = nullptr;
     if (!torrentView->selectedItems().isEmpty())
         item = torrentView->selectedItems().first();
     TorrentClient *client = item ? jobs.at(torrentView->indexOfTopLevelItem(item)).client : nullptr;
@@ -484,7 +484,7 @@ void MainWindow::updateDownloadRate(int bytesPerSecond)
 
     if (!saveChanges) {
         saveChanges = true;
-        QTimer::singleShot(5000, this, &MainWindow::saveSettings);
+        BOBUIimer::singleShot(5000, this, &MainWindow::saveSettings);
     }
 }
 
@@ -498,7 +498,7 @@ void MainWindow::updateUploadRate(int bytesPerSecond)
 
     if (!saveChanges) {
         saveChanges = true;
-        QTimer::singleShot(5000, this, &MainWindow::saveSettings);
+        BOBUIimer::singleShot(5000, this, &MainWindow::saveSettings);
     }
 }
 
@@ -513,7 +513,7 @@ void MainWindow::pauseTorrent()
 
 void MainWindow::moveTorrentUp()
 {
-    QTreeWidgetItem *item = torrentView->currentItem();
+    BOBUIreeWidgetItem *item = torrentView->currentItem();
     int row = torrentView->indexOfTopLevelItem(item);
     if (row == 0)
         return;
@@ -522,14 +522,14 @@ void MainWindow::moveTorrentUp()
     jobs[row - 1] = jobs[row];
     jobs[row] = tmp;
 
-    QTreeWidgetItem *itemAbove = torrentView->takeTopLevelItem(row - 1);
+    BOBUIreeWidgetItem *itemAbove = torrentView->takeTopLevelItem(row - 1);
     torrentView->insertTopLevelItem(row, itemAbove);
     setActionsEnabled();
 }
 
 void MainWindow::moveTorrentDown()
 {
-    QTreeWidgetItem *item = torrentView->currentItem();
+    BOBUIreeWidgetItem *item = torrentView->currentItem();
     int row = torrentView->indexOfTopLevelItem(item);
     if (row == jobs.size() - 1)
         return;
@@ -538,7 +538,7 @@ void MainWindow::moveTorrentDown()
     jobs[row + 1] = jobs[row];
     jobs[row] = tmp;
 
-    QTreeWidgetItem *itemAbove = torrentView->takeTopLevelItem(row + 1);
+    BOBUIreeWidgetItem *itemAbove = torrentView->takeTopLevelItem(row + 1);
     torrentView->insertTopLevelItem(row, itemAbove);
     setActionsEnabled();
 }
@@ -584,7 +584,7 @@ void MainWindow::about()
     text->setWordWrap(true);
     text->setText("<p>The <b>Torrent Client</b> example demonstrates how to"
                   " write a complete peer-to-peer file sharing"
-                  " application using Qt's network and thread classes.</p>"
+                  " application using BobUI's network and thread classes.</p>"
                   "<p>This feature complete client implementation of"
                   " the BitTorrent protocol can efficiently"
                   " maintain several hundred network connections"
@@ -663,14 +663,14 @@ void MainWindow::closeEvent(QCloseEvent *)
 }
 
 TorrentView::TorrentView(QWidget *parent)
-    : QTreeWidget(parent)
+    : BOBUIreeWidget(parent)
 {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     setAcceptDrops(true);
 #endif
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 void TorrentView::dragMoveEvent(QDragMoveEvent *event)
 {
     // Accept file actions with a '.torrent' extension.

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <qcoreapplication.h>
 #include <qdebug.h>
@@ -20,7 +20,7 @@ private slots:
     void construction();
     void moveOperator();
     void operators();
-    void qtbug_74575();
+    void bobuibug_74575();
 };
 
 tst_QSqlError::tst_QSqlError()
@@ -120,7 +120,7 @@ void tst_QSqlError::operators()
    QVERIFY(error4 != error5);
 }
 
-void tst_QSqlError::qtbug_74575()
+void tst_QSqlError::bobuibug_74575()
 {
    const QString driverText(QStringLiteral("drivertext"));
    const QString databaseText(QStringLiteral("databasetext"));
@@ -143,5 +143,5 @@ void tst_QSqlError::qtbug_74575()
    QCOMPARE(error4.text(), databaseTextNewline + driverText);
 }
 
-QTEST_MAIN(tst_QSqlError)
+BOBUIEST_MAIN(tst_QSqlError)
 #include "tst_qsqlerror.moc"

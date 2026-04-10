@@ -1,10 +1,10 @@
 TEMPLATE = app
 TARGET = notepad
 
-QT += widgets
+BOBUI += widgets
 
-qtHaveModule(printsupport): QT += printsupport
-requires(qtConfig(fontdialog))
+bobuiHaveModule(printsupport): BOBUI += printsupport
+requires(bobuiConfig(fontdialog))
 
 SOURCES += \
     main.cpp\
@@ -18,6 +18,6 @@ RESOURCES += \
     notepad.qrc
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tutorials/notepad
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/tutorials/notepad
 INSTALLS += target
 

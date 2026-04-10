@@ -1,19 +1,19 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qhsts_p.h"
 
 #include "qhttpheaders.h"
 
-#include "QtCore/private/qipaddress_p.h"
-#include "QtCore/qlist.h"
+#include "BobUICore/private/qipaddress_p.h"
+#include "BobUICore/qlist.h"
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 #include "qhstsstore_p.h"
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static bool is_valid_domain_name(const QString &host)
 {
@@ -52,10 +52,10 @@ void QHstsCache::updateFromHeaders(const QHttpHeaders &headers,
     QHstsHeaderParser parser;
     if (parser.parse(headers)) {
         updateKnownHost(url.host(), parser.expirationDate(), parser.includeSubDomains());
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
         if (hstsStore)
             hstsStore->synchronize();
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
     }
 }
 
@@ -64,14 +64,14 @@ void QHstsCache::updateFromPolicies(const QList<QHstsPolicy> &policies)
     for (const auto &policy : policies)
         updateKnownHost(policy.host(), policy.expiry(), policy.includesSubDomains());
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (hstsStore && policies.size()) {
         // These policies are coming either from store or from QNAM's setter
         // function. As a result we can notice expired or new policies, time
         // to sync ...
         hstsStore->synchronize();
     }
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 }
 
 void QHstsCache::updateKnownHost(const QUrl &url, const QDateTime &expires,
@@ -81,10 +81,10 @@ void QHstsCache::updateKnownHost(const QUrl &url, const QDateTime &expires,
         return;
 
     updateKnownHost(url.host(), expires, includeSubDomains);
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (hstsStore)
         hstsStore->synchronize();
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 }
 
 void QHstsCache::updateKnownHost(const QString &host, const QDateTime &expires,
@@ -112,10 +112,10 @@ void QHstsCache::updateKnownHost(const QString &host, const QDateTime &expires,
         }
 
         knownHosts.insert({hostName, newPolicy});
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
         if (hstsStore)
             hstsStore->addToObserved(newPolicy);
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
         return;
     }
 
@@ -126,10 +126,10 @@ void QHstsCache::updateKnownHost(const QString &host, const QDateTime &expires,
     else
         return;
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
     if (hstsStore)
         hstsStore->addToObserved(newPolicy);
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 }
 
 bool QHstsCache::isKnownHost(const QUrl &url) const
@@ -166,12 +166,12 @@ bool QHstsCache::isKnownHost(const QUrl &url) const
         if (pos != knownHosts.end()) {
             if (pos->second.isExpired()) {
                 knownHosts.erase(pos);
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
                 if (hstsStore) {
                     // Inform our store that this policy has expired.
                     hstsStore->addToObserved(pos->second);
                 }
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
             } else if (!superDomainMatch || pos->second.includesSubDomains()) {
                 return true;
             }
@@ -202,7 +202,7 @@ QList<QHstsPolicy> QHstsCache::policies() const
     return values;
 }
 
-#if QT_CONFIG(settings)
+#if BOBUI_CONFIG(settings)
 void QHstsCache::setStore(QHstsStore *store)
 {
     // Caller retains ownership of store, which must outlive this cache.
@@ -230,7 +230,7 @@ void QHstsCache::setStore(QHstsStore *store)
         updateFromPolicies(restored);
     }
 }
-#endif // QT_CONFIG(settings)
+#endif // BOBUI_CONFIG(settings)
 
 // The parser is quite simple: 'nextToken' knowns exactly what kind of tokens
 // are valid and it will return false if something else was found; then
@@ -434,7 +434,7 @@ bool QHstsHeaderParser::processDirective(const QByteArray &name, const QByteArra
 {
     Q_ASSERT(name.size());
     // RFC6797 6.1/3 Directive names are case-insensitive
-    if (name.compare("max-age", Qt::CaseInsensitive) == 0) {
+    if (name.compare("max-age", BobUI::CaseInsensitive) == 0) {
         // RFC 6797, 6.1.1
         // The syntax of the max-age directive's REQUIRED value (after
         // quoted-string unescaping, if necessary) is defined as:
@@ -457,7 +457,7 @@ bool QHstsHeaderParser::processDirective(const QByteArray &name, const QByteArra
 
         maxAge = age;
         maxAgeFound = true;
-    } else if (name.compare("includesubdomains", Qt::CaseInsensitive) == 0) {
+    } else if (name.compare("includesubdomains", BobUI::CaseInsensitive) == 0) {
         // RFC 6797, 6.1.2.  The includeSubDomains Directive.
         // The OPTIONAL "includeSubDomains" directive is a valueless directive.
 
@@ -542,4 +542,4 @@ bool QHstsHeaderParser::nextToken()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

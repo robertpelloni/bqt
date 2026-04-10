@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef PROITEMS_H
 #define PROITEMS_H
@@ -12,9 +12,9 @@
 #include <qmap.h>
 #include <qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-class QTextStream;
+class BOBUIextStream;
 
 #ifdef PROPARSER_THREAD_SAFE
 typedef QAtomicInt ProItemRefCount;
@@ -30,7 +30,7 @@ private:
 };
 #endif
 
-#ifndef QT_BUILD_QMAKE
+#ifndef BOBUI_BUILD_QMAKE
 #  define PROITEM_EXPLICIT explicit
 #else
 #  define PROITEM_EXPLICIT
@@ -102,30 +102,30 @@ public:
     ProString left(int len) const { return mid(0, len); }
     ProString right(int len) const { return mid(qMax(0, size() - len)); }
     ProString trimmed() const;
-    int compare(const ProString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().compare(sub.toQStringView(), cs); }
-    int compare(const QString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().compare(sub, cs); }
-    int compare(const char *sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().compare(QLatin1String(sub), cs); }
-    bool startsWith(const ProString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().startsWith(sub.toQStringView(), cs); }
-    bool startsWith(const QString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().startsWith(sub, cs); }
-    bool startsWith(const char *sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().startsWith(QLatin1String(sub), cs); }
-    bool startsWith(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().startsWith(c, cs); }
+    int compare(const ProString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().compare(sub.toQStringView(), cs); }
+    int compare(const QString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().compare(sub, cs); }
+    int compare(const char *sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().compare(QLatin1String(sub), cs); }
+    bool startsWith(const ProString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().startsWith(sub.toQStringView(), cs); }
+    bool startsWith(const QString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().startsWith(sub, cs); }
+    bool startsWith(const char *sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().startsWith(QLatin1String(sub), cs); }
+    bool startsWith(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().startsWith(c, cs); }
     template<typename A, typename B>
     bool startsWith(const QStringBuilder<A, B> &str) { return startsWith(QString(str)); }
-    bool endsWith(const ProString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().endsWith(sub.toQStringView(), cs); }
-    bool endsWith(const QString &sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().endsWith(sub, cs); }
-    bool endsWith(const char *sub, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().endsWith(QLatin1String(sub), cs); }
+    bool endsWith(const ProString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().endsWith(sub.toQStringView(), cs); }
+    bool endsWith(const QString &sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().endsWith(sub, cs); }
+    bool endsWith(const char *sub, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().endsWith(QLatin1String(sub), cs); }
     template<typename A, typename B>
     bool endsWith(const QStringBuilder<A, B> &str) { return endsWith(QString(str)); }
-    bool endsWith(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().endsWith(c, cs); }
-    int indexOf(const QString &s, int from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().indexOf(s, from, cs); }
-    int indexOf(const char *s, int from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().indexOf(QLatin1String(s), from, cs); }
-    int indexOf(QChar c, int from = 0, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().indexOf(c, from, cs); }
-    int lastIndexOf(const QString &s, int from = -1, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().lastIndexOf(s, from, cs); }
-    int lastIndexOf(const char *s, int from = -1, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().lastIndexOf(QLatin1String(s), from, cs); }
-    int lastIndexOf(QChar c, int from = -1, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return toQStringView().lastIndexOf(c, from, cs); }
-    bool contains(const QString &s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return indexOf(s, 0, cs) >= 0; }
-    bool contains(const char *s, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return indexOf(QLatin1String(s), 0, cs) >= 0; }
-    bool contains(QChar c, Qt::CaseSensitivity cs = Qt::CaseSensitive) const { return indexOf(c, 0, cs) >= 0; }
+    bool endsWith(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().endsWith(c, cs); }
+    int indexOf(const QString &s, int from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().indexOf(s, from, cs); }
+    int indexOf(const char *s, int from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().indexOf(QLatin1String(s), from, cs); }
+    int indexOf(QChar c, int from = 0, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().indexOf(c, from, cs); }
+    int lastIndexOf(const QString &s, int from = -1, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().lastIndexOf(s, from, cs); }
+    int lastIndexOf(const char *s, int from = -1, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().lastIndexOf(QLatin1String(s), from, cs); }
+    int lastIndexOf(QChar c, int from = -1, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return toQStringView().lastIndexOf(c, from, cs); }
+    bool contains(const QString &s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return indexOf(s, 0, cs) >= 0; }
+    bool contains(const char *s, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return indexOf(QLatin1String(s), 0, cs) >= 0; }
+    bool contains(QChar c, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const { return indexOf(c, 0, cs) >= 0; }
     qlonglong toLongLong(bool *ok = nullptr, int base = 10) const { return toQStringView().toLongLong(ok, base); }
     int toInt(bool *ok = nullptr, int base = 10) const { return toQStringView().toInt(ok, base); }
     short toShort(bool *ok = nullptr, int base = 10) const { return toQStringView().toShort(ok, base); }
@@ -237,9 +237,9 @@ size_t qHash(const ProString &str);
 inline QString &operator+=(QString &that, const ProString &other)
     { return that += other.toQStringView(); }
 
-QTextStream &operator<<(QTextStream &t, const ProString &str);
+BOBUIextStream &operator<<(BOBUIextStream &t, const ProString &str);
 template<typename A, typename B>
-QTextStream &operator<<(QTextStream &t, const QStringBuilder<A, B> &str) { return t << QString(str); }
+BOBUIextStream &operator<<(BOBUIextStream &t, const QStringBuilder<A, B> &str) { return t << QString(str); }
 
 // This class manages read-only access to a ProString via a raw data QString
 // temporary, ensuring that the latter is accessed exclusively.
@@ -257,7 +257,7 @@ public:
     }
     // No destructor, as a RAII pattern cannot be used: references to the
     // temporary string can legitimately outlive instances of this class
-    // (if they are held by Qt, e.g. in QRegExp).
+    // (if they are held by BobUI, e.g. in QRegExp).
     QString &set(const ProString &ps) { return ps.toQString(*m_rs); }
     QString &str() { return *m_rs; }
 
@@ -316,11 +316,11 @@ public:
     void removeEmpty();
     void removeDuplicates();
 
-    bool contains(const ProString &str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    bool contains(QStringView str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
-    bool contains(const QString &str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const
+    bool contains(const ProString &str, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    bool contains(QStringView str, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
+    bool contains(const QString &str, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const
         { return contains(ProString(str), cs); }
-    bool contains(const char *str, Qt::CaseSensitivity cs = Qt::CaseSensitive) const;
+    bool contains(const char *str, BobUI::CaseSensitivity cs = BobUI::CaseSensitive) const;
 };
 Q_DECLARE_TYPEINFO(ProStringList, Q_RELOCATABLE_TYPE);
 
@@ -484,6 +484,6 @@ struct ProFunctionDefs {
 
 QDebug operator<<(QDebug debug, const ProString &str);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PROITEMS_H

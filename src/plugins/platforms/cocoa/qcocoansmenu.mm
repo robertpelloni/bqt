@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -12,14 +12,14 @@
 #include "qnsview.h"
 #include "qcocoahelpers.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qcoreevent.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtGui/private/qapplekeymapper_p.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qcoreevent.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUIGui/private/qapplekeymapper_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-static NSString *qt_mac_removePrivateUnicode(NSString *string)
+static NSString *bobui_mac_removePrivateUnicode(NSString *string)
 {
     if (const int len = string.length) {
         QVarLengthArray<unichar, 10> characters(len);
@@ -77,7 +77,7 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
 + (instancetype)separatorItemWithPlatformMenuItem:(QCocoaMenuItem *)menuItem
 {
     // Safe because +[NSMenuItem separatorItem] invokes [[self alloc] init]
-    auto *item = qt_objc_cast<QCocoaNSMenuItem *>([self separatorItem]);
+    auto *item = bobui_objc_cast<QCocoaNSMenuItem *>([self separatorItem]);
     Q_ASSERT_X(item, qPrintable(__FUNCTION__),
                "Did +[NSMenuItem separatorItem] not invoke [[self alloc] init]?");
     if (item)
@@ -149,7 +149,7 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
     if (!platformMenu)
         return YES;
 
-    if (auto *platformItem = qt_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem) {
+    if (auto *platformItem = bobui_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem) {
         if (platformMenu->items().contains(platformItem)) {
             if (auto *itemSubmenu = platformItem->menu())
                 itemSubmenu->setAttachedItem(item);
@@ -162,7 +162,7 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
 - (void)menu:(NSMenu *)menu willHighlightItem:(NSMenuItem *)item
 {
     CHECK_MENU_CLASS(menu);
-    if (auto *platformItem = qt_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem)
+    if (auto *platformItem = bobui_objc_cast<QCocoaNSMenuItem *>(item).platformMenuItem)
         emit platformItem->hovered();
 }
 
@@ -196,7 +196,7 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
     /*
        Check if the menu actually has a keysequence defined for this key event.
        If it does, then we will first send the key sequence to the QWidget that has focus
-       since (in Qt's eyes) it needs to a chance at the key event first (QEvent::ShortcutOverride).
+       since (in BobUI's eyes) it needs to a chance at the key event first (QEvent::ShortcutOverride).
        If the widget accepts the key event, we then return YES, but set the target and action to be nil,
        which means that the action should not be triggered, and instead dispatch the event ourselves.
        In every other case we return NO, which means that Cocoa can do as it pleases
@@ -210,14 +210,14 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
                                  | NSEventModifierFlagCommand | NSEventModifierFlagOption;
 
     // Change the private unicode keys to the ones used in setting the "Key Equivalents"
-    NSString *characters = qt_mac_removePrivateUnicode(event.charactersIgnoringModifiers);
+    NSString *characters = bobui_mac_removePrivateUnicode(event.charactersIgnoringModifiers);
     const auto modifiers = event.modifierFlags & mask;
     NSMenuItem *keyEquivalentItem = [self findItemInMenu:menu
                                                   forKey:characters
                                                modifiers:modifiers];
     if (!keyEquivalentItem) {
         // Maybe the modified character is what we're looking for after all
-        characters = qt_mac_removePrivateUnicode(event.characters);
+        characters = bobui_mac_removePrivateUnicode(event.characters);
         keyEquivalentItem = [self findItemInMenu:menu
                                           forKey:characters
                                        modifiers:modifiers];
@@ -229,12 +229,12 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
             QChar ch;
             int keyCode;
             ulong nativeModifiers = event.modifierFlags;
-            Qt::KeyboardModifiers modifiers = QAppleKeyMapper::fromCocoaModifiers(nativeModifiers);
+            BobUI::KeyboardModifiers modifiers = QAppleKeyMapper::fromCocoaModifiers(nativeModifiers);
             NSString *charactersIgnoringModifiers = event.charactersIgnoringModifiers;
             NSString *characters = event.characters;
 
             if (charactersIgnoringModifiers.length > 0) { // convert the first character into a key code
-                if ((modifiers & Qt::ControlModifier) && characters.length > 0) {
+                if ((modifiers & BobUI::ControlModifier) && characters.length > 0) {
                     ch = QChar([characters characterAtIndex:0]);
                 } else {
                     ch = QChar([charactersIgnoringModifiers characterAtIndex:0]);
@@ -243,11 +243,11 @@ static NSString *qt_mac_removePrivateUnicode(NSString *string)
             } else {
                 // might be a dead key
                 ch = QChar::ReplacementCharacter;
-                keyCode = Qt::Key_unknown;
+                keyCode = BobUI::Key_unknown;
             }
 
-            QKeyEvent accel_ev(QEvent::ShortcutOverride, (keyCode & (~Qt::KeyboardModifierMask)),
-                               Qt::KeyboardModifiers(modifiers & Qt::KeyboardModifierMask));
+            QKeyEvent accel_ev(QEvent::ShortcutOverride, (keyCode & (~BobUI::KeyboardModifierMask)),
+                               BobUI::KeyboardModifiers(modifiers & BobUI::KeyboardModifierMask));
             accel_ev.ignore();
             QCoreApplication::sendEvent(object, &accel_ev);
             if (accel_ev.isAccepted()) {

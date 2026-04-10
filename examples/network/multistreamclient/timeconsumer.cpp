@@ -1,19 +1,19 @@
 // Copyright (C) 2016 Alex Trotsenko <alex1973tr@gmail.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "timeconsumer.h"
 #include <QLCDNumber>
 #include <QString>
 #include <QDataStream>
-#include <QTimer>
+#include <BOBUIimer>
 
 TimeConsumer::TimeConsumer(QObject *parent)
     : Consumer(parent)
 {
     lcdNumber = new QLCDNumber(8);
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &TimeConsumer::timerTick);
+    BOBUIimer *timer = new BOBUIimer(this);
+    connect(timer, &BOBUIimer::timeout, this, &TimeConsumer::timerTick);
     timer->start(100);
 
     serverDisconnected();

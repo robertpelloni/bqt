@@ -1,14 +1,14 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #ifdef Q_OS_WIN
 
 #include <private/qcomobject_p.h>
-#include <QtCore/private/qcomptr_p.h>
+#include <BobUICore/private/qcomptr_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 MIDL_INTERFACE("878fab04-7da0-41ea-9c49-058c7fa0d80a")
 IIntermediate : public IUnknown{};
@@ -25,24 +25,24 @@ IMultipleB : public IUnknown{};
 MIDL_INTERFACE("b8278a1b-0c3b-4bbd-99db-1e8a141483fa")
 IOther : public IUnknown{};
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #ifdef __CRT_UUID_DECL
-__CRT_UUID_DECL(QT_PREPEND_NAMESPACE(IIntermediate), 0x878fab04, 0x7da0, 0x41ea, 0x9c, 0x49, 0x05,
+__CRT_UUID_DECL(BOBUI_PREPEND_NAMESPACE(IIntermediate), 0x878fab04, 0x7da0, 0x41ea, 0x9c, 0x49, 0x05,
                 0x8c, 0x7f, 0xa0, 0xd8, 0x0a)
-__CRT_UUID_DECL(QT_PREPEND_NAMESPACE(IDirect), 0x65a29ce9, 0x191c, 0x4182, 0x91, 0x85, 0x06, 0xdd,
+__CRT_UUID_DECL(BOBUI_PREPEND_NAMESPACE(IDirect), 0x65a29ce9, 0x191c, 0x4182, 0x91, 0x85, 0x06, 0xdd,
                 0x70, 0xaa, 0xfc, 0x5d)
-__CRT_UUID_DECL(QT_PREPEND_NAMESPACE(IMultipleA), 0xd05397e0, 0xda7f, 0x4055, 0x85, 0x63, 0xa5,
+__CRT_UUID_DECL(BOBUI_PREPEND_NAMESPACE(IMultipleA), 0xd05397e0, 0xda7f, 0x4055, 0x85, 0x63, 0xa5,
                 0xb8, 0x0f, 0x09, 0x5e, 0x6c)
-__CRT_UUID_DECL(QT_PREPEND_NAMESPACE(IMultipleB), 0x67e298c5, 0xec5f, 0x4c45, 0xa7, 0x79, 0xbf,
+__CRT_UUID_DECL(BOBUI_PREPEND_NAMESPACE(IMultipleB), 0x67e298c5, 0xec5f, 0x4c45, 0xa7, 0x79, 0xbf,
                 0xba, 0x24, 0x84, 0xe1, 0x42)
-__CRT_UUID_DECL(QT_PREPEND_NAMESPACE(IOther), 0xb8278a1b, 0x0c3b, 0x4bbd, 0x99, 0xdb, 0x1e, 0x8a,
+__CRT_UUID_DECL(BOBUI_PREPEND_NAMESPACE(IOther), 0xb8278a1b, 0x0c3b, 0x4bbd, 0x99, 0xdb, 0x1e, 0x8a,
                 0x14, 0x14, 0x83, 0xfa)
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 
 template <>
 struct QComObjectTraits<IDirect>
@@ -53,7 +53,7 @@ struct QComObjectTraits<IDirect>
     }
 };
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 class ComImplementation : public QComObject<IDirect>
 {
@@ -63,7 +63,7 @@ class MultipleComImplementation : public QComObject<IMultipleA, IMultipleB>
 {
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class tst_QComObject : public QObject
 {
@@ -255,7 +255,7 @@ void tst_QComObject::Release_decrementsReferenceCountByOne()
     QCOMPARE(referenceCount2, 1);
 }
 
-QTEST_MAIN(tst_QComObject)
+BOBUIEST_MAIN(tst_QComObject)
 #include "tst_qcomobject.moc"
 
 #endif // Q_OS_WIN

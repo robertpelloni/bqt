@@ -1,11 +1,11 @@
 // Copyright (C) 2013 Samuel Gaist <samuel.gaist@edeltech.ch>
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "private/qpnghandler_p.h"
 
-#ifndef QT_NO_IMAGEFORMAT_PNG
+#ifndef BOBUI_NO_IMAGEFORMAT_PNG
 #include <qcoreapplication.h>
 #include <qdebug.h>
 #include <qiodevice.h>
@@ -13,7 +13,7 @@
 #include <qloggingcategory.h>
 #include <qvariant.h>
 
-#include <private/qimage_p.h> // for qt_getImageText
+#include <private/qimage_p.h> // for bobui_getImageText
 
 #include <qcolorspace.h>
 #include <private/qcolorspace_p.h>
@@ -44,9 +44,9 @@
 #   endif
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // avoid going through QImage::scanLine() which calls detach
 #define FAST_SCAN_LINE(data, bpl, y) (data + (y) * bpl)
@@ -182,7 +182,7 @@ void qpiw_flush_fn(png_structp /* png_ptr */)
 }
 
 static
-bool setup_qt(QImage& image, png_structp png_ptr, png_infop info_ptr)
+bool setup_bobui(QImage& image, png_structp png_ptr, png_infop info_ptr)
 {
     png_uint_32 width = 0;
     png_uint_32 height = 0;
@@ -299,7 +299,7 @@ bool setup_qt(QImage& image, png_structp png_ptr, png_infop info_ptr)
            );
             i++;
         }
-        // Qt==ARGB==Big(ARGB)==Little(BGRA)
+        // BobUI==ARGB==Big(ARGB)==Little(BGRA)
         if (QSysInfo::ByteOrder == QSysInfo::LittleEndian) {
             png_set_bgr(png_ptr);
         }
@@ -341,7 +341,7 @@ bool setup_qt(QImage& image, png_structp png_ptr, png_infop info_ptr)
         if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
             png_set_swap_alpha(png_ptr);
 
-        // Qt==ARGB==Big(ARGB)==Little(BGRA)
+        // BobUI==ARGB==Big(ARGB)==Little(BGRA)
         if (QSysInfo::ByteOrder == QSysInfo::LittleEndian) {
             png_set_bgr(png_ptr);
         }
@@ -352,7 +352,7 @@ bool setup_qt(QImage& image, png_structp png_ptr, png_infop info_ptr)
 }
 
 extern "C" {
-static void qt_png_warning(png_structp /*png_ptr*/, png_const_charp message)
+static void bobui_png_warning(png_structp /*png_ptr*/, png_const_charp message)
 {
     qCInfo(lcImageIo, "libpng warning: %s", message);
 }
@@ -362,7 +362,7 @@ static void qt_png_warning(png_structp /*png_ptr*/, png_const_charp message)
 
 void QPngHandlerPrivate::readPngTexts(png_info *info)
 {
-#ifndef QT_NO_IMAGEIO_TEXT_LOADING
+#ifndef BOBUI_NO_IMAGEIO_TEXT_LOADING
     png_textp text_ptr;
     int num_text=0;
     png_get_text(png_ptr, info, &text_ptr, &num_text);
@@ -398,7 +398,7 @@ bool QPngHandlerPrivate::readPngHeader()
     if (!png_ptr)
         return false;
 
-    png_set_error_fn(png_ptr, nullptr, nullptr, qt_png_warning);
+    png_set_error_fn(png_ptr, nullptr, nullptr, bobui_png_warning);
 
 #if defined(PNG_SET_OPTION_SUPPORTED) && defined(PNG_MAXIMUM_INFLATE_WINDOW)
     // Trade off a little bit of memory for better compatibility with existing images
@@ -521,7 +521,7 @@ bool QPngHandlerPrivate::readPngImage(QImage *outImage)
         colorSpaceState = GammaChrm;
     }
 
-    if (!setup_qt(*outImage, png_ptr, info_ptr)) {
+    if (!setup_bobui(*outImage, png_ptr, info_ptr)) {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         png_ptr = nullptr;
         delete[] row_pointers;
@@ -667,7 +667,7 @@ void QPNGImageWriter::setGamma(float g)
 static void set_text(const QImage &image, png_structp png_ptr, png_infop info_ptr,
                      const QString &description)
 {
-    const QMap<QString, QString> text = qt_getImageText(image, description);
+    const QMap<QString, QString> text = bobui_getImageText(image, description);
 
     if (text.isEmpty())
         return;
@@ -742,7 +742,7 @@ bool QPNGImageWriter::writeImage(const QImage& image, int compression_in, const 
         return false;
     }
 
-    png_set_error_fn(png_ptr, nullptr, nullptr, qt_png_warning);
+    png_set_error_fn(png_ptr, nullptr, nullptr, bobui_png_warning);
 #ifdef PNG_BENIGN_ERRORS_SUPPORTED
     png_set_benign_errors(png_ptr, 1);
 #endif
@@ -871,7 +871,7 @@ bool QPNGImageWriter::writeImage(const QImage& image, int compression_in, const 
         }
     }
 
-    // Qt==ARGB==Big(ARGB)==Little(BGRA). But RGB888 is RGB regardless
+    // BobUI==ARGB==Big(ARGB)==Little(BGRA). But RGB888 is RGB regardless
     if (QSysInfo::ByteOrder == QSysInfo::LittleEndian) {
         switch (image.format()) {
         case QImage::Format_RGB888:
@@ -1118,6 +1118,6 @@ void QPngHandler::setOption(ImageOption option, const QVariant &value)
         d->description = value.toString();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_IMAGEFORMAT_PNG
+#endif // BOBUI_NO_IMAGEFORMAT_PNG

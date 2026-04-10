@@ -1,21 +1,21 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## signaldumper Binary:
 #####################################################################
 
-qt_internal_add_executable(signaldumper
+bobui_internal_add_executable(signaldumper
     NO_INSTALL
     EXCEPTIONS
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     SOURCES
         tst_signaldumper.cpp
     LIBRARIES
-        Qt::TestPrivate
+        BobUI::TestPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_apply_testlib_coverage_options(signaldumper)
+bobui_internal_apply_testlib_coverage_options(signaldumper)

@@ -1,13 +1,13 @@
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qurl.h"
 #include "private/qstringconverter_p.h"
-#include "private/qtools_p.h"
+#include "private/bobuiools_p.h"
 #include "private/qsimd_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // ### move to qurl_p.h
 enum EncodingAction {
@@ -167,7 +167,7 @@ static inline char16_t decodePercentEncoding(const char16_t *input)
 
 static inline char16_t encodeNibble(ushort c)
 {
-    return QtMiscUtils::toHexUpper(c);
+    return BobUIMiscUtils::toHexUpper(c);
 }
 
 static void ensureDetached(QString &result, char16_t *&output, const char16_t *begin, const char16_t *input, const char16_t *end,
@@ -537,11 +537,11 @@ static bool simdCheckNonEncoded(...)
     \endlist
 
     Given the above, it's important for the input to already have all UTF-8
-    percent sequences decoded by qt_urlRecode (that is, the input should not
+    percent sequences decoded by bobui_urlRecode (that is, the input should not
     have been processed with QUrl::EncodeUnicode).
 
     The input should also be a valid percent-encoded sequence (the output of
-    qt_urlRecode is always valid).
+    bobui_urlRecode is always valid).
 */
 static qsizetype decode(QString &appendTo, QStringView in)
 {
@@ -549,7 +549,7 @@ static qsizetype decode(QString &appendTo, QStringView in)
     const char16_t *end = begin + in.size();
 
     // fast check whether there's anything to be decoded in the first place
-    const char16_t *input = QtPrivate::qustrchr(in, '%');
+    const char16_t *input = BobUIPrivate::qustrchr(in, '%');
 
     if (Q_LIKELY(input == end))
         return 0;           // nothing to do, it was already decoded!
@@ -638,7 +638,7 @@ static void maskTable(uchar (&table)[N], const uchar (&mask)[N])
  */
 
 Q_AUTOTEST_EXPORT qsizetype
-qt_urlRecode(QString &appendTo, QStringView in,
+bobui_urlRecode(QString &appendTo, QStringView in,
              QUrl::ComponentFormattingOptions encoding, const ushort *tableModifications)
 {
     uchar actionTable[sizeof defaultActionTable];
@@ -661,7 +661,7 @@ qt_urlRecode(QString &appendTo, QStringView in,
                   reinterpret_cast<const char16_t *>(in.end()), encoding, actionTable, false);
 }
 
-qsizetype qt_encodeFromUser(QString &appendTo, const QString &in, const ushort *tableModifications)
+qsizetype bobui_encodeFromUser(QString &appendTo, const QString &in, const ushort *tableModifications)
 {
     uchar actionTable[sizeof defaultActionTable];
     memcpy(actionTable, defaultActionTable, sizeof actionTable);
@@ -679,4 +679,4 @@ qsizetype qt_encodeFromUser(QString &appendTo, const QString &in, const ushort *
                   reinterpret_cast<const char16_t *>(in.end()), {}, actionTable, true);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -3,13 +3,13 @@
 
 #include <QQuickPaintedItem>
 #include <QImage>
-#include <QTimer>
+#include <BOBUIimer>
 #include <QVector3D>
 #include <QFutureWatcher>
 
 // The ultimate CPU-bound 3D rendering engine.
 // Uses Signed Distance Fields (SDF) and Raymarching split across 
-// a QtConcurrent thread pool to render mathematically pure 3D scenes 
+// a BobUIConcurrent thread pool to render mathematically pure 3D scenes 
 // natively into the QML SceneGraph without breaking WebAssembly GPU sandboxes.
 class OmniRaymarcher : public QQuickPaintedItem {
     Q_OBJECT
@@ -57,7 +57,7 @@ private:
     
     double m_time;
     QImage m_buffer;
-    QTimer m_frameTimer;
+    BOBUIimer m_frameTimer;
     QFutureWatcher<void> m_watcher;
     bool m_isRendering;
 };

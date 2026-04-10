@@ -1,15 +1,15 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/qfile.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qfile.h>
+#include <BobUICore/qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class TestStaticPlugin : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "TestStaticPlugin" URI "qt.teststaticplugin")
+    Q_PLUGIN_METADATA(IID "TestStaticPlugin" URI "bobui.teststaticplugin")
 public:
     TestStaticPlugin() = default;
     Q_INVOKABLE bool checkResources()
@@ -19,6 +19,6 @@ public:
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "pluginmain.moc"

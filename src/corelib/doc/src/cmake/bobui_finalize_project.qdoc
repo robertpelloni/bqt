@@ -1,0 +1,52 @@
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+\page bobui-finalize-project.html
+\ingroup cmake-commands-bobuicore
+
+\title bobui_finalize_project
+\keyword bobui6_finalize_project
+
+\summary {Handles various common platform-specific tasks associated with a BobUI project.}
+
+\include cmake-find-package-core.qdocinc
+
+\cmakecommandsince 6.3
+
+\section1 Synopsis
+
+\badcode
+bobui_finalize_project()
+\endcode
+
+\versionlessCMakeCommandsNote bobui6_finalize_project()
+
+\section1 Description
+
+Some targets that are created using BobUI commands require additional actions
+at the end of CMake configuring phase.
+Depending on the platform, the function typically:
+\list
+    \li Walks the build tree.
+    \li Resolves dependencies.
+    \li Applies any extra deployment steps.
+\endlist
+
+With CMake version 3.19 or later, you don't need to call this command since
+it consists of sub-commands that are ordinarily invoked at the end of
+\c CMAKE_SOURCE_DIR directory scope processing.
+
+\include cmake-android-bobui-finalize-project-warning.qdocinc warning
+
+\section2 Examples
+
+For projects that use a CMake version lower than 3.19, you need to call
+\c bobui_finalize_project manually. This example shows the typical use of the
+function:
+
+\snippet cmake-macros/examples.cmake bobui_finalize_project_manual
+
+\sa {cmake-variable-BOBUI_NO_COLLECT_BUILD_TREE_APK_DEPS}{BOBUI_NO_COLLECT_BUILD_TREE_APK_DEPS}
+\sa {cmake-variable-BOBUI_NO_COLLECT_IMPORTED_TARGET_APK_DEPS}{BOBUI_NO_COLLECT_IMPORTED_TARGET_APK_DEPS}
+*/

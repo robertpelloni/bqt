@@ -1,22 +1,22 @@
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #ifndef QCBORVALUE_H
 #define QCBORVALUE_H
 
-#include <QtCore/qbytearray.h>
-#include <QtCore/qcborcommon.h>
-#include <QtCore/qcompare.h>
-#include <QtCore/qdatetime.h>
-#if QT_CONFIG(regularexpression)
-#  include <QtCore/qregularexpression.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUICore/qcborcommon.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qdatetime.h>
+#if BOBUI_CONFIG(regularexpression)
+#  include <BobUICore/qregularexpression.h>
 #endif
-#include <QtCore/qstring.h>
-#include <QtCore/qstringview.h>
-#include <QtCore/qurl.h>
-#include <QtCore/quuid.h>
-#include <QtCore/qvariant.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringview.h>
+#include <BobUICore/qurl.h>
+#include <BobUICore/quuid.h>
+#include <BobUICore/qvariant.h>
 
 /* X11 headers use these values too, but as defines */
 #if defined(False) && defined(True)
@@ -24,7 +24,7 @@
 #  undef False
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCborArray;
 class QCborMap;
@@ -51,7 +51,7 @@ public:
     enum EncodingOption {
         SortKeysInMaps = 0x01,
         UseFloat = 0x02,
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
         UseFloat16 = UseFloat | 0x04,
 #endif
         UseIntegers = 0x08,
@@ -111,8 +111,8 @@ public:
     QCborValue(const QString &s);
     QCborValue(QStringView s);
     QCborValue(QLatin1StringView s);
-#ifndef QT_NO_CAST_FROM_ASCII
-    QT_ASCII_CAST_WARN QCborValue(const char *s) : QCborValue(QString::fromUtf8(s)) {}
+#ifndef BOBUI_NO_CAST_FROM_ASCII
+    BOBUI_ASCII_CAST_WARN QCborValue(const char *s) : QCborValue(QString::fromUtf8(s)) {}
 #endif
     QCborValue(const QCborArray &a);
     QCborValue(QCborArray &&a);
@@ -123,12 +123,12 @@ public:
         : QCborValue(QCborTag(t_), tv)
     {}
 
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     explicit QCborValue(const QDateTime &dt);
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     explicit QCborValue(const QUrl &url);
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     explicit QCborValue(const QRegularExpression &rx);
 #  endif
     explicit QCborValue(const QUuid &uuid);
@@ -145,12 +145,12 @@ public:
     {
     }
     QCborValue &operator=(const QCborValue &other) noexcept;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCborValue)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QCborValue)
 
     void swap(QCborValue &other) noexcept
     {
         std::swap(n, other.n);
-        qt_ptr_swap(container, other.container);
+        bobui_ptr_swap(container, other.container);
         std::swap(t, other.t);
     }
 
@@ -200,12 +200,12 @@ public:
     QByteArray toByteArray(const QByteArray &defaultValue = {}) const;
     QString toString(const QString &defaultValue = {}) const;
     QAnyStringView toStringView(QAnyStringView defaultValue = {}) const;
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     QDateTime toDateTime(const QDateTime &defaultValue = {}) const;
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QUrl toUrl(const QUrl &defaultValue = {}) const;
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     QRegularExpression toRegularExpression(const QRegularExpression &defaultValue = {}) const;
 #  endif
     QUuid toUuid(const QUuid &defaultValue = {}) const;
@@ -225,7 +225,7 @@ public:
     QCborValueRef operator[](const QString & key);
 
     int compare(const QCborValue &other) const;
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QCborValue &other) const noexcept
     { return compare(other) == 0; }
     bool operator!=(const QCborValue &other) const noexcept
@@ -239,15 +239,15 @@ public:
     static QCborValue fromJsonValue(const QJsonValue &v);
     QJsonValue toJsonValue() const;
 
-#if QT_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamreader)
     static QCborValue fromCbor(QCborStreamReader &reader);
     static QCborValue fromCbor(const QByteArray &ba, QCborParserError *error = nullptr);
     static QCborValue fromCbor(const char *data, qsizetype len, QCborParserError *error = nullptr)
     { return fromCbor(QByteArray(data, int(len)), error); }
     static QCborValue fromCbor(const quint8 *data, qsizetype len, QCborParserError *error = nullptr)
     { return fromCbor(QByteArray(reinterpret_cast<const char *>(data), int(len)), error); }
-#endif // QT_CONFIG(cborstreamreader)
-#if QT_CONFIG(cborstreamwriter)
+#endif // BOBUI_CONFIG(cborstreamreader)
+#if BOBUI_CONFIG(cborstreamwriter)
     QByteArray toCbor(EncodingOptions opt = NoTransformation) const;
     void toCbor(QCborStreamWriter &writer, EncodingOptions opt = NoTransformation) const;
 #endif
@@ -257,11 +257,11 @@ public:
 private:
     friend Q_CORE_EXPORT Q_DECL_PURE_FUNCTION
     bool comparesEqual(const QCborValue &lhs, const QCborValue &rhs) noexcept;
-    friend Qt::strong_ordering compareThreeWay(const QCborValue &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborValue &lhs,
                                                const QCborValue &rhs) noexcept
     {
         int c = lhs.compare(rhs);
-        return Qt::compareThreeWay(c, 0);
+        return BobUI::compareThreeWay(c, 0);
     }
 
     Q_DECLARE_STRONGLY_ORDERED(QCborValue)
@@ -354,14 +354,14 @@ public:
     { return concrete().toString(defaultValue); }
     QAnyStringView toStringView(QAnyStringView defaultValue = {}) const
     { return concreteStringView(*this, defaultValue); }
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     QDateTime toDateTime(const QDateTime &defaultValue = {}) const
     { return concrete().toDateTime(defaultValue); }
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QUrl toUrl(const QUrl &defaultValue = {}) const
     { return concrete().toUrl(defaultValue); }
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     QRegularExpression toRegularExpression(const QRegularExpression &defaultValue = {}) const
     { return concrete().toRegularExpression(defaultValue); }
 #  endif
@@ -385,7 +385,7 @@ public:
     QVariant toVariant() const                  { return concrete().toVariant(); }
     inline QJsonValue toJsonValue() const;      // in qjsonvalue.h
 
-#if QT_CONFIG(cborstreamwriter)
+#if BOBUI_CONFIG(cborstreamwriter)
     QByteArray toCbor(QCborValue::EncodingOptions opt = QCborValue::NoTransformation) const
     { return concrete().toCbor(opt); }
     void toCbor(QCborStreamWriter &writer, QCborValue::EncodingOptions opt = QCborValue::NoTransformation) const
@@ -404,14 +404,14 @@ protected:
     QCborValue concrete() const noexcept  { return concrete(*this); }
     static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(QCborValueConstRef lhs, QCborValueConstRef rhs) noexcept;
-    static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(QCborValueConstRef lhs, QCborValueConstRef rhs) noexcept;
     friend bool comparesEqual(const QCborValueConstRef &lhs,
                               const QCborValueConstRef &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborValueConstRef &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborValueConstRef &lhs,
                                                const QCborValueConstRef &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -420,14 +420,14 @@ protected:
 
     static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION bool
     comparesEqual_helper(QCborValueConstRef lhs, const QCborValue &rhs) noexcept;
-    static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION Qt::strong_ordering
+    static Q_CORE_EXPORT Q_DECL_PURE_FUNCTION BobUI::strong_ordering
     compareThreeWay_helper(QCborValueConstRef lhs, const QCborValue &rhs) noexcept;
     friend bool comparesEqual(const QCborValueConstRef &lhs,
                               const QCborValue &rhs) noexcept
     {
         return comparesEqual_helper(lhs, rhs);
     }
-    friend Qt::strong_ordering compareThreeWay(const QCborValueConstRef &lhs,
+    friend BobUI::strong_ordering compareThreeWay(const QCborValueConstRef &lhs,
                                                const QCborValue &rhs) noexcept
     {
         return compareThreeWay_helper(lhs, rhs);
@@ -457,9 +457,9 @@ protected:
     qsizetype i;
 };
 
-QT_WARNING_PUSH
-QT6_ONLY(QT_WARNING_DISABLE_MSVC(4275)) // non dll-interface class 'QJsonValueConstRef' used as base for dll-interface class 'QJsonValueRef'
-class QT6_ONLY(Q_CORE_EXPORT) QCborValueRef : public QCborValueConstRef
+BOBUI_WARNING_PUSH
+BOBUI6_ONLY(BOBUI_WARNING_DISABLE_MSVC(4275)) // non dll-interface class 'QJsonValueConstRef' used as base for dll-interface class 'QJsonValueRef'
+class BOBUI6_ONLY(Q_CORE_EXPORT) QCborValueRef : public QCborValueConstRef
 {
 public:
     QCborValueRef(const QCborValueRef &) noexcept = default;
@@ -471,11 +471,11 @@ public:
     QCborValueRef &operator=(const QCborValueRef &other)
     { assign(*this, other); return *this; }
 
-    QT7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](qint64 key);
-    QT7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](QLatin1StringView key);
-    QT7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](const QString & key);
+    BOBUI7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](qint64 key);
+    BOBUI7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](QLatin1StringView key);
+    BOBUI7_ONLY(Q_CORE_EXPORT) QCborValueRef operator[](const QString & key);
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) && !defined(QT_BOOTSTRAPPED)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) && !defined(BOBUI_BOOTSTRAPPED)
     // retained for binary compatibility (due to the Q_CORE_EXPORT) because at
     // least one compiler emits and exports all inlines in an exported class
 
@@ -528,14 +528,14 @@ public:
     { return concreteByteArray(*this, defaultValue); }
     QString toString(const QString &defaultValue = {}) const
     { return concreteString(*this, defaultValue); }
-#if QT_CONFIG(datestring)
+#if BOBUI_CONFIG(datestring)
     QDateTime toDateTime(const QDateTime &defaultValue = {}) const
     { return concrete().toDateTime(defaultValue); }
 #endif
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
     QUrl toUrl(const QUrl &defaultValue = {}) const
     { return concrete().toUrl(defaultValue); }
-#  if QT_CONFIG(regularexpression)
+#  if BOBUI_CONFIG(regularexpression)
     QRegularExpression toRegularExpression(const QRegularExpression &defaultValue = {}) const
     { return concrete().toRegularExpression(defaultValue); }
 #  endif
@@ -555,7 +555,7 @@ public:
 
     int compare(const QCborValue &other) const
     { return concrete().compare(other); }
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QCborValue &other) const
     { return compare(other) == 0; }
     bool operator!=(const QCborValue &other) const
@@ -567,7 +567,7 @@ public:
     QVariant toVariant() const                  { return concrete().toVariant(); }
     QJsonValue toJsonValue() const;
 
-#if QT_CONFIG(cborstreamwriter)
+#if BOBUI_CONFIG(cborstreamwriter)
     using QCborValueConstRef::toCbor;
     QByteArray toCbor(QCborValue::EncodingOptions opt = QCborValue::NoTransformation)
     { return std::as_const(*this).toCbor(opt); }
@@ -594,7 +594,7 @@ private:
 #else
 private:
     using QCborValueConstRef::QCborValueConstRef;
-#endif // < Qt 7
+#endif // < BobUI 7
 
     friend class QCborValue;
     friend class QCborArray;
@@ -603,27 +603,27 @@ private:
     friend class QCborValueConstRef;
 
     // static so we can pass this by value
-    QT7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, const QCborValue &other);
-    QT7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, QCborValue &&other);
-    QT7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, const QCborValueRef other);
+    BOBUI7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, const QCborValue &other);
+    BOBUI7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, QCborValue &&other);
+    BOBUI7_ONLY(Q_CORE_EXPORT) static void assign(QCborValueRef that, const QCborValueRef other);
 };
-QT_WARNING_POP
+BOBUI_WARNING_POP
 Q_DECLARE_OPERATORS_FOR_FLAGS(QCborValue::EncodingOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QCborValue::DiagnosticNotationOptions)
 
 Q_CORE_EXPORT size_t qHash(const QCborValue &value, size_t seed = 0);
 
-#if !defined(QT_NO_DEBUG_STREAM)
+#if !defined(BOBUI_NO_DEBUG_STREAM)
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QCborValue &v);
 #endif
 
-#ifndef QT_NO_DATASTREAM
-#if QT_CONFIG(cborstreamwriter)
+#ifndef BOBUI_NO_DATASTREAM
+#if BOBUI_CONFIG(cborstreamwriter)
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QCborValue &);
 #endif
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QCborValue &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCBORVALUE_H

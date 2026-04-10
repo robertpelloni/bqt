@@ -1,20 +1,20 @@
-# Copyright (C) 2023 The Qt Company Ltd.
+# Copyright (C) 2023 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-qt_internal_add_manual_test(embeddedwindows
+bobui_internal_add_manual_test(embeddedwindows
     SOURCES
         main.cpp
     LIBRARIES
-        Qt::Gui
+        BobUI::Gui
     GUI
 )
 
-qt_internal_extend_target(embeddedwindows CONDITION WIN32
+bobui_internal_extend_target(embeddedwindows CONDITION WIN32
     SOURCES
         app.manifest
 )
 
-if(QT_FEATURE_xcb)
+if(BOBUI_FEATURE_xcb)
     target_link_libraries(embeddedwindows PRIVATE XCB::XCB)
 endif()
 

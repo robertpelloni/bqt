@@ -1,35 +1,35 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <qsslkey.h>
 #include <qsslsocket.h>
 #include <QScopeGuard>
 #include <qsslconfiguration.h>
 #include <qsslellipticcurve.h>
 
-#include <QtNetwork/qhostaddress.h>
-#include <QtNetwork/qnetworkproxy.h>
+#include <BobUINetwork/qhostaddress.h>
+#include <BobUINetwork/qnetworkproxy.h>
 
-#include <QtCore/qstring.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qlist.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qlist.h>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-#ifdef QT_BUILD_INTERNAL
-    #if QT_CONFIG(ssl)
+#ifdef BOBUI_BUILD_INTERNAL
+    #if BOBUI_CONFIG(ssl)
         #include "private/qsslkey_p.h"
         #define TEST_CRYPTO
     #endif
-    #ifndef QT_NO_OPENSSL
+    #ifndef BOBUI_NO_OPENSSL
         #include "../shared/qopenssl_symbols.h"
     #endif
 #endif
 
-#if QT_CONFIG(ssl)
-#include <QtNetwork/qsslsocket.h>
-#endif // QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
+#include <BobUINetwork/qsslsocket.h>
+#endif // BOBUI_CONFIG(ssl)
 
 #include <algorithm>
 
@@ -59,13 +59,13 @@ public:
 public slots:
     void initTestCase();
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
 private slots:
     void emptyConstructor();
     void constructor_data();
     void constructor();
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
     void constructorHandle_data();
     void constructorHandle();
 #endif
@@ -103,7 +103,7 @@ private:
 
 tst_QSslKey::tst_QSslKey()
 {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     const QString expectedCurves[] = {
         // See how we generate them in keys/genkey.sh.
         QStringLiteral("secp224r1"),
@@ -131,8 +131,8 @@ tst_QSslKey::tst_QSslKey()
     isOpenSsl = backendName == QStringLiteral("openssl");
 
     if (isOpenSsl) {
-#if !defined(QT_NO_OPENSSL) && defined(QT_BUILD_INTERNAL)
-        isOpenSslResolved = qt_auto_test_resolve_OpenSSL_symbols();
+#if !defined(BOBUI_NO_OPENSSL) && defined(BOBUI_BUILD_INTERNAL)
+        isOpenSslResolved = bobui_auto_test_resolve_OpenSSL_symbols();
 #else
         isOpenSslResolved = false; // not 'unused variable' anymore.
 #endif
@@ -158,7 +158,7 @@ bool tst_QSslKey::fileContainsUnsupportedEllipticCurve(const QString &fileName) 
 
 bool tst_QSslKey::algorithmsSupported(const QString &fileName) const
 {
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
     if (isSchannel && fileName.contains("RC2-64")) // Schannel treats RC2 as 128 bit
         return false;
 
@@ -183,7 +183,7 @@ bool tst_QSslKey::algorithmsSupported(const QString &fileName) const
 #else
     Q_UNUSED(fileName);
     return false;
-#endif // QT_CONFIG(ssl)
+#endif // BOBUI_CONFIG(ssl)
 }
 
 
@@ -222,7 +222,7 @@ void tst_QSslKey::initTestCase()
     }
 }
 
-#if QT_CONFIG(ssl)
+#if BOBUI_CONFIG(ssl)
 
 static QByteArray readFile(const QString &absFilePath)
 {
@@ -253,11 +253,11 @@ Q_DECLARE_METATYPE(QSsl::EncodingFormat)
 
 void tst_QSslKey::createPlainTestRows(bool pemOnly)
 {
-    QTest::addColumn<QString>("absFilePath");
-    QTest::addColumn<QSsl::KeyAlgorithm>("algorithm");
-    QTest::addColumn<QSsl::KeyType>("type");
-    QTest::addColumn<int>("length");
-    QTest::addColumn<QSsl::EncodingFormat>("format");
+    BOBUIest::addColumn<QString>("absFilePath");
+    BOBUIest::addColumn<QSsl::KeyAlgorithm>("algorithm");
+    BOBUIest::addColumn<QSsl::KeyType>("type");
+    BOBUIest::addColumn<int>("length");
+    BOBUIest::addColumn<QSsl::EncodingFormat>("format");
     for (const KeyInfo &keyInfo : std::as_const(keyInfoList)) {
         if (pemOnly && keyInfo.format != QSsl::EncodingFormat::Pem)
             continue;
@@ -265,7 +265,7 @@ void tst_QSslKey::createPlainTestRows(bool pemOnly)
         if (!algorithmsSupported(keyInfo.fileInfo.fileName()))
             continue;
 
-        QTest::newRow(keyInfo.fileInfo.fileName().toLatin1())
+        BOBUIest::newRow(keyInfo.fileInfo.fileName().toLatin1())
             << keyInfo.fileInfo.absoluteFilePath() << keyInfo.algorithm << keyInfo.type
             << keyInfo.length << keyInfo.format;
     }
@@ -288,13 +288,13 @@ void tst_QSslKey::constructor()
 
     QByteArray encoded = readFile(absFilePath);
     QByteArray passphrase;
-    if (QByteArray(QTest::currentDataTag()).contains("-pkcs8-"))
+    if (QByteArray(BOBUIest::currentDataTag()).contains("-pkcs8-"))
         passphrase = QByteArray("1234");
     QSslKey key(encoded, algorithm, format, type, passphrase);
     QVERIFY(!key.isNull());
 }
 
-#ifndef QT_NO_OPENSSL
+#ifndef BOBUI_NO_OPENSSL
 
 void tst_QSslKey::constructorHandle_data()
 {
@@ -303,7 +303,7 @@ void tst_QSslKey::constructorHandle_data()
 
 void tst_QSslKey::constructorHandle()
 {
-#ifndef QT_BUILD_INTERNAL
+#ifndef BOBUI_BUILD_INTERNAL
     QSKIP("This test requires -developer-build.");
 #else
     if (!isOpenSslResolved)
@@ -320,7 +320,7 @@ void tst_QSslKey::constructorHandle()
                  : q_PEM_read_bio_PrivateKey);
 
     QByteArray passphrase;
-    if (QByteArray(QTest::currentDataTag()).contains("-pkcs8-"))
+    if (QByteArray(BOBUIest::currentDataTag()).contains("-pkcs8-"))
         passphrase = "1234";
 
     BIO* bio = q_BIO_new(q_BIO_s_mem());
@@ -367,7 +367,7 @@ void tst_QSslKey::constructorHandle()
 #endif
 }
 
-#endif // !QT_NO_OPENSSL
+#endif // !BOBUI_NO_OPENSSL
 
 void tst_QSslKey::copyAndAssign_data()
 {
@@ -386,7 +386,7 @@ void tst_QSslKey::copyAndAssign()
 
     QByteArray encoded = readFile(absFilePath);
     QByteArray passphrase;
-    if (QByteArray(QTest::currentDataTag()).contains("-pkcs8-"))
+    if (QByteArray(BOBUIest::currentDataTag()).contains("-pkcs8-"))
         passphrase = QByteArray("1234");
     QSslKey key(encoded, algorithm, format, type, passphrase);
 
@@ -430,7 +430,7 @@ void tst_QSslKey::length()
 
     QByteArray encoded = readFile(absFilePath);
     QByteArray passphrase;
-    if (QByteArray(QTest::currentDataTag()).contains("-pkcs8-"))
+    if (QByteArray(BOBUIest::currentDataTag()).contains("-pkcs8-"))
         passphrase = QByteArray("1234");
     QSslKey key(encoded, algorithm, format, type, passphrase);
     QVERIFY(!key.isNull());
@@ -452,7 +452,7 @@ void tst_QSslKey::toPemOrDer()
     QFETCH(QSsl::KeyType, type);
     QFETCH(QSsl::EncodingFormat, format);
 
-    QByteArray dataTag = QByteArray(QTest::currentDataTag());
+    QByteArray dataTag = QByteArray(BOBUIest::currentDataTag());
     if (dataTag.contains("-pkcs8-")) // these are encrypted
         QSKIP("Encrypted PKCS#8 keys gets decrypted when loaded. So we can't compare it to the encrypted version.");
 
@@ -473,11 +473,11 @@ void tst_QSslKey::toPemOrDer()
 
 void tst_QSslKey::toEncryptedPemOrDer_data()
 {
-    QTest::addColumn<QString>("absFilePath");
-    QTest::addColumn<QSsl::KeyAlgorithm>("algorithm");
-    QTest::addColumn<QSsl::KeyType>("type");
-    QTest::addColumn<QSsl::EncodingFormat>("format");
-    QTest::addColumn<QString>("password");
+    BOBUIest::addColumn<QString>("absFilePath");
+    BOBUIest::addColumn<QSsl::KeyAlgorithm>("algorithm");
+    BOBUIest::addColumn<QSsl::KeyType>("type");
+    BOBUIest::addColumn<QSsl::EncodingFormat>("format");
+    BOBUIest::addColumn<QString>("password");
 
     const QString passwords[] = {
         u" "_s,
@@ -497,7 +497,7 @@ void tst_QSslKey::toEncryptedPemOrDer_data()
             + '-' + (keyInfo.type == QSsl::PrivateKey ? "PrivateKey" : "PublicKey")
             + '-' + (keyInfo.format == QSsl::Pem ? "PEM" : "DER")
             + password.toLatin1();
-            QTest::newRow(testName.constData())
+            BOBUIest::newRow(testName.constData())
                 << keyInfo.fileInfo.absoluteFilePath() << keyInfo.algorithm << keyInfo.type
                 << keyInfo.format << password;
         }
@@ -539,7 +539,7 @@ void tst_QSslKey::toEncryptedPemOrDer()
 
     if (type == QSsl::PrivateKey) {
         // verify that private keys are never "encrypted" by toDer() and
-        // instead an empty string is returned, see QTBUG-41038.
+        // instead an empty string is returned, see BOBUIBUG-41038.
         QByteArray encryptedDer = key.toDer(pwBytes);
         QVERIFY(encryptedDer.isEmpty());
     } else {
@@ -559,8 +559,8 @@ void tst_QSslKey::passphraseChecks_data()
     if (!QSslSocket::supportsSsl())
         QSKIP("This test requires a working TLS library");
 
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<QByteArray>("passphrase");
+    BOBUIest::addColumn<QString>("fileName");
+    BOBUIest::addColumn<QByteArray>("passphrase");
 
     const QByteArray pass("123");
     const QByteArray aesPass("1234");
@@ -568,16 +568,16 @@ void tst_QSslKey::passphraseChecks_data()
     if (!isOpenSsl || QSslSocket::sslLibraryVersionNumber() >> 28 < 3) {
         // DES and RC2 are not provided by default in OpenSSL v3.
         // This part is for either non-OpenSSL build, or OpenSSL v < 3.x.
-        QTest::newRow("DES") << QString(testDataDir + "rsa-with-passphrase-des.pem") << pass;
-        QTest::newRow("RC2") << QString(testDataDir + "rsa-with-passphrase-rc2.pem") << pass;
+        BOBUIest::newRow("DES") << QString(testDataDir + "rsa-with-passphrase-des.pem") << pass;
+        BOBUIest::newRow("RC2") << QString(testDataDir + "rsa-with-passphrase-rc2.pem") << pass;
     }
 
-    QTest::newRow("3DES") << QString(testDataDir + "rsa-with-passphrase-3des.pem") << pass;
+    BOBUIest::newRow("3DES") << QString(testDataDir + "rsa-with-passphrase-3des.pem") << pass;
 
-#if defined(QT_NO_OPENSSL) || !defined(OPENSSL_NO_AES)
-    QTest::newRow("AES128") << QString(testDataDir + "rsa-with-passphrase-aes128.pem") << aesPass;
-    QTest::newRow("AES192") << QString(testDataDir + "rsa-with-passphrase-aes192.pem") << aesPass;
-    QTest::newRow("AES256") << QString(testDataDir + "rsa-with-passphrase-aes256.pem") << aesPass;
+#if defined(BOBUI_NO_OPENSSL) || !defined(OPENSSL_NO_AES)
+    BOBUIest::newRow("AES128") << QString(testDataDir + "rsa-with-passphrase-aes128.pem") << aesPass;
+    BOBUIest::newRow("AES192") << QString(testDataDir + "rsa-with-passphrase-aes192.pem") << aesPass;
+    BOBUIest::newRow("AES256") << QString(testDataDir + "rsa-with-passphrase-aes256.pem") << aesPass;
 #endif // Generic backend || OpenSSL built with AES
 }
 
@@ -661,140 +661,140 @@ Q_DECLARE_METATYPE(QSslKeyPrivate::Cipher)
 
 void tst_QSslKey::encrypt_data()
 {
-    using QTlsPrivate::Cipher;
+    using BOBUIlsPrivate::Cipher;
 
-    QTest::addColumn<Cipher>("cipher");
-    QTest::addColumn<QByteArray>("key");
-    QTest::addColumn<QByteArray>("plainText");
-    QTest::addColumn<QByteArray>("cipherText");
-    QTest::addColumn<QByteArray>("iv");
+    BOBUIest::addColumn<Cipher>("cipher");
+    BOBUIest::addColumn<QByteArray>("key");
+    BOBUIest::addColumn<QByteArray>("plainText");
+    BOBUIest::addColumn<QByteArray>("cipherText");
+    BOBUIest::addColumn<QByteArray>("iv");
 
     QByteArray iv("abcdefgh");
 #if OPENSSL_VERSION_MAJOR < 3
     // Either non-OpenSSL build, or OpenSSL v < 3
     // (with DES and other legacy algorithms available by default)
-    QTest::newRow("DES-CBC, length 0")
+    BOBUIest::newRow("DES-CBC, length 0")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray()
         << QByteArray::fromHex("956585228BAF9B1F")
         << iv;
-    QTest::newRow("DES-CBC, length 1")
+    BOBUIest::newRow("DES-CBC, length 1")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(1, 'a')
         << QByteArray::fromHex("E6880AF202BA3C12")
         << iv;
-    QTest::newRow("DES-CBC, length 2")
+    BOBUIest::newRow("DES-CBC, length 2")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(2, 'a')
         << QByteArray::fromHex("A82492386EED6026")
         << iv;
-    QTest::newRow("DES-CBC, length 3")
+    BOBUIest::newRow("DES-CBC, length 3")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(3, 'a')
         << QByteArray::fromHex("90B76D5B79519CBA")
         << iv;
-    QTest::newRow("DES-CBC, length 4")
+    BOBUIest::newRow("DES-CBC, length 4")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(4, 'a')
         << QByteArray::fromHex("63E3DD6FED87052A")
         << iv;
-    QTest::newRow("DES-CBC, length 5")
+    BOBUIest::newRow("DES-CBC, length 5")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(5, 'a')
         << QByteArray::fromHex("03ACDB0EACBDFA94")
         << iv;
-    QTest::newRow("DES-CBC, length 6")
+    BOBUIest::newRow("DES-CBC, length 6")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(6, 'a')
         << QByteArray::fromHex("7D95024E42A3A88A")
         << iv;
-    QTest::newRow("DES-CBC, length 7")
+    BOBUIest::newRow("DES-CBC, length 7")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(7, 'a')
         << QByteArray::fromHex("5003436B8A8E42E9")
         << iv;
-    QTest::newRow("DES-CBC, length 8")
+    BOBUIest::newRow("DES-CBC, length 8")
         << Cipher::DesCbc << QByteArray("01234567")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("E4C1F054BF5521C0A4A0FD4A2BC6C1B1")
         << iv;
 
-    QTest::newRow("DES-EDE3-CBC, length 0")
+    BOBUIest::newRow("DES-EDE3-CBC, length 0")
         << Cipher::DesEde3Cbc << QByteArray("0123456789abcdefghijklmn")
         << QByteArray()
         << QByteArray::fromHex("3B2B4CD0B0FD495F")
         << iv;
-    QTest::newRow("DES-EDE3-CBC, length 8")
+    BOBUIest::newRow("DES-EDE3-CBC, length 8")
         << Cipher::DesEde3Cbc << QByteArray("0123456789abcdefghijklmn")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("F2A5A87763C54A72A3224103D90CDB03")
         << iv;
 
-    QTest::newRow("RC2-40-CBC, length 0")
+    BOBUIest::newRow("RC2-40-CBC, length 0")
         << Cipher::Rc2Cbc << QByteArray("01234")
         << QByteArray()
         << QByteArray::fromHex("6D05D52392FF6E7A")
         << iv;
-    QTest::newRow("RC2-40-CBC, length 8")
+    BOBUIest::newRow("RC2-40-CBC, length 8")
         << Cipher::Rc2Cbc << QByteArray("01234")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("75768E64C5749072A5D168F3AFEB0005")
         << iv;
 
-    QTest::newRow("RC2-64-CBC, length 0")
+    BOBUIest::newRow("RC2-64-CBC, length 0")
         << Cipher::Rc2Cbc << QByteArray("01234567")
         << QByteArray()
         << QByteArray::fromHex("ADAE6BF70F420130")
         << iv;
-    QTest::newRow("RC2-64-CBC, length 8")
+    BOBUIest::newRow("RC2-64-CBC, length 8")
         << Cipher::Rc2Cbc << QByteArray("01234567")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("C7BF5C80AFBE9FBEFBBB9FD935F6D0DF")
         << iv;
 
-    QTest::newRow("RC2-128-CBC, length 0")
+    BOBUIest::newRow("RC2-128-CBC, length 0")
         << Cipher::Rc2Cbc << QByteArray("012345679abcdefg")
         << QByteArray()
         << QByteArray::fromHex("1E965D483A13C8FB")
         << iv;
-    QTest::newRow("RC2-128-CBC, length 8")
+    BOBUIest::newRow("RC2-128-CBC, length 8")
         << Cipher::Rc2Cbc << QByteArray("012345679abcdefg")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("5AEC1A5B295660B02613454232F7DECE")
         << iv;
 #endif // OPENSSL_VERSION_MAJOR
 
-#if defined(QT_NO_OPENSSL) || !defined(OPENSSL_NO_AES)
+#if defined(BOBUI_NO_OPENSSL) || !defined(OPENSSL_NO_AES)
     // AES needs a longer IV
     iv = QByteArray("abcdefghijklmnop");
-    QTest::newRow("AES-128-CBC, length 0")
+    BOBUIest::newRow("AES-128-CBC, length 0")
         << Cipher::Aes128Cbc << QByteArray("012345679abcdefg")
         << QByteArray()
         << QByteArray::fromHex("28DE1A9AA26601C30DD2527407121D1A")
         << iv;
-    QTest::newRow("AES-128-CBC, length 8")
+    BOBUIest::newRow("AES-128-CBC, length 8")
         << Cipher::Aes128Cbc << QByteArray("012345679abcdefg")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("08E880B1BA916F061C1E801D7F44D0EC")
         << iv;
 
-    QTest::newRow("AES-192-CBC, length 0")
+    BOBUIest::newRow("AES-192-CBC, length 0")
         << Cipher::Aes192Cbc << QByteArray("0123456789abcdefghijklmn")
         << QByteArray()
         << QByteArray::fromHex("E169E0E205CDC2BA895B7CF6097673B1")
         << iv;
-    QTest::newRow("AES-192-CBC, length 8")
+    BOBUIest::newRow("AES-192-CBC, length 8")
         << Cipher::Aes192Cbc << QByteArray("0123456789abcdefghijklmn")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("3A227D6A3A13237316D30AA17FF9B0A7")
         << iv;
 
-    QTest::newRow("AES-256-CBC, length 0")
+    BOBUIest::newRow("AES-256-CBC, length 0")
         << Cipher::Aes256Cbc << QByteArray("0123456789abcdefghijklmnopqrstuv")
         << QByteArray()
         << QByteArray::fromHex("4BAACAA0D22199C97DE206C465B7B14A")
         << iv;
-    QTest::newRow("AES-256-CBC, length 8")
+    BOBUIest::newRow("AES-256-CBC, length 8")
         << Cipher::Aes256Cbc << QByteArray("0123456789abcdefghijklmnopqrstuv")
         << QByteArray(8, 'a')
         << QByteArray::fromHex("879C8C25EC135CDF0B14490A0A7C2F67")
@@ -827,5 +827,5 @@ void tst_QSslKey::encrypt()
 
 #endif // ssl
 
-QTEST_MAIN(tst_QSslKey)
+BOBUIEST_MAIN(tst_QSslKey)
 #include "tst_qsslkey.moc"

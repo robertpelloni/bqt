@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformbackingstore.h"
 #include <qwindow.h>
@@ -8,13 +8,13 @@
 #include <private/qbackingstoredefaultcompositor_p.h>
 #include <private/qwindow_p.h>
 
-#include <QtCore/private/qobject_p.h>
+#include <BobUICore/private/qobject_p.h>
 
 #include <unordered_map>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaBackingStore, "qt.qpa.backingstore", QtWarningMsg);
+Q_LOGGING_CATEGORY(lcQpaBackingStore, "bobui.qpa.backingstore", BobUIWarningMsg);
 
 class QPlatformBackingStorePrivate
 {
@@ -410,6 +410,6 @@ void QPlatformBackingStore::graphicsDeviceReportedLost(QWindow *window)
         qWarning("Rhi backingstore: failed to reinitialize after losing the device");
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qplatformbackingstore.cpp"

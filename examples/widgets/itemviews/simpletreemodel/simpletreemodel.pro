@@ -1,5 +1,5 @@
-QT += widgets
-requires(qtConfig(treeview))
+BOBUI += widgets
+requires(bobuiConfig(treeview))
 
 HEADERS     = treeitem.h \
               treemodel.h
@@ -9,5 +9,5 @@ SOURCES     = treeitem.cpp \
               main.cpp
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/widgets/itemviews/simpletreemodel
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/widgets/itemviews/simpletreemodel
 INSTALLS += target

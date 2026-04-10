@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'bookmarkdialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.0.0
+** Created by: BobUI User Interface Compiler version 6.0.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -9,23 +9,23 @@
 #ifndef BOOKMARKDIALOG_H
 #define BOOKMARKDIALOG_H
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAbstractButton>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QVBoxLayout>
+#include <BobUICore/QVariant>
+#include <BobUIWidgets/QAbstractButton>
+#include <BobUIWidgets/QApplication>
+#include <BobUIWidgets/QComboBox>
+#include <BobUIWidgets/QDialog>
+#include <BobUIWidgets/QDialogButtonBox>
+#include <BobUIWidgets/QFrame>
+#include <BobUIWidgets/QHBoxLayout>
+#include <BobUIWidgets/QHeaderView>
+#include <BobUIWidgets/QLabel>
+#include <BobUIWidgets/QLineEdit>
+#include <BobUIWidgets/QPushButton>
+#include <BobUIWidgets/BOBUIoolButton>
+#include <BobUIWidgets/QVBoxLayout>
 #include "bookmarkwidget.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Ui_BookmarkDialog
 {
@@ -39,7 +39,7 @@ public:
     QLineEdit *bookmarkEdit;
     QComboBox *bookmarkFolders;
     QHBoxLayout *horizontalLayout_3;
-    QToolButton *toolButton;
+    BOBUIoolButton *toolButton;
     QFrame *line;
     BookmarkWidget *bookmarkWidget;
     QHBoxLayout *horizontalLayout_4;
@@ -95,7 +95,7 @@ public:
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName("horizontalLayout_3");
-        toolButton = new QToolButton(BookmarkDialog);
+        toolButton = new BOBUIoolButton(BookmarkDialog);
         toolButton->setObjectName("toolButton");
         toolButton->setMinimumSize(QSize(25, 20));
 
@@ -131,7 +131,7 @@ public:
 
         buttonBox = new QDialogButtonBox(BookmarkDialog);
         buttonBox->setObjectName("buttonBox");
-        buttonBox->setOrientation(Qt::Orientation::Horizontal);
+        buttonBox->setOrientation(BobUI::Orientation::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok);
 
         horizontalLayout_4->addWidget(buttonBox);
@@ -153,8 +153,8 @@ public:
         label->setText(QCoreApplication::translate("BookmarkDialog", "Bookmark:", nullptr));
         label_2->setText(QCoreApplication::translate("BookmarkDialog", "Add in Folder:", nullptr));
         toolButton->setText(QCoreApplication::translate("BookmarkDialog", "+", nullptr));
-        QTreeWidgetItem *___qtreewidgetitem = bookmarkWidget->headerItem();
-        ___qtreewidgetitem->setText(0, QCoreApplication::translate("BookmarkDialog", "1", nullptr));
+        BOBUIreeWidgetItem *___bobuireewidgetitem = bookmarkWidget->headerItem();
+        ___bobuireewidgetitem->setText(0, QCoreApplication::translate("BookmarkDialog", "1", nullptr));
         newFolderButton->setText(QCoreApplication::translate("BookmarkDialog", "New Folder", nullptr));
     } // retranslateUi
 
@@ -164,6 +164,6 @@ namespace Ui {
     class BookmarkDialog: public Ui_BookmarkDialog {};
 } // namespace Ui
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // BOOKMARKDIALOG_H

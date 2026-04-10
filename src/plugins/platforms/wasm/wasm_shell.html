@@ -1,6 +1,6 @@
 <!--
-Copyright (C) 2024 The Qt Company Ltd.
-SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+Copyright (C) 2024 The BobUI Company Ltd.
+SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 -->
 
 <!doctype html>
@@ -11,7 +11,7 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
     <!--Set visual viewport size for mobile devices to the device size,
         witch results in a scale of 1 and a 1:1 mapping between CSS pixels
-        and Qt device independent pixels. -->
+        and BobUI device independent pixels. -->
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=0"/>
 
     <title>@APPNAME@</title>
@@ -22,11 +22,11 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
     </style>
   </head>
   <body onload="init()">
-    <figure style="overflow:visible;" id="qtspinner">
+    <figure style="overflow:visible;" id="bobuispinner">
       <center style="margin-top:1.5em; line-height:150%">
-        <img src="qtlogo.svg" width="320" height="200" style="display:block"></img>
-        <strong>Qt for WebAssembly: @APPNAME@</strong>
-        <div id="qtstatus"></div>
+        <img src="bobuilogo.svg" width="320" height="200" style="display:block"></img>
+        <strong>BobUI for WebAssembly: @APPNAME@</strong>
+        <div id="bobuistatus"></div>
         <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
       </center>
     </figure>
@@ -35,9 +35,9 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
     <script type="text/javascript">
         async function init()
         {
-            const spinner = document.querySelector('#qtspinner');
+            const spinner = document.querySelector('#bobuispinner');
             const screen = document.querySelector('#screen');
-            const status = document.querySelector('#qtstatus');
+            const status = document.querySelector('#bobuistatus');
 
             const showUi = (ui) => {
                 [spinner, screen].forEach(element => element.style.display = 'none');
@@ -50,8 +50,8 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
                 showUi(spinner);
                 status.innerHTML = 'Loading...';
 
-                const instance = await qtLoad({
-                    qt: {
+                const instance = await bobuiLoad({
+                    bobui: {
                         onLoaded: () => showUi(screen),
                         onExit: exitData =>
                         {
@@ -74,6 +74,6 @@ SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
         }
     </script>
     <script src="@APPNAME@.js"></script>
-    <script type="text/javascript" src="qtloader.js"></script>
+    <script type="text/javascript" src="bobuiloader.js"></script>
   </body>
 </html>

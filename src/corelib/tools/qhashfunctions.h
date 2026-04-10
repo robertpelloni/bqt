@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Marc Mutz <marc.mutz@kdab.com>
 // Copyright (C) 2024 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QHASHFUNCTIONS_H
 #define QHASHFUNCTIONS_H
 
-#include <QtCore/qstring.h>
-#include <QtCore/qstringfwd.h>
-#ifndef QT_BOOTSTRAPPED
-#include <QtCore/qbitarray.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/qstringfwd.h>
+#ifndef BOBUI_BOOTSTRAPPED
+#include <BobUICore/qbitarray.h>
 #endif
 
 #include <numeric> // for std::accumulate
@@ -18,7 +18,7 @@
 #include <utility> // For std::pair
 
 #if 0
-#pragma qt_class(QHashFunctions)
+#pragma bobui_class(QHashFunctions)
 #endif
 
 #if defined(Q_CC_MSVC)
@@ -27,12 +27,12 @@
 #pragma warning( disable : 4127 ) // conditional expression is constant
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-#if QT_DEPRECATED_SINCE(6,6)
-QT_DEPRECATED_VERSION_X_6_6("Use QHashSeed instead")
+#if BOBUI_DEPRECATED_SINCE(6,6)
+BOBUI_DEPRECATED_VERSION_X_6_6("Use QHashSeed instead")
 Q_CORE_EXPORT int qGlobalQHashSeed();
-QT_DEPRECATED_VERSION_X_6_6("Use QHashSeed instead")
+BOBUI_DEPRECATED_VERSION_X_6_6("Use QHashSeed instead")
 Q_CORE_EXPORT void qSetGlobalQHashSeed(int newSeed);
 #endif
 
@@ -96,13 +96,13 @@ template <typename T1, typename T2> inline size_t qHash(const std::pair<T1, T2> 
     noexcept(QHashPrivate::noexceptPairHash<T1, T2>());
 
 // C++ builtin types
-#define QT_MK_QHASH_COMPAT(X) \
+#define BOBUI_MK_QHASH_COMPAT(X) \
     template <typename T, std::enable_if_t<std::is_same_v<T, X>, bool> = true> \
     constexpr size_t qHash(T key, size_t seed = 0) noexcept \
     /* QHashPrivate::hash() xors before mixing, while 1-to-2-arg adapter xors after */ \
-    { return QHashPrivate::hash(size_t(key), 0 QT7_ONLY(+ seed)) QT6_ONLY(^ seed); } \
+    { return QHashPrivate::hash(size_t(key), 0 BOBUI7_ONLY(+ seed)) BOBUI6_ONLY(^ seed); } \
     /* end */
-QT_MK_QHASH_COMPAT(bool) // QTBUG-126674
+BOBUI_MK_QHASH_COMPAT(bool) // BOBUIBUG-126674
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(char key, size_t seed = 0) noexcept
 { return QHashPrivate::hash(size_t(key), seed); }
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(uchar key, size_t seed = 0) noexcept
@@ -121,7 +121,7 @@ Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(ulong key, size_t seed = 0) 
 { return QHashPrivate::hash(size_t(key), seed); }
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(long key, size_t seed = 0) noexcept
 { return QHashPrivate::hash(size_t(key), seed); }
-#undef QT_MK_QHASH_COMPAT
+#undef BOBUI_MK_QHASH_COMPAT
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(quint64 key, size_t seed = 0) noexcept
 {
     if constexpr (sizeof(quint64) > sizeof(size_t))
@@ -131,28 +131,28 @@ Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(quint64 key, size_t seed = 0
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(qint64 key, size_t seed = 0) noexcept
 {
     if constexpr (sizeof(qint64) > sizeof(size_t)) {
-        // Avoid QTBUG-116080: we XOR the top half with its own sign bit:
+        // Avoid BOBUIBUG-116080: we XOR the top half with its own sign bit:
         // - if the qint64 is in range of qint32, then signmask ^ high == 0
-        //   (for Qt 7 only)
+        //   (for BobUI 7 only)
         // - if the qint64 is in range of quint32, then signmask == 0 and we
         //   do the same as the quint64 overload above
         quint32 high = quint32(quint64(key) >> 32);
         quint32 low = quint32(quint64(key));
         quint32 signmask = qint32(high) >> 31;  // all zeroes or all ones
-        signmask = QT_VERSION_MAJOR > 6 ? signmask : 0;
+        signmask = BOBUI_VERSION_MAJOR > 6 ? signmask : 0;
         low ^= signmask ^ high;
         return qHash(low, seed);
     }
     return qHash(quint64(key), seed);
 }
-#ifdef QT_SUPPORTS_INT128
+#ifdef BOBUI_SUPPORTS_INT128
 constexpr size_t qHash(quint128 key, size_t seed = 0) noexcept
 {
     return qHash(quint64(key + (key >> 64)), seed);
 }
 constexpr size_t qHash(qint128 key, size_t seed = 0) noexcept
 {
-    // Avoid QTBUG-116080: same as above, but with double the sizes and without
+    // Avoid BOBUIBUG-116080: same as above, but with double the sizes and without
     // the need for compatibility
     quint64 high = quint64(quint128(key) >> 64);
     quint64 low = quint64(quint128(key));
@@ -160,7 +160,7 @@ constexpr size_t qHash(qint128 key, size_t seed = 0) noexcept
     low += signmask ^ high;
     return qHash(low, seed);
 }
-#endif // QT_SUPPORTS_INT128
+#endif // BOBUI_SUPPORTS_INT128
 Q_DECL_CONST_FUNCTION inline size_t qHash(float key, size_t seed = 0) noexcept
 {
     // ensure -0 gets mapped to 0
@@ -193,37 +193,37 @@ template <class Enum, std::enable_if_t<std::is_enum_v<Enum>, bool> = true>
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(Enum e, size_t seed = 0) noexcept
 { return QHashPrivate::hash(qToUnderlying(e), seed); }
 
-// (some) Qt types
+// (some) BobUI types
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(const QChar key, size_t seed = 0) noexcept { return qHash(key.unicode(), seed); }
 
-#if QT_CORE_REMOVED_SINCE(6, 4)
+#if BOBUI_CORE_REMOVED_SINCE(6, 4)
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(const QByteArray &key, size_t seed = 0) noexcept;
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(const QByteArrayView &key, size_t seed = 0) noexcept;
 #else
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(QByteArrayView key, size_t seed = 0) noexcept;
 inline Q_DECL_PURE_FUNCTION size_t qHash(const QByteArray &key, size_t seed = 0
-        QT6_DECL_NEW_OVERLOAD_TAIL) noexcept
+        BOBUI6_DECL_NEW_OVERLOAD_TAIL) noexcept
 { return qHash(qToByteArrayViewIgnoringNull(key), seed); }
 #endif
 
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(QStringView key, size_t seed = 0) noexcept;
 inline Q_DECL_PURE_FUNCTION size_t qHash(const QString &key, size_t seed = 0) noexcept
 { return qHash(QStringView{key}, seed); }
-#ifndef QT_BOOTSTRAPPED
+#ifndef BOBUI_BOOTSTRAPPED
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(const QBitArray &key, size_t seed = 0) noexcept;
 #endif
 Q_CORE_EXPORT Q_DECL_PURE_FUNCTION size_t qHash(QLatin1StringView key, size_t seed = 0) noexcept;
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(QKeyCombination key, size_t seed = 0) noexcept
 { return qHash(key.toCombined(), seed); }
-Q_CORE_EXPORT Q_DECL_PURE_FUNCTION uint qt_hash(QStringView key, uint chained = 0) noexcept;
+Q_CORE_EXPORT Q_DECL_PURE_FUNCTION uint bobui_hash(QStringView key, uint chained = 0) noexcept;
 
 template <typename Enum>
 Q_DECL_CONST_FUNCTION constexpr inline size_t qHash(QFlags<Enum> flags, size_t seed = 0) noexcept
 { return qHash(flags.toInt(), seed); }
 
-// ### Qt 7: remove this "catch-all" overload logic, and require users
+// ### BobUI 7: remove this "catch-all" overload logic, and require users
 // to provide the two-argument version of qHash.
-#if (QT_VERSION < QT_VERSION_CHECK(7, 0, 0)) && !defined(QT_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD)
+#if (BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)) && !defined(BOBUI_NO_SINGLE_ARGUMENT_QHASH_OVERLOAD)
 // Beware of moving this code from here. It needs to see all the
 // declarations of qHash overloads for C++ fundamental types *before*
 // its own declaration.
@@ -238,13 +238,13 @@ constexpr inline bool HasQHashSingleArgOverload<T, std::enable_if_t<
 }
 
 // Add Args... to make this overload consistently a worse match than
-// original 2-arg qHash overloads (QTBUG-126659)
+// original 2-arg qHash overloads (BOBUIBUG-126659)
 template <typename T, typename...Args,
           std::enable_if_t<QHashPrivate::HasQHashSingleArgOverload<T>
                            && sizeof...(Args) == 0 && !std::is_enum_v<T>, bool> = true>
 constexpr size_t qHash(const T &t, size_t seed, Args&&...) noexcept(noexcept(qHash(t)))
 { return qHash(t) ^ seed; }
-#endif // < Qt 7
+#endif // < BobUI 7
 
 namespace QHashPrivate {
 
@@ -299,7 +299,7 @@ bool qHashEquals(const T1 &a, const T2 &b)
     return a == b;
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template <typename Mixer> struct QHashCombinerWithSeed : private Mixer
 {
     using result_type = typename Mixer::result_type;
@@ -314,10 +314,10 @@ template <typename Mixer> struct QHashCombinerWithSeed : private Mixer
     }
 };
 
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0) || defined(QT_BOOTSTRAPPED)
-// Earlier Qt 6.x versions of qHashMulti() failed to pass the seed as the seed
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0) || defined(BOBUI_BOOTSTRAPPED)
+// Earlier BobUI 6.x versions of qHashMulti() failed to pass the seed as the seed
 // argument of qHash(), so this class exists for compatibility with user and
-// inline code that relies on the old behavior. For Qt 7, we'll replace with
+// inline code that relies on the old behavior. For BobUI 7, we'll replace with
 // the above version, except for the bootstrapped tools (which have no seed).
 template <typename Mixer> struct QHashCombiner : private Mixer
 {
@@ -383,19 +383,19 @@ struct QNothrowHashable<T, std::enable_if_t<QNothrowHashableHelper_v<T>>> : std:
 template <typename T>
 constexpr inline bool QNothrowHashable_v = QNothrowHashable<T>::value;
 
-} // namespace QtPrivate
+} // namespace BobUIPrivate
 
 template <typename... T>
 constexpr
 #ifdef Q_QDOC
 size_t
 #else
-QtPrivate::QHashMultiReturnType<T...>
+BobUIPrivate::QHashMultiReturnType<T...>
 #endif
 qHashMulti(size_t seed, const T &... args)
-    noexcept(std::conjunction_v<QtPrivate::QNothrowHashable<T>...>)
+    noexcept(std::conjunction_v<BobUIPrivate::QNothrowHashable<T>...>)
 {
-    QtPrivate::QHashCombine hash(seed);
+    BobUIPrivate::QHashCombine hash(seed);
     return ((seed = hash(seed, args)), ...), seed;
 }
 
@@ -404,12 +404,12 @@ constexpr
 #ifdef Q_QDOC
 size_t
 #else
-QtPrivate::QHashMultiReturnType<T...>
+BobUIPrivate::QHashMultiReturnType<T...>
 #endif
 qHashMultiCommutative(size_t seed, const T &... args)
-    noexcept(std::conjunction_v<QtPrivate::QNothrowHashable<T>...>)
+    noexcept(std::conjunction_v<BobUIPrivate::QNothrowHashable<T>...>)
 {
-    QtPrivate::QHashCombineCommutative hash(seed);
+    BobUIPrivate::QHashCombineCommutative hash(seed);
     return ((seed = hash(seed, args)), ...), seed;
 }
 
@@ -417,14 +417,14 @@ template <typename InputIterator>
 inline size_t qHashRange(InputIterator first, InputIterator last, size_t seed = 0)
     noexcept(noexcept(qHash(*first, 0))) // assume iterator operations don't throw
 {
-    return std::accumulate(first, last, seed, QtPrivate::QHashCombine(seed));
+    return std::accumulate(first, last, seed, BobUIPrivate::QHashCombine(seed));
 }
 
 template <typename InputIterator>
 inline size_t qHashRangeCommutative(InputIterator first, InputIterator last, size_t seed = 0)
     noexcept(noexcept(qHash(*first, 0))) // assume iterator operations don't throw
 {
-    return std::accumulate(first, last, seed, QtPrivate::QHashCombineCommutative(seed));
+    return std::accumulate(first, last, seed, BobUIPrivate::QHashCombineCommutative(seed));
 }
 
 namespace QHashPrivate {
@@ -441,44 +441,44 @@ template <typename T1, typename T2> inline size_t qHash(const std::pair<T1, T2> 
     return qHashMulti(seed, key.first, key.second);
 }
 
-#define QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, Arguments)      \
-    QT_BEGIN_INCLUDE_NAMESPACE                                      \
+#define BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, Arguments)      \
+    BOBUI_BEGIN_INCLUDE_NAMESPACE                                      \
     namespace std {                                                 \
         template <>                                                 \
-        struct hash< QT_PREPEND_NAMESPACE(Class) > {                \
-            using argument_type = QT_PREPEND_NAMESPACE(Class);      \
+        struct hash< BOBUI_PREPEND_NAMESPACE(Class) > {                \
+            using argument_type = BOBUI_PREPEND_NAMESPACE(Class);      \
             using result_type = size_t;                             \
             size_t operator()(Arguments s) const                    \
-              noexcept(QT_PREPEND_NAMESPACE(                        \
-                     QtPrivate::QNothrowHashable_v)<argument_type>) \
+              noexcept(BOBUI_PREPEND_NAMESPACE(                        \
+                     BobUIPrivate::QNothrowHashable_v)<argument_type>) \
             {                                                       \
                 /* this seeds qHash with the result of */           \
                 /* std::hash applied to an int, to reap */          \
                 /* any protection against predictable hash */       \
                 /* values the std implementation may provide */     \
-                using QT_PREPEND_NAMESPACE(qHash);                  \
+                using BOBUI_PREPEND_NAMESPACE(qHash);                  \
                 return qHash(s, qHash(std::hash<int>{}(0)));        \
             }                                                       \
         };                                                          \
     }                                                               \
-    QT_END_INCLUDE_NAMESPACE                                        \
+    BOBUI_END_INCLUDE_NAMESPACE                                        \
     /*end*/
 
-#define QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(Class) \
-    QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, const argument_type &)
-#define QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(Class) \
-    QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, argument_type)
+#define BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(Class) \
+    BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, const argument_type &)
+#define BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(Class) \
+    BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH(Class, argument_type)
 
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QString)
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QStringView)
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QLatin1StringView)
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QByteArrayView)
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QByteArray)
-#ifndef QT_BOOTSTRAPPED
-QT_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QBitArray)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QString)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QStringView)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QLatin1StringView)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_VALUE(QByteArrayView)
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QByteArray)
+#ifndef BOBUI_BOOTSTRAPPED
+BOBUI_SPECIALIZE_STD_HASH_TO_CALL_QHASH_BY_CREF(QBitArray)
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #if defined(Q_CC_MSVC)
 #pragma warning( pop )

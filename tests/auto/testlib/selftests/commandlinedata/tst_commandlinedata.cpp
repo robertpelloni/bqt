@@ -1,9 +1,9 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
 /*!
  \internal
@@ -29,22 +29,22 @@ void tst_DataTable::fiveTablePasses() const
 
 void tst_DataTable::fiveTablePasses_data() const
 {
-    QTest::addColumn<bool>("test");
+    BOBUIest::addColumn<bool>("test");
 
-    QTest::newRow("fiveTablePasses_data1") << true;
-    QTest::newRow("fiveTablePasses_data2") << true;
-    QTest::newRow("fiveTablePasses_data3") << true;
-    QTest::newRow("fiveTablePasses_data4") << true;
-    QTest::newRow("fiveTablePasses_data5") << true;
+    BOBUIest::newRow("fiveTablePasses_data1") << true;
+    BOBUIest::newRow("fiveTablePasses_data2") << true;
+    BOBUIest::newRow("fiveTablePasses_data3") << true;
+    BOBUIest::newRow("fiveTablePasses_data4") << true;
+    BOBUIest::newRow("fiveTablePasses_data5") << true;
 }
 
-QTEST_MAIN_WRAPPER(tst_DataTable,
+BOBUIEST_MAIN_WRAPPER(tst_DataTable,
     std::vector<const char*> args(argv, argv + argc);
     args.push_back("fiveTablePasses");
     args.push_back("fiveTablePasses:fiveTablePasses_data1");
     args.push_back("-v2");
     argc = int(args.size());
     argv = const_cast<char**>(&args[0]);
-    QTEST_MAIN_SETUP())
+    BOBUIEST_MAIN_SETUP())
 
 #include "tst_commandlinedata.moc"

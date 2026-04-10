@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 //! [0]
 QLineEdit { background: yellow }
@@ -146,12 +146,12 @@ QPushButton { background-color: red; border: none; }
 
 
 //! [31]
-QToolButton { background-color: red; border: none; }
+BOBUIoolButton { background-color: red; border: none; }
 //! [31]
 
 
 //! [33]
-QTreeView {
+BOBUIreeView {
     alternate-background-color: blue;
     background: yellow;
 }
@@ -159,7 +159,7 @@ QTreeView {
 
 
 //! [34]
-QTextEdit { background: yellow }
+BOBUIextEdit { background: yellow }
 //! [34]
 
 
@@ -200,7 +200,7 @@ QFrame {
 
 
 //! [40]
-QTextEdit {
+BOBUIextEdit {
     background-image: url("leaves.png");
     background-attachment: fixed;
 }
@@ -303,12 +303,12 @@ QCheckBox { font-family: "New Century Schoolbook" }
 
 
 //! [55]
-QTextEdit { font-size: 12px }
+BOBUIextEdit { font-size: 12px }
 //! [55]
 
 
 //! [56]
-QTextEdit { font-style: italic }
+BOBUIextEdit { font-style: italic }
 //! [56]
 
 
@@ -370,7 +370,7 @@ QComboBox { min-width: 72px }
 
 
 //! [68]
-QToolTip { opacity: 223 }
+BOBUIoolTip { opacity: 223 }
 //! [68]
 
 
@@ -385,12 +385,12 @@ QSpinBox::down-button { right: 2px }
 
 
 //! [71]
-QTextEdit { selection-background-color: darkblue }
+BOBUIextEdit { selection-background-color: darkblue }
 //! [71]
 
 
 //! [72]
-QTextEdit { selection-color: white }
+BOBUIextEdit { selection-color: white }
 //! [72]
 
 
@@ -440,7 +440,7 @@ QSpinBox::up-button { width: 12px }
 
 
 //! [80]
-QTextEdit { background-position: bottom center }
+BOBUIextEdit { background-position: bottom center }
 //! [80]
 
 
@@ -497,13 +497,13 @@ QLabel { border-color: hsla(240, 255, 50%, 75%) }
 
 //! [85]
 /* linear gradient from white to green */
-QTextEdit {
+BOBUIextEdit {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                 stop:0 white, stop: 0.4 gray, stop:1 green)
 }
 
 /* linear gradient from white to green */
-QTextEdit {
+BOBUIextEdit {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                 stop:0 white, stop: 0.4 rgba(10, 20, 30, 40),
                 stop:1 rgb(0, 200, 230, 200))
@@ -511,13 +511,13 @@ QTextEdit {
 
 
 /* conical gradient from white to green */
-QTextEdit {
+BOBUIextEdit {
     background: qconicalgradient(cx:0.5, cy:0.5, angle:30,
                 stop:0 white, stop:1 #00FF00)
 }
 
 /* radial gradient from white to green */
-QTextEdit {
+BOBUIextEdit {
     background: qradialgradient(cx:0, cy:0, radius: 1,
                 fx:0.5, fy:0.5, stop:0 white, stop:1 green)
 }
@@ -639,7 +639,7 @@ QDialog QLineEdit { color: brown }
 
 
 //! [106]
-QTextEdit, QListView {
+BOBUIextEdit, QListView {
     background-color: white;
     background-image: url(draft.png);
     background-attachment: scroll;
@@ -648,7 +648,7 @@ QTextEdit, QListView {
 
 
 //! [107]
-QTextEdit, QListView {
+BOBUIextEdit, QListView {
     background-color: white;
     background-image: url(draft.png);
     background-attachment: fixed;
@@ -836,7 +836,7 @@ QDockWidget::float-button {
 
 
 //! [113]
-QFrame, QLabel, QToolTip {
+QFrame, QLabel, BOBUIoolTip {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
@@ -1491,17 +1491,17 @@ QStatusBar QLabel {
 
 
 //! [145]
-QTabWidget::pane { /* The tab widget frame */
+BOBUIabWidget::pane { /* The tab widget frame */
     border-top: 2px solid #C2C7CB;
 }
 
-QTabWidget::tab-bar {
+BOBUIabWidget::tab-bar {
     left: 5px; /* move to the right by 5px */
 }
 
 /* Style the tab using the tab sub-control. Note that
-    it reads QTabBar _not_ QTabWidget */
-QTabBar::tab {
+    it reads BOBUIabBar _not_ BOBUIabWidget */
+BOBUIabBar::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
@@ -1513,35 +1513,35 @@ QTabBar::tab {
     padding: 2px;
 }
 
-QTabBar::tab:selected, QTabBar::tab:hover {
+BOBUIabBar::tab:selected, BOBUIabBar::tab:hover {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,
                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
 }
 
-QTabBar::tab:selected {
+BOBUIabBar::tab:selected {
     border-color: #9B9B9B;
     border-bottom-color: #C2C7CB; /* same as pane color */
 }
 
-QTabBar::tab:!selected {
+BOBUIabBar::tab:!selected {
     margin-top: 2px; /* make non-selected tabs look smaller */
 }
 //! [145]
 
 
 //! [146]
-QTabWidget::pane { /* The tab widget frame */
+BOBUIabWidget::pane { /* The tab widget frame */
     border-top: 2px solid #C2C7CB;
 }
 
-QTabWidget::tab-bar {
+BOBUIabWidget::tab-bar {
     left: 5px; /* move to the right by 5px */
 }
 
 /* Style the tab using the tab sub-control. Note that
-    it reads QTabBar _not_ QTabWidget */
-QTabBar::tab {
+    it reads BOBUIabBar _not_ BOBUIabWidget */
+BOBUIabBar::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
@@ -1553,56 +1553,56 @@ QTabBar::tab {
     padding: 2px;
 }
 
-QTabBar::tab:selected, QTabBar::tab:hover {
+BOBUIabBar::tab:selected, BOBUIabBar::tab:hover {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,
                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
 }
 
-QTabBar::tab:selected {
+BOBUIabBar::tab:selected {
     border-color: #9B9B9B;
     border-bottom-color: #C2C7CB; /* same as pane color */
 }
 
-QTabBar::tab:!selected {
+BOBUIabBar::tab:!selected {
     margin-top: 2px; /* make non-selected tabs look smaller */
 }
 
 /* make use of negative margins for overlapping tabs */
-QTabBar::tab:selected {
+BOBUIabBar::tab:selected {
     /* expand/overlap to the left and right by 4px */
     margin-left: -4px;
     margin-right: -4px;
 }
 
-QTabBar::tab:first:selected {
+BOBUIabBar::tab:first:selected {
     margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
 }
 
-QTabBar::tab:last:selected {
+BOBUIabBar::tab:last:selected {
     margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
 }
 
-QTabBar::tab:only-one {
+BOBUIabBar::tab:only-one {
     margin: 0; /* if there is only one tab, we don't want overlapping margins */
 }
 //! [146]
 
 
 //! [147]
-QTabWidget::pane { /* The tab widget frame */
+BOBUIabWidget::pane { /* The tab widget frame */
     border-top: 2px solid #C2C7CB;
     position: absolute;
     top: -0.5em;
 }
 
-QTabWidget::tab-bar {
+BOBUIabWidget::tab-bar {
     alignment: center;
 }
 
 /* Style the tab using the tab sub-control. Note that
-    it reads QTabBar _not_ QTabWidget */
-QTabBar::tab {
+    it reads BOBUIabBar _not_ BOBUIabWidget */
+BOBUIabBar::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
@@ -1614,13 +1614,13 @@ QTabBar::tab {
     padding: 2px;
 }
 
-QTabBar::tab:selected, QTabBar::tab:hover {
+BOBUIabBar::tab:selected, BOBUIabBar::tab:hover {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,
                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
 }
 
-QTabBar::tab:selected {
+BOBUIabBar::tab:selected {
     border-color: #9B9B9B;
     border-bottom-color: #C2C7CB; /* same as pane color */
 }
@@ -1628,31 +1628,31 @@ QTabBar::tab:selected {
 
 
 //! [148]
-QTabBar::tear {
+BOBUIabBar::tear {
     image: url(tear_indicator.png);
 }
 
-QTabBar::scroller { /* the width of the scroll buttons */
+BOBUIabBar::scroller { /* the width of the scroll buttons */
     width: 20px;
 }
 
-QTabBar QToolButton { /* the scroll buttons are tool buttons */
+BOBUIabBar BOBUIoolButton { /* the scroll buttons are tool buttons */
     border-image: url(scrollbutton.png) 2;
     border-width: 2px;
 }
 
-QTabBar QToolButton::right-arrow { /* the arrow mark in the tool buttons */
+BOBUIabBar BOBUIoolButton::right-arrow { /* the arrow mark in the tool buttons */
     image: url(rightarrow.png);
 }
 
-QTabBar QToolButton::left-arrow {
+BOBUIabBar BOBUIoolButton::left-arrow {
     image: url(leftarrow.png);
 }
 //! [148]
 
 
 //! [149]
-QTableView {
+BOBUIableView {
     selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
                                 stop: 0 #FF92BB, stop: 1 white);
 }
@@ -1660,7 +1660,7 @@ QTableView {
 
 
 //! [150]
-QTableView QTableCornerButton::section {
+BOBUIableView BOBUIableCornerButton::section {
     background: red;
     border: 2px outset red;
 }
@@ -1668,19 +1668,19 @@ QTableView QTableCornerButton::section {
 
 
 //! [151]
-QToolBar {
+BOBUIoolBar {
     background: red;
     spacing: 3px; /* spacing between items in the tool bar */
 }
 
-QToolBar::handle {
+BOBUIoolBar::handle {
     image: url(handle.png);
 }
 //! [151]
 
 
 //! [152]
-QToolBox::tab {
+BOBUIoolBox::tab {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
@@ -1688,7 +1688,7 @@ QToolBox::tab {
     color: darkgray;
 }
 
-QToolBox::tab:selected { /* italicize selected tabs */
+BOBUIoolBox::tab:selected { /* italicize selected tabs */
     font: italic;
     color: white;
 }
@@ -1696,24 +1696,24 @@ QToolBox::tab:selected { /* italicize selected tabs */
 
 
 //! [153]
-QToolButton { /* all types of tool button */
+BOBUIoolButton { /* all types of tool button */
     border: 2px solid #8f8f91;
     border-radius: 6px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #f6f7fa, stop: 1 #dadbde);
 }
 
-QToolButton[popupMode="1"] { /* only for MenuButtonPopup */
+BOBUIoolButton[popupMode="1"] { /* only for MenuButtonPopup */
     padding-right: 20px; /* make way for the popup button */
 }
 
-QToolButton:pressed {
+BOBUIoolButton:pressed {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                       stop: 0 #dadbde, stop: 1 #f6f7fa);
 }
 
 /* the subcontrols below are used only in the MenuButtonPopup mode */
-QToolButton::menu-button {
+BOBUIoolButton::menu-button {
     border: 2px solid gray;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -1721,18 +1721,18 @@ QToolButton::menu-button {
     width: 16px;
 }
 
-QToolButton::menu-arrow {
+BOBUIoolButton::menu-arrow {
     image: url(downarrow.png);
 }
 
-QToolButton::menu-arrow:open {
+BOBUIoolButton::menu-arrow:open {
     top: 1px; left: 1px; /* shift it a bit */
 }
 //! [153]
 
 
 //! [154]
-QToolTip {
+BOBUIoolTip {
     border: 2px solid darkkhaki;
     padding: 5px;
     border-radius: 3px;
@@ -1742,72 +1742,72 @@ QToolTip {
 
 
 //! [155]
-QTreeView {
+BOBUIreeView {
     alternate-background-color: yellow;
 }
 //! [155]
 
 
 //! [156]
-QTreeView {
+BOBUIreeView {
     show-decoration-selected: 1;
 }
 
-QTreeView::item {
+BOBUIreeView::item {
      border: 1px solid #d9d9d9;
     border-top-color: transparent;
     border-bottom-color: transparent;
 }
 
-QTreeView::item:hover {
+BOBUIreeView::item:hover {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
     border: 1px solid #bfcde4;
 }
 
-QTreeView::item:selected {
+BOBUIreeView::item:selected {
     border: 1px solid #567dbc;
 }
 
-QTreeView::item:selected:active{
+BOBUIreeView::item:selected:active{
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
 }
 
-QTreeView::item:selected:!active {
+BOBUIreeView::item:selected:!active {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
 }
 //! [156]
 
 
 //! [157]
-QTreeView::branch {
+BOBUIreeView::branch {
         background: palette(base);
 }
 
-QTreeView::branch:has-siblings:!adjoins-item {
+BOBUIreeView::branch:has-siblings:!adjoins-item {
         background: cyan;
 }
 
-QTreeView::branch:has-siblings:adjoins-item {
+BOBUIreeView::branch:has-siblings:adjoins-item {
         background: red;
 }
 
-QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+BOBUIreeView::branch:!has-children:!has-siblings:adjoins-item {
         background: blue;
 }
 
-QTreeView::branch:closed:has-children:has-siblings {
+BOBUIreeView::branch:closed:has-children:has-siblings {
         background: pink;
 }
 
-QTreeView::branch:has-children:!has-siblings:closed {
+BOBUIreeView::branch:has-children:!has-siblings:closed {
         background: gray;
 }
 
-QTreeView::branch:open:has-children:has-siblings {
+BOBUIreeView::branch:open:has-children:has-siblings {
         background: magenta;
 }
 
-QTreeView::branch:open:has-children:!has-siblings {
+BOBUIreeView::branch:open:has-children:!has-siblings {
         background: green;
 }
 
@@ -1815,37 +1815,37 @@ QTreeView::branch:open:has-children:!has-siblings {
 
 
 //! [158]
-QTreeView::branch:has-siblings:!adjoins-item {
+BOBUIreeView::branch:has-siblings:!adjoins-item {
     border-image: url(vline.png) 0;
 }
 
-QTreeView::branch:has-siblings:adjoins-item {
+BOBUIreeView::branch:has-siblings:adjoins-item {
     border-image: url(branch-more.png) 0;
 }
 
-QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+BOBUIreeView::branch:!has-children:!has-siblings:adjoins-item {
     border-image: url(branch-end.png) 0;
 }
 
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings {
+BOBUIreeView::branch:has-children:!has-siblings:closed,
+BOBUIreeView::branch:closed:has-children:has-siblings {
         border-image: none;
         image: url(branch-closed.png);
 }
 
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings  {
+BOBUIreeView::branch:open:has-children:!has-siblings,
+BOBUIreeView::branch:open:has-children:has-siblings  {
         border-image: none;
         image: url(branch-open.png);
 }
 //! [158]
 
 //! [159]
-QTabBar::close-button {
+BOBUIabBar::close-button {
     image: url(close.png)
     subcontrol-position: left;
 }
-QTabBar::close-button:hover {
+BOBUIabBar::close-button:hover {
     image: url(close-hover.png)
 }
 
@@ -1856,7 +1856,7 @@ QTabBar::close-button:hover {
 //! [160]
 
 //! [161]
-QTableView::indicator:unchecked {
+BOBUIableView::indicator:unchecked {
     background-color: #d7d6d5
 }
 //! [161]

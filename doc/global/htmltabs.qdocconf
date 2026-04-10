@@ -20,8 +20,8 @@
 #
 # Example:
 # \if defined(onlinedocs)
-#   \tab {build-qt-app}{tab-cmake}{CMake}{checked}
-#   \tab {build-qt-app}{tab-qmake}{qmake}{}
+#   \tab {build-bobui-app}{tab-cmake}{CMake}{checked}
+#   \tab {build-bobui-app}{tab-qmake}{qmake}{}
 #   \tabcontent {tab-cmake}
 # \else
 #   \section1 Using CMake

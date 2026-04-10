@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtOpenGL/QOpenGLWindow>
-#include <QTest>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLContext>
-#include <QtGui/QPainter>
+#include <BobUIOpenGL/QOpenGLWindow>
+#include <BOBUIest>
+#include <BobUIGui/QOpenGLFunctions>
+#include <BobUIGui/QOpenGLContext>
+#include <BobUIGui/QPainter>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 
@@ -38,7 +38,7 @@ void tst_QOpenGLWindow::create()
     w.resize(640, 480);
     w.show();
 
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QVERIFY(w.isValid());
 }
@@ -87,7 +87,7 @@ void tst_QOpenGLWindow::basic()
     w.reset();
     w.resize(640, 480);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     // Check that the virtuals are invoked.
     QCOMPARE(w.initCount, 1);
@@ -111,22 +111,22 @@ void tst_QOpenGLWindow::basic()
 
 static bool isPlatformWayland()
 {
-    return QGuiApplication::platformName().startsWith(QLatin1String("wayland"), Qt::CaseInsensitive);
+    return QGuiApplication::platformName().startsWith(QLatin1String("wayland"), BobUI::CaseInsensitive);
 }
 
 void tst_QOpenGLWindow::resize()
 {
     if (isPlatformWayland())
-        QSKIP("Wayland: Crashes on Intel Mesa due to a driver bug (QTBUG-66848).");
+        QSKIP("Wayland: Crashes on Intel Mesa due to a driver bug (BOBUIBUG-66848).");
 
-    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), Qt::CaseInsensitive))
+    if (QGuiApplication::platformName().startsWith(QLatin1String("eglfs"), BobUI::CaseInsensitive))
         QSKIP("EGLFS does not allow resizing on top level window");
 
     Window w;
     w.reset();
     w.resize(640, 480);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     // Check that the virtuals are invoked.
     int resCount = w.resizeCount;
@@ -134,7 +134,7 @@ void tst_QOpenGLWindow::resize()
 
     // Check that a future resize triggers resizeGL.
     w.resize(800, 600);
-    QTRY_VERIFY(w.resizeCount > resCount);
+    BOBUIRY_VERIFY(w.resizeCount > resCount);
 }
 
 class PainterWindow : public QOpenGLWindow
@@ -152,7 +152,7 @@ public:
         f->glClearColor(1, 0, 0, 1);
         f->glClear(GL_COLOR_BUFFER_BIT);
         p.endNativePainting();
-        p.fillRect(QRect(0, 0, 100, 100), Qt::blue);
+        p.fillRect(QRect(0, 0, 100, 100), BobUI::blue);
         p.end();
 
         img = grabFramebuffer();
@@ -166,7 +166,7 @@ void tst_QOpenGLWindow::painter()
     PainterWindow w;
     w.resize(400, 400);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     QCOMPARE(w.img.size(), w.size() * w.devicePixelRatio());
     QVERIFY(w.img.pixel(QPoint(5, 5) * w.devicePixelRatio()) == qRgb(0, 0, 255));
@@ -184,9 +184,9 @@ public:
 
         QPainter p(this);
         if (!x)
-            p.fillRect(QRect(0, 0, width(), height()), Qt::green);
+            p.fillRect(QRect(0, 0, width(), height()), BobUI::green);
 
-        p.fillRect(QRect(x, 0, 10, 10), Qt::blue);
+        p.fillRect(QRect(x, 0, 10, 10), BobUI::blue);
         x += 20;
     }
 
@@ -196,9 +196,9 @@ public:
 
 void tst_QOpenGLWindow::partial_data()
 {
-    QTest::addColumn<int>("behavior");
-    QTest::newRow("blit") << int(QOpenGLWindow::PartialUpdateBlit);
-    QTest::newRow("blend") << int(QOpenGLWindow::PartialUpdateBlend);
+    BOBUIest::addColumn<int>("behavior");
+    BOBUIest::newRow("blit") << int(QOpenGLWindow::PartialUpdateBlit);
+    BOBUIest::newRow("blend") << int(QOpenGLWindow::PartialUpdateBlend);
 }
 
 void tst_QOpenGLWindow::partial()
@@ -208,13 +208,13 @@ void tst_QOpenGLWindow::partial()
     PartialPainterWindow w(u);
     w.resize(800, 400);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     // Add a couple of small blue rects.
     for (int i = 0; i < 10; ++i) {
         w.paintCount = 0;
         w.update();
-        QTRY_VERIFY(w.paintCount > 0);
+        BOBUIRY_VERIFY(w.paintCount > 0);
     }
 
     // Now since the painting went to an extra framebuffer, all the rects should
@@ -279,7 +279,7 @@ void tst_QOpenGLWindow::underOver()
     PaintUnderOverWindow w;
     w.resize(400, 400);
     w.show();
-    QVERIFY(QTest::qWaitForWindowExposed(&w));
+    QVERIFY(BOBUIest::qWaitForWindowExposed(&w));
 
     // under -> paint -> over -> under -> paint -> ... is the only acceptable sequence
     QCOMPARE(w.m_state, PaintUnderOverWindow::PaintOver);
@@ -287,4 +287,4 @@ void tst_QOpenGLWindow::underOver()
 
 #include <tst_qopenglwindow.moc>
 
-QTEST_MAIN(tst_QOpenGLWindow)
+BOBUIEST_MAIN(tst_QOpenGLWindow)

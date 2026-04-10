@@ -5,11 +5,11 @@
 
 # Usage:
 #   \grid
-#       \griditem {qtqml-index.html} {Qt Qml} {Classes for QML and JavaScript languages.}
-#       \griditem {qtquick-index.html} {Qt Quick} {
+#       \griditem {bobuiqml-index.html} {BobUI Qml} {Classes for QML and JavaScript languages.}
+#       \griditem {bobuiquick-index.html} {BobUI Quick} {
 #           Declarative framework for dynamic apps with custom UIs.
 #       }
-#       \griditem {qtquickcontrols-index.html} {Qt Quick Controls} {
+#       \griditem {bobuiquickcontrols-index.html} {BobUI Quick Controls} {
 #           Lightweight QML types for creating performant user
 #           interfaces.
 #       }

@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "character.h"
 
 #include <QMetaEnum>
-#include <QTextStream>
+#include <BOBUIextStream>
 
 Character::Character() = default;
 
@@ -72,7 +72,7 @@ QJsonObject Character::toJson() const
 }
 //! [toJson]
 
-void Character::print(QTextStream &s, int indentation) const
+void Character::print(BOBUIextStream &s, int indentation) const
 {
     const QString indent(indentation * 2, ' ');
     const QString className = QMetaEnum::fromType<ClassType>().valueToKey(mClassType);

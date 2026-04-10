@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 /*!
     \externalpage https://source.android.com/docs/setup/reference/build-numbers
     \title Android: Build Numbers
@@ -69,12 +69,12 @@
 */
 
 /*!
-    \externalpage https://cmake.org/cmake/help/latest/manual/cmake-qt.7.html#automoc
+    \externalpage https://cmake.org/cmake/help/latest/manual/cmake-bobui.7.html#automoc
     \title CMake AUTOMOC Documentation
 */
 
 /*!
-    \externalpage https://cmake.org/cmake/help/latest/manual/cmake-qt.7.html#autouic
+    \externalpage https://cmake.org/cmake/help/latest/manual/cmake-bobui.7.html#autouic
     \title CMake AUTOUIC Documentation
 */
 
@@ -256,7 +256,7 @@
 */
 
 /*!
-    \externalpage https://www.qt.io/product/quality-assurance/test-center
+    \externalpage https://www.bobui.io/product/quality-assurance/test-center
     \title Test Center
 */
 

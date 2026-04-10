@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qsql_sqlite_p.h"
 
@@ -13,18 +13,18 @@
 #include <qsqlfield.h>
 #include <qsqlindex.h>
 #include <qsqlquery.h>
-#include <QtSql/private/qsqlcachedresult_p.h>
-#include <QtSql/private/qsqldriver_p.h>
+#include <BobUISql/private/qsqlcachedresult_p.h>
+#include <BobUISql/private/qsqldriver_p.h>
 #include <qstringlist.h>
 #include <qvariant.h>
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 #include <qcache.h>
 #include <qregularexpression.h>
 #endif
 #include <QScopedValueRollback>
 
 #if defined Q_OS_WIN
-# include <qt_windows.h>
+# include <bobui_windows.h>
 #else
 # include <unistd.h>
 #endif
@@ -38,11 +38,11 @@ Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_STATIC_LOGGING_CATEGORY(lcSqlite, "qt.sql.sqlite")
+Q_STATIC_LOGGING_CATEGORY(lcSqlite, "bobui.sql.sqlite")
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static int qGetColumnType(const QString &tpName)
 {
@@ -527,14 +527,14 @@ bool QSQLiteResult::exec()
                     break;
                 case QMetaType::QDateTime: {
                     const QDateTime dateTime = value.toDateTime();
-                    const QString str = dateTime.toString(Qt::ISODateWithMs);
+                    const QString str = dateTime.toString(BobUI::ISODateWithMs);
                     res = sqlite3_bind_text16(d->stmt, i + 1, str.data(),
                                               int(str.size() * sizeof(ushort)),
                                               SQLITE_TRANSIENT);
                     break;
                 }
-                case QMetaType::QTime: {
-                    const QTime time = value.toTime();
+                case QMetaType::BOBUIime: {
+                    const BOBUIime time = value.toTime();
                     const QString str = time.toString(u"hh:mm:ss.zzz");
                     res = sqlite3_bind_text16(d->stmt, i + 1, str.data(),
                                               int(str.size() * sizeof(ushort)),
@@ -631,7 +631,7 @@ QVariant QSQLiteResult::handle() const
 
 /////////////////////////////////////////////////////////
 
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
 static void _q_regexp(sqlite3_context* context, int argc, sqlite3_value** argv)
 {
     if (Q_UNLIKELY(argc != 2)) {
@@ -755,16 +755,16 @@ bool QSQLiteDriver::open(const QString & db, const QString &, const QString &, c
     bool openReadOnlyOption = false;
     bool openUriOption = false;
     bool useExtendedResultCodes = true;
-    bool useQtVfs = false;
-    bool useQtCaseFolding = false;
+    bool useBobUIVfs = false;
+    bool useBobUICaseFolding = false;
     bool openNoFollow = false;
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
     static const auto regexpConnectOption = "QSQLITE_ENABLE_REGEXP"_L1;
     bool defineRegexp = false;
     int regexpCacheSize = 25;
 #endif
 
-    const auto opts = QStringView{conOpts}.split(u';', Qt::SkipEmptyParts);
+    const auto opts = QStringView{conOpts}.split(u';', BobUI::SkipEmptyParts);
     for (auto option : opts) {
         option = option.trimmed();
         if (option.startsWith("QSQLITE_BUSY_TIMEOUT"_L1)) {
@@ -775,8 +775,8 @@ bool QSQLiteDriver::open(const QString & db, const QString &, const QString &, c
                 if (ok)
                     timeOut = nt;
             }
-        } else if (option == "QSQLITE_USE_QT_VFS"_L1) {
-            useQtVfs = true;
+        } else if (option == "QSQLITE_USE_BOBUI_VFS"_L1) {
+            useBobUIVfs = true;
         } else if (option == "QSQLITE_OPEN_READONLY"_L1) {
             openReadOnlyOption = true;
         } else if (option == "QSQLITE_OPEN_URI"_L1) {
@@ -786,11 +786,11 @@ bool QSQLiteDriver::open(const QString & db, const QString &, const QString &, c
         } else if (option == "QSQLITE_NO_USE_EXTENDED_RESULT_CODES"_L1) {
             useExtendedResultCodes = false;
         } else if (option == "QSQLITE_ENABLE_NON_ASCII_CASE_FOLDING"_L1) {
-            useQtCaseFolding = true;
+            useBobUICaseFolding = true;
         } else if (option == "QSQLITE_OPEN_NOFOLLOW"_L1) {
             openNoFollow = true;
         }
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         else if (option.startsWith(regexpConnectOption)) {
             option = option.mid(regexpConnectOption.size()).trimmed();
             if (option.isEmpty()) {
@@ -824,14 +824,14 @@ bool QSQLiteDriver::open(const QString & db, const QString &, const QString &, c
 
     openMode |= SQLITE_OPEN_NOMUTEX;
 
-    const int res = sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, useQtVfs ? "QtVFS" : nullptr);
+    const int res = sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, useBobUIVfs ? "BobUIVFS" : nullptr);
 
     if (res == SQLITE_OK) {
         sqlite3_busy_timeout(d->access, timeOut);
         sqlite3_extended_result_codes(d->access, useExtendedResultCodes);
         setOpen(true);
         setOpenError(false);
-#if QT_CONFIG(regularexpression)
+#if BOBUI_CONFIG(regularexpression)
         if (defineRegexp) {
             auto cache = new QCache<QString, QRegularExpression>(regexpCacheSize);
             sqlite3_create_function_v2(d->access, "regexp", 2, SQLITE_UTF8, cache,
@@ -839,7 +839,7 @@ bool QSQLiteDriver::open(const QString & db, const QString &, const QString &, c
                                        nullptr, &_q_regexp_cleanup);
         }
 #endif
-        if (useQtCaseFolding) {
+        if (useBobUICaseFolding) {
             sqlite3_create_function_v2(d->access, "lower", 1, SQLITE_UTF8, nullptr,
                                        &_q_lower, nullptr, nullptr, nullptr);
             sqlite3_create_function_v2(d->access, "upper", 1, SQLITE_UTF8, nullptr,
@@ -1050,7 +1050,7 @@ static void handle_sqlite_callback(void *qobj,int aoperation, char const *adbnam
     Q_UNUSED(adbname);
     QSQLiteDriver *driver = static_cast<QSQLiteDriver *>(qobj);
     if (driver) {
-        QMetaObject::invokeMethod(driver, "handleNotification", Qt::QueuedConnection,
+        QMetaObject::invokeMethod(driver, "handleNotification", BobUI::QueuedConnection,
                                   Q_ARG(QString, QString::fromUtf8(atablename)), Q_ARG(qint64, arowid));
     }
 }
@@ -1111,6 +1111,6 @@ void QSQLiteDriver::handleNotification(const QString &tableName, qint64 rowid)
         emit notification(tableName, QSqlDriver::UnknownSource, QVariant(rowid));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qsql_sqlite_p.cpp"

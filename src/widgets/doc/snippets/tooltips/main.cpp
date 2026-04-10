@@ -1,7 +1,7 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 using SearchBar = QWidget;
 using Element = QWidget;
@@ -19,7 +19,7 @@ private:
         return nullptr;
     }
 
-    QToolBar *fileToolBar;
+    BOBUIoolBar *fileToolBar;
     QMenu *fileMenu;
 
     SearchBar *searchBar;
@@ -54,9 +54,9 @@ bool Window::event(QEvent *event)
     if (event->type() == QEvent::ToolTip) {
         QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
         if (Element *element = elementAt(helpEvent->pos())) {
-            QToolTip::showText(helpEvent->globalPos(), element->toolTip());
+            BOBUIoolTip::showText(helpEvent->globalPos(), element->toolTip());
         } else {
-            QToolTip::hideText();
+            BOBUIoolTip::hideText();
             event->ignore();
         }
 

@@ -1,5 +1,5 @@
-// Copyright (C) 2022 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2022 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QPoint>
 #ifdef QVARIANT_H
@@ -24,7 +24,7 @@ CHECK(const &&);
 
 #undef CHECK
 
-#include <QTest>
+#include <BOBUIest>
 #include <QBuffer>
 
 #include <qpoint.h>
@@ -76,7 +76,7 @@ private slots:
     void operator_eq_data();
     void operator_eq();
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
     void stream_data();
     void stream();
 #endif
@@ -96,14 +96,14 @@ void tst_QPoint::isNull()
 
 void tst_QPoint::manhattanLength_data()
 {
-    QTest::addColumn<QPoint>("point");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("(0, 0)") << QPoint(0, 0) << 0;
-    QTest::newRow("(10, 0)") << QPoint(10, 0) << 10;
-    QTest::newRow("(0, 10)") << QPoint(0, 10) << 10;
-    QTest::newRow("(10, 20)") << QPoint(10, 20) << 30;
-    QTest::newRow("(-10, -20)") << QPoint(-10, -20) << 30;
+    BOBUIest::newRow("(0, 0)") << QPoint(0, 0) << 0;
+    BOBUIest::newRow("(10, 0)") << QPoint(10, 0) << 10;
+    BOBUIest::newRow("(0, 10)") << QPoint(0, 10) << 10;
+    BOBUIest::newRow("(10, 20)") << QPoint(10, 20) << 30;
+    BOBUIest::newRow("(-10, -20)") << QPoint(-10, -20) << 30;
 }
 
 void tst_QPoint::manhattanLength()
@@ -116,11 +116,11 @@ void tst_QPoint::manhattanLength()
 
 void tst_QPoint::getSet_data()
 {
-    QTest::addColumn<int>("i");
+    BOBUIest::addColumn<int>("i");
 
-    QTest::newRow("0") << 0;
-    QTest::newRow("INT_MIN") << INT_MIN;
-    QTest::newRow("INT_MAX") << INT_MAX;
+    BOBUIest::newRow("0") << 0;
+    BOBUIest::newRow("INT_MIN") << INT_MIN;
+    BOBUIest::newRow("INT_MAX") << INT_MAX;
 }
 
 void tst_QPoint::getSet()
@@ -137,11 +137,11 @@ void tst_QPoint::getSet()
 
 void tst_QPoint::toPointF_data()
 {
-    QTest::addColumn<QPoint>("input");
-    QTest::addColumn<QPointF>("result");
+    BOBUIest::addColumn<QPoint>("input");
+    BOBUIest::addColumn<QPointF>("result");
 
     auto row = [](int x, int y) {
-        QTest::addRow("(%d, %d)", x, y) << QPoint(x, y) << QPointF(x, y);
+        BOBUIest::addRow("(%d, %d)", x, y) << QPoint(x, y) << QPointF(x, y);
     };
     constexpr std::array samples = {-1, 0, 1};
     for (int x : samples) {
@@ -158,7 +158,7 @@ void tst_QPoint::toPointF()
 
     QCOMPARE(input.toPointF(), result);
     // test also mixed-type comparison
-    QT_TEST_EQUALITY_OPS(input, result, true);
+    BOBUI_TEST_EQUALITY_OPS(input, result, true);
 }
 
 void tst_QPoint::transposed()
@@ -184,14 +184,14 @@ void tst_QPoint::ry()
 
 void tst_QPoint::operator_add_data()
 {
-    QTest::addColumn<QPoint>("point1");
-    QTest::addColumn<QPoint>("point2");
-    QTest::addColumn<QPoint>("expected");
+    BOBUIest::addColumn<QPoint>("point1");
+    BOBUIest::addColumn<QPoint>("point2");
+    BOBUIest::addColumn<QPoint>("expected");
 
-    QTest::newRow("(0, 0) + (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << QPoint(0, 0);
-    QTest::newRow("(0, 9) + (1, 0)") << QPoint(0, 9) << QPoint(1, 0) << QPoint(1, 9);
-    QTest::newRow("(INT_MIN, 0) + (1, 0)") << QPoint(INT_MIN, 0) << QPoint(1, 0) << QPoint(INT_MIN + 1, 0);
-    QTest::newRow("(INT_MAX, 0) + (-1, 0)") << QPoint(INT_MAX, 0) << QPoint(-1, 0) << QPoint(INT_MAX - 1, 0);
+    BOBUIest::newRow("(0, 0) + (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << QPoint(0, 0);
+    BOBUIest::newRow("(0, 9) + (1, 0)") << QPoint(0, 9) << QPoint(1, 0) << QPoint(1, 9);
+    BOBUIest::newRow("(INT_MIN, 0) + (1, 0)") << QPoint(INT_MIN, 0) << QPoint(1, 0) << QPoint(INT_MIN + 1, 0);
+    BOBUIest::newRow("(INT_MAX, 0) + (-1, 0)") << QPoint(INT_MAX, 0) << QPoint(-1, 0) << QPoint(INT_MAX - 1, 0);
 }
 
 void tst_QPoint::operator_add()
@@ -207,14 +207,14 @@ void tst_QPoint::operator_add()
 
 void tst_QPoint::operator_subtract_data()
 {
-    QTest::addColumn<QPoint>("point1");
-    QTest::addColumn<QPoint>("point2");
-    QTest::addColumn<QPoint>("expected");
+    BOBUIest::addColumn<QPoint>("point1");
+    BOBUIest::addColumn<QPoint>("point2");
+    BOBUIest::addColumn<QPoint>("expected");
 
-    QTest::newRow("(0, 0) - (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << QPoint(0, 0);
-    QTest::newRow("(0, 9) - (1, 0)") << QPoint(0, 9) << QPoint(1, 0) << QPoint(-1, 9);
-    QTest::newRow("(INT_MAX, 0) - (1, 0)") << QPoint(INT_MAX, 0) << QPoint(1, 0) << QPoint(INT_MAX - 1, 0);
-    QTest::newRow("(INT_MIN, 0) - (-1, 0)") << QPoint(INT_MIN, 0) << QPoint(-1, 0) << QPoint(INT_MIN - -1, 0);
+    BOBUIest::newRow("(0, 0) - (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << QPoint(0, 0);
+    BOBUIest::newRow("(0, 9) - (1, 0)") << QPoint(0, 9) << QPoint(1, 0) << QPoint(-1, 9);
+    BOBUIest::newRow("(INT_MAX, 0) - (1, 0)") << QPoint(INT_MAX, 0) << QPoint(1, 0) << QPoint(INT_MAX - 1, 0);
+    BOBUIest::newRow("(INT_MIN, 0) - (-1, 0)") << QPoint(INT_MIN, 0) << QPoint(-1, 0) << QPoint(INT_MIN - -1, 0);
 }
 
 void tst_QPoint::operator_subtract()
@@ -234,21 +234,21 @@ Q_DECLARE_METATYPE(PrimitiveType)
 
 void tst_QPoint::operator_multiply_data()
 {
-    QTest::addColumn<QPoint>("point");
-    QTest::addColumn<double>("factorAsDouble");
-    QTest::addColumn<PrimitiveType>("type");
-    QTest::addColumn<QPoint>("expected");
+    BOBUIest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<double>("factorAsDouble");
+    BOBUIest::addColumn<PrimitiveType>("type");
+    BOBUIest::addColumn<QPoint>("expected");
 
-    QTest::newRow("(0, 0) * 0.0") << QPoint(0, 0) << 0.0 << Double << QPoint(0, 0);
-    QTest::newRow("(INT_MIN, 1) * 0.5") << QPoint(INT_MIN, 1) << 0.5 << Double << QPoint(qRound(INT_MIN * 0.5), 1);
-    QTest::newRow("(INT_MAX, 2) * 0.5") << QPoint(INT_MAX, 2) << 0.5 << Double << QPoint(qRound(INT_MAX * 0.5), 1);
+    BOBUIest::newRow("(0, 0) * 0.0") << QPoint(0, 0) << 0.0 << Double << QPoint(0, 0);
+    BOBUIest::newRow("(INT_MIN, 1) * 0.5") << QPoint(INT_MIN, 1) << 0.5 << Double << QPoint(qRound(INT_MIN * 0.5), 1);
+    BOBUIest::newRow("(INT_MAX, 2) * 0.5") << QPoint(INT_MAX, 2) << 0.5 << Double << QPoint(qRound(INT_MAX * 0.5), 1);
 
-    QTest::newRow("(0, 0) * 0") << QPoint(0, 0) << 0.0 << Int << QPoint(0, 0);
-    QTest::newRow("(INT_MIN + 1, 0) * -1") << QPoint(INT_MIN + 1, 0) << -1.0 << Int << QPoint((INT_MIN + 1) * -1, 0);
-    QTest::newRow("(INT_MAX, 0) * -1") << QPoint(INT_MAX, 0) << -1.0 << Int << QPoint(INT_MAX  * -1, 0);
+    BOBUIest::newRow("(0, 0) * 0") << QPoint(0, 0) << 0.0 << Int << QPoint(0, 0);
+    BOBUIest::newRow("(INT_MIN + 1, 0) * -1") << QPoint(INT_MIN + 1, 0) << -1.0 << Int << QPoint((INT_MIN + 1) * -1, 0);
+    BOBUIest::newRow("(INT_MAX, 0) * -1") << QPoint(INT_MAX, 0) << -1.0 << Int << QPoint(INT_MAX  * -1, 0);
 
-    QTest::newRow("(0, 0) * 0.0f") << QPoint(0, 0) << 0.0 << Float << QPoint(0, 0);
-    QTest::newRow("(INT_MIN, 0) * -0.5f") << QPoint(INT_MIN, 0) << -0.5 << Float << QPoint(qRound(INT_MIN * -0.5f), 0);
+    BOBUIest::newRow("(0, 0) * 0.0f") << QPoint(0, 0) << 0.0 << Float << QPoint(0, 0);
+    BOBUIest::newRow("(INT_MIN, 0) * -0.5f") << QPoint(INT_MIN, 0) << -0.5 << Float << QPoint(qRound(INT_MIN * -0.5f), 0);
 }
 
 template<typename T>
@@ -280,14 +280,14 @@ void tst_QPoint::operator_multiply()
 
 void tst_QPoint::operator_divide_data()
 {
-    QTest::addColumn<QPoint>("point");
-    QTest::addColumn<qreal>("divisor");
-    QTest::addColumn<QPoint>("expected");
+    BOBUIest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<qreal>("divisor");
+    BOBUIest::addColumn<QPoint>("expected");
 
-    QTest::newRow("(0, 0) / 1") << QPoint(0, 0) << qreal(1) << QPoint(0, 0);
-    QTest::newRow("(0, 9) / 2") << QPoint(0, 9) << qreal(2) << QPoint(0, 5);
-    QTest::newRow("(INT_MAX, 0) / 2") << QPoint(INT_MAX, 0) << qreal(2) << QPoint(qRound(INT_MAX / qreal(2)), 0);
-    QTest::newRow("(INT_MIN, 0) / -1.5") << QPoint(INT_MIN, 0) << qreal(-1.5) << QPoint(qRound(INT_MIN / qreal(-1.5)), 0);
+    BOBUIest::newRow("(0, 0) / 1") << QPoint(0, 0) << qreal(1) << QPoint(0, 0);
+    BOBUIest::newRow("(0, 9) / 2") << QPoint(0, 9) << qreal(2) << QPoint(0, 5);
+    BOBUIest::newRow("(INT_MAX, 0) / 2") << QPoint(INT_MAX, 0) << qreal(2) << QPoint(qRound(INT_MAX / qreal(2)), 0);
+    BOBUIest::newRow("(INT_MIN, 0) / -1.5") << QPoint(INT_MIN, 0) << qreal(-1.5) << QPoint(qRound(INT_MIN / qreal(-1.5)), 0);
 }
 
 void tst_QPoint::operator_divide()
@@ -303,15 +303,15 @@ void tst_QPoint::operator_divide()
 
 void tst_QPoint::dotProduct_data()
 {
-    QTest::addColumn<QPoint>("point1");
-    QTest::addColumn<QPoint>("point2");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QPoint>("point1");
+    BOBUIest::addColumn<QPoint>("point2");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("(0, 0) dot (0, 0)") << QPoint(0, 0) << QPoint(0, 0)<< 0;
-    QTest::newRow("(10, 0) dot (0, 10)") << QPoint(10, 0) << QPoint(0, 10) << 0;
-    QTest::newRow("(0, 10) dot (10, 0)") << QPoint(0, 10) << QPoint(10, 0) << 0;
-    QTest::newRow("(10, 20) dot (-10, -20)") << QPoint(10, 20) << QPoint(-10, -20) << -500;
-    QTest::newRow("(-10, -20) dot (10, 20)") << QPoint(-10, -20) << QPoint(10, 20) << -500;
+    BOBUIest::newRow("(0, 0) dot (0, 0)") << QPoint(0, 0) << QPoint(0, 0)<< 0;
+    BOBUIest::newRow("(10, 0) dot (0, 10)") << QPoint(10, 0) << QPoint(0, 10) << 0;
+    BOBUIest::newRow("(0, 10) dot (10, 0)") << QPoint(0, 10) << QPoint(10, 0) << 0;
+    BOBUIest::newRow("(10, 20) dot (-10, -20)") << QPoint(10, 20) << QPoint(-10, -20) << -500;
+    BOBUIest::newRow("(-10, -20) dot (10, 20)") << QPoint(-10, -20) << QPoint(10, 20) << -500;
 }
 
 void tst_QPoint::dotProduct()
@@ -337,13 +337,13 @@ void tst_QPoint::operator_unary_plus()
 
 void tst_QPoint::operator_unary_minus_data()
 {
-    QTest::addColumn<QPoint>("point");
-    QTest::addColumn<QPoint>("expected");
+    BOBUIest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<QPoint>("expected");
 
-    QTest::newRow("-(0, 0)") << QPoint(0, 0) << QPoint(0, 0);
-    QTest::newRow("-(-1, 0)") << QPoint(-1, 0) << QPoint(1, 0);
-    QTest::newRow("-(0, -1)") << QPoint(0, -1) << QPoint(0, 1);
-    QTest::newRow("-(-INT_MAX, INT_MAX)") << QPoint(-INT_MAX, INT_MAX) << QPoint(INT_MAX, -INT_MAX);
+    BOBUIest::newRow("-(0, 0)") << QPoint(0, 0) << QPoint(0, 0);
+    BOBUIest::newRow("-(-1, 0)") << QPoint(-1, 0) << QPoint(1, 0);
+    BOBUIest::newRow("-(0, -1)") << QPoint(0, -1) << QPoint(0, 1);
+    BOBUIest::newRow("-(-INT_MAX, INT_MAX)") << QPoint(-INT_MAX, INT_MAX) << QPoint(INT_MAX, -INT_MAX);
 }
 
 void tst_QPoint::operator_unary_minus()
@@ -357,22 +357,22 @@ void tst_QPoint::operator_unary_minus()
 void tst_QPoint::operatorsCompile()
 {
     // Mixed-type comparison is tested in tst_QPointF.
-    QTestPrivate::testEqualityOperatorsCompile<QPoint>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QPoint>();
 }
 
 void tst_QPoint::operator_eq_data()
 {
-    QTest::addColumn<QPoint>("point1");
-    QTest::addColumn<QPoint>("point2");
-    QTest::addColumn<bool>("expectEqual");
+    BOBUIest::addColumn<QPoint>("point1");
+    BOBUIest::addColumn<QPoint>("point2");
+    BOBUIest::addColumn<bool>("expectEqual");
 
-    QTest::newRow("(0, 0) == (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << true;
-    QTest::newRow("(-1, 0) == (-1, 0)") << QPoint(-1, 0) << QPoint(-1, 0) << true;
-    QTest::newRow("(-1, 0) != (0, 0)") << QPoint(-1, 0) << QPoint(0, 0) << false;
-    QTest::newRow("(-1, 0) != (0, -1)") << QPoint(-1, 0) << QPoint(0, -1) << false;
-    QTest::newRow("(1, 99999) != (-1, 99999)") << QPoint(1, 99999) << QPoint(-1, 99999) << false;
-    QTest::newRow("(INT_MIN, INT_MIN) == (INT_MIN, INT_MIN)") << QPoint(INT_MIN, INT_MIN) << QPoint(INT_MIN, INT_MIN) << true;
-    QTest::newRow("(INT_MAX, INT_MAX) == (INT_MAX, INT_MAX)") << QPoint(INT_MAX, INT_MAX) << QPoint(INT_MAX, INT_MAX) << true;
+    BOBUIest::newRow("(0, 0) == (0, 0)") << QPoint(0, 0) << QPoint(0, 0) << true;
+    BOBUIest::newRow("(-1, 0) == (-1, 0)") << QPoint(-1, 0) << QPoint(-1, 0) << true;
+    BOBUIest::newRow("(-1, 0) != (0, 0)") << QPoint(-1, 0) << QPoint(0, 0) << false;
+    BOBUIest::newRow("(-1, 0) != (0, -1)") << QPoint(-1, 0) << QPoint(0, -1) << false;
+    BOBUIest::newRow("(1, 99999) != (-1, 99999)") << QPoint(1, 99999) << QPoint(-1, 99999) << false;
+    BOBUIest::newRow("(INT_MIN, INT_MIN) == (INT_MIN, INT_MIN)") << QPoint(INT_MIN, INT_MIN) << QPoint(INT_MIN, INT_MIN) << true;
+    BOBUIest::newRow("(INT_MAX, INT_MAX) == (INT_MAX, INT_MAX)") << QPoint(INT_MAX, INT_MAX) << QPoint(INT_MAX, INT_MAX) << true;
 }
 
 void tst_QPoint::operator_eq()
@@ -381,21 +381,21 @@ void tst_QPoint::operator_eq()
     QFETCH(QPoint, point2);
     QFETCH(bool, expectEqual);
 
-    QT_TEST_EQUALITY_OPS(point1, point2, expectEqual);
+    BOBUI_TEST_EQUALITY_OPS(point1, point2, expectEqual);
 
     if (expectEqual)
         QCOMPARE(qHash(point1), qHash(point2));
 }
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 void tst_QPoint::stream_data()
 {
-    QTest::addColumn<QPoint>("point");
+    BOBUIest::addColumn<QPoint>("point");
 
-    QTest::newRow("(0, 0)") << QPoint(0, 0);
-    QTest::newRow("(-1, 1)") << QPoint(-1, 1);
-    QTest::newRow("(1, -1)") << QPoint(1, -1);
-    QTest::newRow("(INT_MIN, INT_MAX)") << QPoint(INT_MIN, INT_MAX);
+    BOBUIest::newRow("(0, 0)") << QPoint(0, 0);
+    BOBUIest::newRow("(-1, 1)") << QPoint(-1, 1);
+    BOBUIest::newRow("(1, -1)") << QPoint(1, -1);
+    BOBUIest::newRow("(INT_MIN, INT_MAX)") << QPoint(INT_MIN, INT_MAX);
 }
 
 void tst_QPoint::stream()
@@ -480,5 +480,5 @@ static_assert(p.x() == 8);
 static_assert(p.y() == 12);
 } // namespace ConstexprTests
 
-QTEST_MAIN(tst_QPoint)
+BOBUIEST_MAIN(tst_QPoint)
 #include "tst_qpoint.moc"

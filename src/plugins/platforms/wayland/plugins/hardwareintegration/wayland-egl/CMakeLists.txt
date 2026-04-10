@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 # Generated from wayland-egl.pro.
@@ -6,10 +6,10 @@
 #####################################################################
 ## QWaylandEglClientBufferPlugin Plugin:
 #####################################################################
-qt_find_package(EGL MODULE)
+bobui_find_package(EGL MODULE)
 
-qt_internal_add_plugin(QWaylandEglClientBufferPlugin
-    OUTPUT_NAME qt-plugin-wayland-egl
+bobui_internal_add_plugin(QWaylandEglClientBufferPlugin
+    OUTPUT_NAME bobui-plugin-wayland-egl
     PLUGIN_TYPE wayland-graphics-integration-client
     SOURCES
         main.cpp
@@ -20,18 +20,18 @@ qt_internal_add_plugin(QWaylandEglClientBufferPlugin
     LIBRARIES
         ${CMAKE_DL_LIBS}
         EGL::EGL
-        Qt::Core
-        Qt::Gui
-        Qt::OpenGLPrivate
-        Qt::WaylandClientPrivate
+        BobUI::Core
+        BobUI::Gui
+        BobUI::OpenGLPrivate
+        BobUI::WaylandClientPrivate
         Wayland::Client
         Wayland::Egl
-    QT_LICENSE_ID QT_COMMERCIAL_OR_LGPL3
+    BOBUI_LICENSE_ID BOBUI_COMMERCIAL_OR_LGPL3
 )
 
-qt_internal_extend_target(QWaylandEglClientBufferPlugin CONDITION QT_FEATURE_egl AND NOT QT_FEATURE_egl_x11
+bobui_internal_extend_target(QWaylandEglClientBufferPlugin CONDITION BOBUI_FEATURE_egl AND NOT BOBUI_FEATURE_egl_x11
     DEFINES
-        QT_EGL_NO_X11
+        BOBUI_EGL_NO_X11
 )
 
 

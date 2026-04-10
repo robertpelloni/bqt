@@ -1,8 +1,8 @@
 // Copyright (C) 2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Giuseppe D'Angelo <giuseppe.dangelo@kdab.com>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtCore/QtCompare>
-#include <QtTest/QTest>
+#include <BobUICore/BobUICompare>
+#include <BobUITest/BOBUIest>
 
 #ifdef __cpp_lib_three_way_comparison
 #include <compare>
@@ -25,7 +25,7 @@ class tst_QCompare: public QObject
 private slots:
     void legacyPartialOrdering();
     void legacyConversions();
-    void stdQtBinaryCompatibility();
+    void stdBobUIBinaryCompatibility();
     void partialOrdering();
     void weakOrdering();
     void strongOrdering();
@@ -167,7 +167,7 @@ void tst_QCompare::legacyConversions()
         CHECK_CONVERTS(NS ::strong_ordering,  QPartialOrdering); \
     } while (false)
 
-    CHECK_ALL(Qt);
+    CHECK_ALL(BobUI);
 #ifdef __cpp_lib_three_way_comparison
     CHECK_ALL(std);
 #endif // __cpp_lib_three_way_comparison
@@ -176,17 +176,17 @@ void tst_QCompare::legacyConversions()
 #undef CHECK_CONVERTS
 }
 
-void tst_QCompare::stdQtBinaryCompatibility()
+void tst_QCompare::stdBobUIBinaryCompatibility()
 {
 #ifndef __cpp_lib_three_way_comparison
     QSKIP("This test requires C++20 three-way-comparison support enabled in the stdlib.");
 #else
     QCOMPARE_EQ(sizeof(std::partial_ordering), 1U);
-    QCOMPARE_EQ(sizeof( Qt::partial_ordering), 1U);
+    QCOMPARE_EQ(sizeof( BobUI::partial_ordering), 1U);
     QCOMPARE_EQ(sizeof(std::   weak_ordering), 1U);
-    QCOMPARE_EQ(sizeof( Qt::   weak_ordering), 1U);
+    QCOMPARE_EQ(sizeof( BobUI::   weak_ordering), 1U);
     QCOMPARE_EQ(sizeof(std:: strong_ordering), 1U);
-    QCOMPARE_EQ(sizeof( Qt:: strong_ordering), 1U);
+    QCOMPARE_EQ(sizeof( BobUI:: strong_ordering), 1U);
 
     auto valueOf = [](auto obj) {
         typename QIntegerForSizeof<decltype(obj)>::Unsigned value;
@@ -194,10 +194,10 @@ void tst_QCompare::stdQtBinaryCompatibility()
         return value;
     };
 #define CHECK(type, flag) \
-        QCOMPARE_EQ(valueOf( Qt:: type ## _ordering :: flag), \
+        QCOMPARE_EQ(valueOf( BobUI:: type ## _ordering :: flag), \
                     valueOf(std:: type ## _ordering :: flag)) \
         /* end */
-#  if !defined(Q_STL_LIBSTDCPP) || QT_VERSION >= QT_VERSION_CHECK(7, 0, 0)
+#  if !defined(Q_STL_LIBSTDCPP) || BOBUI_VERSION >= BOBUI_VERSION_CHECK(7, 0, 0)
     CHECK(partial, unordered);
 #  endif
     CHECK(partial, less);
@@ -218,302 +218,302 @@ void tst_QCompare::stdQtBinaryCompatibility()
 
 void tst_QCompare::partialOrdering()
 {
-    static_assert(Qt::partial_ordering::unordered == Qt::partial_ordering::unordered);
-    static_assert(Qt::partial_ordering::unordered != Qt::partial_ordering::less);
-    static_assert(Qt::partial_ordering::unordered != Qt::partial_ordering::equivalent);
-    static_assert(Qt::partial_ordering::unordered != Qt::partial_ordering::greater);
+    static_assert(BobUI::partial_ordering::unordered == BobUI::partial_ordering::unordered);
+    static_assert(BobUI::partial_ordering::unordered != BobUI::partial_ordering::less);
+    static_assert(BobUI::partial_ordering::unordered != BobUI::partial_ordering::equivalent);
+    static_assert(BobUI::partial_ordering::unordered != BobUI::partial_ordering::greater);
 
-    static_assert(Qt::partial_ordering::less != Qt::partial_ordering::unordered);
-    static_assert(Qt::partial_ordering::less == Qt::partial_ordering::less);
-    static_assert(Qt::partial_ordering::less != Qt::partial_ordering::equivalent);
-    static_assert(Qt::partial_ordering::less != Qt::partial_ordering::greater);
+    static_assert(BobUI::partial_ordering::less != BobUI::partial_ordering::unordered);
+    static_assert(BobUI::partial_ordering::less == BobUI::partial_ordering::less);
+    static_assert(BobUI::partial_ordering::less != BobUI::partial_ordering::equivalent);
+    static_assert(BobUI::partial_ordering::less != BobUI::partial_ordering::greater);
 
-    static_assert(Qt::partial_ordering::equivalent != Qt::partial_ordering::unordered);
-    static_assert(Qt::partial_ordering::equivalent != Qt::partial_ordering::less);
-    static_assert(Qt::partial_ordering::equivalent == Qt::partial_ordering::equivalent);
-    static_assert(Qt::partial_ordering::equivalent != Qt::partial_ordering::greater);
+    static_assert(BobUI::partial_ordering::equivalent != BobUI::partial_ordering::unordered);
+    static_assert(BobUI::partial_ordering::equivalent != BobUI::partial_ordering::less);
+    static_assert(BobUI::partial_ordering::equivalent == BobUI::partial_ordering::equivalent);
+    static_assert(BobUI::partial_ordering::equivalent != BobUI::partial_ordering::greater);
 
-    static_assert(Qt::partial_ordering::greater != Qt::partial_ordering::unordered);
-    static_assert(Qt::partial_ordering::greater != Qt::partial_ordering::less);
-    static_assert(Qt::partial_ordering::greater != Qt::partial_ordering::equivalent);
-    static_assert(Qt::partial_ordering::greater == Qt::partial_ordering::greater);
+    static_assert(BobUI::partial_ordering::greater != BobUI::partial_ordering::unordered);
+    static_assert(BobUI::partial_ordering::greater != BobUI::partial_ordering::less);
+    static_assert(BobUI::partial_ordering::greater != BobUI::partial_ordering::equivalent);
+    static_assert(BobUI::partial_ordering::greater == BobUI::partial_ordering::greater);
 
-    static_assert(!is_eq  (Qt::partial_ordering::unordered));
-    static_assert( is_neq (Qt::partial_ordering::unordered));
-    static_assert(!is_lt  (Qt::partial_ordering::unordered));
-    static_assert(!is_lteq(Qt::partial_ordering::unordered));
-    static_assert(!is_gt  (Qt::partial_ordering::unordered));
-    static_assert(!is_gteq(Qt::partial_ordering::unordered));
+    static_assert(!is_eq  (BobUI::partial_ordering::unordered));
+    static_assert( is_neq (BobUI::partial_ordering::unordered));
+    static_assert(!is_lt  (BobUI::partial_ordering::unordered));
+    static_assert(!is_lteq(BobUI::partial_ordering::unordered));
+    static_assert(!is_gt  (BobUI::partial_ordering::unordered));
+    static_assert(!is_gteq(BobUI::partial_ordering::unordered));
 
-    static_assert(!(Qt::partial_ordering::unordered == 0));
-    static_assert( (Qt::partial_ordering::unordered != 0));
-    static_assert(!(Qt::partial_ordering::unordered <  0));
-    static_assert(!(Qt::partial_ordering::unordered <= 0));
-    static_assert(!(Qt::partial_ordering::unordered >  0));
-    static_assert(!(Qt::partial_ordering::unordered >= 0));
+    static_assert(!(BobUI::partial_ordering::unordered == 0));
+    static_assert( (BobUI::partial_ordering::unordered != 0));
+    static_assert(!(BobUI::partial_ordering::unordered <  0));
+    static_assert(!(BobUI::partial_ordering::unordered <= 0));
+    static_assert(!(BobUI::partial_ordering::unordered >  0));
+    static_assert(!(BobUI::partial_ordering::unordered >= 0));
 
-    static_assert(!(0 == Qt::partial_ordering::unordered));
-    static_assert( (0 != Qt::partial_ordering::unordered));
-    static_assert(!(0 <  Qt::partial_ordering::unordered));
-    static_assert(!(0 <= Qt::partial_ordering::unordered));
-    static_assert(!(0 >  Qt::partial_ordering::unordered));
-    static_assert(!(0 >= Qt::partial_ordering::unordered));
-
-
-    static_assert(!is_eq  (Qt::partial_ordering::less));
-    static_assert( is_neq (Qt::partial_ordering::less));
-    static_assert( is_lt  (Qt::partial_ordering::less));
-    static_assert( is_lteq(Qt::partial_ordering::less));
-    static_assert(!is_gt  (Qt::partial_ordering::less));
-    static_assert(!is_gteq(Qt::partial_ordering::less));
-
-    static_assert(!(Qt::partial_ordering::less == 0));
-    static_assert( (Qt::partial_ordering::less != 0));
-    static_assert( (Qt::partial_ordering::less <  0));
-    static_assert( (Qt::partial_ordering::less <= 0));
-    static_assert(!(Qt::partial_ordering::less >  0));
-    static_assert(!(Qt::partial_ordering::less >= 0));
-
-    static_assert(!(0 == Qt::partial_ordering::less));
-    static_assert( (0 != Qt::partial_ordering::less));
-    static_assert(!(0 <  Qt::partial_ordering::less));
-    static_assert(!(0 <= Qt::partial_ordering::less));
-    static_assert( (0 >  Qt::partial_ordering::less));
-    static_assert( (0 >= Qt::partial_ordering::less));
+    static_assert(!(0 == BobUI::partial_ordering::unordered));
+    static_assert( (0 != BobUI::partial_ordering::unordered));
+    static_assert(!(0 <  BobUI::partial_ordering::unordered));
+    static_assert(!(0 <= BobUI::partial_ordering::unordered));
+    static_assert(!(0 >  BobUI::partial_ordering::unordered));
+    static_assert(!(0 >= BobUI::partial_ordering::unordered));
 
 
-    static_assert( is_eq  (Qt::partial_ordering::equivalent));
-    static_assert(!is_neq (Qt::partial_ordering::equivalent));
-    static_assert(!is_lt  (Qt::partial_ordering::equivalent));
-    static_assert( is_lteq(Qt::partial_ordering::equivalent));
-    static_assert(!is_gt  (Qt::partial_ordering::equivalent));
-    static_assert( is_gteq(Qt::partial_ordering::equivalent));
+    static_assert(!is_eq  (BobUI::partial_ordering::less));
+    static_assert( is_neq (BobUI::partial_ordering::less));
+    static_assert( is_lt  (BobUI::partial_ordering::less));
+    static_assert( is_lteq(BobUI::partial_ordering::less));
+    static_assert(!is_gt  (BobUI::partial_ordering::less));
+    static_assert(!is_gteq(BobUI::partial_ordering::less));
 
-    static_assert( (Qt::partial_ordering::equivalent == 0));
-    static_assert(!(Qt::partial_ordering::equivalent != 0));
-    static_assert(!(Qt::partial_ordering::equivalent <  0));
-    static_assert( (Qt::partial_ordering::equivalent <= 0));
-    static_assert(!(Qt::partial_ordering::equivalent >  0));
-    static_assert( (Qt::partial_ordering::equivalent >= 0));
+    static_assert(!(BobUI::partial_ordering::less == 0));
+    static_assert( (BobUI::partial_ordering::less != 0));
+    static_assert( (BobUI::partial_ordering::less <  0));
+    static_assert( (BobUI::partial_ordering::less <= 0));
+    static_assert(!(BobUI::partial_ordering::less >  0));
+    static_assert(!(BobUI::partial_ordering::less >= 0));
 
-    static_assert( (0 == Qt::partial_ordering::equivalent));
-    static_assert(!(0 != Qt::partial_ordering::equivalent));
-    static_assert(!(0 <  Qt::partial_ordering::equivalent));
-    static_assert( (0 <= Qt::partial_ordering::equivalent));
-    static_assert(!(0 >  Qt::partial_ordering::equivalent));
-    static_assert( (0 >= Qt::partial_ordering::equivalent));
+    static_assert(!(0 == BobUI::partial_ordering::less));
+    static_assert( (0 != BobUI::partial_ordering::less));
+    static_assert(!(0 <  BobUI::partial_ordering::less));
+    static_assert(!(0 <= BobUI::partial_ordering::less));
+    static_assert( (0 >  BobUI::partial_ordering::less));
+    static_assert( (0 >= BobUI::partial_ordering::less));
 
 
-    static_assert(!is_eq  (Qt::partial_ordering::greater));
-    static_assert( is_neq (Qt::partial_ordering::greater));
-    static_assert(!is_lt  (Qt::partial_ordering::greater));
-    static_assert(!is_lteq(Qt::partial_ordering::greater));
-    static_assert( is_gt  (Qt::partial_ordering::greater));
-    static_assert( is_gteq(Qt::partial_ordering::greater));
+    static_assert( is_eq  (BobUI::partial_ordering::equivalent));
+    static_assert(!is_neq (BobUI::partial_ordering::equivalent));
+    static_assert(!is_lt  (BobUI::partial_ordering::equivalent));
+    static_assert( is_lteq(BobUI::partial_ordering::equivalent));
+    static_assert(!is_gt  (BobUI::partial_ordering::equivalent));
+    static_assert( is_gteq(BobUI::partial_ordering::equivalent));
 
-    static_assert(!(Qt::partial_ordering::greater == 0));
-    static_assert( (Qt::partial_ordering::greater != 0));
-    static_assert(!(Qt::partial_ordering::greater <  0));
-    static_assert(!(Qt::partial_ordering::greater <= 0));
-    static_assert( (Qt::partial_ordering::greater >  0));
-    static_assert( (Qt::partial_ordering::greater >= 0));
+    static_assert( (BobUI::partial_ordering::equivalent == 0));
+    static_assert(!(BobUI::partial_ordering::equivalent != 0));
+    static_assert(!(BobUI::partial_ordering::equivalent <  0));
+    static_assert( (BobUI::partial_ordering::equivalent <= 0));
+    static_assert(!(BobUI::partial_ordering::equivalent >  0));
+    static_assert( (BobUI::partial_ordering::equivalent >= 0));
 
-    static_assert(!(0 == Qt::partial_ordering::greater));
-    static_assert( (0 != Qt::partial_ordering::greater));
-    static_assert( (0 <  Qt::partial_ordering::greater));
-    static_assert( (0 <= Qt::partial_ordering::greater));
-    static_assert(!(0 >  Qt::partial_ordering::greater));
-    static_assert(!(0 >= Qt::partial_ordering::greater));
+    static_assert( (0 == BobUI::partial_ordering::equivalent));
+    static_assert(!(0 != BobUI::partial_ordering::equivalent));
+    static_assert(!(0 <  BobUI::partial_ordering::equivalent));
+    static_assert( (0 <= BobUI::partial_ordering::equivalent));
+    static_assert(!(0 >  BobUI::partial_ordering::equivalent));
+    static_assert( (0 >= BobUI::partial_ordering::equivalent));
+
+
+    static_assert(!is_eq  (BobUI::partial_ordering::greater));
+    static_assert( is_neq (BobUI::partial_ordering::greater));
+    static_assert(!is_lt  (BobUI::partial_ordering::greater));
+    static_assert(!is_lteq(BobUI::partial_ordering::greater));
+    static_assert( is_gt  (BobUI::partial_ordering::greater));
+    static_assert( is_gteq(BobUI::partial_ordering::greater));
+
+    static_assert(!(BobUI::partial_ordering::greater == 0));
+    static_assert( (BobUI::partial_ordering::greater != 0));
+    static_assert(!(BobUI::partial_ordering::greater <  0));
+    static_assert(!(BobUI::partial_ordering::greater <= 0));
+    static_assert( (BobUI::partial_ordering::greater >  0));
+    static_assert( (BobUI::partial_ordering::greater >= 0));
+
+    static_assert(!(0 == BobUI::partial_ordering::greater));
+    static_assert( (0 != BobUI::partial_ordering::greater));
+    static_assert( (0 <  BobUI::partial_ordering::greater));
+    static_assert( (0 <= BobUI::partial_ordering::greater));
+    static_assert(!(0 >  BobUI::partial_ordering::greater));
+    static_assert(!(0 >= BobUI::partial_ordering::greater));
 }
 
 void tst_QCompare::weakOrdering()
 {
-    static_assert(Qt::weak_ordering::less == Qt::weak_ordering::less);
-    static_assert(Qt::weak_ordering::less != Qt::weak_ordering::equivalent);
-    static_assert(Qt::weak_ordering::less != Qt::weak_ordering::greater);
+    static_assert(BobUI::weak_ordering::less == BobUI::weak_ordering::less);
+    static_assert(BobUI::weak_ordering::less != BobUI::weak_ordering::equivalent);
+    static_assert(BobUI::weak_ordering::less != BobUI::weak_ordering::greater);
 
-    static_assert(Qt::weak_ordering::equivalent != Qt::weak_ordering::less);
-    static_assert(Qt::weak_ordering::equivalent == Qt::weak_ordering::equivalent);
-    static_assert(Qt::weak_ordering::equivalent != Qt::weak_ordering::greater);
+    static_assert(BobUI::weak_ordering::equivalent != BobUI::weak_ordering::less);
+    static_assert(BobUI::weak_ordering::equivalent == BobUI::weak_ordering::equivalent);
+    static_assert(BobUI::weak_ordering::equivalent != BobUI::weak_ordering::greater);
 
-    static_assert(Qt::weak_ordering::greater != Qt::weak_ordering::less);
-    static_assert(Qt::weak_ordering::greater != Qt::weak_ordering::equivalent);
-    static_assert(Qt::weak_ordering::greater == Qt::weak_ordering::greater);
+    static_assert(BobUI::weak_ordering::greater != BobUI::weak_ordering::less);
+    static_assert(BobUI::weak_ordering::greater != BobUI::weak_ordering::equivalent);
+    static_assert(BobUI::weak_ordering::greater == BobUI::weak_ordering::greater);
 
-    static_assert(!is_eq  (Qt::weak_ordering::less));
-    static_assert( is_neq (Qt::weak_ordering::less));
-    static_assert( is_lt  (Qt::weak_ordering::less));
-    static_assert( is_lteq(Qt::weak_ordering::less));
-    static_assert(!is_gt  (Qt::weak_ordering::less));
-    static_assert(!is_gteq(Qt::weak_ordering::less));
+    static_assert(!is_eq  (BobUI::weak_ordering::less));
+    static_assert( is_neq (BobUI::weak_ordering::less));
+    static_assert( is_lt  (BobUI::weak_ordering::less));
+    static_assert( is_lteq(BobUI::weak_ordering::less));
+    static_assert(!is_gt  (BobUI::weak_ordering::less));
+    static_assert(!is_gteq(BobUI::weak_ordering::less));
 
-    static_assert(!(Qt::weak_ordering::less == 0));
-    static_assert( (Qt::weak_ordering::less != 0));
-    static_assert( (Qt::weak_ordering::less <  0));
-    static_assert( (Qt::weak_ordering::less <= 0));
-    static_assert(!(Qt::weak_ordering::less >  0));
-    static_assert(!(Qt::weak_ordering::less >= 0));
+    static_assert(!(BobUI::weak_ordering::less == 0));
+    static_assert( (BobUI::weak_ordering::less != 0));
+    static_assert( (BobUI::weak_ordering::less <  0));
+    static_assert( (BobUI::weak_ordering::less <= 0));
+    static_assert(!(BobUI::weak_ordering::less >  0));
+    static_assert(!(BobUI::weak_ordering::less >= 0));
 
-    static_assert(!(0 == Qt::weak_ordering::less));
-    static_assert( (0 != Qt::weak_ordering::less));
-    static_assert(!(0 <  Qt::weak_ordering::less));
-    static_assert(!(0 <= Qt::weak_ordering::less));
-    static_assert( (0 >  Qt::weak_ordering::less));
-    static_assert( (0 >= Qt::weak_ordering::less));
-
-
-    static_assert( is_eq  (Qt::weak_ordering::equivalent));
-    static_assert(!is_neq (Qt::weak_ordering::equivalent));
-    static_assert(!is_lt  (Qt::weak_ordering::equivalent));
-    static_assert( is_lteq(Qt::weak_ordering::equivalent));
-    static_assert(!is_gt  (Qt::weak_ordering::equivalent));
-    static_assert( is_gteq(Qt::weak_ordering::equivalent));
-
-    static_assert( (Qt::weak_ordering::equivalent == 0));
-    static_assert(!(Qt::weak_ordering::equivalent != 0));
-    static_assert(!(Qt::weak_ordering::equivalent <  0));
-    static_assert( (Qt::weak_ordering::equivalent <= 0));
-    static_assert(!(Qt::weak_ordering::equivalent >  0));
-    static_assert( (Qt::weak_ordering::equivalent >= 0));
-
-    static_assert( (0 == Qt::weak_ordering::equivalent));
-    static_assert(!(0 != Qt::weak_ordering::equivalent));
-    static_assert(!(0 <  Qt::weak_ordering::equivalent));
-    static_assert( (0 <= Qt::weak_ordering::equivalent));
-    static_assert(!(0 >  Qt::weak_ordering::equivalent));
-    static_assert( (0 >= Qt::weak_ordering::equivalent));
+    static_assert(!(0 == BobUI::weak_ordering::less));
+    static_assert( (0 != BobUI::weak_ordering::less));
+    static_assert(!(0 <  BobUI::weak_ordering::less));
+    static_assert(!(0 <= BobUI::weak_ordering::less));
+    static_assert( (0 >  BobUI::weak_ordering::less));
+    static_assert( (0 >= BobUI::weak_ordering::less));
 
 
-    static_assert(!is_eq  (Qt::weak_ordering::greater));
-    static_assert( is_neq (Qt::weak_ordering::greater));
-    static_assert(!is_lt  (Qt::weak_ordering::greater));
-    static_assert(!is_lteq(Qt::weak_ordering::greater));
-    static_assert( is_gt  (Qt::weak_ordering::greater));
-    static_assert( is_gteq(Qt::weak_ordering::greater));
+    static_assert( is_eq  (BobUI::weak_ordering::equivalent));
+    static_assert(!is_neq (BobUI::weak_ordering::equivalent));
+    static_assert(!is_lt  (BobUI::weak_ordering::equivalent));
+    static_assert( is_lteq(BobUI::weak_ordering::equivalent));
+    static_assert(!is_gt  (BobUI::weak_ordering::equivalent));
+    static_assert( is_gteq(BobUI::weak_ordering::equivalent));
 
-    static_assert(!(Qt::weak_ordering::greater == 0));
-    static_assert( (Qt::weak_ordering::greater != 0));
-    static_assert(!(Qt::weak_ordering::greater <  0));
-    static_assert(!(Qt::weak_ordering::greater <= 0));
-    static_assert( (Qt::weak_ordering::greater >  0));
-    static_assert( (Qt::weak_ordering::greater >= 0));
+    static_assert( (BobUI::weak_ordering::equivalent == 0));
+    static_assert(!(BobUI::weak_ordering::equivalent != 0));
+    static_assert(!(BobUI::weak_ordering::equivalent <  0));
+    static_assert( (BobUI::weak_ordering::equivalent <= 0));
+    static_assert(!(BobUI::weak_ordering::equivalent >  0));
+    static_assert( (BobUI::weak_ordering::equivalent >= 0));
 
-    static_assert(!(0 == Qt::weak_ordering::greater));
-    static_assert( (0 != Qt::weak_ordering::greater));
-    static_assert( (0 <  Qt::weak_ordering::greater));
-    static_assert( (0 <= Qt::weak_ordering::greater));
-    static_assert(!(0 >  Qt::weak_ordering::greater));
-    static_assert(!(0 >= Qt::weak_ordering::greater));
+    static_assert( (0 == BobUI::weak_ordering::equivalent));
+    static_assert(!(0 != BobUI::weak_ordering::equivalent));
+    static_assert(!(0 <  BobUI::weak_ordering::equivalent));
+    static_assert( (0 <= BobUI::weak_ordering::equivalent));
+    static_assert(!(0 >  BobUI::weak_ordering::equivalent));
+    static_assert( (0 >= BobUI::weak_ordering::equivalent));
+
+
+    static_assert(!is_eq  (BobUI::weak_ordering::greater));
+    static_assert( is_neq (BobUI::weak_ordering::greater));
+    static_assert(!is_lt  (BobUI::weak_ordering::greater));
+    static_assert(!is_lteq(BobUI::weak_ordering::greater));
+    static_assert( is_gt  (BobUI::weak_ordering::greater));
+    static_assert( is_gteq(BobUI::weak_ordering::greater));
+
+    static_assert(!(BobUI::weak_ordering::greater == 0));
+    static_assert( (BobUI::weak_ordering::greater != 0));
+    static_assert(!(BobUI::weak_ordering::greater <  0));
+    static_assert(!(BobUI::weak_ordering::greater <= 0));
+    static_assert( (BobUI::weak_ordering::greater >  0));
+    static_assert( (BobUI::weak_ordering::greater >= 0));
+
+    static_assert(!(0 == BobUI::weak_ordering::greater));
+    static_assert( (0 != BobUI::weak_ordering::greater));
+    static_assert( (0 <  BobUI::weak_ordering::greater));
+    static_assert( (0 <= BobUI::weak_ordering::greater));
+    static_assert(!(0 >  BobUI::weak_ordering::greater));
+    static_assert(!(0 >= BobUI::weak_ordering::greater));
 }
 
 void tst_QCompare::strongOrdering()
 {
-    static_assert(Qt::strong_ordering::less == Qt::strong_ordering::less);
-    static_assert(Qt::strong_ordering::less != Qt::strong_ordering::equal);
-    static_assert(Qt::strong_ordering::less != Qt::strong_ordering::equivalent);
-    static_assert(Qt::strong_ordering::less != Qt::strong_ordering::greater);
+    static_assert(BobUI::strong_ordering::less == BobUI::strong_ordering::less);
+    static_assert(BobUI::strong_ordering::less != BobUI::strong_ordering::equal);
+    static_assert(BobUI::strong_ordering::less != BobUI::strong_ordering::equivalent);
+    static_assert(BobUI::strong_ordering::less != BobUI::strong_ordering::greater);
 
-    static_assert(Qt::strong_ordering::equal != Qt::strong_ordering::less);
-    static_assert(Qt::strong_ordering::equal == Qt::strong_ordering::equal);
-    static_assert(Qt::strong_ordering::equal == Qt::strong_ordering::equivalent);
-    static_assert(Qt::strong_ordering::equal != Qt::strong_ordering::greater);
+    static_assert(BobUI::strong_ordering::equal != BobUI::strong_ordering::less);
+    static_assert(BobUI::strong_ordering::equal == BobUI::strong_ordering::equal);
+    static_assert(BobUI::strong_ordering::equal == BobUI::strong_ordering::equivalent);
+    static_assert(BobUI::strong_ordering::equal != BobUI::strong_ordering::greater);
 
-    static_assert(Qt::strong_ordering::equivalent != Qt::strong_ordering::less);
-    static_assert(Qt::strong_ordering::equivalent == Qt::strong_ordering::equal);
-    static_assert(Qt::strong_ordering::equivalent == Qt::strong_ordering::equivalent);
-    static_assert(Qt::strong_ordering::equivalent != Qt::strong_ordering::greater);
+    static_assert(BobUI::strong_ordering::equivalent != BobUI::strong_ordering::less);
+    static_assert(BobUI::strong_ordering::equivalent == BobUI::strong_ordering::equal);
+    static_assert(BobUI::strong_ordering::equivalent == BobUI::strong_ordering::equivalent);
+    static_assert(BobUI::strong_ordering::equivalent != BobUI::strong_ordering::greater);
 
-    static_assert(Qt::strong_ordering::greater != Qt::strong_ordering::less);
-    static_assert(Qt::strong_ordering::greater != Qt::strong_ordering::equal);
-    static_assert(Qt::strong_ordering::greater != Qt::strong_ordering::equivalent);
-    static_assert(Qt::strong_ordering::greater == Qt::strong_ordering::greater);
+    static_assert(BobUI::strong_ordering::greater != BobUI::strong_ordering::less);
+    static_assert(BobUI::strong_ordering::greater != BobUI::strong_ordering::equal);
+    static_assert(BobUI::strong_ordering::greater != BobUI::strong_ordering::equivalent);
+    static_assert(BobUI::strong_ordering::greater == BobUI::strong_ordering::greater);
 
-    static_assert(!is_eq  (Qt::strong_ordering::less));
-    static_assert( is_neq (Qt::strong_ordering::less));
-    static_assert( is_lt  (Qt::strong_ordering::less));
-    static_assert( is_lteq(Qt::strong_ordering::less));
-    static_assert(!is_gt  (Qt::strong_ordering::less));
-    static_assert(!is_gteq(Qt::strong_ordering::less));
+    static_assert(!is_eq  (BobUI::strong_ordering::less));
+    static_assert( is_neq (BobUI::strong_ordering::less));
+    static_assert( is_lt  (BobUI::strong_ordering::less));
+    static_assert( is_lteq(BobUI::strong_ordering::less));
+    static_assert(!is_gt  (BobUI::strong_ordering::less));
+    static_assert(!is_gteq(BobUI::strong_ordering::less));
 
-    static_assert(!(Qt::strong_ordering::less == 0));
-    static_assert( (Qt::strong_ordering::less != 0));
-    static_assert( (Qt::strong_ordering::less <  0));
-    static_assert( (Qt::strong_ordering::less <= 0));
-    static_assert(!(Qt::strong_ordering::less >  0));
-    static_assert(!(Qt::strong_ordering::less >= 0));
+    static_assert(!(BobUI::strong_ordering::less == 0));
+    static_assert( (BobUI::strong_ordering::less != 0));
+    static_assert( (BobUI::strong_ordering::less <  0));
+    static_assert( (BobUI::strong_ordering::less <= 0));
+    static_assert(!(BobUI::strong_ordering::less >  0));
+    static_assert(!(BobUI::strong_ordering::less >= 0));
 
-    static_assert(!(0 == Qt::strong_ordering::less));
-    static_assert( (0 != Qt::strong_ordering::less));
-    static_assert(!(0 <  Qt::strong_ordering::less));
-    static_assert(!(0 <= Qt::strong_ordering::less));
-    static_assert( (0 >  Qt::strong_ordering::less));
-    static_assert( (0 >= Qt::strong_ordering::less));
-
-
-    static_assert( is_eq  (Qt::strong_ordering::equal));
-    static_assert(!is_neq (Qt::strong_ordering::equal));
-    static_assert(!is_lt  (Qt::strong_ordering::equal));
-    static_assert( is_lteq(Qt::strong_ordering::equal));
-    static_assert(!is_gt  (Qt::strong_ordering::equal));
-    static_assert( is_gteq(Qt::strong_ordering::equal));
-
-    static_assert( (Qt::strong_ordering::equal == 0));
-    static_assert(!(Qt::strong_ordering::equal != 0));
-    static_assert(!(Qt::strong_ordering::equal <  0));
-    static_assert( (Qt::strong_ordering::equal <= 0));
-    static_assert(!(Qt::strong_ordering::equal >  0));
-    static_assert( (Qt::strong_ordering::equal >= 0));
-
-    static_assert( (0 == Qt::strong_ordering::equal));
-    static_assert(!(0 != Qt::strong_ordering::equal));
-    static_assert(!(0 <  Qt::strong_ordering::equal));
-    static_assert( (0 <= Qt::strong_ordering::equal));
-    static_assert(!(0 >  Qt::strong_ordering::equal));
-    static_assert( (0 >= Qt::strong_ordering::equal));
+    static_assert(!(0 == BobUI::strong_ordering::less));
+    static_assert( (0 != BobUI::strong_ordering::less));
+    static_assert(!(0 <  BobUI::strong_ordering::less));
+    static_assert(!(0 <= BobUI::strong_ordering::less));
+    static_assert( (0 >  BobUI::strong_ordering::less));
+    static_assert( (0 >= BobUI::strong_ordering::less));
 
 
-    static_assert( is_eq  (Qt::strong_ordering::equivalent));
-    static_assert(!is_neq (Qt::strong_ordering::equivalent));
-    static_assert(!is_lt  (Qt::strong_ordering::equivalent));
-    static_assert( is_lteq(Qt::strong_ordering::equivalent));
-    static_assert(!is_gt  (Qt::strong_ordering::equivalent));
-    static_assert( is_gteq(Qt::strong_ordering::equivalent));
+    static_assert( is_eq  (BobUI::strong_ordering::equal));
+    static_assert(!is_neq (BobUI::strong_ordering::equal));
+    static_assert(!is_lt  (BobUI::strong_ordering::equal));
+    static_assert( is_lteq(BobUI::strong_ordering::equal));
+    static_assert(!is_gt  (BobUI::strong_ordering::equal));
+    static_assert( is_gteq(BobUI::strong_ordering::equal));
 
-    static_assert( (Qt::strong_ordering::equivalent == 0));
-    static_assert(!(Qt::strong_ordering::equivalent != 0));
-    static_assert(!(Qt::strong_ordering::equivalent <  0));
-    static_assert( (Qt::strong_ordering::equivalent <= 0));
-    static_assert(!(Qt::strong_ordering::equivalent >  0));
-    static_assert( (Qt::strong_ordering::equivalent >= 0));
+    static_assert( (BobUI::strong_ordering::equal == 0));
+    static_assert(!(BobUI::strong_ordering::equal != 0));
+    static_assert(!(BobUI::strong_ordering::equal <  0));
+    static_assert( (BobUI::strong_ordering::equal <= 0));
+    static_assert(!(BobUI::strong_ordering::equal >  0));
+    static_assert( (BobUI::strong_ordering::equal >= 0));
 
-    static_assert( (0 == Qt::strong_ordering::equivalent));
-    static_assert(!(0 != Qt::strong_ordering::equivalent));
-    static_assert(!(0 <  Qt::strong_ordering::equivalent));
-    static_assert( (0 <= Qt::strong_ordering::equivalent));
-    static_assert(!(0 >  Qt::strong_ordering::equivalent));
-    static_assert( (0 >= Qt::strong_ordering::equivalent));
+    static_assert( (0 == BobUI::strong_ordering::equal));
+    static_assert(!(0 != BobUI::strong_ordering::equal));
+    static_assert(!(0 <  BobUI::strong_ordering::equal));
+    static_assert( (0 <= BobUI::strong_ordering::equal));
+    static_assert(!(0 >  BobUI::strong_ordering::equal));
+    static_assert( (0 >= BobUI::strong_ordering::equal));
 
 
-    static_assert(!is_eq  (Qt::strong_ordering::greater));
-    static_assert( is_neq (Qt::strong_ordering::greater));
-    static_assert(!is_lt  (Qt::strong_ordering::greater));
-    static_assert(!is_lteq(Qt::strong_ordering::greater));
-    static_assert( is_gt  (Qt::strong_ordering::greater));
-    static_assert( is_gteq(Qt::strong_ordering::greater));
+    static_assert( is_eq  (BobUI::strong_ordering::equivalent));
+    static_assert(!is_neq (BobUI::strong_ordering::equivalent));
+    static_assert(!is_lt  (BobUI::strong_ordering::equivalent));
+    static_assert( is_lteq(BobUI::strong_ordering::equivalent));
+    static_assert(!is_gt  (BobUI::strong_ordering::equivalent));
+    static_assert( is_gteq(BobUI::strong_ordering::equivalent));
 
-    static_assert(!(Qt::strong_ordering::greater == 0));
-    static_assert( (Qt::strong_ordering::greater != 0));
-    static_assert(!(Qt::strong_ordering::greater <  0));
-    static_assert(!(Qt::strong_ordering::greater <= 0));
-    static_assert( (Qt::strong_ordering::greater >  0));
-    static_assert( (Qt::strong_ordering::greater >= 0));
+    static_assert( (BobUI::strong_ordering::equivalent == 0));
+    static_assert(!(BobUI::strong_ordering::equivalent != 0));
+    static_assert(!(BobUI::strong_ordering::equivalent <  0));
+    static_assert( (BobUI::strong_ordering::equivalent <= 0));
+    static_assert(!(BobUI::strong_ordering::equivalent >  0));
+    static_assert( (BobUI::strong_ordering::equivalent >= 0));
 
-    static_assert(!(0 == Qt::strong_ordering::greater));
-    static_assert( (0 != Qt::strong_ordering::greater));
-    static_assert( (0 <  Qt::strong_ordering::greater));
-    static_assert( (0 <= Qt::strong_ordering::greater));
-    static_assert(!(0 >  Qt::strong_ordering::greater));
-    static_assert(!(0 >= Qt::strong_ordering::greater));
+    static_assert( (0 == BobUI::strong_ordering::equivalent));
+    static_assert(!(0 != BobUI::strong_ordering::equivalent));
+    static_assert(!(0 <  BobUI::strong_ordering::equivalent));
+    static_assert( (0 <= BobUI::strong_ordering::equivalent));
+    static_assert(!(0 >  BobUI::strong_ordering::equivalent));
+    static_assert( (0 >= BobUI::strong_ordering::equivalent));
+
+
+    static_assert(!is_eq  (BobUI::strong_ordering::greater));
+    static_assert( is_neq (BobUI::strong_ordering::greater));
+    static_assert(!is_lt  (BobUI::strong_ordering::greater));
+    static_assert(!is_lteq(BobUI::strong_ordering::greater));
+    static_assert( is_gt  (BobUI::strong_ordering::greater));
+    static_assert( is_gteq(BobUI::strong_ordering::greater));
+
+    static_assert(!(BobUI::strong_ordering::greater == 0));
+    static_assert( (BobUI::strong_ordering::greater != 0));
+    static_assert(!(BobUI::strong_ordering::greater <  0));
+    static_assert(!(BobUI::strong_ordering::greater <= 0));
+    static_assert( (BobUI::strong_ordering::greater >  0));
+    static_assert( (BobUI::strong_ordering::greater >= 0));
+
+    static_assert(!(0 == BobUI::strong_ordering::greater));
+    static_assert( (0 != BobUI::strong_ordering::greater));
+    static_assert( (0 <  BobUI::strong_ordering::greater));
+    static_assert( (0 <= BobUI::strong_ordering::greater));
+    static_assert(!(0 >  BobUI::strong_ordering::greater));
+    static_assert(!(0 >= BobUI::strong_ordering::greater));
 }
 
 void tst_QCompare::threeWayCompareWithLiteralZero()
@@ -523,14 +523,14 @@ void tst_QCompare::threeWayCompareWithLiteralZero()
 #else
     // the result of <=> is _always_ a std::_ordering type:
 #define CHECK(O) do { \
-        using StdO = typename QtOrderingPrivate::StdOrdering<O>::type; \
+        using StdO = typename BobUIOrderingPrivate::StdOrdering<O>::type; \
         static_assert(std::is_same_v<decltype(0 <=> std::declval<O&>()), StdO>); \
         static_assert(std::is_same_v<decltype(std::declval<O&>() <=> 0), StdO>); \
     } while (false)
 
-    CHECK(Qt::partial_ordering);
-    CHECK(Qt::weak_ordering);
-    CHECK(Qt::strong_ordering);
+    CHECK(BobUI::partial_ordering);
+    CHECK(BobUI::weak_ordering);
+    CHECK(BobUI::strong_ordering);
     CHECK(QPartialOrdering);
     // API symmetry check:
     CHECK(std::partial_ordering);
@@ -540,23 +540,23 @@ void tst_QCompare::threeWayCompareWithLiteralZero()
 #undef CHECK
 
 #define CHECK(O, what, reversed) do { \
-        using StdO = typename QtOrderingPrivate::StdOrdering<O>::type; \
+        using StdO = typename BobUIOrderingPrivate::StdOrdering<O>::type; \
         static_assert((O :: what <=> 0) == StdO:: what); \
         static_assert((0 <=> O :: what) == StdO:: reversed); \
     } while (false)
 
-    CHECK(Qt::partial_ordering, unordered,  unordered);
-    CHECK(Qt::partial_ordering, equivalent, equivalent);
-    CHECK(Qt::partial_ordering, less,       greater);
-    CHECK(Qt::partial_ordering, greater,    less);
+    CHECK(BobUI::partial_ordering, unordered,  unordered);
+    CHECK(BobUI::partial_ordering, equivalent, equivalent);
+    CHECK(BobUI::partial_ordering, less,       greater);
+    CHECK(BobUI::partial_ordering, greater,    less);
 
-    CHECK(Qt::weak_ordering, equivalent, equivalent);
-    CHECK(Qt::weak_ordering, less,       greater);
-    CHECK(Qt::weak_ordering, greater,    less);
+    CHECK(BobUI::weak_ordering, equivalent, equivalent);
+    CHECK(BobUI::weak_ordering, less,       greater);
+    CHECK(BobUI::weak_ordering, greater,    less);
 
-    CHECK(Qt::strong_ordering, equal,     equal);
-    CHECK(Qt::strong_ordering, less,      greater);
-    CHECK(Qt::strong_ordering, greater,   less);
+    CHECK(BobUI::strong_ordering, equal,     equal);
+    CHECK(BobUI::strong_ordering, less,      greater);
+    CHECK(BobUI::strong_ordering, greater,   less);
 
     CHECK(QPartialOrdering, unordered,  unordered);
     CHECK(QPartialOrdering, equivalent, equivalent);
@@ -585,128 +585,128 @@ void tst_QCompare::threeWayCompareWithLiteralZero()
 
 void tst_QCompare::conversions()
 {
-    // Qt::weak_ordering -> Qt::partial_ordering
+    // BobUI::weak_ordering -> BobUI::partial_ordering
     {
-        constexpr Qt::partial_ordering less = Qt::weak_ordering::less;
-        static_assert(less == Qt::partial_ordering::less);
-        constexpr Qt::partial_ordering equivalent = Qt::weak_ordering::equivalent;
-        static_assert(equivalent == Qt::partial_ordering::equivalent);
-        constexpr Qt::partial_ordering greater = Qt::weak_ordering::greater;
-        static_assert(greater == Qt::partial_ordering::greater);
+        constexpr BobUI::partial_ordering less = BobUI::weak_ordering::less;
+        static_assert(less == BobUI::partial_ordering::less);
+        constexpr BobUI::partial_ordering equivalent = BobUI::weak_ordering::equivalent;
+        static_assert(equivalent == BobUI::partial_ordering::equivalent);
+        constexpr BobUI::partial_ordering greater = BobUI::weak_ordering::greater;
+        static_assert(greater == BobUI::partial_ordering::greater);
     }
-    // Qt::strong_ordering -> Qt::partial_ordering
+    // BobUI::strong_ordering -> BobUI::partial_ordering
     {
-        constexpr Qt::partial_ordering less = Qt::strong_ordering::less;
-        static_assert(less == Qt::partial_ordering::less);
-        constexpr Qt::partial_ordering equal = Qt::strong_ordering::equal;
-        static_assert(equal == Qt::partial_ordering::equivalent);
-        constexpr Qt::partial_ordering equivalent = Qt::strong_ordering::equivalent;
-        static_assert(equivalent == Qt::partial_ordering::equivalent);
-        constexpr Qt::partial_ordering greater = Qt::strong_ordering::greater;
-        static_assert(greater == Qt::partial_ordering::greater);
+        constexpr BobUI::partial_ordering less = BobUI::strong_ordering::less;
+        static_assert(less == BobUI::partial_ordering::less);
+        constexpr BobUI::partial_ordering equal = BobUI::strong_ordering::equal;
+        static_assert(equal == BobUI::partial_ordering::equivalent);
+        constexpr BobUI::partial_ordering equivalent = BobUI::strong_ordering::equivalent;
+        static_assert(equivalent == BobUI::partial_ordering::equivalent);
+        constexpr BobUI::partial_ordering greater = BobUI::strong_ordering::greater;
+        static_assert(greater == BobUI::partial_ordering::greater);
     }
-    // Qt::strong_ordering -> Qt::weak_ordering
+    // BobUI::strong_ordering -> BobUI::weak_ordering
     {
-        constexpr Qt::weak_ordering less = Qt::strong_ordering::less;
-        static_assert(less == Qt::weak_ordering::less);
-        constexpr Qt::weak_ordering equal = Qt::strong_ordering::equal;
-        static_assert(equal == Qt::weak_ordering::equivalent);
-        constexpr Qt::weak_ordering equivalent = Qt::strong_ordering::equivalent;
-        static_assert(equivalent == Qt::weak_ordering::equivalent);
-        constexpr Qt::weak_ordering greater = Qt::strong_ordering::greater;
-        static_assert(greater == Qt::weak_ordering::greater);
+        constexpr BobUI::weak_ordering less = BobUI::strong_ordering::less;
+        static_assert(less == BobUI::weak_ordering::less);
+        constexpr BobUI::weak_ordering equal = BobUI::strong_ordering::equal;
+        static_assert(equal == BobUI::weak_ordering::equivalent);
+        constexpr BobUI::weak_ordering equivalent = BobUI::strong_ordering::equivalent;
+        static_assert(equivalent == BobUI::weak_ordering::equivalent);
+        constexpr BobUI::weak_ordering greater = BobUI::strong_ordering::greater;
+        static_assert(greater == BobUI::weak_ordering::greater);
     }
     // Mixed types
     {
-        static_assert(Qt::partial_ordering::less == Qt::strong_ordering::less);
-        static_assert(Qt::partial_ordering::equivalent != Qt::strong_ordering::less);
-        static_assert(Qt::partial_ordering::equivalent == Qt::strong_ordering::equal);
-        static_assert(Qt::partial_ordering::greater == Qt::strong_ordering::greater);
+        static_assert(BobUI::partial_ordering::less == BobUI::strong_ordering::less);
+        static_assert(BobUI::partial_ordering::equivalent != BobUI::strong_ordering::less);
+        static_assert(BobUI::partial_ordering::equivalent == BobUI::strong_ordering::equal);
+        static_assert(BobUI::partial_ordering::greater == BobUI::strong_ordering::greater);
 
-        static_assert(Qt::partial_ordering::less == Qt::weak_ordering::less);
-        static_assert(Qt::partial_ordering::equivalent == Qt::weak_ordering::equivalent);
-        static_assert(Qt::partial_ordering::greater == Qt::weak_ordering::greater);
+        static_assert(BobUI::partial_ordering::less == BobUI::weak_ordering::less);
+        static_assert(BobUI::partial_ordering::equivalent == BobUI::weak_ordering::equivalent);
+        static_assert(BobUI::partial_ordering::greater == BobUI::weak_ordering::greater);
 
-        static_assert(Qt::weak_ordering::less == Qt::strong_ordering::less);
-        static_assert(Qt::weak_ordering::equivalent != Qt::strong_ordering::greater);
-        static_assert(Qt::weak_ordering::equivalent == Qt::strong_ordering::equal);
-        static_assert(Qt::weak_ordering::greater == Qt::strong_ordering::greater);
+        static_assert(BobUI::weak_ordering::less == BobUI::strong_ordering::less);
+        static_assert(BobUI::weak_ordering::equivalent != BobUI::strong_ordering::greater);
+        static_assert(BobUI::weak_ordering::equivalent == BobUI::strong_ordering::equal);
+        static_assert(BobUI::weak_ordering::greater == BobUI::strong_ordering::greater);
 
-        static_assert(Qt::weak_ordering::less == Qt::partial_ordering::less);
-        static_assert(Qt::weak_ordering::equivalent == Qt::partial_ordering::equivalent);
-        static_assert(Qt::weak_ordering::greater == Qt::partial_ordering::greater);
+        static_assert(BobUI::weak_ordering::less == BobUI::partial_ordering::less);
+        static_assert(BobUI::weak_ordering::equivalent == BobUI::partial_ordering::equivalent);
+        static_assert(BobUI::weak_ordering::greater == BobUI::partial_ordering::greater);
 
-        static_assert(Qt::strong_ordering::less == Qt::partial_ordering::less);
-        static_assert(Qt::strong_ordering::equivalent == Qt::partial_ordering::equivalent);
-        static_assert(Qt::strong_ordering::equal == Qt::partial_ordering::equivalent);
-        static_assert(Qt::strong_ordering::greater == Qt::partial_ordering::greater);
+        static_assert(BobUI::strong_ordering::less == BobUI::partial_ordering::less);
+        static_assert(BobUI::strong_ordering::equivalent == BobUI::partial_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::equal == BobUI::partial_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::greater == BobUI::partial_ordering::greater);
 
-        static_assert(Qt::strong_ordering::less == Qt::weak_ordering::less);
-        static_assert(Qt::strong_ordering::equivalent == Qt::weak_ordering::equivalent);
-        static_assert(Qt::strong_ordering::equal == Qt::weak_ordering::equivalent);
-        static_assert(Qt::strong_ordering::greater == Qt::weak_ordering::greater);
+        static_assert(BobUI::strong_ordering::less == BobUI::weak_ordering::less);
+        static_assert(BobUI::strong_ordering::equivalent == BobUI::weak_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::equal == BobUI::weak_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::greater == BobUI::weak_ordering::greater);
     }
 #ifdef __cpp_lib_three_way_comparison
-    // Qt::partial_ordering <-> std::partial_ordering
+    // BobUI::partial_ordering <-> std::partial_ordering
     {
-        static_assert(Qt::partial_ordering::less == std::partial_ordering::less);
-        static_assert(Qt::partial_ordering::less != std::partial_ordering::greater);
-        static_assert(std::partial_ordering::unordered != Qt::partial_ordering::equivalent);
-        static_assert(std::partial_ordering::unordered == Qt::partial_ordering::unordered);
+        static_assert(BobUI::partial_ordering::less == std::partial_ordering::less);
+        static_assert(BobUI::partial_ordering::less != std::partial_ordering::greater);
+        static_assert(std::partial_ordering::unordered != BobUI::partial_ordering::equivalent);
+        static_assert(std::partial_ordering::unordered == BobUI::partial_ordering::unordered);
 
-        static_assert((Qt::partial_ordering(std::partial_ordering::less) ==
+        static_assert((BobUI::partial_ordering(std::partial_ordering::less) ==
                        std::partial_ordering::less));
-        static_assert((Qt::partial_ordering(std::partial_ordering::equivalent) ==
+        static_assert((BobUI::partial_ordering(std::partial_ordering::equivalent) ==
                        std::partial_ordering::equivalent));
-        static_assert((Qt::partial_ordering(std::partial_ordering::greater) ==
+        static_assert((BobUI::partial_ordering(std::partial_ordering::greater) ==
                        std::partial_ordering::greater));
-        static_assert((Qt::partial_ordering(std::partial_ordering::unordered) ==
+        static_assert((BobUI::partial_ordering(std::partial_ordering::unordered) ==
                        std::partial_ordering::unordered));
     }
-    // Qt::weak_ordering <-> std::weak_ordering
+    // BobUI::weak_ordering <-> std::weak_ordering
     {
-        static_assert(Qt::weak_ordering::less == std::weak_ordering::less);
-        static_assert(Qt::weak_ordering::less != std::weak_ordering::equivalent);
-        static_assert(std::weak_ordering::greater != Qt::weak_ordering::less);
-        static_assert(std::weak_ordering::equivalent == Qt::weak_ordering::equivalent);
+        static_assert(BobUI::weak_ordering::less == std::weak_ordering::less);
+        static_assert(BobUI::weak_ordering::less != std::weak_ordering::equivalent);
+        static_assert(std::weak_ordering::greater != BobUI::weak_ordering::less);
+        static_assert(std::weak_ordering::equivalent == BobUI::weak_ordering::equivalent);
 
-        static_assert((Qt::weak_ordering(std::weak_ordering::less) ==
+        static_assert((BobUI::weak_ordering(std::weak_ordering::less) ==
                        std::weak_ordering::less));
-        static_assert((Qt::weak_ordering(std::weak_ordering::equivalent) ==
+        static_assert((BobUI::weak_ordering(std::weak_ordering::equivalent) ==
                        std::weak_ordering::equivalent));
-        static_assert((Qt::weak_ordering(std::weak_ordering::greater) ==
+        static_assert((BobUI::weak_ordering(std::weak_ordering::greater) ==
                        std::weak_ordering::greater));
     }
-    // Qt::strong_ordering <-> std::strong_ordering
+    // BobUI::strong_ordering <-> std::strong_ordering
     {
-        static_assert(Qt::strong_ordering::less == std::strong_ordering::less);
-        static_assert(Qt::strong_ordering::less != std::strong_ordering::equivalent);
-        static_assert(std::strong_ordering::greater != Qt::strong_ordering::less);
-        static_assert(std::strong_ordering::equivalent == Qt::strong_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::less == std::strong_ordering::less);
+        static_assert(BobUI::strong_ordering::less != std::strong_ordering::equivalent);
+        static_assert(std::strong_ordering::greater != BobUI::strong_ordering::less);
+        static_assert(std::strong_ordering::equivalent == BobUI::strong_ordering::equivalent);
 
-        static_assert((Qt::strong_ordering(std::strong_ordering::less) ==
+        static_assert((BobUI::strong_ordering(std::strong_ordering::less) ==
                        std::strong_ordering::less));
-        static_assert((Qt::strong_ordering(std::strong_ordering::equivalent) ==
+        static_assert((BobUI::strong_ordering(std::strong_ordering::equivalent) ==
                        std::strong_ordering::equivalent));
-        static_assert((Qt::strong_ordering(std::strong_ordering::greater) ==
+        static_assert((BobUI::strong_ordering(std::strong_ordering::greater) ==
                        std::strong_ordering::greater));
     }
-    // Mixed Qt::*_ordering <> std::*_ordering types
+    // Mixed BobUI::*_ordering <> std::*_ordering types
     {
-        static_assert(Qt::strong_ordering::less == std::partial_ordering::less);
-        static_assert(Qt::strong_ordering::less != std::partial_ordering::greater);
-        static_assert(Qt::strong_ordering::equal == std::weak_ordering::equivalent);
-        static_assert(Qt::strong_ordering::equivalent != std::weak_ordering::less);
+        static_assert(BobUI::strong_ordering::less == std::partial_ordering::less);
+        static_assert(BobUI::strong_ordering::less != std::partial_ordering::greater);
+        static_assert(BobUI::strong_ordering::equal == std::weak_ordering::equivalent);
+        static_assert(BobUI::strong_ordering::equivalent != std::weak_ordering::less);
 
-        static_assert(Qt::weak_ordering::less != std::partial_ordering::greater);
-        static_assert(Qt::weak_ordering::less == std::partial_ordering::less);
-        static_assert(Qt::weak_ordering::equivalent == std::strong_ordering::equivalent);
-        static_assert(Qt::weak_ordering::equivalent != std::strong_ordering::less);
+        static_assert(BobUI::weak_ordering::less != std::partial_ordering::greater);
+        static_assert(BobUI::weak_ordering::less == std::partial_ordering::less);
+        static_assert(BobUI::weak_ordering::equivalent == std::strong_ordering::equivalent);
+        static_assert(BobUI::weak_ordering::equivalent != std::strong_ordering::less);
 
-        static_assert(Qt::partial_ordering::less != std::weak_ordering::greater);
-        static_assert(Qt::partial_ordering::less == std::weak_ordering::less);
-        static_assert(Qt::partial_ordering::equivalent == std::strong_ordering::equivalent);
-        static_assert(Qt::partial_ordering::equivalent != std::strong_ordering::less);
+        static_assert(BobUI::partial_ordering::less != std::weak_ordering::greater);
+        static_assert(BobUI::partial_ordering::less == std::weak_ordering::less);
+        static_assert(BobUI::partial_ordering::equivalent == std::strong_ordering::equivalent);
+        static_assert(BobUI::partial_ordering::equivalent != std::strong_ordering::less);
     }
 #endif
 
@@ -747,20 +747,20 @@ public:
     QString value() const { return m_val; }
 
 private:
-    static Qt::weak_ordering compareHelper(const QString &lhs, const QString &rhs) noexcept
+    static BobUI::weak_ordering compareHelper(const QString &lhs, const QString &rhs) noexcept
     {
-        const int res = QString::compare(lhs, rhs, Qt::CaseInsensitive);
+        const int res = QString::compare(lhs, rhs, BobUI::CaseInsensitive);
         if (res < 0)
-            return Qt::weak_ordering::less;
+            return BobUI::weak_ordering::less;
         else if (res > 0)
-            return Qt::weak_ordering::greater;
+            return BobUI::weak_ordering::greater;
         else
-            return Qt::weak_ordering::equivalent;
+            return BobUI::weak_ordering::equivalent;
     }
 
     friend bool comparesEqual(const StringWrapper &lhs, const StringWrapper &rhs) noexcept
-    { return QString::compare(lhs.m_val, rhs.m_val, Qt::CaseInsensitive) == 0; }
-    friend Qt::weak_ordering
+    { return QString::compare(lhs.m_val, rhs.m_val, BobUI::CaseInsensitive) == 0; }
+    friend BobUI::weak_ordering
     compareThreeWay(const StringWrapper &lhs, const StringWrapper &rhs) noexcept
     { return compareHelper(lhs.m_val, rhs.m_val); }
     Q_DECLARE_WEAKLY_ORDERED(StringWrapper)
@@ -768,7 +768,7 @@ private:
     // these helper functions are intentionally non-noexcept
     friend bool comparesEqual(const StringWrapper &lhs, int rhs)
     { return comparesEqual(lhs, StringWrapper(QString::number(rhs))); }
-    friend Qt::weak_ordering compareThreeWay(const StringWrapper &lhs, int rhs)
+    friend BobUI::weak_ordering compareThreeWay(const StringWrapper &lhs, int rhs)
     { return compareHelper(lhs.m_val, QString::number(rhs)); }
     Q_DECLARE_WEAKLY_ORDERED_NON_NOEXCEPT(StringWrapper, int)
 
@@ -795,7 +795,7 @@ void tst_QCompare::compareThreeWay()
     static_assert(noexcept(qCompareThreeWay(std::declval<TestEnum>(), std::declval<TestEnum>())));
 
     // pointers
-    using StringWrapperPtr = Qt::totally_ordered_wrapper<StringWrapper *>;
+    using StringWrapperPtr = BobUI::totally_ordered_wrapper<StringWrapper *>;
     static_assert(noexcept(qCompareThreeWay(std::declval<StringWrapperPtr>(),
                                             std::declval<StringWrapperPtr>())));
     static_assert(noexcept(qCompareThreeWay(std::declval<StringWrapperPtr>(), nullptr)));
@@ -804,63 +804,63 @@ void tst_QCompare::compareThreeWay()
 
     // for custom types
     QCOMPARE_EQ(qCompareThreeWay(StringWrapper("ABC"), StringWrapper("abc")),
-                Qt::weak_ordering::equivalent);
+                BobUI::weak_ordering::equivalent);
     QVERIFY(StringWrapper("ABC") == StringWrapper("abc"));
     QCOMPARE_EQ(qCompareThreeWay(StringWrapper("ABC"), StringWrapper("qwe")),
-                Qt::weak_ordering::less);
+                BobUI::weak_ordering::less);
     QVERIFY(StringWrapper("ABC") != StringWrapper("qwe"));
     QCOMPARE_EQ(qCompareThreeWay(StringWrapper("qwe"), StringWrapper("ABC")),
-                Qt::weak_ordering::greater);
+                BobUI::weak_ordering::greater);
     QVERIFY(StringWrapper("qwe") != StringWrapper("ABC"));
-    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("10"), 10), Qt::weak_ordering::equivalent);
+    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("10"), 10), BobUI::weak_ordering::equivalent);
     QVERIFY(StringWrapper("10") == 10);
-    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("10"), 12), Qt::weak_ordering::less);
+    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("10"), 12), BobUI::weak_ordering::less);
     QVERIFY(StringWrapper("10") != 12);
-    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("12"), 10), Qt::weak_ordering::greater);
+    QCOMPARE_EQ(qCompareThreeWay(StringWrapper("12"), 10), BobUI::weak_ordering::greater);
     QVERIFY(StringWrapper("12") != 10);
 
     // reversed compareThreeWay()
     auto result = qCompareThreeWay(10, StringWrapper("12"));
-    QCOMPARE_EQ(result, Qt::weak_ordering::less);
-    static_assert(std::is_same_v<decltype(result), Qt::weak_ordering>);
+    QCOMPARE_EQ(result, BobUI::weak_ordering::less);
+    static_assert(std::is_same_v<decltype(result), BobUI::weak_ordering>);
     QVERIFY(10 != StringWrapper("12"));
     result = qCompareThreeWay(12, StringWrapper("10"));
-    QCOMPARE_EQ(result, Qt::weak_ordering::greater);
-    static_assert(std::is_same_v<decltype(result), Qt::weak_ordering>);
+    QCOMPARE_EQ(result, BobUI::weak_ordering::greater);
+    static_assert(std::is_same_v<decltype(result), BobUI::weak_ordering>);
     QVERIFY(12 != StringWrapper("10"));
     result = qCompareThreeWay(10, StringWrapper("10"));
-    QCOMPARE_EQ(result, Qt::weak_ordering::equivalent);
-    static_assert(std::is_same_v<decltype(result), Qt::weak_ordering>);
+    QCOMPARE_EQ(result, BobUI::weak_ordering::equivalent);
+    static_assert(std::is_same_v<decltype(result), BobUI::weak_ordering>);
     QVERIFY(10 == StringWrapper("10"));
 
     // built-in types
-    QCOMPARE_EQ(qCompareThreeWay(1, 1.0), Qt::partial_ordering::equivalent);
-    QCOMPARE_EQ(qCompareThreeWay(1, 2), Qt::strong_ordering::less);
-    QCOMPARE_EQ(qCompareThreeWay(2.0f, 1.0), Qt::partial_ordering::greater);
+    QCOMPARE_EQ(qCompareThreeWay(1, 1.0), BobUI::partial_ordering::equivalent);
+    QCOMPARE_EQ(qCompareThreeWay(1, 2), BobUI::strong_ordering::less);
+    QCOMPARE_EQ(qCompareThreeWay(2.0f, 1.0), BobUI::partial_ordering::greater);
 
     // enums
-    QCOMPARE_EQ(qCompareThreeWay(Smaller, Bigger), Qt::strong_ordering::less);
+    QCOMPARE_EQ(qCompareThreeWay(Smaller, Bigger), BobUI::strong_ordering::less);
 
     // pointers
     std::array<int, 2> arr{1, 0};
-#if QT_DEPRECATED_SINCE(6, 8)
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
-    QCOMPARE_EQ(qCompareThreeWay(&arr[1], &arr[0]), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(qCompareThreeWay(arr.data(), &arr[0]), Qt::strong_ordering::equivalent);
-QT_WARNING_POP
-#endif // QT_DEPRECATED_SINCE(6, 8)
-    const auto a0 = Qt::totally_ordered_wrapper(&arr[0]);
-    const auto a1 = Qt::totally_ordered_wrapper(&arr[1]);
-    QCOMPARE_EQ(qCompareThreeWay(a1, a0), Qt::strong_ordering::greater);
-    QCOMPARE_EQ(qCompareThreeWay(arr.data(), a0), Qt::strong_ordering::equivalent);
+#if BOBUI_DEPRECATED_SINCE(6, 8)
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_DEPRECATED
+    QCOMPARE_EQ(qCompareThreeWay(&arr[1], &arr[0]), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(qCompareThreeWay(arr.data(), &arr[0]), BobUI::strong_ordering::equivalent);
+BOBUI_WARNING_POP
+#endif // BOBUI_DEPRECATED_SINCE(6, 8)
+    const auto a0 = BobUI::totally_ordered_wrapper(&arr[0]);
+    const auto a1 = BobUI::totally_ordered_wrapper(&arr[1]);
+    QCOMPARE_EQ(qCompareThreeWay(a1, a0), BobUI::strong_ordering::greater);
+    QCOMPARE_EQ(qCompareThreeWay(arr.data(), a0), BobUI::strong_ordering::equivalent);
 }
 
 void tst_QCompare::unorderedNeqLiteralZero()
 {
-    // This test is checking QTBUG-127759
-    constexpr auto qtUnordered = Qt::partial_ordering::unordered;
-    constexpr auto qtLegacyUnordered = QPartialOrdering::Unordered;
+    // This test is checking BOBUIBUG-127759
+    constexpr auto bobuiUnordered = BobUI::partial_ordering::unordered;
+    constexpr auto bobuiLegacyUnordered = QPartialOrdering::Unordered;
 #ifdef __cpp_lib_three_way_comparison
     constexpr auto stdUnordered = std::partial_ordering::unordered;
 
@@ -868,31 +868,31 @@ void tst_QCompare::unorderedNeqLiteralZero()
     QVERIFY(0 != stdUnordered);
     QVERIFY(is_neq(stdUnordered));
 
-    QCOMPARE_EQ(qtUnordered != 0, stdUnordered != 0);
-    QCOMPARE_EQ(0 != qtUnordered, 0 != stdUnordered);
-    QCOMPARE_EQ(is_neq(qtUnordered), is_neq(stdUnordered));
+    QCOMPARE_EQ(bobuiUnordered != 0, stdUnordered != 0);
+    QCOMPARE_EQ(0 != bobuiUnordered, 0 != stdUnordered);
+    QCOMPARE_EQ(is_neq(bobuiUnordered), is_neq(stdUnordered));
 
-    QCOMPARE_EQ(qtLegacyUnordered != 0, stdUnordered != 0);
-    QCOMPARE_EQ(0 != qtLegacyUnordered, 0 != stdUnordered);
-    QCOMPARE_EQ(is_neq(qtLegacyUnordered), is_neq(stdUnordered));
+    QCOMPARE_EQ(bobuiLegacyUnordered != 0, stdUnordered != 0);
+    QCOMPARE_EQ(0 != bobuiLegacyUnordered, 0 != stdUnordered);
+    QCOMPARE_EQ(is_neq(bobuiLegacyUnordered), is_neq(stdUnordered));
 #endif
-    QVERIFY(qtUnordered != 0);
-    QVERIFY(0 != qtUnordered);
-    QVERIFY(is_neq(qtUnordered));
+    QVERIFY(bobuiUnordered != 0);
+    QVERIFY(0 != bobuiUnordered);
+    QVERIFY(is_neq(bobuiUnordered));
 
-    QVERIFY(qtLegacyUnordered != 0);
-    QVERIFY(0 != qtLegacyUnordered);
-    QVERIFY(is_neq(qtLegacyUnordered));
+    QVERIFY(bobuiLegacyUnordered != 0);
+    QVERIFY(0 != bobuiLegacyUnordered);
+    QVERIFY(is_neq(bobuiLegacyUnordered));
 }
 
 #ifdef __cpp_lib_three_way_comparison
 template<typename LeftType, typename RightType, typename OrderingType>
 void tst_QCompare::compare3WayHelper(LeftType lhs, RightType rhs, OrderingType order)
 {
-    // check Qt ordering type.
-    QCOMPARE_3WAY(lhs, rhs, QtOrderingPrivate::to_Qt(order));
+    // check BobUI ordering type.
+    QCOMPARE_3WAY(lhs, rhs, BobUIOrderingPrivate::to_BobUI(order));
     // Also check std ordering type.
-    QCOMPARE_3WAY(lhs, rhs, QtOrderingPrivate::to_std(order));
+    QCOMPARE_3WAY(lhs, rhs, BobUIOrderingPrivate::to_std(order));
 }
 #endif
 
@@ -902,49 +902,49 @@ void tst_QCompare::compare3WayMacro()
     constexpr std::array comparison_array = {1, 0};
     // for custom types
     compare3WayHelper(StringWrapper("ABC"), StringWrapper("abc"),
-                      Qt::weak_ordering::equivalent);
+                      BobUI::weak_ordering::equivalent);
     compare3WayHelper(StringWrapper("ABC"), StringWrapper("qwe"),
-                      Qt::weak_ordering::less);
+                      BobUI::weak_ordering::less);
     compare3WayHelper(StringWrapper("qwe"), StringWrapper("ABC"),
-                      Qt::weak_ordering::greater);
+                      BobUI::weak_ordering::greater);
 
-    compare3WayHelper(StringWrapper("10"), 10, Qt::weak_ordering::equivalent);
-    compare3WayHelper(StringWrapper("10"), 12, Qt::weak_ordering::less);
-    compare3WayHelper(StringWrapper("12"), 10, Qt::weak_ordering::greater);
+    compare3WayHelper(StringWrapper("10"), 10, BobUI::weak_ordering::equivalent);
+    compare3WayHelper(StringWrapper("10"), 12, BobUI::weak_ordering::less);
+    compare3WayHelper(StringWrapper("12"), 10, BobUI::weak_ordering::greater);
 
     // reversed compareThreeWay()
-    compare3WayHelper(10, StringWrapper("12"), Qt::weak_ordering::less);
-    compare3WayHelper(12, StringWrapper("10"), Qt::weak_ordering::greater);
-    compare3WayHelper(10, StringWrapper("10"), Qt::weak_ordering::equivalent);
+    compare3WayHelper(10, StringWrapper("12"), BobUI::weak_ordering::less);
+    compare3WayHelper(12, StringWrapper("10"), BobUI::weak_ordering::greater);
+    compare3WayHelper(10, StringWrapper("10"), BobUI::weak_ordering::equivalent);
 
     // built-in types
-    compare3WayHelper(1, 1.0, Qt::partial_ordering::equivalent);
-    compare3WayHelper(1, 2, Qt::strong_ordering::less);
-    compare3WayHelper(2.0f, 1.0, Qt::partial_ordering::greater);
+    compare3WayHelper(1, 1.0, BobUI::partial_ordering::equivalent);
+    compare3WayHelper(1, 2, BobUI::strong_ordering::less);
+    compare3WayHelper(2.0f, 1.0, BobUI::partial_ordering::greater);
 
     // enums
-    compare3WayHelper(Smaller, Bigger, Qt::strong_ordering::less);
+    compare3WayHelper(Smaller, Bigger, BobUI::strong_ordering::less);
 
     // pointers
-    compare3WayHelper(&comparison_array[1], &comparison_array[0], Qt::strong_ordering::greater);
+    compare3WayHelper(&comparison_array[1], &comparison_array[0], BobUI::strong_ordering::greater);
     compare3WayHelper(comparison_array.data(),
-                      &comparison_array[0], Qt::strong_ordering::equivalent);
+                      &comparison_array[0], BobUI::strong_ordering::equivalent);
 
     const QString lhs = QStringLiteral("abc");
 
     // We don't want to put those into test data since we want to specifically test comparison
     // against inline string literals.
-    compare3WayHelper(lhs, u"", Qt::strong_ordering::greater);
-    compare3WayHelper(lhs, u"abc", Qt::strong_ordering::equal);
-    compare3WayHelper(lhs, u"abcd", Qt::strong_ordering::less);
+    compare3WayHelper(lhs, u"", BobUI::strong_ordering::greater);
+    compare3WayHelper(lhs, u"abc", BobUI::strong_ordering::equal);
+    compare3WayHelper(lhs, u"abcd", BobUI::strong_ordering::less);
 
-    compare3WayHelper(lhs, "", Qt::strong_ordering::greater);
-    compare3WayHelper(lhs, "abc", Qt::strong_ordering::equal);
-    compare3WayHelper(lhs, "abcd", Qt::strong_ordering::less);
+    compare3WayHelper(lhs, "", BobUI::strong_ordering::greater);
+    compare3WayHelper(lhs, "abc", BobUI::strong_ordering::equal);
+    compare3WayHelper(lhs, "abcd", BobUI::strong_ordering::less);
 #else
     QSKIP("This test requires C++20 comparison support enabled in the standard library");
 #endif
 }
 
-QTEST_MAIN(tst_QCompare)
+BOBUIEST_MAIN(tst_QCompare)
 #include "tst_qcompare.moc"

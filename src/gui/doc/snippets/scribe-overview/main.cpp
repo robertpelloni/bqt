@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 #include <QApplication>
-#include <QTextEdit>
+#include <BOBUIextEdit>
 
-void mergeFormat(QTextEdit *edit)
+void mergeFormat(BOBUIextEdit *edit)
 {
 //! [0]
-QTextDocument *document = edit->document();
-QTextCursor cursor(document);
+BOBUIextDocument *document = edit->document();
+BOBUIextCursor cursor(document);
 
-cursor.movePosition(QTextCursor::Start);
-cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+cursor.movePosition(BOBUIextCursor::Start);
+cursor.movePosition(BOBUIextCursor::EndOfLine, BOBUIextCursor::KeepAnchor);
 
-QTextCharFormat format;
+BOBUIextCharFormat format;
 format.setFontWeight(QFont::Bold);
 
 cursor.mergeCharFormat(format);
@@ -27,7 +27,7 @@ QString aStringContainingHTMLtext("<h1>Scribe Overview</h1>");
 QApplication app(argc, argv);
 
 //! [1]
-QTextEdit *editor = new QTextEdit(parent);
+BOBUIextEdit *editor = new BOBUIextEdit(parent);
 editor->setHtml(aStringContainingHTMLtext);
 editor->show();
 //! [1]

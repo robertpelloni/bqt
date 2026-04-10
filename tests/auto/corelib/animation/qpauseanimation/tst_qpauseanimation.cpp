@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/private/qpropertytesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qpropertytesthelper_p.h>
 
-#include <QtCore/qpauseanimation.h>
-#include <QtCore/qpropertyanimation.h>
-#include <QtCore/qsequentialanimationgroup.h>
+#include <BobUICore/qpauseanimation.h>
+#include <BobUICore/qpropertyanimation.h>
+#include <BobUICore/qsequentialanimationgroup.h>
 
 #include <QParallelAnimationGroup>
 
@@ -20,14 +20,14 @@
 static const char timerError[] = "On this platform, consistent timing is not working properly due to bad timer resolution";
 
 #  define WAIT_FOR_STOPPED(animation, duration) \
-       QTest::qWait(duration); \
+       BOBUIest::qWait(duration); \
        if (animation.state() != QAbstractAnimation::Stopped) \
            QEXPECT_FAIL("", timerError, Abort); \
        QCOMPARE(animation.state(), QAbstractAnimation::Stopped)
 #else
-// Use QTRY_COMPARE with one additional timer tick
+// Use BOBUIRY_COMPARE with one additional timer tick
 #  define WAIT_FOR_STOPPED(animation, duration) \
-       QTRY_COMPARE_WITH_TIMEOUT(animation.state(), QAbstractAnimation::Stopped, (duration))
+       BOBUIRY_COMPARE_WITH_TIMEOUT(animation.state(), QAbstractAnimation::Stopped, (duration))
 #endif
 
 class TestablePauseAnimation : public QPauseAnimation
@@ -97,7 +97,7 @@ void tst_QPauseAnimation::changeDirectionWhileRunning()
     TestablePauseAnimation animation;
     animation.setDuration(400);
     animation.start();
-    QTRY_COMPARE(animation.state(), QAbstractAnimation::Running);
+    BOBUIRY_COMPARE(animation.state(), QAbstractAnimation::Running);
     animation.setDirection(QAbstractAnimation::Backward);
     const int expectedDuration = animation.totalDuration() + 100;
     WAIT_FOR_STOPPED(animation, expectedDuration);
@@ -105,13 +105,13 @@ void tst_QPauseAnimation::changeDirectionWhileRunning()
 
 void tst_QPauseAnimation::noTimerUpdates_data()
 {
-    QTest::addColumn<int>("duration");
-    QTest::addColumn<int>("loopCount");
+    BOBUIest::addColumn<int>("duration");
+    BOBUIest::addColumn<int>("loopCount");
 
-    QTest::newRow("0") << 200 << 1;
-    QTest::newRow("1") << 160 << 1;
-    QTest::newRow("2") << 160 << 2;
-    QTest::newRow("3") << 200 << 3;
+    BOBUIest::newRow("0") << 200 << 1;
+    BOBUIest::newRow("1") << 160 << 1;
+    BOBUIest::newRow("2") << 160 << 2;
+    BOBUIest::newRow("3") << 200 << 3;
 }
 
 void tst_QPauseAnimation::noTimerUpdates()
@@ -195,7 +195,7 @@ void tst_QPauseAnimation::pauseAndPropertyAnimations()
 
     pause.start();
 
-    QTest::qWait(100);
+    BOBUIest::qWait(100);
     animation.start();
 
     QCOMPARE(animation.state(), QAbstractAnimation::Running);
@@ -215,11 +215,11 @@ void tst_QPauseAnimation::pauseResume()
     animation.setDuration(400);
     animation.start();
     QCOMPARE(animation.state(), QAbstractAnimation::Running);
-    QTest::qWait(200);
+    BOBUIest::qWait(200);
     animation.pause();
     QCOMPARE(animation.state(), QAbstractAnimation::Paused);
     animation.start();
-    QTRY_COMPARE(animation.state(), QAbstractAnimation::Stopped);
+    BOBUIRY_COMPARE(animation.state(), QAbstractAnimation::Stopped);
 
 #ifdef BAD_TIMER_RESOLUTION
     if (animation.m_updateCurrentTimeCount < 3)
@@ -424,20 +424,20 @@ void tst_QPauseAnimation::bindings()
     TestablePauseAnimation animation;
 
     QProperty<int> duration;
-    animation.bindableDuration().setBinding(Qt::makePropertyBinding(duration));
+    animation.bindableDuration().setBinding(BobUI::makePropertyBinding(duration));
 
     duration = 42;
     QCOMPARE(animation.duration(), 42);
 
     // negative values must be ignored
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QPauseAnimation::setDuration: cannot set a negative duration");
     duration = -1;
     QCOMPARE(animation.duration(), 42);
     QCOMPARE(duration, -1);
 
     // Setting an invalid value shouldn't clear the binding
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QPauseAnimation::setDuration: cannot set a negative duration");
     animation.setDuration(-1);
     QVERIFY(animation.bindableDuration().hasBinding());
@@ -453,17 +453,17 @@ void tst_QPauseAnimation::bindings()
     QVERIFY(!animation.bindableDuration().hasBinding());
 
     // Setting an invalid value also doesn't affect the observer
-    QTest::ignoreMessage(QtWarningMsg,
+    BOBUIest::ignoreMessage(BobUIWarningMsg,
                          "QPauseAnimation::setDuration: cannot set a negative duration");
     animation.setDuration(-1);
     QCOMPARE(durationObserver, 46);
 
-    QTestPrivate::testReadWritePropertyBasics(animation, 10, 20, "duration");
-    if (QTest::currentTestFailed()) {
+    BOBUIestPrivate::testReadWritePropertyBasics(animation, 10, 20, "duration");
+    if (BOBUIest::currentTestFailed()) {
         qDebug("Failed property test for QPauseAnimation::duration");
         return;
     }
 }
 
-QTEST_MAIN(tst_QPauseAnimation)
+BOBUIEST_MAIN(tst_QPauseAnimation)
 #include "tst_qpauseanimation.moc"

@@ -1,5 +1,5 @@
 TEMPLATE = app
 
 SOURCES += main.cpp
-QT += gui widgets
+BOBUI += gui widgets
 CONFIG -=app_bundle

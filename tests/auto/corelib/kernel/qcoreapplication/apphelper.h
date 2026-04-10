@@ -1,17 +1,17 @@
 // Copyright (C) 2025 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef APPHELPER_H
 #define APPHELPER_H
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qprocess.h>
-#include <QtCore/qstandardpaths.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qprocess.h>
+#include <BobUICore/qstandardpaths.h>
 
-#include <QtTest/QTest>
+#include <BobUITest/BOBUIest>
 
 namespace QCoreApplicationTestHelper {
-#if !QT_CONFIG(process)
+#if !BOBUI_CONFIG(process)
 inline void run()
 {
     QSKIP("No QProcess in this build.");
@@ -33,7 +33,7 @@ inline void run()
     int argc = 0;
     QCoreApplication app(argc, nullptr);
     QProcess process;
-    process.start(QFINDTESTDATA("apphelper" EXE), { QTest::currentTestFunction() });
+    process.start(QFINDTESTDATA("apphelper" EXE), { BOBUIest::currentTestFunction() });
     QVERIFY2(process.waitForFinished(5000), qPrintable(process.errorString()));
     if (qint8(process.exitCode()) == -1)
         QSKIP("Process requested skip: " + process.readAllStandardOutput().trimmed());
@@ -78,7 +78,7 @@ inline void run()
     QCOMPARE(process.exitCode(), 0);
 }
 #undef EXE
-#endif // QT_CONFIG(process)
+#endif // BOBUI_CONFIG(process)
 } // namespace
 
 

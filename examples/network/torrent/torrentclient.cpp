@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "connectionmanager.h"
 #include "filemanager.h"
@@ -10,7 +10,7 @@
 #include "peerwireclient.h"
 #include "ratecontroller.h"
 
-#include <QtCore>
+#include <BobUICore>
 #include <QNetworkInterface>
 
 #include <algorithm>
@@ -93,8 +93,8 @@ TorrentClientPrivate::TorrentClientPrivate(TorrentClient *qq)
 {
     error = TorrentClient::UnknownError;
     state = TorrentClient::Idle;
-    errorString = QT_TRANSLATE_NOOP(TorrentClient, "Unknown error");
-    stateString = QT_TRANSLATE_NOOP(TorrentClient, "Idle");
+    errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Unknown error");
+    stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Idle");
     schedulerCalled = false;
     connectingToClients = false;
     lastProgressValue = -1;
@@ -110,19 +110,19 @@ void TorrentClientPrivate::setError(TorrentClient::Error errorCode)
     this->error = errorCode;
     switch (error) {
     case TorrentClient::UnknownError:
-        errorString = QT_TRANSLATE_NOOP(TorrentClient, "Unknown error");
+        errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Unknown error");
         break;
     case TorrentClient::TorrentParseError:
-        errorString = QT_TRANSLATE_NOOP(TorrentClient, "Invalid torrent data");
+        errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Invalid torrent data");
         break;
     case TorrentClient::InvalidTrackerError:
-        errorString = QT_TRANSLATE_NOOP(TorrentClient, "Unable to connect to tracker");
+        errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Unable to connect to tracker");
         break;
     case TorrentClient::FileError:
-        errorString = QT_TRANSLATE_NOOP(TorrentClient, "File error");
+        errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "File error");
         break;
     case TorrentClient::ServerError:
-        errorString = QT_TRANSLATE_NOOP(TorrentClient, "Unable to initialize server");
+        errorString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Unable to initialize server");
         break;
     }
     emit q->error(errorCode);
@@ -133,34 +133,34 @@ void TorrentClientPrivate::setState(TorrentClient::State state)
     this->state = state;
     switch (state) {
     case TorrentClient::Idle:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Idle");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Idle");
         break;
     case TorrentClient::Paused:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Paused");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Paused");
         break;
     case TorrentClient::Stopping:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Stopping");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Stopping");
         break;
     case TorrentClient::Preparing:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Preparing");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Preparing");
         break;
     case TorrentClient::Searching:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Searching");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Searching");
         break;
     case TorrentClient::Connecting:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Connecting");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Connecting");
         break;
     case TorrentClient::WarmingUp:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Warming up");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Warming up");
         break;
     case TorrentClient::Downloading:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Downloading");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Downloading");
         break;
     case TorrentClient::Endgame:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Finishing");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Finishing");
         break;
     case TorrentClient::Seeding:
-        stateString = QT_TRANSLATE_NOOP(TorrentClient, "Seeding");
+        stateString = BOBUI_TRANSLATE_NOOP(TorrentClient, "Seeding");
         break;
     }
     emit q->stateChanged(state);
@@ -170,7 +170,7 @@ void TorrentClientPrivate::callScheduler()
 {
     if (!schedulerCalled) {
         schedulerCalled = true;
-        QMetaObject::invokeMethod(q, "scheduleDownloads", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(q, "scheduleDownloads", BobUI::QueuedConnection);
     }
 }
 
@@ -178,7 +178,7 @@ void TorrentClientPrivate::callPeerConnector()
 {
     if (!connectingToClients) {
         connectingToClients = true;
-        QTimer::singleShot(10000, q, &TorrentClient::connectToPeers);
+        BOBUIimer::singleShot(10000, q, &TorrentClient::connectToPeers);
     }
 }
 
@@ -207,7 +207,7 @@ TorrentClient::TorrentClient(QObject *parent)
 TorrentClient::~TorrentClient()
 {
     auto rateController = RateController::instance();
-    const auto childSockets = findChildren<PeerWireClient *>(Qt::FindDirectChildrenOnly);
+    const auto childSockets = findChildren<PeerWireClient *>(BobUI::FindDirectChildrenOnly);
     for (PeerWireClient *socket : childSockets)
         rateController->removeSocket(socket);
     qDeleteAll(d->peers);
@@ -397,7 +397,7 @@ void TorrentClient::start()
     d->fileManager.setMetaInfo(d->metaInfo);
     d->fileManager.setDestinationFolder(d->destinationFolder);
     d->fileManager.setCompletedPieces(d->completedPieces);
-    d->fileManager.start(QThread::LowestPriority);
+    d->fileManager.start(BOBUIhread::LowestPriority);
     d->fileManager.startDataVerification();
 }
 
@@ -453,7 +453,7 @@ void TorrentClient::setPaused(bool paused)
     }
 }
 
-void TorrentClient::timerEvent(QTimerEvent *event)
+void TorrentClient::timerEvent(BOBUIimerEvent *event)
 {
     if (event->id() == d->uploadScheduleTimer.id()) {
         // Update the state of who's choked and who's not
@@ -1098,7 +1098,7 @@ void TorrentClient::scheduleDownloads()
 void TorrentClient::schedulePieceForClient(PeerWireClient *client)
 {
     // Only schedule connected clients.
-    if (client->state() != QTcpSocket::ConnectedState)
+    if (client->state() != BOBUIcpSocket::ConnectedState)
         return;
 
     // The peer has choked us; try again later.

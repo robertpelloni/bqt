@@ -1,5 +1,5 @@
 // Copyright (C) 2012 KDAB
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <QMainWindow>
 #include <QMenu>
@@ -84,7 +84,7 @@ void createWindow1()
     Responder *r = new Responder(window);
 
     QAction *a = menu->addAction("TestMenuItem1");
-    a->setShortcut( Qt::Key_A | Qt::SHIFT | Qt::CTRL );
+    a->setShortcut( BobUI::Key_A | BobUI::SHIFT | BobUI::CTRL );
     QObject::connect(a, SIGNAL(triggered()),
         r, SLOT(showModalDialog()));
 
@@ -96,7 +96,7 @@ void createWindow1()
         r, SLOT(doPreferences()));
 
     a = menu->addAction("TestMenuItem4");
-    a->setShortcut( Qt::Key_W | Qt::CTRL);
+    a->setShortcut( BobUI::Key_W | BobUI::CTRL);
 
     QMenu *menu2 = new QMenu("SecondMenu", window);
     window->menuBar()->addMenu(menu2);
@@ -131,7 +131,7 @@ void createWindow1()
     menu3->addMenu(submenu3);
 
     a = menu3->addAction("Zwei");
-    a->setShortcut( Qt::Key_3 | Qt::ALT);
+    a->setShortcut( BobUI::Key_3 | BobUI::ALT);
     a = menu3->addAction("About Drei...");
     a->setMenuRole(QAction::AboutRole);
 

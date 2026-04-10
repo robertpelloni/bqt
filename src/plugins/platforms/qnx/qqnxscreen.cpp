@@ -1,7 +1,7 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#undef QT_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
+#undef BOBUI_NO_FOREACH // this file contains unported legacy Q_FOREACH uses
 
 #include "qqnxglobal.h"
 
@@ -9,8 +9,8 @@
 #include "qqnxwindow.h"
 #include "qqnxcursor.h"
 
-#include <QtCore/QThread>
-#include <QtCore/QDebug>
+#include <BobUICore/BOBUIhread>
+#include <BobUICore/QDebug>
 #include <qpa/qwindowsysteminterface.h>
 
 #include <errno.h>
@@ -26,9 +26,9 @@
 // an underlay.
 static const int MAX_UNDERLAY_ZORDER = -1;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaScreen, "qt.qpa.screen");
+Q_LOGGING_CATEGORY(lcQpaScreen, "bobui.qpa.screen");
 
 static QSize determineScreenSize(screen_display_t display, bool primaryScreen) {
     int val[2];
@@ -82,7 +82,7 @@ QQnxScreen::QQnxScreen(screen_context_t screenContext, screen_display_t display,
       m_rootWindow(0),
       m_primaryScreen(primaryScreen),
       m_keyboardHeight(0),
-      m_nativeOrientation(Qt::PrimaryOrientation),
+      m_nativeOrientation(BobUI::PrimaryOrientation),
       m_coverWindow(0),
       m_cursor(new QQnxCursor(screenContext))
 {
@@ -112,7 +112,7 @@ QQnxScreen::QQnxScreen(screen_context_t screenContext, screen_display_t display,
     // returned dimensions to follow the current orientation.
     const QSize screenSize = determineScreenSize(m_display, primaryScreen);
 
-    m_nativeOrientation = screenSize.width() >= screenSize.height() ? Qt::LandscapeOrientation : Qt::PortraitOrientation;
+    m_nativeOrientation = screenSize.width() >= screenSize.height() ? BobUI::LandscapeOrientation : BobUI::PortraitOrientation;
 
     const int angle = screen()->angleBetween(m_nativeOrientation, orientation());
     if (angle == 0 || angle == 180)
@@ -192,7 +192,7 @@ QPixmap QQnxScreen::grabWindow(WId window, int x, int y, int width, int height) 
         free(displays);
     }
 
-    // Create screen and Qt pixmap
+    // Create screen and BobUI pixmap
     screen_pixmap_t pixmap;
     QPixmap result;
     if (display && !screen_create_pixmap(&pixmap, context)) {
@@ -275,35 +275,35 @@ qreal QQnxScreen::refreshRate() const
     return static_cast<qreal>(displayMode.refresh);
 }
 
-Qt::ScreenOrientation QQnxScreen::nativeOrientation() const
+BobUI::ScreenOrientation QQnxScreen::nativeOrientation() const
 {
     return m_nativeOrientation;
 }
 
-Qt::ScreenOrientation QQnxScreen::orientation() const
+BobUI::ScreenOrientation QQnxScreen::orientation() const
 {
-    Qt::ScreenOrientation orient;
-    if (m_nativeOrientation == Qt::LandscapeOrientation) {
+    BobUI::ScreenOrientation orient;
+    if (m_nativeOrientation == BobUI::LandscapeOrientation) {
         // Landscape devices e.g. PlayBook
         if (m_currentRotation == 0)
-            orient = Qt::LandscapeOrientation;
+            orient = BobUI::LandscapeOrientation;
         else if (m_currentRotation == 90)
-            orient = Qt::PortraitOrientation;
+            orient = BobUI::PortraitOrientation;
         else if (m_currentRotation == 180)
-            orient = Qt::InvertedLandscapeOrientation;
+            orient = BobUI::InvertedLandscapeOrientation;
         else
-            orient = Qt::InvertedPortraitOrientation;
+            orient = BobUI::InvertedPortraitOrientation;
     } else {
         // Portrait devices e.g. Phones
         // ###TODO Check these on an actual phone device
         if (m_currentRotation == 0)
-            orient = Qt::PortraitOrientation;
+            orient = BobUI::PortraitOrientation;
         else if (m_currentRotation == 90)
-            orient = Qt::LandscapeOrientation;
+            orient = BobUI::LandscapeOrientation;
         else if (m_currentRotation == 180)
-            orient = Qt::InvertedPortraitOrientation;
+            orient = BobUI::InvertedPortraitOrientation;
         else
-            orient = Qt::InvertedLandscapeOrientation;
+            orient = BobUI::InvertedLandscapeOrientation;
     }
     qCDebug(lcQpaScreen) << Q_FUNC_INFO << "Orientation =" << orient;
     return orient;
@@ -449,7 +449,7 @@ void QQnxScreen::resizeTopLevelWindow(QQnxWindow *w, const QRect &previousScreen
     // so we need to proportionally shrink it
     if (!geometry().contains(windowGeometry)) {
         QSize newSize = windowGeometry.size();
-        newSize.scale(geometry().size(), Qt::KeepAspectRatio);
+        newSize.scale(geometry().size(), BobUI::KeepAspectRatio);
         windowGeometry.setSize(newSize);
 
         if (windowGeometry.x() < 0)
@@ -471,7 +471,7 @@ void QQnxScreen::resizeWindows(const QRect &previousScreenGeometry)
 
     Q_FOREACH (QQnxWindow *w, m_childWindows) {
 
-        if (w->window()->windowState() & Qt::WindowFullScreen || w->window()->windowState() & Qt::WindowMaximized)
+        if (w->window()->windowState() & BobUI::WindowFullScreen || w->window()->windowState() & BobUI::WindowMaximized)
             continue;
 
         if (w->parent()) {
@@ -502,7 +502,7 @@ void QQnxScreen::addWindow(QQnxWindow *window)
     if (m_childWindows.contains(window))
         return;
 
-    if (window->window()->type() != Qt::CoverWindow) {
+    if (window->window()->type() != BobUI::CoverWindow) {
         m_childWindows.push_back(window);
         updateHierarchy();
     }
@@ -575,7 +575,7 @@ void QQnxScreen::updateHierarchy()
         underlayZorder--;
     }
 
-    // Normal Qt windows come next above the root window z-ordering
+    // Normal BobUI windows come next above the root window z-ordering
     for (it = m_childWindows.constBegin(); it != m_childWindows.constEnd(); ++it)
         (*it)->updateZorder(topZorder);
 
@@ -641,7 +641,7 @@ void QQnxScreen::removeOverlayOrUnderlayWindow(screen_window_t window)
 
 void QQnxScreen::newWindowCreated(void *window)
 {
-    Q_ASSERT(thread() == QThread::currentThread());
+    Q_ASSERT(thread() == BOBUIhread::currentThread());
     const screen_window_t windowHandle = reinterpret_cast<screen_window_t>(window);
     screen_display_t display = 0;
     if (screen_get_window_property_pv(windowHandle, SCREEN_PROPERTY_DISPLAY, (void**)&display) != 0) {
@@ -669,7 +669,7 @@ void QQnxScreen::newWindowCreated(void *window)
         return;
 
     // A window was created on this screen. If we don't know about this window yet, it means
-    // it was not created by Qt, but by some foreign library.
+    // it was not created by BobUI, but by some foreign library.
     //
     // Treat all foreign windows as overlays or underlays. A window will
     // be treated as an underlay if its Z-order is less or equal than
@@ -687,13 +687,13 @@ void QQnxScreen::newWindowCreated(void *window)
 
 void QQnxScreen::windowClosed(void *window)
 {
-    Q_ASSERT(thread() == QThread::currentThread());
+    Q_ASSERT(thread() == BOBUIhread::currentThread());
     const screen_window_t windowHandle = reinterpret_cast<screen_window_t>(window);
 
     removeOverlayOrUnderlayWindow(windowHandle);
 }
 
-void QQnxScreen::windowGroupStateChanged(const QByteArray &id, Qt::WindowState state)
+void QQnxScreen::windowGroupStateChanged(const QByteArray &id, BobUI::WindowState state)
 {
     qCDebug(lcQpaScreen) << Q_FUNC_INFO;
 
@@ -760,4 +760,4 @@ void QQnxScreen::setRootWindow(QQnxWindow *window)
     m_rootWindow = window;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

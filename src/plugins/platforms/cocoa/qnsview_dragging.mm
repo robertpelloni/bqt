@@ -1,10 +1,10 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 // This file is included from qnsview.mm, and only used to organize the code
 
-#include <QtGui/qdrag.h>
+#include <BobUIGui/qdrag.h>
 
 @implementation QNSView (Dragging)
 
@@ -12,7 +12,7 @@
 {
     QMacAutoReleasePool pool;
 
-    NSString * const mimeTypeGeneric = @"com.trolltech.qt.MimeTypeName";
+    NSString * const mimeTypeGeneric = @"com.trolltech.bobui.MimeTypeName";
     NSMutableArray<NSString *> *supportedTypes = [NSMutableArray<NSString *> arrayWithArray:@[
                    NSPasteboardTypeColor, NSPasteboardTypeString,
                    NSPasteboardTypeFileURL, @"com.adobe.encapsulated-postscript", NSPasteboardTypeTIFF,
@@ -33,7 +33,7 @@
 static QWindow *findEventTargetWindow(QWindow *candidate)
 {
     while (candidate) {
-        if (!(candidate->flags() & Qt::WindowTransparentForInput))
+        if (!(candidate->flags() & BobUI::WindowTransparentForInput))
             return candidate;
         candidate = candidate->parent();
     }
@@ -51,7 +51,7 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     Q_UNUSED(context);
 
     QCocoaDrag* nativeDrag = QCocoaIntegration::instance()->drag();
-    return qt_mac_mapDropActions(nativeDrag->currentDrag()->supportedActions());
+    return bobui_mac_mapDropActions(nativeDrag->currentDrag()->supportedActions());
 }
 
 - (BOOL)ignoreModifierKeysForDraggingSession:(NSDraggingSession *)session
@@ -62,7 +62,7 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     // if the control, option, or command key is pressed, the source’s
     // operation mask is filtered to only contain a reduced set of operations.
     //
-    // Since Qt already takes care of tracking the keyboard modifiers, we
+    // Since BobUI already takes care of tracking the keyboard modifiers, we
     // don't need (or want) Cocoa to filter anything. Instead, we'll let
     // the application do the actual filtering.
     return YES;
@@ -93,24 +93,24 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     return NO;
 }
 
-- (void)updateCursorFromDragResponse:(QPlatformDragQtResponse)response drag:(QCocoaDrag *)drag
+- (void)updateCursorFromDragResponse:(QPlatformDragBobUIResponse)response drag:(QCocoaDrag *)drag
 {
     const QPixmap pixmapCursor = drag->currentDrag()->dragCursor(response.acceptedAction());
     NSCursor *nativeCursor = nil;
 
     if (pixmapCursor.isNull()) {
         switch (response.acceptedAction()) {
-        case Qt::CopyAction:
+        case BobUI::CopyAction:
             nativeCursor = [NSCursor dragCopyCursor];
             break;
-        case Qt::LinkAction:
+        case BobUI::LinkAction:
             nativeCursor = [NSCursor dragLinkCursor];
             break;
-        case Qt::IgnoreAction:
+        case BobUI::IgnoreAction:
             // Uncomment the next lines if forbidden cursor is wanted on undroppable targets.
             /*nativeCursor = [NSCursor operationNotAllowedCursor];
             break;*/
-        case Qt::MoveAction:
+        case BobUI::MoveAction:
         default:
             nativeCursor = [NSCursor arrowCursor];
             break;
@@ -150,7 +150,7 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     return [self handleDrag:(QEvent::DragMove) sender:sender];
 }
 
-// Sends drag update to Qt, return the action
+// Sends drag update to BobUI, return the action
 - (NSDragOperation)handleDrag:(QEvent::Type)dragType sender:(id<NSDraggingInfo>)sender
 {
     if (!m_platformWindow)
@@ -158,7 +158,7 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
 
     QPoint windowPoint = QPointF::fromCGPoint([self convertPoint:sender.draggingLocation fromView:nil]).toPoint();
 
-    Qt::DropActions qtAllowed = qt_mac_mapNSDragOperations(sender.draggingSourceOperationMask);
+    BobUI::DropActions bobuiAllowed = bobui_mac_mapNSDragOperations(sender.draggingSourceOperationMask);
 
     QWindow *target = findEventTargetWindow(m_platformWindow->window());
     if (!target)
@@ -173,20 +173,20 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     else
         qCDebug(lcQpaMouse) << dragType << "at" << windowPoint << "with" << buttons;
 
-    QPlatformDragQtResponse response(false, Qt::IgnoreAction, QRect());
+    QPlatformDragBobUIResponse response(false, BobUI::IgnoreAction, QRect());
     QCocoaDrag* nativeDrag = QCocoaIntegration::instance()->drag();
     if (nativeDrag->currentDrag()) {
         // The drag was started from within the application
         response = QWindowSystemInterface::handleDrag(target, nativeDrag->dragMimeData(),
-                                                      point, qtAllowed, buttons, modifiers);
+                                                      point, bobuiAllowed, buttons, modifiers);
         [self updateCursorFromDragResponse:response drag:nativeDrag];
     } else {
         QCocoaDropData mimeData(sender.draggingPasteboard);
         response = QWindowSystemInterface::handleDrag(target, &mimeData,
-                                                      point, qtAllowed, buttons, modifiers);
+                                                      point, bobuiAllowed, buttons, modifiers);
     }
 
-    return qt_mac_mapDropAction(response.acceptedAction());
+    return bobui_mac_mapDropAction(response.acceptedAction());
 }
 
 - (void)draggingExited:(id<NSDraggingInfo>)sender
@@ -209,10 +209,10 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     // Send 0 mime data to indicate drag exit
     QWindowSystemInterface::handleDrag(target, nullptr,
                                        mapWindowCoordinates(m_platformWindow->window(), target, windowPoint),
-                                       Qt::IgnoreAction, Qt::NoButton, Qt::NoModifier);
+                                       BobUI::IgnoreAction, BobUI::NoButton, BobUI::NoModifier);
 }
 
-// Called on drop, send the drop to Qt and return if it was accepted
+// Called on drop, send the drop to BobUI and return if it was accepted
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
 {
     if (!m_platformWindow)
@@ -224,9 +224,9 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
 
     QPoint windowPoint = QPointF::fromCGPoint([self convertPoint:sender.draggingLocation fromView:nil]).toPoint();
 
-    Qt::DropActions qtAllowed = qt_mac_mapNSDragOperations(sender.draggingSourceOperationMask);
+    BobUI::DropActions bobuiAllowed = bobui_mac_mapNSDragOperations(sender.draggingSourceOperationMask);
 
-    QPlatformDropQtResponse response(false, Qt::IgnoreAction);
+    QPlatformDropBobUIResponse response(false, BobUI::IgnoreAction);
     QCocoaDrag* nativeDrag = QCocoaIntegration::instance()->drag();
     const auto modifiers = QAppleKeyMapper::fromCocoaModifiers(NSApp.currentEvent.modifierFlags);
     const auto buttons = currentlyPressedMouseButtons();
@@ -237,12 +237,12 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     if (nativeDrag->currentDrag()) {
         // The drag was started from within the application
         response = QWindowSystemInterface::handleDrop(target, nativeDrag->dragMimeData(),
-                                                      point, qtAllowed, buttons, modifiers);
+                                                      point, bobuiAllowed, buttons, modifiers);
         nativeDrag->setAcceptedAction(response.acceptedAction());
     } else {
         QCocoaDropData mimeData(sender.draggingPasteboard);
         response = QWindowSystemInterface::handleDrop(target, &mimeData,
-                                                      point, qtAllowed, buttons, modifiers);
+                                                      point, bobuiAllowed, buttons, modifiers);
     }
     return response.isAccepted();
 }
@@ -265,9 +265,9 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     nativeDrag->exitDragLoop();
     // for internal drag'n'drop, don't override the action the drop event accepted
     if (!nativeDrag->currentDrag())
-        nativeDrag->setAcceptedAction(qt_mac_mapNSDragOperation(operation));
+        nativeDrag->setAcceptedAction(bobui_mac_mapNSDragOperation(operation));
 
-    // Qt starts drag-and-drop on a mouse button press event. Cococa in
+    // BobUI starts drag-and-drop on a mouse button press event. Cococa in
     // this case won't send the matching release event, so we have to
     // synthesize it here.
     m_buttons = currentlyPressedMouseButtons();
@@ -276,15 +276,15 @@ static QPoint mapWindowCoordinates(QWindow *source, QWindow *target, QPoint poin
     NSPoint windowPoint = [self.window convertRectFromScreen:NSMakeRect(screenPoint.x, screenPoint.y, 1, 1)].origin;
     NSPoint nsViewPoint = [self convertPoint: windowPoint fromView: nil];
 
-    QPoint qtWindowPoint(nsViewPoint.x, nsViewPoint.y);
-    QPoint qtScreenPoint = QCocoaScreen::mapFromNative(screenPoint).toPoint();
+    QPoint bobuiWindowPoint(nsViewPoint.x, nsViewPoint.y);
+    QPoint bobuiScreenPoint = QCocoaScreen::mapFromNative(screenPoint).toPoint();
 
     QWindowSystemInterface::handleMouseEvent(
         target,
-        mapWindowCoordinates(m_platformWindow->window(), target, qtWindowPoint),
-        qtScreenPoint,
+        mapWindowCoordinates(m_platformWindow->window(), target, bobuiWindowPoint),
+        bobuiScreenPoint,
         m_buttons,
-        Qt::NoButton,
+        BobUI::NoButton,
         QEvent::MouseButtonRelease,
         modifiers);
 

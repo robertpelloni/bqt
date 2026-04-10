@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qiconengineplugin.h"
 #include "qiconengine.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QIconEnginePlugin
     \brief The QIconEnginePlugin class provides an abstract base for custom QIconEngine plugins.
 
     \ingroup plugins
-    \inmodule QtGui
+    \inmodule BobUIGui
 
     The icon engine plugin is a simple plugin interface that makes it easy to
     create custom icon engines that can be loaded dynamically into applications
@@ -30,7 +30,7 @@ QT_BEGIN_NAMESPACE
     { "Keys": [ "myiconengine" ] }
     \endcode
 
-    \sa {How to Create Qt Plugins}
+    \sa {How to Create BobUI Plugins}
 */
 
 /*!
@@ -52,7 +52,7 @@ QIconEnginePlugin::QIconEnginePlugin(QObject *parent)
 /*!
     Destroys the icon engine plugin.
 
-    You never have to call this explicitly. Qt destroys a plugin
+    You never have to call this explicitly. BobUI destroys a plugin
     automatically when it is no longer used.
 */
 QIconEnginePlugin::~QIconEnginePlugin()
@@ -60,6 +60,6 @@ QIconEnginePlugin::~QIconEnginePlugin()
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qiconengineplugin.cpp"

@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qdirectfbblitter.h"
 #include "qdirectfbconvenience.h"
 
-#include <QtGui/private/qpixmap_blitter_p.h>
+#include <BobUIGui/private/qpixmap_blitter_p.h>
 
 #include <QDebug>
 #include <QFile>
 
 #include <directfb.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QBlittable::Capabilities dfb_blitter_capabilities()
 {
@@ -36,7 +36,7 @@ QDirectFbBlitter::QDirectFbBlitter(const QSize &rect, IDirectFBSurface *surface)
     DFBSurfaceCapabilities surfaceCaps;
     m_surface->GetCapabilities(m_surface.data(), &surfaceCaps);
     m_premult = (surfaceCaps & DSCAPS_PREMULTIPLIED);
-    if (qEnvironmentVariableIntValue("QT_DIRECTFB_BLITTER_DEBUGPAINT"))
+    if (qEnvironmentVariableIntValue("BOBUI_DIRECTFB_BLITTER_DEBUGPAINT"))
         m_debugPaint = true;
 }
 
@@ -63,7 +63,7 @@ QDirectFbBlitter::QDirectFbBlitter(const QSize &rect, bool alpha)
         surfaceDesc.pixelformat = QDirectFbBlitter::pixmapFormat();
     }
 
-    if (qEnvironmentVariableIntValue("QT_DIRECTFB_BLITTER_DEBUGPAINT"))
+    if (qEnvironmentVariableIntValue("BOBUI_DIRECTFB_BLITTER_DEBUGPAINT"))
         m_debugPaint = true;
 
     IDirectFB *dfb = QDirectFbConvenience::dfbInterface();
@@ -137,7 +137,7 @@ void QDirectFbBlitter::alphaFillRect(const QRectF &rect, const QColor &color, QP
     if (result != DFB_OK)
         DirectFBError("QDirectFBBlitter::alphaFillRect()", result);
     if (m_debugPaint)
-        drawDebugRect(QRect(x, y, w, h), QColor(Qt::blue));
+        drawDebugRect(QRect(x, y, w, h), QColor(BobUI::blue));
 }
 
 void QDirectFbBlitter::drawPixmapOpacity(const QRectF &rect, const QPixmap &pixmap, const QRectF &subrect, QPainter::CompositionMode cmode, qreal opacity)
@@ -181,13 +181,13 @@ void QDirectFbBlitter::drawPixmapOpacity(const QRectF &rect, const QPixmap &pixm
         if (result != DFB_OK)
             DirectFBError("QDirectFBBlitter::drawPixmapOpacity()", result);
         if (m_debugPaint)
-            drawDebugRect(QRect(dRect.x, dRect.y, sRect.w, sRect.h), QColor(Qt::green));
+            drawDebugRect(QRect(dRect.x, dRect.y, sRect.w, sRect.h), QColor(BobUI::green));
     } else {
         result = m_surface->StretchBlit(m_surface.data(), s, &sRect, &dRect);
         if (result != DFB_OK)
             DirectFBError("QDirectFBBlitter::drawPixmapOpacity()", result);
         if (m_debugPaint)
-            drawDebugRect(QRect(dRect.x, dRect.y, dRect.w, dRect.h), QColor(Qt::red));
+            drawDebugRect(QRect(dRect.x, dRect.y, dRect.w, dRect.h), QColor(BobUI::red));
     }
 }
 
@@ -217,8 +217,8 @@ bool QDirectFbBlitter::drawCachedGlyphs(const QPaintEngineState *state, QFontEng
     for (int i=0; i<numGlyphs; ++i) {
 
         QFixed subPixelPosition = fontEngine->subPixelPositionForX(positions[i].x);
-        QTextureGlyphCache::GlyphAndSubPixelPosition glyph(glyphs[i], QFixedPoint(subPixelPosition, 0));
-        const QTextureGlyphCache::Coord &c = cache->coords[glyph];
+        BOBUIextureGlyphCache::GlyphAndSubPixelPosition glyph(glyphs[i], QFixedPoint(subPixelPosition, 0));
+        const BOBUIextureGlyphCache::Coord &c = cache->coords[glyph];
         if (c.isNull())
             continue;
 
@@ -268,7 +268,7 @@ bool QDirectFbBlitter::drawCachedGlyphs(const QPaintEngineState *state, QFontEng
 
     if (m_debugPaint) {
         for (int i = 0; i < nGlyphs; ++i) {
-            drawDebugRect(QRect(destPoints[i].x, destPoints[i].y, sourceRects[i].w, sourceRects[i].h), QColor(Qt::yellow));
+            drawDebugRect(QRect(destPoints[i].x, destPoints[i].y, sourceRects[i].w, sourceRects[i].h), QColor(BobUI::yellow));
         }
     }
 
@@ -356,7 +356,7 @@ bool QDirectFbBlitterPlatformPixmap::fromDataBufferDescription(const DFBDataBuff
 }
 
 bool QDirectFbBlitterPlatformPixmap::fromFile(const QString &filename, const char *format,
-                                              Qt::ImageConversionFlags flags)
+                                              BobUI::ImageConversionFlags flags)
 {
     // If we can't find the file, pass it on to the base class as it is
     // trying harder by appending various extensions to the path.
@@ -364,7 +364,7 @@ bool QDirectFbBlitterPlatformPixmap::fromFile(const QString &filename, const cha
         return QBlittablePlatformPixmap::fromFile(filename, format, flags);
 
     // Stop if there is a requirement for colors
-    if (flags != Qt::AutoColor)
+    if (flags != BobUI::AutoColor)
         return QBlittablePlatformPixmap::fromFile(filename, format, flags);
 
     // Deal with resources
@@ -463,4 +463,4 @@ IDirectFBSurface *QDirectFbTextureGlyphCache::sourceSurface()
     return m_surface.data();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

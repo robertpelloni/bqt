@@ -1,4 +1,4 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #.rst:
@@ -8,7 +8,7 @@
 # Temporary fall back to allow integrating this pachset without the
 # toolchain file updated.
 if(NOT IntegrityPlatformGraphics_REQUIRED_LIBRARIES)
-    set(IntegrityPlatformGraphics_REQUIRED_LIBRARIES ${_qt_igy_gui_libs})
+    set(IntegrityPlatformGraphics_REQUIRED_LIBRARIES ${_bobui_igy_gui_libs})
 endif()
 
 find_package_handle_standard_args(IntegrityPlatformGraphics

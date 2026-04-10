@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
+// Copyright (C) 2016 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QtCompare>
-#include <QtCore/QtDebug>
+#include <BobUICore/QCoreApplication>
+#include <BobUICore/BobUICompare>
+#include <BobUICore/BobUIDebug>
 
-#include <QTest>
-#include <QtCore/qbuffer.h>
-#include <QtConcurrentRun>
+#include <BOBUIest>
+#include <BobUICore/qbuffer.h>
+#include <BobUIConcurrentRun>
 #include <QFutureSynchronizer>
 #include <QVariant>
 #include <QSemaphore>
@@ -33,25 +33,25 @@ namespace pmr = std;
 
 using namespace std::chrono;
 using namespace q20::chrono;
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, int>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, QMetaType>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, QList<int>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, QMap<int, QString>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, std::multiset<int>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, std::set<int>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, std::tuple<int, QString, QMap<int, QString>>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, std::unordered_map<int, QString>>);
-static_assert(QTypeTraits::has_ostream_operator_v<QDebug, std::unordered_set<int>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, int>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, QMetaType>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, QList<int>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, QMap<int, QString>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, std::multiset<int>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, std::set<int>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, std::tuple<int, QString, QMap<int, QString>>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, std::unordered_map<int, QString>>);
+static_assert(BOBUIypeTraits::has_ostream_operator_v<QDebug, std::unordered_set<int>>);
 struct NonStreamable {};
-static_assert(!QTypeTraits::has_ostream_operator_v<QDebug, NonStreamable>);
-static_assert(!QTypeTraits::has_ostream_operator_v<QDebug, QList<NonStreamable>>);
-static_assert(!QTypeTraits::has_ostream_operator_v<QDebug, QMap<int, NonStreamable>>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDebug, NonStreamable>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDebug, QList<NonStreamable>>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDebug, QMap<int, NonStreamable>>);
 struct ConvertsToQVariant {
     operator QVariant() {return QVariant::fromValue(*this);};
 };
-static_assert(!QTypeTraits::has_ostream_operator_v<QDebug, ConvertsToQVariant>);
+static_assert(!BOBUIypeTraits::has_ostream_operator_v<QDebug, ConvertsToQVariant>);
 
 #if defined(Q_OS_DARWIN)
 #include <objc/runtime.h>
@@ -134,11 +134,11 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(tst_QDebug::Flags64)
 
 void tst_QDebug::assignment() const
 {
-    QDebug debug1(QtDebugMsg);
-    QDebug debug2(QtWarningMsg);
+    QDebug debug1(BobUIDebugMsg);
+    QDebug debug2(BobUIWarningMsg);
 
-    QTest::ignoreMessage(QtDebugMsg, "foo");
-    QTest::ignoreMessage(QtWarningMsg, "bar 1 2");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "foo");
+    BOBUIest::ignoreMessage(BobUIWarningMsg, "bar 1 2");
 
     debug1 << "foo";
     debug2 << "bar";
@@ -147,13 +147,13 @@ void tst_QDebug::assignment() const
     debug2 << "2";
 }
 
-static QtMsgType s_msgType;
+static BobUIMsgType s_msgType;
 static QString s_msg;
 static QByteArray s_file;
 static int s_line;
 static QByteArray s_function;
 
-static void myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+static void myMessageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     s_msg = msg;
     s_msgType = type;
@@ -168,7 +168,7 @@ static void myMessageHandler(QtMsgType type, const QMessageLogContext &context, 
 class MessageHandlerSetter
 {
 public:
-    MessageHandlerSetter(QtMessageHandler newMessageHandler)
+    MessageHandlerSetter(BobUIMessageHandler newMessageHandler)
         : oldMessageHandler(qInstallMessageHandler(newMessageHandler))
     { }
 
@@ -178,11 +178,11 @@ public:
     }
 
 private:
-    QtMessageHandler oldMessageHandler;
+    BobUIMessageHandler oldMessageHandler;
 };
 
 /*! \internal
-  The qWarning() stream should be usable even if QT_NO_DEBUG is defined.
+  The qWarning() stream should be usable even if BOBUI_NO_DEBUG is defined.
  */
 void tst_QDebug::warningWithoutDebug() const
 {
@@ -190,10 +190,10 @@ void tst_QDebug::warningWithoutDebug() const
     int line = 0;
     MessageHandlerSetter mhs(myMessageHandler);
     { qWarning() << "A qWarning() message"; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtWarningMsg);
+    QCOMPARE(s_msgType, BobUIWarningMsg);
     QCOMPARE(s_msg, QString::fromLatin1("A qWarning() message"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -201,7 +201,7 @@ void tst_QDebug::warningWithoutDebug() const
 }
 
 /*! \internal
-  The qCritical() stream should be usable even if QT_NO_DEBUG is defined.
+  The qCritical() stream should be usable even if BOBUI_NO_DEBUG is defined.
  */
 void tst_QDebug::criticalWithoutDebug() const
 {
@@ -209,10 +209,10 @@ void tst_QDebug::criticalWithoutDebug() const
     int line = 0;
     MessageHandlerSetter mhs(myMessageHandler);
     { qCritical() << "A qCritical() message"; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtCriticalMsg);
+    QCOMPARE(s_msgType, BobUICriticalMsg);
     QCOMPARE(s_msg, QString::fromLatin1("A qCritical() message"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -264,8 +264,8 @@ void tst_QDebug::constructors() const
     const char input[] = "testing QDebug constructors";
     const QLatin1StringView expected{"testing QDebug constructors "};
 
-    // QDebug(QString *); no buffering for a QTextStream that operates on a QString,
-    // so flushing is no-op, see QTextStream::flush()
+    // QDebug(QString *); no buffering for a BOBUIextStream that operates on a QString,
+    // so flushing is no-op, see BOBUIextStream::flush()
     {
         QString str;
         QDebug d(&str);
@@ -277,7 +277,7 @@ void tst_QDebug::constructors() const
     {
         QByteArray ba;
         QDebug d(&ba);
-        d << input << Qt::flush;
+        d << input << BobUI::flush;
         QCOMPARE(ba, expected);
     }
     {
@@ -295,7 +295,7 @@ void tst_QDebug::constructors() const
         QBuffer buf(&ba);
         QVERIFY(buf.open(QIODevice::WriteOnly));
         QDebug d(&buf);
-        d << input << Qt::flush;
+        d << input << BobUI::flush;
         QCOMPARE(ba, expected);
     }
     {
@@ -316,10 +316,10 @@ void tst_QDebug::debugWithBool() const
     int line = 0;
     MessageHandlerSetter mhs(myMessageHandler);
     { qDebug() << false << true; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("false true"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -470,7 +470,7 @@ void tst_QDebug::stateSaver() const
         QDebug d = qDebug();
         {
             QDebugStateSaver saver(d);
-            d.nospace() << Qt::hex << Qt::right << qSetFieldWidth(3) << qSetPadChar('0') << 42;
+            d.nospace() << BobUI::hex << BobUI::right << qSetFieldWidth(3) << qSetPadChar('0') << 42;
         }
         d << 42;
     }
@@ -488,7 +488,7 @@ void tst_QDebug::stateSaver() const
 
     {
         QDebug d = qDebug();
-        d.noquote().nospace() << QStringLiteral("Hello") << Qt::hex << 42;
+        d.noquote().nospace() << QStringLiteral("Hello") << BobUI::hex << 42;
         {
             QDebugStateSaver saver(d);
             d.resetFormat();
@@ -511,10 +511,10 @@ void tst_QDebug::veryLongWarningMessage() const
             test.append(part);
         qWarning("Test output:\n%s\nend", qPrintable(test));
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 3; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtWarningMsg);
+    QCOMPARE(s_msgType, BobUIWarningMsg);
     QCOMPARE(s_msg, QString::fromLatin1("Test output:\n")+test+QString::fromLatin1("\nend"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -531,10 +531,10 @@ void tst_QDebug::qDebugQChar() const
         d << QChar('f') << QChar(QLatin1Char('\xE4')); // f, ä
         d.nospace().noquote() << QChar('o') << QChar('o')  << QChar(QLatin1Char('\xC4')); // o, o, Ä
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("'f' '\\u00e4' oo\\u00c4"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -551,10 +551,10 @@ void tst_QDebug::qDebugQMetaType() const
         QDebug d = qDebug();
         d << QMetaType::fromType<int>() << QMetaType::fromType<QString>();
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 4; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, R"(QMetaType(int) QMetaType(QString))"_L1);
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -572,10 +572,10 @@ void tst_QDebug::qDebugQString() const
 
         MessageHandlerSetter mhs(myMessageHandler);
         { qDebug() << inRef; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
         file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-        QCOMPARE(s_msgType, QtDebugMsg);
+        QCOMPARE(s_msgType, BobUIDebugMsg);
         QCOMPARE(s_msg, QString::fromLatin1("\"input\""));
         QCOMPARE(QString::fromLatin1(s_file), file);
         QCOMPARE(s_line, line);
@@ -649,10 +649,10 @@ void tst_QDebug::qDebugQStringView() const
 
         MessageHandlerSetter mhs(myMessageHandler);
         { qDebug() << inView; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
         file = QLatin1String(__FILE__); line = __LINE__ - 2; function = QLatin1String(Q_FUNC_INFO);
 #endif
-        QCOMPARE(s_msgType, QtDebugMsg);
+        QCOMPARE(s_msgType, BobUIDebugMsg);
         QCOMPARE(s_msg, QLatin1String("\"input\""));
         QCOMPARE(QLatin1String(s_file), file);
         QCOMPARE(s_line, line);
@@ -668,10 +668,10 @@ void tst_QDebug::qDebugQStringView() const
 
         MessageHandlerSetter mhs(myMessageHandler);
         { qDebug() << inView; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
         file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-        QCOMPARE(s_msgType, QtDebugMsg);
+        QCOMPARE(s_msgType, BobUIDebugMsg);
         QCOMPARE(s_msg, QLatin1String("\"\""));
         QCOMPARE(QLatin1String(s_file), file);
         QCOMPARE(s_line, line);
@@ -689,10 +689,10 @@ void tst_QDebug::qDebugQUtf8StringView() const
 
         MessageHandlerSetter mhs(myMessageHandler);
         { qDebug() << inView; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
         file = QLatin1String(__FILE__); line = __LINE__ - 2; function = QLatin1String(Q_FUNC_INFO);
 #endif
-        QCOMPARE(s_msgType, QtDebugMsg);
+        QCOMPARE(s_msgType, BobUIDebugMsg);
         QCOMPARE(s_msg, QString::fromUtf8("\"\\xF0\\x9F\\x98\\x89 is ;-)\""));
         QCOMPARE(QLatin1String(s_file), file);
         QCOMPARE(s_line, line);
@@ -708,10 +708,10 @@ void tst_QDebug::qDebugQUtf8StringView() const
 
         MessageHandlerSetter mhs(myMessageHandler);
         { qDebug() << inView; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
         file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-        QCOMPARE(s_msgType, QtDebugMsg);
+        QCOMPARE(s_msgType, BobUIDebugMsg);
         QCOMPARE(s_msg, QLatin1String("\"\""));
         QCOMPARE(QLatin1String(s_file), file);
         QCOMPARE(s_line, line);
@@ -729,10 +729,10 @@ void tst_QDebug::qDebugQLatin1String() const
         d << QLatin1String("foo") << QLatin1String("") << QLatin1String("barbaz", 3);
         d.nospace().noquote() << QLatin1String("baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -768,10 +768,10 @@ void tst_QDebug::qDebugStdMultiSet() const
         std::multiset<int> multiset{1, 2, 3, 2, 1};
         d.nospace().noquote() << multiset;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, "std::multiset(1, 1, 2, 2, 3)"_L1);
     QCOMPARE(s_file, file);
     QCOMPARE(s_line, line);
@@ -794,10 +794,10 @@ void tst_QDebug::qDebugStdPair() const
         d << std::pair(42, u"foo"_s) << std::pair(u"barbaz"_s, 4.2);
         d.nospace().noquote() << std::pair(u"baz"_s, -42);
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, R"(std::pair(42, "foo") std::pair("barbaz", 4.2) std::pair(baz, -42))"_L1);
     QCOMPARE(s_file, file);
     QCOMPARE(s_line, line);
@@ -829,10 +829,10 @@ void tst_QDebug::qDebugStdSet() const
         std::set<int>set{1, 2, 3, 2, 1};
         d.nospace().noquote() << set;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, "std::set(1, 2, 3)"_L1);
     QCOMPARE(s_file, file);
     QCOMPARE(s_line, line);
@@ -857,10 +857,10 @@ void tst_QDebug::qDebugStdTuple() const
         d << std::tuple(42, u"foo"_s, 4.2) << std::tuple(42);
         d.nospace().noquote() << std::tuple(u"baz"_s);
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, R"(std::tuple(42, "foo", 4.2) std::tuple(42) std::tuple(baz))"_L1);
     QCOMPARE(s_file, file);
     QCOMPARE(s_line, line);
@@ -901,10 +901,10 @@ void tst_QDebug::qDebugStdUnorderedMap() const
         std::unordered_map<int, QString> unorderedMap{{1, "One"}, {2, "Two"}, {3, "Three"}};
         d.nospace().noquote() << unorderedMap;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
 
     QStringList expectedValues = {"std::unordered_map","std::pair(1, One)","std::pair(2, Two)","std::pair(3, Three)"};
 
@@ -936,10 +936,10 @@ void tst_QDebug::qDebugStdUnorderedSet() const
         std::unordered_set<int> unorderedSet{1, 2, 3, 2, 1};
         d.nospace().noquote() << unorderedSet;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
 
     QStringList expectedValues = {"std::unordered_set", "1", "2", "3"};
 
@@ -968,10 +968,10 @@ void tst_QDebug::qDebugStdString() const
         d << pmr::string("foo") << std::string("") << std::string("barbaz", 3);
         d.nospace().noquote() << std::string("baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -999,10 +999,10 @@ void tst_QDebug::qDebugStdStringView() const
         d << std::string_view("foo") << std::string_view("") << std::string_view("barbaz", 3);
         d.nospace().noquote() << std::string_view("baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1030,10 +1030,10 @@ void tst_QDebug::qDebugStdWString() const
         d << pmr::wstring(L"foo") << std::wstring(L"") << std::wstring(L"barbaz", 3);
         d.nospace().noquote() << std::wstring(L"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1061,10 +1061,10 @@ void tst_QDebug::qDebugStdWStringView() const
         d << std::wstring_view(L"foo") << std::wstring_view(L"") << std::wstring_view(L"barbaz", 3);
         d.nospace().noquote() << std::wstring_view(L"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1095,10 +1095,10 @@ void tst_QDebug::qDebugStdU8String() const
         d << pmr::u8string(u8"foo") << std::u8string(u8"") << std::u8string(u8"barbaz", 3);
         d.nospace().noquote() << std::u8string(u8"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1130,10 +1130,10 @@ void tst_QDebug::qDebugStdU8StringView() const
         d << std::u16string_view(u"foo") << std::u16string_view(u"") << std::u16string_view(u"barbaz", 3);
         d.nospace().noquote() << std::u16string_view(u"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1162,10 +1162,10 @@ void tst_QDebug::qDebugStdU16String() const
         d << pmr::u16string(u"foo") << std::u16string(u"") << std::u16string(u"barbaz", 3);
         d.nospace().noquote() << std::u16string(u"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1193,10 +1193,10 @@ void tst_QDebug::qDebugStdU16StringView() const
         d << std::u16string_view(u"foo") << std::u16string_view(u"") << std::u16string_view(u"barbaz", 3);
         d.nospace().noquote() << std::u16string_view(u"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1224,10 +1224,10 @@ void tst_QDebug::qDebugStdU32String() const
         d << pmr::u32string(U"foo") << std::u32string(U"") << std::u32string(U"barbaz", 3);
         d.nospace().noquote() << std::u32string(U"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1255,10 +1255,10 @@ void tst_QDebug::qDebugStdU32StringView() const
         d << std::u32string_view(U"foo") << std::u32string_view(U"") << std::u32string_view(U"barbaz", 3);
         d.nospace().noquote() << std::u32string_view(U"baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1286,10 +1286,10 @@ void tst_QDebug::qDebugQByteArray() const
         d << QByteArrayLiteral("foo") << QByteArrayLiteral("") << QByteArray("barbaz", 3);
         d.nospace().noquote() << QByteArrayLiteral("baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1328,10 +1328,10 @@ void tst_QDebug::qDebugQByteArrayView() const
         d << QByteArrayView("foo") << QByteArrayView("") << QByteArrayView("barbaz", 3);
         d.nospace().noquote() << QByteArrayView("baz");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("\"foo\" \"\" \"bar\" baz"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1377,10 +1377,10 @@ void tst_QDebug::qDebugQFlags() const
 
     // first, test QFlags on an enum where neither are Q_FLAG or Q_ENUM
     { qDebug() << flags; }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("QFlags(0x1|0x10|0x80000000)"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1414,10 +1414,10 @@ void tst_QDebug::qDebugQFlags64() const
 
     // first, test QFlags on an enum where neither are Q_FLAG or Q_ENUM
     qDebug() << flags;
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, "QFlags(0x1|0x8000000000000000)");
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1457,12 +1457,12 @@ void tst_QDebug::qDebugStdChrono_data() const
     using meter_per_light = duration<int64_t, std::ratio<1, 299'792'458>>;
     using kilometer_per_light = duration<int64_t, std::ratio<1000, 299'792'458>>;
 
-    QTest::addColumn<ToStringFunction>("fn");
-    QTest::addColumn<QString>("expected");
+    BOBUIest::addColumn<ToStringFunction>("fn");
+    BOBUIest::addColumn<QString>("expected");
 
     auto addRow = [](const char *name, auto duration, const char *expected) {
         auto toString = [duration]() { return QDebug::toString(duration); };
-        QTest::newRow(name) << ToStringFunction(toString) << expected;
+        BOBUIest::newRow(name) << ToStringFunction(toString) << expected;
     };
 
     addRow("1as", attoseconds{1}, "1as");
@@ -1519,11 +1519,11 @@ void tst_QDebug::qDebugStdChrono_data() const
     addRow("1.5ns", fpnsec{1.5}, "1.5ns");
 
     // and some precision setting too
-    QTest::newRow("1.00000ns")
+    BOBUIest::newRow("1.00000ns")
             << ToStringFunction([]() {
         QString buffer;
         QDebug d(&buffer);
-        d.nospace() << qSetRealNumberPrecision(5) << Qt::fixed << fpnsec{1};
+        d.nospace() << qSetRealNumberPrecision(5) << BobUI::fixed << fpnsec{1};
         return buffer;
     }) << "1.00000ns";
 }
@@ -1547,10 +1547,10 @@ void tst_QDebug::qDebugStdOptional() const
         QDebug d = qDebug();
         d << notSet << set << no;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 4; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("nullopt std::optional(\"foo\") nullopt"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1580,17 +1580,17 @@ void tst_QDebug::qDebugStdOrdering() const
     MessageHandlerSetter mhs(myMessageHandler);
     {
         QDebug d = qDebug();
-        d << Qt::partial_ordering::less
-          << Qt::partial_ordering::unordered
-          << Qt::weak_ordering::greater
-          << Qt::strong_ordering::equal;
+        d << BobUI::partial_ordering::less
+          << BobUI::partial_ordering::unordered
+          << BobUI::weak_ordering::greater
+          << BobUI::strong_ordering::equal;
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = QLatin1StringView(__FILE__);
     function = QLatin1StringView(Q_FUNC_INFO);
 #endif
-    const auto cmpStr = "Qt::partial_ordering::lessQt::partial_ordering::unorderedQt::weak_ordering::greaterQt::strong_ordering::equal"_L1;
-    QCOMPARE(s_msgType, QtDebugMsg);
+    const auto cmpStr = "BobUI::partial_ordering::lessBobUI::partial_ordering::unorderedBobUI::weak_ordering::greaterBobUI::strong_ordering::equal"_L1;
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, cmpStr);
 #ifdef __cpp_lib_three_way_comparison
     qDebug() << std::partial_ordering::less
@@ -1609,11 +1609,11 @@ void tst_QDebug::textStreamModifiers() const
     QString file, function;
     int line = 0;
     MessageHandlerSetter mhs(myMessageHandler);
-    { qDebug() << Qt::hex << short(0xf) << int(0xf) << unsigned(0xf) << long(0xf) << qint64(0xf) << quint64(0xf); }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+    { qDebug() << BobUI::hex << short(0xf) << int(0xf) << unsigned(0xf) << long(0xf) << qint64(0xf) << quint64(0xf); }
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 2; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("f f f f f f"));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1627,13 +1627,13 @@ void tst_QDebug::resetFormat() const
     MessageHandlerSetter mhs(myMessageHandler);
     {
         QDebug d = qDebug();
-        d.nospace().noquote() << Qt::hex <<  int(0xf);
+        d.nospace().noquote() << BobUI::hex <<  int(0xf);
         d.resetFormat() << int(0xf) << QStringLiteral("foo");
     }
-#ifndef QT_NO_MESSAGELOGCONTEXT
+#ifndef BOBUI_NO_MESSAGELOGCONTEXT
     file = __FILE__; line = __LINE__ - 5; function = Q_FUNC_INFO;
 #endif
-    QCOMPARE(s_msgType, QtDebugMsg);
+    QCOMPARE(s_msgType, BobUIDebugMsg);
     QCOMPARE(s_msg, QString::fromLatin1("f15 \"foo\""));
     QCOMPARE(QString::fromLatin1(s_file), file);
     QCOMPARE(s_line, line);
@@ -1643,12 +1643,12 @@ void tst_QDebug::resetFormat() const
 void tst_QDebug::defaultMessagehandler() const
 {
     MessageHandlerSetter mhs(0); // set 0, should set default handler
-    QtMessageHandler defaultMessageHandler1 = qInstallMessageHandler((QtMessageHandler)0); // set 0, should set and return default handler
+    BobUIMessageHandler defaultMessageHandler1 = qInstallMessageHandler((BobUIMessageHandler)0); // set 0, should set and return default handler
     QVERIFY(defaultMessageHandler1);
-    QtMessageHandler defaultMessageHandler2 = qInstallMessageHandler(myMessageHandler); // set myMessageHandler and return default handler
+    BobUIMessageHandler defaultMessageHandler2 = qInstallMessageHandler(myMessageHandler); // set myMessageHandler and return default handler
     bool same = (*defaultMessageHandler1 == *defaultMessageHandler2);
     QVERIFY(same);
-    QtMessageHandler messageHandler = qInstallMessageHandler((QtMessageHandler)0); // set 0, should set default and return myMessageHandler
+    BobUIMessageHandler messageHandler = qInstallMessageHandler((BobUIMessageHandler)0); // set 0, should set default and return myMessageHandler
     same = (*messageHandler == *myMessageHandler);
     QVERIFY(same);
 }
@@ -1657,7 +1657,7 @@ QMutex s_mutex;
 QStringList s_messages;
 QSemaphore s_sema;
 
-static void threadSafeMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+static void threadSafeMessageHandler(BobUIMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QMutexLocker lock(&s_mutex);
     s_messages.append(msg);
@@ -1680,10 +1680,10 @@ void tst_QDebug::threadSafety() const
 
     MessageHandlerSetter mhs(threadSafeMessageHandler);
     const int numThreads = 10;
-    QThreadPool::globalInstance()->setMaxThreadCount(numThreads);
+    BOBUIhreadPool::globalInstance()->setMaxThreadCount(numThreads);
     QFutureSynchronizer<void> sync;
     for (int i = 0; i < numThreads; ++i) {
-        sync.addFuture(QtConcurrent::run(&doDebug));
+        sync.addFuture(BobUIConcurrent::run(&doDebug));
     }
     s_sema.release(numThreads);
     sync.waitForFinished();
@@ -1769,7 +1769,7 @@ void tst_QDebug::noQVariantEndlessRecursion() const
 {
     ConvertsToQVariant conv;
     QVariant var = QVariant::fromValue(conv);
-    QTest::ignoreMessage(QtDebugMsg, "QVariant(ConvertsToQVariant, )");
+    BOBUIest::ignoreMessage(BobUIDebugMsg, "QVariant(ConvertsToQVariant, )");
     qDebug() << var;
 }
 
@@ -1787,24 +1787,24 @@ void tst_QDebug::noQVariantEndlessRecursion() const
 
 void tst_QDebug::objcInCppMode_data() const
 {
-    QTest::addColumn<objc_object *>("object");
-    QTest::addColumn<QString>("message");
+    BOBUIest::addColumn<objc_object *>("object");
+    BOBUIest::addColumn<QString>("message");
 
-    QTest::newRow("nil") << static_cast<objc_object*>(nullptr) << QString::fromLatin1("(null)");
+    BOBUIest::newRow("nil") << static_cast<objc_object*>(nullptr) << QString::fromLatin1("(null)");
 
     // Not an NSObject subclass
     auto *nsproxy = reinterpret_cast<objc_object *>(class_createInstance(objc_getClass("NSProxy"), 0));
-    QTest::newRow("NSProxy") << nsproxy << QString::fromLatin1("<NSProxy: 0x%1>").arg(uintptr_t(nsproxy), 1, 16);
+    BOBUIest::newRow("NSProxy") << nsproxy << QString::fromLatin1("<NSProxy: 0x%1>").arg(uintptr_t(nsproxy), 1, 16);
 
     // Plain NSObject
     auto *nsobject = reinterpret_cast<objc_object *>(class_createInstance(objc_getClass("NSObject"), 0));
-    QTest::newRow("NSObject") << nsobject << QString::fromLatin1("<NSObject: 0x%1>").arg(uintptr_t(nsobject), 1, 16);
+    BOBUIest::newRow("NSObject") << nsobject << QString::fromLatin1("<NSObject: 0x%1>").arg(uintptr_t(nsobject), 1, 16);
 
     auto str = QString::fromLatin1("foo");
-    QTest::newRow("NSString") << reinterpret_cast<objc_object*>(str.toNSString()) << str;
+    BOBUIest::newRow("NSString") << reinterpret_cast<objc_object*>(str.toNSString()) << str;
 
     // Custom debug description
-    QTest::newRow("MyObjcClass") << reinterpret_cast<objc_object*>([[MyObjcClass alloc] init])
+    BOBUIest::newRow("MyObjcClass") << reinterpret_cast<objc_object*>([[MyObjcClass alloc] init])
                                  << QString::fromLatin1("MyObjcClass is the best");
 }
 
@@ -1837,7 +1837,7 @@ void tst_QDebug::objcInObjcMode() const
 #endif
 
 // Should compile: instentiation of unrelated operator<< should not cause cause compilation
-// error in QDebug operators (QTBUG-47375)
+// error in QDebug operators (BOBUIBUG-47375)
 class TestClassA {};
 class TestClassB {};
 
@@ -1845,6 +1845,6 @@ template <typename T>
 TestClassA& operator<< (TestClassA& s, T&) { return s; };
 template<> TestClassA& operator<< <TestClassB>(TestClassA& s, TestClassB& l);
 
-QTEST_MAIN(tst_QDebug);
+BOBUIEST_MAIN(tst_QDebug);
 
 #include "tst_qdebug.moc"

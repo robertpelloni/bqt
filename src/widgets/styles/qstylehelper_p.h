@@ -1,17 +1,17 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qstring.h>
-#include <QtGui/qpaintdevice.h>
-#include <QtGui/qpolygon.h>
-#include <QtCore/qstringbuilder.h>
-#include <QtGui/qaccessible.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qguiapplication.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qstring.h>
+#include <BobUIGui/qpaintdevice.h>
+#include <BobUIGui/qpolygon.h>
+#include <BobUICore/qstringbuilder.h>
+#include <BobUIGui/qaccessible.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIWidgets/qwidget.h>
 
 #ifndef QSTYLEHELPER_P_H
 #define QSTYLEHELPER_P_H
@@ -20,7 +20,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -29,7 +29,7 @@
 
 #include <private/qhexstring_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QColor;
 class QObject;
@@ -49,16 +49,16 @@ namespace QStyleHelper
     Q_WIDGETS_EXPORT qreal dpiScaled(qreal value, const QPaintDevice *device);
     Q_WIDGETS_EXPORT qreal dpiScaled(qreal value, const QStyleOption *option);
 
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
     qreal angle(const QPointF &p1, const QPointF &p2);
     QPolygonF calcLines(const QStyleOptionSlider *dial);
     int calcBigLineSize(int radius);
     Q_WIDGETS_EXPORT void drawDial(const QStyleOptionSlider *dial, QPainter *painter);
-#endif //QT_CONFIG(dial)
+#endif //BOBUI_CONFIG(dial)
     Q_WIDGETS_EXPORT void drawBorderPixmap(const QPixmap &pixmap, QPainter *painter, const QRect &rect,
                      int left = 0, int top = 0, int right = 0,
                      int bottom = 0);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_WIDGETS_EXPORT bool isInstanceOf(QObject *obj, QAccessible::Role role);
     Q_WIDGETS_EXPORT bool hasAncestor(QObject *obj, QAccessible::Role role);
 #endif
@@ -85,6 +85,6 @@ namespace QStyleHelper
 }
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTYLEHELPER_P_H

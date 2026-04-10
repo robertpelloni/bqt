@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "projectgenerator.h"
 #include "option.h"
@@ -9,7 +9,7 @@
 #include <qfileinfo.h>
 #include <qregularexpression.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static QString project_builtin_regx() //calculate the builtin regular expression..
 {
@@ -104,7 +104,7 @@ ProjectGenerator::init()
                     }
                 }
             }
-            if(add_depend && !dir.isEmpty() && !v["DEPENDPATH"].contains(dir, Qt::CaseInsensitive)) {
+            if(add_depend && !dir.isEmpty() && !v["DEPENDPATH"].contains(dir, BobUI::CaseInsensitive)) {
                 QFileInfo fi(fileInfo(dir));
                 if(fi.absoluteFilePath() != qmake_getpwd())
                     v["DEPENDPATH"] += fileFixify(dir);
@@ -125,7 +125,7 @@ ProjectGenerator::init()
                     newdir = fileFixify(newdir, FileFixifyFromOutdir);
                     ProStringList &subdirs = v["SUBDIRS"];
                     if(exists(fi.filePath() + QDir::separator() + fi.fileName() + Option::pro_ext) &&
-                       !subdirs.contains(newdir, Qt::CaseInsensitive)) {
+                       !subdirs.contains(newdir, BobUI::CaseInsensitive)) {
                         subdirs.append(newdir);
                     } else {
                         QStringList profiles = QDir(newdir).entryList(QStringList("*" + Option::pro_ext), QDir::Files);
@@ -137,7 +137,7 @@ ProjectGenerator::init()
                                 nd += QDir::separator();
                             nd += profiles[i];
                             fileFixify(nd);
-                            if (!subdirs.contains(nd, Qt::CaseInsensitive) && !out_file.endsWith(nd))
+                            if (!subdirs.contains(nd, BobUI::CaseInsensitive) && !out_file.endsWith(nd))
                                 subdirs.append(nd);
                         }
                     }
@@ -145,7 +145,7 @@ ProjectGenerator::init()
                         QStringList dirs = QDir(newdir).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
                         for(int i = 0; i < (int)dirs.size(); i++) {
                             QString nd = fileFixify(newdir + QDir::separator() + dirs[i]);
-                            if (!knownDirs.contains(nd, Qt::CaseInsensitive))
+                            if (!knownDirs.contains(nd, BobUI::CaseInsensitive))
                                 knownDirs.append(nd);
                         }
                     }
@@ -173,13 +173,13 @@ ProjectGenerator::init()
                             for(int i = 0; i < (int)profiles.size(); i++) {
                                 QString nd = newdir + QDir::separator() + files[i];
                                 fileFixify(nd);
-                                if(files[i] != "." && files[i] != ".." && !subdirs.contains(nd, Qt::CaseInsensitive)) {
+                                if(files[i] != "." && files[i] != ".." && !subdirs.contains(nd, BobUI::CaseInsensitive)) {
                                     if(newdir + files[i] != Option::output_dir + Option::output.fileName())
                                         subdirs.append(nd);
                                 }
                             }
                         }
-                        if (Option::recursive && !knownDirs.contains(newdir, Qt::CaseInsensitive))
+                        if (Option::recursive && !knownDirs.contains(newdir, BobUI::CaseInsensitive))
                             knownDirs.append(newdir);
                     }
                 }
@@ -199,7 +199,7 @@ ProjectGenerator::init()
     setDependencyPaths(deplist);
 
     ProStringList &h = v["HEADERS"];
-    bool no_qt_files = true;
+    bool no_bobui_files = true;
     static const char *srcs[] = { "SOURCES", "YACCSOURCES", "LEXSOURCES", "FORMS", nullptr };
     for (int i = 0; srcs[i]; i++) {
         const ProStringList &l = v[srcs[i]];
@@ -216,12 +216,12 @@ ProjectGenerator::init()
                     if(!file_dir.isEmpty()) {
                         for(int inc_it = 0; inc_it < deplist.size(); ++inc_it) {
                             QMakeLocalFileName inc = deplist[inc_it];
-                            if(inc.local() == file_dir && !v["INCLUDEPATH"].contains(inc.real(), Qt::CaseInsensitive))
+                            if(inc.local() == file_dir && !v["INCLUDEPATH"].contains(inc.real(), BobUI::CaseInsensitive))
                                 v["INCLUDEPATH"] += inc.real();
                         }
                     }
-                    if (no_qt_files && file_no_path.contains(QRegularExpression("^q[a-z_0-9].h$")))
-                        no_qt_files = false;
+                    if (no_bobui_files && file_no_path.contains(QRegularExpression("^q[a-z_0-9].h$")))
+                        no_bobui_files = false;
                     QString h_ext;
                     for(int hit = 0; hit < Option::h_ext.size(); ++hit) {
                         if(dep.endsWith(Option::h_ext.at(hit))) {
@@ -235,7 +235,7 @@ ProjectGenerator::init()
                                         Option::cpp_ext.at(cppit));
                             if(exists(src)) {
                                 ProStringList &srcl = v["SOURCES"];
-                                if(!srcl.contains(src, Qt::CaseInsensitive))
+                                if(!srcl.contains(src, BobUI::CaseInsensitive))
                                     srcl.append(src);
                             }
                         }
@@ -243,7 +243,7 @@ ProjectGenerator::init()
                               file_no_path.startsWith(Option::lex_mod)) {
                         addConfig("lex_included");
                     }
-                    if(!h.contains(dep, Qt::CaseInsensitive))
+                    if(!h.contains(dep, BobUI::CaseInsensitive))
                         h += dep;
                 }
             }
@@ -293,16 +293,16 @@ ProjectGenerator::init()
 }
 
 bool
-ProjectGenerator::writeMakefile(QTextStream &t)
+ProjectGenerator::writeMakefile(BOBUIextStream &t)
 {
-    t << "######################################################################" << Qt::endl;
-    t << "# Automatically generated by qmake (" QMAKE_VERSION_STR ") " << QDateTime::currentDateTime().toString() << Qt::endl;
-    t << "######################################################################" << Qt::endl << Qt::endl;
+    t << "######################################################################" << BobUI::endl;
+    t << "# Automatically generated by qmake (" QMAKE_VERSION_STR ") " << QDateTime::currentDateTime().toString() << BobUI::endl;
+    t << "######################################################################" << BobUI::endl << BobUI::endl;
     if (!Option::globals->extra_cmds[QMakeEvalBefore].isEmpty())
-        t << Option::globals->extra_cmds[QMakeEvalBefore] << Qt::endl;
+        t << Option::globals->extra_cmds[QMakeEvalBefore] << BobUI::endl;
     t << getWritableVar("TEMPLATE_ASSIGN", false);
     if(project->first("TEMPLATE_ASSIGN") == "subdirs") {
-        t << Qt::endl << "# Directories" << "\n"
+        t << BobUI::endl << "# Directories" << "\n"
           << getWritableVar("SUBDIRS");
     } else {
         //figure out target
@@ -314,14 +314,14 @@ ProjectGenerator::writeMakefile(QTextStream &t)
         t << getWritableVar("TARGET_ASSIGN")
           << getWritableVar("CONFIG", false)
           << getWritableVar("CONFIG_REMOVE", false)
-          << getWritableVar("INCLUDEPATH") << Qt::endl;
+          << getWritableVar("INCLUDEPATH") << BobUI::endl;
 
         t << "# You can make your code fail to compile if you use deprecated APIs.\n"
              "# In order to do so, uncomment the following line.\n"
              "# Please consult the documentation of the deprecated API in order to know\n"
              "# how to port your code away from it.\n"
-             "# You can also select to disable deprecated APIs only up to a certain version of Qt.\n"
-             "#DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x060000 # disables all APIs deprecated in Qt 6.0.0 and earlier\n\n";
+             "# You can also select to disable deprecated APIs only up to a certain version of BobUI.\n"
+             "#DEFINES += BOBUI_DISABLE_DEPRECATED_UP_TO=0x060000 # disables all APIs deprecated in BobUI 6.0.0 and earlier\n\n";
 
         t << "# Input" << "\n";
         t << getWritableVar("HEADERS")
@@ -333,7 +333,7 @@ ProjectGenerator::writeMakefile(QTextStream &t)
           << getWritableVar("TRANSLATIONS");
     }
     if (!Option::globals->extra_cmds[QMakeEvalAfter].isEmpty())
-        t << Option::globals->extra_cmds[QMakeEvalAfter] << Qt::endl;
+        t << Option::globals->extra_cmds[QMakeEvalAfter] << BobUI::endl;
     return true;
 }
 
@@ -399,7 +399,7 @@ ProjectGenerator::addFile(QString file)
     QString newfile = fixPathToQmake(fileFixify(file));
 
     ProStringList &endList = project->values(where);
-    if(!endList.contains(newfile, Qt::CaseInsensitive)) {
+    if(!endList.contains(newfile, BobUI::CaseInsensitive)) {
         endList += newfile;
         return true;
     }
@@ -459,4 +459,4 @@ ProjectGenerator::fixPathToQmake(const QString &file)
     return ret;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

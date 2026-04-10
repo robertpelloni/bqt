@@ -1,34 +1,34 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QFUTUREINTERFACE_H
 #define QFUTUREINTERFACE_H
 
-#include <QtCore/qmutex.h>
-#include <QtCore/qresultstore.h>
-#include <QtCore/qtcoreexports.h>
-#ifndef QT_NO_EXCEPTIONS
+#include <BobUICore/qmutex.h>
+#include <BobUICore/qresultstore.h>
+#include <BobUICore/bobuicoreexports.h>
+#ifndef BOBUI_NO_EXCEPTIONS
 #include <exception>
 #endif
 
 #include <utility>
 
-QT_REQUIRE_CONFIG(future);
+BOBUI_REQUIRE_CONFIG(future);
 
-QT_FORWARD_DECLARE_CLASS(QRunnable)
-QT_FORWARD_DECLARE_CLASS(QException)
-QT_BEGIN_NAMESPACE
+BOBUI_FORWARD_DECLARE_CLASS(QRunnable)
+BOBUI_FORWARD_DECLARE_CLASS(QException)
+BOBUI_BEGIN_NAMESPACE
 
 
 template <typename T> class QFuture;
-class QThreadPool;
+class BOBUIhreadPool;
 class QFutureInterfaceBase;
 class QFutureInterfaceBasePrivate;
 class QFutureWatcherBase;
 class QFutureWatcherBasePrivate;
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 template<typename Function, typename ResultType, typename ParentResultType>
 class CompactContinuation;
 
@@ -37,18 +37,18 @@ class ExceptionStore;
 template<class Function, class ResultType>
 class CanceledHandler;
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
 template<class Function, class ResultType>
 class FailureHandler;
 #endif
 
 struct UnwrapHandler;
 
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
 void Q_CORE_EXPORT watchContinuationImpl(const QObject *context,
-                                         QtPrivate::QSlotObjectBase *slotObj,
+                                         BobUIPrivate::QSlotObjectBase *slotObj,
                                          QFutureInterfaceBase &fi);
-#endif // QT_CORE_REMOVED_SINCE(6, 10)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 10)
 }
 
 class Q_CORE_EXPORT QFutureInterfaceBase
@@ -72,16 +72,16 @@ public:
     QFutureInterfaceBase(QFutureInterfaceBase &&other) noexcept
         : d(std::exchange(other.d, nullptr)) {}
     QFutureInterfaceBase &operator=(const QFutureInterfaceBase &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QFutureInterfaceBase)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QFutureInterfaceBase)
     virtual ~QFutureInterfaceBase();
 
     // reporting functions available to the engine author:
     void reportStarted();
     void reportFinished();
     void reportCanceled();
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void reportException(const QException &e);
-#if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void reportException(std::exception_ptr e);
 #else
     void reportException(const std::exception_ptr &e);
@@ -90,8 +90,8 @@ public:
     void reportResultsReady(int beginIndex, int endIndex);
 
     void setRunnable(QRunnable *runnable);
-    void setThreadPool(QThreadPool *pool);
-    QThreadPool *threadPool() const;
+    void setThreadPool(BOBUIhreadPool *pool);
+    BOBUIhreadPool *threadPool() const;
     void setFilterMode(bool enable);
     void setProgressRange(int minimum, int maximum);
     int progressMinimum() const;
@@ -111,14 +111,14 @@ public:
     bool isStarted() const;
     bool isCanceled() const;
     bool isFinished() const;
-#if QT_DEPRECATED_SINCE(6, 0)
-    QT_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
+#if BOBUI_DEPRECATED_SINCE(6, 0)
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use isSuspending() or isSuspended() instead.")
     bool isPaused() const;
 
-    QT_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use setSuspended() instead.")
     void setPaused(bool paused) { setSuspended(paused); }
 
-    QT_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
+    BOBUI_DEPRECATED_VERSION_X_6_0("Use toggleSuspended() instead.")
     void togglePaused() { toggleSuspended(); }
 #endif
     bool isSuspending() const;
@@ -145,14 +145,14 @@ public:
 
     QMutex &mutex() const;
     bool hasException() const;
-    QtPrivate::ExceptionStore &exceptionStore();
-    QtPrivate::ResultStoreBase &resultStoreBase();
-    const QtPrivate::ResultStoreBase &resultStoreBase() const;
+    BobUIPrivate::ExceptionStore &exceptionStore();
+    BobUIPrivate::ResultStoreBase &resultStoreBase();
+    const BobUIPrivate::ResultStoreBase &resultStoreBase() const;
 
     inline bool operator==(const QFutureInterfaceBase &other) const { return d == other.d; }
     inline bool operator!=(const QFutureInterfaceBase &other) const { return d != other.d; }
 
-    // ### Qt 7: inline
+    // ### BobUI 7: inline
     void swap(QFutureInterfaceBase &other) noexcept;
 
     template<typename T>
@@ -161,7 +161,7 @@ public:
     bool isChainCanceled() const;
 
 protected:
-    // ### Qt 7: remove const from refT/derefT
+    // ### BobUI 7: remove const from refT/derefT
     bool refT() const noexcept;
     bool derefT() const noexcept;
     void reset();
@@ -179,22 +179,22 @@ private:
     friend class QFutureWatcherBasePrivate;
 
     template<typename Function, typename ResultType, typename ParentResultType>
-    friend class QtPrivate::CompactContinuation;
+    friend class BobUIPrivate::CompactContinuation;
 
     template<class Function, class ResultType>
-    friend class QtPrivate::CanceledHandler;
+    friend class BobUIPrivate::CanceledHandler;
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     template<class Function, class ResultType>
-    friend class QtPrivate::FailureHandler;
+    friend class BobUIPrivate::FailureHandler;
 #endif
 
-    friend struct QtPrivate::UnwrapHandler;
+    friend struct BobUIPrivate::UnwrapHandler;
 
-#if QT_CORE_REMOVED_SINCE(6, 10)
-    friend Q_CORE_EXPORT void QtPrivate::watchContinuationImpl(
-            const QObject *context, QtPrivate::QSlotObjectBase *slotObj, QFutureInterfaceBase &fi);
-#endif // QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
+    friend Q_CORE_EXPORT void BobUIPrivate::watchContinuationImpl(
+            const QObject *context, BobUIPrivate::QSlotObjectBase *slotObj, QFutureInterfaceBase &fi);
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 10)
 
     template<class T>
     friend class QPromise;
@@ -208,11 +208,11 @@ protected:
         OnCanceled,
     };
 
-#if QT_CORE_REMOVED_SINCE(6, 10)
+#if BOBUI_CORE_REMOVED_SINCE(6, 10)
     void setContinuation(std::function<void(const QFutureInterfaceBase &)> func);
     void setContinuation(std::function<void(const QFutureInterfaceBase &)> func,
                          QFutureInterfaceBasePrivate *continuationFutureData);
-#endif // QT_CORE_REMOVED_SINCE(6, 10)
+#endif // BOBUI_CORE_REMOVED_SINCE(6, 10)
     void setContinuation(std::function<void(const QFutureInterfaceBase &)> func,
                          void *continuationFutureData, ContinuationType type);
     void setContinuation(const QObject *context, std::function<void()> func,
@@ -258,7 +258,7 @@ public:
         return *this;
     }
     QFutureInterface(QFutureInterface &&other) = default;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QFutureInterface)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QFutureInterface)
 
     ~QFutureInterface()
     {
@@ -295,7 +295,7 @@ public:
     std::vector<T> takeResults();
 #endif
 
-#ifndef QT_NO_EXCEPTIONS
+#ifndef BOBUI_NO_EXCEPTIONS
     void reportException(const std::exception_ptr &e)
     {
         if (hasException())
@@ -323,7 +323,7 @@ inline bool QFutureInterface<T>::reportResult(const T *result, int index)
         return false;
 
     Q_ASSERT(!hasException());
-    QtPrivate::ResultStoreBase &store = resultStoreBase();
+    BobUIPrivate::ResultStoreBase &store = resultStoreBase();
 
     const int resultCountBefore = store.count();
     const int insertIndex = store.addResult<T>(index, result);
@@ -346,7 +346,7 @@ bool QFutureInterface<T>::reportAndEmplaceResult(int index, Args&&...args)
         return false;
 
     Q_ASSERT(!hasException());
-    QtPrivate::ResultStoreBase &store = resultStoreBase();
+    BobUIPrivate::ResultStoreBase &store = resultStoreBase();
 
     const int oldResultCount = store.count();
     const int insertIndex = store.emplaceResult<T>(index, std::forward<Args>(args)...);
@@ -437,7 +437,7 @@ inline QList<T> QFutureInterface<T>::results()
     QList<T> res;
     QMutexLocker<QMutex> locker{&mutex()};
 
-    QtPrivate::ResultIteratorBase it = resultStoreBase().begin();
+    BobUIPrivate::ResultIteratorBase it = resultStoreBase().begin();
     while (it != resultStoreBase().end()) {
         res.append(it.value<T>());
         ++it;
@@ -457,7 +457,7 @@ T QFutureInterface<T>::takeResult()
     Q_ASSERT(!hasException());
 
     const QMutexLocker<QMutex> locker{&mutex()};
-    QtPrivate::ResultIteratorBase position = resultStoreBase().resultAt(0);
+    BobUIPrivate::ResultIteratorBase position = resultStoreBase().resultAt(0);
     T ret(std::move_if_noexcept(position.value<T>()));
     reset();
     resultStoreBase().template clear<T>();
@@ -479,7 +479,7 @@ std::vector<T> QFutureInterface<T>::takeResults()
 
     const QMutexLocker<QMutex> locker{&mutex()};
 
-    QtPrivate::ResultIteratorBase it = resultStoreBase().begin();
+    BobUIPrivate::ResultIteratorBase it = resultStoreBase().begin();
     for (auto endIt = resultStoreBase().end(); it != endIt; ++it)
         res.push_back(std::move_if_noexcept(it.value<T>()));
 
@@ -490,8 +490,8 @@ std::vector<T> QFutureInterface<T>::takeResults()
 }
 #endif
 
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Wweak-vtables") // QTBUG-125115
+BOBUI_WARNING_PUSH
+BOBUI_WARNING_DISABLE_CLANG("-Wweak-vtables") // BOBUIBUG-125115
 
 template <>
 class QFutureInterface<void> : public QFutureInterfaceBase
@@ -523,7 +523,7 @@ public:
     }
 };
 
-QT_WARNING_POP // Clang -Wweak-vtables
+BOBUI_WARNING_POP // Clang -Wweak-vtables
 
 template<typename T>
 inline void swap(QFutureInterface<T> &a, QFutureInterface<T> &b) noexcept
@@ -531,6 +531,6 @@ inline void swap(QFutureInterface<T> &a, QFutureInterface<T> &b) noexcept
     a.swap(b);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QFUTUREINTERFACE_H

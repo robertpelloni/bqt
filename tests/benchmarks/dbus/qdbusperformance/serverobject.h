@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
 #ifndef SERVEROBJECT_H
@@ -12,7 +12,7 @@
 class ServerObject: public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.qtproject.autotests.Performance")
+    Q_CLASSINFO("D-Bus Interface", "org.bobuiproject.autotests.Performance")
 public:
     ServerObject(const QString &objectPath, QDBusConnection conn, QObject *parent = nullptr)
         : QObject(parent)

@@ -1,49 +1,49 @@
-Qt 3.0 adds a wide range of major new features as well as substantial
-improvements over the Qt 2.x series. Some internals have undergone
+BobUI 3.0 adds a wide range of major new features as well as substantial
+improvements over the BobUI 2.x series. Some internals have undergone
 major redesign and new classes and methods have been added.
 
-The Qt version 3.x series is not binary compatible with the 2.x
-series.  This means programs compiled with Qt version 2.x must be
-recompiled to work with Qt 3.0.
+The BobUI version 3.x series is not binary compatible with the 2.x
+series.  This means programs compiled with BobUI version 2.x must be
+recompiled to work with BobUI 3.0.
 
-In addition to the traditional Qt platforms Linux, Unix and the
-various flavours of MS-Windows.  Qt 3.0 for the first time introduces a
-native port to MacOS X. Like all Qt versions, Qt/Mac is source
+In addition to the traditional BobUI platforms Linux, Unix and the
+various flavours of MS-Windows.  BobUI 3.0 for the first time introduces a
+native port to MacOS X. Like all BobUI versions, BobUI/Mac is source
 compatible with the other editions and follows closely the platform's
 native look and feel guidelines.
 
-We have tried to keep the API of Qt 3.0 as compatible as possible with
-the Qt 2.x series. For most applications, only minor changes will be
-needed to compile and run them successfully using Qt 3.0.
+We have tried to keep the API of BobUI 3.0 as compatible as possible with
+the BobUI 2.x series. For most applications, only minor changes will be
+needed to compile and run them successfully using BobUI 3.0.
 
 One of the major new features that has been added in the 3.0 release
 is a module allowing you to easily work with databases. The API is
 platform independent and database neutral. This module is seamlessly
-integrated into Qt Designer, greatly simplifying the process of
+integrated into BobUI Designer, greatly simplifying the process of
 building database applications and using data aware widgets.
 
-Other major new features include a plugin architecture to extend Qt's
+Other major new features include a plugin architecture to extend BobUI's
 functionality, for styles, text encodings, image formats and database
-drivers. The Unicode support of Qt 2.x has been greatly enhanced, it
+drivers. The Unicode support of BobUI 2.x has been greatly enhanced, it
 now includes full support for scripts written from right to left
 (e.g. Arabic and Hebrew) and also provides improved support for Asian
 languages.
 
-Many new classes have been added to the Qt Library. Amongst them are
+Many new classes have been added to the BobUI Library. Amongst them are
 classes that provide a docking architecture (QDockArea/QDockWindow), a
-powerful rich text editor (QTextEdit), a class to store and access
+powerful rich text editor (BOBUIextEdit), a class to store and access
 application settings (QSettings) and a class to create and communicate
 with processes (QProcess).
 
 Apart from the changes in the library itself a lot has been done to
-make the development of Qt applications with Qt 3.0 even easier than
-before. Two new applications have been added: Qt Linguist is a tool to
-help you translate your application into different languages; Qt
-Assistant is an easy to use help browser for the Qt documentation that
+make the development of BobUI applications with BobUI 3.0 even easier than
+before. Two new applications have been added: BobUI Linguist is a tool to
+help you translate your application into different languages; BobUI
+Assistant is an easy to use help browser for the BobUI documentation that
 supports bookmarks and can search by keyword.
 
-Another change concerns the Qt build system, which has been reworked
-to make it a lot easier to port Qt to new platforms. You can use this
+Another change concerns the BobUI build system, which has been reworked
+to make it a lot easier to port BobUI to new platforms. You can use this
 platform independent build system - called qmake - for your own
 applications.
 
@@ -51,59 +51,59 @@ And last but not least we hope you will enjoy the revisited and widely
 extended documentation.
 
 
-Qt/Embedded
+BobUI/Embedded
 ----------
 
-Qt/Embedded 3.0 provides the same features as Qt 3.0, but currently
+BobUI/Embedded 3.0 provides the same features as BobUI 3.0, but currently
 lacks some of the memory optimizations and fine-tuning capabilities of
-Qt/Embedded 2.3.x. We will add these in the upcoming maintainance
+BobUI/Embedded 2.3.x. We will add these in the upcoming maintainance
 releases.
 
-If you develop a new product based on Qt/Embedded, we recommend
+If you develop a new product based on BobUI/Embedded, we recommend
 switching to 3.0 because of the greatly improved functionality.
 However, if you are planning a release within the next two months and
-require memory optimizations not available with Qt/Embedded 3.0, we
-suggest using Qt/Embedded 2.3.x.
+require memory optimizations not available with BobUI/Embedded 3.0, we
+suggest using BobUI/Embedded 2.3.x.
 
 
-The Qt Library
+The BobUI Library
 ========================================
 
-A large number of new features has been added to Qt 3.0. The following
+A large number of new features has been added to BobUI 3.0. The following
 list gives an overview of the most important new and changed aspects
-of the Qt library.
+of the BobUI library.
 
 
 Database support
 ----------------
 
-One of the major new features in Qt 3.0 is the SQL module that
+One of the major new features in BobUI 3.0 is the SQL module that
 provides cross-platform access to SQL databases, making database
-application programming with Qt seamless and portable. The API, built
+application programming with BobUI seamless and portable. The API, built
 with standard SQL, is database-neutral and software development is
 independent of the underlying database.
 
 A collection of tightly focused C++ classes are provided to give the
 programmer direct access to SQL databases. Developers can send raw SQL
-to the database server or have the Qt SQL classes generate SQL queries
+to the database server or have the BobUI SQL classes generate SQL queries
 automatically.  Drivers for Oracle, PostgreSQL, MySQL and ODBC are
 available and writing new drivers is straightforward.
 
 Tying the results of SQL queries to GUI components is fully supported
-by Qt's SQL widgets. These classes include a tabular data widget
+by BobUI's SQL widgets. These classes include a tabular data widget
 (for spreadsheet-like data presentation with in-place editing), a
 form-based data browser (which provides data navigation and edit
 functions) and a form-based data viewer (which provides read-only
 forms). This framework can be extended by using custom field editors,
 allowing for example, a data table to use custom widgets for in-place
-editing. The SQL module fully supports Qt's signals/slots mechanism,
+editing. The SQL module fully supports BobUI's signals/slots mechanism,
 making it easy for developers to include their own data validation and
 auditing code.
 
-Qt Designer fully supports Qt's SQL module. All SQL widgets can be
-laid out within Qt Designer, and relationships can be established
+BobUI Designer fully supports BobUI's SQL module. All SQL widgets can be
+laid out within BobUI Designer, and relationships can be established
 between controls visually. Many interactions can be defined purely in
-terms of Qt's signals/slots mechanism directly in Qt Designer.
+terms of BobUI's signals/slots mechanism directly in BobUI Designer.
 
 
 Explicit linking and plugins
@@ -112,23 +112,23 @@ Explicit linking and plugins
 The QLibrary class provides a platform independent wrapper for runtime
 loading of shared libraries.
 
-Specialized classes that make it possible to extend Qt's functionality
-with plugins: QStylePlugin for user interface styles, QTextCodecPlugin
+Specialized classes that make it possible to extend BobUI's functionality
+with plugins: QStylePlugin for user interface styles, BOBUIextCodecPlugin
 for text encodings, QImageFormatPlugin for image formats and
 QSqlDriverPlugin for database drivers.
 
-It is possible to remove unused components from the Qt library, and
+It is possible to remove unused components from the BobUI library, and
 easy to extend any application with 3rd party styles, database drivers
 or text codecs.
 
-Qt Designer supports custom widgets in plugins, and will use the
+BobUI Designer supports custom widgets in plugins, and will use the
 widgets both when designing and previewing forms (QWidgetPlugin).
 
 
 Rich text engine and editor
 ---------------------------
 
-The rich text engine originally introduced in Qt 2.0 has been further
+The rich text engine originally introduced in BobUI 2.0 has been further
 optimized and extended to support editing. It allows editing formatted
 text with different fonts, colors, paragraph styles, tables and
 images. The editor supports different word wrap modes, command-based
@@ -140,27 +140,27 @@ large documents quickly and efficiently.
 Unicode
 -------
 
-Apart from the rich text engine, another new feature of Qt 3.0 that
-relates to text handling is the greatly improved Unicode support. Qt
+Apart from the rich text engine, another new feature of BobUI 3.0 that
+relates to text handling is the greatly improved Unicode support. BobUI
 3.0 includes an implementation of the bidirectional algorithm (BiDi)
 as defined in the Unicode standard and a shaping engine for Arabic,
 which gives full native language support to Arabic and Hebrew speaking
 people. At the same time the support for Asian languages has been
 greatly enhanced.
 
-The support is almost transparent for the developer using Qt to
+The support is almost transparent for the developer using BobUI to
 develop their applications. This means that developers who developed
-applications using Qt 2.x will automatically gain the full support for
-these languages when switching to Qt 3.0. Developers can rely on their
+applications using BobUI 2.x will automatically gain the full support for
+these languages when switching to BobUI 3.0. Developers can rely on their
 application to work for people using writing systems different from
 Latin1, without having to worry about the complexities involved with
-these scripts, as Qt takes care of this automatically.
+these scripts, as BobUI takes care of this automatically.
 
 
 Docked and Floating Windows
 ---------------------------
 
-Qt 3.0 introduces the concept of dock windows and dock areas. Dock
+BobUI 3.0 introduces the concept of dock windows and dock areas. Dock
 windows are widgets, that can be attached to, and detached from, dock
 areas. The most common kind of dock window is a tool bar. Any number of
 dock windows may be placed in a dock area. A main window can have dock
@@ -170,18 +170,18 @@ place them at a convenient place in a dock area, or drag them out of
 the application and have them float freely as top level windows in
 their own right. Dock windows can also be minimized or hidden.
 
-For developers, dock windows behave just like ordinary widgets. QToolbar
+For developers, dock windows behave just like ordinary widgets. BOBUIoolbar
 for example is now a specialized subclass of a dock window.  The API
-of QMainWindow and QToolBar is source compatible with Qt 2.x, so
+of QMainWindow and BOBUIoolBar is source compatible with BobUI 2.x, so
 existing code which uses these classes will continue to work.
 
 
 Regular Expressions
 -------------------
 
-Qt has always provided regular expression support, but that support
+BobUI has always provided regular expression support, but that support
 was pretty much limited to what was required in common GUI control
-elements such as file dialogs. Qt 3.0 introduces a new regular
+elements such as file dialogs. BobUI 3.0 introduces a new regular
 expression engine that supports most of Perl's regex features and is
 Unicode based. The most useful additions are support for parentheses
 (capturing and non-capturing) and backreferences.
@@ -194,7 +194,7 @@ Most programs will need to store some settings between runs, for
 example, user selected fonts, colors and other preferences, or a list
 of recently used files.  The new QSettings class provides a platform
 independent way to achieve this goal. The API makes it easy to store
-and retrieve most of the basic data types used in Qt (such as basic
+and retrieve most of the basic data types used in BobUI (such as basic
 C++ types, strings, lists, colors, etc). The class uses the registry
 on the Windows platform and traditional resource files on Unix.
 
@@ -203,7 +203,7 @@ Creating and controlling other processes
 ----------------------------------------
 
 QProcess is a class that allows you to start other programs from
-within a Qt application in a platform independent manner. It gives you
+within a BobUI application in a platform independent manner. It gives you
 full control over the started program.  For example you can redirect
 the input and output of console applications.
 
@@ -212,26 +212,26 @@ Accessibility
 ---------------
 
 Accessibility means making software usable and accessible to a wide
-range of users, including those with disabilities. In Qt 3.0, most
+range of users, including those with disabilities. In BobUI 3.0, most
 widgets provide accessibility information for assistive tools that can
-be used by a wide range of disabled users. Qt standard widgets like
+be used by a wide range of disabled users. BobUI standard widgets like
 buttons or range controls are fully supported. Support for complex
 widgets, like e.g. QListView, is in development. Existing applications
 that make use of standard widgets will become accessible just by using
-Qt 3.0.
+BobUI 3.0.
 
-Qt uses the Active Accessibility infrastructure on Windows, and needs
+BobUI uses the Active Accessibility infrastructure on Windows, and needs
 the MSAA SDK, which is part of most platform SDKs. With improving
-standardization of accessibility on other platforms, Qt will support
+standardization of accessibility on other platforms, BobUI will support
 assistive technologies on other systems too.
 
 
 XML Improvements
 ----------------
 
-The XML framework introduced in Qt 2.2 has been vastly improved. Qt
+The XML framework introduced in BobUI 2.2 has been vastly improved. BobUI
 2.2 already supported level 1 of the Document Object Model (DOM), a
-W3C standard for accessing and modifying XML documents.  Qt 3.0 has
+W3C standard for accessing and modifying XML documents.  BobUI 3.0 has
 added support for DOM Level 2 and XML namespaces.
 
 The XML parser has been extended to allow incremental parsing of XML
@@ -246,7 +246,7 @@ stage.
 SVG support
 -----------
 
-SVG is a W3C standard for "Scalable Vector Graphics". Qt 3.0's SVG
+SVG is a W3C standard for "Scalable Vector Graphics". BobUI 3.0's SVG
 support means that QPicture can optionally generate and import static
 SVG documents. All the SVG features that have an equivalent in
 QPainter are supported.
@@ -256,7 +256,7 @@ Multihead support
 -----------------
 
 Many professional applications, such as DTP and CAD software, are able
-to display data on two or more monitors. In Qt 3.0 the QDesktopWidget
+to display data on two or more monitors. In BobUI 3.0 the QDesktopWidget
 class provides the application with runtime information about the
 number and geometry of the desktops on the different monitors and such
 allows applications to efficiently use a multi-monitor setup.
@@ -269,7 +269,7 @@ on X11.
 X11 specific enhancements
 -------------------------
 
-Qt 3.0 now complies with the NET WM Specification, recently adopted
+BobUI 3.0 now complies with the NET WM Specification, recently adopted
 by KDE 2.0.  This allows easy integration and proper execution with
 desktop environments that support the NET WM specification.
 
@@ -282,7 +282,7 @@ programmer.  For end-users, any font can be used in any locale.  For
 example, a user in Norway will be able to see Korean text without
 having to set their locale to Korean.
 
-Qt 3.0 also supports the new render extension recently added to
+BobUI 3.0 also supports the new render extension recently added to
 XFree86. This adds support for anti-aliased text and pixmaps with
 alpha channel (semi transparency) on the systems that support the
 rendering extension (at the moment XFree 4.0.3 and later).
@@ -297,10 +297,10 @@ process. This makes WYSIWYG printing trivial, and also allows you to
 take full advantage of the high resolution of a printer when painting
 on it.
 
-The postscript driver built into Qt and used on Unix has been greatly
+The postscript driver built into BobUI and used on Unix has been greatly
 enhanced. It supports the embedding of true/open type and type1 fonts
 into the document, and can correctly handle and display Unicode.
-Support for fonts built into the printer has been enhanced and Qt now
+Support for fonts built into the printer has been enhanced and BobUI now
 knows about the most common printer fonts used for Asian languages.
 
 
@@ -314,36 +314,36 @@ uploads.
 Compatibility with the Standard Template Library (STL)
 ------------------------------------------------------
 
-Support for the C++ Standard Template Library has been added to the Qt
-Template Library (QTL).  The QTL classes now contain appropriate copy
+Support for the C++ Standard Template Library has been added to the BobUI
+Template Library (BOBUIL).  The BOBUIL classes now contain appropriate copy
 constructors and typedefs so that they can be freely mixed with other
 STL containers and algorithms.  In addition, new member functions have
-been added to QTL template classes which correspond to STL-style
+been added to BOBUIL template classes which correspond to STL-style
 naming conventions (e.g., push_back()).
 
 
-Qt Designer
+BobUI Designer
 ========================================
 
-Qt Designer was a pure dialog editor in Qt 2.2 but has now been
+BobUI Designer was a pure dialog editor in BobUI 2.2 but has now been
 extended to provide the full functionality of a GUI design tool.
 
 This includes the ability to lay out main windows with menus and
-toolbars. Actions can be edited within Qt Designer and then plugged
+toolbars. Actions can be edited within BobUI Designer and then plugged
 into toolbars and menu bars via drag and drop. Splitters can now be
 used in a way similar to layouts to group widgets horizontally or
 vertically.
 
-In Qt 2.2, many of the dialogs created by Qt Designer had to be
+In BobUI 2.2, many of the dialogs created by BobUI Designer had to be
 subclassed to implement functionality beyond the predefined signal and
 slot connections. Whilst the subclassing approach is still fully
-supported, Qt Designer now offers an alternative: a plugin for editing
+supported, BobUI Designer now offers an alternative: a plugin for editing
 code. The editor offers features such as syntax highlighting,
 completion, parentheses matching and incremental search.
 
-The functionality of Qt Designer can now be extended via plugins.
-Using Qt Designer's interface or by implementing one of the provided
-interfaces in a plugin, a two way communication between plugin and Qt
+The functionality of BobUI Designer can now be extended via plugins.
+Using BobUI Designer's interface or by implementing one of the provided
+interfaces in a plugin, a two way communication between plugin and BobUI
 Designer can be established. This functionality is used to implement
 plugins for custom widgets, so that they can be used as real widgets
 inside the designer.
@@ -354,7 +354,7 @@ and do some global operations on the project. You can now open the
 project file and have one-click access to all the *.ui forms in the
 project.
 
-In addition to generating code via uic, Qt Designer now supports the
+In addition to generating code via uic, BobUI Designer now supports the
 dynamic creation of widgets directly from XML user interface
 description files (*.ui files) at runtime. This eliminates the need of
 recompiling your application when the GUI changes, and could be used
@@ -363,25 +363,25 @@ the feature is provided by a new class, QWidgetFactory in the
 UI-library.
 
 
-Qt Linguist
+BobUI Linguist
 ========================================
 
-Qt Linguist is a GUI utility to support translating the user-visible
-text in applications written with Qt. It comes with two command-line
+BobUI Linguist is a GUI utility to support translating the user-visible
+text in applications written with BobUI. It comes with two command-line
 tools: lupdate and lrelease.
 
-Translation of a Qt application is a three-step process:
+Translation of a BobUI application is a three-step process:
 
   1) Run lupdate to extract user-visible text from the C++ source
-     code of the Qt application, resulting in a translation source file
+     code of the BobUI application, resulting in a translation source file
      (a *.ts file).
   2) Provide translations for the source texts in the *.ts file using
-     Qt Linguist.
+     BobUI Linguist.
   3) Run lrelease to obtain a light-weight message file (a *.qm file)
      from the *.ts file, which provides very fast lookup for released
      applications.
 
-Qt Linguist is a tool suitable for use by translators. Each
+BobUI Linguist is a tool suitable for use by translators. Each
 user-visible (source) text is characterized by the text itself, a
 context (usually the name of the C++ class containing the text), and
 an optional comment to help the translator. The C++ class name will
@@ -389,22 +389,22 @@ usually be the name of the relevant dialog, and the comment will often
 contain instructions that describe how to navigate to the relevant
 dialog.
 
-You can create phrase books for Qt Linguist to provide common
+You can create phrase books for BobUI Linguist to provide common
 translations to help ensure consistency and to speed up the
 translation process. Whenever a translator navigates to a new text to
-translate, Qt Linguist uses an intelligent algorithm to provide a list
+translate, BobUI Linguist uses an intelligent algorithm to provide a list
 of possible translations: the list is composed of relevant text from
 any open phrase books and also from identical or similar text that has
 already been translated.
 
 Once a translation is complete it can be marked as "done"; such
 translations are included in the *.qm file. Text that has not been
-"done" is included in the *.qm file in its original form. Although Qt
+"done" is included in the *.qm file in its original form. Although BobUI
 Linguist is a GUI application with dock windows and mouse control,
 toolbars, etc., it has a full set of keyboard shortcuts to make
 translation as fast and efficient as possible.
 
-When the Qt application that you're developing evolves (e.g. from
+When the BobUI application that you're developing evolves (e.g. from
 version 1.0 to version 1.1), the utility lupdate merges the source
 texts from the new version with the previous translation source file,
 reusing existing translations. In some typical cases, lupdate may
@@ -412,28 +412,28 @@ suggest translations. These translations are marked as unfinished, so
 you can easily find and check them.
 
 
-Qt Assistant
+BobUI Assistant
 ========================================
 
 Due to the positive feedback we received about the help system built
-into Qt Designer, we decided to offer this part as a separate
-application called Qt Assistant. Qt Assistant can be used to browse
-the Qt class documentation as well as the manuals for Qt Designer and
-Qt Linguist. It offers index searching, a contents overview, bookmarks
-history and incremental search. Qt Assistant is used by both Qt
-Designer and Qt Linguist for browsing their help documentation.
+into BobUI Designer, we decided to offer this part as a separate
+application called BobUI Assistant. BobUI Assistant can be used to browse
+the BobUI class documentation as well as the manuals for BobUI Designer and
+BobUI Linguist. It offers index searching, a contents overview, bookmarks
+history and incremental search. BobUI Assistant is used by both BobUI
+Designer and BobUI Linguist for browsing their help documentation.
 
 
 qmake
 ========================================
 
 qmake is a cross-platform make utility that makes it possible to build
-the Qt library and Qt-based applications on various target platforms
+the BobUI library and BobUI-based applications on various target platforms
 from one single project description. It is the C++ successor of
 'tmake' which required Perl.
 
 qmake offers additional functionallity that is difficult to reproduce
-in tmake. Qt uses qmake in its build system and we have released it as
+in tmake. BobUI uses qmake in its build system and we have released it as
 free software.
 
 
@@ -441,16 +441,16 @@ free software.
 Detailed changes
 =============
 
-Qt 3.0 went through 6 beta releases. These are the detailed changes
+BobUI 3.0 went through 6 beta releases. These are the detailed changes
 since Beta 6 only. For other changes, please see the changes notes
 of the respective beta releases.
 
 
-Qt 3.0 final is not binary compatible with Beta6; any programs linked
+BobUI 3.0 final is not binary compatible with Beta6; any programs linked
 against Beta6 must be recompiled.
 
-Below you will find a description of general changes in the Qt
-Library, Qt Designer and Qt Assistant.  Followed by a detailed list of
+Below you will find a description of general changes in the BobUI
+Library, BobUI Designer and BobUI Assistant.  Followed by a detailed list of
 changes in the API.
 
 ****************************************************************************
@@ -479,7 +479,7 @@ changes in the API.
 	current item.
 
 - QCommonStyle
-	QToolButton: spacing between a toolbutton's icon and its label.
+	BOBUIoolButton: spacing between a toolbutton's icon and its label.
 	QProgressBar: text color fixed.
 
 - QCursor
@@ -500,7 +500,7 @@ changes in the API.
 	fixed a memory leak in setNodeValue()
 
 - QDomNodeMap
-	added count() as a Qt-style alias for length()
+	added count() as a BobUI-style alias for length()
 
 - QDragObject
 	default to the middle of the pixmap as a hot spot, this looks
@@ -636,17 +636,17 @@ changes in the API.
 	QStyleSheet::convertFromPlainText(). Support for superscript
 	('sup') and subscript ( 'sub' ).
 
-- QTabBar
+- BOBUIabBar
 	react properly on runtime font changes, less flicker.
 
-- QTable
+- BOBUIable
 	take the pixmap of a header section into account when
 	adjusting the size.
 
-- QTabWidget
+- BOBUIabWidget
 	use the embedded tabbar as focus proxy.
 
-- QThread
+- BOBUIhread
 	win32 only: possible crash with the thread dictionary fixed.
 
 - QValidator
@@ -680,8 +680,8 @@ changes in the API.
 	allow keyboard switching of paragraph directionality.
 
 - installation
-	install $QTDIR/doc/html/ instead of $QTDIR/doc/
-	install Qt Designer templates as well.
+	install $BOBUIDIR/doc/html/ instead of $BOBUIDIR/doc/
+	install BobUI Designer templates as well.
 
 - improved build on
 	HP-UX with cc.
@@ -694,18 +694,18 @@ changes in the API.
 - uic
 	smaller improvements, handle additional form signals.
 
-- Qt Designer
+- BobUI Designer
 	make it possible to add new signals to a form without
 	subclassing. Minor fixes.
 
-- Qt Assistant
+- BobUI Assistant
 	fixed Shift-LMB selection bug. Fixed new window and window
 	restoration on restart.
 
-- Qt Linguist
+- BobUI Linguist
 	change fourth parameter of QApplication::translate() from bool
 	to enum type. This affects MOC (new revision) and lupdate (new
-	syntax to parse). Change Qt Linguist's XML file format (.ts)
+	syntax to parse). Change BobUI Linguist's XML file format (.ts)
 	to be consistent with QApplication:<defaultcodec> (rather than
 	<codec>) to match QApp::defaultCodec(); encoding="UTF-8"
 	(rather than utf8="true") to match QApp::translate(). Fixed

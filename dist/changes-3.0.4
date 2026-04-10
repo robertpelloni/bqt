@@ -1,12 +1,12 @@
-Qt 3.0.4 is a bugfix release. It maintains both forward and backward
-compatibility (source and binary) with Qt 3.0.3
+BobUI 3.0.4 is a bugfix release. It maintains both forward and backward
+compatibility (source and binary) with BobUI 3.0.3
 
 
 ****************************************************************************
 *			    General					   *
 ****************************************************************************
 
-- Qt 3.0.4 builds on VC++.NET.
+- BobUI 3.0.4 builds on VC++.NET.
 
 
 ****************************************************************************
@@ -151,7 +151,7 @@ compatibility (source and binary) with Qt 3.0.3
 - QSqlQuery:
 	Reset the last error before a new query is executed.
 
-- QTable:
+- BOBUIable:
 	If a row or column is hidden, setRowHeight() and
 	setColumnWidth() no longer cause an immediate resize; instead
 	they store the value for later use, i.e. for when the row or
@@ -161,7 +161,7 @@ compatibility (source and binary) with Qt 3.0.3
 	visible. Windows only: Fixed the problem that combobox table
 	items never got smaller than a certain size.
 
-- QTextEdit:
+- BOBUIextEdit:
 	Cleaner modified() and setModified() handling (doesn't rely on
 	internal signals anymore, so it is now safe to call
 	setModified() from a slot connected to textChanged()). Fixed
@@ -171,11 +171,11 @@ compatibility (source and binary) with Qt 3.0.3
 	the beginning of a line if textFormat() is RichText, not
 	AutoFormat.
 
-- QTitleBar:
+- BOBUIitleBar:
 	Don't paint all titlebars in a QWorkspace activated when a
 	dockwindow is the active window.
 
-- QToolBar:
+- BOBUIoolBar:
 	Don't show the extension button when the extension menu would
 	not contain any items.
 
@@ -200,15 +200,15 @@ compatibility (source and binary) with Qt 3.0.3
 *			      Other					   *
 ****************************************************************************
 
-Qt Config:
+BobUI Config:
 	X11 only: The default X input methods are now configurable
-	through qtconfig.
+	through bobuiconfig.
 
 ****************************************************************************
-*		    Qt/Embedded-specific changes		           *
+*		    BobUI/Embedded-specific changes		           *
 ****************************************************************************
 
 ****************************************************************************
-*		    Qt/Mac-specific changes		           	   *
+*		    BobUI/Mac-specific changes		           	   *
 ****************************************************************************
 

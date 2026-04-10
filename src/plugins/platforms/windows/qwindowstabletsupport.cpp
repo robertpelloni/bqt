@@ -1,5 +1,5 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowstabletsupport.h"
 
@@ -10,22 +10,22 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-#include <QtGui/qevent.h>
-#include <QtGui/qscreen.h>
-#include <QtGui/qguiapplication.h>
-#include <QtGui/qwindow.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qvarlengtharray.h>
-#include <QtCore/qmath.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIGui/qscreen.h>
+#include <BobUIGui/qguiapplication.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qvarlengtharray.h>
+#include <BobUICore/qmath.h>
 
 #include <private/qguiapplication_p.h>
-#include <QtCore/private/qsystemlibrary_p.h>
+#include <BobUICore/private/qsystemlibrary_p.h>
 
 // Note: The definition of the PACKET structure in pktdef.h depends on this define.
 #define PACKETDATA (PK_X | PK_Y | PK_BUTTONS | PK_NORMAL_PRESSURE | PK_TANGENT_PRESSURE | PK_ORIENTATION | PK_CURSOR | PK_Z | PK_TIME)
 #include <pktdef.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 enum {
     PacketMode = 0,
@@ -34,7 +34,7 @@ enum {
     CursorTypeBitMask = 0x0F06 // bitmask to find the specific cursor type (see Wacom FAQ)
 };
 
-LRESULT QT_WIN_CALLBACK qWindowsTabletSupportWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT BOBUI_WIN_CALLBACK qWindowsTabletSupportWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message) {
     case WT_PROXIMITY:
@@ -92,7 +92,7 @@ static void formatOptions(Stream &str, unsigned options)
         str << " CXO_CSRMESSAGES";
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QWindowsTabletDeviceData &t)
 {
     QDebugStateSaver saver(d);
@@ -109,13 +109,13 @@ QDebug operator<<(QDebug d, const LOGCONTEXT &lc)
     QDebugStateSaver saver(d);
     d.nospace();
     d << "LOGCONTEXT(\"" << QString::fromWCharArray(lc.lcName) << "\", options=0x"
-        << Qt::hex << lc.lcOptions << Qt::dec;
+        << BobUI::hex << lc.lcOptions << BobUI::dec;
     formatOptions(d, lc.lcOptions);
-    d << ", status=0x" << Qt::hex << lc.lcStatus << ", device=0x" << lc.lcDevice
-        << Qt::dec << ", PktRate=" << lc.lcPktRate
+    d << ", status=0x" << BobUI::hex << lc.lcStatus << ", device=0x" << lc.lcDevice
+        << BobUI::dec << ", PktRate=" << lc.lcPktRate
         << ", PktData=" << lc.lcPktData << ", PktMode=" << lc.lcPktMode
-        << ", MoveMask=0x" << Qt::hex << lc.lcMoveMask << ", BtnDnMask=0x" << lc.lcBtnDnMask
-        << ", BtnUpMask=0x" << lc.lcBtnUpMask << Qt::dec << ", SysMode=" << lc.lcSysMode
+        << ", MoveMask=0x" << BobUI::hex << lc.lcMoveMask << ", BtnDnMask=0x" << lc.lcBtnDnMask
+        << ", BtnUpMask=0x" << lc.lcBtnUpMask << BobUI::dec << ", SysMode=" << lc.lcSysMode
         << ", InOrg=(" << lc.lcInOrgX << ", " << lc.lcInOrgY << ", " << lc.lcInOrgZ
         <<  "), InExt=(" << lc.lcInExtX << ", " << lc.lcInExtY << ", " << lc.lcInExtZ
         << ") OutOrg=(" << lc.lcOutOrgX << ", " << lc.lcOutOrgY << ", "
@@ -127,7 +127,7 @@ QDebug operator<<(QDebug d, const LOGCONTEXT &lc)
         << "), SysSens=(" << lc.lcSysSensX << ", " << lc.lcSysSensY << "))";
     return d;
 }
-#endif // !QT_NO_DEBUG_STREAM
+#endif // !BOBUI_NO_DEBUG_STREAM
 
 QWinTabPointingDevice *createInputDevice(const QSharedPointer<QWindowsTabletDeviceData> &d,
                                          QInputDevice::DeviceType devType,
@@ -304,13 +304,13 @@ QString QWindowsTabletSupport::description() const
     WORD extensions = 0;
     m_winTab32DLL.wTInfo(WTI_INTERFACE, IFC_NEXTENSIONS, &extensions);
     QString result;
-    QTextStream str(&result);
+    BOBUIextStream str(&result);
     str << '"' << QString::fromWCharArray(winTabId.data())
         << "\" specification: v" << (specificationVersion >> 8)
         << '.' << (specificationVersion & 0xFF) << " implementation: v"
         << (implementationVersion >> 8) << '.' << (implementationVersion & 0xFF)
         << ' ' << devices << " device(s), " << cursors << " cursor(s), "
-        << extensions << " extensions" << ", options: 0x" << Qt::hex << opts << Qt::dec;
+        << extensions << " extensions" << ", options: 0x" << BobUI::hex << opts << BobUI::dec;
     formatOptions(str, opts);
     if (m_tiltSupport)
         str << " tilt";
@@ -471,7 +471,7 @@ bool QWindowsTabletSupport::translateTabletProximityEvent(WPARAM /* wParam */, L
     const int totalPacks = QWindowsTabletSupport::m_winTab32DLL.wTPacketsGet(m_context, 1, proximityBuffer);
 
     if (!LOWORD(lParam)) {
-        if (m_currentDevice.isNull()) // QTBUG-65120, spurious leave observed
+        if (m_currentDevice.isNull()) // BOBUIBUG-65120, spurious leave observed
             return false;
         qCDebug(lcQpaTablet) << "leave proximity for device #" << m_currentDevice.data();
         m_state = PenUp;
@@ -519,7 +519,7 @@ bool QWindowsTabletSupport::translateTabletProximityEvent(WPARAM /* wParam */, L
     return true;
 }
 
-Qt::MouseButton buttonValueToEnum(DWORD button,
+BobUI::MouseButton buttonValueToEnum(DWORD button,
                                   const QWindowsTabletDeviceData &tdd) {
 
     enum : unsigned {
@@ -531,34 +531,34 @@ Qt::MouseButton buttonValueToEnum(DWORD button,
 
     button = tdd.buttonsMap.value(button);
 
-    return button == leftButtonValue ? Qt::LeftButton :
-        button == rightButtonValue ? Qt::RightButton :
-        button == doubleClickButtonValue ? Qt::MiddleButton :
-        button == middleButtonValue ? Qt::MiddleButton :
-        button ? Qt::LeftButton /* fallback item */ :
-        Qt::NoButton;
+    return button == leftButtonValue ? BobUI::LeftButton :
+        button == rightButtonValue ? BobUI::RightButton :
+        button == doubleClickButtonValue ? BobUI::MiddleButton :
+        button == middleButtonValue ? BobUI::MiddleButton :
+        button ? BobUI::LeftButton /* fallback item */ :
+        BobUI::NoButton;
 }
 
-Qt::MouseButtons convertTabletButtons(DWORD btnNew,
+BobUI::MouseButtons convertTabletButtons(DWORD btnNew,
                                       const QWindowsTabletDeviceData &tdd) {
 
-    Qt::MouseButtons buttons = Qt::NoButton;
+    BobUI::MouseButtons buttons = BobUI::NoButton;
     for (unsigned int i = 0; i < 3; i++) {
         unsigned int btn = 0x1 << i;
 
         if (btn & btnNew) {
-            Qt::MouseButton convertedButton =
+            BobUI::MouseButton convertedButton =
                 buttonValueToEnum(btn, tdd);
 
             buttons |= convertedButton;
 
             /**
              * If a button that is present in hardware input is
-             * mapped to a Qt::NoButton, it means that it is going
+             * mapped to a BobUI::NoButton, it means that it is going
              * to be eaten by the driver, for example by its
              * "Pan/Scroll" feature. Therefore we shouldn't handle
              * any of the events associated to it. We'll just return
-             * Qt::NoButtons here.
+             * BobUI::NoButtons here.
              */
         }
     }
@@ -596,7 +596,7 @@ bool QWindowsTabletSupport::translateTabletPacketEvent()
     }
 
     const auto *keyMapper = QWindowsContext::instance()->keyMapper();
-    const Qt::KeyboardModifiers keyboardModifiers = keyMapper->queryKeyboardModifiers();
+    const BobUI::KeyboardModifiers keyboardModifiers = keyMapper->queryKeyboardModifiers();
 
     for (int i = 0; i < packetCount ; ++i) {
         const PACKET &packet = localPacketBuf[i];
@@ -605,10 +605,10 @@ bool QWindowsTabletSupport::translateTabletPacketEvent()
 
         const auto packetPointerType = pointerType(packet.pkCursor);
 
-        const Qt::MouseButtons buttons =
+        const BobUI::MouseButtons buttons =
             convertTabletButtons(packet.pkButtons, current);
 
-        if (buttons == Qt::NoButton && packetPointerType != m_currentDevice->pointerType()) {
+        if (buttons == BobUI::NoButton && packetPointerType != m_currentDevice->pointerType()) {
             leaveProximity(packet.pkTime);
             Q_ASSERT(!m_currentDevice.isNull());
             // Pointer type changed, find or clone a new device for this physical cursor.
@@ -700,4 +700,4 @@ bool QWindowsTabletSupport::translateTabletPacketEvent()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

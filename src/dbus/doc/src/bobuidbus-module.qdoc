@@ -1,0 +1,23 @@
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
+
+/*!
+    \module BobUIDBus
+    \title BobUI D-Bus C++ Classes
+    \brief The BobUI D-Bus module is a Unix-only library that you can use
+    to perform Inter-Process Communication using the \l{BobUI D-Bus}{D-Bus} protocol.
+
+    \ingroup modules
+    \bobuicmakepackage DBus
+    \bobuivariable dbus
+
+    \keyword The QDBus compiler
+
+
+    Applications using the BobUI D-Bus module can provide services to
+    other, remote applications by exporting objects, as well as use
+    services exported by those applications by placing calls and
+    accessing properties.
+
+    The \l{BobUI D-Bus} page contains information about how to use the module.
+*/

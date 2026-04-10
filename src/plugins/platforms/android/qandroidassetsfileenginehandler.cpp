@@ -1,6 +1,6 @@
 // Copyright (C) 2012 BogDan Vatra <bogdan@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:file-handling
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:file-handling
 
 #include "androidjnimain.h"
 #include "qandroidassetsfileenginehandler.h"
@@ -9,12 +9,12 @@
 
 #include <QCoreApplication>
 #include <QList>
-#include <QtCore/QJniEnvironment>
-#include <QtCore/QJniObject>
+#include <BobUICore/QJniEnvironment>
+#include <BobUICore/QJniObject>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static const auto assetsPrefix = "assets:"_L1;
 const static int prefixSize = 7;
@@ -111,10 +111,10 @@ public:
     {
         // Note that empty dirs in the assets dir before the build are not going to be
         // included in the final apk, so no empty folders should expected to be listed.
-        QJniObject files = QJniObject::callStaticObjectMethod(QtAndroid::applicationClass(),
+        QJniObject files = QJniObject::callStaticObjectMethod(BobUIAndroid::applicationClass(),
                                                                             "listAssetContent",
                                                                             "(Landroid/content/res/AssetManager;Ljava/lang/String;)[Ljava/lang/String;",
-                                                                            QtAndroid::assets(), QJniObject::fromString(path).object());
+                                                                            BobUIAndroid::assets(), QJniObject::fromString(path).object());
         if (files.isValid()) {
             QJniEnvironment env;
             jobjectArray jFiles = files.object<jobjectArray>();
@@ -159,7 +159,7 @@ private:
     static QMutex m_assetsCacheMutex;
 };
 
-QCache<QString, QSharedPointer<FolderIterator>> FolderIterator::m_assetsCache(std::max(50, qEnvironmentVariableIntValue("QT_ANDROID_MAX_ASSETS_CACHE_SIZE")));
+QCache<QString, QSharedPointer<FolderIterator>> FolderIterator::m_assetsCache(std::max(50, qEnvironmentVariableIntValue("BOBUI_ANDROID_MAX_ASSETS_CACHE_SIZE")));
 Q_CONSTINIT QMutex FolderIterator::m_assetsCacheMutex;
 
 class AndroidAbstractFileEngineIterator: public QAbstractFileEngineIterator
@@ -372,12 +372,12 @@ private:
     static QMutex m_assetsInfoCacheMutex;
 };
 
-QCache<QString, QSharedPointer<AssetItem>> AndroidAbstractFileEngine::m_assetsInfoCache(std::max(200, qEnvironmentVariableIntValue("QT_ANDROID_MAX_FILEINFO_ASSETS_CACHE_SIZE")));
+QCache<QString, QSharedPointer<AssetItem>> AndroidAbstractFileEngine::m_assetsInfoCache(std::max(200, qEnvironmentVariableIntValue("BOBUI_ANDROID_MAX_FILEINFO_ASSETS_CACHE_SIZE")));
 Q_CONSTINIT QMutex AndroidAbstractFileEngine::m_assetsInfoCacheMutex;
 
 AndroidAssetsFileEngineHandler::AndroidAssetsFileEngineHandler()
 {
-    m_assetManager = QtAndroid::assetManager();
+    m_assetManager = BobUIAndroid::assetManager();
 }
 
 std::unique_ptr<QAbstractFileEngine>
@@ -398,4 +398,4 @@ AndroidAssetsFileEngineHandler::create(const QString &fileName) const
     return std::make_unique<AndroidAbstractFileEngine>(m_assetManager, path);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

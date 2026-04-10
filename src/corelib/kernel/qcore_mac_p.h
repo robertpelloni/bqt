@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QCORE_MAC_P_H
 #define QCORE_MAC_P_H
@@ -8,8 +8,8 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
@@ -17,7 +17,7 @@
 
 #include "private/qglobal_p.h"
 
-#include <QtCore/qoperatingsystemversion.h>
+#include <BobUICore/qoperatingsystemversion.h>
 
 #include <optional>
 
@@ -38,7 +38,7 @@ kern_return_t IOObjectRelease(io_object_t object);
 
 // --------------------------------------------------------------------------
 
-#if defined(QT_BOOTSTRAPPED)
+#if defined(BOBUI_BOOTSTRAPPED)
 #include <ApplicationServices/ApplicationServices.h>
 #else
 #include <CoreFoundation/CoreFoundation.h>
@@ -52,27 +52,27 @@ kern_return_t IOObjectRelease(io_object_t object);
 #include "qstring.h"
 #include "qpair.h"
 
-#if defined( __OBJC__) && defined(QT_NAMESPACE)
-#define QT_NAMESPACE_ALIAS_OBJC_CLASS(__KLASS__) @compatibility_alias __KLASS__ QT_MANGLE_NAMESPACE(__KLASS__)
+#if defined( __OBJC__) && defined(BOBUI_NAMESPACE)
+#define BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(__KLASS__) @compatibility_alias __KLASS__ BOBUI_MANGLE_NAMESPACE(__KLASS__)
 #else
-#define QT_NAMESPACE_ALIAS_OBJC_CLASS(__KLASS__)
+#define BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(__KLASS__)
 #endif
 
-#define QT_MAC_WEAK_IMPORT(symbol) extern "C" decltype(symbol) symbol __attribute__((weak_import));
+#define BOBUI_MAC_WEAK_IMPORT(symbol) extern "C" decltype(symbol) symbol __attribute__((weak_import));
 
 #if defined(__OBJC__)
-#define QT_DECLARE_NAMESPACED_OBJC_INTERFACE(classname, definition) \
-    @interface QT_MANGLE_NAMESPACE(classname) : \
+#define BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(classname, definition) \
+    @interface BOBUI_MANGLE_NAMESPACE(classname) : \
     definition \
     @end \
-    QT_NAMESPACE_ALIAS_OBJC_CLASS(classname);
+    BOBUI_NAMESPACE_ALIAS_OBJC_CLASS(classname);
 #else
-#define QT_DECLARE_NAMESPACED_OBJC_INTERFACE(classname, definition) \
-    Q_FORWARD_DECLARE_OBJC_CLASS(QT_MANGLE_NAMESPACE(classname)); \
-    using classname = QT_MANGLE_NAMESPACE(classname);
+#define BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(classname, definition) \
+    Q_FORWARD_DECLARE_OBJC_CLASS(BOBUI_MANGLE_NAMESPACE(classname)); \
+    using classname = BOBUI_MANGLE_NAMESPACE(classname);
 #endif
 
-#define QT_FORWARD_DECLARE_OBJC_ENUM(name, type) \
+#define BOBUI_FORWARD_DECLARE_OBJC_ENUM(name, type) \
     typedef type name;
 
 Q_FORWARD_DECLARE_OBJC_CLASS(NSObject);
@@ -88,9 +88,9 @@ struct UIEdgeInsets;
 #endif
 
 // @compatibility_alias doesn't work with categories or their methods
-#define QtExtras QT_MANGLE_NAMESPACE(QtExtras)
+#define BobUIExtras BOBUI_MANGLE_NAMESPACE(BobUIExtras)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 template <typename T, typename U, auto RetainFunction, auto ReleaseFunction>
 class QAppleRefCounted
 {
@@ -223,15 +223,15 @@ public:
 // -------------------------------------------------------------------------
 
 #ifdef Q_OS_MACOS
-Q_CORE_EXPORT bool qt_mac_runningUnderRosetta();
-Q_CORE_EXPORT std::optional<uint32_t> qt_mac_sipConfiguration();
-Q_CORE_EXPORT bool qt_mac_processHasEntitlement(const QString &entitlement);
-#ifdef QT_BUILD_INTERNAL
-Q_AUTOTEST_EXPORT void qt_mac_ensureResponsible();
+Q_CORE_EXPORT bool bobui_mac_runningUnderRosetta();
+Q_CORE_EXPORT std::optional<uint32_t> bobui_mac_sipConfiguration();
+Q_CORE_EXPORT bool bobui_mac_processHasEntitlement(const QString &entitlement);
+#ifdef BOBUI_BUILD_INTERNAL
+Q_AUTOTEST_EXPORT void bobui_mac_ensureResponsible();
 #endif
 #endif
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QMacAutoReleasePool *pool);
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QCFString &string);
 Q_CORE_EXPORT QDebug operator<<(QDebug, CGPoint);
@@ -244,23 +244,23 @@ Q_CORE_EXPORT QDebug operator<<(QDebug, UIEdgeInsets);
 #endif
 #endif
 
-Q_CORE_EXPORT bool qt_apple_isApplicationExtension();
-Q_CORE_EXPORT bool qt_apple_runningWithLiquidGlass();
+Q_CORE_EXPORT bool bobui_apple_isApplicationExtension();
+Q_CORE_EXPORT bool bobui_apple_runningWithLiquidGlass();
 
-#if !defined(QT_BOOTSTRAPPED)
-Q_CORE_EXPORT bool qt_apple_isSandboxed();
+#if !defined(BOBUI_BOOTSTRAPPED)
+Q_CORE_EXPORT bool bobui_apple_isSandboxed();
 
 #if defined(__OBJC__)
-QT_END_NAMESPACE
-@interface NSObject (QtExtras)
-- (id)qt_valueForPrivateKey:(NSString *)key;
+BOBUI_END_NAMESPACE
+@interface NSObject (BobUIExtras)
+- (id)bobui_valueForPrivateKey:(NSString *)key;
 @end
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 #endif
-#endif // !QT_BOOTSTRAPPED
+#endif // !BOBUI_BOOTSTRAPPED
 
-#if !defined(QT_BOOTSTRAPPED) && !defined(Q_OS_WATCHOS)
-QT_END_NAMESPACE
+#if !defined(BOBUI_BOOTSTRAPPED) && !defined(Q_OS_WATCHOS)
+BOBUI_END_NAMESPACE
 # if defined(Q_OS_MACOS)
 Q_FORWARD_DECLARE_OBJC_CLASS(NSApplication);
 using AppleApplication = NSApplication;
@@ -268,30 +268,30 @@ using AppleApplication = NSApplication;
 Q_FORWARD_DECLARE_OBJC_CLASS(UIApplication);
 using AppleApplication = UIApplication;
 # endif
-QT_BEGIN_NAMESPACE
-Q_CORE_EXPORT AppleApplication *qt_apple_sharedApplication();
+BOBUI_BEGIN_NAMESPACE
+Q_CORE_EXPORT AppleApplication *bobui_apple_sharedApplication();
 #endif
 
 // --------------------------------------------------------------------------
 
-#if !defined(QT_BOOTSTRAPPED)
-#define QT_USE_APPLE_UNIFIED_LOGGING
+#if !defined(BOBUI_BOOTSTRAPPED)
+#define BOBUI_USE_APPLE_UNIFIED_LOGGING
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #include <os/log.h>
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT AppleUnifiedLogger
 {
 public:
-    static bool messageHandler(QtMsgType msgType, const QMessageLogContext &context,
+    static bool messageHandler(BobUIMsgType msgType, const QMessageLogContext &context,
                                const QString &message)
     { return messageHandler(msgType, context, message, QString()); }
-    static bool messageHandler(QtMsgType msgType, const QMessageLogContext &context,
+    static bool messageHandler(BobUIMsgType msgType, const QMessageLogContext &context,
                                const QString &message, const QString &subsystem);
     static bool preventsStderrLogging();
 private:
-    static os_log_type_t logTypeForMessageType(QtMsgType msgType);
+    static os_log_type_t logTypeForMessageType(BobUIMsgType msgType);
     static os_log_t cachedLog(const QString &subsystem, const QString &category);
 };
 
@@ -299,11 +299,11 @@ private:
 
 // --------------------------------------------------------------------------
 
-#if !defined(QT_BOOTSTRAPPED) && !__has_feature(objc_arc)
+#if !defined(BOBUI_BOOTSTRAPPED) && !__has_feature(objc_arc)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #include <os/activity.h>
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template <typename T> using QAppleOsType = QAppleRefCounted<T, void *, os_retain, os_release>;
 
@@ -321,7 +321,7 @@ public:
     {
     }
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QAppleLogActivity)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QAppleLogActivity)
 
     QAppleLogActivity &&enter()
     {
@@ -353,24 +353,24 @@ private:
     os_activity_scope_state_s state;
 };
 
-#define QT_APPLE_LOG_ACTIVITY_CREATE(condition, description, parent) []() { \
+#define BOBUI_APPLE_LOG_ACTIVITY_CREATE(condition, description, parent) []() { \
         if (!(condition)) \
             return QAppleLogActivity(); \
         return QAppleLogActivity(os_activity_create(description, parent, OS_ACTIVITY_FLAG_DEFAULT)); \
     }()
 
-#define QT_APPLE_LOG_ACTIVITY_WITH_PARENT_3(condition, description, parent) QT_APPLE_LOG_ACTIVITY_CREATE(condition, description, parent)
-#define QT_APPLE_LOG_ACTIVITY_WITH_PARENT_2(description, parent) QT_APPLE_LOG_ACTIVITY_WITH_PARENT_3(true, description, parent)
-#define QT_APPLE_LOG_ACTIVITY_WITH_PARENT(...) QT_OVERLOADED_MACRO(QT_APPLE_LOG_ACTIVITY_WITH_PARENT, __VA_ARGS__)
+#define BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT_3(condition, description, parent) BOBUI_APPLE_LOG_ACTIVITY_CREATE(condition, description, parent)
+#define BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT_2(description, parent) BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT_3(true, description, parent)
+#define BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT(...) BOBUI_OVERLOADED_MACRO(BOBUI_APPLE_LOG_ACTIVITY_WITH_PARENT, __VA_ARGS__)
 
-QT_MAC_WEAK_IMPORT(_os_activity_current);
-#define QT_APPLE_LOG_ACTIVITY_2(condition, description) QT_APPLE_LOG_ACTIVITY_CREATE(condition, description, OS_ACTIVITY_CURRENT)
-#define QT_APPLE_LOG_ACTIVITY_1(description) QT_APPLE_LOG_ACTIVITY_2(true, description)
-#define QT_APPLE_LOG_ACTIVITY(...) QT_OVERLOADED_MACRO(QT_APPLE_LOG_ACTIVITY, __VA_ARGS__)
+BOBUI_MAC_WEAK_IMPORT(_os_activity_current);
+#define BOBUI_APPLE_LOG_ACTIVITY_2(condition, description) BOBUI_APPLE_LOG_ACTIVITY_CREATE(condition, description, OS_ACTIVITY_CURRENT)
+#define BOBUI_APPLE_LOG_ACTIVITY_1(description) BOBUI_APPLE_LOG_ACTIVITY_2(true, description)
+#define BOBUI_APPLE_LOG_ACTIVITY(...) BOBUI_OVERLOADED_MACRO(BOBUI_APPLE_LOG_ACTIVITY, __VA_ARGS__)
 
-#define QT_APPLE_SCOPED_LOG_ACTIVITY(...) QAppleLogActivity scopedLogActivity = QT_APPLE_LOG_ACTIVITY(__VA_ARGS__).enter();
+#define BOBUI_APPLE_SCOPED_LOG_ACTIVITY(...) QAppleLogActivity scopedLogActivity = BOBUI_APPLE_LOG_ACTIVITY(__VA_ARGS__).enter();
 
-#endif // !defined(QT_BOOTSTRAPPED) && !__has_feature(objc_arc)
+#endif // !defined(BOBUI_BOOTSTRAPPED) && !__has_feature(objc_arc)
 
 // -------------------------------------------------------------------------
 
@@ -400,7 +400,7 @@ public:
     }
 
     QMacNotificationObserver &operator=(const QMacNotificationObserver &other) = delete;
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMacNotificationObserver)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMacNotificationObserver)
 
     void swap(QMacNotificationObserver &other) noexcept
     {
@@ -414,9 +414,9 @@ private:
     NSObject *observer = nullptr;
 };
 
-QT_END_NAMESPACE
-QT_DECLARE_NAMESPACED_OBJC_INTERFACE(KeyValueObserver, NSObject)
-QT_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
+BOBUI_DECLARE_NAMESPACED_OBJC_INTERFACE(KeyValueObserver, NSObject)
+BOBUI_BEGIN_NAMESPACE
 
 class Q_CORE_EXPORT QMacKeyValueObserver
 {
@@ -447,7 +447,7 @@ public:
         return *this;
     }
 
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMacKeyValueObserver)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_MOVE_AND_SWAP(QMacKeyValueObserver)
 
     void removeObserver();
 
@@ -477,7 +477,7 @@ class Q_CORE_EXPORT QMacVersion
 public:
     enum VersionTarget {
         ApplicationBinary,
-        QtLibraries
+        BobUILibraries
     };
 
     static QOperatingSystemVersion buildSDK(VersionTarget target = ApplicationBinary);
@@ -497,7 +497,7 @@ private:
 #ifdef __OBJC__
 template <typename T>
 typename std::enable_if<std::is_pointer<T>::value, T>::type
-qt_objc_cast(id object)
+bobui_objc_cast(id object)
 {
     if ([object isKindOfClass:[typename std::remove_pointer<T>::type class]])
         return static_cast<T>(object);
@@ -508,6 +508,6 @@ qt_objc_cast(id object)
 
 // -------------------------------------------------------------------------
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QCORE_MAC_P_H

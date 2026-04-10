@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSEQUENTIALANIMATIONGROUP_P_H
 #define QSEQUENTIALANIMATIONGROUP_P_H
@@ -9,7 +9,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API. It exists purely as an
+// This file is not part of the BobUI API. It exists purely as an
 // implementation detail. This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -20,9 +20,9 @@
 #include "private/qanimationgroup_p.h"
 #include "private/qproperty_p.h"
 
-QT_REQUIRE_CONFIG(animation);
+BOBUI_REQUIRE_CONFIG(animation);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QSequentialAnimationGroupPrivate : public QAnimationGroupPrivate
 {
@@ -71,6 +71,6 @@ public:
     void _q_uncontrolledAnimationFinished();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QSEQUENTIALANIMATIONGROUP_P_H

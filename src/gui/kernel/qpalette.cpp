@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpalette_p.h"
 #include "qguiapplication_p.h"
@@ -7,16 +7,16 @@
 #include "qvariant.h"
 #include "qdebug.h"
 
-#include <QtCore/qmetaobject.h>
+#include <BobUICore/qmetaobject.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static_assert(QPalettePrivate::bitPosition(QPalette::ColorGroup(QPalette::NColorGroups - 1),
                               QPalette::ColorRole(QPalette::NColorRoles - 1))
                   < sizeof(QPalette::ResolveMask) * CHAR_BIT,
                   "The resolve mask type is not wide enough to fit the entire bit mask.");
 
-static QColor qt_mix_colors(QColor a, QColor b)
+static QColor bobui_mix_colors(QColor a, QColor b)
 {
     return QColor((a.red() + b.red()) / 2, (a.green() + b.green()) / 2,
                   (a.blue() + b.blue()) / 2, (a.alpha() + b.alpha()) / 2);
@@ -32,7 +32,7 @@ static QColor qt_mix_colors(QColor a, QColor b)
     \a alpha represents the dim factor as a percentage. By default, a PlaceHolderText color
     becomes a 50% more transparent version of the corresponding Text color.
 */
-static void qt_placeholder_from_text(QPalette &pal, int alpha = 50)
+static void bobui_placeholder_from_text(QPalette &pal, int alpha = 50)
 {
     if (alpha < 0 or alpha > 100)
         return;
@@ -50,7 +50,7 @@ static void qt_placeholder_from_text(QPalette &pal, int alpha = 50)
     }
 }
 
-static void qt_ensure_default_accent_color(QPalette &pal)
+static void bobui_ensure_default_accent_color(QPalette &pal)
 {
     // have a lighter/darker factor handy, depending on dark/light heuristics
     const int lighter = pal.base().color().lightness() > pal.text().color().lightness() ? 130 : 70;
@@ -68,13 +68,13 @@ static void qt_ensure_default_accent_color(QPalette &pal)
     }
 }
 
-static void qt_palette_from_color(QPalette &pal, const QColor &button)
+static void bobui_palette_from_color(QPalette &pal, const QColor &button)
 {
     int h, s, v;
     button.getHsv(&h, &s, &v);
     // inactive and active are the same..
-    const QBrush whiteBrush = QBrush(Qt::white);
-    const QBrush blackBrush = QBrush(Qt::black);
+    const QBrush whiteBrush = QBrush(BobUI::white);
+    const QBrush blackBrush = QBrush(BobUI::black);
     const QBrush baseBrush = v > 128 ? whiteBrush : blackBrush;
     const QBrush foregroundBrush = v > 128 ? blackBrush : whiteBrush;
     const QBrush buttonBrush = QBrush(button);
@@ -91,8 +91,8 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
                       buttonBrushDark, buttonBrushDark150, buttonBrushDark,
                       whiteBrush, buttonBrush, buttonBrush);
 
-    qt_placeholder_from_text(pal);
-    qt_ensure_default_accent_color(pal);
+    bobui_placeholder_from_text(pal);
+    bobui_ensure_default_accent_color(pal);
 }
 
 /*!
@@ -239,7 +239,7 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
     \since 4.4
 
     Returns the tool tip base brush of the current color group. This brush is
-    used by QToolTip and QWhatsThis.
+    used by BOBUIoolTip and QWhatsThis.
 
     \note Tool tips use the Inactive color group of QPalette, because tool
     tips are not active windows.
@@ -252,7 +252,7 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
     \since 4.4
 
     Returns the tool tip text brush of the current color group. This brush is
-    used by QToolTip and QWhatsThis.
+    used by BOBUIoolTip and QWhatsThis.
 
     \note Tool tips use the Inactive color group of QPalette, because tool
     tips are not active windows.
@@ -324,8 +324,8 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
 
     Returns the placeholder text brush of the current color group.
 
-    \note Before Qt 5.12, the placeholder text color was hard-coded as QPalette::text().color()
-    with an alpha of 128 applied. In Qt 6, it is an independent color.
+    \note Before BobUI 5.12, the placeholder text color was hard-coded as QPalette::text().color()
+    with an alpha of 128 applied. In BobUI 6, it is an independent color.
 
     \sa ColorRole, brush()
 */
@@ -347,12 +347,12 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
 
     \brief The QPalette class contains color groups for each widget state.
 
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup appearance
     \ingroup shared
 
     A palette consists of three color groups: \e Active, \e Disabled,
-    and \e Inactive. All widgets in Qt contain a palette and
+    and \e Inactive. All widgets in BobUI contain a palette and
     use their palette to draw themselves. This makes the user
     interface easily configurable and easier to keep consistent.
 
@@ -383,7 +383,7 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
 
     We strongly recommend that you use the default palette of the
     current style (returned by QGuiApplication::palette()) and
-    modify that as necessary. This is done by Qt's widgets when they
+    modify that as necessary. This is done by BobUI's widgets when they
     are drawn.
 
     To modify a color group you call the functions
@@ -445,18 +445,18 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
                           alternating row colors (see
                           QAbstractItemView::setAlternatingRowColors()).
 
-    \value ToolTipBase Used as the background color for QToolTip and
+    \value ToolTipBase Used as the background color for BOBUIoolTip and
                           QWhatsThis. Tool tips use the Inactive color group
                           of QPalette, because tool tips are not active
                           windows.
 
-    \value ToolTipText Used as the foreground color for QToolTip and
+    \value ToolTipText Used as the foreground color for BOBUIoolTip and
                           QWhatsThis. Tool tips use the Inactive color group
                           of QPalette, because tool tips are not active
                           windows.
 
     \value PlaceholderText Used as the placeholder color for various text input widgets.
-           This enum value has been introduced in Qt 5.12
+           This enum value has been introduced in BobUI 5.12
 
     \value Text  The foreground color used with \c Base. This is usually
                  the same as the \c WindowText, in which case it must provide
@@ -493,14 +493,14 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
     \value Mid  Between \c Button and \c Dark.
 
     \value Shadow  A very dark color. By default, the shadow color is
-                   Qt::black.
+                   BobUI::black.
 
 
     Selected (marked) items have two roles:
 
     \value Highlight   A color to indicate a selected item or the current
                        item. By default, the highlight color is
-                       Qt::darkBlue.
+                       BobUI::darkBlue.
 
     \value [since 6.6] Accent
                        A color that typically contrasts or complements
@@ -510,19 +510,19 @@ static void qt_palette_from_color(QPalette &pal, const QColor &button)
                        Unless explicitly set, it defaults to Highlight.
 
     \value HighlightedText  A text color that contrasts with \c Highlight.
-                            By default, the highlighted text color is Qt::white.
+                            By default, the highlighted text color is BobUI::white.
 
     There are two color roles related to hyperlinks:
 
     \value Link  A text color used for unvisited hyperlinks.
-                 By default, the link color is Qt::blue.
+                 By default, the link color is BobUI::blue.
 
     \value LinkVisited  A text color used for already visited hyperlinks.
-                        By default, the linkvisited color is Qt::magenta.
+                        By default, the linkvisited color is BobUI::magenta.
 
     Note that we do not use the \c Link and \c LinkVisited roles when
-    rendering rich text in Qt, and that we recommend that you use CSS
-    and the QTextDocument::setDefaultStyleSheet() function to alter
+    rendering rich text in BobUI, and that we recommend that you use CSS
+    and the BOBUIextDocument::setDefaultStyleSheet() function to alter
     the appearance of links. For example:
 
     \snippet textdocument-css/main.cpp 0
@@ -553,7 +553,7 @@ QPalette::QPalette()
         setResolveMask(0);
     } else {
         init();
-        qt_palette_from_color(*this, Qt::black);
+        bobui_palette_from_color(*this, BobUI::black);
         d->resolveMask = 0;
     }
 }
@@ -566,7 +566,7 @@ QPalette::QPalette()
 QPalette::QPalette(const QColor &button)
 {
     init();
-    qt_palette_from_color(*this, button);
+    bobui_palette_from_color(*this, button);
 }
 
 /*!
@@ -574,10 +574,10 @@ QPalette::QPalette(const QColor &button)
   automatically calculated, based on this color. \c Window will be
   the button color as well.
 */
-QPalette::QPalette(Qt::GlobalColor button)
+QPalette::QPalette(BobUI::GlobalColor button)
 {
     init();
-    qt_palette_from_color(*this, button);
+    bobui_palette_from_color(*this, button);
 }
 
 /*!
@@ -597,8 +597,8 @@ QPalette::QPalette(const QBrush &windowText, const QBrush &button,
     setColorGroup(All, windowText, button, light, dark, mid, text, bright_text,
                   base, window);
 
-    qt_placeholder_from_text(*this);
-    qt_ensure_default_accent_color(*this);
+    bobui_placeholder_from_text(*this);
+    bobui_ensure_default_accent_color(*this);
 }
 
 
@@ -633,11 +633,11 @@ QPalette::QPalette(const QColor &button, const QColor &window)
     window.getHsv(&h, &s, &v);
 
     const QBrush windowBrush = QBrush(window);
-    const QBrush whiteBrush = QBrush(Qt::white);
-    const QBrush blackBrush = QBrush(Qt::black);
+    const QBrush whiteBrush = QBrush(BobUI::white);
+    const QBrush blackBrush = QBrush(BobUI::black);
     const QBrush baseBrush = v > 128 ? whiteBrush : blackBrush;
     const QBrush foregroundBrush = v > 128 ? blackBrush : whiteBrush;
-    const QBrush disabledForeground = QBrush(Qt::darkGray);
+    const QBrush disabledForeground = QBrush(BobUI::darkGray);
 
     const QBrush buttonBrush = QBrush(button);
     const QBrush buttonBrushDark = QBrush(button.darker());
@@ -655,8 +655,8 @@ QPalette::QPalette(const QColor &button, const QColor &window)
                   buttonBrushDark, buttonBrushDark150, disabledForeground,
                   whiteBrush, baseBrush, windowBrush);
 
-    qt_placeholder_from_text(*this);
-    qt_ensure_default_accent_color(*this);
+    bobui_placeholder_from_text(*this);
+    bobui_ensure_default_accent_color(*this);
 }
 
 /*!
@@ -854,7 +854,7 @@ void QPalette::detach()
             delete d;
         d = x;
     } else {
-        d->detach_no = ++QPalettePrivate::qt_palette_private_count;
+        d->detach_no = ++QPalettePrivate::bobui_palette_private_count;
     }
 }
 
@@ -1026,7 +1026,7 @@ void QPalette::setResolveMask(QPalette::ResolveMask mask)
   QPalette stream functions
  *****************************************************************************/
 
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 
 static const int NumOldRoles = 7;
 static const int oldRoles[7] = { QPalette::WindowText, QPalette::Window, QPalette::Light,
@@ -1038,25 +1038,25 @@ static const int oldRoles[7] = { QPalette::WindowText, QPalette::Window, QPalett
     Writes the palette, \a p to the stream \a s and returns a
     reference to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator<<(QDataStream &s, const QPalette &p)
 {
     for (int grp = 0; grp < (int)QPalette::NColorGroups; grp++) {
         if (s.version() == 1) {
-            // Qt 1.x
+            // BobUI 1.x
             for (int i = 0; i < NumOldRoles; ++i)
                 s << p.d->data->br[grp][oldRoles[i]].color();
         } else {
             int max = (int)QPalette::NColorRoles;
-            if (s.version() <= QDataStream::Qt_2_1)
+            if (s.version() <= QDataStream::BobUI_2_1)
                 max = QPalette::HighlightedText + 1;
-            else if (s.version() <= QDataStream::Qt_4_3)
+            else if (s.version() <= QDataStream::BobUI_4_3)
                 max = QPalette::AlternateBase + 1;
-            else if (s.version() <= QDataStream::Qt_5_11)
+            else if (s.version() <= QDataStream::BobUI_5_11)
                 max = QPalette::ToolTipText + 1;
-            else if (s.version() <= QDataStream::Qt_6_5)
+            else if (s.version() <= QDataStream::BobUI_6_5)
                 max = QPalette::PlaceholderText + 1;
 
             for (int r = 0; r < max; r++)
@@ -1081,7 +1081,7 @@ static void readV1ColorGroup(QDataStream &s, QPalette &pal, QPalette::ColorGroup
     Reads a palette from the stream, \a s into the palette \a p, and
     returns a reference to the stream.
 
-    \sa{Serializing Qt Data Types}{Format of the QDataStream operators}
+    \sa{Serializing BobUI Data Types}{Format of the QDataStream operators}
 */
 
 QDataStream &operator>>(QDataStream &s, QPalette &p)
@@ -1093,16 +1093,16 @@ QDataStream &operator>>(QDataStream &s, QPalette &p)
         readV1ColorGroup(s, p, QPalette::Inactive);
     } else {
         int max = QPalette::NColorRoles;
-        if (s.version() <= QDataStream::Qt_2_1) {
+        if (s.version() <= QDataStream::BobUI_2_1) {
             p = QPalette();
             max = QPalette::HighlightedText + 1;
-        } else if (s.version() <= QDataStream::Qt_4_3) {
+        } else if (s.version() <= QDataStream::BobUI_4_3) {
             p = QPalette();
             max = QPalette::AlternateBase + 1;
-        } else if (s.version() <= QDataStream::Qt_5_11) {
+        } else if (s.version() <= QDataStream::BobUI_5_11) {
             p = QPalette();
             max = QPalette::ToolTipText + 1;
-        } else if (s.version() <= QDataStream::Qt_6_5) {
+        } else if (s.version() <= QDataStream::BobUI_6_5) {
             p = QPalette();
             max = QPalette::PlaceholderText + 1;
         }
@@ -1117,14 +1117,14 @@ QDataStream &operator>>(QDataStream &s, QPalette &p)
             }
 
             // Accent defaults to Highlight for stream versions that don't have it.
-            if (s.version() < QDataStream::Qt_6_6)
+            if (s.version() < QDataStream::BobUI_6_6)
                 p.setBrush(group, QPalette::Accent, p.brush(group, QPalette::Highlight));
         }
 
     }
     return s;
 }
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
 /*!
     Returns \c true if this palette and \a p are copies of each other,
@@ -1153,15 +1153,15 @@ void QPalette::setColorGroup(ColorGroup cg, const QBrush &windowText, const QBru
                              const QBrush &text, const QBrush &bright_text, const QBrush &base,
                              const QBrush &window)
 {
-    QBrush alt_base = QBrush(qt_mix_colors(base.color(), button.color()));
-    QBrush mid_light = QBrush(qt_mix_colors(button.color(), light.color()));
+    QBrush alt_base = QBrush(bobui_mix_colors(base.color(), button.color()));
+    QBrush mid_light = QBrush(bobui_mix_colors(button.color(), light.color()));
     QColor toolTipBase(255, 255, 220);
     QColor toolTipText(0, 0, 0);
 
     setColorGroup(cg, windowText, button, light, dark, mid, text, bright_text, base,
                   alt_base, window, mid_light, text,
-                  QBrush(Qt::black), QBrush(Qt::darkBlue), QBrush(Qt::white),
-                  QBrush(Qt::blue), QBrush(Qt::magenta), QBrush(toolTipBase),
+                  QBrush(BobUI::black), QBrush(BobUI::darkBlue), QBrush(BobUI::white),
+                  QBrush(BobUI::blue), QBrush(BobUI::magenta), QBrush(toolTipBase),
                   QBrush(toolTipText));
 
     for (int cr = Highlight; cr <= LinkVisited; ++cr) {
@@ -1225,7 +1225,7 @@ void QPalette::setColorGroup(ColorGroup cg, const QBrush &foreground, const QBru
     setBrush(cg, ToolTipText, toolTipText);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 static QString groupsToString(const QPalette &p, QPalette::ColorRole cr)
 {
     const auto groupEnum = QMetaEnum::fromType<QPalette::ColorGroup>();
@@ -1268,7 +1268,7 @@ QDebug operator<<(QDebug dbg, const QPalette &p)
     QDebugStateSaver saver(dbg);
     dbg.nospace();
 
-    dbg << "QPalette(resolve=" << Qt::hex << Qt::showbase << p.resolveMask();
+    dbg << "QPalette(resolve=" << BobUI::hex << BobUI::showbase << p.resolveMask();
 
     auto roleString = rolesToString(p);
     if (!roleString.isEmpty())
@@ -1280,6 +1280,6 @@ QDebug operator<<(QDebug dbg, const QPalette &p)
  }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qpalette.cpp"

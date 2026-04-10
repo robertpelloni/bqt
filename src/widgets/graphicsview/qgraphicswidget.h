@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSWIDGET_H
 #define QGRAPHICSWIDGET_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qfont.h>
-#if QT_CONFIG(action)
-#  include <QtGui/qaction.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qfont.h>
+#if BOBUI_CONFIG(action)
+#  include <BobUIGui/qaction.h>
 #endif
-#include <QtWidgets/qgraphicslayoutitem.h>
-#include <QtWidgets/qgraphicsitem.h>
-#include <QtGui/qpalette.h>
+#include <BobUIWidgets/qgraphicslayoutitem.h>
+#include <BobUIWidgets/qgraphicsitem.h>
+#include <BobUIGui/qpalette.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFont;
 class QFontMetrics;
@@ -35,28 +35,28 @@ class Q_WIDGETS_EXPORT QGraphicsWidget : public QGraphicsObject, public QGraphic
     Q_INTERFACES(QGraphicsItem QGraphicsLayoutItem)
     Q_PROPERTY(QPalette palette READ palette WRITE setPalette)
     Q_PROPERTY(QFont font READ font WRITE setFont)
-    Q_PROPERTY(Qt::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection
+    Q_PROPERTY(BobUI::LayoutDirection layoutDirection READ layoutDirection WRITE setLayoutDirection
                RESET unsetLayoutDirection)
     Q_PROPERTY(QSizeF size READ size WRITE resize NOTIFY geometryChanged)
     Q_PROPERTY(QSizeF minimumSize READ minimumSize WRITE setMinimumSize)
     Q_PROPERTY(QSizeF preferredSize READ preferredSize WRITE setPreferredSize)
     Q_PROPERTY(QSizeF maximumSize READ maximumSize WRITE setMaximumSize)
     Q_PROPERTY(QSizePolicy sizePolicy READ sizePolicy WRITE setSizePolicy)
-    Q_PROPERTY(Qt::FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy)
-    Q_PROPERTY(Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
+    Q_PROPERTY(BobUI::FocusPolicy focusPolicy READ focusPolicy WRITE setFocusPolicy)
+    Q_PROPERTY(BobUI::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags)
     Q_PROPERTY(QString windowTitle READ windowTitle WRITE setWindowTitle)
     Q_PROPERTY(QRectF geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(bool autoFillBackground READ autoFillBackground WRITE setAutoFillBackground)
     Q_PROPERTY(QGraphicsLayout* layout READ layout WRITE setLayout NOTIFY layoutChanged)
 public:
-    QGraphicsWidget(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = Qt::WindowFlags());
+    QGraphicsWidget(QGraphicsItem *parent = nullptr, BobUI::WindowFlags wFlags = BobUI::WindowFlags());
     ~QGraphicsWidget();
     QGraphicsLayout *layout() const;
     void setLayout(QGraphicsLayout *layout);
     void adjustSize();
 
-    Qt::LayoutDirection layoutDirection() const;
-    void setLayoutDirection(Qt::LayoutDirection direction);
+    BobUI::LayoutDirection layoutDirection() const;
+    void setLayoutDirection(BobUI::LayoutDirection direction);
     void unsetLayoutDirection();
 
     QStyle *style() const;
@@ -91,27 +91,27 @@ public:
     QRectF windowFrameRect() const;
 
     // Window handling
-    Qt::WindowFlags windowFlags() const;
-    Qt::WindowType windowType() const;
-    void setWindowFlags(Qt::WindowFlags wFlags);
+    BobUI::WindowFlags windowFlags() const;
+    BobUI::WindowType windowType() const;
+    void setWindowFlags(BobUI::WindowFlags wFlags);
     bool isActiveWindow() const;
     void setWindowTitle(const QString &title);
     QString windowTitle() const;
 
     // Focus handling
-    Qt::FocusPolicy focusPolicy() const;
-    void setFocusPolicy(Qt::FocusPolicy policy);
+    BobUI::FocusPolicy focusPolicy() const;
+    void setFocusPolicy(BobUI::FocusPolicy policy);
     static void setTabOrder(QGraphicsWidget *first, QGraphicsWidget *second);
     QGraphicsWidget *focusWidget() const;
 
-#ifndef QT_NO_SHORTCUT
-    int grabShortcut(const QKeySequence &sequence, Qt::ShortcutContext context = Qt::WindowShortcut);
+#ifndef BOBUI_NO_SHORTCUT
+    int grabShortcut(const QKeySequence &sequence, BobUI::ShortcutContext context = BobUI::WindowShortcut);
     void releaseShortcut(int id);
     void setShortcutEnabled(int id, bool enabled = true);
     void setShortcutAutoRepeat(int id, bool enabled = true);
 #endif
 
-#ifndef QT_NO_ACTION
+#ifndef BOBUI_NO_ACTION
     //actions
     void addAction(QAction *action);
     void addActions(const QList<QAction*> &actions);
@@ -121,8 +121,8 @@ public:
     QList<QAction*> actions() const;
 #endif
 
-    void setAttribute(Qt::WidgetAttribute attribute, bool on = true);
-    bool testAttribute(Qt::WidgetAttribute attribute) const;
+    void setAttribute(BobUI::WidgetAttribute attribute, bool on = true);
+    bool testAttribute(BobUI::WidgetAttribute attribute) const;
 
     enum {
         Type = 11
@@ -150,7 +150,7 @@ public Q_SLOTS:
 protected:
     virtual void initStyleOption(QStyleOption *option) const;
 
-    QSizeF sizeHint(Qt::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
+    QSizeF sizeHint(BobUI::SizeHint which, const QSizeF &constraint = QSizeF()) const override;
     void updateGeometry() override;
 
     // Notification
@@ -160,7 +160,7 @@ protected:
     // Scene events
     bool sceneEvent(QEvent *event) override;
     virtual bool windowFrameEvent(QEvent *e);
-    virtual Qt::WindowFrameSection windowFrameSectionAt(const QPointF& pos) const;
+    virtual BobUI::WindowFrameSection windowFrameSectionAt(const QPointF& pos) const;
 
     // Base event handlers
     bool event(QEvent *event) override;
@@ -179,14 +179,14 @@ protected:
     //void resetInputContext ();
     virtual void resizeEvent(QGraphicsSceneResizeEvent *event);
     virtual void showEvent(QShowEvent *event);
-    //virtual void tabletEvent(QTabletEvent *event);
+    //virtual void tabletEvent(BOBUIabletEvent *event);
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void grabMouseEvent(QEvent *event);
     virtual void ungrabMouseEvent(QEvent *event);
     virtual void grabKeyboardEvent(QEvent *event);
     virtual void ungrabKeyboardEvent(QEvent *event);
-    QGraphicsWidget(QGraphicsWidgetPrivate &, QGraphicsItem *parent, Qt::WindowFlags wFlags = Qt::WindowFlags());
+    QGraphicsWidget(QGraphicsWidgetPrivate &, QGraphicsItem *parent, BobUI::WindowFlags wFlags = BobUI::WindowFlags());
 
 private:
     Q_DISABLE_COPY(QGraphicsWidget)
@@ -204,7 +204,7 @@ private:
 inline void QGraphicsWidget::setGeometry(qreal ax, qreal ay, qreal aw, qreal ah)
 { setGeometry(QRectF(ax, ay, aw, ah)); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif
 

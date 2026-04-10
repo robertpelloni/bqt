@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qeglfshooks_p.h"
 #include <QLoggingCategory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef EGLFS_PLATFORM_HOOKS
 
-QEglFSDeviceIntegration *qt_egl_device_integration()
+QEglFSDeviceIntegration *bobui_egl_device_integration()
 {
     extern QEglFSHooks *platformHooks;
     return platformHooks;
@@ -51,7 +51,7 @@ DeviceIntegration::DeviceIntegration()
         }
 
         // The environment variable can override everything.
-        QString requested = qEnvironmentVariable("QT_QPA_EGLFS_INTEGRATION");
+        QString requested = qEnvironmentVariable("BOBUI_QPA_EGLFS_INTEGRATION");
         if (requested.isNull()) {
             // Device-specific makespecs may define a preferred plugin.
 #ifdef EGLFS_PREFERRED_PLUGIN
@@ -87,11 +87,11 @@ DeviceIntegration::DeviceIntegration()
     }
 }
 
-QEglFSDeviceIntegration *qt_egl_device_integration()
+QEglFSDeviceIntegration *bobui_egl_device_integration()
 {
     return deviceIntegration()->integration();
 }
 
 #endif // EGLFS_PLATFORM_HOOKS
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

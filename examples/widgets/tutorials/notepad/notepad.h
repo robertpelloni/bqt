@@ -1,16 +1,16 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef NOTEPAD_H
 #define NOTEPAD_H
 
 #include <QMainWindow>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 namespace Ui {
 class Notepad;
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class Notepad : public QMainWindow
 {

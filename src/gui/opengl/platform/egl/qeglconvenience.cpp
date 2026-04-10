@@ -1,15 +1,15 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 
-#include <QtCore/qbytearray.h>
-#include <QtGui/qopenglcontext.h>
+#include <BobUICore/qbytearray.h>
+#include <BobUIGui/qopenglcontext.h>
 
 #ifdef Q_OS_LINUX
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #endif
-#include <QtGui/private/qmath_p.h>
+#include <BobUIGui/private/qmath_p.h>
 
 #include "qeglconvenience_p.h"
 
@@ -17,7 +17,7 @@
 #define EGL_OPENGL_ES3_BIT_KHR 0x0040
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QList<EGLint> q_createConfigAttributesFromFormat(const QSurfaceFormat &format)
 {
@@ -216,13 +216,13 @@ EGLConfig QEglConfigChooser::chooseConfig()
         break;
 #ifdef EGL_VERSION_1_4
     case QSurfaceFormat::DefaultRenderableType: {
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
         // NVIDIA EGL only provides desktop GL for development purposes, and recommends against using it.
         const char *vendor = eglQueryString(display(), EGL_VENDOR);
         if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL && (!vendor || !strstr(vendor, "NVIDIA")))
             configureAttributes.append(EGL_OPENGL_BIT);
         else
-#endif // QT_NO_OPENGL
+#endif // BOBUI_NO_OPENGL
             needsES2Plus = true;
         break;
     }
@@ -354,7 +354,7 @@ QSurfaceFormat q_glFormatFromConfig(EGLDisplay display, const EGLConfig config, 
              && (renderableType & EGL_OPENGL_BIT))
         format.setRenderableType(QSurfaceFormat::OpenGL);
     else if (referenceFormat.renderableType() == QSurfaceFormat::DefaultRenderableType
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
              && QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL
              && !strstr(eglQueryString(display, EGL_VENDOR), "NVIDIA")
 #endif
@@ -444,8 +444,8 @@ QSizeF q_physicalScreenSizeFromFb(int framebufferDevice, const QSize &screenSize
 
     if (size.isEmpty()) {
         // Note: in millimeters
-        int width = qEnvironmentVariableIntValue("QT_QPA_EGLFS_PHYSICAL_WIDTH");
-        int height = qEnvironmentVariableIntValue("QT_QPA_EGLFS_PHYSICAL_HEIGHT");
+        int width = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_PHYSICAL_WIDTH");
+        int height = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_PHYSICAL_HEIGHT");
 
         if (width && height) {
             size.setWidth(width);
@@ -480,8 +480,8 @@ QSizeF q_physicalScreenSizeFromFb(int framebufferDevice, const QSize &screenSize
 
         if (w <= 0 || h <= 0)
             qWarning("Unable to query physical screen size, defaulting to %d dpi.\n"
-                     "To override, set QT_QPA_EGLFS_PHYSICAL_WIDTH "
-                     "and QT_QPA_EGLFS_PHYSICAL_HEIGHT (in millimeters).", defaultPhysicalDpi);
+                     "To override, set BOBUI_QPA_EGLFS_PHYSICAL_WIDTH "
+                     "and BOBUI_QPA_EGLFS_PHYSICAL_HEIGHT (in millimeters).", defaultPhysicalDpi);
     }
 
     return size;
@@ -497,8 +497,8 @@ QSize q_screenSizeFromFb(int framebufferDevice)
     static QSize size;
 
     if (size.isEmpty()) {
-        int width = qEnvironmentVariableIntValue("QT_QPA_EGLFS_WIDTH");
-        int height = qEnvironmentVariableIntValue("QT_QPA_EGLFS_HEIGHT");
+        int width = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_WIDTH");
+        int height = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_HEIGHT");
 
         if (width && height) {
             size.setWidth(width);
@@ -537,7 +537,7 @@ int q_screenDepthFromFb(int framebufferDevice)
     Q_UNUSED(framebufferDevice);
 #endif
     const int defaultDepth = 32;
-    static int depth = qEnvironmentVariableIntValue("QT_QPA_EGLFS_DEPTH");
+    static int depth = qEnvironmentVariableIntValue("BOBUI_QPA_EGLFS_DEPTH");
 
     if (depth == 0) {
 #ifdef Q_OS_LINUX
@@ -593,4 +593,4 @@ qreal q_refreshRateFromFb(int framebufferDevice)
 
 #endif // Q_OS_UNIX
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,13 +1,13 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qhstspolicy.h"
 
-#include <QtCore/qdatetime.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QHstsPolicy
@@ -15,7 +15,7 @@ QT_BEGIN_NAMESPACE
            Security policy (HSTS).
     \since 5.9
     \ingroup network
-    \inmodule QtNetwork
+    \inmodule BobUINetwork
 
     HSTS policy defines a period of time during which QNetworkAccessManager
     should only access a host in a secure fashion. HSTS policy is defined by
@@ -202,4 +202,4 @@ bool QHstsPolicy::isExpired() const
     \memberswap{policy}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

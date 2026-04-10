@@ -1,27 +1,27 @@
-// Copyright (C) 2024 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2024 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtNetwork/private/qhttpmultipart_p.h>
-#include <QtNetwork/qformdatabuilder.h>
+#include <BobUINetwork/private/qhttpmultipart_p.h>
+#include <BobUINetwork/qformdatabuilder.h>
 
-#include <QtCore/qbuffer.h>
-#include <QtCore/qfile.h>
+#include <BobUICore/qbuffer.h>
+#include <BobUICore/qfile.h>
 
-#include <QtTest/qtest.h>
+#include <BobUITest/bobuiest.h>
 
-#ifndef QTEST_THROW_ON_FAIL
-# error This test requires QTEST_THROW_ON_FAIL being active.
+#ifndef BOBUIEST_THROW_ON_FAIL
+# error This test requires BOBUIEST_THROW_ON_FAIL being active.
 #endif
 
-#ifndef QTEST_THROW_ON_SKIP
-# error This test requires QTEST_THROW_ON_SKIP being active.
+#ifndef BOBUIEST_THROW_ON_SKIP
+# error This test requires BOBUIEST_THROW_ON_SKIP being active.
 #endif
 
-#include <QtCore/qxpfunctional.h>
+#include <BobUICore/qxpfunctional.h>
 #include <string>
 #include <type_traits>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 const auto CRLF = "\r\n"_ba;
 
@@ -29,7 +29,7 @@ Q_NEVER_INLINE static QByteArray
 serialized_impl([[maybe_unused]] qxp::function_ref<QFormDataBuilder &(QFormDataBuilder &)> operations,
                 QFormDataBuilder::Options options = QFormDataBuilder::Option::Default)
 {
-#if defined(QT_UNDEFINED_SANITIZER) && !defined(QT_BUILD_INTERNAL)
+#if defined(BOBUI_UNDEFINED_SANITIZER) && !defined(BOBUI_BUILD_INTERNAL)
     QSKIP("This test requires -developer-build when --sanitize=undefined is active.");
 #else
     QFormDataBuilder builder;
@@ -39,7 +39,7 @@ serialized_impl([[maybe_unused]] qxp::function_ref<QFormDataBuilder &(QFormDataB
     auto *device = QHttpMultiPartPrivate::get(mp.get())->device;
     QVERIFY(device->open(QIODeviceBase::ReadOnly));
     return device->readAll();
-#endif // QT_BUILD_INTERNAL || !QT_UNDEFINED_SANITIZER
+#endif // BOBUI_BUILD_INTERNAL || !BOBUI_UNDEFINED_SANITIZER
 }
 
 template <typename Callable>
@@ -103,55 +103,55 @@ void tst_QFormDataBuilder::checkBodyPartsAreEquivalent(QByteArrayView expected, 
 
 void tst_QFormDataBuilder::generateQHttpPartWithDevice_data()
 {
-    QTest::addColumn<QLatin1StringView>("name_data");
-    QTest::addColumn<QString>("real_file_name");
-    QTest::addColumn<QString>("body_name_data");
-    QTest::addColumn<QByteArray>("expected_content_type_data");
-    QTest::addColumn<QByteArray>("expected_content_disposition_data");
-    QTest::addColumn<QByteArray>("content_disposition_must_not_contain_data");
+    BOBUIest::addColumn<QLatin1StringView>("name_data");
+    BOBUIest::addColumn<QString>("real_file_name");
+    BOBUIest::addColumn<QString>("body_name_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_type_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_disposition_data");
+    BOBUIest::addColumn<QByteArray>("content_disposition_must_not_contain_data");
 
-    QTest::newRow("txt-ascii") << "text"_L1 << u"rfc3252.txt"_s << u"rfc3252.txt"_s << "text/plain"_ba
+    BOBUIest::newRow("txt-ascii") << "text"_L1 << u"rfc3252.txt"_s << u"rfc3252.txt"_s << "text/plain"_ba
                                << R"(form-data; name="text"; filename="rfc3252.txt")"_ba
                                << "filename*"_ba;
-    QTest::newRow("txt-latin") << "text"_L1 << u"rfc3252.txt"_s << u"szöveg.txt"_s << "text/plain"_ba
+    BOBUIest::newRow("txt-latin") << "text"_L1 << u"rfc3252.txt"_s << u"szöveg.txt"_s << "text/plain"_ba
                                << R"(form-data; name="text"; filename="szöveg.txt"; filename*=UTF-8''sz%C3%B6veg.txt)"_ba
                                << ""_ba;
-    QTest::newRow("txt-unicode") << "text"_L1 << u"rfc3252.txt"_s << u"テキスト.txt"_s << "text/plain"_ba
+    BOBUIest::newRow("txt-unicode") << "text"_L1 << u"rfc3252.txt"_s << u"テキスト.txt"_s << "text/plain"_ba
                                  << R"(form-data; name="text"; filename="テキスト.txt"; filename*=UTF-8''%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.txt)"_ba
                                  << ""_ba;
 
-    QTest::newRow("jpg-ascii") << "image"_L1 << u"image1.jpg"_s << u"image1.jpg"_s << "image/jpeg"_ba
+    BOBUIest::newRow("jpg-ascii") << "image"_L1 << u"image1.jpg"_s << u"image1.jpg"_s << "image/jpeg"_ba
                                << R"(form-data; name="image"; filename="image1.jpg")"_ba
                                << "filename*"_ba;
-    QTest::newRow("jpg-latin") << "image"_L1 << u"image1.jpg"_s << u"kép.jpg"_s << "image/jpeg"_ba
+    BOBUIest::newRow("jpg-latin") << "image"_L1 << u"image1.jpg"_s << u"kép.jpg"_s << "image/jpeg"_ba
                                << R"(form-data; name="image"; filename="kép.jpg"; filename*=UTF-8''k%C3%A9p.jpg)"_ba
                                << ""_ba;
-    QTest::newRow("jpg-unicode") << "image"_L1 << u"image1.jpg"_s << u"絵.jpg"_s << "image/jpeg"_ba
+    BOBUIest::newRow("jpg-unicode") << "image"_L1 << u"image1.jpg"_s << u"絵.jpg"_s << "image/jpeg"_ba
                                  << R"(form-data; name="image"; filename="絵.jpg"; filename*=UTF-8''%E7%B5%B5.jpg)"_ba
                                  << ""_ba;
 
-    QTest::newRow("doc-ascii") << "text"_L1 << u"document.docx"_s << u"word.docx"_s
+    BOBUIest::newRow("doc-ascii") << "text"_L1 << u"document.docx"_s << u"word.docx"_s
                                << "application/vnd.openxmlformats-officedocument.wordprocessingml.document"_ba
                                << R"(form-data; name="text"; filename="word.docx")"_ba
                                << "filename*"_ba;
-    QTest::newRow("doc-latin") << "text"_L1 << u"document.docx"_s << u"szöveg.docx"_s
+    BOBUIest::newRow("doc-latin") << "text"_L1 << u"document.docx"_s << u"szöveg.docx"_s
                                << "application/vnd.openxmlformats-officedocument.wordprocessingml.document"_ba
                                << R"(form-data; name="text"; filename="szöveg.docx"; filename*=UTF-8''sz%C3%B6veg.docx)"_ba
                                << ""_ba;
-    QTest::newRow("doc-unicode") << "text"_L1 << u"document.docx"_s << u"テキスト.docx"_s
+    BOBUIest::newRow("doc-unicode") << "text"_L1 << u"document.docx"_s << u"テキスト.docx"_s
                                  << "application/vnd.openxmlformats-officedocument.wordprocessingml.document"_ba
                                  << R"(form-data; name="text"; filename="テキスト.docx"; filename*=UTF-8''%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.docx)"_ba
                                  << ""_ba;
 
-    QTest::newRow("xls-ascii") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"sheet.xlsx"_s
+    BOBUIest::newRow("xls-ascii") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"sheet.xlsx"_s
                                << "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"_ba
                                << R"(form-data; name="spreadsheet"; filename="sheet.xlsx")"_ba
                                << "filename*"_ba;
-    QTest::newRow("xls-latin") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"szöveg.xlsx"_s
+    BOBUIest::newRow("xls-latin") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"szöveg.xlsx"_s
                                << "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"_ba
                                << R"(form-data; name="spreadsheet"; filename="szöveg.xlsx"; filename*=UTF-8''sz%C3%B6veg.xlsx)"_ba
                                << ""_ba;
-    QTest::newRow("xls-unicode") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"テキスト.xlsx"_s
+    BOBUIest::newRow("xls-unicode") << "spreadsheet"_L1 << u"sheet.xlsx"_s << u"テキスト.xlsx"_s
                                  << "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"_ba
                                  << R"(form-data; name="spreadsheet"; filename="テキスト.xlsx"; filename*=UTF-8''%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88.xlsx)"_ba
                                  << ""_ba;
@@ -182,27 +182,27 @@ void tst_QFormDataBuilder::generateQHttpPartWithDevice()
 
 void tst_QFormDataBuilder::escapesBackslashAndQuotesInFilenameAndName_data()
 {
-    QTest::addColumn<QLatin1StringView>("name_data");
-    QTest::addColumn<QString>("body_name_data");
-    QTest::addColumn<QByteArray>("expected_content_type_data");
-    QTest::addColumn<QByteArray>("expected_content_disposition_data");
+    BOBUIest::addColumn<QLatin1StringView>("name_data");
+    BOBUIest::addColumn<QString>("body_name_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_type_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_disposition_data");
 
-    QTest::newRow("quote") << "t\"ext"_L1 << uR"(rfc32"52.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("quote") << "t\"ext"_L1 << uR"(rfc32"52.txt)"_s << "text/plain"_ba
                            << R"(form-data; name="t\"ext"; filename="rfc32\"52.txt")"_ba;
 
-    QTest::newRow("slash") << "t\\ext"_L1 << uR"(rfc32\52.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("slash") << "t\\ext"_L1 << uR"(rfc32\52.txt)"_s << "text/plain"_ba
                            << R"(form-data; name="t\\ext"; filename="rfc32\\52.txt")"_ba;
 
-    QTest::newRow("quotes") << "t\"e\"xt"_L1 << uR"(rfc3"25"2.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("quotes") << "t\"e\"xt"_L1 << uR"(rfc3"25"2.txt)"_s << "text/plain"_ba
                             << R"(form-data; name="t\"e\"xt"; filename="rfc3\"25\"2.txt")"_ba;
 
-    QTest::newRow("slashes") << "t\\\\ext"_L1 << uR"(rfc32\\52.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("slashes") << "t\\\\ext"_L1 << uR"(rfc32\\52.txt)"_s << "text/plain"_ba
                              << R"(form-data; name="t\\\\ext"; filename="rfc32\\\\52.txt")"_ba;
 
-    QTest::newRow("quote-slash") << "t\"ex\\t"_L1 << uR"(rfc"32\52.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("quote-slash") << "t\"ex\\t"_L1 << uR"(rfc"32\52.txt)"_s << "text/plain"_ba
                                  << R"(form-data; name="t\"ex\\t"; filename="rfc\"32\\52.txt")"_ba;
 
-    QTest::newRow("quotes-slashes") << "t\"e\"x\\t\\"_L1 << uR"(r"f"c3\2\52.txt)"_s << "text/plain"_ba
+    BOBUIest::newRow("quotes-slashes") << "t\"e\"x\\t\\"_L1 << uR"(r"f"c3\2\52.txt)"_s << "text/plain"_ba
                                     << R"(form-data; name="t\"e\"x\\t\\"; filename="r\"f\"c3\\2\\52.txt")"_ba;
 }
 
@@ -229,23 +229,23 @@ void tst_QFormDataBuilder::filenameEncoding_data()
     static const auto contentType = "text/plain"_ba;
     using Opts = QFormDataBuilder::Options;
     using Opt = QFormDataBuilder::Option;
-    QTest::addColumn<QLatin1StringView>("name_data");
-    QTest::addColumn<QAnyStringView>("body_name_data");
-    QTest::addColumn<QByteArray>("expected_content_type_data");
-    QTest::addColumn<QByteArray>("expected_content_disposition_data");
-    QTest::addColumn<QByteArray>("content_disposition_must_not_contain_data");
-    QTest::addColumn<QFormDataBuilder::Options>("filename_options");
+    BOBUIest::addColumn<QLatin1StringView>("name_data");
+    BOBUIest::addColumn<QAnyStringView>("body_name_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_type_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_disposition_data");
+    BOBUIest::addColumn<QByteArray>("content_disposition_must_not_contain_data");
+    BOBUIest::addColumn<QFormDataBuilder::Options>("filename_options");
 
     auto addAsciiTestRows = [] (const std::string &rowName, Opts opts) {
-        QTest::newRow((rowName + "-L1").c_str())
+        BOBUIest::newRow((rowName + "-L1").c_str())
             << "text"_L1 << QAnyStringView("rfc3252.txt"_L1) << contentType
             << R"(form-data; name="text"; filename="rfc3252.txt")"_ba
             << "filename*"_ba << opts;
-        QTest::newRow((rowName + "-U8").c_str())
+        BOBUIest::newRow((rowName + "-U8").c_str())
             << "text"_L1 << QAnyStringView(u8"rfc3252.txt") << contentType
             << R"(form-data; name="text"; filename="rfc3252.txt")"_ba
             << "filename*"_ba << opts;
-        QTest::newRow((rowName + "-U").c_str())
+        BOBUIest::newRow((rowName + "-U").c_str())
             << "text"_L1 << QAnyStringView(u"rfc3252.txt") << contentType
             << R"(form-data; name="text"; filename="rfc3252.txt")"_ba
             << "filename*"_ba << opts;
@@ -259,13 +259,13 @@ void tst_QFormDataBuilder::filenameEncoding_data()
     auto addLatin1TestRows = [] (const std::string &rowName, const QByteArray &resultFilename,
                                  const QByteArray &mustNotContain, Opts opts) {
         // 0xF6 is 'ö', use hex value with Latin-1 to avoid interpretation as UTF-8 (0xC3 0xB6)
-        QTest::newRow((rowName + "-L1").c_str())
+        BOBUIest::newRow((rowName + "-L1").c_str())
             << "text"_L1 << QAnyStringView("sz\xF6veg.txt"_L1) << contentType
             << resultFilename << mustNotContain << opts;
-        QTest::newRow((rowName + "-U8").c_str())
+        BOBUIest::newRow((rowName + "-U8").c_str())
             << "text"_L1 << QAnyStringView(u8"szöveg.txt") << contentType
             << resultFilename << mustNotContain << opts;
-        QTest::newRow((rowName + "-U").c_str())
+        BOBUIest::newRow((rowName + "-U").c_str())
             << "text"_L1 << QAnyStringView(u"szöveg.txt") << contentType
             << resultFilename << mustNotContain << opts;
     };
@@ -287,7 +287,7 @@ void tst_QFormDataBuilder::filenameEncoding_data()
 
     auto addUtf8TestRows = [] (const std::string &rowName, const QByteArray &resultFilename,
                                const QByteArray &mustNotContain, Opts opts) {
-        QTest::newRow((rowName + "-U8").c_str())
+        BOBUIest::newRow((rowName + "-U8").c_str())
             << "text"_L1 << QAnyStringView(u8"テキスト.txt") << contentType
             << resultFilename << mustNotContain << opts;
     };
@@ -340,13 +340,13 @@ void tst_QFormDataBuilder::filenameEncoding()
 
 void tst_QFormDataBuilder::setHeadersDoesNotAffectHeaderFieldsManagedByBuilder_data()
 {
-    QTest::addColumn<QLatin1StringView>("name_data");
-    QTest::addColumn<QAnyStringView>("body_name_data");
-    QTest::addColumn<bool>("overwrite");
-    QTest::addColumn<bool>("extra_headers");
-    QTest::addColumn<QByteArrayList>("expected_headers");
+    BOBUIest::addColumn<QLatin1StringView>("name_data");
+    BOBUIest::addColumn<QAnyStringView>("body_name_data");
+    BOBUIest::addColumn<bool>("overwrite");
+    BOBUIest::addColumn<bool>("extra_headers");
+    BOBUIest::addColumn<QByteArrayList>("expected_headers");
 
-    QTest::newRow("content-disposition-is-set-by-default")
+    BOBUIest::newRow("content-disposition-is-set-by-default")
             << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
             << false << false
             << QList{
@@ -354,7 +354,7 @@ void tst_QFormDataBuilder::setHeadersDoesNotAffectHeaderFieldsManagedByBuilder_d
                     "content-type: text/plain"_ba,
                };
 
-    QTest::newRow("default-overwrites-preset-content-disposition")
+    BOBUIest::newRow("default-overwrites-preset-content-disposition")
             << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
             << true << false
             << QList{
@@ -362,7 +362,7 @@ void tst_QFormDataBuilder::setHeadersDoesNotAffectHeaderFieldsManagedByBuilder_d
                     "content-type: text/plain"_ba,
                };
 
-    QTest::newRow("added-extra-header")
+    BOBUIest::newRow("added-extra-header")
             << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
             << false << true
             << QList{
@@ -371,7 +371,7 @@ void tst_QFormDataBuilder::setHeadersDoesNotAffectHeaderFieldsManagedByBuilder_d
                     "content-length: 70"_ba,
                };
 
-    QTest::newRow("extra-header-and-overwrite")
+    BOBUIest::newRow("extra-header-and-overwrite")
             << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
             << true << true
             << QList{
@@ -416,17 +416,17 @@ void tst_QFormDataBuilder::setHeadersDoesNotAffectHeaderFieldsManagedByBuilder()
 
 void tst_QFormDataBuilder::specifyMimeType_data()
 {
-    QTest::addColumn<QLatin1StringView>("name_data");
-    QTest::addColumn<QAnyStringView>("body_name_data");
-    QTest::addColumn<QAnyStringView>("mime_type");
-    QTest::addColumn<QByteArray>("expected_content_type_data");
+    BOBUIest::addColumn<QLatin1StringView>("name_data");
+    BOBUIest::addColumn<QAnyStringView>("body_name_data");
+    BOBUIest::addColumn<QAnyStringView>("mime_type");
+    BOBUIest::addColumn<QByteArray>("expected_content_type_data");
 
-    QTest::newRow("not-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
+    BOBUIest::newRow("not-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
         << QAnyStringView("text/plain"_L1) << "content-type: text/plain"_ba;
-    QTest::newRow("mime-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
+    BOBUIest::newRow("mime-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
         << QAnyStringView("text/plain"_L1) << "content-type: text/plain"_ba;
     // wrong mime type specified but it is not overridden by the deduction
-    QTest::newRow("wrong-mime-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
+    BOBUIest::newRow("wrong-mime-specified") << "text"_L1 << QAnyStringView("rfc3252.txt"_L1)
         << QAnyStringView("image/jpeg"_L1) << "content-type: image/jpeg"_ba;
 }
 
@@ -455,19 +455,19 @@ void tst_QFormDataBuilder::specifyMimeType()
 
 void tst_QFormDataBuilder::picksUtf8NameEncodingIfAsciiDoesNotSuffice_data()
 {
-    QTest::addColumn<QAnyStringView>("name_data");
-    QTest::addColumn<QByteArray>("expected_content_disposition_data");
+    BOBUIest::addColumn<QAnyStringView>("name_data");
+    BOBUIest::addColumn<QByteArray>("expected_content_disposition_data");
 
-    QTest::newRow("latin1-ascii") << QAnyStringView("text"_L1) << R"(form-data; name="text")"_ba;
-    QTest::newRow("u8-ascii") << QAnyStringView(u8"text") << R"(form-data; name="text")"_ba;
-    QTest::newRow("u-ascii") << QAnyStringView(u"text") << R"(form-data; name="text")"_ba;
+    BOBUIest::newRow("latin1-ascii") << QAnyStringView("text"_L1) << R"(form-data; name="text")"_ba;
+    BOBUIest::newRow("u8-ascii") << QAnyStringView(u8"text") << R"(form-data; name="text")"_ba;
+    BOBUIest::newRow("u-ascii") << QAnyStringView(u"text") << R"(form-data; name="text")"_ba;
 
     // 0xF6 is 'ö', use hex value with Latin-1 to avoid interpretation as UTF-8
-    QTest::newRow("latin1-latin") << QAnyStringView("t\xF6xt"_L1) << R"(form-data; name="töxt")"_ba;
-    QTest::newRow("u8-latin") << QAnyStringView(u8"töxt") << R"(form-data; name="töxt")"_ba;
-    QTest::newRow("u-latin") << QAnyStringView(u"töxt") << R"(form-data; name="töxt")"_ba;
+    BOBUIest::newRow("latin1-latin") << QAnyStringView("t\xF6xt"_L1) << R"(form-data; name="töxt")"_ba;
+    BOBUIest::newRow("u8-latin") << QAnyStringView(u8"töxt") << R"(form-data; name="töxt")"_ba;
+    BOBUIest::newRow("u-latin") << QAnyStringView(u"töxt") << R"(form-data; name="töxt")"_ba;
 
-    QTest::newRow("u8-u8") << QAnyStringView(u8"テキスト") << R"(form-data; name="テキスト")"_ba;
+    BOBUIest::newRow("u8-u8") << QAnyStringView(u8"テキスト") << R"(form-data; name="テキスト")"_ba;
 }
 
 void tst_QFormDataBuilder::picksUtf8NameEncodingIfAsciiDoesNotSuffice()
@@ -569,5 +569,5 @@ void tst_QFormDataBuilder::keepResultOfCallingPartAliveAmongSubsequentCallsToPar
     qfdb.buildMultiPart();
 }
 
-QTEST_MAIN(tst_QFormDataBuilder)
+BOBUIEST_MAIN(tst_QFormDataBuilder)
 #include "tst_qformdatabuilder.moc"

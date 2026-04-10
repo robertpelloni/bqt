@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qwindowsvistastyle_p.h"
 #include "qwindowsvistastyle_p_p.h"
@@ -16,17 +16,17 @@
 #include <private/qapplication_p.h>
 #include <private/qsystemlibrary_p.h>
 #include <private/qwindowsthemecache_p.h>
-#if QT_CONFIG(tooltip)
-#include "private/qtooltip_p.h"
+#if BOBUI_CONFIG(tooltip)
+#include "private/bobuiooltip_p.h"
 #endif
 
 #include "qdrawutil.h" // for now
 #include <qbackingstore.h>
 
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static constexpr int windowsItemFrame        =  2; // menu item frame width
 static constexpr int windowsItemHMargin      =  3; // menu item hor text margin
@@ -63,7 +63,7 @@ QVarLengthFlatMap<const QScreen *, HWND, 4> QWindowsVistaStylePrivate::m_vistaTr
 bool QWindowsVistaStylePrivate::useVistaTheme = false;
 Q_CONSTINIT QBasicAtomicInt QWindowsVistaStylePrivate::ref = Q_BASIC_ATOMIC_INITIALIZER(-1); // -1 based refcounting
 
-static void qt_add_rect(HRGN &winRegion, QRect r)
+static void bobui_add_rect(HRGN &winRegion, QRect r)
 {
     HRGN rgn = CreateRectRgn(r.left(), r.top(), r.x() + r.width(), r.y() + r.height());
     if (rgn) {
@@ -77,23 +77,23 @@ static void qt_add_rect(HRGN &winRegion, QRect r)
     }
 }
 
-static HRGN qt_hrgn_from_qregion(const QRegion &region)
+static HRGN bobui_hrgn_from_qregion(const QRegion &region)
 {
     HRGN hRegion = CreateRectRgn(0,0,0,0);
     if (region.rectCount() == 1) {
-        qt_add_rect(hRegion, region.boundingRect());
+        bobui_add_rect(hRegion, region.boundingRect());
         return hRegion;
     }
     for (const QRect &rect : region)
-        qt_add_rect(hRegion, rect);
+        bobui_add_rect(hRegion, rect);
     return hRegion;
 }
 
-static inline Qt::Orientation progressBarOrientation(const QStyleOption *option = nullptr)
+static inline BobUI::Orientation progressBarOrientation(const QStyleOption *option = nullptr)
 {
     if (const auto *pb = qstyleoption_cast<const QStyleOptionProgressBar *>(option))
-        return pb->state & QStyle::State_Horizontal ? Qt::Horizontal : Qt::Vertical;
-    return Qt::Horizontal;
+        return pb->state & QStyle::State_Horizontal ? BobUI::Horizontal : BobUI::Vertical;
+    return BobUI::Horizontal;
 }
 
 /* In order to obtain the correct VistaTreeViewTheme (arrows for PE_IndicatorBranch),
@@ -111,8 +111,8 @@ static inline HWND createTreeViewHelperWindow(const QScreen *screen)
 
     HWND result = nullptr;
     if (auto nativeWindowsApp = dynamic_cast<QWindowsApplication *>(QGuiApplicationPrivate::platformIntegration()))
-        result = nativeWindowsApp->createMessageWindow(QStringLiteral(u"QTreeViewThemeHelperWindowClass"),
-                                                       QStringLiteral(u"QTreeViewThemeHelperWindow"));
+        result = nativeWindowsApp->createMessageWindow(QStringLiteral(u"BOBUIreeViewThemeHelperWindowClass"),
+                                                       QStringLiteral(u"BOBUIreeViewThemeHelperWindow"));
     const auto topLeft = screen->geometry().topLeft();
     // make it a top-level window and move it the the correct screen to paint with the correct dpr later on
     SetParent(result, NULL);
@@ -122,18 +122,18 @@ static inline HWND createTreeViewHelperWindow(const QScreen *screen)
 
 enum TransformType { SimpleTransform, HighDpiScalingTransform, ComplexTransform };
 
-static inline TransformType transformType(const QTransform &transform, qreal devicePixelRatio)
+static inline TransformType transformType(const BOBUIransform &transform, qreal devicePixelRatio)
 {
-    if (transform.type() <= QTransform::TxTranslate)
+    if (transform.type() <= BOBUIransform::TxTranslate)
         return SimpleTransform;
-    if (transform.type() > QTransform::TxScale)
+    if (transform.type() > BOBUIransform::TxScale)
         return ComplexTransform;
     return qFuzzyCompare(transform.m11(), devicePixelRatio)
             && qFuzzyCompare(transform.m22(), devicePixelRatio)
             ? HighDpiScalingTransform : ComplexTransform;
 }
 
-// QTBUG-60571: Exclude known fully opaque theme parts which produce values
+// BOBUIBUG-60571: Exclude known fully opaque theme parts which produce values
 // invalid in ARGB32_Premultiplied (for example, 0x00ffffff).
 static inline bool isFullyOpaque(const QWindowsThemeData &themeData)
 {
@@ -234,7 +234,7 @@ int QWindowsVistaStylePrivate::pixelMetricFromSystemDp(QStyle::PixelMetric pm, c
     case QStyle::PM_ExclusiveIndicatorHeight:
         return QWindowsThemeData::themeSize(widget, nullptr, QWindowsVistaStylePrivate::ButtonTheme, BP_RADIOBUTTON, RBS_UNCHECKEDNORMAL).height();
     case QStyle::PM_ProgressBarChunkWidth:
-        return progressBarOrientation(option) == Qt::Horizontal
+        return progressBarOrientation(option) == BobUI::Horizontal
                 ? QWindowsThemeData::themeSize(widget, nullptr, QWindowsVistaStylePrivate::ProgressTheme, PP_CHUNK).width()
                 : QWindowsThemeData::themeSize(widget, nullptr, QWindowsVistaStylePrivate::ProgressTheme, PP_CHUNKVERT).height();
     case QStyle::PM_SliderThickness:
@@ -358,10 +358,10 @@ bool QWindowsVistaStylePrivate::isLineEditBaseColorSet(const QStyleOption *optio
         // Since spin box includes a line edit we need to resolve the palette mask also from
         // the parent, as while the color is always correct on the palette supplied by panel,
         // the mask can still be empty. If either mask specifies custom base color, use that.
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
         if (const QAbstractSpinBox *spinbox = qobject_cast<QAbstractSpinBox*>(widget->parentWidget()))
             resolveMask |= spinbox->palette().resolveMask();
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
     }
     return (resolveMask & (1 << QPalette::Base)) != 0;
 }
@@ -639,7 +639,7 @@ bool QWindowsVistaStylePrivate::drawBackground(QWindowsThemeData &themeData, qre
     const qreal aditionalDevicePixelRatio = themeData.widget ? themeData.widget->devicePixelRatio() : qreal(1);
     if (paintDevice->devType() == QInternal::Widget) {
         const QWidget *window = static_cast<const QWidget *>(paintDevice)->window();
-        translucentToplevel = window->testAttribute(Qt::WA_TranslucentBackground);
+        translucentToplevel = window->testAttribute(BobUI::WA_TranslucentBackground);
     }
 
     const TransformType tt = transformType(painter->deviceTransform(), aditionalDevicePixelRatio);
@@ -693,7 +693,7 @@ bool QWindowsVistaStylePrivate::drawBackgroundDirectly(HDC dc, QWindowsThemeData
         sysRgn &= area;
     if (painter->hasClipping())
         sysRgn &= scaleRegion(painter->clipRegion(), additionalDevicePixelRatio).translated(redirectionDelta.toPoint());
-    HRGN hrgn = qt_hrgn_from_qregion(sysRgn);
+    HRGN hrgn = bobui_hrgn_from_qregion(sysRgn);
     SelectClipRgn(dc, hrgn);
 
 #ifdef DEBUG_XP_STYLE
@@ -728,7 +728,7 @@ bool QWindowsVistaStylePrivate::drawBackgroundDirectly(HDC dc, QWindowsThemeData
 
     \a correctionFactor is an additional factor used to scale up controls
     that are too small on High DPI screens, as has been observed for
-    WP_MDICLOSEBUTTON, WP_MDIRESTOREBUTTON, WP_MDIMINBUTTON (QTBUG-75927).
+    WP_MDICLOSEBUTTON, WP_MDIRESTOREBUTTON, WP_MDIMINBUTTON (BOBUIBUG-75927).
 */
 bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData &themeData,
                                                                qreal additionalDevicePixelRatio,
@@ -759,7 +759,7 @@ bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData
     bool partIsTransparent;
     bool potentialInvalidAlpha;
 
-    QString pixmapCacheKey = QStringLiteral(u"$qt_xp_");
+    QString pixmapCacheKey = QStringLiteral(u"$bobui_xp_");
     pixmapCacheKey.append(themeName(themeData.theme));
     pixmapCacheKey.append(QLatin1Char('p'));
     pixmapCacheKey.append(QString::number(partId));
@@ -942,7 +942,7 @@ bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData
             img.invertPixels();
 
         if (hasCorrectionFactor)
-            img = img.scaled(img.size() * correctionFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            img = img.scaled(img.size() * correctionFactor, BobUI::KeepAspectRatio, BobUI::SmoothTransformation);
         img.setDevicePixelRatio(additionalDevicePixelRatio);
     }
 
@@ -963,7 +963,7 @@ bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData
     }
 
     if (addBorderContentClipping)
-        painter->setClipRegion(scaleRegion(extraClip, 1.0 / additionalDevicePixelRatio), Qt::IntersectClip);
+        painter->setClipRegion(scaleRegion(extraClip, 1.0 / additionalDevicePixelRatio), BobUI::IntersectClip);
 
     if (!themeData.mirrorHorizontally && !themeData.mirrorVertically && !themeData.rotate) {
         if (!haveCachedPixmap)
@@ -983,15 +983,15 @@ bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData
             imgCopy = cachedPixmap.toImage();
 
         if (themeData.rotate) {
-            QTransform rotMatrix;
+            BOBUIransform rotMatrix;
             rotMatrix.rotate(themeData.rotate);
             imgCopy = imgCopy.transformed(rotMatrix);
         }
-        Qt::Orientations orient = {};
+        BobUI::Orientations orient = {};
         if (themeData.mirrorHorizontally)
-            orient |= Qt::Horizontal;
+            orient |= BobUI::Horizontal;
         if (themeData.mirrorVertically)
-            orient |= Qt::Vertical;
+            orient |= BobUI::Vertical;
         if (themeData.mirrorHorizontally || themeData.mirrorVertically)
             imgCopy.flip(orient);
         painter->drawImage(themeData.rect, imgCopy);
@@ -1035,13 +1035,13 @@ bool QWindowsVistaStylePrivate::drawBackgroundThruNativeBuffer(QWindowsThemeData
     which makes it impossible to run baseline tests with this style. Allow
     overriding through a dynamic property.
 */
-QTime QWindowsVistaStylePrivate::animationTime() const
+BOBUIime QWindowsVistaStylePrivate::animationTime() const
 {
     Q_Q(const QWindowsVistaStyle);
-    static bool animationTimeOverride = q->dynamicPropertyNames().contains("_qt_animation_time");
+    static bool animationTimeOverride = q->dynamicPropertyNames().contains("_bobui_animation_time");
     if (animationTimeOverride)
-        return q->property("_qt_animation_time").toTime();
-    return QTime::currentTime();
+        return q->property("_bobui_animation_time").toTime();
+    return BOBUIime::currentTime();
 }
 
 /* \internal
@@ -1130,7 +1130,7 @@ static void populateTitleBarButtonTheme(const QStyle *proxy, const QWidget *widg
         theme->stateId = RBS_NORMAL;
 }
 
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
 // Helper for drawing MDI buttons into the corner widget of QMenuBar in case a
 // QMdiSubWindow is maximized.
 static void populateMdiButtonTheme(const QStyle *proxy, const QWidget *widget,
@@ -1152,7 +1152,7 @@ static void populateMdiButtonTheme(const QStyle *proxy, const QWidget *widget,
 
 // Calculate an small (max 2), empirical correction factor for scaling up
 // WP_MDICLOSEBUTTON, WP_MDIRESTOREBUTTON, WP_MDIMINBUTTON, which are too
-// small on High DPI screens (QTBUG-75927).
+// small on High DPI screens (BOBUIBUG-75927).
 static qreal mdiButtonCorrectionFactor(QWindowsThemeData &theme, const QPaintDevice *pd = nullptr)
 {
     const auto dpr = pd ? pd->devicePixelRatio() : qApp->devicePixelRatio();
@@ -1163,7 +1163,7 @@ static qreal mdiButtonCorrectionFactor(QWindowsThemeData &theme, const QPaintDev
     const auto factor = rawFactor >= qreal(2) ? qreal(2) : qreal(1);
     return factor;
 }
-#endif // QT_CONFIG(mdiarea)
+#endif // BOBUI_CONFIG(mdiarea)
 
 /*
   This function is used by subControlRect to check if a button
@@ -1171,43 +1171,43 @@ static qreal mdiButtonCorrectionFactor(QWindowsThemeData &theme, const QPaintDev
 */
 static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBar *tb){
 
-    bool isMinimized = tb->titleBarState & Qt::WindowMinimized;
-    bool isMaximized = tb->titleBarState & Qt::WindowMaximized;
+    bool isMinimized = tb->titleBarState & BobUI::WindowMinimized;
+    bool isMaximized = tb->titleBarState & BobUI::WindowMaximized;
     const auto flags = tb->titleBarFlags;
     bool retVal = false;
     switch (sc) {
     case QStyle::SC_TitleBarContextHelpButton:
-        if (flags & Qt::WindowContextHelpButtonHint)
+        if (flags & BobUI::WindowContextHelpButtonHint)
             retVal = true;
         break;
     case QStyle::SC_TitleBarMinButton:
-        if (!isMinimized && (flags & Qt::WindowMinimizeButtonHint))
+        if (!isMinimized && (flags & BobUI::WindowMinimizeButtonHint))
             retVal = true;
         break;
     case QStyle::SC_TitleBarNormalButton:
-        if (isMinimized && (flags & Qt::WindowMinimizeButtonHint))
+        if (isMinimized && (flags & BobUI::WindowMinimizeButtonHint))
             retVal = true;
-        else if (isMaximized && (flags & Qt::WindowMaximizeButtonHint))
+        else if (isMaximized && (flags & BobUI::WindowMaximizeButtonHint))
             retVal = true;
         break;
     case QStyle::SC_TitleBarMaxButton:
-        if (!isMaximized && (flags & Qt::WindowMaximizeButtonHint))
+        if (!isMaximized && (flags & BobUI::WindowMaximizeButtonHint))
             retVal = true;
         break;
     case QStyle::SC_TitleBarShadeButton:
-        if (!isMinimized &&  flags & Qt::WindowShadeButtonHint)
+        if (!isMinimized &&  flags & BobUI::WindowShadeButtonHint)
             retVal = true;
         break;
     case QStyle::SC_TitleBarUnshadeButton:
-        if (isMinimized && flags & Qt::WindowShadeButtonHint)
+        if (isMinimized && flags & BobUI::WindowShadeButtonHint)
             retVal = true;
         break;
     case QStyle::SC_TitleBarCloseButton:
-        if (flags & Qt::WindowSystemMenuHint)
+        if (flags & BobUI::WindowSystemMenuHint)
             retVal = true;
         break;
     case QStyle::SC_TitleBarSysMenu:
-        if (flags & Qt::WindowSystemMenuHint)
+        if (flags & BobUI::WindowSystemMenuHint)
             retVal = true;
         break;
     default :
@@ -1216,7 +1216,7 @@ static bool buttonVisible(const QStyle::SubControl sc, const QStyleOptionTitleBa
     return retVal;
 }
 
-//convert Qt state flags to uxtheme button states
+//convert BobUI state flags to uxtheme button states
 static int buttonStateId(int flags, int partId)
 {
     int stateId = 0;
@@ -1258,7 +1258,7 @@ static inline bool supportsStateTransition(QStyle::PrimitiveElement element,
     case QStyle::PE_IndicatorCheckBox:
         result = true;
         break;
-        // QTBUG-40634, do not animate when color is set in palette for PE_PanelLineEdit.
+        // BOBUIBUG-40634, do not animate when color is set in palette for PE_PanelLineEdit.
     case QStyle::PE_FrameLineEdit:
         result = !QWindowsVistaStylePrivate::isLineEditBaseColorSet(option, widget);
         break;
@@ -1273,7 +1273,7 @@ static inline bool supportsStateTransition(QStyle::PrimitiveElement element,
   \brief The QWindowsVistaStyle class provides a look and feel suitable for applications on Microsoft Windows Vista.
   \since 4.3
   \ingroup appearance
-  \inmodule QtWidgets
+  \inmodule BobUIWidgets
   \internal
 
   \warning This style is only available on the Windows Vista platform
@@ -1318,7 +1318,7 @@ QWindowsVistaStyle::~QWindowsVistaStyle() = default;
   QWindowsVistaStylePrivate::widgetAnimation(Widget *).
 
   Once an animation has been started,
-  QWindowsVistaStylePrivate::timerEvent(QTimerEvent *) will
+  QWindowsVistaStylePrivate::timerEvent(BOBUIimerEvent *) will
   continuously call update() on the widget until it is stopped,
   meaning that drawPrimitive will be called many times until the
   transition has completed. During this time, the result will be
@@ -1474,7 +1474,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         if (const auto *btn = qstyleoption_cast<const QStyleOptionButton *>(option)) {
             QBrush fill;
             if (!(state & State_Sunken) && (state & State_On))
-                fill = QBrush(option->palette.light().color(), Qt::Dense4Pattern);
+                fill = QBrush(option->palette.light().color(), BobUI::Dense4Pattern);
             else
                 fill = option->palette.brush(QPalette::Button);
             if (btn->features & QStyleOptionButton::DefaultButton && state & State_Sunken) {
@@ -1491,14 +1491,14 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         break;
 
     case PE_PanelButtonTool:
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
         if (widget && widget->inherits("QDockWidgetTitleButton")) {
             if (const QWidget *dw = widget->parentWidget())
                 if (dw->isWindow()) {
                     return;
                 }
         }
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
         themeNumber = QWindowsVistaStylePrivate::ToolBarTheme;
         partId = TP_BUTTON;
         if (!(option->state & State_Enabled))
@@ -1579,7 +1579,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             theme.rect = QRect(mid_h - delta, mid_v - delta, decoration_size, decoration_size);
             theme.partId = option->state & State_MouseOver ? TVP_HOTGLYPH : TVP_GLYPH;
             theme.stateId = option->state & QStyle::State_Open ? GLPS_OPENED : GLPS_CLOSED;
-            if (option->direction == Qt::RightToLeft)
+            if (option->direction == BobUI::RightToLeft)
                 theme.mirrorHorizontally = true;
             d->drawBackground(theme);
         }
@@ -1635,13 +1635,13 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             proxy()->drawPrimitive(PE_PanelMenu, &copy, painter, widget);
             break;
         }
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         if (QStyleHelper::isInstanceOf(option->styleObject, QAccessible::EditableText)
              || QStyleHelper::isInstanceOf(option->styleObject, QAccessible::StaticText) ||
 #else
         if (
 #endif
-                (widget && widget->inherits("QTextEdit"))) {
+                (widget && widget->inherits("BOBUIextEdit"))) {
             painter->save();
             int stateId = ETS_NORMAL;
             if (!(state & State_Enabled))
@@ -1726,7 +1726,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
     case PE_PanelMenuBar:
         break;
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     case PE_IndicatorDockWidgetResizeHandle:
         return;
 
@@ -1757,10 +1757,10 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             return;
         }
         break;
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
     case PE_FrameTabWidget:
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         if (const auto *tab = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option)) {
             themeNumber = QWindowsVistaStylePrivate::TabTheme;
             partId = TABP_PANE;
@@ -1797,19 +1797,19 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                 }
             }
             switch (tab->shape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::TriangularNorth:
                 break;
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::RoundedSouth:
+            case BOBUIabBar::TriangularSouth:
                 vMirrored = true;
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::TriangularEast:
                 rotate = 90;
                 break;
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
+            case BOBUIabBar::RoundedWest:
+            case BOBUIabBar::TriangularWest:
                 rotate = 90;
                 hMirrored = true;
                 break;
@@ -1818,7 +1818,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             }
         }
         break;
-#endif  // QT_CONFIG(tabwidget)
+#endif  // BOBUI_CONFIG(tabwidget)
     case PE_FrameStatusBarItem:
         themeNumber = QWindowsVistaStylePrivate::StatusTheme;
         partId = SP_PANE;
@@ -1925,7 +1925,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
             stateId = TS_HOT;
         else
             stateId = TS_NORMAL;
-        if (option->direction == Qt::RightToLeft)
+        if (option->direction == BobUI::RightToLeft)
             hMirrored = true;
         break;
 
@@ -2030,45 +2030,45 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
     }
 
     case PE_FrameTabBarBase:
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
         if (const auto *tbb = qstyleoption_cast<const QStyleOptionTabBarBase *>(option)) {
             painter->save();
             switch (tbb->shape) {
-            case QTabBar::RoundedNorth:
+            case BOBUIabBar::RoundedNorth:
                 painter->setPen(QPen(tbb->palette.dark(), 0));
                 painter->drawLine(tbb->rect.topLeft(), tbb->rect.topRight());
                 break;
-            case QTabBar::RoundedWest:
+            case BOBUIabBar::RoundedWest:
                 painter->setPen(QPen(tbb->palette.dark(), 0));
                 painter->drawLine(tbb->rect.left(), tbb->rect.top(), tbb->rect.left(), tbb->rect.bottom());
                 break;
-            case QTabBar::RoundedSouth:
+            case BOBUIabBar::RoundedSouth:
                 painter->setPen(QPen(tbb->palette.dark(), 0));
                 painter->drawLine(tbb->rect.left(), tbb->rect.top(),
                                   tbb->rect.right(), tbb->rect.top());
                 break;
-            case QTabBar::RoundedEast:
+            case BOBUIabBar::RoundedEast:
                 painter->setPen(QPen(tbb->palette.dark(), 0));
                 painter->drawLine(tbb->rect.topLeft(), tbb->rect.bottomLeft());
                 break;
-            case QTabBar::TriangularNorth:
-            case QTabBar::TriangularEast:
-            case QTabBar::TriangularWest:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::TriangularNorth:
+            case BOBUIabBar::TriangularEast:
+            case BOBUIabBar::TriangularWest:
+            case BOBUIabBar::TriangularSouth:
                 painter->restore();
                 QWindowsStyle::drawPrimitive(element, option, painter, widget);
                 return;
             }
             painter->restore();
         }
-#endif  // QT_CONFIG(tabbar)
+#endif  // BOBUI_CONFIG(tabbar)
         return;
 
     case PE_Widget: {
-#if QT_CONFIG(dialogbuttonbox)
+#if BOBUI_CONFIG(dialogbuttonbox)
         const QDialogButtonBox *buttonBox = nullptr;
         if (qobject_cast<const QMessageBox *> (widget))
-            buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+            buttonBox = widget->findChild<const QDialogButtonBox *>(QLatin1String("bobui_msgbox_buttonbox"));
         if (buttonBox) {
             //draw white panel part
             QWindowsThemeData theme(widget, painter,
@@ -2096,10 +2096,10 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         QAbstractItemView::SelectionBehavior selectionBehavior = QAbstractItemView::SelectRows;
         QAbstractItemView::SelectionMode selectionMode = QAbstractItemView::NoSelection;
         if (const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget)) {
-            newStyle = !qobject_cast<const QTableView*>(view);
+            newStyle = !qobject_cast<const BOBUIableView*>(view);
             selectionBehavior = view->selectionBehavior();
             selectionMode = view->selectionMode();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
         } else if (!widget) {
             newStyle = !QStyleHelper::hasAncestor(option->styleObject, QAccessible::MenuItem) ;
 #endif
@@ -2130,7 +2130,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                 sectionSize.setWidth(vopt->rect.width());
             QPixmap pixmap;
 
-            if (vopt->backgroundBrush.style() != Qt::NoBrush) {
+            if (vopt->backgroundBrush.style() != BobUI::NoBrush) {
                 QPainterStateGuard psg(painter);
                 painter->setBrushOrigin(vopt->rect.topLeft());
                 painter->fillRect(vopt->rect, vopt->backgroundBrush);
@@ -2142,7 +2142,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                             .arg(sectionSize.height()).arg(selected).arg(active).arg(hover);
                     if (!QPixmapCache::find(key, &pixmap)) {
                         pixmap = QPixmap(sectionSize);
-                        pixmap.fill(Qt::transparent);
+                        pixmap.fill(BobUI::transparent);
 
                         int state;
                         if (selected && hover)
@@ -2172,7 +2172,7 @@ void QWindowsVistaStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
                     const int frame = 2; //Assumes a 2 pixel pixmap border
                     QRect srcRect = QRect(0, 0, sectionSize.width(), sectionSize.height());
                     QRect pixmapRect = vopt->rect;
-                    bool reverse = vopt->direction == Qt::RightToLeft;
+                    bool reverse = vopt->direction == BobUI::RightToLeft;
                     bool leftSection = vopt->viewItemPosition == QStyleOptionViewItem::Beginning;
                     bool rightSection = vopt->viewItemPosition == QStyleOptionViewItem::End;
                     if (vopt->viewItemPosition == QStyleOptionViewItem::OnlyOne
@@ -2265,7 +2265,7 @@ int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, co
             QRect titleBarRect = option->rect;
             titleBarRect.setHeight(tbHeight);
             QWindowsThemeData themeData;
-            if (titlebar->titleBarState & Qt::WindowMinimized) {
+            if (titlebar->titleBarState & BobUI::WindowMinimized) {
                 themeData = QWindowsThemeData(widget, nullptr,
                                       QWindowsVistaStylePrivate::WindowTheme,
                                       WP_MINCAPTION, CS_ACTIVE, titleBarRect);
@@ -2279,12 +2279,12 @@ int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, co
         break;
     }
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     case SH_RubberBand_Mask:
         if (qstyleoption_cast<const QStyleOptionRubberBand *>(option))
             ret = 0;
         break;
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 
     case SH_MessageBox_CenterButtons:
         ret = false;
@@ -2310,7 +2310,7 @@ int QWindowsVistaStyle::styleHint(StyleHint hint, const QStyleOption *option, co
         break;
 
     case SH_Header_ArrowAlignment:
-        ret = Qt::AlignTop | Qt::AlignHCenter;
+        ret = BobUI::AlignTop | BobUI::AlignHCenter;
         break;
 
     case SH_ItemView_DrawDelegateFrame:
@@ -2503,18 +2503,18 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         size.rheight()--;
         if (const auto *sg = qstyleoption_cast<const QStyleOptionSizeGrip *>(option)) {
             switch (sg->corner) {
-            case Qt::BottomRightCorner:
+            case BobUI::BottomRightCorner:
                 rect = QRect(QPoint(rect.right() - size.width(), rect.bottom() - size.height()), size);
                 break;
-            case Qt::BottomLeftCorner:
+            case BobUI::BottomLeftCorner:
                 rect = QRect(QPoint(rect.left() + 1, rect.bottom() - size.height()), size);
                 hMirrored = true;
                 break;
-            case Qt::TopRightCorner:
+            case BobUI::TopRightCorner:
                 rect = QRect(QPoint(rect.right() - size.width(), rect.top() + 1), size);
                 vMirrored = true;
                 break;
-            case Qt::TopLeftCorner:
+            case BobUI::TopLeftCorner:
                 rect = QRect(rect.topLeft() + QPoint(1, 1), size);
                 hMirrored = vMirrored = true;
             }
@@ -2527,14 +2527,14 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         return;
 
     case CE_TabBarTab:
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         if (const auto *tab = qstyleoption_cast<const QStyleOptionTab *>(option))
             stateId = tab->state & State_Enabled ? TIS_NORMAL : TIS_DISABLED;
-#endif  // QT_CONFIG(tabwidget)
+#endif  // BOBUI_CONFIG(tabwidget)
         break;
 
     case CE_TabBarTabShape:
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         if (const auto *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             themeNumber = QWindowsVistaStylePrivate::TabTheme;
             const bool isDisabled = !(tab->state & State_Enabled);
@@ -2544,8 +2544,8 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             bool lastTab = tab->position == QStyleOptionTab::End;
             bool firstTab = tab->position == QStyleOptionTab::Beginning;
             const bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
-            const bool leftAligned = proxy()->styleHint(SH_TabBar_Alignment, tab, widget) == Qt::AlignLeft;
-            const bool centerAligned = proxy()->styleHint(SH_TabBar_Alignment, tab, widget) == Qt::AlignCenter;
+            const bool leftAligned = proxy()->styleHint(SH_TabBar_Alignment, tab, widget) == BobUI::AlignLeft;
+            const bool centerAligned = proxy()->styleHint(SH_TabBar_Alignment, tab, widget) == BobUI::AlignCenter;
             const int borderThickness = proxy()->pixelMetric(PM_DefaultFrameWidth, option, widget);
             const int tabOverlap = proxy()->pixelMetric(PM_TabBarTabOverlap, option, widget);
 
@@ -2572,8 +2572,8 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 partId = TABP_TABITEM;
             }
 
-            if (tab->direction == Qt::RightToLeft
-                    && (tab->shape == QTabBar::RoundedNorth || tab->shape == QTabBar::RoundedSouth)) {
+            if (tab->direction == BobUI::RightToLeft
+                    && (tab->shape == BOBUIabBar::RoundedNorth || tab->shape == BOBUIabBar::RoundedSouth)) {
                 bool temp = firstTab;
                 firstTab = lastTab;
                 lastTab = temp;
@@ -2583,13 +2583,13 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             const bool end = lastTab || onlyOne;
 
             switch (tab->shape) {
-            case QTabBar::RoundedNorth:
+            case BOBUIabBar::RoundedNorth:
                 if (selected)
                     rect.adjust(begin ? 0 : -tabOverlap, 0, end ? 0 : tabOverlap, borderThickness);
                 else
                     rect.adjust(begin? tabOverlap : 0, tabOverlap, end ? -tabOverlap : 0, 0);
                 break;
-            case QTabBar::RoundedSouth:
+            case BOBUIabBar::RoundedSouth:
                 //vMirrored = true;
                 rotate = 180; // Not 100% correct, but works
                 if (selected)
@@ -2597,14 +2597,14 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 else
                     rect.adjust(begin ? tabOverlap : 0, 0, end ? -tabOverlap : 0 , -tabOverlap);
                 break;
-            case QTabBar::RoundedEast:
+            case BOBUIabBar::RoundedEast:
                 rotate = 90;
                 if (selected)
                     rect.adjust(-borderThickness, begin ? 0 : -tabOverlap, 0, end ? 0 : tabOverlap);
                 else
                     rect.adjust(0, begin ? tabOverlap : 0, -tabOverlap, end ? -tabOverlap : 0);
                 break;
-            case QTabBar::RoundedWest:
+            case BOBUIabBar::RoundedWest:
                 hMirrored = true;
                 rotate = 90;
                 if (selected)
@@ -2619,16 +2619,16 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
             if (!selected) {
                 switch (tab->shape) {
-                case QTabBar::RoundedNorth:
+                case BOBUIabBar::RoundedNorth:
                     rect.adjust(0,0, 0,-1);
                     break;
-                case QTabBar::RoundedSouth:
+                case BOBUIabBar::RoundedSouth:
                     rect.adjust(0,1, 0,0);
                     break;
-                case QTabBar::RoundedEast:
+                case BOBUIabBar::RoundedEast:
                     rect.adjust( 1,0, 0,0);
                     break;
-                case QTabBar::RoundedWest:
+                case BOBUIabBar::RoundedWest:
                     rect.adjust(0,0, -1,0);
                     break;
                 default:
@@ -2636,16 +2636,16 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 }
             }
         }
-#endif  // QT_CONFIG(tabwidget)
+#endif  // BOBUI_CONFIG(tabwidget)
         break;
 
     case CE_ProgressBarGroove: {
-        Qt::Orientation orient = Qt::Horizontal;
+        BobUI::Orientation orient = BobUI::Horizontal;
         if (const auto *pb = qstyleoption_cast<const QStyleOptionProgressBar *>(option))
             if (!(pb->state & QStyle::State_Horizontal))
-                orient = Qt::Vertical;
+                orient = BobUI::Vertical;
 
-        partId = (orient == Qt::Horizontal) ? PP_BAR : PP_BARVERT;
+        partId = (orient == BobUI::Horizontal) ? PP_BAR : PP_BARVERT;
         themeNumber = QWindowsVistaStylePrivate::ProgressTheme;
         stateId = 1;
         break;
@@ -2668,8 +2668,8 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                             QWindowsVistaStylePrivate::ProgressTheme,
                             vertical ? PP_FILLVERT : PP_FILL);
             theme.rect = option->rect;
-            bool reverse = (bar->direction == Qt::LeftToRight && inverted) || (bar->direction == Qt::RightToLeft && !inverted);
-            QTime current = d->animationTime();
+            bool reverse = (bar->direction == BobUI::LeftToRight && inverted) || (bar->direction == BobUI::RightToLeft && !inverted);
+            BOBUIime current = d->animationTime();
 
             if (isIndeterminate) {
                 if (auto *progressAnimation = qobject_cast<QProgressStyleAnimation *>(d->animation(styleObject(option)))) {
@@ -2691,7 +2691,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     } else {
                         animRect = QRect(rect.left() - glowSize + animOffset,
                                          rect.top(), glowSize, rect.height());
-                        animRect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight,
+                        animRect = QStyle::visualRect(reverse ? BobUI::RightToLeft : BobUI::LeftToRight,
                                                       option->rect, animRect);
                         pixmapSize.setWidth(animRect.width());
                     }
@@ -2699,7 +2699,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     QPixmap pixmap;
                     if (!QPixmapCache::find(name, &pixmap)) {
                         QImage image(pixmapSize, QImage::Format_ARGB32);
-                        image.fill(Qt::transparent);
+                        image.fill(BobUI::transparent);
                         QPainter imagePainter(&image);
                         theme.painter = &imagePainter;
                         theme.partId = vertical ? PP_FILLVERT : PP_FILL;
@@ -2736,7 +2736,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     double vc6_workaround = ((progress - qint64(bar->minimum)) / qMax(double(1.0), double(qint64(bar->maximum) - qint64(bar->minimum))) * maxWidth);
                     int width = isIndeterminate ? maxWidth : qMax(int(vc6_workaround), minWidth);
                     theme.rect.setWidth(width);
-                    theme.rect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight,
+                    theme.rect = QStyle::visualRect(reverse ? BobUI::RightToLeft : BobUI::LeftToRight,
                                                     option->rect, theme.rect);
                 }
                 d->drawBackground(theme);
@@ -2762,7 +2762,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                                            rect.width(), glowSize);
                     } else {
                         theme.rect = QRect(rect.left() - glowSize + animOffset,rect.top(), glowSize, rect.height());
-                        theme.rect = QStyle::visualRect(reverse ? Qt::RightToLeft : Qt::LeftToRight, option->rect, theme.rect);
+                        theme.rect = QStyle::visualRect(reverse ? BobUI::RightToLeft : BobUI::LeftToRight, option->rect, theme.rect);
                     }
                     d->drawBackground(theme);
                     painter->restore();
@@ -2781,11 +2781,11 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             const auto extent = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
             const auto pix = mbi->icon.pixmap(QSize(extent, extent), dpr, QIcon::Normal);
 
-            int alignment = Qt::AlignCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+            int alignment = BobUI::AlignCenter | BobUI::TextShowMnemonic | BobUI::TextDontClip | BobUI::TextSingleLine;
             if (!proxy()->styleHint(SH_UnderlineShortcut, mbi, widget))
-                alignment |= Qt::TextHideMnemonic;
+                alignment |= BobUI::TextHideMnemonic;
 
-            if (widget && mbi->palette.color(QPalette::Window) != Qt::transparent) { // Not needed for QtQuick Controls
+            if (widget && mbi->palette.color(QPalette::Window) != BobUI::transparent) { // Not needed for BobUIQuick Controls
                 //The rect adjustment is a workaround for the menu not really filling its background.
                 QWindowsThemeData theme(widget, painter,
                                 QWindowsVistaStylePrivate::MenuTheme,
@@ -2813,7 +2813,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         }
         return;
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     case CE_MenuEmptyArea:
         if (const auto *menuitem = qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
             QBrush fill = menuitem->palette.brush((menuitem->state & State_Selected) ?
@@ -2847,7 +2847,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             d->drawBackground(popupbackgroundTheme);
 
             //draw vertical menu line
-            if (option->direction == Qt::LeftToRight)
+            if (option->direction == BobUI::LeftToRight)
                 checkcol += rect.x();
             QPoint p1 = QStyle::visualPos(option->direction, menuitem->rect, QPoint(checkcol, rect.top()));
             QPoint p2 = QStyle::visualPos(option->direction, menuitem->rect, QPoint(checkcol, rect.bottom()));
@@ -2930,7 +2930,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 const auto size = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
                 QRect pmr(QPoint(0, 0), QSize(size, size));
                 pmr.moveCenter(vCheckRect.center());
-                menuitem->icon.paint(painter, vCheckRect, Qt::AlignCenter, mode,
+                menuitem->icon.paint(painter, vCheckRect, BobUI::AlignCenter, mode,
                                      checked ? QIcon::On : QIcon::Off);
             }
 
@@ -2948,10 +2948,10 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             if (!s.isEmpty()) {    // draw text
                 painter->save();
                 int t = s.indexOf(QLatin1Char('\t'));
-                int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+                int text_flags = BobUI::AlignVCenter | BobUI::TextShowMnemonic | BobUI::TextDontClip | BobUI::TextSingleLine;
                 if (!proxy()->styleHint(SH_UnderlineShortcut, menuitem, widget))
-                    text_flags |= Qt::TextHideMnemonic;
-                text_flags |= Qt::AlignLeft;
+                    text_flags |= BobUI::TextHideMnemonic;
+                text_flags |= BobUI::AlignLeft;
                 if (t >= 0) {
                     QRect vShortcutRect = visualRect(option->direction, menuitem->rect,
                                                      QRect(textRect.topRight(), QPoint(menuitem->rect.right(), textRect.bottom())));
@@ -2969,7 +2969,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             if (menuitem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
                 int dim = (h - 2 * windowsItemFrame) / 2;
                 PrimitiveElement arrow;
-                arrow = (option->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+                arrow = (option->direction == BobUI::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
                 xpos = x + w - windowsArrowHMargin - windowsItemFrame - dim;
                 QRect  vSubMenuRect = visualRect(option->direction, menuitem->rect, QRect(xpos, y + h / 2 - dim / 2, dim, dim));
                 QStyleOptionMenuItem newMI = *menuitem;
@@ -2979,7 +2979,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             }
         }
         return;
-#endif // QT_CONFIG(menu)
+#endif // BOBUI_CONFIG(menu)
 
     case CE_HeaderSection:
         if (const QStyleOptionHeader *header = qstyleoption_cast<const QStyleOptionHeader *>(option)) {
@@ -3012,7 +3012,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
     }
 
     case CE_ToolBar:
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
         if (const auto *toolbar = qstyleoption_cast<const QStyleOptionToolBar *>(option)) {
             QPalette pal = option->palette;
             pal.setColor(QPalette::Dark, option->palette.window().color().darker(130));
@@ -3020,10 +3020,10 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             copyOpt.palette = pal;
             QWindowsStyle::drawControl(element, &copyOpt, painter, widget);
         }
-#endif  // QT_CONFIG(toolbar)
+#endif  // BOBUI_CONFIG(toolbar)
         return;
 
-#if QT_CONFIG(dockwidget)
+#if BOBUI_CONFIG(dockwidget)
     case CE_DockWidgetTitle:
         if (const auto *dwOpt = qstyleoption_cast<const QStyleOptionDockWidget *>(option)) {
             QRect rect = option->rect;
@@ -3096,7 +3096,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     const auto titleHeight = rect.height() - 2;
                     const auto dpr = QStyleHelper::getDpr(widget);
                     const auto pxIco = ico.pixmap(QSize(titleHeight, titleHeight), dpr);
-                    if (!verticalTitleBar && dwOpt->direction == Qt::RightToLeft)
+                    if (!verticalTitleBar && dwOpt->direction == BobUI::RightToLeft)
                         painter->drawPixmap(rect.width() - titleHeight - pxIco.width(), rect.bottom() - titleHeight - 2, pxIco);
                     else
                         painter->drawPixmap(fw, rect.bottom() - titleHeight - 2, pxIco);
@@ -3108,7 +3108,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     titleFont.setBold(true);
                     painter->setFont(titleFont);
                     QString titleText
-                            = painter->fontMetrics().elidedText(dwOpt->title, Qt::ElideRight, titleRect.width());
+                            = painter->fontMetrics().elidedText(dwOpt->title, BobUI::ElideRight, titleRect.width());
 
                     int result = TST_NONE;
                     GetThemeEnumValue(theme.handle(), WP_SMALLCAPTION, isActive ? CS_ACTIVE : CS_INACTIVE, TMT_TEXTSHADOWTYPE, &result);
@@ -3118,7 +3118,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                         QColor textShadow = qRgb(GetRValue(textShadowRef), GetGValue(textShadowRef), GetBValue(textShadowRef));
                         painter->setPen(textShadow);
                         drawItemText(painter, titleRect.adjusted(1, 1, 1, 1),
-                                     Qt::AlignLeft | Qt::AlignBottom | Qt::TextHideMnemonic, dwOpt->palette,
+                                     BobUI::AlignLeft | BobUI::AlignBottom | BobUI::TextHideMnemonic, dwOpt->palette,
                                      dwOpt->state & State_Enabled, titleText);
                     }
 
@@ -3126,7 +3126,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                     QColor textColor = qRgb(GetRValue(captionText), GetGValue(captionText), GetBValue(captionText));
                     painter->setPen(textColor);
                     drawItemText(painter, titleRect,
-                                 Qt::AlignLeft | Qt::AlignBottom | Qt::TextHideMnemonic, dwOpt->palette,
+                                 BobUI::AlignLeft | BobUI::AlignBottom | BobUI::TextHideMnemonic, dwOpt->palette,
                                  dwOpt->state & State_Enabled, titleText);
                     painter->setFont(oldFont);
                     painter->setPen(oldPen);
@@ -3137,11 +3137,11 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 painter->drawRect(rect.adjusted(0, 1, -1, -3));
 
                 if (!dwOpt->title.isEmpty()) {
-                    QString titleText = painter->fontMetrics().elidedText(dwOpt->title, Qt::ElideRight,
+                    QString titleText = painter->fontMetrics().elidedText(dwOpt->title, BobUI::ElideRight,
                                                                           verticalTitleBar ? titleRect.height() : titleRect.width());
                     const int indent = 4;
                     drawItemText(painter, rect.adjusted(indent + 1, 1, -indent - 1, -1),
-                                 Qt::AlignLeft | Qt::AlignVCenter | Qt::TextHideMnemonic,
+                                 BobUI::AlignLeft | BobUI::AlignVCenter | BobUI::TextHideMnemonic,
                                  dwOpt->palette,
                                  dwOpt->state & State_Enabled, titleText,
                                  QPalette::WindowText);
@@ -3149,9 +3149,9 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             }
         }
         return;
-#endif // QT_CONFIG(dockwidget)
+#endif // BOBUI_CONFIG(dockwidget)
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     case CE_RubberBand:
         if (qstyleoption_cast<const QStyleOptionRubberBand *>(option)) {
             QColor highlight = option->palette.color(QPalette::Active, QPalette::Highlight);
@@ -3167,7 +3167,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             return;
         }
         break;
-#endif // QT_CONFIG(rubberband)
+#endif // BOBUI_CONFIG(rubberband)
 
     case CE_HeaderEmptyArea:
         if (option->state & State_Horizontal) {
@@ -3179,13 +3179,13 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         }
         break;
 
-#if QT_CONFIG(itemviews)
+#if BOBUI_CONFIG(itemviews)
     case CE_ItemViewItem: {
         const QStyleOptionViewItem *vopt;
         const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget);
         bool newStyle = true;
 
-        if (qobject_cast<const QTableView*>(widget))
+        if (qobject_cast<const BOBUIableView*>(widget))
             newStyle = false;
 
         QWindowsThemeData theme(widget, painter, themeNumber, partId, stateId, rect);
@@ -3225,13 +3225,13 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
         d->drawBackground(theme);
         return;
     }
-#endif // QT_CONFIG(itemviews)
+#endif // BOBUI_CONFIG(itemviews)
 
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     case CE_ComboBoxLabel:
         QCommonStyle::drawControl(element, option, painter, widget);
         return;
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
     default:
         break;
@@ -3274,7 +3274,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
     int stateId = 0;
 
     State flags = option->state;
-    if (widget && widget->testAttribute(Qt::WA_UnderMouse) && widget->isActiveWindow())
+    if (widget && widget->testAttribute(BobUI::WA_UnderMouse) && widget->isActiveWindow())
         flags |= State_MouseOver;
 
     if (d->transitionsEnabled() && canAnimate(option))
@@ -3366,7 +3366,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
 
     switch (control) {
 
-#if QT_CONFIG(slider)
+#if BOBUI_CONFIG(slider)
     case CC_Slider:
         if (const auto *slider = qstyleoption_cast<const QStyleOptionSlider *>(option)) {
             QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::TrackBarTheme);
@@ -3374,7 +3374,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             QRegion tickreg = slrect;
             if (sub & SC_SliderGroove) {
                 theme.rect = proxy()->subControlRect(CC_Slider, option, SC_SliderGroove, widget);
-                if (slider->orientation == Qt::Horizontal) {
+                if (slider->orientation == BobUI::Horizontal) {
                     partId = TKP_TRACK;
                     stateId = TRS_NORMAL;
                     theme.rect = QRect(slrect.left(), theme.rect.center().y() - 2, slrect.width(), 4);
@@ -3418,7 +3418,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     int tickLength = (v_ == slider->minimum || v_ >= slider->maximum) ? 4 : 3;
                     pos = QStyle::sliderPositionFromValue(slider->minimum, slider->maximum,
                                                           v_, available) + fudge;
-                    if (slider->orientation == Qt::Horizontal) {
+                    if (slider->orientation == BobUI::Horizontal) {
                         if (ticks & QSlider::TicksAbove) {
                             lines.append(QLine(pos, tickOffset - 1 - bothOffset,
                                                pos, tickOffset - 1 - bothOffset - tickLength));
@@ -3454,7 +3454,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             }
             if (sub & SC_SliderHandle) {
                 theme.rect = proxy()->subControlRect(CC_Slider, option, SC_SliderHandle, widget);
-                if (slider->orientation == Qt::Horizontal) {
+                if (slider->orientation == BobUI::Horizontal) {
                     if (slider->tickPosition == QSlider::TicksAbove)
                         partId = TKP_THUMBTOP;
                     else if (slider->tickPosition == QSlider::TicksBelow)
@@ -3505,7 +3505,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
         break;
 #endif
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
     case CC_ToolButton:
         if (const auto *toolbutton = qstyleoption_cast<const QStyleOptionToolButton *>(option)) {
             QRect button, menuarea;
@@ -3547,7 +3547,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                             stateId = TS_CHECKED;
                         else
                             stateId = TS_NORMAL;
-                        if (option->direction == Qt::RightToLeft)
+                        if (option->direction == BobUI::RightToLeft)
                             theme.mirrorHorizontally = true;
                         theme.stateId = stateId;
                         d->drawBackground(theme);
@@ -3617,7 +3617,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             }
         }
         break;
-#endif // QT_CONFIG(toolbutton)
+#endif // BOBUI_CONFIG(toolbutton)
 
     case CC_TitleBar:
         if (const auto *tb = qstyleoption_cast<const QStyleOptionTitleBar *>(option)) {
@@ -3625,7 +3625,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             bool isActive = tb->titleBarState & QStyle::State_Active;
             QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::WindowTheme);
             if (sub & SC_TitleBarLabel) {
-                partId = (tb->titleBarState & Qt::WindowMinimized) ? WP_MINCAPTION : WP_CAPTION;
+                partId = (tb->titleBarState & BobUI::WindowMinimized) ? WP_MINCAPTION : WP_CAPTION;
                 theme.rect = option->rect;
                 if (widget && !widget->isEnabled())
                     stateId = CS_DISABLED;
@@ -3649,16 +3649,16 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     painter->setPen(textShadow);
                     painter->drawText(int(ir.x() + 3 * factor), int(ir.y() + 2 * factor),
                                       int(ir.width() - 1 * factor), ir.height(),
-                                      Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine, tb->text);
+                                      BobUI::AlignLeft | BobUI::AlignVCenter | BobUI::TextSingleLine, tb->text);
                 }
                 COLORREF captionText = GetSysColor(isActive ? COLOR_CAPTIONTEXT : COLOR_INACTIVECAPTIONTEXT);
                 QColor textColor = qRgb(GetRValue(captionText), GetGValue(captionText), GetBValue(captionText));
                 painter->setPen(textColor);
                 painter->drawText(int(ir.x() + 2 * factor), int(ir.y() + 1 * factor),
                                   int(ir.width() - 2 * factor), ir.height(),
-                                  Qt::AlignLeft | Qt::AlignVCenter | Qt::TextSingleLine, tb->text);
+                                  BobUI::AlignLeft | BobUI::AlignVCenter | BobUI::TextSingleLine, tb->text);
             }
-            if (sub & SC_TitleBarSysMenu && tb->titleBarFlags & Qt::WindowSystemMenuHint) {
+            if (sub & SC_TitleBarSysMenu && tb->titleBarFlags & BobUI::WindowSystemMenuHint) {
                 theme.rect = proxy()->subControlRect(CC_TitleBar, option, SC_TitleBarSysMenu, widget);
                 partId = WP_SYSBUTTON;
                 if ((widget && !widget->isEnabled()) || !isActive)
@@ -3679,55 +3679,55 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                         const auto dpr = QStyleHelper::getDpr(widget);
                         const auto icon = proxy()->standardIcon(SP_TitleBarMenuButton, tb, widget);
                         const auto pm = icon.pixmap(QSize(extent, extent), dpr);
-                        drawItemPixmap(painter, theme.rect, Qt::AlignCenter, pm);
+                        drawItemPixmap(painter, theme.rect, BobUI::AlignCenter, pm);
                     } else {
                         d->drawBackground(theme);
                     }
                 }
             }
 
-            if (sub & SC_TitleBarMinButton && tb->titleBarFlags & Qt::WindowMinimizeButtonHint
-                    && !(tb->titleBarState & Qt::WindowMinimized)) {
+            if (sub & SC_TitleBarMinButton && tb->titleBarFlags & BobUI::WindowMinimizeButtonHint
+                    && !(tb->titleBarState & BobUI::WindowMinimized)) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarMinButton, isActive, WP_MINBUTTON, &theme);
                 d->drawBackground(theme);
             }
-            if (sub & SC_TitleBarMaxButton && tb->titleBarFlags & Qt::WindowMaximizeButtonHint
-                    && !(tb->titleBarState & Qt::WindowMaximized)) {
+            if (sub & SC_TitleBarMaxButton && tb->titleBarFlags & BobUI::WindowMaximizeButtonHint
+                    && !(tb->titleBarState & BobUI::WindowMaximized)) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarMaxButton, isActive, WP_MAXBUTTON, &theme);
                 d->drawBackground(theme);
             }
             if (sub & SC_TitleBarContextHelpButton
-                    && tb->titleBarFlags & Qt::WindowContextHelpButtonHint) {
+                    && tb->titleBarFlags & BobUI::WindowContextHelpButtonHint) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarContextHelpButton, isActive, WP_HELPBUTTON, &theme);
                 d->drawBackground(theme);
             }
             bool drawNormalButton = (sub & SC_TitleBarNormalButton)
-                    && (((tb->titleBarFlags & Qt::WindowMinimizeButtonHint)
-                         && (tb->titleBarState & Qt::WindowMinimized))
-                        || ((tb->titleBarFlags & Qt::WindowMaximizeButtonHint)
-                            && (tb->titleBarState & Qt::WindowMaximized)));
+                    && (((tb->titleBarFlags & BobUI::WindowMinimizeButtonHint)
+                         && (tb->titleBarState & BobUI::WindowMinimized))
+                        || ((tb->titleBarFlags & BobUI::WindowMaximizeButtonHint)
+                            && (tb->titleBarState & BobUI::WindowMaximized)));
             if (drawNormalButton) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarNormalButton, isActive, WP_RESTOREBUTTON, &theme);
                 d->drawBackground(theme);
             }
-            if (sub & SC_TitleBarShadeButton && tb->titleBarFlags & Qt::WindowShadeButtonHint
-                    && !(tb->titleBarState & Qt::WindowMinimized)) {
+            if (sub & SC_TitleBarShadeButton && tb->titleBarFlags & BobUI::WindowShadeButtonHint
+                    && !(tb->titleBarState & BobUI::WindowMinimized)) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarShadeButton, isActive, WP_MINBUTTON, &theme);
                 d->drawBackground(theme);
             }
-            if (sub & SC_TitleBarUnshadeButton && tb->titleBarFlags & Qt::WindowShadeButtonHint
-                    && tb->titleBarState & Qt::WindowMinimized) {
+            if (sub & SC_TitleBarUnshadeButton && tb->titleBarFlags & BobUI::WindowShadeButtonHint
+                    && tb->titleBarState & BobUI::WindowMinimized) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarUnshadeButton, isActive, WP_RESTOREBUTTON, &theme);
                 d->drawBackground(theme);
             }
-            if (sub & SC_TitleBarCloseButton && tb->titleBarFlags & Qt::WindowSystemMenuHint) {
+            if (sub & SC_TitleBarCloseButton && tb->titleBarFlags & BobUI::WindowSystemMenuHint) {
                 populateTitleBarButtonTheme(proxy(), widget, option, SC_TitleBarCloseButton, isActive, WP_CLOSEBUTTON, &theme);
                 d->drawBackground(theme);
             }
         }
         break;
 
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
     case CC_MdiControls: {
         QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::WindowTheme, WP_MDICLOSEBUTTON, CBS_NORMAL);
         if (Q_UNLIKELY(!theme.isValid()))
@@ -3747,14 +3747,14 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
         }
         break;
     }
-#endif // QT_CONFIG(mdiarea)
+#endif // BOBUI_CONFIG(mdiarea)
 
-#if QT_CONFIG(dial)
+#if BOBUI_CONFIG(dial)
     case CC_Dial:
         if (const auto *dial = qstyleoption_cast<const QStyleOptionSlider *>(option))
             QStyleHelper::drawDial(dial, painter);
         break;
-#endif // QT_CONFIG(dial)
+#endif // BOBUI_CONFIG(dial)
 
     case CC_ComboBox:
         if (const QStyleOptionComboBox *cmb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
@@ -3780,7 +3780,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     QRect subRect = proxy()->subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget);
                     QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::ComboboxTheme);
                     theme.rect = subRect;
-                    partId = option->direction == Qt::RightToLeft ? CP_DROPDOWNBUTTONLEFT : CP_DROPDOWNBUTTONRIGHT;
+                    partId = option->direction == BobUI::RightToLeft ? CP_DROPDOWNBUTTONLEFT : CP_DROPDOWNBUTTONRIGHT;
 
                     if (!(cmb->state & State_Enabled))
                         stateId = CBXS_DISABLED;
@@ -3814,7 +3814,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 if (sub & SC_ComboBoxArrow) {
                     QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::ComboboxTheme);
                     theme.rect = proxy()->subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget);
-                    theme.partId = option->direction == Qt::RightToLeft ? CP_DROPDOWNBUTTONLEFT : CP_DROPDOWNBUTTONRIGHT;
+                    theme.partId = option->direction == BobUI::RightToLeft ? CP_DROPDOWNBUTTONLEFT : CP_DROPDOWNBUTTONRIGHT;
                     if (!(cmb->state & State_Enabled))
                         theme.stateId = CBXS_DISABLED;
                     else
@@ -3839,7 +3839,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                 flags &= ~State_Enabled;
 
             bool isHorz = flags & State_Horizontal;
-            bool isRTL  = option->direction == Qt::RightToLeft;
+            bool isRTL  = option->direction == BobUI::RightToLeft;
             if (sub & SC_ScrollBarAddLine) {
                 theme.rect = proxy()->subControlRect(CC_ScrollBar, option, SC_ScrollBarAddLine, widget);
                 partId = SBP_ARROWBTN;
@@ -3936,7 +3936,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
         }
         break;
 
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     case CC_SpinBox:
         if (const QStyleOptionSpinBox *sb = qstyleoption_cast<const QStyleOptionSpinBox *>(option)) {
             QWindowsThemeData theme(widget, painter, QWindowsVistaStylePrivate::SpinTheme);
@@ -3955,8 +3955,8 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                                  QWindowsVistaStylePrivate::EditTheme,
                                  partId, stateId, r);
                 // The spinbox in Windows QStyle is drawn with frameless QLineEdit inside it
-                // That however breaks with QtQuickControls where this results in transparent
-                // spinbox background, so if there's no "widget" passed (QtQuickControls case),
+                // That however breaks with BobUIQuickControls where this results in transparent
+                // spinbox background, so if there's no "widget" passed (BobUIQuickControls case),
                 // let ftheme.noContent be false, which fixes the spinbox rendering in QQC
                 ftheme.noContent = (widget != nullptr);
                 d->drawBackground(ftheme);
@@ -3993,7 +3993,7 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
             }
         }
         break;
-#endif // QT_CONFIG(spinbox)
+#endif // BOBUI_CONFIG(spinbox)
 
     default:
         QWindowsStyle::drawComplexControl(control, option, painter, widget);
@@ -4040,7 +4040,7 @@ QSize QWindowsVistaStyle::sizeFromContents(ContentsType type, const QStyleOption
         contentSize += QSize(1, 0);
         break;
 
-#if QT_CONFIG(menubar)
+#if BOBUI_CONFIG(menubar)
     case CT_MenuBarItem:
         if (!contentSize.isEmpty())
             contentSize += QSize(windowsItemHMargin * 5 + 1, 5);
@@ -4159,34 +4159,34 @@ QRect QWindowsVistaStyle::subElementRect(SubElement element, const QStyleOption 
 
     case SE_TabWidgetTabContents:
         rect = QWindowsStyle::subElementRect(element, option, widget);
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         if (qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option))  {
             rect = QWindowsStyle::subElementRect(element, option, widget);
-            if (const QTabWidget *tabWidget = qobject_cast<const QTabWidget *>(widget)) {
+            if (const BOBUIabWidget *tabWidget = qobject_cast<const BOBUIabWidget *>(widget)) {
                 if (tabWidget->documentMode())
                     break;
                 rect.adjust(0, 0, -2, -2);
             }
         }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
         break;
 
     case SE_TabWidgetTabBar: {
         rect = QWindowsStyle::subElementRect(element, option, widget);
-#if QT_CONFIG(tabwidget)
+#if BOBUI_CONFIG(tabwidget)
         const auto *twfOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
-        if (twfOption && twfOption->direction == Qt::RightToLeft
-                && (twfOption->shape == QTabBar::RoundedNorth
-                    || twfOption->shape == QTabBar::RoundedSouth))
+        if (twfOption && twfOption->direction == BobUI::RightToLeft
+                && (twfOption->shape == BOBUIabBar::RoundedNorth
+                    || twfOption->shape == BOBUIabBar::RoundedSouth))
         {
             QStyleOptionTab otherOption;
-            otherOption.shape = (twfOption->shape == QTabBar::RoundedNorth
-                                 ? QTabBar::RoundedEast : QTabBar::RoundedSouth);
+            otherOption.shape = (twfOption->shape == BOBUIabBar::RoundedNorth
+                                 ? BOBUIabBar::RoundedEast : BOBUIabBar::RoundedSouth);
             int overlap = proxy()->pixelMetric(PM_TabBarBaseOverlap, &otherOption, widget);
             int borderThickness = proxy()->pixelMetric(PM_DefaultFrameWidth, option, widget);
             rect.adjust(-overlap + borderThickness, 0, -overlap + borderThickness, 0);
         }
-#endif // QT_CONFIG(tabwidget)
+#endif // BOBUI_CONFIG(tabwidget)
         break;
     }
 
@@ -4277,7 +4277,7 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
     QRect rect;
 
     switch (control) {
-#if QT_CONFIG(combobox)
+#if BOBUI_CONFIG(combobox)
     case CC_ComboBox:
         if (const auto *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
             const int x = cb->rect.x(), y = cb->rect.y(), wi = cb->rect.width(), he = cb->rect.height();
@@ -4308,7 +4308,7 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
             }
         }
         break;
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
 
     case CC_TitleBar:
         if (const QStyleOptionTitleBar *tb = qstyleoption_cast<const QStyleOptionTitleBar *>(option)) {
@@ -4326,14 +4326,14 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
                     qRound(qreal(GetSystemMetrics(SM_CXSIZE)) * factor - QStyleHelper::dpiScaled(4, option));
 
             const int frameWidth = proxy()->pixelMetric(PM_MdiSubWindowFrameWidth, option, widget);
-            const bool sysmenuHint  = (tb->titleBarFlags & Qt::WindowSystemMenuHint) != 0;
-            const bool minimizeHint = (tb->titleBarFlags & Qt::WindowMinimizeButtonHint) != 0;
-            const bool maximizeHint = (tb->titleBarFlags & Qt::WindowMaximizeButtonHint) != 0;
-            const bool contextHint = (tb->titleBarFlags & Qt::WindowContextHelpButtonHint) != 0;
-            const bool shadeHint = (tb->titleBarFlags & Qt::WindowShadeButtonHint) != 0;
+            const bool sysmenuHint  = (tb->titleBarFlags & BobUI::WindowSystemMenuHint) != 0;
+            const bool minimizeHint = (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint) != 0;
+            const bool maximizeHint = (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint) != 0;
+            const bool contextHint = (tb->titleBarFlags & BobUI::WindowContextHelpButtonHint) != 0;
+            const bool shadeHint = (tb->titleBarFlags & BobUI::WindowShadeButtonHint) != 0;
 
-            bool isMinimized = tb->titleBarState & Qt::WindowMinimized;
-            bool isMaximized = tb->titleBarState & Qt::WindowMaximized;
+            bool isMinimized = tb->titleBarState & BobUI::WindowMinimized;
+            bool isMaximized = tb->titleBarState & BobUI::WindowMaximized;
             int offset = 0;
             const int delta = buttonWidth + 2;
             int controlTop = option->rect.bottom() - buttonHeight - 2;
@@ -4366,43 +4366,43 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
                 break;
 
             case SC_TitleBarContextHelpButton:
-                if (tb->titleBarFlags & Qt::WindowContextHelpButtonHint)
+                if (tb->titleBarFlags & BobUI::WindowContextHelpButtonHint)
                     offset += delta;
                 Q_FALLTHROUGH();
             case SC_TitleBarMinButton:
-                if (!isMinimized && (tb->titleBarFlags & Qt::WindowMinimizeButtonHint))
+                if (!isMinimized && (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint))
                     offset += delta;
                 else if (subControl == SC_TitleBarMinButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarNormalButton:
-                if (isMinimized && (tb->titleBarFlags & Qt::WindowMinimizeButtonHint))
+                if (isMinimized && (tb->titleBarFlags & BobUI::WindowMinimizeButtonHint))
                     offset += delta;
-                else if (isMaximized && (tb->titleBarFlags & Qt::WindowMaximizeButtonHint))
+                else if (isMaximized && (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint))
                     offset += delta;
                 else if (subControl == SC_TitleBarNormalButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarMaxButton:
-                if (!isMaximized && (tb->titleBarFlags & Qt::WindowMaximizeButtonHint))
+                if (!isMaximized && (tb->titleBarFlags & BobUI::WindowMaximizeButtonHint))
                     offset += delta;
                 else if (subControl == SC_TitleBarMaxButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarShadeButton:
-                if (!isMinimized && (tb->titleBarFlags & Qt::WindowShadeButtonHint))
+                if (!isMinimized && (tb->titleBarFlags & BobUI::WindowShadeButtonHint))
                     offset += delta;
                 else if (subControl == SC_TitleBarShadeButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarUnshadeButton:
-                if (isMinimized && (tb->titleBarFlags & Qt::WindowShadeButtonHint))
+                if (isMinimized && (tb->titleBarFlags & BobUI::WindowShadeButtonHint))
                     offset += delta;
                 else if (subControl == SC_TitleBarUnshadeButton)
                     break;
                 Q_FALLTHROUGH();
             case SC_TitleBarCloseButton:
-                if (tb->titleBarFlags & Qt::WindowSystemMenuHint)
+                if (tb->titleBarFlags & BobUI::WindowSystemMenuHint)
                     offset += delta;
                 else if (subControl == SC_TitleBarCloseButton)
                     break;
@@ -4431,7 +4431,7 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
         }
         break;
 
-#if QT_CONFIG(mdiarea)
+#if BOBUI_CONFIG(mdiarea)
     case CC_MdiControls: {
         int numSubControls = 0;
         if (option->subControls & SC_MdiCloseButton)
@@ -4469,7 +4469,7 @@ QRect QWindowsVistaStyle::subControlRect(ComplexControl control, const QStyleOpt
         rect = QRect(offset, 0, buttonWidth, option->rect.height());
         break;
     }
-#endif // QT_CONFIG(mdiarea)
+#endif // BOBUI_CONFIG(mdiarea)
 
     default:
         return QWindowsStyle::subControlRect(control, option, subControl, widget);
@@ -4525,28 +4525,28 @@ int QWindowsVistaStyle::pixelMetric(PixelMetric metric, const QStyleOption *opti
         res = 2;
         break;
 
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     case PM_TabBarBaseOverlap:
         if (const auto *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             switch (tab->shape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
+            case BOBUIabBar::RoundedNorth:
+            case BOBUIabBar::TriangularNorth:
+            case BOBUIabBar::RoundedWest:
+            case BOBUIabBar::TriangularWest:
                 res = 1;
                 break;
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
+            case BOBUIabBar::RoundedSouth:
+            case BOBUIabBar::TriangularSouth:
                 res = 2;
                 break;
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
+            case BOBUIabBar::RoundedEast:
+            case BOBUIabBar::TriangularEast:
                 res = 3;
                 break;
             }
         }
         break;
-#endif  // QT_CONFIG(tabbar)
+#endif  // BOBUI_CONFIG(tabbar)
 
     case PM_SplitterWidth:
         res = QStyleHelper::dpiScaled(5., option);
@@ -4556,23 +4556,23 @@ int QWindowsVistaStyle::pixelMetric(PixelMetric metric, const QStyleOption *opti
         res = 160;
         break;
 
-#if QT_CONFIG(toolbar)
+#if BOBUI_CONFIG(toolbar)
     case PM_ToolBarHandleExtent:
         res = int(QStyleHelper::dpiScaled(8., option));
         break;
 
-#endif // QT_CONFIG(toolbar)
+#endif // BOBUI_CONFIG(toolbar)
     case PM_DockWidgetSeparatorExtent:
     case PM_DockWidgetTitleMargin:
         res = int(QStyleHelper::dpiScaled(4., option));
         break;
 
-#if QT_CONFIG(toolbutton)
+#if BOBUI_CONFIG(toolbutton)
     case PM_ButtonShiftHorizontal:
     case PM_ButtonShiftVertical:
         res = qstyleoption_cast<const QStyleOptionToolButton *>(option) ? 1 : 0;
         break;
-#endif  // QT_CONFIG(toolbutton)
+#endif  // BOBUI_CONFIG(toolbutton)
 
     default:
         res = QWindowsStyle::pixelMetric(metric, option, widget);
@@ -4588,48 +4588,48 @@ void QWindowsVistaStyle::polish(QWidget *widget)
 {
     QWindowsStyle::polish(widget);
     if (false
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
         || qobject_cast<QAbstractButton*>(widget)
-#endif // QT_CONFIG(abstractbutton)
-#if QT_CONFIG(toolbutton)
-        || qobject_cast<QToolButton*>(widget)
-#endif // QT_CONFIG(toolbutton)
-#if QT_CONFIG(tabbar)
-        || qobject_cast<QTabBar*>(widget)
-#endif // QT_CONFIG(tabbar)
-#if QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(toolbutton)
+        || qobject_cast<BOBUIoolButton*>(widget)
+#endif // BOBUI_CONFIG(toolbutton)
+#if BOBUI_CONFIG(tabbar)
+        || qobject_cast<BOBUIabBar*>(widget)
+#endif // BOBUI_CONFIG(tabbar)
+#if BOBUI_CONFIG(combobox)
         || qobject_cast<QComboBox*>(widget)
-#endif // QT_CONFIG(combobox)
+#endif // BOBUI_CONFIG(combobox)
         || qobject_cast<QScrollBar*>(widget)
         || qobject_cast<QSlider*>(widget)
         || qobject_cast<QHeaderView*>(widget)
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
         || qobject_cast<QAbstractSpinBox*>(widget)
         || qobject_cast<QSpinBox*>(widget)
-#endif // QT_CONFIG(spinbox)
-#if QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(spinbox)
+#if BOBUI_CONFIG(lineedit)
         || qobject_cast<QLineEdit*>(widget)
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
         || qobject_cast<QGroupBox*>(widget)
             ) {
-        widget->setAttribute(Qt::WA_Hover);
-    } else if (QTreeView *tree = qobject_cast<QTreeView *> (widget)) {
-        tree->viewport()->setAttribute(Qt::WA_Hover);
+        widget->setAttribute(BobUI::WA_Hover);
+    } else if (BOBUIreeView *tree = qobject_cast<BOBUIreeView *> (widget)) {
+        tree->viewport()->setAttribute(BobUI::WA_Hover);
     } else if (QListView *list = qobject_cast<QListView *> (widget)) {
-        list->viewport()->setAttribute(Qt::WA_Hover);
+        list->viewport()->setAttribute(BobUI::WA_Hover);
     }
 
     if (!QWindowsVistaStylePrivate::useVista())
         return;
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (qobject_cast<QRubberBand*>(widget))
         widget->setWindowOpacity(0.6);
     else
 #endif
-#if QT_CONFIG(commandlinkbutton)
+#if BOBUI_CONFIG(commandlinkbutton)
         if (qobject_cast<QCommandLinkButton*>(widget)) {
-                widget->setProperty("_qt_usingVistaStyle", true);
+                widget->setProperty("_bobui_usingVistaStyle", true);
                 QFont buttonFont = widget->font();
                 buttonFont.setFamilies(QStringList{QLatin1String("Segoe UI")});
                 widget->setFont(buttonFont);
@@ -4638,8 +4638,8 @@ void QWindowsVistaStyle::polish(QWidget *widget)
                 pal.setColor(QPalette::Active, QPalette::BrightText, QColor(7, 64, 229));
                 widget->setPalette(pal);
         } else
-#endif // QT_CONFIG(commandlinkbutton)
-        if (qobject_cast<const QTipLabel *>(widget)) {
+#endif // BOBUI_CONFIG(commandlinkbutton)
+        if (qobject_cast<const BOBUIipLabel *>(widget)) {
             //note that since tooltips are not reused
             //we do not have to care about unpolishing
             widget->setContentsMargins(3, 0, 4, 0);
@@ -4653,9 +4653,9 @@ void QWindowsVistaStyle::polish(QWidget *widget)
                 widget->setPalette(pal);
             }
         } else if (qobject_cast<QMessageBox *> (widget)) {
-            widget->setAttribute(Qt::WA_StyledBackground);
-#if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+            widget->setAttribute(BobUI::WA_StyledBackground);
+#if BOBUI_CONFIG(dialogbuttonbox)
+            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("bobui_msgbox_buttonbox"));
             if (buttonBox)
                 buttonBox->setContentsMargins(0, 9, 0, 0);
 #endif
@@ -4669,7 +4669,7 @@ void QWindowsVistaStyle::unpolish(QWidget *widget)
 {
     Q_D(QWindowsVistaStyle);
 
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     if (qobject_cast<QRubberBand*>(widget))
         widget->setWindowOpacity(1.0);
 #endif
@@ -4689,59 +4689,59 @@ void QWindowsVistaStyle::unpolish(QWidget *widget)
         d->cleanupHandleMap();
     }
     if (false
-        #if QT_CONFIG(abstractbutton)
+        #if BOBUI_CONFIG(abstractbutton)
             || qobject_cast<QAbstractButton*>(widget)
         #endif
-        #if QT_CONFIG(toolbutton)
-            || qobject_cast<QToolButton*>(widget)
-        #endif // QT_CONFIG(toolbutton)
-        #if QT_CONFIG(tabbar)
-            || qobject_cast<QTabBar*>(widget)
-        #endif // QT_CONFIG(tabbar)
-        #if QT_CONFIG(combobox)
+        #if BOBUI_CONFIG(toolbutton)
+            || qobject_cast<BOBUIoolButton*>(widget)
+        #endif // BOBUI_CONFIG(toolbutton)
+        #if BOBUI_CONFIG(tabbar)
+            || qobject_cast<BOBUIabBar*>(widget)
+        #endif // BOBUI_CONFIG(tabbar)
+        #if BOBUI_CONFIG(combobox)
             || qobject_cast<QComboBox*>(widget)
-        #endif // QT_CONFIG(combobox)
+        #endif // BOBUI_CONFIG(combobox)
             || qobject_cast<QScrollBar*>(widget)
             || qobject_cast<QSlider*>(widget)
             || qobject_cast<QHeaderView*>(widget)
-        #if QT_CONFIG(spinbox)
+        #if BOBUI_CONFIG(spinbox)
             || qobject_cast<QAbstractSpinBox*>(widget)
             || qobject_cast<QSpinBox*>(widget)
-        #endif // QT_CONFIG(spinbox)
+        #endif // BOBUI_CONFIG(spinbox)
             ) {
-        widget->setAttribute(Qt::WA_Hover, false);
+        widget->setAttribute(BobUI::WA_Hover, false);
     }
 
     QWindowsStyle::unpolish(widget);
 
     d->stopAnimation(widget);
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     if (qobject_cast<QLineEdit*>(widget))
-        widget->setAttribute(Qt::WA_Hover, false);
+        widget->setAttribute(BobUI::WA_Hover, false);
     else {
-#endif // QT_CONFIG(lineedit)
+#endif // BOBUI_CONFIG(lineedit)
         if (qobject_cast<QGroupBox*>(widget))
-            widget->setAttribute(Qt::WA_Hover, false);
+            widget->setAttribute(BobUI::WA_Hover, false);
         else if (qobject_cast<QMessageBox *> (widget)) {
-            widget->setAttribute(Qt::WA_StyledBackground, false);
-#if QT_CONFIG(dialogbuttonbox)
-            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("qt_msgbox_buttonbox"));
+            widget->setAttribute(BobUI::WA_StyledBackground, false);
+#if BOBUI_CONFIG(dialogbuttonbox)
+            QDialogButtonBox *buttonBox = widget->findChild<QDialogButtonBox *>(QLatin1String("bobui_msgbox_buttonbox"));
             if (buttonBox)
                 buttonBox->setContentsMargins(0, 0, 0, 0);
 #endif
         }
-        else if (QTreeView *tree = qobject_cast<QTreeView *> (widget)) {
-            tree->viewport()->setAttribute(Qt::WA_Hover, false);
+        else if (BOBUIreeView *tree = qobject_cast<BOBUIreeView *> (widget)) {
+            tree->viewport()->setAttribute(BobUI::WA_Hover, false);
         }
-#if QT_CONFIG(commandlinkbutton)
+#if BOBUI_CONFIG(commandlinkbutton)
         else if (qobject_cast<QCommandLinkButton*>(widget)) {
             QFont font = QApplication::font("QCommandLinkButton");
             QFont widgetFont = widget->font();
             widgetFont.setFamilies(font.families()); //Only family set by polish
             widget->setFont(widgetFont);
         }
-#endif // QT_CONFIG(commandlinkbutton)
+#endif // BOBUI_CONFIG(commandlinkbutton)
     }
 }
 
@@ -4752,7 +4752,7 @@ void QWindowsVistaStyle::polish(QPalette &pal)
 {
     Q_D(QWindowsVistaStyle);
 
-    if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark) {
+    if (QGuiApplication::styleHints()->colorScheme() == BobUI::ColorScheme::Dark) {
         // System runs in dark mode, but the Vista style cannot use a dark palette.
         // Overwrite with the light system palette.
         using QWindowsApplication = QNativeInterface::Private::QWindowsApplication;
@@ -4791,22 +4791,22 @@ void QWindowsVistaStyle::polish(QPalette &pal)
 void QWindowsVistaStyle::polish(QApplication *app)
 {
     // Override windows theme palettes to light
-    if (qApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark) {
+    if (qApp->styleHints()->colorScheme() == BobUI::ColorScheme::Dark) {
         static constexpr const char* themedWidgets[] = {
-            "QToolButton",
+            "BOBUIoolButton",
             "QAbstractButton",
             "QCheckBox",
             "QRadioButton",
             "QHeaderView",
             "QAbstractItemView",
             "QMessageBoxLabel",
-            "QTabBar",
+            "BOBUIabBar",
             "QLabel",
             "QGroupBox",
             "QMenu",
             "QMenuBar",
-            "QTextEdit",
-            "QTextControl",
+            "BOBUIextEdit",
+            "BOBUIextControl",
             "QLineEdit"
         };
         for (const auto& themedWidget : std::as_const(themedWidgets)) {
@@ -4896,23 +4896,23 @@ QIcon QWindowsVistaStyle::standardIcon(StandardPixmap standardIcon,
             const QSize size = theme.size().toSize();
             QIcon linkGlyph;
             QPixmap pm(size);
-            pm.fill(Qt::transparent);
+            pm.fill(BobUI::transparent);
             QPainter p(&pm);
             theme.painter = &p;
             theme.rect = QRect(QPoint(0, 0), size);
             d->drawBackground(theme);
             linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::Off);    // Normal
-            pm.fill(Qt::transparent);
+            pm.fill(BobUI::transparent);
 
             theme.stateId = CMDLGS_PRESSED;
             d->drawBackground(theme);
             linkGlyph.addPixmap(pm, QIcon::Normal, QIcon::On);     // Pressed
-            pm.fill(Qt::transparent);
+            pm.fill(BobUI::transparent);
 
             theme.stateId = CMDLGS_HOT;
             d->drawBackground(theme);
             linkGlyph.addPixmap(pm, QIcon::Active, QIcon::Off);    // Hover
-            pm.fill(Qt::transparent);
+            pm.fill(BobUI::transparent);
 
             theme.stateId = CMDLGS_DISABLED;
             d->drawBackground(theme);
@@ -4966,7 +4966,7 @@ void WinFontIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode 
     const bool isWidget = paintDevice->devType() == QInternal::Widget;
     const auto palette = isWidget ? static_cast<const QWidget *>(paintDevice)->palette()
                                   : qApp->palette();
-    QColor color = Qt::black;
+    QColor color = BobUI::black;
     switch (mode) {
     case QIcon::Active:
         color = palette.color(QPalette::Active, QPalette::Text);
@@ -4986,8 +4986,8 @@ void WinFontIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode 
     painter->save();
     painter->setFont(renderFont);
     painter->setPen(color);
-    painter->drawText(rect, Qt::AlignCenter, m_glyph);
+    painter->drawText(rect, BobUI::AlignCenter, m_glyph);
     painter->restore();
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

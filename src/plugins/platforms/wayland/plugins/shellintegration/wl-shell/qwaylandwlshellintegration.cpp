@@ -1,21 +1,21 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwaylandwlshellintegration_p.h"
 #include "qwaylandwlshellsurface_p.h"
 
-#include <QtWaylandClient/private/qwaylandwindow_p.h>
-#include <QtWaylandClient/private/qwaylanddisplay_p.h>
+#include <BobUIWaylandClient/private/qwaylandwindow_p.h>
+#include <BobUIWaylandClient/private/qwaylanddisplay_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace QtWaylandClient {
+namespace BobUIWaylandClient {
 
 QWaylandWlShellIntegration::QWaylandWlShellIntegration() : QWaylandShellIntegrationTemplate(1)
 {
     qCWarning(lcQpaWayland) << "\"wl-shell\" is a deprecated shell extension, prefer using"
                             << "\"xdg-shell\" if supported by the compositor"
-                            << "by setting the environment variable QT_WAYLAND_SHELL_INTEGRATION";
+                            << "by setting the environment variable BOBUI_WAYLAND_SHELL_INTEGRATION";
 }
 
 QWaylandWlShellIntegration::~QWaylandWlShellIntegration()
@@ -42,6 +42,6 @@ void *QWaylandWlShellIntegration::nativeResourceForWindow(const QByteArray &reso
     return nullptr;
 }
 
-} // namespace QtWaylandClient
+} // namespace BobUIWaylandClient
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

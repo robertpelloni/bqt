@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #import <UIKit/UIKit.h>
 
-#include <QtGui/qwindow.h>
-#include <QtGui/private/qguiapplication_p.h>
+#include <BobUIGui/qwindow.h>
+#include <BobUIGui/private/qguiapplication_p.h>
 #include <qpa/qplatformtheme.h>
 
-#include <QtCore/private/qcore_mac_p.h>
+#include <BobUICore/private/qcore_mac_p.h>
 
 #include "qiosglobal.h"
 #include "quiview.h"
 #include "qiosscreen.h"
 #include "qiosmessagedialog.h"
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QIOSMessageDialog::QIOSMessageDialog()
     : m_alertController(nullptr)
@@ -41,7 +41,7 @@ inline QString QIOSMessageDialog::messageTextPlain()
     if (!detailedText.isEmpty())
         text += lineShift + detailedText;
 
-    text.replace("<p>"_L1, "\n"_L1, Qt::CaseInsensitive);
+    text.replace("<p>"_L1, "\n"_L1, BobUI::CaseInsensitive);
     text.remove(QRegularExpression(QStringLiteral("<[^>]*>")));
 
     return text;
@@ -85,12 +85,12 @@ void QIOSMessageDialog::exec()
     m_eventLoop.exec(QEventLoop::DialogExec);
 }
 
-bool QIOSMessageDialog::show(Qt::WindowFlags windowFlags, Qt::WindowModality windowModality, QWindow *parent)
+bool QIOSMessageDialog::show(BobUI::WindowFlags windowFlags, BobUI::WindowModality windowModality, QWindow *parent)
 {
     Q_UNUSED(windowFlags);
     if (m_alertController // Ensure that the dialog is not showing already
             || !options() // Some message dialogs don't have options (QErrorMessage)
-            || windowModality == Qt::NonModal) // We can only do modal dialogs
+            || windowModality == BobUI::NonModal) // We can only do modal dialogs
         return false;
 
     if (!options()->checkBoxLabel().isNull())

@@ -1,12 +1,12 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qxctestlogger_p.h"
 
-#include <QtCore/qstring.h>
+#include <BobUICore/qstring.h>
 
-#include <QtTest/private/qtestlog_p.h>
-#include <QtTest/private/qtestresult_p.h>
+#include <BobUITest/private/bobuiestlog_p.h>
+#include <BobUITest/private/bobuiestresult_p.h>
 
 #import <XCTest/XCTest.h>
 
@@ -31,20 +31,20 @@
 - (NSString *)nameForLegacyLogging;
 @end
 
-QT_WARNING_PUSH
+BOBUI_WARNING_PUSH
 // Ignore XCTestProbe deprecation
-QT_WARNING_DISABLE_DEPRECATED
+BOBUI_WARNING_DISABLE_DEPRECATED
 
 // ---------------------------------------------------------
 
-@interface QtTestLibWrapper : XCTestCase
+@interface BobUITestLibWrapper : XCTestCase
 @end
 
-@interface QtTestLibTests : XCTestSuite
+@interface BobUITestLibTests : XCTestSuite
 + (XCTestSuiteRun*)testRun;
 @end
 
-@interface QtTestLibTest : XCTestCase
+@interface BobUITestLibTest : XCTestCase
 @property (nonatomic, retain) NSString* testObjectName;
 @property (nonatomic, retain) NSString* testFunctionName;
 @end
@@ -57,8 +57,8 @@ public:
     enum Barrier {
         XCTestCanStartTesting,
         XCTestHaveStarted,
-        QtTestsCanStartTesting,
-        QtTestsHaveCompleted,
+        BobUITestsCanStartTesting,
+        BobUITestsHaveCompleted,
         XCTestsHaveCompleted,
         BarrierCount
     };
@@ -88,7 +88,7 @@ private:
 
 // ---------------------------------------------------------
 
-@implementation QtTestLibWrapper
+@implementation BobUITestLibWrapper
 
 + (void)load
 {
@@ -102,13 +102,13 @@ private:
             [[NSDate date] description].UTF8String);
 
     XCTestDriver *testDriver = nil;
-    if ([QtTestLibWrapper usingTestManager])
+    if ([BobUITestLibWrapper usingTestManager])
         testDriver = [XCTestDriver sharedTestDriver];
 
     // Spawn off task to run test infrastructure on separate thread so that we can
     // let main() execute like normal on the main thread. The queue will never be
     // destroyed, so there's no point in trying to keep a proper retain count.
-    dispatch_async(dispatch_queue_create("io.qt.QTestLib.xctest-wrapper", DISPATCH_QUEUE_SERIAL), ^{
+    dispatch_async(dispatch_queue_create("io.bobui.BOBUIestLib.xctest-wrapper", DISPATCH_QUEUE_SERIAL), ^{
         Q_ASSERT(![NSThread isMainThread]);
         [XCTestProbe runTests:nil];
         Q_UNREACHABLE();
@@ -120,7 +120,7 @@ private:
 
     // We register an exit handler so that we can intercept when main() completes
     // and let the XCTest thread finish up. For main() functions that never started
-    // testing using QtTestLib we also need to signal that xcTestsCanStart.
+    // testing using BobUITestLib we also need to signal that xcTestsCanStart.
     atexit_b(^{
         Q_ASSERT([NSThread isMainThread]);
 
@@ -138,7 +138,7 @@ private:
             dispatch_semaphore_wait(dispatch_semaphore_create(0), DISPATCH_TIME_FOREVER);
         });
 
-        SIGNAL_BARRIER(QtTestsHaveCompleted);
+        SIGNAL_BARRIER(BobUITestsHaveCompleted);
 
         // Ensure XCTest complets the top level tests suite
         WAIT_FOR_BARRIER(XCTestsHaveCompleted);
@@ -150,8 +150,8 @@ private:
             [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
     }
 
-    // Wait for our QtTestLib test suite to run before running main
-    WAIT_FOR_BARRIER(QtTestsCanStartTesting);
+    // Wait for our BobUITestLib test suite to run before running main
+    WAIT_FOR_BARRIER(BobUITestsCanStartTesting);
 
     // Prevent XCTestProbe from re-launching runTests on application startup
     [[NSNotificationCenter defaultCenter] removeObserver:[XCTestProbe class]
@@ -167,9 +167,9 @@ private:
     [autoreleasepool release];
 }
 
-+ (QTestLibTests *)defaultTestSuite
++ (BOBUIestLibTests *)defaultTestSuite
 {
-    return [[QtTestLibTests alloc] initWithName:@"QtTestLib"];
+    return [[BobUITestLibTests alloc] initWithName:@"BobUITestLib"];
 }
 
 + (BOOL)usingTestManager
@@ -181,21 +181,21 @@ private:
 
 // ---------------------------------------------------------
 
-static XCTestSuiteRun *s_qtTestSuiteRun = nullptr;
+static XCTestSuiteRun *s_bobuiTestSuiteRun = nullptr;
 
-@implementation QtTestLibTests
+@implementation BobUITestLibTests
 
 - (void)performTest:(XCTestSuiteRun *)testSuiteRun
 {
     Q_ASSERT(![NSThread isMainThread]);
 
-    Q_ASSERT(!s_qtTestSuiteRun);
-    s_qtTestSuiteRun = testSuiteRun;
+    Q_ASSERT(!s_bobuiTestSuiteRun);
+    s_bobuiTestSuiteRun = testSuiteRun;
 
-    SIGNAL_BARRIER(QtTestsCanStartTesting);
+    SIGNAL_BARRIER(BobUITestsCanStartTesting);
 
-    // Wait for main() to complete, or a QtTestLib test to start, so we
-    // know if we should start the QtTestLib test suite.
+    // Wait for main() to complete, or a BobUITestLib test to start, so we
+    // know if we should start the BobUITestLib test suite.
     WAIT_FOR_BARRIER(XCTestCanStartTesting);
 
     if (QXcodeTestLogger::isActive())
@@ -205,7 +205,7 @@ static XCTestSuiteRun *s_qtTestSuiteRun = nullptr;
 
     // All test reporting happens on main thread from now on. Wait until
     // main() completes before allowing the XCTest thread to continue.
-    WAIT_FOR_BARRIER(QtTestsHaveCompleted);
+    WAIT_FOR_BARRIER(BobUITestsHaveCompleted);
 
     if ([testSuiteRun startDate])
         [testSuiteRun stop];
@@ -213,22 +213,22 @@ static XCTestSuiteRun *s_qtTestSuiteRun = nullptr;
 
 + (XCTestSuiteRun*)testRun
 {
-    return s_qtTestSuiteRun;
+    return s_bobuiTestSuiteRun;
 }
 
 @end
 
 // ---------------------------------------------------------
 
-@implementation QtTestLibTest
+@implementation BobUITestLibTest
 
 - (instancetype)initWithInvocation:(NSInvocation *)invocation
 {
     if (self = [super initWithInvocation:invocation]) {
-        // The test object name and function name are used by XCTest after QtTestLib has
+        // The test object name and function name are used by XCTest after BobUITestLib has
         // reset them, so we need to store them up front for each XCTestCase.
-        self.testObjectName = [NSString stringWithUTF8String:QTestResult::currentTestObjectName()];
-        self.testFunctionName = [NSString stringWithUTF8String:QTestResult::currentTestFunction()];
+        self.testObjectName = [NSString stringWithUTF8String:BOBUIestResult::currentTestObjectName()];
+        self.testFunctionName = [NSString stringWithUTF8String:BOBUIestResult::currentTestFunction()];
     }
 
     return self;
@@ -247,9 +247,9 @@ static XCTestSuiteRun *s_qtTestSuiteRun = nullptr;
 - (NSString *)nameForLegacyLogging
 {
     NSString *name = [NSString stringWithFormat:@"%@::%@", [self testClassName], [self testMethodName]];
-    if (QTestResult::currentDataTag() || QTestResult::currentGlobalDataTag()) {
-        const char *currentDataTag = QTestResult::currentDataTag() ? QTestResult::currentDataTag() : "";
-        const char *globalDataTag = QTestResult::currentGlobalDataTag() ? QTestResult::currentGlobalDataTag() : "";
+    if (BOBUIestResult::currentDataTag() || BOBUIestResult::currentGlobalDataTag()) {
+        const char *currentDataTag = BOBUIestResult::currentDataTag() ? BOBUIestResult::currentDataTag() : "";
+        const char *globalDataTag = BOBUIestResult::currentGlobalDataTag() ? BOBUIestResult::currentGlobalDataTag() : "";
         const char *filler = (currentDataTag[0] && globalDataTag[0]) ? ":" : "";
         name = [name stringByAppendingString:[NSString stringWithFormat:@"(%s%s%s)",
             globalDataTag, filler, currentDataTag]];
@@ -311,10 +311,10 @@ void QXcodeTestLogger::startLogging()
         WAIT_FOR_BARRIER(XCTestHaveStarted);
     });
 
-    // Scope test object suite under top level QtTestLib test run
-    [m_testRuns addObject:[QtTestLibTests testRun]];
+    // Scope test object suite under top level BobUITestLib test run
+    [m_testRuns addObject:[BobUITestLibTests testRun]];
 
-    NSString *suiteName = [NSString stringWithUTF8String:QTestResult::currentTestObjectName()];
+    NSString *suiteName = [NSString stringWithUTF8String:BOBUIestResult::currentTestObjectName()];
     pushTestRunForTest([XCTestSuite testSuiteWithName:suiteName], true);
 }
 
@@ -356,7 +356,7 @@ static bool isTestFunctionInActiveScope(const char *function)
 
     static NSArray<NSString *> *testsInScope = [[testScope componentsSeparatedByString:@","] retain];
     bool inScope = [testsInScope containsObject:[NSString stringWithFormat:@"%s/%s",
-                        QTestResult::currentTestObjectName(), function]];
+                        BOBUIestResult::currentTestObjectName(), function]];
 
     if ([XCTestProbe isInverseTestScope])
         inScope = !inScope;
@@ -367,10 +367,10 @@ static bool isTestFunctionInActiveScope(const char *function)
 void QXcodeTestLogger::enterTestFunction(const char *function)
 {
     if (!isTestFunctionInActiveScope(function))
-        QTestResult::setSkipCurrentTest(true);
+        BOBUIestResult::setSkipCurrentTest(true);
 
-    XCTest *test = [QtTestLibTest testCaseWithInvocation:nil];
-    pushTestRunForTest(test, !QTestResult::skipCurrentTest());
+    XCTest *test = [BobUITestLibTest testCaseWithInvocation:nil];
+    pushTestRunForTest(test, !BOBUIestResult::skipCurrentTest());
 }
 
 void QXcodeTestLogger::leaveTestFunction()
@@ -387,9 +387,9 @@ void QXcodeTestLogger::addIncident(IncidentTypes type, const char *description,
     // the failure was a regular failed assertion, or an unexpected exception,
     // so in our case it's always 'YES', and we need to explicitly ignore XFail.
     if (type == QAbstractTestLogger::XFail) {
-        QTestCharBuffer buf;
+        BOBUIestCharBuffer buf;
         NSString *testCaseName = [[testRun test] nameForLegacyLogging];
-        QTest::qt_asprintf(&buf, "Test Case '%s' failed expectedly (%s).\n",
+        BOBUIest::bobui_asprintf(&buf, "Test Case '%s' failed expectedly (%s).\n",
             [testCaseName UTF8String], description);
         outputString(buf.constData());
         return;
@@ -398,12 +398,12 @@ void QXcodeTestLogger::addIncident(IncidentTypes type, const char *description,
     if (type == QAbstractTestLogger::Pass) {
         // We ignore non-data passes, as we're already reporting that as part of the
         // normal test case start/stop cycle.
-        if (!(QTestResult::currentDataTag() || QTestResult::currentGlobalDataTag()))
+        if (!(BOBUIestResult::currentDataTag() || BOBUIestResult::currentGlobalDataTag()))
             return;
 
-        QTestCharBuffer buf;
+        BOBUIestCharBuffer buf;
         NSString *testCaseName = [[testRun test] nameForLegacyLogging];
-        QTest::qt_asprintf(&buf, "Test Case '%s' passed.\n", [testCaseName UTF8String]);
+        BOBUIest::bobui_asprintf(&buf, "Test Case '%s' passed.\n", [testCaseName UTF8String]);
         outputString(buf.constData());
         return;
     }
@@ -420,20 +420,20 @@ void QXcodeTestLogger::addIncident(IncidentTypes type, const char *description,
 void QXcodeTestLogger::addMessage(MessageTypes type, const QString &message,
                                   const char *file, int line)
 {
-    QTestCharBuffer buf;
+    BOBUIestCharBuffer buf;
 
-    if (QTestLog::verboseLevel() > 0 && (file && line)) {
-        QTest::qt_asprintf(&buf, "%s:%d: ", file, line);
+    if (BOBUIestLog::verboseLevel() > 0 && (file && line)) {
+        BOBUIest::bobui_asprintf(&buf, "%s:%d: ", file, line);
         outputString(buf.constData());
     }
 
     if (type == QAbstractTestLogger::Skip) {
         XCTestRun *testRun = [m_testRuns lastObject];
         NSString *testCaseName = [[testRun test] nameForLegacyLogging];
-        QTest::qt_asprintf(&buf, "Test Case '%s' skipped (%s).\n",
+        BOBUIest::bobui_asprintf(&buf, "Test Case '%s' skipped (%s).\n",
             [testCaseName UTF8String], message.toUtf8().constData());
     } else {
-        QTest::qt_asprintf(&buf, "%s\n", message.toUtf8().constData());
+        BOBUIest::bobui_asprintf(&buf, "%s\n", message.toUtf8().constData());
     }
 
     outputString(buf.constData());
@@ -472,4 +472,4 @@ bool QXcodeTestLogger::isActive()
     return s_currentTestLogger;
 }
 
-QT_WARNING_POP
+BOBUI_WARNING_POP

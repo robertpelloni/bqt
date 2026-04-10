@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QMETATYPE_P_H
 #define QMETATYPE_P_H
@@ -8,17 +8,17 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/private/qglobal_p.h>
+#include <BobUICore/private/qglobal_p.h>
 #include "qmetatype.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define QMETATYPE_CONVERTER(To, From, assign_and_return) \
     case makePair(QMetaType::To, QMetaType::From): \
@@ -47,7 +47,7 @@ struct QMetaTypeModuleHelper
         return (quint64(from) << 32) + quint64(to);
     }
 
-    static const QtPrivate::QMetaTypeInterface *interfaceForType_dummy(int)
+    static const BobUIPrivate::QMetaTypeInterface *interfaceForType_dummy(int)
     {
         return nullptr;
     }
@@ -64,7 +64,7 @@ struct QMetaTypeModuleHelper
 extern Q_CORE_EXPORT QMetaTypeModuleHelper qMetaTypeGuiHelper;
 extern Q_CORE_EXPORT QMetaTypeModuleHelper qMetaTypeWidgetsHelper;
 
-namespace QtMetaTypePrivate {
+namespace BobUIMetaTypePrivate {
 template<typename T>
 struct TypeDefinition
 {
@@ -72,7 +72,7 @@ struct TypeDefinition
 };
 
 // Ignore these types, as incomplete
-#ifdef QT_BOOTSTRAPPED
+#ifdef BOBUI_BOOTSTRAPPED
 template<> struct TypeDefinition<qfloat16> { static const bool IsAvailable = false; };
 template<> struct TypeDefinition<QBitArray> { static const bool IsAvailable = false; };
 template<> struct TypeDefinition<QByteArrayList> { static const bool IsAvailable = false; };
@@ -80,7 +80,7 @@ template<> struct TypeDefinition<QCborArray> { static const bool IsAvailable = f
 template<> struct TypeDefinition<QCborMap> { static const bool IsAvailable = false; };
 template<> struct TypeDefinition<QCborSimpleType> { static const bool IsAvailable = false; };
 template<> struct TypeDefinition<QCborValue> { static const bool IsAvailable = false; };
-#if QT_CONFIG(easingcurve)
+#if BOBUI_CONFIG(easingcurve)
 template<> struct TypeDefinition<QEasingCurve> { static const bool IsAvailable = false; };
 #endif
 template<> struct TypeDefinition<QJsonArray> { static const bool IsAvailable = false; };
@@ -98,41 +98,41 @@ template<> struct TypeDefinition<QLineF> { static const bool IsAvailable = false
 template<> struct TypeDefinition<QPoint> { static const bool IsAvailable = false; };
 template<> struct TypeDefinition<QPointF> { static const bool IsAvailable = false; };
 #endif
-#if !QT_CONFIG(regularexpression)
+#if !BOBUI_CONFIG(regularexpression)
 template<> struct TypeDefinition<QRegularExpression> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_CURSOR
+#ifdef BOBUI_NO_CURSOR
 template<> struct TypeDefinition<QCursor> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_MATRIX4X4
+#ifdef BOBUI_NO_MATRIX4X4
 template<> struct TypeDefinition<QMatrix4x4> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_VECTOR2D
+#ifdef BOBUI_NO_VECTOR2D
 template<> struct TypeDefinition<QVector2D> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_VECTOR3D
+#ifdef BOBUI_NO_VECTOR3D
 template<> struct TypeDefinition<QVector3D> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_VECTOR4D
+#ifdef BOBUI_NO_VECTOR4D
 template<> struct TypeDefinition<QVector4D> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_QUATERNION
+#ifdef BOBUI_NO_QUATERNION
 template<> struct TypeDefinition<QQuaternion> { static const bool IsAvailable = false; };
 #endif
-#ifdef QT_NO_ICON
+#ifdef BOBUI_NO_ICON
 template<> struct TypeDefinition<QIcon> { static const bool IsAvailable = false; };
 #endif
 
-template <typename T> inline bool isInterfaceFor(const QtPrivate::QMetaTypeInterface *iface)
+template <typename T> inline bool isInterfaceFor(const BobUIPrivate::QMetaTypeInterface *iface)
 {
     // typeId for built-in types are fixed and require no registration
     static_assert(QMetaTypeId2<T>::IsBuiltIn, "This function only works for built-in types");
-    static constexpr int typeId = QtPrivate::BuiltinMetaType<T>::value;
+    static constexpr int typeId = BobUIPrivate::BuiltinMetaType<T>::value;
     return iface->typeId.loadRelaxed() == typeId;
 }
 
 template <typename FPointer>
-inline bool checkMetaTypeFlagOrPointer(const QtPrivate::QMetaTypeInterface *iface, FPointer ptr, QMetaType::TypeFlag Flag)
+inline bool checkMetaTypeFlagOrPointer(const BobUIPrivate::QMetaTypeInterface *iface, FPointer ptr, QMetaType::TypeFlag Flag)
 {
     // helper to the isXxxConstructible & isDestructible functions below: a
     // meta type has the trait if the trait is trivial or we have the pointer
@@ -142,22 +142,22 @@ inline bool checkMetaTypeFlagOrPointer(const QtPrivate::QMetaTypeInterface *ifac
     return ptr != nullptr || (iface->flags & Flag) == 0;
 }
 
-inline bool isDefaultConstructible(const QtPrivate::QMetaTypeInterface *iface) noexcept
+inline bool isDefaultConstructible(const BobUIPrivate::QMetaTypeInterface *iface) noexcept
 {
     return checkMetaTypeFlagOrPointer(iface, iface->defaultCtr, QMetaType::NeedsConstruction);
 }
 
-inline bool isCopyConstructible(const QtPrivate::QMetaTypeInterface *iface) noexcept
+inline bool isCopyConstructible(const BobUIPrivate::QMetaTypeInterface *iface) noexcept
 {
     return checkMetaTypeFlagOrPointer(iface, iface->copyCtr, QMetaType::NeedsCopyConstruction);
 }
 
-inline bool isMoveConstructible(const QtPrivate::QMetaTypeInterface *iface) noexcept
+inline bool isMoveConstructible(const BobUIPrivate::QMetaTypeInterface *iface) noexcept
 {
     return checkMetaTypeFlagOrPointer(iface, iface->moveCtr, QMetaType::NeedsMoveConstruction);
 }
 
-inline bool isDestructible(const QtPrivate::QMetaTypeInterface *iface) noexcept
+inline bool isDestructible(const BobUIPrivate::QMetaTypeInterface *iface) noexcept
 {
     /* For metatypes of revision 1, the NeedsDestruction was set even for trivially
        destructible types, but their dtor pointer would be null.
@@ -167,7 +167,7 @@ inline bool isDestructible(const QtPrivate::QMetaTypeInterface *iface) noexcept
            checkMetaTypeFlagOrPointer(iface, iface->dtor, QMetaType::NeedsDestruction);
 }
 
-inline void defaultConstruct(const QtPrivate::QMetaTypeInterface *iface, void *where)
+inline void defaultConstruct(const BobUIPrivate::QMetaTypeInterface *iface, void *where)
 {
     Q_ASSERT(isDefaultConstructible(iface));
     if (iface->defaultCtr)
@@ -176,7 +176,7 @@ inline void defaultConstruct(const QtPrivate::QMetaTypeInterface *iface, void *w
         memset(where, 0, iface->size);
 }
 
-inline void copyConstruct(const QtPrivate::QMetaTypeInterface *iface, void *where, const void *copy)
+inline void copyConstruct(const BobUIPrivate::QMetaTypeInterface *iface, void *where, const void *copy)
 {
     Q_ASSERT(isCopyConstructible(iface));
     if (iface->copyCtr)
@@ -185,7 +185,7 @@ inline void copyConstruct(const QtPrivate::QMetaTypeInterface *iface, void *wher
         memcpy(where, copy, iface->size);
 }
 
-inline void moveConstruct(const QtPrivate::QMetaTypeInterface *iface, void *where, void *copy)
+inline void moveConstruct(const BobUIPrivate::QMetaTypeInterface *iface, void *where, void *copy)
 {
     Q_ASSERT(isMoveConstructible(iface));
     if (iface->moveCtr)
@@ -194,7 +194,7 @@ inline void moveConstruct(const QtPrivate::QMetaTypeInterface *iface, void *wher
         memcpy(where, copy, iface->size);
 }
 
-inline void construct(const QtPrivate::QMetaTypeInterface *iface, void *where, const void *copy)
+inline void construct(const BobUIPrivate::QMetaTypeInterface *iface, void *where, const void *copy)
 {
     if (copy)
         copyConstruct(iface, where, copy);
@@ -202,30 +202,30 @@ inline void construct(const QtPrivate::QMetaTypeInterface *iface, void *where, c
         defaultConstruct(iface, where);
 }
 
-inline void destruct(const QtPrivate::QMetaTypeInterface *iface, void *where)
+inline void destruct(const BobUIPrivate::QMetaTypeInterface *iface, void *where)
 {
     Q_ASSERT(isDestructible(iface));
     if (iface->dtor)
         iface->dtor(iface, where);
 }
 
-const char *typedefNameForType(const QtPrivate::QMetaTypeInterface *type_d);
+const char *typedefNameForType(const BobUIPrivate::QMetaTypeInterface *type_d);
 
 template<typename T>
-static const QT_PREPEND_NAMESPACE(QtPrivate::QMetaTypeInterface) *getInterfaceFromType()
+static const BOBUI_PREPEND_NAMESPACE(BobUIPrivate::QMetaTypeInterface) *getInterfaceFromType()
 {
-    if constexpr (QtMetaTypePrivate::TypeDefinition<T>::IsAvailable) {
-        return &QT_PREPEND_NAMESPACE(QtPrivate::QMetaTypeInterfaceWrapper)<T>::metaType;
+    if constexpr (BobUIMetaTypePrivate::TypeDefinition<T>::IsAvailable) {
+        return &BOBUI_PREPEND_NAMESPACE(BobUIPrivate::QMetaTypeInterfaceWrapper)<T>::metaType;
     }
     return nullptr;
 }
 
-#define QT_METATYPE_CONVERT_ID_TO_TYPE(MetaTypeName, MetaTypeId, RealName)                         \
+#define BOBUI_METATYPE_CONVERT_ID_TO_TYPE(MetaTypeName, MetaTypeId, RealName)                         \
     case QMetaType::MetaTypeName:                                                                  \
-        return QtMetaTypePrivate::getInterfaceFromType<RealName>();
+        return BobUIMetaTypePrivate::getInterfaceFromType<RealName>();
 
-} //namespace QtMetaTypePrivate
+} //namespace BobUIMetaTypePrivate
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMETATYPE_P_H

@@ -1,27 +1,27 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-if(NOT QT_BUILD_STANDALONE_TESTS AND NOT QT_BUILDING_QT)
+if(NOT BOBUI_BUILD_STANDALONE_TESTS AND NOT BOBUI_BUILDING_BOBUI)
     cmake_minimum_required(VERSION 3.16)
     project(tst_qsharedmemory LANGUAGES CXX)
-    find_package(Qt6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
+    find_package(BobUI6BuildInternals REQUIRED COMPONENTS STANDALONE_TEST)
 endif()
 
-qt_internal_add_test(tst_qsharedmemory
+bobui_internal_add_test(tst_qsharedmemory
     SOURCES
         tst_qsharedmemory.cpp
     LIBRARIES
-        Qt::CorePrivate
+        BobUI::CorePrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(tst_qsharedmemory CONDITION LINUX
+bobui_internal_extend_target(tst_qsharedmemory CONDITION LINUX
     LIBRARIES
         rt
 )
 add_subdirectory(producerconsumer)
-if(QT_FEATURE_process)
+if(BOBUI_FEATURE_process)
     add_dependencies(tst_qsharedmemory producerconsumer_helper)
 endif()

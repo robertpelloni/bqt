@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example painting/basicdrawing
@@ -88,7 +88,7 @@
     \snippet painting/basicdrawing/window.cpp 3
 
     The pen style defines the line type. The default style is solid
-    (Qt::SolidLine). Setting the style to none (Qt::NoPen) tells the
+    (BobUI::SolidLine). Setting the style to none (BobUI::NoPen) tells the
     painter to not draw lines or outlines.  The pen cap defines how
     the end points of lines are drawn.  And the pen join defines how
     two lines join when multiple connected lines are drawn. The cap
@@ -96,18 +96,18 @@
 
     We create \l {QComboBox}es for each of the \uicontrol {Pen Style}, \uicontrol
     {Pen Cap} and \uicontrol {Pen Join} parameters, and adds the associated
-    items (i.e the values of the Qt::PenStyle, Qt::PenCapStyle and
-    Qt::PenJoinStyle enums respectively).
+    items (i.e the values of the BobUI::PenStyle, BobUI::PenCapStyle and
+    BobUI::PenJoinStyle enums respectively).
 
     \snippet painting/basicdrawing/window.cpp 4
 
     The QBrush class defines the fill pattern of shapes drawn by a
-    QPainter. The default brush style is Qt::NoBrush. This style tells
+    QPainter. The default brush style is BobUI::NoBrush. This style tells
     the painter to not fill shapes. The standard style for filling is
-    Qt::SolidPattern.
+    BobUI::SolidPattern.
 
     We create a QComboBox for the \uicontrol {Brush Style} parameter, and add
-    the associated items (i.e. the values of the Qt::BrushStyle enum).
+    the associated items (i.e. the values of the BobUI::BrushStyle enum).
 
     \snippet painting/basicdrawing/window.cpp 5
     \snippet painting/basicdrawing/window.cpp 6
@@ -153,16 +153,16 @@
     QComboBox::itemData() function. This function returns the data for
     the given role in the given index in the combobox. We use
     QComboBox::currentIndex() to retrieve the index of the shape, and
-    the role is defined by the Qt::ItemDataRole enum; \c IdRole is an
-    alias for Qt::UserRole.
+    the role is defined by the BobUI::ItemDataRole enum; \c IdRole is an
+    alias for BobUI::UserRole.
 
-    Note that Qt::UserRole is only the first role that can be used for
+    Note that BobUI::UserRole is only the first role that can be used for
     application-specific purposes. If you need to store different data
     in the same index, you can use different roles by simply
-    incrementing the value of Qt::UserRole, for example: 'Qt::UserRole
-    + 1' and 'Qt::UserRole + 2'. However, it is a good programming
+    incrementing the value of BobUI::UserRole, for example: 'BobUI::UserRole
+    + 1' and 'BobUI::UserRole + 2'. However, it is a good programming
     practice to give each role their own name: 'myFirstRole =
-    Qt::UserRole + 1' and 'mySecondRole = Qt::UserRole + 2'. Even
+    BobUI::UserRole + 1' and 'mySecondRole = BobUI::UserRole + 2'. Even
     though we only need a single role in this particular example, we
     add the following line of code to the beginning of the \c
     window.cpp file.
@@ -196,12 +196,12 @@
     required.
 
     The QGradient class is used in combination with QBrush to specify
-    gradient fills. Qt currently supports three types of gradient
+    gradient fills. BobUI currently supports three types of gradient
     fills: linear, radial and conical. Each of these is represented by
     a subclass of QGradient: QLinearGradient, QRadialGradient and
     QConicalGradient.
 
-    So if the brush style is Qt::LinearGradientPattern, we first
+    So if the brush style is BobUI::LinearGradientPattern, we first
     create a QLinearGradient object with interpolation area between
     the coordinates passed as arguments to the constructor. The
     positions are specified using logical coordinates. Then we set the
@@ -217,8 +217,8 @@
     \snippet painting/basicdrawing/window.cpp 15
 
     A similar pattern of actions, as the one used for QLinearGradient,
-    is used in the cases of Qt::RadialGradientPattern and
-    Qt::ConicalGradientPattern.
+    is used in the cases of BobUI::RadialGradientPattern and
+    BobUI::ConicalGradientPattern.
 
     The only difference is the arguments passed to the constructor:
     Regarding the QRadialGradient constructor the first argument is
@@ -231,7 +231,7 @@
 
     \snippet painting/basicdrawing/window.cpp 16
 
-    If the brush style is Qt::TexturePattern we create a QBrush from a
+    If the brush style is BobUI::TexturePattern we create a QBrush from a
     QPixmap. Then we call \c RenderArea::setBrush() slot to update the
     \c RenderArea widget with the newly created brush.
 
@@ -319,7 +319,7 @@
     visible in the \c RenderArea widget.
 
     The QWidget::update() slot does not cause an immediate
-    repaint; instead it schedules a paint event for processing when Qt
+    repaint; instead it schedules a paint event for processing when BobUI
     returns to the main event loop.
 
     \snippet painting/basicdrawing/renderarea.cpp 6

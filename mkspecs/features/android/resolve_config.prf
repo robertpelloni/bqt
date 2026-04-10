@@ -10,17 +10,17 @@ load(resolve_config)
     CONFIG += multi_android_abi
 }
 
-# single_arch is set qtConfTest_compile and is a marker that a config test is being built, and
+# single_arch is set bobuiConfTest_compile and is a marker that a config test is being built, and
 # thus all Android ABI file name modifications should be avoided (prefix / suffix of
 # the built binary).
 # single_android_abi means ANDROID_ABI only has one value
-# multi_android_abi means ANDROID_ABI has more than one value (Qt configured with 2+ arches)
+# multi_android_abi means ANDROID_ABI has more than one value (BobUI configured with 2+ arches)
 #
 # Assign $$ALL_ANDROID_ABIS to ANDROID_ABIS only if ANDROID_ABIS was not provided by the user
-# on the qmake command line and Qt was not configured with 2+ arches.
+# on the qmake command line and BobUI was not configured with 2+ arches.
 #
 # Note that in config.tests, ANDROID_ABIS ends up being empty (due to !single_arch check) regardless
-# of how many ABIs Qt is configured with, which in turns causes the 'architectures' field in
+# of how many ABIs BobUI is configured with, which in turns causes the 'architectures' field in
 # in android-arch-deployment-settings.json be empty.
 !equals(TEMPLATE, aux):!host_build:!single_arch:!java:!multi_android_abi:android:isEmpty(ANDROID_ABIS) {
     # Needed for the generated deployment-settings.json not to have an empty list

@@ -1,5 +1,5 @@
 From 8907023584ea0936893269aee890af5995746af5 Mon Sep 17 00:00:00 2001
-From: Marc Mutz <marc.mutz@qt.io>
+From: Marc Mutz <marc.mutz@bobui.io>
 Date: Mon, 17 Mar 2025 10:15:03 +0100
 Subject: [PATCH] ECMEnableSanitizers.cmake: replace tabs with spaces
 

@@ -1,28 +1,28 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2021 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 #include <QSignalSpy>
 #include <QJsonArray>
 #include <qdir.h>
 #include <qendian.h>
 #include <qpluginloader.h>
-#include <qtemporaryfile.h>
+#include <bobuiemporaryfile.h>
 #include <QScopeGuard>
 #include "theplugin/plugininterface.h"
 
-#include <QtCore/private/qsimd_p.h>
+#include <BobUICore/private/qsimd_p.h>
 
-#if defined(QT_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
-#  include <QtCore/private/qmachparser_p.h>
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
+#  include <BobUICore/private/qmachparser_p.h>
 #endif
 
 #ifdef Q_OS_ANDROID
 #include <private/qjnihelpers_p.h>
 #endif
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 // Helper macros to let us know if some suffixes are valid
 #define bundle_VALID    false
@@ -39,7 +39,7 @@ using namespace Qt::StringLiterals;
 # define bundle_VALID   true
 # define dylib_VALID    true
 # define so_VALID       true
-# if QT_CONFIG(debug) && !QT_CONFIG(framework)
+# if BOBUI_CONFIG(debug) && !BOBUI_CONFIG(framework)
 #  define SUFFIX         "_debug.dylib"
 # else
 #  define SUFFIX         ".dylib"
@@ -63,7 +63,7 @@ using namespace Qt::StringLiterals;
 #elif defined(Q_OS_WIN)
 # undef dll_VALID
 # define dll_VALID      true
-# if !defined(QT_NO_DEBUG) && defined(Q_CC_MSVC)
+# if !defined(BOBUI_NO_DEBUG) && defined(Q_CC_MSVC)
 #  define SUFFIX         "d.dll"
 # else
 #  define SUFFIX         ".dll"
@@ -120,9 +120,9 @@ struct ElfPatcher
 
 Q_DECLARE_METATYPE(ElfPatcher)
 
-static std::unique_ptr<QTemporaryFile> patchElf(const QString &source, ElfPatcher patcher)
+static std::unique_ptr<BOBUIemporaryFile> patchElf(const QString &source, ElfPatcher patcher)
 {
-    std::unique_ptr<QTemporaryFile> tmplib;
+    std::unique_ptr<BOBUIemporaryFile> tmplib;
 
     bool ok = false;
     [&]() {
@@ -133,10 +133,10 @@ static std::unique_ptr<QTemporaryFile> patchElf(const QString &source, ElfPatche
         QVERIFY2(srcdata, qPrintable(srclib.errorString()));
 
         // copy our source plugin so we can modify it
-        const char *basename = QTest::currentDataTag();
+        const char *basename = BOBUIest::currentDataTag();
         if (!basename)
-            basename = QTest::currentTestFunction();
-        tmplib.reset(new QTemporaryFile(QDir::currentPath() + u'/' + basename + u".XXXXXX" SUFFIX ""_s));
+            basename = BOBUIest::currentTestFunction();
+        tmplib.reset(new BOBUIemporaryFile(QDir::currentPath() + u'/' + basename + u".XXXXXX" SUFFIX ""_s));
         QVERIFY2(tmplib->open(), qPrintable(tmplib->errorString()));
 
         // sanity-check
@@ -161,7 +161,7 @@ static std::unique_ptr<QTemporaryFile> patchElf(const QString &source, ElfPatche
 // All ELF systems are expected to support GCC expression statements
 #define patchElf(source, patcher)   __extension__({     \
         auto r = patchElf(source, patcher);             \
-        if (QTest::currentTestFailed()) return;         \
+        if (BOBUIest::currentTestFailed()) return;         \
         std::move(r);                                   \
     })
 #endif // Q_OF_ELF
@@ -186,7 +186,7 @@ static QString sys_qualifiedLibraryName(const QString &fileName)
 #endif
 }
 
-QT_FORWARD_DECLARE_CLASS(QPluginLoader)
+BOBUI_FORWARD_DECLARE_CLASS(QPluginLoader)
 class tst_QPluginLoader : public QObject
 {
     Q_OBJECT
@@ -200,7 +200,7 @@ private slots:
     void loadDebugObj();
     void loadCorruptElf_data();
     void loadCorruptElf();
-#  if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
     void loadCorruptElfOldPlugin_data();
     void loadCorruptElfOldPlugin();
 #  endif
@@ -237,8 +237,8 @@ void tst_QPluginLoader::cleanup()
 
 void tst_QPluginLoader::errorString()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
 
     const QString unknown(QLatin1String("Unknown error"));
@@ -288,7 +288,7 @@ void tst_QPluginLoader::errorString()
     }
 
 // A bug in QNX causes the test to crash on exit after attempting to load
-// a shared library with undefined symbols (tracked as QTBUG-114682).
+// a shared library with undefined symbols (tracked as BOBUIBUG-114682).
 #if defined(Q_OF_ELF) && !defined(Q_OS_QNX)
     {
     QPluginLoader loader( sys_qualifiedLibraryName("almostplugin"));     //a plugin with unresolved symbols
@@ -309,7 +309,7 @@ void tst_QPluginLoader::errorString()
 
     static constexpr std::initializer_list<const char *> validplugins = {
         "theplugin",
-#if defined(Q_OF_ELF) && QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#if defined(Q_OF_ELF) && BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
         "theoldplugin"
 #endif
     };
@@ -319,7 +319,7 @@ void tst_QPluginLoader::errorString()
         // Check metadata
         const QJsonObject metaData = loader.metaData();
         QVERIFY2(!metaData.isEmpty(), "No metadata from " + loader.fileName().toLocal8Bit());
-        QCOMPARE(metaData.value("IID").toString(), QStringLiteral("org.qt-project.Qt.autotests.plugininterface"));
+        QCOMPARE(metaData.value("IID").toString(), QStringLiteral("org.bobui-project.BobUI.autotests.plugininterface"));
         const QJsonObject kpluginObject = metaData.value("MetaData").toObject().value("KPlugin").toObject();
         QCOMPARE(kpluginObject.value("Name[mr]").toString(), QString::fromUtf8("चौकट भूमिती"));
 
@@ -342,8 +342,8 @@ void tst_QPluginLoader::errorString()
 
 void tst_QPluginLoader::loadHints()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
     QPluginLoader loader;
     QCOMPARE(loader.loadHints(), QLibrary::PreventUnloadHint);   //Do not crash
@@ -381,8 +381,8 @@ void tst_QPluginLoader::loadHints()
 
 void tst_QPluginLoader::deleteinstanceOnUnload()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
     for (int pass = 0; pass < 2; ++pass) {
         QPluginLoader loader1;
@@ -421,8 +421,8 @@ void tst_QPluginLoader::deleteinstanceOnUnload()
 
 void tst_QPluginLoader::loadDebugObj()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires a shared build of Qt, as QPluginLoader::setFileName is a no-op in static builds");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires a shared build of BobUI, as QPluginLoader::setFileName is a no-op in static builds");
 #endif
     QVERIFY(QFile::exists(QFINDTESTDATA("elftest/debugobj.so")));
     QPluginLoader lib1(QFINDTESTDATA("elftest/debugobj.so"));
@@ -432,7 +432,7 @@ void tst_QPluginLoader::loadDebugObj()
 template <typename Lambda>
 static void newRow(const char *rowname, QString &&snippet, Lambda &&patcher)
 {
-    QTest::newRow(rowname)
+    BOBUIest::newRow(rowname)
             << std::move(snippet) << ElfPatcher::fromLambda(std::forward<Lambda>(patcher));
 }
 
@@ -444,8 +444,8 @@ static ElfPhdr *getProgramEntry(ElfHeader *h, int index)
 
 static void loadCorruptElfCommonRows()
 {
-    QTest::addColumn<QString>("snippet");
-    QTest::addColumn<ElfPatcher>("patcher");
+    BOBUIest::addColumn<QString>("snippet");
+    BOBUIest::addColumn<ElfPatcher>("patcher");
 
     using H = ElfHeader *;          // because I'm lazy
     newRow("not-elf", "invalid signature", [](H h) {
@@ -618,8 +618,8 @@ static void loadCorruptElfCommonRows()
 
 void tst_QPluginLoader::loadCorruptElf_data()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires a shared build of Qt, as QPluginLoader::setFileName is a no-op in static builds");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires a shared build of BobUI, as QPluginLoader::setFileName is a no-op in static builds");
 #endif
     loadCorruptElfCommonRows();
     using H = ElfHeader *;          // because I'm lazy
@@ -657,7 +657,7 @@ void tst_QPluginLoader::loadCorruptElf_data()
 
     // all the intra-note errors cause the notes simply to be skipped
     auto newNoteRow = [](const char *rowname, auto &&lambda) {
-        newRow(rowname, "is not a Qt plugin (metadata not found)", std::move(lambda));
+        newRow(rowname, "is not a BobUI plugin (metadata not found)", std::move(lambda));
     };
     newNoteRow("no-notes", [](H h) {
         for (int i = 0; i < h->e_phnum; ++i) {
@@ -667,23 +667,23 @@ void tst_QPluginLoader::loadCorruptElf_data()
         }
     });
 
-    newNoteRow("note-larger-than-segment-nonqt", [](H h) {
+    newNoteRow("note-larger-than-segment-nonbobui", [](H h) {
         for (int i = 0; i < h->e_phnum; ++i) {
             ElfPhdr *p = getProgramEntry(h, i);
             if (p->p_type != PT_NOTE)
                 continue;
             ElfNhdr *n = getFirstNote(h, p);
             n->n_descsz = p->p_filesz;
-            n->n_type = 0;          // ensure it's not the Qt note
+            n->n_type = 0;          // ensure it's not the BobUI note
         }
     });
-    newNoteRow("note-larger-than-segment-qt", [](H h) {
+    newNoteRow("note-larger-than-segment-bobui", [](H h) {
         for (int i = 0; i < h->e_phnum; ++i) {
             ElfPhdr *p = getProgramEntry(h, i);
             if (p->p_type != PT_NOTE || p->p_align != alignof(QPluginMetaData::ElfNoteHeader))
                 continue;
 
-            // find the Qt metadata note
+            // find the BobUI metadata note
             constexpr QPluginMetaData::ElfNoteHeader header(0);
             ElfNhdr *n = getFirstNote(h, p);
             for ( ; n; n = getNextNote(h, p, n)) {
@@ -698,7 +698,7 @@ void tst_QPluginLoader::loadCorruptElf_data()
             n->n_descsz = p->p_filesz;
             return;
         }
-        qWarning("Could not find the Qt metadata note in this file. Test will fail.");
+        qWarning("Could not find the BobUI metadata note in this file. Test will fail.");
     });
     newNoteRow("note-size-overflow1", [](H h) {
         // due to limited range, this will not overflow on 64-bit
@@ -730,11 +730,11 @@ static void loadCorruptElf_helper(const QString &origLibrary)
 
 #ifdef Q_OS_ANDROID
     // patchElf() tries to map with private mode
-    if (QtAndroidPrivate::isUncompressedNativeLibs())
+    if (BobUIAndroidPrivate::isUncompressedNativeLibs())
         QSKIP("Mapping in-APK libraries with private mode is not supported on Android");
 #endif
 
-    std::unique_ptr<QTemporaryFile> tmplib = patchElf(origLibrary, patcher);
+    std::unique_ptr<BOBUIemporaryFile> tmplib = patchElf(origLibrary, patcher);
 
     QPluginLoader lib(tmplib->fileName());
     QVERIFY(!lib.load());
@@ -746,11 +746,11 @@ void tst_QPluginLoader::loadCorruptElf()
     loadCorruptElf_helper(sys_qualifiedLibraryName("theplugin"));
 }
 
-#  if QT_VERSION < QT_VERSION_CHECK(7, 0, 0)
+#  if BOBUI_VERSION < BOBUI_VERSION_CHECK(7, 0, 0)
 void tst_QPluginLoader::loadCorruptElfOldPlugin_data()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires a shared build of Qt, as QPluginLoader::setFileName is a no-op in static builds");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires a shared build of BobUI, as QPluginLoader::setFileName is a no-op in static builds");
 #endif
     loadCorruptElfCommonRows();
     using H = ElfHeader *;          // because I'm lazy
@@ -764,7 +764,7 @@ void tst_QPluginLoader::loadCorruptElfOldPlugin_data()
     newRow("section-entry-misaligned", "unexpected section entry size", [](H h) {
         ++h->e_shentsize;
     });
-    newRow("no-sections", "is not a Qt plugin (metadata not found)", [](H h){
+    newRow("no-sections", "is not a BobUI plugin (metadata not found)", [](H h){
         h->e_shnum = h->e_shoff = h->e_shstrndx = 0;
     });
 
@@ -840,31 +840,31 @@ void tst_QPluginLoader::loadCorruptElfOldPlugin_data()
         }
     });
 
-    // we don't know which section is .qtmetadata, so we just apply to all of them
+    // we don't know which section is .bobuimetadata, so we just apply to all of them
     static auto applyToAllSectionFlags = +[](H h, int flag) {
         for (int i = 0; i < h->e_shnum; ++i)
             getSection(h, i)->sh_flags |= flag;
     };
-    newRow("qtmetadata-executable", ".qtmetadata section is executable", [](H h) {
+    newRow("bobuimetadata-executable", ".bobuimetadata section is executable", [](H h) {
         applyToAllSectionFlags(h, SHF_EXECINSTR);
     });
-    newRow("qtmetadata-writable", ".qtmetadata section is writable", [](H h) {
+    newRow("bobuimetadata-writable", ".bobuimetadata section is writable", [](H h) {
         applyToAllSectionFlags(h, SHF_WRITE);
     });
 }
 
 void tst_QPluginLoader::loadCorruptElfOldPlugin()
 {
-    // ### Qt7: don't forget to remove theoldplugin from the build
+    // ### BobUI7: don't forget to remove theoldplugin from the build
     loadCorruptElf_helper(sys_qualifiedLibraryName("theoldplugin"));
 }
-#  endif // Qt 7
+#  endif // BobUI 7
 #endif // Q_OF_ELF
 
 void tst_QPluginLoader::archSpecificVersion()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
     QPluginLoader loader(sys_qualifiedLibraryName("theplugin"));
     QVERIFY2(loader.load(), qPrintable(loader.errorString()));
@@ -885,41 +885,41 @@ void tst_QPluginLoader::archSpecificVersion()
 
 void tst_QPluginLoader::loadMachO_data()
 {
-#if defined(QT_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
-    QTest::addColumn<bool>("success");
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
+    BOBUIest::addColumn<bool>("success");
 
-    QTest::newRow("/dev/null") << false;
-    QTest::newRow("elftest/debugobj.so") << false;
-    QTest::newRow("tst_qpluginloader.cpp") << false;
-    QTest::newRow("tst_qpluginloader") << false;
+    BOBUIest::newRow("/dev/null") << false;
+    BOBUIest::newRow("elftest/debugobj.so") << false;
+    BOBUIest::newRow("tst_qpluginloader.cpp") << false;
+    BOBUIest::newRow("tst_qpluginloader") << false;
 
 #  ifdef Q_PROCESSOR_X86_64
-    QTest::newRow("machtest/good.x86_64.dylib") << true;
-    QTest::newRow("machtest/good.arm64.dylib") << false;
-    QTest::newRow("machtest/good.fat.no-x86_64.dylib") << false;
-    QTest::newRow("machtest/good.fat.no-arm64.dylib") << true;
+    BOBUIest::newRow("machtest/good.x86_64.dylib") << true;
+    BOBUIest::newRow("machtest/good.arm64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.no-x86_64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.no-arm64.dylib") << true;
 #  elif defined(Q_PROCESSOR_ARM)
-    QTest::newRow("machtest/good.arm64.dylib") << true;
-    QTest::newRow("machtest/good.x86_64.dylib") << false;
-    QTest::newRow("machtest/good.fat.no-arm64.dylib") << false;
-    QTest::newRow("machtest/good.fat.no-x86_64.dylib") << true;
+    BOBUIest::newRow("machtest/good.arm64.dylib") << true;
+    BOBUIest::newRow("machtest/good.x86_64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.no-arm64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.no-x86_64.dylib") << true;
 #  endif
 
-    QTest::newRow("machtest/good.fat.all.dylib") << true;
-    QTest::newRow("machtest/good.fat.stub-x86_64.dylib") << false;
-    QTest::newRow("machtest/good.fat.stub-arm64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.all.dylib") << true;
+    BOBUIest::newRow("machtest/good.fat.stub-x86_64.dylib") << false;
+    BOBUIest::newRow("machtest/good.fat.stub-arm64.dylib") << false;
 
     QDir d(QFINDTESTDATA("machtest"));
     const QStringList badlist = d.entryList(QStringList() << "bad*.dylib");
     for (const QString &bad : badlist)
-        QTest::newRow(qPrintable("machtest/" + bad)) << false;
+        BOBUIest::newRow(qPrintable("machtest/" + bad)) << false;
 #endif
 }
 
 void tst_QPluginLoader::loadMachO()
 {
-#if defined(QT_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
-    QFile f(QFINDTESTDATA(QTest::currentDataTag()));
+#if defined(BOBUI_BUILD_INTERNAL) && defined(Q_OF_MACH_O)
+    QFile f(QFINDTESTDATA(BOBUIest::currentDataTag()));
     QVERIFY(f.open(QIODevice::ReadOnly));
     QByteArray data = f.readAll();
 
@@ -950,8 +950,8 @@ void tst_QPluginLoader::loadMachO()
 
 void tst_QPluginLoader::relativePath()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
 #ifdef Q_OS_ANDROID
     // On Android we do not need to explicitly set library paths, as they are
@@ -975,8 +975,8 @@ void tst_QPluginLoader::relativePath()
 
 void tst_QPluginLoader::absolutePath()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
 #ifdef Q_OS_ANDROID
     // On Android we need to clear library paths to make sure that the absolute
@@ -1006,8 +1006,8 @@ void tst_QPluginLoader::absolutePath()
 
 void tst_QPluginLoader::reloadPlugin()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
     QPluginLoader loader;
     loader.setFileName( sys_qualifiedLibraryName("theplugin"));     //a plugin
@@ -1038,8 +1038,8 @@ void tst_QPluginLoader::loadSectionTableStrippedElf()
     if (QNativeInterface::QAndroidApplication::sdkVersion() >= 24)
         QSKIP("Android 7+ (API 24+) linker doesn't allow missing or bad section header");
 #endif
-#if !defined(QT_SHARED)
-    QSKIP("This test requires a shared build of Qt, as QPluginLoader::setFileName is a no-op in static builds");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires a shared build of BobUI, as QPluginLoader::setFileName is a no-op in static builds");
 #elif !defined(Q_OF_ELF)
     QSKIP("Test specific to the ELF file format");
 #else
@@ -1049,22 +1049,22 @@ void tst_QPluginLoader::loadSectionTableStrippedElf()
 
         // and append a bad header at the end
         QPluginMetaData::MagicHeader badHeader = {};
-        --badHeader.header.qt_major_version;
+        --badHeader.header.bobui_major_version;
         f->seek(f->size());
         f->write(reinterpret_cast<const char *>(&badHeader), sizeof(badHeader));
     } };
 
     QString tmpLibName;
     {
-        std::unique_ptr<QTemporaryFile> tmplib =
+        std::unique_ptr<BOBUIemporaryFile> tmplib =
                 patchElf(sys_qualifiedLibraryName("theplugin"), patcher);
 
         tmpLibName = tmplib->fileName();
         tmplib->setAutoRemove(false);
     }
 #if defined(Q_OS_QNX)
-    // On QNX plugin access is still too early, even when QTemporaryFile is closed
-    QTest::qSleep(1000);
+    // On QNX plugin access is still too early, even when BOBUIemporaryFile is closed
+    BOBUIest::qSleep(1000);
 #endif
     auto removeTmpLib = qScopeGuard([=]{
         QFile::remove(tmpLibName);
@@ -1082,18 +1082,18 @@ void tst_QPluginLoader::loadSectionTableStrippedElf()
 
 void tst_QPluginLoader::preloadedPlugin_data()
 {
-    QTest::addColumn<bool>("doLoad");
-    QTest::addColumn<QString>("libname");
-    QTest::newRow("create-plugin") << false << sys_qualifiedLibraryName("theplugin");
-    QTest::newRow("load-plugin") << true << sys_qualifiedLibraryName("theplugin");
-    QTest::newRow("create-non-plugin") << false << sys_qualifiedLibraryName("tst_qpluginloaderlib");
-    QTest::newRow("load-non-plugin") << true << sys_qualifiedLibraryName("tst_qpluginloaderlib");
+    BOBUIest::addColumn<bool>("doLoad");
+    BOBUIest::addColumn<QString>("libname");
+    BOBUIest::newRow("create-plugin") << false << sys_qualifiedLibraryName("theplugin");
+    BOBUIest::newRow("load-plugin") << true << sys_qualifiedLibraryName("theplugin");
+    BOBUIest::newRow("create-non-plugin") << false << sys_qualifiedLibraryName("tst_qpluginloaderlib");
+    BOBUIest::newRow("load-non-plugin") << true << sys_qualifiedLibraryName("tst_qpluginloaderlib");
 }
 
 void tst_QPluginLoader::preloadedPlugin()
 {
-#if !defined(QT_SHARED)
-    QSKIP("This test requires Qt to create shared libraries.");
+#if !defined(BOBUI_SHARED)
+    QSKIP("This test requires BobUI to create shared libraries.");
 #endif
     // check that using QPluginLoader does not interfere with QLibrary
     QFETCH(QString, libname);
@@ -1151,24 +1151,24 @@ void tst_QPluginLoader::staticPlugins()
     QVERIFY(found);
 
     // We don't store the patch release version anymore (since 5.13)
-    QCOMPARE(metaData.value("version").toInt() / 0x100, QT_VERSION / 0x100);
+    QCOMPARE(metaData.value("version").toInt() / 0x100, BOBUI_VERSION / 0x100);
     QCOMPARE(metaData.value("IID").toString(), "SomeIID");
     QCOMPARE(metaData.value("ExtraMetaData"), QJsonArray({ "StaticPlugin", "foo" }));
-    QCOMPARE(metaData.value("URI").toString(), "qt.test.pluginloader.staticplugin");
+    QCOMPARE(metaData.value("URI").toString(), "bobui.test.pluginloader.staticplugin");
 }
 
 void tst_QPluginLoader::reregisteredStaticPlugins()
 {
     // the Q_IMPORT_PLUGIN macro will have already done this
-    qRegisterStaticPluginFunction(QT_MANGLE_NAMESPACE(qt_static_plugin_StaticPlugin)());
+    qRegisterStaticPluginFunction(BOBUI_MANGLE_NAMESPACE(bobui_static_plugin_StaticPlugin)());
     staticPlugins();
-    if (QTest::currentTestFailed())
+    if (BOBUIest::currentTestFailed())
         return;
 
-    qRegisterStaticPluginFunction(QT_MANGLE_NAMESPACE(qt_static_plugin_StaticPlugin)());
+    qRegisterStaticPluginFunction(BOBUI_MANGLE_NAMESPACE(bobui_static_plugin_StaticPlugin)());
     staticPlugins();
 }
 
 
-QTEST_MAIN(tst_QPluginLoader)
+BOBUIEST_MAIN(tst_QPluginLoader)
 #include "tst_qpluginloader.moc"

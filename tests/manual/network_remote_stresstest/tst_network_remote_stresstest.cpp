@@ -1,19 +1,19 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
-#include <QtTest/qtesteventloop.h>
-#include <QtCore/QElapsedTimer>
-#include <QtCore/QList>
-#include <QtCore/QSemaphore>
-#include <QtCore/QSharedPointer>
-#include <QtCore/QThread>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QSslSocket>
-#include <QtNetwork/QTcpSocket>
+#include <BOBUIest>
+#include <BobUITest/bobuiesteventloop.h>
+#include <BobUICore/QElapsedTimer>
+#include <BobUICore/QList>
+#include <BobUICore/QSemaphore>
+#include <BobUICore/QSharedPointer>
+#include <BobUICore/BOBUIhread>
+#include <BobUINetwork/QNetworkAccessManager>
+#include <BobUINetwork/QNetworkReply>
+#include <BobUINetwork/QSslSocket>
+#include <BobUINetwork/BOBUIcpSocket>
 
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
 # include <private/qnetworkaccessmanager_p.h>
 #endif
 
@@ -101,28 +101,28 @@ tst_NetworkRemoteStressTest::tst_NetworkRemoteStressTest()
 
 void tst_NetworkRemoteStressTest::initTestCase_data()
 {
-    QTest::addColumn<QList<QUrl>>("urlList");
-    QTest::addColumn<bool>("useSslSocket");
+    BOBUIest::addColumn<QList<QUrl>>("urlList");
+    BOBUIest::addColumn<bool>("useSslSocket");
 
-    QTest::newRow("no-ssl") << httpUrls << false;
-//    QTest::newRow("no-ssl-in-sslsocket") << httpUrls << true;
-    QTest::newRow("ssl") << httpsUrls << true;
-    QTest::newRow("mixed") << mixedUrls << false;
-//    QTest::newRow("mixed-in-sslsocket") << mixedUrls << true;
+    BOBUIest::newRow("no-ssl") << httpUrls << false;
+//    BOBUIest::newRow("no-ssl-in-sslsocket") << httpUrls << true;
+    BOBUIest::newRow("ssl") << httpsUrls << true;
+    BOBUIest::newRow("mixed") << mixedUrls << false;
+//    BOBUIest::newRow("mixed-in-sslsocket") << mixedUrls << true;
 }
 
 void tst_NetworkRemoteStressTest::init()
 {
     // clear the internal cache
-#ifndef QT_BUILD_INTERNAL
-    if (strncmp(QTest::currentTestFunction(), "nam", 3) == 0)
+#ifndef BOBUI_BUILD_INTERNAL
+    if (strncmp(BOBUIest::currentTestFunction(), "nam", 3) == 0)
         QSKIP("QNetworkAccessManager tests disabled");
 #endif
 }
 
 void tst_NetworkRemoteStressTest::clearManager()
 {
-#ifdef QT_BUILD_INTERNAL
+#ifdef BOBUI_BUILD_INTERNAL
     QNetworkAccessManagerPrivate::clearAuthenticationCache(&manager);
     QNetworkAccessManagerPrivate::clearConnectionCache(&manager);
     manager.setProxy(QNetworkProxy());
@@ -198,9 +198,9 @@ void tst_NetworkRemoteStressTest::blockingSequentialRemoteHosts()
     QElapsedTimer outerTimer;
     outerTimer.start();
 
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QVERIFY(!useSslSocket);
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
     for (int i = 0; i < urlList.size(); ++i) {
         const QUrl &url = urlList.at(i);
@@ -209,30 +209,30 @@ void tst_NetworkRemoteStressTest::blockingSequentialRemoteHosts()
         byteCounter = 0;
         timeout.start();
 
-        QSharedPointer<QTcpSocket> socket;
-#ifndef QT_NO_SSL
+        QSharedPointer<BOBUIcpSocket> socket;
+#ifndef BOBUI_NO_SSL
         if (useSslSocket || isHttps)
-            socket = QSharedPointer<QTcpSocket>(new QSslSocket);
-#endif // QT_NO_SSL
+            socket = QSharedPointer<BOBUIcpSocket>(new QSslSocket);
+#endif // BOBUI_NO_SSL
         if (socket.isNull())
-            socket = QSharedPointer<QTcpSocket>(new QTcpSocket);
+            socket = QSharedPointer<BOBUIcpSocket>(new BOBUIcpSocket);
 
         socket->connectToHost(url.host(), url.port(isHttps ? 443 : 80));
         const QByteArray encodedHost = url.host(QUrl::FullyEncoded).toLatin1();
         QVERIFY2(socket->waitForConnected(10000), "Timeout connecting to " + encodedHost);
 
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
         if (isHttps) {
             static_cast<QSslSocket *>(socket.data())->setProtocol(QSsl::TlsV1_0);
             static_cast<QSslSocket *>(socket.data())->startClientEncryption();
             static_cast<QSslSocket *>(socket.data())->ignoreSslErrors();
             QVERIFY2(static_cast<QSslSocket *>(socket.data())->waitForEncrypted(10000), "Timeout starting TLS with " + encodedHost);
         }
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
         socket->write("GET " + url.toEncoded(QUrl::RemoveScheme | QUrl::RemoveAuthority | QUrl::RemoveFragment) + " HTTP/1.0\r\n"
                       "Connection: close\r\n"
-                      "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                      "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                       "Host: " + encodedHost + "\r\n"
                       "\r\n");
         while (socket->bytesToWrite())
@@ -259,9 +259,9 @@ void tst_NetworkRemoteStressTest::sequentialRemoteHosts()
     QFETCH_GLOBAL(QList<QUrl>, urlList);
     QFETCH_GLOBAL(bool, useSslSocket);
 
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QVERIFY(!useSslSocket);
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
     qint64 totalBytes = 0;
     QElapsedTimer outerTimer;
@@ -274,19 +274,19 @@ void tst_NetworkRemoteStressTest::sequentialRemoteHosts()
         byteCounter = 0;
         timeout.start();
 
-        QSharedPointer<QTcpSocket> socket;
-#ifndef QT_NO_SSL
+        QSharedPointer<BOBUIcpSocket> socket;
+#ifndef BOBUI_NO_SSL
         if (useSslSocket || isHttps)
-            socket = QSharedPointer<QTcpSocket>(new QSslSocket);
-#endif // QT_NO_SSL
+            socket = QSharedPointer<BOBUIcpSocket>(new QSslSocket);
+#endif // BOBUI_NO_SSL
         if (socket.isNull())
-            socket = QSharedPointer<QTcpSocket>(new QTcpSocket);
+            socket = QSharedPointer<BOBUIcpSocket>(new BOBUIcpSocket);
         if (isHttps) {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
             static_cast<QSslSocket *>(socket.data())->setProtocol(QSsl::TlsV1_0);
             static_cast<QSslSocket *>(socket.data())->connectToHostEncrypted(url.host(), url.port(443));
             static_cast<QSslSocket *>(socket.data())->ignoreSslErrors();
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
         } else {
             socket->connectToHost(url.host(), url.port(80));
         }
@@ -294,14 +294,14 @@ void tst_NetworkRemoteStressTest::sequentialRemoteHosts()
         const QByteArray encodedHost = url.host(QUrl::FullyEncoded).toLatin1();
         socket->write("GET " + url.toEncoded(QUrl::RemoveScheme | QUrl::RemoveAuthority | QUrl::RemoveFragment) + " HTTP/1.0\r\n"
                       "Connection: close\r\n"
-                      "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                      "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                       "Host: " + encodedHost + "\r\n"
                       "\r\n");
         connect(socket.data(), SIGNAL(readyRead()), SLOT(slotReadAll()));
 
-        QTestEventLoop::instance().connect(socket.data(), SIGNAL(disconnected()), SLOT(exitLoop()));
-        QTestEventLoop::instance().enterLoop(30);
-        QVERIFY2(!QTestEventLoop::instance().timeout(), "Timeout with " + encodedHost + "; "
+        BOBUIestEventLoop::instance().connect(socket.data(), SIGNAL(disconnected()), SLOT(exitLoop()));
+        BOBUIestEventLoop::instance().enterLoop(30);
+        QVERIFY2(!BOBUIestEventLoop::instance().timeout(), "Timeout with " + encodedHost + "; "
                  + QByteArray::number(socket->bytesToWrite()) + " bytes to write");
 
         totalBytes += byteCounter;
@@ -316,16 +316,16 @@ void tst_NetworkRemoteStressTest::sequentialRemoteHosts()
 
 void tst_NetworkRemoteStressTest::parallelRemoteHosts_data()
 {
-    QTest::addColumn<int>("parallelAttempts");
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("4") << 4;
-    QTest::newRow("5") << 5;
-    QTest::newRow("6") << 6;
-    QTest::newRow("8") << 8;
-    QTest::newRow("10") << 10;
-    QTest::newRow("25") << 25;
-    QTest::newRow("500") << 500;
+    BOBUIest::addColumn<int>("parallelAttempts");
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("4") << 4;
+    BOBUIest::newRow("5") << 5;
+    BOBUIest::newRow("6") << 6;
+    BOBUIest::newRow("8") << 8;
+    BOBUIest::newRow("10") << 10;
+    BOBUIest::newRow("25") << 25;
+    BOBUIest::newRow("500") << 500;
 }
 
 void tst_NetworkRemoteStressTest::parallelRemoteHosts()
@@ -335,9 +335,9 @@ void tst_NetworkRemoteStressTest::parallelRemoteHosts()
 
     QFETCH(int, parallelAttempts);
 
-#ifdef QT_NO_SSL
+#ifdef BOBUI_NO_SSL
     QVERIFY(!useSslSocket);
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
 
     qint64 totalBytes = 0;
     QElapsedTimer outerTimer;
@@ -349,24 +349,24 @@ void tst_NetworkRemoteStressTest::parallelRemoteHosts()
         byteCounter = 0;
         timeout.start();
 
-        QList<QSharedPointer<QTcpSocket> > sockets;
+        QList<QSharedPointer<BOBUIcpSocket> > sockets;
         sockets.reserve(parallelAttempts);
         for (int j = 0; j < parallelAttempts && it != urlList.constEnd(); ++j, ++it) {
             const QUrl &url = *it;
             bool isHttps = url.scheme() == "https";
-            QTcpSocket *socket = 0;
-#ifndef QT_NO_SSL
+            BOBUIcpSocket *socket = 0;
+#ifndef BOBUI_NO_SSL
             if (useSslSocket || isHttps)
                 socket = new QSslSocket;
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
             if (!socket)
-                socket = new QTcpSocket;
+                socket = new BOBUIcpSocket;
             if (isHttps) {
-#ifndef QT_NO_SSL
+#ifndef BOBUI_NO_SSL
                 static_cast<QSslSocket *>(socket)->setProtocol(QSsl::TlsV1_0);
                 static_cast<QSslSocket *>(socket)->connectToHostEncrypted(url.host(), url.port(443));
                 static_cast<QSslSocket *>(socket)->ignoreSslErrors();
-#endif // QT_NO_SSL
+#endif // BOBUI_NO_SSL
             } else {
                 socket->connectToHost(url.host(), url.port(isHttps ? 443 : 80));
             }
@@ -374,18 +374,18 @@ void tst_NetworkRemoteStressTest::parallelRemoteHosts()
             const QByteArray encodedHost = url.host(QUrl::FullyEncoded).toLatin1();
             socket->write("GET " + url.toEncoded(QUrl::RemoveScheme | QUrl::RemoveAuthority | QUrl::RemoveFragment) + " HTTP/1.0\r\n"
                           "Connection: close\r\n"
-                          "User-Agent: tst_QTcpSocket_stresstest/1.0\r\n"
+                          "User-Agent: tst_BOBUIcpSocket_stresstest/1.0\r\n"
                           "Host: " + encodedHost + "\r\n"
                           "\r\n");
             connect(socket, SIGNAL(readyRead()), SLOT(slotReadAll()));
-            QTestEventLoop::instance().connect(socket, SIGNAL(disconnected()), SLOT(exitLoop()));
+            BOBUIestEventLoop::instance().connect(socket, SIGNAL(disconnected()), SLOT(exitLoop()));
             socket->setProperty("remoteUrl", url);
 
-            sockets.append(QSharedPointer<QTcpSocket>(socket));
+            sockets.append(QSharedPointer<BOBUIcpSocket>(socket));
         }
 
         while (!timeout.hasExpired(10000)) {
-            QTestEventLoop::instance().enterLoop(10);
+            BOBUIestEventLoop::instance().enterLoop(10);
             int done = 0;
             for (int j = 0; j < sockets.size(); ++j)
                 done += sockets[j]->state() == QAbstractSocket::UnconnectedState ? 1 : 0;
@@ -411,16 +411,16 @@ void tst_NetworkRemoteStressTest::parallelRemoteHosts()
 
 void tst_NetworkRemoteStressTest::namRemoteGet_data()
 {
-    QTest::addColumn<int>("parallelAttempts");
-    QTest::newRow("1") << 1;
-    QTest::newRow("2") << 2;
-    QTest::newRow("4") << 4;
-    QTest::newRow("5") << 5;
-    QTest::newRow("6") << 6;
-    QTest::newRow("8") << 8;
-    QTest::newRow("10") << 10;
-    QTest::newRow("25") << 25;
-    QTest::newRow("500") << 500;
+    BOBUIest::addColumn<int>("parallelAttempts");
+    BOBUIest::newRow("1") << 1;
+    BOBUIest::newRow("2") << 2;
+    BOBUIest::newRow("4") << 4;
+    BOBUIest::newRow("5") << 5;
+    BOBUIest::newRow("6") << 6;
+    BOBUIest::newRow("8") << 8;
+    BOBUIest::newRow("10") << 10;
+    BOBUIest::newRow("25") << 25;
+    BOBUIest::newRow("500") << 500;
 }
 
 void tst_NetworkRemoteStressTest::namRemoteGet()
@@ -451,13 +451,13 @@ void tst_NetworkRemoteStressTest::namRemoteGet()
             r->ignoreSslErrors();
 
             connect(r, SIGNAL(readyRead()), SLOT(slotReadAll()));
-            QTestEventLoop::instance().connect(r, SIGNAL(finished()), SLOT(exitLoop()));
+            BOBUIestEventLoop::instance().connect(r, SIGNAL(finished()), SLOT(exitLoop()));
 
             replies.append(QSharedPointer<QNetworkReply>(r));
         }
 
         while (!timeout.hasExpired(30000)) {
-            QTestEventLoop::instance().enterLoop(30 - timeout.elapsed() / 1000);
+            BOBUIestEventLoop::instance().enterLoop(30 - timeout.elapsed() / 1000);
             int done = 0;
             for (int j = 0; j < replies.size(); ++j)
                 done += replies[j]->isFinished() ? 1 : 0;
@@ -482,6 +482,6 @@ void tst_NetworkRemoteStressTest::namRemoteGet()
     qDebug() << "Average transfer rate was" << (totalBytes / 1024.0 * 1000 / outerTimer.elapsed()) << "kB/s";
 }
 
-QTEST_MAIN(tst_NetworkRemoteStressTest);
+BOBUIEST_MAIN(tst_NetworkRemoteStressTest);
 
 #include "tst_network_remote_stresstest.moc"

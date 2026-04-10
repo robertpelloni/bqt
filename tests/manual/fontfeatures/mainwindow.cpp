@@ -1,5 +1,5 @@
-// Copyright (C) 2023 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2023 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -26,7 +26,7 @@ void MainWindow::updateSampleText()
 
     for (int i = 0; i < ui->lwFeatures->count(); ++i) {
         QListWidgetItem *it = ui->lwFeatures->item(i);
-        if (it->checkState() != Qt::PartiallyChecked) {
+        if (it->checkState() != BobUI::PartiallyChecked) {
             if (const auto maybeTag = QFont::Tag::fromString(it->text().toLatin1()))
                 font.setFeature(*maybeTag, !!it->checkState());
         }
@@ -40,7 +40,7 @@ void MainWindow::enableAll()
 {
     for (int i = 0; i < ui->lwFeatures->count(); ++i) {
         QListWidgetItem *it = ui->lwFeatures->item(i);
-        it->setCheckState(Qt::Checked);
+        it->setCheckState(BobUI::Checked);
     }
 }
 
@@ -48,7 +48,7 @@ void MainWindow::disableAll()
 {
     for (int i = 0; i < ui->lwFeatures->count(); ++i) {
         QListWidgetItem *it = ui->lwFeatures->item(i);
-        it->setCheckState(Qt::Unchecked);
+        it->setCheckState(BobUI::Unchecked);
     }
 }
 
@@ -56,7 +56,7 @@ void MainWindow::reset()
 {
     for (int i = 0; i < ui->lwFeatures->count(); ++i) {
         QListWidgetItem *it = ui->lwFeatures->item(i);
-        it->setCheckState(Qt::PartiallyChecked);
+        it->setCheckState(BobUI::PartiallyChecked);
     }
 }
 
@@ -218,8 +218,8 @@ void MainWindow::setup()
 
     for (auto it = featureList.constBegin(); it != featureList.constEnd(); ++it) {
         QListWidgetItem *item = new QListWidgetItem(*it);
-        item->setFlags(Qt::ItemIsUserTristate | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-        item->setCheckState(Qt::PartiallyChecked);
+        item->setFlags(BobUI::ItemIsUserTristate | BobUI::ItemIsUserCheckable | BobUI::ItemIsEnabled);
+        item->setCheckState(BobUI::PartiallyChecked);
         ui->lwFeatures->addItem(item);
     }
 }

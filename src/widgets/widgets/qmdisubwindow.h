@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QMDISUBWINDOW_H
 #define QMDISUBWINDOW_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(mdiarea);
+BOBUI_REQUIRE_CONFIG(mdiarea);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QMenu;
 class QMdiArea;
@@ -31,7 +31,7 @@ public:
     };
     Q_DECLARE_FLAGS(SubWindowOptions, SubWindowOption)
 
-    QMdiSubWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    QMdiSubWindow(QWidget *parent = nullptr, BobUI::WindowFlags flags = BobUI::WindowFlags());
     ~QMdiSubWindow();
 
     QSize sizeHint() const override;
@@ -54,7 +54,7 @@ public:
     void setKeyboardPageStep(int step);
     int keyboardPageStep() const;
 
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void setSystemMenu(QMenu *systemMenu);
     QMenu *systemMenu() const;
 #endif
@@ -62,11 +62,11 @@ public:
     QMdiArea *mdiArea() const;
 
 Q_SIGNALS:
-    void windowStateChanged(Qt::WindowStates oldState, Qt::WindowStates newState);
+    void windowStateChanged(BobUI::WindowStates oldState, BobUI::WindowStates newState);
     void aboutToActivate();
 
 public Q_SLOTS:
-#if QT_CONFIG(menu)
+#if BOBUI_CONFIG(menu)
     void showSystemMenu();
 #endif
     void showShaded();
@@ -80,7 +80,7 @@ protected:
     void closeEvent(QCloseEvent *closeEvent) override;
     void leaveEvent(QEvent *leaveEvent) override;
     void resizeEvent(QResizeEvent *resizeEvent) override;
-    void timerEvent(QTimerEvent *timerEvent) override;
+    void timerEvent(BOBUIimerEvent *timerEvent) override;
     void moveEvent(QMoveEvent *moveEvent) override;
     void paintEvent(QPaintEvent *paintEvent) override;
     void mousePressEvent(QMouseEvent *mouseEvent) override;
@@ -88,7 +88,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *mouseEvent) override;
     void mouseMoveEvent(QMouseEvent *mouseEvent) override;
     void keyPressEvent(QKeyEvent *keyEvent) override;
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *contextMenuEvent) override;
 #endif
     void focusInEvent(QFocusEvent *focusInEvent) override;
@@ -103,7 +103,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_processFocusChanged(QWidget *, QWidget *))
     friend class QMdiAreaPrivate;
     friend class QMdiArea;
-#if QT_CONFIG(tabbar)
+#if BOBUI_CONFIG(tabbar)
     friend class QMdiAreaTabBar;
 #endif
     friend class QMdi::ControlContainer;
@@ -111,6 +111,6 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QMdiSubWindow::SubWindowOptions)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QMDISUBWINDOW_H

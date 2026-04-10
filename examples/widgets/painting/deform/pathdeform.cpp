@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "pathdeform.h"
 
 #include <QGuiApplication>
 #include <QScreen>
-#include <QtDebug>
+#include <BobUIDebug>
 #include <QMouseEvent>
-#include <QTimerEvent>
+#include <BOBUIimerEvent>
 #include <QLayout>
 #include <QLineEdit>
 #include <QPainter>
@@ -34,19 +34,19 @@ void PathDeformControls::layoutForDesktop()
 
     QGroupBox *radiusGroup = new QGroupBox(mainGroup);
     radiusGroup->setTitle(tr("Lens Radius"));
-    QSlider *radiusSlider = new QSlider(Qt::Horizontal, radiusGroup);
+    QSlider *radiusSlider = new QSlider(BobUI::Horizontal, radiusGroup);
     radiusSlider->setRange(15, 150);
     radiusSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *deformGroup = new QGroupBox(mainGroup);
     deformGroup->setTitle(tr("Deformation"));
-    QSlider *deformSlider = new QSlider(Qt::Horizontal, deformGroup);
+    QSlider *deformSlider = new QSlider(BobUI::Horizontal, deformGroup);
     deformSlider->setRange(-100, 100);
     deformSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *fontSizeGroup = new QGroupBox(mainGroup);
     fontSizeGroup->setTitle(tr("Font Size"));
-    QSlider *fontSizeSlider = new QSlider(Qt::Horizontal, fontSizeGroup);
+    QSlider *fontSizeSlider = new QSlider(BobUI::Horizontal, fontSizeGroup);
     fontSizeSlider->setRange(16, 200);
     fontSizeSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
@@ -109,7 +109,7 @@ void PathDeformControls::layoutForDesktop()
     deformSlider->setValue(80);
     fontSizeSlider->setValue(120);
     radiusSlider->setValue(100);
-    textInput->setText(tr("Qt"));
+    textInput->setText(tr("BobUI"));
 }
 
 void PathDeformControls::layoutForSmallScreen()
@@ -119,19 +119,19 @@ void PathDeformControls::layoutForSmallScreen()
 
     QLabel *radiusLabel = new QLabel(mainGroup);
     radiusLabel->setText(tr("Lens Radius:"));
-    QSlider *radiusSlider = new QSlider(Qt::Horizontal, mainGroup);
+    QSlider *radiusSlider = new QSlider(BobUI::Horizontal, mainGroup);
     radiusSlider->setRange(15, 150);
     radiusSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QLabel *deformLabel = new QLabel(mainGroup);
     deformLabel->setText(tr("Deformation:"));
-    QSlider *deformSlider = new QSlider(Qt::Horizontal, mainGroup);
+    QSlider *deformSlider = new QSlider(BobUI::Horizontal, mainGroup);
     deformSlider->setRange(-100, 100);
     deformSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QLabel *fontSizeLabel = new QLabel(mainGroup);
     fontSizeLabel->setText(tr("Font Size:"));
-    QSlider *fontSizeSlider = new QSlider(Qt::Horizontal, mainGroup);
+    QSlider *fontSizeSlider = new QSlider(BobUI::Horizontal, mainGroup);
     fontSizeSlider->setRange(16, 200);
     fontSizeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
@@ -144,11 +144,11 @@ void PathDeformControls::layoutForSmallScreen()
 
     QGridLayout *mainGroupLayout = new QGridLayout(mainGroup);
     mainGroupLayout->setContentsMargins(QMargins());
-    mainGroupLayout->addWidget(radiusLabel, 0, 0, Qt::AlignRight);
+    mainGroupLayout->addWidget(radiusLabel, 0, 0, BobUI::AlignRight);
     mainGroupLayout->addWidget(radiusSlider, 0, 1);
-    mainGroupLayout->addWidget(deformLabel, 1, 0, Qt::AlignRight);
+    mainGroupLayout->addWidget(deformLabel, 1, 0, BobUI::AlignRight);
     mainGroupLayout->addWidget(deformSlider, 1, 1);
-    mainGroupLayout->addWidget(fontSizeLabel, 2, 0, Qt::AlignRight);
+    mainGroupLayout->addWidget(fontSizeLabel, 2, 0, BobUI::AlignRight);
     mainGroupLayout->addWidget(fontSizeSlider, 2, 1);
     mainGroupLayout->addWidget(animateButton, 3,0, 1,2);
 
@@ -172,7 +172,7 @@ void PathDeformControls::layoutForSmallScreen()
     QRect screen_size = QGuiApplication::primaryScreen()->geometry();
     radiusSlider->setValue(qMin(screen_size.width(), screen_size.height())/5);
 
-    m_renderer->setText(tr("Qt"));
+    m_renderer->setText(tr("BobUI"));
 }
 
 PathDeformWidget::PathDeformWidget(QWidget *parent, bool smallScreen)
@@ -299,7 +299,7 @@ void PathDeformRenderer::setText(const QString &text)
     }
 
     for (int i=0; i<m_paths.size(); ++i)
-        m_paths[i] = m_paths[i] * QTransform(1, 0, 0, 1, -m_pathBounds.x(), -m_pathBounds.y());
+        m_paths[i] = m_paths[i] * BOBUIransform(1, 0, 0, 1, -m_pathBounds.x(), -m_pathBounds.y());
 
     update();
 }
@@ -319,7 +319,7 @@ void PathDeformRenderer::generateLensPixmap()
         painter.begin(&m_lens_image);
     } else {
         m_lens_pixmap = QPixmap(bounds.size());
-        m_lens_pixmap.fill(Qt::transparent);
+        m_lens_pixmap.fill(BobUI::transparent);
         painter.begin(&m_lens_pixmap);
     }
 
@@ -331,7 +331,7 @@ void PathDeformRenderer::generateLensPixmap()
     gr.setColorAt(1, QColor(0, 0, 0, 0));
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(gr);
-    painter.setPen(Qt::NoPen);
+    painter.setPen(BobUI::NoPen);
     painter.drawEllipse(0, 0, bounds.width(), bounds.height());
 }
 
@@ -351,7 +351,7 @@ void PathDeformRenderer::setAnimated(bool animated)
     }
 }
 
-void PathDeformRenderer::timerEvent(QTimerEvent *e)
+void PathDeformRenderer::timerEvent(BOBUIimerEvent *e)
 {
     if (e->timerId() == m_repaintTimer.timerId()) {
 
@@ -414,7 +414,7 @@ void PathDeformRenderer::mousePressEvent(QMouseEvent *e)
 
 void PathDeformRenderer::mouseReleaseEvent(QMouseEvent *e)
 {
-    if (e->buttons() == Qt::NoButton && m_animated) {
+    if (e->buttons() == BobUI::NoButton && m_animated) {
         m_repaintTimer.start(10, this);
         m_repaintTracker.start();
     }
@@ -480,8 +480,8 @@ void PathDeformRenderer::paint(QPainter *painter)
     int skip_x = qRound(m_pathBounds.width() + pad_x + m_fontSize/2);
     int skip_y = qRound(m_pathBounds.height() + pad_y);
 
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::black);
+    painter->setPen(BobUI::NoPen);
+    painter->setBrush(BobUI::black);
 
     QRectF clip(painter->clipPath().boundingRect());
 

@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QTest>
+#include <BOBUIest>
 #include <qfont.h>
 #include <qfontmetrics.h>
 #include <qfontdatabase.h>
@@ -35,7 +35,7 @@ private slots:
     void verticalMetrics_data();
     void verticalMetrics();
     void largeText_data();
-    void largeText(); // QTBUG-123339
+    void largeText(); // BOBUIBUG-123339
     void typoLineMetrics();
     void defaultIgnorableHorizontalAdvance_data();
     void defaultIgnorableHorizontalAdvance();
@@ -150,11 +150,11 @@ void tst_QFontMetrics::boundingRect2()
 
 void tst_QFontMetrics::elidedText_data()
 {
-    QTest::addColumn<QFont>("font");
-    QTest::addColumn<QString>("text");
+    BOBUIest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QString>("text");
 
-    QTest::newRow("helvetica hello") << QFont("helvetica",10) << QString("hello") ;
-    QTest::newRow("helvetica hello &Bye") << QFont("helvetica",10) << QString("hello&Bye") ;
+    BOBUIest::newRow("helvetica hello") << QFont("helvetica",10) << QString("hello") ;
+    BOBUIest::newRow("helvetica hello &Bye") << QFont("helvetica",10) << QString("hello&Bye") ;
 }
 
 
@@ -164,9 +164,9 @@ void tst_QFontMetrics::elidedText()
     QFETCH(QString, text);
     QFontMetrics fm(font);
     int w = fm.horizontalAdvance(text);
-    QString newtext = fm.elidedText(text,Qt::ElideRight,w+1, 0);
+    QString newtext = fm.elidedText(text,BobUI::ElideRight,w+1, 0);
     QCOMPARE(text,newtext); // should not elide
-    newtext = fm.elidedText(text,Qt::ElideRight,w-1, 0);
+    newtext = fm.elidedText(text,BobUI::ElideRight,w-1, 0);
     QVERIFY(text != newtext); // should elide
 }
 
@@ -175,7 +175,7 @@ void tst_QFontMetrics::veryNarrowElidedText()
     QFont f;
     QFontMetrics fm(f);
     QString text("hello");
-    QCOMPARE(fm.elidedText(text, Qt::ElideRight, 0), QString());
+    QCOMPARE(fm.elidedText(text, BobUI::ElideRight, 0), QString());
 }
 
 void tst_QFontMetrics::averageCharWidth()
@@ -211,18 +211,18 @@ template<class FontMetrics, typename PrimitiveType> void elidedMultiLength_helpe
     QString text1_small = "small";
     FontMetrics fm = FontMetrics(QFont());
     PrimitiveType width_long = fm.size(0, text1_long).width();
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, 8000), text1_long);
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, width_long + 1), text1_long);
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, width_long - 1), text1_short);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, 8000), text1_long);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, width_long + 1), text1_long);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, width_long - 1), text1_short);
     PrimitiveType width_short = fm.size(0, text1_short).width();
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, width_short + 1), text1_short);
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, width_short - 1), text1_small);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, width_short + 1), text1_short);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, width_short - 1), text1_small);
 
     // Not even wide enough for "small" - should use ellipsis
     QChar ellipsisChar(0x2026);
     QString text1_el = QString::fromLatin1("s") + ellipsisChar;
     PrimitiveType width_small = fm.horizontalAdvance(text1_el);
-    QCOMPARE(fm.elidedText(text1,Qt::ElideRight, width_small + 1), text1_el);
+    QCOMPARE(fm.elidedText(text1,BobUI::ElideRight, width_small + 1), text1_el);
 }
 
 void tst_QFontMetrics::elidedMultiLength()
@@ -240,7 +240,7 @@ void tst_QFontMetrics::inFontUcs4()
     int id = QFontDatabase::addApplicationFont(":/fonts/ucs4font.ttf");
     QVERIFY(id >= 0);
 
-    QFont font("QtTestUcs4");
+    QFont font("BobUITestUcs4");
     {
         QFontMetrics fm(font);
         QVERIFY(fm.inFontUcs4(0x1D7FF));
@@ -289,7 +289,7 @@ void tst_QFontMetrics::inFontUcs4()
 
 void tst_QFontMetrics::lineWidth()
 {
-    // QTBUG-13009, QTBUG-13011
+    // BOBUIBUG-13009, BOBUIBUG-13011
     QFont smallFont;
     smallFont.setPointSize(8);
     smallFont.setWeight(QFont::Light);
@@ -306,14 +306,14 @@ void tst_QFontMetrics::lineWidth()
 
 void tst_QFontMetrics::mnemonicTextWidth()
 {
-    // QTBUG-41593
+    // BOBUIBUG-41593
     QFont f;
     QFontMetrics fm(f);
     const QString f1  = "File";
     const QString f2  = "&File";
 
-    QCOMPARE(fm.size(Qt::TextShowMnemonic, f1), fm.size(Qt::TextShowMnemonic, f2));
-    QCOMPARE(fm.size(Qt::TextHideMnemonic, f1), fm.size(Qt::TextHideMnemonic, f2));
+    QCOMPARE(fm.size(BobUI::TextShowMnemonic, f1), fm.size(BobUI::TextShowMnemonic, f2));
+    QCOMPARE(fm.size(BobUI::TextHideMnemonic, f1), fm.size(BobUI::TextHideMnemonic, f2));
 }
 
 void tst_QFontMetrics::leadingBelowLine()
@@ -342,7 +342,7 @@ void tst_QFontMetrics::elidedMetrics()
 
     QRectF boundingRect = metrics.boundingRect(s);
 
-    QString elided = metrics.elidedText(s, Qt::ElideRight, boundingRect.width() / 2.0);
+    QString elided = metrics.elidedText(s, BobUI::ElideRight, boundingRect.width() / 2.0);
 
     QRectF elidedBoundingRect = metrics.boundingRect(elided);
 
@@ -379,11 +379,11 @@ void tst_QFontMetrics::zeroWidthMetrics()
 
 void tst_QFontMetrics::verticalMetrics_data()
 {
-    QTest::addColumn<QFont>("font");
+    BOBUIest::addColumn<QFont>("font");
     QStringList families = QFontDatabase::families();
     for (const QString &family : families) {
         QFont font(family);
-        QTest::newRow(family.toUtf8()) << font;
+        BOBUIest::newRow(family.toUtf8()) << font;
     }
 }
 
@@ -396,11 +396,11 @@ void tst_QFontMetrics::verticalMetrics()
 
 void tst_QFontMetrics::largeText_data()
 {
-    QTest::addColumn<qsizetype>("size");
+    BOBUIest::addColumn<qsizetype>("size");
     for (int i = 1; i < 20; ++i) {
         qsizetype size = qsizetype(1) << i;
         QByteArray rowText = QByteArray::number(size);
-        QTest::newRow(rowText.constData()) << size;
+        BOBUIest::newRow(rowText.constData()) << size;
     }
 }
 
@@ -459,10 +459,10 @@ void tst_QFontMetrics::typoLineMetrics()
 
 void tst_QFontMetrics::defaultIgnorableHorizontalAdvance_data()
 {
-    QTest::addColumn<bool>("withShaping");
+    BOBUIest::addColumn<bool>("withShaping");
 
-    QTest::newRow("With Text Shaping") << true;
-    QTest::newRow("Without Text Shaping") << false;
+    BOBUIest::newRow("With Text Shaping") << true;
+    BOBUIest::newRow("Without Text Shaping") << false;
 }
 
 void tst_QFontMetrics::defaultIgnorableHorizontalAdvance()
@@ -493,8 +493,8 @@ void tst_QFontMetrics::defaultIgnorableHorizontalAdvance()
     QFontMetrics withoutSupportMetrics(withoutSupport);
     QFontMetrics withSupportMetrics(withSupport);
 
-    QTextOption opt;
-    opt.setFlags(QTextOption::ShowDefaultIgnorables);
+    BOBUIextOption opt;
+    opt.setFlags(BOBUIextOption::ShowDefaultIgnorables);
 
     const QChar LRM = (ushort)0x200e;
     const QString str = QStringLiteral("[") + LRM + QStringLiteral("]");
@@ -528,5 +528,5 @@ void tst_QFontMetrics::hugeFontMetrics()
     QVERIFY(QFontMetricsF(bigFont).height() < QFontMetricsF(hugeFontWithTypoLineMetrics).height());
 }
 
-QTEST_MAIN(tst_QFontMetrics)
+BOBUIEST_MAIN(tst_QFontMetrics)
 #include "tst_qfontmetrics.moc"

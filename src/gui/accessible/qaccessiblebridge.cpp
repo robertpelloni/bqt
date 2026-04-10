@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qaccessiblebridge.h"
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QAccessibleBridge
@@ -14,9 +14,9 @@ QT_BEGIN_NAMESPACE
     \internal
 
     \ingroup accessibility
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
-    Qt supports Microsoft Active Accessibility (MSAA), \macos
+    BobUI supports Microsoft Active Accessibility (MSAA), \macos
     Accessibility, and the Unix/X11 AT-SPI standard. By subclassing
     QAccessibleBridge, you can support other backends than the
     predefined ones.
@@ -39,7 +39,7 @@ QAccessibleBridge::~QAccessibleBridge()
 /*!
     \fn void QAccessibleBridge::setRootObject(QAccessibleInterface *object)
 
-    This function is called by Qt at application startup to set the
+    This function is called by BobUI at application startup to set the
     root accessible object of the application to \a object. All other
     accessible objects in the application can be reached by the
     client using object navigation.
@@ -48,7 +48,7 @@ QAccessibleBridge::~QAccessibleBridge()
 /*!
     \fn void QAccessibleBridge::notifyAccessibilityUpdate(QAccessibleEvent *event)
 
-    This function is called by Qt to notify the bridge about a change
+    This function is called by BobUI to notify the bridge about a change
     in the accessibility information. The \a event specifies the interface,
     object, reason and child element that has changed.
 
@@ -63,13 +63,13 @@ QAccessibleBridge::~QAccessibleBridge()
 
     \ingroup plugins
     \ingroup accessibility
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     Writing an accessibility bridge plugin is achieved by subclassing
     this base class, reimplementing the pure virtual function create(),
     and exporting the class with the Q_PLUGIN_METADATA() macro.
 
-    \sa QAccessibleBridge, QAccessiblePlugin, {How to Create Qt Plugins}
+    \sa QAccessibleBridge, QAccessiblePlugin, {How to Create BobUI Plugins}
 */
 
 /*!
@@ -85,7 +85,7 @@ QAccessibleBridgePlugin::QAccessibleBridgePlugin(QObject *parent)
 /*!
     Destroys the accessibility bridge plugin.
 
-    You never have to call this explicitly. Qt destroys a plugin
+    You never have to call this explicitly. BobUI destroys a plugin
     automatically when it is no longer used.
 */
 QAccessibleBridgePlugin::~QAccessibleBridgePlugin()
@@ -102,8 +102,8 @@ QAccessibleBridgePlugin::~QAccessibleBridgePlugin()
     \sa keys()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qaccessiblebridge.cpp"
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

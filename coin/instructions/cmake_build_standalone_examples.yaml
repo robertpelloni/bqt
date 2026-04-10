@@ -23,7 +23,7 @@ instructions:
       env_var: COIN_CMAKE_ARGS
       equals_value: null
 
-  - !include "{{qt/qtbase}}/call_cmake_for_standalone_examples.yaml"
+  - !include "{{bobui/bobuibase}}/call_cmake_for_standalone_examples.yaml"
   - type: ExecuteCommand
     command: "{{.Env.EXAMPLES_ENV_PREFIX}} cmake --build . --parallel -v"
     maxTimeInSeconds: 6000

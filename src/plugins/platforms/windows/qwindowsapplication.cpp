@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwindowsapplication.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qwindowsclipboard.h"
 #endif
 #include "qwindowscontext.h"
@@ -13,12 +13,12 @@
 #include "qwindowsintegration.h"
 #include "qwindowstheme.h"
 
-#include <QtCore/qvariant.h>
-#include <QtCore/private/qfunctions_win_p.h>
+#include <BobUICore/qvariant.h>
+#include <BobUICore/private/qfunctions_win_p.h>
 
-#include <QtGui/qpalette.h>
+#include <BobUIGui/qpalette.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 void QWindowsApplication::setTouchWindowTouchType(QWindowsApplication::TouchWindowTouchTypes type)
 {
@@ -51,9 +51,9 @@ void QWindowsApplication::setHasBorderInFullScreenDefault(bool border)
 
 bool QWindowsApplication::isTabletMode() const
 {
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     if (const QWindowsClipboard *clipboard = QWindowsClipboard::instance())
-        return qt_windowsIsTabletMode(clipboard->clipboardViewer());
+        return bobui_windowsIsTabletMode(clipboard->clipboardViewer());
 #endif
     return false;
 }
@@ -142,7 +142,7 @@ QVariant QWindowsApplication::gpuList() const
 
 void QWindowsApplication::populateLightSystemPalette(QPalette &result) const
 {
-    result = QWindowsTheme::systemPalette(Qt::ColorScheme::Light);
+    result = QWindowsTheme::systemPalette(BobUI::ColorScheme::Light);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

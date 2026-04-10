@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTANIMATION_P_H
 #define QABSTRACTANIMATION_P_H
@@ -9,27 +9,27 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.
+// This file is not part of the BobUI API.
 // This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtCore/qbasictimer.h>
-#include <QtCore/qdatetime.h>
-#include <QtCore/qelapsedtimer.h>
+#include <BobUICore/qbasictimer.h>
+#include <BobUICore/qdatetime.h>
+#include <BobUICore/qelapsedtimer.h>
 #include <private/qobject_p.h>
 #include <private/qproperty_p.h>
 #include <qabstractanimation.h>
 
 #if defined(Q_OS_WASM)
-#include <QtCore/private/qwasmanimationdriver_p.h>
+#include <BobUICore/private/qwasmanimationdriver_p.h>
 #endif
 
-QT_REQUIRE_CONFIG(animation);
+BOBUI_REQUIRE_CONFIG(animation);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QAnimationGroup;
 class QAbstractAnimation;
@@ -90,7 +90,7 @@ public:
     ~QDefaultAnimationDriver() override;
 
 protected:
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
 
 private Q_SLOTS:
     void startTimer();
@@ -120,7 +120,7 @@ public:
 
     virtual void updateAnimationsTime(qint64 delta) = 0;
     virtual void restartAnimationTimer() = 0;
-#define QT_QAbstractAnimationTimer_runningAnimationCount_IS_CONST
+#define BOBUI_QAbstractAnimationTimer_runningAnimationCount_IS_CONST
     virtual qsizetype runningAnimationCount() const = 0;
 
     bool isRegistered = false;
@@ -177,7 +177,7 @@ public:
     qint64 elapsed() const;
 
 protected:
-    void timerEvent(QTimerEvent *) override;
+    void timerEvent(BOBUIimerEvent *) override;
 
 private Q_SLOTS:
     void startTimers();
@@ -280,6 +280,6 @@ private:
     int closestPauseAnimationTimeToFinish();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif //QABSTRACTANIMATION_P_H

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "model.h"
 
@@ -57,9 +57,9 @@ QVariant Model::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return QVariant("Item " + QString::number(index.row()) + ':' + QString::number(index.column()));
-    if (role == Qt::DecorationRole) {
+    if (role == BobUI::DecorationRole) {
         if (index.column() == 0)
             return iconProvider.icon(QFileIconProvider::Folder);
         return iconProvider.icon(QFileIconProvider::File);
@@ -67,11 +67,11 @@ QVariant Model::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVariant Model::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant Model::headerData(int section, BobUI::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == BobUI::DisplayRole)
         return QString::number(section);
-    if (role == Qt::DecorationRole)
+    if (role == BobUI::DecorationRole)
         return QVariant::fromValue(services);
     return QAbstractItemModel::headerData(section, orientation, role);
 }
@@ -83,11 +83,11 @@ bool Model::hasChildren(const QModelIndex &parent) const
     return rc > 0 && cc > 0;
 }
 
-Qt::ItemFlags Model::flags(const QModelIndex &index) const
+BobUI::ItemFlags Model::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return {};
-    return Qt::ItemIsDragEnabled|QAbstractItemModel::flags(index);
+    return BobUI::ItemIsDragEnabled|QAbstractItemModel::flags(index);
 }
 
 Model::Node *Model::node(int row, Node *parent) const

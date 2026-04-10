@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #ifndef FORTUNETHREAD_H
 #define FORTUNETHREAD_H
 
-#include <QThread>
-#include <QTcpSocket>
+#include <BOBUIhread>
+#include <BOBUIcpSocket>
 
 //! [0]
-class FortuneThread : public QThread
+class FortuneThread : public BOBUIhread
 {
     Q_OBJECT
 
@@ -18,7 +18,7 @@ public:
     void run() override;
 
 signals:
-    void error(QTcpSocket::SocketError socketError);
+    void error(BOBUIcpSocket::SocketError socketError);
 
 private:
     qintptr socketDescriptor;

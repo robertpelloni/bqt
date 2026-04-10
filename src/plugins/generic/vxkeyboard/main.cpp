@@ -1,10 +1,10 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include <QtGui/qgenericplugin.h>
-#include <QtInputSupport/private/qvxkeyboardmanager_p.h>
+#include <BobUIGui/qgenericplugin.h>
+#include <BobUIInputSupport/private/qvxkeyboardmanager_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QVxKeyboardPlugin : public QGenericPlugin
 {
@@ -25,12 +25,12 @@ QVxKeyboardPlugin::QVxKeyboardPlugin()
 QObject* QVxKeyboardPlugin::create(const QString &key,
                                                  const QString &specification)
 {
-    if (!key.compare(QLatin1String("VxKeyboard"), Qt::CaseInsensitive))
+    if (!key.compare(QLatin1String("VxKeyboard"), BobUI::CaseInsensitive))
         return new QVxKeyboardManager(key, specification);
 
     return nullptr;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "main.moc"

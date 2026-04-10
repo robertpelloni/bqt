@@ -1,12 +1,12 @@
-equals(TEMPLATE, app):qt {
-    # If the application uses Qt, it needs to be an application bundle
+equals(TEMPLATE, app):bobui {
+    # If the application uses BobUI, it needs to be an application bundle
     # to be able to deploy and run on iOS. The only exception to this
     # is if you're working with a jailbroken device and can run the
     # resulting binary from the console/over SSH, but that's not a
     # use-case we care about, so no need to complicate the logic.
     CONFIG *= app_bundle
 
-    # For Qt applications we want Xcode project files as the generated output,
+    # For BobUI applications we want Xcode project files as the generated output,
     # but since qmake doesn't handle the transition between makefiles and Xcode
     # project files (which happens when using subdirs), we can't just override
     # MAKEFILE_GENERATOR. Instead, we generate the Xcode project by spawning a
@@ -41,7 +41,7 @@ macx-xcode {
         QMAKE_BUNDLE_DATA += qmake_launch_screens
     }
 
-    !qtConfig(simulator_and_device) {
+    !bobuiConfig(simulator_and_device) {
         # Single SDK builds only support the target we built
         supported_platforms.name = SUPPORTED_PLATFORMS
         supported_platforms.value = $$QMAKE_MAC_SDK
@@ -52,7 +52,7 @@ macx-xcode {
         # Override the entry point explicitly, in case a Swift file is
         # added to the Xcode project
         ld_entry_point.name = LD_ENTRY_POINT
-        ld_entry_point.value = _qt_main_wrapper
+        ld_entry_point.value = _bobui_main_wrapper
         QMAKE_MAC_XCODE_SETTINGS += ld_entry_point
     }
 
@@ -67,5 +67,5 @@ macx-xcode {
     # NSPhotoLibraryUsageDescription. Otherwise it will be rejected from AppStore.
     plist_path = $$absolute_path($$QMAKE_INFO_PLIST, $$_PRO_FILE_PWD_)
     system("/usr/libexec/PlistBuddy -c 'Print NSPhotoLibraryUsageDescription' $$system_quote($$plist_path) &>/dev/null"): \
-        QTPLUGIN += qiosnsphotolibrarysupport
+        BOBUIPLUGIN += qiosnsphotolibrarysupport
 }

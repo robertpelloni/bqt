@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtGui/qtguiglobal.h>
+#include <BobUIGui/bobuiguiglobal.h>
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <QAccessible>
 
 namespace src_gui_accessible_qaccessible {
 class MyWidget
 {
-    void setFocus(Qt::FocusReason reason);
+    void setFocus(BobUI::FocusReason reason);
 };
 QAccessibleInterface *f = nullptr;
 
@@ -18,7 +18,7 @@ typedef QAccessibleInterface *myFactoryFunction(const QString &key, QObject *);
 //! [1]
 
 //! [2]
-void MyWidget::setFocus(Qt::FocusReason reason)
+void MyWidget::setFocus(BobUI::FocusReason reason)
 {
     // handle custom focus setting...
     QAccessibleEvent event(f, QAccessible::Focus);
@@ -28,4 +28,4 @@ void MyWidget::setFocus(Qt::FocusReason reason)
 
 } // src_gui_accessible_qaccessible
 
-#endif // QT_CONFIG(accessibility)
+#endif // BOBUI_CONFIG(accessibility)

@@ -1,9 +1,9 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "window.h"
 #include <QPlatformSurfaceEvent>
-#include <QTimer>
+#include <BOBUIimer>
 
 Window::Window(QRhi::Implementation graphicsApi)
     : m_graphicsApi(graphicsApi)
@@ -89,7 +89,7 @@ void Window::init()
         m_rhi.reset(QRhi::create(QRhi::Null, &params, rhiFlags));
     }
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     if (m_graphicsApi == QRhi::OpenGLES2) {
         m_fallbackSurface.reset(QRhiGles2InitParams::newFallbackSurface());
         QRhiGles2InitParams params;
@@ -99,7 +99,7 @@ void Window::init()
     }
 #endif
 
-#if QT_CONFIG(vulkan)
+#if BOBUI_CONFIG(vulkan)
     if (m_graphicsApi == QRhi::Vulkan) {
         QRhiVulkanInitParams params;
         params.inst = vulkanInstance();
@@ -120,7 +120,7 @@ void Window::init()
     }
 #endif
 
-#if QT_CONFIG(metal)
+#if BOBUI_CONFIG(metal)
     if (m_graphicsApi == QRhi::Metal) {
         QRhiMetalInitParams params;
         m_rhi.reset(QRhi::create(QRhi::Metal, &params, rhiFlags));
@@ -211,7 +211,7 @@ void Window::render()
 #if 1
     requestUpdate();
 #else
-    QTimer::singleShot(0, this, [this] { render(); });
+    BOBUIimer::singleShot(0, this, [this] { render(); });
 #endif
 }
 

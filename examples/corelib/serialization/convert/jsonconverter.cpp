@@ -1,5 +1,5 @@
 // Copyright (C) 2018 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "jsonconverter.h"
 
@@ -9,7 +9,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static JsonConverter jsonConverter;
 

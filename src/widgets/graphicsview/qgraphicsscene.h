@@ -1,22 +1,22 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSSCENE_H
 #define QGRAPHICSSCENE_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtGui/qbrush.h>
-#include <QtGui/qfont.h>
-#include <QtGui/qtransform.h>
-#include <QtGui/qpen.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/qobject.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUIGui/qbrush.h>
+#include <BobUIGui/qfont.h>
+#include <BobUIGui/bobuiransform.h>
+#include <BobUIGui/qpen.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFocusEvent;
 class QFont;
@@ -98,7 +98,7 @@ public:
 
     void render(QPainter *painter,
                 const QRectF &target = QRectF(), const QRectF &source = QRectF(),
-                Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+                BobUI::AspectRatioMode aspectRatioMode = BobUI::KeepAspectRatio);
 
     ItemIndexMethod itemIndexMethod() const;
     void setItemIndexMethod(ItemIndexMethod method);
@@ -108,25 +108,25 @@ public:
 
     QRectF itemsBoundingRect() const;
 
-    QList<QGraphicsItem *> items(Qt::SortOrder order = Qt::DescendingOrder) const;
+    QList<QGraphicsItem *> items(BobUI::SortOrder order = BobUI::DescendingOrder) const;
 
-    QList<QGraphicsItem *> items(const QPointF &pos, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::DescendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    QList<QGraphicsItem *> items(const QRectF &rect, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::DescendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    QList<QGraphicsItem *> items(const QPolygonF &polygon, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::DescendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    QList<QGraphicsItem *> items(const QPainterPath &path, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, Qt::SortOrder order = Qt::DescendingOrder, const QTransform &deviceTransform = QTransform()) const;
-    inline QList<QGraphicsItem *> items(qreal x, qreal y, qreal w, qreal h, Qt::ItemSelectionMode mode, Qt::SortOrder order,
-                                        const QTransform &deviceTransform = QTransform()) const
+    QList<QGraphicsItem *> items(const QPointF &pos, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape, BobUI::SortOrder order = BobUI::DescendingOrder, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    QList<QGraphicsItem *> items(const QRectF &rect, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape, BobUI::SortOrder order = BobUI::DescendingOrder, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    QList<QGraphicsItem *> items(const QPolygonF &polygon, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape, BobUI::SortOrder order = BobUI::DescendingOrder, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    QList<QGraphicsItem *> items(const QPainterPath &path, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape, BobUI::SortOrder order = BobUI::DescendingOrder, const BOBUIransform &deviceTransform = BOBUIransform()) const;
+    inline QList<QGraphicsItem *> items(qreal x, qreal y, qreal w, qreal h, BobUI::ItemSelectionMode mode, BobUI::SortOrder order,
+                                        const BOBUIransform &deviceTransform = BOBUIransform()) const
     { return items(QRectF(x, y, w, h), mode, order, deviceTransform); }
 
-    QList<QGraphicsItem *> collidingItems(const QGraphicsItem *item, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape) const;
-    QGraphicsItem *itemAt(const QPointF &pos, const QTransform &deviceTransform) const;
-    inline QGraphicsItem *itemAt(qreal x, qreal y, const QTransform &deviceTransform) const
+    QList<QGraphicsItem *> collidingItems(const QGraphicsItem *item, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape) const;
+    QGraphicsItem *itemAt(const QPointF &pos, const BOBUIransform &deviceTransform) const;
+    inline QGraphicsItem *itemAt(qreal x, qreal y, const BOBUIransform &deviceTransform) const
     { return itemAt(QPointF(x, y), deviceTransform); }
 
     QList<QGraphicsItem *> selectedItems() const;
     QPainterPath selectionArea() const;
-    void setSelectionArea(const QPainterPath &path, const QTransform &deviceTransform);
-    void setSelectionArea(const QPainterPath &path, Qt::ItemSelectionOperation selectionOperation = Qt::ReplaceSelection, Qt::ItemSelectionMode mode = Qt::IntersectsItemShape, const QTransform &deviceTransform = QTransform());
+    void setSelectionArea(const QPainterPath &path, const BOBUIransform &deviceTransform);
+    void setSelectionArea(const QPainterPath &path, BobUI::ItemSelectionOperation selectionOperation = BobUI::ReplaceSelection, BobUI::ItemSelectionMode mode = BobUI::IntersectsItemShape, const BOBUIransform &deviceTransform = BOBUIransform());
 
     QGraphicsItemGroup *createItemGroup(const QList<QGraphicsItem *> &items);
     void destroyItemGroup(QGraphicsItemGroup *group);
@@ -140,7 +140,7 @@ public:
     QGraphicsRectItem *addRect(const QRectF &rect, const QPen &pen = QPen(), const QBrush &brush = QBrush());
     QGraphicsTextItem *addText(const QString &text, const QFont &font = QFont());
     QGraphicsSimpleTextItem *addSimpleText(const QString &text, const QFont &font = QFont());
-    QGraphicsProxyWidget *addWidget(QWidget *widget, Qt::WindowFlags wFlags = Qt::WindowFlags());
+    QGraphicsProxyWidget *addWidget(QWidget *widget, BobUI::WindowFlags wFlags = BobUI::WindowFlags());
     inline QGraphicsEllipseItem *addEllipse(qreal x, qreal y, qreal w, qreal h, const QPen &pen = QPen(), const QBrush &brush = QBrush())
     { return addEllipse(QRectF(x, y, w, h), pen, brush); }
     inline QGraphicsLineItem *addLine(qreal x1, qreal y1, qreal x2, qreal y2, const QPen &pen = QPen())
@@ -150,9 +150,9 @@ public:
     void removeItem(QGraphicsItem *item);
 
     QGraphicsItem *focusItem() const;
-    void setFocusItem(QGraphicsItem *item, Qt::FocusReason focusReason = Qt::OtherFocusReason);
+    void setFocusItem(QGraphicsItem *item, BobUI::FocusReason focusReason = BobUI::OtherFocusReason);
     bool hasFocus() const;
-    void setFocus(Qt::FocusReason focusReason = Qt::OtherFocusReason);
+    void setFocus(BobUI::FocusReason focusReason = BobUI::OtherFocusReason);
     void clearFocus();
 
     void setStickyFocus(bool enabled);
@@ -166,7 +166,7 @@ public:
     QBrush foregroundBrush() const;
     void setForegroundBrush(const QBrush &brush);
 
-    virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
+    virtual QVariant inputMethodQuery(BobUI::InputMethodQuery query) const;
 
     QList <QGraphicsView *> views() const;
 
@@ -239,7 +239,7 @@ Q_SIGNALS:
     void changed(const QList<QRectF> &region);
     void sceneRectChanged(const QRectF &rect);
     void selectionChanged();
-    void focusItemChanged(QGraphicsItem *newFocus, QGraphicsItem *oldFocus, Qt::FocusReason reason);
+    void focusItemChanged(QGraphicsItem *newFocus, QGraphicsItem *oldFocus, BobUI::FocusReason reason);
 
 private:
     Q_DECLARE_PRIVATE(QGraphicsScene)
@@ -261,13 +261,13 @@ private:
     friend class QGraphicsSceneBspTreeIndex;
     friend class QGraphicsSceneBspTreeIndexPrivate;
     friend class QGraphicsItemEffectSourcePrivate;
-#ifndef QT_NO_GESTURES
+#ifndef BOBUI_NO_GESTURES
     friend class QGesture;
 #endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QGraphicsScene::SceneLayers)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

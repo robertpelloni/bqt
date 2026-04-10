@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qabstractitemview.h"
 
@@ -9,19 +9,19 @@
 #include <qclipboard.h>
 #include <qpainter.h>
 #include <qstyle.h>
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <qdrag.h>
 #endif
 #include <qevent.h>
 #include <qscrollbar.h>
-#if QT_CONFIG(tooltip)
-#include <qtooltip.h>
+#if BOBUI_CONFIG(tooltip)
+#include <bobuiooltip.h>
 #endif
 #include <qdatetime.h>
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
 #include <qlineedit.h>
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
 #include <qspinbox.h>
 #endif
 #include <qheaderview.h>
@@ -31,16 +31,16 @@
 #include <private/qapplication_p.h>
 #include <private/qguiapplication_p.h>
 #include <private/qscrollbar_p.h>
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <qaccessible.h>
 #endif
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
 #  include <qscroller.h>
 #endif
 
 #include <algorithm>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QAbstractItemViewPrivate::QAbstractItemViewPrivate()
     :   model(QAbstractItemModelPrivate::staticEmptyModel()),
@@ -53,7 +53,7 @@ QAbstractItemViewPrivate::QAbstractItemViewPrivate()
         currentlyCommittingEditor(nullptr),
         pressClosedEditor(false),
         waitForIMCommit(false),
-        pressedModifiers(Qt::NoModifier),
+        pressedModifiers(BobUI::NoModifier),
         pressedPosition(QPoint(-1, -1)),
         pressedAlreadySelected(false),
         releaseFromDoubleClick(false),
@@ -63,14 +63,14 @@ QAbstractItemViewPrivate::QAbstractItemViewPrivate()
         editTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed),
         lastTrigger(QAbstractItemView::NoEditTriggers),
         tabKeyNavigation(false),
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         showDropIndicator(true),
         dragEnabled(false),
         dragDropMode(QAbstractItemView::NoDragDrop),
         overwrite(false),
         dropEventMoved(false),
         dropIndicatorPosition(QAbstractItemView::OnItem),
-        defaultDropAction(Qt::IgnoreAction),
+        defaultDropAction(BobUI::IgnoreAction),
 #endif
         autoScroll(true),
         autoScrollMargin(16),
@@ -78,7 +78,7 @@ QAbstractItemViewPrivate::QAbstractItemViewPrivate()
         shouldScrollToCurrentOnShow(false),
         shouldClearStatusTip(false),
         alternatingColors(false),
-        textElideMode(Qt::ElideRight),
+        textElideMode(BobUI::ElideRight),
         verticalScrollMode(QAbstractItemView::ScrollPerItem),
         horizontalScrollMode(QAbstractItemView::ScrollPerItem),
         currentIndexSet(false),
@@ -116,7 +116,7 @@ void QAbstractItemViewPrivate::init()
     };
     viewport->setBackgroundRole(QPalette::Base);
 
-    q->setAttribute(Qt::WA_InputMethodEnabled);
+    q->setAttribute(BobUI::WA_InputMethodEnabled);
 
     verticalScrollMode = static_cast<QAbstractItemView::ScrollMode>(q->style()->styleHint(QStyle::SH_ItemView_ScrollMode, nullptr, q, nullptr));
     horizontalScrollMode = static_cast<QAbstractItemView::ScrollMode>(q->style()->styleHint(QStyle::SH_ItemView_ScrollMode, nullptr, q, nullptr));
@@ -150,8 +150,8 @@ void QAbstractItemViewPrivate::checkMouseMove(const QPersistentModelIndex &index
 
         if (index.isValid()) {
             emit q->entered(index);
-#if QT_CONFIG(statustip)
-            QString statustip = model->data(index, Qt::StatusTipRole).toString();
+#if BOBUI_CONFIG(statustip)
+            QString statustip = model->data(index, BobUI::StatusTipRole).toString();
             if (parent && (shouldClearStatusTip || !statustip.isEmpty())) {
                 QStatusTipEvent tip(statustip);
                 QCoreApplication::sendEvent(parent, &tip);
@@ -159,7 +159,7 @@ void QAbstractItemViewPrivate::checkMouseMove(const QPersistentModelIndex &index
             }
 #endif
         } else {
-#if QT_CONFIG(statustip)
+#if BOBUI_CONFIG(statustip)
             if (parent && shouldClearStatusTip) {
                 QString emptyString;
                 QStatusTipEvent tip( emptyString );
@@ -172,7 +172,7 @@ void QAbstractItemViewPrivate::checkMouseMove(const QPersistentModelIndex &index
     }
 }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 void QAbstractItemViewPrivate::updateItemAccessibility(const QModelIndex &index,
                                                        const QList<int> &roles)
 {
@@ -188,17 +188,17 @@ void QAbstractItemViewPrivate::updateItemAccessibility(const QModelIndex &index,
     // see QAccessibleTableCell for how role data are mapped to the a11y layer
 
     for (int role : roles) {
-        if (role == Qt::AccessibleTextRole
-            || (role == Qt::DisplayRole
-                && index.data(Qt::AccessibleTextRole).toString().isEmpty())) {
+        if (role == BobUI::AccessibleTextRole
+            || (role == BobUI::DisplayRole
+                && index.data(BobUI::AccessibleTextRole).toString().isEmpty())) {
             QAccessibleEvent event(q, QAccessible::NameChanged);
             event.setChild(childIndex);
             QAccessible::updateAccessibility(&event);
-        } else if (role == Qt::AccessibleDescriptionRole) {
+        } else if (role == BobUI::AccessibleDescriptionRole) {
             QAccessibleEvent event(q, QAccessible::DescriptionChanged);
             event.setChild(childIndex);
             QAccessible::updateAccessibility(&event);
-        } else if (role == Qt::CheckStateRole) {
+        } else if (role == BobUI::CheckStateRole) {
             QAccessible::State state;
             state.checked = true;
             QAccessibleStateChangeEvent event(q, state);
@@ -209,7 +209,7 @@ void QAbstractItemViewPrivate::updateItemAccessibility(const QModelIndex &index,
 }
 #endif
 
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
 
 // stores and restores the selection and current item when flicking
 void QAbstractItemViewPrivate::scrollerStateChanged()
@@ -246,7 +246,7 @@ void QAbstractItemViewPrivate::scrollerStateChanged()
     }
 }
 
-#endif // QT_NO_GESTURES
+#endif // BOBUI_NO_GESTURES
 
 void QAbstractItemViewPrivate::delegateSizeHintChanged(const QModelIndex &index)
 {
@@ -255,7 +255,7 @@ void QAbstractItemViewPrivate::delegateSizeHintChanged(const QModelIndex &index)
         if (!model->checkIndex(index))
             qWarning("Delegate size hint changed for a model index that does not belong to this view");
     }
-    QMetaObject::invokeMethod(q, &QAbstractItemView::doItemsLayout, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, &QAbstractItemView::doItemsLayout, BobUI::QueuedConnection);
 }
 
 void QAbstractItemViewPrivate::connectDelegate(QAbstractItemDelegate *delegate)
@@ -310,7 +310,7 @@ void QAbstractItemViewPrivate::disconnectAll()
         if (!info.isStatic && info.widget)
             QObject::disconnect(info.widget, &QWidget::destroyed, q, &QAbstractItemView::editorDestroyed);
     }
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
     QObject::disconnect(scollerConnection);
 #endif
 }
@@ -322,7 +322,7 @@ void QAbstractItemViewPrivate::disconnectAll()
     item view classes.
 
     \ingroup model-view
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QAbstractItemView class is the base class for every standard view
     that uses a QAbstractItemModel. QAbstractItemView is an abstract
@@ -372,7 +372,7 @@ void QAbstractItemViewPrivate::disconnectAll()
     QAbstractItemView::NoSelection.
 
     The QAbstractItemView class is one of the \l{Model/View Classes}
-    and is part of Qt's \l{Model/View Programming}{model/view framework}.
+    and is part of BobUI's \l{Model/View Programming}{model/view framework}.
 
     The view classes that inherit QAbstractItemView only need
     to implement their own view-specific functionality, such as
@@ -629,7 +629,7 @@ void QAbstractItemViewPrivate::disconnectAll()
 */
 
 /*!
-    \fn QModelIndex QAbstractItemView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers) = 0
+    \fn QModelIndex QAbstractItemView::moveCursor(CursorAction cursorAction, BobUI::KeyboardModifiers modifiers) = 0
 
     Returns a QModelIndex object pointing to the next object in the view,
     based on the given \a cursorAction and keyboard modifiers specified
@@ -925,7 +925,7 @@ QAbstractItemDelegate *QAbstractItemView::itemDelegate() const
 /*!
     \reimp
 */
-QVariant QAbstractItemView::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QAbstractItemView::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     Q_D(const QAbstractItemView);
     const QModelIndex current = currentIndex();
@@ -940,7 +940,7 @@ QVariant QAbstractItemView::inputMethodQuery(Qt::InputMethodQuery query) const
                 const QRect editorRect = result.value<QRect>();
                 result = QRect(currentEditor->mapTo(this, editorRect.topLeft()), editorRect.size());
             }
-        } else if (query == Qt::ImCursorRectangle) {
+        } else if (query == BobUI::ImCursorRectangle) {
             result = visualRect(current);
         }
     }
@@ -1176,7 +1176,7 @@ void QAbstractItemView::reset()
     setRootIndex(QModelIndex());
     if (d->selectionModel)
         d->selectionModel->reset();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(this, QAccessibleTableModelChangeEvent::ModelReset);
         QAccessible::updateAccessibility(&accessibleEvent);
@@ -1198,7 +1198,7 @@ void QAbstractItemView::setRootIndex(const QModelIndex &index)
         return;
     }
     d->root = index;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(this, QAccessibleTableModelChangeEvent::ModelReset);
         QAccessible::updateAccessibility(&accessibleEvent);
@@ -1304,7 +1304,7 @@ void QAbstractItemView::doItemsLayout()
 
     The default value is:
     \list
-    \li for QTableView: DoubleClicked|AnyKeyPressed
+    \li for BOBUIableView: DoubleClicked|AnyKeyPressed
     \li for all other views: DoubleClicked|EditKeyPressed
     \endlist
 */
@@ -1394,7 +1394,7 @@ void QAbstractItemView::resetHorizontalScrollMode()
     d_func()->horizontalScrollModeSet = false;
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \property QAbstractItemView::dragDropOverwriteMode
     \brief the view's drag and drop behavior
@@ -1405,13 +1405,13 @@ void QAbstractItemView::resetHorizontalScrollMode()
     inserted as a new item when the data is dropped. When the data is
     moved, the item is removed as well.
 
-    The default value is \c false, as in the QListView and QTreeView
-    subclasses. In the QTableView subclass, on the other hand, the
+    The default value is \c false, as in the QListView and BOBUIreeView
+    subclasses. In the BOBUIableView subclass, on the other hand, the
     property has been set to \c true.
 
     Note: This is not intended to prevent overwriting of items.
     The model's implementation of flags() should do that by not
-    returning Qt::ItemIsDropEnabled.
+    returning BobUI::ItemIsDropEnabled.
 
     \sa dragDropMode
 */
@@ -1499,7 +1499,7 @@ QSize QAbstractItemView::viewportSizeHint() const
     return QAbstractScrollArea::viewportSizeHint();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \property QAbstractItemView::showDropIndicator
     \brief whether the drop indicator is shown when dragging items and dropping.
@@ -1603,19 +1603,19 @@ QAbstractItemView::DragDropMode QAbstractItemView::dragDropMode() const
 
     \sa showDropIndicator, dragDropOverwriteMode
 */
-void QAbstractItemView::setDefaultDropAction(Qt::DropAction dropAction)
+void QAbstractItemView::setDefaultDropAction(BobUI::DropAction dropAction)
 {
     Q_D(QAbstractItemView);
     d->defaultDropAction = dropAction;
 }
 
-Qt::DropAction QAbstractItemView::defaultDropAction() const
+BobUI::DropAction QAbstractItemView::defaultDropAction() const
 {
     Q_D(const QAbstractItemView);
     return d->defaultDropAction;
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \property QAbstractItemView::alternatingRowColors
@@ -1669,15 +1669,15 @@ QSize QAbstractItemView::iconSize() const
 
     \brief the position of the "..." in elided text.
 
-    The default value for all item views is Qt::ElideRight.
+    The default value for all item views is BobUI::ElideRight.
 */
-void QAbstractItemView::setTextElideMode(Qt::TextElideMode mode)
+void QAbstractItemView::setTextElideMode(BobUI::TextElideMode mode)
 {
     Q_D(QAbstractItemView);
     d->textElideMode = mode;
 }
 
-Qt::TextElideMode QAbstractItemView::textElideMode() const
+BobUI::TextElideMode QAbstractItemView::textElideMode() const
 {
     return d_func()->textElideMode;
 }
@@ -1689,7 +1689,7 @@ bool QAbstractItemView::focusNextPrevChild(bool next)
 {
     Q_D(QAbstractItemView);
     if (d->tabKeyNavigation && isVisible() && isEnabled() && d->viewport->isEnabled()) {
-        QKeyEvent event(QEvent::KeyPress, next ? Qt::Key_Tab : Qt::Key_Backtab, Qt::NoModifier);
+        QKeyEvent event(QEvent::KeyPress, next ? BobUI::Key_Tab : BobUI::Key_Backtab, BobUI::NoModifier);
         keyPressEvent(&event);
         if (event.isAccepted())
             return true;
@@ -1777,7 +1777,7 @@ bool QAbstractItemView::viewportEvent(QEvent *event)
         break;
     case QEvent::Leave:
         d->setHoverIndex(QModelIndex()); // If we've left, no hover should be needed anymore
-    #if QT_CONFIG(statustip)
+    #if BOBUI_CONFIG(statustip)
         if (d->shouldClearStatusTip && d->parent) {
             QString empty;
             QStatusTipEvent tip(empty);
@@ -1811,11 +1811,11 @@ bool QAbstractItemView::viewportEvent(QEvent *event)
         break;
     case QEvent::ScrollPrepare:
         executeDelayedItemsLayout();
-#if QT_CONFIG(gestures) && QT_CONFIG(scroller)
+#if BOBUI_CONFIG(gestures) && BOBUI_CONFIG(scroller)
         d->scollerConnection = QObjectPrivate::connect(
               QScroller::scroller(d->viewport), &QScroller::stateChanged,
               d, &QAbstractItemViewPrivate::scrollerStateChanged,
-              Qt::UniqueConnection);
+              BobUI::UniqueConnection);
 #endif
         break;
 
@@ -1853,7 +1853,7 @@ void QAbstractItemView::mousePressEvent(QMouseEvent *event)
     d->draggedPosition = pos;
     d->draggedPositionOffset = offset;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     // update the pressed position when drag was enable
     if (d->dragEnabled)
         d->pressedPosition = d->draggedPosition + d->draggedPositionOffset;
@@ -1919,12 +1919,12 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
     if (state() == ExpandingState || state() == CollapsingState)
         return;
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (state() == DraggingState) {
         d->maybeStartDrag(bottomRight);
         return;
     }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
     QPersistentModelIndex index = indexAt(bottomRight);
     QModelIndex buddy = d->model->buddy(d->pressedIndex);
@@ -1937,11 +1937,11 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
 
     d->checkMouseMove(index);
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     if (d->pressedIndex.isValid()
         && d->dragEnabled
         && (state() != DragSelectingState)
-        && (event->buttons() != Qt::NoButton)
+        && (event->buttons() != BobUI::NoButton)
         && !d->selectedDraggableIndexes().isEmpty()) {
             setState(DraggingState);
             d->maybeStartDrag(bottomRight);
@@ -1949,7 +1949,7 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
     }
 #endif
 
-    if ((event->buttons() & Qt::LeftButton) && d->selectionAllowed(index) && d->selectionModel) {
+    if ((event->buttons() & BobUI::LeftButton) && d->selectionAllowed(index) && d->selectionModel) {
         setState(DragSelectingState);
         QItemSelectionModel::SelectionFlags command = selectionCommand(index, event);
         if (d->ctrlDragSelectionFlag != QItemSelectionModel::NoUpdate && command.testFlag(QItemSelectionModel::Toggle)) {
@@ -1995,8 +1995,8 @@ void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
 
     bool click = (index == d->pressedIndex && index.isValid() && !releaseFromDoubleClick);
     bool selectedClicked = click && d->pressedAlreadySelected
-                        && (event->button() == Qt::LeftButton)
-                        && (event->modifiers() == Qt::NoModifier);
+                        && (event->button() == BobUI::LeftButton)
+                        && (event->modifiers() == BobUI::NoModifier);
     EditTrigger trigger = (selectedClicked ? SelectedClicked : NoEditTriggers);
     const bool edited = click && !d->pressClosedEditor ? edit(index, trigger, event) : false;
 
@@ -2012,7 +2012,7 @@ void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
     setState(NoState);
 
     if (click) {
-        if (event->button() == Qt::LeftButton)
+        if (event->button() == BobUI::LeftButton)
             emit clicked(index);
         if (edited)
             return;
@@ -2020,7 +2020,7 @@ void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
         initViewItemOption(&option);
         if (d->pressedAlreadySelected)
             option.state |= QStyle::State_Selected;
-        if ((d->model->flags(index) & Qt::ItemIsEnabled)
+        if ((d->model->flags(index) & BobUI::ItemIsEnabled)
             && style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick, &option, this))
             emit activated(index);
     }
@@ -2049,13 +2049,13 @@ void QAbstractItemView::mouseDoubleClickEvent(QMouseEvent *event)
     // signal handlers may change the model
     QPersistentModelIndex persistent = index;
     emit doubleClicked(persistent);
-    if ((event->button() == Qt::LeftButton) && !edit(persistent, DoubleClicked, event)
+    if ((event->button() == BobUI::LeftButton) && !edit(persistent, DoubleClicked, event)
         && !style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick, nullptr, this))
         emit activated(persistent);
     d->releaseFromDoubleClick = true;
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 
 /*!
     This function is called with the given \a event when a drag and drop operation enters
@@ -2067,7 +2067,7 @@ void QAbstractItemView::mouseDoubleClickEvent(QMouseEvent *event)
 void QAbstractItemView::dragEnterEvent(QDragEnterEvent *event)
 {
     if (dragDropMode() == InternalMove
-        && (event->source() != this|| !(event->possibleActions() & Qt::MoveAction)))
+        && (event->source() != this|| !(event->possibleActions() & BobUI::MoveAction)))
         return;
 
     if (d_func()->canDrop(event)) {
@@ -2092,7 +2092,7 @@ void QAbstractItemView::dragMoveEvent(QDragMoveEvent *event)
     d->draggedPosition = event->position().toPoint();
     d->draggedPositionOffset = d->offset();
     if (dragDropMode() == InternalMove
-        && (event->source() != this || !(event->possibleActions() & Qt::MoveAction)))
+        && (event->source() != this || !(event->possibleActions() & BobUI::MoveAction)))
         return;
 
     // ignore by default
@@ -2167,12 +2167,12 @@ void QAbstractItemView::dragMoveEvent(QDragMoveEvent *event)
 bool QAbstractItemViewPrivate::droppingOnItself(QDropEvent *event, const QModelIndex &index)
 {
     Q_Q(QAbstractItemView);
-    Qt::DropAction dropAction = event->dropAction();
+    BobUI::DropAction dropAction = event->dropAction();
     if (q->dragDropMode() == QAbstractItemView::InternalMove)
-        dropAction = Qt::MoveAction;
+        dropAction = BobUI::MoveAction;
     if (event->source() == q
-        && event->possibleActions() & Qt::MoveAction
-        && dropAction == Qt::MoveAction) {
+        && event->possibleActions() & BobUI::MoveAction
+        && dropAction == BobUI::MoveAction) {
         QModelIndexList selectedIndexes = q->selectedIndexes();
         QModelIndex child = index;
         while (child.isValid() && child != root) {
@@ -2210,7 +2210,7 @@ void QAbstractItemView::dropEvent(QDropEvent *event)
 {
     Q_D(QAbstractItemView);
     if (dragDropMode() == InternalMove) {
-        if (event->source() != this || !(event->possibleActions() & Qt::MoveAction))
+        if (event->source() != this || !(event->possibleActions() & BobUI::MoveAction))
             return;
     }
 
@@ -2218,7 +2218,7 @@ void QAbstractItemView::dropEvent(QDropEvent *event)
     int col = -1;
     int row = -1;
     if (d->dropOn(event, &row, &col, &index)) {
-        const Qt::DropAction action = dragDropMode() == InternalMove ? Qt::MoveAction : event->dropAction();
+        const BobUI::DropAction action = dragDropMode() == InternalMove ? BobUI::MoveAction : event->dropAction();
         if (d->model->dropMimeData(event->mimeData(), action, row, col, index)) {
             if (action != event->dropAction()) {
                 event->setDropAction(action);
@@ -2312,13 +2312,13 @@ QAbstractItemViewPrivate::position(const QPoint &pos, const QRect &rect, const Q
         }
     }
 
-    if (r == QAbstractItemView::OnItem && (!(model->flags(index) & Qt::ItemIsDropEnabled)))
+    if (r == QAbstractItemView::OnItem && (!(model->flags(index) & BobUI::ItemIsDropEnabled)))
         r = pos.y() < rect.center().y() ? QAbstractItemView::AboveItem : QAbstractItemView::BelowItem;
 
     return r;
 }
 
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     This function is called with the given \a event when the widget obtains the focus.
@@ -2339,8 +2339,8 @@ void QAbstractItemView::focusInEvent(QFocusEvent *event)
         && !currentIndexValid) {
         bool autoScroll = d->autoScroll;
         d->autoScroll = false;
-        QModelIndex index = moveCursor(MoveNext, Qt::NoModifier); // first visible index
-        if (index.isValid() && d->isIndexEnabled(index) && event->reason() != Qt::MouseFocusReason) {
+        QModelIndex index = moveCursor(MoveNext, BobUI::NoModifier); // first visible index
+        if (index.isValid() && d->isIndexEnabled(index) && event->reason() != BobUI::MouseFocusReason) {
             selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
             currentIndexValid = true;
         }
@@ -2348,9 +2348,9 @@ void QAbstractItemView::focusInEvent(QFocusEvent *event)
     }
 
     if (model && currentIndexValid)
-        setAttribute(Qt::WA_InputMethodEnabled, (currentIndex().flags() & Qt::ItemIsEditable));
+        setAttribute(BobUI::WA_InputMethodEnabled, (currentIndex().flags() & BobUI::ItemIsEditable));
     else if (!currentIndexValid)
-        setAttribute(Qt::WA_InputMethodEnabled, false);
+        setAttribute(BobUI::WA_InputMethodEnabled, false);
 
     d->viewport->update();
 }
@@ -2384,9 +2384,9 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
     Q_D(QAbstractItemView);
     d->delayedAutoScroll.stop(); //any interaction with the view cancel the auto scrolling
 
-#ifdef QT_KEYPAD_NAVIGATION
+#ifdef BOBUI_KEYPAD_NAVIGATION
     switch (event->key()) {
-    case Qt::Key_Select:
+    case BobUI::Key_Select:
         if (QApplicationPrivate::keypadNavigationEnabled()) {
             if (!hasEditFocus()) {
                 setEditFocus(true);
@@ -2394,29 +2394,29 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
             }
         }
         break;
-    case Qt::Key_Back:
+    case BobUI::Key_Back:
         if (QApplicationPrivate::keypadNavigationEnabled() && hasEditFocus()) {
             setEditFocus(false);
         } else {
             event->ignore();
         }
         return;
-    case Qt::Key_Down:
-    case Qt::Key_Up:
+    case BobUI::Key_Down:
+    case BobUI::Key_Up:
         // Let's ignore vertical navigation events, only if there is no other widget
         // what can take the focus in vertical direction. This means widget can handle navigation events
         // even the widget don't have edit focus, and there is no other widget in requested direction.
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()
-                && QWidgetPrivate::canKeypadNavigate(Qt::Vertical)) {
+                && QWidgetPrivate::canKeypadNavigate(BobUI::Vertical)) {
             event->ignore();
             return;
         }
         break;
-    case Qt::Key_Left:
-    case Qt::Key_Right:
+    case BobUI::Key_Left:
+    case BobUI::Key_Right:
         // Similar logic as in up and down events
         if (QApplicationPrivate::keypadNavigationEnabled() && !hasEditFocus()
-                && (QWidgetPrivate::canKeypadNavigate(Qt::Horizontal) || QWidgetPrivate::inTabWidget(this))) {
+                && (QWidgetPrivate::canKeypadNavigate(BobUI::Horizontal) || QWidgetPrivate::inTabWidget(this))) {
             event->ignore();
             return;
         }
@@ -2429,11 +2429,11 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
     }
 #endif
 
-#if !defined(QT_NO_CLIPBOARD) && !defined(QT_NO_SHORTCUT)
+#if !defined(BOBUI_NO_CLIPBOARD) && !defined(BOBUI_NO_SHORTCUT)
     if (event == QKeySequence::Copy) {
         const QModelIndex index = currentIndex();
         if (index.isValid() && d->model) {
-            const QVariant variant = d->model->data(index, Qt::DisplayRole);
+            const QVariant variant = d->model->data(index, BobUI::DisplayRole);
             if (variant.canConvert<QString>())
                 QGuiApplication::clipboard()->setText(variant.toString());
         }
@@ -2444,35 +2444,35 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
     QPersistentModelIndex newCurrent;
     d->moveCursorUpdatedView = false;
     switch (event->key()) {
-    case Qt::Key_Down:
+    case BobUI::Key_Down:
         newCurrent = moveCursor(MoveDown, event->modifiers());
         break;
-    case Qt::Key_Up:
+    case BobUI::Key_Up:
         newCurrent = moveCursor(MoveUp, event->modifiers());
         break;
-    case Qt::Key_Left:
+    case BobUI::Key_Left:
         newCurrent = moveCursor(MoveLeft, event->modifiers());
         break;
-    case Qt::Key_Right:
+    case BobUI::Key_Right:
         newCurrent = moveCursor(MoveRight, event->modifiers());
         break;
-    case Qt::Key_Home:
+    case BobUI::Key_Home:
         newCurrent = moveCursor(MoveHome, event->modifiers());
         break;
-    case Qt::Key_End:
+    case BobUI::Key_End:
         newCurrent = moveCursor(MoveEnd, event->modifiers());
         break;
-    case Qt::Key_PageUp:
+    case BobUI::Key_PageUp:
         newCurrent = moveCursor(MovePageUp, event->modifiers());
         break;
-    case Qt::Key_PageDown:
+    case BobUI::Key_PageDown:
         newCurrent = moveCursor(MovePageDown, event->modifiers());
         break;
-    case Qt::Key_Tab:
+    case BobUI::Key_Tab:
         if (d->tabKeyNavigation)
             newCurrent = moveCursor(MoveNext, event->modifiers());
         break;
-    case Qt::Key_Backtab:
+    case BobUI::Key_Backtab:
         if (d->tabKeyNavigation)
             newCurrent = moveCursor(MovePrevious, event->modifiers());
         break;
@@ -2508,48 +2508,48 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
 
     switch (event->key()) {
     // ignored keys
-    case Qt::Key_Down:
-    case Qt::Key_Up:
-#ifdef QT_KEYPAD_NAVIGATION
+    case BobUI::Key_Down:
+    case BobUI::Key_Up:
+#ifdef BOBUI_KEYPAD_NAVIGATION
         if (QApplicationPrivate::keypadNavigationEnabled()
-                && QWidgetPrivate::canKeypadNavigate(Qt::Vertical)) {
+                && QWidgetPrivate::canKeypadNavigate(BobUI::Vertical)) {
             event->accept(); // don't change focus
             break;
         }
 #endif
-    case Qt::Key_Left:
-    case Qt::Key_Right:
-#ifdef QT_KEYPAD_NAVIGATION
-        if (QApplication::navigationMode() == Qt::NavigationModeKeypadDirectional
-                && (QWidgetPrivate::canKeypadNavigate(Qt::Horizontal)
+    case BobUI::Key_Left:
+    case BobUI::Key_Right:
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        if (QApplication::navigationMode() == BobUI::NavigationModeKeypadDirectional
+                && (QWidgetPrivate::canKeypadNavigate(BobUI::Horizontal)
                 || (QWidgetPrivate::inTabWidget(this) && d->model->columnCount(d->root) > 1))) {
             event->accept(); // don't change focus
             break;
         }
-#endif // QT_KEYPAD_NAVIGATION
-    case Qt::Key_Home:
-    case Qt::Key_End:
-    case Qt::Key_PageUp:
-    case Qt::Key_PageDown:
-    case Qt::Key_Escape:
-    case Qt::Key_Shift:
-    case Qt::Key_Control:
-    case Qt::Key_Delete:
-    case Qt::Key_Backspace:
+#endif // BOBUI_KEYPAD_NAVIGATION
+    case BobUI::Key_Home:
+    case BobUI::Key_End:
+    case BobUI::Key_PageUp:
+    case BobUI::Key_PageDown:
+    case BobUI::Key_Escape:
+    case BobUI::Key_Shift:
+    case BobUI::Key_Control:
+    case BobUI::Key_Delete:
+    case BobUI::Key_Backspace:
         event->ignore();
         break;
-    case Qt::Key_Space:
-    case Qt::Key_Select:
+    case BobUI::Key_Space:
+    case BobUI::Key_Select:
         if (!edit(currentIndex(), AnyKeyPressed, event)) {
             if (d->selectionModel)
                 d->selectionModel->select(currentIndex(), selectionCommand(currentIndex(), event));
-            if (event->key() == Qt::Key_Space) {
+            if (event->key() == BobUI::Key_Space) {
                 keyboardSearch(event->text());
                 event->accept();
             }
         }
-#ifdef QT_KEYPAD_NAVIGATION
-        if ( event->key()==Qt::Key_Select ) {
+#ifdef BOBUI_KEYPAD_NAVIGATION
+        if ( event->key()==BobUI::Key_Select ) {
             // Also do Key_Enter action.
             if (currentIndex().isValid()) {
                 if (state() != EditingState)
@@ -2561,20 +2561,20 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
 #endif
         break;
 #ifdef Q_OS_MACOS
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         // Propagate the enter if you couldn't edit the item and there are no
         // current editors (if there are editors, the event was most likely propagated from it).
         if (!edit(currentIndex(), EditKeyPressed, event) && d->editorIndexHash.isEmpty())
             event->ignore();
         break;
 #else
-    case Qt::Key_F2:
+    case BobUI::Key_F2:
         if (!edit(currentIndex(), EditKeyPressed, event))
             event->ignore();
         break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
+    case BobUI::Key_Enter:
+    case BobUI::Key_Return:
         // ### we can't open the editor on enter, because
         // some widgets will forward the enter event back
         // to the viewport, starting an endless loop
@@ -2586,19 +2586,19 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         break;
 #endif
     default: {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
        if (event == QKeySequence::SelectAll && selectionMode() != NoSelection) {
             selectAll();
             break;
         }
 #endif
 #ifdef Q_OS_MACOS
-        if (event->key() == Qt::Key_O && event->modifiers() & Qt::ControlModifier && currentIndex().isValid()) {
+        if (event->key() == BobUI::Key_O && event->modifiers() & BobUI::ControlModifier && currentIndex().isValid()) {
             emit activated(currentIndex());
             break;
         }
 #endif
-        bool modified = (event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier));
+        bool modified = (event->modifiers() & (BobUI::ControlModifier | BobUI::AltModifier | BobUI::MetaModifier));
         if (!event->text().isEmpty() && !modified && !edit(currentIndex(), AnyKeyPressed, event)) {
             keyboardSearch(event->text());
             event->accept();
@@ -2629,7 +2629,7 @@ void QAbstractItemView::resizeEvent(QResizeEvent *event)
 
   \sa QObject::timerEvent()
 */
-void QAbstractItemView::timerEvent(QTimerEvent *event)
+void QAbstractItemView::timerEvent(BOBUIimerEvent *event)
 {
     Q_D(QAbstractItemView);
     if (event->timerId() == d->fetchMoreTimer.timerId())
@@ -2690,7 +2690,7 @@ void QAbstractItemView::inputMethodEvent(QInputMethodEvent *event)
                         delegate->setEditorData(currentEditor, currentIndex());
                     d->selectAllInEditor(currentEditor);
                 }
-                if (currentEditor->focusPolicy() != Qt::NoFocus)
+                if (currentEditor->focusPolicy() != BobUI::NoFocus)
                     currentEditor->setFocus();
             } else {
                 // more pre-editing
@@ -2718,7 +2718,7 @@ void QAbstractItemView::inputMethodEvent(QInputMethodEvent *event)
     }
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \enum QAbstractItemView::DropIndicatorPosition
 
@@ -2789,7 +2789,7 @@ bool QAbstractItemView::edit(const QModelIndex &index, EditTrigger trigger, QEve
         return false;
 
     if (QWidget *w = (d->persistent.isEmpty() ? static_cast<QWidget*>(nullptr) : d->editorForIndex(index).widget.data())) {
-        if (w->focusPolicy() == Qt::NoFocus)
+        if (w->focusPolicy() == BobUI::NoFocus)
             return false;
         if (!d->waitForIMCommit)
             w->setFocus();
@@ -2998,7 +2998,7 @@ void QAbstractItemView::closeEditor(QWidget *editor, QAbstractItemDelegate::EndE
                 d->removeEditor(editor);
             }
             if (hadFocus) {
-                if (focusPolicy() != Qt::NoFocus)
+                if (focusPolicy() != BobUI::NoFocus)
                     setFocus(); // this will send a focusLost event to the editor
                 else
                     editor->clearFocus();
@@ -3021,22 +3021,22 @@ void QAbstractItemView::closeEditor(QWidget *editor, QAbstractItemDelegate::EndE
         flags = QItemSelectionModel::ClearAndSelect | d->selectionBehaviorFlags();
     switch (hint) {
     case QAbstractItemDelegate::EditNextItem: {
-        QModelIndex index = moveCursor(MoveNext, Qt::NoModifier);
+        QModelIndex index = moveCursor(MoveNext, BobUI::NoModifier);
         if (index.isValid()) {
             QPersistentModelIndex persistent(index);
             d->selectionModel->setCurrentIndex(persistent, flags);
             // currentChanged signal would have already started editing
-            if (index.flags() & Qt::ItemIsEditable
+            if (index.flags() & BobUI::ItemIsEditable
                 && (!(editTriggers() & QAbstractItemView::CurrentChanged)))
                 edit(persistent);
         } break; }
     case QAbstractItemDelegate::EditPreviousItem: {
-        QModelIndex index = moveCursor(MovePrevious, Qt::NoModifier);
+        QModelIndex index = moveCursor(MovePrevious, BobUI::NoModifier);
         if (index.isValid()) {
             QPersistentModelIndex persistent(index);
             d->selectionModel->setCurrentIndex(persistent, flags);
             // currentChanged signal would have already started editing
-            if (index.flags() & Qt::ItemIsEditable
+            if (index.flags() & BobUI::ItemIsEditable
                 && (!(editTriggers() & QAbstractItemView::CurrentChanged)))
                 edit(persistent);
         } break; }
@@ -3145,7 +3145,7 @@ void QAbstractItemView::keyboardSearch(const QString &search)
     QModelIndex startMatch;
     QModelIndexList previous;
     do {
-        match = d->model->match(current, Qt::DisplayRole, d->keyboardInput, 1,
+        match = d->model->match(current, BobUI::DisplayRole, d->keyboardInput, 1,
                                 d->keyboardSearchFlags);
         if (match == previous)
             break;
@@ -3294,19 +3294,19 @@ void QAbstractItemView::setUpdateThreshold(int threshold)
     This property determines how the default implementation of
     keyboardSearch() matches the given string against the model's data.
 
-    The default value is \c{Qt::MatchStartsWith|Qt::MatchWrap}.
+    The default value is \c{BobUI::MatchStartsWith|BobUI::MatchWrap}.
 
     \sa keyboardSearch()
     \sa QAbstractItemModel::match()
 */
 
-Qt::MatchFlags QAbstractItemView::keyboardSearchFlags() const
+BobUI::MatchFlags QAbstractItemView::keyboardSearchFlags() const
 {
     Q_D(const QAbstractItemView);
     return d->keyboardSearchFlags;
 }
 
-void QAbstractItemView::setKeyboardSearchFlags(Qt::MatchFlags searchFlags)
+void QAbstractItemView::setKeyboardSearchFlags(BobUI::MatchFlags searchFlags)
 {
     Q_D(QAbstractItemView);
     d->keyboardSearchFlags = searchFlags;
@@ -3479,7 +3479,7 @@ void QAbstractItemView::update(const QModelIndex &index)
     The \a roles which have been changed can either be an empty container (meaning everything
     has changed), or a non-empty container with the subset of roles which have changed.
 
-    \note: Qt::ToolTipRole is not honored by dataChanged() in the views provided by Qt.
+    \note: BobUI::ToolTipRole is not honored by dataChanged() in the views provided by BobUI.
 */
 void QAbstractItemView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
                                     const QList<int> &roles)
@@ -3524,7 +3524,7 @@ void QAbstractItemView::dataChanged(const QModelIndex &topLeft, const QModelInde
         }
     }
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(this, QAccessibleTableModelChangeEvent::DataChanged);
         accessibleEvent.setFirstRow(topLeft.row());
@@ -3591,7 +3591,7 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
             // find the next visible and enabled item
             while (row < rowCount && !found) {
                 next = d->model->index(row++, current.column(), current.parent());
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
                 if (!next.isValid()) {
                     qWarning("Model unexpectedly returned an invalid index");
                     break;
@@ -3608,7 +3608,7 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
                 // find the previous visible and enabled item
                 while (row >= 0) {
                     next = d->model->index(row--, current.column(), current.parent());
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
                     if (!next.isValid()) {
                         qWarning("Model unexpectedly returned an invalid index");
                         break;
@@ -3667,7 +3667,7 @@ void QAbstractItemViewPrivate::rowsRemoved(const QModelIndex &index, int start, 
     if (q->isVisible())
         q->updateEditorGeometries();
     q->setState(QAbstractItemView::NoState);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(q, QAccessibleTableModelChangeEvent::RowsRemoved);
         accessibleEvent.setFirstRow(start);
@@ -3711,7 +3711,7 @@ void QAbstractItemViewPrivate::columnsAboutToBeRemoved(const QModelIndex &parent
             // find the next visible and enabled item
             while (column < columnCount) {
                 next = model->index(current.row(), column++, current.parent());
-#ifdef QT_DEBUG
+#ifdef BOBUI_DEBUG
                 if (!next.isValid()) {
                     qWarning("Model unexpectedly returned an invalid index");
                     break;
@@ -3758,7 +3758,7 @@ void QAbstractItemViewPrivate::columnsRemoved(const QModelIndex &index, int star
     if (q->isVisible())
         q->updateEditorGeometries();
     q->setState(QAbstractItemView::NoState);
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(q, QAccessibleTableModelChangeEvent::ColumnsRemoved);
         accessibleEvent.setFirstColumn(start);
@@ -3781,7 +3781,7 @@ void QAbstractItemViewPrivate::rowsInserted(const QModelIndex &index, int start,
     Q_UNUSED(start);
     Q_UNUSED(end);
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_Q(QAbstractItemView);
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(q, QAccessibleTableModelChangeEvent::RowsInserted);
@@ -3807,7 +3807,7 @@ void QAbstractItemViewPrivate::columnsInserted(const QModelIndex &index, int sta
     Q_Q(QAbstractItemView);
     if (q->isVisible())
         q->updateEditorGeometries();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(q, QAccessibleTableModelChangeEvent::ColumnsInserted);
         accessibleEvent.setFirstColumn(start);
@@ -3835,7 +3835,7 @@ void QAbstractItemViewPrivate::modelDestroyed()
 void QAbstractItemViewPrivate::layoutChanged()
 {
     doDelayedItemsLayout();
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     Q_Q(QAbstractItemView);
     if (QAccessible::isActive()) {
         QAccessibleTableModelChangeEvent accessibleEvent(q, QAccessibleTableModelChangeEvent::ModelReset);
@@ -3896,7 +3896,7 @@ void QAbstractItemView::currentChanged(const QModelIndex &current, const QModelI
     Q_D(QAbstractItemView);
     Q_ASSERT(d->model);
 
-    QPersistentModelIndex persistentCurrent(current); // in case commitData() moves things around (QTBUG-127852)
+    QPersistentModelIndex persistentCurrent(current); // in case commitData() moves things around (BOBUIBUG-127852)
 
     if (previous.isValid()) {
         QModelIndex buddy = d->model->buddy(previous);
@@ -3906,7 +3906,7 @@ void QAbstractItemView::currentChanged(const QModelIndex &current, const QModelI
         }
         if (editor && !d->persistent.contains(editor)) {
             const bool rowChanged = current.row() != previous.row();
-            commitData(editor); // might invalidate previous, don't use after this line (QTBUG-127852)
+            commitData(editor); // might invalidate previous, don't use after this line (BOBUIBUG-127852)
             if (rowChanged)
                 closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
             else
@@ -3932,14 +3932,14 @@ void QAbstractItemView::currentChanged(const QModelIndex &current, const QModelI
             d->shouldScrollToCurrentOnShow = d->autoScroll;
         }
     }
-    setAttribute(Qt::WA_InputMethodEnabled, (newCurrent.isValid() && (newCurrent.flags() & Qt::ItemIsEditable)));
+    setAttribute(BobUI::WA_InputMethodEnabled, (newCurrent.isValid() && (newCurrent.flags() & BobUI::ItemIsEditable)));
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     Starts a drag by calling drag->exec() using the given \a supportedActions.
 */
-void QAbstractItemView::startDrag(Qt::DropActions supportedActions)
+void QAbstractItemView::startDrag(BobUI::DropActions supportedActions)
 {
     Q_D(QAbstractItemView);
     QModelIndexList indexes = d->selectedDraggableIndexes();
@@ -3954,15 +3954,15 @@ void QAbstractItemView::startDrag(Qt::DropActions supportedActions)
         drag->setPixmap(pixmap);
         drag->setMimeData(data);
         drag->setHotSpot(d->pressedPosition - rect.topLeft());
-        Qt::DropAction defaultDropAction = Qt::IgnoreAction;
+        BobUI::DropAction defaultDropAction = BobUI::IgnoreAction;
         if (dragDropMode() == InternalMove)
-            supportedActions &= ~Qt::CopyAction;
-        if (d->defaultDropAction != Qt::IgnoreAction && (supportedActions & d->defaultDropAction))
+            supportedActions &= ~BobUI::CopyAction;
+        if (d->defaultDropAction != BobUI::IgnoreAction && (supportedActions & d->defaultDropAction))
             defaultDropAction = d->defaultDropAction;
-        else if (supportedActions & Qt::CopyAction && dragDropMode() != QAbstractItemView::InternalMove)
-            defaultDropAction = Qt::CopyAction;
+        else if (supportedActions & BobUI::CopyAction && dragDropMode() != QAbstractItemView::InternalMove)
+            defaultDropAction = BobUI::CopyAction;
         d->dropEventMoved = false;
-        if (drag->exec(supportedActions, defaultDropAction) == Qt::MoveAction && !d->dropEventMoved) {
+        if (drag->exec(supportedActions, defaultDropAction) == BobUI::MoveAction && !d->dropEventMoved) {
             if (dragDropMode() != InternalMove || drag->target() == viewport())
                 d->clearOrRemove();
         }
@@ -3972,7 +3972,7 @@ void QAbstractItemView::startDrag(Qt::DropActions supportedActions)
         d->dropIndicatorPosition = OnItem;
     }
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
 /*!
     \since 6.0
@@ -4004,8 +4004,8 @@ void QAbstractItemView::initViewItemOption(QStyleOptionViewItem *option) const
         option->decorationSize = QSize(pm, pm);
     }
     option->decorationPosition = QStyleOptionViewItem::Left;
-    option->decorationAlignment = Qt::AlignCenter;
-    option->displayAlignment = Qt::AlignLeft|Qt::AlignVCenter;
+    option->decorationAlignment = BobUI::AlignCenter;
+    option->displayAlignment = BobUI::AlignLeft|BobUI::AlignVCenter;
     option->textElideMode = d->textElideMode;
     option->rect = QRect();
     option->showDecorationSelected = style()->styleHint(QStyle::SH_ItemView_ShowDecorationSelected, nullptr, this);
@@ -4142,7 +4142,7 @@ void QAbstractItemView::doAutoScroll()
     if (hv) {
         QAbstractScrollArea *parent = qobject_cast<QAbstractScrollArea*>(parentWidget());
         if (parent) {
-            if (hv->orientation() == Qt::Horizontal) {
+            if (hv->orientation() == BobUI::Horizontal) {
                 if (!hv->horizontalScrollBar() || !hv->horizontalScrollBar()->isVisible())
                     horizontalScroll = parent->horizontalScrollBar();
             } else {
@@ -4180,7 +4180,7 @@ void QAbstractItemView::doAutoScroll()
     if (verticalUnchanged && horizontalUnchanged) {
         stopAutoScroll();
     } else {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
         d->dropIndicatorRect = QRect();
         d->dropIndicatorPosition = QAbstractItemView::OnViewport;
 #endif
@@ -4191,8 +4191,8 @@ void QAbstractItemView::doAutoScroll()
             const QPoint globalPos = d->viewport->mapToGlobal(pos);
             const QPoint windowPos = window()->mapFromGlobal(globalPos);
             QMouseEvent mm(QEvent::MouseMove, pos, windowPos, globalPos,
-                           Qt::NoButton, Qt::LeftButton, d->pressedModifiers,
-                           Qt::MouseEventSynthesizedByQt);
+                           BobUI::NoButton, BobUI::LeftButton, d->pressedModifiers,
+                           BobUI::MouseEventSynthesizedByBobUI);
             QApplication::sendEvent(viewport(), &mm);
             break;
         }
@@ -4227,9 +4227,9 @@ QItemSelectionModel::SelectionFlags QAbstractItemView::selectionCommand(const QM
                                                                         const QEvent *event) const
 {
     Q_D(const QAbstractItemView);
-    Qt::KeyboardModifiers keyModifiers = event && event->isInputEvent()
+    BobUI::KeyboardModifiers keyModifiers = event && event->isInputEvent()
                                        ? static_cast<const QInputEvent*>(event)->modifiers()
-                                       : Qt::NoModifier;
+                                       : BobUI::NoModifier;
     switch (d->selectionMode) {
         case NoSelection: // Never update selection model
             return QItemSelectionModel::NoUpdate;
@@ -4248,7 +4248,7 @@ QItemSelectionModel::SelectionFlags QAbstractItemView::selectionCommand(const QM
                     Q_FALLTHROUGH();
                 case QEvent::KeyPress:
                     // ctrl-release on selected item deselects
-                    if ((keyModifiers & Qt::ControlModifier) && d->selectionModel->isSelected(index))
+                    if ((keyModifiers & BobUI::ControlModifier) && d->selectionModel->isSelected(index))
                         return QItemSelectionModel::Deselect | d->selectionBehaviorFlags();
                     break;
                 default:
@@ -4274,15 +4274,15 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::multiSelectionComm
     if (event) {
         switch (event->type()) {
         case QEvent::KeyPress:
-            if (static_cast<const QKeyEvent*>(event)->key() == Qt::Key_Space
-             || static_cast<const QKeyEvent*>(event)->key() == Qt::Key_Select)
+            if (static_cast<const QKeyEvent*>(event)->key() == BobUI::Key_Space
+             || static_cast<const QKeyEvent*>(event)->key() == BobUI::Key_Select)
                 return QItemSelectionModel::Toggle|selectionBehaviorFlags();
             break;
         case QEvent::MouseButtonPress:
-            if (static_cast<const QMouseEvent*>(event)->button() == Qt::LeftButton) {
+            if (static_cast<const QMouseEvent*>(event)->button() == BobUI::LeftButton) {
                 // since the press might start a drag, deselect only on release
                 if (!pressedAlreadySelected
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
                         || !dragEnabled || !isIndexDragEnabled(index)
 #endif
                         )
@@ -4290,9 +4290,9 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::multiSelectionComm
             }
             break;
         case QEvent::MouseButtonRelease:
-            if (static_cast<const QMouseEvent*>(event)->button() == Qt::LeftButton) {
+            if (static_cast<const QMouseEvent*>(event)->button() == BobUI::LeftButton) {
                 if (pressedAlreadySelected
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
                         && dragEnabled && isIndexDragEnabled(index)
 #endif
                         && index == pressedIndex)
@@ -4301,7 +4301,7 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::multiSelectionComm
             }
             break;
         case QEvent::MouseMove:
-            if (static_cast<const QMouseEvent*>(event)->buttons() & Qt::LeftButton)
+            if (static_cast<const QMouseEvent*>(event)->buttons() & BobUI::LeftButton)
                 return QItemSelectionModel::ToggleCurrent|selectionBehaviorFlags(); // toggle drag select
             break;
         default:
@@ -4316,22 +4316,22 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::multiSelectionComm
 QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::extendedSelectionCommand(
     const QModelIndex &index, const QEvent *event) const
 {
-    Qt::KeyboardModifiers modifiers = event && event->isInputEvent()
+    BobUI::KeyboardModifiers modifiers = event && event->isInputEvent()
             ? static_cast<const QInputEvent*>(event)->modifiers()
             : QGuiApplication::keyboardModifiers();
     if (event) {
         switch (event->type()) {
         case QEvent::MouseMove: {
             // Toggle on MouseMove
-            if (modifiers & Qt::ControlModifier)
+            if (modifiers & BobUI::ControlModifier)
                 return QItemSelectionModel::ToggleCurrent|selectionBehaviorFlags();
             break;
         }
         case QEvent::MouseButtonPress: {
-            const Qt::MouseButton button = static_cast<const QMouseEvent*>(event)->button();
-            const bool rightButtonPressed = button & Qt::RightButton;
-            const bool shiftKeyPressed = modifiers & Qt::ShiftModifier;
-            const bool controlKeyPressed = modifiers & Qt::ControlModifier;
+            const BobUI::MouseButton button = static_cast<const QMouseEvent*>(event)->button();
+            const bool rightButtonPressed = button & BobUI::RightButton;
+            const bool shiftKeyPressed = modifiers & BobUI::ShiftModifier;
+            const bool controlKeyPressed = modifiers & BobUI::ControlModifier;
             const bool indexIsSelected = selectionModel->isSelected(index);
             if ((shiftKeyPressed || controlKeyPressed) && rightButtonPressed)
                 return QItemSelectionModel::NoUpdate;
@@ -4343,7 +4343,7 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::extendedSelectionC
                 return QItemSelectionModel::NoUpdate;
             // since the press might start a drag, deselect only on release
             if (controlKeyPressed && !rightButtonPressed && pressedAlreadySelected
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
                 && dragEnabled && isIndexDragEnabled(index)
 #endif
                     ) {
@@ -4353,16 +4353,16 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::extendedSelectionC
         }
         case QEvent::MouseButtonRelease: {
             // ClearAndSelect on MouseButtonRelease if MouseButtonPress on selected item or empty area
-            const Qt::MouseButton button = static_cast<const QMouseEvent*>(event)->button();
-            const bool rightButtonPressed = button & Qt::RightButton;
-            const bool shiftKeyPressed = modifiers & Qt::ShiftModifier;
-            const bool controlKeyPressed = modifiers & Qt::ControlModifier;
+            const BobUI::MouseButton button = static_cast<const QMouseEvent*>(event)->button();
+            const bool rightButtonPressed = button & BobUI::RightButton;
+            const bool shiftKeyPressed = modifiers & BobUI::ShiftModifier;
+            const bool controlKeyPressed = modifiers & BobUI::ControlModifier;
             if (((index == pressedIndex && selectionModel->isSelected(index))
                 || !index.isValid()) && state != QAbstractItemView::DragSelectingState
                 && !shiftKeyPressed && !controlKeyPressed && (!rightButtonPressed || !index.isValid()))
                 return QItemSelectionModel::ClearAndSelect|selectionBehaviorFlags();
             if (index == pressedIndex && controlKeyPressed && !rightButtonPressed
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
                 && dragEnabled && isIndexDragEnabled(index)
 #endif
                     ) {
@@ -4373,30 +4373,30 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::extendedSelectionC
         case QEvent::KeyPress: {
             // NoUpdate on Key movement and Ctrl
             switch (static_cast<const QKeyEvent*>(event)->key()) {
-            case Qt::Key_Backtab:
-                modifiers = modifiers & ~Qt::ShiftModifier; // special case for backtab
+            case BobUI::Key_Backtab:
+                modifiers = modifiers & ~BobUI::ShiftModifier; // special case for backtab
                 Q_FALLTHROUGH();
-            case Qt::Key_Down:
-            case Qt::Key_Up:
-            case Qt::Key_Left:
-            case Qt::Key_Right:
-            case Qt::Key_Home:
-            case Qt::Key_End:
-            case Qt::Key_PageUp:
-            case Qt::Key_PageDown:
-            case Qt::Key_Tab:
-                if (modifiers & Qt::ControlModifier
-#ifdef QT_KEYPAD_NAVIGATION
+            case BobUI::Key_Down:
+            case BobUI::Key_Up:
+            case BobUI::Key_Left:
+            case BobUI::Key_Right:
+            case BobUI::Key_Home:
+            case BobUI::Key_End:
+            case BobUI::Key_PageUp:
+            case BobUI::Key_PageDown:
+            case BobUI::Key_Tab:
+                if (modifiers & BobUI::ControlModifier
+#ifdef BOBUI_KEYPAD_NAVIGATION
                     // Preserve historical tab order navigation behavior
-                    || QApplication::navigationMode() == Qt::NavigationModeKeypadTabOrder
+                    || QApplication::navigationMode() == BobUI::NavigationModeKeypadTabOrder
 #endif
                     )
                     return QItemSelectionModel::NoUpdate;
                 break;
-            case Qt::Key_Select:
+            case BobUI::Key_Select:
                 return QItemSelectionModel::Toggle|selectionBehaviorFlags();
-            case Qt::Key_Space:// Toggle on Ctrl-Qt::Key_Space, Select on Space
-                if (modifiers & Qt::ControlModifier)
+            case BobUI::Key_Space:// Toggle on Ctrl-BobUI::Key_Space, Select on Space
+                if (modifiers & BobUI::ControlModifier)
                     return QItemSelectionModel::Toggle|selectionBehaviorFlags();
                 return QItemSelectionModel::Select|selectionBehaviorFlags();
             default:
@@ -4409,9 +4409,9 @@ QItemSelectionModel::SelectionFlags QAbstractItemViewPrivate::extendedSelectionC
         }
     }
 
-    if (modifiers & Qt::ShiftModifier)
+    if (modifiers & BobUI::ShiftModifier)
         return QItemSelectionModel::SelectCurrent|selectionBehaviorFlags();
-    if (modifiers & Qt::ControlModifier)
+    if (modifiers & BobUI::ControlModifier)
         return QItemSelectionModel::Toggle|selectionBehaviorFlags();
     if (state == QAbstractItemView::DragSelectingState) {
         //when drag-selecting we need to clear any previous selection and select the current one
@@ -4468,8 +4468,8 @@ bool QAbstractItemViewPrivate::shouldEdit(QAbstractItemView::EditTrigger trigger
 {
     if (!index.isValid())
         return false;
-    Qt::ItemFlags flags = model->flags(index);
-    if (((flags & Qt::ItemIsEditable) == 0) || ((flags & Qt::ItemIsEnabled) == 0))
+    BobUI::ItemFlags flags = model->flags(index);
+    if (((flags & BobUI::ItemIsEditable) == 0) || ((flags & BobUI::ItemIsEnabled) == 0))
         return false;
     if (state == QAbstractItemView::EditingState)
         return false;
@@ -4540,18 +4540,18 @@ void QAbstractItemViewPrivate::updateGeometry()
 /*
     Handles selection of content for some editors containing QLineEdit.
 
-    ### Qt 7 This should be done by a virtual method in QAbstractItemDelegate.
+    ### BobUI 7 This should be done by a virtual method in QAbstractItemDelegate.
 */
 void QAbstractItemViewPrivate::selectAllInEditor(QWidget *editor)
 {
     while (QWidget *fp = editor->focusProxy())
         editor = fp;
 
-#if QT_CONFIG(lineedit)
+#if BOBUI_CONFIG(lineedit)
     if (QLineEdit *le = qobject_cast<QLineEdit*>(editor))
         le->selectAll();
 #endif
-#if QT_CONFIG(spinbox)
+#if BOBUI_CONFIG(spinbox)
     if (QSpinBox *sb = qobject_cast<QSpinBox*>(editor))
         sb->selectAll();
     else if (QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox*>(editor))
@@ -4591,7 +4591,7 @@ void QAbstractItemViewPrivate::updateEditorData(const QModelIndex &tl, const QMo
     // we are counting on having relatively few editors
     const bool checkIndexes = tl.isValid() && br.isValid();
     const QModelIndex parent = tl.parent();
-    // QTBUG-25370: We need to copy the indexEditorHash, because while we're
+    // BOBUIBUG-25370: We need to copy the indexEditorHash, because while we're
     // iterating over it, we are calling methods which can allow user code to
     // call a method on *this which can modify the member indexEditorHash.
     const QIndexEditorHash indexEditorHashCopy = indexEditorHash;
@@ -4624,7 +4624,7 @@ void QAbstractItemViewPrivate::updateEditorData(const QModelIndex &tl, const QMo
 */
 void QAbstractItemViewPrivate::clearOrRemove()
 {
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     const QItemSelection selection = selectionModel->selection();
     QList<QItemSelectionRange>::const_iterator it = selection.constBegin();
 
@@ -4803,7 +4803,7 @@ QPixmap QAbstractItemViewPrivate::renderToPixmap(const QModelIndexList &indexes,
     QPixmap pixmap(r->size() * scale);
     pixmap.setDevicePixelRatio(scale);
 
-    pixmap.fill(Qt::transparent);
+    pixmap.fill(BobUI::transparent);
     QPainter painter(&pixmap);
     painter.setLayoutDirection(q->layoutDirection());
     QStyleOptionViewItem option;
@@ -4834,7 +4834,7 @@ void QAbstractItemViewPrivate::selectAll(QItemSelectionModel::SelectionFlags com
     selectionModel->select(selection, command);
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QModelIndexList QAbstractItemViewPrivate::selectedDraggableIndexes() const
 {
     Q_Q(const QAbstractItemView);
@@ -4880,6 +4880,6 @@ bool QAbstractItemView::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qabstractitemview.cpp"

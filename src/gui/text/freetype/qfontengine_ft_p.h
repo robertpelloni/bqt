@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #ifndef QFONTENGINE_FT_P_H
 #define QFONTENGINE_FT_P_H
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -15,7 +15,7 @@
 
 #include "private/qfontengine_p.h"
 
-#ifndef QT_NO_FREETYPE
+#ifndef BOBUI_NO_FREETYPE
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -36,7 +36,7 @@
 
 #include <utility> // for std::pair
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QFontEngineFTRawFont;
 class QFontconfigDatabase;
@@ -100,7 +100,7 @@ public:
 
 private:
     friend class QFontEngineFT;
-    friend class QtFreetypeData;
+    friend class BobUIFreetypeData;
     QFreetypeFace() = default;
     ~QFreetypeFace() {}
     void cleanup();
@@ -196,33 +196,33 @@ private:
 
     void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics) override;
 
-    bool supportsTransformation(const QTransform &transform) const override;
+    bool supportsTransformation(const BOBUIransform &transform) const override;
 
     void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-                 QPainterPath *path, QTextItem::RenderFlags flags) override;
+                 QPainterPath *path, BOBUIextItem::RenderFlags flags) override;
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs,
-                  QPainterPath *path, QTextItem::RenderFlags flags) override;
+                  QPainterPath *path, BOBUIextItem::RenderFlags flags) override;
 
     int stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, ShaperFlags flags) const override;
 
     glyph_metrics_t boundingBox(const QGlyphLayout &glyphs) override;
     glyph_metrics_t boundingBox(glyph_t glyph) override;
-    glyph_metrics_t boundingBox(glyph_t glyph, const QTransform &matrix) override;
+    glyph_metrics_t boundingBox(glyph_t glyph, const BOBUIransform &matrix) override;
 
     void recalcAdvances(QGlyphLayout *glyphs, ShaperFlags flags) const override;
     QImage alphaMapForGlyph(glyph_t g) override { return alphaMapForGlyph(g, QFixedPoint()); }
     QImage alphaMapForGlyph(glyph_t, const QFixedPoint &) override;
-    QImage alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &t) override;
-    QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t) override;
-    QImage bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const QTransform &t, const QColor &color) override;
+    QImage alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &t) override;
+    QImage alphaRGBMapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t) override;
+    QImage bitmapForGlyph(glyph_t, const QFixedPoint &subPixelPosition, const BOBUIransform &t, const QColor &color) override;
     glyph_metrics_t alphaMapBoundingBox(glyph_t glyph,
                                         const QFixedPoint &subPixelPosition,
-                                        const QTransform &matrix,
+                                        const BOBUIransform &matrix,
                                         QFontEngine::GlyphFormat format) override;
     Glyph *glyphData(glyph_t glyph,
                      const QFixedPoint &subPixelPosition,
                      GlyphFormat neededFormat,
-                     const QTransform &t) override;
+                     const BOBUIransform &t) override;
     bool hasInternalCaching() const override { return cacheEnabled; }
     bool expectsGammaCorrectedBlending() const override;
 
@@ -271,12 +271,12 @@ private:
     Glyph *loadGlyphFor(glyph_t g,
                         const QFixedPoint &subPixelPosition,
                         GlyphFormat format,
-                        const QTransform &t,
+                        const BOBUIransform &t,
                         QColor color,
                         bool fetchBoundingBox = false,
                         bool disableOutlineDrawing = false);
 
-    QGlyphSet *loadGlyphSet(const QTransform &matrix);
+    QGlyphSet *loadGlyphSet(const BOBUIransform &matrix);
 
     QFontEngineFT(const QFontDef &fd);
     virtual ~QFontEngineFT();
@@ -288,11 +288,11 @@ private:
 
     int getPointInOutline(glyph_t glyph, int flags, quint32 point, QFixed *xpos, QFixed *ypos, quint32 *nPoints) override;
 
-    void setQtDefaultHintStyle(QFont::HintingPreference hintingPreference);
+    void setBobUIDefaultHintStyle(QFont::HintingPreference hintingPreference);
     void setDefaultHintStyle(HintStyle style) override;
 
     QFontEngine *cloneWithSize(qreal pixelSize) const override;
-    Qt::HANDLE handle() const override;
+    BobUI::HANDLE handle() const override;
     bool initFromFontEngine(const QFontEngineFT *fontEngine);
 
     HintStyle defaultHintStyle() const { return default_hint_style; }
@@ -325,7 +325,7 @@ private:
     int loadFlags(QGlyphSet *set, GlyphFormat format, int flags, bool &hsubpixel, int &vfactor) const;
     bool shouldUseDesignMetrics(ShaperFlags flags) const;
     QFixed scaledBitmapMetrics(QFixed m) const;
-    glyph_metrics_t scaledBitmapMetrics(const glyph_metrics_t &m, const QTransform &matrix) const;
+    glyph_metrics_t scaledBitmapMetrics(const glyph_metrics_t &m, const BOBUIransform &matrix) const;
 
 #if defined(QFONTENGINE_FT_SUPPORT_COLRV1)
     Glyph *loadColrv1Glyph(QGlyphSet *set,
@@ -351,7 +351,7 @@ private:
         enum { nSets = 10 };
         QGlyphSet *sets[nSets];
 
-        QGlyphSet *findSet(const QTransform &matrix, const QFontDef &fontDef);
+        QGlyphSet *findSet(const BOBUIransform &matrix, const QFontDef &fontDef);
         TransformedGlyphSets() { std::fill(&sets[0], &sets[nSets], nullptr); }
         ~TransformedGlyphSets() { qDeleteAll(&sets[0], &sets[nSets]); }
     private:
@@ -391,10 +391,10 @@ inline QFontEngineFT::Glyph *QFontEngineFT::QGlyphSet::getGlyph(glyph_t index,
     return glyph_data.value(GlyphAndSubPixelPosition(index, subPixelPosition));
 }
 
-Q_GUI_EXPORT FT_Library qt_getFreetype();
+Q_GUI_EXPORT FT_Library bobui_getFreetype();
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#endif // QT_NO_FREETYPE
+#endif // BOBUI_NO_FREETYPE
 
 #endif // QFONTENGINE_FT_P_H

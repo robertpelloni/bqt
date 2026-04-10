@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
     \example drilldown
@@ -11,7 +11,7 @@
     well as submit changes, using the QSqlRelationalTableModel and
     QDataWidgetMapper classes.
 
-    \image drilldown-example.png {The main window displays user-selectable images of the Qt, Qt Quick, Qt Creator and Qt Project products}
+    \image drilldown-example.png {The main window displays user-selectable images of the BobUI, BobUI Quick, BobUI Creator and BobUI Project products}
 
     When running the example application, a user can retrieve
     information about each item by clicking the corresponding image.
@@ -75,7 +75,7 @@
 
     The information window uses the QLabel class to display the name of
     an item. The associated image file is displayed using a QComboBox
-    instance while the description is displayed using QTextEdit. In
+    instance while the description is displayed using BOBUIextEdit. In
     addition, the window has three buttons to control the data flow and
     whether the window is shown or not.
 
@@ -152,7 +152,7 @@
     editors to our custom \c enableButtons slot, enabling the users
     to either submit or revert their changes.
     We need to use lambdas for connecting the \c enableButtons slot
-    because its signature does not match \c QTextEdit::textChanged
+    because its signature does not match \c BOBUIextEdit::textChanged
     and \c QComboBox::currentIndexChanged.
 
     We add all the widgets into a layout, store the item ID and the
@@ -160,7 +160,7 @@
     the window title and initial size.
 
 
-    Note that we also set the Qt::Window window flag to indicate that
+    Note that we also set the BobUI::Window window flag to indicate that
     our widget is in fact a window, with a window system frame and a
     title bar.
 
@@ -418,7 +418,7 @@
     that can be called to ensure that the image item is given the
     preferred size regardless of the original image file.
 
-    The animation is implemented using the QTimeLine class together
+    The animation is implemented using the BOBUIimeLine class together
     with the event handlers and the private \c setFrame() slot: The
     image item will expand when the mouse cursor hovers over it,
     returning back to its original size when the cursor leaves its
@@ -449,16 +449,16 @@
     of the \l {Graphics View Framework}'s items accept hover
     event's by default.
 
-    The QTimeLine class provides a timeline for controlling
-    animations. Its \l {QTimeLine::}{duration} property holds the
+    The BOBUIimeLine class provides a timeline for controlling
+    animations. Its \l {BOBUIimeLine::}{duration} property holds the
     total duration of the timeline in milliseconds. By default, the
     time line runs once from the beginning and towards the end. The
-    QTimeLine::setFrameRange() function sets the timeline's frame
+    BOBUIimeLine::setFrameRange() function sets the timeline's frame
     counter; when the timeline is running, the \l
-    {QTimeLine::}{frameChanged()} signal is emitted each time the
+    {BOBUIimeLine::}{frameChanged()} signal is emitted each time the
     frame changes. We set the duration and frame range for our
     animation, and connect the time line's \l
-    {QTimeLine::}{frameChanged()} and \l {QTimeLine::}{finished()}
+    {BOBUIimeLine::}{frameChanged()} and \l {BOBUIimeLine::}{finished()}
     signals to our private \c setFrame() and \c updateItemPosition()
     slots.
 
@@ -481,7 +481,7 @@
     \e leave events, on the other hand, we postpone the actual update
     to achieve the same result. But remember that when we constructed
     our item, we connected the time line's \l
-    {QTimeLine::}{finished()} signal to the \c updateItemPosition()
+    {BOBUIimeLine::}{finished()} signal to the \c updateItemPosition()
     slot. In this way the item is given the correct position in the
     item stack once the animation is completed. Finally, if the time
     line is not already running, we start it.

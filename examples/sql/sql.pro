@@ -1,4 +1,4 @@
-requires(qtHaveModule(widgets))
+requires(bobuiHaveModule(widgets))
 
 TEMPLATE      = subdirs
 
@@ -10,10 +10,10 @@ SUBDIRS             =   books \
                         sqlwidgetmapper \
                         tablemodel
 
-qtHaveModule(xml): SUBDIRS += masterdetail
+bobuiHaveModule(xml): SUBDIRS += masterdetail
 
 !cross_compile:{
-    contains(QT_BUILD_PARTS, tools):{
+    contains(BOBUI_BUILD_PARTS, tools):{
         SUBDIRS += sqlbrowser
     }
 }

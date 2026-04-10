@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef WIZARDPANEL_H
 #define WIZARDPANEL_H
@@ -8,9 +8,9 @@
 
 class WizardStyleControl;
 class WizardOptionsControl;
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QWizard;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class WizardPanel : public QWidget
 {
@@ -20,7 +20,7 @@ public:
 
 public slots:
     void execModal();
-    void showModal(Qt::WindowModality modality);
+    void showModal(BobUI::WindowModality modality);
     void showNonModal();
     void showEmbedded();
 

@@ -1,11 +1,11 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## embeddedintoforeignwindow Binary:
 #####################################################################
 
-qt_internal_add_manual_test(embeddedintoforeignwindow
+bobui_internal_add_manual_test(embeddedintoforeignwindow
     SOURCES
         ../diaglib/eventfilter.cpp ../diaglib/eventfilter.h
         ../diaglib/nativewindowdump.h
@@ -14,45 +14,45 @@ qt_internal_add_manual_test(embeddedintoforeignwindow
         itemwindow.cpp itemwindow.h
         main.cpp
     NO_PCH_SOURCES
-        itemwindow.cpp # undef QT_NO_FOREACH
+        itemwindow.cpp # undef BOBUI_NO_FOREACH
     DEFINES
-        QT_DIAG_LIB
+        BOBUI_DIAG_LIB
     INCLUDE_DIRECTORIES
         ../diaglib
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )
 
 ## Scopes:
 #####################################################################
 
-qt_internal_extend_target(embeddedintoforeignwindow CONDITION WIN32
+bobui_internal_extend_target(embeddedintoforeignwindow CONDITION WIN32
     SOURCES
         ../diaglib/nativewindowdump_win.cpp
     LIBRARIES
         user32
 )
 
-qt_internal_extend_target(embeddedintoforeignwindow CONDITION UNIX
+bobui_internal_extend_target(embeddedintoforeignwindow CONDITION UNIX
     SOURCES
         ../diaglib/nativewindowdump.cpp
 )
 
-qt_internal_extend_target(embeddedintoforeignwindow CONDITION QT_FEATURE_widgets
+bobui_internal_extend_target(embeddedintoforeignwindow CONDITION BOBUI_FEATURE_widgets
     SOURCES
         ../diaglib/debugproxystyle.cpp ../diaglib/debugproxystyle.h
         ../diaglib/logwidget.cpp ../diaglib/logwidget.h
         ../diaglib/qwidgetdump.cpp ../diaglib/qwidgetdump.h
     LIBRARIES
-        Qt::WidgetsPrivate
+        BobUI::WidgetsPrivate
 )
 
-qt_internal_extend_target(embeddedintoforeignwindow CONDITION QT_FEATURE_opengl
+bobui_internal_extend_target(embeddedintoforeignwindow CONDITION BOBUI_FEATURE_opengl
     SOURCES
         ../diaglib/glinfo.cpp ../diaglib/glinfo.h
     LIBRARIES
-        Qt::OpenGL
-        Qt::OpenGLWidgets
+        BobUI::OpenGL
+        BobUI::OpenGLWidgets
 )

@@ -1,22 +1,22 @@
 // Copyright (C) 2014 John Layt <jlayt@kde.org>
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpagesize.h"
 
-#include <QtCore/qcoreapplication.h>
-#include <QtCore/qdebug.h>
-#include <QtCore/qpoint.h>
-#include <QtCore/qrect.h>
-#include <QtCore/qsize.h>
-#include <QtCore/qstring.h>
+#include <BobUICore/qcoreapplication.h>
+#include <BobUICore/qdebug.h>
+#include <BobUICore/qpoint.h>
+#include <BobUICore/qrect.h>
+#include <BobUICore/qsize.h>
+#include <BobUICore/qstring.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
-QT_IMPL_METATYPE_EXTERN(QPageSize)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPageSize::PageSizeId, QPageSize__PageSizeId)
-QT_IMPL_METATYPE_EXTERN_TAGGED(QPageSize::Unit, QPageSize__Unit)
+BOBUI_IMPL_METATYPE_EXTERN(QPageSize)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPageSize::PageSizeId, QPageSize__PageSizeId)
+BOBUI_IMPL_METATYPE_EXTERN_TAGGED(QPageSize::Unit, QPageSize__Unit)
 
 // Define the Windows DMPAPER sizes for use in the look-up table
 // See http://msdn.microsoft.com/en-us/library/windows/desktop/dd319099.aspx
@@ -153,7 +153,7 @@ enum WindowsDmPaper {
 // _ROTATED = 90 degrees or QPageLayout::Landscape
 // _TRANSVERSE = 180 degrees or QPageLayout::ReversePortrait
 
-static const int qt_windowsConversion[][2] = {
+static const int bobui_windowsConversion[][2] = {
     {DMPAPER_11X17,                         DMPAPER_TABLOID},  // = DMPAPER_LEDGER rotated
     {DMPAPER_A3_EXTRA_TRANSVERSE,           DMPAPER_A3_EXTRA},
     {DMPAPER_A3_ROTATED,                    DMPAPER_A3},
@@ -210,12 +210,12 @@ struct StandardPageSize {
 // See http://partners.adobe.com/public/developer/en/ps/5003.PPD_Spec_v4.3.pdf
 // Excludes all Transverse and Rotated sizes
 // NB! This table needs to be in sync with QPageSize::PageSizeId
-static const StandardPageSize qt_pageSizes[] = {
+static const StandardPageSize bobui_pageSizes[] = {
 
-    // Old Qt sizes including ISO, US, ANSI and other standards
+    // Old BobUI sizes including ISO, US, ANSI and other standards
     {QPageSize::Letter            ,   DMPAPER_LETTER               ,   QPageSize::Inch      ,    612,  792,      215.9,  279.4,       8.5 ,  11   ,    "Letter"},
     {QPageSize::Legal             ,   DMPAPER_LEGAL                ,   QPageSize::Inch      ,    612, 1008,      215.9,  355.6,       8.5 ,  14   ,    "Legal"},
-    {QPageSize::Executive         ,   DMPAPER_NONE                 ,   QPageSize::Inch      ,    540,  720,      190.5,  254  ,       7.5 ,  10   ,    "Executive.7.5x10in"}, // Qt size differs from Postscript / Windows
+    {QPageSize::Executive         ,   DMPAPER_NONE                 ,   QPageSize::Inch      ,    540,  720,      190.5,  254  ,       7.5 ,  10   ,    "Executive.7.5x10in"}, // BobUI size differs from Postscript / Windows
     {QPageSize::A0                ,   DMPAPER_NONE                 ,   QPageSize::Millimeter,   2384, 3370,      841  , 1189  ,      33.11,  46.81,    "A0"},
     {QPageSize::A1                ,   DMPAPER_NONE                 ,   QPageSize::Millimeter,   1684, 2384,      594  ,  841  ,      23.39,  33.11,    "A1"},
     {QPageSize::A2                ,   DMPAPER_A2                   ,   QPageSize::Millimeter,   1191, 1684,      420  ,  594  ,      16.54,  23.39,    "A2"},
@@ -296,7 +296,7 @@ static const StandardPageSize qt_pageSizes[] = {
     {QPageSize::Imperial15x11     ,   DMPAPER_15X11                ,   QPageSize::Inch      ,   1080,  792,      381  ,  279.4,      15   ,  11   ,    "15x11"},
 
     // Other Page Sizes
-    {QPageSize::ExecutiveStandard ,   DMPAPER_EXECUTIVE            ,   QPageSize::Inch      ,    522,  756,      184.2,  266.7,       7.25,  10.5 ,    "Executive"},   // Qt size differs from Postscript / Windows
+    {QPageSize::ExecutiveStandard ,   DMPAPER_EXECUTIVE            ,   QPageSize::Inch      ,    522,  756,      184.2,  266.7,       7.25,  10.5 ,    "Executive"},   // BobUI size differs from Postscript / Windows
     {QPageSize::Note              ,   DMPAPER_NOTE                 ,   QPageSize::Inch      ,    612,  792,      215.9,  279.4,       8.5 ,  11   ,    "Note"},
     {QPageSize::Quarto            ,   DMPAPER_QUARTO               ,   QPageSize::Inch      ,    610,  780,      215.9,  275.1,       8.5 ,  10.83,    "Quarto"},
     {QPageSize::Statement         ,   DMPAPER_STATEMENT            ,   QPageSize::Inch      ,    396,  612,      139.7,  215.9,       5.5 ,   8.5 ,    "Statement"},
@@ -354,18 +354,18 @@ static const StandardPageSize qt_pageSizes[] = {
     {QPageSize::EnvelopeYou4      ,   DMPAPER_JENV_YOU4            ,   QPageSize::Millimeter,    298,  666,      105  ,  235  ,       4.13,   9.25,    "EnvYou4"}
 };
 
-static const int pageSizesCount = int(sizeof(qt_pageSizes) / sizeof(qt_pageSizes[0]));
+static const int pageSizesCount = int(sizeof(bobui_pageSizes) / sizeof(bobui_pageSizes[0]));
 static_assert(pageSizesCount == QPageSize::LastPageSize + 1);
 static_assert(QPageSize::LastPageSize < 256);
 
 // Return key name for PageSize
-static QString qt_keyForPageSizeId(QPageSize::PageSizeId id)
+static QString bobui_keyForPageSizeId(QPageSize::PageSizeId id)
 {
-    return QString::fromLatin1(qt_pageSizes[id].mediaOption);
+    return QString::fromLatin1(bobui_pageSizes[id].mediaOption);
 }
 
 // Return id name for PPD Key
-static QPageSize::PageSizeId qt_idForPpdKey(const QString &ppdKey, QSize *match = nullptr)
+static QPageSize::PageSizeId bobui_idForPpdKey(const QString &ppdKey, QSize *match = nullptr)
 {
     if (ppdKey.isEmpty())
         return QPageSize::Custom;
@@ -376,23 +376,23 @@ static QPageSize::PageSizeId qt_idForPpdKey(const QString &ppdKey, QSize *match 
     else if (key.endsWith(".Transverse"_L1))
         key.chop(11);
     for (int i = 0; i <= int(QPageSize::LastPageSize); ++i) {
-        if (QLatin1StringView(qt_pageSizes[i].mediaOption) == key) {
+        if (QLatin1StringView(bobui_pageSizes[i].mediaOption) == key) {
             if (match)
-                *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-            return qt_pageSizes[i].id;
+                *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+            return bobui_pageSizes[i].id;
         }
     }
     return QPageSize::Custom;
 }
 
 // Return id name for Windows ID
-static QPageSize::PageSizeId qt_idForWindowsID(int windowsId, QSize *match = nullptr)
+static QPageSize::PageSizeId bobui_idForWindowsID(int windowsId, QSize *match = nullptr)
 {
     // If outside known values then is Custom
     if (windowsId <= DMPAPER_NONE || windowsId > DMPAPER_LAST)
         return QPageSize::Custom;
     // Check if one of the unsupported values, convert to valid value if is
-    for (const auto &it : qt_windowsConversion) {
+    for (const auto &it : bobui_windowsConversion) {
         if (it[0] == windowsId) {
             windowsId = it[1];
             break;
@@ -400,10 +400,10 @@ static QPageSize::PageSizeId qt_idForWindowsID(int windowsId, QSize *match = nul
     }
     // Look for the value in our supported size table
     for (int i = 0; i <= int(QPageSize::LastPageSize); ++i) {
-        if (qt_pageSizes[i].windowsId == windowsId) {
+        if (bobui_pageSizes[i].windowsId == windowsId) {
             if (match)
-                *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-            return qt_pageSizes[i].id;
+                *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+            return bobui_pageSizes[i].id;
         }
     }
     // Otherwise is Custom
@@ -411,7 +411,7 @@ static QPageSize::PageSizeId qt_idForWindowsID(int windowsId, QSize *match = nul
 }
 
 // Return key name for custom size
-static QString qt_keyForCustomSize(const QSizeF &size, QPageSize::Unit units)
+static QString bobui_keyForCustomSize(const QSizeF &size, QPageSize::Unit units)
 {
     // PPD custom format
     QString key = QStringLiteral("Custom.%1x%2%3");
@@ -440,7 +440,7 @@ static QString qt_keyForCustomSize(const QSizeF &size, QPageSize::Unit units)
 }
 
 // Return localized name for custom size
-static QString qt_nameForCustomSize(const QSizeF &size, QPageSize::Unit units)
+static QString bobui_nameForCustomSize(const QSizeF &size, QPageSize::Unit units)
 {
     QString name;
     switch (units) {
@@ -474,7 +474,7 @@ static QString qt_nameForCustomSize(const QSizeF &size, QPageSize::Unit units)
 }
 
 // Multiplier for converting units to points.
-static qreal qt_pointMultiplier(QPageSize::Unit unit)
+static qreal bobui_pointMultiplier(QPageSize::Unit unit)
 {
     switch (unit) {
     case QPageSize::Millimeter:
@@ -494,21 +494,21 @@ static qreal qt_pointMultiplier(QPageSize::Unit unit)
 }
 
 // Multiplier for converting pixels to points.
-Q_GUI_EXPORT qreal qt_pixelMultiplier(int resolution)
+Q_GUI_EXPORT qreal bobui_pixelMultiplier(int resolution)
 {
     return resolution <= 0 ? 1.0 : 72.0 / resolution;
 }
 
-static QSizeF qt_definitionSize(QPageSize::PageSizeId pageSizeId)
+static QSizeF bobui_definitionSize(QPageSize::PageSizeId pageSizeId)
 {
-    QPageSize::Unit units = qt_pageSizes[pageSizeId].definitionUnits;
+    QPageSize::Unit units = bobui_pageSizes[pageSizeId].definitionUnits;
     if (units == QPageSize::Millimeter)
-        return QSizeF(qt_pageSizes[pageSizeId].widthMillimeters, qt_pageSizes[pageSizeId].heightMillimeters);
+        return QSizeF(bobui_pageSizes[pageSizeId].widthMillimeters, bobui_pageSizes[pageSizeId].heightMillimeters);
     Q_ASSERT(units == QPageSize::Inch);  // We currently only support definitions in mm or inches
-    return QSizeF(qt_pageSizes[pageSizeId].widthInches, qt_pageSizes[pageSizeId].heightInches);
+    return QSizeF(bobui_pageSizes[pageSizeId].widthInches, bobui_pageSizes[pageSizeId].heightInches);
 }
 
-static QSizeF qt_convertUnits(const QSizeF &size, QPageSize::Unit fromUnits, QPageSize::Unit toUnits)
+static QSizeF bobui_convertUnits(const QSizeF &size, QPageSize::Unit fromUnits, QPageSize::Unit toUnits)
 {
     if (!size.isValid())
         return QSizeF();
@@ -520,73 +520,73 @@ static QSizeF qt_convertUnits(const QSizeF &size, QPageSize::Unit fromUnits, QPa
     QSizeF newSize = size;
     // First convert to points
     if (fromUnits != QPageSize::Point) {
-        const qreal multiplier = qt_pointMultiplier(fromUnits);
+        const qreal multiplier = bobui_pointMultiplier(fromUnits);
         newSize = newSize * multiplier;
     }
     // Then convert from points to required units
-    const qreal multiplier = qt_pointMultiplier(toUnits);
+    const qreal multiplier = bobui_pointMultiplier(toUnits);
     // Try force to 2 decimal places for consistency
     const int width = qRound(newSize.width() * 100 / multiplier);
     const int height = qRound(newSize.height() * 100 / multiplier);
     return QSizeF(width / 100.0, height / 100.0);
 }
 
-static QSize qt_convertUnitsToPoints(const QSizeF &size, QPageSize::Unit units)
+static QSize bobui_convertUnitsToPoints(const QSizeF &size, QPageSize::Unit units)
 {
     if (!size.isValid())
         return QSize();
-    return QSizeF(size * qt_pointMultiplier(units)).toSize();
+    return QSizeF(size * bobui_pointMultiplier(units)).toSize();
 }
 
-static QSize qt_convertPointsToPixels(const QSize &size, int resolution)
+static QSize bobui_convertPointsToPixels(const QSize &size, int resolution)
 {
     if (!size.isValid() || resolution <= 0)
         return QSize();
-    const qreal multiplier = qt_pixelMultiplier(resolution);
+    const qreal multiplier = bobui_pixelMultiplier(resolution);
     return QSize(qFloor(size.width() / multiplier), qFloor(size.height() / multiplier));
 }
 
-static QSizeF qt_convertPointsToUnits(const QSize &size, QPageSize::Unit units)
+static QSizeF bobui_convertPointsToUnits(const QSize &size, QPageSize::Unit units)
 {
     if (!size.isValid())
         return QSizeF();
-    const qreal multiplier = qt_pointMultiplier(units);
+    const qreal multiplier = bobui_pointMultiplier(units);
     // Try force to 2 decimal places for consistency
     const int width = qRound(size.width() * 100 / multiplier);
     const int height = qRound(size.height() * 100 / multiplier);
     return QSizeF(width / 100.0, height / 100.0);
 }
 
-static QSizeF qt_unitSize(QPageSize::PageSizeId pageSizeId, QPageSize::Unit units)
+static QSizeF bobui_unitSize(QPageSize::PageSizeId pageSizeId, QPageSize::Unit units)
 {
     switch (units) {
     case QPageSize::Millimeter:
-        return QSizeF(qt_pageSizes[pageSizeId].widthMillimeters, qt_pageSizes[pageSizeId].heightMillimeters);
+        return QSizeF(bobui_pageSizes[pageSizeId].widthMillimeters, bobui_pageSizes[pageSizeId].heightMillimeters);
     case QPageSize::Point:
-        return QSizeF(qt_pageSizes[pageSizeId].widthPoints, qt_pageSizes[pageSizeId].heightPoints);
+        return QSizeF(bobui_pageSizes[pageSizeId].widthPoints, bobui_pageSizes[pageSizeId].heightPoints);
     case QPageSize::Inch:
-        return QSizeF(qt_pageSizes[pageSizeId].widthInches, qt_pageSizes[pageSizeId].heightInches);
+        return QSizeF(bobui_pageSizes[pageSizeId].widthInches, bobui_pageSizes[pageSizeId].heightInches);
     case QPageSize::Pica:
     case QPageSize::Didot:
     case QPageSize::Cicero:
-        return qt_convertPointsToUnits(QSize(qt_pageSizes[pageSizeId].widthPoints,
-                                             qt_pageSizes[pageSizeId].heightPoints), units);
+        return bobui_convertPointsToUnits(QSize(bobui_pageSizes[pageSizeId].widthPoints,
+                                             bobui_pageSizes[pageSizeId].heightPoints), units);
     }
     return QSizeF();
 }
 
 // Find matching standard page size for point size
-static QPageSize::PageSizeId qt_idForPointSize(const QSize &size, QPageSize::SizeMatchPolicy matchPolicy, QSize *match)
+static QPageSize::PageSizeId bobui_idForPointSize(const QSize &size, QPageSize::SizeMatchPolicy matchPolicy, QSize *match)
 {
     if (!size.isValid())
         return QPageSize::Custom;
 
     // Try exact match in portrait layout
     for (int i = 0; i <= int(QPageSize::LastPageSize); ++i) {
-        if (size.width() == qt_pageSizes[i].widthPoints && size.height() == qt_pageSizes[i].heightPoints) {
+        if (size.width() == bobui_pageSizes[i].widthPoints && size.height() == bobui_pageSizes[i].heightPoints) {
             if (match)
-                *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-            return qt_pageSizes[i].id;
+                *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+            return bobui_pageSizes[i].id;
         }
     }
 
@@ -602,12 +602,12 @@ static QPageSize::PageSizeId qt_idForPointSize(const QSize &size, QPageSize::Siz
 
         // First try fuzzy match in portrait layout
         for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-            const int width = qt_pageSizes[i].widthPoints;
-            const int height = qt_pageSizes[i].heightPoints;
+            const int width = bobui_pageSizes[i].widthPoints;
+            const int height = bobui_pageSizes[i].heightPoints;
             if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight) {
                 if (match)
-                    *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                return qt_pageSizes[i].id;
+                    *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                return bobui_pageSizes[i].id;
             }
         }
 
@@ -615,21 +615,21 @@ static QPageSize::PageSizeId qt_idForPointSize(const QSize &size, QPageSize::Siz
         if (matchPolicy == QPageSize::FuzzyOrientationMatch) {
             // First try exact match in landscape layout
             for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-                if (size.width() == qt_pageSizes[i].heightPoints && size.height() == qt_pageSizes[i].widthPoints) {
+                if (size.width() == bobui_pageSizes[i].heightPoints && size.height() == bobui_pageSizes[i].widthPoints) {
                     if (match)
-                        *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                    return qt_pageSizes[i].id;
+                        *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                    return bobui_pageSizes[i].id;
                 }
             }
 
             // Then try fuzzy match in landscape layout
             for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-                const int width = qt_pageSizes[i].heightPoints;
-                const int height = qt_pageSizes[i].widthPoints;
+                const int width = bobui_pageSizes[i].heightPoints;
+                const int height = bobui_pageSizes[i].widthPoints;
                 if (width >= minWidth && width <= maxWidth && height >= minHeight && height <= maxHeight) {
                     if (match)
-                        *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                    return qt_pageSizes[i].id;
+                        *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                    return bobui_pageSizes[i].id;
                 }
             }
         }
@@ -642,7 +642,7 @@ static QPageSize::PageSizeId qt_idForPointSize(const QSize &size, QPageSize::Siz
 }
 
 // Find matching standard page size for point size
-static QPageSize::PageSizeId qt_idForSize(const QSizeF &size, QPageSize::Unit units,
+static QPageSize::PageSizeId bobui_idForSize(const QSizeF &size, QPageSize::Unit units,
                                           QPageSize::SizeMatchPolicy matchPolicy, QSize *match)
 {
     if (!size.isValid())
@@ -651,33 +651,33 @@ static QPageSize::PageSizeId qt_idForSize(const QSizeF &size, QPageSize::Unit un
     // Try exact match if units are the same
     if (units == QPageSize::Millimeter) {
         for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-            if (size.width() == qt_pageSizes[i].widthMillimeters && size.height() == qt_pageSizes[i].heightMillimeters) {
+            if (size.width() == bobui_pageSizes[i].widthMillimeters && size.height() == bobui_pageSizes[i].heightMillimeters) {
                 if (match)
-                    *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                return qt_pageSizes[i].id;
+                    *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                return bobui_pageSizes[i].id;
             }
         }
     } else if (units == QPageSize::Inch) {
         for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-            if (size.width() == qt_pageSizes[i].widthInches && size.height() == qt_pageSizes[i].heightInches) {
+            if (size.width() == bobui_pageSizes[i].widthInches && size.height() == bobui_pageSizes[i].heightInches) {
                 if (match)
-                    *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                return qt_pageSizes[i].id;
+                    *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                return bobui_pageSizes[i].id;
             }
         }
     } else if (units == QPageSize::Point) {
         for (int i = 0; i <= QPageSize::LastPageSize; ++i) {
-            if (size.width() == qt_pageSizes[i].widthPoints && size.height() == qt_pageSizes[i].heightPoints) {
+            if (size.width() == bobui_pageSizes[i].widthPoints && size.height() == bobui_pageSizes[i].heightPoints) {
                 if (match)
-                    *match = QSize(qt_pageSizes[i].widthPoints, qt_pageSizes[i].heightPoints);
-                return qt_pageSizes[i].id;
+                    *match = QSize(bobui_pageSizes[i].widthPoints, bobui_pageSizes[i].heightPoints);
+                return bobui_pageSizes[i].id;
             }
         }
     }
 
     // If no exact match then convert to points and try match those
-    QSize points = qt_convertUnitsToPoints(size, units);
-    return qt_idForPointSize(points, matchPolicy, match);
+    QSize points = bobui_convertUnitsToPoints(size, units);
+    return bobui_idForPointSize(points, matchPolicy, match);
 }
 
 class QPageSizePrivate : public QSharedData
@@ -741,7 +741,7 @@ QPageSizePrivate::QPageSizePrivate(const QSize &pointSize, const QString &name, 
       m_units(QPageSize::Point)
 {
     if (pointSize.isValid()) {
-        QPageSize::PageSizeId id = qt_idForPointSize(pointSize, matchPolicy, nullptr);
+        QPageSize::PageSizeId id = bobui_idForPointSize(pointSize, matchPolicy, nullptr);
         id == QPageSize::Custom ? init(pointSize, name) : init(id, name);
     }
 }
@@ -753,7 +753,7 @@ QPageSizePrivate::QPageSizePrivate(const QSizeF &size, QPageSize::Unit units,
       m_units(QPageSize::Point)
 {
     if (size.isValid()) {
-        QPageSize::PageSizeId id = qt_idForSize(size, units, matchPolicy, nullptr);
+        QPageSize::PageSizeId id = bobui_idForSize(size, units, matchPolicy, nullptr);
         id == QPageSize::Custom ? init(size, units, name) : init(id, name);
     }
 }
@@ -764,10 +764,10 @@ QPageSizePrivate::QPageSizePrivate(const QString &key, const QSize &pointSize, c
       m_units(QPageSize::Point)
 {
     if (!key.isEmpty() && pointSize.isValid()) {
-        QPageSize::PageSizeId id = qt_idForPpdKey(key, nullptr);
+        QPageSize::PageSizeId id = bobui_idForPpdKey(key, nullptr);
         // If not a known PPD key, check if size is a standard PPD size
         if (id == QPageSize::Custom)
-            id = qt_idForPointSize(pointSize, QPageSize::FuzzyMatch, nullptr);
+            id = bobui_idForPointSize(pointSize, QPageSize::FuzzyMatch, nullptr);
         id == QPageSize::Custom ? init(pointSize, name) : init(id, name);
         m_key = key;
     }
@@ -779,10 +779,10 @@ QPageSizePrivate::QPageSizePrivate(int windowsId, const QSize &pointSize, const 
       m_units(QPageSize::Point)
 {
     if (windowsId > 0 && pointSize.isValid()) {
-        QPageSize::PageSizeId id = qt_idForWindowsID(windowsId, nullptr);
+        QPageSize::PageSizeId id = bobui_idForWindowsID(windowsId, nullptr);
         // If not a known Windows ID, check if size is a standard PPD size
         if (id == QPageSize::Custom)
-            id = qt_idForPointSize(pointSize, QPageSize::FuzzyMatch, nullptr);
+            id = bobui_idForPointSize(pointSize, QPageSize::FuzzyMatch, nullptr);
         id == QPageSize::Custom ? init(pointSize, name) : init(id, name);
         m_windowsId = windowsId;
     }
@@ -796,12 +796,12 @@ QPageSizePrivate::~QPageSizePrivate()
 void QPageSizePrivate::init(QPageSize::PageSizeId id, const QString &name)
 {
     m_id = id;
-    m_size = qt_definitionSize(id);
-    m_units = qt_pageSizes[id].definitionUnits;
-    m_key = qt_keyForPageSizeId(id);
+    m_size = bobui_definitionSize(id);
+    m_units = bobui_pageSizes[id].definitionUnits;
+    m_key = bobui_keyForPageSizeId(id);
     m_name = name.isEmpty() ? QPageSize::name(id) : name;
-    m_windowsId = qt_pageSizes[id].windowsId;
-    m_pointSize = QSize(qt_pageSizes[id].widthPoints, qt_pageSizes[id].heightPoints);
+    m_windowsId = bobui_pageSizes[id].windowsId;
+    m_pointSize = QSize(bobui_pageSizes[id].widthPoints, bobui_pageSizes[id].heightPoints);
 }
 
 // Init a point size
@@ -810,8 +810,8 @@ void QPageSizePrivate::init(const QSize &size, const QString &name)
     m_id = QPageSize::Custom;
     m_size = size;
     m_units = QPageSize::Point;
-    m_key = qt_keyForCustomSize(m_size, m_units);
-    m_name = name.isEmpty() ? qt_nameForCustomSize(m_size, m_units) : name;
+    m_key = bobui_keyForCustomSize(m_size, m_units);
+    m_name = name.isEmpty() ? bobui_nameForCustomSize(m_size, m_units) : name;
     m_windowsId = 0;
     m_pointSize = size;
 }
@@ -822,13 +822,13 @@ void QPageSizePrivate::init(const QSizeF &size, QPageSize::Unit units, const QSt
     m_id = QPageSize::Custom;
     m_size = size;
     m_units = units;
-    m_key = qt_keyForCustomSize(m_size, m_units);
+    m_key = bobui_keyForCustomSize(m_size, m_units);
     if (name.isEmpty())
-        m_name = qt_nameForCustomSize(m_size, m_units);
+        m_name = bobui_nameForCustomSize(m_size, m_units);
     else
         m_name = name;
     m_windowsId = 0;
-    m_pointSize = qt_convertUnitsToPoints(m_size, m_units);
+    m_pointSize = bobui_convertUnitsToPoints(m_size, m_units);
 }
 
 bool QPageSizePrivate::operator==(const QPageSizePrivate &other) const
@@ -861,21 +861,21 @@ QSizeF QPageSizePrivate::size(QPageSize::Unit units) const
 
     // If a custom size do a conversion
     if (m_id == QPageSize::Custom)
-        return qt_convertUnits(m_size, m_units, units);
+        return bobui_convertUnits(m_size, m_units, units);
 
     // Otherwise use the standard sizes
-    return qt_unitSize(m_id, units);
+    return bobui_unitSize(m_id, units);
 }
 
 QSize QPageSizePrivate::sizePixels(int resolution) const
 {
-    return qt_convertPointsToPixels(m_pointSize, resolution);
+    return bobui_convertPointsToPixels(m_pointSize, resolution);
 }
 
 
 /*!
     \class QPageSize
-    \inmodule QtGui
+    \inmodule BobUIGui
     \since 5.3
     \brief The QPageSize class describes the size and name of a defined page size.
 
@@ -1449,7 +1449,7 @@ QString QPageSize::key(PageSizeId pageSizeId)
 {
     if (unsigned(pageSizeId) > unsigned(LastPageSize))
         return QString();
-    return QString::fromUtf8(qt_pageSizes[pageSizeId].mediaOption);
+    return QString::fromUtf8(bobui_pageSizes[pageSizeId].mediaOption);
 }
 
 static QString msgImperialPageSizeInch(int width, int height)
@@ -1724,7 +1724,7 @@ QString QPageSize::name(PageSizeId pageSizeId)
 
 QPageSize::PageSizeId QPageSize::id(const QSize &pointSize, SizeMatchPolicy matchPolicy)
 {
-    return qt_idForPointSize(pointSize, matchPolicy, nullptr);
+    return bobui_idForPointSize(pointSize, matchPolicy, nullptr);
 }
 
 /*!
@@ -1740,7 +1740,7 @@ QPageSize::PageSizeId QPageSize::id(const QSize &pointSize, SizeMatchPolicy matc
 QPageSize::PageSizeId QPageSize::id(const QSizeF &size, Unit units,
                                     SizeMatchPolicy matchPolicy)
 {
-    return qt_idForSize(size, units, matchPolicy, nullptr);
+    return bobui_idForSize(size, units, matchPolicy, nullptr);
 }
 
 /*!
@@ -1751,7 +1751,7 @@ QPageSize::PageSizeId QPageSize::id(const QSizeF &size, Unit units,
 
 QPageSize::PageSizeId QPageSize::id(int windowsId)
 {
-    return qt_idForWindowsID(windowsId);
+    return bobui_idForWindowsID(windowsId);
 }
 
 /*!
@@ -1763,7 +1763,7 @@ QPageSize::PageSizeId QPageSize::id(int windowsId)
 
 int QPageSize::windowsId(PageSizeId pageSizeId)
 {
-    return qt_pageSizes[pageSizeId].windowsId;
+    return bobui_pageSizes[pageSizeId].windowsId;
 }
 
 /*!
@@ -1776,7 +1776,7 @@ QSizeF QPageSize::definitionSize(PageSizeId pageSizeId)
 {
     if (pageSizeId == Custom)
         return QSizeF();
-    return qt_definitionSize(pageSizeId);
+    return bobui_definitionSize(pageSizeId);
 }
 
 /*!
@@ -1789,7 +1789,7 @@ QPageSize::Unit QPageSize::definitionUnits(PageSizeId pageSizeId)
 {
     if (pageSizeId == Custom)
         return Unit(-1);
-    return qt_pageSizes[pageSizeId].definitionUnits;
+    return bobui_pageSizes[pageSizeId].definitionUnits;
 }
 
 /*!
@@ -1800,7 +1800,7 @@ QSizeF QPageSize::size(PageSizeId pageSizeId, Unit units)
 {
     if (pageSizeId == Custom)
         return QSizeF();
-    return qt_unitSize(pageSizeId, units);
+    return bobui_unitSize(pageSizeId, units);
 }
 
 /*!
@@ -1811,7 +1811,7 @@ QSize QPageSize::sizePoints(PageSizeId pageSizeId)
 {
     if (pageSizeId == Custom)
         return QSize();
-    return QSize(qt_pageSizes[pageSizeId].widthPoints, qt_pageSizes[pageSizeId].heightPoints);
+    return QSize(bobui_pageSizes[pageSizeId].widthPoints, bobui_pageSizes[pageSizeId].heightPoints);
 }
 
 /*!
@@ -1823,10 +1823,10 @@ QSize QPageSize::sizePixels(PageSizeId pageSizeId, int resolution)
 {
     if (pageSizeId == Custom)
         return QSize();
-    return qt_convertPointsToPixels(sizePoints(pageSizeId), resolution);
+    return bobui_convertPointsToPixels(sizePoints(pageSizeId), resolution);
 }
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPageSize &pageSize)
 {
     QDebugStateSaver saver(dbg);
@@ -1845,4 +1845,4 @@ QDebug operator<<(QDebug dbg, const QPageSize &pageSize)
 }
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

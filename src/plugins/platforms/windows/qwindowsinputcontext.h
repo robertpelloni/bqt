@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QWINDOWSINPUTCONTEXT_H
 #define QWINDOWSINPUTCONTEXT_H
 
-#include <QtCore/qt_windows.h>
+#include <BobUICore/bobui_windows.h>
 
-#include <QtCore/qlocale.h>
-#include <QtCore/qpointer.h>
+#include <BobUICore/qlocale.h>
+#include <BobUICore/qpointer.h>
 #include <qpa/qplatforminputcontext.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QInputMethodEvent;
 class QWindowsWindow;
@@ -38,7 +38,7 @@ public:
     QLocale locale() const override { return m_locale; }
 
     void reset() override;
-    void update(Qt::InputMethodQueries) override;
+    void update(BobUI::InputMethodQueries) override;
     void invokeAction(QInputMethod::Action, int cursorPosition) override;
     void setFocusObject(QObject *object) override;
 
@@ -77,6 +77,6 @@ private:
     QLocale m_locale;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QWINDOWSINPUTCONTEXT_H

@@ -1,6 +1,6 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QCOCOAVULKANINSTANCE_H
 #define QCOCOAVULKANINSTANCE_H
@@ -11,10 +11,10 @@
 // before this then we wouldn't get the MVK specifics...
 #include <MoltenVK/mvk_vulkan.h>
 
-#include <QtCore/QHash>
-#include <QtGui/private/qbasicvulkanplatforminstance_p.h>
+#include <BobUICore/QHash>
+#include <BobUIGui/private/qbasicvulkanplatforminstance_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QCocoaVulkanInstance : public QBasicPlatformVulkanInstance
 {
@@ -36,6 +36,6 @@ private:
     PFN_vkCreateMetalSurfaceEXT m_createMetalSurface = nullptr;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QXCBVULKANINSTANCE_H

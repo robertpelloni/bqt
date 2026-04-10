@@ -71,7 +71,7 @@
      <item>
       <spacer>
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -92,7 +92,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTreeWidget" name="pageList">
+      <widget class="BOBUIreeWidget" name="pageList">
        <property name="indentation">
         <number>0</number>
        </property>
@@ -153,14 +153,14 @@
         <bool>false</bool>
        </property>
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>BobUI::Orientation::Horizontal</enum>
        </property>
        <property name="standardButtons">
         <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>

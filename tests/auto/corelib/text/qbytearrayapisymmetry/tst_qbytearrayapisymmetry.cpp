@@ -1,7 +1,7 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QTest>
+#include <BOBUIest>
 
 #include <QByteArrayView>
 
@@ -216,23 +216,23 @@ static const auto aBc = QByteArrayLiteral("aBc");
 
 void tst_QByteArrayApiSymmetry::startsWith_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<QByteArray>("sw");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<QByteArray>("sw");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("01") << QByteArray() << QByteArray() << true;
-    QTest::newRow("02") << QByteArray() << QByteArray("") << true;
-    QTest::newRow("03") << QByteArray() << QByteArray("hallo") << false;
+    BOBUIest::newRow("01") << QByteArray() << QByteArray() << true;
+    BOBUIest::newRow("02") << QByteArray() << QByteArray("") << true;
+    BOBUIest::newRow("03") << QByteArray() << QByteArray("hallo") << false;
 
-    QTest::newRow("04") << QByteArray("") << QByteArray() << true;
-    QTest::newRow("05") << QByteArray("") << QByteArray("") << true;
-    QTest::newRow("06") << QByteArray("") << QByteArray("h") << false;
+    BOBUIest::newRow("04") << QByteArray("") << QByteArray() << true;
+    BOBUIest::newRow("05") << QByteArray("") << QByteArray("") << true;
+    BOBUIest::newRow("06") << QByteArray("") << QByteArray("h") << false;
 
-    QTest::newRow("07") << QByteArray("hallo") << QByteArray("h") << true;
-    QTest::newRow("08") << QByteArray("hallo") << QByteArray("hallo") << true;
-    QTest::newRow("09") << QByteArray("hallo") << QByteArray("") << true;
-    QTest::newRow("10") << QByteArray("hallo") << QByteArray("hallohallo") << false;
-    QTest::newRow("11") << QByteArray("hallo") << QByteArray() << true;
+    BOBUIest::newRow("07") << QByteArray("hallo") << QByteArray("h") << true;
+    BOBUIest::newRow("08") << QByteArray("hallo") << QByteArray("hallo") << true;
+    BOBUIest::newRow("09") << QByteArray("hallo") << QByteArray("") << true;
+    BOBUIest::newRow("10") << QByteArray("hallo") << QByteArray("hallohallo") << false;
+    BOBUIest::newRow("11") << QByteArray("hallo") << QByteArray() << true;
 }
 
 template<typename Haystack, typename Needle>
@@ -273,23 +273,23 @@ void tst_QByteArrayApiSymmetry::startsWithChar_impl()
 
 void tst_QByteArrayApiSymmetry::endsWith_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<QByteArray>("sw");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<QByteArray>("sw");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("01") << QByteArray() << QByteArray() << true;
-    QTest::newRow("02") << QByteArray() << QByteArray("") << true;
-    QTest::newRow("03") << QByteArray() << QByteArray("hallo") << false;
+    BOBUIest::newRow("01") << QByteArray() << QByteArray() << true;
+    BOBUIest::newRow("02") << QByteArray() << QByteArray("") << true;
+    BOBUIest::newRow("03") << QByteArray() << QByteArray("hallo") << false;
 
-    QTest::newRow("04") << QByteArray("") << QByteArray() << true;
-    QTest::newRow("05") << QByteArray("") << QByteArray("") << true;
-    QTest::newRow("06") << QByteArray("") << QByteArray("h") << false;
+    BOBUIest::newRow("04") << QByteArray("") << QByteArray() << true;
+    BOBUIest::newRow("05") << QByteArray("") << QByteArray("") << true;
+    BOBUIest::newRow("06") << QByteArray("") << QByteArray("h") << false;
 
-    QTest::newRow("07") << QByteArray("hallo") << QByteArray("o") << true;
-    QTest::newRow("08") << QByteArray("hallo") << QByteArray("hallo") << true;
-    QTest::newRow("09") << QByteArray("hallo") << QByteArray("") << true;
-    QTest::newRow("10") << QByteArray("hallo") << QByteArray("hallohallo") << false;
-    QTest::newRow("11") << QByteArray("hallo") << QByteArray() << true;
+    BOBUIest::newRow("07") << QByteArray("hallo") << QByteArray("o") << true;
+    BOBUIest::newRow("08") << QByteArray("hallo") << QByteArray("hallo") << true;
+    BOBUIest::newRow("09") << QByteArray("hallo") << QByteArray("") << true;
+    BOBUIest::newRow("10") << QByteArray("hallo") << QByteArray("hallohallo") << false;
+    BOBUIest::newRow("11") << QByteArray("hallo") << QByteArray() << true;
 }
 
 template<typename Haystack, typename Needle>
@@ -330,63 +330,63 @@ void tst_QByteArrayApiSymmetry::endsWithChar_impl()
 
 void tst_QByteArrayApiSymmetry::indexOf_data()
 {
-    QTest::addColumn<QByteArray>("ba1");
-    QTest::addColumn<QByteArray>("ba2");
-    QTest::addColumn<int>("startpos");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QByteArray>("ba1");
+    BOBUIest::addColumn<QByteArray>("ba2");
+    BOBUIest::addColumn<int>("startpos");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("1") << abc << a << 0 << 0;
-    QTest::newRow("2") << abc << A << 0 << -1;
-    QTest::newRow("3") << abc << a << 1 << -1;
-    QTest::newRow("4") << abc << A << 1 << -1;
-    QTest::newRow("5") << abc << b << 0 << 1;
-    QTest::newRow("6") << abc << B << 0 << -1;
-    QTest::newRow("7") << abc << b << 1 << 1;
-    QTest::newRow("8") << abc << B << 1 << -1;
-    QTest::newRow("9") << abc << b << 2 << -1;
-    QTest::newRow("10") << abc << c << 0 << 2;
-    QTest::newRow("11") << abc << C << 0 << -1;
-    QTest::newRow("12") << abc << c << 1 << 2;
-    QTest::newRow("13") << abc << C << 1 << -1;
-    QTest::newRow("14") << abc << c << 2 << 2;
-    QTest::newRow("15") << aBc << bc << 0 << -1;
-    QTest::newRow("16") << aBc << Bc << 0 << 1;
-    QTest::newRow("17") << aBc << bC << 0 << -1;
-    QTest::newRow("18") << aBc << BC << 0 << -1;
+    BOBUIest::newRow("1") << abc << a << 0 << 0;
+    BOBUIest::newRow("2") << abc << A << 0 << -1;
+    BOBUIest::newRow("3") << abc << a << 1 << -1;
+    BOBUIest::newRow("4") << abc << A << 1 << -1;
+    BOBUIest::newRow("5") << abc << b << 0 << 1;
+    BOBUIest::newRow("6") << abc << B << 0 << -1;
+    BOBUIest::newRow("7") << abc << b << 1 << 1;
+    BOBUIest::newRow("8") << abc << B << 1 << -1;
+    BOBUIest::newRow("9") << abc << b << 2 << -1;
+    BOBUIest::newRow("10") << abc << c << 0 << 2;
+    BOBUIest::newRow("11") << abc << C << 0 << -1;
+    BOBUIest::newRow("12") << abc << c << 1 << 2;
+    BOBUIest::newRow("13") << abc << C << 1 << -1;
+    BOBUIest::newRow("14") << abc << c << 2 << 2;
+    BOBUIest::newRow("15") << aBc << bc << 0 << -1;
+    BOBUIest::newRow("16") << aBc << Bc << 0 << 1;
+    BOBUIest::newRow("17") << aBc << bC << 0 << -1;
+    BOBUIest::newRow("18") << aBc << BC << 0 << -1;
 
     static const char h19[] = { 'x', 0x00, (char)0xe7, 0x25, 0x1c, 0x0a };
     static const char n19[] = { 0x00, 0x00, 0x01, 0x00 };
-    QTest::newRow("19") << QByteArray(h19, sizeof(h19)) << QByteArray(n19, sizeof(n19)) << 0 << -1;
+    BOBUIest::newRow("19") << QByteArray(h19, sizeof(h19)) << QByteArray(n19, sizeof(n19)) << 0 << -1;
 
-    QTest::newRow("empty from 0") << QByteArray("") << QByteArray("x") << 0 << -1;
-    QTest::newRow("empty from -1") << QByteArray("") << QByteArray("x") << -1 << -1;
-    QTest::newRow("empty from 1") << QByteArray("") << QByteArray("x") << 1 << -1;
-    QTest::newRow("null from 0") << QByteArray() << QByteArray("x") << 0 << -1;
-    QTest::newRow("null from -1") << QByteArray() << QByteArray("x") << -1 << -1;
-    QTest::newRow("null from 1") << QByteArray() << QByteArray("x") << 1 << -1;
-    QTest::newRow("null-in-null") << QByteArray() << QByteArray() << 0 << 0;
-    QTest::newRow("empty-in-null") << QByteArray() << QByteArray("") << 0 << 0;
-    QTest::newRow("null-in-empty") << QByteArray("") << QByteArray() << 0 << 0;
-    QTest::newRow("empty-in-empty") << QByteArray("") << QByteArray("") << 0 << 0;
-    QTest::newRow("empty in abc from 0") << abc << QByteArray() << 0 << 0;
-    QTest::newRow("empty in abc from 2") << abc << QByteArray() << 2 << 2;
-    QTest::newRow("empty in abc from 5") << abc << QByteArray() << 5 << -1;
-    QTest::newRow("empty in abc from -1") << abc << QByteArray() << -1 << 2;
+    BOBUIest::newRow("empty from 0") << QByteArray("") << QByteArray("x") << 0 << -1;
+    BOBUIest::newRow("empty from -1") << QByteArray("") << QByteArray("x") << -1 << -1;
+    BOBUIest::newRow("empty from 1") << QByteArray("") << QByteArray("x") << 1 << -1;
+    BOBUIest::newRow("null from 0") << QByteArray() << QByteArray("x") << 0 << -1;
+    BOBUIest::newRow("null from -1") << QByteArray() << QByteArray("x") << -1 << -1;
+    BOBUIest::newRow("null from 1") << QByteArray() << QByteArray("x") << 1 << -1;
+    BOBUIest::newRow("null-in-null") << QByteArray() << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty-in-null") << QByteArray() << QByteArray("") << 0 << 0;
+    BOBUIest::newRow("null-in-empty") << QByteArray("") << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty-in-empty") << QByteArray("") << QByteArray("") << 0 << 0;
+    BOBUIest::newRow("empty in abc from 0") << abc << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty in abc from 2") << abc << QByteArray() << 2 << 2;
+    BOBUIest::newRow("empty in abc from 5") << abc << QByteArray() << 5 << -1;
+    BOBUIest::newRow("empty in abc from -1") << abc << QByteArray() << -1 << 2;
 
     QByteArray veryBigHaystack(500, 'a');
     veryBigHaystack += 'B';
-    QTest::newRow("BoyerMooreStressTest") << veryBigHaystack << veryBigHaystack << 0 << 0;
-    QTest::newRow("BoyerMooreStressTest2")
+    BOBUIest::newRow("BoyerMooreStressTest") << veryBigHaystack << veryBigHaystack << 0 << 0;
+    BOBUIest::newRow("BoyerMooreStressTest2")
             << QByteArray(veryBigHaystack + 'c') << QByteArray(veryBigHaystack) << 0 << 0;
-    QTest::newRow("BoyerMooreStressTest3")
+    BOBUIest::newRow("BoyerMooreStressTest3")
             << QByteArray('c' + veryBigHaystack) << QByteArray(veryBigHaystack) << 0 << 1;
-    QTest::newRow("BoyerMooreStressTest4")
+    BOBUIest::newRow("BoyerMooreStressTest4")
             << QByteArray(veryBigHaystack) << QByteArray(veryBigHaystack + 'c') << 0 << -1;
-    QTest::newRow("BoyerMooreStressTest5")
+    BOBUIest::newRow("BoyerMooreStressTest5")
             << QByteArray(veryBigHaystack) << QByteArray('c' + veryBigHaystack) << 0 << -1;
-    QTest::newRow("BoyerMooreStressTest6")
+    BOBUIest::newRow("BoyerMooreStressTest6")
             << QByteArray('d' + veryBigHaystack) << QByteArray('c' + veryBigHaystack) << 0 << -1;
-    QTest::newRow("BoyerMooreStressTest7")
+    BOBUIest::newRow("BoyerMooreStressTest7")
             << QByteArray(veryBigHaystack + 'c') << QByteArray('c' + veryBigHaystack) << 0 << -1;
 }
 
@@ -420,60 +420,60 @@ void tst_QByteArrayApiSymmetry::indexOf_impl()
 
 void tst_QByteArrayApiSymmetry::lastIndexOf_data()
 {
-    QTest::addColumn<QByteArray>("ba1");
-    QTest::addColumn<QByteArray>("ba2");
-    QTest::addColumn<int>("startpos");
-    QTest::addColumn<int>("expected");
+    BOBUIest::addColumn<QByteArray>("ba1");
+    BOBUIest::addColumn<QByteArray>("ba2");
+    BOBUIest::addColumn<int>("startpos");
+    BOBUIest::addColumn<int>("expected");
 
-    QTest::newRow("1") << abc << a << 0 << 0;
-    QTest::newRow("2") << abc << A << 0 << -1;
-    QTest::newRow("3") << abc << a << 1 << 0;
-    QTest::newRow("4") << abc << A << 1 << -1;
-    QTest::newRow("5") << abc << a << -1 << 0;
-    QTest::newRow("6") << abc << b << 0 << -1;
-    QTest::newRow("7") << abc << B << 0 << -1;
-    QTest::newRow("8") << abc << b << 1 << 1;
-    QTest::newRow("9") << abc << B << 1 << -1;
-    QTest::newRow("10") << abc << b << 2 << 1;
-    QTest::newRow("11") << abc << b << -1 << 1;
-    QTest::newRow("12") << abc << c << 0 << -1;
-    QTest::newRow("13") << abc << C << 0 << -1;
-    QTest::newRow("14") << abc << c << 1 << -1;
-    QTest::newRow("15") << abc << C << 1 << -1;
-    QTest::newRow("16") << abc << c << 2 << 2;
-    QTest::newRow("17") << abc << c << -1 << 2;
-    QTest::newRow("18") << aBc << bc << 0 << -1;
-    QTest::newRow("19") << aBc << Bc << 0 << -1;
-    QTest::newRow("20") << aBc << Bc << 2 << 1;
-    QTest::newRow("21") << aBc << Bc << 1 << 1;
-    QTest::newRow("22") << aBc << Bc << -1 << 1;
-    QTest::newRow("23") << aBc << bC << 0 << -1;
-    QTest::newRow("24") << aBc << BC << 0 << -1;
+    BOBUIest::newRow("1") << abc << a << 0 << 0;
+    BOBUIest::newRow("2") << abc << A << 0 << -1;
+    BOBUIest::newRow("3") << abc << a << 1 << 0;
+    BOBUIest::newRow("4") << abc << A << 1 << -1;
+    BOBUIest::newRow("5") << abc << a << -1 << 0;
+    BOBUIest::newRow("6") << abc << b << 0 << -1;
+    BOBUIest::newRow("7") << abc << B << 0 << -1;
+    BOBUIest::newRow("8") << abc << b << 1 << 1;
+    BOBUIest::newRow("9") << abc << B << 1 << -1;
+    BOBUIest::newRow("10") << abc << b << 2 << 1;
+    BOBUIest::newRow("11") << abc << b << -1 << 1;
+    BOBUIest::newRow("12") << abc << c << 0 << -1;
+    BOBUIest::newRow("13") << abc << C << 0 << -1;
+    BOBUIest::newRow("14") << abc << c << 1 << -1;
+    BOBUIest::newRow("15") << abc << C << 1 << -1;
+    BOBUIest::newRow("16") << abc << c << 2 << 2;
+    BOBUIest::newRow("17") << abc << c << -1 << 2;
+    BOBUIest::newRow("18") << aBc << bc << 0 << -1;
+    BOBUIest::newRow("19") << aBc << Bc << 0 << -1;
+    BOBUIest::newRow("20") << aBc << Bc << 2 << 1;
+    BOBUIest::newRow("21") << aBc << Bc << 1 << 1;
+    BOBUIest::newRow("22") << aBc << Bc << -1 << 1;
+    BOBUIest::newRow("23") << aBc << bC << 0 << -1;
+    BOBUIest::newRow("24") << aBc << BC << 0 << -1;
 
     static const char h25[] = { 0x00, (char)0xbc, 0x03, 0x10, 0x0a };
     static const char n25[] = { 0x00, 0x00, 0x01, 0x00 };
-    QTest::newRow("25") << QByteArray(h25, sizeof(h25)) << QByteArray(n25, sizeof(n25)) << 0 << -1;
+    BOBUIest::newRow("25") << QByteArray(h25, sizeof(h25)) << QByteArray(n25, sizeof(n25)) << 0 << -1;
 
-    QTest::newRow("empty from 0") << QByteArray("") << QByteArray("x") << 0 << -1;
-    QTest::newRow("empty from -1") << QByteArray("") << QByteArray("x") << -1 << -1;
-    QTest::newRow("empty from 1") << QByteArray("") << QByteArray("x") << 1 << -1;
-    QTest::newRow("null from 0") << QByteArray() << QByteArray("x") << 0 << -1;
-    QTest::newRow("null from -1") << QByteArray() << QByteArray("x") << -1 << -1;
-    QTest::newRow("null from 1") << QByteArray() << QByteArray("x") << 1 << -1;
-    QTest::newRow("null-in-null-off--1") << QByteArray() << QByteArray() << -1 << -1;
-    QTest::newRow("null-in-null-off-0") << QByteArray() << QByteArray() << 0 << 0;
-    QTest::newRow("empty-in-null-off--1") << QByteArray() << QByteArray("") << -1 << -1;
-    QTest::newRow("empty-in-null-off-0") << QByteArray() << QByteArray("") << 0 << 0;
-    QTest::newRow("null-in-empty-off--1") << QByteArray("") << QByteArray() << -1 << -1;
-    QTest::newRow("null-in-empty-off-0") << QByteArray("") << QByteArray() << 0 << 0;
-    QTest::newRow("empty-in-empty-off--1") << QByteArray("") << QByteArray("") << -1 << -1;
-    QTest::newRow("empty-in-empty-off-0") << QByteArray("") << QByteArray("") << 0 << 0;
-    QTest::newRow("empty in abc from 0") << abc << QByteArray() << 0 << 0;
-    QTest::newRow("empty in abc from 2") << abc << QByteArray() << 2 << 2;
-    QTest::newRow("empty in abc from 5")
+    BOBUIest::newRow("empty from 0") << QByteArray("") << QByteArray("x") << 0 << -1;
+    BOBUIest::newRow("empty from -1") << QByteArray("") << QByteArray("x") << -1 << -1;
+    BOBUIest::newRow("empty from 1") << QByteArray("") << QByteArray("x") << 1 << -1;
+    BOBUIest::newRow("null from 0") << QByteArray() << QByteArray("x") << 0 << -1;
+    BOBUIest::newRow("null from -1") << QByteArray() << QByteArray("x") << -1 << -1;
+    BOBUIest::newRow("null from 1") << QByteArray() << QByteArray("x") << 1 << -1;
+    BOBUIest::newRow("null-in-null-off--1") << QByteArray() << QByteArray() << -1 << -1;
+    BOBUIest::newRow("null-in-null-off-0") << QByteArray() << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty-in-null-off--1") << QByteArray() << QByteArray("") << -1 << -1;
+    BOBUIest::newRow("empty-in-null-off-0") << QByteArray() << QByteArray("") << 0 << 0;
+    BOBUIest::newRow("null-in-empty-off--1") << QByteArray("") << QByteArray() << -1 << -1;
+    BOBUIest::newRow("null-in-empty-off-0") << QByteArray("") << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty-in-empty-off--1") << QByteArray("") << QByteArray("") << -1 << -1;
+    BOBUIest::newRow("empty-in-empty-off-0") << QByteArray("") << QByteArray("") << 0 << 0;
+    BOBUIest::newRow("empty in abc from 0") << abc << QByteArray() << 0 << 0;
+    BOBUIest::newRow("empty in abc from 2") << abc << QByteArray() << 2 << 2;
+    BOBUIest::newRow("empty in abc from 5")
             << abc << QByteArray() << 5 << -1; // perversely enough, should be 3?
-    QTest::newRow("empty in abc from -1") << abc << QByteArray() << -1 << 3;
-    QTest::newRow("empty in abc from -5")
+    BOBUIest::newRow("empty in abc from -1") << abc << QByteArray() << -1 << 3;
+    BOBUIest::newRow("empty in abc from -5")
             << abc << QByteArray() << -5 << 3; // perversely enough, should be -1?
 }
 
@@ -507,28 +507,28 @@ void tst_QByteArrayApiSymmetry::lastIndexOf_impl()
 
 void tst_QByteArrayApiSymmetry::contains_data()
 {
-    QTest::addColumn<QByteArray>("ba1");
-    QTest::addColumn<QByteArray>("ba2");
-    QTest::addColumn<bool>("result");
+    BOBUIest::addColumn<QByteArray>("ba1");
+    BOBUIest::addColumn<QByteArray>("ba2");
+    BOBUIest::addColumn<bool>("result");
 
-    QTest::newRow("1") << abc << a << true;
-    QTest::newRow("2") << abc << A << false;
-    QTest::newRow("3") << abc << b << true;
-    QTest::newRow("4") << abc << B << false;
-    QTest::newRow("5") << abc << c << true;
-    QTest::newRow("6") << abc << C << false;
-    QTest::newRow("7") << aBc << Bc << true;
-    QTest::newRow("8") << aBc << bc << false;
+    BOBUIest::newRow("1") << abc << a << true;
+    BOBUIest::newRow("2") << abc << A << false;
+    BOBUIest::newRow("3") << abc << b << true;
+    BOBUIest::newRow("4") << abc << B << false;
+    BOBUIest::newRow("5") << abc << c << true;
+    BOBUIest::newRow("6") << abc << C << false;
+    BOBUIest::newRow("7") << aBc << Bc << true;
+    BOBUIest::newRow("8") << aBc << bc << false;
 
     const char withnull[] = "a\0bc";
-    QTest::newRow("withnull") << QByteArray(withnull, 4) << QByteArray("bc") << true;
+    BOBUIest::newRow("withnull") << QByteArray(withnull, 4) << QByteArray("bc") << true;
 
-    QTest::newRow("empty") << QByteArray("") << QByteArray("x") << false;
-    QTest::newRow("null") << QByteArray() << QByteArray("x") << false;
-    QTest::newRow("null-in-null") << QByteArray() << QByteArray() << true;
-    QTest::newRow("empty-in-null") << QByteArray() << QByteArray("") << true;
-    QTest::newRow("null-in-empty") << QByteArray("") << QByteArray() << true;
-    QTest::newRow("empty-in-empty") << QByteArray("") << QByteArray("") << true;
+    BOBUIest::newRow("empty") << QByteArray("") << QByteArray("x") << false;
+    BOBUIest::newRow("null") << QByteArray() << QByteArray("x") << false;
+    BOBUIest::newRow("null-in-null") << QByteArray() << QByteArray() << true;
+    BOBUIest::newRow("empty-in-null") << QByteArray() << QByteArray("") << true;
+    BOBUIest::newRow("null-in-empty") << QByteArray("") << QByteArray() << true;
+    BOBUIest::newRow("empty-in-empty") << QByteArray("") << QByteArray("") << true;
 }
 
 template<typename Haystack, typename Needle>
@@ -549,27 +549,27 @@ void tst_QByteArrayApiSymmetry::contains_impl()
 
 void tst_QByteArrayApiSymmetry::count_data()
 {
-    QTest::addColumn<QByteArray>("ba1");
-    QTest::addColumn<QByteArray>("ba2");
-    QTest::addColumn<int>("result");
+    BOBUIest::addColumn<QByteArray>("ba1");
+    BOBUIest::addColumn<QByteArray>("ba2");
+    BOBUIest::addColumn<int>("result");
 
-    QTest::addRow("aaa") << QByteArray("aaa") << QByteArray("a") << 3;
-    QTest::addRow("xyzaaaxyz") << QByteArray("xyzaaxyaxyz") << QByteArray("xyz") << 2;
-    QTest::addRow("a in null") << QByteArray() << QByteArray("a") << 0;
-    QTest::addRow("a in empty") << QByteArray("") << QByteArray("a") << 0;
-    QTest::addRow("xyz in null") << QByteArray() << QByteArray("xyz") << 0;
-    QTest::addRow("xyz in empty") << QByteArray("") << QByteArray("xyz") << 0;
-    QTest::addRow("null in null") << QByteArray() << QByteArray() << 1;
-    QTest::addRow("empty in empty") << QByteArray("") << QByteArray("") << 1;
-    QTest::addRow("empty in null") << QByteArray() << QByteArray("") << 1;
-    QTest::addRow("null in empty") << QByteArray("") << QByteArray() << 1;
+    BOBUIest::addRow("aaa") << QByteArray("aaa") << QByteArray("a") << 3;
+    BOBUIest::addRow("xyzaaaxyz") << QByteArray("xyzaaxyaxyz") << QByteArray("xyz") << 2;
+    BOBUIest::addRow("a in null") << QByteArray() << QByteArray("a") << 0;
+    BOBUIest::addRow("a in empty") << QByteArray("") << QByteArray("a") << 0;
+    BOBUIest::addRow("xyz in null") << QByteArray() << QByteArray("xyz") << 0;
+    BOBUIest::addRow("xyz in empty") << QByteArray("") << QByteArray("xyz") << 0;
+    BOBUIest::addRow("null in null") << QByteArray() << QByteArray() << 1;
+    BOBUIest::addRow("empty in empty") << QByteArray("") << QByteArray("") << 1;
+    BOBUIest::addRow("empty in null") << QByteArray() << QByteArray("") << 1;
+    BOBUIest::addRow("null in empty") << QByteArray("") << QByteArray() << 1;
 
     const int len = 500;
     QByteArray longData(len, 'a');
     const QByteArray needle("abcdef");
     longData.insert(0, needle);
     longData.insert(len / 2, needle);
-    QTest::addRow("longInput") << longData << needle << 2;
+    BOBUIest::addRow("longInput") << longData << needle << 2;
 }
 
 template <typename Haystack, typename Needle>
@@ -589,40 +589,40 @@ void tst_QByteArrayApiSymmetry::count_impl()
 
 void tst_QByteArrayApiSymmetry::compare_data()
 {
-    QTest::addColumn<QByteArray>("ba1");
-    QTest::addColumn<QByteArray>("ba2");
-    QTest::addColumn<int>("result");
+    BOBUIest::addColumn<QByteArray>("ba1");
+    BOBUIest::addColumn<QByteArray>("ba2");
+    BOBUIest::addColumn<int>("result");
 
-    QTest::newRow("null")      << QByteArray() << QByteArray() << 0;
-    QTest::newRow("null-empty")<< QByteArray() << QByteArray("") << 0;
-    QTest::newRow("empty-null")<< QByteArray("") << QByteArray() << 0;
-    QTest::newRow("null-full") << QByteArray() << QByteArray("abc") << -1;
-    QTest::newRow("full-null") << QByteArray("abc") << QByteArray() << +1;
-    QTest::newRow("empty-full")<< QByteArray("") << QByteArray("abc") << -1;
-    QTest::newRow("full-empty")<< QByteArray("abc") << QByteArray("") << +1;
-    QTest::newRow("rawempty-full") << QByteArray::fromRawData("abc", 0) << QByteArray("abc") << -1;
-    QTest::newRow("full-rawempty") << QByteArray("abc") << QByteArray::fromRawData("abc", 0) << +1;
+    BOBUIest::newRow("null")      << QByteArray() << QByteArray() << 0;
+    BOBUIest::newRow("null-empty")<< QByteArray() << QByteArray("") << 0;
+    BOBUIest::newRow("empty-null")<< QByteArray("") << QByteArray() << 0;
+    BOBUIest::newRow("null-full") << QByteArray() << QByteArray("abc") << -1;
+    BOBUIest::newRow("full-null") << QByteArray("abc") << QByteArray() << +1;
+    BOBUIest::newRow("empty-full")<< QByteArray("") << QByteArray("abc") << -1;
+    BOBUIest::newRow("full-empty")<< QByteArray("abc") << QByteArray("") << +1;
+    BOBUIest::newRow("rawempty-full") << QByteArray::fromRawData("abc", 0) << QByteArray("abc") << -1;
+    BOBUIest::newRow("full-rawempty") << QByteArray("abc") << QByteArray::fromRawData("abc", 0) << +1;
 
-    QTest::newRow("equal   1") << QByteArray("abc") << QByteArray("abc") << 0;
-    QTest::newRow("equal   2") << QByteArray::fromRawData("abc", 3) << QByteArray("abc") << 0;
-    QTest::newRow("equal   3") << QByteArray::fromRawData("abcdef", 3) << QByteArray("abc") << 0;
-    QTest::newRow("equal   4") << QByteArray("abc") << QByteArray::fromRawData("abc", 3) << 0;
-    QTest::newRow("equal   5") << QByteArray("abc") << QByteArray::fromRawData("abcdef", 3) << 0;
-    QTest::newRow("equal   6") << QByteArray("a\0bc", 4) << QByteArray("a\0bc", 4) << 0;
-    QTest::newRow("equal   7") << QByteArray::fromRawData("a\0bcdef", 4) << QByteArray("a\0bc", 4) << 0;
-    QTest::newRow("equal   8") << QByteArray("a\0bc", 4) << QByteArray::fromRawData("a\0bcdef", 4) << 0;
+    BOBUIest::newRow("equal   1") << QByteArray("abc") << QByteArray("abc") << 0;
+    BOBUIest::newRow("equal   2") << QByteArray::fromRawData("abc", 3) << QByteArray("abc") << 0;
+    BOBUIest::newRow("equal   3") << QByteArray::fromRawData("abcdef", 3) << QByteArray("abc") << 0;
+    BOBUIest::newRow("equal   4") << QByteArray("abc") << QByteArray::fromRawData("abc", 3) << 0;
+    BOBUIest::newRow("equal   5") << QByteArray("abc") << QByteArray::fromRawData("abcdef", 3) << 0;
+    BOBUIest::newRow("equal   6") << QByteArray("a\0bc", 4) << QByteArray("a\0bc", 4) << 0;
+    BOBUIest::newRow("equal   7") << QByteArray::fromRawData("a\0bcdef", 4) << QByteArray("a\0bc", 4) << 0;
+    BOBUIest::newRow("equal   8") << QByteArray("a\0bc", 4) << QByteArray::fromRawData("a\0bcdef", 4) << 0;
 
-    QTest::newRow("less    1") << QByteArray("000") << QByteArray("abc") << -1;
-    QTest::newRow("less    2") << QByteArray::fromRawData("00", 3) << QByteArray("abc") << -1;
-    QTest::newRow("less    3") << QByteArray("000") << QByteArray::fromRawData("abc", 3) << -1;
-    QTest::newRow("less    4") << QByteArray("abc", 3) << QByteArray("abc", 4) << -1;
-    QTest::newRow("less    5") << QByteArray::fromRawData("abc\0", 3) << QByteArray("abc\0", 4) << -1;
-    QTest::newRow("less    6") << QByteArray("a\0bc", 4) << QByteArray("a\0bd", 4) << -1;
+    BOBUIest::newRow("less    1") << QByteArray("000") << QByteArray("abc") << -1;
+    BOBUIest::newRow("less    2") << QByteArray::fromRawData("00", 3) << QByteArray("abc") << -1;
+    BOBUIest::newRow("less    3") << QByteArray("000") << QByteArray::fromRawData("abc", 3) << -1;
+    BOBUIest::newRow("less    4") << QByteArray("abc", 3) << QByteArray("abc", 4) << -1;
+    BOBUIest::newRow("less    5") << QByteArray::fromRawData("abc\0", 3) << QByteArray("abc\0", 4) << -1;
+    BOBUIest::newRow("less    6") << QByteArray("a\0bc", 4) << QByteArray("a\0bd", 4) << -1;
 
-    QTest::newRow("greater 1") << QByteArray("abc") << QByteArray("000") << +1;
-    QTest::newRow("greater 2") << QByteArray("abc") << QByteArray::fromRawData("00", 3) << +1;
-    QTest::newRow("greater 3") << QByteArray("abcd") << QByteArray::fromRawData("abcd", 3) << +1;
-    QTest::newRow("greater 4") << QByteArray("a\0bc", 4) << QByteArray("a\0bb", 4) << +1;
+    BOBUIest::newRow("greater 1") << QByteArray("abc") << QByteArray("000") << +1;
+    BOBUIest::newRow("greater 2") << QByteArray("abc") << QByteArray::fromRawData("00", 3) << +1;
+    BOBUIest::newRow("greater 3") << QByteArray("abcd") << QByteArray::fromRawData("abcd", 3) << +1;
+    BOBUIest::newRow("greater 4") << QByteArray("a\0bc", 4) << QByteArray("a\0bb", 4) << +1;
 }
 
 template <typename LHS, typename RHS>
@@ -681,15 +681,15 @@ template <typename ByteArray> ByteArray detached(ByteArray b)
 
 void tst_QByteArrayApiSymmetry::sliced_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QByteArray>("result1");
-    QTest::addColumn<QByteArray>("result2");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<int>("pos");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QByteArray>("result1");
+    BOBUIest::addColumn<QByteArray>("result2");
 
-    QTest::addRow("empty") << empty << 0 << 0 << empty << empty;
+    BOBUIest::addRow("empty") << empty << 0 << 0 << empty << empty;
 #define ROW(base, p, n, r1, r2) \
-    QTest::addRow("%s%d%d", #base, p, n) << base << p << n << r1 << r2
+    BOBUIest::addRow("%s%d%d", #base, p, n) << base << p << n << r1 << r2
 
     ROW(a, 0, 0, a, empty);
     ROW(a, 0, 1, a, a);
@@ -754,14 +754,14 @@ void tst_QByteArrayApiSymmetry::sliced_impl()
 
 void tst_QByteArrayApiSymmetry::first_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QByteArray>("result");
 
-    QTest::addRow("empty") << empty << 0 << empty;
+    BOBUIest::addRow("empty") << empty << 0 << empty;
 
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << base << n << res
+    BOBUIest::addRow("%s%d", #base, n) << base << n << res
 
     ROW(a, 0, empty);
     ROW(a, 1, a);
@@ -811,14 +811,14 @@ void tst_QByteArrayApiSymmetry::first_impl()
 
 void tst_QByteArrayApiSymmetry::last_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QByteArray>("result");
 
-    QTest::addRow("empty") << empty << 0 << empty;
+    BOBUIest::addRow("empty") << empty << 0 << empty;
 
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << base << n << res
+    BOBUIest::addRow("%s%d", #base, n) << base << n << res
 
     ROW(a, 0, empty);
     ROW(a, 1, a);
@@ -861,16 +861,16 @@ void tst_QByteArrayApiSymmetry::last_impl()
 
 void tst_QByteArrayApiSymmetry::chop_data()
 {
-    QTest::addColumn<QByteArray>("ba");
-    QTest::addColumn<int>("n");
-    QTest::addColumn<QByteArray>("result");
+    BOBUIest::addColumn<QByteArray>("ba");
+    BOBUIest::addColumn<int>("n");
+    BOBUIest::addColumn<QByteArray>("result");
 
-    QTest::addRow("empty") << empty << 0 << empty;
+    BOBUIest::addRow("empty") << empty << 0 << empty;
 
     // Some classes' truncate() implementations have a wide contract, others a narrow one
     // so only test valid arguents here:
 #define ROW(base, n, res) \
-    QTest::addRow("%s%d", #base, n) << base << n << res
+    BOBUIest::addRow("%s%d", #base, n) << base << n << res
 
     ROW(a, 0, a);
     ROW(a, 1, empty);
@@ -921,15 +921,15 @@ void tst_QByteArrayApiSymmetry::chop_impl()
 
 void tst_QByteArrayApiSymmetry::trimmed_data()
 {
-    QTest::addColumn<QByteArray>("source");
-    QTest::addColumn<QByteArray>("expected");
+    BOBUIest::addColumn<QByteArray>("source");
+    BOBUIest::addColumn<QByteArray>("expected");
 
-    QTest::newRow("null") << QByteArray() << QByteArray();
-    QTest::newRow("empty") << QByteArray("") << QByteArray("");
-    QTest::newRow("no end-spaces") << QByteArray("a b\nc\td") << QByteArray("a b\nc\td");
-    QTest::newRow("with end-spaces")
+    BOBUIest::newRow("null") << QByteArray() << QByteArray();
+    BOBUIest::newRow("empty") << QByteArray("") << QByteArray("");
+    BOBUIest::newRow("no end-spaces") << QByteArray("a b\nc\td") << QByteArray("a b\nc\td");
+    BOBUIest::newRow("with end-spaces")
         << QByteArray("\t \v a b\r\nc \td\ve   f \r\n\f") << QByteArray("a b\r\nc \td\ve   f");
-    QTest::newRow("all spaces") << QByteArray("\t \r \n \v \f") << QByteArray("");
+    BOBUIest::newRow("all spaces") << QByteArray("\t \r \n \v \f") << QByteArray("");
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::trimmed_impl()
@@ -1046,37 +1046,37 @@ extern const char globalChar;
 
 void tst_QByteArrayApiSymmetry::toInt_data() const
 {
-    QTest::addColumn<QByteArray>("string");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<int>("expectednumber");
-    QTest::addColumn<bool>("expectedok");
+    BOBUIest::addColumn<QByteArray>("string");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<int>("expectednumber");
+    BOBUIest::addColumn<bool>("expectedok");
 
-    QTest::newRow("null") << QByteArray() << 10 << 0 << false;
-    QTest::newRow("empty") << QByteArray("") << 10 << 0 << false;
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0 << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 10 << 0 << false;
 
-    QTest::newRow("base 10") << QByteArray("100") << 10 << 100 << true;
-    QTest::newRow("base 16-1") << QByteArray("100") << 16 << 256 << true;
-    QTest::newRow("base 16-2") << QByteArray("0400") << 16 << 1024 << true;
-    QTest::newRow("base 2") << QByteArray("1111") << 2 << 15 << true;
-    QTest::newRow("base 8") << QByteArray("100") << 8 << 64 << true;
-    QTest::newRow("base 0-1") << QByteArray("0x10") << 0 << 16 << true;
-    QTest::newRow("base 0-2") << QByteArray("10") << 0 << 10 << true;
-    QTest::newRow("base 0-3") << QByteArray("010") << 0 << 8 << true;
-    QTest::newRow("base 0 empty") << QByteArray() << 0 << 0 << false;
+    BOBUIest::newRow("base 10") << QByteArray("100") << 10 << 100 << true;
+    BOBUIest::newRow("base 16-1") << QByteArray("100") << 16 << 256 << true;
+    BOBUIest::newRow("base 16-2") << QByteArray("0400") << 16 << 1024 << true;
+    BOBUIest::newRow("base 2") << QByteArray("1111") << 2 << 15 << true;
+    BOBUIest::newRow("base 8") << QByteArray("100") << 8 << 64 << true;
+    BOBUIest::newRow("base 0-1") << QByteArray("0x10") << 0 << 16 << true;
+    BOBUIest::newRow("base 0-2") << QByteArray("10") << 0 << 10 << true;
+    BOBUIest::newRow("base 0-3") << QByteArray("010") << 0 << 8 << true;
+    BOBUIest::newRow("base 0 empty") << QByteArray() << 0 << 0 << false;
 
-    QTest::newRow("leading space") << QByteArray(" 100") << 10 << 100 << true;
-    QTest::newRow("trailing space") << QByteArray("100 ") << 10 << 100 << true;
-    QTest::newRow("leading junk") << QByteArray("x100") << 10 << 0 << false;
-    QTest::newRow("trailing junk") << QByteArray("100x") << 10 << 0 << false;
+    BOBUIest::newRow("leading space") << QByteArray(" 100") << 10 << 100 << true;
+    BOBUIest::newRow("trailing space") << QByteArray("100 ") << 10 << 100 << true;
+    BOBUIest::newRow("leading junk") << QByteArray("x100") << 10 << 0 << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("100x") << 10 << 0 << false;
 
     // using fromRawData
-    QTest::newRow("raw1") << QByteArray::fromRawData("1", 1) << 10 << 1 << true;
-    QTest::newRow("raw2") << QByteArray::fromRawData("1foo", 1) << 10 << 1 << true;
-    QTest::newRow("raw3") << QByteArray::fromRawData("12", 1) << 10 << 1 << true;
-    QTest::newRow("raw4") << QByteArray::fromRawData("123456789", 1) << 10 << 1 << true;
-    QTest::newRow("raw5") << QByteArray::fromRawData("123456789", 2) << 10 << 12 << true;
+    BOBUIest::newRow("raw1") << QByteArray::fromRawData("1", 1) << 10 << 1 << true;
+    BOBUIest::newRow("raw2") << QByteArray::fromRawData("1foo", 1) << 10 << 1 << true;
+    BOBUIest::newRow("raw3") << QByteArray::fromRawData("12", 1) << 10 << 1 << true;
+    BOBUIest::newRow("raw4") << QByteArray::fromRawData("123456789", 1) << 10 << 1 << true;
+    BOBUIest::newRow("raw5") << QByteArray::fromRawData("123456789", 2) << 10 << 12 << true;
 
-    QTest::newRow("raw-static") << QByteArray::fromRawData(&globalChar, 1) << 10 << 1 << true;
+    BOBUIest::newRow("raw-static") << QByteArray::fromRawData(&globalChar, 1) << 10 << 1 << true;
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::toInt() const
@@ -1095,21 +1095,21 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toInt() const
 
 void tst_QByteArrayApiSymmetry::toUInt_data() const
 {
-    QTest::addColumn<QByteArray>("string");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<uint>("expectednumber");
-    QTest::addColumn<bool>("expectedok");
+    BOBUIest::addColumn<QByteArray>("string");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<uint>("expectednumber");
+    BOBUIest::addColumn<bool>("expectedok");
 
-    QTest::newRow("null") << QByteArray() << 10 << 0u << false;
-    QTest::newRow("empty") << QByteArray("") << 10 << 0u << false;
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0u << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 10 << 0u << false;
 
-    QTest::newRow("negative value") << QByteArray("-50") << 10 << 0u << false;
-    QTest::newRow("more than MAX_INT") << QByteArray("3234567890") << 10 << 3234567890u << true;
-    QTest::newRow("2^32 - 1") << QByteArray("4294967295") << 10 << 4294967295u << true;
+    BOBUIest::newRow("negative value") << QByteArray("-50") << 10 << 0u << false;
+    BOBUIest::newRow("more than MAX_INT") << QByteArray("3234567890") << 10 << 3234567890u << true;
+    BOBUIest::newRow("2^32 - 1") << QByteArray("4294967295") << 10 << 4294967295u << true;
     if constexpr (sizeof(int) > 4)
-        QTest::newRow("2^32") << QByteArray("4294967296") << 10 << (1u << 32) << true;
+        BOBUIest::newRow("2^32") << QByteArray("4294967296") << 10 << (1u << 32) << true;
     else
-        QTest::newRow("2^32") << QByteArray("4294967296") << 10 << 0u << false;
+        BOBUIest::newRow("2^32") << QByteArray("4294967296") << 10 << 0u << false;
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::toUInt() const
@@ -1128,58 +1128,58 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toUInt() const
 
 void tst_QByteArrayApiSymmetry::toLong_data() const
 {
-    QTest::addColumn<QByteArray>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<long>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QByteArray>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<long>("result");
+    BOBUIest::addColumn<bool>("ok");
 
-    QTest::newRow("null") << QByteArray() << 10 << 0L << false;
-    QTest::newRow("empty") << QByteArray("") << 16 << 0L << false;
-    QTest::newRow("in range dec") << QByteArray("1608507359") << 10 << 1608507359L << true;
-    QTest::newRow("in range dec neg") << QByteArray("-1608507359") << 10 << -1608507359L << true;
-    QTest::newRow("in range hex") << QByteArray("12ABCDEF") << 16 << 0x12ABCDEFL << true;
-    QTest::newRow("in range hex neg") << QByteArray("-12ABCDEF") << 16 << -0x12ABCDEFL << true;
-    QTest::newRow("Fibonacci's last int32")
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0L << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 16 << 0L << false;
+    BOBUIest::newRow("in range dec") << QByteArray("1608507359") << 10 << 1608507359L << true;
+    BOBUIest::newRow("in range dec neg") << QByteArray("-1608507359") << 10 << -1608507359L << true;
+    BOBUIest::newRow("in range hex") << QByteArray("12ABCDEF") << 16 << 0x12ABCDEFL << true;
+    BOBUIest::newRow("in range hex neg") << QByteArray("-12ABCDEF") << 16 << -0x12ABCDEFL << true;
+    BOBUIest::newRow("Fibonacci's last int32")
         << QByteArray("1836311903") << 10 << 1836311903L << true;
 
-    QTest::newRow("leading spaces") << QByteArray(" \r\n\tABC123") << 16 << 0xABC123L << true;
-    QTest::newRow("trailing spaces") << QByteArray("1234567\t\r \n") << 10 << 1234567L << true;
-    QTest::newRow("leading junk") << QByteArray("q12345") << 10 << 0L << false;
-    QTest::newRow("trailing junk") << QByteArray("abc12345t") << 16 << 0L << false;
+    BOBUIest::newRow("leading spaces") << QByteArray(" \r\n\tABC123") << 16 << 0xABC123L << true;
+    BOBUIest::newRow("trailing spaces") << QByteArray("1234567\t\r \n") << 10 << 1234567L << true;
+    BOBUIest::newRow("leading junk") << QByteArray("q12345") << 10 << 0L << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("abc12345t") << 16 << 0L << false;
 
-    QTest::newRow("dec with base 0") << QByteArray("123") << 0 << 123L << true;
-    QTest::newRow("neg dec with base 0") << QByteArray("-123") << 0 << -123L << true;
-    QTest::newRow("hex with base 0") << QByteArray("0x123") << 0 << 0x123L << true;
-    QTest::newRow("neg hex with base 0") << QByteArray("-0x123") << 0 << -0x123L << true;
-    QTest::newRow("oct with base 0") << QByteArray("0123") << 0 << 0123L << true;
-    QTest::newRow("neg oct with base 0") << QByteArray("-0123") << 0 << -0123L << true;
+    BOBUIest::newRow("dec with base 0") << QByteArray("123") << 0 << 123L << true;
+    BOBUIest::newRow("neg dec with base 0") << QByteArray("-123") << 0 << -123L << true;
+    BOBUIest::newRow("hex with base 0") << QByteArray("0x123") << 0 << 0x123L << true;
+    BOBUIest::newRow("neg hex with base 0") << QByteArray("-0x123") << 0 << -0x123L << true;
+    BOBUIest::newRow("oct with base 0") << QByteArray("0123") << 0 << 0123L << true;
+    BOBUIest::newRow("neg oct with base 0") << QByteArray("-0123") << 0 << -0123L << true;
 
-    QTest::newRow("base 3") << QByteArray("12012") << 3 << 140L << true;
-    QTest::newRow("neg base 3") << QByteArray("-201") << 3 << -19L << true;
+    BOBUIest::newRow("base 3") << QByteArray("12012") << 3 << 140L << true;
+    BOBUIest::newRow("neg base 3") << QByteArray("-201") << 3 << -19L << true;
 
     using Bounds = std::numeric_limits<long>;
-    QTest::newRow("long max") << QByteArray::number(Bounds::max()) << 10 << Bounds::max() << true;
-    QTest::newRow("long min") << QByteArray::number(Bounds::min()) << 10 << Bounds::min() << true;
+    BOBUIest::newRow("long max") << QByteArray::number(Bounds::max()) << 10 << Bounds::max() << true;
+    BOBUIest::newRow("long min") << QByteArray::number(Bounds::min()) << 10 << Bounds::min() << true;
 
     using B32 = std::numeric_limits<qint32>;
-    QTest::newRow("int32 min bin")
+    BOBUIest::newRow("int32 min bin")
         << (QByteArray("-1") + QByteArray(31, '0')) << 2 << long(B32::min()) << true;
-    QTest::newRow("int32 max bin") << QByteArray(31, '1') << 2 << long(B32::max()) << true;
-    QTest::newRow("int32 min hex") << QByteArray("-80000000") << 16 << long(B32::min()) << true;
-    QTest::newRow("int32 max hex") << QByteArray("7fffffff") << 16 << long(B32::max()) << true;
-    QTest::newRow("int32 min dec") << QByteArray("-2147483648") << 10 << long(B32::min()) << true;
-    QTest::newRow("int32 max dec") << QByteArray("2147483647") << 10 << long(B32::max()) << true;
+    BOBUIest::newRow("int32 max bin") << QByteArray(31, '1') << 2 << long(B32::max()) << true;
+    BOBUIest::newRow("int32 min hex") << QByteArray("-80000000") << 16 << long(B32::min()) << true;
+    BOBUIest::newRow("int32 max hex") << QByteArray("7fffffff") << 16 << long(B32::max()) << true;
+    BOBUIest::newRow("int32 min dec") << QByteArray("-2147483648") << 10 << long(B32::min()) << true;
+    BOBUIest::newRow("int32 max dec") << QByteArray("2147483647") << 10 << long(B32::max()) << true;
 
     if constexpr (sizeof(long) < sizeof(qlonglong)) {
-        QT_WARNING_PUSH
+        BOBUI_WARNING_PUSH
         // See: https://github.com/llvm/llvm-project/issues/59448
-        QT_WARNING_DISABLE_CLANG("-Winteger-overflow")
+        BOBUI_WARNING_DISABLE_CLANG("-Winteger-overflow")
         const qlonglong longMaxPlusOne = static_cast<qlonglong>(Bounds::max()) + 1;
         const qlonglong longMinMinusOne = static_cast<qlonglong>(Bounds::min()) - 1;
-        QT_WARNING_POP
+        BOBUI_WARNING_POP
 
-        QTest::newRow("long max + 1") << QByteArray::number(longMaxPlusOne) << 10 << 0L << false;
-        QTest::newRow("long min - 1") << QByteArray::number(longMinMinusOne) << 10 << 0L << false;
+        BOBUIest::newRow("long max + 1") << QByteArray::number(longMaxPlusOne) << 10 << 0L << false;
+        BOBUIest::newRow("long min - 1") << QByteArray::number(longMinMinusOne) << 10 << 0L << false;
     }
 }
 
@@ -1203,23 +1203,23 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toLong() const
 
 void tst_QByteArrayApiSymmetry::toULong_data() const
 {
-    QTest::addColumn<QByteArray>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<ulong>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QByteArray>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<ulong>("result");
+    BOBUIest::addColumn<bool>("ok");
 
     ulong LongMaxPlusOne = (ulong)LONG_MAX + 1;
-    QTest::newRow("LONG_MAX+1")
+    BOBUIest::newRow("LONG_MAX+1")
         << QString::number(LongMaxPlusOne).toUtf8() << 10 << LongMaxPlusOne << true;
-    QTest::newRow("null") << QByteArray() << 10 << 0UL << false;
-    QTest::newRow("empty") << QByteArray("") << 10 << 0UL << false;
-    QTest::newRow("ulong1") << QByteArray("3234567890") << 10 << 3234567890UL << true;
-    QTest::newRow("ulong2") << QByteArray("fFFfFfFf") << 16 << 0xFFFFFFFFUL << true;
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0UL << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 10 << 0UL << false;
+    BOBUIest::newRow("ulong1") << QByteArray("3234567890") << 10 << 3234567890UL << true;
+    BOBUIest::newRow("ulong2") << QByteArray("fFFfFfFf") << 16 << 0xFFFFFFFFUL << true;
 
-    QTest::newRow("leading spaces") << QByteArray(" \n\r\t100") << 10 << 100UL << true;
-    QTest::newRow("trailing spaces") << QByteArray("100 \n\r\t") << 10 << 100UL << true;
-    QTest::newRow("leading junk") << QByteArray("x100") << 10 << 0UL << false;
-    QTest::newRow("trailing junk") << QByteArray("100x") << 10 << 0UL << false;
+    BOBUIest::newRow("leading spaces") << QByteArray(" \n\r\t100") << 10 << 100UL << true;
+    BOBUIest::newRow("trailing spaces") << QByteArray("100 \n\r\t") << 10 << 100UL << true;
+    BOBUIest::newRow("leading junk") << QByteArray("x100") << 10 << 0UL << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("100x") << 10 << 0UL << false;
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::toULong() const
@@ -1251,130 +1251,130 @@ static QByteArray decNext(QByteArray &&big)
 
 void tst_QByteArrayApiSymmetry::toLongLong_data() const
 {
-    QTest::addColumn<QByteArray>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<qlonglong>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QByteArray>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<qlonglong>("result");
+    BOBUIest::addColumn<bool>("ok");
 
-    QTest::newRow("null") << QByteArray() << 10 << 0LL << false;
-    QTest::newRow("empty") << QByteArray("") << 10 << 0LL << false;
-    QTest::newRow("out of base bound") << QByteArray("c") << 10 << 0LL << false;
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0LL << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 10 << 0LL << false;
+    BOBUIest::newRow("out of base bound") << QByteArray("c") << 10 << 0LL << false;
 
-    QTest::newRow("in range dec")
+    BOBUIest::newRow("in range dec")
         << QByteArray("7679359922672374856") << 10 << 7679359922672374856LL << true;
-    QTest::newRow("in range dec neg")
+    BOBUIest::newRow("in range dec neg")
         << QByteArray("-7679359922672374856") << 10 << -7679359922672374856LL << true;
-    QTest::newRow("in range hex")
+    BOBUIest::newRow("in range hex")
         << QByteArray("6A929129A5421448") << 16 << 0x6A929129A5421448LL << true;
-    QTest::newRow("in range hex prefix")
+    BOBUIest::newRow("in range hex prefix")
         << QByteArray("0x6A929129A5421448") << 16 << 0x6A929129A5421448LL << true;
-    QTest::newRow("in range hex neg")
+    BOBUIest::newRow("in range hex neg")
         << QByteArray("-6A929129A5421448") << 16 << -0x6A929129A5421448LL << true;
-    QTest::newRow("in range hex prefix neg")
+    BOBUIest::newRow("in range hex prefix neg")
         << QByteArray("-0x6A929129A5421448") << 16 << -0x6A929129A5421448LL << true;
-    QTest::newRow("Fibonacci's last int64")
+    BOBUIest::newRow("Fibonacci's last int64")
         << QByteArray("7540113804746346429") << 10 << 7540113804746346429LL << true;
 
-    QTest::newRow("leading spaces")
+    BOBUIest::newRow("leading spaces")
         << QByteArray(" \r\n\tABCFFFFFFF123") << 16 << 0xABCFFFFFFF123LL << true;
-    QTest::newRow("trailing spaces")
+    BOBUIest::newRow("trailing spaces")
         << QByteArray("9876543210\t\r \n") << 10 << 9876543210LL << true;
-    QTest::newRow("space after plus") << QByteArray("+ 12") << 10 << 0LL << false;
-    QTest::newRow("space after minus") << QByteArray("- 12") << 10 << 0LL << false;
-    QTest::newRow("leading junk") << QByteArray("q12345") << 10 << 0LL << false;
-    QTest::newRow("trailing junk") << QByteArray("abc12345t") << 16 << 0LL << false;
+    BOBUIest::newRow("space after plus") << QByteArray("+ 12") << 10 << 0LL << false;
+    BOBUIest::newRow("space after minus") << QByteArray("- 12") << 10 << 0LL << false;
+    BOBUIest::newRow("leading junk") << QByteArray("q12345") << 10 << 0LL << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("abc12345t") << 16 << 0LL << false;
 
-    QTest::newRow("dec with base 0") << QByteArray("9876543210") << 0 << 9876543210LL << true;
-    QTest::newRow("neg dec with base 0") << QByteArray("-9876543210") << 0 << -9876543210LL << true;
-    QTest::newRow("hex with base 0") << QByteArray("0x9876543210") << 0 << 0x9876543210LL << true;
-    QTest::newRow("neg hex with base 0")
+    BOBUIest::newRow("dec with base 0") << QByteArray("9876543210") << 0 << 9876543210LL << true;
+    BOBUIest::newRow("neg dec with base 0") << QByteArray("-9876543210") << 0 << -9876543210LL << true;
+    BOBUIest::newRow("hex with base 0") << QByteArray("0x9876543210") << 0 << 0x9876543210LL << true;
+    BOBUIest::newRow("neg hex with base 0")
         << QByteArray("-0x9876543210") << 0 << -0x9876543210LL << true;
-    QTest::newRow("oct with base 0")
+    BOBUIest::newRow("oct with base 0")
         << QByteArray("07654321234567") << 0 << 07654321234567LL << true;
-    QTest::newRow("neg oct with base 0")
+    BOBUIest::newRow("neg oct with base 0")
         << QByteArray("-07654321234567") << 0 << -07654321234567LL << true;
 
-    QTest::newRow("base 3") << QByteArray("12012") << 3 << 140LL << true;
-    QTest::newRow("neg base 3") << QByteArray("-201") << 3 << -19LL << true;
+    BOBUIest::newRow("base 3") << QByteArray("12012") << 3 << 140LL << true;
+    BOBUIest::newRow("neg base 3") << QByteArray("-201") << 3 << -19LL << true;
 
     // Boundary values, first in every base:
     using LL = std::numeric_limits<qlonglong>;
     for (int b = 0; b <= 36; ++b) {
         if (b == 1) // bases 0 and 2 through 36 are allowed
             ++b;
-        QTest::addRow("max base %d", b)
+        BOBUIest::addRow("max base %d", b)
             << QByteArray::number(LL::max(), b ? b : 10) << b << LL::max() << true;
-        QTest::addRow("min base %d", b)
+        BOBUIest::addRow("min base %d", b)
             << QByteArray::number(LL::min(), b ? b : 10) << b << LL::min() << true;
     }
     // Check leading zeros don't hit any buffer-too-big problems:
-    QTest::newRow("many-0 max dec")
+    BOBUIest::newRow("many-0 max dec")
         << (QByteArray(512, '0') + QByteArray::number(LL::max())) << 10 << LL::max() << true;
 
     // Special bases (and let's include some leading space, too !), first decimal:
-    QTest::newRow("max space dec")
+    BOBUIest::newRow("max space dec")
         << ("\t\r\n\f\v " + QByteArray::number(LL::max())) << 10 << LL::max() << true;
-    QTest::newRow("max space dec, base 0")
+    BOBUIest::newRow("max space dec, base 0")
         << ("\t\r\n\f\v " + QByteArray::number(LL::max())) << 0 << LL::max() << true;
-    QTest::newRow("min space dec")
+    BOBUIest::newRow("min space dec")
         << ("\t\r\n\f\v " + QByteArray::number(LL::min())) << 10 << LL::min() << true;
-    QTest::newRow("min space dec, base 0")
+    BOBUIest::newRow("min space dec, base 0")
         << ("\t\r\n\f\v " + QByteArray::number(LL::min())) << 0 << LL::min() << true;
 
     // Hex with prefix:
-    QTest::newRow("max 0x base 0")
+    BOBUIest::newRow("max 0x base 0")
         << ("0x" + QByteArray::number(LL::max(), 16)) << 0 << LL::max() << true;
-    QTest::newRow("max +0x base 0")
+    BOBUIest::newRow("max +0x base 0")
         << ("+0x" + QByteArray::number(LL::max(), 16)) << 0 << LL::max() << true;
-    QTest::newRow("max space 0x base 0")
+    BOBUIest::newRow("max space 0x base 0")
         << ("\t\r\n\f\v 0x" + QByteArray::number(LL::max(), 16)) << 0 << LL::max() << true;
-    QTest::newRow("max space +0x base 0")
+    BOBUIest::newRow("max space +0x base 0")
         << ("\t\r\n\f\v +0x" + QByteArray::number(LL::max(), 16)) << 0 << LL::max() << true;
     QByteArray big = QByteArray::number(LL::min(), 16);
     big.insert(1, "0x"); // after sign
-    QTest::newRow("min hex prefix") << big << 16 << LL::min() << true;
-    QTest::newRow("min 0x base 0") << big << 0 << LL::min() << true;
+    BOBUIest::newRow("min hex prefix") << big << 16 << LL::min() << true;
+    BOBUIest::newRow("min 0x base 0") << big << 0 << LL::min() << true;
     big.prepend("\t\r\n\f\v ");
-    QTest::newRow("min space hex prefix") << big << 16 << LL::min() << true;
-    QTest::newRow("min space 0x base 0") << big << 0 << LL::min() << true;
+    BOBUIest::newRow("min space hex prefix") << big << 16 << LL::min() << true;
+    BOBUIest::newRow("min space 0x base 0") << big << 0 << LL::min() << true;
 
     // Octal with prefix:
-    QTest::newRow("max octal base 0")
+    BOBUIest::newRow("max octal base 0")
         << ('0' + QByteArray::number(LL::max(), 8)) << 0 << LL::max() << true;
-    QTest::newRow("max +octal base 0")
+    BOBUIest::newRow("max +octal base 0")
         << ("+0" + QByteArray::number(LL::max(), 8)) << 0 << LL::max() << true;
-    QTest::newRow("max space octal base 0")
+    BOBUIest::newRow("max space octal base 0")
         << ("\t\r\n\f\v 0" + QByteArray::number(LL::max(), 8)) << 0 << LL::max() << true;
-    QTest::newRow("max space +octal base 0")
+    BOBUIest::newRow("max space +octal base 0")
         << ("\t\r\n\f\v +0" + QByteArray::number(LL::max(), 8)) << 0 << LL::max() << true;
     big = QByteArray::number(LL::min(), 8);
     big.insert(1, '0'); // after sign
-    QTest::newRow("min octal prefix") << big << 8 << LL::min() << true;
-    QTest::newRow("min octal base 0") << big << 0 << LL::min() << true;
+    BOBUIest::newRow("min octal prefix") << big << 8 << LL::min() << true;
+    BOBUIest::newRow("min octal base 0") << big << 0 << LL::min() << true;
     big.prepend("\t\r\n\f\v ");
-    QTest::newRow("min space octal prefix") << big << 8 << LL::min() << true;
-    QTest::newRow("min space octal base 0") << big << 0 << LL::min() << true;
+    BOBUIest::newRow("min space octal prefix") << big << 8 << LL::min() << true;
+    BOBUIest::newRow("min space octal base 0") << big << 0 << LL::min() << true;
 
     // Values *just* out of range:
-    QTest::newRow("max + 1 dec") << decNext(QByteArray::number(LL::max())) << 10 << 0LL << false;
-    QTest::newRow("max + 1 dec base 0")
+    BOBUIest::newRow("max + 1 dec") << decNext(QByteArray::number(LL::max())) << 10 << 0LL << false;
+    BOBUIest::newRow("max + 1 dec base 0")
         << decNext(QByteArray::number(LL::max())) << 0 << 0LL << false;
-    QTest::newRow("min - 1 dec") << decNext(QByteArray::number(LL::min())) << 10 << 0LL << false;
-    QTest::newRow("min - 1 dec base 0")
+    BOBUIest::newRow("min - 1 dec") << decNext(QByteArray::number(LL::min())) << 10 << 0LL << false;
+    BOBUIest::newRow("min - 1 dec base 0")
         << decNext(QByteArray::number(LL::min())) << 0 << 0LL << false;
     // For hex and octal, we know the last digit of min is 0 and skipping its sign gets max+1:
     big = QByteArray::number(LL::min(), 8);
-    QTest::newRow("max + 1 oct") << big.sliced(1) << 8 << 0LL << false;
+    BOBUIest::newRow("max + 1 oct") << big.sliced(1) << 8 << 0LL << false;
     big[big.size() - 1] = '1';
-    QTest::newRow("min - 1 oct") << big << 8 << 0LL << false;
+    BOBUIest::newRow("min - 1 oct") << big << 8 << 0LL << false;
     big.insert(1, '0'); // after minus sign
-    QTest::newRow("min - 1 octal base 0") << big << 0 << 0LL << false;
+    BOBUIest::newRow("min - 1 octal base 0") << big << 0 << 0LL << false;
     big = QByteArray::number(LL::min(), 16);
-    QTest::newRow("max + 1 hex") << big.sliced(1) << 16 << 0LL << false;
+    BOBUIest::newRow("max + 1 hex") << big.sliced(1) << 16 << 0LL << false;
     big[big.size() - 1] = '1';
-    QTest::newRow("min - 1 hex") << big << 16 << 0LL << false;
+    BOBUIest::newRow("min - 1 hex") << big << 16 << 0LL << false;
     big.insert(1, "0x"); // after minus sign
-    QTest::newRow("min - 1, 0x base 0") << big << 0 << 0LL << false;
+    BOBUIest::newRow("min - 1, 0x base 0") << big << 0 << 0LL << false;
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::toLongLong() const
@@ -1396,85 +1396,85 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toLongLong() const
 
 void tst_QByteArrayApiSymmetry::toULongLong_data() const
 {
-    QTest::addColumn<QByteArray>("str");
-    QTest::addColumn<int>("base");
-    QTest::addColumn<qulonglong>("result");
-    QTest::addColumn<bool>("ok");
+    BOBUIest::addColumn<QByteArray>("str");
+    BOBUIest::addColumn<int>("base");
+    BOBUIest::addColumn<qulonglong>("result");
+    BOBUIest::addColumn<bool>("ok");
 
-    QTest::newRow("null") << QByteArray() << 10 << 0ULL << false;
-    QTest::newRow("empty") << QByteArray("") << 10 << 0ULL << false;
-    QTest::newRow("out of base bound") << QByteArray("c") << 10 << 0ULL << false;
+    BOBUIest::newRow("null") << QByteArray() << 10 << 0ULL << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 10 << 0ULL << false;
+    BOBUIest::newRow("out of base bound") << QByteArray("c") << 10 << 0ULL << false;
 
-    QTest::newRow("in range dec")
+    BOBUIest::newRow("in range dec")
         << QByteArray("7679359922672374856") << 10 << 7679359922672374856ULL << true;
-    QTest::newRow("in range hex")
+    BOBUIest::newRow("in range hex")
         << QByteArray("6A929129A5421448") << 16 << 0x6A929129A5421448ULL << true;
-    QTest::newRow("in range hex prefix")
+    BOBUIest::newRow("in range hex prefix")
         << QByteArray("0x6A929129A5421448") << 16 << 0x6A929129A5421448ULL << true;
 
-    QTest::newRow("leading spaces") << QByteArray(" \n\r\t100") << 10 << 100ULL << true;
-    QTest::newRow("trailing spaces") << QByteArray("100 \n\r\t") << 10 << 100ULL << true;
-    QTest::newRow("leading plus") << QByteArray("+100") << 10 << 100ULL << true;
-    QTest::newRow("space after plus") << QByteArray("+ 12") << 10 << 0ULL << false;
-    QTest::newRow("leading minus") << QByteArray("-100") << 10 << 0ULL << false;
-    QTest::newRow("leading junk") << QByteArray("x100") << 10 << 0ULL << false;
-    QTest::newRow("trailing junk") << QByteArray("100x") << 10 << 0ULL << false;
+    BOBUIest::newRow("leading spaces") << QByteArray(" \n\r\t100") << 10 << 100ULL << true;
+    BOBUIest::newRow("trailing spaces") << QByteArray("100 \n\r\t") << 10 << 100ULL << true;
+    BOBUIest::newRow("leading plus") << QByteArray("+100") << 10 << 100ULL << true;
+    BOBUIest::newRow("space after plus") << QByteArray("+ 12") << 10 << 0ULL << false;
+    BOBUIest::newRow("leading minus") << QByteArray("-100") << 10 << 0ULL << false;
+    BOBUIest::newRow("leading junk") << QByteArray("x100") << 10 << 0ULL << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("100x") << 10 << 0ULL << false;
 
-    QTest::newRow("dec, base 0") << QByteArray("9876543210") << 0 << 9876543210ULL << true;
-    QTest::newRow("hex, base 0") << QByteArray("0x9876543210") << 0 << 0x9876543210ULL << true;
-    QTest::newRow("oct, base 0") << QByteArray("07654321234567") << 0 << 07654321234567ULL << true;
-    QTest::newRow("base 3") << QByteArray("12012") << 3 << 140ULL << true;
+    BOBUIest::newRow("dec, base 0") << QByteArray("9876543210") << 0 << 9876543210ULL << true;
+    BOBUIest::newRow("hex, base 0") << QByteArray("0x9876543210") << 0 << 0x9876543210ULL << true;
+    BOBUIest::newRow("oct, base 0") << QByteArray("07654321234567") << 0 << 07654321234567ULL << true;
+    BOBUIest::newRow("base 3") << QByteArray("12012") << 3 << 140ULL << true;
 
     // Boundary values, first in every base:
     using ULL = std::numeric_limits<qulonglong>;
     for (int b = 0; b <= 36; ++b) {
         if (b == 1) // bases 0 and 2 through 36 are allowed
             ++b;
-        QTest::addRow("max base %d", b)
+        BOBUIest::addRow("max base %d", b)
             << QByteArray::number(ULL::max(), b ? b : 10) << b << ULL::max() << true;
     }
     // Check leading zeros don't hit any buffer-too-big problems:
-    QTest::newRow("many-0 max dec")
+    BOBUIest::newRow("many-0 max dec")
         << (QByteArray(512, '0') + QByteArray::number(ULL::max())) << 10 << ULL::max() << true;
 
     // Special bases (and let's include some leading space, too !), first decimal:
-    QTest::newRow("max space dec")
+    BOBUIest::newRow("max space dec")
         << ("\t\r\n\f\v " + QByteArray::number(ULL::max())) << 10 << ULL::max() << true;
-    QTest::newRow("max space dec, base 0")
+    BOBUIest::newRow("max space dec, base 0")
         << ("\t\r\n\f\v " + QByteArray::number(ULL::max())) << 0 << ULL::max() << true;
 
     // Hex with prefix:
-    QTest::newRow("max 0x base 0")
+    BOBUIest::newRow("max 0x base 0")
         << ("0x" + QByteArray::number(ULL::max(), 16)) << 0 << ULL::max() << true;
-    QTest::newRow("max +0x base 0")
+    BOBUIest::newRow("max +0x base 0")
         << ("+0x" + QByteArray::number(ULL::max(), 16)) << 0 << ULL::max() << true;
-    QTest::newRow("max space 0x base 0")
+    BOBUIest::newRow("max space 0x base 0")
         << ("\t\r\n\f\v 0x" + QByteArray::number(ULL::max(), 16)) << 0 << ULL::max() << true;
-    QTest::newRow("max space +0x base 0")
+    BOBUIest::newRow("max space +0x base 0")
         << ("\t\r\n\f\v +0x" + QByteArray::number(ULL::max(), 16)) << 0 << ULL::max() << true;
 
     // Octal with prefix:
-    QTest::newRow("max octal base 0")
+    BOBUIest::newRow("max octal base 0")
         << ('0' + QByteArray::number(ULL::max(), 8)) << 0 << ULL::max() << true;
-    QTest::newRow("max +octal base 0")
+    BOBUIest::newRow("max +octal base 0")
         << ("+0" + QByteArray::number(ULL::max(), 8)) << 0 << ULL::max() << true;
-    QTest::newRow("max space octal base 0")
+    BOBUIest::newRow("max space octal base 0")
         << ("\t\r\n\f\v 0" + QByteArray::number(ULL::max(), 8)) << 0 << ULL::max() << true;
-    QTest::newRow("max space +octal base 0")
+    BOBUIest::newRow("max space +octal base 0")
         << ("\t\r\n\f\v +0" + QByteArray::number(ULL::max(), 8)) << 0 << ULL::max() << true;
 
     // Values *just* out of range:
-    QTest::newRow("max + 1 dec") << decNext(QByteArray::number(ULL::max())) << 10 << 0ULL << false;
-    QTest::newRow("max + 1 dec base 0")
+    BOBUIest::newRow("max + 1 dec") << decNext(QByteArray::number(ULL::max())) << 10 << 0ULL << false;
+    BOBUIest::newRow("max + 1 dec base 0")
         << decNext(QByteArray::number(ULL::max())) << 0 << 0ULL << false;
     auto big = QByteArray::number(ULL::max(), 8).replace('7', '0');
     // Number of bits is a power of two, so not a multiple of three; so (only)
     // first digit of max wasn't 7:
     big[0] += 1;
-    QTest::newRow("max + 1 oct") << big << 8 << 0ULL << false;
+    BOBUIest::newRow("max + 1 oct") << big << 8 << 0ULL << false;
     // Number of bits is a multiple of four, so every digit of max is 'f'.
     big = '1' + QByteArray::number(ULL::max(), 16).replace('f', '0');
-    QTest::newRow("max + 1 hex") << big << 16 << 0ULL << false;
+    BOBUIest::newRow("max + 1 hex") << big << 16 << 0ULL << false;
 }
 
 template <typename ByteArray> void tst_QByteArrayApiSymmetry::toULongLong() const
@@ -1526,30 +1526,30 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toFloat() const
 
 void tst_QByteArrayApiSymmetry::toDouble_data() const
 {
-    QTest::addColumn<QByteArray>("string");
-    QTest::addColumn<double>("expectedNumber");
-    QTest::addColumn<bool>("expectedOk");
+    BOBUIest::addColumn<QByteArray>("string");
+    BOBUIest::addColumn<double>("expectedNumber");
+    BOBUIest::addColumn<bool>("expectedOk");
 
-    QTest::newRow("null") << QByteArray() << 0.0 << false;
-    QTest::newRow("empty") << QByteArray("") << 0.0 << false;
-    QTest::newRow("space-only") << QByteArray(" ") << 0.0 << false;
-    QTest::newRow("spaces-only") << QByteArray("  ") << 0.0 << false;
+    BOBUIest::newRow("null") << QByteArray() << 0.0 << false;
+    BOBUIest::newRow("empty") << QByteArray("") << 0.0 << false;
+    BOBUIest::newRow("space-only") << QByteArray(" ") << 0.0 << false;
+    BOBUIest::newRow("spaces-only") << QByteArray("  ") << 0.0 << false;
 
-    QTest::newRow("decimal") << QByteArray("1.2345") << 1.2345 << true;
-    QTest::newRow("exponent lowercase") << QByteArray("1.2345e+01") << 12.345 << true;
-    QTest::newRow("exponent uppercase") << QByteArray("1.2345E+02") << 123.45 << true;
-    QTest::newRow("leading spaces") << QByteArray(" \n\r\t1.2345") << 1.2345 << true;
-    QTest::newRow("trailing spaces") << QByteArray("1.2345 \n\r\t") << 1.2345 << true;
-    QTest::newRow("leading junk") << QByteArray("x1.2345") << 0.0 << false;
-    QTest::newRow("trailing junk") << QByteArray("1.2345x") << 0.0 << false;
-    QTest::newRow("high precision")
+    BOBUIest::newRow("decimal") << QByteArray("1.2345") << 1.2345 << true;
+    BOBUIest::newRow("exponent lowercase") << QByteArray("1.2345e+01") << 12.345 << true;
+    BOBUIest::newRow("exponent uppercase") << QByteArray("1.2345E+02") << 123.45 << true;
+    BOBUIest::newRow("leading spaces") << QByteArray(" \n\r\t1.2345") << 1.2345 << true;
+    BOBUIest::newRow("trailing spaces") << QByteArray("1.2345 \n\r\t") << 1.2345 << true;
+    BOBUIest::newRow("leading junk") << QByteArray("x1.2345") << 0.0 << false;
+    BOBUIest::newRow("trailing junk") << QByteArray("1.2345x") << 0.0 << false;
+    BOBUIest::newRow("high precision")
         << QByteArray("0.000000000931322574615478515625") << 9.31322574615478515625e-10 << true;
-    QTest::newRow("exponential")
+    BOBUIest::newRow("exponential")
         << QByteArray("9.31322574615478515625e-10") << 9.31322574615478515625e-10 << true;
 
-    QTest::newRow("raw, null plus junk")
+    BOBUIest::newRow("raw, null plus junk")
         << QByteArray::fromRawData("1.2\0 junk", 9) << 0.0 << false;
-    QTest::newRow("raw, null-terminator excluded")
+    BOBUIest::newRow("raw, null-terminator excluded")
         << QByteArray::fromRawData("2.3", 3) << 2.3 << true;
 }
 
@@ -1568,5 +1568,5 @@ template <typename ByteArray> void tst_QByteArrayApiSymmetry::toDouble() const
 
 const char globalChar = '1'; // Used as staic data for a raw byte array
 
-QTEST_APPLESS_MAIN(tst_QByteArrayApiSymmetry)
+BOBUIEST_APPLESS_MAIN(tst_QByteArrayApiSymmetry)
 #include "tst_qbytearrayapisymmetry.moc"

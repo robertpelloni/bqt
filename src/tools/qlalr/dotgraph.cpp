@@ -1,13 +1,13 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "dotgraph.h"
 
 #include "lalr.h"
 
-#include <QtCore/qtextstream.h>
+#include <BobUICore/bobuiextstream.h>
 
-DotGraph::DotGraph(QTextStream &o):
+DotGraph::DotGraph(BOBUIextStream &o):
   out (o)
 {
 }
@@ -16,9 +16,9 @@ void DotGraph::operator () (Automaton *aut)
 {
   Grammar *g = aut->_M_grammar;
 
-  out << "digraph {" << Qt::endl << Qt::endl;
+  out << "digraph {" << BobUI::endl << BobUI::endl;
 
-  out << "subgraph Includes {" << Qt::endl;
+  out << "subgraph Includes {" << BobUI::endl;
   for (Automaton::IncludesGraph::iterator incl = Automaton::IncludesGraph::begin_nodes ();
        incl != Automaton::IncludesGraph::end_nodes (); ++incl)
     {
@@ -28,14 +28,14 @@ void DotGraph::operator () (Automaton *aut)
           out << "\t->\t";
           out << "\"(" << aut->id ((*edge)->data.state) << ", " << (*edge)->data.nt << ")\"\t";
           out << "[label=\"" << incl->data.state->follows [incl->data.nt] << "\"]";
-          out << Qt::endl;
+          out << BobUI::endl;
         }
     }
-  out << "}" << Qt::endl << Qt::endl;
+  out << "}" << BobUI::endl << BobUI::endl;
 
 
-  out << "subgraph LRA {" << Qt::endl;
-  //out << "node [shape=record];" << Qt::endl << Qt::endl;
+  out << "subgraph LRA {" << BobUI::endl;
+  //out << "node [shape=record];" << BobUI::endl << BobUI::endl;
 
   for (StatePointer q = aut->states.begin (); q != aut->states.end (); ++q)
     {
@@ -49,16 +49,16 @@ void DotGraph::operator () (Automaton *aut)
       for (ItemPointer item = q->kernel.begin (); item != q->kernel.end (); ++item)
         out << "| <" << index++ << "> " << *item;
 
-      out << "}\"]" << Qt::endl;
+      out << "}\"]" << BobUI::endl;
 
       for (Bundle::iterator a = q->bundle.begin (); a != q->bundle.end (); ++a)
         {
           const char *clr = g->isTerminal (a.key ()) ? "blue" : "red";
-          out << "\t" << state << "\t->\t" << aut->id (*a) << "\t[color=\"" << clr << "\",label=\"" << a.key () << "\"]" << Qt::endl;
+          out << "\t" << state << "\t->\t" << aut->id (*a) << "\t[color=\"" << clr << "\",label=\"" << a.key () << "\"]" << BobUI::endl;
         }
-      out << Qt::endl;
+      out << BobUI::endl;
     }
 
-  out << "}" << Qt::endl;
-  out << Qt::endl << Qt::endl << "}" << Qt::endl;
+  out << "}" << BobUI::endl;
+  out << BobUI::endl << BobUI::endl << "}" << BobUI::endl;
 }

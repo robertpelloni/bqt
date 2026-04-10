@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #ifndef QMAKEPARSER_H
 #define QMAKEPARSER_H
@@ -15,7 +15,7 @@
 # include <qwaitcondition.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QMAKE_EXPORT QMakeParserHandler
 {
 public:
@@ -165,7 +165,7 @@ private:
     QMakeVfs *m_vfs;
 
     // This doesn't help gcc 3.3 ...
-    template<typename T> friend class QTypeInfo;
+    template<typename T> friend class BOBUIypeInfo;
 
     friend class ProFileCache;
 };
@@ -209,6 +209,6 @@ Q_DECLARE_TYPEINFO(QMakeParser::BlockScope, Q_RELOCATABLE_TYPE);
 Q_DECLARE_TYPEINFO(QMakeParser::Context, Q_PRIMITIVE_TYPE);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // PROFILEPARSER_H

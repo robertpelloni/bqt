@@ -1,7 +1,7 @@
-// Copyright (C) 2018 The Qt Company Ltd.
+// Copyright (C) 2018 The BobUI Company Ltd.
 // Copyright (c) 2007-2008, Apple, Inc.
 // SPDX-License-Identifier: BSD-3-Clause
-// Qt-Security score:significant reason:default
+// BobUI-Security score:significant reason:default
 
 #include <AppKit/AppKit.h>
 
@@ -14,7 +14,7 @@
 #include "qcocoansmenu.h"
 #include "qcocoahelpers.h"
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
 #  include "qcocoasessionmanager.h"
 #endif
 
@@ -25,9 +25,9 @@
 #include <qpa/qwindowsysteminterface.h>
 #include <qwindowdefs.h>
 
-#include <QtCore/private/qdarwinsecurityscopedfileengine_p.h>
+#include <BobUICore/private/qdarwinsecurityscopedfileengine_p.h>
 
-QT_USE_NAMESPACE
+BOBUI_USE_NAMESPACE
 
 @implementation QCocoaApplicationDelegate {
     NSObject <NSApplicationDelegate> *reflectionDelegate;
@@ -73,7 +73,7 @@ QT_USE_NAMESPACE
 {
     Q_UNUSED(sender);
     // Manually invoke the delegate's -menuWillOpen: method.
-    // See QTBUG-39604 (and its fix) for details.
+    // See BOBUIBUG-39604 (and its fix) for details.
     [self.dockMenu.delegate menuWillOpen:self.dockMenu];
     return [[self.dockMenu retain] autorelease];
 }
@@ -85,14 +85,14 @@ QT_USE_NAMESPACE
         return [reflectionDelegate applicationShouldTerminate:sender];
 
     if (QGuiApplicationPrivate::instance()->threadData.loadRelaxed()->eventLoops.isEmpty()) {
-        // No event loop is executing. This probably means that Qt is used as a plugin,
+        // No event loop is executing. This probably means that BobUI is used as a plugin,
         // or as a part of a native Cocoa application. In any case it should be fine to
         // terminate now.
         qCDebug(lcQpaApplication) << "No running event loops, terminating now";
         return NSTerminateNow;
     }
 
-#if QT_CONFIG(sessionmanager)
+#if BOBUI_CONFIG(sessionmanager)
     QCocoaSessionManager *cocoaSessionManager = QCocoaSessionManager::instance();
     cocoaSessionManager->resetCancellation();
     cocoaSessionManager->appCommitData();
@@ -130,7 +130,7 @@ QT_USE_NAMESPACE
     */
 
     /*
-        If Qt is used as a plugin, we let the 3rd party application handle
+        If BobUI is used as a plugin, we let the 3rd party application handle
         events like quit and open file events. Otherwise, if we install our own
         handlers, we easily end up breaking functionality the 3rd party
         application depends on.
@@ -161,12 +161,12 @@ QT_USE_NAMESPACE
 
     inLaunch = false;
 
-    if (qEnvironmentVariableIsEmpty("QT_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM")) {
+    if (qEnvironmentVariableIsEmpty("BOBUI_MAC_DISABLE_FOREGROUND_APPLICATION_TRANSFORM")) {
         auto currentApplication = NSRunningApplication.currentApplication;
         if (!currentApplication.active) {
             // Move the application to front to avoid launching behind the terminal.
             // Ignoring other apps is necessary (we must ignore the terminal), but makes
-            // Qt apps play slightly less nice with other apps when launching from Finder
+            // BobUI apps play slightly less nice with other apps when launching from Finder
             // (see the activateIgnoringOtherApps docs). FIXME: Try to distinguish between
             // being non-active here because another application stole activation in the
             // time it took us to launch from Finder, and being non-active because we were
@@ -178,7 +178,7 @@ QT_USE_NAMESPACE
         }
 
         if (QOperatingSystemVersion::current() >= QOperatingSystemVersion::MacOSSonoma) {
-            // Qt windows are typically shown in main(), at which point the application
+            // BobUI windows are typically shown in main(), at which point the application
             // is not active yet. When the application is activated, either externally
             // or via the override above, it will only bring the main and key windows
             // forward, which differs from the behavior if these windows had been shown
@@ -207,7 +207,7 @@ QT_USE_NAMESPACE
     in which case the call comes in between willFinishLaunching
     and didFinishLaunching. In this case we don't pass on the
     incoming file paths as file open events, as the paths are
-    also part of the command line arguments, and Qt applications
+    also part of the command line arguments, and BobUI applications
     normally expect to handle file opening via those.
 
     \note The app must register itself as a handler for each file
@@ -219,16 +219,16 @@ QT_USE_NAMESPACE
     Q_UNUSED(sender);
 
     for (NSString *fileName in filenames) {
-        QString qtFileName = QString::fromNSString(fileName);
+        QString bobuiFileName = QString::fromNSString(fileName);
         if (inLaunch) {
             // We need to be careful because Cocoa will be nice enough to take
             // command line arguments and send them to us as events. Given the history
-            // of Qt Applications, this will result in behavior people don't want, as
+            // of BobUI Applications, this will result in behavior people don't want, as
             // they might be doing the opening themselves with the command line parsing.
-            if (qApp->arguments().contains(qtFileName))
+            if (qApp->arguments().contains(bobuiFileName))
                 continue;
         }
-        QUrl url = qt_apple_urlFromPossiblySecurityScopedURL([NSURL fileURLWithPath:fileName]);
+        QUrl url = bobui_apple_urlFromPossiblySecurityScopedURL([NSURL fileURLWithPath:fileName]);
         QWindowSystemInterface::handleFileOpenEvent(url);
         // FIXME: We're supposed to call [NSApp replyToOpenOrPrint:] here, but we
         //  don't know if the open operation succeeded, failed, or was cancelled.
@@ -257,7 +257,7 @@ QT_USE_NAMESPACE
     if ([reflectionDelegate respondsToSelector:_cmd])
         [reflectionDelegate applicationDidBecomeActive:notification];
 
-    QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationActive);
+    QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationActive);
 
     if (QCocoaWindow::s_windowUnderMouse) {
         QPointF windowPoint;
@@ -275,7 +275,7 @@ QT_USE_NAMESPACE
     if ([reflectionDelegate respondsToSelector:_cmd])
         [reflectionDelegate applicationDidResignActive:notification];
 
-    QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationInactive);
+    QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationInactive);
 
     if (QCocoaWindow::s_windowUnderMouse) {
         QWindow *windowUnderMouse = QCocoaWindow::s_windowUnderMouse->window();
@@ -292,7 +292,7 @@ QT_USE_NAMESPACE
     running application because someone double-clicked it again or used
     the dock to activate it.
 
-    We pass the activation on to Qt, and return YES, to let AppKit
+    We pass the activation on to BobUI, and return YES, to let AppKit
     follow its normal flow.
  */
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
@@ -307,7 +307,7 @@ QT_USE_NAMESPACE
        app that has no windows opened would need the event be to delivered even if it was already
        active in order to create a new window as per OS X conventions.
      */
-    QWindowSystemInterface::handleApplicationStateChanged(Qt::ApplicationActive, true /*forcePropagate*/);
+    QWindowSystemInterface::handleApplicationStateChanged(BobUI::ApplicationActive, true /*forcePropagate*/);
 
     return YES;
 }
@@ -357,7 +357,7 @@ QT_USE_NAMESPACE
     as a special NSUserActivityTypeBrowsingWeb activity type, which we
     treat as QDesktopServices::handleUrl().
 
-    Finally, for NS/UIDocument based apps (which Qt is not), the system
+    Finally, for NS/UIDocument based apps (which BobUI is not), the system
     automatically handles document hand-off if the application includes
     the NSUbiquitousDocumentUserActivityType key in its Info.plist.
  */
@@ -447,13 +447,13 @@ QT_USE_NAMESPACE
 {
     qCDebug(lcQpaMenus) << "Validating" << item << "for" << self;
 
-    auto *nativeItem = qt_objc_cast<QCocoaNSMenuItem *>(item);
+    auto *nativeItem = bobui_objc_cast<QCocoaNSMenuItem *>(item);
     if (!nativeItem)
-        return item.enabled; // FIXME Test with with Qt as plugin or embedded QWindow.
+        return item.enabled; // FIXME Test with with BobUI as plugin or embedded QWindow.
 
     auto *platformItem = nativeItem.platformMenuItem;
     if (!platformItem) // Try a bit harder with orphan menu items
-        return item.hasSubmenu || (item.enabled && (item.action != @selector(qt_itemFired:)));
+        return item.hasSubmenu || (item.enabled && (item.action != @selector(bobui_itemFired:)));
 
     // Menu-holding items are always enabled, as it's conventional in Cocoa
     if (platformItem->menu())
@@ -466,14 +466,14 @@ QT_USE_NAMESPACE
 
 @implementation QCocoaApplicationDelegate (MenuAPI)
 
-- (void)qt_itemFired:(QCocoaNSMenuItem *)item
+- (void)bobui_itemFired:(QCocoaNSMenuItem *)item
 {
     qCDebug(lcQpaMenus) << "Activating" << item;
 
     if (item.hasSubmenu)
         return;
 
-    auto *nativeItem = qt_objc_cast<QCocoaNSMenuItem *>(item);
+    auto *nativeItem = bobui_objc_cast<QCocoaNSMenuItem *>(item);
     Q_ASSERT_X(nativeItem, qPrintable(__FUNCTION__), "Triggered menu item is not a QCocoaNSMenuItem.");
     auto *platformItem = nativeItem.platformMenuItem;
     // Menu-holding items also get a target to play nicely
@@ -484,7 +484,7 @@ QT_USE_NAMESPACE
     QGuiApplicationPrivate::modifier_buttons = QAppleKeyMapper::fromCocoaModifiers([NSEvent modifierFlags]);
 
     static QMetaMethod activatedSignal = QMetaMethod::fromSignal(&QCocoaMenuItem::activated);
-    activatedSignal.invoke(platformItem, Qt::QueuedConnection);
+    activatedSignal.invoke(platformItem, BobUI::QueuedConnection);
 }
 
 @end

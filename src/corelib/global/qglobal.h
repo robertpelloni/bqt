@@ -1,12 +1,12 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2019 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QGLOBAL_H
 #define QGLOBAL_H
 
 #if 0
-#pragma qt_class(QtGlobal)
+#pragma bobui_class(BobUIGlobal)
 #endif
 
 #ifdef __cplusplus
@@ -21,52 +21,52 @@
 #  include <stddef.h>
 #endif
 
-#include <QtCore/qtcoreglobal.h>
+#include <BobUICore/bobuicoreglobal.h>
 
-#include <QtCore/qtpreprocessorsupport.h>
+#include <BobUICore/bobuipreprocessorsupport.h>
 
-#include <QtCore/qsystemdetection.h>
-#include <QtCore/qprocessordetection.h>
-#include <QtCore/qcompilerdetection.h>
+#include <BobUICore/qsystemdetection.h>
+#include <BobUICore/qprocessordetection.h>
+#include <BobUICore/qcompilerdetection.h>
 
 #ifndef __ASSEMBLER__
-#  include <QtCore/qassert.h>
-#  include <QtCore/qtnoop.h>
-#  include <QtCore/qtypes.h>
+#  include <BobUICore/qassert.h>
+#  include <BobUICore/bobuinoop.h>
+#  include <BobUICore/bobuiypes.h>
 #endif /* !__ASSEMBLER__ */
-#include <QtCore/qtversion.h>
+#include <BobUICore/bobuiversion.h>
 
 #if defined(__cplusplus)
 
-#include <QtCore/qtclasshelpermacros.h>
+#include <BobUICore/bobuiclasshelpermacros.h>
 
-// We need to keep QTypeInfo, QSysInfo, QFlags, qDebug & family in qglobal.h for compatibility with Qt 4.
+// We need to keep BOBUIypeInfo, QSysInfo, QFlags, qDebug & family in qglobal.h for compatibility with BobUI 4.
 // Be careful when changing the order of these files.
-#include <QtCore/qtypeinfo.h>
-#include <QtCore/qsysinfo.h>
-#include <QtCore/qlogging.h>
+#include <BobUICore/bobuiypeinfo.h>
+#include <BobUICore/qsysinfo.h>
+#include <BobUICore/qlogging.h>
 
-#include <QtCore/qflags.h>
+#include <BobUICore/qflags.h>
 
-#include <QtCore/qatomic.h>
-#include <QtCore/qconstructormacros.h>
-#include <QtCore/qdarwinhelpers.h>
-#include <QtCore/qexceptionhandling.h>
-#include <QtCore/qforeach.h>
-#include <QtCore/qfunctionpointer.h>
-#include <QtCore/qglobalstatic.h>
-#include <QtCore/qmalloc.h>
-#include <QtCore/qminmax.h>
-#include <QtCore/qnumeric.h>
-#include <QtCore/qoverload.h>
-#include <QtCore/qswap.h>
-#include <QtCore/qtdeprecationmarkers.h>
-#include <QtCore/qtenvironmentvariables.h>
-#include <QtCore/qtresource.h>
-#include <QtCore/qttranslation.h>
-#include <QtCore/qttypetraits.h>
-#if QT_CONFIG(version_tagging)
-#include <QtCore/qversiontagging.h>
+#include <BobUICore/qatomic.h>
+#include <BobUICore/qconstructormacros.h>
+#include <BobUICore/qdarwinhelpers.h>
+#include <BobUICore/qexceptionhandling.h>
+#include <BobUICore/qforeach.h>
+#include <BobUICore/qfunctionpointer.h>
+#include <BobUICore/qglobalstatic.h>
+#include <BobUICore/qmalloc.h>
+#include <BobUICore/qminmax.h>
+#include <BobUICore/qnumeric.h>
+#include <BobUICore/qoverload.h>
+#include <BobUICore/qswap.h>
+#include <BobUICore/bobuideprecationmarkers.h>
+#include <BobUICore/bobuienvironmentvariables.h>
+#include <BobUICore/bobuiresource.h>
+#include <BobUICore/bobuitranslation.h>
+#include <BobUICore/bobuitypetraits.h>
+#if BOBUI_CONFIG(version_tagging)
+#include <BobUICore/qversiontagging.h>
 #endif
 #endif /* __cplusplus */
 

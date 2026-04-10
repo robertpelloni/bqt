@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.16)
+project(ui_project LANGUAGES CXX)
+
+find_package(BobUI6 REQUIRED COMPONENTS Core Gui Widgets)
+bobui_standard_project_setup(REQUIRES 6.8)
+
+bobui_add_executable(ui_project
+    main.cpp
+    widget.cpp
+    widget.h
+)
+
+target_sources(ui_project
+    PRIVATE
+        widget.ui
+)
+
+target_link_libraries(ui_project
+    PRIVATE
+        BobUI::Core
+        BobUI::Gui
+        BobUI::Widgets
+)

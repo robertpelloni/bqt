@@ -1,2 +1,2 @@
-QT += widgets
+BOBUI += widgets
 SOURCES += main.cpp

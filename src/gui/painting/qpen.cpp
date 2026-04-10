@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 #include "qpen.h"
 #include "qpen_p.h"
 #include "qdatastream.h"
@@ -8,11 +8,11 @@
 
 #include <qdebug.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QPen
-    \inmodule QtGui
+    \inmodule BobUIGui
     \ingroup painting
     \ingroup shared
 
@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
     \snippet code/src_gui_painting_qpen.cpp 1
 
     The default pen is a solid black brush with 1 width, square
-    cap style (Qt::SquareCap), and  bevel join style (Qt::BevelJoin).
+    cap style (BobUI::SquareCap), and  bevel join style (BobUI::BevelJoin).
 
     In addition QPen provides the color() and setColor()
     convenience functions to extract and set the color of the pen's
@@ -58,8 +58,8 @@ QT_BEGIN_NAMESPACE
 
     \section1 Pen Style
 
-    Qt provides several built-in styles represented by the
-    Qt::PenStyle enum:
+    BobUI provides several built-in styles represented by the
+    BobUI::PenStyle enum:
 
     \table
     \row
@@ -67,28 +67,28 @@ QT_BEGIN_NAMESPACE
     \li \inlineimage qpen-dash.png
     \li \inlineimage qpen-dot.png
     \row
-    \li Qt::SolidLine
-    \li Qt::DashLine
-    \li Qt::DotLine
+    \li BobUI::SolidLine
+    \li BobUI::DashLine
+    \li BobUI::DotLine
     \row
     \li \inlineimage qpen-dashdot.png
     \li \inlineimage qpen-dashdotdot.png
     \li \inlineimage qpen-custom.png
     \row
-    \li Qt::DashDotLine
-    \li Qt::DashDotDotLine
-    \li Qt::CustomDashLine
+    \li BobUI::DashDotLine
+    \li BobUI::DashDotDotLine
+    \li BobUI::CustomDashLine
     \endtable
 
     Simply use the setStyle() function to convert the pen style to
-    either of the built-in styles, except the Qt::CustomDashLine style
-    which we will come back to shortly. Setting the style to Qt::NoPen
+    either of the built-in styles, except the BobUI::CustomDashLine style
+    which we will come back to shortly. Setting the style to BobUI::NoPen
     tells the painter to not draw lines or outlines. The default pen
-    style is Qt::SolidLine.
+    style is BobUI::SolidLine.
 
-    Since Qt 4.1 it is also possible to specify a custom dash pattern
+    Since BobUI 4.1 it is also possible to specify a custom dash pattern
     using the setDashPattern() function which implicitly converts the
-    style of the pen to Qt::CustomDashLine. The pattern argument, a
+    style of the pen to BobUI::CustomDashLine. The pattern argument, a
     QList, must be specified as an even number of \l qreal entries
     where the entries 1, 3, 5... are the dashes and 2, 4, 6... are the
     spaces. For example, the custom pattern shown above is created
@@ -107,7 +107,7 @@ QT_BEGIN_NAMESPACE
 
     The cap style defines how the end points of lines are drawn using
     QPainter.  The cap style only apply to wide lines, i.e. when the
-    width is 1 or greater. The Qt::PenCapStyle enum provides the
+    width is 1 or greater. The BobUI::PenCapStyle enum provides the
     following styles:
 
     \table
@@ -116,28 +116,28 @@ QT_BEGIN_NAMESPACE
     \li \inlineimage qpen-flat.png
     \li \inlineimage qpen-roundcap.png
     \row
-    \li Qt::SquareCap
-    \li Qt::FlatCap
-    \li Qt::RoundCap
+    \li BobUI::SquareCap
+    \li BobUI::FlatCap
+    \li BobUI::RoundCap
     \endtable
 
-    The Qt::SquareCap style is a square line end that covers the end
+    The BobUI::SquareCap style is a square line end that covers the end
     point and extends beyond it by half the line width. The
-    Qt::FlatCap style is a square line end that does not cover the end
-    point of the line. And the Qt::RoundCap style is a rounded line
+    BobUI::FlatCap style is a square line end that does not cover the end
+    point of the line. And the BobUI::RoundCap style is a rounded line
     end covering the end point.
 
-    The default is Qt::SquareCap.
+    The default is BobUI::SquareCap.
 
     Whether or not end points are drawn when the pen width is 0 or 1
-    depends on the cap style. Using Qt::SquareCap or Qt::RoundCap they
-    are drawn, using Qt::FlatCap they are not drawn.
+    depends on the cap style. Using BobUI::SquareCap or BobUI::RoundCap they
+    are drawn, using BobUI::FlatCap they are not drawn.
 
     \section1 Join Style
 
     The join style defines how joins between two connected lines can
     be drawn using QPainter. The join style only apply to wide lines,
-    i.e. when the width is 1 or greater. The Qt::PenJoinStyle enum
+    i.e. when the width is 1 or greater. The BobUI::PenJoinStyle enum
     provides the following styles:
 
     \table
@@ -146,22 +146,22 @@ QT_BEGIN_NAMESPACE
     \li \inlineimage qpen-miter.png
     \li \inlineimage qpen-roundjoin.png
     \row
-    \li Qt::BevelJoin
-    \li Qt::MiterJoin
-    \li Qt::RoundJoin
+    \li BobUI::BevelJoin
+    \li BobUI::MiterJoin
+    \li BobUI::RoundJoin
     \endtable
 
-    The Qt::BevelJoin style fills the triangular notch between the two
-    lines. The Qt::MiterJoin style extends the lines to meet at an
-    angle. And the Qt::RoundJoin style fills a circular arc between
+    The BobUI::BevelJoin style fills the triangular notch between the two
+    lines. The BobUI::MiterJoin style extends the lines to meet at an
+    angle. And the BobUI::RoundJoin style fills a circular arc between
     the two lines.
 
-    The default is Qt::BevelJoin.
+    The default is BobUI::BevelJoin.
 
     \image qpen-miterlimit.png {Illustration showing how miterLimit controls
            the length of the sharp corner for miterJoin}
 
-    When the Qt::MiterJoin style is applied, it is possible to use the
+    When the BobUI::MiterJoin style is applied, it is possible to use the
     setMiterLimit() function to specify how far the miter join can
     extend from the join point. The miterLimit() is used to reduce
     artifacts between line joins where the lines are close to
@@ -176,7 +176,7 @@ QT_BEGIN_NAMESPACE
     \li \inlineimage qpen-demo.png
     \li \b {\l {painting/pathstroke}{The Path Stroking Example}}
 
-    The Path Stroking example shows Qt's built-in dash patterns and shows
+    The Path Stroking example shows BobUI's built-in dash patterns and shows
     how custom patterns can be used to extend the range of available
     patterns.
     \endtable
@@ -188,8 +188,8 @@ QT_BEGIN_NAMESPACE
 /*!
   \internal
 */
-QPenPrivate::QPenPrivate(const QBrush &_brush, qreal _width, Qt::PenStyle penStyle,
-                         Qt::PenCapStyle _capStyle, Qt::PenJoinStyle _joinStyle)
+QPenPrivate::QPenPrivate(const QBrush &_brush, qreal _width, BobUI::PenStyle penStyle,
+                         BobUI::PenCapStyle _capStyle, BobUI::PenJoinStyle _joinStyle)
     : dashOffset(0), miterLimit(2),
       cosmetic(false)
 {
@@ -200,15 +200,15 @@ QPenPrivate::QPenPrivate(const QBrush &_brush, qreal _width, Qt::PenStyle penSty
     joinStyle = _joinStyle;
 }
 
-static constexpr Qt::PenCapStyle qpen_default_cap = Qt::SquareCap;
-static constexpr Qt::PenJoinStyle qpen_default_join = Qt::BevelJoin;
+static constexpr BobUI::PenCapStyle qpen_default_cap = BobUI::SquareCap;
+static constexpr BobUI::PenJoinStyle qpen_default_join = BobUI::BevelJoin;
 
 class QPenDataHolder
 {
 public:
     QPen::DataPtr pen;
-    QPenDataHolder(const QBrush &brush, qreal width, Qt::PenStyle penStyle,
-                   Qt::PenCapStyle penCapStyle, Qt::PenJoinStyle _joinStyle)
+    QPenDataHolder(const QBrush &brush, qreal width, BobUI::PenStyle penStyle,
+                   BobUI::PenCapStyle penCapStyle, BobUI::PenJoinStyle _joinStyle)
         : pen(new QPenPrivate(brush, width, penStyle, penCapStyle, _joinStyle))
     { }
     ~QPenDataHolder() = default;
@@ -216,9 +216,9 @@ public:
 };
 
 Q_GLOBAL_STATIC_WITH_ARGS(QPenDataHolder, defaultPenInstance,
-                          (Qt::black, 1, Qt::SolidLine, qpen_default_cap, qpen_default_join))
+                          (BobUI::black, 1, BobUI::SolidLine, qpen_default_cap, qpen_default_join))
 Q_GLOBAL_STATIC_WITH_ARGS(QPenDataHolder, nullPenInstance,
-                          (Qt::black, 1, Qt::NoPen, qpen_default_cap, qpen_default_join))
+                          (BobUI::black, 1, BobUI::NoPen, qpen_default_cap, qpen_default_join))
 
 /*!
     Constructs a default black solid line pen with 1 width.
@@ -235,12 +235,12 @@ QPen::QPen()
     \sa setStyle()
 */
 
-QPen::QPen(Qt::PenStyle style)
+QPen::QPen(BobUI::PenStyle style)
 {
-    if (style == Qt::NoPen) {
+    if (style == BobUI::NoPen) {
         d = nullPenInstance()->pen;
     } else {
-        d = new QPenPrivate(Qt::black, 1, style, qpen_default_cap, qpen_default_join);
+        d = new QPenPrivate(BobUI::black, 1, style, qpen_default_cap, qpen_default_join);
     }
 }
 
@@ -253,12 +253,12 @@ QPen::QPen(Qt::PenStyle style)
 
 QPen::QPen(const QColor &color)
 {
-    d = new QPenPrivate(color, 1, Qt::SolidLine, qpen_default_cap, qpen_default_join);
+    d = new QPenPrivate(color, 1, BobUI::SolidLine, qpen_default_cap, qpen_default_join);
 }
 
 
 /*!
-    \fn QPen::QPen(const QBrush &brush, qreal width, Qt::PenStyle style, Qt::PenCapStyle cap, Qt::PenJoinStyle join)
+    \fn QPen::QPen(const QBrush &brush, qreal width, BobUI::PenStyle style, BobUI::PenCapStyle cap, BobUI::PenJoinStyle join)
 
     Constructs a pen with the specified \a brush, \a width, pen \a style,
     \a cap style and \a join style.
@@ -266,7 +266,7 @@ QPen::QPen(const QColor &color)
     \sa setBrush(), setWidth(), setStyle(), setCapStyle(), setJoinStyle()
 */
 
-QPen::QPen(const QBrush &brush, qreal width, Qt::PenStyle s, Qt::PenCapStyle c, Qt::PenJoinStyle j)
+QPen::QPen(const QBrush &brush, qreal width, BobUI::PenStyle s, BobUI::PenCapStyle c, BobUI::PenJoinStyle j)
 {
     d = new QPenPrivate(brush, width, s, c, j);
 }
@@ -300,7 +300,7 @@ QPen::QPen(const QPen &p) noexcept
 
 QPen::~QPen() = default;
 
-QT_DEFINE_QESDP_SPECIALIZATION_DTOR(QPenPrivate)
+BOBUI_DEFINE_QESDP_SPECIALIZATION_DTOR(QPenPrivate)
 
 /*!
     \fn void QPen::detach()
@@ -357,7 +357,7 @@ QPen &QPen::operator=(QColor color)
     detach();
     d->brush = color;
     d->width = 1;
-    d->style = Qt::SolidLine;
+    d->style = BobUI::SolidLine;
     d->capStyle = qpen_default_cap;
     d->joinStyle = qpen_default_join;
 
@@ -371,13 +371,13 @@ QPen &QPen::operator=(QColor color)
     Makes this pen a solid, black pen with default cap and join styles,
     and returns a reference to \e this pen.
 */
-QPen &QPen::operator=(Qt::PenStyle style)
+QPen &QPen::operator=(BobUI::PenStyle style)
 {
     detach();
-    if (style == Qt::NoPen) {
+    if (style == BobUI::NoPen) {
         d = nullPenInstance()->pen;
     } else {
-        d->brush = Qt::black;
+        d->brush = BobUI::black;
         d->width = 1;
         d->style = style;
         d->capStyle = qpen_default_cap;
@@ -395,32 +395,32 @@ QPen::operator QVariant() const
 }
 
 /*!
-    \fn Qt::PenStyle QPen::style() const
+    \fn BobUI::PenStyle QPen::style() const
 
     Returns the pen style.
 
     \sa setStyle(), {QPen#Pen Style}{Pen Style}
 */
-Qt::PenStyle QPen::style() const
+BobUI::PenStyle QPen::style() const
 {
     return d->style;
 }
 /*!
-    \fn void QPen::setStyle(Qt::PenStyle style)
+    \fn void QPen::setStyle(BobUI::PenStyle style)
 
     Sets the pen style to the given \a style.
 
-    See the \l Qt::PenStyle documentation for a list of the available
-    styles. Since Qt 4.1 it is also possible to specify a custom dash
+    See the \l BobUI::PenStyle documentation for a list of the available
+    styles. Since BobUI 4.1 it is also possible to specify a custom dash
     pattern using the setDashPattern() function which implicitly
-    converts the style of the pen to Qt::CustomDashLine.
+    converts the style of the pen to BobUI::CustomDashLine.
 
     \note This function resets the dash offset to zero.
 
     \sa style(), {QPen#Pen Style}{Pen Style}
 */
 
-void QPen::setStyle(Qt::PenStyle s)
+void QPen::setStyle(BobUI::PenStyle s)
 {
     if (d->style == s)
         return;
@@ -437,7 +437,7 @@ void QPen::setStyle(Qt::PenStyle s)
  */
 QList<qreal> QPen::dashPattern() const
 {
-    if (d->style == Qt::SolidLine || d->style == Qt::NoPen) {
+    if (d->style == BobUI::SolidLine || d->style == BobUI::NoPen) {
         return QList<qreal>();
     } else if (d->dashPattern.isEmpty()) {
         const qreal space = 2;
@@ -445,19 +445,19 @@ QList<qreal> QPen::dashPattern() const
         const qreal dash = 4;
 
         switch (d->style) {
-        case Qt::DashLine:
+        case BobUI::DashLine:
             d->dashPattern.reserve(2);
             d->dashPattern << dash << space;
             break;
-        case Qt::DotLine:
+        case BobUI::DotLine:
             d->dashPattern.reserve(2);
             d->dashPattern << dot << space;
             break;
-        case Qt::DashDotLine:
+        case BobUI::DashDotLine:
             d->dashPattern.reserve(4);
             d->dashPattern << dash << space << dot << space;
             break;
-        case Qt::DashDotDotLine:
+        case BobUI::DashDotDotLine:
             d->dashPattern.reserve(6);
             d->dashPattern << dash << space << dot << space << dot << space;
             break;
@@ -470,7 +470,7 @@ QList<qreal> QPen::dashPattern() const
 
 /*!
     Sets the dash pattern for this pen to the given \a pattern. This
-    implicitly converts the style of the pen to Qt::CustomDashLine.
+    implicitly converts the style of the pen to BobUI::CustomDashLine.
 
     The pattern must be specified as an even number of positive entries
     where the entries 1, 3, 5... are the dashes and 2, 4, 6... are the
@@ -492,7 +492,7 @@ QList<qreal> QPen::dashPattern() const
     cap set will extend 0.5 pixels out in each direction resulting in
     a total width of 2.
 
-    Note that the default cap style is Qt::SquareCap, meaning that a
+    Note that the default cap style is BobUI::SquareCap, meaning that a
     square line end covers the end point and extends beyond it by half
     the line width.
 
@@ -505,7 +505,7 @@ void QPen::setDashPattern(const QList<qreal> &pattern)
     detach();
 
     d->dashPattern = pattern;
-    d->style = Qt::CustomDashLine;
+    d->style = BobUI::CustomDashLine;
 
     if ((d->dashPattern.size() % 2) == 1) {
         qWarning("QPen::setDashPattern: Pattern not of even length");
@@ -539,7 +539,7 @@ qreal QPen::dashOffset() const
     part of the gap.
     \endtable
 
-    \note This implicitly converts the style of the pen to Qt::CustomDashLine.
+    \note This implicitly converts the style of the pen to BobUI::CustomDashLine.
 */
 void QPen::setDashOffset(qreal offset)
 {
@@ -547,15 +547,15 @@ void QPen::setDashOffset(qreal offset)
         return;
     detach();
     d->dashOffset = offset;
-    if (d->style != Qt::CustomDashLine) {
+    if (d->style != BobUI::CustomDashLine) {
         d->dashPattern = dashPattern();
-        d->style = Qt::CustomDashLine;
+        d->style = BobUI::CustomDashLine;
     }
 }
 
 /*!
     Returns the miter limit of the pen. The miter limit is only
-    relevant when the join style is set to Qt::MiterJoin.
+    relevant when the join style is set to BobUI::MiterJoin.
 
     \sa setMiterLimit(), {QPen#Join Style}{Join Style}
 */
@@ -574,7 +574,7 @@ qreal QPen::miterLimit() const
     where the lines are close to parallel.
 
     This value does only have effect when the pen style is set to
-    Qt::MiterJoin. The value is specified in units of the pen's width,
+    BobUI::MiterJoin. The value is specified in units of the pen's width,
     e.g. a miter limit of 5 in width 10 is 50 pixels long. The default
     miter limit is 2, i.e. twice the pen width in pixels.
 
@@ -671,21 +671,21 @@ void QPen::setWidthF(qreal width)
 
     \sa setCapStyle(), {QPen#Cap Style}{Cap Style}
 */
-Qt::PenCapStyle QPen::capStyle() const
+BobUI::PenCapStyle QPen::capStyle() const
 {
     return d->capStyle;
 }
 
 /*!
-    \fn void QPen::setCapStyle(Qt::PenCapStyle style)
+    \fn void QPen::setCapStyle(BobUI::PenCapStyle style)
 
     Sets the pen's cap style to the given \a style. The default value
-    is Qt::SquareCap.
+    is BobUI::SquareCap.
 
     \sa capStyle(), {QPen#Cap Style}{Cap Style}
 */
 
-void QPen::setCapStyle(Qt::PenCapStyle c)
+void QPen::setCapStyle(BobUI::PenCapStyle c)
 {
     if (d->capStyle == c)
         return;
@@ -698,21 +698,21 @@ void QPen::setCapStyle(Qt::PenCapStyle c)
 
     \sa setJoinStyle(), {QPen#Join Style}{Join Style}
 */
-Qt::PenJoinStyle QPen::joinStyle() const
+BobUI::PenJoinStyle QPen::joinStyle() const
 {
     return d->joinStyle;
 }
 
 /*!
-    \fn void QPen::setJoinStyle(Qt::PenJoinStyle style)
+    \fn void QPen::setJoinStyle(BobUI::PenJoinStyle style)
 
     Sets the pen's join style to the given \a style. The default value
-    is Qt::BevelJoin.
+    is BobUI::BevelJoin.
 
     \sa joinStyle(), {QPen#Join Style}{Join Style}
 */
 
-void QPen::setJoinStyle(Qt::PenJoinStyle j)
+void QPen::setJoinStyle(BobUI::PenJoinStyle j)
 {
     if (d->joinStyle == j)
         return;
@@ -775,7 +775,7 @@ void QPen::setBrush(const QBrush &brush)
 */
 bool QPen::isSolid() const
 {
-    return d->brush.style() == Qt::SolidPattern;
+    return d->brush.style() == BobUI::SolidPattern;
 }
 
 
@@ -816,7 +816,7 @@ void QPen::setCosmetic(bool cosmetic)
 */
 bool QPen::isSolidDefaultLine() const noexcept
 {
-    return d->style == Qt::SolidLine && d->width == 1
+    return d->style == BobUI::SolidLine && d->width == 1
         && d->capStyle == qpen_default_cap && d->joinStyle == qpen_default_join
         && qFuzzyCompare(d->dashOffset, 0) && qFuzzyCompare(d->miterLimit, 2)
         && d->cosmetic == false;
@@ -850,7 +850,7 @@ bool QPen::operator==(const QPen &p) const
             && p.d->joinStyle == d->joinStyle
             && p.d->width == d->width
             && p.d->miterLimit == d->miterLimit
-            && (d->style != Qt::CustomDashLine
+            && (d->style != BobUI::CustomDashLine
                 || (qFuzzyCompare(p.d->dashOffset, d->dashOffset) &&
                     p.d->dashPattern == d->dashPattern))
             && p.d->brush == d->brush
@@ -868,10 +868,10 @@ bool QPen::doCompareEqualColor(QColor rhs) const noexcept
 /*!
     \internal
 */
-bool QPen::doCompareEqualStyle(Qt::PenStyle rhs) const
+bool QPen::doCompareEqualStyle(BobUI::PenStyle rhs) const
 {
-    if (rhs == Qt::NoPen)
-        return style() == Qt::NoPen;
+    if (rhs == BobUI::NoPen)
+        return style() == BobUI::NoPen;
     return *this == QPen(rhs); // ### optimize (allocates)
 }
 
@@ -890,7 +890,7 @@ bool QPen::isDetached()
 /*****************************************************************************
   QPen stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 /*!
     \fn QDataStream &operator<<(QDataStream &stream, const QPen &pen)
     \relates QPen
@@ -898,14 +898,14 @@ bool QPen::isDetached()
     Writes the given \a pen to the given \a stream and returns a reference to
     the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator<<(QDataStream &s, const QPen &p)
 {
     if (s.version() < 3) {
         s << (quint8)p.style();
-    } else if (s.version() < QDataStream::Qt_4_3) {
+    } else if (s.version() < QDataStream::BobUI_4_3) {
         s << (quint8)(uint(p.style()) | uint(p.capStyle()) | uint(p.joinStyle()));
     } else {
         s << (quint16)(uint(p.style()) | uint(p.capStyle()) | uint(p.joinStyle()));
@@ -932,7 +932,7 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
         }
         if (s.version() >= 9)
             s << double(p.dashOffset());
-        if (s.version() >= QDataStream::Qt_5_0)
+        if (s.version() >= QDataStream::BobUI_5_0)
             s << bool(qFuzzyIsNull(p.widthF()));
     }
     return s;
@@ -945,7 +945,7 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
     Reads a pen from the given \a stream into the given \a pen and
     returns a reference to the \a stream.
 
-    \sa {Serializing Qt Data Types}
+    \sa {Serializing BobUI Data Types}
 */
 
 QDataStream &operator>>(QDataStream &s, QPen &p)
@@ -960,7 +960,7 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     double dashOffset = 0;
     bool cosmetic = false;
     bool defaultWidth;
-    if (s.version() < QDataStream::Qt_4_3) {
+    if (s.version() < QDataStream::BobUI_4_3) {
         quint8 style8;
         s >> style8;
         style = style8;
@@ -993,16 +993,16 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
             s >> dashOffset;
     }
 
-    if (s.version() >= QDataStream::Qt_5_0) {
+    if (s.version() >= QDataStream::BobUI_5_0) {
         s >> defaultWidth;
     }
 
     p.detach();
     p.d->width = width;
     p.d->brush = brush;
-    p.d->style = Qt::PenStyle(style & Qt::MPenStyle);
-    p.d->capStyle = Qt::PenCapStyle(style & Qt::MPenCapStyle);
-    p.d->joinStyle = Qt::PenJoinStyle(style & Qt::MPenJoinStyle);
+    p.d->style = BobUI::PenStyle(style & BobUI::MPenStyle);
+    p.d->capStyle = BobUI::PenCapStyle(style & BobUI::MPenCapStyle);
+    p.d->joinStyle = BobUI::PenJoinStyle(style & BobUI::MPenJoinStyle);
     p.d->dashPattern = dashPattern;
     p.d->miterLimit = miterLimit;
     p.d->dashOffset = dashOffset;
@@ -1010,9 +1010,9 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
 
     return s;
 }
-#endif //QT_NO_DATASTREAM
+#endif //BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QPen &p)
 {
     QDebugStateSaver saver(dbg);
@@ -1036,6 +1036,6 @@ QDebug operator<<(QDebug dbg, const QPen &p)
     \internal
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-#undef QT_COMPILING_QPEN
+#undef BOBUI_COMPILING_QPEN

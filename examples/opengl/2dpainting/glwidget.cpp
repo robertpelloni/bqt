@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "glwidget.h"
 #include "helper.h"
 
 #include <QPainter>
-#include <QTimer>
+#include <BOBUIimer>
 
 //! [0]
 GLWidget::GLWidget(Helper *helper, QWidget *parent)
@@ -20,7 +20,7 @@ GLWidget::GLWidget(Helper *helper, QWidget *parent)
 //! [1]
 void GLWidget::animate()
 {
-    elapsed = (elapsed + qobject_cast<QTimer*>(sender())->interval()) % 1000;
+    elapsed = (elapsed + qobject_cast<BOBUIimer*>(sender())->interval()) % 1000;
     update();
 }
 //! [1]

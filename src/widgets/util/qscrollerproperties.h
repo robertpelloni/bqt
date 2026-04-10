@@ -1,18 +1,18 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QSCROLLERPROPERTIES_H
 #define QSCROLLERPROPERTIES_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtCore/QScopedPointer>
-#include <QtCore/QMetaType>
-#include <QtCore/QVariant>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUICore/QScopedPointer>
+#include <BobUICore/QMetaType>
+#include <BobUICore/QVariant>
 
-QT_REQUIRE_CONFIG(scroller);
+BOBUI_REQUIRE_CONFIG(scroller);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QScroller;
@@ -93,11 +93,11 @@ private:
     friend class QScrollerPrivate;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
-QT_DECL_METATYPE_EXTERN_TAGGED(QScrollerProperties::OvershootPolicy,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QScrollerProperties::OvershootPolicy,
                                QScrollerProperties__OvershootPolicy, Q_WIDGETS_EXPORT)
-QT_DECL_METATYPE_EXTERN_TAGGED(QScrollerProperties::FrameRates,
+BOBUI_DECL_METATYPE_EXTERN_TAGGED(QScrollerProperties::FrameRates,
                                QScrollerProperties__FrameRates, Q_WIDGETS_EXPORT)
 
 #endif // QSCROLLERPROPERTIES_H

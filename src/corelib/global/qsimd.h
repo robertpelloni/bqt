@@ -1,14 +1,14 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2022 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSIMD_H
 #define QSIMD_H
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 /*
- * qconfig.h defines the QT_COMPILER_SUPPORTS_XXX macros.
+ * qconfig.h defines the BOBUI_COMPILER_SUPPORTS_XXX macros.
  * They mean the compiler supports the necessary flags and the headers
  * for the x86 and ARM intrinsics.
  *
@@ -27,7 +27,7 @@
  *  lasx       | loongarch
  *
  * Code can use the following constructs to determine compiler support & status:
- * - #if QT_COMPILER_USES(XXX) (e.g: #if QT_COMPILER_USES(neon) or QT_COMPILER_USES(sse4_1)
+ * - #if BOBUI_COMPILER_USES(XXX) (e.g: #if BOBUI_COMPILER_USES(neon) or BOBUI_COMPILER_USES(sse4_1)
  *   If this test passes, then the compiler is already generating code using the
  *   given instruction set. The intrinsics for those instructions are
  *   #included and can be used without restriction or runtime check.
@@ -36,53 +36,53 @@
  * currently not supported here, have a look at qsimd_p.h for support.
  */
 
-#define QT_COMPILER_USES(feature) (1/QT_COMPILER_USES_##feature == 1)
+#define BOBUI_COMPILER_USES(feature) (1/BOBUI_COMPILER_USES_##feature == 1)
 
 #if defined(Q_PROCESSOR_ARM) && defined(__ARM_NEON) || defined(__ARM_NEON__) || defined(_M_ARM64)
 #  include <arm_neon.h>
-#  define QT_COMPILER_USES_neon 1
+#  define BOBUI_COMPILER_USES_neon 1
 #else
-#  define QT_COMPILER_USES_neon -1
+#  define BOBUI_COMPILER_USES_neon -1
 #endif
 
 // To avoid to many untestable fringe cases we so far only support 64bit LE in SVE code
-// The test for QT_COMPILER_SUPPORTS_SVE ensures the intrinsics exists
-#if defined(Q_PROCESSOR_ARM_64) && defined(__ARM_FEATURE_SVE) && defined(Q_LITTLE_ENDIAN) && defined(QT_COMPILER_SUPPORTS_SVE)
+// The test for BOBUI_COMPILER_SUPPORTS_SVE ensures the intrinsics exists
+#if defined(Q_PROCESSOR_ARM_64) && defined(__ARM_FEATURE_SVE) && defined(Q_LITTLE_ENDIAN) && defined(BOBUI_COMPILER_SUPPORTS_SVE)
 #  include <arm_sve.h>
-#  define QT_COMPILER_USES_sve 1
+#  define BOBUI_COMPILER_USES_sve 1
 #else
-#  define QT_COMPILER_USES_sve -1
+#  define BOBUI_COMPILER_USES_sve -1
 #endif
 
 #if defined(Q_PROCESSOR_MIPS) && (defined(__MIPS_DSP__) || (defined(__mips_dsp) && defined(Q_PROCESSOR_MIPS_32)))
-#  define QT_COMPILER_USES_mips_dsp 1
+#  define BOBUI_COMPILER_USES_mips_dsp 1
 #else
-#  define QT_COMPILER_USES_mips_dsp -1
+#  define BOBUI_COMPILER_USES_mips_dsp -1
 #endif
 
 #if defined(Q_PROCESSOR_MIPS) && (defined(__MIPS_DSPR2__) || (defined(__mips_dspr2) && defined(Q_PROCESSOR_MIPS_32)))
-#  define QT_COMPILER_USES_mips_dspr2 1
+#  define BOBUI_COMPILER_USES_mips_dspr2 1
 #else
-#  define QT_COMPILER_USES_mips_dspr2 -1
+#  define BOBUI_COMPILER_USES_mips_dspr2 -1
 #endif
 
 #if defined(Q_PROCESSOR_LOONGARCH) && defined(__loongarch_sx)
 #  include <lsxintrin.h>
-#  define QT_COMPILER_USES_lsx 1
+#  define BOBUI_COMPILER_USES_lsx 1
 #else
-#  define QT_COMPILER_USES_lsx -1
+#  define BOBUI_COMPILER_USES_lsx -1
 #endif
 
 #if defined(Q_PROCESSOR_LOONGARCH) && defined(__loongarch_asx)
 #  include <lasxintrin.h>
-#  define QT_COMPILER_USES_lasx 1
+#  define BOBUI_COMPILER_USES_lasx 1
 #else
-#  define QT_COMPILER_USES_lasx -1
+#  define BOBUI_COMPILER_USES_lasx -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(Q_CC_MSVC)
 // MSVC doesn't define __SSE2__, so do it ourselves
-#  if (defined(_M_X64) || _M_IX86_FP >= 2) && defined(QT_COMPILER_SUPPORTS_SSE2)
+#  if (defined(_M_X64) || _M_IX86_FP >= 2) && defined(BOBUI_COMPILER_SUPPORTS_SSE2)
 #    define __SSE__ 1
 #    define __SSE2__ 1
 #  endif
@@ -99,7 +99,7 @@
 #    endif
 #  endif
 #  ifdef __SSE2__
-#    define QT_VECTORCALL __vectorcall
+#    define BOBUI_VECTORCALL __vectorcall
 #  endif
 #  ifdef __AVX2__
 // MSVC defines __AVX2__ with /arch:AVX2
@@ -116,52 +116,52 @@
 
 #if defined(Q_PROCESSOR_X86) && defined(__SSE2__)
 #  include <immintrin.h>
-#  define QT_COMPILER_USES_sse2 1
+#  define BOBUI_COMPILER_USES_sse2 1
 #else
-#  define QT_COMPILER_USES_sse2 -1
+#  define BOBUI_COMPILER_USES_sse2 -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__SSE3__)
-#  define QT_COMPILER_USES_sse3 1
+#  define BOBUI_COMPILER_USES_sse3 1
 #else
-#  define QT_COMPILER_USES_sse3 -1
+#  define BOBUI_COMPILER_USES_sse3 -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__SSSE3__)
-#  define QT_COMPILER_USES_ssse3 1
+#  define BOBUI_COMPILER_USES_ssse3 1
 #else
-#  define QT_COMPILER_USES_ssse3 -1
+#  define BOBUI_COMPILER_USES_ssse3 -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__SSE4_1__)
-#  define QT_COMPILER_USES_sse4_1 1
+#  define BOBUI_COMPILER_USES_sse4_1 1
 #else
-#  define QT_COMPILER_USES_sse4_1 -1
+#  define BOBUI_COMPILER_USES_sse4_1 -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__SSE4_2__)
-#  define QT_COMPILER_USES_sse4_2 1
+#  define BOBUI_COMPILER_USES_sse4_2 1
 #else
-#  define QT_COMPILER_USES_sse4_2 -1
+#  define BOBUI_COMPILER_USES_sse4_2 -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__AVX__)
-#  define QT_COMPILER_USES_avx 1
+#  define BOBUI_COMPILER_USES_avx 1
 #else
-#  define QT_COMPILER_USES_avx -1
+#  define BOBUI_COMPILER_USES_avx -1
 #endif
 
 #if defined(Q_PROCESSOR_X86) && defined(__AVX2__)
-#  define QT_COMPILER_USES_avx2 1
+#  define BOBUI_COMPILER_USES_avx2 1
 #else
-#  define QT_COMPILER_USES_avx2 -1
+#  define BOBUI_COMPILER_USES_avx2 -1
 #endif
 
-#ifndef QT_VECTORCALL
-#define QT_VECTORCALL
+#ifndef BOBUI_VECTORCALL
+#define BOBUI_VECTORCALL
 #endif
 
-QT_BEGIN_NAMESPACE
-QT_END_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSIMD_H

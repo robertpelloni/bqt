@@ -1,5 +1,5 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #ifndef CONTROLLERWIDGET_H
 #define CONTROLLERWIDGET_H
@@ -8,11 +8,11 @@
 #include <QGroupBox>
 #include <QScopedPointer>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class QSpinBox;
 class QLabel;
 class QGridLayout;
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 class TypeControl;
 class HintControl;
@@ -97,8 +97,8 @@ private:
     virtual QPoint objectFramePosition(const QObject *o) const = 0;
     virtual void setObjectFramePosition(QObject *o, const QPoint &) const = 0;
 
-    virtual Qt::WindowFlags objectWindowFlags(const QObject *o) const = 0;
-    virtual void setObjectWindowFlags(QObject *o, Qt::WindowFlags) = 0;
+    virtual BobUI::WindowFlags objectWindowFlags(const QObject *o) const = 0;
+    virtual void setObjectWindowFlags(QObject *o, BobUI::WindowFlags) = 0;
 
     virtual QPoint objectMapToGlobal(const QObject *o, const QPoint &) const = 0;
 

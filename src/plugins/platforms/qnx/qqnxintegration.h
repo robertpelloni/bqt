@@ -1,22 +1,22 @@
 // Copyright (C) 2011 - 2013 BlackBerry Limited. All rights reserved.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QQNXINTEGRATION_H
 #define QQNXINTEGRATION_H
 
 #include <qpa/qplatformintegration.h>
-#include <private/qtguiglobal_p.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qmutex.h>
+#include <private/bobuiguiglobal_p.h>
+#include <BobUICore/qhash.h>
+#include <BobUICore/qmutex.h>
 
 #include <screen/screen.h>
-#include <QtCore/QLoggingCategory>
+#include <BobUICore/QLoggingCategory>
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
 #include <EGL/egl.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(lcQpaQnx);
 Q_DECLARE_LOGGING_CATEGORY(lcQpaGLContext);
@@ -35,12 +35,12 @@ class QQnxServices;
 class QSimpleDrag;
 class QQnxInputContext;
 
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
 class QQnxNavigatorEventNotifier;
 class QQnxButtonEventNotifier;
 #endif
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
 class QQnxClipboard;
 #endif
 
@@ -69,7 +69,7 @@ public:
     QPlatformWindow *createPlatformWindow(QWindow *window) const override;
     QPlatformBackingStore *createPlatformBackingStore(QWindow *window) const override;
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     EGLDisplay eglDisplay() const { return m_eglDisplay; }
     QPlatformOpenGLContext *createPlatformOpenGLContext(QOpenGLContext *context) const override;
 #endif
@@ -86,10 +86,10 @@ public:
 
     QPlatformNativeInterface *nativeInterface() const override;
 
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
     QPlatformClipboard *clipboard() const override;
 #endif
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QPlatformDrag *drag() const override;
 #endif
     QVariant styleHint(StyleHint hint) const override;
@@ -124,7 +124,7 @@ private:
     QQnxNavigatorEventHandler *m_navigatorEventHandler;
     QQnxAbstractVirtualKeyboard *m_virtualKeyboard;
     QQnxInputContext *m_inputContext;
-#if QT_CONFIG(qqnx_pps)
+#if BOBUI_CONFIG(qqnx_pps)
     QQnxNavigatorEventNotifier *m_navigatorEventNotifier;
     QQnxButtonEventNotifier *m_buttonsNotifier;
 #endif
@@ -135,11 +135,11 @@ private:
     QQnxNativeInterface *m_nativeInterface;
     QList<QQnxScreen*> m_screens;
     QQnxScreenEventHandler *m_screenEventHandler;
-#if !defined(QT_NO_CLIPBOARD)
+#if !defined(BOBUI_NO_CLIPBOARD)
     mutable QQnxClipboard* m_clipboard;
 #endif
     QQnxAbstractNavigator *m_navigator;
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     QSimpleDrag *m_drag;
 #endif
     QQnxWindowMapper m_windowMapper;
@@ -147,7 +147,7 @@ private:
 
     Options m_options;
 
-#if QT_CONFIG(opengl)
+#if BOBUI_CONFIG(opengl)
     EGLDisplay m_eglDisplay;
     void createEglDisplay();
     void destroyEglDisplay();
@@ -158,6 +158,6 @@ private:
     friend class QQnxWindow;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QQNXINTEGRATION_H

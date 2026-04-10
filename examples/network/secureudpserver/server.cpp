@@ -1,5 +1,5 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "server.h"
 
@@ -38,7 +38,7 @@ DtlsServer::DtlsServer()
     connect(&serverSocket, &QAbstractSocket::readyRead, this, &DtlsServer::readyRead);
 
     serverConfiguration = QSslConfiguration::defaultDtlsConfiguration();
-    serverConfiguration.setPreSharedKeyIdentityHint("Qt DTLS example server");
+    serverConfiguration.setPreSharedKeyIdentityHint("BobUI DTLS example server");
     serverConfiguration.setPeerVerifyMode(QSslSocket::VerifyNone);
 }
 //! [1]
@@ -83,7 +83,7 @@ void DtlsServer::readyRead()
         return;
     }
 
-    QByteArray dgram(bytesToRead, Qt::Uninitialized);
+    QByteArray dgram(bytesToRead, BobUI::Uninitialized);
     QHostAddress peerAddress;
     quint16 peerPort = 0;
     const qint64 bytesRead = serverSocket.readDatagram(dgram.data(), dgram.size(),

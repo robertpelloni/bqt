@@ -1,8 +1,8 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
-#include <QtWidgets>
-#include <qtest.h>
+#include <BobUIWidgets>
+#include <bobuiest.h>
 
 #include "dummyobject.h"
 #include "dummyanimation.h"
@@ -33,9 +33,9 @@ private:
 
 void tst_qanimation::data()
 {
-    QTest::addColumn<bool>("started");
-    QTest::newRow("NotRunning") << false;
-    QTest::newRow("Running") << true;
+    BOBUIest::addColumn<bool>("started");
+    BOBUIest::newRow("NotRunning") << false;
+    BOBUIest::newRow("Running") << true;
 }
 
 void tst_qanimation::itemPropertyAnimation()
@@ -148,6 +148,6 @@ void tst_qanimation::floatAnimation()
 
 
 
-QTEST_MAIN(tst_qanimation)
+BOBUIEST_MAIN(tst_qanimation)
 
 #include "main.moc"

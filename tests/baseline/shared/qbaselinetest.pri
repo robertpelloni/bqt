@@ -1,4 +1,4 @@
-QT *= testlib
+BOBUI *= testlib
 
 SOURCES += \
         $$PWD/qbaselinetest.cpp
@@ -6,7 +6,7 @@ SOURCES += \
 HEADERS += \
         $$PWD/qbaselinetest.h
 
-qtHaveModule(widgets) {
+bobuiHaveModule(widgets) {
         SOURCES += $$PWD/qwidgetbaselinetest.cpp
         HEADERS += $$PWD/qwidgetbaselinetest.h
 }

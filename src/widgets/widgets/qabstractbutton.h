@@ -1,20 +1,20 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QABSTRACTBUTTON_H
 #define QABSTRACTBUTTON_H
 
-#include <QtWidgets/qtwidgetsglobal.h>
-#include <QtGui/qicon.h>
-#if QT_CONFIG(shortcut)
-#  include <QtGui/qkeysequence.h>
+#include <BobUIWidgets/bobuiwidgetsglobal.h>
+#include <BobUIGui/qicon.h>
+#if BOBUI_CONFIG(shortcut)
+#  include <BobUIGui/qkeysequence.h>
 #endif
-#include <QtWidgets/qwidget.h>
+#include <BobUIWidgets/qwidget.h>
 
-QT_REQUIRE_CONFIG(abstractbutton);
+BOBUI_REQUIRE_CONFIG(abstractbutton);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QButtonGroup;
@@ -27,7 +27,7 @@ class Q_WIDGETS_EXPORT QAbstractButton : public QWidget
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
 #endif
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
@@ -50,7 +50,7 @@ public:
 
     QSize iconSize() const;
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     void setShortcut(const QKeySequence &key);
     QKeySequence shortcut() const;
 #endif
@@ -75,7 +75,7 @@ public:
     void setAutoExclusive(bool);
     bool autoExclusive() const;
 
-#if QT_CONFIG(buttongroup)
+#if BOBUI_CONFIG(buttongroup)
     QButtonGroup *group() const;
 #endif
 
@@ -107,7 +107,7 @@ protected:
     void focusInEvent(QFocusEvent *e) override;
     void focusOutEvent(QFocusEvent *e) override;
     void changeEvent(QEvent *e) override;
-    void timerEvent(QTimerEvent *e) override;
+    void timerEvent(BOBUIimerEvent *e) override;
 
 
 protected:
@@ -119,6 +119,6 @@ private:
     friend class QButtonGroup;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QABSTRACTBUTTON_H

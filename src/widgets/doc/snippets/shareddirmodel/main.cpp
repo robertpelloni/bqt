@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 /*
   main.cpp
@@ -8,8 +8,8 @@
   selection model.
 */
 
-#include <QtGui>
-#include <QtWidgets>
+#include <BobUIGui>
+#include <BobUIWidgets>
 
 //! [0] //! [1]
 int main(int argc, char *argv[])
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     QFileSystemModel *model = new QFileSystemModel;
     model->setRootPath(QDir::currentPath());
     //! [0] //! [2] //! [4] //! [5]
-    QTreeView *tree = new QTreeView(splitter);
+    BOBUIreeView *tree = new BOBUIreeView(splitter);
     //! [3] //! [6]
     tree->setModel(model);
     //! [4] //! [6] //! [7]

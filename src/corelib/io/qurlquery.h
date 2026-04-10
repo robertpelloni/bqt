@@ -1,18 +1,18 @@
-// Copyright (C) 2020 The Qt Company Ltd.
+// Copyright (C) 2020 The BobUI Company Ltd.
 // Copyright (C) 2016 Intel Corporation.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QURLQUERY_H
 #define QURLQUERY_H
 
-#include <QtCore/qcompare.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qurl.h>
+#include <BobUICore/qcompare.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qurl.h>
 
 #include <initializer_list>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_CORE_EXPORT size_t qHash(const QUrlQuery &key, size_t seed = 0) noexcept;
 
@@ -33,10 +33,10 @@ public:
     QUrlQuery(const QUrlQuery &other);
     QUrlQuery(QUrlQuery &&other) noexcept;
     QUrlQuery &operator=(const QUrlQuery &other);
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUrlQuery)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QUrlQuery)
     ~QUrlQuery();
 
-#if QT_CORE_REMOVED_SINCE(6, 8)
+#if BOBUI_CORE_REMOVED_SINCE(6, 8)
     bool operator==(const QUrlQuery &other) const;
     bool operator!=(const QUrlQuery &other) const
     { return !operator==(other); }
@@ -84,6 +84,6 @@ public:
 
 Q_DECLARE_SHARED(QUrlQuery)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QURLQUERY_H

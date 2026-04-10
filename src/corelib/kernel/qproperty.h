@@ -1,55 +1,55 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPROPERTY_H
 #define QPROPERTY_H
 
-#include <QtCore/qglobal.h>
-#include <QtCore/qshareddata.h>
-#include <QtCore/qstring.h>
-#include <QtCore/qttypetraits.h>
-#include <QtCore/qbindingstorage.h>
+#include <BobUICore/qglobal.h>
+#include <BobUICore/qshareddata.h>
+#include <BobUICore/qstring.h>
+#include <BobUICore/bobuitypetraits.h>
+#include <BobUICore/qbindingstorage.h>
 
 #include <type_traits>
 
-#include <QtCore/qpropertyprivate.h>
+#include <BobUICore/qpropertyprivate.h>
 
 #if __has_include(<source_location>) && __cplusplus >= 202002L && !defined(Q_QDOC)
 #include <source_location>
 #if defined(__cpp_lib_source_location)
-#define QT_SOURCE_LOCATION_NAMESPACE std
-#define QT_PROPERTY_COLLECT_BINDING_LOCATION
+#define BOBUI_SOURCE_LOCATION_NAMESPACE std
+#define BOBUI_PROPERTY_COLLECT_BINDING_LOCATION
 #if defined(Q_CC_MSVC)
 /* MSVC runs into an issue with constexpr with source location (error C7595)
    so use the factory function as a workaround */
-#  define QT_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation::fromStdSourceLocation(std::source_location::current())
+#  define BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation::fromStdSourceLocation(std::source_location::current())
 #else
 /* some versions of gcc in turn run into
    expression ‘std::source_location::current()’ is not a constant expression
    so don't use the workaround there */
-#  define QT_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation(std::source_location::current())
+#  define BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation(std::source_location::current())
 #endif
 #endif
 #endif
 
 #if __has_include(<experimental/source_location>) && !defined(Q_QDOC)
 #include <experimental/source_location>
-#if !defined(QT_PROPERTY_COLLECT_BINDING_LOCATION)
+#if !defined(BOBUI_PROPERTY_COLLECT_BINDING_LOCATION)
 #if defined(__cpp_lib_experimental_source_location)
-#define QT_SOURCE_LOCATION_NAMESPACE std::experimental
-#define QT_PROPERTY_COLLECT_BINDING_LOCATION
-#define QT_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation(std::experimental::source_location::current())
+#define BOBUI_SOURCE_LOCATION_NAMESPACE std::experimental
+#define BOBUI_PROPERTY_COLLECT_BINDING_LOCATION
+#define BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation(std::experimental::source_location::current())
 #endif // defined(__cpp_lib_experimental_source_location)
 #endif
 #endif
 
-#if !defined(QT_PROPERTY_COLLECT_BINDING_LOCATION)
-#define QT_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation()
+#if !defined(BOBUI_PROPERTY_COLLECT_BINDING_LOCATION)
+#define BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION QPropertyBindingSourceLocation()
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-namespace Qt {
+namespace BobUI {
 Q_CORE_EXPORT void beginPropertyUpdateGroup();
 Q_CORE_EXPORT void endPropertyUpdateGroup();
 }
@@ -60,9 +60,9 @@ class QScopedPropertyUpdateGroup
 public:
     Q_NODISCARD_CTOR
     QScopedPropertyUpdateGroup()
-    { Qt::beginPropertyUpdateGroup(); }
+    { BobUI::beginPropertyUpdateGroup(); }
     ~QScopedPropertyUpdateGroup() noexcept(false)
-    { Qt::endPropertyUpdateGroup(); }
+    { BobUI::endPropertyUpdateGroup(); }
 };
 
 template <typename T>
@@ -79,7 +79,7 @@ public:
     using parameter_type = std::conditional_t<UseReferences, const T &, T>;
     using rvalue_ref = typename std::conditional_t<UseReferences, T &&, DisableRValueRefs>;
     using arrow_operator_result = std::conditional_t<std::is_pointer_v<T>, const T &,
-                                        std::conditional_t<QTypeTraits::is_dereferenceable_v<T>, const T &, void>>;
+                                        std::conditional_t<BOBUIypeTraits::is_dereferenceable_v<T>, const T &, void>>;
 
     QPropertyData() = default;
     QPropertyData(parameter_type t) : val(t) {}
@@ -91,7 +91,7 @@ public:
     void setValueBypassingBindings(rvalue_ref v) { val = std::move(v); }
 };
 
-// ### Qt 7: un-export
+// ### BobUI 7: un-export
 struct Q_CORE_EXPORT QPropertyBindingSourceLocation
 {
     const char *fileName = nullptr;
@@ -107,7 +107,7 @@ struct Q_CORE_EXPORT QPropertyBindingSourceLocation
         line = cppLocation.line();
         column = cppLocation.column();
     }
-    QT_POST_CXX17_API_IN_EXPORTED_CLASS
+    BOBUI_POST_CXX17_API_IN_EXPORTED_CLASS
     static consteval QPropertyBindingSourceLocation
     fromStdSourceLocation(const std::source_location &cppLocation)
     {
@@ -159,14 +159,14 @@ class Q_CORE_EXPORT QUntypedPropertyBinding
 {
 public:
     // writes binding result into dataPtr
-    using BindingFunctionVTable = QtPrivate::BindingFunctionVTable;
+    using BindingFunctionVTable = BobUIPrivate::BindingFunctionVTable;
 
     QUntypedPropertyBinding();
     QUntypedPropertyBinding(QMetaType metaType, const BindingFunctionVTable *vtable, void *function, const QPropertyBindingSourceLocation &location);
 
     template<typename Functor>
     QUntypedPropertyBinding(QMetaType metaType, Functor &&f, const QPropertyBindingSourceLocation &location)
-        : QUntypedPropertyBinding(metaType, &QtPrivate::bindingFunctionVTable<std::remove_reference_t<Functor>>, &f, location)
+        : QUntypedPropertyBinding(metaType, &BobUIPrivate::bindingFunctionVTable<std::remove_reference_t<Functor>>, &f, location)
     {}
 
     QUntypedPropertyBinding(QUntypedPropertyBinding &&other);
@@ -183,7 +183,7 @@ public:
 
     explicit QUntypedPropertyBinding(QPropertyBindingPrivate *priv);
 private:
-    friend class QtPrivate::QPropertyBindingData;
+    friend class BobUIPrivate::QPropertyBindingData;
     friend class QPropertyBindingPrivate;
     template <typename> friend class QPropertyBinding;
     QPropertyBindingPrivatePtr d;
@@ -198,7 +198,7 @@ public:
 
     template<typename Functor>
     QPropertyBinding(Functor &&f, const QPropertyBindingSourceLocation &location)
-        : QUntypedPropertyBinding(QMetaType::fromType<PropertyType>(), &QtPrivate::bindingFunctionVTable<std::remove_reference_t<Functor>, PropertyType>, &f, location)
+        : QUntypedPropertyBinding(QMetaType::fromType<PropertyType>(), &BobUIPrivate::bindingFunctionVTable<std::remove_reference_t<Functor>, PropertyType>, &f, location)
     {}
 
 
@@ -208,9 +208,9 @@ public:
     {}
 };
 
-namespace Qt {
+namespace BobUI {
     template <typename Functor>
-    auto makePropertyBinding(Functor &&f, const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+    auto makePropertyBinding(Functor &&f, const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                              std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
         return QPropertyBinding<std::invoke_result_t<Functor>>(std::forward<Functor>(f), location);
@@ -229,8 +229,8 @@ public:
         ObserverNotifiesBinding, // observer was installed to notify bindings that obsverved property changed
         ObserverNotifiesChangeHandler, // observer is a change handler, which runs on every change
         ObserverIsPlaceholder,  // the observer before this one is currently evaluated in QPropertyObserver::notifyObservers.
-#if QT_DEPRECATED_SINCE(6, 6)
-        ObserverIsAlias QT_DEPRECATED_VERSION_X_6_6("Use QProperty and add a binding to the target.")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+        ObserverIsAlias BOBUI_DEPRECATED_VERSION_X_6_6("Use QProperty and add a binding to the target.")
 #endif
     };
 protected:
@@ -244,10 +244,10 @@ private:
     friend struct QPropertyBindingDataPointer;
     friend class QPropertyBindingPrivate;
 
-    QTaggedPointer<QPropertyObserver, ObserverTag> next;
+    BOBUIaggedPointer<QPropertyObserver, ObserverTag> next;
     // prev is a pointer to the "next" element within the previous node, or to the "firstObserverPtr" if it is the
     // first node.
-    QtPrivate::QTagPreservingPointerToPointer<QPropertyObserver, ObserverTag> prev;
+    BobUIPrivate::BOBUIagPreservingPointerToPointer<QPropertyObserver, ObserverTag> prev;
 
     union {
         QPropertyBindingPrivate *binding = nullptr;
@@ -264,15 +264,15 @@ public:
     QPropertyObserver &operator=(QPropertyObserver &&other) noexcept;
     ~QPropertyObserver();
 
-    template <typename Property, QtPrivate::IsUntypedPropertyData<Property> = true>
+    template <typename Property, BobUIPrivate::IsUntypedPropertyData<Property> = true>
     void setSource(const Property &property)
     { setSource(property.bindingData()); }
-    void setSource(const QtPrivate::QPropertyBindingData &property);
+    void setSource(const BobUIPrivate::QPropertyBindingData &property);
 
 protected:
     QPropertyObserver(ChangeHandler changeHandler);
-#if QT_DEPRECATED_SINCE(6, 6)
-    QT_DEPRECATED_VERSION_X_6_6("This constructor was only meant for internal use. Use QProperty and add a binding to the target.")
+#if BOBUI_DEPRECATED_SINCE(6, 6)
+    BOBUI_DEPRECATED_VERSION_X_6_6("This constructor was only meant for internal use. Use QProperty and add a binding to the target.")
     QPropertyObserver(QUntypedPropertyData *aliasedPropertyPtr);
 #endif
 
@@ -303,7 +303,7 @@ public:
     {
     }
 
-    template <typename Property, QtPrivate::IsUntypedPropertyData<Property> = true>
+    template <typename Property, BobUIPrivate::IsUntypedPropertyData<Property> = true>
     Q_NODISCARD_CTOR
     QPropertyChangeHandler(const Property &property, Functor handler)
         : QPropertyObserver([](QPropertyObserver *self, QUntypedPropertyData *) {
@@ -334,7 +334,7 @@ public:
     }
 
     template <typename Functor, typename Property,
-              QtPrivate::IsUntypedPropertyData<Property> = true>
+              BobUIPrivate::IsUntypedPropertyData<Property> = true>
     Q_NODISCARD_CTOR
     QPropertyNotifier(const Property &property, Functor handler)
         : QPropertyObserver([](QPropertyObserver *self, QUntypedPropertyData *) {
@@ -350,10 +350,10 @@ public:
 template <typename T>
 class QProperty : public QPropertyData<T>
 {
-    QtPrivate::QPropertyBindingData d;
+    BobUIPrivate::QPropertyBindingData d;
     bool is_equal(const T &v)
     {
-        if constexpr (QTypeTraits::has_operator_equal_v<T>) {
+        if constexpr (BOBUIypeTraits::has_operator_equal_v<T>) {
             if (v == this->val)
                 return true;
         }
@@ -385,7 +385,7 @@ public:
     { setBinding(binding); }
 #ifndef Q_QDOC
     template <typename Functor>
-    explicit QProperty(Functor &&f, const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+    explicit QProperty(Functor &&f, const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                        typename std::enable_if_t<std::is_invocable_r_v<T, Functor&>> * = nullptr)
         : QProperty(QPropertyBinding<T>(std::forward<Functor>(f), location))
     {}
@@ -395,12 +395,12 @@ public:
 #endif
     ~QProperty() = default;
 
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, QProperty, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
-    QT_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, QProperty, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
 
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, U, /* non-constexpr */, noexcept(false), template <typename U, std::enable_if_t<has_operator_equal_to_v<U>>* = nullptr>)
-    QT_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QProperty, U, /* non-constexpr */, noexcept(false), template <typename U, std::enable_if_t<has_operator_equal_to_v<U>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QProperty, U, /* non-constexpr */, noexcept(false), template <typename U, std::enable_if_t<has_operator_equal_to_v<U>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QProperty, U, /* non-constexpr */, noexcept(false), template <typename U, std::enable_if_t<has_operator_equal_to_v<U>>* = nullptr>)
 
     // Explicitly delete op==(QProperty<T>, QProperty<U>) for different T & U.
     // We do not want implicit conversions here!
@@ -424,7 +424,7 @@ public:
 
     arrow_operator_result operator->() const
     {
-        if constexpr (QTypeTraits::is_dereferenceable_v<T>) {
+        if constexpr (BOBUIypeTraits::is_dereferenceable_v<T>) {
             return value();
         } else if constexpr (std::is_pointer_v<T>) {
             value();
@@ -490,10 +490,10 @@ public:
 #ifndef Q_QDOC
     template <typename Functor>
     QPropertyBinding<T> setBinding(Functor &&f,
-                                   const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+                                   const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                                    std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
-        return setBinding(Qt::makePropertyBinding(std::forward<Functor>(f), location));
+        return setBinding(BobUI::makePropertyBinding(std::forward<Functor>(f), location));
     }
 #else
     template <typename Functor>
@@ -534,15 +534,15 @@ public:
         return QPropertyNotifier(*this, std::move(f));
     }
 
-    const QtPrivate::QPropertyBindingData &bindingData() const { return d; }
+    const BobUIPrivate::QPropertyBindingData &bindingData() const { return d; }
 private:
-    template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>
+    template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>
     friend bool comparesEqual(const QProperty &lhs, const QProperty &rhs)
     {
         return lhs.value() == rhs.value();
     }
 
-    template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>
+    template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>
     friend bool comparesEqual(const QProperty &lhs, const T &rhs)
     {
         return lhs.value() == rhs;
@@ -562,18 +562,18 @@ private:
     Q_DISABLE_COPY_MOVE(QProperty)
 };
 
-namespace Qt {
+namespace BobUI {
     template <typename PropertyType>
     QPropertyBinding<PropertyType> makePropertyBinding(const QProperty<PropertyType> &otherProperty,
                                                        const QPropertyBindingSourceLocation &location =
-                                                       QT_PROPERTY_DEFAULT_BINDING_LOCATION)
+                                                       BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION)
     {
-        return Qt::makePropertyBinding([&otherProperty]() -> PropertyType { return otherProperty; }, location);
+        return BobUI::makePropertyBinding([&otherProperty]() -> PropertyType { return otherProperty; }, location);
     }
 }
 
 
-namespace QtPrivate
+namespace BobUIPrivate
 {
 
 struct QBindableInterface
@@ -610,7 +610,7 @@ public:
         nullptr,
         nullptr,
         [](const QUntypedPropertyData *d, const QPropertyBindingSourceLocation &location) -> QUntypedPropertyBinding
-        { return Qt::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
+        { return BobUI::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
         [](const QUntypedPropertyData *d, QPropertyObserver *observer) -> void
         { observer->setSource(static_cast<const Property *>(d)->bindingData()); },
         []() { return QMetaType::fromType<T>(); }
@@ -632,7 +632,7 @@ public:
         { return static_cast<const Property *>(d)->binding(); },
         /*setBinding=*/nullptr,
         [](const QUntypedPropertyData *d, const QPropertyBindingSourceLocation &location) -> QUntypedPropertyBinding
-        { return Qt::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
+        { return BobUI::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
         [](const QUntypedPropertyData *d, QPropertyObserver *observer) -> void
         { observer->setSource(static_cast<const Property *>(d)->bindingData()); },
         []() { return QMetaType::fromType<T>(); }
@@ -654,7 +654,7 @@ public:
         [](QUntypedPropertyData *d, const QUntypedPropertyBinding &binding) -> QUntypedPropertyBinding
         { return static_cast<Property *>(d)->setBinding(static_cast<const QPropertyBinding<T> &>(binding)); },
         [](const QUntypedPropertyData *d, const QPropertyBindingSourceLocation &location) -> QUntypedPropertyBinding
-        { return Qt::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
+        { return BobUI::makePropertyBinding([d]() -> T { return static_cast<const Property *>(d)->value(); }, location); },
         [](const QUntypedPropertyData *d, QPropertyObserver *observer) -> void
         { observer->setSource(static_cast<const Property *>(d)->bindingData()); },
         []() { return QMetaType::fromType<T>(); }
@@ -663,7 +663,7 @@ public:
 
 }
 
-namespace QtPrivate {
+namespace BobUIPrivate {
 // used in Q(Untyped)Bindable to print warnings about various binding errors
 namespace BindableWarnings {
 enum Reason { InvalidInterface, NonBindableInterface, ReadOnlyInterface };
@@ -676,7 +676,7 @@ Q_CORE_EXPORT void getter(const QUntypedPropertyData *d, void *value);
 Q_CORE_EXPORT void setter(QUntypedPropertyData *d, const void *value);
 Q_CORE_EXPORT QUntypedPropertyBinding getBinding(const QUntypedPropertyData *d);
 Q_CORE_EXPORT bool bindingWrapper(QMetaType type, QUntypedPropertyData *d,
-                                  QtPrivate::QPropertyBindingFunction binding,
+                                  BobUIPrivate::QPropertyBindingFunction binding,
                                   QUntypedPropertyData *temp, void *value);
 Q_CORE_EXPORT QUntypedPropertyBinding setBinding(QUntypedPropertyData *d,
                                                  const QUntypedPropertyBinding &binding,
@@ -685,7 +685,7 @@ Q_CORE_EXPORT void setObserver(const QUntypedPropertyData *d, QPropertyObserver 
 
 template<typename T>
 bool bindingWrapper(QMetaType type, QUntypedPropertyData *d,
-                    QtPrivate::QPropertyBindingFunction binding)
+                    BobUIPrivate::QPropertyBindingFunction binding)
 {
     struct Data : QPropertyData<T>
     {
@@ -704,7 +704,7 @@ template<typename T>
 QUntypedPropertyBinding makeBinding(const QUntypedPropertyData *d,
                                     const QPropertyBindingSourceLocation &location)
 {
-    return Qt::makePropertyBinding(
+    return BobUI::makePropertyBinding(
             [d]() -> T {
                 T r;
                 getter(d, &r);
@@ -731,27 +731,27 @@ class QUntypedBindable
     friend struct QUntypedBindablePrivate; // allows access to internal data
 protected:
     QUntypedPropertyData *data = nullptr;
-    const QtPrivate::QBindableInterface *iface = nullptr;
-    constexpr QUntypedBindable(QUntypedPropertyData *d, const QtPrivate::QBindableInterface *i)
+    const BobUIPrivate::QBindableInterface *iface = nullptr;
+    constexpr QUntypedBindable(QUntypedPropertyData *d, const BobUIPrivate::QBindableInterface *i)
         : data(d), iface(i)
     {}
 
-    Q_CORE_EXPORT explicit QUntypedBindable(QObject* obj, const QMetaProperty &property, const QtPrivate::QBindableInterface *i);
-    Q_CORE_EXPORT explicit QUntypedBindable(QObject* obj, const char* property, const QtPrivate::QBindableInterface *i);
+    Q_CORE_EXPORT explicit QUntypedBindable(QObject* obj, const QMetaProperty &property, const BobUIPrivate::QBindableInterface *i);
+    Q_CORE_EXPORT explicit QUntypedBindable(QObject* obj, const char* property, const BobUIPrivate::QBindableInterface *i);
 
 public:
     constexpr QUntypedBindable() = default;
     template<typename Property>
     QUntypedBindable(Property *p)
         : data(const_cast<std::remove_cv_t<Property> *>(p)),
-          iface(&QtPrivate::QBindableInterfaceForProperty<Property>::iface)
+          iface(&BobUIPrivate::QBindableInterfaceForProperty<Property>::iface)
     { Q_ASSERT(data && iface); }
 
     bool isValid() const { return data != nullptr; }
     bool isBindable() const { return iface && iface->getBinding; }
     bool isReadOnly() const { return !(iface && iface->setBinding && iface->setObserver); }
 
-    QUntypedPropertyBinding makeBinding(const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION) const
+    QUntypedPropertyBinding makeBinding(const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION) const
     {
         return iface ? iface->makeBinding(data, location) : QUntypedPropertyBinding();
     }
@@ -777,10 +777,10 @@ public:
     {
         if (iface)
             iface->setObserver(data, observer);
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         else
-            QtPrivate::BindableWarnings::printUnsuitableBindableWarning("observe:",
-                                                                        QtPrivate::BindableWarnings::InvalidInterface);
+            BobUIPrivate::BindableWarnings::printUnsuitableBindableWarning("observe:",
+                                                                        BobUIPrivate::BindableWarnings::InvalidInterface);
 #endif
     }
 
@@ -810,9 +810,9 @@ public:
     QUntypedPropertyBinding binding() const
     {
         if (!isBindable()) {
-#ifndef QT_NO_DEBUG
-            QtPrivate::BindableWarnings::printUnsuitableBindableWarning("binding: ",
-                                                                        QtPrivate::BindableWarnings::NonBindableInterface);
+#ifndef BOBUI_NO_DEBUG
+            BobUIPrivate::BindableWarnings::printUnsuitableBindableWarning("binding: ",
+                                                                        BobUIPrivate::BindableWarnings::NonBindableInterface);
 #endif
             return QUntypedPropertyBinding();
         }
@@ -821,16 +821,16 @@ public:
     bool setBinding(const QUntypedPropertyBinding &binding)
     {
         if (isReadOnly()) {
-#ifndef QT_NO_DEBUG
-            const auto errorType = iface ? QtPrivate::BindableWarnings::ReadOnlyInterface :
-                                           QtPrivate::BindableWarnings::InvalidInterface;
-            QtPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding: Could not set binding via bindable interface.", errorType);
+#ifndef BOBUI_NO_DEBUG
+            const auto errorType = iface ? BobUIPrivate::BindableWarnings::ReadOnlyInterface :
+                                           BobUIPrivate::BindableWarnings::InvalidInterface;
+            BobUIPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding: Could not set binding via bindable interface.", errorType);
 #endif
             return false;
         }
         if (!binding.isNull() && binding.valueMetaType() != metaType()) {
-#ifndef QT_NO_DEBUG
-            QtPrivate::BindableWarnings::printMetaTypeMismatch(metaType(), binding.valueMetaType());
+#ifndef BOBUI_NO_DEBUG
+            BobUIPrivate::BindableWarnings::printMetaTypeMismatch(metaType(), binding.valueMetaType());
 #endif
             return false;
         }
@@ -848,12 +848,12 @@ public:
             return QMetaType();
         if (iface->metaType)
             return iface->metaType();
-        // ### Qt 7: Change the metatype function to take data as its argument
+        // ### BobUI 7: Change the metatype function to take data as its argument
         // special casing for QML's proxy bindable: allow multiplexing in the getter
         // function to retrieve the metatype from data
         Q_ASSERT(iface->getter);
         QMetaType result;
-        iface->getter(data, reinterpret_cast<void *>(quintptr(&result) | QtPrivate::QBindableInterface::MetaTypeAccessorFlag));
+        iface->getter(data, reinterpret_cast<void *>(quintptr(&result) | BobUIPrivate::QBindableInterface::MetaTypeAccessorFlag));
         return result;
     }
 
@@ -864,7 +864,7 @@ class QBindable : public QUntypedBindable
 {
     template<typename U>
     friend class QPropertyAlias;
-    constexpr QBindable(QUntypedPropertyData *d, const QtPrivate::QBindableInterface *i)
+    constexpr QBindable(QUntypedPropertyData *d, const BobUIPrivate::QBindableInterface *i)
         : QUntypedBindable(d, i)
     {}
 public:
@@ -878,12 +878,12 @@ public:
     }
 
     explicit QBindable(QObject *obj, const QMetaProperty &property)
-        : QUntypedBindable(obj, property, &QtPrivate::PropertyAdaptorSlotObjectHelpers::iface<T>) {}
+        : QUntypedBindable(obj, property, &BobUIPrivate::PropertyAdaptorSlotObjectHelpers::iface<T>) {}
 
     explicit QBindable(QObject *obj, const char *property)
-        : QUntypedBindable(obj, property, &QtPrivate::PropertyAdaptorSlotObjectHelpers::iface<T>) {}
+        : QUntypedBindable(obj, property, &BobUIPrivate::PropertyAdaptorSlotObjectHelpers::iface<T>) {}
 
-    QPropertyBinding<T> makeBinding(const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION) const
+    QPropertyBinding<T> makeBinding(const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION) const
     {
         return static_cast<QPropertyBinding<T> &&>(QUntypedBindable::makeBinding(location));
     }
@@ -904,21 +904,21 @@ public:
 
         if (iface && iface->setBinding)
             return static_cast<QPropertyBinding<T> &&>(iface->setBinding(data, binding));
-#ifndef QT_NO_DEBUG
+#ifndef BOBUI_NO_DEBUG
         if (!iface)
-            QtPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding", QtPrivate::BindableWarnings::InvalidInterface);
+            BobUIPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding", BobUIPrivate::BindableWarnings::InvalidInterface);
         else
-            QtPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding: Could not set binding via bindable interface.", QtPrivate::BindableWarnings::ReadOnlyInterface);
+            BobUIPrivate::BindableWarnings::printUnsuitableBindableWarning("setBinding: Could not set binding via bindable interface.", BobUIPrivate::BindableWarnings::ReadOnlyInterface);
 #endif
         return QPropertyBinding<T>();
     }
 #ifndef Q_QDOC
     template <typename Functor>
     QPropertyBinding<T> setBinding(Functor &&f,
-                                   const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+                                   const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                                    std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
-        return setBinding(Qt::makePropertyBinding(std::forward<Functor>(f), location));
+        return setBinding(BobUI::makePropertyBinding(std::forward<Functor>(f), location));
     }
 #else
     template <typename Functor>
@@ -942,28 +942,28 @@ public:
     }
 };
 
-#if QT_DEPRECATED_SINCE(6, 6)
+#if BOBUI_DEPRECATED_SINCE(6, 6)
 template<typename T>
-class QT_DEPRECATED_VERSION_X_6_6("Class was only meant for internal use, use a QProperty and add a binding to the target")
+class BOBUI_DEPRECATED_VERSION_X_6_6("Class was only meant for internal use, use a QProperty and add a binding to the target")
 QPropertyAlias : public QPropertyObserver
 {
     Q_DISABLE_COPY_MOVE(QPropertyAlias)
-    const QtPrivate::QBindableInterface *iface = nullptr;
+    const BobUIPrivate::QBindableInterface *iface = nullptr;
 
 public:
-    QT_WARNING_PUSH QT_WARNING_DISABLE_DEPRECATED
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_DEPRECATED
     QPropertyAlias(QProperty<T> *property)
         : QPropertyObserver(property),
-          iface(&QtPrivate::QBindableInterfaceForProperty<QProperty<T>>::iface)
+          iface(&BobUIPrivate::QBindableInterfaceForProperty<QProperty<T>>::iface)
     {
         if (iface)
             iface->setObserver(aliasedProperty(), this);
     }
 
-    template <typename Property, QtPrivate::IsUntypedPropertyData<Property> = true>
+    template <typename Property, BobUIPrivate::IsUntypedPropertyData<Property> = true>
     QPropertyAlias(Property *property)
         : QPropertyObserver(property),
-          iface(&QtPrivate::QBindableInterfaceForProperty<Property>::iface)
+          iface(&BobUIPrivate::QBindableInterfaceForProperty<Property>::iface)
     {
         if (iface)
             iface->setObserver(aliasedProperty(), this);
@@ -1020,10 +1020,10 @@ public:
 #ifndef Q_QDOC
     template <typename Functor>
     QPropertyBinding<T> setBinding(Functor &&f,
-                                   const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+                                   const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                                    std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
-        return setBinding(Qt::makePropertyBinding(std::forward<Functor>(f), location));
+        return setBinding(BobUI::makePropertyBinding(std::forward<Functor>(f), location));
     }
 #else
     template <typename Functor>
@@ -1067,9 +1067,9 @@ public:
     {
         return aliasedProperty() != nullptr;
     }
-    QT_WARNING_POP
+    BOBUI_WARNING_POP
 };
-#endif // QT_DEPRECATED_SINCE(6, 6)
+#endif // BOBUI_DEPRECATED_SINCE(6, 6)
 
 template<typename Class, typename T, auto Offset, auto Signal = nullptr>
 class QObjectBindableProperty : public QPropertyData<T>
@@ -1080,12 +1080,12 @@ class QObjectBindableProperty : public QPropertyData<T>
     Class *owner()
     {
         char *that = reinterpret_cast<char *>(this);
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
     const Class *owner() const
     {
         char *that = const_cast<char *>(reinterpret_cast<const char *>(this));
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
     static void signalCallBack(QUntypedPropertyData *o)
     {
@@ -1111,7 +1111,7 @@ public:
     { setBinding(binding); }
 #ifndef Q_QDOC
     template <typename Functor>
-    explicit QObjectBindableProperty(Functor &&f, const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+    explicit QObjectBindableProperty(Functor &&f, const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                        typename std::enable_if_t<std::is_invocable_r_v<T, Functor&>> * = nullptr)
         : QObjectBindableProperty(QPropertyBinding<T>(std::forward<Functor>(f), location))
     {}
@@ -1120,9 +1120,9 @@ public:
     explicit QObjectBindableProperty(Functor &&f);
 #endif
 
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QObjectBindableProperty, QObjectBindableProperty, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
-    QT_DECLARE_EQUALITY_OPERATORS_HELPER(QObjectBindableProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
-    QT_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QObjectBindableProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QObjectBindableProperty, QObjectBindableProperty, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_HELPER(QObjectBindableProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
+    BOBUI_DECLARE_EQUALITY_OPERATORS_REVERSED_HELPER(QObjectBindableProperty, T, /* non-constexpr */, noexcept(false), template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>)
 
     parameter_type value() const
     {
@@ -1132,7 +1132,7 @@ public:
 
     arrow_operator_result operator->() const
     {
-        if constexpr (QTypeTraits::is_dereferenceable_v<T>) {
+        if constexpr (BOBUIypeTraits::is_dereferenceable_v<T>) {
             return value();
         } else if constexpr (std::is_pointer_v<T>) {
             value();
@@ -1193,7 +1193,7 @@ public:
 
     QPropertyBinding<T> setBinding(const QPropertyBinding<T> &newBinding)
     {
-        QtPrivate::QPropertyBindingData *bd = qGetBindingStorage(owner())->bindingData(this, true);
+        BobUIPrivate::QPropertyBindingData *bd = qGetBindingStorage(owner())->bindingData(this, true);
         QUntypedPropertyBinding oldBinding(bd->setBinding(newBinding, this, HasSignal ? &signalCallBack : nullptr));
         return static_cast<QPropertyBinding<T> &>(oldBinding);
     }
@@ -1209,10 +1209,10 @@ public:
 #ifndef Q_QDOC
     template <typename Functor>
     QPropertyBinding<T> setBinding(Functor &&f,
-                                   const QPropertyBindingSourceLocation &location = QT_PROPERTY_DEFAULT_BINDING_LOCATION,
+                                   const QPropertyBindingSourceLocation &location = BOBUI_PROPERTY_DEFAULT_BINDING_LOCATION,
                                    std::enable_if_t<std::is_invocable_v<Functor>> * = nullptr)
     {
-        return setBinding(Qt::makePropertyBinding(std::forward<Functor>(f), location));
+        return setBinding(BobUI::makePropertyBinding(std::forward<Functor>(f), location));
     }
 #else
     template <typename Functor>
@@ -1258,25 +1258,25 @@ public:
         return QPropertyNotifier(*this, std::move(f));
     }
 
-    const QtPrivate::QPropertyBindingData &bindingData() const
+    const BobUIPrivate::QPropertyBindingData &bindingData() const
     {
         auto *storage = const_cast<QBindingStorage *>(qGetBindingStorage(owner()));
         return *storage->bindingData(const_cast<ThisType *>(this), true);
     }
 private:
-    template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>
+    template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>
     friend bool comparesEqual(const QObjectBindableProperty &lhs, const QObjectBindableProperty &rhs)
     {
         return lhs.value() == rhs.value();
     }
 
-    template <typename Ty = T, std::enable_if_t<QTypeTraits::has_operator_equal_v<Ty>>* = nullptr>
+    template <typename Ty = T, std::enable_if_t<BOBUIypeTraits::has_operator_equal_v<Ty>>* = nullptr>
     friend bool comparesEqual(const QObjectBindableProperty &lhs, const T &rhs)
     {
         return lhs.value() == rhs;
     }
 
-    void notify(const QtPrivate::QPropertyBindingData *binding)
+    void notify(const BobUIPrivate::QPropertyBindingData *binding)
     {
         if (binding)
             binding->notifyObservers(this, qGetBindingStorage(owner()));
@@ -1289,53 +1289,53 @@ private:
     }
 };
 
-#define QT_OBJECT_BINDABLE_PROPERTY_3(Class, Type, name) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_BINDABLE_PROPERTY_3(Class, Type, name) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, nullptr> name;
+    QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, nullptr> name;
 
-#define QT_OBJECT_BINDABLE_PROPERTY_4(Class, Type, name, Signal) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+#define BOBUI_OBJECT_BINDABLE_PROPERTY_4(Class, Type, name, Signal) \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, Signal> name;
+    QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, Signal> name;
 
 #define Q_OBJECT_BINDABLE_PROPERTY(...) \
-    QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
-    QT_OVERLOADED_MACRO(QT_OBJECT_BINDABLE_PROPERTY, __VA_ARGS__) \
-    QT_WARNING_POP
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
+    BOBUI_OVERLOADED_MACRO(BOBUI_OBJECT_BINDABLE_PROPERTY, __VA_ARGS__) \
+    BOBUI_WARNING_POP
 
-#define QT_OBJECT_BINDABLE_PROPERTY_WITH_ARGS_4(Class, Type, name, value)                          \
-    static constexpr size_t _qt_property_##name##_offset()                                         \
+#define BOBUI_OBJECT_BINDABLE_PROPERTY_WITH_ARGS_4(Class, Type, name, value)                          \
+    static constexpr size_t _bobui_property_##name##_offset()                                         \
     {                                                                                              \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF                                        \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF                                        \
         return offsetof(Class, name);                                                              \
-        QT_WARNING_POP                                                                             \
+        BOBUI_WARNING_POP                                                                             \
     }                                                                                              \
-    QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, nullptr> name =      \
-            QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, nullptr>(    \
+    QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, nullptr> name =      \
+            QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, nullptr>(    \
                     value);
 
-#define QT_OBJECT_BINDABLE_PROPERTY_WITH_ARGS_5(Class, Type, name, value, Signal)                  \
-    static constexpr size_t _qt_property_##name##_offset()                                         \
+#define BOBUI_OBJECT_BINDABLE_PROPERTY_WITH_ARGS_5(Class, Type, name, value, Signal)                  \
+    static constexpr size_t _bobui_property_##name##_offset()                                         \
     {                                                                                              \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF                                        \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF                                        \
         return offsetof(Class, name);                                                              \
-        QT_WARNING_POP                                                                             \
+        BOBUI_WARNING_POP                                                                             \
     }                                                                                              \
-    QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, Signal> name =       \
-            QObjectBindableProperty<Class, Type, Class::_qt_property_##name##_offset, Signal>(     \
+    QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, Signal> name =       \
+            QObjectBindableProperty<Class, Type, Class::_bobui_property_##name##_offset, Signal>(     \
                     value);
 
 #define Q_OBJECT_BINDABLE_PROPERTY_WITH_ARGS(...)                                                  \
-    QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
-    QT_OVERLOADED_MACRO(QT_OBJECT_BINDABLE_PROPERTY_WITH_ARGS, __VA_ARGS__) \
-    QT_WARNING_POP
+    BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
+    BOBUI_OVERLOADED_MACRO(BOBUI_OBJECT_BINDABLE_PROPERTY_WITH_ARGS, __VA_ARGS__) \
+    BOBUI_WARNING_POP
 
 template<typename Class, typename T, auto Offset, auto Getter>
 class QObjectComputedProperty : public QUntypedPropertyData
@@ -1343,12 +1343,12 @@ class QObjectComputedProperty : public QUntypedPropertyData
     Class *owner()
     {
         char *that = reinterpret_cast<char *>(this);
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
     const Class *owner() const
     {
         char *that = const_cast<char *>(reinterpret_cast<const char *>(this));
-        return reinterpret_cast<Class *>(that - QtPrivate::detail::getOffset(Offset));
+        return reinterpret_cast<Class *>(that - BobUIPrivate::detail::getOffset(Offset));
     }
 
 public:
@@ -1363,10 +1363,10 @@ public:
         return (owner()->*Getter)();
     }
 
-    std::conditional_t<QTypeTraits::is_dereferenceable_v<T>, parameter_type, void>
+    std::conditional_t<BOBUIypeTraits::is_dereferenceable_v<T>, parameter_type, void>
     operator->() const
     {
-        if constexpr (QTypeTraits::is_dereferenceable_v<T>)
+        if constexpr (BOBUIypeTraits::is_dereferenceable_v<T>)
             return value();
         else
             return;
@@ -1406,7 +1406,7 @@ public:
         return QPropertyNotifier(*this, std::move(f));
     }
 
-    QtPrivate::QPropertyBindingData &bindingData() const
+    BobUIPrivate::QPropertyBindingData &bindingData() const
     {
         auto *storage = const_cast<QBindingStorage *>(qGetBindingStorage(owner()));
         return *storage->bindingData(const_cast<QObjectComputedProperty *>(this), true);
@@ -1422,15 +1422,15 @@ public:
 };
 
 #define Q_OBJECT_COMPUTED_PROPERTY(Class, Type, name,  ...) \
-    static constexpr size_t _qt_property_##name##_offset() { \
-        QT_WARNING_PUSH QT_WARNING_DISABLE_INVALID_OFFSETOF \
+    static constexpr size_t _bobui_property_##name##_offset() { \
+        BOBUI_WARNING_PUSH BOBUI_WARNING_DISABLE_INVALID_OFFSETOF \
         return offsetof(Class, name); \
-        QT_WARNING_POP \
+        BOBUI_WARNING_POP \
     } \
-    QObjectComputedProperty<Class, Type, Class::_qt_property_##name##_offset, __VA_ARGS__> name;
+    QObjectComputedProperty<Class, Type, Class::_bobui_property_##name##_offset, __VA_ARGS__> name;
 
-#undef QT_SOURCE_LOCATION_NAMESPACE
+#undef BOBUI_SOURCE_LOCATION_NAMESPACE
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPROPERTY_H

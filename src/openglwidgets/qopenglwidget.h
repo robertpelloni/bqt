@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLWIDGET_H
 #define QOPENGLWIDGET_H
 
-#include <QtOpenGLWidgets/qtopenglwidgetsglobal.h>
+#include <BobUIOpenGLWidgets/bobuiopenglwidgetsglobal.h>
 
-#include <QtWidgets/QWidget>
-#include <QtGui/QSurfaceFormat>
-#include <QtGui/qopengl.h>
+#include <BobUIWidgets/QWidget>
+#include <BobUIGui/QSurfaceFormat>
+#include <BobUIGui/qopengl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QOpenGLWidgetPrivate;
 
@@ -32,7 +32,7 @@ public:
     };
     Q_ENUM(TargetBuffer)
 
-    explicit QOpenGLWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QOpenGLWidget(QWidget* parent = nullptr, BobUI::WindowFlags f = BobUI::WindowFlags());
     ~QOpenGLWidget();
 
     void setUpdateBehavior(UpdateBehavior updateBehavior);
@@ -82,6 +82,6 @@ private:
     Q_DISABLE_COPY(QOpenGLWidget)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QOPENGLWIDGET_H

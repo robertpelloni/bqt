@@ -1,14 +1,14 @@
 // Copyright (C) 2012 Research In Motion
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qqnxabstractnavigator.h"
 
 #include <QDebug>
 #include <QUrl>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-Q_LOGGING_CATEGORY(lcQpaQnxNavigator, "qt.qpa.qnx.navigator");
+Q_LOGGING_CATEGORY(lcQpaQnxNavigator, "bobui.qpa.qnx.navigator");
 
 QQnxAbstractNavigator::QQnxAbstractNavigator(QObject *parent)
     : QObject(parent)
@@ -33,4 +33,4 @@ bool QQnxAbstractNavigator::invokeUrl(const QUrl &url)
     return result;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

@@ -1,16 +1,16 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qfontengine_coretext_p.h"
 
 #include <qpa/qplatformfontdatabase.h>
-#include <QtCore/qendian.h>
-#if QT_CONFIG(settings)
-#include <QtCore/qsettings.h>
+#include <BobUICore/qendian.h>
+#if BOBUI_CONFIG(settings)
+#include <BobUICore/qsettings.h>
 #endif
-#include <QtCore/qoperatingsystemversion.h>
-#include <QtGui/qpainterpath.h>
+#include <BobUICore/qoperatingsystemversion.h>
+#include <BobUIGui/qpainterpath.h>
 #include <private/qcoregraphics_p.h>
 #include <private/qimage_p.h>
 #include <private/qguiapplication_p.h>
@@ -23,7 +23,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-#if defined(QT_PLATFORM_UIKIT)
+#if defined(BOBUI_PLATFORM_UIKIT)
 #import <UIKit/UIKit.h>
 #endif
 
@@ -42,7 +42,7 @@
 #define kCTFontWeightBold NSFontWeightBold
 #define kCTFontWeightHeavy NSFontWeightHeavy
 #define kCTFontWeightBlack NSFontWeightBlack
-#elif defined(QT_PLATFORM_UIKIT)
+#elif defined(BOBUI_PLATFORM_UIKIT)
 #define kCTFontWeightUltraLight UIFontWeightUltraLight
 #define kCTFontWeightThin UIFontWeightThin
 #define kCTFontWeightLight UIFontWeightLight
@@ -54,7 +54,7 @@
 #define kCTFontWeightBlack UIFontWeightBlack
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static float SYNTHETIC_ITALIC_SKEW = std::tan(14.f * std::acos(0.f) / 90.f);
 
@@ -74,14 +74,14 @@ bool QCoreTextFontEngine::ct_getSfntTable(void *user_data, uint tag, uchar *buff
     return true;
 }
 
-QFont::Weight QCoreTextFontEngine::qtWeightFromCFWeight(float value)
+QFont::Weight QCoreTextFontEngine::bobuiWeightFromCFWeight(float value)
 {
-#define COMPARE_WEIGHT_DISTANCE(ct_weight, qt_weight) \
+#define COMPARE_WEIGHT_DISTANCE(ct_weight, bobui_weight) \
     { \
         float d; \
         if ((d = qAbs(value - ct_weight)) < distance) { \
             distance = d; \
-            ret = qt_weight; \
+            ret = bobui_weight; \
         } \
     }
 
@@ -104,7 +104,7 @@ QFont::Weight QCoreTextFontEngine::qtWeightFromCFWeight(float value)
     return ret;
 }
 
-CGAffineTransform qt_transform_from_fontdef(const QFontDef &fontDef)
+CGAffineTransform bobui_transform_from_fontdef(const QFontDef &fontDef)
 {
     CGAffineTransform transform = CGAffineTransformIdentity;
     if (fontDef.stretch && fontDef.stretch != 100)
@@ -124,7 +124,7 @@ public:
     {
         QFontDef newFontDef = fontDef;
         newFontDef.pixelSize = pixelSize;
-        newFontDef.pointSize = pixelSize * 72.0 / qt_defaultDpi();
+        newFontDef.pointSize = pixelSize * 72.0 / bobui_defaultDpi();
 
         return new QCoreTextRawFontEngine(cgFont, newFontDef, m_fontData);
     }
@@ -157,7 +157,7 @@ QCoreTextFontEngine *QCoreTextFontEngine::create(const QByteArray &fontData,
 
     QFontDef def;
     def.pixelSize = pixelSize;
-    def.pointSize = pixelSize * 72.0 / qt_defaultDpi();
+    def.pointSize = pixelSize * 72.0 / bobui_defaultDpi();
     return new QCoreTextRawFontEngine(cgFont, def, fontData);
 }
 
@@ -181,7 +181,7 @@ QCoreTextFontEngine::QCoreTextFontEngine(const QFontDef &def)
     : QFontEngine(Mac)
 {
     fontDef = def;
-    transform = qt_transform_from_fontdef(fontDef);
+    transform = bobui_transform_from_fontdef(fontDef);
 }
 
 QCoreTextFontEngine::~QCoreTextFontEngine()
@@ -232,12 +232,12 @@ void QCoreTextFontEngine::init()
     if (slant > 500 && !(traits & kCTFontItalicTrait))
         fontDef.style = QFont::StyleOblique;
 
-    if (fontDef.weight >= QFont::Bold && !(traits & kCTFontBoldTrait) && !qEnvironmentVariableIsSet("QT_NO_SYNTHESIZED_BOLD"))
+    if (fontDef.weight >= QFont::Bold && !(traits & kCTFontBoldTrait) && !qEnvironmentVariableIsSet("BOBUI_NO_SYNTHESIZED_BOLD"))
         synthesisFlags |= SynthesizedBold;
     else
-        fontDef.weight = QCoreTextFontEngine::qtWeightFromCFWeight(getTraitValue(allTraits, kCTFontWeightTrait));
+        fontDef.weight = QCoreTextFontEngine::bobuiWeightFromCFWeight(getTraitValue(allTraits, kCTFontWeightTrait));
 
-    if (fontDef.style != QFont::StyleNormal && !(traits & kCTFontItalicTrait) && !qEnvironmentVariableIsSet("QT_NO_SYNTHESIZED_ITALIC"))
+    if (fontDef.style != QFont::StyleNormal && !(traits & kCTFontItalicTrait) && !qEnvironmentVariableIsSet("BOBUI_NO_SYNTHESIZED_ITALIC"))
         synthesisFlags |= SynthesizedItalic;
 
     avgCharWidth = 0;
@@ -444,12 +444,12 @@ bool QCoreTextFontEngine::hasColorGlyphs() const
     return glyphFormat == QFontEngine::Format_ARGB;
 }
 
-Q_GUI_EXPORT extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
-void QCoreTextFontEngine::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt &ti, int paintDeviceHeight)
+Q_GUI_EXPORT extern bool bobui_scaleForTransform(const BOBUIransform &transform, qreal *scale); // bobuiransform.cpp
+void QCoreTextFontEngine::draw(CGContextRef ctx, qreal x, qreal y, const BOBUIextItemInt &ti, int paintDeviceHeight)
 {
     QVarLengthArray<QFixedPoint> positions;
     QVarLengthArray<glyph_t> glyphs;
-    QTransform matrix;
+    BOBUIransform matrix;
     matrix.translate(x, y);
     getGlyphPositions(ti.glyphs, matrix, ti.flags, glyphs, positions);
     if (glyphs.size() == 0)
@@ -489,11 +489,11 @@ void QCoreTextFontEngine::draw(CGContextRef ctx, qreal x, qreal y, const QTextIt
     CTFontDrawGlyphs(ctfont, cgGlyphs.data(), cgPositions.data(), glyphs.size(), ctx);
 
     if (synthesisFlags & QFontEngine::SynthesizedBold) {
-        QTransform matrix(cgMatrix.a, cgMatrix.b, cgMatrix.c, cgMatrix.d, cgMatrix.tx, cgMatrix.ty);
+        BOBUIransform matrix(cgMatrix.a, cgMatrix.b, cgMatrix.c, cgMatrix.d, cgMatrix.tx, cgMatrix.ty);
 
         qreal boldOffset = 0.5 * lineThickness().toReal();
         qreal scale;
-        qt_scaleForTransform(matrix, &scale);
+        bobui_scaleForTransform(matrix, &scale);
         boldOffset *= scale;
 
         CGContextSetTextPosition(ctx,
@@ -550,7 +550,7 @@ static void convertCGPathToQPainterPath(void *info, const CGPathElement *element
 }
 
 void QCoreTextFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nGlyphs,
-                                          QPainterPath *path, QTextItem::RenderFlags)
+                                          QPainterPath *path, BOBUIextItem::RenderFlags)
 {
     if (hasColorGlyphs())
         return; // We can't convert color-glyphs to path
@@ -569,7 +569,7 @@ void QCoreTextFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *position
     }
 }
 
-static void qcoretextfontengine_scaleMetrics(glyph_metrics_t &br, const QTransform &matrix)
+static void qcoretextfontengine_scaleMetrics(glyph_metrics_t &br, const BOBUIransform &matrix)
 {
     if (matrix.isScaling()) {
         qreal hscale = matrix.m11();
@@ -581,14 +581,14 @@ static void qcoretextfontengine_scaleMetrics(glyph_metrics_t &br, const QTransfo
     }
 }
 
-glyph_metrics_t QCoreTextFontEngine::alphaMapBoundingBox(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &matrix, GlyphFormat format)
+glyph_metrics_t QCoreTextFontEngine::alphaMapBoundingBox(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &matrix, GlyphFormat format)
 {
-    if (matrix.type() > QTransform::TxScale)
+    if (matrix.type() > BOBUIransform::TxScale)
         return QFontEngine::alphaMapBoundingBox(glyph, subPixelPosition, matrix, format);
 
     glyph_metrics_t br = boundingBox(glyph);
 
-    QTransform xform = matrix;
+    BOBUIransform xform = matrix;
     if (fontDef.stretch != 100 && fontDef.stretch != QFont::AnyStretch)
         xform.scale(fontDef.stretch / 100.0, 1.0);
     qcoretextfontengine_scaleMetrics(br, xform);
@@ -768,7 +768,7 @@ qreal QCoreTextFontEngine::fontSmoothingGamma()
     return 2.0;
 }
 
-QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &matrix, const QColor &color)
+QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &matrix, const QColor &color)
 {
     glyph_metrics_t br = alphaMapBoundingBox(glyph, subPixelPosition, matrix, glyphFormat);
 
@@ -777,7 +777,7 @@ QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subP
     if (!im.width() || !im.height())
         return im;
 
-    auto cgImageFormat = qt_mac_cgImageFormatForImage(im);
+    auto cgImageFormat = bobui_mac_cgImageFormatForImage(im);
     if (!cgImageFormat)
         return im;
 
@@ -805,7 +805,7 @@ QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subP
             // in the key for the glyph cache.
 
             if (auto *platformTheme = QGuiApplicationPrivate::platformTheme()) {
-                if (platformTheme->colorScheme() != Qt::ColorScheme::Dark)
+                if (platformTheme->colorScheme() != BobUI::ColorScheme::Dark)
                     return kCGColorBlack;
             }
         }
@@ -814,7 +814,7 @@ QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subP
 
     const bool blackOnWhiteGlyphs = glyphColor == kCGColorBlack;
     if (blackOnWhiteGlyphs)
-        im.fill(Qt::white);
+        im.fill(BobUI::white);
     else
 #endif
         im.fill(0);
@@ -853,7 +853,7 @@ QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subP
             qreal boldOffset = 0.5 * lineThickness().toReal();
 
             qreal scale;
-            qt_scaleForTransform(matrix, &scale);
+            bobui_scaleForTransform(matrix, &scale);
             boldOffset *= scale;
 
             CGContextSetTextPosition(ctx, pos_x + boldOffset, pos_y);
@@ -886,12 +886,12 @@ QImage QCoreTextFontEngine::imageForGlyph(glyph_t glyph, const QFixedPoint &subP
 
 QImage QCoreTextFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition)
 {
-    return alphaMapForGlyph(glyph, subPixelPosition, QTransform());
+    return alphaMapForGlyph(glyph, subPixelPosition, BOBUIransform());
 }
 
-QImage QCoreTextFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &x)
+QImage QCoreTextFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &x)
 {
-    if (x.type() > QTransform::TxScale)
+    if (x.type() > BOBUIransform::TxScale)
         return QFontEngine::alphaMapForGlyph(glyph, subPixelPosition, x);
 
     QImage im = imageForGlyph(glyph, subPixelPosition, x);
@@ -911,17 +911,17 @@ QImage QCoreTextFontEngine::alphaMapForGlyph(glyph_t glyph, const QFixedPoint &s
     return alphaMap;
 }
 
-QImage QCoreTextFontEngine::alphaRGBMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &x)
+QImage QCoreTextFontEngine::alphaRGBMapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &x)
 {
-    if (x.type() > QTransform::TxScale)
+    if (x.type() > BOBUIransform::TxScale)
         return QFontEngine::alphaRGBMapForGlyph(glyph, subPixelPosition, x);
 
     return imageForGlyph(glyph, subPixelPosition, x);
 }
 
-QImage QCoreTextFontEngine::bitmapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const QTransform &t, const QColor &color)
+QImage QCoreTextFontEngine::bitmapForGlyph(glyph_t glyph, const QFixedPoint &subPixelPosition, const BOBUIransform &t, const QColor &color)
 {
-    if (t.type() > QTransform::TxScale)
+    if (t.type() > BOBUIransform::TxScale)
         return QFontEngine::bitmapForGlyph(glyph, subPixelPosition, t, color);
 
     return imageForGlyph(glyph, subPixelPosition, t, color);
@@ -1000,21 +1000,21 @@ QFontEngine *QCoreTextFontEngine::cloneWithSize(qreal pixelSize) const
 {
     QFontDef newFontDef = fontDef;
     newFontDef.pixelSize = pixelSize;
-    newFontDef.pointSize = pixelSize * 72.0 / qt_defaultDpi();
+    newFontDef.pointSize = pixelSize * 72.0 / bobui_defaultDpi();
 
     return new QCoreTextFontEngine(cgFont, newFontDef);
 }
 
-Qt::HANDLE QCoreTextFontEngine::handle() const
+BobUI::HANDLE QCoreTextFontEngine::handle() const
 {
-    return (Qt::HANDLE)(static_cast<CTFontRef>(ctfont));
+    return (BobUI::HANDLE)(static_cast<CTFontRef>(ctfont));
 }
 
-bool QCoreTextFontEngine::supportsTransformation(const QTransform &transform) const
+bool QCoreTextFontEngine::supportsTransformation(const BOBUIransform &transform) const
 {
-    if (transform.type() < QTransform::TxScale)
+    if (transform.type() < BOBUIransform::TxScale)
         return true;
-    else if (transform.type() == QTransform::TxScale &&
+    else if (transform.type() == BOBUIransform::TxScale &&
              transform.m11() >= 0 && transform.m22() >= 0)
         return true;
     else
@@ -1079,4 +1079,4 @@ QList<QFontVariableAxis> QCoreTextFontEngine::variableAxes() const
     return variableAxisList;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

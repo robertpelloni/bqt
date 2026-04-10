@@ -1,21 +1,21 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtPrintSupport/qtprintsupportglobal.h>
+#include <BobUIPrintSupport/bobuiprintsupportglobal.h>
 
-#include <QtPrintSupport/qabstractprintdialog.h>
+#include <BobUIPrintSupport/qabstractprintdialog.h>
 
-#if QT_CONFIG(printdialog)
+#if BOBUI_CONFIG(printdialog)
 
 #include <QStandardItem>
-#include <QtCore/qmimedata.h>
-#include <QtGui/qdrag.h>
-#include <QtOpenGLWidgets/qopenglwidget.h>
-#include <QtPrintSupport/qprintdialog.h>
-#include <QtPrintSupport/qprinter.h>
-#include <QtWidgets/QGraphicsSceneMouseEvent>
-#include <QtWidgets/qdialog.h>
-#include <QtWidgets/qgraphicsview.h>
+#include <BobUICore/qmimedata.h>
+#include <BobUIGui/qdrag.h>
+#include <BobUIOpenGLWidgets/qopenglwidget.h>
+#include <BobUIPrintSupport/qprintdialog.h>
+#include <BobUIPrintSupport/qprinter.h>
+#include <BobUIWidgets/QGraphicsSceneMouseEvent>
+#include <BobUIWidgets/qdialog.h>
+#include <BobUIWidgets/qgraphicsview.h>
 
 void graphicsview_snippet_main()
 {
@@ -23,7 +23,7 @@ void graphicsview_snippet_main()
     QGraphicsScene scene;
     QGraphicsRectItem *rect = scene.addRect(QRectF(0, 0, 100, 100));
 
-    QGraphicsItem *item = scene.itemAt(50, 50, QTransform());
+    QGraphicsItem *item = scene.itemAt(50, 50, BOBUIransform());
     //! [0]
     Q_UNUSED(rect);
     Q_UNUSED(item);
@@ -60,7 +60,7 @@ void printScene()
     //! [3]
     QGraphicsScene scene;
     QPrinter printer;
-    scene.addRect(QRectF(0, 0, 100, 200), QPen(Qt::black), QBrush(Qt::green));
+    scene.addRect(QRectF(0, 0, 100, 200), QPen(BobUI::black), QBrush(BobUI::green));
 
     if (QPrintDialog(&printer).exec() == QDialog::Accepted) {
         QPainter painter(&printer);
@@ -74,7 +74,7 @@ void pixmapScene()
 {
     //! [4]
     QGraphicsScene scene;
-    scene.addRect(QRectF(0, 0, 100, 200), QPen(Qt::black), QBrush(Qt::green));
+    scene.addRect(QRectF(0, 0, 100, 200), QPen(BobUI::black), QBrush(BobUI::green));
 
     QPixmap pixmap;
     QPainter painter(&pixmap);
@@ -109,4 +109,4 @@ void viewScene()
     //! [6]
 }
 
-#endif // QT_CONFIG(printdialog)
+#endif // BOBUI_CONFIG(printdialog)

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "option.h"
 #include "cachekeys.h"
@@ -12,10 +12,10 @@
 #include <stdarg.h>
 
 #include <qmakelibraryinfo.h>
-#include <qtversion.h>
+#include <bobuiversion.h>
 #include <private/qlibraryinfo_p.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QMakeInternal;
 
@@ -80,7 +80,7 @@ static Option::QMAKE_MODE default_mode(QString progname)
         progname = progname.right(progname.size() - (s + 1));
     if(progname == "qmakegen")
         return Option::QMAKE_GENERATE_PROJECT;
-    else if(progname == "qt-config")
+    else if(progname == "bobui-config")
         return Option::QMAKE_QUERY_PROPERTY;
     return Option::QMAKE_GENERATE_MAKEFILE;
 }
@@ -117,7 +117,7 @@ bool usage(const char *a0)
             "                 be added to the .pro file. By default, all files with\n"
             "                 known source extensions are added.\n"
             "                 Note: The created .pro file probably will \n"
-            "                 need to be edited. For example add the QT variable to \n"
+            "                 need to be edited. For example add the BOBUI variable to \n"
             "                 specify what modules are required.\n"
             "  -makefile      Put qmake into makefile generation mode%s\n"
             "                 In this mode qmake interprets files as project files to\n"
@@ -155,7 +155,7 @@ bool usage(const char *a0)
             "  -set <prop> <value> Set persistent property\n"
             "  -unset <prop>  Unset persistent property\n"
             "  -query <prop>  Query persistent property. Show all if <prop> is empty.\n"
-            "  -qtconf file   Use file instead of looking for qt" QT_STRINGIFY(QT_VERSION_MAJOR) ".conf, then qt.conf\n"
+            "  -bobuiconf file   Use file instead of looking for bobui" BOBUI_STRINGIFY(BOBUI_VERSION_MAJOR) ".conf, then bobui.conf\n"
             "  -cache file    Use file as cache           [makefile mode only]\n"
             "  -spec spec     Use spec as QMAKESPEC       [makefile mode only]\n"
             "  -nocache       Don't use a cache file      [makefile mode only]\n"
@@ -187,8 +187,8 @@ Option::parseCommandLine(QStringList &args, QMakeCmdLineParserState &state)
                 fprintf(stderr, "***Option %s requires a parameter\n", qPrintable(args.at(x - 1)));
                 return Option::QMAKE_CMDLINE_SHOW_USAGE | Option::QMAKE_CMDLINE_ERROR;
             }
-            if (!globals->qtconf.isEmpty())
-                QLibraryInfoPrivate::setQtconfManualPath(&globals->qtconf);
+            if (!globals->bobuiconf.isEmpty())
+                QLibraryInfoPrivate::setBobUIconfManualPath(&globals->bobuiconf);
             if (cmdRet == QMakeGlobals::ArgumentsOk)
                 break;
             Q_ASSERT(cmdRet == QMakeGlobals::ArgumentUnknown);
@@ -199,13 +199,13 @@ Option::parseCommandLine(QStringList &args, QMakeCmdLineParserState &state)
                 } else if (arg == "-v" || arg == "-version" || arg == "--version") {
                     fprintf(stdout,
                             "QMake version %s\n"
-                            "Using Qt version %s in %s\n",
-                            QMAKE_VERSION_STR, QT_VERSION_STR,
+                            "Using BobUI version %s in %s\n",
+                            QMAKE_VERSION_STR, BOBUI_VERSION_STR,
                             QMakeLibraryInfo::path(QLibraryInfo::LibrariesPath)
                                     .toLatin1()
                                     .constData());
 #ifdef QMAKE_OPENSOURCE_VERSION
-                    fprintf(stdout, "QMake is Open Source software from The Qt Company Ltd and/or its subsidiary(-ies).\n");
+                    fprintf(stdout, "QMake is Open Source software from The BobUI Company Ltd and/or its subsidiary(-ies).\n");
 #endif
                     return Option::QMAKE_CMDLINE_BAIL;
                 } else if (arg == "-h" || arg == "-help" || arg == "--help") {
@@ -313,7 +313,7 @@ Option::init(int argc, char **argv)
     if(argc && argv) {
         QString argv0 = argv[0];
 #ifdef Q_OS_WIN
-        if (!argv0.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
+        if (!argv0.endsWith(QLatin1String(".exe"), BobUI::CaseInsensitive))
             argv0 += QLatin1String(".exe");
 #endif
         if(Option::qmake_mode == Option::QMAKE_GENERATE_NOTHING)
@@ -387,8 +387,8 @@ Option::init(int argc, char **argv)
                 Option::qmake_mode = Option::QMAKE_QUERY_PROPERTY;
             } else if (opt == "-makefile") {
                 Option::qmake_mode = Option::QMAKE_GENERATE_MAKEFILE;
-            } else if (opt == "-qtconf") {
-                // Skip "-qtconf <file>" and proceed.
+            } else if (opt == "-bobuiconf") {
+                // Skip "-bobuiconf <file>" and proceed.
                 ++idx;
                 if (idx + 1 < args.size())
                     ++idx;
@@ -622,4 +622,4 @@ qmakeAddCacheClear(qmakeCacheClearFunc func, void **data)
     cache_items.append(new QMakeCacheClearItem(func, data));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

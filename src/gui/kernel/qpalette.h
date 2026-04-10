@@ -1,15 +1,15 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QPALETTE_H
 #define QPALETTE_H
 
-#include <QtGui/qtguiglobal.h>
-#include <QtGui/qwindowdefs.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qbrush.h>
+#include <BobUIGui/bobuiguiglobal.h>
+#include <BobUIGui/qwindowdefs.h>
+#include <BobUIGui/qcolor.h>
+#include <BobUIGui/qbrush.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QPalettePrivate;
@@ -21,7 +21,7 @@ class Q_GUI_EXPORT QPalette
 public:
     QPalette();
     QPalette(const QColor &button);
-    QPalette(Qt::GlobalColor button);
+    QPalette(BobUI::GlobalColor button);
     QPalette(const QColor &button, const QColor &window);
     QPalette(const QBrush &windowText, const QBrush &button, const QBrush &light,
              const QBrush &dark, const QBrush &mid, const QBrush &text,
@@ -34,12 +34,12 @@ public:
     QPalette(QPalette &&other) noexcept
         : d(std::exchange(other.d, nullptr)), currentGroup(other.currentGroup)
     {}
-    QT_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPalette)
+    BOBUI_MOVE_ASSIGNMENT_OPERATOR_IMPL_VIA_PURE_SWAP(QPalette)
 
     void swap(QPalette &other) noexcept
     {
         std::swap(currentGroup, other.currentGroup);
-        qt_ptr_swap(d, other.d);
+        bobui_ptr_swap(d, other.d);
     }
 
     operator QVariant() const;
@@ -155,15 +155,15 @@ inline void QPalette::setBrush(ColorRole acr, const QBrush &abrush)
 /*****************************************************************************
   QPalette stream functions
  *****************************************************************************/
-#ifndef QT_NO_DATASTREAM
+#ifndef BOBUI_NO_DATASTREAM
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &ds, const QPalette &p);
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &ds, QPalette &p);
-#endif // QT_NO_DATASTREAM
+#endif // BOBUI_NO_DATASTREAM
 
-#ifndef QT_NO_DEBUG_STREAM
+#ifndef BOBUI_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QPalette &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QPALETTE_H

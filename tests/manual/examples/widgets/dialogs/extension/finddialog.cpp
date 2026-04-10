@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 #include "finddialog.h"
 
@@ -37,7 +37,7 @@ FindDialog::FindDialog(QWidget *parent)
 //! [2]
 
 //! [3]
-    buttonBox = new QDialogButtonBox(Qt::Vertical);
+    buttonBox = new QDialogButtonBox(BobUI::Vertical);
     buttonBox->addButton(findButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(moreButton, QDialogButtonBox::ActionRole);
 

@@ -1,11 +1,11 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 
-#include <QtCore/QCoreApplication>
-#include <QTest>
+#include <BobUICore/QCoreApplication>
+#include <BOBUIest>
 
-Q_DECLARE_METATYPE(QTest::TestFailMode)
+Q_DECLARE_METATYPE(BOBUIest::TestFailMode)
 
 class tst_ExpectFail: public QObject
 {
@@ -156,8 +156,8 @@ void tst_ExpectFail::xfailDataDrivenWithQString() const
 {
     // This test does not (yet) distinguish the two Pass cases.
     QFETCH(bool, shouldPass);
-    QFETCH(QTest::TestFailMode, failMode);
-    if (shouldPass || failMode == QTest::Continue)
+    QFETCH(BOBUIest::TestFailMode, failMode);
+    if (shouldPass || failMode == BOBUIest::Continue)
         ++skipped;
     else
         ++passed;
@@ -182,7 +182,7 @@ void tst_ExpectFail::xfailDataDrivenWithQVerify() const
     // This test does not (yet) distinguish the two Pass cases.
     ++passed;
     QFETCH(bool, shouldPass);
-    QFETCH(QTest::TestFailMode, failMode);
+    QFETCH(BOBUIest::TestFailMode, failMode);
 
     QEXPECT_FAIL("Fail Abort", "This test should xfail", Abort);
     QEXPECT_FAIL("Fail Continue", "This test should xfail", Continue);
@@ -191,20 +191,20 @@ void tst_ExpectFail::xfailDataDrivenWithQVerify() const
     // If we get here, either we expected to pass or we expected to
     // fail and the failure mode was Continue.
     if (!shouldPass)
-        QCOMPARE(failMode, QTest::Continue);
+        QCOMPARE(failMode, BOBUIest::Continue);
 }
 
 void tst_ExpectFail::xfailDataDriven_data(bool failOnly) const
 {
-    QTest::addColumn<bool>("shouldPass");
-    QTest::addColumn<QTest::TestFailMode>("failMode");
+    BOBUIest::addColumn<bool>("shouldPass");
+    BOBUIest::addColumn<BOBUIest::TestFailMode>("failMode");
 
     if (!failOnly) {
-        QTest::newRow("Pass Abort")    << true  << QTest::Abort;
-        QTest::newRow("Pass Continue") << true  << QTest::Continue;
+        BOBUIest::newRow("Pass Abort")    << true  << BOBUIest::Abort;
+        BOBUIest::newRow("Pass Continue") << true  << BOBUIest::Continue;
     }
-    QTest::newRow("Fail Abort")    << false << QTest::Abort;
-    QTest::newRow("Fail Continue") << false << QTest::Continue;
+    BOBUIest::newRow("Fail Abort")    << false << BOBUIest::Abort;
+    BOBUIest::newRow("Fail Continue") << false << BOBUIest::Continue;
 }
 
 void tst_ExpectFail::xfailDataDrivenWithQCompare() const
@@ -212,7 +212,7 @@ void tst_ExpectFail::xfailDataDrivenWithQCompare() const
     // This test does not (yet) distinguish the two Pass cases.
     ++passed;
     QFETCH(bool, shouldPass);
-    QFETCH(QTest::TestFailMode, failMode);
+    QFETCH(BOBUIest::TestFailMode, failMode);
 
     QEXPECT_FAIL("Fail Abort", "This test should xfail", Abort);
     QEXPECT_FAIL("Fail Continue", "This test should xfail", Continue);
@@ -222,7 +222,7 @@ void tst_ExpectFail::xfailDataDrivenWithQCompare() const
     // If we get here, either we expected to pass or we expected to
     // fail and the failure mode was Continue.
     if (!shouldPass)
-        QCOMPARE(failMode, QTest::Continue);
+        QCOMPARE(failMode, BOBUIest::Continue);
 }
 
 void tst_ExpectFail::xfailOnWrongRow() const
@@ -231,15 +231,15 @@ void tst_ExpectFail::xfailOnWrongRow() const
     qDebug("Should pass (*not* xpass), despite test-case name");
     // QEXPECT_FAIL for a row that does not exist should be ignored.
     // (It might be conditional data(), so exist in other circumstances.)
-    QFETCH(QTest::TestFailMode, failMode);
+    QFETCH(BOBUIest::TestFailMode, failMode);
     // You can't pass a variable as the last parameter of QEXPECT_FAIL,
-    // because the macro adds "QTest::" in front of the last parameter.
+    // because the macro adds "BOBUIest::" in front of the last parameter.
     // That is why the following code appears to be a little strange.
-    if (failMode == QTest::Abort)
+    if (failMode == BOBUIest::Abort)
         QEXPECT_FAIL("wrong row", "This xfail should be ignored", Abort);
     else
         QEXPECT_FAIL("wrong row", "This xfail should be ignored", Continue);
-    QTEST(false, "shouldPass"); // _data skips the passing tests as pointless
+    BOBUIEST(false, "shouldPass"); // _data skips the passing tests as pointless
 }
 
 void tst_ExpectFail::xfailOnAnyRow() const
@@ -247,22 +247,22 @@ void tst_ExpectFail::xfailOnAnyRow() const
     ++passed;
     // In a data-driven test, passing an empty first parameter to QEXPECT_FAIL
     // should mean that the failure is expected for all data rows.
-    QFETCH(QTest::TestFailMode, failMode);
+    QFETCH(BOBUIest::TestFailMode, failMode);
     // You can't pass a variable as the last parameter of QEXPECT_FAIL,
-    // because the macro adds "QTest::" in front of the last parameter.
+    // because the macro adds "BOBUIest::" in front of the last parameter.
     // That is why the following code appears to be a little strange.
-    if (failMode == QTest::Abort)
+    if (failMode == BOBUIest::Abort)
         QEXPECT_FAIL("", "This test should xfail", Abort);
     else
         QEXPECT_FAIL("", "This test should xfail", Continue);
-    QTEST(true, "shouldPass"); // _data skips the passing tests as pointless
+    BOBUIEST(true, "shouldPass"); // _data skips the passing tests as pointless
 }
 
 void tst_ExpectFail::xfailWithoutCheck() const
 {
     ++failed;
     qDebug("Should fail (*not* xfail), despite test-case name");
-    QTEST(false, "shouldPass"); // _data skips the passing tests as pass/fail is irrelevant
+    BOBUIEST(false, "shouldPass"); // _data skips the passing tests as pass/fail is irrelevant
     QEXPECT_FAIL("Fail Abort", "Calling QEXPECT_FAIL without any subsequent check is an error",
                  Abort);
     QEXPECT_FAIL("Fail Continue", "Calling QEXPECT_FAIL without any subsequent check is an error",
@@ -311,10 +311,10 @@ void tst_ExpectFail::xpassContinue() const
 
 void tst_ExpectFail::xpassDataDriven_data() const
 {
-    QTest::addColumn<bool>("shouldXPass");
+    BOBUIest::addColumn<bool>("shouldXPass");
 
-    QTest::newRow("XPass")  << true;
-    QTest::newRow("Pass")   << false;
+    BOBUIest::newRow("XPass")  << true;
+    BOBUIest::newRow("Pass")   << false;
 }
 
 void tst_ExpectFail::xpassContinueSkip() const
@@ -393,5 +393,5 @@ void tst_ExpectFail::xpassContinueDataDrivenWithQCompare() const
     qDebug(shouldXPass ? "Test should Continue past XPASS" : "Test should simply PASS");
 }
 
-QTEST_MAIN(tst_ExpectFail)
+BOBUIEST_MAIN(tst_ExpectFail)
 #include "tst_expectfail.moc"

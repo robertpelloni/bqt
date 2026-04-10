@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include <qplatformdefs.h>
 
@@ -20,7 +20,7 @@
 #include <sys/time.h>
 #include <fcntl.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 // #define KEVENT_DEBUG
 #ifdef KEVENT_DEBUG
@@ -65,24 +65,24 @@ QStringList QKqueueFileSystemWatcherEngine::addPaths(const QStringList &paths,
         auto sg = qScopeGuard([&]{unhandled.push_back(path);});
         int fd;
 #if defined(O_EVTONLY)
-        fd = qt_safe_open(QFile::encodeName(path), O_EVTONLY);
+        fd = bobui_safe_open(QFile::encodeName(path), O_EVTONLY);
 #else
-        fd = qt_safe_open(QFile::encodeName(path), O_RDONLY);
+        fd = bobui_safe_open(QFile::encodeName(path), O_RDONLY);
 #endif
         if (fd == -1) {
             perror("QKqueueFileSystemWatcherEngine::addPaths: open");
             continue;
         }
         if (fd >= (int)FD_SETSIZE / 2 && fd < (int)FD_SETSIZE) {
-            int fddup = qt_safe_dup(fd, FD_SETSIZE);
+            int fddup = bobui_safe_dup(fd, FD_SETSIZE);
             if (fddup != -1) {
                 ::close(fd);
                 fd = fddup;
             }
         }
 
-        QT_STATBUF st;
-        if (QT_FSTAT(fd, &st) == -1) {
+        BOBUI_STATBUF st;
+        if (BOBUI_FSTAT(fd, &st) == -1) {
             perror("QKqueueFileSystemWatcherEngine::addPaths: fstat");
             ::close(fd);
             continue;
@@ -166,7 +166,7 @@ void QKqueueFileSystemWatcherEngine::readFromKqueue()
         int r;
         struct kevent kev;
         struct timespec ts = { 0, 0 }; // 0 ts, because we want to poll
-        QT_EINTR_LOOP(r, kevent(kqfd, 0, 0, &kev, 1, &ts));
+        BOBUI_EINTR_LOOP(r, kevent(kqfd, 0, 0, &kev, 1, &ts));
         if (r < 0) {
             perror("QKqueueFileSystemWatcherEngine: error during kevent wait");
             return;
@@ -218,6 +218,6 @@ void QKqueueFileSystemWatcherEngine::readFromKqueue()
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qfilesystemwatcher_kqueue_p.cpp"

@@ -1,12 +1,12 @@
-// Copyright (C) 2018 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2018 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include "qwasmintegration.h"
 #include "qwasmeventdispatcher.h"
 #include "qwasmcompositor.h"
 #include "qwasmopenglcontext.h"
 #include "qwasmtheme.h"
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 #include "qwasmclipboard.h"
 #endif
 #include "qwasmaccessibility.h"
@@ -16,14 +16,14 @@
 #include "qwasmwindow.h"
 #include "qwasmbackingstore.h"
 #include "qwasmfontdatabase.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include "qwasmdrag.h"
 #endif
 
 #include <qpa/qplatformwindow.h>
-#include <QtGui/qscreen.h>
+#include <BobUIGui/qscreen.h>
 #include <qpa/qwindowsysteminterface.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUICore/qcoreapplication.h>
 #include <qpa/qplatforminputcontextfactory_p.h>
 #include <qpa/qwindowsysteminterface_p.h>
 #include "private/qwasmsuspendresumecontrol_p.h"
@@ -33,17 +33,17 @@
 
 // this is where EGL headers are pulled in, make sure it is last
 #include "qwasmscreen.h"
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 #include <private/qsimpledrag_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-extern void qt_set_sequence_auto_mnemonic(bool);
+extern void bobui_set_sequence_auto_mnemonic(bool);
 
 using namespace emscripten;
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 static void setContainerElements(emscripten::val elementArray)
 {
@@ -65,7 +65,7 @@ static void resizeContainerElement(emscripten::val element)
     QWasmIntegration::get()->resizeScreen(element);
 }
 
-static void qtUpdateDpi()
+static void bobuiUpdateDpi()
 {
     QWasmIntegration::get()->updateDpi();
 }
@@ -81,15 +81,15 @@ static void loadLocalFontFamilies(emscripten::val event)
     QWasmIntegration::get()->loadLocalFontFamilies(event);
 }
 
-EMSCRIPTEN_BINDINGS(qtQWasmIntegraton)
+EMSCRIPTEN_BINDINGS(bobuiQWasmIntegraton)
 {
-    function("qtSetContainerElements", &setContainerElements);
-    function("qtAddContainerElement", &addContainerElement);
-    function("qtRemoveContainerElement", &removeContainerElement);
-    function("qtResizeContainerElement", &resizeContainerElement);
-    function("qtUpdateDpi", &qtUpdateDpi);
-    function("qtResizeAllScreens", &resizeAllScreens);
-    function("qtLoadLocalFontFamilies", &loadLocalFontFamilies);
+    function("bobuiSetContainerElements", &setContainerElements);
+    function("bobuiAddContainerElement", &addContainerElement);
+    function("bobuiRemoveContainerElement", &removeContainerElement);
+    function("bobuiResizeContainerElement", &resizeContainerElement);
+    function("bobuiUpdateDpi", &bobuiUpdateDpi);
+    function("bobuiResizeAllScreens", &resizeAllScreens);
+    function("bobuiLoadLocalFontFamilies", &loadLocalFontFamilies);
 }
 
 QWasmIntegration *QWasmIntegration::s_instance;
@@ -98,38 +98,38 @@ QWasmIntegration::QWasmIntegration()
     : m_suspendResume(std::make_shared<QWasmSuspendResumeControl>()) // create early in order to register event handlers at startup
     , m_fontDb(nullptr)
     , m_desktopServices(nullptr)
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
     , m_clipboard(new QWasmClipboard)
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     , m_accessibility(new QWasmAccessibility)
 #endif
 {
     s_instance = this;
 
     if (platform() == Platform::MacOS)
-        qt_set_sequence_auto_mnemonic(false);
+        bobui_set_sequence_auto_mnemonic(false);
 
     touchPoints = emscripten::val::global("navigator")["maxTouchPoints"].as<int>();
     QWindowSystemInterfacePrivate::TabletEvent::setPlatformSynthesizesMouse(false);
 
     // Create screens for container elements. Each container element will ultimately become a
-    // div element. Qt historically supported supplying canvas for screen elements - these elements
+    // div element. BobUI historically supported supplying canvas for screen elements - these elements
     // will be transformed into divs and warnings about deprecation will be printed. See
     // QWasmScreen ctor.
     emscripten::val filtered = emscripten::val::array();
-    emscripten::val qtContainerElements = val::module_property("qtContainerElements");
-    if (qtContainerElements.isArray()) {
-        for (int i = 0; i < qtContainerElements["length"].as<int>(); ++i) {
-            emscripten::val element = qtContainerElements[i].as<emscripten::val>();
+    emscripten::val bobuiContainerElements = val::module_property("bobuiContainerElements");
+    if (bobuiContainerElements.isArray()) {
+        for (int i = 0; i < bobuiContainerElements["length"].as<int>(); ++i) {
+            emscripten::val element = bobuiContainerElements[i].as<emscripten::val>();
             if (element.isNull() || element.isUndefined())
-                qWarning() << "Skipping null or undefined element in qtContainerElements";
+                qWarning() << "Skipping null or undefined element in bobuiContainerElements";
             else
                 filtered.call<void>("push", element);
         }
     } else {
         // No screens, which may or may not be intended
-        qWarning() << "The qtContainerElements module property was not set or is invalid. "
+        qWarning() << "The bobuiContainerElements module property was not set or is invalid. "
                       "Proceeding with no screens.";
     }
     setContainerElements(filtered);
@@ -139,7 +139,7 @@ QWasmIntegration::QWasmIntegration()
                                    [](int, const EmscriptenUiEvent *, void *) -> EM_BOOL {
                                        // This resize event is called when the HTML window is
                                        // resized. Depending on the page layout the elements might
-                                       // also have been resized, so we update the Qt screen sizes
+                                       // also have been resized, so we update the BobUI screen sizes
                                        // (and canvas render sizes).
                                        if (QWasmIntegration *integration = QWasmIntegration::get())
                                            integration->resizeAllScreens();
@@ -150,9 +150,9 @@ QWasmIntegration::QWasmIntegration()
     emscripten::val visualViewport = emscripten::val::global("window")["visualViewport"];
     if (!visualViewport.isUndefined()) {
         visualViewport.call<void>("addEventListener", val("resize"),
-                                  val::module_property("qtResizeAllScreens"));
+                                  val::module_property("bobuiResizeAllScreens"));
     }
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     m_drag = std::make_unique<QWasmDrag>();
 #endif
 }
@@ -164,12 +164,12 @@ QWasmIntegration::~QWasmIntegration()
     emscripten::val visualViewport = emscripten::val::global("window")["visualViewport"];
     if (!visualViewport.isUndefined()) {
         visualViewport.call<void>("removeEventListener", val("resize"),
-                          val::module_property("qtResizeAllScreens"));
+                          val::module_property("bobuiResizeAllScreens"));
     }
 
     delete m_fontDb;
     delete m_desktopServices;
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     delete m_accessibility;
 #endif
 
@@ -237,7 +237,7 @@ void QWasmIntegration::releaseRequesetUpdateHold()
     }
 }
 
-#ifndef QT_NO_OPENGL
+#ifndef BOBUI_NO_OPENGL
 QPlatformOpenGLContext *QWasmIntegration::createPlatformOpenGLContext(QOpenGLContext *context) const
 {
     return new QWasmOpenGLContext(context);
@@ -291,11 +291,11 @@ QVariant QWasmIntegration::styleHint(QPlatformIntegration::StyleHint hint) const
     }
 }
 
-Qt::WindowState QWasmIntegration::defaultWindowState(Qt::WindowFlags flags) const
+BobUI::WindowState QWasmIntegration::defaultWindowState(BobUI::WindowFlags flags) const
 {
     // Don't maximize dialogs or popups
-    if (flags.testFlag(Qt::Dialog) || flags.testFlag(Qt::Popup))
-        return Qt::WindowNoState;
+    if (flags.testFlag(BobUI::Dialog) || flags.testFlag(BobUI::Popup))
+        return BobUI::WindowNoState;
 
     return QPlatformIntegration::defaultWindowState(flags);
 }
@@ -319,14 +319,14 @@ QPlatformServices *QWasmIntegration::services() const
     return m_desktopServices;
 }
 
-#if QT_CONFIG(clipboard)
+#if BOBUI_CONFIG(clipboard)
 QPlatformClipboard* QWasmIntegration::clipboard() const
 {
     return m_clipboard;
 }
 #endif
 
-#ifndef QT_NO_ACCESSIBILITY
+#ifndef BOBUI_NO_ACCESSIBILITY
 QPlatformAccessibility *QWasmIntegration::accessibility() const
 {
     return m_accessibility;
@@ -424,7 +424,7 @@ void QWasmIntegration::resizeScreen(const emscripten::val &element)
 
 void QWasmIntegration::updateDpi()
 {
-    emscripten::val dpi = emscripten::val::module_property("qtFontDpi");
+    emscripten::val dpi = emscripten::val::module_property("bobuiFontDpi");
     if (dpi.isUndefined())
         return;
     qreal dpiValue = dpi.as<qreal>();
@@ -448,11 +448,11 @@ quint64 QWasmIntegration::getTimestamp()
     return emscripten_performance_now();
 }
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 QPlatformDrag *QWasmIntegration::drag() const
 {
     return m_drag.get();
 }
-#endif // QT_CONFIG(draganddrop)
+#endif // BOBUI_CONFIG(draganddrop)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

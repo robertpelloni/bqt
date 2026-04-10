@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QOPENGLPAINTENGINE_P_H
 #define QOPENGLPAINTENGINE_P_H
@@ -8,7 +8,7 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
+// This file is not part of the BobUI API.  It exists purely as an
 // implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
@@ -22,7 +22,7 @@
 #include <private/qopengl2pexvertexarray_p.h>
 #include <private/qfontengine_p.h>
 #include <private/qdatabuffer_p.h>
-#include <private/qtriangulatingstroker_p.h>
+#include <private/bobuiriangulatingstroker_p.h>
 
 #include <private/qopenglextensions_p.h>
 
@@ -37,15 +37,15 @@ enum EngineMode {
     ImageOpacityArrayDrawingMode
 };
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define GL_STENCIL_HIGH_BIT         GLuint(0x80)
-#define QT_UNKNOWN_TEXTURE_UNIT     GLuint(-1)
-#define QT_DEFAULT_TEXTURE_UNIT     GLuint(0)
-#define QT_BRUSH_TEXTURE_UNIT       GLuint(0)
-#define QT_IMAGE_TEXTURE_UNIT       GLuint(0) //Can be the same as brush texture unit
-#define QT_MASK_TEXTURE_UNIT        GLuint(1)
-#define QT_BACKGROUND_TEXTURE_UNIT  GLuint(2)
+#define BOBUI_UNKNOWN_TEXTURE_UNIT     GLuint(-1)
+#define BOBUI_DEFAULT_TEXTURE_UNIT     GLuint(0)
+#define BOBUI_BRUSH_TEXTURE_UNIT       GLuint(0)
+#define BOBUI_IMAGE_TEXTURE_UNIT       GLuint(0) //Can be the same as brush texture unit
+#define BOBUI_MASK_TEXTURE_UNIT        GLuint(1)
+#define BOBUI_BACKGROUND_TEXTURE_UNIT  GLuint(2)
 
 class QOpenGL2PaintEngineExPrivate;
 
@@ -94,11 +94,11 @@ public:
     virtual void drawPixmapFragments(const QPainter::PixmapFragment *fragments, int fragmentCount, const QPixmap &pixmap,
                                      QPainter::PixmapFragmentHints hints) override;
     virtual void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
-                           Qt::ImageConversionFlags flags = Qt::AutoColor) override;
-    virtual void drawTextItem(const QPointF &p, const QTextItem &textItem) override;
+                           BobUI::ImageConversionFlags flags = BobUI::AutoColor) override;
+    virtual void drawTextItem(const QPointF &p, const BOBUIextItem &textItem) override;
     virtual void fill(const QVectorPath &path, const QBrush &brush) override;
     virtual void stroke(const QVectorPath &path, const QPen &pen) override;
-    virtual void clip(const QVectorPath &path, Qt::ClipOperation op) override;
+    virtual void clip(const QVectorPath &path, BobUI::ClipOperation op) override;
 
     virtual void drawStaticTextItem(QStaticTextItem *textItem) override;
 
@@ -123,8 +123,8 @@ public:
     void setRenderTextActive(bool);
 
     bool isNativePaintingActive() const;
-    bool requiresPretransformedGlyphPositions(QFontEngine *, const QTransform &) const override { return false; }
-    bool shouldDrawCachedGlyphs(QFontEngine *, const QTransform &) const override;
+    bool requiresPretransformedGlyphPositions(QFontEngine *, const BOBUIransform &) const override { return false; }
+    bool shouldDrawCachedGlyphs(QFontEngine *, const BOBUIransform &) const override;
 
 private:
     Q_DISABLE_COPY_MOVE(QOpenGL2PaintEngineEx)
@@ -134,7 +134,7 @@ private:
 
 // This probably needs to grow to GL_MAX_VERTEX_ATTRIBS, but 3 is ok for now as that's
 // all the GL2 engine uses:
-#define QT_GL_VERTEX_ARRAY_TRACKED_COUNT 3
+#define BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT 3
 
 class QOpenGL2PaintEngineExPrivate : public QPaintEngineExPrivate
 {
@@ -157,7 +157,7 @@ public:
             snapToPixelGrid(false),
             nativePaintingActive(false),
             inverseScale(1),
-            lastTextureUnitUsed(QT_UNKNOWN_TEXTURE_UNIT),
+            lastTextureUnitUsed(BOBUI_UNKNOWN_TEXTURE_UNIT),
             vertexBuffer(QOpenGLBuffer::VertexBuffer),
             texCoordBuffer(QOpenGLBuffer::VertexBuffer),
             opacityBuffer(QOpenGLBuffer::VertexBuffer),
@@ -245,7 +245,7 @@ public:
     EngineMode mode;
     QFontEngine::GlyphFormat glyphCacheFormat;
 
-    bool vertexAttributeArraysEnabledState[QT_GL_VERTEX_ARRAY_TRACKED_COUNT];
+    bool vertexAttributeArraysEnabledState[BOBUI_GL_VERTEX_ARRAY_TRACKED_COUNT];
 
     // Dirty flags
     bool matrixDirty; // Implies matrix uniforms are also dirty
@@ -291,7 +291,7 @@ public:
     bool needsSync;
     bool multisamplingAlwaysEnabled;
 
-    QTriangulatingStroker stroker;
+    BOBUIriangulatingStroker stroker;
     QDashedStrokeProcessor dasher;
 
     QVarLengthArray<GLuint, 8> unusedVBOSToClean;
@@ -305,15 +305,15 @@ void QOpenGL2PaintEngineExPrivate::uploadData(unsigned int arrayIndex, const GLf
 {
     Q_ASSERT(arrayIndex < 3);
 
-    if (arrayIndex == QT_VERTEX_COORDS_ATTR) {
+    if (arrayIndex == BOBUI_VERTEX_COORDS_ATTR) {
         vertexBuffer.bind();
         vertexBuffer.allocate(data, count * sizeof(float));
     }
-    if (arrayIndex == QT_TEXTURE_COORDS_ATTR) {
+    if (arrayIndex == BOBUI_TEXTURE_COORDS_ATTR) {
         texCoordBuffer.bind();
         texCoordBuffer.allocate(data, count * sizeof(float));
     }
-    if (arrayIndex == QT_OPACITY_ATTR) {
+    if (arrayIndex == BOBUI_OPACITY_ATTR) {
         opacityBuffer.bind();
         opacityBuffer.allocate(data, count * sizeof(float));
 
@@ -333,6 +333,6 @@ bool QOpenGL2PaintEngineExPrivate::uploadIndexData(const void *data, GLenum inde
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

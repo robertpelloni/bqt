@@ -25,7 +25,7 @@ bool OmniAssetManager::mountArchive(const QString& pakFilePath) {
     }
 
     QDataStream in(&file);
-    in.setVersion(QDataStream::Qt_6_0);
+    in.setVersion(QDataStream::BobUI_6_0);
 
     quint32 magic;
     in >> magic;
@@ -84,7 +84,7 @@ bool OmniAssetManager::createArchive(const QString& sourceDirectory, const QStri
     if (!outFile.open(QIODevice::WriteOnly)) return false;
 
     QDataStream out(&outFile);
-    out.setVersion(QDataStream::Qt_6_0);
+    out.setVersion(QDataStream::BobUI_6_0);
 
     // Write Magic
     out << OMNI_MAGIC;

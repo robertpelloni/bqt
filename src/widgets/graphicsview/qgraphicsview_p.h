@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #ifndef QGRAPHICSVIEW_P_H
 #define QGRAPHICSVIEW_P_H
@@ -9,28 +9,28 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the BobUI API.  It exists for the convenience
+// of other BobUI classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtWidgets/private/qtwidgetsglobal_p.h>
+#include <BobUIWidgets/private/bobuiwidgetsglobal_p.h>
 #include "qgraphicsview.h"
 
-#include <QtGui/private/qevent_p.h>
-#include <QtCore/qcoreapplication.h>
+#include <BobUIGui/private/qevent_p.h>
+#include <BobUICore/qcoreapplication.h>
 #include "qgraphicssceneevent.h"
-#include <QtWidgets/qstyleoption.h>
+#include <BobUIWidgets/qstyleoption.h>
 #include <private/qabstractscrollarea_p.h>
 #include <private/qapplication_p.h>
 
-#include <QtCore/qpointer.h>
+#include <BobUICore/qpointer.h>
 
-QT_REQUIRE_CONFIG(graphicsview);
+BOBUI_REQUIRE_CONFIG(graphicsview);
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_WIDGETS_EXPORT QGraphicsViewPrivate : public QAbstractScrollAreaPrivate
 {
@@ -80,8 +80,8 @@ public:
     QPointF lastRubberbandScenePoint;
     QPoint lastMouseMoveScreenPoint;
     QPoint dirtyScrollOffset;
-    Qt::MouseButton mousePressButton;
-    QTransform matrix;
+    BobUI::MouseButton mousePressButton;
+    BOBUIransform matrix;
     qint64 scrollX, scrollY;
     void updateScroll();
     bool canStartScrollingAt(const QPoint &startPos) const override;
@@ -96,7 +96,7 @@ public:
     void mouseMoveEventHandler(QMouseEvent *event);
 
     QPointF lastCenterPoint;
-    Qt::Alignment alignment;
+    BobUI::Alignment alignment;
 
     QGraphicsView::ViewportAnchor transformationAnchor;
     QGraphicsView::ViewportAnchor resizeAnchor;
@@ -106,14 +106,14 @@ public:
     bool stereoEnabled = false; // Set in setupViewport()
 
     QPointer<QGraphicsScene> scene;
-#if QT_CONFIG(rubberband)
+#if BOBUI_CONFIG(rubberband)
     QRect rubberBandRect;
     QRegion rubberBandRegion(const QWidget *widget, const QRect &rect) const;
     void updateRubberBand(const QMouseEvent *event);
     void clearRubberBand();
     bool rubberBanding;
-    Qt::ItemSelectionMode rubberBandSelectionMode;
-    Qt::ItemSelectionOperation rubberBandSelectionOperation;
+    BobUI::ItemSelectionMode rubberBandSelectionMode;
+    BobUI::ItemSelectionOperation rubberBandSelectionOperation;
 #endif
     int handScrollMotions;
 
@@ -128,7 +128,7 @@ public:
     QPixmap backgroundPixmap;
     QRegion backgroundPixmapExposed;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     QCursor originalCursor;
     bool hasStoredOriginalCursor;
     void _q_setViewportCursor(const QCursor &cursor);
@@ -140,7 +140,7 @@ public:
     void populateSceneDragDropEvent(QGraphicsSceneDragDropEvent *dest,
                                     QDropEvent *source);
 
-    QTransform mapToViewTransform(const QGraphicsItem *item) const;
+    BOBUIransform mapToViewTransform(const QGraphicsItem *item) const;
     QRect mapToViewRect(const QGraphicsItem *item, const QRectF &rect) const;
     QRegion mapToViewRegion(const QGraphicsItem *item, const QRectF &rect) const;
     QRegion dirtyRegion;
@@ -156,7 +156,7 @@ public:
 
     inline void dispatchPendingUpdateRequests()
     {
-        if (qt_widget_private(viewport)->shouldPaintOnScreen())
+        if (bobui_widget_private(viewport)->shouldPaintOnScreen())
             QCoreApplication::sendPostedEvents(viewport, QEvent::UpdateRequest);
         else
             QCoreApplication::sendPostedEvents(viewport->window(), QEvent::UpdateRequest);
@@ -174,19 +174,19 @@ public:
     }
 
     bool updateRect(const QRect &rect);
-    bool updateRegion(const QRectF &rect, const QTransform &xform);
+    bool updateRegion(const QRectF &rect, const BOBUIransform &xform);
     bool updateSceneSlotReimplementedChecked;
     QRegion exposedRegion;
 
     QList<QGraphicsItem *> findItems(const QRegion &exposedRegion, bool *allItems,
-                                     const QTransform &viewTransform) const;
+                                     const BOBUIransform &viewTransform) const;
 
     QPointF mapToScene(const QPointF &point) const;
     QRectF mapToScene(const QRectF &rect) const;
-    static void translateTouchEvent(QGraphicsViewPrivate *d, QTouchEvent *touchEvent);
+    static void translateTouchEvent(QGraphicsViewPrivate *d, BOBUIouchEvent *touchEvent);
     void updateInputMethodSensitivity();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif

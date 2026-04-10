@@ -1,7 +1,7 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
-#include <QtWidgets>
+#include <BobUIWidgets>
 
 //! [0]
 class SimpleItem : public QGraphicsItem
@@ -42,13 +42,13 @@ void example(QGraphicsItem *item, QGraphicsView *view)
 {
     {
         //! [2]
-        item->setCursor(Qt::IBeamCursor);
+        item->setCursor(BobUI::IBeamCursor);
         //! [2]
     }
 
     {
         //! [3]
-        item->setCursor(Qt::IBeamCursor);
+        item->setCursor(BobUI::IBeamCursor);
         //! [3]
     }
 
@@ -130,7 +130,7 @@ void RoundRectItem::paint(QPainter *painter,
 }
 //! [10]
 
-void data_snippet(QGraphicsScene &scene, QTransform &transform)
+void data_snippet(QGraphicsScene &scene, BOBUIransform &transform)
 {
     //! [11]
     static const int ObjectName = 0;
@@ -224,7 +224,7 @@ void snippets( QGraphicsScene *scene, QGraphicsItem *item,
     //! [17]
 
     //! [19]
-    QTransform xform = item->deviceTransform(view->viewportTransform());
+    BOBUIransform xform = item->deviceTransform(view->viewportTransform());
     QRect deviceRect = xform.mapRect(rect).toAlignedRect();
     view->viewport()->scroll(dx, dy, deviceRect);
     //! [19]

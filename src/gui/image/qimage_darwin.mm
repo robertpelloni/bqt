@@ -1,5 +1,5 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2017 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qimage.h"
 
@@ -10,7 +10,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 #include <Accelerate/Accelerate.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \fn CGImageRef QImage::toCGImage() const
@@ -39,7 +39,7 @@ CGImageRef QImage::toCGImage() const
     if (isNull())
         return nil;
 
-    auto cgImageFormat = qt_mac_cgImageFormatForImage(*this);
+    auto cgImageFormat = bobui_mac_cgImageFormatForImage(*this);
     if (!cgImageFormat)
         return nil;
 
@@ -59,4 +59,4 @@ CGImageRef QImage::toCGImage() const
     );
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

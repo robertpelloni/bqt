@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 /*!
     \class QGraphicsSceneBspTreeIndex
@@ -20,7 +20,7 @@
     for scenes with thousands or millions of items. This also greatly improves
     rendering performance.
 
-    By default, the depth value is 0, in which case Qt will guess a reasonable
+    By default, the depth value is 0, in which case BobUI will guess a reasonable
     default depth based on the size, location and number of items in the
     scene. If these parameters change frequently, however, you may experience
     slowdowns as the index retunes the depth internally. You can avoid
@@ -37,20 +37,20 @@
     \sa QGraphicsScene, QGraphicsView, QGraphicsSceneIndex
 */
 
-#include <QtCore/qglobal.h>
+#include <BobUICore/qglobal.h>
 
 #include <private/qgraphicsscene_p.h>
 #include <private/qgraphicsscenebsptreeindex_p.h>
 #include <private/qgraphicssceneindex_p.h>
 
-#include <QtCore/qmath.h>
-#include <QtCore/qdebug.h>
+#include <BobUICore/qmath.h>
+#include <BobUICore/qdebug.h>
 
 #include <algorithm>
 
 using namespace std::chrono_literals;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static inline int intmaxlog(int n)
 {
@@ -59,7 +59,7 @@ static inline int intmaxlog(int n)
 
 /*!
     \class QGraphicsSceneBspTreeIndexPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 
     Constructs a private scene bsp index.
@@ -210,7 +210,7 @@ void QGraphicsSceneBspTreeIndexPrivate::climbTree(QGraphicsItem *item, int *stac
 {
     if (!item->d_ptr->children.isEmpty()) {
         QList<QGraphicsItem *> childList = item->d_ptr->children;
-        std::sort(childList.begin(), childList.end(), qt_closestLeaf);
+        std::sort(childList.begin(), childList.end(), bobui_closestLeaf);
         for (int i = 0; i < childList.size(); ++i) {
             QGraphicsItem *item = childList.at(i);
             if (!(item->flags() & QGraphicsItem::ItemStacksBehindParent))
@@ -249,7 +249,7 @@ void QGraphicsSceneBspTreeIndexPrivate::_q_updateSortCache()
             topLevels << item;
     }
 
-    std::sort(topLevels.begin(), topLevels.end(), qt_closestLeaf);
+    std::sort(topLevels.begin(), topLevels.end(), bobui_closestLeaf);
     for (int i = 0; i < topLevels.size(); ++i)
         climbTree(topLevels.at(i), &stackingOrder);
 }
@@ -264,7 +264,7 @@ void QGraphicsSceneBspTreeIndexPrivate::invalidateSortCache()
         return;
 
     updatingSortCache = true;
-    QMetaObject::invokeMethod(q, "_q_updateSortCache", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(q, "_q_updateSortCache", BobUI::QueuedConnection);
 }
 
 void QGraphicsSceneBspTreeIndexPrivate::addItem(QGraphicsItem *item, bool recursive)
@@ -341,7 +341,7 @@ void QGraphicsSceneBspTreeIndexPrivate::removeItem(QGraphicsItem *item, bool rec
     }
 }
 
-QList<QGraphicsItem *> QGraphicsSceneBspTreeIndexPrivate::estimateItems(const QRectF &rect, Qt::SortOrder order,
+QList<QGraphicsItem *> QGraphicsSceneBspTreeIndexPrivate::estimateItems(const QRectF &rect, BobUI::SortOrder order,
                                                                         bool onlyTopLevelItems)
 {
     Q_Q(QGraphicsSceneBspTreeIndex);
@@ -377,31 +377,31 @@ QList<QGraphicsItem *> QGraphicsSceneBspTreeIndexPrivate::estimateItems(const QR
 
     \internal
 */
-void QGraphicsSceneBspTreeIndexPrivate::sortItems(QList<QGraphicsItem *> *itemList, Qt::SortOrder order,
+void QGraphicsSceneBspTreeIndexPrivate::sortItems(QList<QGraphicsItem *> *itemList, BobUI::SortOrder order,
                                                   bool sortCacheEnabled, bool onlyTopLevelItems)
 {
-    if (order == Qt::SortOrder(-1))
+    if (order == BobUI::SortOrder(-1))
         return;
 
     if (onlyTopLevelItems) {
-        if (order == Qt::DescendingOrder)
-            std::sort(itemList->begin(), itemList->end(), qt_closestLeaf);
-        else if (order == Qt::AscendingOrder)
-            std::sort(itemList->begin(), itemList->end(), qt_notclosestLeaf);
+        if (order == BobUI::DescendingOrder)
+            std::sort(itemList->begin(), itemList->end(), bobui_closestLeaf);
+        else if (order == BobUI::AscendingOrder)
+            std::sort(itemList->begin(), itemList->end(), bobui_notclosestLeaf);
         return;
     }
 
     if (sortCacheEnabled) {
-        if (order == Qt::DescendingOrder) {
+        if (order == BobUI::DescendingOrder) {
             std::sort(itemList->begin(), itemList->end(), closestItemFirst_withCache);
-        } else if (order == Qt::AscendingOrder) {
+        } else if (order == BobUI::AscendingOrder) {
             std::sort(itemList->begin(), itemList->end(), closestItemLast_withCache);
         }
     } else {
-        if (order == Qt::DescendingOrder) {
-            std::sort(itemList->begin(), itemList->end(), qt_closestItemFirst);
-        } else if (order == Qt::AscendingOrder) {
-            std::sort(itemList->begin(), itemList->end(), qt_closestItemLast);
+        if (order == BobUI::DescendingOrder) {
+            std::sort(itemList->begin(), itemList->end(), bobui_closestItemFirst);
+        } else if (order == BobUI::AscendingOrder) {
+            std::sort(itemList->begin(), itemList->end(), bobui_closestItemLast);
         }
     }
 }
@@ -497,24 +497,24 @@ void QGraphicsSceneBspTreeIndex::prepareBoundingRectChange(const QGraphicsItem *
     \a deviceTransform is the transformation apply to the view.
 
 */
-QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::estimateItems(const QRectF &rect, Qt::SortOrder order) const
+QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::estimateItems(const QRectF &rect, BobUI::SortOrder order) const
 {
     Q_D(const QGraphicsSceneBspTreeIndex);
     return const_cast<QGraphicsSceneBspTreeIndexPrivate*>(d)->estimateItems(rect, order);
 }
 
-QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::estimateTopLevelItems(const QRectF &rect, Qt::SortOrder order) const
+QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::estimateTopLevelItems(const QRectF &rect, BobUI::SortOrder order) const
 {
     Q_D(const QGraphicsSceneBspTreeIndex);
     return const_cast<QGraphicsSceneBspTreeIndexPrivate*>(d)->estimateItems(rect, order, /*onlyTopLevels=*/true);
 }
 
 /*!
-    \fn QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::items(Qt::SortOrder order = Qt::DescendingOrder) const;
+    \fn QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::items(BobUI::SortOrder order = BobUI::DescendingOrder) const;
 
     Return all items in the BSP index and sort them using \a order.
 */
-QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::items(Qt::SortOrder order) const
+QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::items(BobUI::SortOrder order) const
 {
     Q_D(const QGraphicsSceneBspTreeIndex);
     const_cast<QGraphicsSceneBspTreeIndexPrivate*>(d)->purgeRemovedItems();
@@ -547,7 +547,7 @@ QList<QGraphicsItem *> QGraphicsSceneBspTreeIndex::items(Qt::SortOrder order) co
     for scenes with thousands or millions of items. This also greatly improves
     rendering performance.
 
-    By default, the value is 0, in which case Qt will guess a reasonable
+    By default, the value is 0, in which case BobUI will guess a reasonable
     default depth based on the size, location and number of items in the
     scene. If these parameters change frequently, however, you may experience
     slowdowns as the index retunes the depth internally. You can avoid
@@ -661,7 +661,7 @@ bool QGraphicsSceneBspTreeIndex::event(QEvent *event)
 {
     Q_D(QGraphicsSceneBspTreeIndex);
     if (event->type() == QEvent::Timer) {
-            if (d->indexTimer.isActive() && static_cast<QTimerEvent *>(event)->id() == d->indexTimer.id()) {
+            if (d->indexTimer.isActive() && static_cast<BOBUIimerEvent *>(event)->id() == d->indexTimer.id()) {
                 if (d->restartIndexTimer) {
                     d->restartIndexTimer = false;
                 } else {
@@ -673,6 +673,6 @@ bool QGraphicsSceneBspTreeIndex::event(QEvent *event)
     return QObject::event(event);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsscenebsptreeindex_p.cpp"

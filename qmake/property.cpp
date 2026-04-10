@@ -1,11 +1,11 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 
 #include "property.h"
 
 #include <qdir.h>
 #include <qsettings.h>
-#include <qtversion.h>
+#include <bobuiversion.h>
 #include <qmakelibraryinfo.h>
 #include <qstringlist.h>
 #include <stdio.h>
@@ -15,7 +15,7 @@ constexpr int PropSuccessRetCode = 0;
 constexpr int PropFailRetCode = 101;
 }
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 static const struct {
     const char *name;
@@ -23,27 +23,27 @@ static const struct {
     bool raw;
     bool singular;
 } propList[] = {
-    { "QT_SYSROOT", QMakeLibraryInfo::SysrootPath, true, true },
-    { "QT_INSTALL_PREFIX", QLibraryInfo::PrefixPath, false, false },
-    { "QT_INSTALL_ARCHDATA", QLibraryInfo::ArchDataPath, false, false },
-    { "QT_INSTALL_DATA", QLibraryInfo::DataPath, false, false },
-    { "QT_INSTALL_DOCS", QLibraryInfo::DocumentationPath, false, false },
-    { "QT_INSTALL_HEADERS", QLibraryInfo::HeadersPath, false, false },
-    { "QT_INSTALL_LIBS", QLibraryInfo::LibrariesPath, false, false },
-    { "QT_INSTALL_LIBEXECS", QLibraryInfo::LibraryExecutablesPath, false, false },
-    { "QT_INSTALL_BINS", QLibraryInfo::BinariesPath, false, false },
-    { "QT_INSTALL_TESTS", QLibraryInfo::TestsPath, false, false },
-    { "QT_INSTALL_PLUGINS", QLibraryInfo::PluginsPath, false, false },
-    { "QT_INSTALL_QML", QLibraryInfo::QmlImportsPath, false, false },
-    { "QT_INSTALL_TRANSLATIONS", QLibraryInfo::TranslationsPath, false, false },
-    { "QT_INSTALL_CONFIGURATION", QLibraryInfo::SettingsPath, false, false },
-    { "QT_INSTALL_EXAMPLES", QLibraryInfo::ExamplesPath, false, false },
-    { "QT_INSTALL_DEMOS", QLibraryInfo::ExamplesPath, false, false }, // Just backwards compat
-    { "QT_HOST_PREFIX", QMakeLibraryInfo::HostPrefixPath, true, false },
-    { "QT_HOST_DATA", QMakeLibraryInfo::HostDataPath, true, false },
-    { "QT_HOST_BINS", QMakeLibraryInfo::HostBinariesPath, true, false },
-    { "QT_HOST_LIBEXECS", QMakeLibraryInfo::HostLibraryExecutablesPath, true, false },
-    { "QT_HOST_LIBS", QMakeLibraryInfo::HostLibrariesPath, true, false },
+    { "BOBUI_SYSROOT", QMakeLibraryInfo::SysrootPath, true, true },
+    { "BOBUI_INSTALL_PREFIX", QLibraryInfo::PrefixPath, false, false },
+    { "BOBUI_INSTALL_ARCHDATA", QLibraryInfo::ArchDataPath, false, false },
+    { "BOBUI_INSTALL_DATA", QLibraryInfo::DataPath, false, false },
+    { "BOBUI_INSTALL_DOCS", QLibraryInfo::DocumentationPath, false, false },
+    { "BOBUI_INSTALL_HEADERS", QLibraryInfo::HeadersPath, false, false },
+    { "BOBUI_INSTALL_LIBS", QLibraryInfo::LibrariesPath, false, false },
+    { "BOBUI_INSTALL_LIBEXECS", QLibraryInfo::LibraryExecutablesPath, false, false },
+    { "BOBUI_INSTALL_BINS", QLibraryInfo::BinariesPath, false, false },
+    { "BOBUI_INSTALL_TESTS", QLibraryInfo::TestsPath, false, false },
+    { "BOBUI_INSTALL_PLUGINS", QLibraryInfo::PluginsPath, false, false },
+    { "BOBUI_INSTALL_QML", QLibraryInfo::QmlImportsPath, false, false },
+    { "BOBUI_INSTALL_TRANSLATIONS", QLibraryInfo::TranslationsPath, false, false },
+    { "BOBUI_INSTALL_CONFIGURATION", QLibraryInfo::SettingsPath, false, false },
+    { "BOBUI_INSTALL_EXAMPLES", QLibraryInfo::ExamplesPath, false, false },
+    { "BOBUI_INSTALL_DEMOS", QLibraryInfo::ExamplesPath, false, false }, // Just backwards compat
+    { "BOBUI_HOST_PREFIX", QMakeLibraryInfo::HostPrefixPath, true, false },
+    { "BOBUI_HOST_DATA", QMakeLibraryInfo::HostDataPath, true, false },
+    { "BOBUI_HOST_BINS", QMakeLibraryInfo::HostBinariesPath, true, false },
+    { "BOBUI_HOST_LIBEXECS", QMakeLibraryInfo::HostLibraryExecutablesPath, true, false },
+    { "BOBUI_HOST_LIBS", QMakeLibraryInfo::HostLibrariesPath, true, false },
     { "QMAKE_SPEC", QMakeLibraryInfo::HostSpecPath, true, true },
     { "QMAKE_XSPEC", QMakeLibraryInfo::TargetSpecPath, true, true },
 };
@@ -76,8 +76,8 @@ void QMakeProperty::reload()
 #ifdef QMAKE_VERSION_STR
     m_values["QMAKE_VERSION"] = ProString(QMAKE_VERSION_STR);
 #endif
-#ifdef QT_VERSION_STR
-    m_values["QT_VERSION"] = ProString(QT_VERSION_STR);
+#ifdef BOBUI_VERSION_STR
+    m_values["BOBUI_VERSION"] = ProString(BOBUI_VERSION_STR);
 #endif
 }
 
@@ -90,7 +90,7 @@ QMakeProperty::~QMakeProperty()
 void QMakeProperty::initSettings()
 {
     if (!settings) {
-        settings = new QSettings(QSettings::UserScope, "QtProject", "QMake");
+        settings = new QSettings(QSettings::UserScope, "BobUIProject", "QMake");
         settings->setFallbacksEnabled(false);
     }
 }
@@ -144,8 +144,8 @@ int QMakeProperty::queryProperty(const QStringList &optionProperties,
 #ifdef QMAKE_VERSION_STR
         specialProps.append("QMAKE_VERSION");
 #endif
-#ifdef QT_VERSION_STR
-        specialProps.append("QT_VERSION");
+#ifdef BOBUI_VERSION_STR
+        specialProps.append("BOBUI_VERSION");
 #endif
         for (const QString &prop : std::as_const(specialProps)) {
             ProString val = value(ProKey(prop));
@@ -201,4 +201,4 @@ void QMakeProperty::unsetProperty(const QStringList &optionProperties)
     }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

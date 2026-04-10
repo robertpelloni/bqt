@@ -1,4 +1,4 @@
-QT += network widgets
+BOBUI += network widgets
 
 HEADERS += httpwindow.h
 SOURCES += httpwindow.cpp \
@@ -6,5 +6,5 @@ SOURCES += httpwindow.cpp \
 FORMS += authenticationdialog.ui
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/http
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/http
 INSTALLS += target

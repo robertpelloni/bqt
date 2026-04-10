@@ -1,14 +1,14 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qplatformdefs.h"
 #include "qurl.h"
 #include "private/qdataurl_p.h"
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::Literals;
+using namespace BobUI::Literals;
 
 /*!
     \internal
@@ -44,7 +44,7 @@ Q_CORE_EXPORT bool qDecodeDataUrl(const QUrl &uri, QString &mimeType, QByteArray
         QLatin1StringView charsetParam;
         constexpr auto charset = "charset"_L1;
         bool first = true;
-        for (auto part : qTokenize(data, u';', Qt::SkipEmptyParts)) {
+        for (auto part : qTokenize(data, u';', BobUI::SkipEmptyParts)) {
             part = part.trimmed();
             if (first) {
                 if (part.contains(u'/'))
@@ -53,7 +53,7 @@ Q_CORE_EXPORT bool qDecodeDataUrl(const QUrl &uri, QString &mimeType, QByteArray
             }
             // Minimal changes, e.g. if it's "charset=;" or "charset;" without
             // an encoding, leave it as-is
-            if (part.startsWith(charset, Qt::CaseInsensitive))
+            if (part.startsWith(charset, BobUI::CaseInsensitive))
                 charsetParam = part;
 
             if (!mime.isEmpty() && !charsetParam.isEmpty())
@@ -72,7 +72,7 @@ Q_CORE_EXPORT bool qDecodeDataUrl(const QUrl &uri, QString &mimeType, QByteArray
 
         // find out if the payload is encoded in Base64
         constexpr auto base64 = ";base64"_L1; // per the RFC, at the end of `data`
-        const bool isBas64 = data.endsWith(base64, Qt::CaseInsensitive);
+        const bool isBas64 = data.endsWith(base64, BobUI::CaseInsensitive);
 
         payload.slice(pos + 1);
         data = {};
@@ -96,4 +96,4 @@ Q_CORE_EXPORT bool qDecodeDataUrl(const QUrl &uri, QString &mimeType, QByteArray
     return false;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

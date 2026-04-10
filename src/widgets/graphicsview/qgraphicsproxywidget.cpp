@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qglobal.h"
 
@@ -10,22 +10,22 @@
 #include "private/qwidget_p.h"
 #include "private/qapplication_p.h"
 
-#include <QtCore/qdebug.h>
-#include <QtGui/qevent.h>
-#include <QtWidgets/qgraphicsscene.h>
-#include <QtWidgets/qgraphicssceneevent.h>
-#include <QtWidgets/qlayout.h>
-#include <QtGui/qpainter.h>
-#include <QtWidgets/qstyleoption.h>
-#include <QtWidgets/qgraphicsview.h>
-#if QT_CONFIG(lineedit)
-#include <QtWidgets/qlineedit.h>
+#include <BobUICore/qdebug.h>
+#include <BobUIGui/qevent.h>
+#include <BobUIWidgets/qgraphicsscene.h>
+#include <BobUIWidgets/qgraphicssceneevent.h>
+#include <BobUIWidgets/qlayout.h>
+#include <BobUIGui/qpainter.h>
+#include <BobUIWidgets/qstyleoption.h>
+#include <BobUIWidgets/qgraphicsview.h>
+#if BOBUI_CONFIG(lineedit)
+#include <BobUIWidgets/qlineedit.h>
 #endif
-#if QT_CONFIG(textedit)
-#include <QtWidgets/qtextedit.h>
+#if BOBUI_CONFIG(textedit)
+#include <BobUIWidgets/bobuiextedit.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //#define GRAPHICSPROXYWIDGET_DEBUG
 
@@ -35,7 +35,7 @@ QT_BEGIN_NAMESPACE
     a QWidget in a QGraphicsScene.
     \since 4.4
     \ingroup graphicsview-api
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     QGraphicsProxyWidget embeds QWidget-based widgets, for example, a
     QPushButton, QFontComboBox, or even QFileDialog, into
@@ -55,14 +55,14 @@ QT_BEGIN_NAMESPACE
     means that when an embedded QComboBox shows its popup list, a new
     QGraphicsProxyWidget is created automatically, embedding the popup, and
     positioning it correctly. This only works if the popup is child of the
-    embedded widget (for example QToolButton::setMenu() requires the QMenu instance
-    to be child of the QToolButton).
+    embedded widget (for example BOBUIoolButton::setMenu() requires the QMenu instance
+    to be child of the BOBUIoolButton).
 
     \section1 Embedding a Widget with QGraphicsProxyWidget
 
     There are two ways to embed a widget using QGraphicsProxyWidget. The most
     common way is to pass a widget pointer to QGraphicsScene::addWidget()
-    together with any relevant \l Qt::WindowFlags. This function returns a
+    together with any relevant \l BobUI::WindowFlags. This function returns a
     pointer to a QGraphicsProxyWidget. You can then choose to reparent or
     position either the proxy, or the embedded widget itself.
 
@@ -156,8 +156,8 @@ QT_BEGIN_NAMESPACE
     \sa QGraphicsScene::addWidget(), QGraphicsWidget
 */
 
-extern bool qt_sendSpontaneousEvent(QObject *, QEvent *);
-Q_WIDGETS_EXPORT extern bool qt_tab_all_widgets();
+extern bool bobui_sendSpontaneousEvent(QObject *, QEvent *);
+Q_WIDGETS_EXPORT extern bool bobui_tab_all_widgets();
 
 /*!
     \internal
@@ -190,7 +190,7 @@ QGraphicsProxyWidgetPrivate::~QGraphicsProxyWidgetPrivate()
 void QGraphicsProxyWidgetPrivate::init()
 {
     Q_Q(QGraphicsProxyWidget);
-    q->setFocusPolicy(Qt::WheelFocus);
+    q->setFocusPolicy(BobUI::WheelFocus);
     q->setAcceptDrops(true);
 }
 
@@ -202,7 +202,7 @@ void QGraphicsProxyWidgetPrivate::sendWidgetMouseEvent(QGraphicsSceneHoverEvent 
     QGraphicsSceneMouseEvent mouseEvent(QEvent::GraphicsSceneMouseMove);
     mouseEvent.setPos(event->pos());
     mouseEvent.setScreenPos(event->screenPos());
-    mouseEvent.setButton(Qt::NoButton);
+    mouseEvent.setButton(BobUI::NoButton);
     mouseEvent.setButtons({ });
     mouseEvent.setModifiers(event->modifiers());
     mouseEvent.setTimestamp(event->timestamp());
@@ -290,14 +290,14 @@ void QGraphicsProxyWidgetPrivate::sendWidgetMouseEvent(QGraphicsSceneMouseEvent 
         QApplicationPrivate::dispatchEnterLeave(lastWidgetUnderMouse, embeddedMouseGrabber, event->screenPos());
         embeddedMouseGrabber = nullptr;
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         // ### Restore the cursor, don't override it.
         if (!lastWidgetUnderMouse)
             q->unsetCursor();
 #endif
     }
 
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     // Keep cursor in sync
     if (lastWidgetUnderMouse) {
         QCursor widgetsCursor = lastWidgetUnderMouse->cursor();
@@ -331,7 +331,7 @@ void QGraphicsProxyWidgetPrivate::sendWidgetKeyEvent(QKeyEvent *event)
 /*!
     \internal
 */
-void QGraphicsProxyWidgetPrivate::removeSubFocusHelper(QWidget *widget, Qt::FocusReason reason)
+void QGraphicsProxyWidgetPrivate::removeSubFocusHelper(QWidget *widget, BobUI::FocusReason reason)
 {
     QFocusEvent event(QEvent::FocusOut, reason);
     QPointer<QWidget> widgetGuard = widget;
@@ -363,7 +363,7 @@ QWidget *QGraphicsProxyWidgetPrivate::findFocusChild(QWidget *child, bool next) 
         return nullptr;
 
     QWidget *oldChild = child;
-    uint focus_flag = qt_tab_all_widgets() ? Qt::TabFocus : Qt::StrongFocus;
+    uint focus_flag = bobui_tab_all_widgets() ? BobUI::TabFocus : BobUI::StrongFocus;
     do {
         if (child->isEnabled()
             && child->isVisibleTo(widget)
@@ -444,7 +444,7 @@ void QGraphicsProxyWidgetPrivate::updateProxyInputMethodAcceptanceFromWidget()
     if (!focusWidget)
         focusWidget = widget;
     q->setFlag(QGraphicsItem::ItemAcceptsInputMethod,
-               focusWidget->testAttribute(Qt::WA_InputMethodEnabled));
+               focusWidget->testAttribute(BobUI::WA_InputMethodEnabled));
 }
 
 /*!
@@ -510,7 +510,7 @@ QPointF QGraphicsProxyWidgetPrivate::mapToReceiver(const QPointF &pos, const QWi
     Constructs a new QGraphicsProxy widget. \a parent and \a wFlags are passed
     to QGraphicsItem's constructor.
 */
-QGraphicsProxyWidget::QGraphicsProxyWidget(QGraphicsItem *parent, Qt::WindowFlags wFlags)
+QGraphicsProxyWidget::QGraphicsProxyWidget(QGraphicsItem *parent, BobUI::WindowFlags wFlags)
     : QGraphicsWidget(*new QGraphicsProxyWidgetPrivate, parent, wFlags)
 {
     Q_D(QGraphicsProxyWidget);
@@ -556,7 +556,7 @@ QGraphicsProxyWidget::~QGraphicsProxyWidget()
     Every child widget that are embedded will also be embedded and their proxy
     widget destroyed.
 
-    Note that widgets with the Qt::WA_PaintOnScreen widget attribute
+    Note that widgets with the BobUI::WA_PaintOnScreen widget attribute
     set and widgets that wrap an external application or controller
     cannot be embedded. Examples are QOpenGLWidget and QAxWidget.
 
@@ -576,7 +576,7 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
     if (widget) {
         QObject::disconnect(widget, SIGNAL(destroyed()), q, SLOT(_q_removeWidgetSlot()));
         widget->removeEventFilter(q);
-        widget->setAttribute(Qt::WA_DontShowOnScreen, false);
+        widget->setAttribute(BobUI::WA_DontShowOnScreen, false);
         widget->d_func()->extra->proxyWidget = nullptr;
         resolveFont(inheritedFontResolveMask);
         resolvePalette(inheritedPaletteResolveMask);
@@ -600,7 +600,7 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
         }
 
         widget = nullptr;
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
         q->unsetCursor();
 #endif
         q->setAcceptHoverEvents(false);
@@ -635,17 +635,17 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
     }
     *proxyWidget = q;
 
-    newWidget->setAttribute(Qt::WA_DontShowOnScreen);
+    newWidget->setAttribute(BobUI::WA_DontShowOnScreen);
     newWidget->ensurePolished();
     // Do not wait for this widget to close before the app closes ###
     // shouldn't this widget inherit the attribute?
-    newWidget->setAttribute(Qt::WA_QuitOnClose, false);
+    newWidget->setAttribute(BobUI::WA_QuitOnClose, false);
     q->setAcceptHoverEvents(true);
 
-    if (newWidget->testAttribute(Qt::WA_NoSystemBackground))
-        q->setAttribute(Qt::WA_NoSystemBackground);
-    if (newWidget->testAttribute(Qt::WA_OpaquePaintEvent))
-        q->setAttribute(Qt::WA_OpaquePaintEvent);
+    if (newWidget->testAttribute(BobUI::WA_NoSystemBackground))
+        q->setAttribute(BobUI::WA_NoSystemBackground);
+    if (newWidget->testAttribute(BobUI::WA_OpaquePaintEvent))
+        q->setAttribute(BobUI::WA_OpaquePaintEvent);
 
     widget = newWidget;
 
@@ -655,25 +655,25 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
     posChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
     sizeChangeMode = QGraphicsProxyWidgetPrivate::WidgetToProxyMode;
 
-    if ((autoShow && !newWidget->testAttribute(Qt::WA_WState_ExplicitShowHide)) || !newWidget->testAttribute(Qt::WA_WState_Hidden)) {
+    if ((autoShow && !newWidget->testAttribute(BobUI::WA_WState_ExplicitShowHide)) || !newWidget->testAttribute(BobUI::WA_WState_Hidden)) {
         newWidget->show();
     }
 
     // Copy the state from the widget onto the proxy.
-#ifndef QT_NO_CURSOR
-    if (newWidget->testAttribute(Qt::WA_SetCursor))
+#ifndef BOBUI_NO_CURSOR
+    if (newWidget->testAttribute(BobUI::WA_SetCursor))
         q->setCursor(widget->cursor());
 #endif
     q->setEnabled(newWidget->isEnabled());
     q->setVisible(newWidget->isVisible());
     q->setLayoutDirection(newWidget->layoutDirection());
-    if (newWidget->testAttribute(Qt::WA_SetStyle))
+    if (newWidget->testAttribute(BobUI::WA_SetStyle))
         q->setStyle(widget->style());
 
     resolveFont(inheritedFontResolveMask);
     resolvePalette(inheritedPaletteResolveMask);
 
-    if (!newWidget->testAttribute(Qt::WA_Resized))
+    if (!newWidget->testAttribute(BobUI::WA_Resized))
         newWidget->adjustSize();
 
     q->setContentsMargins(newWidget->contentsMargins());
@@ -855,8 +855,8 @@ bool QGraphicsProxyWidget::event(QEvent *event)
     }
     case QEvent::KeyPress: {
         QKeyEvent *k = static_cast<QKeyEvent *>(event);
-        if (k->key() == Qt::Key_Tab || k->key() == Qt::Key_Backtab) {
-            if (!(k->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {  //### Add MetaModifier?
+        if (k->key() == BobUI::Key_Tab || k->key() == BobUI::Key_Backtab) {
+            if (!(k->modifiers() & (BobUI::ControlModifier | BobUI::AltModifier))) {  //### Add MetaModifier?
                 QWidget *focusWidget = d->widget->focusWidget();
                 while (focusWidget) {
                     const bool res = QCoreApplication::sendEvent(focusWidget, event);
@@ -871,7 +871,7 @@ bool QGraphicsProxyWidget::event(QEvent *event)
         }
         break;
     }
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
     case QEvent::GraphicsSceneHelp: {
         // Propagate the help event (for tooltip) to the widget under mouse
         if (d->lastWidgetUnderMouse) {
@@ -897,7 +897,7 @@ bool QGraphicsProxyWidget::event(QEvent *event)
     case QEvent::TouchBegin:
     case QEvent::TouchUpdate:
     case QEvent::TouchEnd: {
-        QTouchEvent *touchEvent = static_cast<QTouchEvent *>(event);
+        BOBUIouchEvent *touchEvent = static_cast<BOBUIouchEvent *>(event);
         bool res = QApplicationPrivate::translateRawTouchEvent(d->widget, touchEvent);
         if (res & touchEvent->isAccepted())
             return true;
@@ -959,7 +959,7 @@ bool QGraphicsProxyWidget::eventFilter(QObject *object, QEvent *event)
                 d->styleChangeMode = QGraphicsProxyWidgetPrivate::NoMode;
             }
             break;
-#if QT_CONFIG(tooltip)
+#if BOBUI_CONFIG(tooltip)
         case QEvent::ToolTipChange:
             // Propagate tooltip change to the proxy.
             if (!d->tooltipChangeMode) {
@@ -992,7 +992,7 @@ void QGraphicsProxyWidget::hideEvent(QHideEvent *event)
     Q_UNUSED(event);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -1027,15 +1027,15 @@ void QGraphicsProxyWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *even
 
     event->setAccepted(contextMenuEvent.isAccepted());
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
 /*!
     \reimp
 */
 void QGraphicsProxyWidget::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-#if !QT_CONFIG(draganddrop)
+#if !BOBUI_CONFIG(draganddrop)
     Q_UNUSED(event);
 #else
     Q_D(QGraphicsProxyWidget);
@@ -1056,7 +1056,7 @@ void QGraphicsProxyWidget::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 void QGraphicsProxyWidget::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 {
     Q_UNUSED(event);
-#if QT_CONFIG(draganddrop)
+#if BOBUI_CONFIG(draganddrop)
     Q_D(QGraphicsProxyWidget);
     if (!d->widget || !d->dragDropWidget)
         return;
@@ -1071,7 +1071,7 @@ void QGraphicsProxyWidget::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 */
 void QGraphicsProxyWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-#if !QT_CONFIG(draganddrop)
+#if !BOBUI_CONFIG(draganddrop)
     Q_UNUSED(event);
 #else
     Q_D(QGraphicsProxyWidget);
@@ -1127,7 +1127,7 @@ void QGraphicsProxyWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
             d->dragDropWidget = nullptr;
         }
         // Propagate
-        event->setDropAction(Qt::IgnoreAction);
+        event->setDropAction(BobUI::IgnoreAction);
     }
 #endif
 }
@@ -1137,7 +1137,7 @@ void QGraphicsProxyWidget::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 */
 void QGraphicsProxyWidget::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-#if !QT_CONFIG(draganddrop)
+#if !BOBUI_CONFIG(draganddrop)
     Q_UNUSED(event);
 #else
     Q_D(QGraphicsProxyWidget);
@@ -1253,7 +1253,7 @@ void QGraphicsProxyWidget::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event
 /*!
     \reimp
 */
-#if QT_CONFIG(wheelevent)
+#if BOBUI_CONFIG(wheelevent)
 void QGraphicsProxyWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
     Q_D(QGraphicsProxyWidget);
@@ -1273,9 +1273,9 @@ void QGraphicsProxyWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
     // the event we send to the receiver get grabbed by the viewport, resulting
     // in infinite recursion
     QPointer<QWidget> prev_grabber = QApplicationPrivate::wheel_widget;
-    if (event->phase() == Qt::ScrollBegin) {
+    if (event->phase() == BobUI::ScrollBegin) {
         QApplicationPrivate::wheel_widget = receiver;
-    } else if (event->phase() != Qt::NoScrollPhase && QApplicationPrivate::wheel_widget != receiver) {
+    } else if (event->phase() != BobUI::NoScrollPhase && QApplicationPrivate::wheel_widget != receiver) {
         // this event is part of a stream that didn't start here, so ignore
         event->ignore();
         return;
@@ -1286,7 +1286,7 @@ void QGraphicsProxyWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
 
     // Send mouse event.
     QPoint angleDelta;
-    if (event->orientation() == Qt::Horizontal)
+    if (event->orientation() == BobUI::Horizontal)
         angleDelta.setX(event->delta());
     else
         angleDelta.setY(event->delta());
@@ -1294,14 +1294,14 @@ void QGraphicsProxyWidget::wheelEvent(QGraphicsSceneWheelEvent *event)
     // were not preserved in the QGraphicsSceneWheelEvent unfortunately
     QWheelEvent wheelEvent(pos, event->screenPos(), event->pixelDelta(), angleDelta,
                            event->buttons(), event->modifiers(), event->phase(),
-                           event->isInverted(), Qt::MouseEventSynthesizedByQt,
+                           event->isInverted(), BobUI::MouseEventSynthesizedByBobUI,
                            QPointingDevice::primaryPointingDevice());
     QPointer<QWidget> focusWidget = d->widget->focusWidget();
-    extern bool qt_sendSpontaneousEvent(QObject *, QEvent *);
-    qt_sendSpontaneousEvent(receiver, &wheelEvent);
+    extern bool bobui_sendSpontaneousEvent(QObject *, QEvent *);
+    bobui_sendSpontaneousEvent(receiver, &wheelEvent);
     event->setAccepted(wheelEvent.isAccepted());
 
-    if (event->phase() == Qt::ScrollBegin) {
+    if (event->phase() == BobUI::ScrollBegin) {
         // reset the wheel grabber if the event wasn't accepted
         if (!wheelEvent.isAccepted())
             QApplicationPrivate::wheel_widget = prev_grabber;
@@ -1373,12 +1373,12 @@ void QGraphicsProxyWidget::focusInEvent(QFocusEvent *event)
     d->proxyIsGivingFocus = true;
 
     switch (event->reason()) {
-    case Qt::TabFocusReason: {
+    case BobUI::TabFocusReason: {
         if (QWidget *focusChild = d->findFocusChild(nullptr, true))
             focusChild->setFocus(event->reason());
         break;
     }
-    case Qt::BacktabFocusReason:
+    case BobUI::BacktabFocusReason:
         if (QWidget *focusChild = d->findFocusChild(nullptr, false))
             focusChild->setFocus(event->reason());
         break;
@@ -1389,9 +1389,9 @@ void QGraphicsProxyWidget::focusInEvent(QFocusEvent *event)
         break;
     }
 
-    // QTBUG-88016
+    // BOBUIBUG-88016
     if (d->widget && d->widget->focusWidget()
-        && d->widget->focusWidget()->testAttribute(Qt::WA_InputMethodEnabled))
+        && d->widget->focusWidget()->testAttribute(BobUI::WA_InputMethodEnabled))
         QApplication::inputMethod()->reset();
 
     d->proxyIsGivingFocus = false;
@@ -1410,9 +1410,9 @@ void QGraphicsProxyWidget::focusOutEvent(QFocusEvent *event)
         // We need to explicitly remove subfocus from the embedded widget's
         // focus widget.
         if (QWidget *focusWidget = d->widget->focusWidget()) {
-            // QTBUG-88016 proxyWidget set QTextEdit(QLineEdit etc.) when input preview text,
+            // BOBUIBUG-88016 proxyWidget set BOBUIextEdit(QLineEdit etc.) when input preview text,
             // inputMethod should be reset when proxyWidget lost focus
-            if (focusWidget->testAttribute(Qt::WA_InputMethodEnabled))
+            if (focusWidget->testAttribute(BobUI::WA_InputMethodEnabled))
                 QApplication::inputMethod()->reset();
 
             d->removeSubFocusHelper(focusWidget, event->reason());
@@ -1429,7 +1429,7 @@ bool QGraphicsProxyWidget::focusNextPrevChild(bool next)
     if (!d->widget || !d->scene)
         return QGraphicsWidget::focusNextPrevChild(next);
 
-    Qt::FocusReason reason = next ? Qt::TabFocusReason : Qt::BacktabFocusReason;
+    BobUI::FocusReason reason = next ? BobUI::TabFocusReason : BobUI::BacktabFocusReason;
     QWidget *lastFocusChild = d->widget->focusWidget();
     if (QWidget *newFocusChild = d->findFocusChild(lastFocusChild, next)) {
         newFocusChild->setFocus(reason);
@@ -1442,7 +1442,7 @@ bool QGraphicsProxyWidget::focusNextPrevChild(bool next)
 /*!
     \reimp
 */
-QVariant QGraphicsProxyWidget::inputMethodQuery(Qt::InputMethodQuery query) const
+QVariant QGraphicsProxyWidget::inputMethodQuery(BobUI::InputMethodQuery query) const
 {
     Q_D(const QGraphicsProxyWidget);
 
@@ -1481,14 +1481,14 @@ void QGraphicsProxyWidget::inputMethodEvent(QInputMethodEvent *event)
     // Forward input method events if the focus widget enables input methods.
     Q_D(const QGraphicsProxyWidget);
     QWidget *focusWidget = d->widget->focusWidget();
-    if (focusWidget && focusWidget->testAttribute(Qt::WA_InputMethodEnabled))
+    if (focusWidget && focusWidget->testAttribute(BobUI::WA_InputMethodEnabled))
         QCoreApplication::sendEvent(focusWidget, event);
 }
 
 /*!
     \reimp
 */
-QSizeF QGraphicsProxyWidget::sizeHint(Qt::SizeHint which, const QSizeF &constraint) const
+QSizeF QGraphicsProxyWidget::sizeHint(BobUI::SizeHint which, const QSizeF &constraint) const
 {
     Q_D(const QGraphicsProxyWidget);
     if (!d->widget)
@@ -1496,25 +1496,25 @@ QSizeF QGraphicsProxyWidget::sizeHint(Qt::SizeHint which, const QSizeF &constrai
 
     QSizeF sh;
     switch (which) {
-    case Qt::PreferredSize:
+    case BobUI::PreferredSize:
         if (QLayout *l = d->widget->layout())
             sh = l->sizeHint();
         else
             sh = d->widget->sizeHint();
         break;
-    case Qt::MinimumSize:
+    case BobUI::MinimumSize:
         if (QLayout *l = d->widget->layout())
             sh = l->minimumSize();
         else
             sh = d->widget->minimumSizeHint();
         break;
-    case Qt::MaximumSize:
+    case BobUI::MaximumSize:
         if (QLayout *l = d->widget->layout())
             sh = l->maximumSize();
         else
             sh = QSizeF(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
         break;
-    case Qt::MinimumDescent:
+    case BobUI::MinimumDescent:
         sh = constraint;
         break;
     default:
@@ -1553,7 +1553,7 @@ void QGraphicsProxyWidget::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     // When rendering to pdf etc. painting may go outside widget boundaries unless clipped
     if (painter->device()->devType() != QInternal::Widget && (flags() & ItemClipsChildrenToShape))
-        painter->setClipRect(d->widget->geometry(), Qt::IntersectClip);
+        painter->setClipRect(d->widget->geometry(), BobUI::IntersectClip);
 
     d->widget->render(painter, exposedWidgetRect.topLeft(), exposedWidgetRect);
 }
@@ -1602,7 +1602,7 @@ QGraphicsProxyWidget *QGraphicsProxyWidget::createProxyForChildWidget(QWidget *c
     if (!parentProxy)
         return nullptr;
 
-    if (!QMetaObject::invokeMethod(parentProxy, "newProxyWidget",  Qt::DirectConnection,
+    if (!QMetaObject::invokeMethod(parentProxy, "newProxyWidget",  BobUI::DirectConnection,
          Q_RETURN_ARG(QGraphicsProxyWidget*, proxy), Q_ARG(const QWidget*, child)))
         return nullptr;
     proxy->setParent(parentProxy);
@@ -1635,6 +1635,6 @@ QGraphicsProxyWidget *QGraphicsProxyWidget::newProxyWidget(const QWidget *)
 
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qgraphicsproxywidget.cpp"

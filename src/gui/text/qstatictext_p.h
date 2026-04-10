@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #ifndef QSTATICTEXT_P_H
 #define QSTATICTEXT_P_H
@@ -8,20 +8,20 @@
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
+// This file is not part of the BobUI API.  It exists for the convenience
 // of internal files.  This header file may change from version to version
 // without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QtGui/private/qtguiglobal_p.h>
+#include <BobUIGui/private/bobuiguiglobal_p.h>
 #include "qstatictext.h"
 
-#include <private/qtextureglyphcache_p.h>
-#include <QtGui/qcolor.h>
+#include <private/bobuiextureglyphcache_p.h>
+#include <BobUIGui/qcolor.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class Q_GUI_EXPORT QStaticTextUserData
 {
@@ -109,14 +109,14 @@ public:
     QSizeF actualSize;                   // 16 bytes per text
     QPointF position;                    // 16 bytes per text
 
-    QTransform matrix;                   // 80 bytes per text
+    BOBUIransform matrix;                   // 80 bytes per text
     QStaticTextItem *items;              // 4 bytes per text
     int itemCount;                       // 4 bytes per text
 
     glyph_t *glyphPool;                  // 4 bytes per text
     QFixedPoint *positionPool;           // 4 bytes per text
 
-    QTextOption textOption;              // 28 bytes per text
+    BOBUIextOption textOption;              // 28 bytes per text
 
     unsigned char needsRelayout            : 1; // 1 byte per text
     unsigned char useBackendOptimizations  : 1;
@@ -128,6 +128,6 @@ public:
     static QStaticTextPrivate *get(const QStaticText *q);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QSTATICTEXT_P_H

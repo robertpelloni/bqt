@@ -1,13 +1,13 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \headerfile <QtMath>
-    \inmodule QtCore
+    \headerfile <BobUIMath>
+    \inmodule BobUICore
     \title Generic Math Functions
     \ingroup funclists
 
-    \brief The <QtMath> header file provides various math functions.
+    \brief The <BobUIMath> header file provides various math functions.
 
     These functions are partly convenience definitions for basic math operations
     not available in the C or Standard Template Libraries.
@@ -37,7 +37,7 @@
     The ceiling is the smallest integer that is not less than \a v.
     For example, if \a v is 41.2, then the ceiling is 42.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qFloor()
 */
 
@@ -48,7 +48,7 @@
     The floor is the largest integer that is not greater than \a v.
     For example, if \a v is 41.2, then the floor is 41.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qCeil()
 */
 
@@ -56,14 +56,14 @@
     \fn template <typename T> auto qFabs(T v)
     Returns the absolute value of \a v.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
 */
 
 /*!
     \fn template <typename T> auto qSin(T v)
     Returns the sine of the angle \a v in radians.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qCos(), qTan()
 */
 
@@ -71,7 +71,7 @@
     \fn  template <typename T> auto qCos(T v)
     Returns the cosine of an angle \a v in radians.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSin(), qTan()
 */
 
@@ -79,7 +79,7 @@
     \fn template <typename T> auto qTan(T v)
     Returns the tangent of an angle \a v in radians.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSin(), qCos()
 */
 
@@ -88,7 +88,7 @@
     Returns the arccosine of \a v as an angle in radians.
     Arccosine is the inverse operation of cosine.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qAtan(), qAsin(), qCos()
 */
 
@@ -97,7 +97,7 @@
     Returns the arcsine of \a v as an angle in radians.
     Arcsine is the inverse operation of sine.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSin(), qAtan(), qAcos()
 */
 
@@ -106,7 +106,7 @@
     Returns the arctangent of \a v as an angle in radians.
     Arctangent is the inverse operation of tangent.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qTan(), qAcos(), qAsin()
 */
 
@@ -115,7 +115,7 @@
     Returns the arctangent of a point specified by the coordinates \a y and \a x.
     This function will return the angle (argument) of that point.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qAtan(), qHypot()
 */
 
@@ -124,7 +124,7 @@
     Returns the square root of \a v.
     This function returns a NaN if \a v is a negative number.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qPow(), qHypot()
 */
 
@@ -142,7 +142,7 @@
     infinite, so is the result; otherwise, if either is a NaN, so is
     the result.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSqrt(), qAtan2()
 */
 
@@ -159,7 +159,7 @@
     floating-point type as std::hypot(). If any parameter is infinite,
     so is the result; otherwise, if any is NaN, so is the result.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSqrt()
 */
 
@@ -174,7 +174,7 @@
     calculation equivalent to squaring each, summing and returning the square
     root, save that underflow and overflow are avoided as far as possible.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSqrt()
 */
 
@@ -182,7 +182,7 @@
     \fn template <typename T> auto qLn(T v)
     Returns the natural logarithm of \a v. Natural logarithm uses base e.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qExp()
 */
 
@@ -190,7 +190,7 @@
     \fn template <typename T> auto qExp(T v)
     Returns the exponential function of \c e to the power of \a v.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qLn()
 */
 
@@ -199,13 +199,13 @@
     Returns the value of \a x raised to the power of \a y.
     That is, \a x is the base and \a y is the exponent.
 
-    \relates <QtMath>
+    \relates <BobUIMath>
     \sa qSqrt()
 */
 
 /*!
     \fn float qDegreesToRadians(float degrees)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.1
 
     This function converts the \a degrees in float to radians.
@@ -219,7 +219,7 @@
 
 /*!
     \fn double qDegreesToRadians(double degrees)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.1
 
     This function converts the \a degrees in double to radians.
@@ -233,7 +233,7 @@
 
 /*!
     \fn long double qDegreesToRadians(long double degrees)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 6.0
 
     This function converts the \a degrees in double to radians.
@@ -243,7 +243,7 @@
 
 /*!
     \fn template <typename Integral> double qDegreesToRadians(Integral degrees)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 6.0
 
     This function converts the \a degrees in double to radians;
@@ -256,7 +256,7 @@
 
 /*!
     \fn float qRadiansToDegrees(float radians)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.1
 
     This function converts the \a radians in float to degrees.
@@ -270,7 +270,7 @@
 
 /*!
     \fn double qRadiansToDegrees(double radians)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.1
 
     This function converts the \a radians in double to degrees.
@@ -284,7 +284,7 @@
 
 /*!
     \fn long double qRadiansToDegrees(long double radians)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 6.0
 
     This function converts the \a radians in double to degrees.
@@ -294,7 +294,7 @@
 
 /*!
     \fn quint32 qNextPowerOfTwo(quint32 value)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.4
 
     This function returns the nearest power of two greater than \a value. For 0 it returns 1, and for values larger than or equal to 2^31 the result is undefined.
@@ -302,7 +302,7 @@
 
 /*!
     \fn quint32 qNextPowerOfTwo(qint32 value)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.4
     \overload
 
@@ -311,7 +311,7 @@
 
 /*!
     \fn quint64 qNextPowerOfTwo(quint64 value)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.4
 
     This function returns the nearest power of two greater than \a value. For 0 it returns 1, and for values larger than or equal to 2^63 the result is undefined.
@@ -319,7 +319,7 @@
 
 /*!
     \fn quint64 qNextPowerOfTwo(qint64 value)
-    \relates <QtMath>
+    \relates <BobUIMath>
     \since 5.4
     \overload
 

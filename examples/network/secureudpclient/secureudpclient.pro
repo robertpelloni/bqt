@@ -1,4 +1,4 @@
-QT += widgets network
+BOBUI += widgets network
 
 TARGET = secureudpclient
 TEMPLATE = app
@@ -18,5 +18,5 @@ FORMS += \
         mainwindow.ui \
         addressdialog.ui
 
-target.path = $$[QT_INSTALL_EXAMPLES]/network/secureudpclient
+target.path = $$[BOBUI_INSTALL_EXAMPLES]/network/secureudpclient
 INSTALLS += target

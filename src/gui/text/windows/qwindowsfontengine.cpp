@@ -1,46 +1,46 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:critical reason:data-parser
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:critical reason:data-parser
 
 #include "qwindowsfontengine_p.h"
 #include "qwindowsnativeimage_p.h"
 #include "qwindowsfontdatabase_p.h"
-#include <QtCore/qt_windows.h>
-#if QT_CONFIG(directwrite)
+#include <BobUICore/bobui_windows.h>
+#if BOBUI_CONFIG(directwrite)
 #  include "qwindowsfontenginedirectwrite_p.h"
 #endif
-#include <QtGui/qpa/qplatformintegration.h>
-#include <QtGui/private/qtextengine_p.h> // glyph_metrics_t
-#include <QtGui/private/qguiapplication_p.h>
-#include <QtGui/QPaintDevice>
-#include <QtGui/QBitmap>
-#include <QtGui/QPainter>
-#include <QtGui/private/qpainter_p.h>
-#include <QtGui/QPaintEngine>
-#include <QtGui/private/qpaintengine_raster_p.h>
-#include <QtGui/private/qtgui-config_p.h>
+#include <BobUIGui/qpa/qplatformintegration.h>
+#include <BobUIGui/private/bobuiextengine_p.h> // glyph_metrics_t
+#include <BobUIGui/private/qguiapplication_p.h>
+#include <BobUIGui/QPaintDevice>
+#include <BobUIGui/QBitmap>
+#include <BobUIGui/QPainter>
+#include <BobUIGui/private/qpainter_p.h>
+#include <BobUIGui/QPaintEngine>
+#include <BobUIGui/private/qpaintengine_raster_p.h>
+#include <BobUIGui/private/bobuigui-config_p.h>
 
-#include <QtCore/QtEndian>
-#include <QtCore/QFile>
-#include <QtCore/qmath.h>
-#include <QtCore/QTextStream>
-#include <QtCore/QThreadStorage>
-#include <QtCore/private/qsystemlibrary_p.h>
-#include <QtCore/private/qstringiterator_p.h>
+#include <BobUICore/BobUIEndian>
+#include <BobUICore/QFile>
+#include <BobUICore/qmath.h>
+#include <BobUICore/BOBUIextStream>
+#include <BobUICore/BOBUIhreadStorage>
+#include <BobUICore/private/qsystemlibrary_p.h>
+#include <BobUICore/private/qstringiterator_p.h>
 
-#include <QtCore/QDebug>
+#include <BobUICore/QDebug>
 
 #include <limits.h>
 
-#if QT_CONFIG(directwrite)
+#if BOBUI_CONFIG(directwrite)
 #  include <dwrite.h>
 #  include <comdef.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-QT_IMPL_METATYPE_EXTERN(HFONT)
-QT_IMPL_METATYPE_EXTERN(LOGFONT)
+BOBUI_IMPL_METATYPE_EXTERN(HFONT)
+BOBUI_IMPL_METATYPE_EXTERN(LOGFONT)
 
 //### mingw needed define
 #ifndef TT_PRIM_CSPLINE
@@ -181,7 +181,7 @@ int QWindowsFontEngine::getGlyphIndexes(const QChar *str, int numChars, QGlyphLa
     \brief Standard Windows font engine.
     \internal
 
-    Will probably be superseded by a common Free Type font engine in Qt 5.X.
+    Will probably be superseded by a common Free Type font engine in BobUI 5.X.
 */
 
 QWindowsFontEngine::QWindowsFontEngine(const QString &name,
@@ -361,7 +361,7 @@ void QWindowsFontEngine::recalcAdvances(QGlyphLayout *glyphs, QFontEngine::Shape
     }
 }
 
-bool QWindowsFontEngine::getOutlineMetrics(glyph_t glyph, const QTransform &t, glyph_metrics_t *metrics) const
+bool QWindowsFontEngine::getOutlineMetrics(glyph_t glyph, const BOBUIransform &t, glyph_metrics_t *metrics) const
 {
     Q_ASSERT(metrics != 0);
 
@@ -375,7 +375,7 @@ bool QWindowsFontEngine::getOutlineMetrics(glyph_t glyph, const QTransform &t, g
     mat.eM21.value = mat.eM12.value = 0;
     mat.eM21.fract = mat.eM12.fract = 0;
 
-    if (t.type() > QTransform::TxTranslate) {
+    if (t.type() > BOBUIransform::TxTranslate) {
         // We need to set the transform using the HDC's world
         // matrix rather than using the MAT2 above, because the
         // results provided when transforming via MAT2 does not
@@ -396,7 +396,7 @@ bool QWindowsFontEngine::getOutlineMetrics(glyph_t glyph, const QTransform &t, g
         format |= GGO_GLYPH_INDEX;
     res = GetGlyphOutline(hdc, glyph, format, &gm, 0, 0, &mat);
 
-    if (t.type() > QTransform::TxTranslate) {
+    if (t.type() > BOBUIransform::TxTranslate) {
         XFORM xform;
         xform.eM11 = xform.eM22 = 1;
         xform.eM12 = xform.eM21 = xform.eDx = xform.eDy = 0;
@@ -414,7 +414,7 @@ bool QWindowsFontEngine::getOutlineMetrics(glyph_t glyph, const QTransform &t, g
     }
 }
 
-glyph_metrics_t QWindowsFontEngine::boundingBox(glyph_t glyph, const QTransform &t)
+glyph_metrics_t QWindowsFontEngine::boundingBox(glyph_t glyph, const BOBUIransform &t)
 {
     HDC hdc = m_fontEngineData->hdc;
     SelectObject(hdc, hfont);
@@ -634,12 +634,12 @@ qreal QWindowsFontEngine::minRightBearing() const
     return rbearing;
 }
 
-static inline double qt_fixed_to_double(const FIXED &p) {
+static inline double bobui_fixed_to_double(const FIXED &p) {
     return ((p.value << 16) + p.fract) / 65536.0;
 }
 
-static inline QPointF qt_to_qpointf(const POINTFX &pt, qreal scale, qreal stretch) {
-    return QPointF(qt_fixed_to_double(pt.x) * scale * stretch, -qt_fixed_to_double(pt.y) * scale);
+static inline QPointF bobui_to_qpointf(const POINTFX &pt, qreal scale, qreal stretch) {
+    return QPointF(bobui_fixed_to_double(pt.x) * scale * stretch, -bobui_fixed_to_double(pt.y) * scale);
 }
 
 #ifndef GGO_UNHINTED
@@ -698,7 +698,7 @@ static bool addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
     while (headerOffset < bufferSize) {
         const TTPOLYGONHEADER *ttph = reinterpret_cast<const TTPOLYGONHEADER *>(dataBuffer + headerOffset);
 
-        QPointF lastPoint(qt_to_qpointf(ttph->pfxStart, scale, stretch));
+        QPointF lastPoint(bobui_to_qpointf(ttph->pfxStart, scale, stretch));
         path->moveTo(lastPoint + oset);
         offset += sizeof(TTPOLYGONHEADER);
         while (offset < headerOffset + ttph->cb) {
@@ -706,7 +706,7 @@ static bool addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
             switch (curve->wType) {
             case TT_PRIM_LINE: {
                 for (int i=0; i<curve->cpfx; ++i) {
-                    QPointF p = qt_to_qpointf(curve->apfx[i], scale, stretch) + oset;
+                    QPointF p = bobui_to_qpointf(curve->apfx[i], scale, stretch) + oset;
                     path->lineTo(p);
                 }
                 break;
@@ -716,8 +716,8 @@ static bool addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
                 QPointF prev(elm.x, elm.y);
                 QPointF endPoint;
                 for (int i=0; i<curve->cpfx - 1; ++i) {
-                    QPointF p1 = qt_to_qpointf(curve->apfx[i], scale, stretch) + oset;
-                    QPointF p2 = qt_to_qpointf(curve->apfx[i+1], scale, stretch) + oset;
+                    QPointF p1 = bobui_to_qpointf(curve->apfx[i], scale, stretch) + oset;
+                    QPointF p2 = bobui_to_qpointf(curve->apfx[i+1], scale, stretch) + oset;
                     if (i < curve->cpfx - 2) {
                         endPoint = QPointF((p1.x() + p2.x()) / 2, (p1.y() + p2.y()) / 2);
                     } else {
@@ -732,9 +732,9 @@ static bool addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
             }
             case TT_PRIM_CSPLINE: {
                 for (int i=0; i<curve->cpfx; ) {
-                    QPointF p2 = qt_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
-                    QPointF p3 = qt_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
-                    QPointF p4 = qt_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
+                    QPointF p2 = bobui_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
+                    QPointF p3 = bobui_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
+                    QPointF p4 = bobui_to_qpointf(curve->apfx[i++], scale, stretch) + oset;
                     path->cubicTo(p2, p3, p4);
                 }
                 break;
@@ -753,7 +753,7 @@ static bool addGlyphToPath(glyph_t glyph, const QFixedPoint &position, HDC hdc,
 }
 
 void QWindowsFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
-                                     QPainterPath *path, QTextItem::RenderFlags)
+                                     QPainterPath *path, BOBUIextItem::RenderFlags)
 {
     LOGFONT lf = m_logfont;
     // The sign must be negative here to make sure we match against character height instead of
@@ -783,7 +783,7 @@ void QWindowsFontEngine::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions
 }
 
 void QWindowsFontEngine::addOutlineToPath(qreal x, qreal y, const QGlyphLayout &glyphs,
-                                      QPainterPath *path, QTextItem::RenderFlags flags)
+                                      QPainterPath *path, BOBUIextItem::RenderFlags flags)
 {
     if (tm.tmPitchAndFamily & (TMPF_TRUETYPE | TMPF_VECTOR)) {
         hasOutline = true;
@@ -803,9 +803,9 @@ QFontEngine::FaceId QWindowsFontEngine::faceId() const
     return _faceId;
 }
 
-QT_BEGIN_INCLUDE_NAMESPACE
+BOBUI_BEGIN_INCLUDE_NAMESPACE
 #include <qdebug.h>
-QT_END_INCLUDE_NAMESPACE
+BOBUI_END_INCLUDE_NAMESPACE
 
 int QWindowsFontEngine::synthesized() const
 {
@@ -817,7 +817,7 @@ int QWindowsFontEngine::synthesized() const
             SelectObject(hdc, hfont);
             uchar data[4];
             GetFontData(hdc, HEAD, 44, &data, 4);
-            USHORT macStyle = qt_getUShort(data);
+            USHORT macStyle = bobui_getUShort(data);
             if (tm.tmItalic && !(macStyle & 2))
                 synthesized_flags = SynthesizedItalic;
             if (fontDef.stretch != 100 && ttf)
@@ -898,7 +898,7 @@ bool QWindowsFontEngine::getSfntTableData(uint tag, uchar *buffer, uint *length)
 #endif
 
 QWindowsNativeImage *QWindowsFontEngine::drawGDIGlyph(HFONT font, glyph_t glyph, int margin,
-                                                  const QTransform &t,
+                                                  const BOBUIransform &t,
                                                   QImage::Format mask_format)
 {
     Q_UNUSED(mask_format);
@@ -914,7 +914,7 @@ QWindowsNativeImage *QWindowsFontEngine::drawGDIGlyph(HFONT font, glyph_t glyph,
     if (iw <= 0 || ih <= 0)
         return 0;
 
-    bool has_transformation = t.type() > QTransform::TxTranslate;
+    bool has_transformation = t.type() > BOBUIransform::TxTranslate;
 
     unsigned int options = ttf ? ETO_GLYPH_INDEX : 0;
     XFORM xform;
@@ -993,7 +993,7 @@ QWindowsNativeImage *QWindowsFontEngine::drawGDIGlyph(HFONT font, glyph_t glyph,
 
 glyph_metrics_t QWindowsFontEngine::alphaMapBoundingBox(glyph_t glyph,
                                                         const QFixedPoint &,
-                                                        const QTransform &matrix,
+                                                        const BOBUIransform &matrix,
                                                         GlyphFormat format)
 {
     int margin = 0;
@@ -1005,7 +1005,7 @@ glyph_metrics_t QWindowsFontEngine::alphaMapBoundingBox(glyph_t glyph,
     return gm;
 }
 
-QImage QWindowsFontEngine::alphaMapForGlyph(glyph_t glyph, const QTransform &xform)
+QImage QWindowsFontEngine::alphaMapForGlyph(glyph_t glyph, const BOBUIransform &xform)
 {
     HFONT font = hfont;
 
@@ -1061,7 +1061,7 @@ QImage QWindowsFontEngine::alphaMapForGlyph(glyph_t glyph, const QTransform &xfo
 
 QImage QWindowsFontEngine::alphaRGBMapForGlyph(glyph_t glyph,
                                                const QFixedPoint &,
-                                               const QTransform &t)
+                                               const BOBUIransform &t)
 {
     HFONT font = hfont;
 
@@ -1121,7 +1121,7 @@ QFontEngine *QWindowsFontEngine::cloneWithSize(qreal pixelSize) const
     return fontEngine;
 }
 
-Qt::HANDLE QWindowsFontEngine::handle() const
+BobUI::HANDLE QWindowsFontEngine::handle() const
 {
     return hfont;
 }
@@ -1143,10 +1143,10 @@ void QWindowsFontEngine::initFontInfo(const QFontDef &request,
     }
 }
 
-bool QWindowsFontEngine::supportsTransformation(const QTransform &transform) const
+bool QWindowsFontEngine::supportsTransformation(const BOBUIransform &transform) const
 {
     // Support all transformations for ttf files, and translations for raster fonts
-    return ttf || transform.type() <= QTransform::TxTranslate;
+    return ttf || transform.type() <= BOBUIransform::TxTranslate;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

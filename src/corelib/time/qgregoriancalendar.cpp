@@ -1,12 +1,12 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Copyright (C) 2021 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qgregoriancalendar_p.h"
 #include "qcalendarmath_p.h"
 
-#include <QtCore/qdatetime.h>
+#include <BobUICore/qdatetime.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace QRoundingDown;
 
@@ -34,7 +34,7 @@ static_assert(qDivMod<86400>(-172800).remainder == 0);
     \internal
 
     \class QGregorianCalendar
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QGregorianCalendar class implements the Gregorian calendar.
 
     \section1 The Gregorian Calendar
@@ -140,7 +140,7 @@ QGregorianCalendar::matchCenturyToWeekday(const QCalendar::YearMonthDay &parts, 
             if (maybe && weekDayOfJulian(*maybe) == dow)
                 return *maybe;
             Q_ASSERT(parts.month == 2 && parts.day == 29
-                     && dow != int(Qt::Tuesday) && !(year % 100));
+                     && dow != int(BobUI::Tuesday) && !(year % 100));
         }
 
     } else if (parts.month == 2 && parts.day == 29) {
@@ -157,7 +157,7 @@ QGregorianCalendar::matchCenturyToWeekday(const QCalendar::YearMonthDay &parts, 
             maybe = julianFromParts(year > 0 ? year : year - 1, parts.month, parts.day);
             if (maybe && weekDayOfJulian(*maybe) == dow) // (Can only happen for Tuesday.)
                 return *maybe;
-            Q_ASSERT(dow != int(Qt::Tuesday));
+            Q_ASSERT(dow != int(BobUI::Tuesday));
         }
     }
     return (std::numeric_limits<qint64>::min)();
@@ -206,7 +206,7 @@ int QGregorianCalendar::yearSharingWeekDays(QDate date)
             static constexpr int usual[] = { 2198, 2199, 2098, 2099, 2399, 2298, 2299 };
             static constexpr int leaps[] = { 2396, 2284, 2296, 2184, 2196, 2084, 2096 };
             // Indexing is: first day of year's day-of-week, Monday = 0, one less
-            // than Qt's, as it's simpler to subtract one than to s/7/0/.
+            // than BobUI's, as it's simpler to subtract one than to s/7/0/.
             res = (leapTest(year) ? leaps : usual)[yearStartWeekDay(year) - 1];
         }
         Q_ASSERT(QDate(res, 1, 1).dayOfWeek() == QDate(year, 1, 1).dayOfWeek());
@@ -264,4 +264,4 @@ QCalendar::YearMonthDay QGregorianCalendar::partsFromJulian(qint64 jd)
     return QCalendar::YearMonthDay(y > 0 ? y : y - 1, month, day);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

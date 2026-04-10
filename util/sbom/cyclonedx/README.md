@@ -1,7 +1,7 @@
-# Qt CycloneDX SBOM helper tool
+# BobUI CycloneDX SBOM helper tool
 
 This repository contains a Python script to create a CycloneDX Software
-Bill of Materials (SBOM) document for Qt-based projects.
+Bill of Materials (SBOM) document for BobUI-based projects.
 
 ## Requirements
 
@@ -21,7 +21,7 @@ pip install . # in the current directory to parse the `pyproject.toml` dependenc
 
 ## Description
 
-The tool is not meant to be run standalone. Instead, the Qt CMake build system generates an
+The tool is not meant to be run standalone. Instead, the BobUI CMake build system generates an
 intermediate TOML file during the build process, which is then processed by the provided Python
 script to create the final CycloneDX SBOM in JSON format.
 
@@ -40,7 +40,7 @@ make env
 uv pip install -e .
 
 # Run the script
-python ./qt_cyclonedx_generator/qt_cyclonedx_generator.py
+python ./bobui_cyclonedx_generator/bobui_cyclonedx_generator.py
 ```
 
 To format the source code run:

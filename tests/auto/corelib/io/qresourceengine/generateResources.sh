@@ -1,6 +1,6 @@
 #!/bin/sh
 # Copyright (C) 2016 Intel Corporation.
-# SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only WITH Qt-GPL-exception-1.0
+# SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only WITH BobUI-GPL-exception-1.0
 count=`awk '/ZERO_FILE_LEN/ { print $3 }' tst_qresourceengine.cpp`
 dd if=/dev/zero of=zero.txt bs=1 count=$count
 rcc --binary -o uncompressed.rcc --no-compress compressed.qrc

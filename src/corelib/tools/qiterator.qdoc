@@ -1,8 +1,8 @@
-// Copyright (C) 2020 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
+// Copyright (C) 2020 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GFDL-1.3-no-invariants-only
 
 /*! \class QKeyValueIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 5.10
 
     \brief Iterator over the key/value pairs of an associative container.
@@ -135,7 +135,7 @@
 
 /*!
     \class QListIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QListIterator class provides a Java-style const iterator for QList and QQueue.
 
@@ -188,7 +188,7 @@
 
 /*!
     \class QSetIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \brief The QSetIterator class provides a Java-style const iterator for QSet.
 
     QSet has both \l{Java-style iterators} and \l{STL-style
@@ -231,7 +231,7 @@
 
 /*!
     \class QMutableListIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMutableListIterator class provides a Java-style non-const iterator for QList, QQueue and QStack.
 
@@ -297,7 +297,7 @@
 
 /*!
     \class QMutableSetIterator
-    \inmodule QtCore
+    \inmodule BobUICore
     \since 4.2
 
     \brief The QMutableSetIterator class provides a Java-style non-const iterator for QSet.
@@ -695,7 +695,7 @@
 
 /*!
     \class QMapIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMapIterator class provides a Java-style const iterator for QMap.
 
@@ -747,7 +747,7 @@
 
 /*!
     \class QMultiMapIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMultiMapIterator class provides a Java-style const iterator for QMultiMap.
     QMultiMap has both \l{Java-style iterators} and \l{STL-style
@@ -798,7 +798,7 @@
 
 /*!
     \class QHashIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QHashIterator class provides a Java-style const iterator for QHash and QMultiHash.
 
@@ -846,7 +846,7 @@
 
 /*!
     \class QMutableMapIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMutableMapIterator class provides a Java-style non-const iterator for QMap.
 
@@ -911,7 +911,7 @@
 
 /*!
     \class QMutableMultiMapIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMutableMultiMapIterator class provides a Java-style non-const iterator for QMultiMap.
 
@@ -976,7 +976,7 @@
 
 /*!
     \class QMutableHashIterator
-    \inmodule QtCore
+    \inmodule BobUICore
 
     \brief The QMutableHashIterator class provides a Java-style non-const iterator for QHash and QMultiHash.
 

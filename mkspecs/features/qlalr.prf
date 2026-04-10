@@ -1,4 +1,4 @@
-qtPrepareLibExecTool(QMAKE_QLALR, qlalr)
+bobuiPrepareLibExecTool(QMAKE_QLALR, qlalr)
 
 isEmpty(QLALR_DIR): QLALR_DIR = .
 

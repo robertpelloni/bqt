@@ -4,15 +4,15 @@ ok 1 - initTestCase()
 not ok 2 - value()
   ---
   # Received a fatal error.
-  at: tst_FailDataType::value() (qtbase/src/testlib/qtestdata.cpp:0)
-  file: qtbase/src/testlib/qtestdata.cpp
+  at: tst_FailDataType::value() (bobuibase/src/testlib/bobuiestdata.cpp:0)
+  file: bobuibase/src/testlib/bobuiestdata.cpp
   line: 0
   extensions:
     messages:
     - severity: debug
       message: expected data of type 'QString', got 'bool' for element 0 of data with tag 'bool-as-string'
     - severity: fatal
-      message: ASSERT: "false" in file qtbase/src/testlib/qtestdata.cpp, line 0
+      message: ASSERT: "false" in file bobuibase/src/testlib/bobuiestdata.cpp, line 0
   ...
 1..2
 # tests 2

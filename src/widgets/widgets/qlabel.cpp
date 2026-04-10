@@ -1,6 +1,6 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-// Qt-Security score:significant reason:default
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// BobUI-Security score:significant reason:default
 
 #include "qpainter.h"
 #include "qevent.h"
@@ -11,19 +11,19 @@
 #include "private/qhexstring_p.h"
 #include <qmath.h>
 
-#if QT_CONFIG(style_stylesheet)
+#if BOBUI_CONFIG(style_stylesheet)
 #include "private/qstylesheetstyle_p.h"
 #endif
-#if QT_CONFIG(abstractbutton)
+#if BOBUI_CONFIG(abstractbutton)
 #include "qabstractbutton.h"
 #endif
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
 #include <qaccessible.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
-using namespace Qt::StringLiterals;
+using namespace BobUI::StringLiterals;
 
 QLabelPrivate::QLabelPrivate()
     : QFramePrivate(),
@@ -33,7 +33,7 @@ QLabelPrivate::QLabelPrivate()
       textDirty(false),
       isTextLabel(false),
       hasShortcut(false),
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
       validCursor(false),
       onAnchor(false),
 #endif
@@ -50,7 +50,7 @@ QLabelPrivate::~QLabelPrivate()
     \brief The QLabel widget provides a text or image display.
 
     \ingroup basicwidgets
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
 
     \image fusion-label.png {Label}
 
@@ -94,7 +94,7 @@ QLabelPrivate::~QLabelPrivate()
 
     By default, labels display \l{alignment}{left-aligned, vertically-centered}
     text and images, where any tabs in the text to be displayed are
-    \l{Qt::TextExpandTabs}{automatically expanded}. However, the look
+    \l{BobUI::TextExpandTabs}{automatically expanded}. However, the look
     of a QLabel can be adjusted and fine-tuned in several ways.
 
     The positioning of the content within the QLabel widget area can
@@ -121,18 +121,18 @@ QLabelPrivate::~QLabelPrivate()
     was a button (inheriting from QAbstractButton), triggering the
     mnemonic would emulate a button click.
 
-    \sa QLineEdit, QTextEdit, QPixmap, QMovie
+    \sa QLineEdit, BOBUIextEdit, QPixmap, QMovie
 */
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 /*!
-    \fn QPicture QLabel::picture(Qt::ReturnByValueConstant) const
+    \fn QPicture QLabel::picture(BobUI::ReturnByValueConstant) const
     \deprecated Use the overload without argument instead.
     \since 5.15
 
     Returns the label's picture.
 
-    Previously, Qt provided a version of \c picture() which returned the picture
+    Previously, BobUI provided a version of \c picture() which returned the picture
     by-pointer. That version is now removed. This overload allowed to
     explicitly differentiate between the by-pointer function and the by-value.
 */
@@ -149,7 +149,7 @@ QPicture QLabel::picture() const
         return *(d->picture);
     return QPicture();
 }
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE
 
 
 /*!
@@ -160,7 +160,7 @@ QPicture QLabel::picture() const
 
     \sa setAlignment(), setFrameStyle(), setIndent()
 */
-QLabel::QLabel(QWidget *parent, Qt::WindowFlags f)
+QLabel::QLabel(QWidget *parent, BobUI::WindowFlags f)
     : QFrame(*new QLabelPrivate(), parent, f)
 {
     Q_D(QLabel);
@@ -175,7 +175,7 @@ QLabel::QLabel(QWidget *parent, Qt::WindowFlags f)
 
     \sa setText(), setAlignment(), setFrameStyle(), setIndent()
 */
-QLabel::QLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)
+QLabel::QLabel(const QString &text, QWidget *parent, BobUI::WindowFlags f)
     : QLabel(parent, f)
 {
     setText(text);
@@ -215,7 +215,7 @@ void QLabelPrivate::init()
 
     The text will be interpreted either as plain text or as rich
     text, depending on the text format setting; see setTextFormat().
-    The default setting is Qt::AutoText; i.e. QLabel will try to
+    The default setting is BobUI::AutoText; i.e. QLabel will try to
     auto-detect the format of the text set.
     See \l {Supported HTML Subset} for the definition of rich text.
 
@@ -225,8 +225,8 @@ void QLabelPrivate::init()
     Note that QLabel is well-suited to display small rich text
     documents, such as small documents that get their document
     specific settings (font, text color, link color) from the label's
-    palette and font properties. For large documents, use QTextEdit
-    in read-only mode instead. QTextEdit can also provide a scroll bar
+    palette and font properties. For large documents, use BOBUIextEdit
+    in read-only mode instead. BOBUIextEdit can also provide a scroll bar
     when necessary.
 
     \note This function enables mouse tracking if \a text contains rich
@@ -248,11 +248,11 @@ void QLabel::setText(const QString &text)
     d->text = text;
     d->isTextLabel = true;
     d->textDirty = true;
-    if (d->textformat == Qt::AutoText) {
-        if (Qt::mightBeRichText(d->text))
-            d->effectiveTextFormat = Qt::RichText;
+    if (d->textformat == BobUI::AutoText) {
+        if (BobUI::mightBeRichText(d->text))
+            d->effectiveTextFormat = BobUI::RichText;
         else
-            d->effectiveTextFormat = Qt::PlainText;
+            d->effectiveTextFormat = BobUI::PlainText;
     } else {
         d->effectiveTextFormat = d->textformat;
     }
@@ -266,20 +266,20 @@ void QLabel::setText(const QString &text)
         d->control = nullptr;
     }
 
-    if (d->effectiveTextFormat != Qt::PlainText) {
+    if (d->effectiveTextFormat != BobUI::PlainText) {
         setMouseTracking(true);
     } else {
         // Note: mouse tracking not disabled intentionally
     }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (d->buddy)
         d->updateShortcut();
 #endif
 
     d->updateLabel();
 
-#if QT_CONFIG(accessibility)
+#if BOBUI_CONFIG(accessibility)
     if (accessibleName().isEmpty()) {
         QAccessibleEvent event(this, QAccessible::NameChanged);
         QAccessible::updateAccessibility(&event);
@@ -330,23 +330,23 @@ QPixmap QLabel::pixmap() const
 }
 
 /*!
-    \fn QPixmap QLabel::pixmap(Qt::ReturnByValueConstant) const
+    \fn QPixmap QLabel::pixmap(BobUI::ReturnByValueConstant) const
 
     \deprecated Use the overload without argument instead.
     \since 5.15
 
     Returns the label's pixmap.
 
-    Previously, Qt provided a version of \c pixmap() which returned the pixmap
+    Previously, BobUI provided a version of \c pixmap() which returned the pixmap
     by-pointer. That version has now been removed. This overload allowed to
     explicitly differentiate between the by-pointer function and the by-value.
 
     \code
-    QPixmap pixmapVal = label->pixmap(Qt::ReturnByValue);
+    QPixmap pixmapVal = label->pixmap(BobUI::ReturnByValue);
     \endcode
 */
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
 /*!
     Sets the label contents to \a picture. Any previous content is
     cleared.
@@ -364,7 +364,7 @@ void QLabel::setPicture(const QPicture &picture)
 
     d->updateLabel();
 }
-#endif // QT_NO_PICTURE
+#endif // BOBUI_NO_PICTURE
 
 /*!
     Sets the label contents to plain text containing the textual
@@ -409,22 +409,22 @@ void QLabel::setNum(double num)
     \sa text
 */
 
-void QLabel::setAlignment(Qt::Alignment alignment)
+void QLabel::setAlignment(BobUI::Alignment alignment)
 {
     Q_D(QLabel);
-    if (alignment == (d->align & (Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask)))
+    if (alignment == (d->align & (BobUI::AlignVertical_Mask|BobUI::AlignHorizontal_Mask)))
         return;
-    d->align = (d->align & ~(Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask))
-               | (alignment & (Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask));
+    d->align = (d->align & ~(BobUI::AlignVertical_Mask|BobUI::AlignHorizontal_Mask))
+               | (alignment & (BobUI::AlignVertical_Mask|BobUI::AlignHorizontal_Mask));
 
     d->updateLabel();
 }
 
 
-Qt::Alignment QLabel::alignment() const
+BobUI::Alignment QLabel::alignment() const
 {
     Q_D(const QLabel);
-    return QFlag(d->align & (Qt::AlignVertical_Mask|Qt::AlignHorizontal_Mask));
+    return QFlag(d->align & (BobUI::AlignVertical_Mask|BobUI::AlignHorizontal_Mask));
 }
 
 
@@ -443,9 +443,9 @@ void QLabel::setWordWrap(bool on)
 {
     Q_D(QLabel);
     if (on)
-        d->align |= Qt::TextWordWrap;
+        d->align |= BobUI::TextWordWrap;
     else
-        d->align &= ~Qt::TextWordWrap;
+        d->align &= ~BobUI::TextWordWrap;
 
     d->updateLabel();
 }
@@ -453,7 +453,7 @@ void QLabel::setWordWrap(bool on)
 bool QLabel::wordWrap() const
 {
     Q_D(const QLabel);
-    return d->align & Qt::TextWordWrap;
+    return d->align & BobUI::TextWordWrap;
 }
 
 /*!
@@ -461,9 +461,9 @@ bool QLabel::wordWrap() const
     \brief the label's text indent in pixels
 
     If a label displays text, the indent applies to the left edge if
-    alignment() is Qt::AlignLeft, to the right edge if alignment() is
-    Qt::AlignRight, to the top edge if alignment() is Qt::AlignTop, and
-    to the bottom edge if alignment() is Qt::AlignBottom.
+    alignment() is BobUI::AlignLeft, to the right edge if alignment() is
+    BobUI::AlignRight, to the top edge if alignment() is BobUI::AlignTop, and
+    to the bottom edge if alignment() is BobUI::AlignBottom.
 
     If indent is negative, or if no indent has been set, the label
     computes the effective indent as follows: If frameWidth() is 0,
@@ -519,7 +519,7 @@ void QLabel::setMargin(int margin)
 
 /*!
     \class QLabelPrivate
-    \inmodule QtWidgets
+    \inmodule BobUIWidgets
     \internal
 */
 
@@ -542,11 +542,11 @@ QSize QLabelPrivate::sizeForWidth(int w) const
 
     if (icon && !icon->isNull()) {
         br = QRect(QPoint(0, 0), pixmapSize);
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     } else if (picture && !picture->isNull()) {
         br = picture->boundingRect();
 #endif
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
     } else if (movie && !movie->currentPixmap().isNull()) {
         br = movie->currentPixmap().rect();
         br.setSize(movie->currentPixmap().deviceIndependentSize().toSize());
@@ -559,9 +559,9 @@ QSize QLabelPrivate::sizeForWidth(int w) const
         if (m < 0 && q->frameWidth()) // no indent, but we do have a frame
             m = fm.horizontalAdvance(u'x') - margin*2;
         if (m > 0) {
-            if ((align & Qt::AlignLeft) || (align & Qt::AlignRight))
+            if ((align & BobUI::AlignLeft) || (align & BobUI::AlignRight))
                 hextra += m;
-            if ((align & Qt::AlignTop) || (align & Qt::AlignBottom))
+            if ((align & BobUI::AlignTop) || (align & BobUI::AlignBottom))
                 vextra += m;
         }
 
@@ -569,7 +569,7 @@ QSize QLabelPrivate::sizeForWidth(int w) const
             ensureTextLayouted();
             const qreal oldTextWidth = control->textWidth();
             // Calculate the length of document if w is the width
-            if (align & Qt::TextWordWrap) {
+            if (align & BobUI::TextWordWrap) {
                 if (w >= 0) {
                     w = qMax(w-hextra-contentsMargin.width(), 0); // strip margin and indent
                     control->setTextWidth(w);
@@ -588,16 +588,16 @@ QSize QLabelPrivate::sizeForWidth(int w) const
         } else {
             // Turn off center alignment in order to avoid rounding errors for centering,
             // since centering involves a division by 2. At the end, all we want is the size.
-            int flags = align & ~(Qt::AlignVCenter | Qt::AlignHCenter);
+            int flags = align & ~(BobUI::AlignVCenter | BobUI::AlignHCenter);
             if (hasShortcut) {
-                flags |= Qt::TextShowMnemonic;
+                flags |= BobUI::TextShowMnemonic;
                 QStyleOption opt;
                 opt.initFrom(q);
                 if (!q->style()->styleHint(QStyle::SH_UnderlineShortcut, &opt, q))
-                    flags |= Qt::TextHideMnemonic;
+                    flags |= BobUI::TextHideMnemonic;
             }
 
-            bool tryWidth = (w < 0) && (align & Qt::TextWordWrap);
+            bool tryWidth = (w < 0) && (align & BobUI::TextWordWrap);
             if (tryWidth)
                 w = qMin(fm.averageCharWidth() * 80, q->maximumSize().width());
             else if (w < 0)
@@ -665,24 +665,24 @@ void QLabel::setOpenExternalLinks(bool open)
 
     Specifies how the label should interact with user input if it displays text.
 
-    If the flags contain Qt::LinksAccessibleByKeyboard the focus policy is also
-    automatically set to Qt::StrongFocus. If Qt::TextSelectableByKeyboard is set
-    then the focus policy is set to Qt::ClickFocus.
+    If the flags contain BobUI::LinksAccessibleByKeyboard the focus policy is also
+    automatically set to BobUI::StrongFocus. If BobUI::TextSelectableByKeyboard is set
+    then the focus policy is set to BobUI::ClickFocus.
 
-    The default value is Qt::LinksAccessibleByMouse.
+    The default value is BobUI::LinksAccessibleByMouse.
 */
-void QLabel::setTextInteractionFlags(Qt::TextInteractionFlags flags)
+void QLabel::setTextInteractionFlags(BobUI::TextInteractionFlags flags)
 {
     Q_D(QLabel);
     if (d->textInteractionFlags == flags)
         return;
     d->textInteractionFlags = flags;
-    if (flags & Qt::LinksAccessibleByKeyboard)
-        setFocusPolicy(Qt::StrongFocus);
-    else if (flags & (Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse))
-        setFocusPolicy(Qt::ClickFocus);
+    if (flags & BobUI::LinksAccessibleByKeyboard)
+        setFocusPolicy(BobUI::StrongFocus);
+    else if (flags & (BobUI::TextSelectableByKeyboard | BobUI::TextSelectableByMouse))
+        setFocusPolicy(BobUI::ClickFocus);
     else
-        setFocusPolicy(Qt::NoFocus);
+        setFocusPolicy(BobUI::NoFocus);
 
     if (d->needTextControl()) {
         d->ensureTextControl();
@@ -695,7 +695,7 @@ void QLabel::setTextInteractionFlags(Qt::TextInteractionFlags flags)
         d->control->setTextInteractionFlags(d->textInteractionFlags);
 }
 
-Qt::TextInteractionFlags QLabel::textInteractionFlags() const
+BobUI::TextInteractionFlags QLabel::textInteractionFlags() const
 {
     Q_D(const QLabel);
     return d->textInteractionFlags;
@@ -716,9 +716,9 @@ void QLabel::setSelection(int start, int length)
     Q_D(QLabel);
     if (d->control) {
         d->ensureTextPopulated();
-        QTextCursor cursor = d->control->textCursor();
+        BOBUIextCursor cursor = d->control->textCursor();
         cursor.setPosition(start);
-        cursor.setPosition(start + length, QTextCursor::KeepAnchor);
+        cursor.setPosition(start + length, BOBUIextCursor::KeepAnchor);
         d->control->setTextCursor(cursor);
     }
 }
@@ -853,7 +853,7 @@ void QLabel::mouseReleaseEvent(QMouseEvent *ev)
     d->sendControlEvent(ev);
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 /*!\reimp
 */
 void QLabel::contextMenuEvent(QContextMenuEvent *ev)
@@ -869,10 +869,10 @@ void QLabel::contextMenuEvent(QContextMenuEvent *ev)
         return;
     }
     ev->accept();
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu->setAttribute(BobUI::WA_DeleteOnClose);
     menu->popup(ev->globalPos());
 }
-#endif // QT_NO_CONTEXTMENU
+#endif // BOBUI_NO_CONTEXTMENU
 
 /*!
     \reimp
@@ -895,10 +895,10 @@ void QLabel::focusOutEvent(QFocusEvent *ev)
     Q_D(QLabel);
     if (d->control) {
         d->sendControlEvent(ev);
-        QTextCursor cursor = d->control->textCursor();
-        Qt::FocusReason reason = ev->reason();
-        if (reason != Qt::ActiveWindowFocusReason
-            && reason != Qt::PopupFocusReason
+        BOBUIextCursor cursor = d->control->textCursor();
+        BobUI::FocusReason reason = ev->reason();
+        if (reason != BobUI::ActiveWindowFocusReason
+            && reason != BobUI::PopupFocusReason
             && cursor.hasSelection()) {
             cursor.clearSelection();
             d->control->setTextCursor(cursor);
@@ -933,22 +933,22 @@ bool QLabel::event(QEvent *e)
     Q_D(QLabel);
     QEvent::Type type = e->type();
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (type == QEvent::Shortcut) {
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (se->shortcutId() == d->shortcutId) {
             QWidget *w = d->buddy;
             if (!w)
                 return QFrame::event(e);
-            if (w->focusPolicy() != Qt::NoFocus)
-                w->setFocus(Qt::ShortcutFocusReason);
-#if QT_CONFIG(abstractbutton)
+            if (w->focusPolicy() != BobUI::NoFocus)
+                w->setFocus(BobUI::ShortcutFocusReason);
+#if BOBUI_CONFIG(abstractbutton)
             QAbstractButton *button = qobject_cast<QAbstractButton *>(w);
             if (button && !se->isAmbiguous())
                 button->animateClick();
             else
 #endif
-                window()->setAttribute(Qt::WA_KeyboardFocusChange);
+                window()->setAttribute(BobUI::WA_KeyboardFocusChange);
             return true;
         }
     } else
@@ -984,7 +984,7 @@ void QLabel::paintEvent(QPaintEvent *)
     int align = QStyle::visualAlignment(d->isTextLabel ? d->textDirection()
                                                        : layoutDirection(), QFlag(d->align));
 
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
     if (d->movie && !d->movie->currentPixmap().isNull()) {
         if (d->scaledcontents)
             style->drawItemPixmap(&painter, cr, align, d->movie->currentPixmap().scaled(cr.size()));
@@ -997,17 +997,17 @@ void QLabel::paintEvent(QPaintEvent *)
         QRectF lr = d->layoutRect().toAlignedRect();
         QStyleOption opt;
         opt.initFrom(this);
-#if QT_CONFIG(style_stylesheet)
-        if (QStyleSheetStyle* cssStyle = qt_styleSheet(style))
+#if BOBUI_CONFIG(style_stylesheet)
+        if (QStyleSheetStyle* cssStyle = bobui_styleSheet(style))
             cssStyle->styleSheetPalette(this, &opt, &opt.palette);
 #endif
         if (d->control) {
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
             const bool underline = static_cast<bool>(style->styleHint(QStyle::SH_UnderlineShortcut,
                                                                       nullptr, this, nullptr));
             if (d->shortcutId != 0
                 && underline != d->shortcutCursor.charFormat().fontUnderline()) {
-                QTextCharFormat fmt;
+                BOBUIextCharFormat fmt;
                 fmt.setFontUnderline(underline);
                 d->shortcutCursor.mergeCharFormat(fmt);
             }
@@ -1028,17 +1028,17 @@ void QLabel::paintEvent(QPaintEvent *)
             d->control->drawContents(&painter, QRectF(), this);
             painter.restore();
         } else {
-            int flags = align | (d->textDirection() == Qt::LeftToRight ? Qt::TextForceLeftToRight
-                                                                       : Qt::TextForceRightToLeft);
+            int flags = align | (d->textDirection() == BobUI::LeftToRight ? BobUI::TextForceLeftToRight
+                                                                       : BobUI::TextForceRightToLeft);
             if (d->hasShortcut) {
-                flags |= Qt::TextShowMnemonic;
+                flags |= BobUI::TextShowMnemonic;
                 if (!style->styleHint(QStyle::SH_UnderlineShortcut, &opt, this))
-                    flags |= Qt::TextHideMnemonic;
+                    flags |= BobUI::TextHideMnemonic;
             }
             style->drawItemText(&painter, lr.toRect(), flags, opt.palette, isEnabled(), d->text, foregroundRole());
         }
     } else
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     if (d->picture) {
         QRect br = d->picture->boundingRect();
         int rw = br.width();
@@ -1052,13 +1052,13 @@ void QLabel::paintEvent(QPaintEvent *)
         } else {
             int xo = 0;
             int yo = 0;
-            if (align & Qt::AlignVCenter)
+            if (align & BobUI::AlignVCenter)
                 yo = (cr.height()-rh)/2;
-            else if (align & Qt::AlignBottom)
+            else if (align & BobUI::AlignBottom)
                 yo = cr.height()-rh;
-            if (align & Qt::AlignRight)
+            if (align & BobUI::AlignRight)
                 xo = cr.width()-rw;
-            else if (align & Qt::AlignHCenter)
+            else if (align & BobUI::AlignHCenter)
                 xo = (cr.width()-rw)/2;
             painter.drawPicture(cr.x()+xo-br.x(), cr.y()+yo-br.y(), *d->picture);
         }
@@ -1072,16 +1072,16 @@ void QLabel::paintEvent(QPaintEvent *)
         // the size of the returned pixmap might not match when
         //  - scaledContents is enabled
         //  - the dpr does not match the one from the pixmap in QIcon
-        // since QStyle::drawItemPixmap() stretches without Qt::SmoothTransformation
+        // since QStyle::drawItemPixmap() stretches without BobUI::SmoothTransformation
         // we do it here
         if (pix.size() != size * dpr) {
-            const QString key = "qt_label_"_L1 % HexString<quint64>(pix.cacheKey())
+            const QString key = "bobui_label_"_L1 % HexString<quint64>(pix.cacheKey())
                                                % HexString<quint8>(mode)
                                                % HexString<uint>(size.width())
                                                % HexString<uint>(size.height())
                                                % HexString<quint16>(qRound(dpr * 1000));
             if (!QPixmapCache::find(key, &pix)) {
-                pix = pix.scaled(size * dpr, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+                pix = pix.scaled(size * dpr, BobUI::IgnoreAspectRatio, BobUI::SmoothTransformation);
                 pix.setDevicePixelRatio(dpr);
                 // using QIcon to cache the newly create pixmap is not possible
                 // because QIcon does not clear this cache (so we grow indefinitely)
@@ -1109,7 +1109,7 @@ void QLabelPrivate::updateLabel()
 
     if (isTextLabel) {
         QSizePolicy policy = q->sizePolicy();
-        const bool wrap = align & Qt::TextWordWrap;
+        const bool wrap = align & BobUI::TextWordWrap;
         policy.setHeightForWidth(wrap);
         if (policy != q->sizePolicy())  // ### should be replaced by WA_WState_OwnSizePolicy idiom
             q->setSizePolicy(policy);
@@ -1119,7 +1119,7 @@ void QLabelPrivate::updateLabel()
     q->update(q->contentsRect());
 }
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
 /*!
     Sets this label's buddy to \a buddy.
 
@@ -1212,9 +1212,9 @@ void QLabelPrivate::buddyDeleted()
     q->setBuddy(nullptr);
 }
 
-#endif // QT_NO_SHORTCUT
+#endif // BOBUI_NO_SHORTCUT
 
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
 void QLabelPrivate::movieUpdated(const QRect &rect)
 {
     Q_Q(QLabel);
@@ -1276,7 +1276,7 @@ void QLabel::setMovie(QMovie *movie)
         d->updateLabel();
 }
 
-#endif // QT_CONFIG(movie)
+#endif // BOBUI_CONFIG(movie)
 
 /*!
   \internal
@@ -1291,7 +1291,7 @@ void QLabelPrivate::clearContents()
     isTextLabel = false;
     hasShortcut = false;
 
-#ifndef QT_NO_PICTURE
+#ifndef BOBUI_NO_PICTURE
     picture.reset();
 #endif
     icon.reset();
@@ -1299,17 +1299,17 @@ void QLabelPrivate::clearContents()
 
     text.clear();
     Q_Q(QLabel);
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
     if (shortcutId)
         q->releaseShortcut(shortcutId);
     shortcutId = 0;
 #endif
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
     for (const auto &conn : std::as_const(movieConnections))
         QObject::disconnect(conn);
     movie = nullptr;
 #endif
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (onAnchor) {
         if (validCursor)
             q->setCursor(cursor);
@@ -1322,7 +1322,7 @@ void QLabelPrivate::clearContents()
 }
 
 
-#if QT_CONFIG(movie)
+#if BOBUI_CONFIG(movie)
 
 /*!
     Returns a pointer to the label's movie, or nullptr if no movie has been
@@ -1337,27 +1337,27 @@ QMovie *QLabel::movie() const
     return d->movie;
 }
 
-#endif  // QT_CONFIG(movie)
+#endif  // BOBUI_CONFIG(movie)
 
 /*!
     \property QLabel::textFormat
     \brief the label's text format
 
-    See the Qt::TextFormat enum for an explanation of the possible
+    See the BobUI::TextFormat enum for an explanation of the possible
     options.
 
-    The default format is Qt::AutoText.
+    The default format is BobUI::AutoText.
 
     \sa text()
 */
 
-Qt::TextFormat QLabel::textFormat() const
+BobUI::TextFormat QLabel::textFormat() const
 {
     Q_D(const QLabel);
     return d->textformat;
 }
 
-void QLabel::setTextFormat(Qt::TextFormat format)
+void QLabel::setTextFormat(BobUI::TextFormat format)
 {
     Q_D(QLabel);
     if (format != d->textformat) {
@@ -1375,7 +1375,7 @@ void QLabel::setTextFormat(Qt::TextFormat format)
 
     Returns the resource provider for rich text of this label.
 */
-QTextDocument::ResourceProvider QLabel::resourceProvider() const
+BOBUIextDocument::ResourceProvider QLabel::resourceProvider() const
 {
     Q_D(const QLabel);
     return d->control ? d->control->document()->resourceProvider() : d->resourceProvider;
@@ -1388,7 +1388,7 @@ QTextDocument::ResourceProvider QLabel::resourceProvider() const
 
     \note The label \e{does not} take ownership of the \a provider.
 */
-void QLabel::setResourceProvider(const QTextDocument::ResourceProvider &provider)
+void QLabel::setResourceProvider(const BOBUIextDocument::ResourceProvider &provider)
 {
     Q_D(QLabel);
     d->resourceProvider = provider;
@@ -1441,14 +1441,14 @@ void QLabel::setScaledContents(bool enable)
     update(contentsRect());
 }
 
-Qt::LayoutDirection QLabelPrivate::textDirection() const
+BobUI::LayoutDirection QLabelPrivate::textDirection() const
 {
     if (control) {
-        QTextOption opt = control->document()->defaultTextOption();
+        BOBUIextOption opt = control->document()->defaultTextOption();
         return opt.textDirection();
     }
 
-    return text.isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
+    return text.isRightToLeft() ? BobUI::RightToLeft : BobUI::LeftToRight;
 }
 
 
@@ -1465,13 +1465,13 @@ QRect QLabelPrivate::documentRect() const
     if (m < 0 && q->frameWidth()) // no indent, but we do have a frame
         m = q->fontMetrics().horizontalAdvance(u'x') / 2 - margin;
     if (m > 0) {
-        if (align & Qt::AlignLeft)
+        if (align & BobUI::AlignLeft)
             cr.setLeft(cr.left() + m);
-        if (align & Qt::AlignRight)
+        if (align & BobUI::AlignRight)
             cr.setRight(cr.right() - m);
-        if (align & Qt::AlignTop)
+        if (align & BobUI::AlignTop)
             cr.setTop(cr.top() + m);
-        if (align & Qt::AlignBottom)
+        if (align & BobUI::AlignBottom)
             cr.setBottom(cr.bottom() - m);
     }
     return cr;
@@ -1482,16 +1482,16 @@ void QLabelPrivate::ensureTextPopulated() const
     if (!textDirty)
         return;
     if (control) {
-        QTextDocument *doc = control->document();
+        BOBUIextDocument *doc = control->document();
         if (textDirty) {
-            if (effectiveTextFormat == Qt::PlainText) {
+            if (effectiveTextFormat == BobUI::PlainText) {
                 doc->setPlainText(text);
-#if QT_CONFIG(texthtmlparser)
-            } else if (effectiveTextFormat == Qt::RichText) {
+#if BOBUI_CONFIG(texthtmlparser)
+            } else if (effectiveTextFormat == BobUI::RichText) {
                 doc->setHtml(text);
 #endif
-#if QT_CONFIG(textmarkdownreader)
-            } else if (effectiveTextFormat == Qt::MarkdownText) {
+#if BOBUI_CONFIG(textmarkdownreader)
+            } else if (effectiveTextFormat == BobUI::MarkdownText) {
                 doc->setMarkdown(text);
 #endif
             } else {
@@ -1499,15 +1499,15 @@ void QLabelPrivate::ensureTextPopulated() const
             }
             doc->setUndoRedoEnabled(false);
 
-#ifndef QT_NO_SHORTCUT
+#ifndef BOBUI_NO_SHORTCUT
             if (hasShortcut) {
                 // Underline the first character that follows an ampersand (and remove the others ampersands)
                 int from = 0;
                 bool found = false;
-                QTextCursor cursor;
+                BOBUIextCursor cursor;
                 while (!(cursor = control->document()->find(("&"_L1), from)).isNull()) {
                     cursor.deleteChar(); // remove the ampersand
-                    cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+                    cursor.movePosition(BOBUIextCursor::NextCharacter, BOBUIextCursor::KeepAnchor);
                     from = cursor.position();
                     if (!found && cursor.selectedText() != "&"_L1) { //not a second &
                         found = true;
@@ -1527,19 +1527,19 @@ void QLabelPrivate::ensureTextLayouted() const
         return;
     ensureTextPopulated();
     if (control) {
-        QTextDocument *doc = control->document();
-        QTextOption opt = doc->defaultTextOption();
+        BOBUIextDocument *doc = control->document();
+        BOBUIextOption opt = doc->defaultTextOption();
 
         opt.setAlignment(QFlag(this->align));
 
-        if (this->align & Qt::TextWordWrap)
-            opt.setWrapMode(QTextOption::WordWrap);
+        if (this->align & BobUI::TextWordWrap)
+            opt.setWrapMode(BOBUIextOption::WordWrap);
         else
-            opt.setWrapMode(QTextOption::ManualWrap);
+            opt.setWrapMode(BOBUIextOption::ManualWrap);
 
         doc->setDefaultTextOption(opt);
 
-        QTextFrameFormat fmt = doc->rootFrame()->frameFormat();
+        BOBUIextFrameFormat fmt = doc->rootFrame()->frameFormat();
         fmt.setMargin(0);
         doc->rootFrame()->setFrameFormat(fmt);
         doc->setTextWidth(documentRect().width());
@@ -1576,7 +1576,7 @@ void QLabelPrivate::ensureTextControl() const
 void QLabelPrivate::sendControlEvent(QEvent *e)
 {
     Q_Q(QLabel);
-    if (!isTextLabel || !control || textInteractionFlags == Qt::NoTextInteraction) {
+    if (!isTextLabel || !control || textInteractionFlags == BobUI::NoTextInteraction) {
         e->ignore();
         return;
     }
@@ -1586,7 +1586,7 @@ void QLabelPrivate::sendControlEvent(QEvent *e)
 void QLabelPrivate::linkHovered(const QString &anchor)
 {
     Q_Q(QLabel);
-#ifndef QT_NO_CURSOR
+#ifndef BOBUI_NO_CURSOR
     if (anchor.isEmpty()) { // restore cursor
         if (validCursor)
             q->setCursor(cursor);
@@ -1594,11 +1594,11 @@ void QLabelPrivate::linkHovered(const QString &anchor)
             q->unsetCursor();
         onAnchor = false;
     } else if (!onAnchor) {
-        validCursor = q->testAttribute(Qt::WA_SetCursor);
+        validCursor = q->testAttribute(BobUI::WA_SetCursor);
         if (validCursor) {
             cursor = q->cursor();
         }
-        q->setCursor(Qt::PointingHandCursor);
+        q->setCursor(BobUI::PointingHandCursor);
         onAnchor = true;
     }
 #endif
@@ -1617,9 +1617,9 @@ QRectF QLabelPrivate::layoutRect() const
     // Calculate y position manually
     qreal rh = control->document()->documentLayout()->documentSize().height();
     qreal yo = 0;
-    if (align & Qt::AlignVCenter)
+    if (align & BobUI::AlignVCenter)
         yo = qMax((cr.height()-rh)/2, qreal(0));
-    else if (align & Qt::AlignBottom)
+    else if (align & BobUI::AlignBottom)
         yo = qMax(cr.height()-rh, qreal(0));
     return QRectF(cr.x(), yo + cr.y(), cr.width(), cr.height());
 }
@@ -1631,7 +1631,7 @@ QPoint QLabelPrivate::layoutPoint(const QPoint& p) const
     return p - lr.topLeft();
 }
 
-#ifndef QT_NO_CONTEXTMENU
+#ifndef BOBUI_NO_CONTEXTMENU
 QMenu *QLabelPrivate::createStandardContextMenu(const QPoint &pos)
 {
     if (!control)
@@ -1663,6 +1663,6 @@ QMenu *QLabelPrivate::createStandardContextMenu(const QPoint &pos)
     \sa linkHovered()
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qlabel.cpp"

@@ -24,7 +24,7 @@
      <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+        <enum>BobUI::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -109,7 +109,7 @@
       <item row="1" column="2" >
        <spacer name="horizontalSpacer_4" >
         <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+         <enum>BobUI::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0" >
          <size>
@@ -168,7 +168,7 @@
       <item>
        <spacer name="verticalSpacer_5" >
         <property name="orientation" >
-         <enum>Qt::Vertical</enum>
+         <enum>BobUI::Vertical</enum>
         </property>
         <property name="sizeHint" stdset="0" >
          <size>
@@ -198,7 +198,7 @@
            <string>top margin</string>
           </property>
           <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
           </property>
           <property name="maximum" >
            <double>999.990000000000009</double>
@@ -210,7 +210,7 @@
           <item>
            <spacer name="horizontalSpacer_7" >
             <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0" >
              <size>
@@ -229,7 +229,7 @@
              <string>left margin</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
             </property>
             <property name="maximum" >
              <double>999.990000000000009</double>
@@ -239,7 +239,7 @@
           <item>
            <spacer name="horizontalSpacer" >
             <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
             <property name="sizeType" >
              <enum>QSizePolicy::MinimumExpanding</enum>
@@ -261,7 +261,7 @@
              <string>right margin</string>
             </property>
             <property name="alignment" >
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
             </property>
             <property name="maximum" >
              <double>999.990000000000009</double>
@@ -271,7 +271,7 @@
           <item>
            <spacer name="horizontalSpacer_8" >
             <property name="orientation" >
-             <enum>Qt::Horizontal</enum>
+             <enum>BobUI::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0" >
              <size>
@@ -286,7 +286,7 @@
         <item row="0" column="2">
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>BobUI::Horizontal</enum>
           </property>
           <property name="sizeType">
            <enum>QSizePolicy::MinimumExpanding</enum>
@@ -308,7 +308,7 @@
            <string>bottom margin</string>
           </property>
           <property name="alignment" >
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>BobUI::AlignRight|BobUI::AlignTrailing|BobUI::AlignVCenter</set>
           </property>
           <property name="maximum" >
            <double>999.990000000000009</double>
@@ -318,7 +318,7 @@
         <item row="0" column="0">
          <spacer name="horizontalSpacer_5">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>BobUI::Horizontal</enum>
           </property>
           <property name="sizeType" >
            <enum>QSizePolicy::MinimumExpanding</enum>
@@ -351,7 +351,7 @@
       <item row="0" column="2">
        <spacer name="horizontalSpacer_6">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>BobUI::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -390,7 +390,7 @@
    <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>BobUI::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0" >
       <size>

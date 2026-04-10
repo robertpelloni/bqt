@@ -1,15 +1,15 @@
-# Copyright (C) 2022 The Qt Company Ltd.
+# Copyright (C) 2022 The BobUI Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
 #####################################################################
 ## tst_qscreen2 Test:
 #####################################################################
 
-qt_internal_add_test(tst_qscreen_xrandr
+bobui_internal_add_test(tst_qscreen_xrandr
     SOURCES
         tst_qscreen_xrandr.cpp
     LIBRARIES
-        Qt::CorePrivate
-        Qt::Gui
-        Qt::GuiPrivate
+        BobUI::CorePrivate
+        BobUI::Gui
+        BobUI::GuiPrivate
 )

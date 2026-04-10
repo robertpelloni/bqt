@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR BSD-3-Clause
 
 #include "stylesheeteditor.h"
 
@@ -14,7 +14,7 @@ StyleSheetEditor::StyleSheetEditor(QWidget *parent)
 
     connect(ui.styleCombo, &QComboBox::textActivated, this, &StyleSheetEditor::setStyleName);
     connect(ui.styleSheetCombo, &QComboBox::textActivated, this, &StyleSheetEditor::setStyleSheetName);
-    connect(ui.styleTextEdit, &QTextEdit::textChanged, this, &StyleSheetEditor::setModified);
+    connect(ui.styleTextEdit, &BOBUIextEdit::textChanged, this, &StyleSheetEditor::setModified);
     connect(ui.applyButton, &QAbstractButton::clicked, this, &StyleSheetEditor::apply);
 
     QRegularExpression regExp("^.(.*)\\+?Style$");
@@ -25,7 +25,7 @@ StyleSheetEditor::StyleSheetEditor(QWidget *parent)
         defaultStyle = match.captured(1);
 
     ui.styleCombo->addItems(QStyleFactory::keys());
-    ui.styleCombo->setCurrentIndex(ui.styleCombo->findText(defaultStyle, Qt::MatchContains));
+    ui.styleCombo->setCurrentIndex(ui.styleCombo->findText(defaultStyle, BobUI::MatchContains));
     ui.styleSheetCombo->setCurrentIndex(ui.styleSheetCombo->findText("Coffee"));
     loadStyleSheet("Coffee");
 }

@@ -1,5 +1,5 @@
-// Copyright (C) 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
+// Copyright (C) 2016 The BobUI Company Ltd.
+// SPDX-License-Identifier: LicenseRef-BobUI-Commercial OR GPL-3.0-only
 
 #include <private/qmimetype_p.h>
 
@@ -7,8 +7,8 @@
 #include <qmimedatabase.h>
 #include <QVariantMap>
 
-#include <QTest>
-#include <QtTest/private/qcomparisontesthelper_p.h>
+#include <BOBUIest>
+#include <BobUITest/private/qcomparisontesthelper_p.h>
 
 class tst_qmimetype : public QObject
 {
@@ -45,7 +45,7 @@ static QString qMimeTypeName()
 
 void tst_qmimetype::compareCompiles()
 {
-    QTestPrivate::testEqualityOperatorsCompile<QMimeType>();
+    BOBUIestPrivate::testEqualityOperatorsCompile<QMimeType>();
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ void tst_qmimetype::compareQMimetypes()
     QMimeType defaultQMimeType;
 
     QVERIFY(!defaultQMimeType.isValid());
-    QT_TEST_EQUALITY_OPS(defaultQMimeType, QMimeType(), true);
-    QT_TEST_EQUALITY_OPS(QMimeType(), QMimeType(), true);
-    QT_TEST_EQUALITY_OPS(instantiatedQMimeType, QMimeType(), false);
-    QT_TEST_EQUALITY_OPS(otherQMimeType, defaultQMimeType, false);
+    BOBUI_TEST_EQUALITY_OPS(defaultQMimeType, QMimeType(), true);
+    BOBUI_TEST_EQUALITY_OPS(QMimeType(), QMimeType(), true);
+    BOBUI_TEST_EQUALITY_OPS(instantiatedQMimeType, QMimeType(), false);
+    BOBUI_TEST_EQUALITY_OPS(otherQMimeType, defaultQMimeType, false);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void tst_qmimetype::isValid()
     QMimeType otherQMimeType (instantiatedQMimeType);
 
     QVERIFY(otherQMimeType.isValid());
-    QT_TEST_EQUALITY_OPS(instantiatedQMimeType, otherQMimeType, true);
+    BOBUI_TEST_EQUALITY_OPS(instantiatedQMimeType, otherQMimeType, true);
 
     QMimeType defaultQMimeType;
 
@@ -90,7 +90,7 @@ void tst_qmimetype::name()
     // Verify that the Name is part of the equality test:
     QCOMPARE(instantiatedQMimeType.name(), qMimeTypeName());
 
-    QT_TEST_EQUALITY_OPS(instantiatedQMimeType, otherQMimeType, false);
+    BOBUI_TEST_EQUALITY_OPS(instantiatedQMimeType, otherQMimeType, false);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -143,5 +143,5 @@ void tst_qmimetype::gadget()
 
 // ------------------------------------------------------------------------------------------------
 
-QTEST_GUILESS_MAIN(tst_qmimetype)
+BOBUIEST_GUILESS_MAIN(tst_qmimetype)
 #include "tst_qmimetype.moc"
