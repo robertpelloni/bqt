@@ -2,6 +2,7 @@
 
 // Generic include catch-all
 #include "juce_gui_basics/juce_gui_basics.h"
+<<<<<<< HEAD
 
 // Append mock declarations
 namespace juce {
@@ -35,3 +36,5 @@ namespace juce {
         };
     }
 }
+=======
+>>>>>>> feature/omni-ui-framework-18001284211800334382

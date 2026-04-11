@@ -5,9 +5,12 @@ project(PluginDemo LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+<<<<<<< HEAD
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick Sql Network WebSockets Concurrent Multimedia)
 
 include_directories(../../omnicore/include)
+=======
+>>>>>>> feature/omni-ui-framework-18001284211800334382
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Qml Quick)
 
 include_directories(../../core/include)
@@ -16,6 +19,7 @@ include_directories(../../deps/juce)
 
 add_executable(PluginDemo
     src/main.cpp
+<<<<<<< HEAD
     ../../omnicore/src/OmniApp.cpp
     ../../omnicore/src/OmniNativeEventFilter.cpp
     ../../omnicore/src/OmniQmlRegistration.cpp
@@ -80,6 +84,8 @@ add_executable(PluginDemo
     ../../omnicore/src/widgets/OmniCodeEditor.cpp
     ../../omnicore/src/widgets/OmniMarkdownView.cpp
     ../../omnicore/src/widgets/OmniCalendar.cpp
+=======
+>>>>>>> feature/omni-ui-framework-18001284211800334382
     ../../core/src/OmniApp.cpp
     ../../core/src/JuceWidget.cpp
     ../../core/src/widgets/OmniButton.cpp
@@ -107,11 +113,18 @@ add_executable(PluginDemo
 )
 
 target_link_libraries(PluginDemo PRIVATE
+<<<<<<< HEAD
     Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick Qt6::Sql Qt6::Network Qt6::WebSockets Qt6::Concurrent Qt6::Multimedia
+=======
+    Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
+>>>>>>> feature/omni-ui-framework-18001284211800334382
 )
 
 if(EMSCRIPTEN)
     target_link_options(HelloOmni PRIVATE -s USE_PTHREADS=0)
 endif()
+<<<<<<< HEAD
     Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
 )
+=======
+>>>>>>> feature/omni-ui-framework-18001284211800334382

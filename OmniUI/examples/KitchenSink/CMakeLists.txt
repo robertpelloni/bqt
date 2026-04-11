@@ -55,3 +55,10 @@ add_executable(KitchenSink
 target_link_libraries(KitchenSink PRIVATE
     Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Qml Qt6::Quick
 )
+<<<<<<< HEAD
+=======
+
+if(EMSCRIPTEN)
+    target_link_options(HelloOmni PRIVATE -s USE_PTHREADS=0)
+endif()
+>>>>>>> feature/omni-ui-framework-18001284211800334382
