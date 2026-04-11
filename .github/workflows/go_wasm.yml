@@ -23,6 +23,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update
+        sudo apt-get install -y libx11-xcb-dev libxcb-xkb-dev libxfixes-dev
         sudo apt-get install -y cmake libwayland-dev libx11-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
     - name: Validate Go baseline
@@ -51,6 +52,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update
+        sudo apt-get install -y libx11-xcb-dev libxcb-xkb-dev libxfixes-dev
         sudo apt-get install -y libwayland-dev libx11-dev libxkbcommon-x11-dev libgles2-mesa-dev libegl1-mesa-dev libffi-dev libxcursor-dev libvulkan-dev
 
     - name: Build WASM
