@@ -717,3 +717,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated `internal/ui/engine.go` to initialize the demo surface and wire baseline WebView callbacks.
 - Updated planning docs to move next toward richer runtime integration and WebEngineQuick-style JS bridge semantics.
+
+## [1.1.53] - 2026-04-10
+### Changed
+- Mass rebranded `Bobui` and `OmniUI` to `BobQ` and `bobq` across the entire codebase.
+- Re-architected documentation to encompass JUCE, Ultimate++, GTK, and DearImGui 1:1 parity goals.
+### Added
+- Integrated JUCE and Ultimate++ as Git submodules in the `submodules/` directory.
+- Updated `CMakeLists.txt` to include submodules gracefully.

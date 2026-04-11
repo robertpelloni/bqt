@@ -34,3 +34,11 @@ endif()
 set(QT_BUILD_EXTRA_IDE_FILE_PATTERNS bin/* libexec/*)
 
 qt_internal_qtbase_build_repo()
+
+# Integrate submodules for Ultimate++ and JUCE
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/submodules/juce/CMakeLists.txt")
+    add_subdirectory(submodules/juce)
+endif()
+
+# Ultimate++ does not typically use CMake cleanly out of the box, but we map its path.
+set(UPP_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/submodules/ultimatepp")

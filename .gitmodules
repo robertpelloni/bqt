@@ -1,0 +1,3 @@
+[submodule "submodules/ultimatepp"]
+	path = submodules/ultimatepp
+	url = https://github.com/ultimatepp/ultimatepp
