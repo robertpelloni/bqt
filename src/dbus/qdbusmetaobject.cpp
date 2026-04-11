@@ -22,7 +22,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -142,7 +142,7 @@ QDBusMetaObjectGenerator::findType(const QByteArray &signature,
     if (type == QMetaType::UnknownType && !qt_dbus_metaobject_skip_annotations) {
         // it's not a type normally handled by our meta type system
         // it must contain an annotation
-        QString annotationName = QString::fromLatin1("org.qtproject.QtDBus.QtTypeName");
+        QString annotationName = QString::fromLatin1("org.qtproject.BobUIDBus.QtTypeName");
         if (id >= 0)
             annotationName += QString::fromLatin1(".%1%2")
                               .arg(QLatin1StringView(direction))
@@ -155,7 +155,7 @@ QDBusMetaObjectGenerator::findType(const QByteArray &signature,
         // verify that it's a valid one
         if (typeName.isEmpty()) {
             // try the old annotation from Qt 4
-            annotationName = QString::fromLatin1("com.trolltech.QtDBus.QtTypeName");
+            annotationName = QString::fromLatin1("com.trolltech.BobUIDBus.QtTypeName");
             if (id >= 0)
                 annotationName += QString::fromLatin1(".%1%2")
                                   .arg(QLatin1StringView(direction))
@@ -383,7 +383,7 @@ void QDBusMetaObjectGenerator::write(QDBusMetaObject *obj)
             - methods.size(); // ditto
 
     QDBusMetaObjectPrivate *header = reinterpret_cast<QDBusMetaObjectPrivate *>(idata.data());
-    static_assert(QMetaObjectPrivate::OutputRevision == 14, "QtDBus meta-object generator should generate the same version as moc");
+    static_assert(QMetaObjectPrivate::OutputRevision == 14, "BobUIDBus meta-object generator should generate the same version as moc");
     header->revision = QMetaObjectPrivate::OutputRevision;
     header->className = 0;
     header->metaObjectHashIndex = -1; // TODO support hash in dbus metaobject too
@@ -683,6 +683,6 @@ int QDBusMetaObject::propertyMetaType(int id) const
     return 0;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

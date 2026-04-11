@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \page qtdbus-overview.html
+    \page bobuidbus-overview.html
     \title Qt D-Bus Overview
     \brief Provides insight into the Qt Qt D-Bus module.
     \ingroup explanations-networkingandconnectivity

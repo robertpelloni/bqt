@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_REDUCEKERNEL_H
-#define QTCONCURRENT_REDUCEKERNEL_H
+#ifndef BOBUICONCURRENT_REDUCEKERNEL_H
+#define BOBUICONCURRENT_REDUCEKERNEL_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
@@ -18,7 +18,7 @@
 
 #include <mutex>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QtPrivate {
 
@@ -32,7 +32,7 @@ struct SequenceHolder
 
 }
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 /*
     The ReduceQueueStartLimit and ReduceQueueThrottleLimit constants
@@ -229,9 +229,9 @@ struct SequenceHolder2 : private QtPrivate::SequenceHolder<Sequence>, public Bas
     }
 };
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

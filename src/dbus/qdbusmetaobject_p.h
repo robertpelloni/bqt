@@ -17,7 +17,7 @@
 //
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <QtCore/qmetaobject.h>
 
 #ifndef QT_NO_DBUS
@@ -26,7 +26,7 @@
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusError;
 
@@ -56,7 +56,7 @@ private:
     QDBusMetaObject();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

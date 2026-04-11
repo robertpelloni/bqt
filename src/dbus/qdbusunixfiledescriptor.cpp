@@ -9,7 +9,7 @@
 # include <private/qcore_unix_p.h>
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef QT_NO_DBUS
 
@@ -17,7 +17,7 @@ QT_IMPL_METATYPE_EXTERN(QDBusUnixFileDescriptor)
 
 /*!
     \class QDBusUnixFileDescriptor
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \ingroup shared
     \since 4.8
 
@@ -304,4 +304,4 @@ QDBusUnixFileDescriptorPrivate::~QDBusUnixFileDescriptorPrivate()
 
 #endif // QT_NO_DBUS
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE

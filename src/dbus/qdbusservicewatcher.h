@@ -7,11 +7,11 @@
 
 #include <QtCore/QObject>
 #include <QtCore/qcontainerfwd.h> // Q(String)List
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 
 #if !defined(QT_NO_DBUS) && !defined(QT_NO_QOBJECT)
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QString;
 template<typename T>
@@ -66,7 +66,7 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDBusServiceWatcher::WatchMode)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS || QT_NO_QOBJECT
 #endif // QDBUSSERVICEWATCHER_H

@@ -21,7 +21,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -268,7 +268,7 @@ int QDBusAbstractInterfaceBase::qt_metacall(QMetaObject::Call _c, int _id, void 
 
 /*!
     \class QDBusAbstractInterface
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusAbstractInterface class is the base class for all D-Bus interfaces in the Qt D-Bus binding, allowing access to remote interfaces.
@@ -821,7 +821,7 @@ QDBusPendingCall QDBusAbstractInterface::doAsyncCall(const QString &method, cons
     return asyncCallWithArgumentList(method, list);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 

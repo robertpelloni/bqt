@@ -5,17 +5,17 @@
 #ifndef QDBUSREPLY_H
 #define QDBUSREPLY_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qvariant.h>
 
-#include <QtDBus/qdbusmessage.h>
-#include <QtDBus/qdbuserror.h>
-#include <QtDBus/qdbusextratypes.h>
-#include <QtDBus/qdbuspendingreply.h>
+#include <BobUIDBus/qdbusmessage.h>
+#include <BobUIDBus/qdbuserror.h>
+#include <BobUIDBus/qdbusextratypes.h>
+#include <BobUIDBus/qdbuspendingreply.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 Q_DBUS_EXPORT void qDBusReplyFill(const QDBusMessage &reply, QDBusError &error, QVariant &data);
@@ -140,7 +140,7 @@ private:
 };
 # endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

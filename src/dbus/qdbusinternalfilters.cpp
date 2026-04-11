@@ -26,7 +26,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -56,12 +56,12 @@ static const char propertiesInterfaceXml[] =
     "    <method name=\"GetAll\">\n"
     "      <arg name=\"interface_name\" type=\"s\" direction=\"in\"/>\n"
     "      <arg name=\"values\" type=\"a{sv}\" direction=\"out\"/>\n"
-    "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out0\" value=\"QVariantMap\"/>\n"
+    "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out0\" value=\"QVariantMap\"/>\n"
     "    </method>\n"
     "    <signal name=\"PropertiesChanged\">\n"
     "      <arg name=\"interface_name\" type=\"s\" direction=\"out\"/>\n"
     "      <arg name=\"changed_properties\" type=\"a{sv}\" direction=\"out\"/>\n"
-    "      <annotation name=\"org.qtproject.QtDBus.QtTypeName.Out1\" value=\"QVariantMap\"/>\n"
+    "      <annotation name=\"org.qtproject.BobUIDBus.QtTypeName.Out1\" value=\"QVariantMap\"/>\n"
     "      <arg name=\"invalidated_properties\" type=\"as\" direction=\"out\"/>\n"
     "    </signal>\n"
     "  </interface>\n";
@@ -322,7 +322,7 @@ static int writeProperty(QObject *obj, const QByteArray &property_name, QVariant
         // we have to demarshall before writing
         QVariant other{QMetaType(id)};
         if (!QDBusMetaType::demarshall(qvariant_cast<QDBusArgument>(value), other.metaType(), other.data())) {
-            qWarning("QDBusConnection: type '%s' (%d) is not registered with QtDBus. "
+            qWarning("QDBusConnection: type '%s' (%d) is not registered with BobUIDBus. "
                      "Use qDBusRegisterMetaType to register it",
                      mp.typeName(), id.id());
             return PropertyWriteFailed;
@@ -487,6 +487,6 @@ QDBusMessage qDBusPropertyGetAll(const QDBusConnectionPrivate::ObjectTreeNode &n
     return msg.createReply(QVariant::fromValue(result));
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

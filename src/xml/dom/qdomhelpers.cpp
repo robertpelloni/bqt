@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:critical reason:data-parser
 
-#include <QtXml/qtxmlglobal.h>
+#include <BobUIXml/bobuixmlglobal.h>
 
 #if QT_CONFIG(dom)
 
@@ -14,7 +14,7 @@
 #include <memory>
 #include <stack>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -441,6 +441,6 @@ bool QDomParser::parseMarkupDecl()
     return true;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature dom

@@ -2,22 +2,22 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_STOREDFUNCTIONCALL_H
-#define QTCONCURRENT_STOREDFUNCTIONCALL_H
+#ifndef BOBUICONCURRENT_STOREDFUNCTIONCALL_H
+#define BOBUICONCURRENT_STOREDFUNCTIONCALL_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #ifndef QT_NO_CONCURRENT
-#include <QtConcurrent/qtconcurrentrunbase.h>
+#include <BobUIConcurrent/bobuiconcurrentrunbase.h>
 #include <QtCore/qpromise.h>
 
 #include <type_traits>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifndef Q_QDOC
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 template<typename...>
 struct NonMemberFunctionResolver;
@@ -220,11 +220,11 @@ struct TaskResolver : public TaskResolverHelper<typename std::is_invocable<std::
 {
 };
 
-} //namespace QtConcurrent
+} //namespace BobUIConcurrent
 
 #endif // Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

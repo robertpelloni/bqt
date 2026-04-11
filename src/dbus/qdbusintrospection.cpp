@@ -7,11 +7,11 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 /*!
     \class QDBusIntrospection
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about introspected objects and interfaces on D-Bus.
     \internal
 
@@ -27,7 +27,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Argument
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief One argument to a D-Bus method or signal.
 
     This struct represents one argument passed to a method or received from a method or signal in
@@ -51,7 +51,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Method
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about one method.
 
     This struct represents one method discovered through introspection. A method is composed of
@@ -87,7 +87,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Signal
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about one signal.
 
     This struct represents one signal discovered through introspection. A signal is composed of
@@ -117,7 +117,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Property
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about one property.
 
     This struct represents one property discovered through introspection. A property is composed of
@@ -160,7 +160,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Interface
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about one interface on the bus.
 
     Each interface on D-Bus has a unique \a name, identifying where that interface was defined.
@@ -215,7 +215,7 @@ QDBusIntrospection::DiagnosticsReporter::~DiagnosticsReporter()
 
 /*!
     \class QDBusIntrospection::Object
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \brief Information about one object on the bus.
 
     An object on the D-Bus bus is represented by its service and path on the service but, unlike
@@ -350,6 +350,6 @@ QDBusIntrospection::Object QDBusIntrospection::parseObject(const QString &xml,
     return *retval;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

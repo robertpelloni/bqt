@@ -7,7 +7,8 @@
 
 qt_internal_add_module(Xml
     SOURCES
-        qtxmlglobal.h
+        bobuixmlglobal.h
+        BobUIXml
     DEFINES
         QT_NO_CONTEXTLESS_CONNECT
         QT_NO_FOREACH

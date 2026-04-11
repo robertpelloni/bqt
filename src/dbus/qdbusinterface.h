@@ -5,13 +5,13 @@
 #ifndef QDBUSINTERFACE_H
 #define QDBUSINTERFACE_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbusabstractinterface.h>
-#include <QtDBus/qdbusconnection.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbusabstractinterface.h>
+#include <BobUIDBus/qdbusconnection.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusInterfacePrivate;
@@ -35,7 +35,7 @@ private:
     Q_DECLARE_PRIVATE(QDBusInterface)
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

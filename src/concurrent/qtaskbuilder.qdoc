@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GFDL-1.3-no-invariants-only
 
 /*!
-    \class QtConcurrent::QTaskBuilder
-    \inmodule QtConcurrent
+    \class BobUIConcurrent::QTaskBuilder
+    \inmodule BobUIConcurrent
     \brief The QTaskBuilder class is used for adjusting task parameters.
     \since 6.0
 
@@ -17,21 +17,21 @@
 */
 
 /*!
-    \fn template <class Task, class ...Args> [[nodiscard]] QFuture<InvokeResultType> QtConcurrent::QTaskBuilder<Task, Args...>::spawn()
+    \fn template <class Task, class ...Args> [[nodiscard]] QFuture<InvokeResultType> BobUIConcurrent::QTaskBuilder<Task, Args...>::spawn()
 
     Runs the task in a separate thread and returns a future object immediately.
     This is a non-blocking call. The task might not start immediately.
 */
 
 /*!
-    \fn template <class Task, class ...Args> void QtConcurrent::QTaskBuilder<Task, Args...>::spawn(QtConcurrent::FutureResult)
+    \fn template <class Task, class ...Args> void BobUIConcurrent::QTaskBuilder<Task, Args...>::spawn(BobUIConcurrent::FutureResult)
 
     Runs the task in a separate thread. This is a non-blocking call.
     The task might not start immediately.
 */
 
 /*!
-    \fn template <class Task, class ...Args> template <class ...ExtraArgs> [[nodiscard]] QTaskBuilder<Task, ExtraArgs...> QtConcurrent::QTaskBuilder<Task, Args...>::withArguments(ExtraArgs &&...args)
+    \fn template <class Task, class ...Args> template <class ...ExtraArgs> [[nodiscard]] QTaskBuilder<Task, ExtraArgs...> BobUIConcurrent::QTaskBuilder<Task, Args...>::withArguments(ExtraArgs &&...args)
 
     Sets the arguments \a args the task will be invoked with. The code is ill-formed
     (causes compilation errors) if:
@@ -42,20 +42,20 @@
 */
 
 /*!
-    \fn template <class Task, class ...Args> [[nodiscard]] QTaskBuilder<Task, Args...> &QtConcurrent::QTaskBuilder<Task, Args...>::onThreadPool(QThreadPool &newThreadPool)
+    \fn template <class Task, class ...Args> [[nodiscard]] QTaskBuilder<Task, Args...> &BobUIConcurrent::QTaskBuilder<Task, Args...>::onThreadPool(QThreadPool &newThreadPool)
 
     Sets the thread pool \a newThreadPool that the task will be invoked on.
 */
 
 /*!
-    \fn template <class Task, class ...Args> [[nodiscard]] QTaskBuilder<Task, Args...> &QtConcurrent::QTaskBuilder<Task, Args...>::withPriority(int newPriority)
+    \fn template <class Task, class ...Args> [[nodiscard]] QTaskBuilder<Task, Args...> &BobUIConcurrent::QTaskBuilder<Task, Args...>::withPriority(int newPriority)
 
     Sets the priority \a newPriority that the task will be invoked with.
 */
 
 /*!
-    \typedef QtConcurrent::InvokeResultType
-    \relates QtConcurrent::QTaskBuilder
+    \typedef BobUIConcurrent::InvokeResultType
+    \relates BobUIConcurrent::QTaskBuilder
 
     The simplified definition of this type looks like this:
     \code
@@ -68,10 +68,10 @@
 */
 
 /*!
-    \enum QtConcurrent::FutureResult
+    \enum BobUIConcurrent::FutureResult
 
     This enum type is used to invoke a special overload of
-    QtConcurrent::QTaskBuilder::spawn(QtConcurrent::FutureResult)
+    BobUIConcurrent::QTaskBuilder::spawn(BobUIConcurrent::FutureResult)
     that doesn't return a future object.
 
     \value Ignore

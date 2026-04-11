@@ -17,11 +17,11 @@
 #ifndef QDBUSCONTEXT_P_H
 #define QDBUSCONTEXT_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusMessage;
 class QDBusConnection;
@@ -39,7 +39,7 @@ public:
     static QDBusContextPrivate *set(QObject *obj, QDBusContextPrivate *newContext);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

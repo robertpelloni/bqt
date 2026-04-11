@@ -13,13 +13,13 @@ bool allLowerCase(const QString &string)
 }
 
 QStringList strings = ...;
-QFuture<QString> lowerCaseStrings = QtConcurrent::filtered(strings, allLowerCase);
+QFuture<QString> lowerCaseStrings = BobUIConcurrent::filtered(strings, allLowerCase);
 //! [1]
 
 
 //! [2]
 QStringList strings = ...;
-QFuture<void> future = QtConcurrent::filter(strings, allLowerCase);
+QFuture<void> future = BobUIConcurrent::filter(strings, allLowerCase);
 //! [2]
 
 
@@ -35,18 +35,18 @@ void addToDictionary(QSet<QString> &dictionary, const QString &string)
 }
 
 QStringList strings = ...;
-QFuture<QSet<QString>> dictionary = QtConcurrent::filteredReduced(strings, allLowerCase, addToDictionary);
+QFuture<QSet<QString>> dictionary = BobUIConcurrent::filteredReduced(strings, allLowerCase, addToDictionary);
 //! [4]
 
 
 //! [5]
 QStringList strings = ...;
-QFuture<QString> lowerCaseStrings = QtConcurrent::filtered(strings.constBegin(), strings.constEnd(), allLowerCase);
+QFuture<QString> lowerCaseStrings = BobUIConcurrent::filtered(strings.constBegin(), strings.constEnd(), allLowerCase);
 
 // filter in-place only works on non-const iterators
-QFuture<void> future = QtConcurrent::filter(strings.begin(), strings.end(), allLowerCase);
+QFuture<void> future = BobUIConcurrent::filter(strings.begin(), strings.end(), allLowerCase);
 
-QFuture<QSet<QString>> dictionary = QtConcurrent::filteredReduced(strings.constBegin(), strings.constEnd(), allLowerCase, addToDictionary);
+QFuture<QSet<QString>> dictionary = BobUIConcurrent::filteredReduced(strings.constBegin(), strings.constEnd(), allLowerCase, addToDictionary);
 //! [5]
 
 
@@ -54,44 +54,44 @@ QFuture<QSet<QString>> dictionary = QtConcurrent::filteredReduced(strings.constB
 QStringList strings = ...;
 
 // each call blocks until the entire operation is finished
-QStringList lowerCaseStrings = QtConcurrent::blockingFiltered(strings, allLowerCase);
+QStringList lowerCaseStrings = BobUIConcurrent::blockingFiltered(strings, allLowerCase);
 
 
-QtConcurrent::blockingFilter(strings, allLowerCase);
+BobUIConcurrent::blockingFilter(strings, allLowerCase);
 
-QSet<QString> dictionary = QtConcurrent::blockingFilteredReduced(strings, allLowerCase, addToDictionary);
+QSet<QString> dictionary = BobUIConcurrent::blockingFilteredReduced(strings, allLowerCase, addToDictionary);
 //! [6]
 
 
 //! [7]
 // keep only images with an alpha channel
 QList<QImage> images = ...;
-QFuture<void> alphaImages = QtConcurrent::filter(images, &QImage::hasAlphaChannel);
+QFuture<void> alphaImages = BobUIConcurrent::filter(images, &QImage::hasAlphaChannel);
 
 // retrieve gray scale images
 QList<QImage> images = ...;
-QFuture<QImage> grayscaleImages = QtConcurrent::filtered(images, &QImage::isGrayscale);
+QFuture<QImage> grayscaleImages = BobUIConcurrent::filtered(images, &QImage::isGrayscale);
 
 // create a set of all printable characters
 QList<QChar> characters = ...;
-QFuture<QSet<QChar>> set = QtConcurrent::filteredReduced(characters, qOverload<>(&QChar::isPrint),
+QFuture<QSet<QChar>> set = BobUIConcurrent::filteredReduced(characters, qOverload<>(&QChar::isPrint),
                                                          qOverload<const QChar&>(&QSet<QChar>::insert));
 //! [7]
 
 
 //! [8]
-// can mix normal functions and member functions with QtConcurrent::filteredReduced()
+// can mix normal functions and member functions with BobUIConcurrent::filteredReduced()
 
 // create a dictionary of all lower cased strings
 extern bool allLowerCase(const QString &string);
 QStringList strings = ...;
-QFuture<QSet<QString>> lowerCase = QtConcurrent::filteredReduced(strings, allLowerCase,
+QFuture<QSet<QString>> lowerCase = BobUIConcurrent::filteredReduced(strings, allLowerCase,
                                                                  qOverload<const QString&>(&QSet<QString>::insert));
 
 // create a collage of all gray scale images
 extern void addToCollage(QImage &collage, const QImage &grayscaleImage);
 QList<QImage> images = ...;
-QFuture<QImage> collage = QtConcurrent::filteredReduced(images, &QImage::isGrayscale, addToCollage);
+QFuture<QImage> collage = BobUIConcurrent::filteredReduced(images, &QImage::isGrayscale, addToCollage);
 //! [8]
 
 
@@ -102,7 +102,7 @@ bool QString::contains(const QRegularExpression &regexp) const;
 
 //! [12]
 QStringList strings = ...;
-QFuture<QString> future = QtConcurrent::filtered(list, [](const QString &str) {
+QFuture<QString> future = BobUIConcurrent::filtered(list, [](const QString &str) {
     return str.contains(QRegularExpression("^\\S+$")); // matches strings without whitespace
 });
 //! [12]
@@ -122,7 +122,7 @@ struct StartsWith
 };
 
 QList<QString> strings = ...;
-QFuture<QString> fooString = QtConcurrent::filtered(strings, StartsWith(QLatin1String("Foo")));
+QFuture<QString> fooString = BobUIConcurrent::filtered(strings, StartsWith(QLatin1String("Foo")));
 //! [13]
 
 //! [14]
@@ -132,24 +132,24 @@ struct StringTransform
 };
 
 QFuture<QString> fooString =
-        QtConcurrent::filteredReduced(strings, StartsWith(QLatin1String("Foo")), StringTransform());
+        BobUIConcurrent::filteredReduced(strings, StartsWith(QLatin1String("Foo")), StringTransform());
 //! [14]
 
 //! [15]
 // keep only even integers
 QList<int> list { 1, 2, 3, 4 };
-QtConcurrent::blockingFilter(list, [](int n) { return (n & 1) == 0; });
+BobUIConcurrent::blockingFilter(list, [](int n) { return (n & 1) == 0; });
 
 // retrieve only even integers
 QList<int> list2 { 1, 2, 3, 4 };
-QFuture<int> future = QtConcurrent::filtered(list2, [](int x) {
+QFuture<int> future = BobUIConcurrent::filtered(list2, [](int x) {
     return (x & 1) == 0;
 });
 QList<int> results = future.results();
 
 // add up all even integers
 QList<int> list3 { 1, 2, 3, 4 };
-QFuture<int> sum = QtConcurrent::filteredReduced(list3,
+QFuture<int> sum = BobUIConcurrent::filteredReduced(list3,
     [](int x) {
         return (x & 1) == 0;
     },
@@ -166,7 +166,7 @@ void intSumReduce(int &sum, int x)
 }
 
 QList<int> list { 1, 2, 3, 4 };
-QFuture<int> sum = QtConcurrent::filteredReduced(list,
+QFuture<int> sum = BobUIConcurrent::filteredReduced(list,
     [] (int x) {
         return (x & 1) == 0;
     },
@@ -181,7 +181,7 @@ bool keepEvenIntegers(int x)
 }
 
 QList<int> list { 1, 2, 3, 4 };
-QFuture<int> sum = QtConcurrent::filteredReduced(list,
+QFuture<int> sum = BobUIConcurrent::filteredReduced(list,
     keepEvenIntegers,
     [](int &sum, int x) {
         sum += x;
@@ -195,12 +195,12 @@ auto keepPositive = [](int val) {
 };
 
 QList<int> inputs { -1, 1, 2, -3, 5 };
-auto badFuture = QtConcurrent::filtered(inputs, keepPositive)
+auto badFuture = BobUIConcurrent::filtered(inputs, keepPositive)
                          .then([](int val) {
                              qDebug() << val;
                          });
 
-auto goodFuture = QtConcurrent::filtered(inputs, keepPositive)
+auto goodFuture = BobUIConcurrent::filtered(inputs, keepPositive)
                           .then([](QFuture<int> f) {
                               for (auto r : f.results()) {
                                   qDebug() << r;

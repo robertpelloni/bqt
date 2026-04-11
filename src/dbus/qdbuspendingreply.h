@@ -5,15 +5,15 @@
 #ifndef QDBUSPENDINGREPLY_H
 #define QDBUSPENDINGREPLY_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbusargument.h>
-#include <QtDBus/qdbuspendingcall.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbusargument.h>
+#include <BobUIDBus/qdbuspendingcall.h>
 
 #ifndef QT_NO_DBUS
 
 class tst_QDBusPendingReply;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class Q_DBUS_EXPORT QDBusPendingReplyBase : public QDBusPendingCall
@@ -172,7 +172,7 @@ private:
 
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

@@ -8,7 +8,7 @@
 #include <private/qglobal_p.h>
 
 QT_REQUIRE_CONFIG(dom);
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 //
 //  W A R N I N G
@@ -95,6 +95,6 @@ private:
     QDomBuilder domBuilder;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QDOMHELPERS_P_H

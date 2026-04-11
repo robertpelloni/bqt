@@ -2,26 +2,26 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_MAP_H
-#define QTCONCURRENT_MAP_H
+#ifndef BOBUICONCURRENT_MAP_H
+#define BOBUICONCURRENT_MAP_H
 
 #if 0
-#pragma qt_class(QtConcurrentMap)
+#pragma qt_class(BobUIConcurrentMap)
 #endif
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
-#include <QtConcurrent/qtconcurrentmapkernel.h>
-#include <QtConcurrent/qtconcurrentreducekernel.h>
-#include <QtConcurrent/qtconcurrentfunctionwrappers.h>
+#include <BobUIConcurrent/bobuiconcurrentmapkernel.h>
+#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentfunctionwrappers.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 // map() on sequences
 template <typename Sequence, typename MapFunctor>
@@ -814,10 +814,10 @@ auto blockingMapped(Iterator begin, Iterator end, MapFunctor &&map)
                                                  QtPrivate::PushBackWrapper(), OrderedReduce);
 }
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

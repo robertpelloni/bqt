@@ -42,7 +42,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -2731,6 +2731,6 @@ void QDBusConnectionPrivate::enableDispatchDelayed(QObject *context)
             Qt::QueuedConnection);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

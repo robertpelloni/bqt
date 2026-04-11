@@ -14,12 +14,12 @@
     APIs in each release. But some changes were inevitable in an effort to
     make Qt a better framework.
 
-    In this topic we summarize those changes in Qt DBus, and provide
+    In this topic we summarize those changes in BobUI DBus, and provide
     guidance to handle them.
 
     \section1 API changes
 
-    The QtDBus module has undergone some basic consolidation and
+    The BobUIDBus module has undergone some basic consolidation and
     cleanup. There should be minimal porting effort to be able to switch to Qt6.
 
     \section2 The QDBusMessage class

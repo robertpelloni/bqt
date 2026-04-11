@@ -18,7 +18,7 @@
 #ifndef QDBUSABSTRACTINTERFACE_P_H
 #define QDBUSABSTRACTINTERFACE_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbusabstractinterface.h>
 #include <qdbusconnection.h>
 #include <qdbuserror.h>
@@ -29,7 +29,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusAbstractInterfacePrivate : public QObjectPrivate
 {
@@ -68,7 +68,7 @@ public:
     static void finishDisconnectNotify(QDBusAbstractInterface *iface, int signalId);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

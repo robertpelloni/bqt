@@ -30,7 +30,7 @@
 #include <limits>
 #include <memory>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -339,7 +339,7 @@ QDomImplementationPrivate* QDomImplementationPrivate::clone()
     \brief The QDomImplementation class provides information about the
     features of the DOM implementation.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     This class describes the features that are supported by the DOM
@@ -811,7 +811,7 @@ int QDomNodeListPrivate::noexceptLength() const noexcept
     \reentrant
     \brief The QDomNodeList class is a list of QDomNode objects.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     Lists can be obtained by QDomDocument::elementsByTagName() and
@@ -1557,7 +1557,7 @@ void QDomNodePrivate::setLocation(int lineNumber, int columnNumber)
     \reentrant
     \brief The QDomNode class is the base class for all the nodes in a DOM tree.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
 
@@ -2827,7 +2827,7 @@ bool QDomNamedNodeMapPrivate::containsNS(const QString& nsURI, const QString & l
     \brief The QDomNamedNodeMap class contains a collection of nodes
     that can be accessed by name.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     Note that QDomNamedNodeMap does not inherit from QDomNodeList.
@@ -3267,7 +3267,7 @@ void QDomDocumentTypePrivate::save(QTextStream& s, int, int indent) const
     \brief The QDomDocumentType class is the representation of the DTD
     in the document tree.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     The QDomDocumentType class allows read-only access to some of the
@@ -3436,7 +3436,7 @@ QDomNodePrivate* QDomDocumentFragmentPrivate::cloneNode(bool deep)
     \reentrant
     \brief The QDomDocumentFragment class is a tree of QDomNodes which is not usually a complete QDomDocument.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     If you want to do complex tree operations it is useful to have a
@@ -3567,7 +3567,7 @@ void QDomCharacterDataPrivate::appendData(const QString& arg)
     \reentrant
     \brief The QDomCharacterData class represents a generic string in the DOM.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     Character data as used in XML specifies a generic data string.
@@ -3873,7 +3873,7 @@ void QDomAttrPrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomAttr class represents one attribute of a QDomElement.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     For example, the following piece of XML produces an element with
@@ -4341,7 +4341,7 @@ void QDomElementPrivate::afterSave(QTextStream &s, int depth, int indent) const
     \reentrant
     \brief The QDomElement class represents one element in the DOM tree.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     Elements have a tagName() and zero or more attributes associated
@@ -4895,7 +4895,7 @@ void QDomTextPrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomText class represents text data in the parsed XML document.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     You can split the text in a QDomText object over two QDomText
@@ -5021,7 +5021,7 @@ void QDomCommentPrivate::save(QTextStream& s, int depth, int indent) const
     \reentrant
     \brief The QDomComment class represents an XML comment.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     A comment in the parsed XML such as this:
@@ -5122,7 +5122,7 @@ void QDomCDATASectionPrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomCDATASection class represents an XML CDATA section.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     CDATA sections are used to escape blocks of text containing
@@ -5240,7 +5240,7 @@ void QDomNotationPrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomNotation class represents an XML notation.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     A notation either declares, by name, the format of an unparsed
@@ -5430,7 +5430,7 @@ void QDomEntityPrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomEntity class represents an XML entity.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     This class represents an entity in an XML document, either parsed
@@ -5575,7 +5575,7 @@ void QDomEntityReferencePrivate::save(QTextStream& s, int, int) const
     \reentrant
     \brief The QDomEntityReference class represents an XML entity reference.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     A QDomEntityReference object may be inserted into the DOM tree
@@ -5692,7 +5692,7 @@ void QDomProcessingInstructionPrivate::save(QTextStream& s, int, int) const
     \brief The QDomProcessingInstruction class represents an XML processing
     instruction.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
 
     Processing instructions are used in XML to keep processor-specific
@@ -6156,7 +6156,7 @@ void QDomDocumentPrivate::saveDocument(QTextStream& s, const int indent, QDomNod
     \reentrant
     \brief The QDomDocument class represents an XML document.
 
-    \inmodule QtXml
+    \inmodule BobUIXml
 
     \ingroup xml-tools
 
@@ -6502,7 +6502,7 @@ QT_WARNING_POP
 /*!
     \struct QDomDocument::ParseResult
     \since 6.5
-    \inmodule QtXml
+    \inmodule BobUIXml
     \ingroup xml-tools
     \brief The struct is used to store the result of QDomDocument::setContent().
 
@@ -7177,6 +7177,6 @@ QDomComment QDomNode::toComment() const
     Pointer to private data structure.
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // feature dom

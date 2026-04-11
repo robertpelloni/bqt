@@ -39,7 +39,8 @@ qt_internal_add_module(DBus
         qdbusvirtualobject.cpp qdbusvirtualobject.h
         qdbusxmlgenerator.cpp
         qdbusxmlparser.cpp qdbusxmlparser_p.h
-        qtdbusglobal.h qtdbusglobal_p.h
+        bobuidbusglobal.h bobuidbusglobal_p.h
+        BobUIDBus
     NO_UNITY_BUILD_SOURCES
         qdbusconnectionmanager.cpp # qt_windows.h clashing with "interface"
     DEFINES
@@ -79,5 +80,5 @@ qt_internal_extend_target(DBus CONDITION WIN32
         ws2_32
 )
 qt_internal_add_docs(DBus
-    doc/qtdbus.qdocconf
+    doc/bobuidbus.qdocconf
 )

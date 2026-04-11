@@ -13,7 +13,7 @@ QImage scaled(const QImage &image)
 }
 
 QList<QImage> images = ...;
-QFuture<QImage> thumbnails = QtConcurrent::mapped(images, scaled);
+QFuture<QImage> thumbnails = BobUIConcurrent::mapped(images, scaled);
 //! [1]
 
 
@@ -29,7 +29,7 @@ void scale(QImage &image)
 }
 
 QList<QImage> images = ...;
-QFuture<void> future = QtConcurrent::map(images, scale);
+QFuture<void> future = BobUIConcurrent::map(images, scale);
 //! [3]
 
 
@@ -48,19 +48,19 @@ void addToCollage(QImage &collage, const QImage &thumbnail)
 }
 
 QList<QImage> images = ...;
-QFuture<QImage> collage = QtConcurrent::mappedReduced(images, scaled, addToCollage);
+QFuture<QImage> collage = BobUIConcurrent::mappedReduced(images, scaled, addToCollage);
 //! [5]
 
 
 //! [6]
 QList<QImage> images = ...;
 
-QFuture<QImage> thumbnails = QtConcurrent::mapped(images.constBegin(), images.constEnd(), scaled);
+QFuture<QImage> thumbnails = BobUIConcurrent::mapped(images.constBegin(), images.constEnd(), scaled);
 
 // Map in-place only works on non-const iterators.
-QFuture<void> future = QtConcurrent::map(images.begin(), images.end(), scale);
+QFuture<void> future = BobUIConcurrent::map(images.begin(), images.end(), scale);
 
-QFuture<QImage> collage = QtConcurrent::mappedReduced(images.constBegin(), images.constEnd(), scaled, addToCollage);
+QFuture<QImage> collage = BobUIConcurrent::mappedReduced(images.constBegin(), images.constEnd(), scaled, addToCollage);
 //! [6]
 
 
@@ -68,43 +68,43 @@ QFuture<QImage> collage = QtConcurrent::mappedReduced(images.constBegin(), image
 QList<QImage> images = ...;
 
 // Each call blocks until the entire operation is finished.
-QList<QImage> future = QtConcurrent::blockingMapped(images, scaled);
+QList<QImage> future = BobUIConcurrent::blockingMapped(images, scaled);
 
-QtConcurrent::blockingMap(images, scale);
+BobUIConcurrent::blockingMap(images, scale);
 
-QImage collage = QtConcurrent::blockingMappedReduced(images, scaled, addToCollage);
+QImage collage = BobUIConcurrent::blockingMappedReduced(images, scaled, addToCollage);
 //! [7]
 
 
 //! [8]
 // Squeeze all strings in a QStringList.
 QStringList strings = ...;
-QFuture<void> squeezedStrings = QtConcurrent::map(strings, &QString::squeeze);
+QFuture<void> squeezedStrings = BobUIConcurrent::map(strings, &QString::squeeze);
 
 // Swap the rgb values of all pixels on a list of images.
 QList<QImage> images = ...;
-QFuture<QImage> bgrImages = QtConcurrent::mapped(images,
+QFuture<QImage> bgrImages = BobUIConcurrent::mapped(images,
     static_cast<QImage (QImage::*)() const &>(&QImage::rgbSwapped));
 
 // Create a set of the lengths of all strings in a list.
 QStringList strings = ...;
-QFuture<QSet<int>> wordLengths = QtConcurrent::mappedReduced(strings, &QString::length,
+QFuture<QSet<int>> wordLengths = BobUIConcurrent::mappedReduced(strings, &QString::length,
                                                              qOverload<const int&>(&QSet<int>::insert));
 //! [8]
 
 
 //! [9]
-// Can mix normal functions and member functions with QtConcurrent::mappedReduced().
+// Can mix normal functions and member functions with BobUIConcurrent::mappedReduced().
 
 // Compute the average length of a list of strings.
 extern void computeAverage(int &average, int length);
 QStringList strings = ...;
-QFuture<int> averageWordLength = QtConcurrent::mappedReduced(strings, &QString::length, computeAverage);
+QFuture<int> averageWordLength = BobUIConcurrent::mappedReduced(strings, &QString::length, computeAverage);
 
 // Create a set of the color distribution of all images in a list.
 extern int colorDistribution(const QImage &string);
 QList<QImage> images = ...;
-QFuture<QSet<int>> totalColorDistribution = QtConcurrent::mappedReduced(images, colorDistribution,
+QFuture<QSet<int>> totalColorDistribution = BobUIConcurrent::mappedReduced(images, colorDistribution,
                                                                         qOverload<const int&>(&QSet<int>::insert));
 //! [9]
 
@@ -120,8 +120,8 @@ struct ImageTransform
 };
 
 QFuture<QImage> thumbNails =
-        QtConcurrent::mappedReduced(images, Scaled(100), ImageTransform(),
-                                    QtConcurrent::SequentialReduce);
+        BobUIConcurrent::mappedReduced(images, Scaled(100), ImageTransform(),
+                                    BobUIConcurrent::SequentialReduce);
 //! [11]
 
 //! [13]
@@ -129,7 +129,7 @@ QList<QImage> images = ...;
 std::function<QImage(const QImage &)> scale = [](const QImage &img) {
     return img.scaledToWidth(100, Qt::SmoothTransformation);
 };
-QFuture<QImage> thumbnails = QtConcurrent::mapped(images, scale);
+QFuture<QImage> thumbnails = BobUIConcurrent::mapped(images, scale);
 //! [13]
 
 //! [14]
@@ -149,17 +149,17 @@ struct Scaled
 };
 
 QList<QImage> images = ...;
-QFuture<QImage> thumbnails = QtConcurrent::mapped(images, Scaled(100));
+QFuture<QImage> thumbnails = BobUIConcurrent::mapped(images, Scaled(100));
 //! [14]
 
 //! [15]
 QList<int> vector { 1, 2, 3, 4 };
-QtConcurrent::blockingMap(vector, [](int &x) { x *= 2; });
+BobUIConcurrent::blockingMap(vector, [](int &x) { x *= 2; });
 
 int size = 100;
 QList<QImage> images = ...;
 
-QList<QImage> thumbnails = QtConcurrent::mapped(images,
+QList<QImage> thumbnails = BobUIConcurrent::mapped(images,
         [&size](const QImage &image) {
             return image.scaled(size, size);
         }
@@ -167,7 +167,7 @@ QList<QImage> thumbnails = QtConcurrent::mapped(images,
 //! [15]
 
 //! [16]
-QList<QImage> collage = QtConcurrent::mappedReduced(images,
+QList<QImage> collage = BobUIConcurrent::mappedReduced(images,
         [&size](const QImage &image) {
             return image.scaled(size, size);
         },
@@ -176,7 +176,7 @@ QList<QImage> collage = QtConcurrent::mappedReduced(images,
 //! [16]
 
 //! [17]
-QList<QImage> collage = QtConcurrent::mappedReduced(images,
+QList<QImage> collage = BobUIConcurrent::mappedReduced(images,
         [&size](const QImage &image) {
             return image.scaled(size, size);
         },
@@ -192,12 +192,12 @@ auto process = [](int val) {
 };
 
 QList<int> inputs { 1, 2, 3 };
-auto badFuture = QtConcurrent::mapped(inputs, process)
+auto badFuture = BobUIConcurrent::mapped(inputs, process)
                          .then([](int val) {
                              qDebug() << val;
                          });
 
-auto goodFuture = QtConcurrent::mapped(inputs, process)
+auto goodFuture = BobUIConcurrent::mapped(inputs, process)
                           .then([](QFuture<int> f) {
                               for (auto r : f.results()) {
                                   qDebug() << r;

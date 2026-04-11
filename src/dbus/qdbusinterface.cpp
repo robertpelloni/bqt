@@ -14,7 +14,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -142,7 +142,7 @@ QDBusInterfacePrivate::~QDBusInterfacePrivate()
 
 /*!
     \class QDBusInterface
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusInterface class is a proxy for interfaces on remote objects.
@@ -291,6 +291,6 @@ int QDBusInterfacePrivate::metacall(QMetaObject::Call c, int id, void **argv)
     return id;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

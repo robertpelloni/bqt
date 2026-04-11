@@ -16,13 +16,13 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
 /*!
     \class QDBusPendingCall
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \ingroup shared
     \since 4.5
 
@@ -54,7 +54,7 @@ using namespace Qt::StringLiterals;
 
 /*!
     \class QDBusPendingCallWatcher
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.5
 
     \brief The QDBusPendingCallWatcher class provides a convenient way for
@@ -167,7 +167,7 @@ void QDBusPendingCallPrivate::setMetaTypes(int count, const QMetaType *types)
     for (int i = 0; i < count; ++i) {
         const char *typeSig = QDBusMetaType::typeToSignature(types[i]);
         if (Q_UNLIKELY(!typeSig))
-            qFatal("QDBusPendingReply: type %s is not registered with QtDBus", types[i].name());
+            qFatal("QDBusPendingReply: type %s is not registered with BobUIDBus", types[i].name());
         sig += typeSig;
     }
 
@@ -538,7 +538,7 @@ void QDBusPendingCallWatcher::waitForFinished()
         QCoreApplication::sendPostedEvents(this, QEvent::MetaCall);
     }
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbuspendingcall_p.cpp"
 

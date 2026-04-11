@@ -18,7 +18,7 @@
 #ifndef QDBUS_SYMBOLS_P_H
 #define QDBUS_SYMBOLS_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 
 #ifndef QT_NO_DBUS
 
@@ -34,7 +34,7 @@
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if !defined QT_LINKED_LIBDBUS
 
@@ -44,7 +44,7 @@ bool qdbus_loadLibDBus();
 
 //# define TRACE_DBUS_CALLS
 # ifdef TRACE_DBUS_CALLS
-namespace QtDBusCallTracing {
+namespace BobUIDBusCallTracing {
 struct TraceDBusCall
 {
     struct ThreadData {
@@ -110,8 +110,8 @@ template <typename T> struct TraceReturn { typedef TraceDBusCall Type; };
 template <>           struct TraceReturn<void> { typedef void Type; };
 }
 
-#  define DEBUGCALL(name, argcall)   QtDBusCallTracing::TraceDBusCall tc(qDebug(), name "("); tc argcall
-#  define DEBUGRET(ret)              (QtDBusCallTracing::TraceReturn<ret>::Type) tc ,
+#  define DEBUGCALL(name, argcall)   BobUIDBusCallTracing::TraceDBusCall tc(qDebug(), name "("); tc argcall
+#  define DEBUGRET(ret)              (BobUIDBusCallTracing::TraceReturn<ret>::Type) tc ,
 # else
 #  define DEBUGCALL(name, argcall)
 #  define DEBUGRET(ret)
@@ -475,7 +475,7 @@ DEFINEFUNC(void        , dbus_server_unref, (DBusServer     *server),
 /* dbus-thread.h */
 DEFINEFUNC(dbus_bool_t     , dbus_threads_init_default, (), (), return)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif // QDBUS_SYMBOLS_P_H

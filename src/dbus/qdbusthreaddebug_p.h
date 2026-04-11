@@ -16,11 +16,11 @@
 // We mean it.
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #if !defined(QDBUS_THREAD_DEBUG) && defined(QT_BUILD_INTERNAL)
 # define QDBUS_THREAD_DEBUG 1
@@ -130,7 +130,7 @@ struct QDBusWriteLocker: QDBusLockerBase
     }
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

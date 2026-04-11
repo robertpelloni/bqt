@@ -7,7 +7,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 QT_IMPL_METATYPE_EXTERN(QDBusVariant)
 QT_IMPL_METATYPE_EXTERN(QDBusObjectPath)
@@ -51,7 +51,7 @@ void QDBusSignature::doCheck()
 
 /*!
     \class QDBusVariant
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusVariant class enables the programmer to identify
@@ -104,7 +104,7 @@ void QDBusSignature::doCheck()
 
 /*!
     \class QDBusObjectPath
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusObjectPath class enables the programmer to
@@ -165,7 +165,7 @@ QDBusObjectPath::operator QVariant() const { return QVariant::fromValue(*this); 
 
 /*!
     \class QDBusSignature
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusSignature class enables the programmer to
@@ -230,6 +230,6 @@ QDBusObjectPath::operator QVariant() const { return QVariant::fromValue(*this); 
     \memberswap{variant}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

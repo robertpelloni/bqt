@@ -1,0 +1,1 @@
+C:/Users/hyper/workspace/npp/bobui/src/corelib/kernel/moc_qobject.cpp.json

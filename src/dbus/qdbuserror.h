@@ -5,7 +5,7 @@
 #ifndef QDBUSERROR_H
 #define QDBUSERROR_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qobjectdefs.h>
 #include <QtCore/qstring.h>
 
@@ -13,7 +13,7 @@
 
 struct DBusError;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusMessage;
@@ -103,12 +103,12 @@ Q_DECLARE_SHARED(QDBusError)
 Q_DBUS_EXPORT QDebug operator<<(QDebug, const QDBusError &);
 #endif
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 QT_DECL_METATYPE_EXTERN(QDBusError, Q_DBUS_EXPORT)
 #else
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 class Q_DBUS_EXPORT QDBusError {}; // dummy class for moc
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif // QT_NO_DBUS
 #endif

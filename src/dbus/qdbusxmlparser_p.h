@@ -16,7 +16,7 @@
 // We mean it.
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <QtCore/qloggingcategory.h>
 #include <QtCore/qmap.h>
 #include <QtCore/qxmlstream.h>
@@ -24,7 +24,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 Q_DECLARE_LOGGING_CATEGORY(dbusParser)
 
@@ -62,7 +62,7 @@ private:
     void updateCurrentLocation();
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

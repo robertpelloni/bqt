@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_COMPILERTEST_H
-#define QTCONCURRENT_COMPILERTEST_H
+#ifndef BOBUICONCURRENT_COMPILERTEST_H
+#define BOBUICONCURRENT_COMPILERTEST_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #ifndef QT_NO_CONCURRENT
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QtPrivate {
 
@@ -35,7 +35,7 @@ namespace QtPrivate {
     inline constexpr bool IsDereferenceableValue = IsDereferenceable<T>::value;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

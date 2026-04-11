@@ -9,13 +9,13 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
 /*!
     \class QDBusReply
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusReply class stores the reply for a method call to a remote object.
@@ -202,6 +202,6 @@ void qDBusReplyFill(const QDBusMessage &reply, QDBusError &error, QVariant &data
     data = QVariant();      // clear it
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

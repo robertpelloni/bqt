@@ -2,24 +2,24 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_ITERATEKERNEL_H
-#define QTCONCURRENT_ITERATEKERNEL_H
+#ifndef BOBUICONCURRENT_ITERATEKERNEL_H
+#define BOBUICONCURRENT_ITERATEKERNEL_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
 #include <QtCore/qatomic.h>
-#include <QtConcurrent/qtconcurrentmedian.h>
-#include <QtConcurrent/qtconcurrentthreadengine.h>
+#include <BobUIConcurrent/bobuiconcurrentmedian.h>
+#include <BobUIConcurrent/bobuiconcurrentthreadengine.h>
 
 #include <iterator>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 /*
     The BlockSizeManager class manages how many iterations a thread should
@@ -326,10 +326,10 @@ public:
     DefaultValueContainer<ResultType> defaultValue;
 };
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

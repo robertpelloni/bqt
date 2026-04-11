@@ -17,8 +17,8 @@
 #ifndef QDBUSUTIL_P_H
 #define QDBUSUTIL_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
-#include <QtDBus/qdbuserror.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
+#include <BobUIDBus/qdbuserror.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 
@@ -26,7 +26,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #define Q_DBUS_NO_EXPORT        // force syncqt looking into this namespace
 namespace Q_DBUS_NO_EXPORT QDBusUtil
@@ -144,7 +144,7 @@ namespace Q_DBUS_NO_EXPORT QDBusUtil
     { return QStringLiteral("Not connected to D-Bus server"); }
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

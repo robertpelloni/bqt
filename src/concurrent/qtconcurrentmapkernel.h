@@ -2,21 +2,21 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_MAPKERNEL_H
-#define QTCONCURRENT_MAPKERNEL_H
+#ifndef BOBUICONCURRENT_MAPKERNEL_H
+#define BOBUICONCURRENT_MAPKERNEL_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined (Q_QDOC)
 
-#include <QtConcurrent/qtconcurrentiteratekernel.h>
-#include <QtConcurrent/qtconcurrentreducekernel.h>
-#include <QtConcurrent/qtconcurrentfunctionwrappers.h>
+#include <BobUIConcurrent/bobuiconcurrentiteratekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentfunctionwrappers.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 // map kernel, works with both parallel-for and parallel-while
 template <typename Iterator, typename MapFunctor>
@@ -172,7 +172,7 @@ public:
     }
 };
 
-//! [qtconcurrentmapkernel-1]
+//! [bobuiconcurrentmapkernel-1]
 template <typename Iterator, typename Functor>
 inline ThreadEngineStarter<void> startMap(QThreadPool *pool, Iterator begin,
                                           Iterator end, Functor &&functor)
@@ -181,7 +181,7 @@ inline ThreadEngineStarter<void> startMap(QThreadPool *pool, Iterator begin,
             pool, begin, end, std::forward<Functor>(functor)));
 }
 
-//! [qtconcurrentmapkernel-2]
+//! [bobuiconcurrentmapkernel-2]
 template <typename T, typename Iterator, typename Functor>
 inline ThreadEngineStarter<T> startMapped(QThreadPool *pool, Iterator begin,
                                           Iterator end, Functor &&functor)
@@ -212,7 +212,7 @@ struct SequenceHolder1 : private QtPrivate::SequenceHolder<Sequence>, public Bas
     }
 };
 
-//! [qtconcurrentmapkernel-3]
+//! [bobuiconcurrentmapkernel-3]
 template <typename T, typename Sequence, typename Functor>
 inline ThreadEngineStarter<T> startMapped(QThreadPool *pool, Sequence &&sequence,
                                           Functor &&functor)
@@ -228,7 +228,7 @@ inline ThreadEngineStarter<T> startMapped(QThreadPool *pool, Sequence &&sequence
                                                     std::forward<Functor>(functor)));
 }
 
-//! [qtconcurrentmapkernel-4]
+//! [bobuiconcurrentmapkernel-4]
 template <typename IntermediateType, typename ResultType, typename Sequence, typename MapFunctor,
           typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
@@ -252,7 +252,7 @@ inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
                                                     options));
 }
 
-//! [qtconcurrentmapkernel-5]
+//! [bobuiconcurrentmapkernel-5]
 template <typename IntermediateType, typename ResultType, typename Iterator, typename MapFunctor,
           typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
@@ -272,7 +272,7 @@ inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
                                                   options));
 }
 
-//! [qtconcurrentmapkernel-6]
+//! [bobuiconcurrentmapkernel-6]
 template <typename IntermediateType, typename ResultType, typename Sequence, typename MapFunctor,
           typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
@@ -298,7 +298,7 @@ inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
                                    std::forward<ResultType>(initialValue), options));
 }
 
-//! [qtconcurrentmapkernel-7]
+//! [bobuiconcurrentmapkernel-7]
 template <typename IntermediateType, typename ResultType, typename Iterator, typename MapFunctor,
           typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
@@ -318,10 +318,10 @@ inline ThreadEngineStarter<ResultType> startMappedReduced(QThreadPool *pool,
                                                   std::forward<ResultType>(initialValue), options));
 }
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

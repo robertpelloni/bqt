@@ -17,7 +17,7 @@
 #ifndef QDBUSABSTRACTADAPTOR_P_H
 #define QDBUSABSTRACTADAPTOR_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbusabstractadaptor.h>
 
 #include <QtCore/qbytearrayview.h>
@@ -36,7 +36,7 @@
 #  undef interface
 #endif
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusAbstractAdaptor;
 class QDBusAdaptorConnector;
@@ -102,7 +102,7 @@ Q_DECLARE_TYPEINFO(QDBusAdaptorConnector::AdaptorData, Q_PRIMITIVE_TYPE);
 extern QDBusAdaptorConnector *qDBusFindAdaptorConnector(QObject *object);
 extern QDBusAdaptorConnector *qDBusCreateAdaptorConnector(QObject *object);
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif // QDBUSABSTRACTADAPTOR_P_H

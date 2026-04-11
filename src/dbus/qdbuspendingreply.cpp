@@ -13,7 +13,7 @@
 
 /*!
     \class QDBusPendingReply
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.5
 
     \brief The QDBusPendingReply class contains the reply to an asynchronous method call.

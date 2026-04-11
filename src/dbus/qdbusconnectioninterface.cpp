@@ -17,7 +17,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -27,7 +27,7 @@ using namespace Qt::StringLiterals;
 
 /*!
     \class QDBusConnectionInterface
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusConnectionInterface class provides access to the D-Bus bus daemon service.
@@ -422,7 +422,7 @@ void QDBusConnectionInterface::disconnectNotify(const QMetaMethod &signal)
   \sa QDBusConnection::callWithCallback()
  */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnectioninterface.cpp"
 

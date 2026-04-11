@@ -5,7 +5,7 @@
 #ifndef QDBUSARGUMENT_H
 #define QDBUSARGUMENT_H
 
-#include <QtDBus/qtdbusglobal.h>
+#include <BobUIDBus/bobuidbusglobal.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qglobal.h>
@@ -14,13 +14,13 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qvariant.h>
-#include <QtDBus/qdbusextratypes.h>
+#include <BobUIDBus/qdbusextratypes.h>
 
 #include <tuple>
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusUnixFileDescriptor;
@@ -144,9 +144,9 @@ private:
 };
 Q_DECLARE_SHARED(QDBusArgument)
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 QT_DECL_METATYPE_EXTERN(QDBusArgument, Q_DBUS_EXPORT)
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 template<typename T> inline T qdbus_cast(const QDBusArgument &arg)
 {
@@ -345,7 +345,7 @@ inline const QDBusArgument &operator>>(const QDBusArgument &arg, std::pair<T1, T
     return arg;
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

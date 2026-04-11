@@ -64,7 +64,7 @@
 
     Consider the following example:
 
-    \snippet code/doc_src_qtxml.qdoc 6
+    \snippet code/doc_src_bobuixml.qdoc 6
 
     Here we find three different uses of the name \e title. If you wish to
     process this document you will encounter problems because each of the
@@ -75,7 +75,7 @@
     occurrence of \e title as the title of a book, i.e. to use the \e
     title element of a book namespace to distinguish it from, for example,
     the chapter title, e.g.:
-    \snippet code/doc_src_qtxml.qdoc 7
+    \snippet code/doc_src_bobuixml.qdoc 7
 
     \e book in this case is a \e prefix denoting the namespace.
 
@@ -91,12 +91,12 @@
     http://www.example.com/fnord/ the document's default XML namespace \e
     xmlns we write
 
-    \snippet code/doc_src_qtxml.qdoc 8
+    \snippet code/doc_src_bobuixml.qdoc 8
 
     To distinguish the \e http://www.example.com/fnord/book/ namespace from
     the default, we must supply it with a prefix:
 
-    \snippet code/doc_src_qtxml.qdoc 9
+    \snippet code/doc_src_bobuixml.qdoc 9
 
     A namespace that is declared like this can be applied to element and
     attribute names by prepending the appropriate prefix and a ":"
@@ -117,7 +117,7 @@
     within a \e chapter.
 
     Let's clarify this with an example:
-    \snippet code/doc_src_qtxml.qdoc 10
+    \snippet code/doc_src_bobuixml.qdoc 10
 
     Within the \e document element we have two namespaces declared. The
     default namespace \e http://www.example.com/fnord/ applies to the \e

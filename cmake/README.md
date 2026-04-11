@@ -4,6 +4,41 @@ This document gives an overview of the Qt 6 build system. For a hands-on guide o
 to build Qt 6, see https://doc.qt.io/qt-6/build-sources.html and
 https://wiki.qt.io/Building_Qt_6_from_Git
 
+# BobUI Compatibility Shims
+
+This repository also carries an additive BobUI-facing compatibility layer in:
+- `BobUICompatibilityHelpers.cmake`
+- `BobUI6Config.cmake`
+- `BobUIConfig.cmake`
+- `BobUI6CoreConfig.cmake`
+- `BobUICoreConfig.cmake`
+- `BobUI6GuiConfig.cmake`
+- `BobUIGuiConfig.cmake`
+- `BobUI6NetworkConfig.cmake`
+- `BobUINetworkConfig.cmake`
+- `BobUI6ConcurrentConfig.cmake`
+- `BobUIConcurrentConfig.cmake`
+- `BobUI6DBusConfig.cmake`
+- `BobUIDBusConfig.cmake`
+- `BobUI6OpenGLConfig.cmake`
+- `BobUIOpenGLConfig.cmake`
+- `BobUI6OpenGLWidgetsConfig.cmake`
+- `BobUIOpenGLWidgetsConfig.cmake`
+- `BobUI6PrintSupportConfig.cmake`
+- `BobUIPrintSupportConfig.cmake`
+- `BobUI6SqlConfig.cmake`
+- `BobUISqlConfig.cmake`
+- `BobUI6WidgetsConfig.cmake`
+- `BobUIWidgetsConfig.cmake`
+- `BobUI6XmlConfig.cmake`
+- `BobUIXmlConfig.cmake`
+- `QtBobUIHelpers.cmake`
+
+These files do **not** replace the canonical Qt-derived build internals. They are the first staged
+compatibility bucket for side-by-side BobUI naming work and now publish additive `BobUI6/` and
+`BobUI/` package directories through the top-level package-generation path while preserving the
+tracked Qt package surface.
+
 # Contributing
 
 See qtbase/cmake/CODESTYLE.md for the code style you should follow when contributing

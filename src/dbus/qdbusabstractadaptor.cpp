@@ -20,7 +20,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 int QDBusAdaptorConnector::relaySlotMethodIndex()
 {
@@ -70,7 +70,7 @@ void QDBusAbstractAdaptorPrivate::saveIntrospectionXml(QDBusAbstractAdaptor *ada
 
 /*!
     \class QDBusAbstractAdaptor
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusAbstractAdaptor class is the base class of D-Bus adaptor classes.
@@ -240,7 +240,7 @@ void QDBusAdaptorConnector::relaySlot(QMethodRawArguments argv)
     if (Q_LIKELY(sndr)) {
         relay(sndr, senderSignalIndex(), argv.arguments);
     } else {
-        qWarning("QtDBus: cannot relay signals from parent %s(%p \"%s\") unless they are emitted in the object's thread %s(%p \"%s\"). "
+        qWarning("BobUIDBus: cannot relay signals from parent %s(%p \"%s\") unless they are emitted in the object's thread %s(%p \"%s\"). "
                  "Current thread is %s(%p \"%s\").",
                  parent()->metaObject()->className(), parent(), qPrintable(parent()->objectName()),
                  parent()->thread()->metaObject()->className(), parent()->thread(), qPrintable(parent()->thread()->objectName()),
@@ -291,7 +291,7 @@ void QDBusAdaptorConnector::relay(QObject *senderObj, int lastSignalIdx, void **
     emit relaySignal(realObject, senderMetaObject, lastSignalIdx, args);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusabstractadaptor_p.cpp"
 #include "moc_qdbusabstractadaptor.cpp"

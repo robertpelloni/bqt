@@ -1,0 +1,1 @@
+FINAL_PRL_FILE_PATH = C:/Users/hyper/workspace/npp/bobui/lib/Qt6EntryPoint.prl

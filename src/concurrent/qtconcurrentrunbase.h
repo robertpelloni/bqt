@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_RUNBASE_H
-#define QTCONCURRENT_RUNBASE_H
+#ifndef BOBUICONCURRENT_RUNBASE_H
+#define BOBUICONCURRENT_RUNBASE_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #ifndef QT_NO_CONCURRENT
 
@@ -16,12 +16,12 @@
 #include <type_traits>
 #include <utility>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 #ifndef Q_QDOC
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 template <typename T>
 struct SelectSpecialization
@@ -98,11 +98,11 @@ protected:
     QFutureInterface<T> promise;
 };
 
-} //namespace QtConcurrent
+} //namespace BobUIConcurrent
 
 #endif //Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

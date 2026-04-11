@@ -5,8 +5,8 @@
 #ifndef QDBUSPENDINGCALL_H
 #define QDBUSPENDINGCALL_H
 
-#include <QtDBus/qtdbusglobal.h>
-#include <QtDBus/qdbusmessage.h>
+#include <BobUIDBus/bobuidbusglobal.h>
+#include <BobUIDBus/qdbusmessage.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qshareddata.h>
 
@@ -14,7 +14,7 @@
 
 class tst_QDBusPendingReply;
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 class QDBusConnection;
@@ -83,7 +83,7 @@ Q_SIGNALS:
     void finished(QDBusPendingCallWatcher *self = nullptr);
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

@@ -1,0 +1,44 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: qtbase-6.12.0
+DocumentNamespace: https://qt.io/spdxdocs/qtbase-ce5f43eaf9+main+dirty-host-windows-amd64-target-windows-msvc-amd64-27d534bc-ace8-52e9-8f1f-27ccb89334ad
+Creator: Organization: TheQtCompany
+Creator: Tool: Qt Build System
+CreatorComment: <text>This SPDX document was created from CMake 4.3.1, using the qt
+build system from https://code.qt.io/cgit/qt/qtbase.git/tree/cmake/QtPublicSbomHelpers.cmake</text>
+Created: 2026-04-02T21:14:35Z${QT_SBOM_EXTERNAL_DOC_REFS}
+
+PackageName: MSVC
+SPDXID: SPDXRef-compiler
+PackageVersion: 19.50.35728.0
+PackageDownloadLocation: NOASSERTION
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageSupplier: Organization: Anonymous
+FilesAnalyzed: false
+PackageSummary: <text>The compiler as identified by CMake, running on Windows (AMD64)</text>
+PrimaryPackagePurpose: APPLICATION
+Relationship: SPDXRef-compiler BUILD_DEPENDENCY_OF SPDXRef-Package-qtbase
+RelationshipComment: <text>SPDXRef-Package-qtbase is built by compiler MSVC version 19.50.35728.0</text>
+
+PackageName: qtbase
+SPDXID: SPDXRef-Package-qtbase
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtbase:6.12.0:*:*:*:*:*:*:*
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtbase@ce5f43eaf9+main+dirty
+PackageVersion: ce5f43eaf9+main+dirty
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtbase@ce5f43eaf9+main+dirty
+PackageSupplier: Organization: TheQtCompany
+PackageDownloadLocation: git://code.qt.io/qt/qtbase.git@ce5f43eaf95f13997977a321f14b4913a193cd5d
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: Copyright (C) The Qt Company Ltd. and other contributors.
+PackageHomePage: https://qt.io
+PackageComment: <text>Built by CMake 4.3.1 with Release configuration for Windows (AMD64)
+qtbase was configured with:
+    qt6/configure -release -opensource -confirm-license -static -no-icu -no-harfbuzz -no-libpng -qt-zlib -qt-pcre -nomake tests -nomake examples -- -G Visual Studio 18 2026 -A x64
+</text>
+FilesAnalyzed: false
+BuiltDate: 2026-04-02T21:14:35Z
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-qtbase

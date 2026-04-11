@@ -16,7 +16,7 @@
 // We mean it.
 //
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include <qdbusmetatype.h>
 
 #include <qdbusmessage.h>
@@ -27,7 +27,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 namespace QDBusMetaTypeId {
 QMetaType message(); // QDBusMessage
@@ -62,7 +62,7 @@ inline QMetaType QDBusMetaTypeId::error()
 inline QMetaType QDBusMetaTypeId::unixfd()
 { return QMetaType::fromType<QDBusUnixFileDescriptor>(); }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS
 #endif

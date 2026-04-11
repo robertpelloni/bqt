@@ -250,16 +250,19 @@ template <typename... Block> struct UintData
     template <typename Unique, typename Result> constexpr void
     copyTo(Result &result, size_t dataoffset, uint &metatypeoffset) const
     {
-        uint *ptr = result.staticData.data;
+        Result &result_ref = result;
+        uint *ptr = result_ref.staticData.data;
         size_t payloadoffset = dataoffset + headerSize();
         data.forEach([&](const auto &input) {
+            using InputMetaTypes = decltype(input.metaTypes());
+
             // copy the uint data
             q20::copy_n(input.header, input.headerSize(), ptr + dataoffset);
             q20::copy_n(input.payload, input.payloadSize(), ptr + payloadoffset);
             input.adjustOffsets(ptr, uint(dataoffset), uint(payloadoffset), metatypeoffset);
 
             // copy the metatypes
-            decltype(input.metaTypes())::template copyTo<Unique>(result, metatypeoffset);
+            InputMetaTypes::template copyTo<Unique>(result_ref, metatypeoffset);
 
             dataoffset += input.headerSize();
             payloadoffset += input.payloadSize();

@@ -1,7 +1,7 @@
 include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
 include($QT_INSTALL_DOCS/config/exampleurl-qtbase.qdocconf)
 
-project                 = QtXml
+project                 = BobUIXml
 description             = Qt XML Reference Documentation
 version                 = $QT_VERSION
 
@@ -10,25 +10,25 @@ examplesinstallpath     = xml
 # Path to the root of qtbase (for automatic linking to source code)
 url.sources.rootdir     = ../../..
 
-qhp.projects            = QtXml
+qhp.projects            = BobUIXml
 
-qhp.QtXml.file            = qtxml.qhp
-qhp.QtXml.namespace           = org.qt-project.qtxml.$QT_VERSION_TAG
-qhp.QtXml.virtualFolder       = qtxml
-qhp.QtXml.indexTitle          = Qt XML
-qhp.QtXml.indexRoot           =
+qhp.BobUIXml.file            = bobuixml.qhp
+qhp.BobUIXml.namespace           = org.qt-project.bobuixml.$QT_VERSION_TAG
+qhp.BobUIXml.virtualFolder       = bobuixml
+qhp.BobUIXml.indexTitle          = Qt XML
+qhp.BobUIXml.indexRoot           =
 
-qhp.QtXml.subprojects = manual classes
-qhp.QtXml.subprojects.classes.title = C++ Classes
-qhp.QtXml.subprojects.classes.indexTitle = Qt XML C++ Classes
-qhp.QtXml.subprojects.classes.selectors = class fake:headerfile
-qhp.QtXml.subprojects.classes.sortPages = true
+qhp.BobUIXml.subprojects = manual classes
+qhp.BobUIXml.subprojects.classes.title = C++ Classes
+qhp.BobUIXml.subprojects.classes.indexTitle = Qt XML C++ Classes
+qhp.BobUIXml.subprojects.classes.selectors = class fake:headerfile
+qhp.BobUIXml.subprojects.classes.sortPages = true
 
-qhp.QtXml.subprojects.manual.title = Qt XML
-qhp.QtXml.subprojects.manual.indexTitle = Qt XML module topics
-qhp.QtXml.subprojects.manual.type = manual
+qhp.BobUIXml.subprojects.manual.title = Qt XML
+qhp.BobUIXml.subprojects.manual.indexTitle = Qt XML module topics
+qhp.BobUIXml.subprojects.manual.type = manual
 
-tagfile                 = ../../../doc/qtxml/qtxml.tags
+tagfile                 = ../../../doc/bobuixml/bobuixml.tags
 
 depends                 += qtcore qtnetwork qtdoc qtwidgets qmake qtcmake qtcore5compat
 
@@ -47,7 +47,7 @@ navigation.toctitles = "Qt XML module topics"
 navigation.toctitles.inclusive = false
 
 # Add a thumbnail for examples that do not have images
-manifestmeta.thumbnail.names = "QtXml/XML Stream Lint Example"
+manifestmeta.thumbnail.names = "BobUIXml/XML Stream Lint Example"
 
 # Enforce zero documentation warnings
 warninglimit = 0

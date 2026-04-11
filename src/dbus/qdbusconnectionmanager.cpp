@@ -16,7 +16,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_OS_WIN
 static void preventDllUnload();
@@ -301,14 +301,14 @@ void QDBusConnectionManager::createServer(const QString &address, QDBusServer *s
             Qt::BlockingQueuedConnection);
 }
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #include "moc_qdbusconnectionmanager_p.cpp"
 
 #ifdef Q_OS_WIN
 #  include <qt_windows.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 static void preventDllUnload()
 {
     // Thread termination is really wacky on Windows. For some reason we don't
@@ -329,7 +329,7 @@ static void preventDllUnload()
                       reinterpret_cast<const wchar_t *>(&self), // any address in this DLL
                       &self);
 }
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 #endif
 
 #endif // QT_NO_DBUS

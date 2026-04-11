@@ -18,7 +18,7 @@
 #ifndef QDBUSINTEGRATOR_P_H
 #define QDBUSINTEGRATOR_P_H
 
-#include <QtDBus/private/qtdbusglobal_p.h>
+#include <BobUIDBus/private/bobuidbusglobal_p.h>
 #include "qdbus_symbols_p.h"
 
 #include "qcoreevent.h"
@@ -35,7 +35,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 class QDBusConnectionPrivate;
 class QDBusMessage;
@@ -139,7 +139,7 @@ public:
     QDBusMessage msg;
 };
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 QT_DECL_METATYPE_EXTERN(QDBusSlotCache, Q_DBUS_EXPORT)
 

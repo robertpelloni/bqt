@@ -19,7 +19,7 @@
 
 #ifndef QT_NO_DBUS
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 using namespace Qt::StringLiterals;
 
@@ -314,7 +314,7 @@ QDBusMessage QDBusMessagePrivate::makeLocalReply(const QDBusConnectionPrivate &c
 
 /*!
     \class QDBusMessage
-    \inmodule QtDBus
+    \inmodule BobUIDBus
     \since 4.2
 
     \brief The QDBusMessage class represents one message sent or
@@ -657,7 +657,7 @@ bool QDBusMessage::isReplyRequired() const
     (if \a enable is false).
 
     In D-Bus, all method calls must generate a reply to the caller, unless the
-    caller explicitly indicates otherwise (see isReplyRequired()). QtDBus
+    caller explicitly indicates otherwise (see isReplyRequired()). BobUIDBus
     automatically generates such replies for any slots being called, but it
     also allows slots to indicate whether they will take responsibility
     of sending the reply at a later time, after the function has finished
@@ -877,6 +877,6 @@ QDebug operator<<(QDebug dbg, const QDBusMessage &msg)
     \memberswap{message}
 */
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_DBUS

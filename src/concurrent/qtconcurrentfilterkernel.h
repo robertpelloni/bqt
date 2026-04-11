@@ -2,22 +2,22 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 // Qt-Security score:significant reason:default
 
-#ifndef QTCONCURRENT_FILTERKERNEL_H
-#define QTCONCURRENT_FILTERKERNEL_H
+#ifndef BOBUICONCURRENT_FILTERKERNEL_H
+#define BOBUICONCURRENT_FILTERKERNEL_H
 
-#include <QtConcurrent/qtconcurrent_global.h>
+#include <BobUIConcurrent/bobuiconcurrent_global.h>
 
 #if !defined(QT_NO_CONCURRENT) || defined (Q_QDOC)
 
-#include <QtConcurrent/qtconcurrentiteratekernel.h>
-#include <QtConcurrent/qtconcurrentmapkernel.h>
-#include <QtConcurrent/qtconcurrentreducekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentiteratekernel.h>
+#include <BobUIConcurrent/bobuiconcurrentmapkernel.h>
+#include <BobUIConcurrent/bobuiconcurrentreducekernel.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 template <typename T>
 struct qValueType
@@ -264,7 +264,7 @@ public:
     }
 };
 
-//! [QtConcurrent-2]
+//! [BobUIConcurrent-2]
 template <typename Iterator, typename KeepFunctor>
 inline
 ThreadEngineStarter<typename qValueType<Iterator>::value_type>
@@ -274,7 +274,7 @@ startFiltered(QThreadPool *pool, Iterator begin, Iterator end, KeepFunctor &&fun
                              (pool, begin, end, std::forward<KeepFunctor>(functor)));
 }
 
-//! [QtConcurrent-3]
+//! [BobUIConcurrent-3]
 template <typename Sequence, typename KeepFunctor>
 inline decltype(auto) startFiltered(QThreadPool *pool, Sequence &&sequence, KeepFunctor &&functor)
 {
@@ -287,7 +287,7 @@ inline decltype(auto) startFiltered(QThreadPool *pool, Sequence &&sequence, Keep
                                                     std::forward<KeepFunctor>(functor)));
 }
 
-//! [QtConcurrent-4]
+//! [BobUIConcurrent-4]
 template <typename ResultType, typename Sequence, typename MapFunctor, typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
                                                             Sequence &&sequence,
@@ -312,7 +312,7 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
 }
 
 
-//! [QtConcurrent-5]
+//! [BobUIConcurrent-5]
 template <typename ResultType, typename Iterator, typename MapFunctor, typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
                                                             Iterator begin,
@@ -331,7 +331,7 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
 }
 
 // Repeat the two functions above, but now with an initial value!
-//! [QtConcurrent-6]
+//! [BobUIConcurrent-6]
 template <typename ResultType, typename Sequence, typename MapFunctor, typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
                                                             Sequence &&sequence,
@@ -356,7 +356,7 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
             options));
 }
 
-//! [QtConcurrent-7]
+//! [BobUIConcurrent-7]
 template <typename ResultType, typename Iterator, typename MapFunctor, typename ReduceFunctor>
 inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
                                                             Iterator begin,
@@ -377,10 +377,10 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(QThreadPool *pool,
 }
 
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // QT_NO_CONCURRENT
 

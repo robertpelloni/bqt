@@ -7,13 +7,13 @@
 
 #if !defined(QT_NO_CONCURRENT) || defined(Q_QDOC)
 
-#include <QtConcurrent/qtconcurrentstoredfunctioncall.h>
+#include <BobUIConcurrent/bobuiconcurrentstoredfunctioncall.h>
 
-QT_BEGIN_NAMESPACE
+BOBUI_BEGIN_NAMESPACE
 
 #ifdef Q_QDOC
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 enum class FutureResult { Ignore };
 
@@ -39,11 +39,11 @@ public:
     QTaskBuilder<Task, Args...> &withPriority(int newPriority);
 };
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 #else
 
-namespace QtConcurrent {
+namespace BobUIConcurrent {
 
 enum class FutureResult { Ignore };
 
@@ -125,11 +125,11 @@ private: // Data
     TaskStartParameters startParameters;
 };
 
-} // namespace QtConcurrent
+} // namespace BobUIConcurrent
 
 #endif // Q_QDOC
 
-QT_END_NAMESPACE
+BOBUI_END_NAMESPACE
 
 #endif // !defined(QT_NO_CONCURRENT)
 

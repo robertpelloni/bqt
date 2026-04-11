@@ -64,6 +64,17 @@ The `omni` CLI is a Node.js wrapper around CMake and Ninja.
 - `omni test`: Runs unit tests.
 - `omni install <pkg>`: Installs a plugin.
 - `omni publish`: Builds a release package.
+- `omni deploy <platform>`: Deploys to Android, iOS, WASM, etc.
+- `omni translate <lang>`: Generates a translation template.
+- `omni generate-node <name>`: Scaffolds a new visual node type.
+- `omni generate-physics <name>`: Scaffolds a new physics entity.
+- `omni generate-game <name>`: Scaffolds a new game project.
+- `omni generate-shader <name>`: Scaffolds a new shader graph node.
+- `omni generate-ui "<prompt>"`: Generates a QML file using AI.
+- `omni login`: Authenticates with OmniCloud.
+- `omni logout`: Signs out of OmniCloud.
+- `omni repl`: Starts an interactive OmniScript shell.
+- `omni debug`: Launch app with DevTools attached.
 - `omni doctor [--fix]`: Checks environment health and optionally tries to fix it.
 
 ## 6. Widget Reference (OmniUI 1.0)
@@ -87,11 +98,37 @@ The `omni` CLI is a Node.js wrapper around CMake and Ninja.
 - `ShaderEffect`: GLSL fragment shader container.
 - `ParticleSystem`: GPU-accelerated particle emitter.
 
+### 3D Rendering (Omni3D 1.0)
+- `View3D`: High-performance 3D viewport.
+- `Camera`: Controls position, look-at target, and FOV.
+- `Mesh`: Loads 3D models (OBJ/GLTF).
+- `Light`: Scene lighting source.
+
+### Localization (OmniI18n 1.0)
+- `Translator`: Singleton for switching languages at runtime.
+
+### Desktop Integration (OmniDesktop 1.0)
+- `SystemTray`: Native taskbar icon with menu.
+- `Clipboard`: Copy/paste text.
+- `DropArea`: File drag-and-drop support.
+
+### Hardware I/O (OmniHardware 1.0)
+- `SerialPort`: RS-232/USB UART communication.
+- `Bluetooth`: BLE device discovery.
+
+### Theming (OmniUI 2.0)
+- `Theme`: Load JSON themes dynamically.
+
+### Testing (OmniTest 1.0)
+- `TestCase`: Unit test component.
+- `TestRunner`: Executes registered test cases.
+
 ### Charts & Data (OmniCharts 1.0)
 - `LineChart`: High-performance 2D line plotter.
 - `Oscilloscope`: Real-time waveform visualizer.
 
 ### Layouts (OmniLayout 1.0)
+<<<<<<< HEAD
 - `DockArea`: A flexible docking container.
 - `SplitView`: A resizable split pane.
 
@@ -100,6 +137,89 @@ The `omni` CLI is a Node.js wrapper around CMake and Ninja.
 - `AudioProcessor`: Wraps a JUCE `AudioProcessor` graph.
 - `AudioGraph`: Allows connecting multiple processors together.
 - `AudioSource`: Plays sample files (supports looping).
+=======
+>>>>>>> feature/omni-ui-framework-18001284211800334382
+- `DockArea`: A flexible docking container (supports detachable windows).
+- `SplitView`: A resizable split pane.
+
+### Developer Tools (OmniDebug 1.0)
+- `Inspector`: Inspect and modify QML object properties at runtime.
+- `Console`: In-app log viewer.
+- `NetMonitor`: Inspect network requests.
+- `Profiler`: Performance metrics.
+- `CrashHandler`: Error reporting.
+
+### Networking (OmniNet 1.0)
+- `HttpClient`: REST API client.
+- `WebSocket`: Real-time bidirectional communication.
+- `GraphQLClient`: Query and Mutate GraphQL endpoints.
+
+### Cloud Services (OmniCloud 1.0)
+- `Auth`: User authentication management.
+- `Storage`: Cloud file upload/download.
+- `PubSub`: Real-time messaging channels.
+
+### Mobile Features (OmniMobile 1.0)
+- `Sensors`: Access to accelerometer/gyroscope.
+- `Haptics`: Vibration feedback.
+- `Location`: GPS coordinates.
+
+### Artificial Intelligence (OmniAI 1.0)
+- `LLMClient`: Interface to local inference servers (e.g., Ollama).
+- `Vision`: Image analysis.
+- `Voice`: Speech-to-Text and Text-to-Speech.
+
+### Game Development (OmniGame 1.0)
+- `Sprite`: Animated 2D sprite.
+- `Input`: Gamepad and keyboard input mapping.
+
+### Web3 (OmniWeb3 1.0)
+- `Wallet`: Crypto wallet connection.
+- `SmartContract`: Interact with blockchain contracts.
+
+### Embedded Systems (OmniEmbedded 1.0)
+- `GPIO`: General Purpose Input/Output pin control.
+- `I2C`: Inter-Integrated Circuit communication.
+
+### Scripting & Tooling (OmniScript 1.0)
+- `ScriptEngine`: Run JavaScript dynamically.
+- `FileWatcher`: Monitor filesystem changes (used for Hot Reload).
+
+### Visual Nodes (OmniNodes 1.0)
+- `NodeCanvas`: Infinite zoomable grid for node editing.
+- `Node`: Base component for a visual node.
+- `ConnectionLine`: Bezier curve connecting two points.
+
+### Artificial Intelligence (OmniAI 1.0)
+- `LLMClient`: Interface to local inference servers (e.g., Ollama).
+
+### Animation (OmniAnim 1.0)
+- `Track`: A timeline track containing keyframes.
+- `Keyframe`: A time/value pair.
+
+### Physics (OmniPhysics 1.0)
+- `PhysicsWorld`: Simulation container (AABB collision supported).
+- `RigidBody`: Dynamic object with mass, velocity, and collision signals.
+
+### Web3 (OmniWeb3 1.0)
+- `Wallet`: Crypto wallet connection with transaction history.
+- `SmartContract`: Interact with blockchain contracts.
+- `Transaction`: Represents a pending or confirmed transfer.
+
+### Shader Graph (OmniGfx 1.0)
+- `ShaderNode`: Logic block for shader generation.
+- `ShaderGenerator`: Compiles nodes to GLSL.
+
+## 7. Audio & DSP (OmniAudio 1.0)
+### Components
+- `AudioProcessor`: Wraps a JUCE `AudioProcessor` graph.
+- `AudioGraph`: Manages a graph of audio nodes with cycle detection.
+- `AudioSource`: Plays sample files (supports looping).
+- `AudioMeter`: Visualizes audio levels (RMS/Peak).
+- `Spectrogram`: Frequency spectrum visualization (waterfall).
+- `Tuner`: Pitch detection.
+- `Sampler`: Multi-sample playback engine.
+- `Wavetable`: Wavetable synthesizer (Sine, Saw, Square, Triangle).
 - `Gain`: Simple volume control.
 - `Filter`: LowPass/HighPass/BandPass filter.
 - `Sequencer`: A simple MIDI step sequencer.
