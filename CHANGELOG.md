@@ -737,3 +737,6 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Added `scripts/generate_dashboard.py` to autonomously scrape `.gitmodules` and output an accurate, universally readable markdown `SUBMODULE_DASHBOARD.md`.
+
+### Changed
+- Modularized submodule building (JUCE, Ultimate++) into `cmake/BobQSubmodules.cmake` to prevent conflicts with native `QtBase` internal CMake macros.
