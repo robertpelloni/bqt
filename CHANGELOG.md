@@ -740,3 +740,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Modularized submodule building (JUCE, Ultimate++) into `cmake/BobQSubmodules.cmake` to prevent conflicts with native `QtBase` internal CMake macros.
+
+### Added
+- Implemented `BobQUltimatePPHost` to achieve 1:1 structural integration and parity with Ultimate++. The bridge intercepts Qt input and renders U++ `Ctrl` components directly into a `QImage` mapped onto the QML scenegraph.
+
+### Added
+- Implemented the `OmniMasterClock` singleton. It runs on the main Qt thread and explicitly pumps the `juce::MessageManager` and Ultimate++ `ProcessEvents` queues to prevent UI thread deadlocks and establish 1:1 cross-framework synchronized rendering.
