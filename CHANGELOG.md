@@ -727,3 +727,6 @@ All notable changes to this project will be documented in this file.
 - Updated `CMakeLists.txt` to include submodules gracefully.
 ### Added
 - Implemented `BobQJuceHost` (C++ Bridge) in `OmniUI/omnicore/`, which hosts a JUCE component inside a Qt QQuick painted item, translating Qt input and render events transparently to JUCE.
+
+### Added
+- Implemented `BobQBox` and `BobQGrid` to match GTK's layout paradigms (`GtkBox`, `GtkGrid`) natively inside BobQ's Qt scenegraph. Exposes `packStart`/`packEnd` and grid attachments explicitly.
