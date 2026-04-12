@@ -734,3 +734,6 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Implemented `BobQBox` in Go (`internal/ui/widgets/box.go`) using `gioui.org` to achieve GTK/C++ 1:1 structural parity on the Go side.
 - Created `ANALYSIS.md` to document the missing components in the Go port.
+
+### Added
+- Added `scripts/generate_dashboard.py` to autonomously scrape `.gitmodules` and output an accurate, universally readable markdown `SUBMODULE_DASHBOARD.md`.

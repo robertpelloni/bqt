@@ -1,27 +1,23 @@
-# Submodule Dashboard & Project Structure
+# BobQ / OmniUI Submodule Dashboard
 
-## Current Reality
-- There are **no active Git submodules** configured for this repository at the moment.
-- `bobui` is the **framework/kernel** project.
-- The **operating shell / OS product** belongs to the adjacent `bobfilez` project.
+This document lists all active submodules and major dependencies in the Omni-Workspace ecosystem.
 
-## Major Code Areas
-### C++ Framework Track
-- `OmniUI/omnicore/include/`
-- `OmniUI/omnicore/src/`
-- `OmniUI/examples/`
-- `OmniUI/tests/`
+## Active Submodules
 
-### Go Port Track
-- `main.go`
-- `internal/kernel/`
-- `internal/net/`
-- `internal/state/`
-- `internal/ui/`
-- `internal/audio/`
-- `internal/data/`
-- `internal/vm/`
+### `submodules/ultimatepp`
+- **URL:** [https://github.com/ultimatepp/ultimatepp](https://github.com/ultimatepp/ultimatepp)
+- **Purpose:** Rapid Application Development C++ toolkit utilized for layout parity and interop.
 
-## Notes
-- The Go track currently contains significant experimental work and requires build-focused stabilization.
-- The C++ track remains the more mature implementation path until the Go build is verified.
+### `submodules/juce`
+- **URL:** [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
+- **Purpose:** Audio / DSP / Component UI framework utilized for 1:1 parity and interop.
+
+## Architecture Directories
+
+- `BobQ/` (formerly `OmniUI/`): The core C++ Native Engine (Qt/Meta-Object driven).
+- `internal/`: The pure Go rewrite and bindings engine.
+- `docs/`: Universal AI instructions and architectural deep dives.
+- `scripts/`: Ecosystem automation scripts.
+
+---
+*Automatically generated via `python scripts/generate_dashboard.py`*
