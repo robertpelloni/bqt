@@ -730,3 +730,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Implemented `BobQBox` and `BobQGrid` to match GTK's layout paradigms (`GtkBox`, `GtkGrid`) natively inside BobQ's Qt scenegraph. Exposes `packStart`/`packEnd` and grid attachments explicitly.
+
+### Added
+- Implemented `BobQBox` in Go (`internal/ui/widgets/box.go`) using `gioui.org` to achieve GTK/C++ 1:1 structural parity on the Go side.
+- Created `ANALYSIS.md` to document the missing components in the Go port.
